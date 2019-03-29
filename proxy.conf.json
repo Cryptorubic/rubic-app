@@ -1,0 +1,15 @@
+{
+  "/api": {
+    "target": "http://dev.mywish.io",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/rest-auth": {
+    "target": "http://dev.mywish.io",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
+

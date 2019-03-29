@@ -1,0 +1,17 @@
+@import '../auth.component';
+
+.restore-link {
+  font-size: 17px;
+  line-height: 1.2em;
+  cursor: pointer;
+  display: block;
+  padding: 1.2em 0;
+  white-space: nowrap;
+  text-align: right;
+  color: #fff;
+  &.advanced-field-open {
+    span {
+      border-bottom: 1px dotted;
+    }
+  }
+}

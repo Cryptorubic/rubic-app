@@ -1,0 +1,38 @@
+
+.email-confirm-title, .email-confirm-text {
+  color: #fff;
+}
+.email-confirm-title {
+  font-size: 28px;
+  text-align: center;
+  font-weight: bold;
+}
+.email-confirm-text {
+  font-size: 19px;
+  line-height: 1.35em;
+}
+.red-color {
+  color: #ff5f73;
+  a {
+    color: inherit;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+.dark-red-color {
+  color: #a00;
+  a {
+    color: inherit;
+  }
+}
+.email-confirm-timer-text {
+  display: block;
+  line-height: 5.2em;
+  color: #4c4c4c;
+  span {
+    display: inline-block;
+    max-width: 100%;
+    vertical-align: middle;
+  }
+}

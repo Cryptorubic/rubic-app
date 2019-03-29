@@ -1,0 +1,34 @@
+<div class="dialog-block">
+  <div class="dialog-block__content">
+    <div class="grid-row">
+      <div class="grid-cell grid-cell-1">
+        <ul class="auth-form-menu" mat-dialog-title>
+          <li [ngClass]="{active: data.chapter === 'sign_in'}">
+            <span (click)="data.chapter = 'sign_in'"
+                  translate="HEADER.BUTTONS.SIGN_IN"></span>
+          </li>
+          <li [ngClass]="{active: data.chapter === 'sign_up'}">
+            <span (click)="data.chapter = 'sign_up'"
+                  translate="HEADER.BUTTONS.SIGN_UP"></span>
+          </li>
+        </ul>
+
+        <div mat-dialog-content>
+
+          <div *ngIf="(data.chapter === 'sign_in') || (data.chapter === 'sign_up')">
+            <app-authentication *ngIf="(data.chapter === 'sign_in') && !socialAuthError" [data]="data"></app-authentication>
+            <app-registration *ngIf="data.chapter === 'sign_up' && !socialAuthError" [(registered)]="onRegister"></app-registration>
+            <app-social (changedSocialState)="changedSocialState($event)"></app-social>
+          </div>
+
+
+          <app-email-confirm *ngIf="data.chapter === 'email-confirm'" [currentEmail]="currentEmail"></app-email-confirm>
+          <app-forgot-password *ngIf="data.chapter === 'forgot-password'"></app-forgot-password>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

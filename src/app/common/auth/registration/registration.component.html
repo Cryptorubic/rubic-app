@@ -1,0 +1,96 @@
+<form class="login-form" (submit)="sendRegForm()"
+      [ngClass]="{'ng-submitted': formIsSubmitted}"
+      [formGroup]="registrationForm" name="regForm" novalidate>
+
+  <div class="form-field">
+    <div class="form-field_label" translate="AUTH_POPUP.FIELDS.EMAIL"></div>
+    <div class="form-field_input">
+      <input type="email"
+             autocomplete="new-password"
+             formControlName="username" required
+             [ngClass]="{
+                'ng-invalid-server': ServerErrors.username || ServerErrors.email,
+                'ng-invalid-email': f.username.errors?.email,
+                'ng-invalid-required': f.username.errors?.required,
+                'ng-invalid': f.username.errors || ServerErrors.username || ServerErrors.email
+             }"
+             class="min-text">
+      <span class="field-error form-field_error-required"
+            translate="FIELDS_ERRORS.REQUIRED"></span>
+      <span class="field-error form-field_error-email"
+            translate="FIELDS_ERRORS.YOUR_EMAIL"></span>
+      <span class="field-error form-field_error-server">
+        {{ServerErrors.email?.join(' ')}}
+      </span>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <div class="form-field_label" translate="AUTH_POPUP.FIELDS.PASSWORD"></div>
+    <div class="form-field_input">
+      <input type="password"
+             minlength="8"
+             formControlName="password1"
+             [ngClass]="{
+                'ng-invalid-server': ServerErrors.password1,
+                'ng-invalid-required': f.password1.errors?.required,
+                'ng-invalid': f.password1.errors || ServerErrors.password1
+             }"
+             autocomplete="new-password"
+             name="password"
+             required
+             class="min-text">
+      <span class="field-error form-field_error-pattern"
+            translate="FIELDS_ERRORS.INCORRECT_PASSWORD"></span>
+      <span class="field-error form-field_error-minlength"
+            translate="FIELDS_ERRORS.MIN_LENGTH_PASSWORD"></span>
+      <span class="field-error form-field_error-required"
+            translate="FIELDS_ERRORS.REQUIRED"></span>
+      <span class="field-error form-field_error-server">
+            {{ServerErrors.password1?.join(' ')}}
+      </span>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <div class="form-field_label" translate="AUTH_POPUP.FIELDS.CONFIRM_PASSWORD"></div>
+    <div class="form-field_input">
+      <input type="password"
+             autocomplete="new-password"
+             formControlName="password2"
+             [ngClass]="{
+                'ng-invalid-server': ServerErrors.password2,
+                'ng-invalid-required': f.password2.errors?.required,
+                'ng-invalid': f.password2.errors || ServerErrors.password2,
+                'ng-invalid-pattern': f.password2.errors?.mustMatch
+             }"
+             required
+             class="min-text">
+      <span class="field-error form-field_error-required"
+            *ngIf="f.password1.valid"
+            translate="FIELDS_ERRORS.REQUIRED"></span>
+      <span class="field-error form-field_error-pattern"
+            *ngIf="f.password1.valid"
+            translate="FIELDS_ERRORS.NO_MATCH_PASSWORD"></span>
+      <span class="field-error form-field_error-server">
+            {{ServerErrors.password2?.join(' ')}}
+      </span>
+      <span class="field-error" style="display: block"
+            *ngIf="ServerErrors.non_field_errors">
+            {{ServerErrors.non_field_errors?.join(' ')}}
+      </span>
+    </div>
+  </div>
+
+  <div class="form-field"><br/>
+    <button type="submit" class="btn btn-yellow width-100" [disabled]="formIsProgress">
+      <span class="lds-ellipsis" *ngIf="formIsProgress">
+        <span class="lds-ellipsis-container">
+          <span></span><span></span><span></span><span></span>
+        </span>
+      </span>
+      <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+      <span translate="AUTH_POPUP.BUTTONS.CREATE_ACCOUNT"></span>
+    </button>
+  </div>
+</form>

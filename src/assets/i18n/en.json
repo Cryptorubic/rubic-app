@@ -1,0 +1,64 @@
+{
+  "YES": "Yes",
+  "NO": "No",
+  "HEADER": {
+    "BUTTONS": {
+      "BUY": "Buy",
+      "SIGN_IN": "Sign in",
+      "SIGN_UP": "Sign up",
+      "SEND": "Send",
+      "CONTINUE": "Continue"
+    }
+  },
+  "AUTH_POPUP": {
+    "FIELDS": {
+      "EMAIL": "E-mail",
+      "RESET_EMAIL": "Enter e-mail for password reset",
+      "PASSWORD": "Password",
+      "CONFIRM_PASSWORD": "Repeat password",
+      "2FA": "2FA code"
+    },
+    "CONFIRM_EMAIL": "Please check your email & confirm registration. Thank you!",
+    "CONFIRM_EMAIL_FORM": {
+      "TITLE": "Email Activation",
+      "BASE_TEXT": "An activation email has been sent to <br/><b>{{currEmail}}</b>",
+      "NOTICE_TEXT": "If your email address is gmail or not received for a long time, please check the mailbox trash/spam.",
+      "RESEND_BUTTON": "Resend an email",
+      "TIMER": "We can re-send email in {{timerMinutes}}:{{timerSeconds}}",
+      "ERRORS": {
+        "ERROR_1": "Your email was not registered. Please <a href=\"/auth/registration\">sign up</a> before email activation.",
+        "ERROR_2": "Your email has already been verified. Please <a href=\"/auth\">sign in</a>"
+      }
+    },
+    "BUTTONS": {
+      "LOG_IN": "Log in",
+      "FORGOT_PASSWORD": "Forgot your password?",
+      "LOGIN_FACEBOOK": "Log in via Facebook",
+      "LOGIN_GOOGLE": "Log in via Google",
+      "CREATE_ACCOUNT": "Create account"
+    }
+  },
+  "FIELDS_ERRORS": {
+    "REQUIRED": "Field is required",
+    "INCORRECT_PASSWORD": "Incorrect password",
+    "YOUR_EMAIL": "Enter your e-mail",
+    "MIN_LENGTH_PASSWORD": "Minimum password length 8 characters",
+    "NO_MATCH_PASSWORD": "Passwords do not match",
+    "INVALID_2FA_CODE": "Invalid code",
+    "ADDRESS_NOT_CHECKSUMMED": "Address is not checksummed"
+  },
+  "CONFIRMATIONS": {
+    "LOG_OUT": {
+      "TEXT": "Do you really want to Log Out?"
+    },
+    "CONTRACT_DELETE": {
+      "TEXT": "Do you want to remove it?"
+    },
+    "CONTRACT_PAY": {
+      "TEXT": "Please confirm contract launch ({{price|separateNumber}} {{currency || 'WISH'}})"
+    },
+    "ACCOUNT_CREATION": {
+      "TEXT": "Please confirm account creation ({{price}} {{currency || 'WISH'}})"
+    }
+  }
+}

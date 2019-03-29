@@ -1,0 +1,56 @@
+<header [ngClass]="{scrolled: pageScrolled}">
+  <div class="app-content-block">
+    <div class="logo">
+      <img src="./assets/images/logo.svg">
+    </div>
+    <nav class="header-menu">
+      <ul class="header-menu_list">
+        <li class="header-menu_list_item">
+          <a href="#" class="header-link">How it work</a>
+        </li>
+        <li class="header-menu_list_item">
+          <a href="#" class="header-link">About wish</a>
+        </li>
+        <li class="header-menu_list_item" *ngIf="currentUser.is_ghost">
+          <span (click)="openAuth()" class="header-link">Login</span>
+        </li>
+        <li class="header-menu_list_item with-sublist" *ngIf="!currentUser.is_ghost"
+            [ngClass]="{'opened-list': userMenuOpened}">
+          <span class="header-link" (click)="userMenuOpened = !userMenuOpened">{{currentUser.username}}</span>
+          <ul class="header-menu_sublist">
+            <li class="header-menu_sublist_item">
+              <a href="#" class="sublist-link">My contracts</a>
+            </li>
+            <li class="header-menu_sublist_item">
+              <span class="sublist-link" (click)="openLogoutConfirmation()">Logout</span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+<ng-template #logoutConfirmation>
+  <div class="dialog-block">
+    <div class="dialog-block__content">
+      <div class="alert-window-title">
+        {{'CONFIRMATIONS.LOG_OUT.TEXT'|translate}}
+      </div>
+    </div>
+    <div class="alert-window-buttons text-center">
+      <button class="btn btn-transparent btn-min " type="button" (click)="logoutSuccess()" [disabled]="logoutProgress">
+        <span class="lds-ellipsis" *ngIf="logoutProgress">
+          <span class="lds-ellipsis-container">
+            <span></span><span></span><span></span><span></span>
+          </span>
+        </span>
+        <span class="just-title">&nbsp;&nbsp;&nbsp;{{'YES'|translate}}&nbsp;&nbsp;&nbsp;</span>
+      </button>
+      <button class="btn btn-yellow btn-min" mat-dialog-close type="button">
+        <span>&nbsp;&nbsp;&nbsp;{{'NO'|translate}}&nbsp;&nbsp;&nbsp;</span>
+      </button><br/><br/>
+    </div>
+  </div>
+</ng-template>

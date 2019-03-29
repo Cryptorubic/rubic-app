@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="88px" height="33px" viewBox="0 0 88 33" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>maf</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard-Copy" transform="translate(-378.000000, -1028.000000)" fill="#FEFEFE">
+            <g id="maf" transform="translate(378.000000, 1028.000000)">
+                <path d="M37,33 L42.6511133,33 L44.0357456,29.7864056 L54.9642544,29.7864056 L56.3481048,33 L62,33 L49.5,4 L37,33 Z M49.5,17.1253452 L52.6617463,24.4624997 L46.3382537,24.4624997 L49.5,17.1253452 Z" id="Fill-1"></path>
+                <polygon id="Fill-2" points="25 19.3001689 25 26.1384219 25 33 32 33 32 13"></polygon>
+                <polygon id="Fill-3" points="32.3128403 1.60219455 33.3630334 2.78126002 16.4712405 17.8088522 0 2.43787449 0 33 7.19136719 33 7.17394317 17.7193441 15.6008316 25.7010233 20.3686764 21.4445075 20.3583804 21.4355567 37.5756856 6.316829 38.8721909 7.71315497 40 0"></polygon>
+                <polygon id="Fill-4" points="67 5 67 33 72.2501987 33 72.2501987 21.7021692 83.2632177 21.7021692 83.2632177 16.3165817 72.2501987 16.3165817 72.2501987 10.3855874 88 10.3855874 88 5"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

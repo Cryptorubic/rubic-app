@@ -1,0 +1,203 @@
+@import '~@angular/material/theming';
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+
+
+
+.base-block-content {
+  padding-top: 200px;
+  background: url('/assets/images/backgrounds/bg-index-top.png') transparent;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  min-height: 100vh;
+  padding-bottom: 60px;
+  box-sizing: border-box;
+}
+.form-container {
+  padding-left: 62px;
+
+}
+.form-field_description {
+  line-height: 28px;
+  span {
+    vertical-align: middle;
+  }
+}
+.revert-btn {
+  display: inline-block;
+  border: 0 none;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  text-align: center;
+  line-height: 28px;
+  margin-left: 10px;
+  vertical-align: middle;
+  background-color: rgba(216, 216, 216, 0.26);
+  cursor: pointer;
+  img {
+    width: 14px;
+    vertical-align: middle;
+  }
+}
+.form-block {
+  position: relative;
+  counter-increment: blockNumber;
+  padding: 20px 30px 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  &:after {
+    display: block;
+    position: absolute;
+    box-sizing: border-box;
+    right: 100%;
+    top: 0;
+    width: 62px;
+    height: 62px;
+    line-height: 64px;
+    text-align: center;
+    border-left: 5px solid;
+    // border-color: #FCD600;
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 30px;
+    color: #FFFFFF;
+    font-weight: bold;
+    content: counter(blockNumber);
+  }
+
+  &_title {
+    font-size: 25px;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 20px 30px;
+    margin-left: -30px;
+    margin-right: -30px;
+    margin-top: -20px;
+    line-height: 22px;
+    transition: all linear 0.1s;
+  }
+  &_fieldset {
+    padding: 20px 0;
+  }
+
+  + .form-block {
+    margin-top: 25px;
+  }
+  &.hidden &_fieldset {
+    display: none;
+  }
+  &__active &_title {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.26);
+    }
+  }
+  &__active {
+    &:after {
+      border-color: #FCD600;
+    }
+  }
+  &.checked {
+    &:after {
+      content: '';
+    }
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 17px;
+      left: -34px;
+      width: 10px;
+      height: 20px;
+      border-width: 0 4px 4px 0;
+      border-style: solid;
+      border-color: #FCD600;
+      transform: rotate(45deg);
+    }
+  }
+}
+
+.token-block {
+  background-color: rgba(0, 0, 0, 0.1);
+  .form-field_description {
+    margin-top: 0;
+    padding: 3px 20px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+  }
+}
+.token-info {
+  padding: 20px;
+  &:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+  &_icon {
+    width: 52px;
+    height: 52px;
+    text-align: center;
+    line-height: 52px;
+    background-color: #fff;
+    border-radius: 50%;
+    float: left;
+    margin-right: 18px;
+    img {
+      vertical-align: middle;
+      max-height: 80%;
+    }
+  }
+  &_texts {
+    padding: 4px 0;
+    &__name {
+      font-size: 16px;
+      color: #FFFFFF;
+      letter-spacing: -0.43px;
+      font-weight: bold;
+      line-height: 19px;
+    }
+    &__address {
+      margin-top: 4px;
+      font-size: 18px;
+      color: #FFFFFF;
+      line-height: 22px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+  &_balance {
+    float: left;
+    clear: both;
+    margin-top: 12px;
+    span {
+      display: block;
+      float: left;
+      text-align: center;
+      white-space: nowrap;
+    }
+    &_title {
+      padding: 15px 10px;
+      min-width: 125px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 18px;
+      background-color: rgba(0, 0, 0, 0.1);
+      text-transform: uppercase;
+    }
+    &_count {
+      padding: 7px 10px;
+      line-height: 34px;
+      font-size: 28px;
+      color: #FFFFFF;
+      background-color: rgba(69, 79, 95, 0.5);
+    }
+  }
+}
+
+.contract-info-block {
+  padding: 30px 0 15px;
+
+}
+
+
+

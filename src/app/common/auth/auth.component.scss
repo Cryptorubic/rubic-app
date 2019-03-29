@@ -1,0 +1,31 @@
+//@import "environment";
+
+
+.auth-form-menu {
+  list-style-type: none;
+  padding: 0 0 4em  ;
+  margin: 0;
+  color: #fff;
+  font-size: 12px;
+  li {
+    display: inline-block;
+    vertical-align: middle;
+    + li {
+      margin-left: 2em;
+    }
+    &.active {
+      color: #fcd600;
+      border-bottom: 2px solid #fcd600;
+    }
+    span {
+      font-size: 2em;
+      line-height: 1.25em;
+      cursor: pointer;
+    }
+  }
+}
+
+.email-confirm-text {
+  font-size: 1.6em;
+  line-height: 1.22em;
+}

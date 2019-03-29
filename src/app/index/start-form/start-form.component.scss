@@ -1,0 +1,31 @@
+.index-start-form {
+  padding: 15vh 0;
+  box-sizing: border-box;
+  &:after {
+    clear: both;
+    content: '';
+    display: block;
+  }
+  &_left {
+    float: left;
+    width: 52%;
+    .title {
+      font-size: 44px;
+      color: #FFFFFF;
+      line-height: 53px;
+      margin: 0;
+    }
+    .description {
+      margin-top: 30px;
+      font-size: 24.1px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .btn-block {
+      margin-top: 40px;
+    }
+  }
+  &_right {
+    float: left;
+    width: 48%;
+  }
+}

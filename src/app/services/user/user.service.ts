@@ -1,0 +1,300 @@
+import { Injectable } from '@angular/core';
+import { HttpService } from '../http/http.service';
+import { Observable } from 'rxjs';
+import { URLS } from './user.service.api';
+import {AuthUserInterface, NewUserInterface, SocialUserInterface, UserInterface} from './user.interface';
+import {DEFAULT_USER, SOCIAL_KEYS} from './user.constant';
+// import { environment } from '../../../environments/environment';
+
+
+import BigNumber from 'bignumber.js';
+import {AuthComponent} from '../../common/auth/auth.component';
+import {MatDialog} from '@angular/material';
+
+
+
+@Injectable({
+  providedIn: 'root'
+})
+
+
+export class UserService {
+  private FBInit: boolean;
+  private GAInit: boolean;
+
+  constructor(
+    private dialog: MatDialog,
+    private httpService: HttpService
+  ) {
+    this.userObserves = [];
+
+
+    if (window['FB']) {
+      this.FBInit = true;
+      window['FB'].init({
+        appId: SOCIAL_KEYS.FACEBOOK,
+        status: true,
+        cookie: true,
+        xfbml: true,
+        version: 'v2.8'
+      });
+    }
+    if (window['gapi']) {
+      this.GAInit = true;
+      window['gapi'].load('auth2');
+    }
+
+
+  }
+  public userObserves;
+  private _userModel: UserInterface;
+  private _updateProgress: boolean;
+
+  private authDialog;
+
+  private checkUserProfile() {
+    const decimalsBalance = 18;
+    this._userModel.visibleBalance = new BigNumber(this._userModel.balance).div(Math.pow(10, decimalsBalance)).toString();
+  }
+
+  private callSubscribers() {
+    this.userObserves.forEach((userObserve) => {
+      this.checkUserProfile();
+      userObserve.next(this._userModel);
+      this._userModel.isLogout = undefined;
+    });
+  }
+
+  public updateUser(afterLogout?: boolean) {
+    if (this._updateProgress) {
+      return;
+    }
+    this._updateProgress = true;
+    return this.getProfile().then((result) => {
+      this._userModel = result;
+      this._updateProgress  = false;
+    }, (error) => {
+      this._userModel = DEFAULT_USER;
+      this._userModel.isLogout = afterLogout;
+      this._updateProgress  = false;
+    }).finally(() => {
+      this.callSubscribers();
+    });
+  }
+
+  public checkSocialNetworks(): {FB: boolean, GA: boolean} {
+    return {
+      GA: this.GAInit,
+      FB: this.FBInit
+    };
+  }
+
+  public getCurrentUser(withRequest?: boolean, checkNow?: boolean): Observable<any> {
+    return new Observable((observer) => {
+      this.userObserves.push(observer);
+
+      if (withRequest) {
+        this.updateUser();
+      }
+
+      if (checkNow && !this._updateProgress) {
+        setTimeout(() => {
+          observer.next(this._userModel);
+        });
+      }
+
+      const _th = this;
+
+      return {
+        unsubscribe() {
+          _th.userObserves = _th.userObserves.filter((subscriber) => {
+            return subscriber !== observer;
+          });
+        }
+      };
+    });
+  }
+
+  public getUserModel(): UserInterface {
+    return this._userModel;
+  }
+
+  private getProfile(): Promise<any> {
+    return this.httpService.get(URLS.PROFILE).toPromise();
+  }
+
+  public authenticate(data: AuthUserInterface|SocialUserInterface, socialAuthPath?: string): Promise<any> {
+    data.username = data.username ? data.username.toLowerCase() : data.username;
+    return new Promise((resolve, reject) => {
+      this.httpService.post(socialAuthPath || URLS.LOGIN, data, URLS.HOSTS.AUTH_PATH).toPromise().then((response) => {
+        this.updateUser();
+        resolve(response);
+      }, reject);
+    });
+  }
+
+  public registration(data: NewUserInterface): Promise<any> {
+    data.email = data.username = data.username.toLowerCase();
+    return this.httpService.post(URLS.REGISTRATION, data, URLS.HOSTS.AUTH_PATH).toPromise();
+  }
+
+  public passwordReset(email: string): Promise<any> {
+    const data = {
+      email: email.toLowerCase()
+    };
+    return this.httpService.post(URLS.PASSWORD_RESET, data, URLS.HOSTS.AUTH_PATH).toPromise();
+  }
+
+  public resendConfirmEmail(email: string): Promise<any> {
+    const data = {
+      email: email.toLowerCase()
+    };
+    return this.httpService.post(URLS.RESEND_EMAIL, data).toPromise();
+  }
+
+  public openAuthForm(chapter?: string) {
+    return new Promise((resolve, reject) => {
+      const updateUserObserver = this.getCurrentUser(false, true).subscribe((userModel) => {
+        if (!userModel.is_ghost) {
+          this.closeAuthForm();
+          resolve(userModel);
+        }
+      });
+      this.authDialog = this.dialog.open(AuthComponent, {
+        width: '460px',
+        panelClass: 'custom-dialog-container',
+        data: {
+          chapter: chapter || 'sign_in'
+        }
+      });
+      this.authDialog.beforeClosed().toPromise().then(() => {
+        updateUserObserver.unsubscribe();
+        reject({
+          state: 'CLOSED'
+        });
+      });
+    });
+  }
+
+  private closeAuthForm() {
+    if (this.authDialog) {
+      this.authDialog.close();
+    }
+  }
+
+  public logout() {
+    return this.httpService.get(URLS.LOGOUT, {}, URLS.HOSTS.AUTH_PATH).toPromise().then(() => {
+      this._userModel = undefined;
+      this.updateUser(true);
+    });
+  }
+
+  public enable2fa(code) {
+    return this.httpService.post(URLS.ENABLE_2FA, {
+      totp: code
+    }).toPromise();
+  }
+
+  public disable2fa(code) {
+    return this.httpService.post(URLS.DISABLE_2FA, {
+      totp: code
+    }).toPromise();
+  }
+
+  public generate2fa() {
+    return this.httpService.post(URLS.GENERATE_KEY).toPromise();
+  }
+
+
+  public setNewPassword(data) {
+    return this.httpService.post(URLS.PASSWORD_CHANGE, data, URLS.HOSTS.AUTH_PATH).toPromise();
+  }
+
+
+  public socialAuthRequest(network, data) {
+    switch (network) {
+      case 'fb':
+        return this.authenticate(data, URLS.SOCIAL.GOOGLE);
+      case 'ga':
+        return this.authenticate(data, URLS.SOCIAL.GOOGLE);
+    }
+  }
+
+  public FBAuth() {
+    return new Promise((resolve, reject) => {
+      const getStatus = () => {
+        window['FB'].getLoginStatus((response) => {
+          if (response.status === 'connected') {
+            resolve(response.authResponse);
+          } else {
+            window['FB'].login(() => {
+              getStatus();
+            }, () => {});
+          }
+        }, () => {});
+      };
+      getStatus();
+    });
+  }
+
+  public GoogleAuth() {
+    return new Promise((resolve, reject) => {
+      window['gapi'].auth2.authorize({
+        client_id: SOCIAL_KEYS.GOOGLE,
+        scope: 'email profile',
+        response_type: 'id_token permission',
+        prompt: 'select_account'
+      }, (response) => {
+        if (response.error) {
+          reject(response);
+          return;
+        }
+        resolve(response);
+      });
+    });
+
+  }
+
+
+  // var promise = requestService.get(params);
+  // promise.then(function(responseSocialUserInterface) {
+    //   if (response.data.id) {
+        // !WebSocketService.status() ? WebSocketService.connect() : false;
+        // $cookies.put('UserID', response.data.id);
+      // } else {
+        // WebSocketService.status() ? WebSocketService.disconnect() : false;
+        // $cookies.put('UserID', undefined);
+      // }
+    // }, function() {
+      // WebSocketService.status() ? WebSocketService.disconnect() : false;
+      // $cookies.put('UserID', undefined);
+    // });
+    // return promise;
+  // },
+
+
+
+
+  // passwordChange: function(data) {
+  //   var params = {
+  //     data: data
+  //   };
+  //   params.API_PATH = API.HOSTS.AUTH_PATH;
+  //   params.path = API.PASSWORD_RESET_CONFIRM;
+  //   return requestService.post(params);
+  // },
+
+
+  // setLanguage: function(lng) {
+  //   var params = {
+  //     path: API.SET_LNG,
+  //     data: {
+  //       lang: lng
+  //     }
+  //   };
+  //   return requestService.post(params);
+  // }
+
+
+}
+

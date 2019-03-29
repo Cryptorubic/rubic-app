@@ -1,0 +1,51 @@
+<input type="text" placeholder="0"
+       #amountField
+       required
+       [tabindex]="visibleInput ? '-1' : ''"
+       (ngModelChange)="transformValue($event)"
+       [(ngModel)]="amount">
+
+<input type="hidden" required
+       #hiddenAddress="ngModel"
+       [ngModel]="tokenModel.token.address">
+
+<button class="form-field_input__btn"
+        [ngClass]="{active: visibleInput}"
+        (click)="showAutoInput()">
+  <span *ngIf="!tokenModel.token.address">Choose Token</span>
+  <span *ngIf="tokenModel.token.address" class="ac_res_preview">
+    <span class="ac_res_preview_icon">
+      <img [src]="tokenModel.token.image_link" *ngIf="tokenModel.token.image_link">
+    </span>
+    <span class="ac_res_preview_symbol">{{tokenModel.token.token_short_name}}</span>
+  </span>
+</button>
+<input type="text" placeholder="Search"
+       [tabindex]="!visibleInput ? '-1' : ''"
+       name="token"
+       [(ngModel)]="tokenName"
+       #tokenField
+       (ngModelChange)="searchToken(tokenName)"
+       (keydown)="keyDownResult($event)"
+       class="form-field_input__ac_input">
+<span class="form-field_input__ac_closer" (click)="showAutoInput()">
+  <img src="./assets/images/icons/cross.svg">
+</span>
+<div class="form-field_input__ac_res">
+  <ul *ngIf="tokensList.length && listIsOpened && visibleInput" class="ac_res_list">
+    <li class="ac_res_list_item"
+        *ngFor="let item of tokensList; let ind = index;"
+        [ngClass]="{active: item.active}"
+        (click)="selectToken(item, ind)">
+      <span class="ac_res_list_item-content">
+        <span class="ac_res_list_item-content_ico">
+          <img [src]="item.image_link">
+        </span>
+        <span class="ac_res_list_item-content_name">
+          {{item.token_name}}&nbsp;({{item.token_short_name}})
+        </span>
+      </span>
+    </li>
+  </ul>
+</div>
+

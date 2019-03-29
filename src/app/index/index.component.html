@@ -1,0 +1,212 @@
+<div class="app-index">
+  <div class="app-content-block">
+    <div class="app-index__start-form">
+      <app-start-form></app-start-form>
+    </div>
+
+    <div class="app-index__how-it-works">
+
+      <button class="btn btn-white-opacity float-right">
+        <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
+        <span>Watch video tutorial</span>
+      </button>
+      <div class="how-it-work">
+        <div class="how-it-work-title">How it works</div>
+        <ul class="how-it-work-steps">
+          <li class="how-it-work-steps_item">
+            <div class="how-it-work-steps_item__cont">
+              <span class="step-arrow">
+                <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
+              </span>
+              <div class="step-image">
+                <img src="./assets/images/how-it-work/ic_hw_01.svg"/>
+              </div>
+              <div class="step-text">
+                <span>
+                  Enter<br/>
+                  MyWish
+                </span>
+              </div>
+            </div>
+          </li>
+
+
+          <li class="how-it-work-steps_item">
+            <div class="how-it-work-steps_item__cont">
+              <span class="step-arrow">
+                <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
+              </span>
+              <div class="step-image">
+                <img src="./assets/images/how-it-work/ic_hw_02.svg"/>
+              </div>
+              <div class="step-text">
+                <span>
+                  Fill in the form fields
+                </span>
+              </div>
+            </div>
+          </li>
+          <li class="how-it-work-steps_item">
+            <div class="how-it-work-steps_item__cont">
+              <span class="step-arrow">
+                <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
+              </span>
+              <div class="step-image">
+                <img src="./assets/images/how-it-work/ic_hw_02.svg"/>
+              </div>
+              <div class="step-text">
+                <span>
+                  Make a&nbsp;payment
+                </span>
+              </div>
+            </div>
+          </li>
+          <li class="how-it-work-steps_item">
+            <div class="how-it-work-steps_item__cont">
+              <span class="step-arrow">
+                <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
+              </span>
+              <div class="step-image">
+                <img src="./assets/images/how-it-work/ic_hw_04.svg"/>
+              </div>
+              <div class="step-text">
+                <span>
+                  MyWish deploys contract to&nbsp;blockchain
+                </span>
+              </div>
+            </div>
+          </li>
+          <li class="how-it-work-steps_item">
+            <div class="how-it-work-steps_item__cont">
+              <span class="step-arrow">
+                <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
+              </span>
+              <div class="step-image">
+                <img src="./assets/images/how-it-work/ic_hw_05.svg"/>
+              </div>
+              <div class="step-text">
+                <span>
+                  Get contract address
+                </span>
+              </div>
+            </div>
+          </li>
+          <li class="how-it-work-steps_item">
+            <div class="how-it-work-steps_item__cont">
+              <div class="step-image">
+                <img src="./assets/images/how-it-work/ic_hw_06.svg"/>
+              </div>
+              <div class="step-text">
+                <span>
+                  Start using it!
+                </span>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-content-block">
+    <div class="app-index__used-service used-service">
+      <div class="used-service__title">User our service</div>
+      <div class="used-service__info">
+        <div class="used-service__info_item">
+          <div class="used-service__info_item__image">
+            <img src="./assets/images/used-service/users.png">
+          </div>
+          <div class="used-service__info_item__text">
+            <span class="count">7093</span>
+            <span class="desc">Users</span>
+            <span class="range">+7</span>
+          </div>
+        </div>
+        <div class="used-service__info_item">
+          <div class="used-service__info_item__image">
+            <img src="./assets/images/used-service/contracts.png">
+          </div>
+          <div class="used-service__info_item__text">
+            <span class="count">7093</span>
+            <span class="desc">Contracts</span>
+            <span class="range">+7</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-index__partners">
+      <div class="grid-row">
+        <div *ngFor="let project of projects" class="grid-cell grid-cell-1-8 grid-cell-sm-1-5 grid-cell-s-1-4 grid-cell-ps-1-3 grid-cell-ls-1-2">
+          <div class="app-index__partners_item">
+            <a href="{{project.link}}" target="_blank">
+              <img [src]="project.logo">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-index__faq">
+    <div class="app-content-block">
+      <div class="faq-title">FAQ</div>
+      <ul class="faq-questions-list">
+        <li class="faq-questions-list_item">
+          <input type="checkbox" class="question-checkbox" id="question-1"/>
+          <label class="question" for="question-1">– What about security?</label>
+          <span class="answer">
+          <span>MyWish is an open source project, you can check the source code on our GitHub, We guarantee security our services are 100% secure.</span>
+        </span>
+        </li>
+        <li class="faq-questions-list_item">
+          <input type="checkbox" class="question-checkbox" id="question-2"/>
+          <label class="question" for="question-2">– What is RAM/CPU/NET for EOS account? Can I setup it in your service?</label>
+          <span class="answer">
+            <span>RAM/CPU/NET are resources of your account needed for interaction with EOS blockchain. You can setup it during the account creation if needed.</span>
+          </span>
+        </li>
+        <!-- li class="faq-questions-list_item">
+          <input type="checkbox" class="question-checkbox" id="question-3"/>
+          <label class="question" for="question-3">– Is it safe?</label>
+            <span class="answer">
+              <span>MyWish provides you with 100% security</span>
+            </span>
+        </li -->
+        <li class="faq-questions-list_item">
+          <input type="checkbox" class="question-checkbox" id="question-5"/>
+          <label class="question" for="question-5">– Why should I buy an account?</label>
+          <span class="answer">
+            <span>When you pay fees to create an EOS account, it means that you are paying for a certain amount of RAM which is required for the account to function.</span>
+          </span>
+        </li>
+        <li class="faq-questions-list_item">
+          <input type="checkbox" class="question-checkbox" id="question-4"/>
+          <label class="question" for="question-4">– How much the account will cost me?</label>
+          <span class="answer">
+            <span>It depends on how much RAM you need for your account, so the price differs but mainly it's 10 USD.</span>
+          </span>
+        </li>
+        <li class="faq-questions-list_item">
+          <input type="checkbox" class="question-checkbox" id="question-6"/>
+          <label class="question" for="question-6">– How can I be sure I got EOS account?</label>
+          <span class="answer">
+            <span>We generate a link to EOS blockchain once the account is created, so you will have a proof that now you own an EOS account.</span>
+          </span>
+        </li>
+        <li class="faq-questions-list_item">
+          <input type="checkbox" class="question-checkbox" id="question-7"/>
+          <label class="question" for="question-7">– How can I be sure account is only under my control?</label>
+          <span class="answer">
+            <span> EOS uses private and public key pairs for every account. If you don’t have public key we provide you with it and you need to save it in a safe place, However,  MyWish is not saving any private pairs.</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="app-index__footer-form"></div>
+</div>
+
+
+

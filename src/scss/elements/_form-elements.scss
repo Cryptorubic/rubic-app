@@ -1,0 +1,123 @@
+
+
+.field-error {
+  display: none;
+  color: rgba(255, 41, 68, 0.8);
+  font-size: 12px;
+  padding: 0.5em 0;
+  text-transform: uppercase;
+}
+
+.field-success {
+  color: rgba(6, 176, 31, 0.96);
+  font-size: 12px;
+  padding: 0.5em 0;
+  display: block;
+  text-transform: uppercase;
+  &.grey-text-color {
+    color: #878787;
+  }
+}
+
+.form-field input {
+  outline: none;
+  form.ng-submitted &.ng-invalid, &.ng-invalid:focus, &.ng-touched.ng-invalid, &[invalid="true"] {
+    &:not(:disabled), &:not([disabled]), &:not([readonly]) {
+      border-color: #ff2944;
+    }
+    &:focus {
+      box-shadow: 0 0 0.2em rgba(249, 28, 28, 0.4);
+    }
+    ~ {
+      .field-label {
+        //color: #ffa2a8;
+      }
+    }
+    ~ .field-advanced-description {
+      display: none;
+    }
+
+    &.ng-invalid-required {
+      ~ .form-field_error-required {
+        display: block;
+        ~ .field-error {
+          display: none!important;
+        }
+      }
+    }
+    &.ng-invalid-email {
+      ~ {
+        .form-field_error-email {
+          display: block;
+          ~ .field-error {
+            display: none!important;
+          }
+        }
+      }
+    }
+    &.ng-invalid-pattern {
+      ~ {
+        .form-field_error-pattern {
+          display: block;
+          ~ .field-error {
+            display: none!important;
+          }
+        }
+      }
+    }
+    &.ng-invalid-minlength {
+      ~ {
+        .form-field_error-minlength {
+          display: block;
+          ~ .field-error {
+            display: none!important;
+          }
+        }
+      }
+    }
+
+    &.ng-invalid-server {
+      ~ {
+        .form-field_error-server {
+          display: block;
+          ~ .field-error {
+            display: none!important;
+          }
+        }
+      }
+    }
+    &.ng-invalid-soft-cap {
+      ~ {
+        .form-field_error-soft-cap {
+          display: block;
+          ~ .field-error {
+            display: none!important;
+          }
+        }
+      }
+    }
+    &.ng-invalid-check-sum {
+      ~ {
+        .form-field_error-check-sum {
+          display: block;
+          ~ .field-error {
+            display: none!important;
+          }
+        }
+      }
+    }
+
+    &.ng-invalid-contract-address {
+      ~ {
+        .form-field_error-contract-address {
+          display: block;
+          ~ .field-error {
+            display: none!important;
+          }
+        }
+      }
+    }
+
+  }
+}
+
