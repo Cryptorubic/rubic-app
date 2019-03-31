@@ -226,7 +226,12 @@
                 </div>
               </div>
 
-              <button class="btn btn-yellow" [disabled]="!extraForm.valid" type="submit">
+              <button class="btn btn-yellow" [disabled]="!extraForm.valid || formIsSending" type="submit">
+                <span class="lds-ellipsis" *ngIf="formIsSending">
+                  <span class="lds-ellipsis-container">
+                    <span></span><span></span><span></span><span></span>
+                  </span>
+                </span>
                 <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                 <span>
                   Next step
@@ -265,10 +270,16 @@
                      *ngIf="requestData.base.token && requestData.quote.token && requestData.base.amount && requestData.quote.amount">
                     <span>
                       Rate:
-                      {{(requestData.base.amount / requestData.quote.amount) | number : '1.0-4'}}
-                      {{requestData.base.token.token_short_name}} / 1 {{requestData.quote.token.token_short_name}}
+                      <span *ngIf="!revertedRate">
+                        {{(requestData.base.amount / requestData.quote.amount) | number : '1.0-4'}}
+                        {{requestData.base.token.token_short_name}} / 1 {{requestData.quote.token.token_short_name}}
+                      </span>
+                      <span *ngIf="revertedRate">
+                        {{(requestData.quote.amount / requestData.base.amount) | number : '1.0-4'}}
+                        {{requestData.quote.token.token_short_name}} / 1 {{requestData.base.token.token_short_name}}
+                      </span>
                     </span>
-                  <button class="revert-btn" (click)="revertCoins()">
+                  <button class="revert-btn" (click)="revertedRate = !revertedRate">
                     <img src="./assets/images/icons/revert.svg">
                   </button>
                 </div>
@@ -297,13 +308,13 @@
                   <div class="grid-cell grid-cell-1-5">
                     <div class="form-field">
                       <label class="form-field_label transparent">Closing date</label>
-                      <div class="form-field_value">24.05.2019</div>
+                      <div class="form-field_value">{{requestData.stop_date | date : 'dd.MM.yyyy' : '+0000'}}</div>
                     </div>
                   </div>
                   <div class="grid-cell grid-cell-1-5">
                     <div class="form-field">
                       <label class="form-field_label transparent">Closing time</label>
-                      <div class="form-field_value">19:00</div>
+                      <div class="form-field_value">{{requestData.stop_date | date : 'HH:mm' : '+0000'}}</div>
                     </div>
                   </div>
                   <div class="grid-cell grid-cell-3-5 text-right">
@@ -313,10 +324,10 @@
                       </div>
                       <div class="form-field_checkbox-val_stat">
                         <div *ngIf="requestData.public">
-                          <img src="./assets/images/icons/yes.svg">Yes
+                          Yes<img src="./assets/images/icons/yes.svg">
                         </div>
                         <div *ngIf="!requestData.public">
-                          <img src="./assets/images/icons/pd_icon.svg">No
+                          No<img src="./assets/images/icons/pd_icon.svg">
                         </div>
                       </div>
                     </div>
@@ -333,7 +344,12 @@
                 </div>
               </div>
 
-              <button class="btn btn-yellow">
+              <button class="btn btn-yellow" (click)="confirmContract()" [disabled]="confirmationIsProgress">
+                <span class="lds-ellipsis" *ngIf="confirmationIsProgress">
+                  <span class="lds-ellipsis-container">
+                    <span></span><span></span><span></span><span></span>
+                  </span>
+                </span>
                 <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                 <span>
                     Next step

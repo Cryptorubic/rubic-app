@@ -1,6 +1,7 @@
 @import 'scss/grid';
 @import "scss/elements/dialog";
 @import "scss/elements/form-elements";
+@import "scss/elements/preloader";
 
 /* You can add global styles to this file, and also import other style files */
 
@@ -311,7 +312,7 @@ a:not(.btn) {
       width: 100%;
       opacity: 1;
       font-size: 28px;
-      padding: 14px 22px;
+      padding: 12px 22px;
       top: 0;
     }
   }
@@ -343,13 +344,14 @@ a:not(.btn) {
       color: #110931;
       line-height: 16px;
       background: #E2E2E2;
-      width: 65px;
+      min-width: 65px;
+      white-space: nowrap;
       box-sizing: border-box;
       text-align: center;
 
       img {
         vertical-align: middle;
-        float: right;
+        margin-left: 5px;
       }
     }
     &_label {
@@ -381,4 +383,22 @@ a:not(.btn) {
 }
 .mat-calendar-body-selected {
   background-color: #394553!important;
+}
+
+
+
+.timepicker__header {
+  background-color: #222!important;
+}
+.clock-face__number > span.active {
+  background-color: #222!important;
+}
+.clock-face__clock-hand {
+  background-color: #222!important;
+}
+.clock-face__clock-hand_minute:before {
+  border-color: #222!important;
+}
+.timepicker-button {
+  color: #222!important;
 }

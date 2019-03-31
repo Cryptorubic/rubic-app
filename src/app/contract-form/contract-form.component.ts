@@ -12,7 +12,7 @@ import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common'
 import {TokenInfoInterface, Web3Service} from '../services/web3/web3.service';
 import {HttpService} from '../services/http/http.service';
 
-const BigNumber = require('bignumber.js');
+import BigNumber from 'bignumber.js';
 
 
 export const MY_FORMATS = {
@@ -43,6 +43,46 @@ export const MY_FORMATS = {
   ]
 })
 export class ContractFormComponent implements AfterContentInit, OnInit {
+  public confirmationIsProgress: boolean;
+  public formIsSending: boolean;
+
+
+  constructor(
+    private contractsService: ContractsService,
+    private userService: UserService,
+    private location: Location,
+    private route: ActivatedRoute
+  ) {
+
+    this.formData = {
+      contract_type: 20,
+      network: 1
+    };
+
+
+    this.originalContract = this.route.snapshot.data.contract;
+
+    this.customTokens = {
+      base: {},
+      quote: {}
+    };
+    this.openedCustomTokens = {
+      base: false,
+      quote: false
+    };
+    this.openedForm = this.originalContract ? 'preview' : 'tokens';
+
+    this.currentUser = this.userService.getUserModel();
+    this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
+      this.currentUser = userProfile;
+    });
+
+    this.minDate = moment().add(1, 'hour');
+    this.datePickerDate = this.minDate;
+    this.datePickerTime = `${this.minDate.hour()}:${this.minDate.minutes()}`;
+
+
+  }
 
   private currentUser;
 
@@ -86,49 +126,20 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
 
   @ViewChild('extraForm') public extraForm;
 
-  constructor(
-    private contractsService: ContractsService,
-    private userService: UserService,
-    private location: Location,
-    private route: ActivatedRoute
-  ) {
-
-    this.formData = {
-      contract_type: 20,
-      network: 1
-    };
-
-
-    this.originalContract = this.route.snapshot.data.contract;
-
-    this.customTokens = {
-      base: {},
-      quote: {}
-    };
-    this.openedCustomTokens = {
-      base: false,
-      quote: false
-    };
-    this.openedForm = this.originalContract ? 'preview' : 'tokens';
-
-    this.currentUser = this.userService.getUserModel();
-    this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
-      this.currentUser = userProfile;
-    });
-
-    this.minDate = moment().add(1, 'hour');
-    this.datePickerDate = this.minDate;
-    this.datePickerTime = `${this.minDate.hour()}:${this.minDate.minutes()}`;
-
-
-  }
-
   ngOnInit() {
     const draftData = localStorage.getItem('form_values');
     this.requestData = draftData ? JSON.parse(draftData) : {
       base: {},
       quote: {}
     };
+  }
+
+  private createRequestData(contract) {
+    this.requestData = {...contract.tokens_info};
+
+    this.requestData.owner_address = contract.contract_details.owner_address;
+    this.requestData.stop_date = contract.contract_details.stop_date;
+    this.requestData.public = contract.contract_details.public;
   }
 
   ngAfterContentInit() {
@@ -138,10 +149,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
 
     if (this.route.snapshot.data.contract) {
       this.formData.id = this.originalContract.id;
-      this.requestData = {...this.originalContract.tokens_info};
-      this.requestData.owner_address = this.originalContract.contract_details.owner_address;
-      this.requestData.public = this.originalContract.contract_details.public;
-      this.datePickerDate = moment(this.originalContract.contract_details.stop_date);
+      this.createRequestData(this.originalContract);
+      this.datePickerDate = moment.utc(this.originalContract.contract_details.stop_date);
       this.datePickerTime = `${this.datePickerDate.hour()}:${this.datePickerDate.minutes()}`;
     }
   }
@@ -149,10 +158,10 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
 
   public revertCoins() {
     const baseCoin = this.requestData.base;
-    this.requestData = {
-      base: this.requestData.quote,
-      quote: baseCoin
-    };
+
+    this.requestData.base = this.requestData.quote;
+    this.requestData.quote = baseCoin;
+
     setTimeout(() => {
       this.changeModel.emit();
     });
@@ -176,18 +185,25 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
   private contractIsCreated(contract) {
     this.location.replaceState(`/view/${contract.id}`);
     this.originalContract = contract;
+    this.openedForm = 'preview';
   }
 
   private contractIsError(error) {
   }
 
   private sendContractData(data) {
-    this.contractsService.createContract(this.formData)
+    if (this.formIsSending) {
+      return;
+    }
+    this.formIsSending = true;
+    this.contractsService[data.id ? 'updateContract' : 'createContract'](this.formData)
       .then((result) => {
         this.contractIsCreated(result);
       }, (err) => {
         this.contractIsError(err);
-      });
+      }).finally(() => {
+      this.formIsSending = false;
+    });
   }
 
   public createContract(tokenForm) {
@@ -201,7 +217,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
       (new BigNumber(this.requestData.quote.amount)).times(Math.pow(10, this.requestData.quote.token.decimals)).toString(10);
 
     this.formData.contract_details.owner_address = this.extraForm.value.owner_address;
-    
+
     if (this.currentUser.is_ghost) {
       this.userService.openAuthForm().then(() => {
         this.sendContractData(this.formData);
@@ -223,6 +239,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
     } else {
       this.extraForm.controls.time.setErrors(null);
     }
+
+    this.requestData.stop_date = this.extraForm.value.active_to;
   }
 
   public dateChange() {
@@ -238,6 +256,22 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
   public timeChange() {
     this.setFullDateTime();
   }
+
+
+  public confirmContract() {
+    if (this.confirmationIsProgress) {
+      return;
+    }
+    this.confirmationIsProgress = true;
+    this.contractsService.startWatchContract(this.formData.id).then((result) => {
+
+    }, (err) => {
+
+    }).finally(() => {
+      this.confirmationIsProgress = false;
+    });
+  }
+
 }
 
 
@@ -247,8 +281,10 @@ export class ContractEditResolver implements Resolve<any> {
     private contractsService: ContractsService,
     private userService: UserService,
     private web3Service: Web3Service,
-    private httpService: HttpService
+    private httpService: HttpService,
   ) {}
+
+  private contractId: number;
 
   private convertTokenInfo(tokenInfo) {
     return {
@@ -276,39 +312,49 @@ export class ContractEditResolver implements Resolve<any> {
     });
   }
 
+  private getContractInformation(observer) {
+    this.contractsService.getContract(this.contractId).then((result) => {
+
+      result.tokens_info = {};
+
+      this.getTokenInfo(result.contract_details.quote_address).then((token: TokenInfoInterface) => {
+        result.tokens_info.quote = {
+          token,
+          amount: new BigNumber(result.contract_details.quote_limit).div(Math.pow(10, token.decimals)).toString()
+        };
+        if (result.tokens_info.base) {
+          observer.complete();
+        }
+      });
+
+      this.getTokenInfo(result.contract_details.base_address).then((token: TokenInfoInterface) => {
+        result.tokens_info.base = {
+          token,
+          amount: new BigNumber(result.contract_details.base_limit).div(Math.pow(10, token.decimals)).toString()
+        };
+        if (result.tokens_info.quote) {
+          observer.complete();
+        }
+      });
+
+      observer.next(result);
+    });
+  }
+
   resolve(route: ActivatedRouteSnapshot) {
+
+    this.contractId = route.params.id;
+
     return new Observable((observer) => {
       const subscription = this.userService.getCurrentUser(false, true).subscribe((user) => {
         if (!user.is_ghost) {
-          this.contractsService.getContract(route.params.id).then((result) => {
-
-            result.tokens_info = {};
-
-            this.getTokenInfo(result.contract_details.quote_address).then((token: TokenInfoInterface) => {
-              result.tokens_info.quote = {
-                token,
-                amount: new BigNumber(result.contract_details.quote_limit).div(Math.pow(10, token.decimals)).toString()
-              };
-              if (result.tokens_info.base) {
-                observer.complete();
-              }
-            });
-
-            this.getTokenInfo(result.contract_details.base_address).then((token: TokenInfoInterface) => {
-              result.tokens_info.base = {
-                token,
-                amount: new BigNumber(result.contract_details.base_limit).div(Math.pow(10, token.decimals)).toString()
-              };
-              if (result.tokens_info.quote) {
-                observer.complete();
-              }
-            });
-            console.log(result.tokens_info);
-            observer.next(result);
-          });
+          this.getContractInformation(observer);
         } else {
-          observer.next(null);
-          observer.complete();
+          this.userService.openAuthForm().then(() => {
+            this.getContractInformation(observer);
+          }, () => {
+            alert(123);
+          });
         }
         subscription.unsubscribe();
       });

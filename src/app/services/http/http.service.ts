@@ -18,6 +18,13 @@ export class HttpService {
       });
   }
 
+  public patch(url: string, data?: {}, path?: string): Observable<any> {
+    return this.http
+      .request<any>('patch', (path || SERVER_REST_URL) + (url || ''), {
+        body: data
+      });
+  }
+
   public post(url: string, data?: {}, path?: string): Observable<any> {
     return this.http
       .post<any>((path || SERVER_REST_URL) + (url || ''), data);

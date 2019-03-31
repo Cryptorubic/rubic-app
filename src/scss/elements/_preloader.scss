@@ -1,0 +1,286 @@
+.preloader-container {
+  display: inline-block;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.preloader-circle {
+  //background-color: $main-color;
+  display: inline-block;
+  vertical-align: middle;
+  height: 1em;
+  width: 1em;
+  margin-left: 0.5em;
+  animation-name:bounce_circleG;
+  -o-animation-name:bounce_circleG;
+  -ms-animation-name:bounce_circleG;
+  -webkit-animation-name:bounce_circleG;
+  -moz-animation-name:bounce_circleG;
+  animation-duration:2.24s;
+  -o-animation-duration:2.24s;
+  -ms-animation-duration:2.24s;
+  -webkit-animation-duration:2.24s;
+  -moz-animation-duration:2.24s;
+  animation-iteration-count:infinite;
+  -o-animation-iteration-count:infinite;
+  -ms-animation-iteration-count:infinite;
+  -webkit-animation-iteration-count:infinite;
+  -moz-animation-iteration-count:infinite;
+  animation-direction:normal;
+  -o-animation-direction:normal;
+  -ms-animation-direction:normal;
+  -webkit-animation-direction:normal;
+  -moz-animation-direction:normal;
+}
+
+.preloader-circle-1 {
+  animation-delay:0.45s;
+  -o-animation-delay:0.45s;
+  -ms-animation-delay:0.45s;
+  -webkit-animation-delay:0.45s;
+  -moz-animation-delay:0.45s;
+}
+.preloader-circle-2 {
+  animation-delay:1.05s;
+  -o-animation-delay:1.05s;
+  -ms-animation-delay:1.05s;
+  -webkit-animation-delay:1.05s;
+  -moz-animation-delay:1.05s;
+}
+.preloader-circle-3 {
+  animation-delay:1.35s;
+  -o-animation-delay:1.35s;
+  -ms-animation-delay:1.35s;
+  -webkit-animation-delay:1.35s;
+  -moz-animation-delay:1.35s;
+}
+
+
+@keyframes bounce_circleG{
+  0%{}
+
+  50%{
+    background-color:rgba(0,0,0, 0);
+  }
+
+  100%{}
+}
+
+@-o-keyframes bounce_circleG{
+  0%{}
+
+  50%{
+    background-color:rgba(0,0,0, 0);
+  }
+
+  100%{}
+}
+
+@-ms-keyframes bounce_circleG{
+  0%{}
+
+  50%{
+    background-color:rgba(0,0,0, 0);
+  }
+
+  100%{}
+}
+
+@-webkit-keyframes bounce_circleG{
+  0%{}
+
+  50%{
+    background-color:rgba(0,0,0, 0);
+  }
+
+  100%{}
+}
+
+@-moz-keyframes bounce_circleG{
+  0%{}
+
+  50%{
+    background-color:rgba(0,0,0, 0);
+  }
+
+  100%{}
+}
+
+
+
+.refresh-in-progress {
+
+  animation-name: refreshProgress;
+  -o-animation-name: refreshProgress;
+  -ms-animation-name: refreshProgress;
+  -webkit-animation-name: refreshProgress;
+  -moz-animation-name: refreshProgress;
+  //animation-duration:2.24s;
+  //-o-animation-duration:2.24s;
+  //-ms-animation-duration:2.24s;
+  //-webkit-animation-duration:2.24s;
+  //-moz-animation-duration:2.24s;
+  animation-iteration-count:infinite;
+  -o-animation-iteration-count:infinite;
+  -ms-animation-iteration-count:infinite;
+  -webkit-animation-iteration-count:infinite;
+  -moz-animation-iteration-count:infinite;
+  animation-direction:normal;
+  -o-animation-direction:normal;
+  -ms-animation-direction:normal;
+  -webkit-animation-direction:normal;
+  -moz-animation-direction:normal;
+}
+
+@keyframes refreshProgress {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes refreshProgress {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-ms-keyframes refreshProgress {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes refreshProgress {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes refreshProgress {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+.lds-ellipsis {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  ~ * {
+    visibility: hidden;
+  }
+}
+.lds-ellipsis-container {
+  position: relative;
+  height: 100%;
+  width: 62px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lds-ellipsis-container span {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  margin-top: -5px;
+}
+.lds-ellipsis-container span:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis-container span:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis-container span:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis-container span:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
+}
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  opacity: 0.9;
+  .form-control & {
+    position: absolute;
+    right: 1.5em;
+    top: 1.7em;
+    width: 1.8em;
+    height: 1.8em;
+    + .dynamic-info {
+      display: none;
+    }
+  }
+}
+.lds-dual-ring:after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+  box-sizing: border-box;
+  .form-control & {
+    //border-color: $main-color transparent $main-color transparent;
+  }
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
