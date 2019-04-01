@@ -16,6 +16,7 @@ export interface TokenInfoInterface {
   symbol: string;
 }
 
+const IS_PRODUCTION = location.protocol === 'https:';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,6 @@ export class Web3Service {
   private Web3;
 
   constructor() {
-    const IS_PRODUCTION = location.protocol === 'https:';
 
     this.providers = {};
     try {
@@ -101,6 +101,70 @@ export class Web3Service {
     return this.getTokenInfo(address);
   }
 
+  private setProvider(providerName) {
+
+    const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
+
+    switch (providerName) {
+      case 'metamask':
+        const networkVersion = Number(this.providers[providerName].publicConfigStore._state.networkVersion);
+        if (usedNetworkVersion === networkVersion) {
+          this.Web3.setProvider(this.providers[providerName]);
+        }
+        break;
+    }
+  }
+
+
+  private getAccountsByProvider(providerName) {
+    return new Promise((resolve, reject) => {
+      try {
+        this.setProvider(providerName);
+        this.Web3.eth.getAccounts((err, addresses) => {
+          if (!err) {
+            resolve({
+              type: providerName,
+              addresses
+            });
+          }
+        });
+      } catch (err) {
+        resolve({
+          type: providerName,
+          addresses: []
+        });
+      }
+    });
+  }
+
+
+  public getAccounts() {
+    const addressesDictionary: any = {};
+    return new Promise((resolve, reject) => {
+      this.getAccountsByProvider('metamask').then((addresses: any) => {
+        addressesDictionary[addresses.type] = addresses.addresses;
+        this.Web3.setProvider(this.providers.infura);
+        resolve(addressesDictionary);
+      });
+    });
+  }
+
+  public encodeFunctionCall(abi, data) {
+    return this.Web3.eth.abi.encodeFunctionCall(abi, data);
+  }
+
+  public sendTransaction(transactionConfig, provider?) {
+    if (provider) {
+      this.Web3.setProvider(this.providers[provider]);
+    }
+    return this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
+      if (provider) {
+        this.Web3.setProvider(this.providers.infura);
+      }
+      return result;
+    });
+  }
+
 }
 
 
@@ -131,12 +195,4 @@ export class EthTokenValidatorDirective implements AsyncValidator {
 
     });
   }
-
-  // registerOnValidatorChange(fn: () => void): void {
-  //   console.log(arguments);
-  // }
-
-  // validate(control: AbstractControl): ValidationErrors | null {
-  //   return undefined;
-  // }
 }

@@ -23,7 +23,7 @@ export class ContractsService {
   }
 
   public startWatchContract(id) {
-    return this.httpService.get('confirm_swaps_info/', {
+    return this.httpService.post('confirm_swaps_info/', {
       contract_id: id
     }).toPromise();
   }

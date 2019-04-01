@@ -3,6 +3,10 @@ export const ETH_NETWORKS = {
   ROPSTEN_INFURA_ADDRESS: 'https://ropsten.infura.io/MEDIUMTUTORIAL',
 };
 
+export const TOKENS_ADDRESSES = {
+  WISH: '0x1b22c32cd936cb97c28c5690a0695a82abf688e6',
+  BNB: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
+};
 
 export const ERC20_TOKEN_ABI  = [
   {

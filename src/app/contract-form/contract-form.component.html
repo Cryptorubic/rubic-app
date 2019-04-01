@@ -3,9 +3,14 @@
     <div class="grid-row">
       <div class="grid-cell grid-cell-2-3">
         <div class="form-container">
-          <form class="form-block form-block__active" #tokensForm="ngForm"
-                [ngClass]="{hidden: openedForm !== 'tokens', checked: tokensForm.valid}">
-            <div class="form-block_title" (click)="openedForm = 'tokens'">Created</div>
+          <form class="form-block"
+                #tokensForm="ngForm"
+                [ngClass]="{
+                    hidden: openedForm !== 'tokens',
+                    checked: tokensForm.valid,
+                    'form-block__active': editableContract
+                }">
+            <div class="form-block_title" (click)="openedForm = editableContract ? 'tokens' : openedForm">Created</div>
 
             <div class="form-block_fieldset">
               <!-- Выбор токена -->
@@ -136,9 +141,13 @@
 
 
           <div class="form-block"
-               [ngClass]="{hidden: !(tokensForm.valid && (openedForm === 'contract')), 'form-block__active': tokensForm.valid}">
+               [ngClass]="{
+                  hidden: !(tokensForm.valid && (openedForm === 'contract')),
+                  'form-block__active': tokensForm.valid && editableContract,
+                  checked: extraForm.valid
+               }">
             <div class="form-block_title"
-                 (click)="openedForm = tokensForm.valid ? 'contract' : openedForm;">Extra points</div>
+                 (click)="openedForm = (tokensForm.valid && editableContract) ? 'contract' : openedForm;">Extra points</div>
             <form class="form-block_fieldset" #extraForm="ngForm" (submit)="createContract(tokensForm)">
               <div class="grid-row">
                 <div class="grid-cell grid-cell-3-4">
@@ -241,7 +250,8 @@
 
 
           </div>
-          <div class="form-block" [ngClass]="{hidden: !(tokensForm.valid && (openedForm === 'preview'))}">
+          <div class="form-block"
+               [ngClass]="{hidden: !(tokensForm.valid && (openedForm === 'preview')), checked: !editableContract}">
             <div class="form-block_title">
               Check details {{requestData.base.token.token_short_name}}<>{{requestData.quote.token.token_short_name}}
             </div>
@@ -268,17 +278,17 @@
 
                 <div class="form-field_description"
                      *ngIf="requestData.base.token && requestData.quote.token && requestData.base.amount && requestData.quote.amount">
-                    <span>
-                      Rate:
-                      <span *ngIf="!revertedRate">
-                        {{(requestData.base.amount / requestData.quote.amount) | number : '1.0-4'}}
-                        {{requestData.base.token.token_short_name}} / 1 {{requestData.quote.token.token_short_name}}
-                      </span>
-                      <span *ngIf="revertedRate">
-                        {{(requestData.quote.amount / requestData.base.amount) | number : '1.0-4'}}
-                        {{requestData.quote.token.token_short_name}} / 1 {{requestData.base.token.token_short_name}}
-                      </span>
+                  <span>
+                    Rate:
+                    <span *ngIf="!revertedRate">
+                      {{(requestData.base.amount / requestData.quote.amount) | number : '1.0-4'}}
+                      {{requestData.base.token.token_short_name}} / 1 {{requestData.quote.token.token_short_name}}
                     </span>
+                    <span *ngIf="revertedRate">
+                      {{(requestData.quote.amount / requestData.base.amount) | number : '1.0-4'}}
+                      {{requestData.quote.token.token_short_name}} / 1 {{requestData.base.token.token_short_name}}
+                    </span>
+                  </span>
                   <button class="revert-btn" (click)="revertedRate = !revertedRate">
                     <img src="./assets/images/icons/revert.svg">
                   </button>
@@ -359,13 +369,178 @@
           </div>
 
 
-          <div class="form-block hidden">
+          <div class="form-block" [ngClass]="{hidden: openedForm !== 'payment'}">
             <div class="form-block_title">Payment</div>
+            <div class="form-field_description no-top-margin" *ngIf="openedForm === 'payment'">
+              {{fromBigNumber(originalContract.cost.USDT, 6)}} USDT
+            </div>
             <div class="form-block_fieldset">
+              <div class="form-field">
+                <label class="form-field_label">Choose replenish method</label>
+                <div class="form-field_input">
+                  <div class="grid-row">
+                    <div class="grid-cell grid-cell-1-5">
+                      <label class="checkbox-block">
+                        <input type="radio"
+                               name="payment-method"
+                               [(ngModel)]="replenishMethod"
+                               value="WISH" checked="checked"/>
+                        <span class="btn btn-payment width-100 btn-normal-weight">
+                          <img class="btn-payment_ico" src="./assets/images/icons/coins/wish.png">
+                          <span class="btn-payment_txt">WISH</span>
+                        </span>
+                      </label>
+                    </div>
 
+                    <div class="grid-cell grid-cell-1-5">
+                      <label class="checkbox-block">
+                        <input type="radio"
+                               name="payment-method"
+                               [(ngModel)]="replenishMethod"
+                               value="ETH"/>
+                        <span class="btn btn-payment width-100 btn-normal-weight">
+                          <img class="btn-payment_ico" src="./assets/images/icons/coins/eth.png">
+                          <span class="btn-payment_txt">ETH</span>
+                        </span>
+                      </label>
+                    </div>
+
+                    <div class="grid-cell grid-cell-1-5">
+                      <label class="checkbox-block">
+                        <input type="radio"
+                               name="payment-method"
+                               [(ngModel)]="replenishMethod"
+                               value="BNB"/>
+                        <span class="btn btn-payment width-100 btn-normal-weight">
+                          <img class="btn-payment_ico" src="./assets/images/icons/coins/bnb.svg">
+                          <span class="btn-payment_txt">BNB</span>
+                        </span>
+                      </label>
+                    </div>
+
+                    <div class="grid-cell grid-cell-1-5">
+                      <label class="checkbox-block">
+                        <input type="radio"
+                               name="payment-method"
+                               [(ngModel)]="replenishMethod"
+                               value="BTC"/>
+                        <span class="btn btn-payment width-100 btn-normal-weight">
+                          <img class="btn-payment_ico" src="./assets/images/icons/coins/btc.svg">
+                          <span class="btn-payment_txt">BTC</span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div *ngIf="replenishMethod !== 'BTC'">
+                <div class="form-field">
+                  <div class="form-field_label bold">
+                    Send
+                    <span *ngIf="replenishMethod === 'ETH'">
+                      {{fromBigNumber(originalContract.cost.ETH, 18)}} ETH
+                    </span>
+                    <span *ngIf="replenishMethod === 'WISH'">
+                      {{fromBigNumber(originalContract.cost.WISH, 18)}} WISH
+                    </span>
+                    <span *ngIf="replenishMethod === 'BNB'">
+                      {{fromBigNumber(originalContract.cost.BNB, 18)}} BNB
+                    </span>
+                    to
+                  </div>
+                  <div class="form-field_input">
+                    <div class="form-field_copy">
+                      <button type="button"
+                              class="copy-btn"
+                              [ngClass]="{copied: copiedAddresses['eth']}"
+                              (click)="copyText(currentUser.internal_address, 'eth')">
+                        <img src="./assets/images/icons/copy.svg"/>
+                      </button>
+                    </div>
+                    <div class="form-field_input_data">
+                      <input type="text" class="min-text dark-field"
+                             readonly
+                             [value]="currentUser.internal_address"/>
+                      <div class="form-field_info-field form-field_small-desc">
+                        <span class="float-left">
+                          Gas price 30 gwei
+                        </span>
+                        <span class="float-left">
+                          Gas limit 100.000
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="or-delimiter">
+                  <span>OR</span>
+                </div>
+
+                <div class="form-field">
+                  <label class="form-field_label">Select payment method:</label>
+                  <div class="form-field_input">
+                    <div class="grid-row">
+                      <div class="grid-cell">
+                        <button type="button" class="btn btn btn-transparent btn-min btn-normal-weight">
+                          <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
+                          MyEtherWallet
+                        </button>
+                      </div>
+                      <div class="grid-cell">
+                        <button type="button"
+                                (click)="payContractVia(replenishMethod)"
+                                [disabled]="!providedAddresses.metamask?.length"
+                                class="btn btn btn-transparent btn-min btn-normal-weight">
+                          <img src="./assets/images/icons/web3clients/metamask.svg" class="btn-ico">
+                          Metamask
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div *ngIf="replenishMethod === 'BTC'">
+                <div class="form-field">
+                  <div class="form-field_label bold">
+                    Send
+                    {{fromBigNumber(originalContract.cost.BTC, 18)}} BTC
+                    to
+                  </div>
+                  <div class="form-field_input">
+                    <div class="form-field_copy">
+                      <button type="button"
+                              class="copy-btn"
+                              [ngClass]="{copied: copiedAddresses['btc']}"
+                              (click)="copyText(currentUser.internal_btc_address, 'btc')">
+                        <img src="./assets/images/icons/copy.svg"/>
+                      </button>
+                    </div>
+                    <div class="form-field_input_data">
+                      <input type="text" class="min-text dark-field"
+                             readonly
+                             [value]="currentUser.internal_btc_address"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="contract-state" *ngIf="openedForm === 'payment'">
+              <span class="lds-ellipsis inline">
+                <span class="lds-ellipsis-container min">
+                  <span></span><span></span><span></span><span></span>
+                </span>
+              </span>&nbsp;&nbsp;
+              Waiting for payment
             </div>
           </div>
-          <div class="form-block hidden">
+
+
+
+          <div class="form-block hidden" [ngClass]="{hidden: openedForm !== 'deploy'}">
             <div class="form-block_title">Contract Deployment</div>
             <div class="form-block_fieldset">
 
