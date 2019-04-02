@@ -180,11 +180,17 @@
 
 .lds-ellipsis {
   display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
+  &.inline {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .btn & {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+  }
   ~ * {
     visibility: hidden;
   }
@@ -192,20 +198,47 @@
 .lds-ellipsis-container {
   position: relative;
   height: 100%;
-  width: 62px;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  width: 62px;
+  span {
+    position: absolute;
+    top: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    margin-top: -5px;
+    width: 10px;
+    height: 10px;
+  }
+  &.min {
+    width: 31px;
+    span {
+      margin-top: -3px;
+      width: 5px;
+      height: 5px;
+      &:nth-child(1) {
+        left: 3px;
+        animation: lds-ellipsis1min 0.4s infinite;
+      }
+      &:nth-child(2) {
+        left: 3px;
+        animation: lds-ellipsis2min 0.4s infinite;
+      }
+      &:nth-child(3) {
+        left: 13px;
+        animation: lds-ellipsis2min 0.4s infinite;
+      }
+      &:nth-child(4) {
+        left: 23px;
+        animation: lds-ellipsis3min 0.4s infinite;
+      }
+      animation-timing-function: cubic-bezier(1, 1, 0, 0) !important;
+    }
+  }
+
 }
-.lds-ellipsis-container span {
-  position: absolute;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.7);
-  animation-timing-function: cubic-bezier(0, 1, 1, 0);
-  margin-top: -5px;
-}
+
 .lds-ellipsis-container span:nth-child(1) {
   left: 6px;
   animation: lds-ellipsis1 0.6s infinite;
@@ -246,6 +279,38 @@
     transform: translate(19px, 0);
   }
 }
+
+
+
+
+@keyframes lds-ellipsis1min {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3min {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2min {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(10px, 0);
+  }
+}
+
+
+
+
 
 .lds-dual-ring {
   display: inline-block;

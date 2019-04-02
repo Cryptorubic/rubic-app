@@ -1,10 +1,12 @@
-import {AfterContentInit, AfterViewInit, Component, EventEmitter, Injectable, OnInit, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, EventEmitter, Injectable, OnInit, ViewChild} from '@angular/core';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker} from '@angular/material';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {ActivatedRoute, ActivatedRouteSnapshot, Resolve} from '@angular/router';
 import {UserService} from '../services/user/user.service';
 import {Observable} from 'rxjs';
+
+import {TOKENS_ADDRESSES} from './../services/web3/web3.constants';
 
 import * as moment from 'moment';
 import {UserInterface} from '../services/user/user.interface';
@@ -40,6 +42,8 @@ export interface IContract {
   id?: number|undefined;
   contract_type?: 20;
   network?: 1;
+  state?: string;
+  cost?: any;
 }
 
 
@@ -71,13 +75,15 @@ export const MY_FORMATS = {
   ]
 })
 export class ContractFormComponent implements AfterContentInit, OnInit {
-
-
-  private currentUser;
-
   public confirmationIsProgress: boolean;
   public formIsSending: boolean;
 
+  public currentUser;
+
+  public replenishMethod: string;
+  public providedAddresses: any = {};
+
+  public editableContract = true;
 
   public minTime;
   public minDate: moment.Moment;
@@ -117,7 +123,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
     private contractsService: ContractsService,
     private userService: UserService,
     private location: Location,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private web3Service: Web3Service
   ) {
 
     this.formData = {
@@ -128,7 +135,6 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
 
     this.originalContract = this.route.snapshot.data.contract;
 
-
     this.customTokens = {
       base: {},
       quote: {}
@@ -138,8 +144,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
       base: false,
       quote: false
     };
-
-    this.openedForm = this.originalContract ? 'preview' : 'tokens';
+    this.openedForm = 'tokens';
 
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
@@ -150,6 +155,69 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
     this.datePickerDate = this.minDate;
     this.datePickerTime = `${this.minDate.hour()}:${this.minDate.minutes()}`;
 
+
+    if (this.originalContract) {
+      switch (this.originalContract.state) {
+        case 'CREATED':
+          this.openedForm = 'preview';
+          break;
+        case 'ACTIVE':
+          // Redirect to big preview
+          this.openedForm = false;
+          this.editableContract = false;
+          break;
+
+        case 'WAITING_FOR_PAYMENT':
+          this.editableContract = false;
+          this.activatePaymentBlock();
+          break;
+
+        case 'POSTPONED':
+          this.editableContract = false;
+          this.openedForm = false;
+          break;
+
+        case 'WAITING_FOR_DEPLOYMENT':
+          this.editableContract = false;
+          this.openedForm = 'deploy';
+          this.checkContractState();
+          break;
+      }
+    }
+  }
+
+
+
+
+  private checkContractState() {
+    setTimeout(() => {
+      this.contractsService.getContract(this.originalContract.id).then((contract) => {
+        switch (contract.state) {
+          case 'WAITING_FOR_PAYMENT':
+            this.checkContractState();
+            break;
+          case 'WAITING_FOR_DEPLOYMENT':
+            this.openedForm = 'deploy';
+            this.checkContractState();
+            break;
+          case 'ACTIVE':
+            break;
+          case 'POSTPONED':
+            break;
+        }
+      });
+    }, 5000);
+  }
+
+
+  private activatePaymentBlock() {
+    this.generateDataFields();
+    this.replenishMethod = 'WISH';
+    this.openedForm = 'payment';
+    this.web3Service.getAccounts().then((addresses) => {
+      this.providedAddresses = addresses;
+    });
+    this.checkContractState();
   }
 
 
@@ -308,11 +376,102 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
     });
   }
 
+
+
+  public copiedAddresses = {};
+
+  public copyText(val: string, field) {
+    if (this.copiedAddresses[field]) {
+      return;
+    }
+    this.copiedAddresses[field] = true;
+    setTimeout(() => {
+      this.copiedAddresses[field] = false;
+    }, 1000);
+
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+
+  }
+
+
+  public fromBigNumber(num, decimals) {
+    return new BigNumber(num).div(Math.pow(10, decimals)).toString(10);
+  }
+
+
+  public trxDataFields: any = {};
+
+  private checkTRXData(cost) {
+    return this.web3Service.encodeFunctionCall(
+      {
+        name: 'transfer',
+        type: 'function',
+        inputs: [{
+          type: 'address',
+          name: 'to'
+        }, {
+          type: 'uint256',
+          name: 'value'
+        }]
+      }, [
+        this.currentUser.internal_address,
+        new BigNumber(cost).toString(10)
+      ]
+    );
+  }
+
+  private generateDataFields() {
+    this.trxDataFields.WISH = this.checkTRXData(this.originalContract.cost.WISH);
+    this.trxDataFields.BNB = this.checkTRXData(this.originalContract.cost.BNB);
+  }
+
+  public payContractVia(coin) {
+
+    if (coin !== 'ETH') {
+      this.payContractViaTokens(coin);
+    } else {
+      this.payContractViaEth();
+    }
+
+  }
+
+
+  private payContractViaTokens(token) {
+    this.web3Service.sendTransaction({
+      from: this.providedAddresses.metamask[0],
+      to: TOKENS_ADDRESSES[token],
+      data: this.trxDataFields[token]
+    }, 'metamask').then((result) => {
+      console.log(result);
+    }, (err) => {
+      console.log(err);
+    });
+  }
+
+
+  public payContractViaEth() {
+    this.web3Service.sendTransaction({
+      from: this.providedAddresses.metamask[0],
+      to: this.currentUser.internal_address,
+      value: new BigNumber(this.originalContract.cost.ETH).toString(10)
+    }, 'metamask').then((result) => {
+      console.log(result);
+    }, (err) => {
+      console.log(err);
+    });
+  }
+
 }
-
-
-
-
 
 
 @Injectable()
