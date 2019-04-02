@@ -6,10 +6,10 @@
        [(ngModel)]="amount">
 
 <input type="hidden" required
-       #hiddenAddress="ngModel"
        [ngModel]="tokenModel.token.address">
 
 <button class="form-field_input__btn"
+        type="button"
         [ngClass]="{active: visibleInput}"
         (click)="showAutoInput()">
   <span *ngIf="!tokenModel.token.address">Choose Token</span>
@@ -21,6 +21,7 @@
   </span>
 </button>
 <input type="text" placeholder="Search"
+       autocomplete="off"
        [tabindex]="!visibleInput ? '-1' : ''"
        name="token"
        [(ngModel)]="tokenName"

@@ -1,6 +1,15 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import {HttpService} from '../../services/http/http.service';
 
+
+export interface ITokenInfo {
+    active?: boolean;
+    image_link: string;
+    token_short_name: string;
+    token_name: string;
+    decimals: number;
+}
+
 @Component({
   selector: 'app-token-input',
   templateUrl: './token-input.component.html',
@@ -13,8 +22,8 @@ export class TokenInputComponent implements OnInit {
   ) {
   }
 
-  @Input() public tokenModel: any;
-  @Input() public updateModel: any;
+  @Input('tokenModel') public tokenModel: any;
+  @Input('updateModel') public updateModel: any;
   @Input() public tokenGroup: any;
 
   @ViewChild('tokenField') tokenField: ElementRef;
@@ -23,7 +32,7 @@ export class TokenInputComponent implements OnInit {
   public amount;
 
   public visibleInput: boolean;
-  public tokensList;
+  public tokensList: ITokenInfo[];
   public listIsOpened: boolean;
   public tokenName;
   private activeTokenIndex;
@@ -53,7 +62,7 @@ export class TokenInputComponent implements OnInit {
     this.listIsOpened = false;
     this.httpService.get('get_all_tokens/', {
       token_short_name: q
-    }).subscribe((res) => {
+    }).subscribe((res: ITokenInfo[]) => {
       this.listIsOpened = true;
       this.tokensList = res;
       if (res.length) {
