@@ -62,7 +62,7 @@
           </div>
           <div class="form-field">
             <div class="form-field_label">
-              <span *ngIf="!transaction.from">Send transaction</span> To contract address
+              <span *ngIf="!transaction.from">Send transaction ({{transaction.ethValue || '0'}} ETH)</span> To contract address
             </div>
             <div class="form-field_input">
               <div class="form-field_copy">
@@ -80,7 +80,7 @@
               </div>
             </div>
           </div>
-          <div class="form-field">
+          <div class="form-field" *ngIf="transaction.data">
             <div class="form-field_label">
               With data field
             </div>

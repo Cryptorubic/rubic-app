@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import {IndexComponent} from './index/index.component';
 import {ContractEditResolver, ContractFormComponent} from './contract-form/contract-form.component';
 import {ContractPreviewComponent} from './contract-preview/contract-preview.component';
+import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,18 @@ const routes: Routes = [
     component: ContractPreviewComponent,
     resolve: {
       contract: ContractEditResolver
+    }
+  }, {
+    path: 'public/:public_link',
+    component: ContractPreviewComponent,
+    resolve: {
+      contract: ContractEditResolver
+    }
+  }, {
+    path: 'contracts',
+    component: ContractsListComponent,
+    resolve: {
+      contracts: ContractsListResolver
     }
   }
 ];

@@ -1,0 +1,19 @@
+<div class="base-block-content">
+  <div class="app-content-block">
+    <div class="grid-row">
+      <div class="grid-cell grid-cell-2-3">
+        <div class="my-contracts-title">My contracts</div>
+        <div class="my-contracts-list">
+          <div class="my-contracts-list_item"
+               (click)="toContract(contract)"
+               *ngFor="let contract of contractsList">
+            <div class="contract-state" [ngClass]="'contract-state__' + states[contract.state].NUMBER">
+              {{states[contract.state].TEXT}}
+            </div>
+            <span class="my-contract-name">{{contract.name}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

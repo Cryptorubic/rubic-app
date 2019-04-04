@@ -34,14 +34,16 @@
                   <div class="tokens-info-block_filled__count">
                     {{tokens.base.amount | number}}
                   </div>
-                  <div class="tokens-info-block_filled__text">
-                    Filled with tokens
-                  </div>
-                  <div class="tokens-info-block_filled__complete">
-                    {{ contractInfo.baseRaised | number}}
+                  <div *ngIf="originalContract.state === 'ACTIVE'">
+                    <div class="tokens-info-block_filled__text">
+                      Filled with tokens
+                    </div>
+                    <div class="tokens-info-block_filled__complete">
+                      {{ contractInfo.baseRaised | number}}
+                    </div>
                   </div>
                 </div>
-                <div class="tokens-info-block_progress">
+                <div class="tokens-info-block_progress" *ngIf="originalContract.state === 'ACTIVE'">
                   <span [ngStyle]="{width:  (contractInfo.baseRaised / tokens.base.amount * 100) + '%'}"></span>
                 </div>
 
@@ -62,7 +64,7 @@
                       <a href="#" >{{tokens.base.token.address}}</a>
                     </div>
                   </div>
-                  <div class="token-info_investments">
+                  <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE'">
                     <div class="token-info_investments__number">
                       {{ contractInfo.baseInvestors }}
                     </div>
@@ -73,7 +75,7 @@
                   </div>
                 </div>
                 <div class="contract-buttons"
-                     *ngIf="originalContract.state === 'ACTIVE'">
+                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false)">
                   <form class="form-field" #baseContributeForm="ngForm"
                         (submit)="sendContribute(baseContributeForm.value.amount, 'base')">
                     <div class="grid-row">
@@ -115,14 +117,16 @@
                   <div class="tokens-info-block_filled__count">
                     {{tokens.quote.amount | number}}
                   </div>
-                  <div class="tokens-info-block_filled__text">
-                    Filled with tokens
-                  </div>
-                  <div class="tokens-info-block_filled__complete">
-                    {{ contractInfo.quoteRaised | number}}
+                  <div *ngIf="originalContract.state === 'ACTIVE'">
+                    <div class="tokens-info-block_filled__text">
+                      Filled with tokens
+                    </div>
+                    <div class="tokens-info-block_filled__complete">
+                      {{ contractInfo.quoteRaised | number}}
+                    </div>
                   </div>
                 </div>
-                <div class="tokens-info-block_progress">
+                <div class="tokens-info-block_progress" *ngIf="originalContract.state === 'ACTIVE'">
                   <span [ngStyle]="{width:  (contractInfo.quoteRaised / tokens.quote.amount * 100) + '%'}"></span>
                 </div>
 
@@ -143,7 +147,7 @@
                       <a href="#" >{{tokens.quote.token.address}}</a>
                     </div>
                   </div>
-                  <div class="token-info_investments">
+                  <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE'">
                     <div class="token-info_investments__number">
                       {{ contractInfo.quoteInvestors }}
                     </div>
@@ -154,7 +158,7 @@
                   </div>
                 </div>
                 <div class="contract-buttons"
-                     *ngIf="originalContract.state === 'ACTIVE'">
+                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false)">
                   <form class="form-field" #quoteContributeForm="ngForm"
                         (submit)="sendContribute(quoteContributeForm.value.amount, 'quote')">
                     <div class="grid-row">
@@ -222,7 +226,7 @@
                 </div>
               </div>
 
-              <div class="grid-cell grid-cell-1">
+              <div class="grid-cell grid-cell-1" *ngIf="originalContract.isAuthor">
                 <div class="form-field">
                   <label class="form-field_label transparent">Management address</label>
                   <div class="form-field_value">
@@ -241,7 +245,7 @@
             </div>
 
 
-            <div class="one-separated-block">
+            <div class="one-separated-block" *ngIf="originalContract.state === 'ACTIVE'">
               <label class="form-field_label transparent">Link to deal</label>
               <div class="form-field_value">
                 <a [href]="contractAdditional.link" target="_blank">
@@ -258,7 +262,7 @@
             </div>
 
 
-            <div class="one-separated-block">
+            <div class="one-separated-block" *ngIf="originalContract.isAuthor">
 
               <a [href]="contractAdditional.source_link"
                  download="{{originalContract.contract_details.tokens_info.base.token.token_short_name + originalContract.contract_details.tokens_info.quote.token.token_short_name}}"
@@ -282,8 +286,9 @@
             </div>
 
 
-            <div class="one-separated-block">
-              <button type="button" class="btn btn-yellow btn-min btn-normal-weight">
+            <div class="one-separated-block"
+                 *ngIf="((originalContract.state === 'EXPIRED') || ((originalContract.state === 'ACTIVE') && originalContract.isAuthor)) && (originalContract.isSwapped === false)">
+              <button type="button" class="btn btn-yellow btn-min btn-normal-weight" (click)="sendCancel()">
                 <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                 <span>Cancel the deal</span>
               </button>

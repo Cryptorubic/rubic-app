@@ -2,6 +2,7 @@
 @import "scss/elements/dialog";
 @import "scss/elements/form-elements";
 @import "scss/elements/preloader";
+@import "scss/elements/contracts";
 
 /* You can add global styles to this file, and also import other style files */
 
@@ -422,7 +423,7 @@ a:not(.btn):not(.minimal-btn) {
       padding: 1px 1px 1px 10px;
       font-size: 13px;
       color: #110931;
-      line-height: 16px;
+      line-height: 30px;
       background: #E2E2E2;
       min-width: 65px;
       white-space: nowrap;
@@ -438,7 +439,7 @@ a:not(.btn):not(.minimal-btn) {
       font-size: 14px;
       color: #E2E2E2;
       line-height: 18px;
-      padding: 6px 10px 3px;
+      padding: 3px 10px 0;
     }
   }
 

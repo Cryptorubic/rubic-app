@@ -1,0 +1,42 @@
+
+.base-block-content {
+  padding-top: 200px;
+  background: transparent url('/assets/images/backgrounds/bg-index-top.png') no-repeat center top;
+  background-size: 100%;
+  min-height: 100vh;
+  padding-bottom: 60px;
+  box-sizing: border-box;
+}
+.my-contracts-title {
+  font-size: 25px;
+  line-height: 30px;
+  color: #fff;
+  font-weight: bold;
+}
+.my-contracts-list {
+  margin-top: 20px;
+  &_item {
+    display: block;
+    color: #fff!important;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 29px 15px;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    &:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    &, &:hover, &:focus {
+      text-decoration: none!important;
+    }
+    &:hover, &:focus {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+  }
+  &_item + &_item {
+    margin-top: 10px;
+  }
+}

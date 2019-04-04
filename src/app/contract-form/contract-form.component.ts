@@ -38,6 +38,7 @@ export interface IContractDetails {
 
 
 export interface IContract {
+  isSwapped?: boolean;
   contract_details?: IContractDetails;
   id?: number|undefined;
   contract_type?: 20;
@@ -45,6 +46,8 @@ export interface IContract {
   state?: string;
   cost?: any;
   name?: string;
+  isAuthor?: boolean;
+  user?: number;
 }
 
 
@@ -367,6 +370,7 @@ export class ContractEditResolver implements Resolve<any> {
   ) {}
 
   private contractId: number;
+  private publicLink: string;
 
   private convertTokenInfo(tokenInfo) {
     return {
@@ -394,8 +398,17 @@ export class ContractEditResolver implements Resolve<any> {
     });
   }
 
-  private getContractInformation(observer) {
-    this.contractsService.getContract(this.contractId).then((result) => {
+  private getContractInformation(observer, isPublic?) {
+
+    let promise;
+
+    if (!isPublic) {
+      promise = this.contractsService.getContract(this.contractId);
+    } else {
+      promise = this.contractsService.getContractByPublic(this.publicLink);
+    }
+
+    promise.then((result) => {
 
       result.contract_details.tokens_info = {};
 
@@ -425,24 +438,30 @@ export class ContractEditResolver implements Resolve<any> {
 
   resolve(route: ActivatedRouteSnapshot) {
 
-    this.contractId = route.params.id;
-
-    return new Observable((observer) => {
-      const subscription = this.userService.getCurrentUser(false, true).subscribe((user) => {
-        if (!user.is_ghost) {
-          this.getContractInformation(observer);
-        } else {
-          this.userService.openAuthForm().then(() => {
+    if (route.params.id) {
+      this.contractId = route.params.id;
+      return new Observable((observer) => {
+        const subscription = this.userService.getCurrentUser(false, true).subscribe((user) => {
+          if (!user.is_ghost) {
             this.getContractInformation(observer);
-          }, () => {
-            alert(123);
-          });
-        }
-        subscription.unsubscribe();
+          } else {
+            this.userService.openAuthForm().then(() => {
+              this.getContractInformation(observer);
+            }, () => {
+              //
+            });
+          }
+          subscription.unsubscribe();
+        });
+        return {
+          unsubscribe() {}
+        };
       });
-      return {
-        unsubscribe() {}
-      };
-    });
+    } else if (route.params.public_link) {
+      this.publicLink = route.params.public_link;
+      return new Observable((observer) => {
+        this.getContractInformation(observer, true);
+      });
+    }
   }
 }

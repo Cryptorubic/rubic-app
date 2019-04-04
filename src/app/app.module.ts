@@ -30,6 +30,7 @@ import {ForgotPasswordComponent} from './common/auth/forgot-password/forgot-pass
 import { ContractFormPayComponent } from './contract-form/contract-form-pay/contract-form-pay.component';
 import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
 import { TransactionComponent } from './transaction/transaction.component';
+import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -69,7 +70,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ForgotPasswordComponent,
     ContractFormPayComponent,
     ContractPreviewComponent,
-    TransactionComponent
+    TransactionComponent,
+    ContractsListComponent
   ],
   entryComponents: [
     AuthComponent,
@@ -103,6 +105,7 @@ export function appInitializerFactory(translate: TranslateService, userService: 
   ],
   providers: [
     ContractEditResolver,
+    ContractsListResolver,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,

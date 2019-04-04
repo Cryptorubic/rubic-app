@@ -22,9 +22,20 @@ export class ContractsService {
     return this.httpService.get(`contracts/${id}/`).toPromise();
   }
 
+  public getContractsList() {
+    return this.httpService.get('contracts/').toPromise();
+  }
+
   public startWatchContract(id) {
     return this.httpService.post('confirm_swaps_info/', {
       contract_id: id
     }).toPromise();
   }
+
+  public getContractByPublic(publicLink) {
+    return this.httpService.get(`get_contract_for_unique_link/`, {
+      unique_link: publicLink
+    }).toPromise();
+  }
+
 }
