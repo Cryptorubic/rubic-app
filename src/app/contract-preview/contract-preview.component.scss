@@ -1,0 +1,208 @@
+.preview-container {
+
+}
+.base-block-content {
+  padding-top: 200px;
+  background: transparent url('/assets/images/backgrounds/bg-index-top.png') no-repeat center top;
+  background-size: 100%;
+  min-height: 100vh;
+  padding-bottom: 60px;
+  box-sizing: border-box;
+}
+.contract-title {
+  font-size: 25px;
+  line-height: 30px;
+  color: #fff;
+  font-weight: bold;
+}
+.preview-container {
+  padding: 19px 15px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.revert-btn {
+  display: inline-block;
+  border: 0 none;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  text-align: center;
+  line-height: 28px;
+  margin-left: 10px;
+  vertical-align: middle;
+  background-color: rgba(216, 216, 216, 0.26);
+  cursor: pointer;
+  img {
+    width: 14px;
+    vertical-align: middle;
+  }
+}
+
+.rate-info {
+  padding: 7px 0;
+  display: block;
+  margin-top: 0;
+}
+
+.tokens-info-block {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 8px 20px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+  &_filled {
+    padding-bottom: 11px;
+    &__count {
+      font-size: 50px;
+      font-weight: bold;
+      line-height: 61px;
+      color: #fff;
+    }
+    &__text {
+      margin-top: 9px;
+      font-size: 12px;
+      line-height: 14px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    &__complete {
+      margin-top: 3px;
+      font-size: 17px;
+      line-height: 20px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  &_progress {
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.27);
+    margin: 0 -20px;
+    span {
+      display: block;
+      height: 100%;
+      float: left;
+      background-color: #FCD600;
+    }
+  }
+}
+
+.token-info {
+  padding: 20px 0;
+  &:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+  &_icon {
+    width: 52px;
+    height: 52px;
+    text-align: center;
+    line-height: 52px;
+    background-color: #fff;
+    border-radius: 50%;
+    float: left;
+    margin-right: 18px;
+    img {
+      vertical-align: middle;
+      max-height: 80%;
+    }
+  }
+  &_texts {
+    padding: 4px 0;
+    &__name {
+      font-size: 16px;
+      color: #FFFFFF;
+      letter-spacing: -0.43px;
+      font-weight: bold;
+      line-height: 19px;
+    }
+    &__address {
+      margin-top: 4px;
+      font-size: 18px;
+      color: #FFFFFF;
+      line-height: 22px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      &_link {
+        padding: 20px 0;
+        font-size: 17px;
+        line-height: 20px;
+        clear: both;
+        word-break: break-all;
+      }
+    }
+  }
+  &_investments {
+    line-height: 34px;
+    &__number {
+      font-size: 28px;
+      display: inline-block;
+      vertical-align: middle;
+      color: #fff;
+      margin-right: 15px;
+    }
+    &__desc {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 18px;
+      font-size: 14px;
+      margin: -1px 0;
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+.contract-buttons {
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
+  margin: 0 -20px -8px;
+  padding: 20px;
+}
+
+.contract-info-block {
+  margin-top: 35px;
+}
+.one-separated-block {
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
+  margin: 0 -15px;
+  padding: 15px;
+  &:last-child {
+    margin-bottom: -14px;
+  }
+}
+
+
+.contract-state {
+  float: right;
+  color: #61B9DF;
+  font-size: 20px;
+  font-weight: bold;
+  white-space: nowrap;
+  line-height: 24px;
+  &:before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+  &__1 {
+    &:before {
+      background-color: #15ff0f;
+      box-shadow: 0 0 9px rgba(21, 255, 15, 0.68);
+    }
+  }
+  &__3 {
+    &:before {
+      background-color: #ffd139;
+      box-shadow: 0 0 9px rgba(255, 209, 57, 0.68);
+    }
+  }
+}
+
+
+
+
+
+

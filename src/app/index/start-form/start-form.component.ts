@@ -9,7 +9,7 @@ export class StartFormComponent implements OnInit {
   public tokensData;
   constructor() {
     const draftData = localStorage.getItem('form_values');
-    this.tokensData = draftData ? JSON.parse(draftData) : {
+    this.tokensData = draftData ? JSON.parse(draftData).tokens_info : {
       base: {
         token: {}
       },
@@ -20,7 +20,7 @@ export class StartFormComponent implements OnInit {
   }
 
   public changedToken() {
-    localStorage.setItem('form_values', JSON.stringify(this.tokensData));
+    localStorage.setItem('form_values', JSON.stringify({tokens_info: this.tokensData}));
   }
 
   ngOnInit() {

@@ -1,0 +1,119 @@
+
+<div class="dialog-block">
+  <div class="dialog-block__content">
+    <div class="transaction-title">
+      {{trxData.title}}
+    </div>
+    <div class="transaction-description">
+      {{trxData.description}}
+    </div>
+    <mat-dialog-content>
+      <div *ngFor="let transaction of trxData.transactions" class="transaction-instruction">
+        <div class="transaction-buttons">
+          <div *ngIf="transaction.title" class="transaction-item-title">
+            {{ transaction.title }}
+          </div>
+          <div class="form-field_input">
+            <div class="grid-row">
+              <div class="grid-cell">
+                <button type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn">
+                  <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
+                  MyEtherWallet
+                </button>
+              </div>
+              <div class="grid-cell">
+                <button type="button"
+                        [disabled]="!providedAddresses.metamask?.length"
+                        (click)="transaction.action({
+                        type: 'metamask',
+                        address: providedAddresses.metamask[0]
+                      })"
+                        class="btn btn-transparent btn-min btn-normal-weight wallet-btn">
+                  <img src="./assets/images/icons/web3clients/metamask.svg" class="btn-ico">
+                  Metamask
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="or-delimiter">
+          <span>OR</span>
+        </div>
+        <div class="transaction-fields">
+          <div class="form-field" *ngIf="transaction.from">
+            <div class="form-field_label">
+              Send transaction (0 ETH) from your management address
+            </div>
+            <div class="form-field_input">
+              <div class="form-field_copy">
+                <button type="button"
+                        class="copy-btn"
+                        [ngClass]="{copied: copiedData['owner_address']}"
+                        (click)="copyText(transaction.from, 'owner_address')">
+                  <img src="./assets/images/icons/copy.svg"/>
+                </button>
+              </div>
+              <div class="form-field_input_data">
+                <input type="text" class="min-text dark-field minimal-input"
+                       readonly
+                       [value]="transaction.from"/>
+              </div>
+            </div>
+          </div>
+          <div class="form-field">
+            <div class="form-field_label">
+              <span *ngIf="!transaction.from">Send transaction</span> To contract address
+            </div>
+            <div class="form-field_input">
+              <div class="form-field_copy">
+                <button type="button"
+                        class="copy-btn"
+                        [ngClass]="{copied: copiedData['contract_address']}"
+                        (click)="copyText(transaction.to, 'contract_address')">
+                  <img src="./assets/images/icons/copy.svg"/>
+                </button>
+              </div>
+              <div class="form-field_input_data">
+                <input type="text" class="min-text dark-field minimal-input"
+                       readonly
+                       [value]="transaction.to"/>
+              </div>
+            </div>
+          </div>
+          <div class="form-field">
+            <div class="form-field_label">
+              With data field
+            </div>
+            <div class="form-field_input">
+              <div class="form-field_copy">
+                <button type="button"
+                        class="copy-btn"
+                        [ngClass]="{copied: copiedData['data']}"
+                        (click)="copyText(transaction.data, 'data')">
+                  <img src="./assets/images/icons/copy.svg"/>
+                </button>
+              </div>
+              <div class="form-field_input_data">
+                <input type="text" class="min-text dark-field minimal-input"
+                       readonly
+                       [value]="transaction.data"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-dialog-content>
+
+    <div class="transaction-buttons">
+      <div class="grid-row">
+        <div class="grid-cell grid-cell-1-3">
+          <button class="btn btn-yellow btn-min width-100" mat-dialog-close >
+            <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

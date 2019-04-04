@@ -56,7 +56,26 @@ export class Web3Service {
     this.Web3 = new Web3(this.providers.infura);
   }
 
-  // 0xcDDF6eCa70DCc93538fc8dEF899E5facE2598d7a
+  public getContract(abi, address) {
+    return this.Web3.eth.Contract(abi, address);
+  }
+
+
+  public getMethodInterface(methodName, abi?) {
+    abi = abi || ERC20_TOKEN_ABI;
+    return abi.filter((m) => {
+      return m.name === methodName;
+    })[0];
+  }
+
+  public tokenContract(address) {
+    return this.Web3.eth.Contract(ERC20_TOKEN_ABI, address);
+  }
+
+  public BatchRequest() {
+    return new this.Web3.BatchRequest();
+  }
+
 
   public getTokenInfo(tokenAddress) {
     const tokenInfoFields = ['decimals', 'symbol', 'name'];
@@ -162,6 +181,16 @@ export class Web3Service {
         this.Web3.setProvider(this.providers.infura);
       }
       return result;
+    });
+  }
+
+
+  public createTransaction(transactionConfig, provider?) {
+    if (provider) {
+      this.Web3.setProvider(this.providers[provider]);
+    }
+    return this.Web3.eth.sendTransaction.request(transactionConfig, () => {
+      this.Web3.setProvider(this.providers.infura);
     });
   }
 

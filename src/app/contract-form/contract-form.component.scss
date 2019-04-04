@@ -198,13 +198,35 @@
   padding: 30px 0 15px;
 }
 
-.contract-state {
-  border-top: 1px dashed rgba(255, 255, 255, 0.25);
-  font-size: 18px;
-  color: #8E939B;
-  line-height: 22px;
-  padding: 15px 10px;
+.deployment-progress-container {
+  padding: 12px 0 32px;
+  text-align: center;
 }
-
-
-
+.progress-bubble {
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 85px;
+  height: 85px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  .lds-ring {
+    position: absolute;
+    top: 50%;
+    margin-left: -21px;
+    left: 50%;
+    margin-top: -21px;
+  }
+}
+.progress-text {
+  margin-top: 15px;
+  font-size: 20px;
+  line-height: 24px;
+  color: #fff;
+  text-align: center;
+}
+.progress-info_text {
+  margin-top: 18px;
+  font-size: 14px;
+  line-height: 18px;
+  color: rgba(255, 255, 255, 0.55);
+}

@@ -44,7 +44,7 @@ html {
   padding-right: 1vw;
 }
 
-a:not(.btn) {
+a:not(.btn):not(.minimal-btn) {
   color: #61B9DF;
   text-decoration: none;
   &:hover, &:focus {
@@ -87,7 +87,9 @@ a:not(.btn) {
 .text-center {
   text-align: center;
 }
-
+.uppercase {
+  text-transform: uppercase;
+}
 
 
 .btn {
@@ -139,7 +141,16 @@ a:not(.btn) {
   &-min {
     font-size: 16px;
     line-height: 20px;
-    padding: 13px 13px 12px 6px;
+    padding: 13px 15px 12px 6px;
+    &:not(.width-100) {
+      padding-left: 25px;
+      .arrow {
+        margin-left: -14px;
+      }
+    }
+    &.wallet-btn {
+      padding-left: 15px;
+    }
   }
 
   &-for-field {
@@ -168,8 +179,11 @@ a:not(.btn) {
     background: #FCD600;
     border-left-color: rgba(255, 255, 255, 0.67);
     color: #000;
-    &:hover {
-      background-color: #ffd700;
+    &:not([disabled]):hover {
+      background-color: #ffff00;
+    }
+    &:not([disabled]):active {
+      background-color: #c7a800;
     }
   }
   &-payment {
@@ -315,6 +329,9 @@ a:not(.btn) {
         border-color: transparent;
         color: #fff;
       }
+      &.minimal-input {
+        line-height: 19px;
+      }
     }
     input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]) {
       font-size: 28px;
@@ -402,7 +419,7 @@ a:not(.btn) {
     }
 
     &_stat {
-      padding: 7px 8px 7px 10px;
+      padding: 1px 1px 1px 10px;
       font-size: 13px;
       color: #110931;
       line-height: 16px;
@@ -494,6 +511,32 @@ a:not(.btn) {
   }
 }
 
+
+.minimal-btn {
+  border: 1px solid #979797;
+  color: #EEEEEE;
+  background: none;
+  font-size: 14px;
+  line-height: 18px;
+  padding: 5px 7px;
+  cursor: pointer;
+  white-space: nowrap;
+  &, &:hover, &:focus, &:active {
+    text-decoration: none;
+  }
+  img, span {
+    vertical-align: middle;
+  }
+  img {
+    margin-right: 7px;
+  }
+  span {
+    margin-top: 3px;
+    position: relative;
+    top: 2px;
+  }
+}
+
 .or-delimiter {
   height: 0;
   border-top: 1px dashed rgba(255, 255, 255, 0.25);
@@ -550,3 +593,7 @@ a:not(.btn) {
 .timepicker-button {
   color: #222!important;
 }
+
+
+
+

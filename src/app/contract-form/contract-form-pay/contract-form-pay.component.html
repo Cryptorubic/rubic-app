@@ -1,0 +1,167 @@
+<div class="form-block_fieldset">
+  <div class="form-field_description">
+    {{fromBigNumber(contractCosts.USDT, 6)}} USDT
+  </div><br/>
+  <div class="form-field">
+    <label class="form-field_label">Choose replenish method</label>
+    <div class="form-field_input">
+      <div class="grid-row">
+        <div class="grid-cell">
+          <label class="checkbox-block">
+            <input type="radio"
+                   name="payment-method"
+                   [(ngModel)]="replenishMethod"
+                   value="WISH" checked="checked"/>
+            <span class="btn btn-payment btn-normal-weight">
+              <img class="btn-payment_ico" src="./assets/images/icons/coins/wish.png">
+              <span class="btn-payment_txt">WISH</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="grid-cell">
+          <label class="checkbox-block">
+            <input type="radio"
+                   name="payment-method"
+                   [(ngModel)]="replenishMethod"
+                   value="ETH"/>
+            <span class="btn btn-payment btn-normal-weight">
+              <img class="btn-payment_ico" src="./assets/images/icons/coins/eth.png">
+              <span class="btn-payment_txt">ETH</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="grid-cell">
+          <label class="checkbox-block">
+            <input type="radio"
+                   name="payment-method"
+                   [(ngModel)]="replenishMethod"
+                   value="BNB"/>
+            <span class="btn btn-payment btn-normal-weight">
+              <img class="btn-payment_ico" src="./assets/images/icons/coins/bnb.svg">
+              <span class="btn-payment_txt">BNB</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="grid-cell">
+          <label class="checkbox-block">
+            <input type="radio"
+                   name="payment-method"
+                   [(ngModel)]="replenishMethod"
+                   value="BTC"/>
+            <span class="btn btn-payment btn-normal-weight">
+              <img class="btn-payment_ico" src="./assets/images/icons/coins/btc.svg">
+              <span class="btn-payment_txt">BTC</span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="replenishMethod !== 'BTC'">
+    <div class="form-field">
+      <div class="form-field_label bold">
+        Send
+        <span *ngIf="replenishMethod === 'ETH'">
+          {{fromBigNumber(contractCosts.ETH, 18)}} ETH
+        </span>
+        <span *ngIf="replenishMethod === 'WISH'">
+          {{fromBigNumber(contractCosts.WISH, 18)}} WISH
+        </span>
+        <span *ngIf="replenishMethod === 'BNB'">
+          {{fromBigNumber(contractCosts.BNB, 18)}} BNB
+        </span>
+        to
+      </div>
+      <div class="form-field_input">
+        <div class="form-field_copy">
+          <button type="button"
+                  class="copy-btn"
+                  [ngClass]="{copied: copiedAddresses['eth']}"
+                  (click)="copyText(currentUser.internal_address, 'eth')">
+            <img src="./assets/images/icons/copy.svg"/>
+          </button>
+        </div>
+        <div class="form-field_input_data">
+          <input type="text" class="min-text dark-field"
+                 readonly
+                 [value]="currentUser.internal_address"/>
+          <div class="form-field_info-field form-field_small-desc">
+            <span class="float-left">
+              Gas price 30 gwei
+            </span>
+            <span class="float-left">
+              Gas limit 100.000
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="or-delimiter">
+      <span>OR</span>
+    </div>
+
+    <div class="form-field">
+      <label class="form-field_label">Select payment method:</label>
+      <div class="form-field_input">
+        <div class="grid-row">
+          <div class="grid-cell">
+            <button type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn">
+              <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
+              MyEtherWallet
+            </button>
+          </div>
+          <div class="grid-cell">
+            <button type="button"
+                    (click)="payContractVia(replenishMethod)"
+                    [disabled]="!providedAddresses.metamask?.length"
+                    class="btn btn-transparent btn-min btn-normal-weight wallet-btn">
+              <img src="./assets/images/icons/web3clients/metamask.svg" class="btn-ico">
+              Metamask
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="replenishMethod === 'BTC'">
+    <div class="form-field">
+      <div class="form-field_label bold">
+        Send
+        {{fromBigNumber(contractCosts.BTC, 8)}} BTC
+        to
+      </div>
+      <div class="form-field_input">
+        <div class="form-field_copy">
+          <button type="button"
+                  class="copy-btn"
+                  [ngClass]="{copied: copiedAddresses['btc']}"
+                  (click)="copyText(currentUser.internal_btc_address, 'btc')">
+            <img src="./assets/images/icons/copy.svg"/>
+          </button>
+        </div>
+        <div class="form-field_input_data">
+          <input type="text" class="min-text dark-field"
+                 readonly
+                 [value]="currentUser.internal_btc_address"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contract-state">
+  <span class="lds-ellipsis inline">
+    <span class="lds-ellipsis-container min">
+      <span></span><span></span><span></span><span></span>
+    </span>
+  </span>&nbsp;&nbsp;
+    Waiting for payment
+  </div>
+
+</div>

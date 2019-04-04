@@ -2,11 +2,9 @@ import {AfterContentInit, Component, EventEmitter, Injectable, OnInit, ViewChild
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker} from '@angular/material';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {ContractsService} from '../services/contracts/contracts.service';
-import {ActivatedRoute, ActivatedRouteSnapshot, Resolve} from '@angular/router';
+import {ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router} from '@angular/router';
 import {UserService} from '../services/user/user.service';
 import {Observable} from 'rxjs';
-
-import {TOKENS_ADDRESSES} from './../services/web3/web3.constants';
 
 import * as moment from 'moment';
 import {UserInterface} from '../services/user/user.interface';
@@ -24,6 +22,8 @@ export interface IContractDetails {
   stop_date?: number;
   owner_address?: string;
   public?: boolean|undefined;
+  unique_link?: string;
+  eth_contract?: any;
   tokens_info?: {
     base: {
       token: any;
@@ -44,6 +44,7 @@ export interface IContract {
   network?: 1;
   state?: string;
   cost?: any;
+  name?: string;
 }
 
 
@@ -79,10 +80,6 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
   public formIsSending: boolean;
 
   public currentUser;
-
-  public replenishMethod: string;
-  public providedAddresses: any = {};
-
   public editableContract = true;
 
   public minTime;
@@ -124,7 +121,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
     private userService: UserService,
     private location: Location,
     private route: ActivatedRoute,
-    private web3Service: Web3Service
+    private router: Router
   ) {
 
     this.formData = {
@@ -144,7 +141,6 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
       base: false,
       quote: false
     };
-    this.openedForm = 'tokens';
 
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
@@ -157,69 +153,49 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
 
 
     if (this.originalContract) {
-      switch (this.originalContract.state) {
-        case 'CREATED':
-          this.openedForm = 'preview';
-          break;
-        case 'ACTIVE':
-          // Redirect to big preview
-          this.openedForm = false;
-          this.editableContract = false;
-          break;
-
-        case 'WAITING_FOR_PAYMENT':
-          this.editableContract = false;
-          this.activatePaymentBlock();
-          break;
-
-        case 'POSTPONED':
-          this.editableContract = false;
-          this.openedForm = false;
-          break;
-
-        case 'WAITING_FOR_DEPLOYMENT':
-          this.editableContract = false;
-          this.openedForm = 'deploy';
-          this.checkContractState();
-          break;
-      }
+      this.analyzeContractState(this.originalContract);
+    } else {
+      this.openedForm = 'tokens';
     }
   }
 
 
+  private analyzeContractState(contract) {
 
+    const tokensInfo = this.originalContract.contract_details.tokens_info;
+    this.originalContract = contract;
+    this.originalContract.contract_details.tokens_info = tokensInfo;
+
+    switch (contract.state) {
+      case 'CREATED':
+        this.openedForm = 'preview';
+        break;
+      case 'WAITING_FOR_PAYMENT':
+        this.editableContract = false;
+        this.openedForm = false;
+        this.checkContractState();
+        break;
+      case 'WAITING_FOR_DEPLOYMENT':
+        this.editableContract = false;
+        this.openedForm = false;
+        this.checkContractState();
+        break;
+      case 'ACTIVE':
+        this.router.navigate(['/contract/' + contract.id]);
+        break;
+      case 'POSTPONED':
+        this.router.navigate(['/contract/' + contract.id]);
+        break;
+    }
+  }
 
   private checkContractState() {
     setTimeout(() => {
       this.contractsService.getContract(this.originalContract.id).then((contract) => {
-        switch (contract.state) {
-          case 'WAITING_FOR_PAYMENT':
-            this.checkContractState();
-            break;
-          case 'WAITING_FOR_DEPLOYMENT':
-            this.openedForm = 'deploy';
-            this.checkContractState();
-            break;
-          case 'ACTIVE':
-            break;
-          case 'POSTPONED':
-            break;
-        }
+        this.analyzeContractState(contract);
       });
     }, 5000);
   }
-
-
-  private activatePaymentBlock() {
-    this.generateDataFields();
-    this.replenishMethod = 'WISH';
-    this.openedForm = 'payment';
-    this.web3Service.getAccounts().then((addresses) => {
-      this.providedAddresses = addresses;
-    });
-    this.checkContractState();
-  }
-
 
 
   ngOnInit() {
@@ -273,7 +249,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
 
 
   public addCustomToken(name) {
-    this.requestData[name].token = {
+    this.requestData.tokens_info[name].token = {
       token_short_name: this.customTokens[name].symbol,
       token_name: this.customTokens[name].name,
       address: this.customTokens[name].address,
@@ -322,6 +298,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
       times(Math.pow(10, this.requestData.tokens_info.quote.token.decimals)).toString(10);
 
     this.formData.contract_details.owner_address = this.extraForm.value.owner_address;
+    this.formData.name = this.requestData.tokens_info.base.token.token_short_name + '<>' + this.requestData.tokens_info.quote.token.token_short_name;
+
 
     if (this.currentUser.is_ghost) {
       this.userService.openAuthForm().then(() => {
@@ -367,111 +345,16 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
       return;
     }
     this.confirmationIsProgress = true;
-    this.contractsService.startWatchContract(this.formData.id).then((result) => {
-
+    this.contractsService.startWatchContract(this.formData.id).then((contract) => {
+      this.analyzeContractState(contract);
     }, (err) => {
 
     }).finally(() => {
       this.confirmationIsProgress = false;
     });
   }
-
-
-
-  public copiedAddresses = {};
-
-  public copyText(val: string, field) {
-    if (this.copiedAddresses[field]) {
-      return;
-    }
-    this.copiedAddresses[field] = true;
-    setTimeout(() => {
-      this.copiedAddresses[field] = false;
-    }, 1000);
-
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-
-  }
-
-
-  public fromBigNumber(num, decimals) {
-    return new BigNumber(num).div(Math.pow(10, decimals)).toString(10);
-  }
-
-
-  public trxDataFields: any = {};
-
-  private checkTRXData(cost) {
-    return this.web3Service.encodeFunctionCall(
-      {
-        name: 'transfer',
-        type: 'function',
-        inputs: [{
-          type: 'address',
-          name: 'to'
-        }, {
-          type: 'uint256',
-          name: 'value'
-        }]
-      }, [
-        this.currentUser.internal_address,
-        new BigNumber(cost).toString(10)
-      ]
-    );
-  }
-
-  private generateDataFields() {
-    this.trxDataFields.WISH = this.checkTRXData(this.originalContract.cost.WISH);
-    this.trxDataFields.BNB = this.checkTRXData(this.originalContract.cost.BNB);
-  }
-
-  public payContractVia(coin) {
-
-    if (coin !== 'ETH') {
-      this.payContractViaTokens(coin);
-    } else {
-      this.payContractViaEth();
-    }
-
-  }
-
-
-  private payContractViaTokens(token) {
-    this.web3Service.sendTransaction({
-      from: this.providedAddresses.metamask[0],
-      to: TOKENS_ADDRESSES[token],
-      data: this.trxDataFields[token]
-    }, 'metamask').then((result) => {
-      console.log(result);
-    }, (err) => {
-      console.log(err);
-    });
-  }
-
-
-  public payContractViaEth() {
-    this.web3Service.sendTransaction({
-      from: this.providedAddresses.metamask[0],
-      to: this.currentUser.internal_address,
-      value: new BigNumber(this.originalContract.cost.ETH).toString(10)
-    }, 'metamask').then((result) => {
-      console.log(result);
-    }, (err) => {
-      console.log(err);
-    });
-  }
-
 }
+
 
 
 @Injectable()
@@ -479,8 +362,8 @@ export class ContractEditResolver implements Resolve<any> {
   constructor(
     private contractsService: ContractsService,
     private userService: UserService,
-    private web3Service: Web3Service,
     private httpService: HttpService,
+    private web3Service: Web3Service
   ) {}
 
   private contractId: number;

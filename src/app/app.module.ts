@@ -27,6 +27,9 @@ import {RegistrationComponent} from './common/auth/registration/registration.com
 import {SocialComponent} from './common/auth/social/social.component';
 import {EmailConfirmComponent} from './common/auth/email-confirm/email-confirm.component';
 import {ForgotPasswordComponent} from './common/auth/forgot-password/forgot-password.component';
+import { ContractFormPayComponent } from './contract-form/contract-form-pay/contract-form-pay.component';
+import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
+import { TransactionComponent } from './transaction/transaction.component';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -63,10 +66,14 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     AuthenticationComponent,
     SocialComponent,
     EmailConfirmComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    ContractFormPayComponent,
+    ContractPreviewComponent,
+    TransactionComponent
   ],
   entryComponents: [
-    AuthComponent
+    AuthComponent,
+    TransactionComponent
   ],
   imports: [
     TranslateModule.forRoot({
