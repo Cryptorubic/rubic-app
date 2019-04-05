@@ -221,7 +221,9 @@ a:not(.btn):not(.minimal-btn) {
 
 .checkbox-block {
   position: relative;
+  overflow: hidden;
   input {
+    opacity: 0;
     position: absolute;
     right: 100%;
     bottom: 100%;
@@ -314,7 +316,7 @@ a:not(.btn):not(.minimal-btn) {
         }
       }
     }
-    input {
+    input:not([type="checkbox"]):not([type="radio"]) {
       box-sizing: border-box;
       background-color: #fff;
       border: 1px solid #fff;
@@ -400,7 +402,7 @@ a:not(.btn):not(.minimal-btn) {
     color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
     &:not(.no-top-margin) {
-      margin-top: 15px;
+      margin-top: 24px;
     }
   }
   &_small-desc {

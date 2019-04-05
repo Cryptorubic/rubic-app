@@ -156,7 +156,9 @@
                   checked: extraForm.valid
                }">
             <div class="form-block_title"
-                 (click)="openedForm = (tokensForm.valid && editableContract) ? 'contract' : openedForm;">Extra points</div>
+                 (click)="openedForm = (tokensForm.valid && editableContract) ? 'contract' : openedForm;">
+              Extra options
+            </div>
             <form class="form-block_fieldset" #extraForm="ngForm" (submit)="createContract(tokensForm)">
               <div class="grid-row">
                 <div class="grid-cell grid-cell-3-4">

@@ -5,6 +5,7 @@ import {UserService} from '../services/user/user.service';
 
 import {Observable} from 'rxjs';
 import {CONTRACT_STATES} from '../contract-preview/contract-states';
+import {UserInterface} from '../services/user/user.interface';
 
 @Component({
   selector: 'app-contracts-list',
@@ -19,11 +20,16 @@ export class ContractsListComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private userService: UserService
   ) {
+    this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
+      if (userProfile.is_ghost) {
+        this.router.navigate(['/']);
+      }
+    });
 
-    console.log(this.states);
-    console.log(this.route.snapshot.data.contracts.results);
     this.contractsList = this.route.snapshot.data.contracts.results;
+
   }
 
   ngOnInit() {

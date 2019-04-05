@@ -13,50 +13,17 @@
     font-size: 25px;
     color: #FFFFFF;
   }
-  &-steps {
-    list-style-type: none;
-    padding: 0;
-    margin: 23px -5px 23px 0;
-    &:after {
-      content: '';
-      display: block;
-      clear: both;
-    }
-    &_item {
-      //background: rgba(0,0,0,0.10);
-      width: 16.6666%;
-      float: left;
-      padding-right: 5px;
-      box-sizing: border-box;
-      &__cont {
-        background-color: rgba(0, 0, 0, 0.1);
-        position: relative;
-        padding: 13px;
-        text-align: center;
-        color: #fff;
-      }
-    }
-    .step-arrow {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-    .step-text {
-      font-size: 16px;
-      color: #FFFFFF;
-      line-height: 57px;
-      span {
-        line-height: 19px;
-        vertical-align: middle;
-        display: inline-block;
-        width: 100%;
-      }
-    }
-    .step-image {
-      line-height: 94px;
-      img {
-        vertical-align: middle;
-      }
+
+  &-description {
+    font-size: 25px;
+    margin: 20px 0 35px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  &-img {
+    text-align: left;
+    img {
+      max-width: 100%;
+      vertical-align: top;
     }
   }
 }

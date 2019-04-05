@@ -1,9 +1,12 @@
-<input type="text" placeholder="0"
-       #amountField
-       required
-       [tabindex]="visibleInput ? '-1' : ''"
-       (ngModelChange)="transformValue($event)"
-       [(ngModel)]="amount">
+<form #amountForm="ngForm">
+  <input type="text" placeholder="0"
+         #amountField
+         required
+         name="amountField"
+         [tabindex]="visibleInput ? '-1' : ''"
+         (ngModelChange)="transformValue($event)"
+         [(ngModel)]="amount">
+</form>
 
 <input type="hidden" required
        [ngModel]="tokenModel.token.address">

@@ -1,5 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import {HttpService} from '../../services/http/http.service';
+import {AbstractControl} from '@angular/forms';
 
 
 export interface ITokenInfo {
@@ -26,6 +27,9 @@ export class TokenInputComponent implements OnInit {
   @Input('updateModel') public updateModel: any;
   @Input() public tokenGroup: any;
 
+  @ViewChild('amountForm') public amountForm: any;
+
+
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
 
@@ -41,6 +45,8 @@ export class TokenInputComponent implements OnInit {
 
 
   private oldValue;
+  private amountControl: AbstractControl;
+
 
   ngOnInit() {
     let amount;
@@ -154,6 +160,7 @@ export class TokenInputComponent implements OnInit {
     const replaceRegExp = /(\d)(?=(\d{3})+(?!\d))/g;
     let value = event ? event.replace(/,/g, '') : undefined;
 
+    // const amountControl = this.amountForm.controls.amountField;
 
     if (!value) {
       this.oldValue = '';
@@ -161,17 +168,43 @@ export class TokenInputComponent implements OnInit {
 
     if (isNaN(value)) {
       value = this.oldValue || '';
-      this.amount = value.replace(replaceRegExp, '$1,');
     } else if (this.oldValue !== value) {
       this.oldValue = value;
     }
 
     this.tokenModel.amount = value;
-    this.amount = value.replace(replaceRegExp, '$1,');
+    const numberVal = parseFloat(value);
+    const dotIndex = value.indexOf('.') + 1;
+
+    const splittedValue = value.split('.');
+    if (dotIndex) {
+      this.amount = splittedValue[0].replace(replaceRegExp, '$1,') + '.' + (splittedValue[1] || '');
+    } else {
+      this.amount = value.replace(replaceRegExp, '$1,');
+    }
+
     this.amountField.nativeElement.value = this.amount;
     this.TokenChange.emit(this.tokenModel);
+
+
     setTimeout(() => {
-      this.amount = value.replace(replaceRegExp, '$1,');
+      if (dotIndex) {
+        this.amount = splittedValue[0].replace(replaceRegExp, '$1,') + '.' + (splittedValue[1] || '');
+      } else {
+        this.amount = value.replace(replaceRegExp, '$1,');
+      }
+
+      const minErr = numberVal < Math.pow(10, -this.tokenModel.token.decimals);
+      const maxErr = numberVal * Math.pow(10, this.tokenModel.token.decimals) > (Math.pow(2, 256) - 1);
+      const decErr = dotIndex && splittedValue[1].length > this.tokenModel.token.decimals;
+
+      this.amountForm.controls.amountField.setErrors(minErr || maxErr || decErr? {
+        min: minErr || null,
+        max: maxErr || null,
+        decimals: decErr || null
+      } : null);
+
+      console.log(this.amountForm.controls.amountField.errors);
     });
   }
 

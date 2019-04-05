@@ -7,12 +7,12 @@ header {
   right: 0;
   transition: all linear 0.2s;
   &.scrolled {
-    background: rgba(0,0,0,0.3);
+    background: rgba(56, 67, 84, 0.9);
     padding-top: 13px;
     padding-bottom: 10px;
     z-index: 5;
     .logo {
-      margin-top: 0px;
+      margin-top: 0;
       margin-bottom: -5px;
     }
   }
