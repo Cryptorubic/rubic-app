@@ -4,7 +4,8 @@
       <app-start-form></app-start-form>
     </div>
 
-    <div class="app-index__how-it-works">
+
+    <div class="app-index__how-it-works" id="how-it-works">
       <div class="how-it-work">
         <div class="how-it-work-title">How it works</div>
         <div class="how-it-work-description">
@@ -17,7 +18,7 @@
     </div>
   </div>
 
-  <div class="app-content-block">
+  <div class="app-content-block" id="about">
     <div class="app-index__used-service used-service">
       <div class="used-service__title">Used our service</div>
       <div class="used-service__info">
@@ -26,7 +27,7 @@
             <img src="./assets/images/used-service/users.png">
           </div>
           <div class="used-service__info_item__text">
-            <span class="count">7093</span>
+            <span class="count">{{stat?.users}}</span>
             <span class="desc">Users</span>
             <!--<span class="range">+7</span>-->
           </div>
@@ -36,7 +37,7 @@
             <img src="./assets/images/used-service/contracts.png">
           </div>
           <div class="used-service__info_item__text">
-            <span class="count">7093</span>
+            <span class="count">{{stat?.contracts}}</span>
             <span class="desc">Contracts</span>
             <!--<span class="range">+7</span>-->
           </div>
@@ -63,51 +64,45 @@
       <ul class="faq-questions-list">
         <li class="faq-questions-list_item">
           <input type="checkbox" class="question-checkbox" id="question-1"/>
-          <label class="question" for="question-1">– What about security?</label>
+          <label class="question" for="question-1">– What is the cost of creating a SWAP smart contract?</label>
           <span class="answer">
-          <span>MyWish is an open source project, you can check the source code on our GitHub, We guarantee security our services are 100% secure.</span>
+          <span>The contract cost is 10USD.</span>
         </span>
         </li>
         <li class="faq-questions-list_item">
           <input type="checkbox" class="question-checkbox" id="question-2"/>
-          <label class="question" for="question-2">– What is RAM/CPU/NET for EOS account? Can I setup it in your service?</label>
+          <label class="question" for="question-2">– Is the contract price fixed or depends on the deal?</label>
           <span class="answer">
-            <span>RAM/CPU/NET are resources of your account needed for interaction with EOS blockchain. You can setup it during the account creation if needed.</span>
+            <span>The contract cost is fixed in USD, but may vary depends on USD if you pay in WISH, ETH, BNB, BTC.</span>
           </span>
         </li>
-        <!-- li class="faq-questions-list_item">
-          <input type="checkbox" class="question-checkbox" id="question-3"/>
-          <label class="question" for="question-3">– Is it safe?</label>
-            <span class="answer">
-              <span>MyWish provides you with 100% security</span>
-            </span>
-        </li -->
+
         <li class="faq-questions-list_item">
           <input type="checkbox" class="question-checkbox" id="question-5"/>
-          <label class="question" for="question-5">– Why should I buy an account?</label>
+          <label class="question" for="question-5">– How much time does it take to deploy a contract?</label>
           <span class="answer">
-            <span>When you pay fees to create an EOS account, it means that you are paying for a certain amount of RAM which is required for the account to function.</span>
+            <span>On average, the contract is deployed in the Ethereum blockchain in 5-10 minutes.</span>
           </span>
         </li>
         <li class="faq-questions-list_item">
           <input type="checkbox" class="question-checkbox" id="question-4"/>
-          <label class="question" for="question-4">– How much the account will cost me?</label>
+          <label class="question" for="question-4">– What kind of deals does the SWAP contract support?</label>
           <span class="answer">
-            <span>It depends on how much RAM you need for your account, so the price differs but mainly it's 10 USD.</span>
+            <span>
+              This contract allows you to make the following deals:<br/>
+              &nbsp;&nbsp;- Exchange ETH to ERC20 / ERC223<br/>
+              &nbsp;&nbsp;- Exchange ERC20 / ERC223 to ERC20 / ERC223?<br/>
+            </span>
           </span>
         </li>
         <li class="faq-questions-list_item">
           <input type="checkbox" class="question-checkbox" id="question-6"/>
-          <label class="question" for="question-6">– How can I be sure I got EOS account?</label>
+          <label class="question" for="question-6">– How can I pay the contract fees?</label>
           <span class="answer">
-            <span>We generate a link to EOS blockchain once the account is created, so you will have a proof that now you own an EOS account.</span>
-          </span>
-        </li>
-        <li class="faq-questions-list_item">
-          <input type="checkbox" class="question-checkbox" id="question-7"/>
-          <label class="question" for="question-7">– How can I be sure account is only under my control?</label>
-          <span class="answer">
-            <span> EOS uses private and public key pairs for every account. If you don’t have public key we provide you with it and you need to save it in a safe place, However,  MyWish is not saving any private pairs.</span>
+            <span>
+              MyWish accepts payment in WISH tokens, ETH, and BTC.<br/>
+              Click on the "Buy Tokens" tab, choose your preferred payment method and follow the instructions.
+            </span>
           </span>
         </li>
       </ul>
