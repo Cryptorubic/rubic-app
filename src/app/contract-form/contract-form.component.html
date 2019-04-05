@@ -283,7 +283,11 @@
                       ({{tokens.base.token.token_short_name}})
                     </div>
                     <div class="token-info_texts__address">
-                      Token: <a href="#" >{{tokens.base.token.address}}</a>
+                      Token:
+                      <a [href]="tokens.base.token.address | etherscanUrl : 'token'"
+                         target="_blank">
+                        {{tokens.base.token.address}}
+                      </a>
                     </div>
                   </div>
                   <div class="token-info_balance">
@@ -321,7 +325,11 @@
                       {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
                     </div>
                     <div class="token-info_texts__address">
-                      Token: <a href="#" >{{tokens.quote.token.address}}</a>
+                      Token:
+                      <a [href]="tokens.quote.token.address | etherscanUrl : 'token'"
+                         target="_blank">
+                        {{tokens.quote.token.address}}
+                      </a>
                     </div>
                   </div>
                   <div class="token-info_balance">
@@ -365,7 +373,10 @@
                     <div class="form-field">
                       <label class="form-field_label transparent">Management address</label>
                       <div class="form-field_value">
-                        <a href="#">{{originalContract.contract_details.owner_address}}</a>
+                        <a [href]="originalContract.contract_details.owner_address | etherscanUrl : 'address'"
+                           target="_blank">
+                          {{originalContract.contract_details.owner_address}}
+                        </a>
                       </div>
                     </div>
                   </div>

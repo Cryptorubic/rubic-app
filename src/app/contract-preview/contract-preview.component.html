@@ -61,8 +61,10 @@
                       Token:
                     </div>
                     <div class="token-info_texts__address_link">
-                      <a href="#" >{{tokens.base.token.address}}</a>
-                    </div>
+                      <a [href]="tokens.base.token.address | etherscanUrl : 'token'"
+                         target="_blank">
+                        {{tokens.base.token.address}}
+                      </a>
                   </div>
                   <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE'">
                     <div class="token-info_investments__number">
@@ -144,7 +146,10 @@
                       Token:
                     </div>
                     <div class="token-info_texts__address_link">
-                      <a href="#" >{{tokens.quote.token.address}}</a>
+                      <a [href]="tokens.quote.token.address | etherscanUrl : 'token'"
+                         target="_blank">
+                        {{tokens.quote.token.address}}
+                      </a>
                     </div>
                   </div>
                   <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE'">
@@ -230,8 +235,11 @@
                 <div class="form-field">
                   <label class="form-field_label transparent">Management address</label>
                   <div class="form-field_value">
-                    <a href="#">{{originalContract.contract_details.owner_address}}</a>
-                    &nbsp;&nbsp;
+                    <a [href]="originalContract.contract_details.owner_address | etherscanUrl : 'address'"
+                       target="_blank">
+                      {{originalContract.contract_details.owner_address}}
+                    </a>
+
                     <button type="button"
                             class="copy-btn"
                             [ngClass]="{copied: copiedAddresses['owner_address']}"
@@ -273,8 +281,10 @@
 
               <label class="form-field_label transparent">Contract address</label>
               <div class="form-field_value">
-                <a href="#">{{originalContract.contract_details.eth_contract.address}}</a>
-
+                <a [href]="originalContract.contract_details.eth_contract.address | etherscanUrl : 'address'"
+                   target="_blank">
+                  {{originalContract.contract_details.eth_contract.address}}
+                </a>
                 &nbsp;&nbsp;
                 <button type="button"
                         class="copy-btn"

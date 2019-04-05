@@ -18,7 +18,7 @@ import {MatNativeDateModule, MatDatepickerModule, MAT_DATE_FORMATS, MatDialogMod
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { EthAddressDirective } from './directives/eth-address/eth-address.directive';
-import {EthTokenValidatorDirective} from './services/web3/web3.service';
+import {EtherscanUrlPipe, EthTokenValidatorDirective} from './services/web3/web3.service';
 import {UserService} from './services/user/user.service';
 import {UserInterface} from './services/user/user.interface';
 import {AuthComponent} from './common/auth/auth.component';
@@ -31,6 +31,7 @@ import { ContractFormPayComponent } from './contract-form/contract-form-pay/cont
 import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
 import { TransactionComponent } from './transaction/transaction.component';
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
+
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -71,7 +72,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ContractFormPayComponent,
     ContractPreviewComponent,
     TransactionComponent,
-    ContractsListComponent
+    ContractsListComponent,
+    EtherscanUrlPipe
   ],
   entryComponents: [
     AuthComponent,

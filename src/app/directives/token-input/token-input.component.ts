@@ -204,7 +204,6 @@ export class TokenInputComponent implements OnInit {
         decimals: decErr || null
       } : null);
 
-      console.log(this.amountForm.controls.amountField.errors);
     });
   }
 

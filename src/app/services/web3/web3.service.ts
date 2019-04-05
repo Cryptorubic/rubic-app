@@ -5,8 +5,10 @@ import Web3 from 'web3';
 
 import {AbstractControl, AsyncValidator, NG_ASYNC_VALIDATORS, NG_VALIDATORS, ValidationErrors} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+
 import {ETH_NETWORKS, ERC20_TOKEN_ABI} from './web3.constants';
+
+import { Pipe, PipeTransform } from '@angular/core';
 
 
 export interface TokenInfoInterface {
@@ -17,6 +19,23 @@ export interface TokenInfoInterface {
 }
 
 const IS_PRODUCTION = location.protocol === 'https:';
+
+
+
+const ETHERSCAN_URLS = {
+  ETHERSCAN_ADDRESS: 'https://etherscan.io/',
+  ROPSTEN_ETHERSCAN_ADDRESS: 'https://ropsten.etherscan.io/',
+};
+
+@Pipe({ name: 'etherscanUrl' })
+export class EtherscanUrlPipe implements PipeTransform {
+  transform(address, type) {
+    const url = IS_PRODUCTION ? ETHERSCAN_URLS.ETHERSCAN_ADDRESS : ETHERSCAN_URLS.ROPSTEN_ETHERSCAN_ADDRESS;
+    return url + type + '/' + address;
+  }
+}
+
+
 
 @Injectable({
   providedIn: 'root'
