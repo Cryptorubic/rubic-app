@@ -36,7 +36,14 @@ const routes: Routes = [
     resolve: {
       contracts: ContractsListResolver
     }
+  }, {
+    path: 'dashboard/first_entry',
+    redirectTo: '/'
+  }, {
+    path: 'accounts/login',
+    redirectTo: '/'
   }
+
 ];
 
 @NgModule({
