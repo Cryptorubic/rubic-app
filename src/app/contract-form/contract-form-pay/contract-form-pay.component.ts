@@ -17,6 +17,9 @@ export class ContractFormPayComponent implements OnInit {
   public trxDataFields: any = {};
   public providedAddresses: any = {};
   public replenishMethod: string;
+  public costValue;
+
+  public tokensAddresses = TOKENS_ADDRESSES;
 
   constructor(
     private web3Service: Web3Service,
@@ -28,6 +31,7 @@ export class ContractFormPayComponent implements OnInit {
     this.trxDataFields.WISH = this.checkTRXData(this.contractCosts.WISH);
     this.trxDataFields.BNB = this.checkTRXData(this.contractCosts.BNB);
     this.replenishMethod = 'WISH';
+    this.costValue = new BigNumber(this.contractCosts.ETH).toString(10);
     this.web3Service.getAccounts().then((addresses) => {
       this.providedAddresses = addresses;
     });
@@ -108,7 +112,7 @@ export class ContractFormPayComponent implements OnInit {
     this.web3Service.sendTransaction({
       from: this.providedAddresses.metamask[0],
       to: this.currentUser.internal_address,
-      value: new BigNumber(this.contractCosts.ETH).toString(10)
+      value: this.costValue
     }, 'metamask').then((result) => {
       console.log(result);
     }, (err) => {

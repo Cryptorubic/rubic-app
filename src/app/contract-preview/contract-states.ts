@@ -26,5 +26,9 @@ export const CONTRACT_STATES = {
   WAITING_FOR_PAYMENT: {
     NUMBER: 6,
     TEXT: 'Waiting'
+  },
+  WAITING_FOR_DEPLOYMENT: {
+    NUMBER: 6,
+    TEXT: 'Waiting'
   }
 };

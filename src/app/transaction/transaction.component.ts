@@ -13,12 +13,11 @@ export class TransactionComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public trxData,
     private web3Service: Web3Service
   ) {
+    this.copiedData = {};
   }
 
   public copiedData: any = {};
   public providedAddresses: any = {};
-
-  public copiedAddresses: any;
 
   ngOnInit() {
 
@@ -28,12 +27,12 @@ export class TransactionComponent implements OnInit {
   }
 
   public copyText(val: string, field) {
-    if (this.copiedAddresses[field]) {
+    if (this.copiedData[field]) {
       return;
     }
-    this.copiedAddresses[field] = true;
+    this.copiedData[field] = true;
     setTimeout(() => {
-      this.copiedAddresses[field] = false;
+      this.copiedData[field] = false;
     }, 1000);
 
     const selBox = document.createElement('textarea');

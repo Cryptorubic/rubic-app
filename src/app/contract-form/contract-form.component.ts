@@ -372,31 +372,6 @@ export class ContractEditResolver implements Resolve<any> {
   private contractId: number;
   private publicLink: string;
 
-  private convertTokenInfo(tokenInfo) {
-    return {
-      token_short_name: tokenInfo.symbol,
-      token_name: tokenInfo.name,
-      address: tokenInfo.address,
-      decimals: tokenInfo.decimals
-    };
-  }
-
-  private getTokenInfo(tokenAddress) {
-
-    return new Promise((resolve, reject) => {
-      this.httpService.get('get_all_tokens/', {
-        address: tokenAddress
-      }).toPromise().then((result) => {
-        if (!result.length) {
-          this.web3Service.getTokenInfo(tokenAddress).then((tokenInfo: {data: TokenInfoInterface}) => {
-            resolve(this.convertTokenInfo(tokenInfo.data));
-          });
-        } else {
-          resolve(result[0]);
-        }
-      });
-    });
-  }
 
   private getContractInformation(observer, isPublic?) {
 
@@ -412,7 +387,7 @@ export class ContractEditResolver implements Resolve<any> {
 
       result.contract_details.tokens_info = {};
 
-      this.getTokenInfo(result.contract_details.quote_address).then((token: TokenInfoInterface) => {
+      this.web3Service.getFullTokenInfo(result.contract_details.quote_address).then((token: TokenInfoInterface) => {
         result.contract_details.tokens_info.quote = {
           token,
           amount: new BigNumber(result.contract_details.quote_limit).div(Math.pow(10, token.decimals)).toString()
@@ -422,7 +397,7 @@ export class ContractEditResolver implements Resolve<any> {
         }
       });
 
-      this.getTokenInfo(result.contract_details.base_address).then((token: TokenInfoInterface) => {
+      this.web3Service.getFullTokenInfo(result.contract_details.base_address).then((token: TokenInfoInterface) => {
         result.contract_details.tokens_info.base = {
           token,
           amount: new BigNumber(result.contract_details.base_limit).div(Math.pow(10, token.decimals)).toString()

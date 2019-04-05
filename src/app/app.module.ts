@@ -31,6 +31,7 @@ import { ContractFormPayComponent } from './contract-form/contract-form-pay/cont
 import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
 import { TransactionComponent } from './transaction/transaction.component';
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -73,7 +74,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ContractPreviewComponent,
     TransactionComponent,
     ContractsListComponent,
-    EtherscanUrlPipe
+    EtherscanUrlPipe,
+    FooterComponent
   ],
   entryComponents: [
     AuthComponent,

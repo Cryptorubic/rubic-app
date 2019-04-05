@@ -1,19 +1,6 @@
 @import '~@angular/material/theming';
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
-
-
-
-.base-block-content {
-  padding-top: 200px;
-  background: url('/assets/images/backgrounds/bg-index-top.png') transparent;
-  background-position: center top;
-  background-repeat: no-repeat;
-  background-size: 100%;
-  min-height: 100vh;
-  padding-bottom: 60px;
-  box-sizing: border-box;
-}
 .form-container {
   padding-left: 62px;
 
@@ -128,6 +115,7 @@
 }
 .token-info {
   padding: 20px;
+  line-height: 52px;
   &:after {
     content: '';
     display: block;
@@ -149,6 +137,8 @@
   }
   &_texts {
     padding: 4px 0;
+    display: inline-block;
+    vertical-align: middle;
     &__name {
       font-size: 16px;
       color: #FFFFFF;
@@ -166,9 +156,13 @@
     }
   }
   &_balance {
-    float: left;
     clear: both;
-    margin-top: 12px;
+    padding: 0 20px 20px;
+    &:after {
+      clear: both;
+      display: block;
+      content: '';
+    }
     span {
       display: block;
       float: left;

@@ -5,10 +5,12 @@ import {AbstractControl} from '@angular/forms';
 
 export interface ITokenInfo {
     active?: boolean;
+    address: string;
     image_link: string;
     token_short_name: string;
     token_name: string;
     decimals: number;
+    isEther?: boolean;
 }
 
 @Component({
@@ -66,11 +68,17 @@ export class TokenInputComponent implements OnInit {
 
   public searchToken(q) {
     this.listIsOpened = false;
+    if (!q) {
+      return;
+    }
     this.httpService.get('get_all_tokens/', {
       token_short_name: q
     }).subscribe((res: ITokenInfo[]) => {
       this.listIsOpened = true;
       this.tokensList = res;
+      this.tokensList.forEach((tok) => {
+        tok.isEther = tok.address === '0x0000000000000000000000000000000000000000';
+      });
       if (res.length) {
         this.selectToken(res[0], 0, true);
       }

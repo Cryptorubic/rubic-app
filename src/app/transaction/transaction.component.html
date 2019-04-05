@@ -8,7 +8,7 @@
       {{trxData.description}}
     </div>
     <mat-dialog-content>
-      <div *ngFor="let transaction of trxData.transactions" class="transaction-instruction">
+      <div *ngFor="let transaction of trxData.transactions; let index = index" class="transaction-instruction">
         <div class="transaction-buttons">
           <div *ngIf="transaction.title" class="transaction-item-title">
             {{ transaction.title }}
@@ -16,10 +16,18 @@
           <div class="form-field_input">
             <div class="grid-row">
               <div class="grid-cell">
-                <button type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn">
-                  <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
+                <a [href]="
+                    'https://vintage.myetherwallet.com/' +
+                    (!transaction.data ?
+                      '?sendMode=ether&to=' + transaction.to + '&value=' + transaction.ethValue + '#send-transaction' :
+                      '?data=' + transaction.data + '&value=0&to=' + transaction.to + '#send-transaction'
+                    )"
+                   target="_blank"
+                   type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn">
+                  <img src="./assets/images/icons/web3clients/myetherwallet.svg"
+                       class="btn-ico">
                   MyEtherWallet
-                </button>
+                </a>
               </div>
               <div class="grid-cell">
                 <button type="button"
@@ -48,8 +56,8 @@
               <div class="form-field_copy">
                 <button type="button"
                         class="copy-btn"
-                        [ngClass]="{copied: copiedData['owner_address']}"
-                        (click)="copyText(transaction.from, 'owner_address')">
+                        [ngClass]="{copied: copiedData['owner_address' + index]}"
+                        (click)="copyText(transaction.from, 'owner_address' + index)">
                   <img src="./assets/images/icons/copy.svg"/>
                 </button>
               </div>
@@ -68,8 +76,8 @@
               <div class="form-field_copy">
                 <button type="button"
                         class="copy-btn"
-                        [ngClass]="{copied: copiedData['contract_address']}"
-                        (click)="copyText(transaction.to, 'contract_address')">
+                        [ngClass]="{copied: copiedData['contract_address' + index]}"
+                        (click)="copyText(transaction.to, 'contract_address' + index)">
                   <img src="./assets/images/icons/copy.svg"/>
                 </button>
               </div>
@@ -88,8 +96,8 @@
               <div class="form-field_copy">
                 <button type="button"
                         class="copy-btn"
-                        [ngClass]="{copied: copiedData['data']}"
-                        (click)="copyText(transaction.data, 'data')">
+                        [ngClass]="{copied: copiedData['data' + index]}"
+                        (click)="copyText(transaction.data, 'data' + index)">
                   <img src="./assets/images/icons/copy.svg"/>
                 </button>
               </div>

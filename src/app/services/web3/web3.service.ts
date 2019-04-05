@@ -1,3 +1,5 @@
+import {HttpService} from '../http/http.service';
+
 const BigNumber = require('bignumber.js');
 
 import {Directive, EventEmitter, Injectable, Output} from '@angular/core';
@@ -9,6 +11,7 @@ import {Observable} from 'rxjs';
 import {ETH_NETWORKS, ERC20_TOKEN_ABI} from './web3.constants';
 
 import { Pipe, PipeTransform } from '@angular/core';
+import {map} from 'rxjs/operators';
 
 
 export interface TokenInfoInterface {
@@ -16,6 +19,7 @@ export interface TokenInfoInterface {
   decimals: number;
   name: string;
   symbol: string;
+  isEther: boolean;
 }
 
 const IS_PRODUCTION = location.protocol === 'https:';
@@ -45,7 +49,9 @@ export class Web3Service {
   private providers;
   private Web3;
 
-  constructor() {
+  constructor(
+    private httpService: HttpService
+  ) {
 
     this.providers = {};
     try {
@@ -93,6 +99,39 @@ export class Web3Service {
 
   public BatchRequest() {
     return new this.Web3.BatchRequest();
+  }
+
+  private convertTokenInfo(tokenInfo) {
+    return {
+      token_short_name: tokenInfo.symbol,
+      token_name: tokenInfo.name,
+      address: tokenInfo.address,
+      decimals: tokenInfo.decimals,
+      isEther: tokenInfo.address === '0x0000000000000000000000000000000000000000'
+    };
+  }
+
+
+  public getFullTokenInfo(tokenAddress) {
+
+    return new Promise((resolve, reject) => {
+      this.httpService.get('get_all_tokens/', {
+        address: tokenAddress
+      }).toPromise().then((result) => {
+        result.forEach((tok) => {
+          tok.isEther = tok.address === '0x0000000000000000000000000000000000000000';
+        });
+        if (!result.length) {
+          this.getTokenInfo(tokenAddress).then((tokenInfo: {data: TokenInfoInterface}) => {
+            const convertedToken = this.convertTokenInfo(tokenInfo.data);
+
+            resolve(convertedToken);
+          });
+        } else {
+          resolve(result[0]);
+        }
+      });
+    });
   }
 
 

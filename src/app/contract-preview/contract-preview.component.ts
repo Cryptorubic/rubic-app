@@ -143,7 +143,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   }
 
   private getBaseContract() {
-    this.contractService.getContract(this.originalContract.id).then((result) => {
+    this.contractService.getContractByPublic(this.originalContract.contract_details.unique_link).then((result) => {
       const tokens_info = this.originalContract.contract_details.tokens_info;
       const swapped = this.originalContract.isSwapped;
       this.originalContract = result;
@@ -212,9 +212,10 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       panelClass: 'custom-dialog-container',
       data: {
         title: 'Refund',
-        description: 'Description description description',
+        description:
+          'You can take back your contributions at any tome until the contract’s execution.\n' +
+          'Use the same address which you used for the contribution.',
         transactions: [{
-          from: details.owner_address,
             to: contract.address,
           data: methodSignature,
           action: sendTransaction
@@ -253,7 +254,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
           action: cancelTransaction
         }],
         title: 'Cancel',
-        description: 'Cancel desc, cancel descript, cancel description'
+        description: 'To Cancel the swap you need to make the transaction from the management address'
       }
     });
   }
@@ -281,7 +282,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
           ethValue: amount
         }],
         title: 'Contribute',
-        description: 'For contribution you need to make 1 transaction'
+        description: 'Send ' + amount + ' ETH to the contract address directly'
       }
     });
   }
@@ -308,7 +309,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
         break;
     }
 
-    if (tokenAddress.token.address === '0x0000000000000000000000000000000000000000') {
+    if (tokenAddress.token.isEther) {
       this.sendEth(amount, amountDecimals);
       return;
     }
@@ -365,13 +366,12 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
           action: approveTransaction
         }, {
           title: 'Make the transfer of ' + amount + ' ' + tokenAddress.token.token_short_name + ' tokens to contract',
-          from: details.owner_address,
           to: contract.address,
           data: depositSignature,
           action: contributeTransaction
         }],
         title: 'Contribute',
-        description: 'For contribution you need to make 2 transactions: authorise the contract and make the transfer (you cann read why these steps are needed here)'
+        description: 'For contribution you need to make 2 transactions: authorise the contract and make the transfer'
       }
     });
 

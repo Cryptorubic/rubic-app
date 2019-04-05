@@ -57,14 +57,15 @@
                       {{tokens.base.token.token_name}}
                       ({{tokens.base.token.token_short_name}})
                     </div>
-                    <div class="token-info_texts__address">
+                    <div class="token-info_texts__address" *ngIf="!tokens.base.token.isEther">
                       Token:
                     </div>
-                    <div class="token-info_texts__address_link">
+                    <div class="token-info_texts__address_link" [ngClass]="{invisible: tokens.base.token.isEther}">
                       <a [href]="tokens.base.token.address | etherscanUrl : 'token'"
                          target="_blank">
                         {{tokens.base.token.address}}
                       </a>
+                    </div>
                   </div>
                   <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE'">
                     <div class="token-info_investments__number">
@@ -77,8 +78,9 @@
                   </div>
                 </div>
                 <div class="contract-buttons"
-                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false)">
+                     *ngIf="originalContract.isSwapped === false">
                   <form class="form-field" #baseContributeForm="ngForm"
+                        *ngIf="(originalContract.state === 'ACTIVE')"
                         (submit)="sendContribute(baseContributeForm.value.amount, 'base')">
                     <div class="grid-row">
                       <div class="grid-cell grid-cell-3-5">
@@ -104,6 +106,7 @@
                   </form>
                   <div>
                     <button class="btn btn-yellow btn-min btn-normal-weight"
+                            *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')"
                             (click)="sendRefund('refundBase')"
                             type="button">
                       <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
@@ -142,10 +145,10 @@
                       {{tokens.quote.token.token_name}}
                       ({{tokens.quote.token.token_short_name}})
                     </div>
-                    <div class="token-info_texts__address">
+                    <div class="token-info_texts__address" *ngIf="!tokens.quote.token.isEther">
                       Token:
                     </div>
-                    <div class="token-info_texts__address_link">
+                    <div class="token-info_texts__address_link" [ngClass]="{invisible: tokens.quote.token.isEther}">
                       <a [href]="tokens.quote.token.address | etherscanUrl : 'token'"
                          target="_blank">
                         {{tokens.quote.token.address}}
@@ -163,8 +166,9 @@
                   </div>
                 </div>
                 <div class="contract-buttons"
-                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false)">
+                     *ngIf="originalContract.isSwapped === false">
                   <form class="form-field" #quoteContributeForm="ngForm"
+                        *ngIf="(originalContract.state === 'ACTIVE')"
                         (submit)="sendContribute(quoteContributeForm.value.amount, 'quote')">
                     <div class="grid-row">
                       <div class="grid-cell grid-cell-3-5">
@@ -190,6 +194,7 @@
                   </form>
                   <div>
                     <button class="btn btn-yellow btn-min btn-normal-weight"
+                            *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')"
                             (click)="sendRefund('refundQuote')"
                             type="button">
                       <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
@@ -297,7 +302,7 @@
 
 
             <div class="one-separated-block"
-                 *ngIf="((originalContract.state === 'EXPIRED') || ((originalContract.state === 'ACTIVE') && originalContract.isAuthor)) && (originalContract.isSwapped === false)">
+                 *ngIf="((originalContract.state === 'ACTIVE') && originalContract.isAuthor) && (originalContract.isSwapped === false)">
               <button type="button" class="btn btn-yellow btn-min btn-normal-weight" (click)="sendCancel()">
                 <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                 <span>Cancel the deal</span>

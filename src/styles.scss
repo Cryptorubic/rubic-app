@@ -29,6 +29,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Sofia Pro', Arial, sans-serif;
+  min-width: 1024px;
 }
 
 html {
@@ -70,11 +71,21 @@ a:not(.btn):not(.minimal-btn) {
 
 
 
+.base-block-content {
+  padding-top: 200px;
+  background: transparent url('/assets/images/backgrounds/bg-index-top.png') no-repeat center top;
+  background-size: 100%;
+  min-height: 100vh;
+  padding-bottom: 60px;
+  box-sizing: border-box;
+}
 
 
 
 
-
+.invisible {
+  visibility: hidden;
+}
 .float-right {
   float: right;
 }
@@ -488,7 +499,7 @@ a:not(.btn):not(.minimal-btn) {
       bottom: 100%;
       width: 100px;
       text-align: center;
-      left: 50%;
+      right: 0;
       margin-left: -55px;
       margin-bottom: 8px;
       border-radius: 2px;
@@ -500,7 +511,7 @@ a:not(.btn):not(.minimal-btn) {
     }
     &:before {
       position: absolute;
-      left: 50%;
+      right: 0;
       bottom: 100%;
       border-width: 7px 7px 0 7px;
       border-color: rgba(0, 0, 0, 0.4) transparent;
@@ -508,7 +519,7 @@ a:not(.btn):not(.minimal-btn) {
       content: '';
       width: 0;
       height: 0;
-      margin-left: -8px;
+      margin-right: 4px;
       margin-bottom: 1px;
     }
   }

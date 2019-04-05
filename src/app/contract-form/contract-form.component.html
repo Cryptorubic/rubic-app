@@ -283,7 +283,7 @@
                       {{tokens.base.token.token_name}}
                       ({{tokens.base.token.token_short_name}})
                     </div>
-                    <div class="token-info_texts__address">
+                    <div class="token-info_texts__address" *ngIf="!tokens.base.token.isEther">
                       Token:
                       <a [href]="tokens.base.token.address | etherscanUrl : 'token'"
                          target="_blank">
@@ -291,14 +291,12 @@
                       </a>
                     </div>
                   </div>
-                  <div class="token-info_balance">
-                    <span class="token-info_balance_title">You have</span>
-                    <span class="token-info_balance_count">
-                      {{tokens.base.amount | number}}
-                    </span>
-                  </div>
                 </div>
 
+                <div class="token-info_balance">
+                  <span class="token-info_balance_title">You have</span>
+                  <span class="token-info_balance_count">{{tokens.base.amount | number}}</span>
+                </div>
 
                 <div class="form-field_description">
                     <span>
@@ -325,7 +323,7 @@
                     <div class="token-info_texts__name">
                       {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
                     </div>
-                    <div class="token-info_texts__address">
+                    <div class="token-info_texts__address" *ngIf="!tokens.quote.token.isEther">
                       Token:
                       <a [href]="tokens.quote.token.address | etherscanUrl : 'token'"
                          target="_blank">
@@ -333,10 +331,10 @@
                       </a>
                     </div>
                   </div>
-                  <div class="token-info_balance">
-                    <span class="token-info_balance_title">You want get</span>
-                    <span class="token-info_balance_count">{{tokens.quote.amount | number}}</span>
-                  </div>
+                </div>
+                <div class="token-info_balance">
+                  <span class="token-info_balance_title">You want get</span>
+                  <span class="token-info_balance_count">{{tokens.quote.amount | number}}</span>
                 </div>
               </div>
 
