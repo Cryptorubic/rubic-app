@@ -1,6 +1,8 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
+import {Component, Directive, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {HttpService} from '../../services/http/http.service';
-import {AbstractControl} from '@angular/forms';
+import {AbstractControl, NG_ASYNC_VALIDATORS} from '@angular/forms';
+import {Validator} from 'codelyzer/walkerFactory/walkerFn';
+import BigNumber from 'bignumber.js';
 
 
 export interface ITokenInfo {
@@ -49,6 +51,8 @@ export class TokenInputComponent implements OnInit {
   private oldValue;
   private amountControl: AbstractControl;
 
+  private searchSubscriber;
+
 
   ngOnInit() {
     let amount;
@@ -65,13 +69,16 @@ export class TokenInputComponent implements OnInit {
     amount = this.tokenModel.amount;
     this.transformValue(amount);
   }
-
   public searchToken(q) {
     this.listIsOpened = false;
+    if (this.searchSubscriber) {
+      this.searchSubscriber.unsubscribe();
+    }
+
     if (!q) {
       return;
     }
-    this.httpService.get('get_all_tokens/', {
+    this.searchSubscriber = this.httpService.get('get_all_tokens/', {
       token_short_name: q
     }).subscribe((res: ITokenInfo[]) => {
       this.listIsOpened = true;
@@ -168,51 +175,51 @@ export class TokenInputComponent implements OnInit {
     const replaceRegExp = /(\d)(?=(\d{3})+(?!\d))/g;
     let value = event ? event.replace(/,/g, '') : undefined;
 
-    // const amountControl = this.amountForm.controls.amountField;
+    const withoutDotValue = (value !== undefined) ? value.replace(/^[0]+(.*)\.+$/, '$1') : '';
 
-    if (!value) {
-      this.oldValue = '';
-    }
-
-    if (isNaN(value)) {
+    if (isNaN(withoutDotValue)) {
       value = this.oldValue || '';
     } else if (this.oldValue !== value) {
       this.oldValue = value;
     }
 
-    this.tokenModel.amount = value;
-    const numberVal = parseFloat(value);
-    const dotIndex = value.indexOf('.') + 1;
+    const numberVal = new BigNumber(withoutDotValue);
 
+    // value = !isNaN(withoutDotValue) ? withoutDotValue : value;
+    const dotIndex = withoutDotValue.indexOf('.') + 1;
+
+    value = value || '';
     const splittedValue = value.split('.');
+
     if (dotIndex) {
-      this.amount = splittedValue[0].replace(replaceRegExp, '$1,') + '.' + (splittedValue[1] || '');
+      this.amountField.nativeElement.value = splittedValue[0].replace(replaceRegExp, '$1,') + '.' + (splittedValue[1] || '');
     } else {
-      this.amount = value.replace(replaceRegExp, '$1,');
+      this.amountField.nativeElement.value = value.replace(replaceRegExp, '$1,');
     }
-
-    this.amountField.nativeElement.value = this.amount;
-    this.TokenChange.emit(this.tokenModel);
-
 
     setTimeout(() => {
       if (dotIndex) {
+        this.tokenModel.amount = splittedValue[1] ? splittedValue.join('.') : splittedValue[0];
         this.amount = splittedValue[0].replace(replaceRegExp, '$1,') + '.' + (splittedValue[1] || '');
       } else {
+        this.tokenModel.amount = value.replace(/^([.]+)\.+$/, '$1');
         this.amount = value.replace(replaceRegExp, '$1,');
       }
+      this.TokenChange.emit(this.tokenModel);
 
-      const minErr = numberVal < Math.pow(10, -this.tokenModel.token.decimals);
-      const maxErr = numberVal * Math.pow(10, this.tokenModel.token.decimals) > (Math.pow(2, 256) - 1);
-      const decErr = dotIndex && splittedValue[1].length > this.tokenModel.token.decimals;
+      const minErr = numberVal.minus(Math.pow(10, -this.tokenModel.token.decimals)).toNumber() < 0;
+      const maxErr = numberVal.times(Math.pow(10, this.tokenModel.token.decimals)).minus(Math.pow(2, 256) - 1).toNumber() > 0;
+      const decErr = splittedValue[1] && (splittedValue[1].length > this.tokenModel.token.decimals);
 
-      this.amountForm.controls.amountField.setErrors(minErr || maxErr || decErr? {
-        min: minErr || null,
-        max: maxErr || null,
-        decimals: decErr || null
-      } : null);
-
+      if (minErr || maxErr || decErr) {
+        this.amountForm.controls.amountField.setErrors({
+          min: minErr || null,
+          max: maxErr || null,
+          decimals: decErr || null
+        });
+      }
     });
   }
 
 }
+

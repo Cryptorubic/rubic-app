@@ -4,11 +4,17 @@
       <div class="page-content">
         <h2 class="page-content__title text-center" [innerHTML]="'FOOTER.SUBSCRIPTION_FORM.TITLE'|translate"></h2>
         <form id="bot-sub"
-              action="https://mywish.us17.list-manage.com/subscribe/post?u=46f67485295b8e33b7a04853c&amp;id=a211b0611e" method="post" name="mc-embedded-subscribe-form" target="_blank" novalidate
+              #form
+              (submit)="onSubmit(form)"
+              action="https://mywish.us17.list-manage.com/subscribe/post?u=46f67485295b8e33b7a04853c&amp;id=a211b0611e"
+              method="post"
+              name="mc-embedded-subscribe-form"
+              target="_blank"
               class="subscribe__row subscribe__row_form">
           <div class="subscribe__row_form__cell">
             <div class="form-field_input">
               <input value="" name="EMAIL" id="mce-EMAIL"
+                     required
                      placeholder="{{'FOOTER.SUBSCRIPTION_FORM.FIELD_PLACEHOLDER'|translate}}"
                      class="top__bar__input min-text" type="email">
             </div>

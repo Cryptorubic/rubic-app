@@ -29,7 +29,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Sofia Pro', Arial, sans-serif;
-  min-width: 1024px;
+  min-width: 320px;
 }
 
 html {
@@ -57,10 +57,51 @@ a:not(.btn):not(.minimal-btn) {
 
 
 
+#livechat-compact-container {
+  display: none!important;
+}
+#livechat-top-button {
+  @extend .app-content-block;
+  position: relative;
+  //padding-top: 100px;
+}
 
+#livechat-compact-container {
+  position: absolute!important;
+  left: 50%!important;
+  top: 200px!important;
+  bottom: auto!important;
+  right: auto!important;
+  margin-left: 240px!important;
+  height: 62px!important;
+  border-left: 5px solid #FCD600!important;
+  line-height: 62px;
+  padding: 0!important;
+  background: url(/assets/images/icons/support.svg) 15px 17px no-repeat rgba(255, 255, 255, 0.1)!important;
 
+  transform: translateY(0%)!important;
+  opacity: 1!important;
+  visibility: visible!important;
+  z-index: 5!important;
 
+  display: none!important;
 
+  &:before {
+    content: 'Support';
+    color: #fff;
+    font-weight: bold;
+    line-height: 62px;
+    float: left;
+    display: block;
+    vertical-align: middle;
+    font-size: 18px;
+    margin-left: 50px;
+  }
+}
+
+.with-support #livechat-compact-container {
+  //display: block!important;
+}
 
 
 
@@ -350,7 +391,7 @@ a:not(.btn):not(.minimal-btn) {
     input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]) {
       font-size: 28px;
       width: 100%;
-      padding: 12px 22px;
+      padding: 12px 12px;
     }
     &__btn {
       position: absolute;
@@ -413,7 +454,7 @@ a:not(.btn):not(.minimal-btn) {
     color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
     &:not(.no-top-margin) {
-      margin-top: 24px;
+      margin-top: 22px;
     }
   }
   &_small-desc {
@@ -459,6 +500,7 @@ a:not(.btn):not(.minimal-btn) {
   &_value {
     font-size: 18px;
     color: #FFFFFF;
+    word-break: break-all;
   }
   &_copy {
     float: right;
@@ -611,3 +653,8 @@ a:not(.btn):not(.minimal-btn) {
 
 
 
+@media screen and (max-width: 800px) {
+  .base-block-content {
+    padding-top: 17vw;
+  }
+}

@@ -21,7 +21,7 @@ footer {
   margin-top: 60px;
   text-align: center;
   .top__bar__input {
-    width: 400px !important;
+    width: 400px;
   }
 
   &_form {
@@ -51,6 +51,7 @@ footer {
     transform: scale(1);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
     width: 75px;
+    max-width: 70%;
   }
   span {
     float: left;
@@ -85,5 +86,43 @@ footer {
       width: 25%;
       margin-bottom: 20px;
     }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .subscribe {
+    padding-bottom: 8vw;
+    .page-content__title {
+      font-size: 10vw;
+      line-height: initial;
+      margin: 2vw 0;
+    }
+  }
+  .subscribe__row {
+    .top__bar__input {
+      width: 100%;
+    }
+    &_form {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      .btn {
+        padding-bottom: 16px;
+      }
+      &__cell {
+        display: block;
+        vertical-align: middle;
+        padding: 0 5px;
+        .btn {
+          width: 100%;
+        }
+      }
+      &__cell + &__cell {
+        margin-top: 20px;
+      }
+    }
+  }
+  footer {
+    margin-top: 10vw;
   }
 }

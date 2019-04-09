@@ -16,7 +16,6 @@
   border: 0 none;
   padding: 0;
   width: 28px;
-  height: 28px;
   text-align: center;
   line-height: 28px;
   margin-left: 10px;
@@ -24,14 +23,16 @@
   background-color: rgba(216, 216, 216, 0.26);
   cursor: pointer;
   img {
+    margin-top: -2px;
     width: 14px;
     vertical-align: middle;
   }
 }
+
 .form-block {
   position: relative;
   counter-increment: blockNumber;
-  padding: 20px 30px 0;
+  padding: 20px 2vw 0;
   background-color: rgba(0, 0, 0, 0.2);
   &:after {
     display: block;
@@ -56,9 +57,9 @@
     font-size: 25px;
     color: #FFFFFF;
     font-weight: bold;
-    padding: 20px 30px;
-    margin-left: -30px;
-    margin-right: -30px;
+    padding: 20px 2vw;
+    margin-left: -2vw;
+    margin-right: -2vw;
     margin-top: -20px;
     line-height: 22px;
     transition: all linear 0.1s;
@@ -92,7 +93,7 @@
       content: '';
       display: block;
       position: absolute;
-      top: 17px;
+      top: 14px;
       left: -34px;
       width: 10px;
       height: 20px;
@@ -139,6 +140,7 @@
     padding: 4px 0;
     display: inline-block;
     vertical-align: middle;
+    max-width: 100%;
     &__name {
       font-size: 16px;
       color: #FFFFFF;
@@ -153,6 +155,7 @@
       line-height: 22px;
       overflow: hidden;
       white-space: nowrap;
+      text-overflow: ellipsis
     }
   }
   &_balance {
@@ -224,3 +227,85 @@
   line-height: 18px;
   color: rgba(255, 255, 255, 0.55);
 }
+
+
+.steps-mobile {
+  margin-bottom: 20px;
+  display: none;
+  .grid-cell {
+    counter-increment: mobileItemNumber;
+  }
+  &_item {
+    height: 62px;
+    line-height: 62px;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.1);
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    color: #fff;
+    position: relative;
+    border-color: rgba(255, 255, 255, 0.2);
+    &:before {
+      content: counter(mobileItemNumber);
+      display: inline;
+      font-size: 30px;
+      font-weight: bold;
+    }
+    &.opened {
+      border-left: 5px solid;
+      border-color: #FCD600;
+    }
+    &.active {
+      border-left: 5px solid;
+      border-color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+    }
+    &.checked:before {
+      display: none;
+    }
+    &.checked:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 20px;
+      margin-top: -18px;
+      margin-left: -6px;
+      border-width: 0 4px 4px 0;
+      border-style: solid;
+      border-color: #FCD600;
+      -webkit-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+}
+
+@media screen and (max-width: 580px) {
+  .steps-mobile {
+    display: block;
+  }
+  .form-block {
+    margin-top: 0!important;
+    &_fieldset {
+      padding-top: 0;
+    }
+    &.hidden {
+      display: none;
+    }
+    &:after, &:before {
+      display: none;
+    }
+  }
+  .form-container {
+    padding-left: 0;
+  }
+}
+
+
+

@@ -6,6 +6,7 @@ header {
   left: 0;
   right: 0;
   transition: all linear 0.2s;
+  z-index: 3;
   &.scrolled {
     background: rgba(56, 67, 84, 0.9);
     padding-top: 13px;
@@ -100,4 +101,81 @@ header {
 }
 
 
+.navbar-toggle {
+  background: none;
+  float: right;
+  border: 0 none;
+  display: none;
+  padding: 10px 6px;
+  cursor: pointer;
+  margin-top: -5px;
+  .icon-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: #fff;
+    + .icon-bar {
+      margin-top: 4px;
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .logo {
+    margin-left: 10px;
+  }
+  header {
+    padding-top: 0!important;
+    padding-bottom: 0!important;
+    .app-content-block {
+      padding-top: 3vw;
+      padding-bottom: 3vw;
+      position: relative;
+      &:after {
+        content: '';
+        display: block;
+        clear: both;
+      }
+    }
+  }
+  .header-menu {
+    display: none;
+    background: rgba(56, 67, 84, 0.9);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    &_sublist {
+      left: 0;
+      right: 0;
+      background: rgba(56, 67, 84, 0.9);
+      .sublist-link {
+        padding-left: 35px;
+      }
+    }
+    &_list {
+      &_item {
+        display: block;
+        .header-link {
+          padding-top: 15px;
+          padding-bottom: 15px;
+          display: block;
+          &:hover {
+            text-decoration: none;
+            background-color: rgba(0, 0, 0, 0.4);
+          }
+        }
+      }
+    }
+    &.opened {
+      display: block;
+      float: left;
+      width: 100%;
+    }
+  }
+  .navbar-toggle {
+    display: block;
+  }
+}
 

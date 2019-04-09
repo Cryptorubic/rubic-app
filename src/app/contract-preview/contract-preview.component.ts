@@ -380,7 +380,6 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.updateContractTimer) {
-      console.log(this.updateContractTimer);
       window.clearTimeout(this.updateContractTimer);
     }
   }

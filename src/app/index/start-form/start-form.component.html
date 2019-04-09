@@ -1,46 +1,48 @@
 <div class="index-start-form">
-  <div class="index-start-form_left">
-    <h1 class="title">
-      Fully decentralized OTC<br/>
-      service for Ethereum
-    </h1>
-    <div class="description">
-      Create smart contract for tokens Swap
-    </div>
-    <div class="btn-block">
-      <a [routerLink]="['/']" [fragment]="'how-it-works'" class="btn btn-white-opacity">
-        <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
-        <span>How it works</span>
-      </a>
-    </div>
-  </div>
-  <div class="index-start-form_right">
-    <div class="form-field">
-      <label class="form-field_label">You have</label>
-      <div class="form-field_input">
-        <app-token-input [(tokenModel)]="tokensData.base" (TokenChange)="changedToken('base', $event)"></app-token-input>
+  <div class="grid-row">
+    <div class="index-start-form_left grid-cell grid-cell-1-2 grid-cell-sm-1">
+      <h1 class="title">
+        Fully decentralized OTC<br/>
+        service for Ethereum
+      </h1>
+      <div class="description">
+        Create smart contract for tokens Swap
+      </div>
+      <div class="btn-block">
+        <a [routerLink]="['/']" [fragment]="'how-it-works'" class="btn btn-white-opacity">
+          <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
+          <span>How it works</span>
+        </a>
       </div>
     </div>
-    <div class="form-field">
-      <label class="form-field_label">You want get</label>
-      <div class="form-field_input">
-        <app-token-input [(tokenModel)]="tokensData.quote" (TokenChange)="changedToken('quote', $event)"></app-token-input>
+    <div class="index-start-form_right grid-cell grid-cell-1-2 grid-cell-s-1">
+      <div class="form-field">
+        <label class="form-field_label">You have</label>
+        <div class="form-field_input">
+          <app-token-input [(tokenModel)]="tokensData.base" (TokenChange)="changedToken('base', $event)"></app-token-input>
+        </div>
       </div>
-      <div class="form-field_description"
-           *ngIf="tokensData.base.token.address && tokensData.quote.token.address && tokensData.base.amount && tokensData.quote.amount"
-      >
-        Rate:
-        {{(tokensData.base.amount / tokensData.quote.amount) | number : '1.0-4'}}
-        {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
+      <div class="form-field">
+        <label class="form-field_label">You want to get</label>
+        <div class="form-field_input">
+          <app-token-input [(tokenModel)]="tokensData.quote" (TokenChange)="changedToken('quote', $event)"></app-token-input>
+        </div>
+        <div class="form-field_description"
+             *ngIf="tokensData.base.token.address && tokensData.quote.token.address && tokensData.base.amount && tokensData.quote.amount"
+        >
+          Rate:
+          {{(tokensData.base.amount / tokensData.quote.amount) | number : '1.0-4'}}
+          {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
+        </div>
       </div>
-    </div>
-    <div class="form-field">
-      <a class="btn btn-yellow width-100" routerLink="create">
-        <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-        <span>
-          Create SWAP
-        </span>
-      </a>
+      <div class="form-field">
+        <a class="btn btn-yellow width-100" routerLink="create">
+          <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+          <span>
+            Create SWAP
+          </span>
+        </a>
+      </div>
     </div>
   </div>
 </div>

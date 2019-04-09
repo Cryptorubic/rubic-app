@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from './services/user/user.service';
+import {ActivationStart, NavigationStart, ResolveStart, Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,11 +11,47 @@ export class AppComponent implements OnInit {
   title = 'mywish-swaps';
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
+    const body = document.getElementsByTagName('body')[0];
+    this.router.events.subscribe((event) => {
+      if (event instanceof ActivationStart) {
+        if (event.snapshot.data.support) {
+          body.className = 'with-support';
+        } else {
+          body.className = '';
+        }
+      }
 
+      if (event instanceof NavigationStart) {
+        if (event.id === 2) {
+
+        }
+      }
+    });
   }
 
+  private checkLiveChat() {
+
+    const liveChatButtonFrame = document.getElementById('livechat-compact-view');
+
+    if (!liveChatButtonFrame) {
+      setTimeout(() => {
+        this.checkLiveChat();
+      }, 2000);
+      return;
+    }
+
+    const frameContent = liveChatButtonFrame['contentWindow'] || liveChatButtonFrame['contentDocument'];
+    const frameContentContainer = frameContent.document.getElementById('content-container');
+
+    frameContentContainer.style.margin = '-10px';
+    liveChatButtonFrame.style.opacity = '0';
+    liveChatButtonFrame.style.top = '0';
+    liveChatButtonFrame.style.marginTop = '-62px';
+
+  }
 
   ngOnInit(): void {
     let visibilityEvent;
@@ -40,5 +77,8 @@ export class AppComponent implements OnInit {
         }
       }, false);
     }
+
+    this.checkLiveChat();
+
   }
 }

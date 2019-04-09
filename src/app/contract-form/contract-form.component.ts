@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, EventEmitter, Injectable, OnInit, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker} from '@angular/material';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {ContractsService} from '../services/contracts/contracts.service';
@@ -78,7 +78,7 @@ export const MY_FORMATS = {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}
   ]
 })
-export class ContractFormComponent implements AfterContentInit, OnInit {
+export class ContractFormComponent implements AfterContentInit, OnInit, OnDestroy {
   public confirmationIsProgress: boolean;
   public formIsSending: boolean;
 
@@ -91,6 +91,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
   public datePickerDate;
   public datePickerTime;
 
+  private updateContractTimer;
 
   public changeModel = new EventEmitter<any>();
   public customTokens;
@@ -158,7 +159,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
     if (this.originalContract) {
       this.analyzeContractState(this.originalContract);
     } else {
-      this.openedForm = 'tokens';
+      this.openedForm = 0;
     }
   }
 
@@ -171,16 +172,16 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
 
     switch (contract.state) {
       case 'CREATED':
-        this.openedForm = 'preview';
+        this.openedForm = 2;
         break;
       case 'WAITING_FOR_PAYMENT':
         this.editableContract = false;
-        this.openedForm = false;
+        this.openedForm = 3;
         this.checkContractState();
         break;
       case 'WAITING_FOR_DEPLOYMENT':
         this.editableContract = false;
-        this.openedForm = false;
+        this.openedForm = 4;
         this.checkContractState();
         break;
       case 'ACTIVE':
@@ -193,7 +194,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
   }
 
   private checkContractState() {
-    setTimeout(() => {
+    this.updateContractTimer = setTimeout(() => {
       this.contractsService.getContract(this.originalContract.id).then((contract) => {
         this.analyzeContractState(contract);
       });
@@ -270,7 +271,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
     this.formData.id = contract.id;
     this.originalContract = contract;
     this.originalContract.contract_details.tokens_info = this.requestData.tokens_info;
-    this.openedForm = 'preview';
+    this.openedForm = 2;
   }
 
   private contractIsError(error) {
@@ -356,6 +357,14 @@ export class ContractFormComponent implements AfterContentInit, OnInit {
       this.confirmationIsProgress = false;
     });
   }
+
+
+  ngOnDestroy(): void {
+    if (this.updateContractTimer) {
+      window.clearTimeout(this.updateContractTimer);
+    }
+  }
+
 }
 
 

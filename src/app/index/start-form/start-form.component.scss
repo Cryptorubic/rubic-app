@@ -7,8 +7,7 @@
     display: block;
   }
   &_left {
-    float: left;
-    width: 52%;
+    margin-bottom: 70px;
     .title {
       font-size: 44px;
       color: #FFFFFF;
@@ -24,8 +23,42 @@
       margin-top: 40px;
     }
   }
-  &_right {
-    float: left;
-    width: 48%;
+
+}
+
+
+@media screen and (max-width: 980px) {
+  .index-start-form {
+    padding: 5vh 0.5em;
+    &_left {
+      text-align: center;
+    }
+    &_right {
+      margin-left: 25%;
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .index-start-form {
+    &_right {
+      margin-left: 0;
+    }
+  }
+}
+
+@media screen and (max-width: 580px) {
+
+  .index-start-form {
+    &_left {
+      .title {
+        font-size: 34px;
+        line-height: initial;
+      }
+      .description {
+        margin-top: 25px;
+        line-height: initial;
+      }
+    }
   }
 }

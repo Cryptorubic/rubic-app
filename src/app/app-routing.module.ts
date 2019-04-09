@@ -11,24 +11,36 @@ const routes: Routes = [
     component: IndexComponent
   }, {
     path: 'create',
-    component: ContractFormComponent
+    component: ContractFormComponent,
+    data: {
+      support: true
+    }
   }, {
     path: 'view/:id',
     component: ContractFormComponent,
     resolve: {
       contract: ContractEditResolver
+    },
+    data: {
+      support: true
     }
   }, {
     path: 'contract/:id',
     component: ContractPreviewComponent,
     resolve: {
       contract: ContractEditResolver
+    },
+    data: {
+      support: true
     }
   }, {
     path: 'public/:public_link',
     component: ContractPreviewComponent,
     resolve: {
       contract: ContractEditResolver
+    },
+    data: {
+      support: true
     }
   }, {
     path: 'contracts',

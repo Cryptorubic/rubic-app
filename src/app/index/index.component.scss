@@ -21,6 +21,9 @@
   }
   &-img {
     text-align: left;
+    &.mobile {
+      display: none;
+    }
     img {
       max-width: 100%;
       vertical-align: top;
@@ -110,14 +113,14 @@
       }
     }
     img {
-      max-width: 100%;
+      max-width: 85%;
       vertical-align: middle;
     }
   }
 }
 
 .app-index__faq {
-  padding: 57px;
+  padding: 5vh 2%;
   background: url(/assets/images/backgrounds/bg-index-faq.jpg) no-repeat center top;
   background-position: center top;
   background-repeat: no-repeat;
@@ -150,7 +153,7 @@
   .question {
     background-color: rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    padding: 19px 17px 18px;
+    padding: 19px 2% 18px;
     outline: 0 none;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     color: rgba(255, 255, 255, 0.7);
@@ -200,7 +203,7 @@
     span {
       background-color: rgba(0, 0, 0, 0.2);
       border-left: 5px solid rgba(255, 255, 255, 0.56);
-      padding: 0 35px;
+      padding: 0 2%;
       max-height: 0;
       margin-bottom: 5px;
       opacity: 0;
@@ -218,12 +221,54 @@
         border-color: #FCD600;
         opacity: 1;
         max-height: initial;
-        padding: 30px 35px;
+        padding: 30px 2%;
       }
     }
   }
 }
 
+
+@media screen and (max-width: 540px) {
+  .app-index {
+    padding-top: 20vw;
+  }
+  .how-it-work {
+    padding: 20vw 0;
+    text-align: center;
+    &-title {
+    }
+
+    &-description {
+      font-size: 15px;
+    }
+    &-img {
+      text-align: center;
+      &:not(.mobile) {
+        display: none;
+      }
+      &.mobile {
+        display: block;
+      }
+    }
+  }
+  .used-service {
+    &__title {
+      font-size: 10vw;
+      line-height: initial;
+    }
+    &__info {
+      padding: 30px 15px;
+      max-width: initial;
+      &_item {
+        float: none;
+        width: auto;
+      }
+      &_item + &_item {
+        margin-top: 20px;
+      }
+    }
+  }
+}
 
 
 

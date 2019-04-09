@@ -1,5 +1,5 @@
 .grid-row {
-  margin: 0 -0.5em;
+  margin: 0 -1vw;
   &:after, &:before {
     display: table;
     width: 100%;
@@ -12,7 +12,7 @@
 .grid-cell {
   float: left;
   box-sizing: border-box;
-  padding: 0 0.5em;
+  padding: 0 1vw;
   &.without-padding {
     padding-left: 0;
     padding-right: 0;
@@ -121,12 +121,12 @@
     display: block!important;
   }
 }
-@media screen and (min-width: 981px) {
+@media screen and (min-width: 1021px) {
   .show-sm {
     display: none;
   }
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 1020px) {
   .grid-cell {
     &.grid-cell-sm-1 {
       width: 100%;
@@ -257,6 +257,12 @@
   .show-ps {
     display: block!important;
   }
+  .ps-float-left {
+    float: left!important;
+  }
+  .ps-width-100 {
+    width: 100%;
+  }
 }
 
 
@@ -310,6 +316,9 @@
   .show-ls {
     display: initial!important;
   }
+  .ls-width-100 {
+    width: 100%;
+  }
 }
 @media screen and (min-width: 481px) {
   .show-vs {
@@ -345,6 +354,9 @@
   }
   .show-vs {
     display: block!important;
+  }
+  .vs-width-100 {
+    width: 100%;
   }
 }
 
