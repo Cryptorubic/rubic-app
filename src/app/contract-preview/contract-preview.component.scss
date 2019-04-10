@@ -1,5 +1,4 @@
 .base-block-content {
-  padding-top: 200px;
   box-sizing: border-box;
 }
 .contract-title {
@@ -163,8 +162,48 @@
   }
 }
 
+.one-token-info-cell {
+  position: relative;
+}
 
+.exchange-ico {
+  position: absolute;
+  left: 0;
+  margin-left: -20px;
+  top: 46px;
+}
 
+@media screen and (max-width: 680px) {
+  .preview-container,
+  .tokens-info-block,
+  .one-separated-block,
+  .contract-buttons {
+    padding-left: 2vw;
+    padding-right: 2vw;
+  }
+  .tokens-info-block_progress,
+  .one-separated-block,
+  .contract-buttons {
+    margin-left: -2vw;
+    margin-right: -2vw;
+  }
+  .one-token-info-cell {
+    + .one-token-info-cell {
+      margin-top: 15px;
+    }
+  }
+  .tokens-info-block_filled__count {
+    font-size: 7.5vw;
+    line-height: initial;
+  }
+  .exchange-ico {
+    left: 50%;
+    top: 0;
+    margin-top: -20px;
+    margin-left: -26px;
+    transform: rotate(90deg);
+  }
+}
 
 
 

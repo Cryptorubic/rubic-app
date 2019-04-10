@@ -1,0 +1,126 @@
+.active-swaps-table {
+  height: 400px;
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+.public-table {
+  width: 100%;
+  font-family: inherit;
+  color: #fff;
+  border-collapse: collapse;
+  &_thead {
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+    line-height: 19px;
+  }
+  &_tdhead {
+    padding: 7px 29px;
+    font-weight: normal;
+    border: 1px solid rgba(0, 0, 0, .1);
+    white-space: nowrap;
+    &:first-child {
+      text-align: right;
+    }
+    &:nth-child(2) {
+      text-align: left;
+    }
+  }
+
+
+  &_tbody {
+    background-color: rgba(0, 0, 0, 0.1);
+    vertical-align: middle;
+    font-size: 16px;
+  }
+  &_trbody {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+  &_tdbody {
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, .1);
+    text-align: center;
+    padding: 7px 29px;
+    &:first-child {
+      text-align: right;
+      padding-left: 14px;
+      .public-token {
+        text-align: left;
+        float: left;
+      }
+      .public-info {
+        float: right;
+      }
+    }
+    &:nth-child(2) {
+      text-align: left;
+      padding-right: 14px;
+      overflow: visible;
+      position: relative;
+      &:after {
+        content: '';
+        display: block;
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        left: -25px;
+        background: url('/assets/images/icons/ch_03.svg') center center no-repeat;
+        background-size: 24px;
+      }
+      .public-token {
+        text-align: right;
+        float: right;
+      }
+      .public-info {
+        float: left;
+      }
+    }
+  }
+  .public-token {
+    color: rgba(255, 255, 255, 0.5);
+    width: 50%;
+    &_icon {
+      max-height: 22px;
+      margin-bottom: 9px;
+      vertical-align: middle;
+    }
+  }
+  .public-info {
+    padding: 4px 0;
+    width: 50%;
+    &_amount {}
+    &_progress {
+      margin-top: 11px;
+      img {
+        display: none;
+      }
+    }
+    &.low_left .public-info_progress {
+      color: #FFD900;
+    }
+  }
+
+  .public-info.filled .public-info_progress {
+    line-height: 16px;
+    img {
+      display: initial;
+      margin-right: 5px;
+      vertical-align: middle;
+      margin-top: -2px;
+    }
+  }
+}
+
+.public-progress-loading {
+  height: 8px;
+  margin: 60px 0;
+  span {
+    display: block;
+    height: 100%;
+    background-color: #FFD900;
+    transition: linear 0.2s;
+  }
+}

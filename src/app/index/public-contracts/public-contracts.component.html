@@ -1,0 +1,79 @@
+<div class="title-section" *ngIf="contractsList && contractsList.length">
+  Active SWAPS (Public)
+</div>
+
+<div class="public-progress-loading" *ngIf="contractsList && (contractsCount !== contractsList.length)">
+  <span [ngStyle]="{width: (contractsCount / contractsList.length) * 100 + '%'}"></span>
+</div>
+
+<div class="active-swaps-table" *ngIf="contractsList && contractsList.length && (contractsCount === contractsList.length)">
+  <ng-scrollbar>
+    <table class="public-table">
+      <thead class="public-table_thead">
+      <tr class="public-table_trhead">
+        <th class="public-table_tdhead">Token 1</th>
+        <th class="public-table_tdhead">Token 2</th>
+        <th class="public-table_tdhead">Rate</th>
+        <th class="public-table_tdhead">Due date</th>
+        <th class="public-table_tdhead">Time</th>
+      </tr>
+      </thead>
+      <tbody class="public-table_tbody">
+      <tr *ngFor="let contract of contractsList" class="public-table_trbody"
+          [routerLink]="'public/' + contract.contract_details.unique_link">
+        <td class="public-table_tdbody">
+          <div class="public-token">
+            <img class="public-token_icon"
+                 *ngIf="contract.contract_details.base_token_info.image_link"
+                 [src]="contract.contract_details.base_token_info.image_link">
+            <div>{{contract.contract_details.base_token_info.token_short_name}}</div>
+          </div>
+          <div class="public-info" [ngClass]="{
+                filled: contract.contract_details.baseProgress >= 100,
+                low_left: contract.contract_details.baseProgress >= 75
+              }">
+            <div class="public-info_amount">
+              {{contract.contract_details.base_token_info.amount | number }}
+            </div>
+            <div class="public-info_progress">
+              <img src="./assets/images/icons/ok-y.svg">
+              {{contract.contract_details.baseProgress || 0}}%
+            </div>
+          </div>
+        </td>
+        <td class="public-table_tdbody">
+          <div class="public-token">
+            <img class="public-token_icon"
+                 *ngIf="contract.contract_details.quote_token_info.image_link"
+                 [src]="contract.contract_details.quote_token_info.image_link">
+            <div>{{contract.contract_details.quote_token_info.token_short_name}}</div>
+          </div>
+          <div class="public-info" [ngClass]="{
+                filled: contract.contract_details.quoteProgress >= 100,
+                low_left: contract.contract_details.quoteProgress >= 75
+              }">
+            <div class="public-info_amount">
+              {{contract.contract_details.quote_token_info.amount | number }}
+            </div>
+            <div class="public-info_progress">
+              <img src="./assets/images/icons/ok-y.svg">
+              {{contract.contract_details.quoteProgress || 0}}%
+            </div>
+          </div>
+        </td>
+        <td class="public-table_tdbody">
+          {{contract.contract_details.base_token_info.rate}}
+          {{contract.contract_details.base_token_info.token_short_name}}
+          / 1 {{contract.contract_details.quote_token_info?.token_short_name}}
+        </td>
+        <td class="public-table_tdbody">
+          {{contract.contract_details.stop_date | date : 'dd MMM yyyy'}}
+        </td>
+        <td class="public-table_tdbody">
+          {{contract.contract_details.stop_date | date : 'h:mm a'}}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-scrollbar>
+</div>

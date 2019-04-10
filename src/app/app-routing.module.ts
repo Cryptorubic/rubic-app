@@ -31,6 +31,7 @@ const routes: Routes = [
       contract: ContractEditResolver
     },
     data: {
+      supportHide: 1024,
       support: true
     }
   }, {
@@ -40,6 +41,7 @@ const routes: Routes = [
       contract: ContractEditResolver
     },
     data: {
+      supportHide: 1024,
       support: true
     }
   }, {
@@ -47,6 +49,9 @@ const routes: Routes = [
     component: ContractsListComponent,
     resolve: {
       contracts: ContractsListResolver
+    },
+    data: {
+      support: true
     }
   }, {
     path: 'dashboard/first_entry',

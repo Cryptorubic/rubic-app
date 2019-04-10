@@ -1,7 +1,7 @@
 <div class="base-block-content">
   <div class="app-content-block">
     <div class="grid-row">
-      <div class="grid-cell grid-cell-2-3">
+      <div class="grid-cell grid-cell-2-3  grid-cell-sm-1">
         <div class="preview-container">
           <div class="contract-state" [ngClass]="'contract-state__' + states[originalContract.state].NUMBER">
             {{states[originalContract.state].TEXT}}
@@ -26,8 +26,8 @@
             </button>
           </span>
 
-          <div class="grid-row">
-            <div class="grid-cell grid-cell-1-2">
+          <div class="grid-row all-tokens-info-row">
+            <div class="grid-cell grid-cell-1-2 grid-cell-ps-1 one-token-info-cell">
 
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
@@ -79,22 +79,24 @@
                 </div>
                 <div class="contract-buttons"
                      *ngIf="originalContract.isSwapped === false">
-                  <form class="form-field" #baseContributeForm="ngForm"
+                  <form #baseContributeForm="ngForm"
                         *ngIf="(originalContract.state === 'ACTIVE')"
                         (submit)="sendContribute(baseContributeForm.value.amount, 'base')">
                     <div class="grid-row">
-                      <div class="grid-cell grid-cell-3-5">
-                        <div class="form-field_input">
-                          <input type="text"
-                                 required
-                                 ngModel
-                                 name="amount"
-                                 placeholder="Enter amount"
-                                 class="min-text minimal-input">
+                      <div class="grid-cell grid-cell-3-5 grid-cell-vs-1">
+                        <div class="form-field">
+                          <div class="form-field_input">
+                            <input type="text"
+                                   required
+                                   ngModel
+                                   name="amount"
+                                   placeholder="Enter amount"
+                                   class="min-text minimal-input">
+                          </div>
                         </div>
                       </div>
-                      <div class="grid-cell grid-cell-2-5">
-                        <div>
+                      <div class="grid-cell grid-cell-2-5 grid-cell-vs-1">
+                        <div class="form-field">
                           <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
                                   [disabled]="!baseContributeForm.valid"
                                   type="submit">
@@ -116,7 +118,7 @@
                 </div>
               </div>
             </div>
-            <div class="grid-cell grid-cell-1-2">
+            <div class="grid-cell grid-cell-1-2 grid-cell-ps-1 one-token-info-cell">
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
@@ -167,22 +169,24 @@
                 </div>
                 <div class="contract-buttons"
                      *ngIf="originalContract.isSwapped === false">
-                  <form class="form-field" #quoteContributeForm="ngForm"
+                  <form #quoteContributeForm="ngForm"
                         *ngIf="(originalContract.state === 'ACTIVE')"
                         (submit)="sendContribute(quoteContributeForm.value.amount, 'quote')">
                     <div class="grid-row">
-                      <div class="grid-cell grid-cell-3-5">
-                        <div class="form-field_input">
-                          <input type="text"
-                                 required
-                                 name="amount"
-                                 ngModel
-                                 placeholder="Enter amount"
-                                 class="min-text minimal-input">
+                      <div class="grid-cell grid-cell-3-5 grid-cell-vs-1">
+                        <div class="form-field">
+                          <div class="form-field_input">
+                            <input type="text"
+                                   required
+                                   name="amount"
+                                   ngModel
+                                   placeholder="Enter amount"
+                                   class="min-text minimal-input">
+                          </div>
                         </div>
                       </div>
-                      <div class="grid-cell grid-cell-2-5">
-                        <div>
+                      <div class="grid-cell grid-cell-2-5 grid-cell-vs-1">
+                        <div class="form-field">
                           <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
                                   [disabled]="!quoteContributeForm.valid"
                                   type="submit">
@@ -203,38 +207,58 @@
                   </div>
                 </div>
               </div>
+              <img src="./assets/images/icons/ch_03.svg" class="exchange-ico"/>
             </div>
           </div>
 
+
+
           <div class="contract-info-block">
             <div class="grid-row">
-              <div class="grid-cell grid-cell-1-5">
+              <div class="grid-cell grid-cell-1-5 grid-cell-ps-1-2">
                 <div class="form-field">
                   <label class="form-field_label transparent">Closing date</label>
                   <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'dd.MM.yyyy' : '+0000'}}</div>
                 </div>
               </div>
-              <div class="grid-cell grid-cell-1-5">
+              <div class="grid-cell grid-cell-1-5 grid-cell-ps-1-2">
                 <div class="form-field">
                   <label class="form-field_label transparent">Closing time</label>
                   <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'HH:mm' : '+0000'}}</div>
                 </div>
               </div>
-              <div class="grid-cell grid-cell-3-5 text-right">
-                <div class="form-field_checkbox-val float-right">
-                  <div class="form-field_checkbox-val_label">
-                    Public deal
-                  </div>
-                  <div class="form-field_checkbox-val_stat">
-                    <div *ngIf="originalContract.contract_details.public">
-                      Yes<img src="./assets/images/icons/yes.svg">
+              <div class="grid-cell grid-cell-3-5 text-right grid-cell-ps-1">
+                <div class="form-field ps-float-left">
+                  <div class="form-field_checkbox-val float-right">
+                    <div class="form-field_checkbox-val_label">
+                      Public deal
                     </div>
-                    <div *ngIf="!originalContract.contract_details.public">
-                      No<img src="./assets/images/icons/pd_icon.svg">
+                    <div class="form-field_checkbox-val_stat">
+                      <div *ngIf="originalContract.contract_details.public">
+                        Yes<img src="./assets/images/icons/yes.svg">
+                      </div>
+                      <div *ngIf="!originalContract.contract_details.public">
+                        No<img src="./assets/images/icons/pd_icon.svg">
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+
+              <div class="grid-cell grid-cell-1">
+                <div class="form-field">
+                  <label class="form-field_label transparent">Management address</label>
+                  <div class="form-field_value">
+                    <a [href]="originalContract.contract_details.owner_address | etherscanUrl : 'address'"
+                       target="_blank">
+                      {{originalContract.contract_details.owner_address}}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-row">
 
               <div class="grid-cell grid-cell-1" *ngIf="originalContract.isAuthor">
                 <div class="form-field">

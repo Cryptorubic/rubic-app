@@ -26,6 +26,10 @@ export class ContractsService {
     return this.httpService.get('contracts/').toPromise();
   }
 
+  public getPublicContractsList() {
+    return this.httpService.get('get_public_contracts/').toPromise();
+  }
+
   public startWatchContract(id) {
     return this.httpService.post('confirm_swaps_info/', {
       contract_id: id

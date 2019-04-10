@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from './services/user/user.service';
-import {ActivationStart, NavigationStart, ResolveStart, Router} from '@angular/router';
+import {ActivationEnd, ActivationStart, NavigationStart, ResolveStart, Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -16,9 +16,9 @@ export class AppComponent implements OnInit {
   ) {
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe((event) => {
-      if (event instanceof ActivationStart) {
+      if (event instanceof ActivationEnd) {
         if (event.snapshot.data.support) {
-          body.className = 'with-support';
+          body.className = 'with-support ' + (event.snapshot.data.supportHide ? 'support-hide-' + event.snapshot.data.supportHide : '');
         } else {
           body.className = '';
         }
@@ -46,10 +46,13 @@ export class AppComponent implements OnInit {
     const frameContent = liveChatButtonFrame['contentWindow'] || liveChatButtonFrame['contentDocument'];
     const frameContentContainer = frameContent.document.getElementById('content-container');
 
-    frameContentContainer.style.margin = '-10px';
+
+    frameContentContainer.setAttribute('style', 'padding: 0 !important');
     liveChatButtonFrame.style.opacity = '0';
     liveChatButtonFrame.style.top = '0';
     liveChatButtonFrame.style.marginTop = '-62px';
+
+    frameContent.document.getElementById('full-view-button').style.height = '100%';
 
   }
 

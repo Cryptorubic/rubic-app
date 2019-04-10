@@ -32,7 +32,8 @@ import { ContractPreviewComponent } from './contract-preview/contract-preview.co
 import { TransactionComponent } from './transaction/transaction.component';
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
 import { FooterComponent } from './footer/footer.component';
-
+import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -75,7 +76,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     TransactionComponent,
     ContractsListComponent,
     EtherscanUrlPipe,
-    FooterComponent
+    FooterComponent,
+    PublicContractsComponent
   ],
   entryComponents: [
     AuthComponent,
@@ -105,7 +107,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     MatDatepickerModule,
     MatButtonModule,
     BrowserAnimationsModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    NgScrollbarModule
   ],
   providers: [
     ContractEditResolver,

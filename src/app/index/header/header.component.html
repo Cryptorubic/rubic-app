@@ -10,7 +10,8 @@
       <span class="icon-bar"></span>
     </button>
 
-    <nav class="header-menu" [ngClass]="{opened: openedMenu}">
+    <nav class="header-menu" [ngClass]="{opened: openedMenu}"
+         (mousedown)="$event.stopPropagation(); $event.preventDefault();">
       <ul class="header-menu_list">
         <li class="header-menu_list_item">
           <a [routerLink]="['/']" [fragment]="'how-it-works'" class="header-link">How it works</a>
