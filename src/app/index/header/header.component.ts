@@ -48,7 +48,7 @@ export class HeaderComponent implements OnInit {
 
     document.getElementsByTagName('body')[0]['addEventListener'](
       'mousedown',
-      (event, err) => {
+      (event) => {
         this.openedMenu = false;
         this.userMenuOpened = false;
       }
@@ -57,7 +57,6 @@ export class HeaderComponent implements OnInit {
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
-        console.log(this.headerPage);
         this.openedMenu = false;
         this.userMenuOpened = false;
       }

@@ -36,7 +36,9 @@
   <img src="./assets/images/icons/cross.svg">
 </span>
 <div class="form-field_input__ac_res">
-  <ul *ngIf="tokensList.length && listIsOpened && visibleInput" class="ac_res_list">
+  <ul *ngIf="tokensList.length && listIsOpened && visibleInput"
+      (mousedown)="$event.stopPropagation(); $event.preventDefault();"
+      class="ac_res_list">
     <li class="ac_res_list_item"
         *ngFor="let item of tokensList; let ind = index;"
         [ngClass]="{active: item.active}"

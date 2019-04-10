@@ -22,11 +22,6 @@ export interface ITokenInfo {
 })
 export class TokenInputComponent implements OnInit {
 
-  constructor(
-    private httpService: HttpService
-  ) {
-  }
-
   @Input('tokenModel') public tokenModel: any;
   @Input('updateModel') public updateModel: any;
   @Input() public tokenGroup: any;
@@ -36,6 +31,11 @@ export class TokenInputComponent implements OnInit {
 
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
+
+  constructor(
+    private httpService: HttpService
+  ) {
+  }
 
   public amount;
 
@@ -56,6 +56,11 @@ export class TokenInputComponent implements OnInit {
 
   ngOnInit() {
     let amount;
+
+    this.tokenField.nativeElement.addEventListener('blur', () => {
+      this.listIsOpened = false;
+    });
+
     if (this.updateModel) {
       this.updateModel.subscribe(() => {
         amount = this.tokenModel.amount;
