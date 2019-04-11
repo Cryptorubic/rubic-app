@@ -2,9 +2,9 @@
   "name": "mywish-swaps",
   "version": "0.0.0",
   "scripts": {
-    "start": "ng serve --proxy-config proxy.conf.json --host localdev.mywish.io --port 4200 --disableHostCheck",
+    "start": "ng serve --proxy-config proxy.conf.json --host localdevswaps.mywish.io --port 4200 --disableHostCheck",
     "ng": "ng",
-    "build": "ng build",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

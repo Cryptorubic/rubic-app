@@ -4,7 +4,8 @@
       <img src="./assets/images/logo.svg">
     </a>
 
-    <button class="navbar-toggle" type="button" (click)="openedMenu = !openedMenu">
+    <button class="navbar-toggle" type="button"
+            (click)="openedMenu = !openedMenu" (mousedown)="$event.stopPropagation(); $event.preventDefault();" >
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>

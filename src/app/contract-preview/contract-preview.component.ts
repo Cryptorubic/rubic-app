@@ -51,6 +51,8 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   public originalContract: IContract;
   public copiedAddresses: any;
   public states = CONTRACT_STATES;
+  public revertedRate: boolean;
+
 
   public contractAdditional: {
     source_link?: SafeResourceUrl;
@@ -213,7 +215,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       data: {
         title: 'Refund',
         description:
-          'You can take back your contributions at any tome until the contract’s execution.\n' +
+          'You can take back your contributions at any time until the contract’s execution.\n' +
           'Use the same address which you used for the contribution.',
         transactions: [{
             to: contract.address,
@@ -296,16 +298,22 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     const details = this.originalContract.contract_details;
     const contract = this.originalContract.contract_details.eth_contract;
 
+    const bigNumberAmount = new BigNumber(amount);
+
+    if (bigNumberAmount.isNaN()) {
+      return;
+    }
+
     switch (token) {
       case 'base':
         tokenAddress = details.tokens_info.base;
         depositMethodName = 'depositBaseTokens';
-        amountDecimals = new BigNumber(amount).times(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
+        amountDecimals = bigNumberAmount.times(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
         break;
       case 'quote':
         tokenAddress = details.tokens_info.quote;
         depositMethodName = 'depositQuoteTokens';
-        amountDecimals = new BigNumber(amount).times(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
+        amountDecimals = bigNumberAmount.times(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
         break;
     }
 

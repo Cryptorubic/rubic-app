@@ -62,9 +62,9 @@
                     </div>
                     <div class="token-info_texts__address_link" [ngClass]="{invisible: tokens.base.token.isEther}">
                       <a [href]="tokens.base.token.address | etherscanUrl : 'token'"
-                         target="_blank">
+                         target="_blank" *ngIf="!tokens.base.token.isEther">
                         {{tokens.base.token.address}}
-                      </a>
+                      </a>&nbsp;
                     </div>
                   </div>
                   <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE'">
@@ -152,9 +152,9 @@
                     </div>
                     <div class="token-info_texts__address_link" [ngClass]="{invisible: tokens.quote.token.isEther}">
                       <a [href]="tokens.quote.token.address | etherscanUrl : 'token'"
-                         target="_blank">
+                         target="_blank" *ngIf="!tokens.quote.token.isEther">
                         {{tokens.quote.token.address}}
-                      </a>
+                      </a>&nbsp;
                     </div>
                   </div>
                   <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE'">
@@ -218,13 +218,13 @@
               <div class="grid-cell grid-cell-1-5 grid-cell-ps-1-2">
                 <div class="form-field">
                   <label class="form-field_label transparent">Closing date</label>
-                  <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'dd.MM.yyyy' : '+0000'}}</div>
+                  <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'dd.MM.yyyy'}}</div>
                 </div>
               </div>
               <div class="grid-cell grid-cell-1-5 grid-cell-ps-1-2">
                 <div class="form-field">
                   <label class="form-field_label transparent">Closing time</label>
-                  <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'HH:mm' : '+0000'}}</div>
+                  <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'HH:mm'}}</div>
                 </div>
               </div>
               <div class="grid-cell grid-cell-3-5 text-right grid-cell-ps-1">
@@ -241,18 +241,6 @@
                         No<img src="./assets/images/icons/pd_icon.svg">
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid-cell grid-cell-1">
-                <div class="form-field">
-                  <label class="form-field_label transparent">Management address</label>
-                  <div class="form-field_value">
-                    <a [href]="originalContract.contract_details.owner_address | etherscanUrl : 'address'"
-                       target="_blank">
-                      {{originalContract.contract_details.owner_address}}
-                    </a>
                   </div>
                 </div>
               </div>

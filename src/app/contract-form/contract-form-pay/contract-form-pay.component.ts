@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import BigNumber from 'bignumber.js';
 import {TOKENS_ADDRESSES} from '../../services/web3/web3.constants';
 import {Web3Service} from '../../services/web3/web3.service';
@@ -8,7 +8,7 @@ import {Web3Service} from '../../services/web3/web3.service';
   templateUrl: './contract-form-pay.component.html',
   styleUrls: ['./contract-form-pay.component.scss']
 })
-export class ContractFormPayComponent implements OnInit {
+export class ContractFormPayComponent implements OnInit, OnDestroy {
 
   @Input () public contractCosts;
   @Input () public currentUser;
@@ -21,10 +21,11 @@ export class ContractFormPayComponent implements OnInit {
 
   public tokensAddresses = TOKENS_ADDRESSES;
 
+  private getAccountsTimeout;
+
   constructor(
     private web3Service: Web3Service,
-  ) {
-  }
+  ) {}
 
 
   ngOnInit() {
@@ -32,6 +33,16 @@ export class ContractFormPayComponent implements OnInit {
     this.trxDataFields.BNB = this.checkTRXData(this.contractCosts.BNB);
     this.replenishMethod = 'WISH';
     this.costValue = new BigNumber(this.contractCosts.ETH).toString(10);
+    this.getAccountsTimeout = setInterval(() => {
+      this.updateAddresses();
+    }, 1000);
+  }
+
+  ngOnDestroy() {
+    clearTimeout(this.getAccountsTimeout);
+  }
+
+  private updateAddresses() {
     this.web3Service.getAccounts().then((addresses) => {
       this.providedAddresses = addresses;
     });

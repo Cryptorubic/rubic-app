@@ -74,7 +74,6 @@ export const MY_FORMATS = {
     Location,
     {provide: LocationStrategy, useClass: PathLocationStrategy},
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true }},
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}
   ]
 })
@@ -234,7 +233,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
     if (this.route.snapshot.data.contract) {
       this.formData.id = this.originalContract.id;
-      this.datePickerDate = moment.utc(this.originalContract.contract_details.stop_date);
+      this.datePickerDate = moment(this.originalContract.contract_details.stop_date);
       this.datePickerTime = `${this.datePickerDate.hour()}:${this.datePickerDate.minutes()}`;
     }
   }
@@ -253,12 +252,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
 
   public addCustomToken(name) {
-    this.requestData.tokens_info[name].token = {
-      token_short_name: this.customTokens[name].symbol,
-      token_name: this.customTokens[name].name,
-      address: this.customTokens[name].address,
-      decimals: this.customTokens[name].decimals
-    };
+    this.requestData.tokens_info[name].token = this.customTokens[name];
     this.openedCustomTokens[name] = false;
   }
 
@@ -295,7 +289,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   public createContract(tokenForm) {
     this.formData.contract_details = {...tokenForm.value};
     this.formData.contract_details.public = !!this.extraForm.value.public;
-    this.formData.contract_details.stop_date = this.extraForm.value.active_to.format('YYYY-MM-DD HH:mm');
+    this.formData.contract_details.stop_date = this.extraForm.value.active_to.utc().format('YYYY-MM-DD HH:mm');
     this.formData.contract_details.base_limit = (new BigNumber(this.requestData.tokens_info.base.amount)).
       times(Math.pow(10, this.requestData.tokens_info.base.token.decimals)).toString(10);
     this.formData.contract_details.quote_limit = (new BigNumber(this.requestData.tokens_info.quote.amount)).

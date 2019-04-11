@@ -29,6 +29,7 @@
        name="token"
        [(ngModel)]="tokenName"
        #tokenField
+       (focus)="showList()"
        (ngModelChange)="searchToken(tokenName)"
        (keydown)="keyDownResult($event)"
        class="form-field_input__ac_input">

@@ -272,14 +272,14 @@ export class EthTokenValidatorDirective implements AsyncValidator {
   validate(
     ctrl: AbstractControl
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    return this.web3Service.checkTokenAddress(ctrl.value).then((result: any) => {
-      if (result.data) {
-        this.TokenResolve.emit(result.data);
+    return this.web3Service.getFullTokenInfo(ctrl.value).then((result: any) => {
+
+      if (result) {
+        this.TokenResolve.emit(result);
         return null;
       } else {
         return result;
       }
-
     });
   }
 }

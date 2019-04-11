@@ -76,6 +76,7 @@ export class TokenInputComponent implements OnInit {
   }
   public searchToken(q) {
     this.listIsOpened = false;
+    this.tokensList = [];
     if (this.searchSubscriber) {
       this.searchSubscriber.unsubscribe();
     }
@@ -95,6 +96,12 @@ export class TokenInputComponent implements OnInit {
         this.selectToken(res[0], 0, true);
       }
     });
+  }
+
+  public showList() {
+    if (this.tokensList.length) {
+      this.listIsOpened = true;
+    }
   }
 
   public showAutoInput() {
@@ -177,9 +184,7 @@ export class TokenInputComponent implements OnInit {
   }
 
   public transformValue(event) {
-    const replaceRegExp = /(\d)(?=(\d{3})+(?!\d))/g;
     let value = event ? event.replace(/,/g, '') : undefined;
-
     const withoutDotValue = (value !== undefined) ? value.replace(/^[0]+(.*)\.+$/, '$1') : '';
 
     if (isNaN(withoutDotValue)) {
@@ -188,41 +193,42 @@ export class TokenInputComponent implements OnInit {
       this.oldValue = value;
     }
 
-    const numberVal = new BigNumber(withoutDotValue);
-
-    // value = !isNaN(withoutDotValue) ? withoutDotValue : value;
-    const dotIndex = withoutDotValue.indexOf('.') + 1;
-
     value = value || '';
     const splittedValue = value.split('.');
 
-    if (dotIndex) {
-      this.amountField.nativeElement.value = splittedValue[0].replace(replaceRegExp, '$1,') + '.' + (splittedValue[1] || '');
-    } else {
-      this.amountField.nativeElement.value = value.replace(replaceRegExp, '$1,');
+    const valueNumber = new BigNumber(value);
+
+    let actualVal = !valueNumber.isNaN() ?
+      valueNumber.toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) : '';
+
+    if ((splittedValue[1] !== undefined) && !splittedValue[1]) {
+      actualVal += '.';
     }
 
-    setTimeout(() => {
-      if (dotIndex) {
-        this.tokenModel.amount = splittedValue[1] ? splittedValue.join('.') : splittedValue[0];
-        this.amount = splittedValue[0].replace(replaceRegExp, '$1,') + '.' + (splittedValue[1] || '');
-      } else {
-        this.tokenModel.amount = value.replace(/^([.]+)\.+$/, '$1');
-        this.amount = value.replace(replaceRegExp, '$1,');
-      }
-      this.TokenChange.emit(this.tokenModel);
+    this.amountField.nativeElement.value = actualVal;
 
-      const minErr = numberVal.minus(Math.pow(10, -this.tokenModel.token.decimals)).toNumber() < 0;
-      const maxErr = numberVal.times(Math.pow(10, this.tokenModel.token.decimals)).minus(Math.pow(2, 256) - 1).toNumber() > 0;
+    setTimeout(() => {
+      this.amountField.nativeElement.value = actualVal;
+
+      this.amount = actualVal;
+
+      const minErr = valueNumber.minus(Math.pow(10, -this.tokenModel.token.decimals)).toNumber() < 0;
+      const maxErr = valueNumber.times(Math.pow(10, this.tokenModel.token.decimals)).minus(Math.pow(2, 256) - 1).toNumber() > 0;
       const decErr = splittedValue[1] && (splittedValue[1].length > this.tokenModel.token.decimals);
 
-      if (minErr || maxErr || decErr) {
-        this.amountForm.controls.amountField.setErrors({
-          min: minErr || null,
-          max: maxErr || null,
-          decimals: decErr || null
-        });
-      }
+      setTimeout(() => {
+        if (minErr || maxErr || decErr) {
+          this.amountForm.controls.amountField.setErrors({
+            min: minErr || null,
+            max: maxErr || null,
+            decimals: decErr || null
+          });
+          this.tokenModel.amount = '';
+        } else {
+          this.tokenModel.amount = !valueNumber.isNaN() ? (valueNumber.toString(10) || '') : '';
+        }
+        this.TokenChange.emit(this.tokenModel);
+      });
     });
   }
 

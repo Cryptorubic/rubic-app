@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {Web3Service} from '../services/web3/web3.service';
 
@@ -7,7 +7,10 @@ import {Web3Service} from '../services/web3/web3.service';
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.scss']
 })
-export class TransactionComponent implements OnInit {
+export class TransactionComponent implements OnInit, OnDestroy {
+
+
+  private getAccountsTimeout;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public trxData,
@@ -21,6 +24,16 @@ export class TransactionComponent implements OnInit {
 
   ngOnInit() {
 
+    this.getAccountsTimeout = setInterval(() => {
+      this.updateAddresses();
+    }, 1000);
+  }
+
+  ngOnDestroy() {
+    clearTimeout(this.getAccountsTimeout);
+  }
+
+  private updateAddresses() {
     this.web3Service.getAccounts().then((addresses) => {
       this.providedAddresses = addresses;
     });

@@ -19,13 +19,13 @@
       <div class="form-field">
         <label class="form-field_label">You have</label>
         <div class="form-field_input">
-          <app-token-input [(tokenModel)]="tokensData.base" (TokenChange)="changedToken('base', $event)"></app-token-input>
+          <app-token-input [(tokenModel)]="tokensData.base" (TokenChange)="changedToken()"></app-token-input>
         </div>
       </div>
       <div class="form-field">
         <label class="form-field_label">You want to get</label>
         <div class="form-field_input">
-          <app-token-input [(tokenModel)]="tokensData.quote" (TokenChange)="changedToken('quote', $event)"></app-token-input>
+          <app-token-input [(tokenModel)]="tokensData.quote" (TokenChange)="changedToken()"></app-token-input>
         </div>
         <div class="form-field_description"
              *ngIf="tokensData.base.token.address && tokensData.quote.token.address && tokensData.base.amount && tokensData.quote.amount"

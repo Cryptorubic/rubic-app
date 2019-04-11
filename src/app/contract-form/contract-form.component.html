@@ -85,6 +85,8 @@
                       <div class="form-field_input">
                         <input type="text" appEthTokenValidator
                                class="min-text"
+                               required
+                               pattern="0x[0-9a-fA-F]{40}"
                                #baseCustomToken="ngModel"
                                [ngModelOptions]="{standalone: true}"
                                (TokenResolve)="setCustomToken('base', $event)"
@@ -277,8 +279,7 @@
                           <label class="form-field_input-checkbox">
                             <input type="checkbox"
                                    name="public"
-                                   disabled>
-                            <!--[(ngModel)]="requestData.public"-->
+                                   [(ngModel)]="requestData.public">
                             <span class="checkbox-text checkbox-text_on">Yes</span>
                             <span class="checkbox-text checkbox-text_off">No</span>
                             <span class="checkbox-rect"></span>
@@ -384,13 +385,13 @@
                   <div class="grid-cell grid-cell-1-5 grid-cell-ps-1-2">
                     <div class="form-field">
                       <label class="form-field_label transparent">Closing date</label>
-                      <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'dd.MM.yyyy' : '+0000'}}</div>
+                      <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'dd.MM.yyyy'}}</div>
                     </div>
                   </div>
                   <div class="grid-cell grid-cell-1-5 grid-cell-ps-1-2">
                     <div class="form-field">
                       <label class="form-field_label transparent">Closing time</label>
-                      <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'HH:mm' : '+0000'}}</div>
+                      <div class="form-field_value">{{originalContract.contract_details.stop_date | date : 'HH:mm'}}</div>
                     </div>
                   </div>
                   <div class="grid-cell grid-cell-3-5 text-right grid-cell-ps-1">
