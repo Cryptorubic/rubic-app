@@ -28,9 +28,9 @@
   padding: 45px 0;
 }
 .used-service {
-  padding: 40px 2%;
+  padding: 40px 2% 0;
   &__info {
-    padding: 40px 0 30px;
+    padding: 40px 0 10px;
     &:after {
       content: '';
       display: block;
@@ -293,7 +293,7 @@
   }
   .used-service {
     &__info {
-      padding: 30px 0;
+      padding: 30px 0 0;
       max-width: initial;
       &_item {
         float: none;

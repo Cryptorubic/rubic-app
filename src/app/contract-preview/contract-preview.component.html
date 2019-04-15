@@ -40,15 +40,15 @@
                       <div class="tokens-info-block_filled__text">
                         <b>Sent</b>
                       </div>
-                      <div class="tokens-info-block_filled__complete">
-                        {{ contractInfo.baseRaisedFormatted }}
+                      <div class="tokens-info-block_filled__complete" [title]="contractInfo.baseRaisedFormatted">
+                        <b>{{ contractInfo.baseRaisedFormatted }}</b>
                       </div>
                     </div>
                     <div class="tokens-info-block_filled_item left">
                       <div class="tokens-info-block_filled__text">
                         Left
                       </div>
-                      <div class="tokens-info-block_filled__complete">
+                      <div class="tokens-info-block_filled__complete" [title]="contractInfo.baseLeftFormated">
                         {{contractInfo.baseLeftFormated}}
                       </div>
                     </div>
@@ -145,15 +145,15 @@
                       <div class="tokens-info-block_filled__text">
                         <b>Sent</b>
                       </div>
-                      <div class="tokens-info-block_filled__complete">
-                        <b>{{ contractInfo.quoteRaised | number : '1.0-' + tokens.base.token.decimals}}</b>
+                      <div class="tokens-info-block_filled__complete" [title]="contractInfo.quoteRaisedFormatted">
+                        <b>{{ contractInfo.quoteRaisedFormatted}}</b>
                       </div>
                     </div>
                     <div class="tokens-info-block_filled_item left">
                       <div class="tokens-info-block_filled__text">
                         Left
                       </div>
-                      <div class="tokens-info-block_filled__complete">
+                      <div class="tokens-info-block_filled__complete" [title]="contractInfo.quoteLeftFormated">
                         {{contractInfo.quoteLeftFormated}}
                       </div>
                     </div>

@@ -348,7 +348,7 @@
 
                 <div class="form-field_description info-content-block">
                     <span>
-                      Rate:
+                      <span>Rate:</span>
                       <span *ngIf="!revertedRate">
                         {{(tokens.base.amount / tokens.quote.amount) | number : '1.0-4'}}
                         {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
