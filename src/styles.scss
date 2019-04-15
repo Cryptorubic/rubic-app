@@ -65,9 +65,19 @@ a:not(.btn):not(.minimal-btn) {
   position: relative;
   //padding-top: 100px;
 }
-
+.watch-instruction-btn {
+  position: fixed;
+  left: 50%;
+  top: 287px;
+  bottom: auto;
+  right: auto;
+  margin-left: 207px;
+  .btn {
+    width: 285px;
+  }
+}
 #livechat-compact-container {
-  position: absolute!important;
+  position: fixed!important;
   left: 50%!important;
   top: 200px!important;
   bottom: auto!important;
@@ -83,9 +93,11 @@ a:not(.btn):not(.minimal-btn) {
   opacity: 1!important;
   visibility: visible!important;
   z-index: 5!important;
-
   display: none!important;
-
+  width: 285px;
+  &:hover {
+    background-color:  rgba(255, 255, 255, 0.2) !important;
+  }
   &:before {
     content: 'Support';
     color: #fff;
@@ -108,6 +120,9 @@ a:not(.btn):not(.minimal-btn) {
   #livechat-compact-container {
     margin-left: 16.66666666% !important;
   }
+  .watch-instruction-btn {
+    margin-left: 16.66666666%;
+  }
 }
 
 
@@ -115,6 +130,12 @@ a:not(.btn):not(.minimal-btn) {
   #livechat-compact-container {
     margin-left: 25% !important;
     width: 23vw !important;
+  }
+  .watch-instruction-btn {
+    margin-left: 25%;
+    .btn {
+      width: 23vw;
+    }
   }
 }
 
@@ -133,7 +154,16 @@ a:not(.btn):not(.minimal-btn) {
   box-sizing: border-box;
 }
 
-
+.action-link {
+  color: rgba(255, 255, 255, 0.7);
+  border-bottom: 1px dashed;
+  display: inline-block;
+  margin-top: 20px;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+  }
+}
 
 
 .invisible {
@@ -484,6 +514,15 @@ a:not(.btn):not(.minimal-btn) {
     line-height: 18px;
     font-size: 14px;
     color: rgba(255, 255, 255, 0.85);
+    &.for-checkbox {
+      margin-top: 0;
+      line-height: 40px;
+      span {
+        line-height: 20px;
+        display: inline-block;
+        max-width: 100%;
+      }
+    }
   }
   &_checkbox-val {
     display: block;
@@ -499,8 +538,9 @@ a:not(.btn):not(.minimal-btn) {
       padding: 1px 1px 1px 10px;
       font-size: 13px;
       color: #110931;
-      line-height: 30px;
+      line-height: 28px;
       background: #E2E2E2;
+      padding-top: 3px;
       min-width: 65px;
       white-space: nowrap;
       box-sizing: border-box;
@@ -509,6 +549,7 @@ a:not(.btn):not(.minimal-btn) {
       img {
         vertical-align: middle;
         margin-left: 5px;
+        margin-top: -3px;
       }
     }
     &_label {
@@ -615,6 +656,7 @@ a:not(.btn):not(.minimal-btn) {
   }
 }
 
+
 .or-delimiter {
   height: 0;
   border-top: 1px dashed rgba(255, 255, 255, 0.25);
@@ -673,8 +715,8 @@ a:not(.btn):not(.minimal-btn) {
 }
 
 
-@media screen and (max-width: 1024px) {
-  .support-hide-1024.with-support #livechat-compact-container{
+@media screen and (max-width: 1020px) {
+  .support-hide-1024.with-support #livechat-compact-container, .watch-instruction-btn.hide-1024{
     display: none!important;
   }
 }
@@ -684,7 +726,7 @@ a:not(.btn):not(.minimal-btn) {
   .base-block-content {
     padding-top: 17vw;
   }
-  .with-support #livechat-compact-container {
+  .with-support #livechat-compact-container, .watch-instruction-btn {
     display: none!important;
   }
 }

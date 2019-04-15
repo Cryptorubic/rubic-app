@@ -214,7 +214,7 @@ export class UserService {
   public socialAuthRequest(network, data) {
     switch (network) {
       case 'fb':
-        return this.authenticate(data, URLS.SOCIAL.GOOGLE);
+        return this.authenticate(data, URLS.SOCIAL.FACEBOOK);
       case 'ga':
         return this.authenticate(data, URLS.SOCIAL.GOOGLE);
     }
@@ -229,9 +229,9 @@ export class UserService {
           } else {
             window['FB'].login(() => {
               getStatus();
-            }, () => {});
+            });
           }
-        }, () => {});
+        });
       };
       getStatus();
     });
@@ -244,7 +244,7 @@ export class UserService {
         scope: 'email profile',
         response_type: 'id_token permission',
         prompt: 'select_account'
-      }, (response) => {
+      }, function(response) {
         if (response.error) {
           reject(response);
           return;

@@ -45,3 +45,30 @@
     font-size: 22px;
   }
 }
+
+@media screen and (max-width: 800px) {
+  .or-delimiter, .transaction-buttons {
+    margin-left: -4%;
+    margin-right: -4%;
+  }
+
+  .transaction-buttons {
+    padding-left: 4%;
+    padding-right: 4%;
+  }
+
+  .mat-dialog-content {
+    margin: 0 -4% !important;
+    padding: 0 4% !important;
+  }
+}
+
+@media screen and (max-width: 580px) {
+  .btn-min.wallet-btn {
+    font-size: 13px;
+    padding: 2.5vw 5% 2.5vw 3%;
+    .btn-ico {
+      height: 6vw;
+    }
+  }
+}

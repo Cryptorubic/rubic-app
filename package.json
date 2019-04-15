@@ -2,7 +2,7 @@
   "name": "mywish-swaps",
   "version": "0.0.0",
   "scripts": {
-    "start": "ng serve --proxy-config proxy.conf.json --host localdevswaps.mywish.io --port 4200 --disableHostCheck",
+    "start": "ng serve --proxy-config proxy.conf.json --host local.devswaps.mywish.io --port 4200 --disableHostCheck",
     "ng": "ng",
     "build": "ng build --prod",
     "test": "ng test",
@@ -32,7 +32,7 @@
     "ngx-scrollbar": "^4.1.1",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
-    "web3": "^1.0.0-beta.50",
+    "web3": "^1.0.0-beta.52",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

@@ -7,7 +7,7 @@
 }
 
 .how-it-work {
-  padding: 72px 0 32px;
+  padding: 72px 2% 32px;
   &-description {
     font-size: 25px;
     margin: 20px 0 35px;
@@ -28,18 +28,9 @@
   padding: 45px 0;
 }
 .used-service {
-  &__title {
-    font-size: 44px;
-    color: #FFFFFF;
-    font-weight: bold;
-    line-height: 53px;
-    text-align: center;
-  }
+  padding: 40px 2%;
   &__info {
-    padding: 70px ;
-    max-width: 50%;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 40px 0 30px;
     &:after {
       content: '';
       display: block;
@@ -47,13 +38,12 @@
     }
     &_item {
       float: left;
-      width: 50%;
       padding-left: 110px;
       box-sizing: border-box;
+      margin-right: 40px;
       &__image {
         float: left;
         margin-left: -110px;
-        text-align: center;
         width: 110px;
         img {
           vertical-align: top;
@@ -109,6 +99,68 @@
     img {
       max-width: 85%;
       vertical-align: middle;
+    }
+  }
+}
+
+@media screen and (min-width: 1021px) {
+  .app-index__partners {
+    > .grid-row .grid-cell:nth-child(8n + 1) .app-index__partners_item {
+      text-align: left;
+    }
+    > .grid-row .grid-cell:nth-child(8n) .app-index__partners_item {
+      text-align: right;
+    }
+  }
+}
+@media screen and (min-width: 980px) and (max-width: 1020px) {
+  .app-index__partners {
+    > .grid-row .grid-cell:nth-child(6n + 1) .app-index__partners_item {
+      text-align: left;
+    }
+    > .grid-row .grid-cell:nth-child(6n) .app-index__partners_item {
+      text-align: right;
+    }
+  }
+}
+@media screen and (max-width: 980px) and (min-width: 801px) {
+  .app-index__partners {
+    > .grid-row .grid-cell:nth-child(5n + 1) .app-index__partners_item {
+      text-align: left;
+    }
+    > .grid-row .grid-cell:nth-child(5n) .app-index__partners_item {
+      text-align: right;
+    }
+  }
+}
+
+@media screen and (max-width: 800px) and (min-width: 681px) {
+  .app-index__partners {
+    > .grid-row .grid-cell:nth-child(4n + 1) .app-index__partners_item {
+      text-align: left;
+    }
+    > .grid-row .grid-cell:nth-child(4n) .app-index__partners_item {
+      text-align: right;
+    }
+  }
+}
+
+@media screen and (max-width: 680px) and (min-width: 581px) {
+  .app-index__partners {
+    > .grid-row .grid-cell:nth-child(3n + 1) .app-index__partners_item {
+      text-align: left;
+    }
+    > .grid-row .grid-cell:nth-child(3n) .app-index__partners_item {
+      text-align: right;
+    }}
+}
+@media screen and (max-width: 580px) {
+  .app-index__partners {
+    > .grid-row .grid-cell:nth-child(2n + 1) .app-index__partners_item {
+      text-align: left;
+    }
+    > .grid-row .grid-cell:nth-child(2n) .app-index__partners_item {
+      text-align: right;
     }
   }
 }
@@ -240,12 +292,8 @@
     }
   }
   .used-service {
-    &__title {
-      font-size: 10vw;
-      line-height: initial;
-    }
     &__info {
-      padding: 30px 15px;
+      padding: 30px 0;
       max-width: initial;
       &_item {
         float: none;

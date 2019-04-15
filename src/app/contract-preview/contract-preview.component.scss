@@ -43,24 +43,52 @@
   border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
   &_filled {
     padding-bottom: 11px;
+    &:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
     &__count {
       font-size: 50px;
       font-weight: bold;
       line-height: 61px;
       color: #fff;
     }
+    &_item {
+      width: 48%;
+      &.send {
+        color: #FCD600;
+      }
+      &:first-child {
+        text-align: left;
+        float: left;
+      }
+      &:last-child {
+        text-align: right;
+        float: right;
+      }
+    }
+    &_item.left &__text {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    &_item.left &__complete {
+      color: rgba(255, 255, 255, 0.7);
+    }
     &__text {
       margin-top: 9px;
       font-size: 12px;
       line-height: 14px;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.5);
     }
     &__complete {
       margin-top: 3px;
       font-size: 17px;
       line-height: 20px;
-      color: rgba(255, 255, 255, 0.7);
+
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 100%;
     }
   }
 
@@ -89,10 +117,11 @@
     height: 52px;
     text-align: center;
     line-height: 52px;
-    background-color: #fff;
     border-radius: 50%;
     float: left;
     margin-right: 18px;
+    background: #fff no-repeat center center;
+    background-size: 80%;
     img {
       vertical-align: middle;
       max-height: 80%;
@@ -126,8 +155,9 @@
   }
   &_investments {
     line-height: 34px;
+    margin-top: 25px;
     &__number {
-      font-size: 28px;
+      font-size: 35px;
       display: inline-block;
       vertical-align: middle;
       color: #fff;
@@ -136,9 +166,9 @@
     &__desc {
       display: inline-block;
       vertical-align: middle;
-      line-height: 18px;
+      line-height: 16px;
       font-size: 14px;
-      margin: -1px 0;
+      margin: -2px 0 auto;
       color: rgba(255, 255, 255, 0.5);
     }
   }
@@ -148,6 +178,9 @@
   border-top: 1px dashed rgba(255, 255, 255, 0.25);
   margin: 0 -20px -8px;
   padding: 20px;
+  &.bottom-correct {
+    margin-bottom: -20px;
+  }
 }
 
 .contract-info-block {

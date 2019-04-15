@@ -1,3 +1,11 @@
 <app-header></app-header>
-<div id="livechat-top-button"></div>
 <router-outlet></router-outlet>
+<div class="watch-instruction-btn hide-sm" [ngClass]="{'hide-1024': hideInstructionLink}" *ngIf="visibleWatchButton">
+  <a href="https://www.youtube.com/watch?v=NVd2A0a_dn0"
+     target="_blank"
+     class="btn btn-white-opacity">
+    <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
+    <span>Watch instruction</span>
+  </a>
+</div>
+

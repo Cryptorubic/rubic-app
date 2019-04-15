@@ -81,11 +81,11 @@ export class SocialComponent implements OnInit {
   }
 
   public FBAuth() {
-    this.userService.FBAuth().then((response: {totp: string; access_token: string}) => {
+    this.userService.FBAuth().then((response: {totp: string; accessToken: string}) => {
       this.socialFormData = {
         network: 'fb',
         data: {
-          access_token: response.access_token,
+          access_token: response.accessToken,
           totp: response.totp
         }
       };

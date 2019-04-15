@@ -69,3 +69,42 @@
     padding: 30px;
   }
 }
+.dialog-closer {
+  float: right;
+  margin-top: -8px;
+  margin-right: -8px;
+  background: none;
+  padding: 0;
+  border: 0 none;
+  cursor: pointer;
+  img {
+    width: 30px;
+    vertical-align: middle;
+  }
+}
+@media screen and (max-width: 800px) {
+  .custom-dialog-container {
+    max-width: 100% !important;
+    width: 90% !important;
+  }
+  .mat-dialog-content {
+    margin: 0 -4% !important;
+    padding: 0 4% !important;
+  }
+  .dialog-block {
+    overflow: auto!important;
+    &__content {
+      padding: 4%;
+    }
+  }
+}
+
+@media screen and (max-width: 580px) {
+  .custom-dialog-container {
+    width: 100% !important;
+    height: 100%;
+  }
+  .dialog-block {
+    height: 100%;
+  }
+}

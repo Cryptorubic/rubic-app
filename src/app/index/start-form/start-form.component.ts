@@ -32,14 +32,14 @@ export class StartFormComponent implements OnInit {
   ngOnInit() {
     if (!this.tokensData.base.token.address) {
       this.web3Service.getFullTokenInfo('0xB8c77482e45F1F44dE1745F52C74426C631bDD52').then((result) => {
-        console.log(result);
         this.tokensData.base.token = result;
+        this.changedToken();
       });
     }
     if (!this.tokensData.quote.token.address) {
       this.web3Service.getFullTokenInfo('0x0000000000085d4780B73119b644AE5ecd22b376').then((result) => {
-        console.log(result);
         this.tokensData.quote.token = result;
+        this.changedToken();
       });
     }
   }

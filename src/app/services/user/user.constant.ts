@@ -18,6 +18,6 @@ export const DEFAULT_USER = <UserInterface>{
 };
 
 export const SOCIAL_KEYS = {
-  'GOOGLE': '448526667030-rfiiqfee3f0eils8nha266n43kp1pbac.apps.googleusercontent.com',
-  'FACEBOOK': '438113386623173'
+  'GOOGLE': '145060606284-c6ep1vk9rbrni42u4pnvqls551qsfjfi.apps.googleusercontent.com',
+  'FACEBOOK': '608463682954705'
 };

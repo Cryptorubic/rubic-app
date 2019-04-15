@@ -22,6 +22,8 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
 
   private currentUser: any;
 
+  public maximumInvestors;
+
   constructor(
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
@@ -34,6 +36,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     this.copiedAddresses = {};
     this.analyzeContract();
 
+    this.maximumInvestors = 10;
 
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
@@ -71,6 +74,9 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     web3Contract.methods.baseRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
       this.contractInfo.baseRaised = this.fromBigNumber(result, details.tokens_info.base.token.decimals);
+      const baseLeft = new BigNumber(details.tokens_info.base.amount).minus(this.contractInfo.baseRaised);
+      this.contractInfo.baseLeftFormated = baseLeft.toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'});
+      this.contractInfo.baseLeft = baseLeft.toString();
     }, err => {
       console.log(err);
     });
@@ -79,6 +85,9 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     web3Contract.methods.quoteRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
       this.contractInfo.quoteRaised = this.fromBigNumber(result, details.tokens_info.quote.token.decimals);
+      const quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(this.contractInfo.quoteRaised);
+      this.contractInfo.quoteLeftFormated = quoteLeft.toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'});
+      this.contractInfo.quoteLeft = quoteLeft.toString();
     }, err => {
       console.log(err);
     });

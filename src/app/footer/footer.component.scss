@@ -1,6 +1,7 @@
 footer {
   background: rgba(0,0,0,0.20);
   margin-top: 122px;
+  padding: 0 2%;
 }
 .subscribe {
   padding-top: 50px;
@@ -9,7 +10,6 @@ footer {
   .page-content__title {
     font-size: 44px;
     letter-spacing: 0;
-    text-align: center;
     line-height: 53px;
     font-weight: bold;
   }
@@ -19,15 +19,12 @@ footer {
 .subscribe__row {
   margin-bottom: 60px;
   margin-top: 60px;
-  text-align: center;
   .top__bar__input {
     width: 400px;
   }
 
   &_form {
     display: table;
-    margin-left: auto;
-    margin-right: auto;
     .btn {
       padding-bottom: 16px;
     }

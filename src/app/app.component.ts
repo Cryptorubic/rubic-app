@@ -10,17 +10,24 @@ import {ActivationEnd, ActivationStart, NavigationStart, ResolveStart, Router} f
 export class AppComponent implements OnInit {
   title = 'mywish-swaps';
 
+  public hideInstructionLink;
+  public visibleWatchButton;
+
   constructor(
     private userService: UserService,
     private router: Router
   ) {
+
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe((event) => {
       if (event instanceof ActivationEnd) {
         if (event.snapshot.data.support) {
+          this.hideInstructionLink = event.snapshot.data.supportHide;
+          this.visibleWatchButton = true;
           body.className = 'with-support ' + (event.snapshot.data.supportHide ? 'support-hide-' + event.snapshot.data.supportHide : '');
         } else {
           body.className = '';
+          this.visibleWatchButton = false;
         }
       }
 
@@ -45,7 +52,6 @@ export class AppComponent implements OnInit {
 
     const frameContent = liveChatButtonFrame['contentWindow'] || liveChatButtonFrame['contentDocument'];
     const frameContentContainer = frameContent.document.getElementById('content-container');
-
 
     frameContentContainer.setAttribute('style', 'padding: 0 !important');
     liveChatButtonFrame.style.opacity = '0';

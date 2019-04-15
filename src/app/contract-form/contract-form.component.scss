@@ -127,10 +127,11 @@
     height: 52px;
     text-align: center;
     line-height: 52px;
-    background-color: #fff;
     border-radius: 50%;
     float: left;
     margin-right: 18px;
+    background: #fff no-repeat center center;
+    background-size: 80%;
     img {
       vertical-align: middle;
       max-height: 80%;

@@ -272,7 +272,7 @@
                     </div>
                   </div>
                   <div class="grid-row">
-                    <div class="grid-cell grid-cell-3-4">
+                    <div class="grid-cell grid-cell-1-5 grid-cell-ls-1-3">
                       <div class="form-field">
                         <label class="form-field_label">Public deal</label>
                         <div class="form-field_input">
@@ -285,6 +285,12 @@
                             <span class="checkbox-rect"></span>
                           </label>
                         </div>
+                      </div>
+                    </div>
+                    <div class="grid-cell grid-cell-4-5 grid-cell-ls-2-3">
+                      <label class="form-field_label">&nbsp;</label>
+                      <div class="form-field_small-desc for-checkbox">
+                        <span>SWAP will be listed on the main page</span>
                       </div>
                     </div>
                   </div>
@@ -317,8 +323,8 @@
             <div class="form-block_fieldset">
               <div class="token-block">
                 <div class="token-info">
-                  <div class="token-info_icon">
-                    <img [src]="tokens.base.token.image_link">
+                  <div class="token-info_icon"
+                       [ngStyle]="{'background-image': 'url(' + tokens.base.token.image_link + ')'}">
                   </div>
                   <div class="token-info_texts">
                     <div class="token-info_texts__name">
@@ -358,8 +364,8 @@
                 </div>
 
                 <div class="token-info">
-                  <div class="token-info_icon">
-                    <img [src]="tokens.quote.token.image_link">
+                  <div class="token-info_icon"
+                       [ngStyle]="{'background-image': 'url(' + tokens.quote.token.image_link + ')'}">
                   </div>
                   <div class="token-info_texts">
                     <div class="token-info_texts__name">

@@ -1,6 +1,9 @@
-
 <div class="dialog-block">
   <div class="dialog-block__content">
+
+    <button class="dialog-closer" mat-dialog-close>
+      <img src="./assets/images/icons/cross-w.svg">
+    </button>
     <div class="transaction-title">
       {{trxData.title}}
     </div>
@@ -15,7 +18,7 @@
           </div>
           <div class="form-field_input">
             <div class="grid-row">
-              <div class="grid-cell">
+              <div class="grid-cell grid-cell-vs-1-2">
                 <a [href]="
                     'https://vintage.myetherwallet.com/' +
                     (!transaction.data ?
@@ -23,20 +26,19 @@
                       '?data=' + transaction.data + '&value=0&to=' + transaction.to + '#send-transaction'
                     )"
                    target="_blank"
-                   type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn">
-                  <img src="./assets/images/icons/web3clients/myetherwallet.svg"
-                       class="btn-ico">
+                   type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
+                  <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
                   MyEtherWallet
                 </a>
               </div>
-              <div class="grid-cell">
+              <div class="grid-cell grid-cell-vs-1-2">
                 <button type="button"
                         [disabled]="!providedAddresses.metamask?.length"
                         (click)="transaction.action({
                         type: 'metamask',
                         address: providedAddresses.metamask[0]
                       })"
-                        class="btn btn-transparent btn-min btn-normal-weight wallet-btn">
+                        class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
                   <img src="./assets/images/icons/web3clients/metamask.svg" class="btn-ico">
                   Metamask
                 </button>
@@ -116,8 +118,8 @@
 
     <div class="transaction-buttons">
       <div class="grid-row">
-        <div class="grid-cell grid-cell-1-3">
-          <button class="btn btn-yellow btn-min width-100" mat-dialog-close >
+        <div class="grid-cell grid-cell-1-3 grid-cell-vs-1-2">
+          <button class="btn btn-yellow btn-min width-100" mat-dialog-close>
             <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
             Done
           </button>
