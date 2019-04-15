@@ -34,6 +34,7 @@ import {ContractsListComponent, ContractsListResolver} from './contracts-list/co
 import { FooterComponent } from './footer/footer.component';
 import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import {ClipboardModule} from 'ngx-clipboard';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -108,7 +109,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     MatButtonModule,
     BrowserAnimationsModule,
     NgxMaterialTimepickerModule,
-    NgScrollbarModule
+    NgScrollbarModule,
+    ClipboardModule
   ],
   providers: [
     ContractEditResolver,

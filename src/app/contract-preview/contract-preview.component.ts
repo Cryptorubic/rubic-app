@@ -24,6 +24,8 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
 
   public maximumInvestors;
 
+  private formatNumberParams;
+
   constructor(
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
@@ -44,6 +46,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       this.checkAuthor();
     });
     this.checkAuthor();
+    this.formatNumberParams = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
   }
 
 
@@ -74,9 +77,11 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     web3Contract.methods.baseRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
       this.contractInfo.baseRaised = this.fromBigNumber(result, details.tokens_info.base.token.decimals);
+      this.contractInfo.baseRaisedFormatted = new BigNumber(this.contractInfo.baseRaised).toFormat(this.formatNumberParams);
+      this.contractInfo.baseRaised = this.contractInfo.baseRaised.toString(10);
       const baseLeft = new BigNumber(details.tokens_info.base.amount).minus(this.contractInfo.baseRaised);
-      this.contractInfo.baseLeftFormated = baseLeft.toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'});
-      this.contractInfo.baseLeft = baseLeft.toString();
+      this.contractInfo.baseLeftFormated = baseLeft.toFormat(this.formatNumberParams);
+      this.contractInfo.baseLeft = baseLeft.toString(10);
     }, err => {
       console.log(err);
     });
@@ -85,9 +90,11 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     web3Contract.methods.quoteRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
       this.contractInfo.quoteRaised = this.fromBigNumber(result, details.tokens_info.quote.token.decimals);
+      this.contractInfo.quoteRaisedFormatted = new BigNumber(this.contractInfo.quoteRaised).toFormat(this.formatNumberParams);
+      this.contractInfo.quoteRaised = this.contractInfo.quoteRaised.toString(10);
       const quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(this.contractInfo.quoteRaised);
       this.contractInfo.quoteLeftFormated = quoteLeft.toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'});
-      this.contractInfo.quoteLeft = quoteLeft.toString();
+      this.contractInfo.quoteLeft = quoteLeft.toString(10);
     }, err => {
       console.log(err);
     });
@@ -176,7 +183,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  public copyText(val: string, field) {
+  public onCopied(field) {
     if (this.copiedAddresses[field]) {
       return;
     }
@@ -184,18 +191,6 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.copiedAddresses[field] = false;
     }, 1000);
-
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
   }
 
 

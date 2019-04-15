@@ -74,6 +74,8 @@ a:not(.btn):not(.minimal-btn) {
   margin-left: 207px;
   .btn {
     width: 285px;
+    text-align: left;
+    padding-left: 50px;
   }
 }
 #livechat-compact-container {
@@ -303,6 +305,8 @@ a:not(.btn):not(.minimal-btn) {
     padding: 11px 15px;
     line-height: 26px;
     white-space: nowrap;
+    vertical-align: top;
+    margin-bottom: 7px;
     &:hover {
       background-color: rgba(0, 0, 0, 0.4);
     }
@@ -326,6 +330,7 @@ a:not(.btn):not(.minimal-btn) {
 .checkbox-block {
   position: relative;
   overflow: hidden;
+  display: block;
   input {
     opacity: 0;
     position: absolute;
@@ -444,6 +449,9 @@ a:not(.btn):not(.minimal-btn) {
       font-size: 28px;
       width: 100%;
       padding: 12px 12px;
+      &[disabled] {
+        opacity: 0.5;
+      }
     }
     &__btn {
       position: absolute;
@@ -538,7 +546,7 @@ a:not(.btn):not(.minimal-btn) {
       padding: 1px 1px 1px 10px;
       font-size: 13px;
       color: #110931;
-      line-height: 28px;
+      line-height: 25px;
       background: #E2E2E2;
       padding-top: 3px;
       min-width: 65px;

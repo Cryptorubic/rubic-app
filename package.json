@@ -28,6 +28,7 @@
     "core-js": "^2.5.4",
     "luxon": "^1.12.0",
     "moment": "^2.24.0",
+    "ngx-clipboard": "^12.0.0",
     "ngx-material-timepicker": "^3.0.2",
     "ngx-scrollbar": "^4.1.1",
     "rxjs": "~6.3.3",

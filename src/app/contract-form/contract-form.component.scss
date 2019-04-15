@@ -109,13 +109,14 @@
   background-color: rgba(0, 0, 0, 0.1);
   .form-field_description {
     margin-top: 0;
-    padding: 3px 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
     border-top: 1px dashed rgba(255, 255, 255, 0.1);
     border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
   }
 }
 .token-info {
-  padding: 20px;
+  padding: 20px 0;
   line-height: 52px;
   &:after {
     content: '';
@@ -161,7 +162,7 @@
   }
   &_balance {
     clear: both;
-    padding: 0 20px 20px;
+    padding: 0 0 20px;
     &:after {
       clear: both;
       display: block;
@@ -195,7 +196,11 @@
 .contract-info-block {
   padding: 30px 0 15px;
 }
+.info-content-block {
+  padding-left: 2vw;
+  padding-right: 2vw;
 
+}
 .deployment-progress-container {
   padding: 12px 0 32px;
   text-align: center;
@@ -264,6 +269,9 @@
       &:hover {
         background-color: rgba(0, 0, 0, 0.3);
       }
+      &.opened {
+        border-color: #FCD600;
+      }
     }
     &.checked:before {
       display: none;
@@ -287,6 +295,16 @@
   }
 }
 
+@media screen and (max-width: 480px) {
+  .token-info {
+    &_balance {
+      span {
+        text-align: left;
+        float: none;
+      }
+    }
+  }
+}
 @media screen and (max-width: 580px) {
   .steps-mobile {
     display: block;

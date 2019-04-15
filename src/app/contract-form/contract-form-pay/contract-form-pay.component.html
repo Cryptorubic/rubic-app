@@ -1,6 +1,6 @@
 <div class="form-block_fieldset">
-  <div class="form-field_description">
-    {{fromBigNumber(contractCosts.USDT, 6)}} USDT
+  <div class="form-field_description price-contract">
+    SWAP's cost: {{fromBigNumber(contractCosts.USDT, 6)}} USDT
   </div><br/>
   <div class="form-field">
     <label class="form-field_label">Choose replenish method</label>
@@ -79,7 +79,8 @@
           <button type="button"
                   class="copy-btn"
                   [ngClass]="{copied: copiedAddresses['eth']}"
-                  (click)="copyText(currentUser.internal_address, 'eth')">
+                  ngxClipboard [cbContent]="currentUser.internal_address"
+                  (cbOnSuccess)="onCopied('eth' + index)">
             <img src="./assets/images/icons/copy.svg"/>
           </button>
         </div>

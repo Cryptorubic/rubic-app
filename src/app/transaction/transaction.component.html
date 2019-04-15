@@ -59,7 +59,8 @@
                 <button type="button"
                         class="copy-btn"
                         [ngClass]="{copied: copiedData['owner_address' + index]}"
-                        (click)="copyText(transaction.from, 'owner_address' + index)">
+                        ngxClipboard [cbContent]="transaction.from"
+                        (cbOnSuccess)="onCopied('owner_address' + index)">
                   <img src="./assets/images/icons/copy.svg"/>
                 </button>
               </div>
@@ -81,7 +82,8 @@
                 <button type="button"
                         class="copy-btn"
                         [ngClass]="{copied: copiedData['contract_address' + index]}"
-                        (click)="copyText(transaction.to, 'contract_address' + index)">
+                        ngxClipboard [cbContent]="transaction.to"
+                        (cbOnSuccess)="onCopied('contract_address' + index)">
                   <img src="./assets/images/icons/copy.svg"/>
                 </button>
               </div>
@@ -101,7 +103,8 @@
                 <button type="button"
                         class="copy-btn"
                         [ngClass]="{copied: copiedData['data' + index]}"
-                        (click)="copyText(transaction.data, 'data' + index)">
+                        ngxClipboard [cbContent]="transaction.data"
+                        (cbOnSuccess)="onCopied('data' + index)">
                   <img src="./assets/images/icons/copy.svg"/>
                 </button>
               </div>

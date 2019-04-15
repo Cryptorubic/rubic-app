@@ -48,7 +48,8 @@ export class ContractFormPayComponent implements OnInit, OnDestroy {
     });
   }
 
-  public copyText(val: string, field) {
+
+  public onCopied(field) {
     if (this.copiedAddresses[field]) {
       return;
     }
@@ -56,20 +57,8 @@ export class ContractFormPayComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.copiedAddresses[field] = false;
     }, 1000);
-
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = val;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-
   }
+
 
 
   public fromBigNumber(num, decimals) {

@@ -150,7 +150,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
       this.currentUser = userProfile;
     });
 
-    this.minDate = moment().add(1, 'hour');
+    this.minDate = moment().add(2, 'hour');
     this.datePickerDate = this.minDate;
     this.datePickerTime = `${this.minDate.hour()}:${this.minDate.minutes()}`;
 
@@ -158,10 +158,19 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     if (this.originalContract) {
       this.analyzeContractState(this.originalContract);
     } else {
-      this.openedForm = 0;
+      this.gotToForm(0);
     }
   }
 
+  public gotToForm(formNumber) {
+    if (this.openedForm === formNumber) {
+      return;
+    }
+    this.openedForm = formNumber;
+    if (window.screen.width <= 580) {
+      window.scrollTo(0, 0);
+    }
+  }
 
   private analyzeContractState(contract) {
 
@@ -171,16 +180,16 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
     switch (contract.state) {
       case 'CREATED':
-        this.openedForm = 2;
+        this.gotToForm(2);
         break;
       case 'WAITING_FOR_PAYMENT':
         this.editableContract = false;
-        this.openedForm = 3;
+        this.gotToForm(3);
         this.checkContractState();
         break;
       case 'WAITING_FOR_DEPLOYMENT':
         this.editableContract = false;
-        this.openedForm = 4;
+        this.gotToForm(4);
         this.checkContractState();
         break;
       case 'ACTIVE':
@@ -265,7 +274,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     this.formData.id = contract.id;
     this.originalContract = contract;
     this.originalContract.contract_details.tokens_info = this.requestData.tokens_info;
-    this.openedForm = 2;
+    this.gotToForm(2);
   }
 
   private contractIsError(error) {
@@ -365,11 +374,13 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
 @Injectable()
 export class ContractEditResolver implements Resolve<any> {
+  private currentUser;
   constructor(
     private contractsService: ContractsService,
     private userService: UserService,
     private httpService: HttpService,
-    private web3Service: Web3Service
+    private web3Service: Web3Service,
+    private router: Router
   ) {}
 
   private contractId: number;
@@ -387,7 +398,6 @@ export class ContractEditResolver implements Resolve<any> {
     }
 
     promise.then((result) => {
-
       result.contract_details.tokens_info = {};
 
       this.web3Service.getFullTokenInfo(result.contract_details.quote_address).then((token: TokenInfoInterface) => {
@@ -420,12 +430,14 @@ export class ContractEditResolver implements Resolve<any> {
       this.contractId = route.params.id;
       return new Observable((observer) => {
         const subscription = this.userService.getCurrentUser(false, true).subscribe((user) => {
+          this.currentUser = user;
           if (!user.is_ghost) {
             this.getContractInformation(observer);
           } else {
             this.userService.openAuthForm().then(() => {
               this.getContractInformation(observer);
             }, () => {
+              this.router.navigate(['/']);
               //
             });
           }

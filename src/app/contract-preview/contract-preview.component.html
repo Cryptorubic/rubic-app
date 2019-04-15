@@ -32,7 +32,7 @@
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    {{tokens.base.amount | number}}
+                    {{tokens.base.amount | number : '1.0-' + tokens.base.token.decimals}}
                   </div>
 
                   <div *ngIf="originalContract.state === 'ACTIVE'">
@@ -41,7 +41,7 @@
                         <b>Sent</b>
                       </div>
                       <div class="tokens-info-block_filled__complete">
-                        {{ contractInfo.baseRaised | number : '1.0-' + tokens.base.token.decimals}}
+                        {{ contractInfo.baseRaisedFormatted }}
                       </div>
                     </div>
                     <div class="tokens-info-block_filled_item left">
@@ -96,13 +96,16 @@
                         <div class="form-field">
                           <div class="form-field_input">
                             <input type="text"
+                                   [disabled]="contractInfo.baseLeft <= 0"
                                    required
                                    ngModel
                                    name="amount"
                                    placeholder="Enter amount"
                                    class="min-text minimal-input">
                           </div>
-                          <span class="action-link" (click)="baseContributeForm.controls.amount.setValue(contractInfo.baseLeft)">
+                          <span class="action-link"
+                                [ngClass]="{invisible: contractInfo.baseLeft <= 0}"
+                                (click)="baseContributeForm.controls.amount.setValue(contractInfo.baseLeft)">
                             Fill all
                           </span>
                         </div>
@@ -110,7 +113,7 @@
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
                         <div class="form-field">
                           <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
-                                  [disabled]="!baseContributeForm.valid"
+                                  [disabled]="!baseContributeForm.valid || contractInfo.baseLeft <= 0"
                                   type="submit">
                             <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                             <span>Contribute</span>
@@ -284,7 +287,8 @@
                     <button type="button"
                             class="copy-btn"
                             [ngClass]="{copied: copiedAddresses['owner_address']}"
-                            (click)="copyText(originalContract.contract_details.owner_address, 'owner_address')">
+                            ngxClipboard [cbContent]="originalContract.contract_details.owner_address"
+                            (cbOnSuccess)="onCopied('owner_address')">
                       <img src="./assets/images/icons/copy.svg"/>
                     </button>
 
@@ -304,16 +308,18 @@
                 <button type="button"
                         class="copy-btn"
                         [ngClass]="{copied: copiedAddresses['link']}"
-                        (click)="copyText(contractAdditional.link, 'link')">
+                        ngxClipboard [cbContent]="contractAdditional.link"
+                        (cbOnSuccess)="onCopied('link')">
                   <img src="./assets/images/icons/copy.svg"/>
                 </button>
               </div>
             </div>
 
 
-            <div class="one-separated-block" *ngIf="originalContract.isAuthor">
+            <div class="one-separated-block">
 
               <a [href]="contractAdditional.source_link"
+                 *ngIf="originalContract.isAuthor"
                  download="{{originalContract.contract_details.tokens_info.base.token.token_short_name + originalContract.contract_details.tokens_info.quote.token.token_short_name}}"
                  class="minimal-btn uppercase float-right">
                 <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
@@ -330,7 +336,8 @@
                 <button type="button"
                         class="copy-btn"
                         [ngClass]="{copied: copiedAddresses['contract_address']}"
-                        (click)="copyText(originalContract.contract_details.eth_contract.address, 'contract_address')">
+                        ngxClipboard [cbContent]="originalContract.contract_details.eth_contract.address"
+                        (cbOnSuccess)="onCopied('contract_address')">
                   <img src="./assets/images/icons/copy.svg"/>
                 </button>
               </div>
