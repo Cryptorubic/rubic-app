@@ -21,7 +21,10 @@
 
 .form-field input {
   outline: none;
-  form.ng-submitted &.ng-invalid, &.ng-invalid:focus, &.ng-touched.ng-invalid, &[invalid="true"] {
+  form.ng-submitted &:not(.without-error-lightning).ng-invalid,
+  &.ng-invalid:not(.without-error-lightning):focus,
+  &:not(.without-error-lightning).ng-touched.ng-invalid,
+  &:not(.without-error-lightning)[invalid="true"] {
     &:not(:disabled), &:not([disabled]), &:not([readonly]) {
       border-color: #ff2944;
     }

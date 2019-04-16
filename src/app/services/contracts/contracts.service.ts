@@ -42,4 +42,8 @@ export class ContractsService {
     }).toPromise();
   }
 
+  public deleteContract(contract) {
+    return this.httpService.delete(`contracts/${contract.id}/`).toPromise();
+  }
+
 }

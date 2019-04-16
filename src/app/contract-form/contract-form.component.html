@@ -232,6 +232,7 @@
                                  [format]="24"
                                  [min]="minTime"
                                  required
+                                 readonly
                                  (ngModelChange)="timeChange()"
                                  [(ngModel)]="datePickerTime"
                                  name="time"
@@ -266,7 +267,7 @@
                       </div>
                       <div class="grid-cell grid-cell-1">
                         <div class="form-field_small-desc">
-                          Owner of this address will be able to manage the contract (it's the only one)
+                          Owner of this address will be able to manage the contract
                         </div>
                       </div>
                     </div>
@@ -381,7 +382,7 @@
                   </div>
                 </div>
                 <div class="token-info_balance info-content-block">
-                  <span class="token-info_balance_title">You want get</span>
+                  <span class="token-info_balance_title">You want to get</span>
                   <span class="token-info_balance_count">{{tokens.quote.amount | number}}</span>
                 </div>
               </div>

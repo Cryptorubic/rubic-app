@@ -150,9 +150,10 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
       this.currentUser = userProfile;
     });
 
-    this.minDate = moment().add(2, 'hour');
-    this.datePickerDate = this.minDate;
-    this.datePickerTime = `${this.minDate.hour()}:${this.minDate.minutes()}`;
+    this.minDate = moment().add(1, 'hour');
+    const startDateTime = moment(this.minDate);
+    this.datePickerDate = startDateTime.add(1, 'hour');
+    this.datePickerTime = `${startDateTime.hour()}:${startDateTime.minutes()}`;
 
 
     if (this.originalContract) {
@@ -225,6 +226,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
           }
         }
       };
+
+      this.requestData.public = true;
       this.originalContract = {
         contract_details: {...this.requestData}
       };

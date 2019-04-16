@@ -10,6 +10,11 @@
           <div class="my-contracts-list_item"
                (click)="toContract(contract)"
                *ngFor="let contract of contractsList">
+            <button class="delete-btn"
+                    [ngClass]="{invisible: !((states[contract.state].NUMBER === 0) || (states[contract.state].NUMBER === 6))}"
+                    (click)="$event.stopPropagation(); $event.preventDefault(); deleteContract(contract);">
+              <img src="./assets/images/icons/trash.svg">
+            </button>
             <div class="contract-state" [ngClass]="'contract-state__' + states[contract.state].NUMBER">
               {{states[contract.state].TEXT}}
             </div>
@@ -20,3 +25,22 @@
     </div>
   </div>
 </div>
+
+<ng-template #deleteConfirmation>
+  <div class="dialog-block">
+    <div class="dialog-block__content">
+      <div class="alert-window-title">
+        Do you want to remove it?
+      </div>
+    </div>
+    <div class="alert-window-buttons text-center">
+      <button class="btn btn-transparent btn-min right-padding" type="button"
+              (click)="deleteContractConfirm()">
+        {{'YES'|translate}}
+      </button>
+      <button class="btn btn-yellow btn-min right-padding" mat-dialog-close type="button">
+        {{'NO'|translate}}
+      </button><br/><br/>
+    </div>
+  </div>
+</ng-template>

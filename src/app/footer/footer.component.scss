@@ -110,6 +110,9 @@ footer {
         display: block;
         vertical-align: middle;
         padding: 0 5px;
+        &:first-child {
+          padding-left: 0;
+        }
         .btn {
           width: 100%;
         }

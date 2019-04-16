@@ -23,8 +23,10 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   private currentUser: any;
 
   public maximumInvestors;
-
+  public rates;
   private formatNumberParams;
+
+  public rateFormat;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +49,15 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     });
     this.checkAuthor();
     this.formatNumberParams = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
+
+    const tokenInfo = this.originalContract.contract_details.tokens_info;
+    const rate = new BigNumber(tokenInfo.base.amount).div(tokenInfo.quote.amount);
+    this.rateFormat = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
+    this.rates = {
+      normal: rate,
+      reverted: rate.pow(-1)
+    };
+
   }
 
 
@@ -59,6 +70,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   public states = CONTRACT_STATES;
   public revertedRate: boolean;
 
+  public activeSide: string;
 
   public contractAdditional: {
     source_link?: SafeResourceUrl;

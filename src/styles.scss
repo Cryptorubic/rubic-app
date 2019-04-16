@@ -160,7 +160,6 @@ a:not(.btn):not(.minimal-btn) {
   color: rgba(255, 255, 255, 0.7);
   border-bottom: 1px dashed;
   display: inline-block;
-  margin-top: 20px;
   cursor: pointer;
   &:hover {
     color: #fff;
@@ -187,7 +186,10 @@ a:not(.btn):not(.minimal-btn) {
 .uppercase {
   text-transform: uppercase;
 }
-
+.normal-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+}
 
 
 .title-section {
@@ -225,6 +227,9 @@ a:not(.btn):not(.minimal-btn) {
   }
   .arrow {
     height: 14px;
+    + span {
+      vertical-align: middle;
+    }
   }
   &:not(.width-100) {
     .arrow {
@@ -254,6 +259,9 @@ a:not(.btn):not(.minimal-btn) {
       .arrow {
         margin-left: -14px;
       }
+    }
+    &.right-padding {
+      padding-right: 25px;
     }
     &.wallet-btn {
       padding-left: 15px;

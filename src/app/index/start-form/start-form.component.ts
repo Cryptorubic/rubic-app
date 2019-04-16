@@ -11,16 +11,13 @@ export class StartFormComponent implements OnInit {
   constructor(
     private web3Service: Web3Service
   ) {
-
     const draftData = localStorage.getItem('form_values');
     this.tokensData = draftData ? JSON.parse(draftData).tokens_info : {
       base: {
-        token: {},
-        amount: '100000'
+        token: {}
       },
       quote: {
-        token: {},
-        amount: '2000000'
+        token: {}
       }
     };
   }

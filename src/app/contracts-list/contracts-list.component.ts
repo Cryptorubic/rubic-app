@@ -1,4 +1,4 @@
-import {Component, Injectable, OnInit} from '@angular/core';
+import {Component, Injectable, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router} from '@angular/router';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {UserService} from '../services/user/user.service';
@@ -6,6 +6,7 @@ import {UserService} from '../services/user/user.service';
 import {Observable} from 'rxjs';
 import {CONTRACT_STATES} from '../contract-preview/contract-states';
 import {UserInterface} from '../services/user/user.interface';
+import {MatDialog, MatDialogRef} from '@angular/material';
 
 @Component({
   selector: 'app-contracts-list',
@@ -16,11 +17,17 @@ export class ContractsListComponent implements OnInit {
 
   public contractsList: any[] = [];
   public states = CONTRACT_STATES;
+  private contractForDeleting;
+
+  @ViewChild('deleteConfirmation') deleteConfirmation;
+  private deleteConfirmationModal: MatDialogRef<any>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private dialog: MatDialog,
+    private contractsService: ContractsService
   ) {
     this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
       if (userProfile.is_ghost) {
@@ -47,6 +54,28 @@ export class ContractsListComponent implements OnInit {
         break;
     }
   }
+
+  public deleteContractConfirm() {
+    this.contractsList = this.contractsList.filter((existsContract) => {
+      return existsContract !== this.contractForDeleting;
+    });
+    this.contractsService.deleteContract(this.contractForDeleting).then(() => {
+
+    });
+    this.contractForDeleting = false;
+    this.deleteConfirmationModal.close();
+  }
+
+
+  public deleteContract(contract) {
+    this.contractForDeleting = contract;
+    this.deleteConfirmationModal = this.dialog.open(this.deleteConfirmation, {
+      width: '480px',
+      panelClass: 'custom-dialog-container'
+    });
+  }
+
+
 
 }
 
