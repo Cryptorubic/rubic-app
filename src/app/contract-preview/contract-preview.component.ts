@@ -54,8 +54,8 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     const rate = new BigNumber(tokenInfo.base.amount).div(tokenInfo.quote.amount);
     this.rateFormat = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
     this.rates = {
-      normal: rate,
-      reverted: rate.pow(-1)
+      normal: new BigNumber(tokenInfo.base.amount).div(tokenInfo.quote.amount),
+      reverted: new BigNumber(tokenInfo.quote.amount).div(tokenInfo.base.amount)
     };
 
   }

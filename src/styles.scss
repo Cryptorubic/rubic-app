@@ -440,6 +440,23 @@ a:not(.btn):not(.minimal-btn) {
       color: #110931;
       line-height: 34px;
       font-family: inherit;
+      font-size: 24px!important;
+      padding: 12px 10px 10px;
+
+      &::-webkit-input-placeholder {
+        font-size: 20px;
+      }
+      &:-ms-input-placeholder {
+        font-size: 20px;
+      }
+      &::-ms-input-placeholder {
+        font-size: 20px;
+      }
+      &::placeholder {
+        font-size: 20px;
+      }
+
+
       &.min-text {
         font-size: 18px!important;
         color: #110931;
@@ -454,9 +471,7 @@ a:not(.btn):not(.minimal-btn) {
       }
     }
     input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]) {
-      font-size: 28px;
       width: 100%;
-      padding: 12px 12px;
       &[disabled] {
         opacity: 0.5;
       }
@@ -472,7 +487,7 @@ a:not(.btn):not(.minimal-btn) {
       letter-spacing: -0.43px;
       line-height: 18px;
       padding: 10px 11px;
-      right: 10px;
+      right: 8px;
       margin-top: -21px;
       font-family: inherit;
       cursor: pointer;
@@ -480,7 +495,7 @@ a:not(.btn):not(.minimal-btn) {
     &__ac_input {
       position: absolute;
       right: 0;
-      top: 14px;
+      top: 0;
       width: 0;
       opacity: 0;
       transition: all linear 0.2s;
@@ -512,8 +527,6 @@ a:not(.btn):not(.minimal-btn) {
     &__btn.active + &__ac_input {
       width: 100%;
       opacity: 1;
-      font-size: 28px;
-      padding: 12px 22px;
       top: 0;
     }
   }
