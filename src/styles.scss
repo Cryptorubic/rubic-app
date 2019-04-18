@@ -193,11 +193,19 @@ a:not(.btn):not(.minimal-btn) {
 
 
 .title-section {
-  font-size: 25px;
+  font-size: 28px;
   color: #FFFFFF;
   font-weight: bold;
+  margin-bottom: 1em;
 }
 
+.description-section {
+  font-size: 24px;
+  line-height: 35px;
+  color: #FFFFFF;
+  margin-bottom: 1em;
+  width: 80%;
+}
 
 
 
@@ -253,7 +261,7 @@ a:not(.btn):not(.minimal-btn) {
   &-min {
     font-size: 16px;
     line-height: 20px;
-    padding: 13px 15px 12px 6px;
+    padding: 12px 15px 10px 6px;
     &:not(.width-100) {
       padding-left: 25px;
       .arrow {
@@ -443,16 +451,16 @@ a:not(.btn):not(.minimal-btn) {
       font-size: 24px!important;
       padding: 12px 10px 10px;
 
-      &::-webkit-input-placeholder {
+      &:not(.min-text)::-webkit-input-placeholder {
         font-size: 20px;
       }
-      &:-ms-input-placeholder {
+      &:not(.min-text):-ms-input-placeholder {
         font-size: 20px;
       }
-      &::-ms-input-placeholder {
+      &:not(.min-text)::-ms-input-placeholder {
         font-size: 20px;
       }
-      &::placeholder {
+      &:not(.min-text)::placeholder {
         font-size: 20px;
       }
 
@@ -460,6 +468,19 @@ a:not(.btn):not(.minimal-btn) {
       &.min-text {
         font-size: 18px!important;
         color: #110931;
+
+        &::-webkit-input-placeholder {
+          font-size: 16px;
+        }
+        &:-ms-input-placeholder {
+          font-size: 16px;
+        }
+        &::-ms-input-placeholder {
+          font-size: 16px;
+        }
+        &::placeholder {
+          font-size: 16px;
+        }
       }
       &.dark-field {
         background-color: rgba(106, 114, 126, 0.45);
@@ -741,6 +762,13 @@ a:not(.btn):not(.minimal-btn) {
 }
 .timepicker-button {
   color: #222!important;
+}
+
+
+.active-swaps-table {
+  .ng-scrollbar-layout {
+    max-height: 400px!important;
+  }
 }
 
 

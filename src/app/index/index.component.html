@@ -7,64 +7,205 @@
     <div class="app-index__contracts">
       <app-public-contracts></app-public-contracts>
     </div>
+    <div class="app-index__our-clients section-content-block">
+      <div class="title-section">Problems</div>
+      <ul class="blocks-list">
+        <li>
+          <div class="blocks-list_content">
+            <div class="blocks-list_content__title">
+              Large amounts
+            </div>
+            <div class="blocks-list_content__text">
+              Inability to change large amounts without a 3rd party due to low liquidity
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="blocks-list_content">
+            <div class="blocks-list_content__title">
+              Privacy
+            </div>
+            <div class="blocks-list_content__text">
+              Inability to make private deals when using a decentralized exchange
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="blocks-list_content">
+            <div class="blocks-list_content__title">
+              Privacy slippage
+            </div>
+            <div class="blocks-list_content__text">
+              Costs of crypto assets are decreasing significantly when selling large amounts
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="blocks-list_content">
+            <div class="blocks-list_content__title">
+              Non-listed token
+            </div>
+            <div class="blocks-list_content__text">
+              Inability to exchange tokens for not-listed projects without a 3rd part
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
 
-    <div class="app-index__how-it-works" id="how-it-works">
-      <div class="how-it-work">
-        <div class="title-section">How it works</div>
-        <div class="how-it-work-description">
-          SWAPS creates individual swap smart contracts which guarantees safe exchange.
+  <div class="second-index-block">
+    <div class="app-content-block">
+      <div class="app-index__how-it-works section-content-block" id="how-it-works">
+        <div class="how-it-work">
+          <div class="title-section">Solution</div>
+          <div class="how-it-work-description">
+            Individual swap decentralized solution which guarantees safe exchange.
+          </div>
+          <div class="how-it-work-img">
+            <img src="./assets/images/index/sm_dk.svg">
+          </div>
+          <div class="how-it-work-img mobile">
+            <img src="./assets/images/index/sh_mob.svg">
+          </div>
         </div>
-        <div class="how-it-work-img">
-          <img src="./assets/images/index/sm_dk.svg">
+      </div>
+
+      <div class="app-index__why-we section-content-block">
+        <div class="title-section">Why we?</div>
+        <ul class="why-we-list">
+          <li>
+            <span>Fully decentralized</span>
+          </li>
+          <li>
+            <span>Swap even not-listed tokens</span>
+          </li>
+          <li>
+            <span>No volume limits</span>
+          </li>
+          <li>
+            <span>Private or public swaps</span>
+          </li>
+          <li>
+            <span>Ability to get funds back anytime</span>
+          </li>
+          <li>
+            <span>Multiple participants at 1 swap</span>
+          </li>
+          <li>
+            <span>Any trading pair supported</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="app-index__our-clients section-content-block">
+        <div class="title-section">Our clients</div>
+        <ul class="blocks-list">
+          <li>
+            <div class="blocks-list_content">
+              <div class="blocks-list_content__title">
+                Whales
+              </div>
+              <div class="blocks-list_content__text">
+                Token holders can exchange any volume of tokens
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="blocks-list_content">
+              <div class="blocks-list_content__title">
+                Projects
+              </div>
+              <div class="blocks-list_content__text">
+                They can sale tokens at any project's stage
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="blocks-list_content">
+              <div class="blocks-list_content__title">
+                Brokers
+              </div>
+              <div class="blocks-list_content__text">
+                They can initiate deals and earn commissions.
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="blocks-list_content">
+              <div class="blocks-list_content__title">
+                Traders
+              </div>
+              <div class="blocks-list_content__text">
+                They earn on the difference in the rate due to the volume of the deal.
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="blocks-list_content">
+              <div class="blocks-list_content__title">
+                Crypto wallets
+              </div>
+              <div class="blocks-list_content__text">
+                They swap of tokens between user's wallets.
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+
+
+    <div class="app-content-block" id="about">
+      <div class="app-index__used-service used-service section-content-block">
+        <div class="title-section">Trust</div>
+        <div class="description-section">
+          Our&nbsp;Team is working on&nbsp;MyWish Platform - the leading Platform
+          for&nbsp;Smart&nbsp;Contract generation supported by TRON, EOS Community, NEO.
         </div>
-        <div class="how-it-work-img mobile">
-          <img src="./assets/images/index/sh_mob.svg">
+        <div class="used-service__info">
+          <div class="used-service__info_item">
+            <div class="used-service__info_item__image">
+              <img src="./assets/images/used-service/users.png">
+            </div>
+            <div class="used-service__info_item__text">
+              <span class="count">{{stat?.users}}</span>
+              <span class="desc">Users</span>
+              <!--<span class="range">+7</span>-->
+            </div>
+          </div>
+          <div class="used-service__info_item">
+            <div class="used-service__info_item__image">
+              <img src="./assets/images/used-service/contracts.png">
+            </div>
+            <div class="used-service__info_item__text">
+              <span class="count">{{stat?.contracts}}</span>
+              <span class="desc">Contracts</span>
+              <!--<span class="range">+7</span>-->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-content-block">
+        <div class="app-index__partners">
+          <div class="grid-row">
+            <div *ngFor="let project of projects" class="grid-cell grid-cell-1-8 grid-cell-sm-1-5 grid-cell-s-1-4 grid-cell-ps-1-3 grid-cell-ls-1-2">
+              <div class="app-index__partners_item">
+                <a href="{{project.link}}" target="_blank">
+                  <img [src]="project.logo">
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="app-content-block" id="about">
-    <div class="app-index__used-service used-service">
-      <div class="title-section">Used our services</div>
-      <div class="used-service__info">
-        <div class="used-service__info_item">
-          <div class="used-service__info_item__image">
-            <img src="./assets/images/used-service/users.png">
-          </div>
-          <div class="used-service__info_item__text">
-            <span class="count">{{stat?.users}}</span>
-            <span class="desc">Users</span>
-            <!--<span class="range">+7</span>-->
-          </div>
-        </div>
-        <div class="used-service__info_item">
-          <div class="used-service__info_item__image">
-            <img src="./assets/images/used-service/contracts.png">
-          </div>
-          <div class="used-service__info_item__text">
-            <span class="count">{{stat?.contracts}}</span>
-            <span class="desc">Contracts</span>
-            <!--<span class="range">+7</span>-->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="app-index__partners">
-      <div class="grid-row">
-        <div *ngFor="let project of projects" class="grid-cell grid-cell-1-8 grid-cell-sm-1-5 grid-cell-s-1-4 grid-cell-ps-1-3 grid-cell-ls-1-2">
-          <div class="app-index__partners_item">
-            <a href="{{project.link}}" target="_blank">
-              <img [src]="project.logo">
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="app-index__faq">
+  <!-- div class="app-index__faq">
     <div class="app-content-block">
       <div class="title-section">FAQ</div>
       <ul class="faq-questions-list">
@@ -112,7 +253,7 @@
         </li>
       </ul>
     </div>
-  </div>
+  </div -->
   <div class="app-index__footer-form"></div>
 </div>
 

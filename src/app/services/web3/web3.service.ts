@@ -79,7 +79,28 @@ export class Web3Service {
       console.log('Infura not found');
     }
     this.Web3 = new Web3(this.providers.infura);
+
+    // this.connectMetamask();
   }
+
+
+  // public connectMetamask() {
+  //   this.setProvider('metamask');
+  //   this.Web3.eth.getAccounts((err, addresses) => {
+  //     const publicAddress = addresses[0];
+  //     if (!publicAddress) {
+  //       return;
+  //     }
+  //     this.Web3.eth.personal.sign(
+  //       'Я хочу использовать SWAPS MyWish',
+  //       publicAddress,
+  //       (signError, signature) => {
+  //         console.log(signature);
+  //       }
+  //     );
+  //   });
+  // }
+
 
   public getContract(abi, address) {
     return this.Web3.eth.Contract(abi, address);
@@ -102,13 +123,13 @@ export class Web3Service {
   }
 
   private convertTokenInfo(tokenInfo) {
-    return {
+    return tokenInfo.symbol ? {
       token_short_name: tokenInfo.symbol,
       token_name: tokenInfo.name,
       address: tokenInfo.address,
       decimals: tokenInfo.decimals,
       isEther: tokenInfo.address === '0x0000000000000000000000000000000000000000'
-    };
+    } : false;
   }
 
 
@@ -251,6 +272,7 @@ export class Web3Service {
       this.Web3.setProvider(this.providers.infura);
     });
   }
+
 
 }
 
