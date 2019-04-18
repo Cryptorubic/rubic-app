@@ -298,6 +298,9 @@ a:not(.btn):not(.minimal-btn) {
   &-white-opacity {
     border-color: #fcd600;
     background-color: rgba(255, 255, 255, 0.1);
+    &.white-border {
+      border-color: rgba(255, 255, 255, 0.67);
+    }
     &:hover {
       background-color:  rgba(255, 255, 255, 0.2);
     }

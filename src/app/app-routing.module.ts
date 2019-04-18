@@ -4,6 +4,7 @@ import {IndexComponent} from './index/index.component';
 import {ContractEditResolver, ContractFormComponent} from './contract-form/contract-form.component';
 import {ContractPreviewComponent} from './contract-preview/contract-preview.component';
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
+import {ContractFormTwoComponent} from './contract-form-two/contract-form-two.component';
 
 const routes: Routes = [
   {
@@ -12,6 +13,12 @@ const routes: Routes = [
   }, {
     path: 'create',
     component: ContractFormComponent,
+    data: {
+      support: true
+    }
+  }, {
+    path: 'create-v2',
+    component: ContractFormTwoComponent,
     data: {
       support: true
     }

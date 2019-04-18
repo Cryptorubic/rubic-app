@@ -26,18 +26,25 @@
                 'opened': openedForm === 2
              }"></div>
       </div>
+      <div class="grid-cell grid-cell-1-5" *ngIf="withAdvancedOptions">
+        <div class="steps-mobile_item"
+             [ngClass]="{
+                'checked': (openedForm > 3) && advancedForm.valid,
+                'opened': openedForm === 3
+             }"></div>
+      </div>
       <div class="grid-cell grid-cell-1-5">
         <div class="steps-mobile_item"
              [ngClass]="{
                 'checked': originalContract.state === 'WAITING_FOR_DEPLOYMENT',
-                'opened': openedForm === 3
+                'opened': openedForm === 101
             }"></div>
       </div>
       <div class="grid-cell grid-cell-1-5">
         <div class="steps-mobile_item"
              [ngClass]="{
                 'checked': originalContract.state === 'WAITING_FOR_DEPLOYMENT',
-                'opened': openedForm === 4
+                'opened': openedForm === 102
             }"></div>
       </div>
     </div>
@@ -198,7 +205,7 @@
                  (click)="openedForm = (tokensForm.valid && editableContract) ? 1 : openedForm;">
               Extra options
             </div>
-            <form class="form-block_fieldset" #extraForm="ngForm" (submit)="createContract(tokensForm)">
+            <form class="form-block_fieldset" #extraForm="ngForm" (submit)="!withAdvancedOptions ? createContract(tokensForm) : gotToForm(2)">
               <div class="grid-row">
                 <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
                   <div class="grid-row">
@@ -309,6 +316,36 @@
                   Next step
                 </span>
               </button>
+            </form>
+          </div>
+          <div class="form-block" *ngIf="withAdvancedOptions"
+                [ngClass]="{
+                  hidden: !(extraForm.valid && (openedForm === 2)),
+                  'form-block__active': extraForm.valid && editableContract,
+                  checked: advancedForm.valid && (openedForm > 2)
+               }">
+            <div class="form-block_title"
+                 (click)="gotToForm((extraForm.valid && editableContract) ? 2 : openedForm);">
+              Advanced options
+            </div>
+            <form class="form-block_fieldset" #advancedForm="ngForm" (submit)="createContract(tokensForm)">
+              <div class="form-field">
+                <label class="form-field_label">Minimum contribution in {{tokens.base.token.token_name}}</label>
+                <div class="grid-row">
+                  <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
+                    <div class="form-field_input">
+                      <input type="text"
+                             name="invest-base-min"
+                             ngModel
+                             [appBigNumber]="{
+                                decimals: tokens.base.token.decimals,
+                                min: 0,
+                                max: tokens.base.amount
+                             }">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
           <div class="form-block"

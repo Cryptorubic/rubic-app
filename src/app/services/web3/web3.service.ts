@@ -123,7 +123,7 @@ export class Web3Service {
   }
 
   private convertTokenInfo(tokenInfo) {
-    return tokenInfo.symbol ? {
+    return (tokenInfo && tokenInfo.symbol) ? {
       token_short_name: tokenInfo.symbol,
       token_name: tokenInfo.name,
       address: tokenInfo.address,

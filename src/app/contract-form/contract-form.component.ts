@@ -185,12 +185,12 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
         break;
       case 'WAITING_FOR_PAYMENT':
         this.editableContract = false;
-        this.gotToForm(3);
+        this.gotToForm(101);
         this.checkContractState();
         break;
       case 'WAITING_FOR_DEPLOYMENT':
         this.editableContract = false;
-        this.gotToForm(4);
+        this.gotToForm(102);
         this.checkContractState();
         break;
       case 'ACTIVE':
@@ -336,6 +336,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   }
 
   public dateChange() {
+    console.log(this.extraForm.value.active_to);
     if (this.extraForm.value.active_to.isSame(this.minDate, 'day')) {
       this.minTime = `${this.minDate.hour()}:${this.minDate.minutes()}`;
     } else {
