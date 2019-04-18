@@ -1,5 +1,6 @@
 import {Directive, Injector, Input, OnInit} from '@angular/core';
 import {NgControl} from '@angular/forms';
+import BigNumber from 'bignumber.js';
 
 @Directive({
   selector: '[appBigNumber]'
@@ -7,6 +8,10 @@ import {NgControl} from '@angular/forms';
 export class BigNumberDirective implements OnInit {
 
   private control: NgControl;
+  private latestValue;
+
+  private withEndPoint;
+
   @Input ('appBigNumber') appBigNumber;
   constructor(
     private injector: Injector,
@@ -17,37 +22,28 @@ export class BigNumberDirective implements OnInit {
     this.control = this.injector.get(NgControl);
 
     const originalWriteVal = this.control.valueAccessor.writeValue.bind(this.control.valueAccessor);
-    this.control.valueAccessor.writeValue = (val: any) => originalWriteVal(this._maskValue(val));
+    this.control.valueAccessor.writeValue = (value) => originalWriteVal(this.maskValue());
 
-    const originalChange = ( <any> this.control.valueAccessor).onChange.bind(this.control.valueAccessor);
-    this.control.valueAccessor.registerOnChange((val: any) => originalChange(this._unmaskValue(val)));
+    this.control.valueChanges.subscribe((result) => {
+      const originalValue = result.split(',').join('').replace(/\.$/, '');
 
-    this._setVal(this._maskValue(this.control.value));
+      let bigNumberValue = new BigNumber(originalValue);
 
+      if (bigNumberValue.isNaN()) {
+        bigNumberValue = this.latestValue;
+      } else {
+        this.withEndPoint = result.indexOf('.') === (result.length - 1);
+      }
+
+      this.latestValue = bigNumberValue;
+      this.control.control.setValue(this.latestValue ? this.latestValue.toString() : '', { emitEvent: false });
+    });
   }
 
-  private _maskValue(val: string): string {
-
-    return this.valueToFormat(val);
+  private maskValue() {
+    return this.latestValue ?
+      this.latestValue.toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : '') : '';
   }
 
-  private _unmaskValue(val: string): string {
-    const maskedVal = this._maskValue(val);
 
-    if (maskedVal !== val) {
-      this._setVal(maskedVal);
-    }
-
-    return maskedVal;
-  }
-
-  private valueToFormat(val) {
-    return val;
-  }
-
-  private _setVal(val: string) {
-    if (this.control.control) {
-      this.control.control.setValue(val, { emitEvent: false });
-    }
-  }
 }

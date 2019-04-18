@@ -318,6 +318,8 @@
               </button>
             </form>
           </div>
+
+
           <div class="form-block" *ngIf="withAdvancedOptions"
                 [ngClass]="{
                   hidden: !(extraForm.valid && (openedForm === 2)),
@@ -334,6 +336,7 @@
                 <div class="grid-row">
                   <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
                     <div class="form-field_input">
+                      {{advancedForm.value['invest-base-min']}}
                       <input type="text"
                              name="invest-base-min"
                              ngModel
