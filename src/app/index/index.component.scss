@@ -119,6 +119,7 @@
     float: left;
     width: 34%;
     padding: 13px 23px;
+    box-sizing: border-box;
     &:before {
       float: left;
       content: '';
@@ -373,7 +374,7 @@
     padding-top: 20vw;
   }
   .how-it-work {
-    padding: 20vw 0;
+    //padding: 20vw 0;
     &-title {
     }
     &-img {
