@@ -25,6 +25,9 @@ export class BigNumberDirective implements OnInit {
     this.control.valueAccessor.writeValue = (value) => originalWriteVal(this.maskValue());
 
     this.control.valueChanges.subscribe((result) => {
+
+      console.log(this.appBigNumber);
+
       const originalValue = result.split(',').join('').replace(/\.$/, '');
 
       let bigNumberValue = new BigNumber(originalValue);
@@ -32,11 +35,42 @@ export class BigNumberDirective implements OnInit {
       if (bigNumberValue.isNaN()) {
         bigNumberValue = this.latestValue;
       } else {
+        bigNumberValue = bigNumberValue.dp(50);
         this.withEndPoint = result.indexOf('.') === (result.length - 1);
       }
 
+      const stringValue = this.latestValue ? this.latestValue.toString(10) : '';
+      const decimalPart = stringValue.split('.')[1];
+
+      const errors: any = {};
+
+      if (!bigNumberValue || bigNumberValue.isNaN()) {
+        errors.pattern = true;
+      } else {
+
+        if (decimalPart && (decimalPart.length > this.appBigNumber.decimals)) {
+          errors.decimals = true;
+        }
+
+        if (bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals)).div(Math.pow(2, 256) - 1).toNumber() > 1) {
+          errors.totalMaximum = true;
+        }
+
+        if (bigNumberValue.minus(this.appBigNumber.min).toNumber() < 0) {
+          errors.min = true;
+        }
+
+        if (bigNumberValue.minus(this.appBigNumber.max).toNumber() > 0) {
+          errors.max = true;
+        }
+      }
+
+      console.log(errors);
+
+
+
       this.latestValue = bigNumberValue;
-      this.control.control.setValue(this.latestValue ? this.latestValue.toString() : '', { emitEvent: false });
+      this.control.control.setValue(stringValue, { emitEvent: false });
     });
   }
 
