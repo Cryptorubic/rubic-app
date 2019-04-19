@@ -12,11 +12,6 @@
 
 .how-it-work {
   padding: 72px 0 32px;
-  &-description {
-    font-size: 25px;
-    margin: 20px 0 35px;
-    color: rgba(255, 255, 255, 0.7);
-  }
   &-img {
     text-align: left;
     &.mobile {
@@ -379,12 +374,7 @@
   }
   .how-it-work {
     padding: 20vw 0;
-    text-align: center;
     &-title {
-    }
-
-    &-description {
-      font-size: 15px;
     }
     &-img {
       text-align: center;
