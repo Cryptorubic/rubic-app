@@ -130,7 +130,7 @@ export class ContractFormTwoComponent extends ContractFormComponent {
       details.base_limit,
       details.quote_limit,
       (new Date(details.stop_date)).getTime(),
-      details.whitelist ? details.whitelist_address : '0x0',
+      details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
       details.min_base_wei,
       details.min_quote_wei
     ];
