@@ -236,11 +236,13 @@ export class Web3Service {
   }
 
 
-  public getAccounts() {
+  public getAccounts(owner?) {
     const addressesDictionary: any = {};
     return new Promise((resolve, reject) => {
       this.getAccountsByProvider('metamask').then((addresses: any) => {
-        addressesDictionary[addresses.type] = addresses.addresses;
+        addressesDictionary[addresses.type] = owner ? addresses.addresses.filter((addr) => {
+          return addr.toLowerCase() === owner.toLowerCase();
+        }) : addresses.addresses;
         this.Web3.setProvider(this.providers.infura);
         resolve(addressesDictionary);
       });

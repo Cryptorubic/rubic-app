@@ -5,6 +5,7 @@ import {ContractEditResolver, ContractFormComponent} from './contract-form/contr
 import {ContractPreviewComponent} from './contract-preview/contract-preview.component';
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
 import {ContractFormTwoComponent} from './contract-form-two/contract-form-two.component';
+import {ContractPreviewTwoComponent} from './contract-preview-two/contract-preview-two.component';
 
 const routes: Routes = [
   {
@@ -32,8 +33,27 @@ const routes: Routes = [
       support: true
     }
   }, {
+    path: 'view-v2/:id',
+    component: ContractFormTwoComponent,
+    resolve: {
+      contract: ContractEditResolver
+    },
+    data: {
+      support: true
+    }
+  }, {
     path: 'contract/:id',
     component: ContractPreviewComponent,
+    resolve: {
+      contract: ContractEditResolver
+    },
+    data: {
+      supportHide: 1024,
+      support: true
+    }
+  }, {
+    path: 'contract-v2/:id',
+    component: ContractPreviewTwoComponent,
     resolve: {
       contract: ContractEditResolver
     },

@@ -13,33 +13,37 @@ export class BigNumberDirective implements OnInit {
   private withEndPoint;
 
   @Input ('appBigNumber') appBigNumber;
+  @Input ('ngModel') ngModel;
+
   constructor(
     private injector: Injector,
   ) {
+    this.control = this.injector.get(NgControl);
   }
 
   ngOnInit() {
-    this.control = this.injector.get(NgControl);
 
     const originalWriteVal = this.control.valueAccessor.writeValue.bind(this.control.valueAccessor);
-    this.control.valueAccessor.writeValue = (value) => originalWriteVal(this.maskValue());
+    this.control.valueAccessor.writeValue = (value) => originalWriteVal(this.maskValue(value));
 
     this.control.valueChanges.subscribe((result) => {
 
-      console.log(this.appBigNumber);
+      if (result === this.ngModel) {
+        return;
+      }
 
+      result = result || '';
       const originalValue = result.split(',').join('').replace(/\.$/, '');
-
       let bigNumberValue = new BigNumber(originalValue);
 
       if (bigNumberValue.isNaN()) {
-        bigNumberValue = this.latestValue;
+        bigNumberValue = (result !== '') ? this.latestValue : '';
       } else {
         bigNumberValue = bigNumberValue.dp(50);
         this.withEndPoint = result.indexOf('.') === (result.length - 1);
       }
 
-      const stringValue = this.latestValue ? this.latestValue.toString(10) : '';
+      const stringValue = bigNumberValue ? bigNumberValue.toString(10) : '';
       const decimalPart = stringValue.split('.')[1];
 
       const errors: any = {};
@@ -65,18 +69,18 @@ export class BigNumberDirective implements OnInit {
         }
       }
 
-      console.log(errors);
-
-
-
       this.latestValue = bigNumberValue;
-      this.control.control.setValue(stringValue, { emitEvent: false });
+      const modelValue = bigNumberValue ? bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals)).toString(10) : '';
+      this.control.control.setValue(modelValue, { emitEvent: false });
+      this.control.control.setErrors((JSON.stringify(errors) !== '{}') ? errors : null);
     });
   }
 
-  private maskValue() {
-    return this.latestValue ?
-      this.latestValue.toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : '') : '';
+  private maskValue(value) {
+    return value ?
+      new BigNumber(value)
+        .div(Math.pow(10, this.appBigNumber.decimals))
+        .toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) : '';
   }
 
 

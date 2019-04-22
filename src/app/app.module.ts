@@ -37,6 +37,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import {ClipboardModule} from 'ngx-clipboard';
 import { ContractFormTwoComponent } from './contract-form-two/contract-form-two.component';
 import { BigNumberDirective } from './directives/big-number/big-number.directive';
+import { ContractPreviewTwoComponent } from './contract-preview-two/contract-preview-two.component';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -82,7 +83,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     FooterComponent,
     PublicContractsComponent,
     ContractFormTwoComponent,
-    BigNumberDirective
+    BigNumberDirective,
+    ContractPreviewTwoComponent
   ],
   entryComponents: [
     AuthComponent,

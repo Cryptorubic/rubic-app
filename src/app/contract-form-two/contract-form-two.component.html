@@ -21,6 +21,14 @@
       </div>
       <div class="grid-cell grid-cell-1-5">
         <div class="steps-mobile_item"
+             (click)="gotToForm(openedForm = (advancedForm.valid && editableContract) ? 2 : openedForm)"
+             [ngClass]="{
+                'checked': (openedForm > 2) && advancedForm.valid,
+                'opened': openedForm === 2
+             }"></div>
+      </div>
+      <div class="grid-cell grid-cell-1-5">
+        <div class="steps-mobile_item"
              [ngClass]="{
                 'checked': (openedForm > 100) && extraForm.valid,
                 'opened': openedForm === 100
@@ -199,7 +207,7 @@
               Extra options
             </div>
             <form class="form-block_fieldset" #extraForm="ngForm"
-                  (submit)="createContract(tokensForm)">
+                  (submit)="gotToForm(2)">
               <div class="grid-row">
                 <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
                   <div class="grid-row">
@@ -312,6 +320,111 @@
               </button>
             </form>
           </div>
+
+
+          <div class="form-block"
+                [ngClass]="{
+                  hidden: !(extraForm.valid && (openedForm === 2)),
+                  'form-block__active': extraForm.valid && editableContract,
+                  checked: advancedForm.valid && (openedForm > 2)
+               }">
+            <div class="form-block_title"
+                 (click)="gotToForm((extraForm.valid && editableContract) ? 2 : openedForm);">
+              Advanced options
+            </div>
+            <form class="form-block_fieldset" #advancedForm="ngForm" (submit)="createContract(tokensForm, advancedForm)">
+              <div class="form-field">
+                <label class="form-field_label">Minimum contribution in {{tokens.base.token.token_name}}</label>
+                <div class="grid-row">
+                  <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
+                    <div class="form-field_input">
+                      <input type="text"
+                             name="min_base_wei"
+                             [(ngModel)]="requestData.min_base_wei"
+                             [appBigNumber]="{
+                                decimals: tokens.base.token.decimals,
+                                min: 0,
+                                max: tokens.base.amount
+                             }">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="form-field_label">Minimum contribution in {{tokens.quote.token.token_name}}</label>
+                <div class="grid-row">
+                  <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
+                    <div class="form-field_input">
+                      <input type="text"
+                             name="min_quote_wei"
+                             [(ngModel)]="requestData.min_quote_wei"
+                             [appBigNumber]="{
+                                decimals: tokens.quote.token.decimals,
+                                min: 0,
+                                max: tokens.quote.amount
+                             }">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="form-field_label">Contribution limit in Ethereum</label>
+                <div class="grid-row">
+                  <div class="grid-cell">
+                    <div class="form-field_input">
+                      <label class="form-field_input-checkbox">
+                        <input type="checkbox"
+                               name="whitelist"
+                               [(ngModel)]="requestData.whitelist">
+                        <span class="checkbox-text checkbox-text_on">Yes</span>
+                        <span class="checkbox-text checkbox-text_off">No</span>
+                        <span class="checkbox-rect"></span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="grid-cell">
+                    <div class="form-field_small-desc for-checkbox">
+                      <span>Only specified address</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="form-field_label">Only this address can contribute in {{tokens.base.token.token_name}}</label>
+                <div class="grid-row">
+                  <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
+                    <div class="form-field_input">
+                      <input type="text"
+                             [disabled]="!advancedForm.value.whitelist"
+                             class="min-text"
+                             maxlength="42"
+                             [pattern]="advancedForm.value.whitelist ? '0x[0-9a-fA-F]{40}' : ''"
+                             [required]="advancedForm.value.whitelist"
+                             [(ngModel)]="requestData.whitelist_address"
+                             placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
+                             name="whitelist_address">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-yellow" [disabled]="!advancedForm.valid || formIsSending" type="submit">
+                <span class="lds-ellipsis" *ngIf="formIsSending">
+                  <span class="lds-ellipsis-container">
+                    <span></span><span></span><span></span><span></span>
+                  </span>
+                </span>
+                <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                <span>
+                  Next step
+                </span>
+              </button>
+            </form>
+          </div>
+
 
           <div class="form-block"
                [ngClass]="{hidden: !(tokensForm.valid && (openedForm === 100)), checked: !editableContract}">
@@ -452,33 +565,125 @@
           </div>
 
           <div class="form-block" [ngClass]="{
-              hidden: originalContract.state !== 'WAITING_FOR_PAYMENT',
-              checked: originalContract.state === 'WAITING_FOR_DEPLOYMENT'
+              hidden: originalContract.state !== 'WAITING_FOR_ACTIVATION'
             }">
-            <div class="form-block_title">Payment</div>
-            <app-contract-form-pay
-              *ngIf="originalContract.state === 'WAITING_FOR_PAYMENT'"
-              [contractCosts]="originalContract.cost"
-              [currentUser]="currentUser"></app-contract-form-pay>
+            <div class="form-block_title">Activation</div>
 
-          </div>
+            <div class="form-block_fieldset" *ngIf="originalContract.state === 'WAITING_FOR_ACTIVATION'">
+              <div class="transaction-buttons">
 
-          <div class="form-block hidden" [ngClass]="{hidden: originalContract.state !== 'WAITING_FOR_DEPLOYMENT'}">
-            <div class="form-block_title">Contract Deployment</div>
-            <div class="form-block_fieldset">
-              <div class="deployment-progress-container">
-                <div class="progress-bubble">
-                  <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-                </div>
-                <div class="progress-text">
-                  Contract Deployment is in progress ...
-                </div>
-                <div class="progress-info_text">
-                  It can take 10&ndash;15 minutes, please wait.
+                <div class="form-field_input">
+                  <div class="grid-row">
+                    <div class="grid-cell grid-cell-vs-1-2">
+                      <a [href]="
+                          'https://vintage.myetherwallet.com/' +
+                            '?data=' + transaction.data + '&value=0&to=' + transaction.to + '#send-transaction'"
+                         target="_blank"
+                         type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
+                        <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
+                        MyEtherWallet
+                      </a>
+                    </div>
+                    <div class="grid-cell grid-cell-vs-1-2">
+                      <button type="button"
+                              [disabled]="!providedAddresses.metamask?.length"
+                              (click)="sendActivateTrx({
+                                type: 'metamask',
+                                address: providedAddresses.metamask[0]
+                              })"
+                              class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
+                        <img src="./assets/images/icons/web3clients/metamask.svg" class="btn-ico">
+                        Metamask
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
+              <div class="or-delimiter">
+                <span>OR</span>
+              </div>
+              <div class="transaction-fields">
+                <div class="form-field" *ngIf="transaction.from">
+                  <div class="form-field_label">
+                    Send transaction (0 ETH) from your management address
+                  </div>
+                  <div class="form-field_input">
+                    <div class="form-field_copy">
+                      <button type="button"
+                              class="copy-btn"
+                              [ngClass]="{copied: copiedData['owner_address']}"
+                              ngxClipboard [cbContent]="transaction.from"
+                              (cbOnSuccess)="onCopied('owner_address')">
+                        <img src="./assets/images/icons/copy.svg"/>
+                      </button>
+                    </div>
+                    <div class="form-field_input_data">
+                      <input type="text" class="min-text dark-field minimal-input"
+                             readonly
+                             [value]="transaction.from"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-field">
+                  <div class="form-field_label">
+                    <span>Send transaction (0 ETH)</span>
+                    To contract address
+                  </div>
+                  <div class="form-field_input">
+                    <div class="form-field_copy">
+                      <button type="button"
+                              class="copy-btn"
+                              [ngClass]="{copied: copiedData['contract_address']}"
+                              ngxClipboard [cbContent]="transaction.to"
+                              (cbOnSuccess)="onCopied('contract_address')">
+                        <img src="./assets/images/icons/copy.svg"/>
+                      </button>
+                    </div>
+                    <div class="form-field_input_data">
+                      <input type="text" class="min-text dark-field minimal-input"
+                             readonly
+                             [value]="transaction.to"/>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <div class="form-field_label">
+                    With data field
+                  </div>
+                  <div class="form-field_input">
+                    <div class="form-field_copy">
+                      <button type="button"
+                              class="copy-btn"
+                              [ngClass]="{copied: copiedData['data']}"
+                              ngxClipboard [cbContent]="transaction.data"
+                              (cbOnSuccess)="onCopied('data')">
+                        <img src="./assets/images/icons/copy.svg"/>
+                      </button>
+                    </div>
+                    <div class="form-field_input_data">
+                      <input type="text" class="min-text dark-field minimal-input"
+                             readonly
+                             [value]="transaction.data"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="contract-pay-state">
+                <span class="lds-ellipsis inline">
+                  <span class="lds-ellipsis-container min">
+                    <span></span><span></span><span></span><span></span>
+                  </span>
+                </span>&nbsp;&nbsp;
+                Waiting for activation
+              </div>
+
+
             </div>
+
           </div>
+
         </div>
       </div>
     </div>
