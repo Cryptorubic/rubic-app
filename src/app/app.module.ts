@@ -36,7 +36,7 @@ import { PublicContractsComponent } from './index/public-contracts/public-contra
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import {ClipboardModule} from 'ngx-clipboard';
 import { ContractFormTwoComponent } from './contract-form-two/contract-form-two.component';
-import { BigNumberDirective } from './directives/big-number/big-number.directive';
+import {BigNumberDirective, BigNumberFormat} from './directives/big-number/big-number.directive';
 import { ContractPreviewTwoComponent } from './contract-preview-two/contract-preview-two.component';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -81,6 +81,7 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ContractsListComponent,
     EtherscanUrlPipe,
     FooterComponent,
+    BigNumberFormat,
     PublicContractsComponent,
     ContractFormTwoComponent,
     BigNumberDirective,

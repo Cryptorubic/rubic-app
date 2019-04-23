@@ -212,8 +212,9 @@ export class TokenInputComponent implements OnInit {
 
       this.amount = actualVal;
 
+      const decimalsValue = valueNumber.times(Math.pow(10, this.tokenModel.token.decimals));
       const minErr = valueNumber.minus(Math.pow(10, -this.tokenModel.token.decimals)).toNumber() < 0;
-      const maxErr = valueNumber.times(Math.pow(10, this.tokenModel.token.decimals)).minus(Math.pow(2, 256) - 1).toNumber() > 0;
+      const maxErr = decimalsValue.minus(Math.pow(2, 256) - 1).toNumber() > 0;
       const decErr = splittedValue[1] && (splittedValue[1].length > this.tokenModel.token.decimals);
 
       setTimeout(() => {
@@ -225,6 +226,7 @@ export class TokenInputComponent implements OnInit {
           });
           this.tokenModel.amount = '';
         } else {
+          this.tokenModel.decimalsAmount = !valueNumber.isNaN() ? decimalsValue.toString(10) : '';
           this.tokenModel.amount = !valueNumber.isNaN() ? (valueNumber.toString(10) || '') : '';
         }
         this.TokenChange.emit(this.tokenModel);

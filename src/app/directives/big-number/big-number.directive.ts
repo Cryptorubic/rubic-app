@@ -1,4 +1,4 @@
-import {Directive, Injector, Input, OnInit} from '@angular/core';
+import {Directive, Injector, Input, OnInit, Pipe, PipeTransform} from '@angular/core';
 import {NgControl} from '@angular/forms';
 import BigNumber from 'bignumber.js';
 
@@ -48,29 +48,33 @@ export class BigNumberDirective implements OnInit {
 
       const errors: any = {};
 
+      let decimalsValue;
+
       if (!bigNumberValue || bigNumberValue.isNaN()) {
         errors.pattern = true;
       } else {
+
+        decimalsValue = bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals));
 
         if (decimalPart && (decimalPart.length > this.appBigNumber.decimals)) {
           errors.decimals = true;
         }
 
-        if (bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals)).div(Math.pow(2, 256) - 1).toNumber() > 1) {
+        if (decimalsValue.div(Math.pow(2, 256) - 1).toNumber() > 1) {
           errors.totalMaximum = true;
         }
 
-        if (bigNumberValue.minus(this.appBigNumber.min).toNumber() < 0) {
+        if (decimalsValue.minus(this.appBigNumber.min).toNumber() < 0) {
           errors.min = true;
         }
 
-        if (bigNumberValue.minus(this.appBigNumber.max).toNumber() > 0) {
+        if (decimalsValue.minus(this.appBigNumber.max).toNumber() > 0) {
           errors.max = true;
         }
       }
 
       this.latestValue = bigNumberValue;
-      const modelValue = bigNumberValue ? bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals)).toString(10) : '';
+      const modelValue = decimalsValue || '';
       this.control.control.setValue(modelValue, { emitEvent: false });
       this.control.control.setErrors((JSON.stringify(errors) !== '{}') ? errors : null);
     });
@@ -80,8 +84,25 @@ export class BigNumberDirective implements OnInit {
     return value ?
       new BigNumber(value)
         .div(Math.pow(10, this.appBigNumber.decimals))
-        .toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) : '';
+        .toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : '') : '';
   }
 
 
 }
+
+
+@Pipe({ name: 'bigNumberFormat' })
+export class BigNumberFormat implements PipeTransform {
+  transform(value, decimals, format) {
+
+    const formatNumberParams = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
+
+    const bigNumberValue = new BigNumber(value).div(Math.pow(10, decimals));
+    if (format) {
+      return bigNumberValue.toFormat(formatNumberParams);
+    } else {
+      return bigNumberValue.toString(10);
+    }
+  }
+}
+

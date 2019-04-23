@@ -103,9 +103,14 @@
                                    [ngClass]="{'without-error-lightning': activeSide !== 'base'}"
                                    [disabled]="contractInfo.baseLeft <= 0"
                                    required
-                                   ngModel
+                                   [(ngModel)]="baseAmount"
                                    name="amount"
                                    placeholder="Enter amount"
+                                   [appBigNumber]="{
+                                      decimals: tokens.base.token.decimals,
+                                      min: originalContract.contract_details.min_base_wei,
+                                      max: contractInfo.baseLeft
+                                   }"
                                    class="min-text minimal-input">
                           </div>
                         </div>
@@ -124,7 +129,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{rates.reverted.times(baseContributeForm.value.amount).toString(10) | number : '1.0-8'}}
+                            {{rates.reverted.times(fromBigNumber(baseContributeForm.value.amount, tokens.base.token.decimals)).toString(10) | number : '1.0-8'}}
                             {{tokens.quote.token.token_short_name}}
                             after SWAP
                           </span>
@@ -134,7 +139,7 @@
                         <div class="form-field">
                           <span class="action-link"
                                 [ngClass]="{invisible: contractInfo.baseLeft <= 0}"
-                                (click)="baseContributeForm.controls.amount.setValue(contractInfo.baseLeft)">
+                                (click)="baseAmount = contractInfo.baseLeft">
                             Fill all
                           </span>
                         </div>
@@ -145,7 +150,7 @@
                 <div class="contract-buttons">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')"
-                          (click)="sendRefund('refundBase')"
+                          (click)="sendRefund(tokens.base.token)"
                           type="button">
                     <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
                     <span>Refund</span>
@@ -219,14 +224,21 @@
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
                         <div class="form-field">
                           <div class="form-field_input">
+
                             <input type="text"
                                    (focus)="activeSide = 'quote'"
                                    (blur)="activeSide = false"
                                    autocomplete="off"
+                                   [disabled]="contractInfo.quoteLeft <= 0"
                                    required
                                    [ngClass]="{'without-error-lightning': activeSide !== 'quote'}"
                                    name="amount"
-                                   ngModel
+                                   [(ngModel)]="quoteAmount"
+                                   [appBigNumber]="{
+                                      decimals: tokens.quote.token.decimals,
+                                      min: originalContract.contract_details.min_quote_wei,
+                                      max: contractInfo.quoteLeft
+                                   }"
                                    placeholder="Enter amount"
                                    class="min-text minimal-input">
                           </div>
@@ -235,7 +247,7 @@
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
                         <div class="form-field">
                           <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
-                                  [disabled]="!quoteContributeForm.valid"
+                                  [disabled]="!quoteContributeForm.valid || (contractInfo.quoteLeft <= 0)"
                                   type="submit">
                             <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                             <span>Contribute</span>
@@ -246,7 +258,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{rates.normal.times(quoteContributeForm.value.amount).toString(10) | number : '1.0-8'}}
+                            {{rates.normal.times(fromBigNumber(quoteContributeForm.value.amount, tokens.quote.token.decimals)).toString(10) | number : '1.0-8'}}
                             {{tokens.base.token.token_short_name}}
                             after SWAP
                           </span>
@@ -256,7 +268,7 @@
                         <div class="form-field">
                           <span class="action-link"
                                 [ngClass]="{invisible: contractInfo.quoteLeft <= 0}"
-                                (click)="quoteContributeForm.controls.amount.setValue(contractInfo.quoteLeft)">
+                                (click)="quoteAmount = contractInfo.quoteLeft">
                             Fill all
                           </span>
                         </div>
@@ -267,7 +279,7 @@
                 <div class="contract-buttons">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')"
-                          (click)="sendRefund('refundQuote')"
+                          (click)="sendRefund(tokens.quote.token)"
                           type="button">
                     <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
                     <span>Refund</span>

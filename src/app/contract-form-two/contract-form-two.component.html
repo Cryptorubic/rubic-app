@@ -344,7 +344,7 @@
                              [appBigNumber]="{
                                 decimals: tokens.base.token.decimals,
                                 min: 0,
-                                max: tokens.base.amount
+                                max: tokens.base.decimalsAmount
                              }">
                     </div>
                   </div>
@@ -362,7 +362,7 @@
                              [appBigNumber]="{
                                 decimals: tokens.quote.token.decimals,
                                 min: 0,
-                                max: tokens.quote.amount
+                                max: tokens.quote.decimalsAmount
                              }">
                     </div>
                   </div>
@@ -545,6 +545,46 @@
                       </div>
                     </div>
                   </div>
+
+
+                  <div class="grid-cell grid-cell-1">
+                    <div class="form-field">
+                      <label class="form-field_label transparent">
+                        Minimum contribution in {{tokens.base.token.token_name}}
+                      </label>
+                      <div class="form-field_value">
+                        {{requestData.min_base_wei | bigNumberFormat : tokens.base.token.decimals : true }}
+                        {{tokens.base.token.token_short_name}}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="grid-cell grid-cell-1">
+                    <div class="form-field">
+                      <label class="form-field_label transparent">
+                        Minimum contribution in {{tokens.quote.token.token_name}}
+                      </label>
+                      <div class="form-field_value">
+                        {{requestData.min_quote_wei | bigNumberFormat : tokens.quote.token.decimals : true }}
+                        {{tokens.quote.token.token_short_name}}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="grid-cell grid-cell-1" *ngIf="originalContract.contract_details.whitelist">
+                    <div class="form-field">
+                      <label class="form-field_label transparent">
+                        Only this address can contribute in {{tokens.base.token.token_name}}
+                      </label>
+                      <div class="form-field_value">
+                        <a [href]="originalContract.contract_details.whitelist_address | etherscanUrl : 'address'"
+                           target="_blank">
+                          {{originalContract.contract_details.whitelist_address}}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
@@ -603,27 +643,7 @@
                 <span>OR</span>
               </div>
               <div class="transaction-fields">
-                <div class="form-field" *ngIf="transaction.from">
-                  <div class="form-field_label">
-                    Send transaction (0 ETH) from your management address
-                  </div>
-                  <div class="form-field_input">
-                    <div class="form-field_copy">
-                      <button type="button"
-                              class="copy-btn"
-                              [ngClass]="{copied: copiedData['owner_address']}"
-                              ngxClipboard [cbContent]="transaction.from"
-                              (cbOnSuccess)="onCopied('owner_address')">
-                        <img src="./assets/images/icons/copy.svg"/>
-                      </button>
-                    </div>
-                    <div class="form-field_input_data">
-                      <input type="text" class="min-text dark-field minimal-input"
-                             readonly
-                             [value]="transaction.from"/>
-                    </div>
-                  </div>
-                </div>
+
                 <div class="form-field">
                   <div class="form-field_label">
                     <span>Send transaction (0 ETH)</span>
@@ -643,6 +663,28 @@
                       <input type="text" class="min-text dark-field minimal-input"
                              readonly
                              [value]="transaction.to"/>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <div class="form-field_label">
+                    From your management address
+                  </div>
+                  <div class="form-field_input">
+                    <div class="form-field_copy">
+                      <button type="button"
+                              class="copy-btn"
+                              [ngClass]="{copied: copiedData['owner_address']}"
+                              ngxClipboard [cbContent]="transaction.from"
+                              (cbOnSuccess)="onCopied('owner_address')">
+                        <img src="./assets/images/icons/copy.svg"/>
+                      </button>
+                    </div>
+                    <div class="form-field_input_data">
+                      <input type="text" class="min-text dark-field minimal-input"
+                             readonly
+                             [value]="transaction.from"/>
                     </div>
                   </div>
                 </div>
