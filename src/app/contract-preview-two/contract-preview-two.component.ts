@@ -272,7 +272,7 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
     const cancelTransaction = (wallet) => {
       this.web3Service.sendTransaction({
         from: wallet.address,
-        to: this.originalContract.contract_details.eth_contract.address,
+        to: SWAPS_V2.ADDRESS,
         data: cancelSignature
       }, wallet.type).then((result) => {
         console.log(result);
@@ -287,7 +287,7 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
       data: {
         transactions: [{
           from: this.originalContract.contract_details.owner_address,
-          to: this.originalContract.contract_details.eth_contract.address,
+          to: SWAPS_V2.ADDRESS,
           data: cancelSignature,
           action: cancelTransaction
         }],

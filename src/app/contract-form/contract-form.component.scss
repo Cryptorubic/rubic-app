@@ -1,6 +1,9 @@
 @import '~@angular/material/theming';
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
+.base-block-content {
+  background-attachment: fixed;
+}
 .form-container {
   padding-left: 62px;
 

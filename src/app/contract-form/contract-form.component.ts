@@ -29,10 +29,12 @@ export interface IContractDetails {
     base: {
       token: any;
       amount: string;
+      decimalsAmount: string;
     };
     quote: {
       token: any;
       amount: string;
+      decimalsAmount: string;
     };
   };
 

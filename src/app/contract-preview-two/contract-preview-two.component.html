@@ -108,7 +108,7 @@
                                    placeholder="Enter amount"
                                    [appBigNumber]="{
                                       decimals: tokens.base.token.decimals,
-                                      min: originalContract.contract_details.min_base_wei,
+                                      min: [contractInfo.baseLeft, originalContract.contract_details.min_base_wei] | bigNumberMin,
                                       max: contractInfo.baseLeft
                                    }"
                                    class="min-text minimal-input">
@@ -215,6 +215,7 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="contract-buttons bottom-correct"
                      *ngIf="originalContract.isSwapped === false">
                   <form #quoteContributeForm="ngForm"
@@ -236,11 +237,12 @@
                                    [(ngModel)]="quoteAmount"
                                    [appBigNumber]="{
                                       decimals: tokens.quote.token.decimals,
-                                      min: originalContract.contract_details.min_quote_wei,
+                                      min: [contractInfo.quoteLeft, originalContract.contract_details.min_quote_wei] | bigNumberMin,
                                       max: contractInfo.quoteLeft
                                    }"
                                    placeholder="Enter amount"
                                    class="min-text minimal-input">
+
                           </div>
                         </div>
                       </div>

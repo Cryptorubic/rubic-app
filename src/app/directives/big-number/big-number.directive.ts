@@ -106,3 +106,17 @@ export class BigNumberFormat implements PipeTransform {
   }
 }
 
+
+@Pipe({ name: 'bigNumberMin' })
+export class BigNumberMin implements PipeTransform {
+  transform(values) {
+    return BigNumber.min.apply(null, values);
+  }
+}
+@Pipe({ name: 'bigNumberMax' })
+export class BigNumberMax implements PipeTransform {
+  transform(values) {
+    return BigNumber.max.apply(null, values);
+  }
+}
+
