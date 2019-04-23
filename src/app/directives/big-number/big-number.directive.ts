@@ -9,6 +9,7 @@ export class BigNumberDirective implements OnInit {
 
   private control: NgControl;
   private latestValue;
+  private decimalPart;
 
   private withEndPoint;
 
@@ -27,7 +28,7 @@ export class BigNumberDirective implements OnInit {
     this.control.valueAccessor.writeValue = (value) => originalWriteVal(this.maskValue(value));
 
     this.control.valueChanges.subscribe((result) => {
-
+      this.decimalPart = '';
       if (result === this.ngModel) {
         return;
       }
@@ -39,12 +40,13 @@ export class BigNumberDirective implements OnInit {
       if (bigNumberValue.isNaN()) {
         bigNumberValue = (result !== '') ? this.latestValue : '';
       } else {
-        bigNumberValue = bigNumberValue.dp(50);
-        this.withEndPoint = result.indexOf('.') === (result.length - 1);
+        bigNumberValue = bigNumberValue.dp(this.appBigNumber.decimals);
+        const fixedResult = result.replace(/\.+$/, '.');
+        this.withEndPoint = fixedResult.indexOf('.') === (fixedResult.length - 1);
       }
 
       const stringValue = bigNumberValue ? bigNumberValue.toString(10) : '';
-      const decimalPart = stringValue.split('.')[1];
+      this.decimalPart = stringValue ? result.split('.')[1] : '';
 
       const errors: any = {};
 
@@ -56,7 +58,7 @@ export class BigNumberDirective implements OnInit {
 
         decimalsValue = bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals));
 
-        if (decimalPart && (decimalPart.length > this.appBigNumber.decimals)) {
+        if (this.decimalPart && (this.decimalPart.length > this.appBigNumber.decimals)) {
           errors.decimals = true;
         }
 
@@ -74,9 +76,10 @@ export class BigNumberDirective implements OnInit {
       }
 
       this.latestValue = bigNumberValue;
-      const modelValue = decimalsValue || '';
+      const modelValue = decimalsValue ? decimalsValue.toString(10) : '';
       this.control.control.setValue(modelValue, { emitEvent: false });
       this.control.control.setErrors((JSON.stringify(errors) !== '{}') ? errors : null);
+
     });
   }
 
@@ -84,7 +87,7 @@ export class BigNumberDirective implements OnInit {
     return value ?
       new BigNumber(value)
         .div(Math.pow(10, this.appBigNumber.decimals))
-        .toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : '') : '';
+        .toFormat(this.decimalPart ? this.decimalPart.length : 0, {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : '') : '';
   }
 
 

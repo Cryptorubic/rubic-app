@@ -72,6 +72,16 @@ const routes: Routes = [
       support: true
     }
   }, {
+    path: 'public-v2/:public_link',
+    component: ContractPreviewTwoComponent,
+    resolve: {
+      contract: ContractEditResolver
+    },
+    data: {
+      supportHide: 1024,
+      support: true
+    }
+  }, {
     path: 'contracts',
     component: ContractsListComponent,
     resolve: {

@@ -37,15 +37,7 @@
       <div class="grid-cell grid-cell-1-5">
         <div class="steps-mobile_item"
              [ngClass]="{
-                'checked': originalContract.state === 'WAITING_FOR_DEPLOYMENT',
                 'opened': openedForm === 101
-            }"></div>
-      </div>
-      <div class="grid-cell grid-cell-1-5">
-        <div class="steps-mobile_item"
-             [ngClass]="{
-                'checked': originalContract.state === 'WAITING_FOR_DEPLOYMENT',
-                'opened': openedForm === 102
             }"></div>
       </div>
     </div>
@@ -339,6 +331,7 @@
                   <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
                     <div class="form-field_input">
                       <input type="text"
+                             placeholder="0"
                              name="min_base_wei"
                              [(ngModel)]="requestData.min_base_wei"
                              [appBigNumber]="{
@@ -357,6 +350,7 @@
                   <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
                     <div class="form-field_input">
                       <input type="text"
+                             placeholder="0"
                              name="min_quote_wei"
                              [(ngModel)]="requestData.min_quote_wei"
                              [appBigNumber]="{
@@ -370,7 +364,7 @@
               </div>
 
               <div class="form-field">
-                <label class="form-field_label">Contribution limit in Ethereum</label>
+                <label class="form-field_label">Contribution limit in {{tokens.base.token.token_name}}</label>
                 <div class="grid-row">
                   <div class="grid-cell">
                     <div class="form-field_input">
@@ -704,9 +698,8 @@
                       </button>
                     </div>
                     <div class="form-field_input_data">
-                      <input type="text" class="min-text dark-field minimal-input"
-                             readonly
-                             [value]="transaction.data"/>
+                      <textarea class="min-text dark-field minimal-input"
+                                readonly>{{transaction.data}}</textarea>
                     </div>
                   </div>
                 </div>

@@ -83,7 +83,6 @@ export class ContractFormTwoComponent extends ContractFormComponent {
     this.originalContract = contract;
     this.originalContract.contract_details.tokens_info = tokensInfo;
 
-    console.log(contract.state);
     switch (contract.state) {
       case 'CREATED':
         this.gotToForm(100);
@@ -94,8 +93,7 @@ export class ContractFormTwoComponent extends ContractFormComponent {
         this.checkContractState();
         this.generateActivateTrx();
         break;
-      case 'ACTIVE':
-      case 'POSTPONED':
+      default:
         this.router.navigate(['/contract-v2/' + contract.id]);
         break;
     }

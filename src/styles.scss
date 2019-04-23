@@ -449,7 +449,7 @@ a:not(.btn):not(.minimal-btn) {
         }
       }
     }
-    input:not([type="checkbox"]):not([type="radio"]) {
+    input:not([type="checkbox"]):not([type="radio"]), textarea {
       box-sizing: border-box;
       background-color: #fff;
       border: 1px solid #fff;
@@ -499,7 +499,11 @@ a:not(.btn):not(.minimal-btn) {
         line-height: 19px;
       }
     }
-    input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]) {
+    textarea {
+      resize: none;
+      height: 233px;
+    }
+    input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]), textarea {
       width: 100%;
       &[disabled] {
         opacity: 0.5;
@@ -627,7 +631,7 @@ a:not(.btn):not(.minimal-btn) {
     float: right;
     text-align: center;
     width: 40px;
-    line-height: 60px;
+    line-height: 43px;
   }
   &_copy + &_input_data {
     margin-right: 40px;

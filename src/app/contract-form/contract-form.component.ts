@@ -440,14 +440,17 @@ export class ContractEditResolver implements Resolve<any> {
       let newState;
       switch (result.contract_type) {
         case 21:
-          console.log(result.state);
           switch (result.state) {
             case 'CREATED':
             case 'WAITING_FOR_ACTIVATION':
               newState = `/view-v2/${result.id}`;
               break;
             default:
-              newState = `/contract-v2/${result.id}`;
+              if (isPublic) {
+                newState = `/public-v2/${this.publicLink}`;
+              } else {
+                newState = `/contract-v2/${result.id}`;
+              }
               break;
           }
           break;
@@ -459,7 +462,11 @@ export class ContractEditResolver implements Resolve<any> {
               newState = `/view/${result.id}`;
               break;
             default:
-              newState = `/contract/${result.id}`;
+              if (isPublic) {
+                newState = `/public/${this.publicLink}`;
+              } else {
+                newState = `/contract/${result.id}`;
+              }
               break;
           }
           break;
