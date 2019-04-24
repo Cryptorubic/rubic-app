@@ -87,10 +87,10 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="contract-buttons bottom-correct"
-                     *ngIf="originalContract.isSwapped === false">
+                     *ngIf="(originalContract.isSwapped === false) && (originalContract.state === 'ACTIVE') && (contractInfo.baseLeft > 0)">
                   <form #baseContributeForm="ngForm"
-                        *ngIf="(originalContract.state === 'ACTIVE')"
                         (submit)="sendContribute(baseContributeForm.value.amount, 'base')">
                     <div class="grid-row">
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
@@ -101,7 +101,6 @@
                                    (focus)="activeSide = 'base'"
                                    (blur)="activeSide = false"
                                    [ngClass]="{'without-error-lightning': activeSide !== 'base'}"
-                                   [disabled]="contractInfo.baseLeft <= 0"
                                    required
                                    [(ngModel)]="baseAmount"
                                    name="amount"
@@ -118,14 +117,16 @@
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
                         <div class="form-field">
                           <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
-                                  [disabled]="!baseContributeForm.valid || contractInfo.baseLeft <= 0"
+                                  [disabled]="!baseContributeForm.valid"
+                                  [value]="contractInfo.baseLeft <= 0 ? '' : undefined"
                                   type="submit">
                             <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                             <span>Contribute</span>
                           </button>
                         </div>
                       </div>
-                      <div class="grid-cell grid-cell-1" *ngIf="baseContributeForm.value.amount">
+                      <div class="grid-cell grid-cell-1"
+                           *ngIf="baseContributeForm.value.amount">
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
@@ -147,9 +148,9 @@
                     </div>
                   </form>
                 </div>
-                <div class="contract-buttons">
+                <div class="contract-buttons"
+                     *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
-                          *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')"
                           (click)="sendRefund(tokens.base.token)"
                           type="button">
                     <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
@@ -217,9 +218,8 @@
                 </div>
 
                 <div class="contract-buttons bottom-correct"
-                     *ngIf="originalContract.isSwapped === false">
+                     *ngIf="(originalContract.isSwapped === false) && (originalContract.state === 'ACTIVE') && (contractInfo.quoteLeft > 0)">
                   <form #quoteContributeForm="ngForm"
-                        *ngIf="(originalContract.state === 'ACTIVE')"
                         (submit)="sendContribute(quoteContributeForm.value.amount, 'quote')">
                     <div class="grid-row">
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
@@ -230,7 +230,6 @@
                                    (focus)="activeSide = 'quote'"
                                    (blur)="activeSide = false"
                                    autocomplete="off"
-                                   [disabled]="contractInfo.quoteLeft <= 0"
                                    required
                                    [ngClass]="{'without-error-lightning': activeSide !== 'quote'}"
                                    name="amount"
@@ -249,7 +248,7 @@
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
                         <div class="form-field">
                           <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
-                                  [disabled]="!quoteContributeForm.valid || (contractInfo.quoteLeft <= 0)"
+                                  [disabled]="!quoteContributeForm.valid"
                                   type="submit">
                             <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                             <span>Contribute</span>
@@ -278,9 +277,9 @@
                     </div>
                   </form>
                 </div>
-                <div class="contract-buttons">
+                <div class="contract-buttons"
+                     *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
-                          *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')"
                           (click)="sendRefund(tokens.quote.token)"
                           type="button">
                     <img class="arrow" src="./assets/images/buttons/arrow_w.svg">

@@ -62,8 +62,7 @@
                       <div class="form-field_input">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.token.address" name="base_address">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.amount" name="base_limit">
-                        <app-token-input [tokenModel]="requestData.tokens_info.base"
-                                         [updateModel]="changeModel"></app-token-input>
+                        <app-token-input [tokenModel]="requestData.tokens_info.base"></app-token-input>
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
@@ -114,8 +113,7 @@
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.token.address" name="quote_address">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.amount" name="quote_limit">
 
-                        <app-token-input [tokenModel]="requestData.tokens_info.quote"
-                                         [updateModel]="changeModel"></app-token-input>
+                        <app-token-input [tokenModel]="requestData.tokens_info.quote"></app-token-input>
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
@@ -166,7 +164,7 @@
                         requestData.tokens_info.quote.amount">
                       <span>
                         Rate:
-                        {{(requestData.tokens_info.base.amount / requestData.tokens_info.quote.amount) | number : '1.0-4'}}
+                        {{checkRate()  | bigNumberFormat : 0 : true}}
                         {{requestData.tokens_info.base.token.token_short_name}} / 1 {{requestData.tokens_info.quote.token.token_short_name}}
                       </span>
                   <button class="revert-btn" (click)="revertCoins()" type="button">
@@ -345,21 +343,21 @@
 
                 <div class="token-info_balance info-content-block">
                   <span class="token-info_balance_title">You have</span>
-                  <span class="token-info_balance_count">{{tokens.base.amount | number}}</span>
+                  <span class="token-info_balance_count">{{tokens.base.amount | bigNumberFormat : tokens.base.token.decimals : true}}</span>
                 </div>
 
                 <div class="form-field_description info-content-block">
-                    <span>
-                      <span>Rate:</span>
-                      <span *ngIf="!revertedRate">
-                        {{(tokens.base.amount / tokens.quote.amount) | number : '1.0-4'}}
-                        {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
-                      </span>
-                      <span *ngIf="revertedRate">
-                        {{(tokens.quote.amount / tokens.base.amount) | number : '1.0-4'}}
-                        {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
-                      </span>
+                  <span>
+                    <span>Rate:</span>
+                    <span *ngIf="!revertedRate">
+                      {{checkRate()  | bigNumberFormat : 0 : true}}
+                      {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
                     </span>
+                    <span *ngIf="revertedRate">
+                      {{checkRate(true)  | bigNumberFormat : 0 : true}}
+                      {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
+                    </span>
+                  </span>
                   <button class="revert-btn" (click)="revertedRate = !revertedRate">
                     <img src="./assets/images/icons/revert.svg">
                   </button>
@@ -384,7 +382,7 @@
                 </div>
                 <div class="token-info_balance info-content-block">
                   <span class="token-info_balance_title">You want to get</span>
-                  <span class="token-info_balance_count">{{tokens.quote.amount | number}}</span>
+                  <span class="token-info_balance_count">{{tokens.quote.amount  | bigNumberFormat : tokens.quote.token.decimals : true}}</span>
                 </div>
               </div>
 

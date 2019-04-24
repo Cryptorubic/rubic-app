@@ -25,7 +25,7 @@
       <div class="form-field">
         <label class="form-field_label">You want to get</label>
         <div class="form-field_input">
-          <app-token-input [(tokenModel)]="tokensData.quote" (TokenChange)="changedToken()"></app-token-input>
+          <app-token-input [(tokenModel)]="tokensData.quote"></app-token-input>
         </div>
         <div class="form-field_description"
              *ngIf="tokensData.base.token.address && tokensData.quote.token.address && tokensData.base.amount && tokensData.quote.amount"
@@ -47,7 +47,7 @@
         <a class="btn btn-white-opacity width-100 white-border" routerLink="create">
           <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
           <span>
-            Create private SWAP
+            Create Private SWAP
           </span>
         </a>
       </div>

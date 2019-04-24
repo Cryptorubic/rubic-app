@@ -449,7 +449,7 @@ a:not(.btn):not(.minimal-btn) {
         }
       }
     }
-    input:not([type="checkbox"]):not([type="radio"]), textarea {
+    input:not([type="checkbox"]):not([type="radio"]), textarea, .textarea {
       box-sizing: border-box;
       background-color: #fff;
       border: 1px solid #fff;
@@ -503,7 +503,12 @@ a:not(.btn):not(.minimal-btn) {
       resize: none;
       height: 233px;
     }
-    input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]), textarea {
+
+    .textarea {
+      word-break: break-all;
+    }
+
+    input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]), textarea, .textarea {
       width: 100%;
       &[disabled] {
         opacity: 0.5;

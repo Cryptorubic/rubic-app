@@ -15,6 +15,7 @@ export class BigNumberDirective implements OnInit {
 
   @Input ('appBigNumber') appBigNumber;
   @Input ('ngModel') ngModel;
+  @Input ('decimalsChange') decimalsChange;
 
   constructor(
     private injector: Injector,
@@ -27,9 +28,23 @@ export class BigNumberDirective implements OnInit {
     const originalWriteVal = this.control.valueAccessor.writeValue.bind(this.control.valueAccessor);
     this.control.valueAccessor.writeValue = (value) => originalWriteVal(this.maskValue(value));
 
+
+    if (this.decimalsChange) {
+      this.decimalsChange.subscribe((tokenInfo) => {
+        if (this.latestValue) {
+          this.appBigNumber.decimals = tokenInfo.token.decimals;
+          this.control.control.setValue(
+            this.latestValue.toString(10)
+          );
+        }
+      });
+    }
+
+
     this.control.valueChanges.subscribe((result) => {
-      this.decimalPart = '';
+
       if (result === this.ngModel) {
+        this.latestValue = (new BigNumber(result)).div(Math.pow(10, this.appBigNumber.decimals));
         return;
       }
 
@@ -43,10 +58,12 @@ export class BigNumberDirective implements OnInit {
         bigNumberValue = bigNumberValue.dp(this.appBigNumber.decimals);
         const fixedResult = result.replace(/\.+$/, '.');
         this.withEndPoint = fixedResult.indexOf('.') === (fixedResult.length - 1);
+
+        const stringValue = bigNumberValue ? bigNumberValue.toString(10) : '';
+        this.decimalPart = stringValue ? result.split('.')[1] : '';
       }
 
-      const stringValue = bigNumberValue ? bigNumberValue.toString(10) : '';
-      this.decimalPart = stringValue ? result.split('.')[1] : '';
+
 
       const errors: any = {};
 
@@ -58,9 +75,9 @@ export class BigNumberDirective implements OnInit {
 
         decimalsValue = bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals));
 
-        if (this.decimalPart && (this.decimalPart.length > this.appBigNumber.decimals)) {
-          errors.decimals = true;
-        }
+        // if (this.decimalPart && (this.decimalPart.length > this.appBigNumber.decimals)) {
+        //   errors.decimals = true;
+        // }
 
         if (decimalsValue.div(Math.pow(2, 256) - 1).toNumber() > 1) {
           errors.totalMaximum = true;
@@ -87,24 +104,28 @@ export class BigNumberDirective implements OnInit {
     return value ?
       new BigNumber(value)
         .div(Math.pow(10, this.appBigNumber.decimals))
-        .toFormat(this.decimalPart ? this.decimalPart.length : 0, {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : '') : '';
+        .toFormat(
+          Math.min(this.decimalPart ? this.decimalPart.length : 0, this.appBigNumber.decimals),
+          {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : ''
+      ) : '';
   }
-
 
 }
 
 
 @Pipe({ name: 'bigNumberFormat' })
 export class BigNumberFormat implements PipeTransform {
-  transform(value, decimals, format) {
+  transform(value, decimals, format, asBN) {
 
     const formatNumberParams = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
 
     const bigNumberValue = new BigNumber(value).div(Math.pow(10, decimals));
     if (format) {
       return bigNumberValue.toFormat(formatNumberParams);
-    } else {
+    } else if (!asBN) {
       return bigNumberValue.toString(10);
+    } else {
+      return bigNumberValue;
     }
   }
 }

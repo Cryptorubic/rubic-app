@@ -109,9 +109,9 @@
                 </button>
               </div>
               <div class="form-field_input_data">
-                <input type="text" class="min-text dark-field minimal-input"
-                       readonly
-                       [value]="transaction.data"/>
+                <div class="textarea min-text dark-field minimal-input">
+                  {{ transaction.data }}
+                </div>
               </div>
             </div>
           </div>

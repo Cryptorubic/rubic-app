@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker} from '@angular/material';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {ContractsService} from '../services/contracts/contracts.service';
@@ -13,7 +13,6 @@ import {TokenInfoInterface, Web3Service} from '../services/web3/web3.service';
 import {HttpService} from '../services/http/http.service';
 
 import BigNumber from 'bignumber.js';
-import {NgForm} from '@angular/forms';
 
 export interface IContractDetails {
   base_address?: string;
@@ -89,6 +88,9 @@ export const MY_FORMATS = {
 })
 export class ContractFormComponent implements AfterContentInit, OnInit, OnDestroy {
 
+  @Output() BaseTokenChange = new EventEmitter<string>();
+  @Output() QuoteTokenChange = new EventEmitter<string>();
+
   constructor(
     protected contractsService: ContractsService,
     private userService: UserService,
@@ -144,7 +146,6 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
   private updateContractTimer;
 
-  public changeModel = new EventEmitter<any>();
   public customTokens;
   public openedCustomTokens: {
     base: boolean;
@@ -264,13 +265,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
   public revertCoins() {
     const baseCoin = this.requestData.tokens_info.base;
-
     this.requestData.tokens_info.base = this.requestData.tokens_info.quote;
     this.requestData.tokens_info.quote = baseCoin;
-
-    setTimeout(() => {
-      this.changeModel.emit();
-    });
   }
 
 
@@ -324,10 +320,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     this.formData.contract_details = {...tokenForm.value};
     this.formData.contract_details.public = !!this.extraForm.value.public;
     this.formData.contract_details.stop_date = this.extraForm.value.active_to.utc().format('YYYY-MM-DD HH:mm');
-    this.formData.contract_details.base_limit = (new BigNumber(this.requestData.tokens_info.base.amount)).
-      times(Math.pow(10, this.requestData.tokens_info.base.token.decimals)).toString(10);
-    this.formData.contract_details.quote_limit = (new BigNumber(this.requestData.tokens_info.quote.amount)).
-      times(Math.pow(10, this.requestData.tokens_info.quote.token.decimals)).toString(10);
+    this.formData.contract_details.base_limit = this.requestData.tokens_info.base.amount;
+    this.formData.contract_details.quote_limit = this.requestData.tokens_info.quote.amount;
 
     this.formData.contract_details.owner_address = this.extraForm.value.owner_address;
     this.formData.name = this.requestData.tokens_info.base.token.token_short_name + '<>' + this.requestData.tokens_info.quote.token.token_short_name;
@@ -400,6 +394,31 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
     if (this.updateContractTimer) {
       window.clearTimeout(this.updateContractTimer);
+    }
+  }
+
+  public checkRate(revert?) {
+
+    const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount)
+      .div(Math.pow(10, this.requestData.tokens_info.base.token.decimals));
+
+    const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount)
+      .div(Math.pow(10, this.requestData.tokens_info.quote.token.decimals));
+
+    return !revert ?
+      baseCoinAmount.div(quoteCoinAmount).dp(4) :
+      quoteCoinAmount.div(baseCoinAmount).dp(4);
+  }
+
+
+  public changedToken(coin) {
+    switch (coin) {
+      case 'base':
+        this.BaseTokenChange.emit(this.requestData.tokens_info[coin]);
+        break;
+      case 'quote':
+        this.QuoteTokenChange.emit(this.requestData.tokens_info[coin]);
+        break;
     }
   }
 
@@ -479,7 +498,7 @@ export class ContractEditResolver implements Resolve<any> {
       this.web3Service.getFullTokenInfo(result.contract_details.quote_address).then((token: TokenInfoInterface) => {
         result.contract_details.tokens_info.quote = {
           token,
-          amount: new BigNumber(result.contract_details.quote_limit).div(Math.pow(10, token.decimals)).toString()
+          amount: result.contract_details.quote_limit
         };
         if (result.contract_details.tokens_info.base) {
           observer.complete();
@@ -489,7 +508,7 @@ export class ContractEditResolver implements Resolve<any> {
       this.web3Service.getFullTokenInfo(result.contract_details.base_address).then((token: TokenInfoInterface) => {
         result.contract_details.tokens_info.base = {
           token,
-          amount: new BigNumber(result.contract_details.base_limit).div(Math.pow(10, token.decimals)).toString()
+          amount: result.contract_details.base_limit
         };
         if (result.contract_details.tokens_info.quote) {
           observer.complete();
@@ -530,4 +549,5 @@ export class ContractEditResolver implements Resolve<any> {
       });
     }
   }
+
 }

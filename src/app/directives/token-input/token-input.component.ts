@@ -23,11 +23,7 @@ export interface ITokenInfo {
 export class TokenInputComponent implements OnInit {
 
   @Input('tokenModel') public tokenModel: any;
-  @Input('updateModel') public updateModel: any;
   @Input() public tokenGroup: any;
-
-  @ViewChild('amountForm') public amountForm: any;
-
 
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
@@ -35,9 +31,8 @@ export class TokenInputComponent implements OnInit {
   constructor(
     private httpService: HttpService
   ) {
+    this.tokensList = [];
   }
-
-  public amount;
 
   public visibleInput: boolean;
   public tokensList: ITokenInfo[];
@@ -47,32 +42,13 @@ export class TokenInputComponent implements OnInit {
 
   @Output() TokenChange = new EventEmitter<string>();
 
-
-  private oldValue;
-  private amountControl: AbstractControl;
-
   private searchSubscriber;
 
 
   ngOnInit() {
-    let amount;
-
     this.tokenField.nativeElement.addEventListener('blur', () => {
       this.listIsOpened = false;
     });
-
-    if (this.updateModel) {
-      this.updateModel.subscribe(() => {
-        amount = this.tokenModel.amount;
-        this.transformValue(amount);
-      });
-    }
-    this.tokensList = [];
-    if (!this.tokenModel.amount) {
-      return;
-    }
-    amount = this.tokenModel.amount;
-    this.transformValue(amount);
   }
   public searchToken(q) {
     this.listIsOpened = false;
@@ -180,57 +156,6 @@ export class TokenInputComponent implements OnInit {
       } else if (activeItem.offsetTop < listTokensNode.scrollTop) {
         listTokensNode.scroll(0, activeItem.offsetTop);
       }
-    });
-  }
-
-  public transformValue(event) {
-    let value = event ? event.replace(/,/g, '') : undefined;
-    const withoutDotValue = (value !== undefined) ? value.replace(/^[0]+(.*)\.+$/, '$1') : '';
-
-    if (isNaN(withoutDotValue)) {
-      value = this.oldValue || '';
-    } else if (this.oldValue !== value) {
-      this.oldValue = value;
-    }
-
-    value = value || '';
-    const splittedValue = value.split('.');
-
-    const valueNumber = new BigNumber(value);
-
-    let actualVal = !valueNumber.isNaN() ?
-      valueNumber.toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) : '';
-
-    if ((splittedValue[1] !== undefined) && !splittedValue[1]) {
-      actualVal += '.';
-    }
-
-    this.amountField.nativeElement.value = actualVal;
-
-    setTimeout(() => {
-      this.amountField.nativeElement.value = actualVal;
-
-      this.amount = actualVal;
-
-      const decimalsValue = valueNumber.times(Math.pow(10, this.tokenModel.token.decimals));
-      const minErr = valueNumber.minus(Math.pow(10, -this.tokenModel.token.decimals)).toNumber() < 0;
-      const maxErr = decimalsValue.minus(Math.pow(2, 256) - 1).toNumber() > 0;
-      const decErr = splittedValue[1] && (splittedValue[1].length > this.tokenModel.token.decimals);
-
-      setTimeout(() => {
-        if (minErr || maxErr || decErr) {
-          this.amountForm.controls.amountField.setErrors({
-            min: minErr || null,
-            max: maxErr || null,
-            decimals: decErr || null
-          });
-          this.tokenModel.amount = '';
-        } else {
-          this.tokenModel.decimalsAmount = !valueNumber.isNaN() ? decimalsValue.toString(10) : '';
-          this.tokenModel.amount = !valueNumber.isNaN() ? (valueNumber.toString(10) || '') : '';
-        }
-        this.TokenChange.emit(this.tokenModel);
-      });
     });
   }
 

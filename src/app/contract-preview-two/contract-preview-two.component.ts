@@ -292,7 +292,7 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
           action: cancelTransaction
         }],
         title: 'Cancel',
-        description: 'To Cancel the swap you need to make the transaction from the management address'
+        description: 'To cancel the swap you need to make the transaction from the management address'
       }
     });
   }

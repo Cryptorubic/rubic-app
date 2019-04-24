@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Web3Service} from '../../services/web3/web3.service';
 
 @Component({
@@ -6,7 +6,7 @@ import {Web3Service} from '../../services/web3/web3.service';
   templateUrl: './start-form.component.html',
   styleUrls: ['./start-form.component.scss']
 })
-export class StartFormComponent implements OnInit {
+export class StartFormComponent implements OnInit, OnDestroy {
   public tokensData;
   constructor(
     private web3Service: Web3Service
@@ -39,5 +39,9 @@ export class StartFormComponent implements OnInit {
         this.changedToken();
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.changedToken();
   }
 }

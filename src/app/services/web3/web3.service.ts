@@ -127,7 +127,7 @@ export class Web3Service {
       token_short_name: tokenInfo.symbol,
       token_name: tokenInfo.name,
       address: tokenInfo.address,
-      decimals: tokenInfo.decimals,
+      decimals: parseInt(tokenInfo.decimals, 10),
       isEther: tokenInfo.address === '0x0000000000000000000000000000000000000000'
     } : false;
   }
@@ -253,15 +253,20 @@ export class Web3Service {
     return this.Web3.eth.abi.encodeFunctionCall(abi, data);
   }
 
+  public setDefaultAddress(address) {
+    this.Web3.eth.defaultAccount = address;
+  }
+
   public sendTransaction(transactionConfig, provider?) {
     if (provider) {
-      this.Web3.setProvider(this.providers[provider]);
+      this.Web3.eth.setProvider(this.providers[provider]);
     }
     return this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
-      if (provider) {
-        this.Web3.setProvider(this.providers.infura);
-      }
       return result;
+    }).finally(() => {
+      if (provider) {
+        this.Web3.eth.setProvider(this.providers.infura);
+      }
     });
   }
 
@@ -297,12 +302,13 @@ export class EthTokenValidatorDirective implements AsyncValidator {
     ctrl: AbstractControl
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     return this.web3Service.getFullTokenInfo(ctrl.value).then((result: any) => {
-
       if (result) {
         this.TokenResolve.emit(result);
         return null;
       } else {
-        return result;
+        return {
+          token: true
+        };
       }
     });
   }
