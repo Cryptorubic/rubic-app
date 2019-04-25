@@ -71,12 +71,13 @@ export class BigNumberDirective implements OnInit {
       let decimalsValue;
 
       if (!bigNumberValue || bigNumberValue.isNaN()) {
-        errors.pattern = true;
+        if (bigNumberValue) {
+          errors.pattern = true;
+        }
       } else {
 
         if (this.decimalPart && (this.decimalPart.length > this.appBigNumber.decimals)) {
-          // errors.decimals = true;
-          bigNumberValue = bigNumberValue.dp(this.appBigNumber.decimals, 3);
+          bigNumberValue = bigNumberValue.dp(this.appBigNumber.decimals);
         }
 
         decimalsValue = bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals));
@@ -98,11 +99,11 @@ export class BigNumberDirective implements OnInit {
       const modelValue = decimalsValue ? decimalsValue.toString(10) : '';
 
       if (JSON.stringify(errors) === '{}') {
-        this.control.control.setErrors(null);
         this.control.control.setValue(modelValue, { emitEvent: false });
+        this.control.control.setErrors(null);
       } else {
-        this.control.control.setErrors(errors);
         this.control.control.setValue('', { emitEvent: false });
+        this.control.control.setErrors(errors);
       }
 
     });
@@ -116,7 +117,6 @@ export class BigNumberDirective implements OnInit {
     return visibleValue ?
       visibleValue.toFormat(
           Math.min(this.decimalPart ? this.decimalPart.length : 0, this.appBigNumber.decimals),
-        3,
           {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : ''
       ) : '';
   }
@@ -133,7 +133,7 @@ export class BigNumberFormat implements PipeTransform {
     const bigNumberValue = new BigNumber(value).div(Math.pow(10, decimals));
 
     if (format) {
-      return bigNumberValue.toFormat(formatNumberParams);
+      return bigNumberValue.dp(round || decimals).toFormat(formatNumberParams);
     } else if (!asBN) {
       return bigNumberValue.toString(10);
     } else {

@@ -13,11 +13,11 @@
           <span class="form-field_description rate-info">
             Rate:
             <span *ngIf="!revertedRate">
-              {{ rates.normal.toFormat(4, rateFormat) }}
+              {{ rates.normal.dp(4).toFormat(rateFormat) }}
               {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
             </span>
             <span *ngIf="revertedRate">
-              {{ rates.reverted.toFormat(4, rateFormat) }}
+              {{ rates.reverted.dp(4).toFormat(rateFormat) }}
               {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
             </span>
 
@@ -129,7 +129,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{rates.reverted.times(baseContributeForm.value.amount) | bigNumberFormat : tokens.base.token.decimals : true}}
+                            {{quoteWillGetValue(baseContributeForm.value.amount) | bigNumberFormat : tokens.quote.token.decimals : true }}
                             {{tokens.quote.token.token_short_name}}
                             after SWAP
                           </span>
@@ -276,7 +276,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{rates.normal.times(quoteContributeForm.value.amount) | bigNumberFormat : tokens.quote.token.decimals : true}}
+                            {{baseWillGetValue(quoteContributeForm.value.amount) | bigNumberFormat : tokens.base.token.decimals : true }}
                             {{tokens.base.token.token_short_name}}
                             after SWAP
                           </span>

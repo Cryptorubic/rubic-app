@@ -129,8 +129,8 @@ export class ContractFormTwoComponent extends ContractFormComponent {
       details.quote_limit,
       (new Date(details.stop_date)).getTime(),
       details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
-      details.min_base_wei,
-      details.min_quote_wei
+      details.min_base_wei || '0',
+      details.min_quote_wei || '0'
     ];
 
     const methodSignature = this.web3Service.encodeFunctionCall(interfaceMethod, this.trxRequest);

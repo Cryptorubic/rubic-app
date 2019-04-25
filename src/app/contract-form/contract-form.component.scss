@@ -1,6 +1,8 @@
 @import '~@angular/material/theming';
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
+@import '../transaction/transaction.component';
+
 .base-block-content {
   background-attachment: fixed;
 }

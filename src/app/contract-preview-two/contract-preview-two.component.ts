@@ -64,7 +64,6 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
       normal: baseAmount.div(quoteAmount),
       reverted: quoteAmount.div(baseAmount)
     };
-
   }
 
 
@@ -440,6 +439,17 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
       panelClass: 'custom-dialog-container',
       data: this.originalContract
     });
+  }
+
+
+  public quoteWillGetValue(amount) {
+    const details = this.originalContract.contract_details;
+    return new BigNumber(amount).div(details.tokens_info.base.amount).times(details.tokens_info.quote.amount);
+  }
+
+  public baseWillGetValue(amount) {
+    const details = this.originalContract.contract_details;
+    return new BigNumber(amount).div(details.tokens_info.quote.amount).times(details.tokens_info.base.amount);
   }
 
 }

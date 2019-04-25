@@ -333,7 +333,6 @@
                     <div class="form-field_input">
                       <input type="text"
                              placeholder="0"
-                             required
                              name="min_base_wei"
                              [decimalsChange]="BaseTokenChange"
                              [(ngModel)]="requestData.min_base_wei"
@@ -354,7 +353,6 @@
                     <div class="form-field_input">
                       <input type="text"
                              placeholder="0"
-                             required
                              name="min_quote_wei"
                              [decimalsChange]="QuoteTokenChange"
                              [(ngModel)]="requestData.min_quote_wei"
@@ -554,7 +552,7 @@
                         Minimum contribution in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
                       </label>
                       <div class="form-field_value">
-                        {{requestData.min_base_wei | bigNumberFormat : tokens.base.token.decimals : true }}
+                        {{(requestData.min_base_wei || 0) | bigNumberFormat : tokens.base.token.decimals : true }}
                         {{tokens.base.token.token_short_name}}
                       </div>
                     </div>
@@ -566,7 +564,7 @@
                         Minimum contribution in {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
                       </label>
                       <div class="form-field_value">
-                        {{requestData.min_quote_wei | bigNumberFormat : tokens.quote.token.decimals : true }}
+                        {{(requestData.min_quote_wei || 0) | bigNumberFormat : tokens.quote.token.decimals : true }}
                         {{tokens.quote.token.token_short_name}}
                       </div>
                     </div>
@@ -718,14 +716,10 @@
                     <span></span><span></span><span></span><span></span>
                   </span>
                 </span>&nbsp;&nbsp;
-                Waiting for activation
+                Waiting for initialization
               </div>
-
-
             </div>
-
           </div>
-
         </div>
       </div>
     </div>

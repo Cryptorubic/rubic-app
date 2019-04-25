@@ -420,4 +420,15 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     });
   }
 
+  public quoteWillGetValue(amount) {
+    const details = this.originalContract.contract_details;
+    return new BigNumber(amount).div(details.tokens_info.base.amount).times(details.tokens_info.quote.amount);
+  }
+
+  public baseWillGetValue(amount) {
+    const details = this.originalContract.contract_details;
+    return new BigNumber(amount).div(details.tokens_info.quote.amount).times(details.tokens_info.base.amount);
+  }
+
+
 }

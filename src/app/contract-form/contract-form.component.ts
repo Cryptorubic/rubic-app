@@ -331,6 +331,10 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
         ...this.formData.contract_details,
         ...advancedForm.value
       };
+
+      this.formData.contract_details.min_quote_wei = this.formData.contract_details.min_quote_wei || '0';
+      this.formData.contract_details.min_base_wei = this.formData.contract_details.min_base_wei || '0';
+
     }
 
     if (this.currentUser.is_ghost) {

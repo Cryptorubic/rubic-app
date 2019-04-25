@@ -127,7 +127,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{rates.reverted.times(baseContributeForm.value.amount) | bigNumberFormat : tokens.base.token.decimals : true}}
+                            {{quoteWillGetValue(baseContributeForm.value.amount) | bigNumberFormat : tokens.quote.token.decimals : true }}
                             {{tokens.quote.token.token_short_name}}
                             after SWAP
                           </span>
@@ -257,7 +257,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{rates.normal.times(quoteContributeForm.value.amount) | bigNumberFormat : tokens.quote.token.decimals : true}}
+                            {{baseWillGetValue(quoteContributeForm.value.amount) | bigNumberFormat : tokens.base.token.decimals : true }}
                             {{tokens.base.token.token_short_name}}
                             after SWAP
                           </span>

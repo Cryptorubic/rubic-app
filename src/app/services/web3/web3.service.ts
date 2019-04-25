@@ -261,12 +261,16 @@ export class Web3Service {
     if (provider) {
       this.Web3.eth.setProvider(this.providers[provider]);
     }
-    return this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
-      return result;
-    }).finally(() => {
-      if (provider) {
-        this.Web3.eth.setProvider(this.providers.infura);
-      }
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
+          resolve(result);
+        }).finally(() => {
+          if (provider) {
+            this.Web3.eth.setProvider(this.providers.infura);
+          }
+        });
+      });
     });
   }
 
