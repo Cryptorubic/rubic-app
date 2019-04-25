@@ -49,7 +49,8 @@ const routes: Routes = [
     },
     data: {
       supportHide: 1024,
-      support: true
+      support: true,
+      hideInstruction: true
     }
   }, {
     path: 'contract-v2/:id',
@@ -59,7 +60,8 @@ const routes: Routes = [
     },
     data: {
       supportHide: 1024,
-      support: true
+      support: true,
+      hideInstruction: true
     }
   }, {
     path: 'public/:public_link',
@@ -69,7 +71,8 @@ const routes: Routes = [
     },
     data: {
       supportHide: 1024,
-      support: true
+      support: true,
+      hideInstruction: true
     }
   }, {
     path: 'public-v2/:public_link',
@@ -79,7 +82,8 @@ const routes: Routes = [
     },
     data: {
       supportHide: 1024,
-      support: true
+      support: true,
+      hideInstruction: true
     }
   }, {
     path: 'contracts',

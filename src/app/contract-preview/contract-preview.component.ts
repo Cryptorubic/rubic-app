@@ -12,6 +12,7 @@ import {TransactionComponent} from '../transaction/transaction.component';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {UserInterface} from '../services/user/user.interface';
 import {UserService} from '../services/user/user.service';
+import {ContactOwnerComponent} from '../contact-owner/contact-owner.component';
 
 @Component({
   selector: 'app-contract-preview',
@@ -51,11 +52,15 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     this.formatNumberParams = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
 
     const tokenInfo = this.originalContract.contract_details.tokens_info;
-    const rate = new BigNumber(tokenInfo.base.amount).div(tokenInfo.quote.amount);
+
     this.rateFormat = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
+
+    const baseAmount = new BigNumber(tokenInfo.base.amount).div(Math.pow(10, tokenInfo.base.token.decimals));
+    const quoteAmount = new BigNumber(tokenInfo.quote.amount).div(Math.pow(10, tokenInfo.quote.token.decimals));
+
     this.rates = {
-      normal: new BigNumber(tokenInfo.base.amount).div(tokenInfo.quote.amount),
-      reverted: new BigNumber(tokenInfo.quote.amount).div(tokenInfo.base.amount)
+      normal: baseAmount.div(quoteAmount),
+      reverted: quoteAmount.div(baseAmount)
     };
 
   }
@@ -88,12 +93,9 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   private getBaseRaised(web3Contract) {
     web3Contract.methods.baseRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
-      this.contractInfo.baseRaised = this.fromBigNumber(result, details.tokens_info.base.token.decimals);
-      this.contractInfo.baseRaisedFormatted = new BigNumber(this.contractInfo.baseRaised).toFormat(this.formatNumberParams);
-      this.contractInfo.baseRaised = this.contractInfo.baseRaised.toString(10);
-      const baseLeft = new BigNumber(details.tokens_info.base.amount).minus(this.contractInfo.baseRaised);
-      this.contractInfo.baseLeftFormated = baseLeft.toFormat(this.formatNumberParams);
-      this.contractInfo.baseLeft = baseLeft.toString(10);
+      this.contractInfo.baseRaised = result;
+      this.contractInfo.baseLeft = new BigNumber(details.tokens_info.base.amount).minus(result);
+      this.contractInfo.baseLeftString = this.contractInfo.baseLeft.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
     }, err => {
       console.log(err);
     });
@@ -101,12 +103,9 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   private getQuoteRaised(web3Contract) {
     web3Contract.methods.quoteRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
-      this.contractInfo.quoteRaised = this.fromBigNumber(result, details.tokens_info.quote.token.decimals);
-      this.contractInfo.quoteRaisedFormatted = new BigNumber(this.contractInfo.quoteRaised).toFormat(this.formatNumberParams);
-      this.contractInfo.quoteRaised = this.contractInfo.quoteRaised.toString(10);
-      const quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(this.contractInfo.quoteRaised);
-      this.contractInfo.quoteLeftFormated = quoteLeft.toFormat({groupSeparator: ',', groupSize: 3, decimalSeparator: '.'});
-      this.contractInfo.quoteLeft = quoteLeft.toString(10);
+      this.contractInfo.quoteRaised = result;
+      this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(result);
+      this.contractInfo.baseLeftString = this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
     }, err => {
       console.log(err);
     });
@@ -147,6 +146,8 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       case 'EXPIRED':
         this.contractAdditional.link =
           location.origin + '/public/' + this.originalContract.contract_details.unique_link;
+
+        this.originalContract.contract_details.unique_link_url = this.contractAdditional.link;
 
         this.contractAdditional.source_link =
           this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(
@@ -320,16 +321,18 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       return;
     }
 
+    amountDecimals = bigNumberAmount.toString(10);
+
     switch (token) {
       case 'base':
         tokenAddress = details.tokens_info.base;
         depositMethodName = 'depositBaseTokens';
-        amountDecimals = bigNumberAmount.times(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
+        amount = bigNumberAmount.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
         break;
       case 'quote':
         tokenAddress = details.tokens_info.quote;
         depositMethodName = 'depositQuoteTokens';
-        amountDecimals = bigNumberAmount.times(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
+        amount = bigNumberAmount.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
         break;
     }
 
@@ -406,6 +409,15 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     if (this.updateContractTimer) {
       window.clearTimeout(this.updateContractTimer);
     }
+  }
+
+
+  public openContactForm() {
+    this.dialog.open(ContactOwnerComponent, {
+      width: '38.65em',
+      panelClass: 'custom-dialog-container',
+      data: this.originalContract
+    });
   }
 
 }

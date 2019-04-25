@@ -31,10 +31,13 @@ export class BigNumberDirective implements OnInit {
 
     if (this.decimalsChange) {
       this.decimalsChange.subscribe((tokenInfo) => {
-        if (this.latestValue) {
-          this.appBigNumber.decimals = tokenInfo.token.decimals;
+        this.appBigNumber.decimals = tokenInfo.token.decimals;
+        if (this.latestValue && !(this.latestValue.isNaN())) {
           this.control.control.setValue(
-            this.latestValue.toString(10)
+            this.latestValue.times(Math.pow(10, tokenInfo.token.decimals)).toString(10),
+            {
+              emitEvent: false
+            }
           );
         }
       });
@@ -44,8 +47,7 @@ export class BigNumberDirective implements OnInit {
     this.control.valueChanges.subscribe((result) => {
 
       if (result === this.ngModel) {
-        this.latestValue = (new BigNumber(result)).div(Math.pow(10, this.appBigNumber.decimals));
-        return;
+        result = new BigNumber(result).div(Math.pow(10, this.appBigNumber.decimals)).toString(10);
       }
 
       result = result || '';
@@ -55,7 +57,6 @@ export class BigNumberDirective implements OnInit {
       if (bigNumberValue.isNaN()) {
         bigNumberValue = (result !== '') ? this.latestValue : '';
       } else {
-        bigNumberValue = bigNumberValue.dp(this.appBigNumber.decimals);
         const fixedResult = result.replace(/\.+$/, '.');
         this.withEndPoint = fixedResult.indexOf('.') === (fixedResult.length - 1);
 
@@ -73,11 +74,12 @@ export class BigNumberDirective implements OnInit {
         errors.pattern = true;
       } else {
 
-        decimalsValue = bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals));
+        if (this.decimalPart && (this.decimalPart.length > this.appBigNumber.decimals)) {
+          // errors.decimals = true;
+          bigNumberValue = bigNumberValue.dp(this.appBigNumber.decimals, 3);
+        }
 
-        // if (this.decimalPart && (this.decimalPart.length > this.appBigNumber.decimals)) {
-        //   errors.decimals = true;
-        // }
+        decimalsValue = bigNumberValue.times(Math.pow(10, this.appBigNumber.decimals));
 
         if (decimalsValue.div(Math.pow(2, 256) - 1).toNumber() > 1) {
           errors.totalMaximum = true;
@@ -94,18 +96,27 @@ export class BigNumberDirective implements OnInit {
 
       this.latestValue = bigNumberValue;
       const modelValue = decimalsValue ? decimalsValue.toString(10) : '';
-      this.control.control.setValue(modelValue, { emitEvent: false });
-      this.control.control.setErrors((JSON.stringify(errors) !== '{}') ? errors : null);
+
+      if (JSON.stringify(errors) === '{}') {
+        this.control.control.setErrors(null);
+        this.control.control.setValue(modelValue, { emitEvent: false });
+      } else {
+        this.control.control.setErrors(errors);
+        this.control.control.setValue('', { emitEvent: false });
+      }
 
     });
   }
 
   private maskValue(value) {
-    return value ?
-      new BigNumber(value)
-        .div(Math.pow(10, this.appBigNumber.decimals))
-        .toFormat(
+
+    const visibleValue = this.latestValue ||
+      (value ? new BigNumber(value).div(Math.pow(10, this.appBigNumber.decimals)) : '');
+
+    return visibleValue ?
+      visibleValue.toFormat(
           Math.min(this.decimalPart ? this.decimalPart.length : 0, this.appBigNumber.decimals),
+        3,
           {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : ''
       ) : '';
   }
@@ -115,11 +126,12 @@ export class BigNumberDirective implements OnInit {
 
 @Pipe({ name: 'bigNumberFormat' })
 export class BigNumberFormat implements PipeTransform {
-  transform(value, decimals, format, asBN) {
+  transform(value, decimals, format, asBN, round) {
 
     const formatNumberParams = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
 
     const bigNumberValue = new BigNumber(value).div(Math.pow(10, decimals));
+
     if (format) {
       return bigNumberValue.toFormat(formatNumberParams);
     } else if (!asBN) {

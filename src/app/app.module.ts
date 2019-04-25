@@ -38,6 +38,7 @@ import {ClipboardModule} from 'ngx-clipboard';
 import { ContractFormTwoComponent } from './contract-form-two/contract-form-two.component';
 import {BigNumberDirective, BigNumberFormat, BigNumberMax, BigNumberMin} from './directives/big-number/big-number.directive';
 import { ContractPreviewTwoComponent } from './contract-preview-two/contract-preview-two.component';
+import { ContactOwnerComponent } from './contact-owner/contact-owner.component';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -87,11 +88,13 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     PublicContractsComponent,
     ContractFormTwoComponent,
     BigNumberDirective,
-    ContractPreviewTwoComponent
+    ContractPreviewTwoComponent,
+    ContactOwnerComponent
   ],
   entryComponents: [
     AuthComponent,
-    TransactionComponent
+    TransactionComponent,
+    ContactOwnerComponent
   ],
   imports: [
     TranslateModule.forRoot({

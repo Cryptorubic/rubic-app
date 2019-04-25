@@ -5,25 +5,25 @@
 @import "scss/elements/contracts";
 
 /* You can add global styles to this file, and also import other style files */
-
 @font-face {
   font-family: 'Sofia Pro';
-  src: url('./assets/fonts/SofiaProBold.eot');
-  src: url('/assets/fonts/SofiaProBold.eot?#iefix') format('embedded-opentype'),
-  url('/assets/fonts/SofiaProBold.woff') format('woff'),
-  url('/assets/fonts/SofiaProBold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Sofia Pro';
-  src: url('./assets/fonts/SofiaProRegular.eot');
-  src: url('./assets/fonts/SofiaProRegular.eot?#iefix') format('embedded-opentype'),
+  src: local('Sofia Pro Regular'), local('Sofia-Pro-Bold'),
+  url('./assets/fonts/SofiaProRegular.woff2') format('woff2'),
   url('./assets/fonts/SofiaProRegular.woff') format('woff'),
   url('./assets/fonts/SofiaProRegular.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Sofia Pro';
+  src: local('Sofia Pro Bold'), local('Sofia-Pro-Bold'),
+  url('./assets/fonts/SofiaProBold.woff2') format('woff2'),
+  url('./assets/fonts/SofiaProBold.woff') format('woff'),
+  url('./assets/fonts/SofiaProBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
 
 body {
   margin: 0;
@@ -189,6 +189,9 @@ a:not(.btn):not(.minimal-btn) {
 .normal-text {
   color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
+  &.opacity-color {
+    color: rgba(255, 255, 255, 0.7);
+  }
 }
 
 
@@ -212,13 +215,12 @@ a:not(.btn):not(.minimal-btn) {
   }
 }
 
-
 .btn {
   font-family: inherit;
   font-size: 18px;
   color: #FFFFFF;
   line-height: 27px;
-  padding: 17px 42px;
+  padding: 17px 42px 17px 37px;
   border: 0 none;
   border-left: 5px solid;
   position: relative;
@@ -249,7 +251,13 @@ a:not(.btn):not(.minimal-btn) {
       top: 50%;
       left: 25px;
       margin-top: -9px;
-
+    }
+    .btn-icon {
+      position: absolute;
+      left: 15px;
+      height: 24px;
+      top: 50%;
+      margin-top: -12px;
     }
   }
   &-min-padding {

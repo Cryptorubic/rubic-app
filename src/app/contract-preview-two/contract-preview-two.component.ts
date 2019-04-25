@@ -14,6 +14,7 @@ import {UserInterface} from '../services/user/user.interface';
 import {UserService} from '../services/user/user.service';
 
 import {SWAPS_V2} from '../contract-form-two/contract-v2-details';
+import {ContactOwnerComponent} from '../contact-owner/contact-owner.component';
 
 @Component({
   selector: 'app-contract-preview-two',
@@ -53,11 +54,15 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
     this.formatNumberParams = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
 
     const tokenInfo = this.originalContract.contract_details.tokens_info;
-    const rate = new BigNumber(tokenInfo.base.amount).div(tokenInfo.quote.amount);
+
     this.rateFormat = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
+
+    const baseAmount = new BigNumber(tokenInfo.base.amount).div(Math.pow(10, tokenInfo.base.token.decimals));
+    const quoteAmount = new BigNumber(tokenInfo.quote.amount).div(Math.pow(10, tokenInfo.quote.token.decimals));
+
     this.rates = {
-      normal: new BigNumber(tokenInfo.base.amount).div(tokenInfo.quote.amount),
-      reverted: new BigNumber(tokenInfo.quote.amount).div(tokenInfo.base.amount)
+      normal: baseAmount.div(quoteAmount),
+      reverted: quoteAmount.div(baseAmount)
     };
 
   }
@@ -86,7 +91,7 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
   public fromBigNumber(num, decimals, format?) {
     const bigNumberValue = new BigNumber(num).div(Math.pow(10, decimals));
     if (format) {
-      return bigNumberValue.toFormat(this.formatNumberParams)
+      return bigNumberValue.toFormat(this.formatNumberParams);
     } else {
       return bigNumberValue.toString(10);
     }
@@ -96,14 +101,9 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
   private getBaseRaised(web3Contract) {
     const details = this.originalContract.contract_details;
     web3Contract.methods.baseRaised(details.memo_contract).call().then((result) => {
-      this.contractInfo.baseRaised = this.fromBigNumber(result, details.tokens_info.base.token.decimals);
-      this.contractInfo.baseRaisedFormatted = new BigNumber(this.contractInfo.baseRaised).toFormat(this.formatNumberParams);
-      this.contractInfo.baseRaised = this.contractInfo.baseRaised.toString(10);
-
-      const baseLeft = new BigNumber(details.base_limit).minus(result);
-      const leftDecimalsValue = baseLeft.div(Math.pow(10, details.tokens_info.base.token.decimals));
-      this.contractInfo.baseLeftFormated = leftDecimalsValue.toFormat(this.formatNumberParams);
-      this.contractInfo.baseLeft = baseLeft.toString(10);
+      this.contractInfo.baseRaised = result;
+      this.contractInfo.baseLeft = new BigNumber(details.tokens_info.base.amount).minus(result);
+      this.contractInfo.baseLeftString = this.contractInfo.baseLeft.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
     }, err => {
       console.log(err);
     });
@@ -111,14 +111,9 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
   private getQuoteRaised(web3Contract) {
     const details = this.originalContract.contract_details;
     web3Contract.methods.quoteRaised(details.memo_contract).call().then((result) => {
-      this.contractInfo.quoteRaised = this.fromBigNumber(result, details.tokens_info.quote.token.decimals);
-      this.contractInfo.quoteRaisedFormatted = new BigNumber(this.contractInfo.quoteRaised).toFormat(this.formatNumberParams);
-      this.contractInfo.quoteRaised = this.contractInfo.quoteRaised.toString(10);
-
-      const quoteLeft = new BigNumber(details.quote_limit).minus(result);
-      const leftDecimalsValue = quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals));
-      this.contractInfo.quoteLeftFormated = leftDecimalsValue.toFormat(this.formatNumberParams);
-      this.contractInfo.quoteLeft = quoteLeft.toString(10);
+      this.contractInfo.quoteRaised = result;
+      this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(result);
+      this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
     }, err => {
       console.log(err);
     });
@@ -163,6 +158,8 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
       case 'EXPIRED':
         this.contractAdditional.link =
           location.origin + '/public-v2/' + this.originalContract.contract_details.unique_link;
+
+        this.originalContract.contract_details.unique_link_url = this.contractAdditional.link;
 
         this.contractAdditional.source_link =
           this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(
@@ -435,6 +432,14 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
     if (this.updateContractTimer) {
       window.clearTimeout(this.updateContractTimer);
     }
+  }
+
+  public openContactForm() {
+    this.dialog.open(ContactOwnerComponent, {
+      width: '38.65em',
+      panelClass: 'custom-dialog-container',
+      data: this.originalContract
+    });
   }
 
 }

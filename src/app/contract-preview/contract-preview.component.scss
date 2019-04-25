@@ -52,8 +52,8 @@
   .active-side-info & {
     background-color: rgba(0, 0, 0, 0.4);
     opacity: 1;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
-    transform: scale(1.02);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    //transform: scale(1.02);
   }
   &_filled {
     padding-bottom: 11px;
@@ -193,6 +193,9 @@
   border-top: 1px dashed rgba(255, 255, 255, 0.25);
   margin: 0 -20px -8px;
   padding: 20px;
+  &.no-bottom-margin {
+    margin-bottom: 0;
+  }
   &.bottom-correct {
     margin-bottom: -20px;
   }

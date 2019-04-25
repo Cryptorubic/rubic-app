@@ -2,7 +2,7 @@
        #amountField
        required
        [appBigNumber]="{
-          decimals: tokenModel.token?.decimals || 0,
+          decimals: tokenModel.token?.decimals || 50,
           min: 1
        }"
        [decimalsChange]="TokenChange"

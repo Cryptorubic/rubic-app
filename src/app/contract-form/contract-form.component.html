@@ -158,8 +158,8 @@
               <div class="form-field">
                 <div class="form-field_description"
                      *ngIf="
-                        requestData.tokens_info.base.token &&
-                        requestData.tokens_info.quote.token &&
+                        requestData.tokens_info.base.token?.address &&
+                        requestData.tokens_info.quote.token?.address &&
                         requestData.tokens_info.base.amount &&
                         requestData.tokens_info.quote.amount">
                       <span>

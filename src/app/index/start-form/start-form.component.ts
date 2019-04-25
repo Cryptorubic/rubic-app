@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Web3Service} from '../../services/web3/web3.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-start-form',
@@ -11,6 +12,7 @@ export class StartFormComponent implements OnInit, OnDestroy {
   constructor(
     private web3Service: Web3Service
   ) {
+    localStorage.removeItem('form_values');
     const draftData = localStorage.getItem('form_values');
     this.tokensData = draftData ? JSON.parse(draftData).tokens_info : {
       base: {
@@ -25,6 +27,21 @@ export class StartFormComponent implements OnInit, OnDestroy {
   public changedToken() {
     localStorage.setItem('form_values', JSON.stringify({tokens_info: this.tokensData}));
   }
+
+
+  public checkRate(revert?) {
+
+    const baseCoinAmount = new BigNumber(this.tokensData.base.amount)
+      .div(Math.pow(10, this.tokensData.base.token.decimals));
+
+    const quoteCoinAmount = new BigNumber(this.tokensData.quote.amount)
+      .div(Math.pow(10, this.tokensData.quote.token.decimals));
+
+    return !revert ?
+      baseCoinAmount.div(quoteCoinAmount).dp(4) :
+      quoteCoinAmount.div(baseCoinAmount).dp(4);
+  }
+
 
   ngOnInit() {
     if (!this.tokensData.base.token.address) {

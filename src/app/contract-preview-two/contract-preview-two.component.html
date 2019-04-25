@@ -13,11 +13,11 @@
           <span class="form-field_description rate-info">
             Rate:
             <span *ngIf="!revertedRate">
-              {{ rates.normal.toFormat(rateFormat) }}
+              {{ rates.normal.toFormat(4, rateFormat) }}
               {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
             </span>
             <span *ngIf="revertedRate">
-              {{ rates.reverted.toFormat(rateFormat) }}
+              {{ rates.reverted.toFormat(4, rateFormat) }}
               {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
             </span>
 
@@ -33,7 +33,7 @@
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    {{tokens.base.amount | number : '1.0-' + tokens.base.token.decimals}}
+                    {{tokens.base.amount | bigNumberFormat : tokens.base.token.decimals : true}}
                   </div>
 
                   <div *ngIf="originalContract.state === 'ACTIVE'">
@@ -41,16 +41,18 @@
                       <div class="tokens-info-block_filled__text">
                         <b>Sent</b>
                       </div>
-                      <div class="tokens-info-block_filled__complete" [title]="contractInfo.baseRaisedFormatted">
-                        <b>{{ contractInfo.baseRaisedFormatted }}</b>
+                      <div class="tokens-info-block_filled__complete"
+                           [title]="contractInfo.baseRaised | bigNumberFormat : tokens.base.token.decimals : true">
+                        <b>{{ contractInfo.baseRaised | bigNumberFormat : tokens.base.token.decimals : true }}</b>
                       </div>
                     </div>
                     <div class="tokens-info-block_filled_item left">
                       <div class="tokens-info-block_filled__text">
                         Left
                       </div>
-                      <div class="tokens-info-block_filled__complete" [title]="contractInfo.baseLeftFormated">
-                        {{contractInfo.baseLeftFormated}}
+                      <div class="tokens-info-block_filled__complete"
+                           [title]="contractInfo.baseLeft | bigNumberFormat : tokens.base.token.decimals : true">
+                        {{contractInfo.baseLeft | bigNumberFormat : tokens.base.token.decimals : true}}
                       </div>
                     </div>
                   </div>
@@ -87,7 +89,6 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="contract-buttons bottom-correct"
                      *ngIf="(originalContract.isSwapped === false) && (originalContract.state === 'ACTIVE') && (contractInfo.baseLeft > 0)">
                   <form #baseContributeForm="ngForm"
@@ -97,19 +98,19 @@
                         <div class="form-field">
                           <div class="form-field_input">
                             <input type="text"
-                                   autocomplete="off"
                                    (focus)="activeSide = 'base'"
                                    (blur)="activeSide = false"
-                                   [ngClass]="{'without-error-lightning': activeSide !== 'base'}"
+                                   autocomplete="off"
                                    required
-                                   [(ngModel)]="baseAmount"
-                                   name="amount"
-                                   placeholder="Enter amount"
                                    [appBigNumber]="{
                                       decimals: tokens.base.token.decimals,
                                       min: [contractInfo.baseLeft, originalContract.contract_details.min_base_wei] | bigNumberMin,
                                       max: contractInfo.baseLeft
                                    }"
+                                   [ngClass]="{'without-error-lightning': activeSide !== 'base'}"
+                                   name="amount"
+                                   [ngModel]="baseValueContribution"
+                                   placeholder="Enter amount"
                                    class="min-text minimal-input">
                           </div>
                         </div>
@@ -117,20 +118,18 @@
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
                         <div class="form-field">
                           <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
-                                  [disabled]="!baseContributeForm.valid"
-                                  [value]="contractInfo.baseLeft <= 0 ? '' : undefined"
+                                  [disabled]="!baseContributeForm.valid || contractInfo.baseLeft <= 0"
                                   type="submit">
                             <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                             <span>Contribute</span>
                           </button>
                         </div>
                       </div>
-                      <div class="grid-cell grid-cell-1"
-                           *ngIf="baseContributeForm.value.amount">
+                      <div class="grid-cell grid-cell-1" *ngIf="baseContributeForm.value.amount">
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{rates.reverted.times(fromBigNumber(baseContributeForm.value.amount, tokens.base.token.decimals)).toString(10) | number : '1.0-8'}}
+                            {{rates.reverted.times(baseContributeForm.value.amount) | bigNumberFormat : tokens.base.token.decimals : true}}
                             {{tokens.quote.token.token_short_name}}
                             after SWAP
                           </span>
@@ -140,13 +139,31 @@
                         <div class="form-field">
                           <span class="action-link"
                                 [ngClass]="{invisible: contractInfo.baseLeft <= 0}"
-                                (click)="baseAmount = contractInfo.baseLeft">
+                                (click)="baseContributeForm.controls.amount.setValue(contractInfo.baseLeftString)">
                             Fill all
                           </span>
                         </div>
                       </div>
                     </div>
                   </form>
+                </div>
+                <div class="contract-buttons no-bottom-margin">
+                  <span class="normal-text">
+                    <span *ngIf="originalContract.contract_details.min_base_wei != 0">
+                      Min Contribution Limit:
+                      <b>
+                        {{originalContract.contract_details.min_base_wei | bigNumberFormat : tokens.base.token.decimals : true}}
+                        {{tokens.base.token.token_short_name}}
+                      </b>
+                    </span>
+                    <span *ngIf="originalContract.contract_details.min_base_wei == 0">
+                      No Min Contribution
+                    </span>
+                  </span><br/>
+                  <span class="normal-text opacity-color"
+                        *ngIf="originalContract.contract_details.whitelist"><br/>
+                    Only Owner can contribute
+                  </span>
                 </div>
                 <div class="contract-buttons"
                      *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')">
@@ -158,29 +175,32 @@
                   </button>
                 </div>
               </div>
+
             </div>
             <div class="grid-cell grid-cell-1-2 grid-cell-ps-1 one-token-info-cell"
                  [ngClass]="{'active-side-info': activeSide === 'quote'}">
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    {{tokens.quote.amount | number}}
+                    {{tokens.quote.amount | bigNumberFormat : tokens.quote.token.decimals : true}}
                   </div>
                   <div *ngIf="originalContract.state === 'ACTIVE'">
                     <div class="tokens-info-block_filled_item send">
                       <div class="tokens-info-block_filled__text">
                         <b>Sent</b>
                       </div>
-                      <div class="tokens-info-block_filled__complete" [title]="contractInfo.quoteRaisedFormatted">
-                        <b>{{ contractInfo.quoteRaisedFormatted}}</b>
+                      <div class="tokens-info-block_filled__complete"
+                           [title]="contractInfo.quoteRaised | bigNumberFormat : tokens.quote.token.decimals : true">
+                        <b>{{ contractInfo.quoteRaised | bigNumberFormat : tokens.quote.token.decimals : true }}</b>
                       </div>
                     </div>
                     <div class="tokens-info-block_filled_item left">
                       <div class="tokens-info-block_filled__text">
                         Left
                       </div>
-                      <div class="tokens-info-block_filled__complete" [title]="contractInfo.quoteLeftFormated">
-                        {{contractInfo.quoteLeftFormated}}
+                      <div class="tokens-info-block_filled__complete"
+                           [title]="contractInfo.quoteLeft | bigNumberFormat : tokens.quote.token.decimals : true">
+                        {{contractInfo.quoteLeft | bigNumberFormat : tokens.quote.token.decimals : true}}
                       </div>
                     </div>
                   </div>
@@ -216,7 +236,6 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="contract-buttons bottom-correct"
                      *ngIf="(originalContract.isSwapped === false) && (originalContract.state === 'ACTIVE') && (contractInfo.quoteLeft > 0)">
                   <form #quoteContributeForm="ngForm"
@@ -225,23 +244,21 @@
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
                         <div class="form-field">
                           <div class="form-field_input">
-
                             <input type="text"
                                    (focus)="activeSide = 'quote'"
                                    (blur)="activeSide = false"
                                    autocomplete="off"
                                    required
-                                   [ngClass]="{'without-error-lightning': activeSide !== 'quote'}"
-                                   name="amount"
-                                   [(ngModel)]="quoteAmount"
                                    [appBigNumber]="{
                                       decimals: tokens.quote.token.decimals,
                                       min: [contractInfo.quoteLeft, originalContract.contract_details.min_quote_wei] | bigNumberMin,
                                       max: contractInfo.quoteLeft
                                    }"
+                                   [ngClass]="{'without-error-lightning': activeSide !== 'quote'}"
+                                   name="amount"
+                                   [ngModel]="quoteValueContribution"
                                    placeholder="Enter amount"
                                    class="min-text minimal-input">
-
                           </div>
                         </div>
                       </div>
@@ -259,7 +276,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{rates.normal.times(fromBigNumber(quoteContributeForm.value.amount, tokens.quote.token.decimals)).toString(10) | number : '1.0-8'}}
+                            {{rates.normal.times(quoteContributeForm.value.amount) | bigNumberFormat : tokens.quote.token.decimals : true}}
                             {{tokens.base.token.token_short_name}}
                             after SWAP
                           </span>
@@ -269,7 +286,7 @@
                         <div class="form-field">
                           <span class="action-link"
                                 [ngClass]="{invisible: contractInfo.quoteLeft <= 0}"
-                                (click)="quoteAmount = contractInfo.quoteLeft">
+                                (click)="quoteContributeForm.controls.amount.setValue(contractInfo.quoteLeftString)">
                             Fill all
                           </span>
                         </div>
@@ -277,6 +294,22 @@
                     </div>
                   </form>
                 </div>
+
+                <div class="contract-buttons no-bottom-margin">
+                  <span class="normal-text">
+                    <span *ngIf="originalContract.contract_details.min_quote_wei != 0">
+                      Min Contribution Limit:
+                      <b>
+                        {{originalContract.contract_details.min_quote_wei | bigNumberFormat : tokens.quote.token.decimals : true}}
+                        {{tokens.quote.token.token_short_name}}
+                      </b>
+                    </span>
+                    <span *ngIf="originalContract.contract_details.min_quote_wei == 0">
+                      No Min Contribution
+                    </span>
+                  </span>
+                </div>
+
                 <div class="contract-buttons"
                      *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
@@ -381,4 +414,12 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="watch-instruction-btn hide-1024">
+  <button (click)="openContactForm()"
+          class="btn btn-white-opacity">
+    <img src="./assets/images/icons/conown.svg" class="btn-icon">
+    <span>Contact swap owner</span>
+  </button>
 </div>

@@ -23,17 +23,16 @@ export interface IContractDetails {
   owner_address?: string;
   public?: boolean|undefined;
   unique_link?: string;
+  unique_link_url?: string;
   eth_contract?: any;
   tokens_info?: {
     base: {
       token: any;
       amount: string;
-      decimalsAmount: string;
     };
     quote: {
       token: any;
       amount: string;
-      decimalsAmount: string;
     };
   };
 
@@ -264,14 +263,15 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
 
   public revertCoins() {
-    const baseCoin = this.requestData.tokens_info.base;
-    this.requestData.tokens_info.base = this.requestData.tokens_info.quote;
-    this.requestData.tokens_info.quote = baseCoin;
+    const baseCoin = {...this.requestData.tokens_info.base};
+    this.requestData.tokens_info.base = {...this.requestData.tokens_info.quote};
+    this.requestData.tokens_info.quote = {...baseCoin};
   }
 
 
   public addCustomToken(name) {
-    this.requestData.tokens_info[name].token = this.customTokens[name];
+    this.requestData.tokens_info[name].token = {...this.customTokens[name]};
+    this.changedToken(name);
     this.openedCustomTokens[name] = false;
   }
 

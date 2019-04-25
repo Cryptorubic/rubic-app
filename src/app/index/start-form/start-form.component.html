@@ -15,23 +15,30 @@
         </a>
       </div -->
     </div>
-    <div class="index-start-form_right grid-cell grid-cell-1-2 grid-cell-s-1">
+    <form #startForm="ngForm" class="index-start-form_right grid-cell grid-cell-1-2 grid-cell-s-1">
       <div class="form-field">
         <label class="form-field_label">You have</label>
         <div class="form-field_input">
+          <input type="hidden" required [ngModel]="tokensData.base.token.address" name="base_address">
+          <input type="hidden" required [ngModel]="tokensData.base.amount"
+                 [value]="(tokensData.base.amount == 0) ? '' : tokensData.base.amount"
+                 name="base_limit">
           <app-token-input [(tokenModel)]="tokensData.base" (TokenChange)="changedToken()"></app-token-input>
         </div>
       </div>
       <div class="form-field">
         <label class="form-field_label">You want to get</label>
         <div class="form-field_input">
+          <input type="hidden" required [ngModel]="tokensData.quote.token.address" name="quote_address">
+          <input type="hidden" required [ngModel]="tokensData.quote.amount"
+                 [value]="(tokensData.quote.amount == 0) ? '' : tokensData.quote.amount"
+                 name="quote_limit">
           <app-token-input [(tokenModel)]="tokensData.quote"></app-token-input>
         </div>
         <div class="form-field_description"
-             *ngIf="tokensData.base.token.address && tokensData.quote.token.address && tokensData.base.amount && tokensData.quote.amount"
-        >
+             *ngIf="startForm.valid">
           Rate:
-          {{(tokensData.base.amount / tokensData.quote.amount) | number : '1.0-4'}}
+          {{checkRate() | bigNumberFormat : 0 : true}}
           {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
         </div>
       </div>
@@ -51,7 +58,7 @@
           </span>
         </a>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
