@@ -10,6 +10,7 @@ export class BigNumberDirective implements OnInit {
   private control: NgControl;
   private latestValue;
   private decimalPart;
+  private oldDecimal;
 
   private withEndPoint;
 
@@ -32,17 +33,19 @@ export class BigNumberDirective implements OnInit {
 
     if (this.decimalsChange) {
       this.decimalsChange.subscribe((tokenInfo) => {
+        this.oldDecimal = this.appBigNumber.decimals;
         this.appBigNumber.decimals = tokenInfo.token.decimals;
         this.control.control.setValue(
           this.latestValue
         );
+        this.oldDecimal = undefined;
       });
     }
 
 
     this.control.valueChanges.subscribe((result: string) => {
 
-      if (result === this.ngModel) {
+      if ((result !== '') && (result === this.ngModel) && (this.oldDecimal === undefined)) {
         result = new BigNumber(result).div(Math.pow(10, this.appBigNumber.decimals)).toString(10);
       }
 
