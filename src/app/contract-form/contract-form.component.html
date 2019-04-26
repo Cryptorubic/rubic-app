@@ -62,7 +62,9 @@
                       <div class="form-field_input">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.token.address" name="base_address">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.amount" name="base_limit">
-                        <app-token-input [tokenModel]="requestData.tokens_info.base"></app-token-input>
+                        <app-token-input
+                          [setToken]="BaseTokenCustom"
+                          [tokenModel]="requestData.tokens_info.base"></app-token-input>
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
@@ -113,7 +115,9 @@
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.token.address" name="quote_address">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.amount" name="quote_limit">
 
-                        <app-token-input [tokenModel]="requestData.tokens_info.quote"></app-token-input>
+                        <app-token-input
+                          [setToken]="QuoteTokenCustom"
+                          [tokenModel]="requestData.tokens_info.quote"></app-token-input>
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
@@ -164,7 +168,7 @@
                         requestData.tokens_info.quote.amount">
                       <span>
                         Rate:
-                        {{checkRate()  | bigNumberFormat : 0 : true}}
+                        {{checkRate() | bigNumberFormat : 0 : true : false : 4}}
                         {{requestData.tokens_info.base.token.token_short_name}} / 1 {{requestData.tokens_info.quote.token.token_short_name}}
                       </span>
                   <button class="revert-btn" (click)="revertCoins()" type="button">
@@ -350,11 +354,11 @@
                   <span>
                     <span>Rate:</span>
                     <span *ngIf="!revertedRate">
-                      {{checkRate()  | bigNumberFormat : 0 : true}}
+                      {{checkRate()  | bigNumberFormat : 0 : true : false : 4}}
                       {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
                     </span>
                     <span *ngIf="revertedRate">
-                      {{checkRate(true)  | bigNumberFormat : 0 : true}}
+                      {{checkRate(true)  | bigNumberFormat : 0 : true : false : 4}}
                       {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
                     </span>
                   </span>

@@ -66,6 +66,7 @@
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.token.address" name="base_address">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.amount" name="base_limit">
                         <app-token-input (TokenChange)="changedToken('base')"
+                                         [setToken]="BaseTokenCustom"
                                          [tokenModel]="requestData.tokens_info.base"></app-token-input>
                       </div>
                     </div>
@@ -117,6 +118,7 @@
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.token.address" name="quote_address">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.amount" name="quote_limit">
                         <app-token-input (TokenChange)="changedToken('quote')"
+                                         [setToken]="QuoteTokenCustom"
                                          [tokenModel]="requestData.tokens_info.quote"></app-token-input>
                       </div>
                     </div>
@@ -168,7 +170,7 @@
                         requestData.tokens_info.quote.amount">
                       <span>
                         Rate:
-                        {{checkRate()  | bigNumberFormat : 0 : true}}
+                        {{checkRate()  | bigNumberFormat : 0 : true : false : 4}}
                         {{requestData.tokens_info.base.token.token_short_name}} / 1 {{requestData.tokens_info.quote.token.token_short_name}}
                       </span>
                   <button class="revert-btn" (click)="revertCoins()" type="button">
@@ -392,7 +394,9 @@
               </div>
 
               <div class="form-field">
-                <label class="form-field_label">Only this address can contribute in {{tokens.base.token.token_name}}</label>
+                <label class="form-field_label">
+                  Only this address can contribute in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
+                </label>
                 <div class="grid-row">
                   <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
                     <div class="form-field_input">
@@ -465,11 +469,11 @@
                   <span>
                     <span>Rate:</span>
                     <span *ngIf="!revertedRate">
-                      {{checkRate()  | bigNumberFormat : 0 : true}}
+                      {{checkRate()  | bigNumberFormat : 0 : true : false : 4}}
                       {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
                     </span>
                     <span *ngIf="revertedRate">
-                      {{checkRate(true)  | bigNumberFormat : 0 : true}}
+                      {{checkRate(true)  | bigNumberFormat : 0 : true : false : 4}}
                       {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
                     </span>
                   </span>
@@ -573,7 +577,7 @@
                   <div class="grid-cell grid-cell-1" *ngIf="originalContract.contract_details.whitelist">
                     <div class="form-field">
                       <label class="form-field_label transparent">
-                        Only this address can contribute in {{tokens.base.token.token_name}}
+                        Only this address can contribute in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
                       </label>
                       <div class="form-field_value">
                         <a [href]="originalContract.contract_details.whitelist_address | etherscanUrl : 'address'"
@@ -659,9 +663,9 @@
                       </button>
                     </div>
                     <div class="form-field_input_data">
-                      <input type="text" class="min-text dark-field minimal-input"
-                             readonly
-                             [value]="transaction.to"/>
+                      <div class="textarea min-text dark-field minimal-input">
+                        {{ transaction.to }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -681,9 +685,9 @@
                       </button>
                     </div>
                     <div class="form-field_input_data">
-                      <input type="text" class="min-text dark-field minimal-input"
-                             readonly
-                             [value]="transaction.from"/>
+                      <div class="textarea min-text dark-field minimal-input">
+                        {{ transaction.from }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -703,8 +707,9 @@
                       </button>
                     </div>
                     <div class="form-field_input_data">
-                      <textarea class="min-text dark-field minimal-input"
-                                readonly>{{transaction.data}}</textarea>
+                      <div class="textarea min-text dark-field minimal-input">
+                        {{ transaction.data }}
+                      </div>
                     </div>
                   </div>
                 </div>

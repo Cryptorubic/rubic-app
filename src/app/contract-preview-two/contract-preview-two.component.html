@@ -101,7 +101,7 @@
                                    (focus)="activeSide = 'base'"
                                    (blur)="activeSide = false"
                                    autocomplete="off"
-                                   required
+                                   [required]="true"
                                    [appBigNumber]="{
                                       decimals: tokens.base.token.decimals,
                                       min: [contractInfo.baseLeft, originalContract.contract_details.min_base_wei] | bigNumberMin,
@@ -115,6 +115,7 @@
                           </div>
                         </div>
                       </div>
+
                       <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
                         <div class="form-field">
                           <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
@@ -248,7 +249,7 @@
                                    (focus)="activeSide = 'quote'"
                                    (blur)="activeSide = false"
                                    autocomplete="off"
-                                   required
+                                   [required]="true"
                                    [appBigNumber]="{
                                       decimals: tokens.quote.token.decimals,
                                       min: [contractInfo.quoteLeft, originalContract.contract_details.min_quote_wei] | bigNumberMin,

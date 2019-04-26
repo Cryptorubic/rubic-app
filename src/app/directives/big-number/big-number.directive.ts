@@ -16,6 +16,7 @@ export class BigNumberDirective implements OnInit {
   @Input ('appBigNumber') appBigNumber;
   @Input ('ngModel') ngModel;
   @Input ('decimalsChange') decimalsChange;
+  @Input ('required') required;
 
   constructor(
     private injector: Injector,
@@ -32,47 +33,45 @@ export class BigNumberDirective implements OnInit {
     if (this.decimalsChange) {
       this.decimalsChange.subscribe((tokenInfo) => {
         this.appBigNumber.decimals = tokenInfo.token.decimals;
-        if (this.latestValue && !(this.latestValue.isNaN())) {
-          this.control.control.setValue(
-            this.latestValue.times(Math.pow(10, tokenInfo.token.decimals)).toString(10),
-            {
-              emitEvent: false
-            }
-          );
-        }
+        this.control.control.setValue(
+          this.latestValue
+        );
       });
     }
 
 
-    this.control.valueChanges.subscribe((result) => {
+    this.control.valueChanges.subscribe((result: string) => {
 
       if (result === this.ngModel) {
         result = new BigNumber(result).div(Math.pow(10, this.appBigNumber.decimals)).toString(10);
       }
 
-      result = result || '';
-      const originalValue = result.split(',').join('').replace(/\.$/, '');
-      let bigNumberValue = new BigNumber(originalValue);
 
-      if (bigNumberValue.isNaN()) {
-        bigNumberValue = (result !== '') ? this.latestValue : '';
+      result = result || '';
+
+      let originalValue = result.split(',').join('').replace(/\.$/, '');
+
+      if (new BigNumber(originalValue).isNaN()) {
+        originalValue = (result !== '') ? this.latestValue : '';
       } else {
         const fixedResult = result.replace(/\.+$/, '.');
         this.withEndPoint = fixedResult.indexOf('.') === (fixedResult.length - 1);
-
-        const stringValue = bigNumberValue ? bigNumberValue.toString(10) : '';
-        this.decimalPart = stringValue ? result.split('.')[1] : '';
+        this.decimalPart = originalValue ? result.split('.')[1] : '';
       }
 
+      this.latestValue = originalValue;
 
+      let bigNumberValue = new BigNumber(originalValue);
 
       const errors: any = {};
 
       let decimalsValue;
 
-      if (!bigNumberValue || bigNumberValue.isNaN()) {
-        if (bigNumberValue) {
+      if (!originalValue || bigNumberValue.isNaN()) {
+        if (originalValue) {
           errors.pattern = true;
+        } else if (this.required) {
+          errors.required = true;
         }
       } else {
 
@@ -95,7 +94,6 @@ export class BigNumberDirective implements OnInit {
         }
       }
 
-      this.latestValue = bigNumberValue;
       const modelValue = decimalsValue ? decimalsValue.toString(10) : '';
 
       if (JSON.stringify(errors) === '{}') {
@@ -110,8 +108,8 @@ export class BigNumberDirective implements OnInit {
   }
 
   private maskValue(value) {
-
-    const visibleValue = this.latestValue ||
+    const visibleValue = this.latestValue ?
+      new BigNumber(this.latestValue) :
       (value ? new BigNumber(value).div(Math.pow(10, this.appBigNumber.decimals)) : '');
 
     return visibleValue ?
@@ -131,6 +129,10 @@ export class BigNumberFormat implements PipeTransform {
     const formatNumberParams = {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'};
 
     const bigNumberValue = new BigNumber(value).div(Math.pow(10, decimals));
+
+    if (bigNumberValue.isNaN()) {
+      return value;
+    }
 
     if (format) {
       return bigNumberValue.dp(round || decimals).toFormat(formatNumberParams);

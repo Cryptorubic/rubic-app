@@ -1,8 +1,8 @@
 <input type="text" placeholder="Enter Amount"
        #amountField
-       required
+       [required]="true"
        [appBigNumber]="{
-          decimals: tokenModel.token?.decimals || 50,
+          decimals: tokenModel.token?.decimals === undefined ? 50 : tokenModel.token.decimals,
           min: 1
        }"
        [decimalsChange]="TokenChange"

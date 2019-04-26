@@ -24,6 +24,7 @@ export class TokenInputComponent implements OnInit {
 
   @Input('tokenModel') public tokenModel: any;
   @Input() public tokenGroup: any;
+  @Input() private setToken: any;
 
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
@@ -46,6 +47,13 @@ export class TokenInputComponent implements OnInit {
 
 
   ngOnInit() {
+
+    if (this.setToken) {
+      this.setToken.subscribe((result) => {
+        this.TokenChange.emit(this.tokenModel);
+      });
+    }
+
     this.tokenField.nativeElement.addEventListener('blur', () => {
       this.listIsOpened = false;
     });

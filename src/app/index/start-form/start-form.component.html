@@ -38,7 +38,7 @@
         <div class="form-field_description"
              *ngIf="startForm.valid">
           Rate:
-          {{checkRate() | bigNumberFormat : 0 : true}}
+          {{checkRate() | bigNumberFormat : 0 : true : false : 4}}
           {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
         </div>
       </div>

@@ -89,6 +89,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
   @Output() BaseTokenChange = new EventEmitter<string>();
   @Output() QuoteTokenChange = new EventEmitter<string>();
+  @Output() BaseTokenCustom = new EventEmitter<string>();
+  @Output() QuoteTokenCustom = new EventEmitter<string>();
 
   constructor(
     protected contractsService: ContractsService,
@@ -271,7 +273,14 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
   public addCustomToken(name) {
     this.requestData.tokens_info[name].token = {...this.customTokens[name]};
-    this.changedToken(name);
+    switch (name) {
+      case 'base':
+        this.BaseTokenCustom.emit(this.requestData.tokens_info[name]);
+        break;
+      case 'quote':
+        this.QuoteTokenCustom.emit(this.requestData.tokens_info[name]);
+        break;
+    }
     this.openedCustomTokens[name] = false;
   }
 
@@ -409,6 +418,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount)
       .div(Math.pow(10, this.requestData.tokens_info.quote.token.decimals));
 
+
+
     return !revert ?
       baseCoinAmount.div(quoteCoinAmount).dp(4) :
       quoteCoinAmount.div(baseCoinAmount).dp(4);
@@ -416,14 +427,16 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
 
   public changedToken(coin) {
-    switch (coin) {
-      case 'base':
-        this.BaseTokenChange.emit(this.requestData.tokens_info[coin]);
-        break;
-      case 'quote':
-        this.QuoteTokenChange.emit(this.requestData.tokens_info[coin]);
-        break;
-    }
+    setTimeout(() => {
+      switch (coin) {
+        case 'base':
+          this.BaseTokenChange.emit(this.requestData.tokens_info[coin]);
+          break;
+        case 'quote':
+          this.QuoteTokenChange.emit(this.requestData.tokens_info[coin]);
+          break;
+      }
+    });
   }
 
 }

@@ -65,9 +65,9 @@
                 </button>
               </div>
               <div class="form-field_input_data">
-                <input type="text" class="min-text dark-field minimal-input"
-                       readonly
-                       [value]="transaction.from"/>
+                <div class="textarea min-text dark-field minimal-input">
+                  {{ transaction.from }}
+                </div>
               </div>
             </div>
           </div>
@@ -88,9 +88,9 @@
                 </button>
               </div>
               <div class="form-field_input_data">
-                <input type="text" class="min-text dark-field minimal-input"
-                       readonly
-                       [value]="transaction.to"/>
+                <div class="textarea min-text dark-field minimal-input">
+                  {{ transaction.to }}
+                </div>
               </div>
             </div>
           </div>

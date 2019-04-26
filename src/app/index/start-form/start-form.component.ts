@@ -12,7 +12,7 @@ export class StartFormComponent implements OnInit, OnDestroy {
   constructor(
     private web3Service: Web3Service
   ) {
-
+    // localStorage.removeItem('form_values');
     const draftData = localStorage.getItem('form_values');
     this.tokensData = draftData ? JSON.parse(draftData).tokens_info : {
       base: {
