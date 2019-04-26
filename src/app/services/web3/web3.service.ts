@@ -218,14 +218,27 @@ export class Web3Service {
     return new Promise((resolve, reject) => {
       try {
         this.setProvider(providerName);
-        this.Web3.eth.getAccounts((err, addresses) => {
-          if (!err) {
+
+        if (window['ethereum'] && window['ethereum'].isMetaMask) {
+          window['ethereum'].enable().then(() => {
+            this.Web3.eth.getAccounts((err, addresses) => {
+              if (!err) {
+                resolve({
+                  type: providerName,
+                  addresses
+                });
+              }
+            });
+          }, () => {
             resolve({
               type: providerName,
-              addresses
+              addresses: null
             });
-          }
-        });
+          });
+        }
+
+        // const accounts = ethereum.enable();
+
       } catch (err) {
         resolve({
           type: providerName,

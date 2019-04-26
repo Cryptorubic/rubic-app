@@ -99,7 +99,7 @@
                                    (focus)="activeSide = 'base'"
                                    (blur)="activeSide = false"
                                    autocomplete="off"
-                                   required
+                                   [required]="true"
                                    [appBigNumber]="{
                                       decimals: tokens.base.token.decimals,
                                       min: 1,
@@ -229,7 +229,7 @@
                                    (focus)="activeSide = 'quote'"
                                    (blur)="activeSide = false"
                                    autocomplete="off"
-                                   required
+                                   [required]="true"
                                    [appBigNumber]="{
                                       decimals: tokens.quote.token.decimals,
                                       min: 1,

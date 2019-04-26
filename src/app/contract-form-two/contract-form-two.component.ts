@@ -60,6 +60,8 @@ export class ContractFormTwoComponent extends ContractFormComponent {
     };
 
     this.transaction = {};
+    this.updateAddresses();
+
   }
 
 
@@ -115,9 +117,6 @@ export class ContractFormTwoComponent extends ContractFormComponent {
 
 
   private generateActivateTrx() {
-    this.getAccountsTimeout = setInterval(() => {
-      this.updateAddresses();
-    }, 1000);
 
     const details = this.originalContract.contract_details;
     const interfaceMethod = this.web3Service.getMethodInterface('createOrder', SWAPS_V2.ABI);
@@ -142,9 +141,15 @@ export class ContractFormTwoComponent extends ContractFormComponent {
       data: methodSignature
     };
   }
+
   private updateAddresses() {
     this.web3Service.getAccounts(this.originalContract.contract_details.owner_address).then((addresses) => {
-      this.providedAddresses = addresses;
+      if (addresses !== null) {
+        this.providedAddresses = addresses;
+        // this.getAccountsTimeout = setTimeout(() => {
+        //   this.updateAddresses();
+        // }, 1000);
+      }
     });
   }
 

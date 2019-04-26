@@ -105,7 +105,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       const details = this.originalContract.contract_details;
       this.contractInfo.quoteRaised = result;
       this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(result);
-      this.contractInfo.baseLeftString = this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
+      this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
     }, err => {
       console.log(err);
     });

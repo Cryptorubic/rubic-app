@@ -33,9 +33,9 @@ export class ContractFormPayComponent implements OnInit, OnDestroy {
     this.trxDataFields.BNB = this.checkTRXData(this.contractCosts.BNB);
     this.replenishMethod = 'WISH';
     this.costValue = new BigNumber(this.contractCosts.ETH).toString(10);
-    this.getAccountsTimeout = setInterval(() => {
-      this.updateAddresses();
-    }, 1000);
+    // this.getAccountsTimeout = setInterval(() => {
+    this.updateAddresses();
+    // }, 1000);
   }
 
   ngOnDestroy() {

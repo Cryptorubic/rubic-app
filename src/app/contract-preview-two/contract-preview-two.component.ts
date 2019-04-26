@@ -293,47 +293,6 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
     });
   }
 
-  private sendEth(bigNumberAmount, tokenInfo) {
-
-    const details = this.originalContract.contract_details;
-
-    const transferEth = (wallet) => {
-
-      const stringAmountValue = bigNumberAmount.toString(10);
-      const depositMethod = this.web3Service.getMethodInterface('deposit', SWAPS_V2.ABI);
-      const depositSignature = this.web3Service.encodeFunctionCall(
-        depositMethod, [details.memo_contract, tokenInfo.address, stringAmountValue]
-      );
-
-      this.web3Service.sendTransaction({
-        from: wallet.address,
-        to: SWAPS_V2.ADDRESS,
-        value: stringAmountValue,
-        data: depositSignature
-      }, 'metamask').then((result) => {
-        console.log(result);
-      }, (err) => {
-        console.log(err);
-      });
-    };
-
-    const displayingAmount = bigNumberAmount.div(Math.pow(10, tokenInfo.decimals)).toFormat(this.formatNumberParams);
-
-    this.dialog.open(TransactionComponent, {
-      width: '38.65em',
-      panelClass: 'custom-dialog-container',
-      data: {
-        transactions: [{
-          to: SWAPS_V2.ADDRESS,
-          action: transferEth,
-          ethValue: displayingAmount
-        }],
-        title: 'Contribute',
-        description: 'Send ' + displayingAmount + ' ETH to the contract address directly'
-      }
-    });
-  }
-
   public sendContribute(amount, token) {
 
     let tokenAddress: any;
@@ -358,9 +317,9 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
 
     const stringAmountValue = bigNumberAmount.toString(10);
 
+    let value: string;
     if (tokenAddress.token.isEther) {
-      this.sendEth(bigNumberAmount, tokenAddress.token);
-      return;
+      value = stringAmountValue;
     }
 
     const approveMethod = this.web3Service.getMethodInterface('approve');
@@ -394,7 +353,8 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
       this.web3Service.sendTransaction({
         from: wallet.address,
         to: SWAPS_V2.ADDRESS,
-        data: depositSignature
+        data: depositSignature,
+        value: value || undefined
       }, wallet.type).then((result) => {
         console.log(result);
       }, (err) => {
@@ -404,23 +364,34 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
 
     const textAmount = this.fromBigNumber(amount, tokenAddress.token.decimals);
 
+    const transactionsList: any[] = [{
+      title: !tokenAddress.token.isEther ?
+        'Make the transfer of ' + textAmount + ' ' + tokenAddress.token.token_short_name + ' tokens to contract' : undefined,
+      to: SWAPS_V2.ADDRESS,
+      data: depositSignature,
+      action: contributeTransaction,
+      ethValue: !tokenAddress.token.isEther ? undefined : bigNumberAmount.div(Math.pow(10, tokenAddress.token.decimals))
+    }];
+
+    if (!tokenAddress.token.isEther) {
+      transactionsList.unshift({
+        title: 'Authorise the contract for getting ' + textAmount + ' ' + tokenAddress.token.token_short_name + ' tokens',
+        to: tokenAddress.token.address,
+        data: approveSignature,
+        action: approveTransaction
+      });
+    }
+
+    // 'Send ' + amount + ' ETH to the contract address directly'
     this.dialog.open(TransactionComponent, {
       width: '38.65em',
       panelClass: 'custom-dialog-container',
       data: {
-        transactions: [{
-          title: 'Authorise the contract for getting ' + textAmount + ' ' + tokenAddress.token.token_short_name + ' tokens',
-          to: tokenAddress.token.address,
-          data: approveSignature,
-          action: approveTransaction
-        }, {
-          title: 'Make the transfer of ' + textAmount + ' ' + tokenAddress.token.token_short_name + ' tokens to contract',
-          to: SWAPS_V2.ADDRESS,
-          data: depositSignature,
-          action: contributeTransaction
-        }],
+        transactions: transactionsList,
         title: 'Contribute',
-        description: 'For contribution you need to make 2 transactions: authorise the contract and make the transfer'
+        description: !tokenAddress.token.isEther ?
+          'For contribution you need to make 2 transactions: authorise the contract and make the transfer' :
+          'Make the transfer of ' + textAmount + ' ' + tokenAddress.token.token_short_name + ' tokens to contract'
       }
     });
 

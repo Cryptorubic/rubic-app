@@ -23,10 +23,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
   public providedAddresses: any = {};
 
   ngOnInit() {
-
-    this.getAccountsTimeout = setInterval(() => {
-      this.updateAddresses();
-    }, 1000);
+    this.updateAddresses();
   }
 
   ngOnDestroy() {
@@ -35,7 +32,12 @@ export class TransactionComponent implements OnInit, OnDestroy {
 
   private updateAddresses() {
     this.web3Service.getAccounts().then((addresses) => {
-      this.providedAddresses = addresses;
+      if (addresses !== null) {
+        this.providedAddresses = addresses;
+        // this.getAccountsTimeout = setTimeout(() => {
+        //   this.updateAddresses();
+        // }, 1000);
+      }
     });
   }
 
