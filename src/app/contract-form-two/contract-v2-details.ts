@@ -863,6 +863,6 @@ export const SWAPS_V2  = {
       type: 'function'
     }
   ],
-  ADDRESS: '0x79f4886a694c8e1fc7b94be3aeb818aae2e90c4d'
-  // ADDRESS: '0xb79afd748d6c9c6eef9e40cc601004843108d89a'
+  // ADDRESS: '0x79f4886a694c8e1fc7b94be3aeb818aae2e90c4d'
+  ADDRESS: '0xb79afd748d6c9c6eef9e40cc601004843108d89a'
 };

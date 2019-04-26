@@ -226,7 +226,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
 
   ngOnInit() {
-    const draftData = localStorage.getItem('form_values');
+    const draftData = localStorage.getItem('form_new_values');
     if (this.originalContract) {
       this.requestData = {...this.originalContract.contract_details};
       this.analyzeContractState(this.originalContract);

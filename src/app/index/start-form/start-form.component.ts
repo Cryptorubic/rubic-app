@@ -12,8 +12,8 @@ export class StartFormComponent implements OnInit, OnDestroy {
   constructor(
     private web3Service: Web3Service
   ) {
-    // localStorage.removeItem('form_values');
-    const draftData = localStorage.getItem('form_values');
+    localStorage.removeItem('form_new_values');
+    const draftData = undefined; // = localStorage.getItem('form_new_values');
     this.tokensData = draftData ? JSON.parse(draftData).tokens_info : {
       base: {
         token: {}
@@ -25,7 +25,7 @@ export class StartFormComponent implements OnInit, OnDestroy {
   }
 
   public changedToken() {
-    localStorage.setItem('form_values', JSON.stringify({tokens_info: this.tokensData}));
+    localStorage.setItem('form_new_values', JSON.stringify({tokens_info: this.tokensData}));
   }
 
 
