@@ -23,15 +23,6 @@ import {SWAPS_V2} from './contract-v2-details';
 })
 export class ContractFormTwoComponent extends ContractFormComponent {
 
-  @ViewChild('advancedForm') public advancedForm;
-
-  public transaction;
-  public copiedData;
-  public providedAddresses;
-  private getAccountsTimeout;
-  protected web3Service;
-  private trxRequest;
-
   constructor(
     contractsService: ContractsService,
     userService: UserService,
@@ -60,9 +51,18 @@ export class ContractFormTwoComponent extends ContractFormComponent {
     };
 
     this.transaction = {};
-    this.updateAddresses();
-
   }
+
+  @ViewChild('advancedForm') public advancedForm;
+
+  public transaction;
+  public copiedData;
+  public providedAddresses;
+  private getAccountsTimeout;
+  protected web3Service;
+  private trxRequest;
+
+  private addressesIsLeft: boolean;
 
 
   public confirmContract() {
@@ -84,6 +84,8 @@ export class ContractFormTwoComponent extends ContractFormComponent {
     const tokensInfo = this.originalContract.contract_details.tokens_info;
     this.originalContract = contract;
     this.originalContract.contract_details.tokens_info = tokensInfo;
+
+    this.updateAddresses();
 
     switch (contract.state) {
       case 'CREATED':
@@ -142,7 +144,12 @@ export class ContractFormTwoComponent extends ContractFormComponent {
     };
   }
 
+
   private updateAddresses() {
+    if (this.addressesIsLeft) {
+      return;
+    }
+    this.addressesIsLeft = true;
     this.web3Service.getAccounts(this.originalContract.contract_details.owner_address).then((addresses) => {
       if (addresses !== null) {
         this.providedAddresses = addresses;
