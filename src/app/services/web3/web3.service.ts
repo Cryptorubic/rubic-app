@@ -84,22 +84,26 @@ export class Web3Service {
   }
 
 
-  // public connectMetamask() {
-  //   this.setProvider('metamask');
-  //   this.Web3.eth.getAccounts((err, addresses) => {
-  //     const publicAddress = addresses[0];
-  //     if (!publicAddress) {
-  //       return;
-  //     }
-  //     this.Web3.eth.personal.sign(
-  //       'Я хочу использовать SWAPS MyWish',
-  //       publicAddress,
-  //       (signError, signature) => {
-  //         console.log(signature);
-  //       }
-  //     );
-  //   });
-  // }
+  public getSignedMetaMaskMsg(msg, addr) {
+
+    return new Promise((resolve, reject) => {
+
+      this.Web3.eth.setProvider(this.providers.metamask);
+
+      this.Web3.eth.personal.sign(
+        msg,
+        addr,
+        undefined,
+        (signError, signature) => {
+          if (!signError) {
+            resolve(signature);
+          } else {
+            reject(signError);
+          }
+        }
+      );
+    });
+  }
 
 
   public getContract(abi, address) {

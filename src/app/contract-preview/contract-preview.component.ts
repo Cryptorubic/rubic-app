@@ -180,6 +180,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       this.originalContract = result;
       this.originalContract.contract_details.tokens_info = tokens_info;
       this.originalContract.isSwapped = swapped;
+    }).finally(() => {
       this.analyzeContract();
     });
   }

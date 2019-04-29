@@ -80,7 +80,7 @@
                   class="copy-btn"
                   [ngClass]="{copied: copiedAddresses['eth']}"
                   ngxClipboard [cbContent]="currentUser.internal_address"
-                  (cbOnSuccess)="onCopied('eth' + index)">
+                  (cbOnSuccess)="onCopied('eth')">
             <img src="./assets/images/icons/copy.svg"/>
           </button>
         </div>
@@ -149,7 +149,8 @@
           <button type="button"
                   class="copy-btn"
                   [ngClass]="{copied: copiedAddresses['btc']}"
-                  (click)="copyText(currentUser.internal_btc_address, 'btc')">
+                  ngxClipboard [cbContent]="currentUser.internal_btc_address"
+                  (cbOnSuccess)="onCopied('btc')">
             <img src="./assets/images/icons/copy.svg"/>
           </button>
         </div>

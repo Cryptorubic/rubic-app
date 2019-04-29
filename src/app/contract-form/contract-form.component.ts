@@ -220,6 +220,10 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     this.updateContractTimer = setTimeout(() => {
       this.contractsService.getContract(this.originalContract.id).then((contract) => {
         this.analyzeContractState(contract);
+      }, () => {
+        this.updateContractTimer = setTimeout(() => {
+          this.checkContractState();
+        }, 5000);
       });
     }, 5000);
   }

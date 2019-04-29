@@ -1,4 +1,14 @@
 <div *ngIf="!socialAuthError && (social.FB || social.GA) && !social.eoslynx">
+
+  <div class="form-field">
+    <button type="button" class="btn btn-transparent width-100"
+            [disabled]="!social.MM"
+            (click)="MetamaskAuth()">
+      <img src="./assets/images/icons/web3clients/metamask.svg" class="icon">
+      <span>Log in via MetaMask</span>
+    </button>
+  </div>
+
   <div class="form-field">
     <a class="btn btn-transparent width-100"
        style="display: none;"
@@ -8,6 +18,7 @@
       <span translate="AUTH_POPUP.BUTTONS.LOGIN_FACEBOOK"></span>
     </a>
   </div>
+
   <div class="form-field">
     <a class="btn btn-transparent width-100"
        *ngIf="social.GA"
@@ -16,6 +27,7 @@
       <span translate="AUTH_POPUP.BUTTONS.LOGIN_GOOGLE"></span>
     </a>
   </div>
+
 </div>
 
 

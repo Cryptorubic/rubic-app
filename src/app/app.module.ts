@@ -45,6 +45,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
 }
 
 export function appInitializerFactory(translate: TranslateService, userService: UserService) {
+  translate.setDefaultLang('en');
   return () => new Promise<any>((resolve: any, reject) => {
     const subscriber = userService.getCurrentUser(true).subscribe((user: UserInterface) => {
       translate.use(user.lang).subscribe(() => {

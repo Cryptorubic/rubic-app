@@ -21,6 +21,7 @@ import {MatDialog} from '@angular/material';
 export class UserService {
   private FBInit: boolean;
   private GAInit: boolean;
+  private MMInit: boolean;
 
   constructor(
     private dialog: MatDialog,
@@ -44,6 +45,9 @@ export class UserService {
       window['gapi'].load('auth2');
     }
 
+    if (window['ethereum'] && window['ethereum'].isMetaMask) {
+      this.MMInit = true;
+    }
 
   }
   public userObserves;
@@ -82,10 +86,11 @@ export class UserService {
     });
   }
 
-  public checkSocialNetworks(): {FB: boolean, GA: boolean} {
+  public checkSocialNetworks(): {FB: boolean, GA: boolean, MM: boolean} {
     return {
       GA: this.GAInit,
-      FB: this.FBInit
+      FB: this.FBInit,
+      MM: this.MMInit
     };
   }
 
@@ -219,6 +224,15 @@ export class UserService {
         return this.authenticate(data, URLS.SOCIAL.GOOGLE);
     }
   }
+
+  public getMetaMaskAuthMsg() {
+    return this.httpService.get('get_metamask_message/').toPromise();
+  }
+
+  public metaMaskAuth(data) {
+    return this.httpService.post('metamask/', data, URLS.HOSTS.AUTH_PATH).toPromise();
+  }
+
 
   public FBAuth() {
     return new Promise((resolve, reject) => {
