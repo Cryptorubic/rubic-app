@@ -170,7 +170,6 @@ export class Web3Service {
         });
       }
 
-
       const contract = this.Web3.eth.Contract(ERC20_TOKEN_ABI, address);
 
       tokenInfoFields.map((method) => {
@@ -195,69 +194,59 @@ export class Web3Service {
   }
 
 
-  public checkTokenAddress(address) {
-    return this.getTokenInfo(address);
-  }
-
-  private setProvider(providerName) {
-
-    const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
-
-    switch (providerName) {
-      case 'metamask':
-        const networkVersion = Number(this.providers[providerName].publicConfigStore._state.networkVersion);
-        if (usedNetworkVersion === networkVersion) {
-          this.Web3.setProvider(this.providers[providerName]);
-        }
-        break;
-    }
-  }
-
-
   private getAccountsByProvider(providerName) {
-    return new Promise((resolve, reject) => {
-      try {
-        this.setProvider(providerName);
-
-        if (window['ethereum'] && window['ethereum'].isMetaMask) {
-          window['ethereum'].enable().then(() => {
-            this.Web3.eth.getAccounts((err, addresses) => {
-              if (!err) {
-                resolve({
-                  type: providerName,
-                  addresses
-                });
-              }
-            });
-          }, () => {
-            resolve({
-              type: providerName,
-              addresses: null
-            });
-          });
+    const sendNull = (observer) => {
+      observer.next({
+        type: providerName,
+        addresses: null
+      });
+    };
+    return new Observable((observer) => {
+      const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
+      if (window['ethereum'] && window['ethereum'].isMetaMask) {
+        const networkVersion = Number(window['ethereum'].networkVersion);
+        if (usedNetworkVersion !== networkVersion) {
+          sendNull(observer);
+          return;
         }
-
-        // const accounts = ethereum.enable();
-
-      } catch (err) {
-        resolve({
-          type: providerName,
-          addresses: []
+        window['ethereum'].on('accountsChanged', (accounts) => {
+          observer.next({
+            type: providerName,
+            addresses: accounts
+          });
         });
+        window['ethereum'].enable().then((accounts) => {
+          observer.next({
+            type: providerName,
+            addresses: accounts
+          });
+        }, () => {
+          sendNull(observer);
+        });
+      } else {
+        sendNull(observer);
       }
+      return {
+        unsubscribe() {}
+      };
     });
   }
 
 
   public getAccounts(owner?) {
     const addressesDictionary: any = {};
-    return new Promise((resolve, reject) => {
-      this.getAccountsByProvider('metamask').then((addresses: any) => {
-        addressesDictionary[addresses.type] = owner ? addresses.addresses.filter((addr) => {
+    return new Observable((observer) => {
+      const accountsSubscriber = this.getAccountsByProvider('metamask').subscribe((addresses: any) => {
+        addressesDictionary[addresses.type] = addresses.addresses === null ? null : owner ? addresses.addresses.filter((addr) => {
           return addr.toLowerCase() === owner.toLowerCase();
         }) : addresses.addresses;
-        this.Web3.setProvider(this.providers.infura);
-        resolve(addressesDictionary);
+
+        observer.next(addressesDictionary);
+        return {
+          unsubscribe() {
+            accountsSubscriber.unsubscribe();
+          }
+        };
       });
     });
   }
@@ -266,38 +255,20 @@ export class Web3Service {
     return this.Web3.eth.abi.encodeFunctionCall(abi, data);
   }
 
-  public setDefaultAddress(address) {
-    this.Web3.eth.defaultAccount = address;
-  }
-
   public sendTransaction(transactionConfig, provider?) {
     if (provider) {
       this.Web3.eth.setProvider(this.providers[provider]);
     }
     return new Promise((resolve) => {
-      setTimeout(() => {
-        this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
-          resolve(result);
-        }).finally(() => {
-          if (provider) {
-            this.Web3.eth.setProvider(this.providers.infura);
-          }
-        });
+      this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
+        resolve(result);
+      }).finally(() => {
+        if (provider) {
+          this.Web3.eth.setProvider(this.providers.infura);
+        }
       });
     });
   }
-
-
-  public createTransaction(transactionConfig, provider?) {
-    if (provider) {
-      this.Web3.setProvider(this.providers[provider]);
-    }
-    return this.Web3.eth.sendTransaction.request(transactionConfig, () => {
-      this.Web3.setProvider(this.providers.infura);
-    });
-  }
-
-
 }
 
 

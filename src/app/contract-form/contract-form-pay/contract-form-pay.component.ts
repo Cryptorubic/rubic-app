@@ -21,7 +21,7 @@ export class ContractFormPayComponent implements OnInit, OnDestroy {
 
   public tokensAddresses = TOKENS_ADDRESSES;
 
-  private getAccountsTimeout;
+  private getAccountsSubscriber;
 
   constructor(
     private web3Service: Web3Service,
@@ -33,17 +33,15 @@ export class ContractFormPayComponent implements OnInit, OnDestroy {
     this.trxDataFields.BNB = this.checkTRXData(this.contractCosts.BNB);
     this.replenishMethod = 'WISH';
     this.costValue = new BigNumber(this.contractCosts.ETH).toString(10);
-    // this.getAccountsTimeout = setInterval(() => {
     this.updateAddresses();
-    // }, 1000);
   }
 
   ngOnDestroy() {
-    clearTimeout(this.getAccountsTimeout);
+    this.getAccountsSubscriber.unsubscribe();
   }
 
   private updateAddresses() {
-    this.web3Service.getAccounts().then((addresses) => {
+    this.getAccountsSubscriber = this.web3Service.getAccounts().subscribe((addresses) => {
       this.providedAddresses = addresses;
     });
   }

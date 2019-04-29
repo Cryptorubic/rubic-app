@@ -31,9 +31,10 @@
                   MyEtherWallet
                 </a>
               </div>
+              <!--this.originalContract.contract_details.owner_address-->
               <div class="grid-cell grid-cell-vs-1-2">
                 <button type="button"
-                        [disabled]="!providedAddresses.metamask?.length"
+                        [disabled]="!providedAddresses.metamask?.length || (transaction.onlyOwner && (providedAddresses.metamask[0] !== transaction.onlyOwner))"
                         (click)="transaction.action({
                         type: 'metamask',
                         address: providedAddresses.metamask[0]

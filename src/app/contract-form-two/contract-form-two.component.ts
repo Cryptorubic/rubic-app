@@ -46,7 +46,7 @@ export class ContractFormTwoComponent extends ContractFormComponent {
 
     this.onDestroyPage = () => {
       if (this.getAccountsTimeout) {
-        clearTimeout(this.getAccountsTimeout);
+        this.getAccountsTimeout.unsubscribe();
       }
     };
 
@@ -62,7 +62,7 @@ export class ContractFormTwoComponent extends ContractFormComponent {
   protected web3Service;
   private trxRequest;
 
-  private addressesIsLeft: boolean;
+  private getAccountsSubscriber;
 
 
   public confirmContract() {
@@ -85,8 +85,6 @@ export class ContractFormTwoComponent extends ContractFormComponent {
     this.originalContract = contract;
     this.originalContract.contract_details.tokens_info = tokensInfo;
 
-    this.updateAddresses();
-
     switch (contract.state) {
       case 'CREATED':
         this.gotToForm(100);
@@ -96,6 +94,7 @@ export class ContractFormTwoComponent extends ContractFormComponent {
         this.gotToForm(101);
         this.checkContractState();
         this.generateActivateTrx();
+        this.updateAddresses();
         break;
       default:
         this.router.navigate(['/contract-v2/' + contract.id]);
@@ -113,9 +112,7 @@ export class ContractFormTwoComponent extends ContractFormComponent {
     }, (err) => {
       console.log(err);
     });
-
   }
-
 
 
   private generateActivateTrx() {
@@ -146,16 +143,14 @@ export class ContractFormTwoComponent extends ContractFormComponent {
 
 
   private updateAddresses() {
-    if (this.addressesIsLeft) {
+    if (this.getAccountsSubscriber) {
       return;
     }
-    this.addressesIsLeft = true;
-    this.web3Service.getAccounts(this.originalContract.contract_details.owner_address).then((addresses) => {
+    this.getAccountsSubscriber = this.web3Service.getAccounts(this.originalContract.contract_details.owner_address).subscribe((addresses) => {
       if (addresses !== null) {
         this.providedAddresses = addresses;
-        // this.getAccountsTimeout = setTimeout(() => {
-        //   this.updateAddresses();
-        // }, 1000);
+      } else {
+        this.providedAddresses = {};
       }
     });
   }

@@ -285,7 +285,8 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
           from: this.originalContract.contract_details.owner_address,
           to: SWAPS_V2.ADDRESS,
           data: cancelSignature,
-          action: cancelTransaction
+          action: cancelTransaction,
+          onlyOwner: details.owner_address
         }],
         title: 'Cancel',
         description: 'To cancel the swap you need to make the transaction from the management address'
