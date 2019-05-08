@@ -91,8 +91,8 @@ export class SocialComponent implements OnInit {
         this.userService.getMetaMaskAuthMsg().then((msg) => {
           this.web3Service.getSignedMetaMaskMsg(msg, address).then((signed) => {
             this.userService.metaMaskAuth({
-              address: address,
-              msg: msg,
+              address,
+              msg,
               signed_msg: signed
             }).then((result) => {
               console.log(result);

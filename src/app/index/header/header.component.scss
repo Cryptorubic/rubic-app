@@ -65,6 +65,11 @@ header {
         vertical-align: middle;
         padding: 9px 25px;
         cursor: pointer;
+        &.is-social {
+          max-width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
         &:hover {
           text-decoration: underline;
         }
@@ -161,6 +166,7 @@ header {
           padding-top: 15px;
           padding-bottom: 15px;
           display: block;
+          max-width: initial;
           &:hover {
             text-decoration: none;
             background-color: rgba(0, 0, 0, 0.4);

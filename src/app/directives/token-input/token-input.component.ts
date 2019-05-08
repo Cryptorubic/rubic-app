@@ -1,9 +1,5 @@
-import {Component, Directive, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {HttpService} from '../../services/http/http.service';
-import {AbstractControl, NG_ASYNC_VALIDATORS} from '@angular/forms';
-import {Validator} from 'codelyzer/walkerFactory/walkerFn';
-import BigNumber from 'bignumber.js';
-
 
 export interface ITokenInfo {
     active?: boolean;

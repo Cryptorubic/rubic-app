@@ -230,7 +230,12 @@ export class UserService {
   }
 
   public metaMaskAuth(data) {
-    return this.httpService.post('metamask/', data, URLS.HOSTS.AUTH_PATH).toPromise();
+    return new Promise((resolve, reject) => {
+      this.httpService.post('metamask/', data, URLS.HOSTS.AUTH_PATH).toPromise().then((response) => {
+        this.updateUser();
+        resolve(response);
+      }, reject);
+    });
   }
 
 
