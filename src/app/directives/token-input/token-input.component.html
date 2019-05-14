@@ -1,15 +1,14 @@
-<form #amountForm="ngForm">
-  <input type="text" placeholder="Enter Amount"
-         #amountField
-         required
-         name="amountField"
-         [tabindex]="visibleInput ? '-1' : ''"
-         (ngModelChange)="transformValue($event)"
-         [(ngModel)]="amount">
-</form>
-
-<input type="hidden" required
-       [ngModel]="tokenModel.token.address">
+<input type="text" placeholder="Enter Amount"
+       #amountField
+       [required]="true"
+       [appBigNumber]="{
+          decimals: (tokenModel.token?.decimals === undefined) ? 50 : tokenModel.token.decimals,
+          min: 1
+       }"
+       [decimalsChange]="TokenChange"
+       name="amountField"
+       [tabindex]="visibleInput ? '-1' : ''"
+       [(ngModel)]="tokenModel.amount">
 
 <button class="form-field_input__btn"
         type="button"

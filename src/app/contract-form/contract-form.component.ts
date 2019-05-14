@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker} from '@angular/material';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {ContractsService} from '../services/contracts/contracts.service';
@@ -23,6 +23,7 @@ export interface IContractDetails {
   owner_address?: string;
   public?: boolean|undefined;
   unique_link?: string;
+  unique_link_url?: string;
   eth_contract?: any;
   tokens_info?: {
     base: {
@@ -34,6 +35,13 @@ export interface IContractDetails {
       amount: string;
     };
   };
+
+
+  whitelist?: any;
+  whitelist_address?: any;
+  min_base_wei?: any;
+  memo_contract?: any;
+  min_quote_wei?: any;
 }
 
 
@@ -41,7 +49,7 @@ export interface IContract {
   isSwapped?: boolean;
   contract_details?: IContractDetails;
   id?: number|undefined;
-  contract_type?: 20;
+  contract_type?: number;
   network?: 1;
   state?: string;
   cost?: any;
@@ -78,53 +86,18 @@ export const MY_FORMATS = {
   ]
 })
 export class ContractFormComponent implements AfterContentInit, OnInit, OnDestroy {
-  public confirmationIsProgress: boolean;
-  public formIsSending: boolean;
 
-  public currentUser;
-  public editableContract = true;
-
-  public minTime;
-  public minDate: moment.Moment;
-
-  public datePickerDate;
-  public datePickerTime;
-
-  private updateContractTimer;
-
-  public changeModel = new EventEmitter<any>();
-  public customTokens;
-  public openedCustomTokens: {
-    base: boolean;
-    quote: boolean;
-  };
-
-  public revertedRate: boolean;
-
-  // For preview
-  public originalContract: IContract;
-
-  // For form displaying
-  public requestData: IContractDetails;
-
-  // For request form data
-  private formData: IContract;
-
-
-  public openedForm: any;
-
-  @ViewChild(MatDatepicker) datepicker: MatDatepicker<Date>;
-  @ViewChild('extraForm') public extraForm;
-
-
-
+  @Output() BaseTokenChange = new EventEmitter<string>();
+  @Output() QuoteTokenChange = new EventEmitter<string>();
+  @Output() BaseTokenCustom = new EventEmitter<string>();
+  @Output() QuoteTokenCustom = new EventEmitter<string>();
 
   constructor(
-    private contractsService: ContractsService,
+    protected contractsService: ContractsService,
     private userService: UserService,
     private location: Location,
     private route: ActivatedRoute,
-    private router: Router
+    protected router: Router
   ) {
 
     this.formData = {
@@ -155,12 +128,53 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     this.datePickerDate = startDateTime.add(1, 'hour');
     this.datePickerTime = `${startDateTime.hour()}:${startDateTime.minutes()}`;
 
+  }
 
-    if (this.originalContract) {
-      this.analyzeContractState(this.originalContract);
-    } else {
-      this.gotToForm(0);
-    }
+  get tokens() {
+    return this.originalContract.contract_details.tokens_info;
+  }
+  public confirmationIsProgress: boolean;
+  public formIsSending: boolean;
+
+  public currentUser;
+  public editableContract = true;
+
+  public minTime;
+  public minDate: moment.Moment;
+
+  public datePickerDate;
+  public datePickerTime;
+
+  private updateContractTimer;
+
+  public customTokens;
+  public openedCustomTokens: {
+    base: boolean;
+    quote: boolean;
+  };
+
+  public revertedRate: boolean;
+
+  // For preview
+  public originalContract: IContract;
+
+  // For form displaying
+  public requestData: IContractDetails;
+
+  // For request form data
+  protected formData: IContract;
+
+
+  public openedForm: any;
+
+  @ViewChild(MatDatepicker) datepicker: MatDatepicker<Date>;
+  @ViewChild('extraForm') public extraForm;
+
+  protected onDestroyPage;
+
+
+  protected setContractType(typeNumber) {
+    this.formData.contract_type = typeNumber;
   }
 
   public gotToForm(formNumber) {
@@ -173,7 +187,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     }
   }
 
-  private analyzeContractState(contract) {
+  protected analyzeContractState(contract) {
 
     const tokensInfo = this.originalContract.contract_details.tokens_info;
     this.originalContract = contract;
@@ -181,16 +195,16 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
     switch (contract.state) {
       case 'CREATED':
-        this.gotToForm(2);
+        this.gotToForm(100);
         break;
       case 'WAITING_FOR_PAYMENT':
         this.editableContract = false;
-        this.gotToForm(3);
+        this.gotToForm(101);
         this.checkContractState();
         break;
       case 'WAITING_FOR_DEPLOYMENT':
         this.editableContract = false;
-        this.gotToForm(4);
+        this.gotToForm(102);
         this.checkContractState();
         break;
       case 'ACTIVE':
@@ -202,19 +216,24 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     }
   }
 
-  private checkContractState() {
+  protected checkContractState() {
     this.updateContractTimer = setTimeout(() => {
       this.contractsService.getContract(this.originalContract.id).then((contract) => {
         this.analyzeContractState(contract);
+      }, () => {
+        this.updateContractTimer = setTimeout(() => {
+          this.checkContractState();
+        }, 5000);
       });
     }, 5000);
   }
 
 
   ngOnInit() {
-    const draftData = localStorage.getItem('form_values');
+    const draftData = localStorage.getItem('form_new_values');
     if (this.originalContract) {
       this.requestData = {...this.originalContract.contract_details};
+      this.analyzeContractState(this.originalContract);
     } else {
       this.requestData = draftData ? JSON.parse(draftData) : {
         tokens_info: {
@@ -231,11 +250,9 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
       this.originalContract = {
         contract_details: {...this.requestData}
       };
+      this.gotToForm(0);
     }
-  }
 
-  get tokens() {
-    return this.originalContract.contract_details.tokens_info;
   }
 
   ngAfterContentInit() {
@@ -252,19 +269,22 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
 
   public revertCoins() {
-    const baseCoin = this.requestData.tokens_info.base;
-
-    this.requestData.tokens_info.base = this.requestData.tokens_info.quote;
-    this.requestData.tokens_info.quote = baseCoin;
-
-    setTimeout(() => {
-      this.changeModel.emit();
-    });
+    const baseCoin = {...this.requestData.tokens_info.base};
+    this.requestData.tokens_info.base = {...this.requestData.tokens_info.quote};
+    this.requestData.tokens_info.quote = {...baseCoin};
   }
 
 
   public addCustomToken(name) {
-    this.requestData.tokens_info[name].token = this.customTokens[name];
+    this.requestData.tokens_info[name].token = {...this.customTokens[name]};
+    switch (name) {
+      case 'base':
+        this.BaseTokenCustom.emit(this.requestData.tokens_info[name]);
+        break;
+      case 'quote':
+        this.QuoteTokenCustom.emit(this.requestData.tokens_info[name]);
+        break;
+    }
     this.openedCustomTokens[name] = false;
   }
 
@@ -273,11 +293,22 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   }
 
   private contractIsCreated(contract) {
-    this.location.replaceState(`/view/${contract.id}`);
+    let newState;
+    switch (contract.contract_type) {
+      case 21:
+        newState = `/view-v2/${contract.id}`;
+        break;
+      case 20:
+        newState = `/view/${contract.id}`;
+        break;
+
+    }
+
+    this.location.replaceState(newState);
     this.formData.id = contract.id;
     this.originalContract = contract;
     this.originalContract.contract_details.tokens_info = this.requestData.tokens_info;
-    this.gotToForm(2);
+    this.gotToForm(100);
   }
 
   private contractIsError(error) {
@@ -298,18 +329,26 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     });
   }
 
-  public createContract(tokenForm) {
+  public createContract(tokenForm, advancedForm?: any) {
     this.formData.contract_details = {...tokenForm.value};
     this.formData.contract_details.public = !!this.extraForm.value.public;
     this.formData.contract_details.stop_date = this.extraForm.value.active_to.utc().format('YYYY-MM-DD HH:mm');
-    this.formData.contract_details.base_limit = (new BigNumber(this.requestData.tokens_info.base.amount)).
-      times(Math.pow(10, this.requestData.tokens_info.base.token.decimals)).toString(10);
-    this.formData.contract_details.quote_limit = (new BigNumber(this.requestData.tokens_info.quote.amount)).
-      times(Math.pow(10, this.requestData.tokens_info.quote.token.decimals)).toString(10);
+    this.formData.contract_details.base_limit = this.requestData.tokens_info.base.amount;
+    this.formData.contract_details.quote_limit = this.requestData.tokens_info.quote.amount;
 
     this.formData.contract_details.owner_address = this.extraForm.value.owner_address;
     this.formData.name = this.requestData.tokens_info.base.token.token_short_name + '<>' + this.requestData.tokens_info.quote.token.token_short_name;
 
+    if (advancedForm) {
+      this.formData.contract_details = {
+        ...this.formData.contract_details,
+        ...advancedForm.value
+      };
+
+      this.formData.contract_details.min_quote_wei = this.formData.contract_details.min_quote_wei || '0';
+      this.formData.contract_details.min_base_wei = this.formData.contract_details.min_base_wei || '0';
+
+    }
 
     if (this.currentUser.is_ghost) {
       this.userService.openAuthForm().then(() => {
@@ -366,9 +405,42 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
 
   ngOnDestroy(): void {
+    if (this.onDestroyPage) {
+      this.onDestroyPage();
+    }
+
     if (this.updateContractTimer) {
       window.clearTimeout(this.updateContractTimer);
     }
+  }
+
+  public checkRate(revert?) {
+
+    const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount)
+      .div(Math.pow(10, this.requestData.tokens_info.base.token.decimals));
+
+    const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount)
+      .div(Math.pow(10, this.requestData.tokens_info.quote.token.decimals));
+
+
+
+    return !revert ?
+      baseCoinAmount.div(quoteCoinAmount).dp(4) :
+      quoteCoinAmount.div(baseCoinAmount).dp(4);
+  }
+
+
+  public changedToken(coin) {
+    setTimeout(() => {
+      switch (coin) {
+        case 'base':
+          this.BaseTokenChange.emit(this.requestData.tokens_info[coin]);
+          break;
+        case 'quote':
+          this.QuoteTokenChange.emit(this.requestData.tokens_info[coin]);
+          break;
+      }
+    });
   }
 
 }
@@ -378,6 +450,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 @Injectable()
 export class ContractEditResolver implements Resolve<any> {
   private currentUser;
+  private route;
+
   constructor(
     private contractsService: ContractsService,
     private userService: UserService,
@@ -403,10 +477,49 @@ export class ContractEditResolver implements Resolve<any> {
     promise.then((result) => {
       result.contract_details.tokens_info = {};
 
+      let newState;
+      switch (result.contract_type) {
+        case 21:
+          switch (result.state) {
+            case 'CREATED':
+            case 'WAITING_FOR_ACTIVATION':
+              newState = `/view-v2/${result.id}`;
+              break;
+            default:
+              if (isPublic) {
+                newState = `/public-v2/${this.publicLink}`;
+              } else {
+                newState = `/contract-v2/${result.id}`;
+              }
+              break;
+          }
+          break;
+        case 20:
+          switch (result.state) {
+            case 'CREATED':
+            case 'WAITING_FOR_PAYMENT':
+            case 'WAITING_FOR_DEPLOYMENT':
+              newState = `/view/${result.id}`;
+              break;
+            default:
+              if (isPublic) {
+                newState = `/public/${this.publicLink}`;
+              } else {
+                newState = `/contract/${result.id}`;
+              }
+              break;
+          }
+          break;
+      }
+      if (this.route._routerState.url !== newState) {
+          this.router.navigate([newState]);
+          return;
+      }
+
       this.web3Service.getFullTokenInfo(result.contract_details.quote_address).then((token: TokenInfoInterface) => {
         result.contract_details.tokens_info.quote = {
           token,
-          amount: new BigNumber(result.contract_details.quote_limit).div(Math.pow(10, token.decimals)).toString()
+          amount: result.contract_details.quote_limit
         };
         if (result.contract_details.tokens_info.base) {
           observer.complete();
@@ -416,7 +529,7 @@ export class ContractEditResolver implements Resolve<any> {
       this.web3Service.getFullTokenInfo(result.contract_details.base_address).then((token: TokenInfoInterface) => {
         result.contract_details.tokens_info.base = {
           token,
-          amount: new BigNumber(result.contract_details.base_limit).div(Math.pow(10, token.decimals)).toString()
+          amount: result.contract_details.base_limit
         };
         if (result.contract_details.tokens_info.quote) {
           observer.complete();
@@ -428,7 +541,7 @@ export class ContractEditResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot) {
-
+    this.route = route;
     if (route.params.id) {
       this.contractId = route.params.id;
       return new Observable((observer) => {
@@ -457,4 +570,5 @@ export class ContractEditResolver implements Resolve<any> {
       });
     }
   }
+
 }

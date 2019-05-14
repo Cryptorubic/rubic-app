@@ -19,108 +19,109 @@
   }
 }
 
-.form-field input {
-  outline: none;
-  form.ng-submitted &:not(.without-error-lightning).ng-invalid,
-  &.ng-invalid:not(.without-error-lightning):focus,
-  &:not(.without-error-lightning).ng-touched.ng-invalid,
-  &:not(.without-error-lightning)[invalid="true"] {
-    &:not(:disabled), &:not([disabled]), &:not([readonly]) {
-      border-color: #ff2944;
-    }
-    &:focus {
-      box-shadow: 0 0 0.2em rgba(249, 28, 28, 0.4);
-    }
-    ~ {
-      .field-label {
-        //color: #ffa2a8;
+.form-field {
+  input, textarea {
+    outline: none;
+    form.ng-submitted &:not(.without-error-lightning).ng-invalid,
+    &.ng-invalid:not(.without-error-lightning):focus,
+    &:not(.without-error-lightning).ng-touched.ng-invalid,
+    &:not(.without-error-lightning)[invalid="true"] {
+      &:not(:disabled), &:not([disabled]), &:not([readonly]) {
+        border-color: #ff2944;
       }
-    }
-    ~ .field-advanced-description {
-      display: none;
-    }
+      &:focus {
+        box-shadow: 0 0 0.2em rgba(249, 28, 28, 0.4);
+      }
+      ~ {
+        .field-label {
+          //color: #ffa2a8;
+        }
+      }
+      ~ .field-advanced-description {
+        display: none;
+      }
 
-    &.ng-invalid-required {
-      ~ .form-field_error-required {
-        display: block;
-        ~ .field-error {
-          display: none!important;
-        }
-      }
-    }
-    &.ng-invalid-email {
-      ~ {
-        .form-field_error-email {
+      &.ng-invalid-required {
+        ~ .form-field_error-required {
           display: block;
           ~ .field-error {
-            display: none!important;
+            display: none !important;
           }
         }
       }
-    }
-    &.ng-invalid-pattern {
-      ~ {
-        .form-field_error-pattern {
-          display: block;
-          ~ .field-error {
-            display: none!important;
+      &.ng-invalid-email {
+        ~ {
+          .form-field_error-email {
+            display: block;
+            ~ .field-error {
+              display: none !important;
+            }
           }
         }
       }
-    }
-    &.ng-invalid-minlength {
-      ~ {
-        .form-field_error-minlength {
-          display: block;
-          ~ .field-error {
-            display: none!important;
+      &.ng-invalid-pattern {
+        ~ {
+          .form-field_error-pattern {
+            display: block;
+            ~ .field-error {
+              display: none !important;
+            }
           }
         }
       }
-    }
+      &.ng-invalid-minlength {
+        ~ {
+          .form-field_error-minlength {
+            display: block;
+            ~ .field-error {
+              display: none !important;
+            }
+          }
+        }
+      }
 
-    &.ng-invalid-server {
-      ~ {
-        .form-field_error-server {
-          display: block;
-          ~ .field-error {
-            display: none!important;
+      &.ng-invalid-server {
+        ~ {
+          .form-field_error-server {
+            display: block;
+            ~ .field-error {
+              display: none !important;
+            }
           }
         }
       }
-    }
-    &.ng-invalid-soft-cap {
-      ~ {
-        .form-field_error-soft-cap {
-          display: block;
-          ~ .field-error {
-            display: none!important;
+      &.ng-invalid-soft-cap {
+        ~ {
+          .form-field_error-soft-cap {
+            display: block;
+            ~ .field-error {
+              display: none !important;
+            }
           }
         }
       }
-    }
-    &.ng-invalid-check-sum {
-      ~ {
-        .form-field_error-check-sum {
-          display: block;
-          ~ .field-error {
-            display: none!important;
+      &.ng-invalid-check-sum {
+        ~ {
+          .form-field_error-check-sum {
+            display: block;
+            ~ .field-error {
+              display: none !important;
+            }
           }
         }
       }
-    }
 
-    &.ng-invalid-contract-address {
-      ~ {
-        .form-field_error-contract-address {
-          display: block;
-          ~ .field-error {
-            display: none!important;
+      &.ng-invalid-contract-address {
+        ~ {
+          .form-field_error-contract-address {
+            display: block;
+            ~ .field-error {
+              display: none !important;
+            }
           }
         }
       }
     }
-
   }
 }
 

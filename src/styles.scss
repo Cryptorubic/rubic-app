@@ -5,25 +5,25 @@
 @import "scss/elements/contracts";
 
 /* You can add global styles to this file, and also import other style files */
-
 @font-face {
   font-family: 'Sofia Pro';
-  src: url('./assets/fonts/SofiaProBold.eot');
-  src: url('/assets/fonts/SofiaProBold.eot?#iefix') format('embedded-opentype'),
-  url('/assets/fonts/SofiaProBold.woff') format('woff'),
-  url('/assets/fonts/SofiaProBold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Sofia Pro';
-  src: url('./assets/fonts/SofiaProRegular.eot');
-  src: url('./assets/fonts/SofiaProRegular.eot?#iefix') format('embedded-opentype'),
+  src: local('Sofia Pro Regular'), local('Sofia-Pro-Bold'),
+  url('./assets/fonts/SofiaProRegular.woff2') format('woff2'),
   url('./assets/fonts/SofiaProRegular.woff') format('woff'),
   url('./assets/fonts/SofiaProRegular.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Sofia Pro';
+  src: local('Sofia Pro Bold'), local('Sofia-Pro-Bold'),
+  url('./assets/fonts/SofiaProBold.woff2') format('woff2'),
+  url('./assets/fonts/SofiaProBold.woff') format('woff'),
+  url('./assets/fonts/SofiaProBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
 
 body {
   margin: 0;
@@ -189,6 +189,9 @@ a:not(.btn):not(.minimal-btn) {
 .normal-text {
   color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
+  &.opacity-color {
+    color: rgba(255, 255, 255, 0.7);
+  }
 }
 
 
@@ -212,13 +215,12 @@ a:not(.btn):not(.minimal-btn) {
   }
 }
 
-
 .btn {
   font-family: inherit;
   font-size: 18px;
   color: #FFFFFF;
   line-height: 27px;
-  padding: 17px 42px;
+  padding: 17px 42px 17px 37px;
   border: 0 none;
   border-left: 5px solid;
   position: relative;
@@ -249,7 +251,13 @@ a:not(.btn):not(.minimal-btn) {
       top: 50%;
       left: 25px;
       margin-top: -9px;
-
+    }
+    .btn-icon {
+      position: absolute;
+      left: 15px;
+      height: 24px;
+      top: 50%;
+      margin-top: -12px;
     }
   }
   &-min-padding {
@@ -295,9 +303,13 @@ a:not(.btn):not(.minimal-btn) {
       margin: -1px 0;
     }
   }
+
   &-white-opacity {
     border-color: #fcd600;
     background-color: rgba(255, 255, 255, 0.1);
+    &.white-border {
+      border-color: rgba(255, 255, 255, 0.67);
+    }
     &:hover {
       background-color:  rgba(255, 255, 255, 0.2);
     }
@@ -445,7 +457,7 @@ a:not(.btn):not(.minimal-btn) {
         }
       }
     }
-    input:not([type="checkbox"]):not([type="radio"]) {
+    input:not([type="checkbox"]):not([type="radio"]), textarea, .textarea {
       box-sizing: border-box;
       background-color: #fff;
       border: 1px solid #fff;
@@ -495,7 +507,16 @@ a:not(.btn):not(.minimal-btn) {
         line-height: 19px;
       }
     }
-    input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]) {
+    textarea {
+      resize: none;
+      height: 233px;
+    }
+
+    .textarea {
+      word-break: break-all;
+    }
+
+    input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]), textarea, .textarea {
       width: 100%;
       &[disabled] {
         opacity: 0.5;
@@ -623,7 +644,7 @@ a:not(.btn):not(.minimal-btn) {
     float: right;
     text-align: center;
     width: 40px;
-    line-height: 60px;
+    line-height: 43px;
   }
   &_copy + &_input_data {
     margin-right: 40px;

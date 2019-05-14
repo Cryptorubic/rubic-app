@@ -42,6 +42,12 @@ export class ContractsService {
     }).toPromise();
   }
 
+  public changeContractState(id) {
+    return this.httpService.post(`change_contract_state/`, {
+      contract_id: id
+    }).toPromise();
+  }
+
   public deleteContract(contract) {
     return this.httpService.delete(`contracts/${contract.id}/`).toPromise();
   }

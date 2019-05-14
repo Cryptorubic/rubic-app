@@ -1,6 +1,11 @@
 @import '~@angular/material/theming';
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
+@import '../transaction/transaction.component';
+
+.base-block-content {
+  background-attachment: fixed;
+}
 .form-container {
   padding-left: 62px;
 
@@ -327,4 +332,11 @@
 }
 
 
+.contract-pay-state {
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
+  font-size: 18px;
+  color: #8E939B;
+  line-height: 22px;
+  padding: 15px 10px;
+}
 

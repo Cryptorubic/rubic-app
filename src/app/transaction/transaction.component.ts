@@ -10,7 +10,7 @@ import {Web3Service} from '../services/web3/web3.service';
 export class TransactionComponent implements OnInit, OnDestroy {
 
 
-  private getAccountsTimeout;
+  private getAccountsSubscriber;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public trxData,
@@ -23,19 +23,18 @@ export class TransactionComponent implements OnInit, OnDestroy {
   public providedAddresses: any = {};
 
   ngOnInit() {
-
-    this.getAccountsTimeout = setInterval(() => {
-      this.updateAddresses();
-    }, 1000);
+    this.updateAddresses();
   }
 
   ngOnDestroy() {
-    clearTimeout(this.getAccountsTimeout);
+    this.getAccountsSubscriber.unsubscribe();
   }
 
   private updateAddresses() {
-    this.web3Service.getAccounts().then((addresses) => {
-      this.providedAddresses = addresses;
+    this.getAccountsSubscriber = this.web3Service.getAccounts().subscribe((addresses) => {
+      if (addresses !== null) {
+        this.providedAddresses = addresses;
+      }
     });
   }
 

@@ -3,6 +3,7 @@ import {ContractsService} from '../../services/contracts/contracts.service';
 import {TokenInfoInterface, Web3Service} from '../../services/web3/web3.service';
 
 import BigNumber from 'bignumber.js';
+import {SWAPS_V2} from '../../contract-form-two/contract-v2-details';
 
 @Component({
   selector: 'app-public-contracts',
@@ -48,7 +49,7 @@ export class PublicContractsComponent implements OnInit {
       contractDetails.base_token_info.rate = baseAmount.div(quoteAmount).dp(3).toString();
       contractDetails.quote_token_info.rate = quoteAmount.div(baseAmount).dp(3).toString();
       if (contract.state === 'ACTIVE' || contract.state === 'DONE' || contract.state === 'CANCEL') {
-        this.loadContractInfo(contractDetails);
+        this.loadContractInfo(contractDetails, contract);
       } else {
         this.contractsCount++;
       }
@@ -70,7 +71,7 @@ export class PublicContractsComponent implements OnInit {
   }
 
 
-  private loadContractInfo(contractDetails) {
+  private loadPrivateContractInfo(contractDetails) {
 
     const contractData = contractDetails.eth_contract;
     const web3Contract = this.web3Service.getContract(contractData.abi, contractData.address);
@@ -97,6 +98,45 @@ export class PublicContractsComponent implements OnInit {
       console.log(err);
     });
 
+  }
+
+  private loadSwapsContractInfo(contractDetails) {
+
+    const web3Contract = this.web3Service.getContract(SWAPS_V2.ABI, SWAPS_V2.ADDRESS);
+
+    web3Contract.methods.baseRaised(contractDetails.memo_contract).call().then((result) => {
+      contractDetails.baseProgress =
+        new BigNumber(result).div(contractDetails.base_limit).times(100).toNumber();
+
+      if (!isNaN(contractDetails.quoteProgress)) {
+        this.contractsCount++;
+      }
+    }, err => {
+      console.log(err);
+    });
+
+    web3Contract.methods.quoteRaised(contractDetails.memo_contract).call().then((result) => {
+      contractDetails.quoteProgress =
+        new BigNumber(result).div(contractDetails.quote_limit).times(100).toNumber();
+
+      if (!isNaN(contractDetails.baseProgress)) {
+        this.contractsCount++;
+      }
+    }, err => {
+      console.log(err);
+    });
+
+  }
+
+  private loadContractInfo(contractDetails, contract) {
+    switch (contract.contract_type) {
+      case 20:
+        this.loadPrivateContractInfo(contractDetails);
+        break;
+      case 21:
+        this.loadSwapsContractInfo(contractDetails);
+        break;
+    }
   }
 
 

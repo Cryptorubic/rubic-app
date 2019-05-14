@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Web3Service} from '../../services/web3/web3.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-start-form',
   templateUrl: './start-form.component.html',
   styleUrls: ['./start-form.component.scss']
 })
-export class StartFormComponent implements OnInit {
+export class StartFormComponent implements OnInit, OnDestroy {
   public tokensData;
   constructor(
     private web3Service: Web3Service
   ) {
-    const draftData = localStorage.getItem('form_values');
+    localStorage.removeItem('form_new_values');
+    const draftData = undefined; // = localStorage.getItem('form_new_values');
     this.tokensData = draftData ? JSON.parse(draftData).tokens_info : {
       base: {
         token: {}
@@ -23,8 +25,23 @@ export class StartFormComponent implements OnInit {
   }
 
   public changedToken() {
-    localStorage.setItem('form_values', JSON.stringify({tokens_info: this.tokensData}));
+    localStorage.setItem('form_new_values', JSON.stringify({tokens_info: this.tokensData}));
   }
+
+
+  public checkRate(revert?) {
+
+    const baseCoinAmount = new BigNumber(this.tokensData.base.amount)
+      .div(Math.pow(10, this.tokensData.base.token.decimals));
+
+    const quoteCoinAmount = new BigNumber(this.tokensData.quote.amount)
+      .div(Math.pow(10, this.tokensData.quote.token.decimals));
+
+    return !revert ?
+      baseCoinAmount.div(quoteCoinAmount).dp(4) :
+      quoteCoinAmount.div(baseCoinAmount).dp(4);
+  }
+
 
   ngOnInit() {
     if (!this.tokensData.base.token.address) {
@@ -39,5 +56,9 @@ export class StartFormComponent implements OnInit {
         this.changedToken();
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.changedToken();
   }
 }

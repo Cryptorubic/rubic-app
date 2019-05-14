@@ -6,20 +6,22 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {Web3Service} from '../services/web3/web3.service';
 import BigNumber from 'bignumber.js';
 
-import {CONTRACT_STATES} from './contract-states';
+import {CONTRACT_STATES} from '../contract-preview/contract-states';
 import {MatDialog} from '@angular/material';
 import {TransactionComponent} from '../transaction/transaction.component';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {UserInterface} from '../services/user/user.interface';
 import {UserService} from '../services/user/user.service';
+
+import {SWAPS_V2} from '../contract-form-two/contract-v2-details';
 import {ContactOwnerComponent} from '../contact-owner/contact-owner.component';
 
 @Component({
-  selector: 'app-contract-preview',
-  templateUrl: './contract-preview.component.html',
-  styleUrls: ['./contract-preview.component.scss']
+  selector: 'app-contract-preview-two',
+  templateUrl: './contract-preview-two.component.html',
+  styleUrls: ['../contract-preview/contract-preview.component.scss']
 })
-export class ContractPreviewComponent implements OnInit, OnDestroy {
+export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
 
   private currentUser: any;
 
@@ -62,7 +64,6 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       normal: baseAmount.div(quoteAmount),
       reverted: quoteAmount.div(baseAmount)
     };
-
   }
 
 
@@ -86,13 +87,19 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
 
   private updateContractTimer;
 
-  public fromBigNumber(num, decimals) {
-    return new BigNumber(num).div(Math.pow(10, decimals)).toString(10);
+  public fromBigNumber(num, decimals, format?) {
+    const bigNumberValue = new BigNumber(num).div(Math.pow(10, decimals));
+    if (format) {
+      return bigNumberValue.toFormat(this.formatNumberParams);
+    } else {
+      return bigNumberValue.toString(10);
+    }
+
   }
 
   private getBaseRaised(web3Contract) {
-    web3Contract.methods.baseRaised().call().then((result) => {
-      const details = this.originalContract.contract_details;
+    const details = this.originalContract.contract_details;
+    web3Contract.methods.baseRaised(details.memo_contract).call().then((result) => {
       this.contractInfo.baseRaised = result;
       this.contractInfo.baseLeft = new BigNumber(details.tokens_info.base.amount).minus(result);
       this.contractInfo.baseLeftString = this.contractInfo.baseLeft.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
@@ -101,8 +108,8 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     });
   }
   private getQuoteRaised(web3Contract) {
-    web3Contract.methods.quoteRaised().call().then((result) => {
-      const details = this.originalContract.contract_details;
+    const details = this.originalContract.contract_details;
+    web3Contract.methods.quoteRaised(details.memo_contract).call().then((result) => {
       this.contractInfo.quoteRaised = result;
       this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(result);
       this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
@@ -110,15 +117,18 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       console.log(err);
     });
   }
+
   private getBaseInvestors(web3Contract) {
-    web3Contract.methods.baseInvestors().call().then((result) => {
+    const details = this.originalContract.contract_details;
+    web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
       this.contractInfo.baseInvestors = result.length;
     }, err => {
       console.log(err);
     });
   }
   private getQuoteInvestors(web3Contract) {
-    web3Contract.methods.quoteInvestors().call().then((result) => {
+    const details = this.originalContract.contract_details;
+    web3Contract.methods.quoteInvestors(details.memo_contract).call().then((result) => {
       this.contractInfo.quoteInvestors = result.length;
     }, err => {
       console.log(err);
@@ -126,11 +136,12 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   }
 
   private getContractInfoFromBlockchain(web3Contract) {
+    const details = this.originalContract.contract_details;
     this.getBaseRaised(web3Contract);
     this.getQuoteRaised(web3Contract);
     this.getBaseInvestors(web3Contract);
     this.getQuoteInvestors(web3Contract);
-    web3Contract.methods.isSwapped().call().then((result) => {
+    web3Contract.methods.isSwapped(details.memo_contract).call().then((result) => {
       this.originalContract.isSwapped = result;
     }, err => {
       console.log(err);
@@ -145,7 +156,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       case 'DONE':
       case 'EXPIRED':
         this.contractAdditional.link =
-          location.origin + '/public/' + this.originalContract.contract_details.unique_link;
+          location.origin + '/public-v2/' + this.originalContract.contract_details.unique_link;
 
         this.originalContract.contract_details.unique_link_url = this.contractAdditional.link;
 
@@ -186,9 +197,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   }
 
   private getContractInfo() {
-    const details = this.originalContract.contract_details;
-    const contractData = details.eth_contract;
-    const web3Contract = this.web3Service.getContract(contractData.abi, contractData.address);
+    const web3Contract = this.web3Service.getContract(SWAPS_V2.ABI, SWAPS_V2.ADDRESS);
     this.checkAuthor();
     this.getContractInfoFromBlockchain(web3Contract);
   }
@@ -208,17 +217,20 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   }
 
 
-  public sendRefund(methodName) {
+  public sendRefund(token) {
     const details = this.originalContract.contract_details;
     const contract = this.originalContract.contract_details.eth_contract;
 
-    const interfaceMethod = this.web3Service.getMethodInterface(methodName, contract.abi);
-    const methodSignature = this.web3Service.encodeFunctionCall(interfaceMethod, []);
+    const interfaceMethod = this.web3Service.getMethodInterface('refund', SWAPS_V2.ABI);
+    const methodSignature = this.web3Service.encodeFunctionCall(interfaceMethod, [
+      details.memo_contract,
+      token.address
+    ]);
 
     const sendTransaction = (wallet) => {
       this.web3Service.sendTransaction({
         from: wallet.address,
-        to: contract.address,
+        to: SWAPS_V2.ADDRESS,
         data: methodSignature
       }, wallet.type).then((result) => {
         console.log(result);
@@ -236,7 +248,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
           'You can take back your contributions at any time until the contract’s execution.\n' +
           'Use the same address which you used for the contribution.',
         transactions: [{
-            to: contract.address,
+          to: SWAPS_V2.ADDRESS,
           data: methodSignature,
           action: sendTransaction
         }]
@@ -246,15 +258,18 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
 
 
   public sendCancel() {
-    const cancelMethod = this.web3Service.getMethodInterface('cancel', this.originalContract.contract_details.eth_contract.abi);
+
+    const details = this.originalContract.contract_details;
+
+    const cancelMethod = this.web3Service.getMethodInterface('cancel', SWAPS_V2.ABI);
     const cancelSignature = this.web3Service.encodeFunctionCall(
-      cancelMethod, []
+      cancelMethod, [details.memo_contract]
     );
 
     const cancelTransaction = (wallet) => {
       this.web3Service.sendTransaction({
         from: wallet.address,
-        to: this.originalContract.contract_details.eth_contract.address,
+        to: SWAPS_V2.ADDRESS,
         data: cancelSignature
       }, wallet.type).then((result) => {
         console.log(result);
@@ -269,40 +284,13 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       data: {
         transactions: [{
           from: this.originalContract.contract_details.owner_address,
-          to: this.originalContract.contract_details.eth_contract.address,
+          to: SWAPS_V2.ADDRESS,
           data: cancelSignature,
-          action: cancelTransaction
+          action: cancelTransaction,
+          onlyOwner: details.owner_address
         }],
         title: 'Cancel',
-        description: 'To Cancel the swap you need to make the transaction from the management address'
-      }
-    });
-  }
-
-  private sendEth(amount, amountDecimals) {
-    const transferEth = (wallet) => {
-      this.web3Service.sendTransaction({
-        from: wallet.address,
-        to: this.originalContract.contract_details.eth_contract.address,
-        value: amountDecimals
-      }, 'metamask').then((result) => {
-        console.log(result);
-      }, (err) => {
-        console.log(err);
-      });
-    };
-
-    this.dialog.open(TransactionComponent, {
-      width: '38.65em',
-      panelClass: 'custom-dialog-container',
-      data: {
-        transactions: [{
-          to: this.originalContract.contract_details.eth_contract.address,
-          action: transferEth,
-          ethValue: amount
-        }],
-        title: 'Contribute',
-        description: 'Send ' + amount + ' ETH to the contract address directly'
+        description: 'To cancel the swap you need to make the transaction from the management address'
       }
     });
   }
@@ -310,11 +298,8 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
   public sendContribute(amount, token) {
 
     let tokenAddress: any;
-    let depositMethodName: string;
-    let amountDecimals: string;
 
     const details = this.originalContract.contract_details;
-    const contract = this.originalContract.contract_details.eth_contract;
 
     const bigNumberAmount = new BigNumber(amount);
 
@@ -322,38 +307,36 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       return;
     }
 
-    amountDecimals = bigNumberAmount.toString(10);
-
     switch (token) {
       case 'base':
         tokenAddress = details.tokens_info.base;
-        depositMethodName = 'depositBaseTokens';
-        amount = bigNumberAmount.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
         break;
       case 'quote':
         tokenAddress = details.tokens_info.quote;
-        depositMethodName = 'depositQuoteTokens';
-        amount = bigNumberAmount.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
         break;
     }
 
+
+    const stringAmountValue = bigNumberAmount.toString(10);
+
+    let value: string;
     if (tokenAddress.token.isEther) {
-      this.sendEth(amount, amountDecimals);
-      return;
+      value = stringAmountValue;
     }
 
     const approveMethod = this.web3Service.getMethodInterface('approve');
 
+
     const approveSignature = this.web3Service.encodeFunctionCall(
       approveMethod, [
-        contract.address,
-        amountDecimals
+        SWAPS_V2.ADDRESS,
+        stringAmountValue
       ]
     );
 
-    const depositMethod = this.web3Service.getMethodInterface(depositMethodName, contract.abi);
+    const depositMethod = this.web3Service.getMethodInterface('deposit', SWAPS_V2.ABI);
     const depositSignature = this.web3Service.encodeFunctionCall(
-      depositMethod, [amountDecimals]
+      depositMethod, [details.memo_contract, tokenAddress.token.address, stringAmountValue]
     );
 
     const approveTransaction = (wallet) => {
@@ -371,8 +354,9 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     const contributeTransaction = (wallet) => {
       this.web3Service.sendTransaction({
         from: wallet.address,
-        to: contract.address,
-        data: depositSignature
+        to: SWAPS_V2.ADDRESS,
+        data: depositSignature,
+        value: value || undefined
       }, wallet.type).then((result) => {
         console.log(result);
       }, (err) => {
@@ -380,26 +364,36 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       });
     };
 
+    const textAmount = this.fromBigNumber(amount, tokenAddress.token.decimals);
 
+    const transactionsList: any[] = [{
+      title: !tokenAddress.token.isEther ?
+        'Make the transfer of ' + textAmount + ' ' + tokenAddress.token.token_short_name + ' tokens to contract' : undefined,
+      to: SWAPS_V2.ADDRESS,
+      data: depositSignature,
+      action: contributeTransaction,
+      ethValue: !tokenAddress.token.isEther ? undefined : bigNumberAmount.div(Math.pow(10, tokenAddress.token.decimals))
+    }];
 
+    if (!tokenAddress.token.isEther) {
+      transactionsList.unshift({
+        title: 'Authorise the contract for getting ' + textAmount + ' ' + tokenAddress.token.token_short_name + ' tokens',
+        to: tokenAddress.token.address,
+        data: approveSignature,
+        action: approveTransaction
+      });
+    }
 
+    // 'Send ' + amount + ' ETH to the contract address directly'
     this.dialog.open(TransactionComponent, {
       width: '38.65em',
       panelClass: 'custom-dialog-container',
       data: {
-        transactions: [{
-          title: 'Authorise the contract for getting ' + amount + ' ' + tokenAddress.token.token_short_name + ' tokens',
-          to: tokenAddress.token.address,
-          data: approveSignature,
-          action: approveTransaction
-        }, {
-          title: 'Make the transfer of ' + amount + ' ' + tokenAddress.token.token_short_name + ' tokens to contract',
-          to: contract.address,
-          data: depositSignature,
-          action: contributeTransaction
-        }],
+        transactions: transactionsList,
         title: 'Contribute',
-        description: 'For contribution you need to make 2 transactions: authorise the contract and make the transfer'
+        description: !tokenAddress.token.isEther ?
+          'For contribution you need to make 2 transactions: authorise the contract and make the transfer' :
+          'Make the transfer of ' + textAmount + ' ' + tokenAddress.token.token_short_name + ' tokens to contract'
       }
     });
 
@@ -412,7 +406,6 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
-
   public openContactForm() {
     this.dialog.open(ContactOwnerComponent, {
       width: '38.65em',
@@ -420,6 +413,7 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       data: this.originalContract
     });
   }
+
 
   public quoteWillGetValue(amount) {
     const details = this.originalContract.contract_details;
@@ -430,6 +424,5 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     const details = this.originalContract.contract_details;
     return new BigNumber(amount).div(details.tokens_info.quote.amount).times(details.tokens_info.base.amount);
   }
-
 
 }

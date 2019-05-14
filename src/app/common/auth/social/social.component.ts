@@ -1,5 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {UserService} from '../../../services/user/user.service';
+import {Web3Service} from '../../../services/web3/web3.service';
 
 @Component({
   selector: 'app-social',
@@ -11,15 +12,17 @@ export class SocialComponent implements OnInit {
   @Output() changedSocialState = new EventEmitter<string>();
 
   public socialAuthError;
-  public social: {FB: boolean; GA: boolean; eoslynx?: boolean} = {
+  public social: {FB: boolean; GA: boolean; MM: boolean, eoslynx?: boolean} = {
     FB: false,
-    GA: false
+    GA: false,
+    MM: false
   };
 
   public change2FAProgress: boolean;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private web3Service: Web3Service
   ) {
     this.social = userService.checkSocialNetworks();
   }
@@ -78,6 +81,26 @@ export class SocialComponent implements OnInit {
     }, (error) => {
       // console.log(error);
     });
+  }
+
+
+  public MetamaskAuth() {
+    if (window['ethereum'] && window['ethereum'].isMetaMask) {
+      window['ethereum'].enable().then((accounts) => {
+        const address = accounts[0];
+        this.userService.getMetaMaskAuthMsg().then((msg) => {
+          this.web3Service.getSignedMetaMaskMsg(msg, address).then((signed) => {
+            this.userService.metaMaskAuth({
+              address,
+              msg,
+              signed_msg: signed
+            }).then((result) => {
+              console.log(result);
+            });
+          });
+        });
+      });
+    }
   }
 
   public FBAuth() {

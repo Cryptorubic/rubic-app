@@ -1,0 +1,57 @@
+<div class="dialog-block">
+  <div class="dialog-block__content">
+
+    <button class="dialog-closer" mat-dialog-close>
+      <img src="./assets/images/icons/cross-w.svg">
+    </button>
+    <div class="modal-title">
+      Contact
+    </div>
+
+    <div class="modal-description">
+      You can send message to owner of SWAP.
+      All messages are moderated by SWAP team before sending.
+    </div>
+
+    <form #contactForm="ngForm" (submit)="sendForm()">
+      <mat-dialog-content>
+        <div class="modal-buttons">
+
+          <div class="form-field">
+            <div class="form-field_label">Your Email</div>
+            <div class="form-field_input">
+              <input placeholder="Your Email"
+                     required
+                     type="email"
+                     name="email"
+                     [(ngModel)]="formData.email"
+                     class="min-text">
+            </div>
+          </div>
+          <div class="form-field">
+            <div class="form-field_label">Your Message</div>
+            <div class="form-field_input">
+              <textarea placeholder="Your message"
+                        required
+                        name="message"
+                        [(ngModel)]="formData.message"
+                        class="min-text"></textarea>
+            </div>
+          </div>
+        </div>
+      </mat-dialog-content>
+      <div class="modal-buttons">
+        <div class="grid-row">
+          <div class="grid-cell grid-cell-1-3">
+            <button class="btn btn-yellow btn-normal-weight width-100"
+                    [disabled]="!contactForm.valid"
+                    type="submit">
+              <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+              <span>Send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

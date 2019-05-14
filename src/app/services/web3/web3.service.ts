@@ -84,22 +84,26 @@ export class Web3Service {
   }
 
 
-  // public connectMetamask() {
-  //   this.setProvider('metamask');
-  //   this.Web3.eth.getAccounts((err, addresses) => {
-  //     const publicAddress = addresses[0];
-  //     if (!publicAddress) {
-  //       return;
-  //     }
-  //     this.Web3.eth.personal.sign(
-  //       'Я хочу использовать SWAPS MyWish',
-  //       publicAddress,
-  //       (signError, signature) => {
-  //         console.log(signature);
-  //       }
-  //     );
-  //   });
-  // }
+  public getSignedMetaMaskMsg(msg, addr) {
+
+    return new Promise((resolve, reject) => {
+
+      this.Web3.eth.setProvider(this.providers.metamask);
+
+      this.Web3.eth.personal.sign(
+        msg,
+        addr,
+        undefined,
+        (signError, signature) => {
+          if (!signError) {
+            resolve(signature);
+          } else {
+            reject(signError);
+          }
+        }
+      );
+    });
+  }
 
 
   public getContract(abi, address) {
@@ -123,11 +127,11 @@ export class Web3Service {
   }
 
   private convertTokenInfo(tokenInfo) {
-    return tokenInfo.symbol ? {
+    return (tokenInfo && tokenInfo.symbol) ? {
       token_short_name: tokenInfo.symbol,
       token_name: tokenInfo.name,
       address: tokenInfo.address,
-      decimals: tokenInfo.decimals,
+      decimals: parseInt(tokenInfo.decimals, 10),
       isEther: tokenInfo.address === '0x0000000000000000000000000000000000000000'
     } : false;
   }
@@ -170,7 +174,6 @@ export class Web3Service {
         });
       }
 
-
       const contract = this.Web3.eth.Contract(ERC20_TOKEN_ABI, address);
 
       tokenInfoFields.map((method) => {
@@ -195,54 +198,59 @@ export class Web3Service {
   }
 
 
-  public checkTokenAddress(address) {
-    return this.getTokenInfo(address);
-  }
-
-  private setProvider(providerName) {
-
-    const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
-
-    switch (providerName) {
-      case 'metamask':
-        const networkVersion = Number(this.providers[providerName].publicConfigStore._state.networkVersion);
-        if (usedNetworkVersion === networkVersion) {
-          this.Web3.setProvider(this.providers[providerName]);
-        }
-        break;
-    }
-  }
-
-
   private getAccountsByProvider(providerName) {
-    return new Promise((resolve, reject) => {
-      try {
-        this.setProvider(providerName);
-        this.Web3.eth.getAccounts((err, addresses) => {
-          if (!err) {
-            resolve({
-              type: providerName,
-              addresses
-            });
-          }
+    const sendNull = (observer) => {
+      observer.next({
+        type: providerName,
+        addresses: null
+      });
+    };
+    return new Observable((observer) => {
+      const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
+      if (window['ethereum'] && window['ethereum'].isMetaMask) {
+        const networkVersion = Number(window['ethereum'].networkVersion);
+        if (usedNetworkVersion !== networkVersion) {
+          sendNull(observer);
+          return;
+        }
+        window['ethereum'].on('accountsChanged', (accounts) => {
+          observer.next({
+            type: providerName,
+            addresses: accounts
+          });
         });
-      } catch (err) {
-        resolve({
-          type: providerName,
-          addresses: []
+        window['ethereum'].enable().then((accounts) => {
+          observer.next({
+            type: providerName,
+            addresses: accounts
+          });
+        }, () => {
+          sendNull(observer);
         });
+      } else {
+        sendNull(observer);
       }
+      return {
+        unsubscribe() {}
+      };
     });
   }
 
 
-  public getAccounts() {
+  public getAccounts(owner?) {
     const addressesDictionary: any = {};
-    return new Promise((resolve, reject) => {
-      this.getAccountsByProvider('metamask').then((addresses: any) => {
-        addressesDictionary[addresses.type] = addresses.addresses;
-        this.Web3.setProvider(this.providers.infura);
-        resolve(addressesDictionary);
+    return new Observable((observer) => {
+      const accountsSubscriber = this.getAccountsByProvider('metamask').subscribe((addresses: any) => {
+        addressesDictionary[addresses.type] = addresses.addresses === null ? null : owner ? addresses.addresses.filter((addr) => {
+          return addr.toLowerCase() === owner.toLowerCase();
+        }) : addresses.addresses;
+
+        observer.next(addressesDictionary);
+        return {
+          unsubscribe() {
+            accountsSubscriber.unsubscribe();
+          }
+        };
       });
     });
   }
@@ -253,27 +261,18 @@ export class Web3Service {
 
   public sendTransaction(transactionConfig, provider?) {
     if (provider) {
-      this.Web3.setProvider(this.providers[provider]);
+      this.Web3.eth.setProvider(this.providers[provider]);
     }
-    return this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
-      if (provider) {
-        this.Web3.setProvider(this.providers.infura);
-      }
-      return result;
+    return new Promise((resolve) => {
+      this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
+        resolve(result);
+      }).finally(() => {
+        if (provider) {
+          this.Web3.eth.setProvider(this.providers.infura);
+        }
+      });
     });
   }
-
-
-  public createTransaction(transactionConfig, provider?) {
-    if (provider) {
-      this.Web3.setProvider(this.providers[provider]);
-    }
-    return this.Web3.eth.sendTransaction.request(transactionConfig, () => {
-      this.Web3.setProvider(this.providers.infura);
-    });
-  }
-
-
 }
 
 
@@ -295,12 +294,13 @@ export class EthTokenValidatorDirective implements AsyncValidator {
     ctrl: AbstractControl
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     return this.web3Service.getFullTokenInfo(ctrl.value).then((result: any) => {
-
       if (result) {
         this.TokenResolve.emit(result);
         return null;
       } else {
-        return result;
+        return {
+          token: true
+        };
       }
     });
   }

@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
       if (event instanceof ActivationEnd) {
         if (event.snapshot.data.support) {
           this.hideInstructionLink = event.snapshot.data.supportHide;
-          this.visibleWatchButton = true;
+          this.visibleWatchButton = !event.snapshot.data.hideInstruction,
           body.className = 'with-support ' + (event.snapshot.data.supportHide ? 'support-hide-' + event.snapshot.data.supportHide : '');
         } else {
           body.className = '';

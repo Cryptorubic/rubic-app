@@ -31,9 +31,10 @@
                   MyEtherWallet
                 </a>
               </div>
+              <!--this.originalContract.contract_details.owner_address-->
               <div class="grid-cell grid-cell-vs-1-2">
                 <button type="button"
-                        [disabled]="!providedAddresses.metamask?.length"
+                        [disabled]="!providedAddresses.metamask?.length || (transaction.onlyOwner && (providedAddresses.metamask[0] !== transaction.onlyOwner))"
                         (click)="transaction.action({
                         type: 'metamask',
                         address: providedAddresses.metamask[0]
@@ -65,9 +66,9 @@
                 </button>
               </div>
               <div class="form-field_input_data">
-                <input type="text" class="min-text dark-field minimal-input"
-                       readonly
-                       [value]="transaction.from"/>
+                <div class="textarea min-text dark-field minimal-input">
+                  {{ transaction.from }}
+                </div>
               </div>
             </div>
           </div>
@@ -88,9 +89,9 @@
                 </button>
               </div>
               <div class="form-field_input_data">
-                <input type="text" class="min-text dark-field minimal-input"
-                       readonly
-                       [value]="transaction.to"/>
+                <div class="textarea min-text dark-field minimal-input">
+                  {{ transaction.to }}
+                </div>
               </div>
             </div>
           </div>
@@ -109,9 +110,9 @@
                 </button>
               </div>
               <div class="form-field_input_data">
-                <input type="text" class="min-text dark-field minimal-input"
-                       readonly
-                       [value]="transaction.data"/>
+                <div class="textarea min-text dark-field minimal-input">
+                  {{ transaction.data }}
+                </div>
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@
     <span class="logo">
       <img src="./assets/images/logo.svg" usemap="#logotype">
       <map name="logotype">
-        <area shape="rect" coords="0,0,97, 31" href="/">
+        <area shape="rect" coords="0,0,97, 31" routerLink="/">
         <area shape="rect" coords="97,0,195, 31" href="https://mywish.io">
       </map>
     </span>
@@ -29,7 +29,9 @@
         </li>
         <li class="header-menu_list_item with-sublist" *ngIf="!currentUser.is_ghost"
             [ngClass]="{'opened-list': userMenuOpened}">
-          <span class="header-link" (click)="userMenuOpened = !userMenuOpened">{{currentUser.username}}</span>
+          <span class="header-link"
+                [ngClass]="{'is-social': currentUser.is_social}"
+                (click)="userMenuOpened = !userMenuOpened">{{currentUser.username}}</span>
           <ul class="header-menu_sublist">
             <li class="header-menu_sublist_item">
               <a routerLink="contracts" class="sublist-link">My contracts</a>

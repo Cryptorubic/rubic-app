@@ -4,6 +4,8 @@ import {IndexComponent} from './index/index.component';
 import {ContractEditResolver, ContractFormComponent} from './contract-form/contract-form.component';
 import {ContractPreviewComponent} from './contract-preview/contract-preview.component';
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
+import {ContractFormTwoComponent} from './contract-form-two/contract-form-two.component';
+import {ContractPreviewTwoComponent} from './contract-preview-two/contract-preview-two.component';
 
 const routes: Routes = [
   {
@@ -16,8 +18,23 @@ const routes: Routes = [
       support: true
     }
   }, {
+    path: 'create-v2',
+    component: ContractFormTwoComponent,
+    data: {
+      support: true
+    }
+  }, {
     path: 'view/:id',
     component: ContractFormComponent,
+    resolve: {
+      contract: ContractEditResolver
+    },
+    data: {
+      support: true
+    }
+  }, {
+    path: 'view-v2/:id',
+    component: ContractFormTwoComponent,
     resolve: {
       contract: ContractEditResolver
     },
@@ -32,7 +49,19 @@ const routes: Routes = [
     },
     data: {
       supportHide: 1024,
-      support: true
+      support: true,
+      hideInstruction: true
+    }
+  }, {
+    path: 'contract-v2/:id',
+    component: ContractPreviewTwoComponent,
+    resolve: {
+      contract: ContractEditResolver
+    },
+    data: {
+      supportHide: 1024,
+      support: true,
+      hideInstruction: true
     }
   }, {
     path: 'public/:public_link',
@@ -42,7 +71,19 @@ const routes: Routes = [
     },
     data: {
       supportHide: 1024,
-      support: true
+      support: true,
+      hideInstruction: true
+    }
+  }, {
+    path: 'public-v2/:public_link',
+    component: ContractPreviewTwoComponent,
+    resolve: {
+      contract: ContractEditResolver
+    },
+    data: {
+      supportHide: 1024,
+      support: true,
+      hideInstruction: true
     }
   }, {
     path: 'contracts',
