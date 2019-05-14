@@ -32,6 +32,7 @@
     "ngx-material-timepicker": "^3.0.2",
     "ngx-scrollbar": "^4.1.1",
     "rxjs": "~6.3.3",
+    "tar": "^4.4.8",
     "tslib": "^1.9.0",
     "web3": "^1.0.0-beta.52",
     "zone.js": "~0.8.26"
