@@ -4,7 +4,8 @@ export interface IPerson {
   name: string;
   position: string;
   avatarPath: string;
-  linkedInUrl: string;
+  linkedInUrl?: string;
+  gitHubUrl?: string;
 }
 
 @Component({
