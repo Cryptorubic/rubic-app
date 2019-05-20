@@ -40,6 +40,7 @@ import {BigNumberDirective, BigNumberFormat, BigNumberMax, BigNumberMin} from '.
 import { ContractPreviewTwoComponent } from './contract-preview-two/contract-preview-two.component';
 import { ContactOwnerComponent } from './contact-owner/contact-owner.component';
 import { TeamComponent } from './team-component/team.component';
+import { RoadmapComponent } from './roadmap-component/roadmap.component';
 import {MinMaxDirective} from './directives/minMax/min-max.directive';
 import {CookieService} from 'ngx-cookie-service';
 
@@ -94,6 +95,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     BigNumberDirective,
     ContractPreviewTwoComponent,
     ContactOwnerComponent,
+    TeamComponent,
+    RoadmapComponent,
 
     MinMaxDirective,
     ContactOwnerComponent,
