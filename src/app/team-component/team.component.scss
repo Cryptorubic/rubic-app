@@ -31,10 +31,13 @@
   }
   &__position {
     color: #fff;
-    text-transform: uppercase;
+  }
+  &__socials {
+    display: flex;
   }
   &__social-icon {
     width: 15px;
+    margin-right: 10px;
   }
 }
 
