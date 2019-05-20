@@ -3,16 +3,16 @@
     <h2 class="title-section">Team</h2>
 
     <div class="people-container">
-      <div class="col-3">
+      <div *ngFor="let person of people" class="col-3">
         <div class="people-container__person">
-          <img class="people-container__avatar" src="https://pbs.twimg.com/profile_images/685347483430486016/tr4jiGUK_400x400.jpg" alt="">
+          <img class="people-container__avatar" [src]="person.avatarPath" alt="">
     
           <div class="people-container__person-info">
-            <span class="people-container__name">John Smith</span>
-            <span class="people-container__position">CEO</span>
+            <span class="people-container__name">{{ person.name }}</span>
+            <span class="people-container__position">{{ person.position }}</span>
           </div>
 
-          <a href="">
+          <a [href]="person.linkedInUrl">
             <img class="people-container__social-icon" src="../../assets/images/icons/linkedIn.svg" alt="LinkedIn">
           </a>
         </div>
