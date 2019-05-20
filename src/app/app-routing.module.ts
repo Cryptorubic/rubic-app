@@ -7,6 +7,7 @@ import {ContractsListComponent, ContractsListResolver} from './contracts-list/co
 import {ContractFormTwoComponent} from './contract-form-two/contract-form-two.component';
 import {ContractPreviewTwoComponent} from './contract-preview-two/contract-preview-two.component';
 import { TeamComponent } from './team-component/team.component';
+import { RoadmapComponent } from './roadmap-component/roadmap.component';
 
 const routes: Routes = [
   {
@@ -106,6 +107,10 @@ const routes: Routes = [
   {
     path: 'team',
     component: TeamComponent,
+  },
+  {
+    path: 'roadmap',
+    component: RoadmapComponent,
   }
 ];
 
