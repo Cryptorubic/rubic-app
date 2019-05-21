@@ -12,6 +12,8 @@
           <span class="people-container__position">{{ person.position }}</span>
         </div>
 
+        <p class="people-container__person-biography">{{ person.biography }}</p>
+
         <div class="people-container__socials">
           <a *ngIf="person.linkedInUrl" [href]="person.linkedInUrl">
             <img class="people-container__social-icon" src="../../assets/images/icons/linkedIn.svg" alt="LinkedIn">
@@ -38,6 +40,8 @@
           <span class="people-container__name">{{ person.name }}</span>
           <span class="people-container__position">{{ person.position }}</span>
         </div>
+
+        <p class="people-container__person-biography">{{ person.biography }}</p>
 
         <div class="people-container__socials">
           <a *ngIf="person.linkedInUrl" [href]="person.linkedInUrl">

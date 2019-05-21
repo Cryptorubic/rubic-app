@@ -1,22 +1,30 @@
 .team-container {
   background: url('/assets/images/backgrounds/bg-index-top.png');
   background-size: cover;
+  background-attachment: fixed;
   padding-top: 130px;
 }
 
 .people-container {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   flex-wrap: wrap;
   &__person {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     width: 300px;
-    height: 250px;
+    min-height: 250px;
+    height: auto;
     padding: 20px;
     margin: 0 10px 100px;
     background-color: rgba(40, 50, 64, .5);
+    &:hover {
+      .people-container__person-biography {
+        max-height: 500px;
+      }
+    }
   }
   &__avatar {
     width: 150px;
@@ -33,12 +41,22 @@
   &__position {
     color: #fff;
   }
+  &__person-biography {
+    max-height: 0;
+    overflow: hidden;
+    color: #fff;
+    transition: max-height .5s;
+  }
   &__socials {
     display: flex;
   }
   &__social-icon {
     width: 15px;
     margin-right: 10px;
+  }
+  &:after {
+    content: '';
+    flex: auto;
   }
 }
 
