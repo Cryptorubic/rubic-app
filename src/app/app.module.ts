@@ -41,6 +41,7 @@ import { ContractPreviewTwoComponent } from './contract-preview-two/contract-pre
 import { ContactOwnerComponent } from './contact-owner/contact-owner.component';
 import { TeamComponent } from './team-component/team.component';
 import { RoadmapComponent } from './roadmap-component/roadmap.component';
+import { FaqComponent } from './faq-component/faq.component';
 import {MinMaxDirective} from './directives/minMax/min-max.directive';
 import {CookieService} from 'ngx-cookie-service';
 
@@ -94,13 +95,12 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ContractFormTwoComponent,
     BigNumberDirective,
     ContractPreviewTwoComponent,
-    ContactOwnerComponent,
-    TeamComponent,
-    RoadmapComponent,
 
     MinMaxDirective,
     ContactOwnerComponent,
-    TeamComponent
+    TeamComponent,
+    RoadmapComponent,
+    FaqComponent
   ],
   entryComponents: [
     AuthComponent,
