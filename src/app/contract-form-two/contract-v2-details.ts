@@ -719,7 +719,12 @@ export const SWAPS_V2  = {
         }
       ],
       name: 'tokenFallback',
-      outputs: [],
+      outputs: [
+        {
+          name: '',
+          type: 'uint256'
+        }
+      ],
       payable: false,
       stateMutability: 'nonpayable',
       type: 'function'
@@ -777,7 +782,12 @@ export const SWAPS_V2  = {
         }
       ],
       name: 'createOrder',
-      outputs: [],
+      outputs: [
+        {
+          name: '',
+          type: 'uint256'
+        }
+      ],
       payable: false,
       stateMutability: 'nonpayable',
       type: 'function'
@@ -810,6 +820,50 @@ export const SWAPS_V2  = {
         {
           name: '_id',
           type: 'bytes32'
+        },
+        {
+          name: '_baseAddress',
+          type: 'address'
+        },
+        {
+          name: '_quoteAddress',
+          type: 'address'
+        },
+        {
+          name: '_baseLimit',
+          type: 'uint256'
+        },
+        {
+          name: '_quoteLimit',
+          type: 'uint256'
+        },
+        {
+          name: '_expirationTimestamp',
+          type: 'uint256'
+        },
+        {
+          name: '_baseOnlyInvestor',
+          type: 'address'
+        },
+        {
+          name: '_minBaseInvestment',
+          type: 'uint256'
+        },
+        {
+          name: '_minQuoteInvestment',
+          type: 'uint256'
+        },
+        {
+          name: '_brokerAddress',
+          type: 'address'
+        },
+        {
+          name: '_brokerBasePercent',
+          type: 'uint256'
+        },
+        {
+          name: '_brokerQuotePercent',
+          type: 'uint256'
         }
       ],
       name: 'cancel',
@@ -828,6 +882,10 @@ export const SWAPS_V2  = {
         {
           name: '_token',
           type: 'address'
+        },
+        {
+          name: '_amount',
+          type: 'uint256'
         }
       ],
       name: 'refund',
@@ -888,6 +946,10 @@ export const SWAPS_V2  = {
         {
           name: '_owner',
           type: 'address'
+        },
+        {
+          name: '_quotePercent',
+          type: 'uint256'
         }
       ],
       name: 'createKey',
@@ -895,6 +957,44 @@ export const SWAPS_V2  = {
         {
           name: 'result',
           type: 'bytes32'
+        }
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32'
+        }
+      ],
+      name: 'allBrokersBasePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32'
+        }
+      ],
+      name: 'allBrokersQuotePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256'
         }
       ],
       payable: false,
@@ -1021,6 +1121,10 @@ export const SWAPS_V2  = {
         {
           name: '_id',
           type: 'bytes32'
+        },
+        {
+          name: '_user',
+          type: 'address'
         }
       ],
       name: 'baseInvestors',
@@ -1040,6 +1144,10 @@ export const SWAPS_V2  = {
         {
           name: '_id',
           type: 'bytes32'
+        },
+        {
+          name: '_user',
+          type: 'address'
         }
       ],
       name: 'quoteInvestors',
@@ -1119,6 +1227,6 @@ export const SWAPS_V2  = {
       type: 'function'
     }
   ],
-  ADDRESS: '0xc3dd4ba8eb9102fb3350d435d4353cc7816c4c8c'
+  ADDRESS: '0x47eca74d1b3a275482371997d41401e939be5f3a'
   // ADDRESS: '0xb79afd748d6c9c6eef9e40cc601004843108d89a'
 };

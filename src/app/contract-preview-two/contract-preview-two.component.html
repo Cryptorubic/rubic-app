@@ -168,12 +168,14 @@
                 </div>
 
                 <div class="contract-buttons no-bottom-margin"
-                     *ngIf="originalContract.contract_details.broker_fee">
+                     *ngIf="originalContract.contract_details.broker_fee && contractInfo.baseBrokerPercent">
                   <span class="normal-text">
                     <span>
                       Brokers fee:
                       <b>
-                        0.1% (10 {{tokens.base.token.token_short_name}})
+                        {{contractInfo.baseBrokerPercent}}%
+                        ({{contractInfo.baseBrokerAmount | bigNumberFormat : tokens.base.token.decimals : true}}
+                        {{tokens.base.token.token_short_name}})
                       </b>
                     </span>
                   </span>
@@ -326,12 +328,14 @@
 
 
                 <div class="contract-buttons no-bottom-margin"
-                     *ngIf="originalContract.contract_details.broker_fee">
+                     *ngIf="originalContract.contract_details.broker_fee && contractInfo.quoteBrokerPercent">
                   <span class="normal-text">
                     <span>
                       Brokers fee:
                       <b>
-                        0.05% (10 {{tokens.quote.token.token_short_name}})
+                        {{contractInfo.quoteBrokerPercent}}%
+                        ({{contractInfo.quoteBrokerAmount | bigNumberFormat : tokens.quote.token.decimals : true}}
+                        {{tokens.quote.token.token_short_name}})
                       </b>
                     </span>
                   </span>
@@ -386,9 +390,10 @@
               </div>
             </div>
 
-            <div class="grid-row">
+            <div class="one-separated-block" *ngIf="originalContract.isAuthor">
 
-              <div class="grid-cell grid-cell-1" *ngIf="originalContract.isAuthor">
+            <div class="grid-row" *ngIf="originalContract.isAuthor">
+              <div class="grid-cell grid-cell-1">
                 <div class="form-field">
                   <label class="form-field_label transparent">Management address</label>
                   <div class="form-field_value">
@@ -409,6 +414,31 @@
                 </div>
               </div>
             </div>
+
+
+            <div class="grid-row" *ngIf="originalContract.isAuthor">
+              <div class="grid-cell grid-cell-1">
+                <div class="form-field">
+                  <label class="form-field_label transparent">Broker address</label>
+                  <div class="form-field_value">
+                    <a [href]="originalContract.contract_details.broker_fee_address | etherscanUrl : 'address'"
+                       target="_blank">
+                      {{originalContract.contract_details.broker_fee_address.toLowerCase()}}
+                    </a>
+
+                    <button type="button"
+                            class="copy-btn"
+                            [ngClass]="{copied: copiedAddresses['broker_fee_address']}"
+                            ngxClipboard [cbContent]="originalContract.contract_details.broker_fee_address"
+                            (cbOnSuccess)="onCopied('broker_fee_address')">
+                      <img src="./assets/images/icons/copy.svg"/>
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
 
 
             <div class="one-separated-block" *ngIf="originalContract.state === 'ACTIVE'">

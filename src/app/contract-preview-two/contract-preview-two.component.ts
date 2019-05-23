@@ -123,13 +123,46 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
     web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
       this.contractInfo.baseInvestors = result ? result.length : 0;
     }, err => {
-      console.log(err);
+      this.contractInfo.baseInvestors = 0;
+      // console.log(err);
     });
   }
+
   private getQuoteInvestors(web3Contract) {
     const details = this.originalContract.contract_details;
     web3Contract.methods.quoteInvestors(details.memo_contract).call().then((result) => {
       this.contractInfo.quoteInvestors = result ? result.length : 0;
+    }, err => {
+      this.contractInfo.quoteInvestors = 0;
+      // console.log(err);
+    });
+  }
+
+  private getBaseBrokersPercent(web3Contract) {
+    const details = this.originalContract.contract_details;
+    web3Contract.methods.allBrokersBasePercent(details.memo_contract).call().then((result) => {
+      this.contractInfo.baseBrokerPercent = result / 100;
+      this.contractInfo.baseBrokerAmount =
+        new BigNumber(details.tokens_info.base.amount).
+        div(100).times(this.contractInfo.baseBrokerPercent);
+
+      // console.log(result);
+      // this.contractInfo.quoteInvestors = result ? result.length : 0;
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  private getQuoteBrokersPercent(web3Contract) {
+    const details = this.originalContract.contract_details;
+    web3Contract.methods.allBrokersQuotePercent(details.memo_contract).call().then((result) => {
+      this.contractInfo.quoteBrokerPercent = result / 100;
+      this.contractInfo.quoteBrokerAmount =
+        new BigNumber(details.tokens_info.quote.amount).
+        div(100).times(this.contractInfo.quoteBrokerPercent);
+
+      // console.log(result);
+      // this.contractInfo.quoteInvestors = result ? result.length : 0;
     }, err => {
       console.log(err);
     });
@@ -141,6 +174,10 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
     this.getQuoteRaised(web3Contract);
     this.getBaseInvestors(web3Contract);
     this.getQuoteInvestors(web3Contract);
+
+    this.getBaseBrokersPercent(web3Contract);
+    this.getQuoteBrokersPercent(web3Contract);
+
     web3Contract.methods.isSwapped(details.memo_contract).call().then((result) => {
       this.originalContract.isSwapped = result;
     }, err => {
