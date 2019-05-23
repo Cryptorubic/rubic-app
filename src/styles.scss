@@ -209,6 +209,23 @@ a:not(.btn):not(.minimal-btn) {
   line-height: 1.5em;
 }
 
+.with-after-text {
+  position: relative;
+  &:after {
+    background-color: #fff;
+    content: attr(data-after-text);
+    color: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    line-height: 50px;
+    right: 0;
+    padding: 0 12px;
+    font-weight: bold;
+  }
+
+}
+
 @media screen and (max-width: 540px) {
   .description-section {
     font-size: 15px;
@@ -462,10 +479,10 @@ a:not(.btn):not(.minimal-btn) {
       background-color: #fff;
       border: 1px solid #fff;
       color: #110931;
-      line-height: 34px;
+      line-height: 30px;
       font-family: inherit;
       font-size: 24px!important;
-      padding: 12px 10px 10px;
+      padding: 10px 10px 8px;
 
       &:not(.min-text)::-webkit-input-placeholder {
         font-size: 20px;
@@ -582,6 +599,14 @@ a:not(.btn):not(.minimal-btn) {
     text-transform: uppercase;
     &:not(.no-top-margin) {
       margin-top: 22px;
+    }
+    &__inline {
+      line-height: 50px;
+      color: rgba(255, 255, 255, 0.5);
+      span {
+        line-height: 25px;
+        vertical-align: middle;
+      }
     }
   }
   &_small-desc {

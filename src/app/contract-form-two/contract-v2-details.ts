@@ -25,6 +25,20 @@ export const SWAPS_V2  = {
     },
     {
       constant: true,
+      inputs: [],
+      name: 'myWishBasePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      constant: true,
       inputs: [
         {
           name: '',
@@ -101,6 +115,20 @@ export const SWAPS_V2  = {
     },
     {
       constant: true,
+      inputs: [],
+      name: 'myWishAddress',
+      outputs: [
+        {
+          name: '',
+          type: 'address'
+        }
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      constant: true,
       inputs: [
         {
           name: '',
@@ -143,6 +171,43 @@ export const SWAPS_V2  = {
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'myWishQuotePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32'
+        },
+        {
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      name: 'brokers',
+      outputs: [
+        {
+          name: '',
+          type: 'address'
+        }
+      ],
+      payable: false,
+      stateMutability: 'view',
       type: 'function'
     },
     {
@@ -258,6 +323,33 @@ export const SWAPS_V2  = {
           type: 'address'
         }
       ],
+      name: 'brokerPercents',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32'
+        },
+        {
+          name: '',
+          type: 'address'
+        },
+        {
+          name: '',
+          type: 'address'
+        }
+      ],
       name: 'investments',
       outputs: [
         {
@@ -344,17 +436,17 @@ export const SWAPS_V2  = {
           type: 'bytes32'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'owner',
           type: 'address'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'baseAddress',
           type: 'address'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'quoteAddress',
           type: 'address'
         },
@@ -372,6 +464,36 @@ export const SWAPS_V2  = {
           indexed: false,
           name: 'expirationTimestamp',
           type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'baseOnlyInvestor',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          name: 'minBaseInvestment',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'minQuoteInvestment',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'broker',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          name: 'brokerBasePercent',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'brokerQuotePercent',
+          type: 'uint256'
         }
       ],
       name: 'OrderCreated',
@@ -386,7 +508,7 @@ export const SWAPS_V2  = {
           type: 'bytes32'
         }
       ],
-      name: 'Cancel',
+      name: 'OrderCancelled',
       type: 'event'
     },
     {
@@ -398,12 +520,12 @@ export const SWAPS_V2  = {
           type: 'bytes32'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'token',
           type: 'address'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'user',
           type: 'address'
         },
@@ -430,12 +552,12 @@ export const SWAPS_V2  = {
           type: 'bytes32'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'token',
           type: 'address'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'user',
           type: 'address'
         },
@@ -457,12 +579,12 @@ export const SWAPS_V2  = {
           type: 'bytes32'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'byUser',
           type: 'address'
         }
       ],
-      name: 'Swap',
+      name: 'OrderSwapped',
       type: 'event'
     },
     {
@@ -474,12 +596,12 @@ export const SWAPS_V2  = {
           type: 'bytes32'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'token',
           type: 'address'
         },
         {
-          indexed: true,
+          indexed: false,
           name: 'user',
           type: 'address'
         },
@@ -490,6 +612,77 @@ export const SWAPS_V2  = {
         }
       ],
       name: 'SwapSend',
+      type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32'
+        },
+        {
+          indexed: false,
+          name: 'token',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          name: 'broker',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          name: 'amount',
+          type: 'uint256'
+        }
+      ],
+      name: 'BrokerSend',
+      type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'oldMyWishAddress',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          name: 'newMyWishAddress',
+          type: 'address'
+        }
+      ],
+      name: 'MyWishAddressChange',
+      type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'oldBasePercent',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'oldQuotePercent',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'newBasePercent',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'newQuotePercent',
+          type: 'uint256'
+        }
+      ],
+      name: 'MyWishPercentsChange',
       type: 'event'
     },
     {
@@ -569,6 +762,18 @@ export const SWAPS_V2  = {
         {
           name: '_minQuoteInvestment',
           type: 'uint256'
+        },
+        {
+          name: '_brokerAddress',
+          type: 'address'
+        },
+        {
+          name: '_brokerBasePercent',
+          type: 'uint256'
+        },
+        {
+          name: '_brokerQuotePercent',
+          type: 'uint256'
         }
       ],
       name: 'createOrder',
@@ -640,6 +845,38 @@ export const SWAPS_V2  = {
         }
       ],
       name: 'setVault',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_basePercent',
+          type: 'uint256'
+        },
+        {
+          name: '_quotePercent',
+          type: 'uint256'
+        }
+      ],
+      name: 'setMyWishPercents',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_myWishAddress',
+          type: 'address'
+        }
+      ],
+      name: 'setMyWishAddress',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
@@ -861,8 +1098,27 @@ export const SWAPS_V2  = {
       payable: false,
       stateMutability: 'view',
       type: 'function'
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32'
+        }
+      ],
+      name: 'orderBrokers',
+      outputs: [
+        {
+          name: '',
+          type: 'address[]'
+        }
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function'
     }
   ],
-  // ADDRESS: '0x79f4886a694c8e1fc7b94be3aeb818aae2e90c4d'
-  ADDRESS: '0xb79afd748d6c9c6eef9e40cc601004843108d89a'
+  ADDRESS: '0xc3dd4ba8eb9102fb3350d435d4353cc7816c4c8c'
+  // ADDRESS: '0xb79afd748d6c9c6eef9e40cc601004843108d89a'
 };

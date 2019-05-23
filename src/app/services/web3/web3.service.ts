@@ -1,17 +1,13 @@
 import {HttpService} from '../http/http.service';
-
-const BigNumber = require('bignumber.js');
-
-import {Directive, EventEmitter, Injectable, Output} from '@angular/core';
+import {Directive, EventEmitter, Injectable, Output, Pipe, PipeTransform} from '@angular/core';
 import Web3 from 'web3';
 
-import {AbstractControl, AsyncValidator, NG_ASYNC_VALIDATORS, NG_VALIDATORS, ValidationErrors} from '@angular/forms';
+import {AbstractControl, AsyncValidator, NG_ASYNC_VALIDATORS, ValidationErrors} from '@angular/forms';
 import {Observable} from 'rxjs';
 
-import {ETH_NETWORKS, ERC20_TOKEN_ABI} from './web3.constants';
+import {ERC20_TOKEN_ABI, ETH_NETWORKS} from './web3.constants';
 
-import { Pipe, PipeTransform } from '@angular/core';
-import {map} from 'rxjs/operators';
+const BigNumber = require('bignumber.js');
 
 
 export interface TokenInfoInterface {
@@ -55,9 +51,8 @@ export class Web3Service {
 
     this.providers = {};
     try {
-      const metaMaskProvider = Web3.givenProvider || new Web3.providers.WebsocketProvider('ws://localhost:8546');
       // if (metaMaskProvider && metaMaskProvider.publicConfigStore) {
-      this.providers.metamask = metaMaskProvider;
+      this.providers.metamask = Web3.givenProvider || new Web3.providers.WebsocketProvider('ws://localhost:8546');
       // }
 
     } catch (err) {

@@ -121,7 +121,7 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
   private getBaseInvestors(web3Contract) {
     const details = this.originalContract.contract_details;
     web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
-      this.contractInfo.baseInvestors = result.length;
+      this.contractInfo.baseInvestors = result ? result.length : 0;
     }, err => {
       console.log(err);
     });
@@ -129,7 +129,7 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
   private getQuoteInvestors(web3Contract) {
     const details = this.originalContract.contract_details;
     web3Contract.methods.quoteInvestors(details.memo_contract).call().then((result) => {
-      this.contractInfo.quoteInvestors = result.length;
+      this.contractInfo.quoteInvestors = result ? result.length : 0;
     }, err => {
       console.log(err);
     });

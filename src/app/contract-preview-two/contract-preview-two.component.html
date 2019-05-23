@@ -148,24 +148,37 @@
                     </div>
                   </form>
                 </div>
-                <div class="contract-buttons no-bottom-margin">
+                <div class="contract-buttons no-bottom-margin" *ngIf="originalContract.contract_details.min_base_wei != 0">
                   <span class="normal-text">
-                    <span *ngIf="originalContract.contract_details.min_base_wei != 0">
+                    <span>
                       Min Contribution Limit:
                       <b>
                         {{originalContract.contract_details.min_base_wei | bigNumberFormat : tokens.base.token.decimals : true}}
                         {{tokens.base.token.token_short_name}}
                       </b>
                     </span>
-                    <span *ngIf="originalContract.contract_details.min_base_wei == 0">
-                      No Min Contribution
-                    </span>
+                    <!--<span *ngIf="originalContract.contract_details.min_base_wei == 0">-->
+                      <!--No Min Contribution-->
+                    <!--</span>-->
                   </span><br/>
                   <span class="normal-text opacity-color"
                         *ngIf="originalContract.contract_details.whitelist"><br/>
                     Only Owner can contribute
                   </span>
                 </div>
+
+                <div class="contract-buttons no-bottom-margin"
+                     *ngIf="originalContract.contract_details.broker_fee">
+                  <span class="normal-text">
+                    <span>
+                      Brokers fee:
+                      <b>
+                        0.1% (10 {{tokens.base.token.token_short_name}})
+                      </b>
+                    </span>
+                  </span>
+                </div>
+
                 <div class="contract-buttons"
                      *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
@@ -296,17 +309,30 @@
                   </form>
                 </div>
 
-                <div class="contract-buttons no-bottom-margin">
+                <div class="contract-buttons no-bottom-margin" *ngIf="originalContract.contract_details.min_quote_wei != 0">
                   <span class="normal-text">
-                    <span *ngIf="originalContract.contract_details.min_quote_wei != 0">
+                    <span>
                       Min Contribution Limit:
                       <b>
                         {{originalContract.contract_details.min_quote_wei | bigNumberFormat : tokens.quote.token.decimals : true}}
                         {{tokens.quote.token.token_short_name}}
                       </b>
                     </span>
-                    <span *ngIf="originalContract.contract_details.min_quote_wei == 0">
-                      No Min Contribution
+                    <!--<span *ngIf="originalContract.contract_details.min_quote_wei == 0">-->
+                      <!--No Min Contribution-->
+                    <!--</span>-->
+                  </span>
+                </div>
+
+
+                <div class="contract-buttons no-bottom-margin"
+                     *ngIf="originalContract.contract_details.broker_fee">
+                  <span class="normal-text">
+                    <span>
+                      Brokers fee:
+                      <b>
+                        0.05% (10 {{tokens.quote.token.token_short_name}})
+                      </b>
                     </span>
                   </span>
                 </div>

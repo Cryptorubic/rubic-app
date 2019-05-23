@@ -30,6 +30,15 @@
       </div>
       <div class="grid-cell grid-cell-1-5">
         <div class="steps-mobile_item"
+             (click)="gotToForm((advancedForm.valid && tokensForm.valid && extraForm.valid && editableContract) ? 3 : openedForm);"
+             [ngClass]="{
+                'active': advancedForm.valid && tokensForm.valid && extraForm.valid && editableContract,
+                'checked': (openedForm > 3) && brokersForm.valid,
+                'opened': openedForm === 3
+             }"></div>
+      </div>
+      <div class="grid-cell grid-cell-1-5">
+        <div class="steps-mobile_item"
              [ngClass]="{
                 'checked': (openedForm > 100) && extraForm.valid,
                 'opened': openedForm === 100
@@ -46,6 +55,7 @@
     <div class="grid-row">
       <div class="grid-cell grid-cell-2-3 grid-cell-sm-3-4 grid-cell-s-1">
         <div class="form-container">
+
           <form class="form-block"
                 #tokensForm="ngForm"
                 [ngClass]="{
@@ -54,7 +64,6 @@
                     'form-block__active': editableContract
                 }">
             <div class="form-block_title" (click)="openedForm = editableContract ? 0 : openedForm">Created</div>
-
             <div class="form-block_fieldset">
               <!-- Выбор токена -->
               <label class="form-field_label">You have</label>
@@ -315,8 +324,6 @@
               </button>
             </form>
           </div>
-
-
           <div class="form-block"
                 [ngClass]="{
                   hidden: !(extraForm.valid && (openedForm === 2)),
@@ -327,7 +334,7 @@
                  (click)="gotToForm((tokensForm.valid && extraForm.valid && editableContract) ? 2 : openedForm);">
               Advanced options
             </div>
-            <form class="form-block_fieldset" #advancedForm="ngForm" (submit)="createContract(tokensForm, advancedForm)">
+            <form class="form-block_fieldset" #advancedForm="ngForm" (submit)="gotToForm(3)">
               <div class="form-field">
                 <label class="form-field_label">Minimum contribution in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})</label>
                 <div class="grid-row">
@@ -393,7 +400,7 @@
                 </div>
               </div>
 
-              <div class="form-field">
+              <div class="form-field" *ngIf="advancedForm.value.whitelist">
                 <label class="form-field_label">
                   Only this address can contribute in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
                 </label>
@@ -401,11 +408,10 @@
                   <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
                     <div class="form-field_input">
                       <input type="text"
-                             [disabled]="!advancedForm.value.whitelist"
                              class="min-text"
                              maxlength="42"
-                             [pattern]="advancedForm.value.whitelist ? '0x[0-9a-fA-F]{40}' : ''"
-                             [required]="advancedForm.value.whitelist"
+                             pattern="0x[0-9a-fA-F]{40}"
+                             required="required"
                              [(ngModel)]="requestData.whitelist_address"
                              placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
                              name="whitelist_address">
@@ -414,7 +420,135 @@
                 </div>
               </div>
 
-              <button class="btn btn-yellow" [disabled]="!advancedForm.valid || formIsSending" type="submit">
+              <button class="btn btn-yellow" [disabled]="!advancedForm.valid" type="submit">
+                <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                <span>
+                  Next step
+                </span>
+              </button>
+            </form>
+          </div>
+
+          <div class="form-block"
+               [ngClass]="{
+                  hidden: !(advancedForm.valid && (openedForm === 3)),
+                  'form-block__active': tokensForm.valid && extraForm.valid && editableContract,
+                  checked: brokersForm.valid && (openedForm > 3)
+               }">
+            <div class="form-block_title"
+                 (click)="gotToForm((advancedForm.valid && tokensForm.valid && extraForm.valid && editableContract) ? 3 : openedForm);">
+              Broker / Traders
+            </div>
+            <form class="form-block_fieldset" #brokersForm="ngForm" (submit)="createContract(tokensForm, advancedForm)">
+              <div class="grid-row">
+                <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
+
+                  <div class="form-field">
+                    <div class="grid-row">
+                      <div class="grid-cell">
+                        <div class="form-field_input">
+                          <label class="form-field_input-checkbox">
+                            <input type="checkbox"
+                                   name="broker_fee"
+                                   [(ngModel)]="requestData.broker_fee">
+                            <span class="checkbox-text checkbox-text_on">Yes</span>
+                            <span class="checkbox-text checkbox-text_off">No</span>
+                            <span class="checkbox-rect"></span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="grid-cell">
+                        <div class="form-field_small-desc for-checkbox">
+                          <span>You can specify <b>%</b> for Brokers</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-field" *ngIf="requestData.broker_fee">
+                    <label class="form-field_label">
+                      Enter Broker Address
+                    </label>
+                    <div class="form-field_input">
+                      <input type="text"
+                             required
+                             class="min-text"
+                             maxlength="42"
+                             [pattern]="'0x[0-9a-fA-F]{40}'"
+                             [(ngModel)]="requestData.broker_fee_address"
+                             placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
+                             name="broker_fee_address">
+                    </div>
+                  </div>
+
+                  <div class="grid-row" *ngIf="requestData.broker_fee">
+                    <div class="grid-cell grid-cell-1">
+                      <div class="form-field">
+                        <div class="grid-row">
+                          <div class="grid-cell grid-cell-1">
+                            <label class="form-field_label">
+                              Specify % for {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
+                            </label>
+                          </div>
+                          <div class="grid-cell grid-cell-1-4">
+                            <div class="form-field_input with-after-text" data-after-text="%">
+                              <input type="number"
+                                     required
+                                     placeholder="0.1"
+                                     [(ngModel)]="requestData.broker_fee_base"
+                                     name="broker_fee_base"
+                                     min="0"
+                                     step="0.01"
+                                     max="50"
+                                     class="min-text"/>
+                            </div>
+                          </div>
+                          <div class="grid-cell grid-cell-3-4"
+                               *ngIf="requestData.broker_fee_base && tokens.base.amount">
+                            <div class="form-field_description__inline">
+                              <span>
+                                {{ baseBrokerFee | bigNumberFormat : tokens.base.token.decimals : true}}
+                                {{tokens.base.token.token_short_name}}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="form-field">
+                        <div class="grid-row">
+                          <div class="grid-cell grid-cell-1">
+                            <label class="form-field_label">
+                              Specify % for {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
+                            </label>
+                          </div>
+                          <div class="grid-cell grid-cell-1-4">
+                            <div class="form-field_input with-after-text" data-after-text="%">
+                              <input type="number"
+                                     required
+                                     placeholder="0.1"
+                                     [(ngModel)]="requestData.broker_fee_quote"
+                                     name="broker_fee_quote"
+                                     min="0"
+                                     step="0.01"
+                                     max="50"
+                                     class="min-text"/>
+                            </div>
+                          </div>
+                          <div class="grid-cell grid-cell-3-4"
+                               *ngIf="requestData.broker_fee_quote && tokens.quote.amount">
+                            <div class="form-field_description__inline">
+                              <span>
+                                {{ quoteBrokerFee | bigNumberFormat : tokens.quote.token.decimals : true}}
+                                {{tokens.quote.token.token_short_name}}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="btn btn-yellow" [disabled]="!brokersForm.valid || formIsSending" type="submit">
                 <span class="lds-ellipsis" *ngIf="formIsSending">
                   <span class="lds-ellipsis-container">
                     <span></span><span></span><span></span><span></span>
@@ -425,9 +559,10 @@
                   Next step
                 </span>
               </button>
+                </div>
+              </div>
             </form>
           </div>
-
 
           <div class="form-block"
                [ngClass]="{hidden: !(tokensForm.valid && (openedForm === 100)), checked: !editableContract}">
@@ -442,21 +577,39 @@
             <div class="form-block_fieldset">
               <div class="token-block">
                 <div class="token-info info-content-block">
-                  <div class="token-info_icon"
-                       [ngStyle]="{'background-image': 'url(' + tokens.base.token.image_link + ')'}">
-                  </div>
-                  <div class="token-info_texts">
-                    <div class="token-info_texts__name">
-                      {{tokens.base.token.token_name}}
-                      ({{tokens.base.token.token_short_name}})
+                  <div class="grid-row">
+                    <div class="grid-cell grid-cell-1-2">
+                      <div class="token-info_icon"
+                           [ngStyle]="{'background-image': 'url(' + tokens.base.token.image_link + ')'}">
+                      </div>
+                      <div class="token-info_texts">
+                        <div class="token-info_texts__name">
+                          {{tokens.base.token.token_name}}
+                          ({{tokens.base.token.token_short_name}})
+                        </div>
+                        <div class="token-info_texts__address" *ngIf="!tokens.base.token.isEther">
+                          <a [href]="tokens.base.token.address | etherscanUrl : 'token'"
+                             target="_blank">
+                            <small>Check on Etherscan</small>&nbsp;
+                            <img src="./assets/images/icons/link.svg">
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                    <div class="token-info_texts__address" *ngIf="!tokens.base.token.isEther">
-                      <a [href]="tokens.base.token.address | etherscanUrl : 'token'"
-                         target="_blank">
-                        <small>Check on Etherscan</small>&nbsp;
-                        <img src="./assets/images/icons/link.svg">
-                      </a>
+
+                    <div class="grid-cell grid-cell-1-2">
+                      <div class="token-info_texts">
+                        <div class="token-info_texts__name">
+                          Broker % for {{tokens.base.token.token_name}}
+                        </div>
+                        <div class="token-info_texts__address">
+                          {{ originalContract.contract_details.broker_fee_base }}%
+                          ({{ baseBrokerFee | bigNumberFormat : tokens.base.token.decimals : true}}
+                          {{tokens.base.token.token_short_name}})
+                        </div>
+                      </div>
                     </div>
+
                   </div>
                 </div>
 
@@ -483,21 +636,38 @@
                 </div>
 
                 <div class="token-info info-content-block">
-                  <div class="token-info_icon"
-                       [ngStyle]="{'background-image': 'url(' + tokens.quote.token.image_link + ')'}">
-                  </div>
-                  <div class="token-info_texts">
-                    <div class="token-info_texts__name">
-                      {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
+                  <div class="grid-row">
+                    <div class="grid-cell grid-cell-1-2">
+                      <div class="token-info_icon"
+                           [ngStyle]="{'background-image': 'url(' + tokens.quote.token.image_link + ')'}">
+                      </div>
+                      <div class="token-info_texts">
+                        <div class="token-info_texts__name">
+                          {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
+                        </div>
+                        <div class="token-info_texts__address" *ngIf="!tokens.quote.token.isEther">
+                          <a [href]="tokens.quote.token.address | etherscanUrl : 'token'"
+                             target="_blank">
+                            <small>Check on Etherscan</small>&nbsp;
+                            <img src="./assets/images/icons/link.svg">
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                    <div class="token-info_texts__address" *ngIf="!tokens.quote.token.isEther">
-                      <a [href]="tokens.quote.token.address | etherscanUrl : 'token'"
-                         target="_blank">
-                        <small>Check on Etherscan</small>&nbsp;
-                        <img src="./assets/images/icons/link.svg">
-                      </a>
+                    <div class="grid-cell grid-cell-1-2">
+                      <div class="token-info_texts">
+                        <div class="token-info_texts__name">
+                          Broker % for {{tokens.quote.token.token_name}}
+                        </div>
+                        <div class="token-info_texts__address">
+                          {{originalContract.contract_details.broker_fee_quote}}%
+                          ({{ quoteBrokerFee | bigNumberFormat : tokens.quote.token.decimals : true}}
+                          {{tokens.quote.token.token_short_name}})
+                        </div>
+                      </div>
                     </div>
                   </div>
+
                 </div>
                 <div class="token-info_balance info-content-block">
                   <span class="token-info_balance_title">You want to get</span>
@@ -507,6 +677,20 @@
 
               <div class="contract-info-block">
                 <div class="grid-row">
+
+                  <div class="grid-cell grid-cell-1" *ngIf="originalContract.contract_details.broker_fee">
+                    <div class="form-field">
+                      <label class="form-field_label transparent">Broker address</label>
+                      <div class="form-field_value">
+                        <a [href]="originalContract.contract_details.broker_fee_address | etherscanUrl : 'address'"
+                           target="_blank">
+                          {{originalContract.contract_details.broker_fee_address}}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+
                   <div class="grid-cell grid-cell-1-5 grid-cell-ps-1-2">
                     <div class="form-field">
                       <label class="form-field_label transparent">Closing date</label>
@@ -605,7 +789,7 @@
                   </span>
               </button>
             </div>
-          </div>
+      </div>
 
           <div class="form-block" [ngClass]="{
               hidden: originalContract.state !== 'WAITING_FOR_ACTIVATION'

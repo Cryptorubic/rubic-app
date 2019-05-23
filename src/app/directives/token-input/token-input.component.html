@@ -5,7 +5,7 @@
           decimals: (tokenModel.token?.decimals === undefined) ? 50 : tokenModel.token.decimals,
           min: 1
        }"
-       [decimalsChange]="TokenChange"
+       [decimalsChange]="DecimalsEmitter"
        name="amountField"
        [tabindex]="visibleInput ? '-1' : ''"
        [(ngModel)]="tokenModel.amount">

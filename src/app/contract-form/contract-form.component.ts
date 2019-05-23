@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, EventEmitter, Injectable, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker} from '@angular/material';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {ContractsService} from '../services/contracts/contracts.service';
@@ -25,6 +25,12 @@ export interface IContractDetails {
   unique_link?: string;
   unique_link_url?: string;
   eth_contract?: any;
+
+  broker_fee: boolean;
+  broker_fee_address: string;
+  broker_fee_base: number;
+  broker_fee_quote: number;
+
   tokens_info?: {
     base: {
       token: any;
@@ -89,8 +95,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
   @Output() BaseTokenChange = new EventEmitter<string>();
   @Output() QuoteTokenChange = new EventEmitter<string>();
-  @Output() BaseTokenCustom = new EventEmitter<string>();
-  @Output() QuoteTokenCustom = new EventEmitter<string>();
+  @Output() BaseTokenCustom = new EventEmitter<any>();
+  @Output() QuoteTokenCustom = new EventEmitter<any>();
 
   constructor(
     protected contractsService: ContractsService,
@@ -169,6 +175,9 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
   @ViewChild(MatDatepicker) datepicker: MatDatepicker<Date>;
   @ViewChild('extraForm') public extraForm;
+
+  @ViewChild('brokersForm') private brokersForm;
+
 
   protected onDestroyPage;
 
@@ -272,6 +281,9 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     const baseCoin = {...this.requestData.tokens_info.base};
     this.requestData.tokens_info.base = {...this.requestData.tokens_info.quote};
     this.requestData.tokens_info.quote = {...baseCoin};
+
+    this.BaseTokenCustom.emit(this.requestData.tokens_info.base);
+    this.QuoteTokenCustom.emit(this.requestData.tokens_info.quote);
   }
 
 
@@ -330,14 +342,15 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   }
 
   public createContract(tokenForm, advancedForm?: any) {
-    this.formData.contract_details = {...tokenForm.value};
+    this.formData.contract_details = {...tokenForm.value} as IContractDetails;
     this.formData.contract_details.public = !!this.extraForm.value.public;
     this.formData.contract_details.stop_date = this.extraForm.value.active_to.utc().format('YYYY-MM-DD HH:mm');
     this.formData.contract_details.base_limit = this.requestData.tokens_info.base.amount;
     this.formData.contract_details.quote_limit = this.requestData.tokens_info.quote.amount;
 
     this.formData.contract_details.owner_address = this.extraForm.value.owner_address;
-    this.formData.name = this.requestData.tokens_info.base.token.token_short_name + '<>' + this.requestData.tokens_info.quote.token.token_short_name;
+    this.formData.name = this.requestData.tokens_info.base.token.token_short_name +
+      '<>' + this.requestData.tokens_info.quote.token.token_short_name;
 
     if (advancedForm) {
       this.formData.contract_details = {
@@ -348,6 +361,19 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
       this.formData.contract_details.min_quote_wei = this.formData.contract_details.min_quote_wei || '0';
       this.formData.contract_details.min_base_wei = this.formData.contract_details.min_base_wei || '0';
 
+    }
+
+
+    if (this.brokersForm) {
+      this.formData.contract_details = {
+        ...this.formData.contract_details,
+        ...this.brokersForm.value
+      };
+      if (!this.formData.contract_details.broker_fee) {
+        this.formData.contract_details.broker_fee_address = null;
+        this.formData.contract_details.broker_fee_base = null;
+        this.formData.contract_details.broker_fee_quote = null;
+      }
     }
 
     if (this.currentUser.is_ghost) {

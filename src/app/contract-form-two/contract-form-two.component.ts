@@ -9,6 +9,7 @@ import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/mater
 import {Web3Service} from '../services/web3/web3.service';
 
 import {SWAPS_V2} from './contract-v2-details';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-contract-form-two',
@@ -119,6 +120,9 @@ export class ContractFormTwoComponent extends ContractFormComponent {
 
     const details = this.originalContract.contract_details;
     const interfaceMethod = this.web3Service.getMethodInterface('createOrder', SWAPS_V2.ABI);
+
+    details.broker_fee_address = '0xce85a63F5093b28F15aa7C2C1f1b4b0037011cbE';
+
     this.trxRequest = [
       details.memo_contract,
       details.base_address,
@@ -128,7 +132,10 @@ export class ContractFormTwoComponent extends ContractFormComponent {
       (new Date(details.stop_date)).getTime(),
       details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
       details.min_base_wei || '0',
-      details.min_quote_wei || '0'
+      details.min_quote_wei || '0',
+      details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
+      details.broker_fee ? (details.broker_fee_base * 100) : '0',
+      details.broker_fee ? (details.broker_fee_quote * 100) : '0'
     ];
 
     const methodSignature = this.web3Service.encodeFunctionCall(interfaceMethod, this.trxRequest);
@@ -146,7 +153,9 @@ export class ContractFormTwoComponent extends ContractFormComponent {
     if (this.getAccountsSubscriber) {
       return;
     }
-    this.getAccountsSubscriber = this.web3Service.getAccounts(this.originalContract.contract_details.owner_address).subscribe((addresses) => {
+
+    this.getAccountsSubscriber =
+      this.web3Service.getAccounts(this.originalContract.contract_details.owner_address).subscribe((addresses) => {
       if (addresses !== null) {
         this.providedAddresses = addresses;
       } else {
@@ -168,5 +177,12 @@ export class ContractFormTwoComponent extends ContractFormComponent {
   }
 
 
+  get baseBrokerFee() {
+    return new BigNumber(this.requestData.tokens_info.base.amount).div(100).times(this.requestData.broker_fee_base);
+  }
+
+  get quoteBrokerFee() {
+    return new BigNumber(this.requestData.tokens_info.quote.amount).div(100).times(this.requestData.broker_fee_quote);
+  }
 
 }

@@ -38,6 +38,7 @@ export class TokenInputComponent implements OnInit {
   private activeTokenIndex;
 
   @Output() TokenChange = new EventEmitter<string>();
+  public DecimalsEmitter = new EventEmitter<string>();
 
   private searchSubscriber;
 
@@ -46,7 +47,8 @@ export class TokenInputComponent implements OnInit {
 
     if (this.setToken) {
       this.setToken.subscribe((result) => {
-        this.TokenChange.emit(this.tokenModel);
+        this.TokenChange.emit(result);
+        this.DecimalsEmitter.emit(result.token.decimals);
       });
     }
 
@@ -109,7 +111,10 @@ export class TokenInputComponent implements OnInit {
     this.tokenModel.token = token;
     this.listIsOpened = false;
     this.tokenName = token.token_name + ' (' + token.token_short_name + ')';
+
     this.TokenChange.emit(this.tokenModel);
+    this.DecimalsEmitter.emit(this.tokenModel.token.decimals);
+
     this.showAutoInput();
   }
 
