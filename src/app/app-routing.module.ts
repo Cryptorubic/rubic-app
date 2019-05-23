@@ -8,6 +8,7 @@ import {ContractFormTwoComponent} from './contract-form-two/contract-form-two.co
 import {ContractPreviewTwoComponent} from './contract-preview-two/contract-preview-two.component';
 import { TeamComponent } from './team-component/team.component';
 import { RoadmapComponent } from './roadmap-component/roadmap.component';
+import { FaqComponent } from './faq-component/faq.component';
 
 const routes: Routes = [
   {
@@ -111,6 +112,10 @@ const routes: Routes = [
   {
     path: 'roadmap',
     component: RoadmapComponent,
+  },
+  {
+    path: 'faq',
+    component: FaqComponent,
   }
 ];
 
