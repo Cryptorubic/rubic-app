@@ -24,10 +24,39 @@
   height: 100%;
   border: 2px solid #FCD600;
   &__list {
+    position: relative;
     line-height: 35px;
-    li {
-      font-size: 18px;
-      color: #fff;
+    list-style: none;
+  }
+  &__li {
+    font-size: 18px;
+    color: #fff;
+    &:before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      width: 10px;
+      height: 10px;
+      margin: 15px 0;
+      border: 1px solid #FCD600;
+      border-radius: 50%;
+    }
+    &_checked {
+      &:before {
+        background: #FCD600;
+      }
+      &:after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        top: 16px;
+        left: 19px;
+        transform: rotate(45deg);
+        height: 6px;
+        width: 2px;
+        border-bottom: 2px solid #000;
+        border-right: 2px solid #000;
+      }
     }
   }
   &__flag {
