@@ -259,6 +259,7 @@ a:not(.btn):not(.minimal-btn) {
   .arrow {
     height: 14px;
     + span {
+      display: inline-block;
       vertical-align: middle;
     }
   }
@@ -266,8 +267,8 @@ a:not(.btn):not(.minimal-btn) {
     .arrow {
       position: absolute;
       top: 50%;
-      left: 25px;
-      margin-top: -9px;
+      left: 18px;
+      margin-top: -8px;
     }
     .btn-icon {
       position: absolute;
@@ -306,7 +307,7 @@ a:not(.btn):not(.minimal-btn) {
   }
 
   &-for-field {
-    margin: 7px 0;
+    margin: 3px 0;
   }
   &-transparent {
     background-color: transparent;
@@ -821,6 +822,13 @@ a:not(.btn):not(.minimal-btn) {
   }
 }
 
+.index-start-form {
+  .form-field_input input {
+    padding-top: 12px!important;
+    padding-bottom: 10px!important;
+    line-height: 34px!important;
+  }
+}
 
 @media screen and (max-width: 1020px) {
   .support-hide-1024.with-support #livechat-compact-container, .watch-instruction-btn.hide-1024{

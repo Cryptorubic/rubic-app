@@ -26,7 +26,8 @@ footer {
   &_form {
     display: table;
     .btn {
-      padding-bottom: 16px;
+      padding-bottom: 11px;
+      padding-top: 12px;
     }
     &__cell {
       display: table-cell;
@@ -103,13 +104,10 @@ footer {
       display: block;
       margin-left: auto;
       margin-right: auto;
-      .btn {
-        padding-bottom: 16px;
-      }
       &__cell {
         display: block;
         vertical-align: middle;
-        padding: 0 5px;
+        padding: 0;
         &:first-child {
           padding-left: 0;
         }
