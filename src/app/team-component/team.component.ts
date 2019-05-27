@@ -49,7 +49,7 @@ export class TeamComponent implements OnInit {
         biography: `Programming experience for more than 6 years.
         Frontend Developer for Blockchain for 1.5 years.
         Languages: JS, TS (CSS, HTML)`,
-        avatarPath: 'https://templatic.com/_data/icons/Ask-a-Question.png',
+        avatarPath: '../../assets/images/team/person-13.png',
         linkedInUrl: 'https://www.linkedin.com/in/dmitriy-kovalev-b1743086/',
         gitHubUrl: 'https://github.com/dimanok87'
       },
@@ -86,7 +86,7 @@ export class TeamComponent implements OnInit {
         biography: `A young and perspective developer with 2 years of experience.
         He participates actively in the development of the MyWIsh Crowdsale contracts and the Joule system.
         Languages: Solidity, JavaScript, Java. C++`,
-        avatarPath: 'https://templatic.com/_data/icons/Ask-a-Question.png',
+        avatarPath: '../../assets/images/team/person-14.png',
         linkedInUrl: 'https://www.linkedin.com/in/nikolay-toporkov-a1119415a/',
         gitHubUrl: 'https://github.com/kolya-t'
       },
@@ -97,7 +97,8 @@ export class TeamComponent implements OnInit {
         five years Experience with blockchains 2 years Prior to the
         blockchain, was engaged in infrastructure and administration of Linux`,
         avatarPath: '../../assets/images/team/person-5.png',
-        linkedInUrl: 'https://www.linkedin.com/in/maksim-strenk-a93877177'
+        linkedInUrl: 'https://www.linkedin.com/in/maksim-strenk-a93877177',
+        gitHubUrl: 'https://github.com/ephdtrg '
       },
       {
         name: 'Alexander Volkov',
