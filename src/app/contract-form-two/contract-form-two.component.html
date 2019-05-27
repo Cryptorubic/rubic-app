@@ -459,7 +459,7 @@
                       </div>
                       <div class="grid-cell">
                         <div class="form-field_small-desc for-checkbox">
-                          <span>You can specify <b>%</b> for Brokers</span>
+                          <span>You can specify <b>%</b> for Broker</span>
                         </div>
                       </div>
                     </div>
@@ -498,8 +498,11 @@
                                      [(ngModel)]="requestData.broker_fee_base"
                                      name="broker_fee_base"
                                      min="0"
-                                     step="0.01"
                                      max="50"
+                                     appMinValue
+                                     [minValue]="0"
+                                     [step]="0.01"
+                                     [maxValue]="50"
                                      class="min-text"/>
                             </div>
                           </div>
@@ -532,6 +535,10 @@
                                      min="0"
                                      step="0.01"
                                      max="50"
+                                     appMinValue
+                                     [minValue]="0"
+                                     [step]="0.01"
+                                     [maxValue]="50"
                                      class="min-text"/>
                             </div>
                           </div>

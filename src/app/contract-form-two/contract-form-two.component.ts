@@ -134,8 +134,8 @@ export class ContractFormTwoComponent extends ContractFormComponent {
       details.min_base_wei || '0',
       details.min_quote_wei || '0',
       details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
-      details.broker_fee ? (details.broker_fee_base * 100) : '0',
-      details.broker_fee ? (details.broker_fee_quote * 100) : '0'
+      details.broker_fee ? new BigNumber(details.broker_fee_base).times(100) : '0',
+      details.broker_fee ? new BigNumber(details.broker_fee_quote).times(100) : '0'
     ];
 
     const methodSignature = this.web3Service.encodeFunctionCall(interfaceMethod, this.trxRequest);

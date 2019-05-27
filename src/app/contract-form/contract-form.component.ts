@@ -460,10 +460,10 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     setTimeout(() => {
       switch (coin) {
         case 'base':
-          this.BaseTokenChange.emit(this.requestData.tokens_info[coin]);
+          this.BaseTokenChange.emit(this.requestData.tokens_info[coin].token.decimals);
           break;
         case 'quote':
-          this.QuoteTokenChange.emit(this.requestData.tokens_info[coin]);
+          this.QuoteTokenChange.emit(this.requestData.tokens_info[coin].token.decimals);
           break;
       }
     });

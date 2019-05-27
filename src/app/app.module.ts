@@ -39,6 +39,7 @@ import { ContractFormTwoComponent } from './contract-form-two/contract-form-two.
 import {BigNumberDirective, BigNumberFormat, BigNumberMax, BigNumberMin} from './directives/big-number/big-number.directive';
 import { ContractPreviewTwoComponent } from './contract-preview-two/contract-preview-two.component';
 import { ContactOwnerComponent } from './contact-owner/contact-owner.component';
+import {MinMaxDirective} from './directives/minMax/min-max.directive';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -90,7 +91,9 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ContractFormTwoComponent,
     BigNumberDirective,
     ContractPreviewTwoComponent,
-    ContactOwnerComponent
+    ContactOwnerComponent,
+
+    MinMaxDirective
   ],
   entryComponents: [
     AuthComponent,

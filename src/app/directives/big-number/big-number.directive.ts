@@ -82,6 +82,7 @@ export class BigNumberDirective implements OnInit {
         result = new BigNumber(result).div(Math.pow(10, this.currentDecimals)).toString(10);
       }
 
+
       result = result || '';
 
       let originalValue = result.split(',').join('').replace(/\.$/, '');
