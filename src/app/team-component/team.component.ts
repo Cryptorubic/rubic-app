@@ -128,7 +128,7 @@ export class TeamComponent implements OnInit {
         Blockchain conferences, network events and infamous
         After-Parties for global influencers. ​2019 ​- Healthtech, DEX OTC,
         Education and Protocols adoption.`,
-        avatarPath: 'https://templatic.com/_data/icons/Ask-a-Question.png',
+        avatarPath: '../../assets/images/team/person-15.png',
         linkedInUrl: 'https://www.linkedin.com/in/marco-pharaoh'
       },
       {
