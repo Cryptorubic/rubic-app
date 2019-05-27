@@ -13,7 +13,6 @@
   &__person {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     width: 300px;
     min-height: 250px;
     height: auto;
@@ -29,6 +28,7 @@
   &__avatar {
     width: 150px;
     height: auto;
+    margin-bottom: 15px;
   }
   &__person-info {
     display: flex;
@@ -43,6 +43,7 @@
   }
   &__person-biography {
     max-height: 0;
+    margin: 10px 0;
     overflow: hidden;
     color: #fff;
     transition: max-height .5s;
