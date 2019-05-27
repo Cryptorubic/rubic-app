@@ -110,6 +110,8 @@ export class TeamComponent implements OnInit {
       {
         name: 'Alexander Boyarshenchok',
         position: 'Designer',
+        biography: `Web, UI/UX and Identity designer with over 10 years
+        of work experience. I specialize on User Interface web and Mobile Applications (IOS | Android).`,
         avatarPath: '../../assets/images/team/person-6.png',
       }
     ];
