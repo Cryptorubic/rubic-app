@@ -1,12 +1,14 @@
 <header [ngClass]="{scrolled: pageScrolled}">
   <div class="app-content-block">
-    <span class="logo">
-      <img src="./assets/images/logo.svg" usemap="#logotype">
-      <map name="logotype">
-        <area shape="rect" coords="0,0,97, 31" routerLink="/">
-        <area shape="rect" coords="97,0,195, 31" href="https://mywish.io">
-      </map>
-    </span>
+    <a routerLink="/">
+      <span class="logo">
+        <img src="./assets/images/logo.svg">
+        <!-- <map name="logotype">
+          <area shape="rect" coords="0,0,97, 31" routerLink="/">
+          <area shape="rect" coords="97,0,195, 31" href="https://mywish.io">
+        </map> -->
+      </span>
+    </a>
 
     <button class="navbar-toggle" type="button"
             (click)="openedMenu = !openedMenu" (mousedown)="$event.stopPropagation(); $event.preventDefault();" >
