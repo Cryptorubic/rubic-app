@@ -47,6 +47,7 @@ export class MinMaxDirective implements OnInit {
     const val = control.value * 1;
     const errors = control.errors || {};
 
+    const olderVal = this.oldValidValue;
     if (control.value && isNaN(val)) {
       if (this.oldValidValue) {
         this.el.nativeElement.value = this.oldValidValue;
@@ -84,6 +85,17 @@ export class MinMaxDirective implements OnInit {
 
     if (!stepValid) {
       errors.step = true;
+      this.oldValidValue = olderVal;
+      this.el.nativeElement.value = this.oldValidValue;
+      control.setValue(olderVal, {
+        emitEvent: false
+      });
+      setTimeout(() => {
+        control.setValue(olderVal, {
+          emitEvent: false
+        });
+      });
+      return;
     } else {
       delete errors.step;
     }

@@ -121,8 +121,6 @@ export class ContractFormTwoComponent extends ContractFormComponent {
     const details = this.originalContract.contract_details;
     const interfaceMethod = this.web3Service.getMethodInterface('createOrder', SWAPS_V2.ABI);
 
-    details.broker_fee_address = '0xce85a63F5093b28F15aa7C2C1f1b4b0037011cbE';
-
     this.trxRequest = [
       details.memo_contract,
       details.base_address,
@@ -134,8 +132,8 @@ export class ContractFormTwoComponent extends ContractFormComponent {
       details.min_base_wei || '0',
       details.min_quote_wei || '0',
       details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
-      details.broker_fee ? new BigNumber(details.broker_fee_base).times(100) : '0',
-      details.broker_fee ? new BigNumber(details.broker_fee_quote).times(100) : '0'
+      details.broker_fee ? (new BigNumber(details.broker_fee_base).times(100)).toString(10) : '0',
+      details.broker_fee ? (new BigNumber(details.broker_fee_quote).times(100)).toString(10) : '0'
     ];
 
     const methodSignature = this.web3Service.encodeFunctionCall(interfaceMethod, this.trxRequest);
