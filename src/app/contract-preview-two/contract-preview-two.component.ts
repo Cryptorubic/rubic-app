@@ -121,8 +121,10 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
   private getBaseInvestors(web3Contract) {
     const details = this.originalContract.contract_details;
     web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
+      console.log(result);
       this.contractInfo.baseInvestors = result ? result.length : 0;
     }, err => {
+      console.log(err);
       this.contractInfo.baseInvestors = 0;
       // console.log(err);
     });
@@ -372,6 +374,7 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
     );
 
     const depositMethod = this.web3Service.getMethodInterface('deposit', SWAPS_V2.ABI);
+
     const depositSignature = this.web3Service.encodeFunctionCall(
       depositMethod, [details.memo_contract, tokenAddress.token.address, stringAmountValue]
     );

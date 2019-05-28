@@ -820,50 +820,6 @@ export const SWAPS_V2  = {
         {
           name: '_id',
           type: 'bytes32'
-        },
-        {
-          name: '_baseAddress',
-          type: 'address'
-        },
-        {
-          name: '_quoteAddress',
-          type: 'address'
-        },
-        {
-          name: '_baseLimit',
-          type: 'uint256'
-        },
-        {
-          name: '_quoteLimit',
-          type: 'uint256'
-        },
-        {
-          name: '_expirationTimestamp',
-          type: 'uint256'
-        },
-        {
-          name: '_baseOnlyInvestor',
-          type: 'address'
-        },
-        {
-          name: '_minBaseInvestment',
-          type: 'uint256'
-        },
-        {
-          name: '_minQuoteInvestment',
-          type: 'uint256'
-        },
-        {
-          name: '_brokerAddress',
-          type: 'address'
-        },
-        {
-          name: '_brokerBasePercent',
-          type: 'uint256'
-        },
-        {
-          name: '_brokerQuotePercent',
-          type: 'uint256'
         }
       ],
       name: 'cancel',
@@ -882,10 +838,6 @@ export const SWAPS_V2  = {
         {
           name: '_token',
           type: 'address'
-        },
-        {
-          name: '_amount',
-          type: 'uint256'
         }
       ],
       name: 'refund',
@@ -1121,10 +1073,6 @@ export const SWAPS_V2  = {
         {
           name: '_id',
           type: 'bytes32'
-        },
-        {
-          name: '_user',
-          type: 'address'
         }
       ],
       name: 'baseInvestors',
@@ -1144,10 +1092,6 @@ export const SWAPS_V2  = {
         {
           name: '_id',
           type: 'bytes32'
-        },
-        {
-          name: '_user',
-          type: 'address'
         }
       ],
       name: 'quoteInvestors',

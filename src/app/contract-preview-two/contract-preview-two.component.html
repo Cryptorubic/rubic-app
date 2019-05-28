@@ -416,7 +416,7 @@
             </div>
 
 
-            <div class="grid-row" *ngIf="originalContract.isAuthor">
+            <div class="grid-row" *ngIf="originalContract.isAuthor && originalContract.contract_details.broker_fee">
               <div class="grid-cell grid-cell-1">
                 <div class="form-field">
                   <label class="form-field_label transparent">Broker address</label>

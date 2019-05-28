@@ -509,7 +509,7 @@
                           <div class="grid-cell grid-cell-3-4"
                                *ngIf="requestData.broker_fee_base && tokens.base.amount">
                             <div class="form-field_description__inline">
-                              <span *ngIf="brokersForm.controls.broker_fee_base.valid">
+                              <span *ngIf="brokersForm.controls.broker_fee_base?.valid">
                                 {{ baseBrokerFee | bigNumberFormat : tokens.base.token.decimals : true}}
                                 {{tokens.base.token.token_short_name}}</span>
                             </div>
@@ -545,7 +545,7 @@
                           <div class="grid-cell grid-cell-3-4"
                                *ngIf="requestData.broker_fee_quote && tokens.quote.amount">
                             <div class="form-field_description__inline">
-                              <span *ngIf="brokersForm.controls.broker_fee_quote.valid">
+                              <span *ngIf="brokersForm.controls.broker_fee_quote?.valid">
                                 {{ quoteBrokerFee | bigNumberFormat : tokens.quote.token.decimals : true}}
                                 {{tokens.quote.token.token_short_name}}</span>
                             </div>
@@ -604,7 +604,7 @@
                       </div>
                     </div>
 
-                    <div class="grid-cell grid-cell-1-2">
+                    <div class="grid-cell grid-cell-1-2" *ngIf="originalContract.contract_details.broker_fee">
                       <div class="token-info_texts">
                         <div class="token-info_texts__name">
                           Broker % for {{tokens.base.token.token_name}}
@@ -661,7 +661,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="grid-cell grid-cell-1-2">
+                    <div class="grid-cell grid-cell-1-2" *ngIf="originalContract.contract_details.broker_fee">
                       <div class="token-info_texts">
                         <div class="token-info_texts__name">
                           Broker % for {{tokens.quote.token.token_name}}
