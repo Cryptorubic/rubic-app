@@ -359,12 +359,12 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
     const stringAmountValue = bigNumberAmount.toString(10);
 
     let value: string;
+
     if (tokenAddress.token.isEther) {
       value = stringAmountValue;
     }
 
     const approveMethod = this.web3Service.getMethodInterface('approve');
-
 
     const approveSignature = this.web3Service.encodeFunctionCall(
       approveMethod, [
@@ -406,13 +406,15 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
 
     const textAmount = this.fromBigNumber(amount, tokenAddress.token.decimals);
 
+    console.log(bigNumberAmount.div(Math.pow(10, tokenAddress.token.decimals)).toString(10));
+
     const transactionsList: any[] = [{
       title: !tokenAddress.token.isEther ?
         'Make the transfer of ' + textAmount + ' ' + tokenAddress.token.token_short_name + ' tokens to contract' : undefined,
       to: SWAPS_V2.ADDRESS,
       data: depositSignature,
       action: contributeTransaction,
-      ethValue: !tokenAddress.token.isEther ? undefined : bigNumberAmount.div(Math.pow(10, tokenAddress.token.decimals))
+      ethValue: !tokenAddress.token.isEther ? undefined : bigNumberAmount.div(Math.pow(10, tokenAddress.token.decimals)).toString(10)
     }];
 
     if (!tokenAddress.token.isEther) {

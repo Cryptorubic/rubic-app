@@ -61,7 +61,6 @@
                   <span [ngStyle]="{width:  (contractInfo.baseRaised / tokens.base.amount * 100) + '%'}"></span>
                 </div>
 
-
                 <div class="token-info">
                   <div class="token-info_icon"
                        [ngStyle]="{'background-image': 'url(' + tokens.base.token.image_link + ')'}">
@@ -89,6 +88,7 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="contract-buttons bottom-correct"
                      *ngIf="(originalContract.isSwapped === false) && (originalContract.state === 'ACTIVE') && (contractInfo.baseLeft > 0)">
                   <form #baseContributeForm="ngForm"
@@ -148,6 +148,7 @@
                     </div>
                   </form>
                 </div>
+
                 <div class="contract-buttons no-bottom-margin" *ngIf="originalContract.contract_details.min_base_wei != 0">
                   <span class="normal-text">
                     <span>
@@ -391,81 +392,74 @@
             </div>
 
             <div class="one-separated-block" *ngIf="originalContract.isAuthor">
+              <div class="grid-row" *ngIf="originalContract.isAuthor">
+                <div class="grid-cell grid-cell-1">
+                  <div class="form-field">
+                    <label class="form-field_label transparent">Management address</label>
+                    <div class="form-field_value">
+                      <a [href]="originalContract.contract_details.owner_address | etherscanUrl : 'address'"
+                         target="_blank">
+                        {{originalContract.contract_details.owner_address}}
+                      </a>
 
-            <div class="grid-row" *ngIf="originalContract.isAuthor">
-              <div class="grid-cell grid-cell-1">
-                <div class="form-field">
-                  <label class="form-field_label transparent">Management address</label>
-                  <div class="form-field_value">
-                    <a [href]="originalContract.contract_details.owner_address | etherscanUrl : 'address'"
-                       target="_blank">
-                      {{originalContract.contract_details.owner_address}}
-                    </a>
+                      <button type="button"
+                              class="copy-btn"
+                              [ngClass]="{copied: copiedAddresses['owner_address']}"
+                              ngxClipboard [cbContent]="originalContract.contract_details.owner_address"
+                              (cbOnSuccess)="onCopied('owner_address')">
+                        <img src="./assets/images/icons/copy.svg"/>
+                      </button>
 
-                    <button type="button"
-                            class="copy-btn"
-                            [ngClass]="{copied: copiedAddresses['owner_address']}"
-                            ngxClipboard [cbContent]="originalContract.contract_details.owner_address"
-                            (cbOnSuccess)="onCopied('owner_address')">
-                      <img src="./assets/images/icons/copy.svg"/>
-                    </button>
-
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+              <div class="grid-row" *ngIf="originalContract.isAuthor && originalContract.contract_details.broker_fee">
+                <div class="grid-cell grid-cell-1">
+                  <div class="form-field">
+                    <label class="form-field_label transparent">Broker address</label>
+                    <div class="form-field_value">
+                      <a [href]="originalContract.contract_details.broker_fee_address | etherscanUrl : 'address'"
+                         target="_blank">
+                        {{originalContract.contract_details.broker_fee_address.toLowerCase()}}
+                      </a>
 
+                      <button type="button"
+                              class="copy-btn"
+                              [ngClass]="{copied: copiedAddresses['broker_fee_address']}"
+                              ngxClipboard [cbContent]="originalContract.contract_details.broker_fee_address"
+                              (cbOnSuccess)="onCopied('broker_fee_address')">
+                        <img src="./assets/images/icons/copy.svg"/>
+                      </button>
 
-            <div class="grid-row" *ngIf="originalContract.isAuthor && originalContract.contract_details.broker_fee">
-              <div class="grid-cell grid-cell-1">
-                <div class="form-field">
-                  <label class="form-field_label transparent">Broker address</label>
-                  <div class="form-field_value">
-                    <a [href]="originalContract.contract_details.broker_fee_address | etherscanUrl : 'address'"
-                       target="_blank">
-                      {{originalContract.contract_details.broker_fee_address.toLowerCase()}}
-                    </a>
-
-                    <button type="button"
-                            class="copy-btn"
-                            [ngClass]="{copied: copiedAddresses['broker_fee_address']}"
-                            ngxClipboard [cbContent]="originalContract.contract_details.broker_fee_address"
-                            (cbOnSuccess)="onCopied('broker_fee_address')">
-                      <img src="./assets/images/icons/copy.svg"/>
-                    </button>
-
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-
-
-
-            <div class="one-separated-block" *ngIf="originalContract.state === 'ACTIVE'">
-              <label class="form-field_label transparent">Link to deal</label>
-              <div class="form-field_value">
-                <a [href]="contractAdditional.link" target="_blank">
-                  {{contractAdditional.link}}
-                </a>
-                &nbsp;&nbsp;
-                <button type="button"
-                        class="copy-btn"
-                        [ngClass]="{copied: copiedAddresses['link']}"
-                        ngxClipboard [cbContent]="contractAdditional.link"
-                        (cbOnSuccess)="onCopied('link')">
-                  <img src="./assets/images/icons/copy.svg"/>
+              <div class="one-separated-block" *ngIf="originalContract.state === 'ACTIVE'">
+                <label class="form-field_label transparent">Link to deal</label>
+                <div class="form-field_value">
+                  <a [href]="contractAdditional.link" target="_blank">
+                    {{contractAdditional.link}}
+                  </a>
+                  &nbsp;&nbsp;
+                  <button type="button"
+                          class="copy-btn"
+                          [ngClass]="{copied: copiedAddresses['link']}"
+                          ngxClipboard [cbContent]="contractAdditional.link"
+                          (cbOnSuccess)="onCopied('link')">
+                    <img src="./assets/images/icons/copy.svg"/>
+                  </button>
+                </div>
+              </div>
+              <div class="one-separated-block"
+                   *ngIf="((originalContract.state === 'ACTIVE') && originalContract.isAuthor) && (originalContract.isSwapped === false)">
+                <button type="button" class="btn btn-yellow btn-min btn-normal-weight" (click)="sendCancel()">
+                  <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                  <span>Cancel the deal</span>
                 </button>
               </div>
             </div>
-
-            <div class="one-separated-block"
-                 *ngIf="((originalContract.state === 'ACTIVE') && originalContract.isAuthor) && (originalContract.isSwapped === false)">
-              <button type="button" class="btn btn-yellow btn-min btn-normal-weight" (click)="sendCancel()">
-                <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                <span>Cancel the deal</span>
-              </button>
-            </div>
-
           </div>
         </div>
       </div>
@@ -474,9 +468,9 @@
 </div>
 
 <div class="watch-instruction-btn hide-1024">
-  <button (click)="openContactForm()"
-          class="btn btn-white-opacity">
+  <button (click)="openContactForm()" class="btn btn-white-opacity">
     <img src="./assets/images/icons/conown.svg" class="btn-icon">
     <span>Contact swap owner</span>
   </button>
 </div>
+

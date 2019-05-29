@@ -216,10 +216,10 @@ a:not(.btn):not(.minimal-btn) {
     content: attr(data-after-text);
     color: rgba(0, 0, 0, 0.8);
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 1px;
+    bottom: 1px;
     line-height: 50px;
-    right: 0;
+    right: 1px;
     padding: 0 12px;
     font-weight: bold;
   }

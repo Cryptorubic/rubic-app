@@ -719,12 +719,7 @@ export const SWAPS_V2  = {
         }
       ],
       name: 'tokenFallback',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256'
-        }
-      ],
+      outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
       type: 'function'
@@ -782,12 +777,7 @@ export const SWAPS_V2  = {
         }
       ],
       name: 'createOrder',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256'
-        }
-      ],
+      outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
       type: 'function'
@@ -898,10 +888,6 @@ export const SWAPS_V2  = {
         {
           name: '_owner',
           type: 'address'
-        },
-        {
-          name: '_quotePercent',
-          type: 'uint256'
         }
       ],
       name: 'createKey',

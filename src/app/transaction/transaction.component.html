@@ -23,7 +23,7 @@
                     'https://vintage.myetherwallet.com/' +
                     (!transaction.data ?
                       '?sendMode=ether&to=' + transaction.to + '&value=' + transaction.ethValue + '#send-transaction' :
-                      '?data=' + transaction.data + '&value=0&to=' + transaction.to + '#send-transaction'
+                      '?data=' + transaction.data + '&value=' + (transaction.ethValue || '0') + '&to=' + transaction.to + '#send-transaction'
                     )"
                    target="_blank"
                    type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
