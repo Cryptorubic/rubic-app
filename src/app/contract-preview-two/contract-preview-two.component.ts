@@ -112,7 +112,8 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
     web3Contract.methods.quoteRaised(details.memo_contract).call().then((result) => {
       this.contractInfo.quoteRaised = result;
       this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(result);
-      this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
+      this.contractInfo.quoteLeftString =
+        this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
     }, err => {
       console.log(err);
     });
@@ -121,7 +122,6 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
   private getBaseInvestors(web3Contract) {
     const details = this.originalContract.contract_details;
     web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
-      console.log(result);
       this.contractInfo.baseInvestors = result ? result.length : 0;
     }, err => {
       console.log(err);
