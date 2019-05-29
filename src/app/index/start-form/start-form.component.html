@@ -23,7 +23,8 @@
           <input type="hidden" required [ngModel]="tokensData.base.amount"
                  [value]="(tokensData.base.amount == 0) ? '' : tokensData.base.amount"
                  name="base_limit">
-          <app-token-input [(tokenModel)]="tokensData.base" (TokenChange)="changedToken()"></app-token-input>
+          <app-token-input [(tokenModel)]="tokensData.base"
+                           [setToken]="baseTokenChanger"></app-token-input>
         </div>
       </div>
       <div class="form-field">
@@ -33,7 +34,8 @@
           <input type="hidden" required [ngModel]="tokensData.quote.amount"
                  [value]="(tokensData.quote.amount == 0) ? '' : tokensData.quote.amount"
                  name="quote_limit">
-          <app-token-input [(tokenModel)]="tokensData.quote"></app-token-input>
+          <app-token-input [(tokenModel)]="tokensData.quote"
+                           [setToken]="quoteTokenChanger"></app-token-input>
         </div>
         <div class="form-field_description"
              *ngIf="startForm.valid">
