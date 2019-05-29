@@ -459,12 +459,18 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
 
   public quoteWillGetValue(amount) {
     const details = this.originalContract.contract_details;
-    return new BigNumber(amount).div(details.tokens_info.base.amount).times(details.tokens_info.quote.amount);
+    const quoteWillValue = new BigNumber(amount).div(details.tokens_info.base.amount).times(details.tokens_info.quote.amount);
+    const quoteFeeValue = quoteWillValue.div(100).times(this.contractInfo.quoteBrokerPercent);
+
+    return quoteWillValue.minus(quoteFeeValue);
   }
 
   public baseWillGetValue(amount) {
     const details = this.originalContract.contract_details;
-    return new BigNumber(amount).div(details.tokens_info.quote.amount).times(details.tokens_info.base.amount);
+    const baseWillValue = new BigNumber(amount).div(details.tokens_info.quote.amount).times(details.tokens_info.base.amount);
+    const baseFeeValue = baseWillValue.div(100).times(this.contractInfo.baseBrokerPercent);
+
+    return baseWillValue.minus(baseFeeValue);
   }
 
 }
