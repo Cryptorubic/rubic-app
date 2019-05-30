@@ -154,6 +154,9 @@
     padding: 35px 15px;
     height: 100%;
     box-sizing: border-box;
+    &__img {
+      margin-bottom: 20px;
+    }
     &__title {
       font-weight: bold;
       font-size: 24px;
