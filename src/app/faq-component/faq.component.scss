@@ -30,6 +30,9 @@
     display: flex;
     justify-content: space-between;
   }
+  &__text {
+    white-space: pre-line;
+  }
   &__arrow {
     display: inline-block;
     width: 10px;

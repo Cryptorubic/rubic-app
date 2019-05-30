@@ -1,3 +1,5 @@
+// tslint:disable: max-line-length
+
 import { Component, OnInit } from '@angular/core';
 
 export interface IQuestion {
@@ -19,8 +21,7 @@ export class FaqComponent implements OnInit {
     this.questions = [
       {
         title: 'What is SWAPS.NETWORK?',
-        text: `SWAPS.NETWORK is a fully decentralized OTC. We provide
-        marketplace superior pricing and liquidity for large orders in digital assets.`,
+        text: `SWAPS.NETWORK is a fully decentralized OTC. We provide marketplace superior pricing and liquidity for large orders in digital assets.`,
         isActive: false
       },
       {
@@ -35,14 +36,12 @@ export class FaqComponent implements OnInit {
       },
       {
         title: 'How does it work?',
-        text: `We created a smart contract which allows our customers to exchange
-        their cryptocurrency assets without a third party.`,
+        text: `We created a smart contract which allows our customers to exchange their cryptocurrency assets without a third party.`,
         isActive: false
       },
       {
         title: 'What cryptocurrencies are supported?',
-        text: `SWAPS.NETWORK works with Ethereum based tokens. NEO, EOS, TRON and BTC Blockchains will be released soon.
-        You can trade any pair of cryptocurrency with another individual. Our goal is a safe and simple environment to swap.`,
+        text: `SWAPS.NETWORK works with Ethereum based tokens. NEO, EOS, TRON and BTC Blockchains will be released soon. You can trade any pair of cryptocurrency with another individual. Our goal is a safe and simple environment to swap.`,
         isActive: false
       },
       {
@@ -52,14 +51,12 @@ export class FaqComponent implements OnInit {
       },
       {
         title: 'Do you plan to deal with fiat?',
-        text: `Not at the moment, however, we are open to partnership with companies who work with fiat.
-        If you have any suggestions please write to us info@swaps.network.`,
+        text: `Not at the moment, however, we are open to partnership with companies who work with fiat. If you have any suggestions please write to us info@swaps.network.`,
         isActive: false
       },
       {
         title: 'How to start?',
-        text: `It’s easy, fast and free. Firstly, log in.
-        Fill out in the fields of the desired terms and click Create SWAP.`,
+        text: `It’s easy, fast and free. Firstly, log in. Fill out in the fields of the desired terms and click Create SWAP.`,
         isActive: false
       },
       {
@@ -73,8 +70,7 @@ export class FaqComponent implements OnInit {
       },
       {
         title: 'How much does it cost?',
-        text: `We do not charge for each completed transaction. However, if you
-        want to create a private deal, you pay $10`,
+        text: `We do not charge for each completed transaction. However, if you want to create a private deal, you pay $10`,
         isActive: false
       },
       {
@@ -104,8 +100,7 @@ export class FaqComponent implements OnInit {
       },
       {
         title: 'If I created a deal, however, I have changed my mind, can I cancel a deal?',
-        text: `Yes, you can cancel your deal any time before the second part will
-        complete the deal. If you cancel a deal you can get your tokens back.`,
+        text: `Yes, you can cancel your deal any time before the second part will complete the deal. If you cancel a deal you can get your tokens back.`,
         isActive: false
       }
     ];
