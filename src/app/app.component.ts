@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from './services/user/user.service';
+import { CookieService } from 'ngx-cookie-service';
 import {ActivationEnd, ActivationStart, NavigationStart, ResolveStart, Router} from '@angular/router';
 
 @Component({
@@ -12,10 +13,12 @@ export class AppComponent implements OnInit {
 
   public hideInstructionLink;
   public visibleWatchButton;
+  public notCookiesAccept: boolean;
 
   constructor(
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private cookieService: CookieService
   ) {
 
     const body = document.getElementsByTagName('body')[0];
@@ -23,7 +26,7 @@ export class AppComponent implements OnInit {
       if (event instanceof ActivationEnd) {
         if (event.snapshot.data.support) {
           this.hideInstructionLink = event.snapshot.data.supportHide;
-          this.visibleWatchButton = !event.snapshot.data.hideInstruction,
+          this.visibleWatchButton = !event.snapshot.data.hideInstruction;
           body.className = 'with-support ' + (event.snapshot.data.supportHide ? 'support-hide-' + event.snapshot.data.supportHide : '');
         } else {
           body.className = '';
@@ -36,7 +39,15 @@ export class AppComponent implements OnInit {
 
         }
       }
+      this.notCookiesAccept = !this.cookieService.get('cookies-accept');
     });
+  }
+
+  public closeCookiesInfo(withoutCookie) {
+    if (!withoutCookie) {
+      this.cookieService.set('cookies-accept', '1');
+    }
+    this.notCookiesAccept = false;
   }
 
   private checkLiveChat() {

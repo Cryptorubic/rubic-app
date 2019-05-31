@@ -11,3 +11,20 @@
   </a>
 </div>
 
+
+<div class="cookies-info" *ngIf="notCookiesAccept">
+  <div class="cookies-info_content">
+    <div class="cookies-info_content_text">
+      We use cookies to enhance your experience.
+      By using <span>SWAPS.NETWORK</span> you are agree to our cookies terms.
+    </div>
+    <div class="cookies-info_content_button">
+      <button class="btn btn-white-opacity" (click)="closeCookiesInfo()">
+        <span>Accept</span>
+      </button>
+    </div>
+    <span class="cookies-info_content_close" (click)="closeCookiesInfo(true)"></span>
+  </div>
+</div>
+
+

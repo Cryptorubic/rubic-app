@@ -40,6 +40,7 @@ import {BigNumberDirective, BigNumberFormat, BigNumberMax, BigNumberMin} from '.
 import { ContractPreviewTwoComponent } from './contract-preview-two/contract-preview-two.component';
 import { ContactOwnerComponent } from './contact-owner/contact-owner.component';
 import {MinMaxDirective} from './directives/minMax/min-max.directive';
+import {CookieService} from 'ngx-cookie-service';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -129,6 +130,7 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ClipboardModule
   ],
   providers: [
+    CookieService,
     ContractEditResolver,
     ContractsListResolver,
     {
