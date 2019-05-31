@@ -86,10 +86,10 @@
     a {
       display: block;
       height: 100%;
-      opacity: 0.6;
-      transition: opacity linear 0.2s;
+      filter: grayscale(100%);
+      transition: all .2s;
       &:hover, &:focus {
-        opacity: 1;
+        filter: grayscale(0);
       }
     }
     img {

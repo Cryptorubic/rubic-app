@@ -1,159 +1,28 @@
 const PROJECTS = [
   {
-    link: 'https://www.wmpro.io/',
-    logo: './assets/images/trust/xpro.svg',
-    'colorized-logo': './assets/images/trust/colorized/xpro.svg'
-  }, /*{
-    "link": "https://discountco.in/",
-    "logo": "./assets/images/trust/discountcoin.svg",
-    "colorized-logo": "./assets/images/trust/colorized/discountcoin.svg"
-  }, */{
-    link: 'https://www.rubycoin.org/',
-    logo: './assets/images/trust/Rubicoin.svg',
-    'colorized-logo': './assets/images/trust/colorized/Rubicoin.svg'
-  }/*, {
-    "link": "http://securix.io/",
-    "logo": "./assets/images/trust/securix.svg",
-    "colorized-logo": "./assets/images/trust/colorized/securix.svg"
-  }*/, {
-    link: 'http://www.finamo.mx/',
-    logo: './assets/images/trust/finamo.svg',
-    'colorized-logo': './assets/images/trust/colorized/finamo.svg'
-  }/*, {
-    "link": "https://palladiumtokenmagic.com/",
-    "logo": "./assets/images/trust/PTMX.svg",
-    "colorized-logo": "./assets/images/trust/colorized/PTMX.svg"
-  }, {
-    "link": "https://www.amgchain.com/",
-    "logo": "./assets/images/trust/agmg.svg",
-    "colorized-logo": "./assets/images/trust/colorized/agmg.svg"
-  }, {
-    "link": "https://yourdatasafe.io/",
-    "logo": "./assets/images/trust/YDS.svg",
-    "colorized-logo": "./assets/images/trust/colorized/YDS.svg"
-  }*/, {
-    link: 'https://www.likecoincurrency.com/',
-    logo: './assets/images/trust/likecoin.svg',
-    'colorized-logo': './assets/images/trust/colorized/likecoin.svg'
-  }, {
-    link: 'https://sharpay.io/ru/',
-    logo: './assets/images/trust/sharpay.svg',
-    'colorized-logo': './assets/images/trust/colorized/sharpay.svg'
-  }/*, {
-    "link": "https://www.sidera.io/",
-    "logo": "./assets/images/trust/eQUOS.svg",
-    "colorized-logo": "./assets/images/trust/colorized/eQUOS.svg"
-  }*/, {
-    link: 'https://ozex.io/',
-    logo: './assets/images/trust/ozex.svg',
-    'colorized-logo': './assets/images/trust/colorized/ozex.svg'
-  }/*, {
-    "link": "https://ejacoin.io/",
-    "logo": "./assets/images/trust/ejd.svg",
-    "colorized-logo": "./assets/images/trust/colorized/ejd.svg"
-  }, {
-    "link": "https://cbdoken.com",
-    "logo": "./assets/images/trust/cbdoken.svg",
-    "colorized-logo": "./assets/images/trust/colorized/cbdoken.svg"
-  }*/, {
-    link: 'https://helios.technology',
-    logo: './assets/images/trust/helios.svg',
-    'colorized-logo': './assets/images/trust/colorized/helios.svg'
-  }/*, {
-    "link": "http://peachcoin.io/",
-    "logo": "./assets/images/trust/Peachcoin.svg",
-    "colorized-logo": "./assets/images/trust/colorized/Peachcoin.svg"
-  }*/, {
-    link: 'https://www.stairsgold.org/',
-    logo: './assets/images/trust/StairsGold.svg',
-    'colorized-logo': './assets/images/trust/colorized/StairsGold.svg'
-  }, {
-    link: 'http://www.elanfuture.com/',
-    logo: './assets/images/trust/elanfuture.svg',
-    'colorized-logo': './assets/images/trust/colorized/elanfuture.svg'
-  }, {
-    link: 'https://cpollo.info/',
-    logo: './assets/images/trust/cpollo.svg',
-    'colorized-logo': './assets/images/trust/colorized/cpollo.svg'
-  }, {
-    link: 'https://zichain.io/ru',
-    logo: './assets/images/trust/IZIChain.svg',
-    'colorized-logo': './assets/images/trust/colorized/IZIChain.svg'
-  }/*, {
-    "link": "http://rix.foundation",
-    "logo": "./assets/images/trust/rix.svg",
-    "colorized-logo": "./assets/images/trust/colorized/rix.svg"
-  }, {
-    "link": "https://kryptonium.io/",
-    "logo": "./assets/images/trust/Kryptonium.svg",
-    "colorized-logo": "./assets/images/trust/colorized/Kryptonium.svg"
-  }, {
-    "link": "https://www.wechain.network/",
-    "logo": "./assets/images/trust/Wechain.svg",
-    "colorized-logo": "./assets/images/trust/colorized/Wechain.svg"
-  }*/, {
-    link: 'https://feniks.finance/',
-    logo: './assets/images/trust/feniks.svg',
-    'colorized-logo': './assets/images/trust/colorized/feniks.svg'
-  }, {
-    link: 'https://gbsystems.org',
-    logo: './assets/images/trust/GBCoin.svg',
-    'colorized-logo': './assets/images/trust/colorized/GBCoin.svg'
-  }, {
-    link: 'https://onyxfutures.io/',
-    logo: './assets/images/trust/OnyxToken.svg',
-    'colorized-logo': './assets/images/trust/colorized/OnyxToken.svg'
-  }, {
-    link: 'https://winiota.com/',
-    logo: './assets/images/trust/WINiotaToken.svg',
-    'colorized-logo': './assets/images/trust/colorized/WINiotaToken.svg'
-  }, {
-    link: 'https://efforce.io',
-    logo: './assets/images/trust/efforce.svg',
-    'colorized-logo': './assets/images/trust/colorized/efforce.svg'
-  }/*, {
-    "link": "https://www.makeafolio.com",
-    "logo": "./assets/images/trust/maf.svg",
-    "colorized-logo": "./assets/images/trust/colorized/maf.svg"
-  }*/, {
-    link: 'https://www.globalspy.eu',
-    logo: './assets/images/trust/globalsky.svg',
-    'colorized-logo': './assets/images/trust/colorized/globalsky.svg'
-  }, {
-    link: 'https://bionic-coin.io',
-    logo: './assets/images/trust/onic.svg',
-    'colorized-logo': './assets/images/trust/colorized/onic.svg'
-  }, {
-    link: 'http://apandor.co.jp',
-    logo: './assets/images/trust/apandor.svg',
-    'colorized-logo': './assets/images/trust/colorized/apandor.svg'
-  }, {
-    link: 'http://www.i2sec.co.kr/',
-    logo: './assets/images/trust/i2sec.svg',
-    'colorized-logo': './assets/images/trust/colorized/i2sec.svg'
-  }, {
-    link: 'https://www.block-chain.com/',
-    logo: './assets/images/trust/block-chain-com.svg',
-    'colorized-logo': './assets/images/trust/colorized/block-chain-com.svg'
-  }/*, {
-    "link": "https://gpcc.io/",
-    "logo": "./assets/images/trust/gpcc.svg",
-    "colorized-logo": "./assets/images/trust/colorized/gpcc.svg"
-  }*/, {
-    link: 'https://www.chubex.io/',
-    logo: './assets/images/trust/chubex.png',
-    'colorized-logo': './assets/images/trust/colorized/chubex.svg'
+    link: 'https://bestrate.org',
+    logo: '../../assets/images/partners/bestrate.svg'
   },
   {
-    link: 'https://angelium.net',
-    logo: './assets/images/trust/alogo.svg'
-    // "colorized-logo": "./assets/images/trust/colorized/chubex.svg"
+    link: 'https://changelly.com/',
+    logo: '../../assets/images/partners/changelly.svg'
   },
   {
-    link: 'https://www.eoslite.co/',
-    logo: './assets/images/trust/eoslite.svg'
-    // "colorized-logo": "./assets/images/trust/colorized/chubex.svg"
+    link: 'https://t.me/chornyy_rynok',
+    logo: '../../assets/images/partners/chornyy_rynok.svg'
   },
+  {
+    link: 'https://mywish.io',
+    logo: '../../assets/images/partners/mywish.svg'
+  },
+  {
+    link: 'http://hapax.tech',
+    logo: '../../assets/images/partners/hapax.png'
+  },
+  {
+    link: 'https://deex.exchange/',
+    logo: '../../assets/images/partners/deex.png'
+  }
 ];
 
 export default PROJECTS;
