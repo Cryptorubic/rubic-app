@@ -35,6 +35,9 @@
         <li class="header-menu_list_item">
           <a routerLink="faq" class="header-link">Faq</a>
         </li>
+        <li class="header-menu_list_item">
+          <a routerLink="contacts" class="header-link">Contacts</a>
+        </li>
         <li class="header-menu_list_item" *ngIf="currentUser.is_ghost">
           <span (click)="openAuth()" class="header-link">Login</span>
         </li>
