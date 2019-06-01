@@ -9,6 +9,7 @@ import {ContractPreviewTwoComponent} from './contract-preview-two/contract-previ
 import { TeamComponent } from './team-component/team.component';
 import { RoadmapComponent } from './roadmap-component/roadmap.component';
 import { FaqComponent } from './faq-component/faq.component';
+import { ContactsComponent } from './contacts-component/contacts.component';
 
 const routes: Routes = [
   {
@@ -116,6 +117,10 @@ const routes: Routes = [
   {
     path: 'faq',
     component: FaqComponent,
+  },
+  {
+    path: 'contacts',
+    component: ContactsComponent,
   }
 ];
 
