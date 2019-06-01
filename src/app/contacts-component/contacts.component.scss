@@ -1,0 +1,28 @@
+.contacts-container {
+  padding: 130px 15px 0 15px;
+}
+
+.contacts-form {
+  width: 450px;
+  padding: 50px 0;
+  &__input {
+    margin-bottom: 30px;
+    padding: 15px 0;
+    background: transparent;
+    opacity: .5;
+    color: #E0E0E0;
+    font-size: 16px;
+    border: none;
+    border-bottom: 1px solid #E0E0E0;
+    outline: none;
+    &::placeholder {
+      color: #E0E0E0;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .contacts-form {
+    width: 100%;
+  }
+}

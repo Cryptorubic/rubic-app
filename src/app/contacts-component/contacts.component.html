@@ -1,3 +1,17 @@
-<p>
-  contacts works!
-</p>
+<div class="contacts-container">
+  <div class="app-content-block">
+    <h2 class="title-section">Contact us</h2>
+
+    <form class="contacts-form" [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+      <input type="email" class="contacts-form__input" placeholder="E-mail" formControlName="email">
+      <input type="text" class="contacts-form__input" placeholder="Message" formControlName="message">
+
+      <button type="submit" class="btn-block btn btn_small btn-white-opacity" [disabled]="!contactForm.valid">
+        <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
+        <span>Send</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<app-footer></app-footer>
