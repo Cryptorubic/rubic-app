@@ -35,15 +35,6 @@ export class TeamComponent implements OnInit {
         linkedInUrl: 'https://www.linkedin.com/in/vtikhomirov/'
       },
       {
-        name: 'Veronika Trunina',
-        position: 'Business Development',
-        biography: `Crypto junkies, having passion to connect people
-        and businesses with more than 10 years leading in IT.
-        Former Software Development Director in EPAM (3 years)`,
-        avatarPath: '../../assets/images/team/person-2.png',
-        linkedInUrl: 'https://www.linkedin.com/in/veronika-trunina-6b567027/'
-      },
-      {
         name: 'Dmitriy Kovalev',
         position: 'Senior Frontend Developer',
         biography: `Programming experience for more than 6 years.
@@ -62,23 +53,6 @@ export class TeamComponent implements OnInit {
         avatarPath: '../../assets/images/team/person-3.png',
         linkedInUrl: 'https://www.linkedin.com/in/rue-karriva-7b6713177/',
         gitHubUrl: 'https://github.com/karriva'
-      },
-      {
-        name: 'Alexandra Korneva',
-        biography: `Co-founder at Hapax.tech, co-founder at Pencil Group. More than 6 years
-        of experience in PR, marketing and media. Worked with Cointelegraph,
-        Blockchain Life, BlockShow, CryptoFriends and etc.`,
-        position: 'Partner / PR and Marketing',
-        avatarPath: '../../assets/images/team/person-4.png',
-        linkedInUrl: 'https://ru.linkedin.com/'
-      },
-      {
-        name: 'Olga Kulakova',
-        biography: `Social networks adept and content creator for IT and crypto projects.
-        4 years eхperience in the organization of SMM-procedures and community management`,
-        position: 'SMM',
-        avatarPath: '../../assets/images/team/person-7.png',
-        linkedInUrl: 'https://www.linkedin.com/in/kulakovaolga/'
       },
       {
         name: 'Nikolay Toporkov',
@@ -101,11 +75,22 @@ export class TeamComponent implements OnInit {
         gitHubUrl: 'https://github.com/ephdtrg '
       },
       {
-        name: 'Alexander Volkov',
-        biography: `Graduate of the Saratov State University, more than 4 years in testing
-        mobile, client-server and  blockchain-based projects`,
-        position: 'QA lead',
-        avatarPath: '../../assets/images/team/person-12.png'
+        name: 'Veronika Trunina',
+        position: 'Business Development',
+        biography: `Crypto junkies, having passion to connect people
+        and businesses with more than 10 years leading in IT.
+        Former Software Development Director in EPAM (3 years)`,
+        avatarPath: '../../assets/images/team/person-2.png',
+        linkedInUrl: 'https://www.linkedin.com/in/veronika-trunina-6b567027/'
+      },
+      {
+        name: 'Alexandra Korneva',
+        biography: `Co-founder at Hapax.tech, co-founder at Pencil Group. More than 6 years
+        of experience in PR, marketing and media. Worked with Cointelegraph,
+        Blockchain Life, BlockShow, CryptoFriends and etc.`,
+        position: 'Partner / PR and Marketing',
+        avatarPath: '../../assets/images/team/person-4.png',
+        linkedInUrl: 'https://ru.linkedin.com/'
       },
       {
         name: 'Alexander Boyarshenchok',
@@ -113,37 +98,25 @@ export class TeamComponent implements OnInit {
         biography: `Web, UI/UX and Identity designer with over 10 years
         of work experience. I specialize on User Interface web and Mobile Applications (IOS | Android).`,
         avatarPath: '../../assets/images/team/person-6.png',
+      },
+      {
+        name: 'Olga Kulakova',
+        biography: `Social networks adept and content creator for IT and crypto projects.
+        4 years eхperience in the organization of SMM-procedures and community management`,
+        position: 'SMM',
+        avatarPath: '../../assets/images/team/person-7.png',
+        linkedInUrl: 'https://www.linkedin.com/in/kulakovaolga/'
+      },
+      {
+        name: 'Alexander Volkov',
+        biography: `Graduate of the Saratov State University, more than 4 years in testing
+        mobile, client-server and  blockchain-based projects`,
+        position: 'QA lead',
+        avatarPath: '../../assets/images/team/person-12.png'
       }
     ];
 
     this.advisers = [
-      {
-        name: 'Marco Poliquin',
-        position: 'Blockchain Futurist based in Tokyo',
-        biography: `15 years of Web Development UI/UX, Machine Learning.
-        First became interested in cryptocurrency in ​2013​. True believer
-        in decentralization and trustless protocols to empower individual
-        freedoms and future society structures. 2017 - ​Advisor and Marketing
-        Director for International Blockchain projects. 2018 - Co-organized
-        Blockchain conferences, network events and infamous
-        After-Parties for global influencers. ​2019 ​- Healthtech, DEX OTC,
-        Education and Protocols adoption.`,
-        avatarPath: '../../assets/images/team/person-15.png',
-        linkedInUrl: 'https://www.linkedin.com/in/marco-pharaoh'
-      },
-      {
-        name: 'Eric Benz',
-        position: 'CEO of Changelly',
-        biography: `Eric has over 10 years of experience working in and around
-        Financial Technology. He has delivered innovative
-        SaaS systems for some of today's biggest institutions
-        around payments, identity, and banking infrastructure. Eric has been
-        in the Blockchain space since 2012 and is involved in a number
-        of blockchain and fintech businesses both as an investor,
-        board director, and founder.`,
-        avatarPath: '../../assets/images/team/person-10.png',
-        linkedInUrl: 'https://www.linkedin.com/in/ericbenz84/'
-      },
       {
         name: 'Pavel Shterlyaev',
         position: 'Founder BestRate.org',
@@ -169,11 +142,38 @@ export class TeamComponent implements OnInit {
         linkedInUrl: 'https://www.linkedin.com/in/hugo-hellebuyck'
       },
       {
+        name: 'Eric Benz',
+        position: 'CEO of Changelly',
+        biography: `Eric has over 10 years of experience working in and around
+        Financial Technology. He has delivered innovative
+        SaaS systems for some of today's biggest institutions
+        around payments, identity, and banking infrastructure. Eric has been
+        in the Blockchain space since 2012 and is involved in a number
+        of blockchain and fintech businesses both as an investor,
+        board director, and founder.`,
+        avatarPath: '../../assets/images/team/person-10.png',
+        linkedInUrl: 'https://www.linkedin.com/in/ericbenz84/'
+      },
+      {
         name: 'Dmitry Machikhin',
         position: 'Head GMTLegal',
         biography: `Crowdfunding Lawyer. Lawyer of Cointelegraph. Experience in business and law 10 years.`,
         avatarPath: '../../assets/images/team/person-11.png',
         linkedInUrl: 'https://www.linkedin.com/in/dmitry-machikhin-56282a77/'
+      },
+      {
+        name: 'Marco Poliquin',
+        position: 'Blockchain Futurist based in Tokyo',
+        biography: `15 years of Web Development UI/UX, Machine Learning.
+        First became interested in cryptocurrency in ​2013​. True believer
+        in decentralization and trustless protocols to empower individual
+        freedoms and future society structures. 2017 - ​Advisor and Marketing
+        Director for International Blockchain projects. 2018 - Co-organized
+        Blockchain conferences, network events and infamous
+        After-Parties for global influencers. ​2019 ​- Healthtech, DEX OTC,
+        Education and Protocols adoption.`,
+        avatarPath: '../../assets/images/team/person-15.png',
+        linkedInUrl: 'https://www.linkedin.com/in/marco-pharaoh'
       }
     ];
   }
