@@ -43,7 +43,11 @@ import { TeamComponent } from './team-component/team.component';
 import { RoadmapComponent } from './roadmap-component/roadmap.component';
 import { FaqComponent } from './faq-component/faq.component';
 import {MinMaxDirective} from './directives/minMax/min-max.directive';
+<<<<<<< HEAD
 import {CookieService} from 'ngx-cookie-service';
+=======
+import { ContactsComponent } from './contacts-component/contacts.component';
+>>>>>>> chore: generate contacts-component
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -100,7 +104,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ContactOwnerComponent,
     TeamComponent,
     RoadmapComponent,
-    FaqComponent
+    FaqComponent,
+    ContactsComponent
   ],
   entryComponents: [
     AuthComponent,
