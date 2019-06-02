@@ -1,12 +1,11 @@
 .roadmap-container {
   background: url('/assets/images/backgrounds/bg-index-top.png');
   background-size: cover;
-  padding-top: 130px;
+  padding: 130px 15px 0 15px;
   &__block {
     width: 70%;
     height: auto;
-    margin: 100px auto;
-    padding: 15px;
+    margin: 100px 0;
   }
   &__title {
     font-size: 18px;
@@ -22,7 +21,8 @@
   position: relative;
   width: 100%;
   height: 100%;
-  border: 2px solid #FCD600;
+  padding: 10px;
+  border-left: 5px solid rgba(255, 255, 255, 0.67);
   background: rgba(0, 0, 0, .2);
   &__list {
     position: relative;
@@ -60,38 +60,38 @@
       }
     }
   }
-  &__flag {
-    position: absolute;
-    top: 100%;
-    width: 2px;
-    height: 50px;
-    background: #FCD600;
-    &:after {
-      content: '';
-      position: absolute;
-      top: 88%;
-      width: 20px;
-      height: 10px;
-      border: 2px solid #FCD600;
-      border-radius: 50%;
-    }
-  }
-  &_left {
-    .quarter-container__flag {
-      left: -2px;
-      &:after {
-        right: -11px;
-      }
-    }
-  }
-  &_right {
-    .quarter-container__flag {
-      right: -2px;
-      &:after {
-        left: -11px;
-      }
-    }
-  }
+  // &__flag {
+  //   position: absolute;
+  //   top: 100%;
+  //   width: 2px;
+  //   height: 50px;
+  //   background: #FCD600;
+  //   &:after {
+  //     content: '';
+  //     position: absolute;
+  //     top: 88%;
+  //     width: 20px;
+  //     height: 10px;
+  //     border: 2px solid #FCD600;
+  //     border-radius: 50%;
+  //   }
+  // }
+  // &_left {
+  //   .quarter-container__flag {
+  //     left: -2px;
+  //     &:after {
+  //       right: -11px;
+  //     }
+  //   }
+  // }
+  // &_right {
+  //   .quarter-container__flag {
+  //     right: -2px;
+  //     &:after {
+  //       left: -11px;
+  //     }
+  //   }
+  // }
 }
 
 @media (max-width: 768px) {
