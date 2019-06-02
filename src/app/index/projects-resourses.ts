@@ -17,11 +17,11 @@ const PROJECTS = [
   },
   {
     link: 'http://hapax.tech',
-    logo: '../../assets/images/partners/hapax.png'
+    logo: '../../assets/images/partners/hapax.svg'
   },
   {
     link: 'https://deex.exchange/',
-    logo: '../../assets/images/partners/deex.png'
+    logo: '../../assets/images/partners/deex.svg'
   }
 ];
 
