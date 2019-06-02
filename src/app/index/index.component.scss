@@ -108,7 +108,7 @@
   color: #fff;
   font-size: 16px;
   line-height: 19px;
-  padding: 0;
+  padding: 0 25px;
   margin: 0;
   &:after {
     content: '';
@@ -116,19 +116,22 @@
     clear: both;
   }
   li {
+    position: relative;
     float: left;
     width: 33.333%;
-    padding: 13px 23px;
+    padding: 30px 23px;
     box-sizing: border-box;
     &:before {
-      float: left;
       content: '';
       display: block;
-      width: 8px;
-      height: 8px;
-      margin-left: -23px;
-      margin-top: 5px;
-      background: #FCD600;
+      position: absolute;
+      left: -20px;
+      top: 23px;
+      width: 35px;
+      height: 35px;
+      background: url('../../assets/images/index/feature-rectangle.svg');
+      background-repeat: no-repeat;
+      background-size: contain;
     }
   }
 }
