@@ -86,10 +86,10 @@
     a {
       display: block;
       height: 100%;
-      filter: grayscale(100%);
+      filter: brightness(50%);
       transition: all .2s;
       &:hover, &:focus {
-        filter: grayscale(0);
+        filter: brightness(100%);
       }
     }
     img {
