@@ -1,8 +1,9 @@
 .app-index {
-  background: url('/assets/images/backgrounds/bg-index-top.png') transparent;
+  background: url('/assets/images/backgrounds/bg-gradient.png') transparent;
   background-position: center top;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
+  height: 100%;
   padding-top: 130px;
 }
 
@@ -270,9 +271,9 @@
 
 .second-index-block {
   margin-top: 70px;
-  background: url(/assets/images/backgrounds/bg-index-faq.jpg) no-repeat center top;
-  background-position: center top;
-  background-size: 100%;
+  // background: url(/assets/images/backgrounds/bg-index-faq.jpg) no-repeat center top;
+  // background-position: center top;
+  // background-size: 100%;
 }
 
 //.app-index__faq {
