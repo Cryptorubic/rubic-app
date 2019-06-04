@@ -7,7 +7,7 @@
 
 .people-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
   flex-wrap: wrap;
   &__person {
@@ -17,7 +17,7 @@
     min-height: 250px;
     height: auto;
     padding: 20px;
-    margin: 0 10px 100px;
+    margin: 0 20px 100px;
     background-color: rgba(40, 50, 64, .5);
     &:hover {
       .people-container__person-biography {
@@ -56,13 +56,9 @@
     width: 15px;
     margin-right: 10px;
   }
-  &:after {
-    content: '';
-    flex: auto;
-  }
 }
 
-@media (max-width: 1105px) {
+@media (max-width: 1215px) {
   .people-container {
     justify-content: center;
   }
