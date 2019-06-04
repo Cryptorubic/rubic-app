@@ -119,6 +119,17 @@ export class TeamComponent implements OnInit {
     this.advisers = [
       {
         name: 'Pavel Shterlyaev',
+        position: 'Blockchain Entrepreneur',
+        biography: `Former Director of R&D, NEO Global Development (NGD),
+        one of the early NEO developers.
+        He has 8 years of experience in internet technology development and 6
+        years of experience in blockchain industry,
+        engaged in the development of consortium chain and public chain.`,
+        avatarPath: '../../assets/images/team/person-16.jpg',
+        linkedInUrl: 'https://www.linkedin.com/in/pengtao-lin-453653b4/'
+      },
+      {
+        name: 'Pavel Shterlyaev',
         position: 'Founder BestRate.org',
         biography: `M.Sc. Lappeenranta University of Technology, IT Worked
         in a number of IT companies in different roles: Huawei,
