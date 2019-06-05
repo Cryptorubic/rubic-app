@@ -69,3 +69,13 @@
     }
   }
 }
+
+@media (max-width: 800px) {
+  .cookies-info {
+    padding: 0;
+    &_content_text {
+      font-size: 10px;
+      margin-right: 5px;
+    }
+  }
+}
