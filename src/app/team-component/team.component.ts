@@ -35,6 +35,24 @@ export class TeamComponent implements OnInit {
         linkedInUrl: 'https://www.linkedin.com/in/vtikhomirov/'
       },
       {
+        name: 'Alexandra Korneva',
+        biography: `Co-founder at Hapax.tech, co-founder at Pencil Group. More than 6 years
+        of experience in PR, marketing and media. Worked with Cointelegraph,
+        Blockchain Life, BlockShow, CryptoFriends and etc.`,
+        position: 'Partner / PR and Marketing',
+        avatarPath: '../../assets/images/team/person-4.png',
+        linkedInUrl: 'https://ru.linkedin.com/'
+      },
+      {
+        name: 'Veronika Trunina',
+        position: 'Business Development',
+        biography: `Crypto junkies, having passion to connect people
+        and businesses with more than 10 years leading in IT.
+        Former Software Development Director in EPAM (3 years)`,
+        avatarPath: '../../assets/images/team/person-2.png',
+        linkedInUrl: 'https://www.linkedin.com/in/veronika-trunina-6b567027/'
+      },
+      {
         name: 'Dmitriy Kovalev',
         position: 'Senior Frontend Developer',
         biography: `Programming experience for more than 6 years.
@@ -46,7 +64,7 @@ export class TeamComponent implements OnInit {
       },
       {
         name: 'Nina Lukina',
-        position: 'Backend Developer',
+        position: 'Senior Backend Developer',
         biography: `Programming experience 3.5 years.
         Languages: Python, Django, TensorFlow, SQL/NoSQL, redis, celery, asyncio, unittest, DRF
         Backend for Ethereum, EOS, RSK, NEO, WAVES, TRON include all testnets`,
@@ -67,7 +85,7 @@ export class TeamComponent implements OnInit {
       {
         name: 'Max Strenk',
         position: 'Backend Developer',
-        biography: ` Languages - Python, Solidity, JavaScript. Programming experience over
+        biography: `Languages - Python, Solidity, JavaScript. Programming experience over
         five years Experience with blockchains 2 years Prior to the
         blockchain, was engaged in infrastructure and administration of Linux`,
         avatarPath: '../../assets/images/team/person-5.png',
@@ -75,22 +93,11 @@ export class TeamComponent implements OnInit {
         gitHubUrl: 'https://github.com/ephdtrg '
       },
       {
-        name: 'Veronika Trunina',
-        position: 'Business Development',
-        biography: `Crypto junkies, having passion to connect people
-        and businesses with more than 10 years leading in IT.
-        Former Software Development Director in EPAM (3 years)`,
-        avatarPath: '../../assets/images/team/person-2.png',
-        linkedInUrl: 'https://www.linkedin.com/in/veronika-trunina-6b567027/'
-      },
-      {
-        name: 'Alexandra Korneva',
-        biography: `Co-founder at Hapax.tech, co-founder at Pencil Group. More than 6 years
-        of experience in PR, marketing and media. Worked with Cointelegraph,
-        Blockchain Life, BlockShow, CryptoFriends and etc.`,
-        position: 'Partner / PR and Marketing',
-        avatarPath: '../../assets/images/team/person-4.png',
-        linkedInUrl: 'https://ru.linkedin.com/'
+        name: 'Daniil Dubrava',
+        position: 'Frontend Developer',
+        biography: `JS, TS, Angular, Vue.js. Programming experience over 1 year.`,
+        avatarPath: '',
+        gitHubUrl: 'https://github.com/ddubrava '
       },
       {
         name: 'Alexander Boyarshenchok',
@@ -117,6 +124,19 @@ export class TeamComponent implements OnInit {
     ];
 
     this.advisers = [
+      {
+        name: 'Eric Benz',
+        position: 'CEO of Changelly',
+        biography: `Eric has over 10 years of experience working in and around
+        Financial Technology. He has delivered innovative
+        SaaS systems for some of today's biggest institutions
+        around payments, identity, and banking infrastructure. Eric has been
+        in the Blockchain space since 2012 and is involved in a number
+        of blockchain and fintech businesses both as an investor,
+        board director, and founder.`,
+        avatarPath: '../../assets/images/team/person-10.png',
+        linkedInUrl: 'https://www.linkedin.com/in/ericbenz84/'
+      },
       {
         name: 'Pavel Shterlyaev',
         position: 'Blockchain Entrepreneur',
@@ -151,19 +171,6 @@ export class TeamComponent implements OnInit {
         emerging countries, Agri-tech and Blockchain Startups.`,
         avatarPath: '../../assets/images/team/person-9.png',
         linkedInUrl: 'https://www.linkedin.com/in/hugo-hellebuyck'
-      },
-      {
-        name: 'Eric Benz',
-        position: 'CEO of Changelly',
-        biography: `Eric has over 10 years of experience working in and around
-        Financial Technology. He has delivered innovative
-        SaaS systems for some of today's biggest institutions
-        around payments, identity, and banking infrastructure. Eric has been
-        in the Blockchain space since 2012 and is involved in a number
-        of blockchain and fintech businesses both as an investor,
-        board director, and founder.`,
-        avatarPath: '../../assets/images/team/person-10.png',
-        linkedInUrl: 'https://www.linkedin.com/in/ericbenz84/'
       },
       {
         name: 'Dmitry Machikhin',
