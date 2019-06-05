@@ -138,7 +138,7 @@ export class TeamComponent implements OnInit {
         linkedInUrl: 'https://www.linkedin.com/in/ericbenz84/'
       },
       {
-        name: 'Pavel Shterlyaev',
+        name: 'Peter Lin',
         position: 'Blockchain Entrepreneur',
         biography: `Former Director of R&D, NEO Global Development (NGD),
         one of the early NEO developers.
