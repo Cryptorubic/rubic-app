@@ -18,9 +18,20 @@ header {
     }
   }
 }
+
+.app-content-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &_right {
+    width: 100%;
+  }
+}
+
 .logo {
   float: left;
 }
+
 .header-menu {
   float: right;
   font-weight: bold;
