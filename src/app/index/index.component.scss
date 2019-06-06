@@ -1,8 +1,5 @@
 .app-index {
-  background: url('/assets/images/backgrounds/bg-index-top.png') transparent;
-  background-position: center top;
-  background-repeat: no-repeat;
-  background-size: contain;
+  height: 100%;
   padding-top: 130px;
 }
 
@@ -86,10 +83,10 @@
     a {
       display: block;
       height: 100%;
-      opacity: 0.6;
-      transition: opacity linear 0.2s;
+      filter: grayscale(100%);
+      transition: all .2s;
       &:hover, &:focus {
-        opacity: 1;
+        filter: grayscale(0);
       }
     }
     img {
@@ -106,9 +103,9 @@
 .why-we-list {
   list-style-type: none;
   color: #fff;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 19px;
-  padding: 0;
+  padding: 0 25px;
   margin: 0;
   &:after {
     content: '';
@@ -116,20 +113,26 @@
     clear: both;
   }
   li {
+    position: relative;
     float: left;
     width: 33.333%;
-    padding: 13px 23px;
+    padding: 30px 23px;
     box-sizing: border-box;
     &:before {
-      float: left;
       content: '';
       display: block;
-      width: 8px;
-      height: 8px;
-      margin-left: -23px;
-      margin-top: 5px;
-      background: #FCD600;
+      position: absolute;
+      left: -20px;
+      top: 23px;
+      width: 35px;
+      height: 35px;
+      background: url('../../assets/images/index/feature-rectangle.svg');
+      background-repeat: no-repeat;
+      background-size: contain;
     }
+  }
+  &__span_yellow {
+    color: #FCD600;
   }
 }
 
@@ -154,6 +157,9 @@
     padding: 35px 15px;
     height: 100%;
     box-sizing: border-box;
+    &__img {
+      margin-bottom: 20px;
+    }
     &__title {
       font-weight: bold;
       font-size: 24px;
@@ -261,9 +267,9 @@
 
 .second-index-block {
   margin-top: 70px;
-  background: url(/assets/images/backgrounds/bg-index-faq.jpg) no-repeat center top;
-  background-position: center top;
-  background-size: 100%;
+  // background: url(/assets/images/backgrounds/bg-index-faq.jpg) no-repeat center top;
+  // background-position: center top;
+  // background-size: 100%;
 }
 
 //.app-index__faq {

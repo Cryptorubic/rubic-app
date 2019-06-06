@@ -6,6 +6,10 @@ import {ContractPreviewComponent} from './contract-preview/contract-preview.comp
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
 import {ContractFormTwoComponent} from './contract-form-two/contract-form-two.component';
 import {ContractPreviewTwoComponent} from './contract-preview-two/contract-preview-two.component';
+import { TeamComponent } from './team-component/team.component';
+import { RoadmapComponent } from './roadmap-component/roadmap.component';
+import { FaqComponent } from './faq-component/faq.component';
+import { ContactsComponent } from './contacts-component/contacts.component';
 
 const routes: Routes = [
   {
@@ -97,18 +101,35 @@ const routes: Routes = [
   }, {
     path: 'dashboard/first_entry',
     redirectTo: '/'
-  }, {
+  },
+  {
     path: 'accounts/login',
     redirectTo: '/'
+  },
+  {
+    path: 'team',
+    component: TeamComponent,
+  },
+  {
+    path: 'roadmap',
+    component: RoadmapComponent,
+  },
+  {
+    path: 'faq',
+    component: FaqComponent,
+  },
+  {
+    path: 'contacts',
+    component: ContactsComponent,
   }
-
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'enabled',
-      anchorScrolling: 'enabled'
+      anchorScrolling: 'enabled',
+      onSameUrlNavigation: 'reload',
+      scrollPositionRestoration: 'enabled'
     })
   ],
   exports: [RouterModule]

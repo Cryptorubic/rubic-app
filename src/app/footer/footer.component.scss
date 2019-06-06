@@ -1,8 +1,7 @@
 footer {
-  background: rgba(0,0,0,0.20);
-  margin-top: 122px;
   padding: 0 2%;
 }
+
 .subscribe {
   padding-top: 50px;
   color: #fff;
@@ -25,10 +24,6 @@ footer {
 
   &_form {
     display: table;
-    .btn {
-      padding-bottom: 11px;
-      padding-top: 12px;
-    }
     &__cell {
       display: table-cell;
       vertical-align: middle;
@@ -53,7 +48,7 @@ footer {
   }
   span {
     float: left;
-    width: 12.5%;
+    width: 8%;
     text-align: left;
   }
   a {

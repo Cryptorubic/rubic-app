@@ -1,0 +1,63 @@
+.team-container {
+  height: 100%;
+  padding: 130px 15px 0 15px;
+}
+
+.people-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  &__person {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    min-height: 260px;
+    height: auto;
+    padding: 20px;
+    margin: 0 20px 100px;
+    background-color: rgba(40, 50, 64, .5);
+    &:hover {
+      .people-container__person-biography {
+        max-height: 500px;
+      }
+    }
+  }
+  &__avatar {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 15px;
+  }
+  &__person-info {
+    display: flex;
+    flex-direction: column;
+  }
+  &__name {
+    margin-bottom: 5px;
+    font-size: 21px;
+    color: #FCD600;
+  }
+  &__position {
+    color: #fff;
+  }
+  &__person-biography {
+    max-height: 0;
+    margin: 10px 0;
+    overflow: hidden;
+    color: #fff;
+    transition: max-height .5s;
+  }
+  &__social-icon {
+    width: 15px;
+    margin-right: 10px;
+    &_github {
+      margin-bottom: -1px;
+    }
+  }
+}
+
+@media (max-width: 1215px) {
+  .people-container {
+    justify-content: center;
+  }
+}

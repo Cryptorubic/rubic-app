@@ -39,8 +39,12 @@ import { ContractFormTwoComponent } from './contract-form-two/contract-form-two.
 import {BigNumberDirective, BigNumberFormat, BigNumberMax, BigNumberMin} from './directives/big-number/big-number.directive';
 import { ContractPreviewTwoComponent } from './contract-preview-two/contract-preview-two.component';
 import { ContactOwnerComponent } from './contact-owner/contact-owner.component';
+import { TeamComponent } from './team-component/team.component';
+import { RoadmapComponent } from './roadmap-component/roadmap.component';
+import { FaqComponent } from './faq-component/faq.component';
 import {MinMaxDirective} from './directives/minMax/min-max.directive';
-import {CookieService} from 'ngx-cookie-service';
+import { CookieService } from 'ngx-cookie-service';
+import { ContactsComponent } from './contacts-component/contacts.component';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -92,9 +96,13 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ContractFormTwoComponent,
     BigNumberDirective,
     ContractPreviewTwoComponent,
-    ContactOwnerComponent,
 
-    MinMaxDirective
+    MinMaxDirective,
+    ContactOwnerComponent,
+    TeamComponent,
+    RoadmapComponent,
+    FaqComponent,
+    ContactsComponent
   ],
   entryComponents: [
     AuthComponent,

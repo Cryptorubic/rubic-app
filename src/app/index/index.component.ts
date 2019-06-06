@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import PROJECTS from "./projects-resourses";
-import {HttpService} from '../services/http/http.service';
+import PROJECTS from './projects-resourses';
+import { HttpService } from '../services/http/http.service';
 
 const STAT_URL = 'get_statistics_landing/';
 

@@ -72,34 +72,52 @@
       </div>
 
       <div class="app-index__why-we section-content-block">
-        <div class="title-section">Why Us?</div>
+        <div class="title-section">Features</div>
         <ul class="why-we-list">
           <li>
-            <span>Fully decentralized</span>
+            <span>
+              Fully <span class="why-we-list__span_yellow">decentralized</span>
+            </span>
           </li>
           <li>
-            <span>Swap not-listed tokens</span>
+            <span>
+              <span class="why-we-list__span_yellow">No</span> volume <span class="why-we-list__span_yellow">limits</span>
+            </span>
           </li>
           <li>
-            <span>No volume limits</span>
+            <span>
+              Ability to <span class="why-we-list__span_yellow">get funds back</span> anytime
+            </span>
           </li>
           <li>
-            <span>Private or public swaps</span>
+            <span>
+              <span class="why-we-list__span_yellow">Any</span> trading <span class="why-we-list__span_yellow">pair</span> supported
+            </span>
           </li>
           <li>
-            <span>Ability to get funds back anytime</span>
+            <span>
+              Swap even <span class="why-we-list__span_yellow">not-listed</span> tokens
+            </span>
           </li>
           <li>
-            <span>Multiple participants at 1 swap</span>
+            <span>
+              <span class="why-we-list__span_yellow">Private</span> or public swaps
+            </span>
           </li>
           <li>
-            <span>Any trading pair supported</span>
+            <span>
+              <span class="why-we-list__span_yellow">Multiple</span> participants at 1 swap
+            </span>
           </li>
           <li>
-            <span>Super low fee</span>
+            <span>
+              <span class="why-we-list__span_yellow">Intuitive</span> UI design
+            </span>
           </li>
           <li>
-            <span>Used by brokers and traders</span>
+            <span>
+              <span class="why-we-list__span_yellow">No Sign-Ups</span>
+            </span>
           </li>
         </ul>
       </div>
@@ -109,6 +127,8 @@
         <ul class="blocks-list">
           <li>
             <div class="blocks-list_content">
+              <img src="../../assets/images/index/clients/group_1.svg" class="blocks-list_content__img">
+
               <div class="blocks-list_content__title">
                 Token holders
               </div>
@@ -119,41 +139,49 @@
           </li>
           <li>
             <div class="blocks-list_content">
+              <img src="../../assets/images/index/clients/group_2.svg" class="blocks-list_content__img">
+
               <div class="blocks-list_content__title">
                 Projects
               </div>
               <div class="blocks-list_content__text">
-                They can sell tokens at any project's stage.
+                Can sell tokens at any project's stage.
               </div>
             </div>
           </li>
           <li>
             <div class="blocks-list_content">
+              <img src="../../assets/images/index/clients/group_3.svg" class="blocks-list_content__img">
+
               <div class="blocks-list_content__title">
                 Brokers
               </div>
               <div class="blocks-list_content__text">
-                They can initiate deals and earn commissions.
+                Can initiate deals and earn commissions.
               </div>
             </div>
           </li>
           <li>
             <div class="blocks-list_content">
+              <img src="../../assets/images/index/clients/group_4.svg" class="blocks-list_content__img">
+
               <div class="blocks-list_content__title">
                 Traders
               </div>
               <div class="blocks-list_content__text">
-                They earn on the difference in the rate due to the volume of the deal.
+                Earn on the difference in the rate due to the volume of the deal.
               </div>
             </div>
           </li>
           <li>
             <div class="blocks-list_content">
+              <img src="../../assets/images/index/clients/group_5.svg" class="blocks-list_content__img">
+
               <div class="blocks-list_content__title">
                 Crypto wallets
               </div>
               <div class="blocks-list_content__text">
-                They swap tokens between user's wallets.
+                Swap tokens between user's wallets.
               </div>
             </div>
           </li>
@@ -162,43 +190,12 @@
 
     </div>
 
-
-
-    <div class="app-content-block" id="about">
-      <div class="app-index__used-service used-service section-content-block">
-        <div class="title-section">Trust</div>
-        <div class="description-section">
-          Our&nbsp;Team is working on&nbsp;MyWish Platform - the leading Platform
-          for&nbsp;Smart&nbsp;Contract generation supported by TRON, EOS Community, NEO.
-        </div>
-        <div class="used-service__info">
-          <div class="used-service__info_item">
-            <div class="used-service__info_item__image">
-              <img src="./assets/images/used-service/users.png">
-            </div>
-            <div class="used-service__info_item__text">
-              <span class="count">{{stat?.users}}</span>
-              <span class="desc">Users</span>
-              <!--<span class="range">+7</span>-->
-            </div>
-          </div>
-          <div class="used-service__info_item">
-            <div class="used-service__info_item__image">
-              <img src="./assets/images/used-service/contracts.png">
-            </div>
-            <div class="used-service__info_item__text">
-              <span class="count">{{stat?.contracts}}</span>
-              <span class="desc">Contracts</span>
-              <!--<span class="range">+7</span>-->
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-content-block">
+    <div class="app-content-block">
+      <div class="app-index__our-clients section-content-block">
+        <div class="title-section">Partners</div>
         <div class="app-index__partners">
           <div class="grid-row">
-            <div *ngFor="let project of projects" class="grid-cell grid-cell-1-8 grid-cell-sm-1-5 grid-cell-s-1-4 grid-cell-ps-1-3 grid-cell-ls-1-2">
+            <div *ngFor="let project of projects" class="grid-cell grid-cell-1-6 grid-cell-sm-1-5 grid-cell-s-1-4 grid-cell-ps-1-3 grid-cell-ls-1-2">
               <div class="app-index__partners_item">
                 <a href="{{project.link}}" target="_blank">
                   <img [src]="project.logo">
@@ -260,10 +257,4 @@
       </ul>
     </div>
   </div -->
-  <div class="app-index__footer-form"></div>
 </div>
-
-
-
-
-<app-footer></app-footer>

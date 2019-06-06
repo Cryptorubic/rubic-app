@@ -29,42 +29,51 @@ export class SocialComponent implements OnInit {
 
   private socialFormData: {
     network: string;
-    data: {
-      totp: string;
-      access_token: string;
-    }
+    data: any
   };
 
   public reset2FACode() {
     this.socialAuthError = '1032';
   }
 
+  private onTotpError(error) {
+
+    switch (error.status) {
+      case 403:
+        this.socialAuthError = error.error.detail;
+        switch (error.error.detail) {
+          case '1032':
+          case '1033':
+            this.changedSocialState.emit(error.error.detail);
+            break;
+        }
+        break;
+    }
+  }
+
   public RequestSocialAuth() {
+
     this.change2FAProgress = true;
+
     this.userService.socialAuthRequest(
       this.socialFormData.network,
       this.socialFormData.data
     ).then((response) => {
 
     }, (error) => {
-      switch (error.status) {
-        case 403:
-          this.socialAuthError = error.error.detail;
-          switch (error.error.detail) {
-            case '1032':
-            case '1033':
-              this.changedSocialState.emit(error.error.detail);
-              break;
-          }
-          break;
-      }
+      this.onTotpError(error);
     }).finally(() => {
       this.change2FAProgress = false;
     });
   }
 
+
   public continueSocialAuth(totp) {
     this.socialFormData.data.totp = totp;
+    if (this.socialFormData.network === 'mm') {
+      this.sendMetaMaskRequest(this.socialFormData.data);
+      return;
+    }
     this.RequestSocialAuth();
   }
 
@@ -84,18 +93,28 @@ export class SocialComponent implements OnInit {
   }
 
 
+  private sendMetaMaskRequest(data) {
+    this.socialFormData = {
+      network: 'mm',
+      data
+    };
+    this.userService.metaMaskAuth(data).then((result) => {
+      console.log(result);
+    }, (error) => {
+      this.onTotpError(error);
+    });
+  }
+
   public MetamaskAuth() {
     if (window['ethereum'] && window['ethereum'].isMetaMask) {
       window['ethereum'].enable().then((accounts) => {
         const address = accounts[0];
         this.userService.getMetaMaskAuthMsg().then((msg) => {
           this.web3Service.getSignedMetaMaskMsg(msg, address).then((signed) => {
-            this.userService.metaMaskAuth({
+            this.sendMetaMaskRequest({
               address,
               msg,
               signed_msg: signed
-            }).then((result) => {
-              console.log(result);
             });
           });
         });

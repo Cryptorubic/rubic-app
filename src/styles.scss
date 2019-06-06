@@ -30,6 +30,8 @@ body {
   padding: 0;
   font-family: 'Sofia Pro', Arial, sans-serif;
   min-width: 320px;
+  background: url('/assets/images/backgrounds/bg-gradient.png');
+  background-size: cover;
 }
 
 html {
@@ -74,8 +76,11 @@ a:not(.btn):not(.minimal-btn) {
   margin-left: 207px;
   .btn {
     width: 285px;
+    height: 64px;
     text-align: left;
-    padding-left: 50px;
+    padding-left: 15px;
+    justify-content: flex-start;
+    box-sizing: border-box;
   }
 }
 #livechat-compact-container {
@@ -149,8 +154,8 @@ a:not(.btn):not(.minimal-btn) {
 
 .base-block-content {
   padding-top: 200px;
-  background: transparent url('/assets/images/backgrounds/bg-index-top.png') no-repeat center top;
-  background-size: 100%;
+  // background: transparent url('/assets/images/backgrounds/bg-gradient.png') no-repeat center top;
+  // background-size: 100%;
   min-height: 100vh;
   padding-bottom: 60px;
   box-sizing: border-box;
@@ -233,22 +238,21 @@ a:not(.btn):not(.minimal-btn) {
 }
 
 .btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 55px;
+  padding: 0;
+  border: none;
+  border-left: 5px solid;
+  outline: none;
   font-family: inherit;
   font-size: 18px;
-  color: #FFFFFF;
-  line-height: 27px;
-  padding: 17px 42px 17px 37px;
-  border: 0 none;
-  border-left: 5px solid;
-  position: relative;
-  cursor: pointer;
-  transition: all linear 0.1s;
+  color: #fff;
   text-decoration: none;
-  display: inline-block;
-  box-sizing: border-box;
-  text-align: center;
-  outline: none;
-  white-space: nowrap;
+  transition: all linear 0.1s;
+  cursor: pointer;
   &:not(&-normal-weight) {
     font-weight: bold;
   }
@@ -257,37 +261,19 @@ a:not(.btn):not(.minimal-btn) {
     cursor: default;
   }
   .arrow {
-    height: 14px;
-    + span {
-      display: inline-block;
-      vertical-align: middle;
-    }
+    margin: 0 10px -2px 0;
   }
-  &:not(.width-100) {
-    .arrow {
-      position: absolute;
-      top: 50%;
-      left: 18px;
-      margin-top: -8px;
-    }
-    .btn-icon {
-      position: absolute;
-      left: 15px;
-      height: 24px;
-      top: 50%;
-      margin-top: -12px;
-    }
+  &_small {
+    width: 250px;
+  }
+  &_subscribe {
+    width: 200px;
+    height: 50px;
   }
   &-min-padding {
     padding-left: 0;
     padding-right: 0;
   }
-  &.width-100 .arrow {
-    vertical-align: middle;
-    margin-top: -3px;
-    margin-right: 12px;
-  }
-
   &-min {
     font-size: 16px;
     line-height: 20px;
@@ -302,10 +288,11 @@ a:not(.btn):not(.minimal-btn) {
       padding-right: 25px;
     }
     &.wallet-btn {
+      box-sizing: border-box;
+      height: 55px;
       padding-left: 15px;
     }
   }
-
   &-for-field {
     margin: 3px 0;
   }
