@@ -92,13 +92,13 @@ export class TeamComponent implements OnInit {
         linkedInUrl: 'https://www.linkedin.com/in/maksim-strenk-a93877177',
         gitHubUrl: 'https://github.com/ephdtrg '
       },
-      {
-        name: 'Daniil Dubrava',
-        position: 'Frontend Developer',
-        biography: `JS, TS, Angular, Vue.js. Programming experience over 1 year.`,
-        avatarPath: '',
-        gitHubUrl: 'https://github.com/ddubrava '
-      },
+      // {
+      //   name: 'Daniil Dubrava',
+      //   position: 'Frontend Developer',
+      //   biography: `JS, TS, Angular, Vue.js. Programming experience over 1 year.`,
+      //   avatarPath: '',
+      //   gitHubUrl: 'https://github.com/ddubrava '
+      // },
       {
         name: 'Alexander Boyarshenchok',
         position: 'Designer',
