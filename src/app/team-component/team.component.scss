@@ -26,7 +26,6 @@
   &__avatar {
     width: 150px;
     height: 150px;
-    // height: auto;
     margin-bottom: 15px;
   }
   &__person-info {
@@ -48,12 +47,12 @@
     color: #fff;
     transition: max-height .5s;
   }
-  &__socials {
-    display: flex;
-  }
   &__social-icon {
     width: 15px;
     margin-right: 10px;
+    &_github {
+      margin-bottom: -1px;
+    }
   }
 }
 
