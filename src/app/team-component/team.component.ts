@@ -182,7 +182,7 @@ export class TeamComponent implements OnInit {
       },
       {
         name: 'Marco Poliquin',
-        position: 'Blockchain Futurist based in Tokyo',
+        position: 'Blockchain Futurist',
         biography: `15 years of Web Development UI/UX, Machine Learning.
         First became interested in cryptocurrency in ​2013​. True believer
         in decentralization and trustless protocols to empower individual
