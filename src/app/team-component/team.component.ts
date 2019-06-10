@@ -49,7 +49,7 @@ export class TeamComponent implements OnInit {
         biography: `Crypto junkies, having passion to connect people
         and businesses with more than 10 years leading in IT.
         Former Software Development Director in EPAM (3 years)`,
-        avatarPath: '../../assets/images/team/person-2.png',
+        avatarPath: '../../assets/images/team/person-17.png',
         linkedInUrl: 'https://www.linkedin.com/in/veronika-trunina-6b567027/'
       },
       {
@@ -76,7 +76,7 @@ export class TeamComponent implements OnInit {
         name: 'Nikolay Toporkov',
         position: 'Solidity developer',
         biography: `A young and perspective developer with 2 years of experience.
-        He participates actively in the development of the MyWIsh Crowdsale contracts and the Joule system.
+        He participates actively in the development of the MyWish Crowdsale contracts and the Joule system.
         Languages: Solidity, JavaScript, Java. C++`,
         avatarPath: '../../assets/images/team/person-14.png',
         linkedInUrl: 'https://www.linkedin.com/in/nikolay-toporkov-a1119415a/',
@@ -92,13 +92,14 @@ export class TeamComponent implements OnInit {
         linkedInUrl: 'https://www.linkedin.com/in/maksim-strenk-a93877177',
         gitHubUrl: 'https://github.com/ephdtrg '
       },
-      // {
-      //   name: 'Daniil Dubrava',
-      //   position: 'Frontend Developer',
-      //   biography: `JS, TS, Angular, Vue.js. Programming experience over 1 year.`,
-      //   avatarPath: '',
-      //   gitHubUrl: 'https://github.com/ddubrava '
-      // },
+      {
+        name: 'Daniil Dubrava',
+        position: 'Frontend Developer',
+        biography: `JS, TS, Angular, Vue.js. Programming experience over 2 years.
+        Frontend for MyWish, Rock’n’Block, Swaps.Network`,
+        avatarPath: '../../assets/images/team/person-18.jpg',
+        gitHubUrl: 'https://github.com/ddubrava '
+      },
       {
         name: 'Alexander Boyarshenchok',
         position: 'Designer',
@@ -139,7 +140,7 @@ export class TeamComponent implements OnInit {
       },
       {
         name: 'Peter Lin',
-        position: 'Blockchain Entrepreneur',
+        position: 'Former Director of R&D NEO',
         biography: `Former Director of R&D, NEO Global Development (NGD),
         one of the early NEO developers.
         He has 8 years of experience in internet technology development and 6
@@ -164,7 +165,7 @@ export class TeamComponent implements OnInit {
       },
       {
         name: 'Hugo Hellebuyck',
-        position: 'VP Sales at Tangem',
+        position: 'Partner VP sales at Tangem',
         biography: `Graduate of the Webster University 2008 Chief Investment Officer for a Singaporean VC.
         The founder of the investment company LILY S.E.A.
         Consultant for renewable energy projects in
