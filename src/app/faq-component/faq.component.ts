@@ -25,7 +25,7 @@ export class FaqComponent implements OnInit {
         isActive: false
       },
       {
-        title: 'Who can use our service/create a deal?',
+        title: 'Who can use our service?',
         text: `Anyone who has a cryptocurrency and would like to exchange it. KYC is not needed.`,
         isActive: false
       },
