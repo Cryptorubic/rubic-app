@@ -20,6 +20,13 @@
       color: #E0E0E0;
     }
   }
+  &__message {
+    &_success {
+      display: block;
+      margin-bottom: 30px;
+      color: #E0E0E0;
+    }
+  }
 }
 
 @media (max-width: 576px) {
