@@ -3,6 +3,14 @@
   padding: 130px 15px 0 15px;
 }
 
+.about-us-container {
+  padding-bottom: 50px;
+  &__text {
+    color: #fff;
+    font-size: 20px;
+  }
+}
+
 .people-container {
   display: flex;
   justify-content: flex-start;
