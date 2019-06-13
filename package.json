@@ -1,6 +1,6 @@
 {
   "name": "mywish-swaps",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "scripts": {
     "start": "ng serve --proxy-config proxy.conf.json --host local.devswaps.mywish.io --port 4200 --disableHostCheck",
     "ng": "ng",
