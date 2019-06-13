@@ -33,6 +33,9 @@
       a {
         color: #FCD600;
       }
+      br {
+        display: none;
+      }
     }
     &_button {
       .btn {
@@ -76,6 +79,9 @@
     &_content_text {
       font-size: 10px;
       margin-right: 5px;
+      br {
+        display: block;
+      }
     }
   }
 }

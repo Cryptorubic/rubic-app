@@ -81,6 +81,9 @@ a:not(.btn):not(.minimal-btn) {
     padding-left: 15px;
     justify-content: flex-start;
     box-sizing: border-box;
+    &-icon {
+      margin-right: 10px;
+    }
   }
 }
 #livechat-compact-container {
@@ -182,7 +185,7 @@ a:not(.btn):not(.minimal-btn) {
   float: left;
 }
 .width-100 {
-  width: 100%;
+  width: 100% !important;
 }
 
 .text-center {
@@ -241,9 +244,9 @@ a:not(.btn):not(.minimal-btn) {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 96%;
   height: 55px;
-  padding: 0;
+  padding: 0 15px;
   border: none;
   border-left: 5px solid;
   outline: none;
@@ -252,6 +255,7 @@ a:not(.btn):not(.minimal-btn) {
   color: #fff;
   text-decoration: none;
   transition: all linear 0.1s;
+  box-sizing: border-box;
   cursor: pointer;
   &:not(&-normal-weight) {
     font-weight: bold;
@@ -261,7 +265,7 @@ a:not(.btn):not(.minimal-btn) {
     cursor: default;
   }
   .arrow {
-    margin: 0 10px -2px 0;
+    margin-right: 10px;
   }
   &_small {
     width: 250px;
@@ -276,25 +280,10 @@ a:not(.btn):not(.minimal-btn) {
   }
   &-min {
     font-size: 16px;
-    line-height: 20px;
-    padding: 12px 15px 10px 6px;
-    &:not(.width-100) {
-      padding-left: 25px;
-      .arrow {
-        margin-left: -14px;
-      }
-    }
-    &.right-padding {
-      padding-right: 25px;
-    }
-    &.wallet-btn {
-      box-sizing: border-box;
-      height: 55px;
-      padding-left: 15px;
-    }
   }
   &-for-field {
-    margin: 3px 0;
+    height: 40px;
+    margin: 5px 0;
   }
   &-transparent {
     background-color: transparent;
@@ -308,7 +297,6 @@ a:not(.btn):not(.minimal-btn) {
       margin: -1px 0;
     }
   }
-
   &-white-opacity {
     border-color: #fcd600;
     background-color: rgba(255, 255, 255, 0.1);
@@ -335,14 +323,9 @@ a:not(.btn):not(.minimal-btn) {
     color: #fff;
     border-radius: 2px;
     border-width: 0;
-    position: relative;
-    overflow: hidden;
     font-weight: normal;
     font-size: 16px;
-    padding: 11px 15px;
-    line-height: 26px;
-    white-space: nowrap;
-    vertical-align: top;
+    padding: 0 15px;
     margin-bottom: 7px;
     &:hover {
       background-color: rgba(0, 0, 0, 0.4);
@@ -362,6 +345,10 @@ a:not(.btn):not(.minimal-btn) {
     vertical-align: middle;
     margin-left: 5px;
   }
+}
+
+.wallet-btn {
+  height: 50px;
 }
 
 .checkbox-block {

@@ -1,8 +1,17 @@
 <div class="team-container">
   <!-- team block -->
   <div class="app-content-block">
-    <h2 class="title-section">Team</h2>
 
+    <h2 class="title-section">About us</h2>
+    <div class="about-us-container">
+      <p class="about-us-container__text">
+        We have a successful experience in launching projects based on blockchain technology.
+        Our team released the MyWish platform — the leading platform for Smart contracts
+        generation supported by TRON, EOS Community, NEO, Waves and Binance. More than 6 000 contracts created since 2017.
+      </p>
+    </div>
+
+    <h2 class="title-section">Team</h2>
     <div class="people-container">
       <div *ngFor="let person of team" class="people-container__person">
         <img class="people-container__avatar" [src]="person.avatarPath" alt="">

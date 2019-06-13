@@ -15,7 +15,7 @@
       display: none;
     }
     img {
-      max-width: 100%;
+      width: 100%;
       vertical-align: top;
     }
   }
@@ -178,10 +178,10 @@
 
 @media screen and (min-width: 1021px) {
   .app-index__partners {
-    > .grid-row .grid-cell:nth-child(8n + 1) .app-index__partners_item {
+    > .grid-row .grid-cell:nth-child(6n + 1) .app-index__partners_item {
       text-align: left;
     }
-    > .grid-row .grid-cell:nth-child(8n) .app-index__partners_item {
+    > .grid-row .grid-cell:nth-child(6n) .app-index__partners_item {
       text-align: right;
     }
   }

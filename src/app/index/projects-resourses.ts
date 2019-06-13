@@ -22,6 +22,10 @@ const PROJECTS = [
   {
     link: 'https://deex.exchange/',
     logo: '../../assets/images/partners/deex.svg'
+  },
+  {
+    link: 'https://www.bw.com/',
+    logo: '../../assets/images/partners/bwcom.png'
   }
 ];
 

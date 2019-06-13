@@ -189,7 +189,7 @@
               </div>
 
 
-              <button class="btn btn-yellow"
+              <button class="btn btn_small btn-yellow"
                       [disabled]="!tokensForm.valid || (tokens.base.token.address === tokens.quote.token.address)"
                       type="button"
                       (click)="openedForm = 1;">
@@ -311,7 +311,7 @@
                 </div>
               </div>
 
-              <button class="btn btn-yellow" [disabled]="!extraForm.valid || formIsSending" type="submit">
+              <button class="btn btn_small btn-yellow" [disabled]="!extraForm.valid || formIsSending" type="submit">
                 <span class="lds-ellipsis" *ngIf="formIsSending">
                   <span class="lds-ellipsis-container">
                     <span></span><span></span><span></span><span></span>
@@ -420,7 +420,7 @@
                 </div>
               </div>
 
-              <button class="btn btn-yellow" [disabled]="!advancedForm.valid" type="submit">
+              <button class="btn btn_small btn-yellow" [disabled]="!advancedForm.valid" type="submit">
                 <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                 <span>
                   Next step
@@ -555,7 +555,7 @@
                     </div>
                   </div>
 
-                  <button class="btn btn-yellow" [disabled]="!brokersForm.valid || formIsSending" type="submit">
+                  <button class="btn btn_small btn-yellow" [disabled]="!brokersForm.valid || formIsSending" type="submit">
                 <span class="lds-ellipsis" *ngIf="formIsSending">
                   <span class="lds-ellipsis-container">
                     <span></span><span></span><span></span><span></span>
