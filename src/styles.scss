@@ -23,6 +23,20 @@
   font-weight: 700;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Poppins';
+  src: local('Poppins-Regular'),
+  url('./assets/fonts/Poppins-Regular.ttf') format('ttf');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Poppins';
+  src: local('Poppins-Bold'),
+  url('./assets/fonts/Poppins-Bold.ttf') format('ttf');
+  font-weight: 700;
+  font-style: normal;
+}
 
 
 body {
@@ -250,7 +264,7 @@ a:not(.btn):not(.minimal-btn) {
   border: none;
   border-left: 5px solid;
   outline: none;
-  font-family: inherit;
+  font-family: 'Poppins', sans-serif;
   font-size: 18px;
   color: #fff;
   text-decoration: none;
