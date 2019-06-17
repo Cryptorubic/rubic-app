@@ -187,6 +187,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   }
 
   public gotToForm(formNumber) {
+    console.log(formNumber)
     if (this.openedForm === formNumber) {
       return;
     }
