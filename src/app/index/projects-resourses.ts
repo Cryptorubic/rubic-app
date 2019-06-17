@@ -16,10 +16,6 @@ const PROJECTS = [
     logo: '../../assets/images/partners/mywish.svg'
   },
   {
-    link: 'http://hapax.tech',
-    logo: '../../assets/images/partners/hapax.svg'
-  },
-  {
     link: 'https://deex.exchange/',
     logo: '../../assets/images/partners/deex.svg'
   },
