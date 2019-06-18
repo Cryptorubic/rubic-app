@@ -58,6 +58,7 @@
 
           <form class="form-block"
                 #tokensForm="ngForm"
+                (submit)="gotToForm(1)"
                 [ngClass]="{
                     hidden: openedForm !== 0,
                     checked: (tokensForm.valid) && (openedForm > 0),
@@ -191,8 +192,7 @@
 
               <button class="btn btn_small btn-yellow"
                       [disabled]="!tokensForm.valid || (tokens.base.token.address === tokens.quote.token.address)"
-                      type="button"
-                      (click)="openedForm = 1;">
+                      type="submit">
                 <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                 <span>
                   Next step
