@@ -319,6 +319,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   transition: all linear 0.1s;
   box-sizing: border-box;
   cursor: pointer;
+  position: relative;
   &:not(&-normal-weight) {
     font-weight: bold;
   }
@@ -342,6 +343,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   }
   &-min {
     font-size: 16px;
+    height: 42px;
   }
   &-for-field {
     height: 40px;

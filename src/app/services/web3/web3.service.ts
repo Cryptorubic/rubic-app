@@ -144,8 +144,9 @@ export class Web3Service {
         if (!result.length) {
           this.getTokenInfo(tokenAddress).then((tokenInfo: {data: TokenInfoInterface}) => {
             const convertedToken = this.convertTokenInfo(tokenInfo.data);
-
             resolve(convertedToken);
+          }, (err) => {
+            reject(err);
           });
         } else {
           resolve(result[0]);

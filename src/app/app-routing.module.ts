@@ -10,6 +10,8 @@ import { TeamComponent } from './team-component/team.component';
 import { RoadmapComponent } from './roadmap-component/roadmap.component';
 import { FaqComponent } from './faq-component/faq.component';
 import { ContactsComponent } from './contacts-component/contacts.component';
+import {ContractEditV3Resolver, ContractFormAllComponent} from './contract-form-all/contract-form-all.component';
+import {ContractsPreviewV3Component} from './contracts-preview-v3/contracts-preview-v3.component';
 import {IndexIcoComponent} from './index-ico/index-ico.component';
 
 
@@ -63,6 +65,12 @@ const routes: Routes = [
       support: true
     }
   }, {
+    path: 'create-swaps',
+    component: ContractFormAllComponent,
+    data: {
+      support: true
+    }
+  }, {
     path: 'view/:id',
     component: ContractFormComponent,
     resolve: {
@@ -76,6 +84,15 @@ const routes: Routes = [
     component: ContractFormTwoComponent,
     resolve: {
       contract: ContractEditResolver
+    },
+    data: {
+      support: true
+    }
+  }, {
+    path: 'view-v3/:id',
+    component: ContractFormAllComponent,
+    resolve: {
+      contract: ContractEditV3Resolver
     },
     data: {
       support: true
@@ -96,6 +113,17 @@ const routes: Routes = [
     component: ContractPreviewTwoComponent,
     resolve: {
       contract: ContractEditResolver
+    },
+    data: {
+      supportHide: 1024,
+      support: true,
+      hideInstruction: true
+    }
+  }, {
+    path: 'contract-v3/:id',
+    component: ContractsPreviewV3Component,
+    resolve: {
+      contract: ContractEditV3Resolver
     },
     data: {
       supportHide: 1024,

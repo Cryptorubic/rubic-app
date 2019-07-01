@@ -136,6 +136,7 @@ export class ContractFormTwoComponent extends ContractFormComponent {
       details.broker_fee ? (new BigNumber(details.broker_fee_quote).times(100)).toString(10) : '0'
     ];
 
+    console.log(this.trxRequest);
     const methodSignature = this.web3Service.encodeFunctionCall(interfaceMethod, this.trxRequest);
 
     this.transaction = {

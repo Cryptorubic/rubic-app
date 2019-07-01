@@ -45,6 +45,10 @@ import { FaqComponent } from './faq-component/faq.component';
 import {MinMaxDirective} from './directives/minMax/min-max.directive';
 import { CookieService } from 'ngx-cookie-service';
 import { ContactsComponent } from './contacts-component/contacts.component';
+import { TokensAllInputComponent } from './directives/tokens-all-input/tokens-all-input.component';
+import {HttpService} from './services/http/http.service';
+import {ContractEditV3Resolver, ContractFormAllComponent} from './contract-form-all/contract-form-all.component';
+import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
 import { IndexIcoComponent } from './index-ico/index-ico.component';
 import { IndexIcoHeaderComponent } from './index-ico/index-ico-header/index-ico-header.component';
 import { IndexIcoFormComponent } from './index-ico/index-ico-form/index-ico-form.component';
@@ -52,9 +56,6 @@ import {OwlModule} from 'ngx-owl-carousel';
 import {Observable} from 'rxjs';
 import {TransferHttpCacheModule} from '@nguniversal/common';
 
-export function HttpLoaderFactory(httpClient: HttpClient) {
-  return new TranslateHttpLoader(httpClient);
-}
 
 export class TranslateBrowserLoader implements TranslateLoader {
 
@@ -89,7 +90,7 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
 
 
 
-export function appInitializerFactory(translate: TranslateService, userService: UserService) {
+export function appInitializerFactory(translate: TranslateService, userService: UserService, httpService: HttpService) {
 
   const langToSet = window['jQuery']['cookie']('lng') || 'ru';
 
@@ -99,10 +100,25 @@ export function appInitializerFactory(translate: TranslateService, userService: 
 
     translate.use(langToSet).subscribe(() => {
       const subscriber = userService.getCurrentUser(true).subscribe((user: UserInterface) => {
-        resolve(null);
+
+        httpService.get('get_coinmarketcap_tokens/').toPromise().then((tokens) => {
+          tokens.forEach((token) => {
+            token.platform = (token.platform !== 'False') ? token.platform : false;
+            if (!token.platform && (token.token_short_name === 'ETH') && (token.token_name === 'Ethereum')) {
+              token.platform = 'ethereum';
+              token.isEther = true;
+            }
+            token.platform = token.platform || token.token_name.toLowerCase();
+            token.isEthereum = token.platform === 'ethereum';
+            token.decimals = 0;
+          });
+          window['cmc_tokens'] = tokens;
+        });
+
         subscriber.unsubscribe();
       });
     });
+
   });
 }
 
@@ -145,6 +161,9 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     RoadmapComponent,
     FaqComponent,
     ContactsComponent,
+    TokensAllInputComponent,
+    ContractFormAllComponent,
+    ContractsPreviewV3Component,
     IndexIcoComponent,
     IndexIcoHeaderComponent,
     IndexIcoFormComponent
@@ -189,11 +208,12 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     CookieService,
     ContractEditResolver,
     ContractsListResolver,
+    ContractEditV3Resolver,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
       deps: [
-        TranslateService, UserService
+        TranslateService, UserService, HttpService
       ],
       multi: true
     }

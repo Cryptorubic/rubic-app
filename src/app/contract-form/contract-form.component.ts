@@ -187,7 +187,6 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   }
 
   public gotToForm(formNumber) {
-    console.log(formNumber)
     if (this.openedForm === formNumber) {
       return;
     }
@@ -327,7 +326,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   private contractIsError(error) {
   }
 
-  private sendContractData(data) {
+  protected sendContractData(data) {
     if (this.formIsSending) {
       return;
     }

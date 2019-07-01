@@ -14,6 +14,20 @@ export class ContractsService {
     return this.httpService.post('contracts/', data).toPromise();
   }
 
+  public createSWAP3(data) {
+    return this.httpService.post('create_swap3/', data).toPromise();
+  }
+
+  public updateSWAP3(data) {
+    return this.httpService.post(`edit_swap3/${data.id}/`, data).toPromise();
+  }
+
+  public getContractV3Information(id) {
+    return this.httpService.get(`get_swap3/`, {
+      swap_id: id
+    }).toPromise();
+  }
+
   public updateContract(data) {
     return this.httpService.patch(`contracts/${data.id}/`, data).toPromise();
   }
