@@ -63,14 +63,30 @@ export class TeamComponent implements OnInit {
         gitHubUrl: 'https://github.com/dimanok87'
       },
       {
-        name: 'Nina Lukina',
-        position: 'Senior Backend Developer',
-        biography: `Programming experience 3.5 years.
-        Languages: Python, Django, TensorFlow, SQL/NoSQL, redis, celery, asyncio, unittest, DRF
-        Backend for Ethereum, EOS, RSK, NEO, WAVES, TRON include all testnets`,
+        name: 'Max Strenk',
+        position: 'Backend Developer',
+        biography: `Languages - Python, Solidity, JavaScript. Programming experience over
+        five years Experience with blockchains 2 years Prior to the
+        blockchain, was engaged in infrastructure and administration of Linux`,
         avatarPath: '../../assets/images/team/person-3.png',
-        linkedInUrl: 'https://www.linkedin.com/in/rue-karriva-7b6713177/',
-        gitHubUrl: 'https://github.com/karriva'
+        linkedInUrl: 'https://www.linkedin.com/in/maksim-strenk-a93877177',
+        gitHubUrl: 'https://github.com/ephdtrg '
+      },
+      {
+        name: 'Mikhail Rozdin',
+        position: 'Java Backend Developer',
+        biography: `Programming experiance more than 2 years.
+        Languages: Java, PostgreSQL, maven, JUnit, git, TravicCi, JaCoCo`,
+        avatarPath: '../../assets/images/team/person-5.jpg',
+        gitHubUrl: 'https://github.com/mishan74'
+      },
+      {
+        name: 'Evgeny Gazetdinov',
+        position: 'Python Backend Developer',
+        biography: `Programming experience  more than 3 years.
+        Languages: Python, C, Django/Flask, OOP practices.`,
+        avatarPath: '../../assets/images/team/person-19.jpg',
+        gitHubUrl: 'https://github.com/evgeshakrasava'
       },
       {
         name: 'Nikolay Toporkov',
@@ -81,16 +97,6 @@ export class TeamComponent implements OnInit {
         avatarPath: '../../assets/images/team/person-14.png',
         linkedInUrl: 'https://www.linkedin.com/in/nikolay-toporkov-a1119415a/',
         gitHubUrl: 'https://github.com/kolya-t'
-      },
-      {
-        name: 'Max Strenk',
-        position: 'Backend Developer',
-        biography: `Languages - Python, Solidity, JavaScript. Programming experience over
-        five years Experience with blockchains 2 years Prior to the
-        blockchain, was engaged in infrastructure and administration of Linux`,
-        avatarPath: '../../assets/images/team/person-5.png',
-        linkedInUrl: 'https://www.linkedin.com/in/maksim-strenk-a93877177',
-        gitHubUrl: 'https://github.com/ephdtrg '
       },
       {
         name: 'Daniil Dubrava',
@@ -105,7 +111,7 @@ export class TeamComponent implements OnInit {
         position: 'Designer',
         biography: `Web, UI/UX and Identity designer with over 10 years
         of work experience. I specialize on User Interface web and Mobile Applications (IOS | Android).`,
-        avatarPath: '../../assets/images/team/person-6.png',
+        avatarPath: '../../assets/images/team/person-6.jpg',
       },
       {
         name: 'Olga Kulakova',
