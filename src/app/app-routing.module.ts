@@ -15,7 +15,10 @@ import {IndexIcoComponent} from './index-ico/index-ico.component';
 const routes: Routes = [
   {
     path: '',
-    component: IndexIcoComponent
+    component: IndexIcoComponent,
+    data: {
+      noheader: true
+    }
   }, {
     path: 'create',
     component: ContractFormComponent,
