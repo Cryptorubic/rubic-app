@@ -119,7 +119,9 @@ export const TEAM_SOURCE = [
     avatarPath: 'person-3.png',
     linkedInUrl: 'https://www.linkedin.com/in/maksim-strenk-a93877177',
     githubUrl: 'https://github.com/ephdtrg'
-  }, {
+  }
+
+  /* , {
     name: 'Mikhail Rozdin',
     biography: `Programming experiance more than 2 years.
 		Languages: Java, PostgreSQL, maven, JUnit, git, TravicCi, JaCoCo`,
@@ -180,5 +182,5 @@ export const TEAM_SOURCE = [
     avatarPath: 'person-12.png',
     linkedInUrl: '',
     githubUrl: ''
-  }
+  } */
 ];

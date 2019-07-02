@@ -564,7 +564,9 @@
         border-radius: 4px;
       }
       &__green {
-        background-color: #009000;
+        span {
+          background: #009000;
+        }
       }
     }
     &_digit {
