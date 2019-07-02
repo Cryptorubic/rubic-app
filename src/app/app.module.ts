@@ -45,6 +45,8 @@ import { FaqComponent } from './faq-component/faq.component';
 import {MinMaxDirective} from './directives/minMax/min-max.directive';
 import { CookieService } from 'ngx-cookie-service';
 import { ContactsComponent } from './contacts-component/contacts.component';
+import { IndexIcoComponent } from './index-ico/index-ico.component';
+import { IndexIcoHeaderComponent } from './index-ico/index-ico-header/index-ico-header.component';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -102,7 +104,9 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     TeamComponent,
     RoadmapComponent,
     FaqComponent,
-    ContactsComponent
+    ContactsComponent,
+    IndexIcoComponent,
+    IndexIcoHeaderComponent
   ],
   entryComponents: [
     AuthComponent,

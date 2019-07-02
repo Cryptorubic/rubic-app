@@ -10,11 +10,12 @@ import { TeamComponent } from './team-component/team.component';
 import { RoadmapComponent } from './roadmap-component/roadmap.component';
 import { FaqComponent } from './faq-component/faq.component';
 import { ContactsComponent } from './contacts-component/contacts.component';
+import {IndexIcoComponent} from './index-ico/index-ico.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: IndexComponent
+    component: IndexIcoComponent
   }, {
     path: 'create',
     component: ContractFormComponent,

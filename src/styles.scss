@@ -6,6 +6,38 @@
 
 /* You can add global styles to this file, and also import other style files */
 @font-face {
+  font-family: 'TT Norms';
+  src: url('./assets/fonts/ttnorms-bold-webfont.woff2') format('woff2'),
+  url('./assets/fonts/ttnorms-bold-webfont.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TT Norms';
+  src: url('./assets/fonts/ttnorms-regular-webfont.woff2') format('woff2'),
+  url('./assets/fonts/ttnorms-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT Norms';
+  src: url('./assets/fonts/ttnorms-light-webfont.woff2') format('woff2'),
+  url('./assets/fonts/ttnorms-light-webfont.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT Norms';
+  src: url('./assets/fonts/ttnorms-black-webfont.woff2') format('woff2'),
+  url('./assets/fonts/ttnorms-black-webfont.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
+
+
+@font-face {
   font-family: 'Sofia Pro';
   src: local('Sofia Pro Regular'), local('Sofia-Pro-Bold'),
   url('./assets/fonts/SofiaProRegular.woff2') format('woff2'),
@@ -62,7 +94,7 @@ html {
   padding-right: 1vw;
 }
 
-a:not(.btn):not(.minimal-btn) {
+a:not(.new-btn):not(.btn):not(.minimal-btn) {
   color: #61B9DF;
   text-decoration: none;
   &:hover, &:focus {
@@ -719,7 +751,26 @@ a:not(.btn):not(.minimal-btn) {
   }
 }
 
-
+.new-btn {
+  display: inline-block;
+  padding: 0 40px;
+  &, &:hover, &:focus {
+    text-decoration: none;
+  }
+  span {
+    display: block;
+    white-space: nowrap;
+  }
+  &-yellow {
+    background: #F3D663;
+    color: #3B4452;
+    box-shadow: 0 15px 19px rgba(0, 0, 0, 0.09);
+    &:hover, &:focus {
+      background: #ffe268;
+      color: #2a313b;
+    }
+  }
+}
 .minimal-btn {
   border: 1px solid #979797;
   color: #EEEEEE;
