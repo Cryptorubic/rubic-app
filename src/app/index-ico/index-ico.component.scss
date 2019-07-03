@@ -743,7 +743,8 @@
 .section-10 {
   background: #F6F9FD;
   .app-content-block {
-    padding: 104px 0;
+    padding-top: 104px;
+    padding-bottom: 104px;
     background: url('/assets/images/new-index/backgrounds/hand.png') right bottom no-repeat;
     background-size: auto 96%;
   }
@@ -1265,7 +1266,9 @@
 .section-18 {
   background-color: #fff;
   .app-content-block {
-    padding: 95px 0;
+    padding-top: 95px;
+    padding-bottom: 95px;
+
     background: url(/assets/images/new-index/backgrounds/token-data.svg) right 20px no-repeat;
   }
   color: #3B4452;
@@ -1364,6 +1367,85 @@
       font-weight: 300;
     }
   }
+}
+
+
+
+.section-footer {
+  background-color: #F6F9FD;
+  padding: 70px 0;
+  color: #3B4352;
+  font-family: 'TT Norms';
+  .information {
+    display: flex;
+    &_block {
+      &__logotype {
+        width: 23%;
+        img {
+          margin-top: 14px;
+          width: 90%;
+          display: block;
+        }
+      }
+      &__text {
+        p {
+          margin: 0;
+          width: 94%;
+          font-size: 15px;
+          line-height: 17px;
+        }
+      }
+    }
+  }
+  .section-1_menu_links {
+    background-color: transparent;
+    padding: 0;
+    margin-top: 20px;
+    margin-left: 0;
+    color: inherit;
+  }
+
+  .contacts {
+    margin-top: 48px;
+    display: flex;
+    &-section {
+      &__social {
+        width: 48%;
+        margin-right: 7%;
+      }
+      &__links {
+        width: 25%;
+      }
+      &_title {
+        font-size: 17px;
+        line-height: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+      &_links {
+        color: #565F6D;
+        a {
+          color: inherit;
+          font-weight: bold;
+        }
+        &_link {
+          font-size: 15px;
+          line-height: 17px;
+        }
+      }
+      &_social-links {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 21px;
+        align-items: flex-end;
+        img {
+          min-width: 28px;
+        }
+      }
+    }
+  }
+
 }
 
 
