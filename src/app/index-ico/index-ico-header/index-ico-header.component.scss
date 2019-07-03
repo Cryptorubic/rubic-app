@@ -151,20 +151,7 @@ header {
   .logo {
     margin-left: 10px;
   }
-  header {
-    padding-top: 0!important;
-    padding-bottom: 0!important;
-    .app-content-block {
-      padding-top: 3vw;
-      padding-bottom: 3vw;
-      position: relative;
-      &:after {
-        content: '';
-        display: block;
-        clear: both;
-      }
-    }
-  }
+
   .header-menu {
     display: none;
     background: rgba(56, 67, 84, 0.9);
