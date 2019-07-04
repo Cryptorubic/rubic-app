@@ -149,7 +149,9 @@ header {
 
 @media screen and (max-width: 800px) {
   .logo {
-    margin-left: 10px;
+    img {
+      width: 207px;
+    }
   }
 
   .header-menu {
@@ -180,6 +182,11 @@ header {
             background-color: rgba(0, 0, 0, 0.4);
           }
         }
+      }
+      .header-btn {
+        margin-left: 15px;
+        margin-bottom: 9px;
+        margin-top: 9px;
       }
     }
     &.opened {
