@@ -27,9 +27,10 @@
         </p>
       </div>
       <div class="section-1_menu">
-        <a href="https://swaps.network/create-v2" target="_blank" class="new-btn new-btn-yellow">
+
+        <button (click)="openInviteForm()" class="new-btn new-btn-yellow">
           <span>Try service</span>
-        </a>
+        </button>
         <div class="section-1_menu_links">
           <ul>
             <li>
@@ -534,15 +535,16 @@
         <div class="grid-cell hiw-steps_images_cell">
           <div class="one-step-title">Step2</div>
           <div class="one-step-img">
-            <img src="./assets/images/new-index/hiw-2.png">
-            <img src="./assets/images/new-index/hiw-3.png">
+            <img src="./assets/images/new-index/hiw-2.png" class="two-imgs">
+            <img src="./assets/images/new-index/hiw-3.png" class="two-imgs">
           </div>
         </div>
       </div>
 
-      <a href="https://swaps.network/create-v2" class="new-btn new-btn-yellow" target="_blank">
+
+      <button (click)="openInviteForm()" class="new-btn new-btn-yellow">
         <span>Try service without commission</span>
-      </a>
+      </button>
 
     </div>
   </section>
@@ -574,15 +576,15 @@
         </div>
         <ul class="features-list">
           <li>Fully decentralized</li>
-          <li>Swap not-listed tokens</li>
+          <li>Swap non-listed tokens</li>
           <li>No volume limits</li>
           <li>Private and public swaps</li>
           <li>Intuitive design</li>
           <!--<li>Friendlu UI</li>-->
-          <li>Multiply participants at 1 swap</li>
-          <li>Any trading pair supported</li>
-          <li>Ability to get funds back anytime</li>
-          <li>No Sign-Ups</li>
+          <li>Multiple participants during a single swap</li>
+          <li>All trading pairs supported</li>
+          <li>Ability to get funds back at anytime</li>
+          <li>No sign-ups</li>
         </ul>
         <img src="./assets/images/new-index/icons/check-2.svg" class="title-check">
       </div>
@@ -607,12 +609,13 @@
         <div class="grid-cell">
           <div class="reasons-list_item">
             <div class="reasons-list_item_title">
-              <span>OTC market is $30 bln and everyday it is growing.</span>
+              <span>The OTC market consists of up to $30 bln a day and is continuously growing</span>
             </div>
             <div class="reasons-list_item_text">
-              SWAPS.NETWORK fulfills the need in secure decentralized solution allowing to run deals without 3rd party side.
-              It is early to market which allows to conquer a significant share of OTC market. Users need an easy, save,
-              secure and reliable tool to change, buy and sell crypto assets
+              SWAPS.NETWORK fulfils the need for a secure decentralized solution, allowing deals to be carried out
+              without the involvement of a 3rd party. It is an early mover in the market, which allows for a higher
+              chance of conquering a significant share of the OTC market. Users need an easy, safe, secure and reliable
+              tool to change, buy and sell crypto assets.
             </div>
           </div>
           <div class="reasons-list_item">
@@ -620,11 +623,12 @@
               <span>Growing demand for SWAPS.NETWORK services</span>
             </div>
             <div class="reasons-list_item_text">
-              SWAP token is the fuel for our service. It will be used to: <br/>
-              - Pay for SWAPS.NETWORK platform’s fees. <br/>
-              - Pay traders and brokers their commission <br/>
-              - Create smart contracts on different blockchains <br/>
-              As SWAPS.NETWORK will consistently launch project’s components, the demand for SWAP will grow.
+              The SWAP token is the fuel for our service.<br/>
+              It will be used to:<br/>
+              &nbsp;- Pay for SWAPS.NETWORK platform fees<br/>
+              &nbsp;- Pay traders and brokers their commission<br/>
+              &nbsp;- Create smart contracts on different blockchains<br/>
+              As SWAPS.NETWORK will consistently launch the project’s components, the demand for SWAP will grow.
             </div>
           </div>
         </div>
@@ -644,9 +648,9 @@
               <span>SWAPS.NETWORK revolutionizes the OTC market</span>
             </div>
             <div class="reasons-list_item_text">
-              By investing in SWAPS.NETWORK, you are investing in the stock trading market and in the exchanges with
-              which SWAPS.NETWORK works. This market does not depend on fluctuations in the cost of cryptocurrencies
-              and continues to grow
+              By investing in SWAPS.NETWORK, you are investing in the stock trading market and in the exchanges
+              with which SWAPS.NETWORK works. This market does not depend on fluctuations in the cost
+              of cryptocurrencies and continues to grow.
             </div>
           </div>
           <div class="reasons-list_item">
@@ -654,8 +658,8 @@
               <span>Product is live</span>
             </div>
             <div class="reasons-list_item_text">
-              The statistics shows that just 5 percent of the thousands of startups have product live.
-              Currently the process of product development of SWAPS.NETWORK for Ethereum is completed. Everyone can use the service.
+              Statistics show that just 5 percent of the thousands of startups have a product live.
+              Currently the process of product development of SWAPS.NETWORK for Ethereum is completed. Everyone can use this service.
             </div>
           </div>
         </div>
@@ -702,16 +706,32 @@
     <div class="app-content-block">
       <div class="section-content-wrapper">
         <div class="section-text-content">
-          <div class="section-title">Our background</div>
-          <div class="section-text">
-            We have a successful experience in launching projects based on blockchain technology.<br/>
-            Our team released the MyWish platform — the leading platform for Smart contracts generation supported by TRON, EOS Community, NEO, Waves and Binance.<br/>
-            More than 6 000 contracts created since 2017.
+          <div class="section-title">
+            Our background
+            <img src="./assets/images/new-index/logos/mywish.svg" class="section-mywish-logo">
           </div>
-          <div class="section-mywish-logo">
-            <img src="./assets/images/new-index/logos/mywish.svg">
+          <div class="section-text">
+            <b>We have a successful experience in launching projects based on blockchain technology.</b><br/><br/>
+            Our team released the MyWish platform — the leading platform for smart contract generation  for 6 blockchains
+            (NEO, Ethereum, TRON, EOS, RSK, and WAVES) supported by TRON, EOS Community, NEO, Waves and Binance.
           </div>
         </div>
+        <div class="chains-logotypes">
+          <img src="./assets/images/new-index/logos/tron.png" alt="tron">
+          <img src="./assets/images/new-index/logos/eos.png" alt="eos">
+          <img src="./assets/images/new-index/logos/neo.png" alt="neo"><br/>
+          <img src="./assets/images/new-index/logos/waves.png" alt="waves">
+          <img src="./assets/images/new-index/logos/binance.png" alt="binance">
+        </div>
+
+        <ul class="mywish-description">
+          <li>More than 8500 users on MyWish platform</li>
+          <li>More than 6 000 contracts created since 2017</li>
+          <li>More than 200 projects used MyWish for their businesses</li>
+          <li>Winner of TRON Accelerator</li>
+          <li>Winner of WAVES Blockchain Grant</li>
+        </ul>
+
         <!-- div class="section-phone-content">
           <div class="section-phone-wrapper">
             <img src="./assets/images/new-index/empty-phone.png">
@@ -732,23 +752,16 @@
           <ul class="roadmap-map_list">
             <li class="roadmap-map_list_item">
               <span class="text">
-                Launch Swaps.Network<br/>
-                on Ethereum (with support<br/>
-                of all ERC-20 tokens)
+                Launch SWAPS.NETWORK on Ethereum<br/>
+                (with the support of all ERC-20 tokens)
               </span>
               <span class="subtitle">QII 2019</span>
             </li>
             <li class="roadmap-map_list_item">
               <span class="text">
-                Implementation<br/>
-                of a single smart<br/>
-                contract
-              </span>
-            </li>
-            <li class="roadmap-map_list_item">
-              <span class="text">
-                Implementation<br/>
-                of the functionality “Broker”
+                Implementation <br/>
+                of the functionality,<br/>
+                “Broker”
               </span>
             </li>
           </ul>
@@ -783,7 +796,7 @@
             </li>
             <li class="roadmap-map_list_item">
               <span class="text">
-                Run swaps for BTC
+                Run swaps on BTC
               </span>
               <span class="subtitle">QIV 2019</span>
             </li>
@@ -794,14 +807,14 @@
             </li>
             <li class="roadmap-map_list_item">
               <span class="text">
-                SWAPS.NETWORK - the leader in terms of OTC volume in the world
+                Run cross-chain solutions for OTC deals
               </span>
-              <span class="subtitle">QV 2019</span>
             </li>
             <li class="roadmap-map_list_item">
               <span class="text">
-                Running Crosschain Solutions for OTC Deals
+                SWAPS.NETWORK - the leader in terms of OTC volume in the world
               </span>
+              <span class="subtitle">QI 2020</span>
             </li>
           </ul>
         </div>
@@ -993,7 +1006,7 @@
                   </span>
                 </div>
                 <span class="grant-description">
-                  12% will unfreeze each time by 3% (over 4 years)
+                  -12% will be unfrozen each time in the amount of 3% over 4 years
                 </span>
               </div>
 
@@ -1082,7 +1095,7 @@
       </div>
       <div class="information_block information_block__text">
         <p>
-          SWAPS.NETWORK is a global OTC stock. It accumulates all deals on the market and connects sellers and buyers from around the world.<br/>
+          SWAPS.NETWORK is a Global OTC stock. It accumulates all deals on the market and connects sellers and buyers from around the world.<br/>
           SWAPS.NETWORK provides fully decentralized OTC solutions. Users can make OTC deals without a 3rd party or escrow.<br/>
           *OTC stands for “over the counter,” meaning assets can be traded through a dealer network rather than over an exchange.
         </p>
@@ -1174,4 +1187,11 @@
 
   </div>
 </footer>
+
+
+
+
+
+
+
 

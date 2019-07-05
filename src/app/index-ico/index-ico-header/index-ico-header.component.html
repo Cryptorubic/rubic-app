@@ -40,9 +40,10 @@
                [routerLink]="['/']" [fragment]="'roadmap'">Roadmap</a>
           </li>
           <li class="header-menu_list_item">
-            <a href="https://swaps.network/create-v2 " target="_blank" class="new-btn header-btn">
+
+            <button (click)="openInviteForm()" class="new-btn header-btn">
               <span>Try service</span>
-            </a>
+            </button>
           </li>
         </ul>
       </nav>

@@ -1,0 +1,32 @@
+<form class="invite-form" #inviteForm="ngForm" (submit)="sendInviteForm()">
+  <div class="invite-form_title">
+    Try service without<br/>
+    commission
+  </div>
+  <div class="invite-form-field">
+    <div class="invite-form-field_label">
+      Leave your e-mail, we will send invite
+    </div>
+    <div class="invite-form-field_input">
+      <input type="email" placeholder="E-mail"
+             [(ngModel)]="request.email"
+             name="email" [required]="!inviteForm.value?.telegram">
+    </div>
+  </div>
+  <div class="invite-form-field">
+    <div class="invite-form-field_label">
+      Leave your Telegram, we will send invite
+    </div>
+    <div class="invite-form-field_input">
+      <input type="text" placeholder="@username"
+             [(ngModel)]="request.telegram"
+             name="telegram" [required]="!inviteForm.value?.email">
+    </div>
+  </div>
+  <div class="invite-form-field text-center">
+    <button class="new-btn new-btn-yellow" [disabled]="!inviteForm.valid" type="submit">
+      <span>Try service</span>
+    </button>
+  </div>
+  <button class="invite-form_closer" mat-dialog-close></button>
+</form>

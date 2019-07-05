@@ -47,6 +47,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { ContactsComponent } from './contacts-component/contacts.component';
 import { IndexIcoComponent } from './index-ico/index-ico.component';
 import { IndexIcoHeaderComponent } from './index-ico/index-ico-header/index-ico-header.component';
+import { IndexIcoFormComponent } from './index-ico/index-ico-form/index-ico-form.component';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -106,12 +107,14 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     FaqComponent,
     ContactsComponent,
     IndexIcoComponent,
-    IndexIcoHeaderComponent
+    IndexIcoHeaderComponent,
+    IndexIcoFormComponent
   ],
   entryComponents: [
     AuthComponent,
     TransactionComponent,
-    ContactOwnerComponent
+    ContactOwnerComponent,
+    IndexIcoFormComponent
   ],
   imports: [
     TranslateModule.forRoot({

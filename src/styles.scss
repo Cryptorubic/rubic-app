@@ -754,6 +754,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 .new-btn {
   display: inline-block;
   padding: 0 40px;
+  border: 0 none;
   &, &:hover, &:focus {
     text-decoration: none;
   }
@@ -764,10 +765,15 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   &-yellow {
     background: #F3D663;
     color: #3B4452;
-    box-shadow: 0 15px 19px rgba(0, 0, 0, 0.09);
-    &:hover, &:focus {
-      background: #ffe268;
-      color: #2a313b;
+    &:disabled {
+      opacity: 0.8;
+    }
+    &:not(:disabled) {
+      box-shadow: 0 15px 19px rgba(0, 0, 0, 0.09);
+      &:hover, &:focus {
+        background: #ffe268;
+        color: #2a313b;
+      }
     }
   }
 }

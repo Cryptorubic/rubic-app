@@ -1,39 +1,39 @@
 export const TEAM_SOURCE = [
   {
     name: 'Peter Lin',
-    biography: `Former Director of R&D, NEO Global Development (NGD), one of the early NEO developers.
-    He has 8 years of experience in internet technology development and 6 years of experience in blockchain industry,
-    engaged in the development of consortium chain and public chain.`,
+    biography: `Peter is the former Director of R&D for NEO Global Development (NGD) and one of the early NEO developers.
+    He has 8 years of experience in internet technology development and 6 years of experience within the blockchain industry.
+    During this time, he has been actively engaged in the development of consortium chains and public chains.`,
     position: 'Former Director of R&D NEO',
     avatarPath: 'person-16.jpg',
     linkedInUrl: 'https://www.linkedin.com/in/pengtao-lin-453653b4/',
     githubUrl: ''
   }, {
     name: 'Eric Benz',
-    biography: `Eric has over 10 years of experience working in and around Financial Technology.
-    He has delivered innovative SaaS systems for some of today's biggest institutions around payments, identity,
-    and banking infrastructure. Eric has been in the Blockchain space since 2012 and is involved in a number of blockchain and fintech
-    businesses both as an investor, board director, and founder.`,
+    biography: `Eric has over 10 years of experience working in and around financial technology. He has delivered innovative
+    SaaS systems for some of today's biggest institutions involving payments, identity, and banking infrastructure.
+    Eric has been in the blockchain space since 2012 and is involved in a number of blockchain and fintech businesses both
+    as an investor, board director and founder.`,
     position: 'CEO of Changelly',
     avatarPath: 'person-10.png',
     linkedInUrl: 'https://www.linkedin.com/in/ericbenz84/',
     githubUrl: ''
   }, {
     name: 'Hugo Hellebuyck',
-    biography: `Graduate of the Webster University 2008 Chief Investment Officer for a Singaporean VC.
-    The founder of the investment company LILY S.E.A. Consultant for renewable energy projects in emerging countries,
-    Agri-tech and Blockchain Startups.`,
+    biography: `Hugo graduated from Webster University in 2008 and later served as Chief Investment Officer for a Singaporean VC.
+    Additionally, he is the founder of the investment company, LILY S.E.A.,  and a consultant for renewable energy projects in emerging
+    countries, agri-tech and blockchain startups.`,
     position: 'Partner VP sales at Tangem',
     avatarPath: 'person-9.png',
     linkedInUrl: 'https://www.linkedin.com/in/hugo-hellebuyck',
     githubUrl: ''
   }, {
     name: 'Eric Clark Su',
-    biography: `He is a serial entrepreneur with his 4th company backed by a Skype co-founder and Philippine's biggest telco being
-    sold to a leading local cryptocurrency firm in 2017. He is a founder of one of the most trusted OTC
-    (over the counter or peer to peer trading) groups on telegram - The OTC Room.
-    A passionate evangelist of a flatter and global investment dynamic, he is a very product and team focused investor
-    with Casper Labs, Republic.co and Algorand as his recent investments picks.`,
+    biography: `He is a serial entrepreneur with his 4th company being backed by a Skype co-founder, and the Philippine's biggest
+    telco being sold to a leading local cryptocurrency firm in 2017. He is a founder of one of the most trusted OTC
+    (over-the-counter or peer-to-peer trading) groups on Telegram - The OTC Room. A passionate evangelist and global
+    investment dynamic, he is a very product and team focused investor with Casper Labs, Republic.co and Algorand as his
+    recent investments picks.`,
     position: 'Founder of the most trusted OTC telegram channel - The OTC Room',
     avatarPath: 'person-20.jpg',
     linkedInUrl: '',
@@ -49,18 +49,28 @@ export const TEAM_SOURCE = [
     linkedInUrl: 'https://www.linkedin.com/in/marco-pharaoh',
     githubUrl: ''
   }, {
+    name: 'Romal Almazo',
+    biography: `Romal works with institutions and start-ups to solve problems. He has 20 years experience as an IT programme manager
+    and specialises in working with emerging technologies such as Crypto, Digital Assets, Tokenisation and Blockchain.
+    He supports start-ups with go-to market advice and delivery execution.`,
+    position: 'Head of Crypto and DLT at Capco',
+    avatarPath: 'person-21.png',
+    // linkedInUrl: 'https://www.linkedin.com/in/marco-pharaoh',
+    githubUrl: ''
+  }, {
     name: 'Dmitry Machikhin',
-    biography: `Crowdfunding Lawyer. Lawyer of Cointelegraph. Experience in business and law 10 years.`,
+    biography: `Dmitry brings a high level of knowledge with 10 years of experience in the business and law fields. Currently,
+    he is a crowdfunding lawyer and a lawyer for Cointelegraph.`,
     position: 'Head GMTLegal',
     avatarPath: 'person-11.png',
     linkedInUrl: 'https://www.linkedin.com/in/dmitry-machikhin-56282a77/',
     githubUrl: ''
   }, {
     name: 'Pavel Shterlyaev',
-    biography: `M.Sc. Lappeenranta University of Technology, IT Worked in a number of IT companies in different roles:
-    Huawei, Veeam Software, eKassir, Cloudberry Lab, SemRush for 12 years. Started the path as developer and engineer
-    to product owner. Made technical sales on EMEA and other markets. Has been company representative in many conferences as a
-    speaker in English and Spanish. Participated in Yandex. Start and remote IIDF fund accelerator.`,
+    biography: `Pavel holds a M.Sc. in IT from Lappeenranta University of Technology. He has worked in a number of leading IT companies,
+    including Huawei, Veeam Software, eKassir, Cloudberry Lab, SemRush over a period of 12 years. With experience in many areas,
+    such as developing, engineering, and technical sales, Pavel brings a vast skill range to the team. Additionally, he has been
+    represented several companies at many conferences as a speaker in English and Spanish.`,
     position: 'Founder BestRate.org',
     avatarPath: 'person-8.png',
     linkedInUrl: 'https://www.linkedin.com/in/pavelshter/',
@@ -73,25 +83,24 @@ export const TEAM_SOURCE = [
   {
     name: 'Vladimir Tikhomirov',
     position: 'CEO, founder',
-    biography: `Crypto enthusiast and serial entrepreneur, Vladimir has over
-        11 years of experience leading IT businesses. Former Product
-        Manager in Motorola Solutions (for 7 years). Vladimir is a founder of DDG -
-        software development center with 50 employees. Ph.D in Computer Science,
-        founder - MyWish Platform - the leading Platform for Smart Contract
-        generation supported by TRON, EOS Community, NEO, Waves and Binance.`,
+    biography: `As a crypto enthusiast and serial entrepreneur, Vladimir has over 11 years of experience leading IT businesses,
+    including being the former Product Manager at Motorola Solutions (for 7 years). Vladimir is one of the founders of DDG,
+    a software development center with 50 employees. In addition to his practical experience, he has a Ph.D in Computer Science,
+    merging both knowledge and experience. Most recently, he founded MyWish Platform, the leading Platform for smart contract
+    generation supported by TRON, the EOS Community, NEO, Waves and Binance.`,
     avatarPath: 'person-1.png',
     linkedInUrl: 'https://www.linkedin.com/in/vtikhomirov/',
     githubUrl: ''
   }, {
     name: 'Alexandra Korneva',
-    biography: `Co-founder at Hapax.tech, co-founder at Pencil Group. More than 6 years
-        of experience in PR, marketing and media. Worked with Cointelegraph,
-        Blockchain Life, BlockShow, CryptoFriends and etc.`,
+    biography: `Alexandra currently serves as the co-founder at Hapax.tech and the co-founder at Pencil Group. With more
+    than 6 years of experience in PR, marketing and media, she contributes a level of expertise. Her past work includes
+    cooperation with MyWish, Cointelegraph, Blockchain Life, BlockShow, CryptoFriends and many more.`,
     position: 'Partner / PR and Marketing',
     avatarPath: 'person-4.png',
     linkedInUrl: 'https://www.linkedin.com/in/alexandrakorneva/',
     githubUrl: ''
-  }, {
+  }/*, {
     name: 'Veronika Trunina',
     biography: `Crypto junkies, having passion to connect people and businesses with
 		more than 10 years leading in IT.
@@ -100,21 +109,20 @@ export const TEAM_SOURCE = [
     avatarPath: 'person-17.png',
     linkedInUrl: 'https://www.linkedin.com/in/veronika-trunina-6b567027/',
     githubUrl: ''
-  }, {
+  }*/, {
     name: 'Dmitriy Kovalev',
-    biography: `Programming experience for more than 7 years.
-		Frontend Developer for Blockchain for 2 years.
-		Languages: JS, TS (CSS, HTML)`,
+    biography: `Dmitriy has a high level of development knowledge through more than 7 years of accumulated programming experience.
+    He has been serving as a frontend developer in the blockchain industry for 2 years. He is skilled in the following languages:
+    JS, TS (CSS, HTML)`,
     position: 'Senior Frontend Developer',
     avatarPath: 'person-13.png',
     linkedInUrl: 'https://www.linkedin.com/in/dmitriy-kovalev-b1743086/',
     githubUrl: 'https://github.com/dimanok87'
   }, {
     name: 'Max Strenk',
-    biography: `Languages - Python, Solidity, JavaScript.
-		Programming experience over five years Experience with blockchains 2 years
-		Prior to the blockchain, was engaged in infrastructure
-		and administration of Linux`,
+    biography: `With programming experience over five years and 2 years of experience specifically in the blockchain field,
+    Max contributes quality technical skilly and background knowledge. Prior to the blockchain, he was engaged in the
+    infrastructure and administration of Linux. Additionally, he is trained in the following languages: Python. Solidity, JavaScript.`,
     position: 'Backend Developer',
     avatarPath: 'person-3.png',
     linkedInUrl: 'https://www.linkedin.com/in/maksim-strenk-a93877177',
