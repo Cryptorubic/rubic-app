@@ -624,7 +624,10 @@
 
 .section-4 {
   background: linear-gradient(180deg, #414C61 0%, #2D333E 100%);
-  padding: 63px 0 20vw;
+  padding: 63px 0 19vw;
+  &.without-bottom {
+    padding-bottom: 60px;
+  }
   &-title {
     font-size: 44px;
     line-height: 1.3em;
@@ -635,10 +638,13 @@
   .partners-list {
     display: flex;
     margin: 0 -10px;
+    flex-wrap: wrap;
     &_item {
       width: 33.333%;
       display: block;
       padding: 0 10px;
+      box-sizing: border-box;
+      margin-bottom: 24px;
       &_content {
         height: 100%;
         display: block;
@@ -1943,7 +1949,12 @@
     //display: flex;
     position: relative;
     z-index: 2;
-
+    min-width: 600px;
+  }
+  .section-content-flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
   .section-text-content {
     box-sizing: border-box;
@@ -1993,14 +2004,55 @@
   .section-phone-content {
     position: relative;
     overflow: hidden;
-    width: 50%;
+    width: 330px;
+    top: -35px;
   }
   .section-phone-wrapper {
-    position: absolute;
-    width: 376px;
-    top: 0;
-    left: 50%;
-    margin-left: -188px;
+    width: 100%;
+    &_content {
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      height: 100%;
+      width: 100%;
+      img {
+        &.phone-empty {
+          display: block;
+          position: relative;
+          z-index: 2;
+          max-width: 100%;
+          left: 0;
+          top: 0;
+        }
+        &.phone-content {
+          position: absolute;
+          top: 6.6%;
+          left: 13.8%;
+          width: 72.6%;
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 800px) {
+  .section-14 {
+    .section-content-wrapper {
+      min-width: initial;
+    }
+    .section-phone-content {
+      max-width: 330px;
+      width: 100%;
+    }
+    .section-text {
+      width: auto;
+    }
+    .chains-logotypes {
+      br {
+        display: none;
+      }
+    }
   }
 }
 

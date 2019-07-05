@@ -1,12 +1,11 @@
 .invite-form {
   font-family: "TT Norms";
-  padding: 50px 45px 45px;
+  padding: 30px;
   position: relative;
   &_title {
     font-size: 27px;
     line-height: 32px;
     color: #3B4452;
-    text-align: center;
     font-weight: bold;
     margin-bottom: 35px;
   }
@@ -19,7 +18,6 @@
     color: #858D99;
     &_label {
       color: inherit;
-      text-align: center;
       margin-bottom: 8px;
       text-transform: none;
     }

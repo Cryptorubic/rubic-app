@@ -46,7 +46,7 @@ export class IndexIcoHeaderComponent implements OnInit {
 
   public openInviteForm() {
     this.dialog.open(IndexIcoFormComponent, {
-      width: '460px',
+      width: '380px',
       panelClass: 'custom-dialog-container',
       data: {}
     });
