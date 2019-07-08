@@ -301,30 +301,29 @@ button, input {
         position: relative;
         cursor: pointer;
         overflow: hidden;
-        &:before {
-          position: absolute;
-          width: 33vw;
-          height: 33vw;
-          background-color: #F3D663;
-          transform: scale(0);
-          opacity: 0;
-          content: '';
-          display: block;
-          left: 50%;
-          top: 50%;
-          margin-left: -16.5vw;
-          margin-top: -16.5vw;
-          transition: all linear 0.25s;
-          border-radius: 50%;
-        }
-
-        .icon, .text {
+        transition: all linear 0.1s;
+        .icon, .text, .title {
           z-index: 2;
+        }
+        .title {
+          position: relative;
+          font-weight: 800;
+          font-size: 18px;
+          text-transform: uppercase;
+          margin-bottom: 10px;
+          margin-top: -10px;
+          line-height: 45px;
+          span {
+            display: inline-block;
+            line-height: 24px;
+            vertical-align: middle;
+          }
         }
         &, &:hover, &:focus {
           text-decoration: none!important;
         }
         &:hover, &:focus {
+          background-color: #F3D663;
           &:before {
             transform: scale(1);
             opacity: 1;
@@ -343,6 +342,7 @@ button, input {
           top: 45px;
           text-align: center;
           svg path {
+            transition: all linear 0.1s;
             fill: #F3D663;
           }
         }
