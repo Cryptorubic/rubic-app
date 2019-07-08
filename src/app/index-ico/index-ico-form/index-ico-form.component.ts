@@ -20,6 +20,9 @@ export class IndexIcoFormComponent implements OnInit {
   }
 
   public sendInviteForm() {
+
+    window['ym'](54361084, 'reachGoal', 'lead');
+
     this.httpService.post('/save_swaps_mail/', this.request).toPromise().then((response) => {
       this.router.navigate(['/create-v2/']);
       this.dialogRef.close();

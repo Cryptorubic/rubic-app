@@ -16,6 +16,7 @@ const STAT_URL = 'get_statistics_landing/';
 export class IndexIcoComponent implements OnInit {
 
   public teamSource;
+  public msgCount: number;
 
   constructor(
     private dialog: MatDialog
@@ -25,9 +26,16 @@ export class IndexIcoComponent implements OnInit {
       person.avatarPath = './assets/images/team/' + person.avatarPath;
       return person;
     });
+
+    this.msgCount = 1;
+
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    setInterval(() => {
+      this.msgCount++;
+    }, 5000);
+  }
 
 
   public openInviteForm() {
