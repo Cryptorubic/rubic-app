@@ -103,6 +103,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   }
 }
 
+.text-left {
+  text-align: left!important;
+}
+
 
 
 #livechat-compact-container {
@@ -755,6 +759,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   display: inline-block;
   padding: 0 40px;
   border: 0 none;
+  cursor: pointer;
+  outline: 0 none;
+
   &, &:hover, &:focus {
     text-decoration: none;
   }

@@ -1,7 +1,10 @@
 .app-index-ico {
-  font-family: 'TT Norms';
+  font-family: 'TT Norms', Ubuntu, SansSerif;
   width: 100%;
   overflow: hidden;
+}
+button, input {
+  font-family: 'TT Norms', Ubuntu, SansSerif;
 }
 .section-1 {
   background-color: #fff;
@@ -418,8 +421,8 @@
       left: -40px;
     }
     &_right {
-      bottom: -125px;
-      right: -230px;
+      bottom: 0;
+      right: -130px;
     }
   }
 
@@ -491,7 +494,7 @@
 }
 
 
-@media screen and (max-width: 114080px) {
+@media screen and (max-width: 1180px) {
   .section-3 {
     padding-top: 10vw;
     padding-bottom: 10vw;
@@ -2382,9 +2385,27 @@
   padding: 41px 0;
   background: #F3D663;
   color: #3B4352;
+  overflow: hidden;
+  .app-content-block {
+    position: relative;
+    overflow: visible;
+    &:after {
+      position: absolute;
+      display: block;
+      content: '';
+      background: linear-gradient(180deg, #EDC31C -3.25%, rgba(249, 222, 111, 0) 68.83%);
+      width: 60vw;
+      height: 60vw;
+      top: 94px;
+      left: 50%;
+      margin-left: -10vw;
+      border-radius: 50%;
+
+    }
+  }
   .discount-notice {
-    display: flex;
-    justify-content: center;
+    position: relative;
+    z-index: 3;
     &_bonus {
       font-size: 43px;
       line-height: 40px;
@@ -2393,11 +2414,11 @@
     &_msg {
       font-size: 17px;
       line-height: 20px;
-      margin: 0 16px;
-      max-width: 480px;
+      margin: 1em 0;
+      font-weight: bold;
     }
+
     &_btn {
-      margin-left: 10px;
       .new-btn {
         border: 0 none;
         padding: 0 39px;
@@ -2417,9 +2438,171 @@
         }
       }
     }
+    &_timer {
+      text-align: center;
+      &_title {
+        font-size: 17px;
+        line-height: 20px;
+        font-weight: bold;
+      }
+    }
+    &_clock {
+      display: flex;
+      &_block {
+        padding: 0 22px;
+        .digit {
+          font-size: 79px;
+          font-weight: 800;
+        }
+        .name {
+          font-size: 17px;
+          line-height: 20px;
+          text-transform: uppercase;
+          font-weight: 300;
+        }
+        + .discount-notice_clock_block {
+          &:before {
+            float: left;
+            font-size: 79px;
+            margin-left: -35px;
+            content: ':';
+            display: block;
+            font-weight: 800;
+            margin-top: -7px;
+          }
+        }
+      }
+    }
+    .ieo-time {
+      display: flex;
+      margin: 20px 0;
+      &_block {
+        padding-left: 39px;
+        line-height: 27px;
+        margin-right: 10%;
+      }
+      &_icon {
+        margin-left: -39px;
+        width: 27px;
+        float: left;
+      }
+      &_text {
+        font-size: 20px;
+        line-height: 20px;
+        font-weight: bold;
+      }
+    }
+  }
+  .ieo-world-times {
+    display: flex;
+    flex-wrap: wrap;
+    background: #F3D663;
+    box-shadow: 0px 6px 30px #CE9912;
+    font-size: 17px;
+    line-height: 20px;
+    font-weight: 300;
+    margin-bottom: 32px;
+    &_item {
+      padding: 15px 0;
+      text-align: center;
+      width: 16.6666%;
+    }
   }
 }
 
+@media screen and (max-width: 1180px) {
+  .section-17 {
+    .discount-notice {
+      &_clock {
+        &_block {
+          padding: 0 1.86vw;
+          .digit {
+            font-size: 6.7vw;
+          }
+          + .discount-notice_clock_block {
+            &:before {
+              font-size: 6.7vw;
+              margin-left: -3.4vw;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 1024px) {
+  .section-17 {
+    .discount-notice {
+
+      &_timer {
+        text-align: left;
+      }
+      &_clock {
+        &_block {
+          padding: 0 20px;
+          .digit {
+            font-size: 68px;
+          }
+          + .discount-notice_clock_block {
+            &:before {
+              font-size: 68px;
+              margin-left: -28px;
+            }
+          }
+        }
+      }
+    }
+    .ieo-world-times {
+      margin-top: 32px;
+    }
+  }
+}
+@media screen and (max-width: 980px) {
+  .section-17 {
+    .ieo-world-times {
+      &_item {
+        width: 33.333%;
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 520px) {
+  .section-17 {
+    .discount-notice {
+      &_clock {
+        &_block {
+          padding: 0 4vw;
+          .digit {
+            font-size: 13vw;
+          }
+          .name {
+            font-size: 3.27vw;
+            line-height: 1.2em;
+          }
+          + .discount-notice_clock_block {
+            &:before {
+              font-size: 13vw;
+              margin-left: -5.8vw;
+            }
+          }
+        }
+      }
+    }
+
+    .ieo-world-times {
+      &_item {
+        width: 50%;
+        text-align: left;
+        padding-left: 4%;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
 
 
 .section-18 {

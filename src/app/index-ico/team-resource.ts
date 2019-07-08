@@ -50,10 +50,10 @@ export const TEAM_SOURCE = [
     githubUrl: ''
   }, {
     name: 'Romal Almazo',
-    biography: `Romal works with institutions and start-ups to solve problems. He has 20 years experience as an IT programme manager
+    biography: `Romal works with institutions and start-ups. He has 20 years experience as an IT programme manager
     and specialises in working with emerging technologies such as Crypto, Digital Assets, Tokenisation and Blockchain.
     He supports start-ups with go-to market advice and delivery execution.`,
-    position: 'Head of Crypto and DLT at Capco',
+    position: 'Former Head of Crypto and DLT at Capco',
     avatarPath: 'person-21.png',
     // linkedInUrl: 'https://www.linkedin.com/in/marco-pharaoh',
     githubUrl: ''
