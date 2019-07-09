@@ -3,7 +3,7 @@
 <div class="app-index-ico">
   <section class="section-1">
     <div class="app-content-block">
-      <div class="section-1_timer">
+      <a href="https://event.bitforex.com/en/SWAP.html" target="_blank" class="section-1_timer">
         <div class="section-1_timer_circle"></div>
         <div class="section-1_timer_text">
           <b>
@@ -12,7 +12,7 @@
             at 17:00 GMT+8
           </b>
         </div>
-      </div>
+      </a>
 
       <div class="section-1_left">
         <h1>
@@ -154,7 +154,7 @@
           <span (click)="bqSlider.next()" class="slider-navigation_btn slider-navigation_btn__next"></span>
 
           <span class="slider-navigation_curr-slide">
-            {{ (((bqSlider.$owlChild.currentSlideIndex || 0) + 1) % countBqSlides) || countBqSlides }}
+            {{ (((bqSlider.$owlChild.currentSlideIndex || -1) + countBqSlides - 1) % countBqSlides) || countBqSlides }}
           </span>
           <span class="slider-navigation_separate">/</span>
           <span class="slider-navigation_count-slides">{{countBqSlides}}</span>
@@ -166,11 +166,11 @@
       #bqSlider
       [options]="{
         loop: true,
-        margin: 10,
+        margin: 200,
         items: 1,
         touchDrag: countBqSlides > 1,
         mouseDrag: countBqSlides > 1,
-        dots: false, navigation: false }">
+        dots: true, navigation: true }">
       <div class="item">
         <div class="app-content-block">
           <div class="blockquotes">
@@ -188,7 +188,7 @@
                   </div>
                 </div>
               </div>
-              <div class="blockquote blockquote-left">
+              <div class="blockquote blockquote-left blockquote-left__1">
                 <div class="blockquote_content">
                   <div class="blockquote_content_name">Eric Su</div>
                   <div class="blockquote_content_position">
@@ -212,8 +212,91 @@
           </div>
         </div>
       </div>
+
+
+      <div class="item">
+        <div class="app-content-block">
+          <div class="blockquotes">
+
+            <div class="blockquotes-wrapper">
+              <div class="blockquote blockquote-right">
+                <div class="blockquote_content">
+                  <div class="blockquote_content_name">Eric Benz</div>
+                  <div class="blockquote_content_position">
+                    CEO of Changelly
+                  </div>
+                  <div class="blockquote_content_text">
+                    The popularity of OTC services is growing rapidly. SWAPS.NETWORK will provide interoperability
+                    with exchanges in order to execute orders more efficiently whilst using the Changelly API.
+                  </div>
+                </div>
+              </div>
+              <div class="blockquote blockquote-left blockquote-left__2">
+                <div class="blockquote_content">
+                  <div class="blockquote_content_name">Romal Almazo</div>
+                  <div class="blockquote_content_position">
+                    Former Head of Crypto and DLT at Capco
+                  </div>
+                  <div class="blockquote_content_text">
+                    Atomic swap technology will fix execution and settlement  risks currently in the OTC crypto market.
+                    SWAPS.NETWORK are well placed to be a leader in this field, having built a robust solution and secured major liquidity providers.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="blockquote_portrait blockquote_portrait_left left-2">
+              <img src="/assets/images/new-index/blockquote-author-4.png?_t=1">
+            </div>
+            <div class="blockquote_portrait blockquote_portrait_right right-2">
+              <img src="/assets/images/new-index/blockquote-author-2.png?_t=1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="app-content-block">
+          <div class="blockquotes">
+
+            <div class="blockquotes-wrapper">
+              <div class="blockquote blockquote-right">
+                <div class="blockquote_content">
+                  <div class="blockquote_content_name">Hugo Hellebuyck</div>
+                  <div class="blockquote_content_position">
+                    Partner & VP sales at Tangem
+                  </div>
+                  <div class="blockquote_content_text">
+                    I am very confident to say SWAPS.NETWORK and other decentralized solutions of this kind are much
+                    needed in the ecosystem. Too few projects are focusing on the core values of decentralized finance.
+                    The founders have a solid background and a track record in the industry and have always given their
+                    best to satisfy the needs of their community. I will do my best to spread SWAPS.NETWORK solution in the Asian Market.
+                  </div>
+                </div>
+              </div>
+              <div class="blockquote blockquote-left blockquote-left__1">
+                <div class="blockquote_content">
+                  <div class="blockquote_content_name">Marco Poliquin</div>
+                  <div class="blockquote_content_position">
+                    Blockchain Futurist
+                  </div>
+                  <div class="blockquote_content_text">
+                    SWAPS.NETWORK empowers the trader and elevates all players in the OTC market .
+                    Limitless Trustless Deals by Cypherpunk Brokers. Future-Proof OTC Decentralization with a cause!
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="blockquote_portrait blockquote_portrait_left left-3">
+              <img src="/assets/images/new-index/blockquote-author-5.png?_t=1">
+            </div>
+            <div class="blockquote_portrait blockquote_portrait_right right-3">
+              <img src="/assets/images/new-index/blockquote-author-6.png?_t=1">
+            </div>
+          </div>
+        </div>
+      </div>
+
     </owl-carousel>
-    {{bqSlider.items|json}}
   </section>
 
   <a id="partnership"></a>
@@ -1427,7 +1510,7 @@
               </div>
               <div class="token-use-list_item">
               <span class="token-use-list_item_text">
-                Payment for additional transaction options (long period of validity, number of participants, etc.)
+                Payment for additional deal’s options (long period of validity, number of participants, etc.)
               </span>
               </div>
               <div class="token-use-list_item">

@@ -9,7 +9,8 @@
     <div class="invite-form-field_input">
       <input type="email" placeholder="E-mail"
              [(ngModel)]="request.email"
-             name="email" [required]="!inviteForm.value?.telegram">
+             email="true"
+             name="email" required>
     </div>
   </div>
   <div class="invite-form-field">

@@ -40,6 +40,7 @@ button, input {
     float: right;
     width: 50%;
     position: relative;
+    text-decoration: none!important;
     &_text {
       position: absolute;
       top: 50%;
@@ -50,6 +51,7 @@ button, input {
       right: 0;
       text-align: center;
       color: #3B4452;
+      transition: transform cubic-bezier(0.35,-1.6, 0.63, 2.85) 0.5s;
     }
     &_circle {
       width: 38vw;
@@ -81,6 +83,19 @@ button, input {
         right: 18%;
         top: 18%;
         bottom: 18%;
+      }
+      &:after, &:before {
+        transition: all cubic-bezier(0.35,-1.6, 0.63, 2.85) 0.5s;
+      }
+    }
+    &:hover &_circle {
+      &:after {
+        box-shadow: 0 5px 34px rgba(86, 95, 109, 0.2);
+      }
+    }
+    &:hover &_circle {
+      &:after, &:before {
+        transform: scale(1.05);
       }
     }
   }
@@ -422,15 +437,31 @@ button, input {
     position: relative;
   }
 
+  .item {}
   .blockquote_portrait {
     position: absolute;
     &_left {
       top: 10px;
       left: -40px;
+      &.left-2 {
+        width: 38%;
+        left: -9%;
+      }
+      &.left-3 {
+        width: 42%;
+        left: -3%;
+      }
     }
     &_right {
       bottom: 0;
       right: -130px;
+      &.right-2 {
+        bottom: -185px;
+        right: -230px;
+      }
+      &.right-3 {
+        width: 47%;
+      }
     }
   }
 
@@ -452,6 +483,12 @@ button, input {
     }
     &-right .blockquote_content {
       margin-left: 45%;
+      &_name, &_position {
+        text-align: right;
+      }
+      &:before {
+        background-position: right center;
+      }
     }
 
     &-left .blockquote_content_text {
@@ -500,12 +537,51 @@ button, input {
     }
   }
 }
-
+@media screen and (min-width: 1181px) {
+  .section-3 {
+    .blockquote {
+      &-left__3 {
+        margin-top: 50px;
+      }
+      &-left__2 {
+        margin-top: 120px;
+      }
+      &-left__1 {
+        margin-top: 80px;
+      }
+    }
+    .blockquote_portrait {
+      &_right {
+        &.right-2 {
+          bottom: -138px;
+        }
+      }
+    }
+  }
+}
 
 @media screen and (max-width: 1180px) {
   .section-3 {
     padding-top: 10vw;
-    padding-bottom: 10vw;
+    .slider-navigation {
+      top: -12vw;
+    }
+    .blockquote_portrait {
+      &_left {
+        &.left-2 {
+          width: 41%;
+          left: -4%;
+        }
+      }
+      &_right {
+        &.right-3 {
+          width: 544px;
+          right: -17vw;
+          bottom: 0;
+        }
+      }
+    }
+
     .blockquotes {
       &-wrapper {
         display: flex;
@@ -546,6 +622,16 @@ button, input {
         flex-direction: column-reverse;
       }
     }
+
+    .blockquote_portrait {
+      &_left {
+        &.left-2 {
+          width: 50%;
+          left: -4%;
+        }
+      }
+    }
+
     .blockquote {
 
       &_content {}
@@ -606,8 +692,16 @@ button, input {
         }
 
         &_right {
-          right: -37vw;
-          bottom: -19vw;
+          right: -30vw;
+          bottom: 10vw;
+          &.right-2 {
+            bottom: -222px;
+            right: -35vw;
+          }
+          &.right-3 {
+            width: initial;
+            right: -25vw;
+          }
           img {
             width: 92.4vw;
           }
@@ -627,6 +721,20 @@ button, input {
         }
         &_name {
           font-size: 7.3vw;
+        }
+      }
+    }
+
+    &_portrait {
+      //&_left {
+      //  img {
+      //    width: 63.512vw;
+      //  }
+      //}
+
+      &_right {
+        &.right-3 {
+          right: -65vw;
         }
       }
     }
@@ -2748,12 +2856,11 @@ button, input {
     }
     .grant-title {
       padding-left: 63px;
-      margin-top: 11px;
+      line-height: 40px;
       &_percent {
         float: left;
         margin-left: -63px;
         font-size: 28px;
-        line-height: 0.61em;
         color: #F8DB14;
         font-weight: bold;
       }
@@ -2762,6 +2869,8 @@ button, input {
         text-transform: uppercase;
         font-size: 15px;
         line-height: 20px;
+        display: inline-block;
+        vertical-align: middle;
         span {
           font-size: 0.55em;
           opacity: 0.7;
@@ -2797,36 +2906,6 @@ button, input {
         margin: 0 2.288vw;
         padding: 1.5vw 2.2vw;
         height: 100%;
-      }
-
-      .grant-title {
-        padding-left: 63px;
-        margin-top: 11px;
-        &_percent {
-          float: left;
-          margin-left: -63px;
-          font-size: 28px;
-          line-height: 17px;
-          color: #F8DB14;
-          font-weight: bold;
-        }
-        &_text {
-          font-weight: 300;
-          text-transform: uppercase;
-          font-size: 15px;
-          line-height: 20px;
-          span {
-            font-size: 0.55em;
-            opacity: 0.7;
-          }
-        }
-      }
-      .grant-description {
-        font-size: 13px;
-        line-height: 15px;
-        margin-top: 1px;
-        display: block;
-        font-weight: 300;
       }
     }
 
