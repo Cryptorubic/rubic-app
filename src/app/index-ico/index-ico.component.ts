@@ -34,7 +34,7 @@ export class IndexIcoComponent implements OnInit {
   private leftSeconds: number;
   private leftTime: number;
   public timerDigits: ITimer;
-
+  public visibleTeam: boolean;
 
   constructor(
     private dialog: MatDialog,
@@ -65,10 +65,16 @@ export class IndexIcoComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-    setInterval(() => {
+
+  private telegramTimerStart() {
+    setTimeout(() => {
       this.msgCount++;
-    }, 5000);
+      this.telegramTimerStart();
+    }, 5000 * (this.msgCount + 1));
+  }
+
+  ngOnInit() {
+    this.telegramTimerStart();
   }
 
   public checkLeftTIme(): void {
@@ -96,5 +102,8 @@ export class IndexIcoComponent implements OnInit {
     });
   }
 
+  public showAllTeam() {
+    this.visibleTeam = true;
+  }
 
 }

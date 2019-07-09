@@ -295,24 +295,22 @@ button, input {
         height: 100%;
         display: block;
         color: #fff!important;
-        padding: 45px 25px 35px 69px;
+        padding: 20px 15px 20px 59px;
         font-size: 13px;
         line-height: 33px;
         position: relative;
         cursor: pointer;
         overflow: hidden;
         transition: all linear 0.1s;
-        .icon, .text, .title {
-          z-index: 2;
-        }
+
         .title {
-          position: relative;
           font-weight: 800;
           font-size: 18px;
           text-transform: uppercase;
           margin-bottom: 10px;
           margin-top: -10px;
           line-height: 45px;
+          margin-left: -45px;
           span {
             display: inline-block;
             line-height: 24px;
@@ -339,7 +337,7 @@ button, input {
           position: absolute;
           left: 0;
           width: 68px;
-          top: 45px;
+          //top: 0;
           text-align: center;
           svg path {
             transition: all linear 0.1s;
@@ -385,14 +383,23 @@ button, input {
       }
       &_item {
         &_content {
-          padding: 5vw 4vw 4.5vw 10vw;
+          padding: 3vw 4vw 2.5vw 10vw;
           line-height: 5.5vw;
           .text {
-            font-size: 2.85vw
+            font-size: 2.85vw;
+            margin-left: -7vw;
+          }
+          .title {
+            margin-left: 0;
+            margin-bottom: 0;
+            span {
+              font-size: 3.5vw;
+              line-height: 1.2em;
+            }
           }
           .icon {
             width: 10vw;
-            top: 4vw;
+            top: 2vw;
             svg {
               width: 6vw;
             }
@@ -1853,17 +1860,71 @@ button, input {
     margin: 40px 0 0;
     padding: 0;
     flex-wrap: wrap;
-
+    &__all-team .team-list_item__empty {
+      display: none;
+    }
+    &__all-team .team-list_item__hidden {
+      display: block;
+    }
     &_item {
       margin: 0;
       padding: 0;
       width: 25%;
+      &__hidden {
+        display: none;
+      }
+      &__empty {
+        cursor: pointer;
+        position: relative;
+        .team-member {
+          margin-bottom: 0;
+          position: relative;
+        }
+        .team-member_ava {
+          position: relative;
+          overflow: visible;
+          &:before {
+            position: absolute;
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            left: 50%;
+            top: 0;
+            border-radius: 50%;
+            background-color: #F9FAFC;
+          }
+          &:after {
+            position: absolute;
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            right: 0;
+            top: 0;
+            border-radius: 50%;
+            background-color: #f1f3f8;
+          }
+        }
+      }
+
     }
   }
   .team-member {
     margin-right: 35px;
     margin-bottom: 35px;
     font-size: 10px;
+    &_all-label {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      top: 50%;
+      margin-top: -10px;
+      font-weight: bold;
+      font-size: 22px;
+      color: #3B4352;
+    }
     &_ava {
       width: 14.7em;
       height: 14.7em;
