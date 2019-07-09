@@ -146,64 +146,74 @@
   </section>
 
   <section class="section-3">
-    <div class="app-content-block">
-      <div class="blockquotes">
+    <div class="app-content-block slider-navigation" *ngIf="countBqSlides > 1">
+      <div class="slider-navigation_wrapper">
+        <div class="slider-navigation_container">
 
-        <div class="blockquotes-wrapper">
-          <!-- div class="blockquote blockquote-right">
-            <div class="blockquote_content">
-              <div class="blockquote_content_name">Eric Benz</div>
-              <div class="blockquote_content_position">
-                CEO of <a href="https://changelly.com/" target="_blank">Changelly.com</a>
-              </div>
-              <div class="blockquote_content_text">
-                The popularity of OTC services is growing rapidly. SWAPS.NETWORK will provide interoperability with the
-                exchanges in order to execute orders more efficiently. The idea is great and I support SWAPS.NETWORK.
-              </div>
-            </div>
-          </div -->
-          <div class="blockquote blockquote-right">
-            <div class="blockquote_content">
-              <div class="blockquote_content_name">Peter Lin</div>
-              <div class="blockquote_content_position">
-                Former Director of R&D NEO
-              </div>
-              <div class="blockquote_content_text">
-                I know a few not successed attempts to implement the idea of cross-chain swaps.<br/>
-                However SWAPS.NETWORK team has the necessary experience, technological stack and right contacts in the industry, that’s why I believe in the success.
-              </div>
-            </div>
-          </div>
-          <div class="blockquote blockquote-left">
-            <div class="blockquote_content">
-              <div class="blockquote_content_name">Eric Su</div>
-              <div class="blockquote_content_position">
-                founder of the most trusted OTC<br/>
-                telegram channel - <a href="https://t.me/otcroom" target="_blank">The OTC Room</a>
-              </div>
-              <div class="blockquote_content_text">
-                At The OTC Room, as much as $2m of deals for rare digital assets go through us each month.
-                SWAPS.NETWORK cuts down on the friction, scams and a waste of time while being a step forward
-                to the decentralization of the space. If you want a safer and faster way to do OTC, help me support SWAPS.NETWORK.
-              </div>
-            </div>
-          </div>
+          <span (click)="bqSlider.previous()" class="slider-navigation_btn slider-navigation_btn__prev"></span>
+          <span (click)="bqSlider.next()" class="slider-navigation_btn slider-navigation_btn__next"></span>
+
+          <span class="slider-navigation_curr-slide">
+            {{ (((bqSlider.$owlChild.currentSlideIndex || 0) + 1) % countBqSlides) || countBqSlides }}
+          </span>
+          <span class="slider-navigation_separate">/</span>
+          <span class="slider-navigation_count-slides">{{countBqSlides}}</span>
         </div>
-
-        <div class="blockquote_portrait blockquote_portrait_left">
-          <img src="/assets/images/new-index/blockquote-author-1.png?_t=1">
-        </div>
-
-        <div class="blockquote_portrait blockquote_portrait_right">
-          <img src="/assets/images/new-index/blockquote-author-3.png?_t=1">
-        </div>
-
-        <!-- div class="blockquote_portrait blockquote_portrait_right">
-          <img src="/assets/images/new-index/blockquote-author-2.png?_t=1">
-        </div -->
-
       </div>
     </div>
+
+    <owl-carousel
+      #bqSlider
+      [options]="{
+        loop: true,
+        margin: 10,
+        items: 1,
+        touchDrag: countBqSlides > 1,
+        mouseDrag: countBqSlides > 1,
+        dots: false, navigation: false }">
+      <div class="item">
+        <div class="app-content-block">
+          <div class="blockquotes">
+
+            <div class="blockquotes-wrapper">
+              <div class="blockquote blockquote-right">
+                <div class="blockquote_content">
+                  <div class="blockquote_content_name">Peter Lin</div>
+                  <div class="blockquote_content_position">
+                    Former Director of R&D NEO
+                  </div>
+                  <div class="blockquote_content_text">
+                    I know a few not successed attempts to implement the idea of cross-chain swaps.<br/>
+                    However SWAPS.NETWORK team has the necessary experience, technological stack and right contacts in the industry, that’s why I believe in the success.
+                  </div>
+                </div>
+              </div>
+              <div class="blockquote blockquote-left">
+                <div class="blockquote_content">
+                  <div class="blockquote_content_name">Eric Su</div>
+                  <div class="blockquote_content_position">
+                    founder of the most trusted OTC<br/>
+                    telegram channel - <a href="https://t.me/otcroom" target="_blank">The OTC Room</a>
+                  </div>
+                  <div class="blockquote_content_text">
+                    At The OTC Room, as much as $2m of deals for rare digital assets go through us each month.
+                    SWAPS.NETWORK cuts down on the friction, scams and a waste of time while being a step forward
+                    to the decentralization of the space. If you want a safer and faster way to do OTC, help me support SWAPS.NETWORK.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="blockquote_portrait blockquote_portrait_left">
+              <img src="/assets/images/new-index/blockquote-author-1.png?_t=1">
+            </div>
+            <div class="blockquote_portrait blockquote_portrait_right">
+              <img src="/assets/images/new-index/blockquote-author-3.png?_t=1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </owl-carousel>
+    {{bqSlider.items|json}}
   </section>
 
   <a id="partnership"></a>
@@ -261,58 +271,72 @@
             <img src="./assets/images/new-index/graphs.svg">
           </div>
         </div>
-
-        <div class="section-list-title">
-          Why is <span>SWAPS.NETWORK</span> important for the whole blockchain community?
-        </div>
       </div>
-      <div class="about-wrapper">
-        <div class="app-content-block">
-          <div class="about-wrapper_item">
+    </div>
+  </section>
 
-            <div class="grid-row">
-              <div class="grid-cell grid-cell-1-2 grid-cell-ps-2-5 float-right">
-                <img src="/assets/images/new-index/about-swaps-1.png" class="img-bottom-position">
-              </div>
-              <div class="grid-cell grid-cell-1-2">
-                <div class="about-content">
-                  <div class="about-content_title">
-                    <span>Bring security to OTC trades</span>
-                  </div>
-                </div>
-              </div>
-              <div class="grid-cell grid-cell-1-2 grid-cell-ps-1">
-                <div class="about-content_text">
-                  A lot of fake escrow services & OTC “experts” cheat users.
-                  It’s BAD and HARMFUL for the whole industry. SWAPS.NETWORK does things the right way: decentralized & safe.
-                </div>
-              </div>
+  <a id="product"></a>
+  <section class="section-6">
+    <div class="app-content-block">
+      <img src="./assets/images/logo.svg?t=_12" class="swaps-logo"/>
+
+      <ul class="dev-list">
+        <li class="dev-list_item">
+          <div class="dev-progress">
+            <div class="dev-progress_name">development</div>
+            <div class="dev-progress_line">
+              <span style="width: 86%;"></span>
             </div>
+            <div class="dev-progress_digit">86%</div>
           </div>
-          <div class="about-wrapper_item">
-            <div class="grid-row">
-              <div class="grid-cell grid-cell-1-2 grid-cell-ps-2-5">
-                <img src="/assets/images/new-index/about-swaps-2.png" class="img-top-position">
-              </div>
-              <div class="grid-cell grid-cell-1-2 grid-cell-ps-3-5">
-                <div class="about-content with-left-padding">
-                  <div class="about-content_title">
-                    <span>Give up-and-coming projects a chance to operate their tokens</span>
-                  </div>
-                </div>
-              </div>
-              <div class="grid-cell grid-cell-1-2 grid-cell-ps-1">
-                <div class="about-content_text">
-                  Today exchanges dictate their rules and have control of what is listed. If you are a small project or
-                  are just starting out, there is almost no way to trade your tokens in a safe and affordable way.
-                  Decentralized exchanges are a good option, but you still need to list your token, and it is likely
-                  that it will only be available to trade via one trading pair.
-                </div>
-              </div>
+
+          <div class="dev-title">OTC Global Liquidity Pool</div>
+          <div class="dev-text">
+            SWAPS.NETWORK is an OTC provider for exchanges. Users trust exchanges and feel comfortable making OTC
+            transactions there. SWAPS.NETWORK provides exchanges with a full-cycle solution: registration, management,
+            and processing for OTC deals. All user requests from all exchanges will be submitted to SWAPS.NETWORK for effective matching.
+          </div>
+        </li>
+        <li class="dev-list_item">
+          <div class="dev-progress">
+            <div class="dev-progress_name dev-progress_name__green">completed</div>
+            <div class="dev-progress_line dev-progress_line__green">
+              <span style="width: 100%;"></span>
             </div>
+            <div class="dev-progress_digit">100%</div>
           </div>
-        </div>
-      </div>
+
+          <div class="dev-title">Decentralized P2P Solution</div>
+          <div class="dev-text">
+            It’s a ready-to-use product based on smart contracts. The user sends funds directly to the smart contract
+            and nobody except for them can take it back. When the second party sends the funds, the smart contract
+            distributes the funds. No escrow. No 3rd party. Just blockchain. SWAPS.NETWORK provides a lot of options:
+            Broker fees, multiple participants, min/max investment limitations, expiration dates, private & public trades.
+          </div>
+        </li>
+        <li class="dev-list_item">
+          <div class="dev-progress">
+            <div class="dev-progress_name">testing</div>
+            <div class="dev-progress_line">
+              <span style="width: 79%;"></span>
+            </div>
+            <div class="dev-progress_digit">79%</div>
+          </div>
+
+          <div class="dev-title">Crowdfunding Tool</div>
+          <div class="dev-text">
+            The crowdfunding tool consists of 2 parts: Token creation & selling mechanic. Users can create a token
+            within 5 minutes thanks to our partnership with MyWish Platform. The selling mechanic is also ready thanks
+            to the decentralized p2p solution. By using the crowdfunding tool, everyone will be able to start selling
+            the tokens within 10 minutes. This acts as a great solution for start-ups, small businesses & entrepreneurs.
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-5 section-5__without-bg">
+    <div class="section-5-background">
       <div class="app-content-block">
         <div class="section-list-title">
           Why use SWAPS.NETWORK and not a crypto exchange?
@@ -376,70 +400,11 @@
     </div>
   </section>
 
-  <a id="product"></a>
-  <section class="section-6">
+
+
+
+  <section class="section-7 blue-background">
     <div class="app-content-block">
-      <img src="./assets/images/logo.svg" class="swaps-logo"/>
-
-      <ul class="dev-list">
-        <li class="dev-list_item">
-          <div class="dev-progress">
-            <div class="dev-progress_name">development</div>
-            <div class="dev-progress_line">
-              <span style="width: 86%;"></span>
-            </div>
-            <div class="dev-progress_digit">86%</div>
-          </div>
-
-          <div class="dev-title">OTC Global Liquidity Pool</div>
-          <div class="dev-text">
-            SWAPS.NETWORK is an OTC provider for exchanges. Users trust exchanges and feel comfortable making OTC
-            transactions there. SWAPS.NETWORK provides exchanges with a full-cycle solution: registration, management,
-            and processing for OTC deals. All user requests from all exchanges will be submitted to SWAPS.NETWORK for effective matching.
-          </div>
-        </li>
-        <li class="dev-list_item">
-          <div class="dev-progress">
-            <div class="dev-progress_name dev-progress_name__green">completed</div>
-            <div class="dev-progress_line dev-progress_line__green">
-              <span style="width: 100%;"></span>
-            </div>
-            <div class="dev-progress_digit">100%</div>
-          </div>
-
-          <div class="dev-title">Decentralized P2P Solution</div>
-          <div class="dev-text">
-            It’s a ready-to-use product based on smart contracts. The user sends funds directly to the smart contract
-            and nobody except for them can take it back. When the second party sends the funds, the smart contract
-            distributes the funds. No escrow. No 3rd party. Just blockchain. SWAPS.NETWORK provides a lot of options:
-            Broker fees, multiple participants, min/max investment limitations, expiration dates, private & public trades.
-          </div>
-        </li>
-        <li class="dev-list_item">
-          <div class="dev-progress">
-            <div class="dev-progress_name">testing</div>
-            <div class="dev-progress_line">
-              <span style="width: 79%;"></span>
-            </div>
-            <div class="dev-progress_digit">79%</div>
-          </div>
-
-          <div class="dev-title">Crowdfunding Tool</div>
-          <div class="dev-text">
-            The crowdfunding tool consists of 2 parts: Token creation & selling mechanic. Users can create a token
-            within 5 minutes thanks to our partnership with MyWish Platform. The selling mechanic is also ready thanks
-            to the decentralized p2p solution. By using the crowdfunding tool, everyone will be able to start selling
-            the tokens within 10 minutes. This acts as a great solution for start-ups, small businesses & entrepreneurs.
-          </div>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-
-  <section class="section-7">
-    <div class="app-content-block">
-
       <div class="schemas-section">
         <div class="schemas-section_title">OTC Global Liquidity Pool</div>
         <p class="schemas-section_text">
@@ -447,15 +412,19 @@
           In turn, exchanges and brokers can use SWAPS.NETWORK stock for matching their trade orders.
         </p>
         <div class="schemas-section_img">
-          <img src="/assets/images/new-index/schema-1.svg" class="hide-vs">
-          <img src="/assets/images/new-index/schema-1-mobile.svg" class="show-vs">
+          <img src="/assets/images/new-index/schema-1.svg?t_1" class="hide-vs">
+          <img src="/assets/images/new-index/schema-1-mobile.svg?t_1" class="show-vs">
         </div>
         <p class="schemas-section_text">
           Several exchanges have agreed to use our service, and we have already started this implementation process.
           You will be able to use it as of August 2019.
         </p>
       </div>
+    </div>
+  </section>
 
+  <section class="section-7">
+    <div class="app-content-block">
       <div class="schemas-section">
         <div class="schemas-section_title">
           Decentralized Exchange Service. Why it's safe?
@@ -469,15 +438,19 @@
           Each of the parties at any time before the exchange can do the refund.
         </p>
         <div class="schemas-section_img">
-          <img src="/assets/images/new-index/schema-2.svg" class="hide-vs">
-          <img src="/assets/images/new-index/schema-2-mobile.svg" class="show-vs">
+          <img src="/assets/images/new-index/schema-2.svg?t_1" class="hide-vs">
+          <img src="/assets/images/new-index/schema-2-mobile.svg?t_1" class="show-vs">
         </div>
         <p class="schemas-section_text">
           <b>3.</b> There is no 3rd party during the exchange (users are interacting via blockchain) and exchange’s conditions can’t be changed.<br/>
           That’s why it’s the safest and transparent way for an exchange.
         </p>
       </div>
+    </div>
+  </section>
 
+  <section class="section-7 blue-background">
+    <div class="app-content-block">
       <a id="crowdfunding-tool" style="top: -70px; position: relative;"></a>
       <div class="schemas-section">
         <div class="schemas-section_title">
@@ -531,10 +504,9 @@
 
         </div>
       </div>
-
-
     </div>
   </section>
+
 
   <section class="section-8">
     <div class="app-content-block">
@@ -624,6 +596,64 @@
       </div>
     </div>
   </section>
+
+  <section class="section-5 section-5__without-bg">
+    <div class="section-5-background">
+      <div class="app-content-block">
+        <div class="section-list-title">
+          Why is <span>SWAPS.NETWORK</span> important for the whole blockchain community?
+        </div>
+      </div>
+      <div class="about-wrapper">
+        <div class="app-content-block">
+          <div class="about-wrapper_item">
+
+            <div class="grid-row">
+              <div class="grid-cell grid-cell-1-2 grid-cell-ps-2-5 float-right">
+                <img src="/assets/images/new-index/about-swaps-1.png" class="img-bottom-position">
+              </div>
+              <div class="grid-cell grid-cell-1-2">
+                <div class="about-content">
+                  <div class="about-content_title">
+                    <span>Bring security to OTC trades</span>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-cell grid-cell-1-2 grid-cell-ps-1">
+                <div class="about-content_text">
+                  A lot of fake escrow services & OTC “experts” cheat users.
+                  It’s BAD and HARMFUL for the whole industry. SWAPS.NETWORK does things the right way: decentralized & safe.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="about-wrapper_item">
+            <div class="grid-row">
+              <div class="grid-cell grid-cell-1-2 grid-cell-ps-2-5">
+                <img src="/assets/images/new-index/about-swaps-2.png" class="img-top-position">
+              </div>
+              <div class="grid-cell grid-cell-1-2 grid-cell-ps-3-5">
+                <div class="about-content with-left-padding">
+                  <div class="about-content_title">
+                    <span>Give up-and-coming projects a chance to operate their tokens</span>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-cell grid-cell-1-2 grid-cell-ps-1">
+                <div class="about-content_text">
+                  Today exchanges dictate their rules and have control of what is listed. If you are a small project or
+                  are just starting out, there is almost no way to trade your tokens in a safe and affordable way.
+                  Decentralized exchanges are a good option, but you still need to list your token, and it is likely
+                  that it will only be available to trade via one trading pair.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 
   <section class="section-12">
     <div class="app-content-block">
@@ -726,7 +756,7 @@
           <div class="team-member">
             <div class="team-member_ava"></div>
             <div class="team-member_all-label">
-              +6 developers
+              +10 developers
             </div>
           </div>
         </li>
@@ -1570,6 +1600,14 @@
           SWAPS.NETWORK provides fully decentralized OTC solutions. Users can make OTC deals without a 3rd party or escrow.<br/>
           *OTC stands for “over the counter,” meaning assets can be traded through a dealer network rather than over an exchange.
         </p>
+        <p>
+          <small>
+            The development of the SWAPS.NETWORK is conducted by experts and developers of MANZONI LIMITED LIABILITY COMPANY,<br/>
+            Registration number: 116784711990, INN: 7813245218, KPP: 781301001<br/>
+            For all questions regarding the platform operations please contact:
+            <a href="mailto:support@swaps.network">support@swaps.network</a>
+          </small>
+        </p>
         <div class="section-1_menu_links">
           <ul>
             <li>
@@ -1640,22 +1678,28 @@
         </div>
       </div>
 
-      <!-- div class="contacts-section contacts-section__links">
+      <div class="contacts-section contacts-section__links">
         <div class="contacts-section_title">
           Information
         </div>
         <div class="contacts-section_links">
           <div class="contacts-section_links_link">
-            <a href="#">Privacy Policy</a>
+            <a href="https://docs.google.com/document/d/1SLSun5LetKFYtueuCu3QV7ZSQPOxODoAUl-5LemXAHM/edit?usp=sharing" target="_blank">
+              Privacy Policy
+            </a>
           </div>
           <div class="contacts-section_links_link">
-            <a href="#">Terms of use for Website</a>
+            <a href="https://docs.google.com/document/d/1h56cr1eJfQqjU-JObu9qC7PuNkdws2F7RLXhGo2Gp_A/edit?usp=sharing" target="_blank">
+              Website use disclaimers
+            </a>
           </div>
         </div>
-      </div -->
+      </div>
 
     </div>
-
+    <div class="footer-copy">
+      &copy;Copyright SWAPS.NETWORK 2019
+    </div>
   </div>
 </footer>
 

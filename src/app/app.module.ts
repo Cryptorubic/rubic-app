@@ -48,6 +48,7 @@ import { ContactsComponent } from './contacts-component/contacts.component';
 import { IndexIcoComponent } from './index-ico/index-ico.component';
 import { IndexIcoHeaderComponent } from './index-ico/index-ico-header/index-ico-header.component';
 import { IndexIcoFormComponent } from './index-ico/index-ico-form/index-ico-form.component';
+import {OwlModule} from 'ngx-owl-carousel';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -142,7 +143,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     BrowserAnimationsModule,
     NgxMaterialTimepickerModule,
     NgScrollbarModule,
-    ClipboardModule
+    ClipboardModule,
+    OwlModule
   ],
   providers: [
     CookieService,

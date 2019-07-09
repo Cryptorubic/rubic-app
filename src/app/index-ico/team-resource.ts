@@ -101,6 +101,15 @@ export const TEAM_SOURCE = [
     linkedInUrl: 'https://www.linkedin.com/in/alexandrakorneva/',
     githubUrl: ''
   }, {
+    name: 'Veronika Trunina',
+    biography: `Сrypto junky, having passion to connect people and businesses with
+		more than 10 years leading in IT.
+		Former Software Development Director in EPAM (3 years)`,
+    position: 'Business Development',
+    avatarPath: 'person-17.png',
+    linkedInUrl: 'https://www.linkedin.com/in/veronika-trunina-6b567027/',
+    githubUrl: ''
+  }, {
     name: 'Dmitriy Kovalev',
     biography: `Dmitriy has a high level of development knowledge through more than 7 years of accumulated programming experience.
     He has been serving as a frontend developer in the blockchain industry for 2 years. He is skilled in the following languages:
@@ -118,16 +127,7 @@ export const TEAM_SOURCE = [
     avatarPath: 'person-3.png',
     linkedInUrl: 'https://www.linkedin.com/in/maksim-strenk-a93877177',
     githubUrl: 'https://github.com/ephdtrg'
-  }, {
-    name: 'Veronika Trunina',
-    biography: `Crypto junkies, having passion to connect people and businesses with
-		more than 10 years leading in IT.
-		Former Software Development Director in EPAM (3 years)`,
-    position: 'Business Development',
-    avatarPath: 'person-17.png',
-    linkedInUrl: 'https://www.linkedin.com/in/veronika-trunina-6b567027/',
-    githubUrl: ''
-  }, {
+  }/*, {
     name: 'Mikhail Rozdin',
     biography: `Programming experiance more than 2 years.
 		Languages: Java, PostgreSQL, maven, JUnit, git, TravicCi, JaCoCo`,
@@ -195,5 +195,5 @@ export const TEAM_SOURCE = [
     linkedInUrl: '',
     githubUrl: '',
     hidden: true
-  }
+  }*/
 ];

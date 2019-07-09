@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 
 import { TEAM_SOURCE } from './team-resource';
 
@@ -6,8 +6,7 @@ import {IndexIcoFormComponent} from './index-ico-form/index-ico-form.component';
 import {MatDialog} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
 
-
-const STAT_URL = 'get_statistics_landing/';
+import {OwlCarousel} from 'ngx-owl-carousel';
 
 
 export interface ITimer {
@@ -27,6 +26,8 @@ export interface ITimer {
 
 export class IndexIcoComponent implements OnInit {
 
+  @ViewChild('bqSlider') bqSlider: OwlCarousel;
+
   public teamSource;
   public msgCount: number;
   private serverDateTime: number;
@@ -36,11 +37,12 @@ export class IndexIcoComponent implements OnInit {
   public timerDigits: ITimer;
   public visibleTeam: boolean;
 
+  public countBqSlides: number;
+
   constructor(
     private dialog: MatDialog,
     private http: HttpClient
   ) {
-
 
     this.teamSource = TEAM_SOURCE.map((person: any) => {
       person.avatarPath = './assets/images/team/' + person.avatarPath;
@@ -70,11 +72,13 @@ export class IndexIcoComponent implements OnInit {
     setTimeout(() => {
       this.msgCount++;
       this.telegramTimerStart();
-    }, 5000 * (this.msgCount + 1));
+    }, 5000 * ((this.msgCount + 1)) * 2);
   }
 
   ngOnInit() {
     this.telegramTimerStart();
+    console.log(this.bqSlider);
+    this.countBqSlides = this.bqSlider.$owlChild['el'].nativeElement.childElementCount;
   }
 
   public checkLeftTIme(): void {
@@ -103,6 +107,7 @@ export class IndexIcoComponent implements OnInit {
   }
 
   public showAllTeam() {
+    return;
     this.visibleTeam = true;
   }
 

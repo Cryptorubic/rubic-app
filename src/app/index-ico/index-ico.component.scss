@@ -6,6 +6,7 @@
 button, input {
   font-family: 'TT Norms', Ubuntu, SansSerif;
 }
+
 .section-1 {
   background-color: #fff;
   padding: 77px 0 45px;
@@ -781,10 +782,16 @@ button, input {
 
 
 .section-5 {
-  margin-top: -18vw;
-  padding-top: 20vw;
-  background: url(/assets/images/new-index/backgrounds/why-swaps.svg) left top no-repeat;
-  background-size: 100% auto;
+  &:not(&__without-bg) {
+    margin-top: -18vw;
+    padding-top: 20vw;
+    background: url(/assets/images/new-index/backgrounds/why-swaps.svg) left top no-repeat;
+    background-size: 100% auto;
+  }
+  &__without-bg {
+    padding-top: 6%;
+    background-color: #fff;
+  }
   overflow: hidden;
   &-background {
     padding-bottom: 70px;
@@ -1874,7 +1881,7 @@ button, input {
         display: none;
       }
       &__empty {
-        cursor: pointer;
+        //cursor: pointer;
         position: relative;
         .team-member {
           margin-bottom: 0;
@@ -2939,10 +2946,10 @@ button, input {
 
 .section-footer {
   background-color: #F6F9FD;
-  padding: 70px 0;
+  padding: 70px 0 0;
   color: #3B4352;
   font-family: 'TT Norms';
-  margin-bottom: 60px;
+  margin-bottom: 80px;
   .information {
     display: flex;
     &_block {
@@ -2956,7 +2963,7 @@ button, input {
       }
       &__text {
         p {
-          margin: 0;
+          margin: 0 0 1em;
           width: 94%;
           font-size: 15px;
           line-height: 17px;
@@ -3010,6 +3017,18 @@ button, input {
           min-width: 28px;
         }
       }
+    }
+  }
+  .footer-copy {
+    //text-align: center;
+    font-size: 16px;
+    //font-weight: bold;
+    padding: 1em 0;
+    color: #565F6D;
+    margin-top: 2em;
+    a {
+      font-size: 0.8em;
+      color: inherit;
     }
   }
 }
@@ -3299,4 +3318,65 @@ a[id] {
 
 
 
+.blue-background {
+  background-color: #F5F8FD;
+}
+
+
+.slider-navigation {
+  position: relative;
+  z-index: 2;
+  &_wrapper {
+    position: absolute;
+    right: 5vw;
+  }
+  &_container {
+    float: right;
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 14px 23px;
+    position: relative;
+    white-space: nowrap;
+    box-sizing: border-box;
+    width: 125px;
+    margin-top: 29px;
+    text-align: center;
+    font-size: 21px;
+    color: #474D54;
+  }
+
+  &_curr-slide {
+    font-weight: bold;
+    position: relative;
+    top: -2px;
+  }
+  &_separate {
+    font-size: 0.75em;
+    margin-left: -2px;
+  }
+  &_count-slides {
+    font-size: 0.75em;
+    margin-left: -2px;
+  }
+
+  &_btn {
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    border-width: 2px 2px 0 0;
+    border-style: solid;
+    border-color: #a6b1c1;
+    width: 10px;
+    height: 10px;
+    cursor: pointer;
+    &__next {
+      right: 7px;
+      transform: rotate(45deg);
+    }
+    &__prev {
+      left: 7px;
+      transform: rotate(-135deg);
+    }
+  }
+}
 
