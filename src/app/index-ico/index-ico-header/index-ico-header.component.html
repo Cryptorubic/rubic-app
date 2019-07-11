@@ -15,97 +15,63 @@
         <span class="icon-bar"></span>
       </button>
 
+
+      <div class="language-select">
+        <ul class="language-select-list"
+            *ngIf="isBrowser"
+            [ngClass]="{'opened': openedLngList}" (click)="toggleLanguage()">
+          <li (click)="setLanguage(lng['lng'])"
+              [ngClass]="{'active': lng['active']}"
+              *ngFor="let lng of languagesList">
+            <img src="/assets/images/lng/{{lng['lng']}}.svg"/>
+            <span>{{lng['title']}}</span>
+          </li>
+        </ul>
+      </div>
+
+
       <nav class="header-menu" [ngClass]="{opened: openedMenu}"
            (mousedown)="$event.stopPropagation(); $event.preventDefault();">
         <ul class="header-menu_list">
           <li class="header-menu_list_item">
             <a href="https://drive.google.com/file/d/1q0GaNrd-5UOHfBE1q363kkyHWSOYCM97/edit"
                target="_blank"
-               class="header-link">Whitepaper</a>
+               class="header-link">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_1'|translate}}
+            </a>
           </li>
           <li class="header-menu_list_item">
             <a routerLink="team" class="header-link"
-               [routerLink]="['/']" [fragment]="'product'">Product</a>
+               [routerLink]="['/']" [fragment]="'product'">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_2'|translate}}
+            </a>
           </li>
           <li class="header-menu_list_item">
             <a routerLink="roadmap" class="header-link"
-               [routerLink]="['/']" [fragment]="'ieo'">IEO</a>
+               [routerLink]="['/']" [fragment]="'ieo'">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_3'|translate}}
+            </a>
           </li>
           <li class="header-menu_list_item">
             <a routerLink="faq" class="header-link"
-               [routerLink]="['/']" [fragment]="'team'">Team</a>
+               [routerLink]="['/']" [fragment]="'team'">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_4'|translate}}
+            </a>
           </li>
           <li class="header-menu_list_item">
             <a routerLink="faq" class="header-link"
-               [routerLink]="['/']" [fragment]="'roadmap'">Roadmap</a>
+               [routerLink]="['/']" [fragment]="'roadmap'">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_5'|translate}}
+            </a>
           </li>
           <li class="header-menu_list_item">
 
             <button (click)="openInviteForm()" class="new-btn header-btn">
-              <span>Try service</span>
+              <span>{{'INDEX_PAGE.HEADER.BUTTON'|translate}}</span>
             </button>
           </li>
         </ul>
       </nav>
-
-      <!--<nav class="header-menu" [ngClass]="{opened: openedMenu}"-->
-           <!--(mousedown)="$event.stopPropagation(); $event.preventDefault();">-->
-        <!--<ul class="header-menu_list">-->
-          <!--<li class="header-menu_list_item">-->
-            <!--<a [routerLink]="['/']" [fragment]="'how-it-works'" class="header-link">How it works</a>-->
-          <!--</li>-->
-          <!--<li class="header-menu_list_item">-->
-            <!--<a routerLink="team" class="header-link">Team</a>-->
-          <!--</li>-->
-          <!--<li class="header-menu_list_item">-->
-            <!--<a routerLink="roadmap" class="header-link">Roadmap</a>-->
-          <!--</li>-->
-          <!--<li class="header-menu_list_item">-->
-            <!--<a routerLink="faq" class="header-link">Faq</a>-->
-          <!--</li>-->
-          <!--<li class="header-menu_list_item" *ngIf="currentUser.is_ghost">-->
-            <!--<span (click)="openAuth()" class="header-link">Login</span>-->
-          <!--</li>-->
-          <!--<li class="header-menu_list_item with-sublist" *ngIf="!currentUser.is_ghost"-->
-              <!--[ngClass]="{'opened-list': userMenuOpened}">-->
-            <!--<span class="header-link"-->
-                  <!--[ngClass]="{'is-social': currentUser.is_social}"-->
-                  <!--(click)="userMenuOpened = !userMenuOpened">{{currentUser.username}}</span>-->
-            <!--<ul class="header-menu_sublist">-->
-              <!--<li class="header-menu_sublist_item">-->
-                <!--<a routerLink="contracts" class="sublist-link">My contracts</a>-->
-              <!--</li>-->
-              <!--<li class="header-menu_sublist_item">-->
-                <!--<span class="sublist-link" (click)="openLogoutConfirmation()">Logout</span>-->
-              <!--</li>-->
-            <!--</ul>-->
-          <!--</li>-->
-        <!--</ul>-->
-      <!--</nav>-->
     </div>
   </div>
 </header>
-
-
-<ng-template #logoutConfirmation>
-  <div class="dialog-block">
-    <div class="dialog-block__content">
-      <div class="alert-window-title">
-        {{'CONFIRMATIONS.LOG_OUT.TEXT'|translate}}
-      </div>
-    </div>
-    <div class="alert-window-buttons text-center">
-      <button class="btn btn-transparent btn-min " type="button" (click)="logoutSuccess()" [disabled]="logoutProgress">
-        <span class="lds-ellipsis" *ngIf="logoutProgress">
-          <span class="lds-ellipsis-container">
-            <span></span><span></span><span></span><span></span>
-          </span>
-        </span>
-        <span class="just-title">&nbsp;&nbsp;&nbsp;{{'YES'|translate}}&nbsp;&nbsp;&nbsp;</span>
-      </button>
-      <button class="btn btn-yellow btn-min" mat-dialog-close type="button">
-        <span>&nbsp;&nbsp;&nbsp;{{'NO'|translate}}&nbsp;&nbsp;&nbsp;</span>
-      </button><br/><br/>
-    </div>
-  </div>
-</ng-template>

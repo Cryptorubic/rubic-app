@@ -1,36 +1,45 @@
 <app-index-ico-header></app-index-ico-header>
 
 <div class="app-index-ico">
+
   <section class="section-1">
     <div class="app-content-block">
       <a href="https://event.bitforex.com/en/SWAP.html" target="_blank" class="section-1_timer">
         <div class="section-1_timer_circle"></div>
         <div class="section-1_timer_text">
-          <b>
-            IEO on BitForex<br/>
-            Starts on 15th of July 2019<br/>
-            at 17:00 GMT+8
-          </b>
+          {{'INDEX_PAGE.SECTION_1.TIMER.TITLE'|translate}}
+          <div class="section-1_timer_clock" *ngIf="timerDigits">
+            <div class="timer_clock_block">
+              <div class="timer_clock_block_digit">{{timerDigits.days}}</div>
+              <div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.DAYS"></div>
+            </div>
+            <div class="timer_clock_block">
+              <div class="timer_clock_block_digit">{{timerDigits.hours}}</div>
+              <div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.HOURS"></div>
+            </div>
+            <div class="timer_clock_block">
+              <div class="timer_clock_block_digit">{{timerDigits.minutes}}</div>
+              <div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.MINUTES"></div>
+            </div>
+            <div class="timer_clock_block">
+              <div class="timer_clock_block_digit">{{timerDigits.seconds}}</div>
+              <div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.SECONDS"></div>
+            </div>
+          </div>
         </div>
       </a>
-
       <div class="section-1_left">
-        <h1>
-          We&nbsp;are&nbsp;disrupting <br/>
-          the OTC<sup>*</sup> market
-        </h1>
+        <h1 [innerHTML]="'INDEX_PAGE.SECTION_1.TITLE'|translate"></h1>
         <p>
-          SWAPS.NETWORK is an OTC Global Liquidity Pool. It accumulates all deals on the market and connects sellers and buyers
-          from around the world.<br/>
-          SWAPS.NETWORK provides fully decentralized OTC solutions. Users can make OTC deals without a 3rd party or escrow.
+          {{'INDEX_PAGE.SECTION_1.TEXT.PART_1'|translate}}<br/>
+          {{'INDEX_PAGE.SECTION_1.TEXT.PART_2'|translate}}
           <br/><br/>
-          <sup>*</sup>OTC stands for “over the counter,” meaning assets can be traded through a dealer network rather than over an exchange.
+          <span [innerHTML]="'INDEX_PAGE.SECTION_1.TEXT.PART_3'|translate"></span>
         </p>
       </div>
       <div class="section-1_menu">
-
         <button (click)="openInviteForm()" class="new-btn new-btn-yellow">
-          <span>Try service</span>
+          <span translate="INDEX_PAGE.SECTION_1.MENU.BUTTON"></span>
         </button>
         <div class="section-1_menu_links">
           <ul>
@@ -38,21 +47,21 @@
               <a href="https://drive.google.com/file/d/1q0GaNrd-5UOHfBE1q363kkyHWSOYCM97/edit"
                  target="_blank"
                  class="icon-blank">
-                <span>Whitepaper</span>
+                <span translate="INDEX_PAGE.SECTION_1.MENU.WHITEPAPER"></span>
               </a>
             </li>
             <li>
               <a href="https://drive.google.com/file/d/14QPyhdvTZ5jy6qcdm0Y6bu2ZwlpT3r3c/view"
                  target="_blank"
                  class="icon-blank">
-                <span>Onepager</span>
+                <span translate="INDEX_PAGE.SECTION_1.MENU.ONEPAGER"></span>
               </a>
             </li>
             <li>
               <a href="https://t.me/SWAPS_NETWORK"
                  target="_blank"
                  class="icon-telegram">
-                <span>Telegram</span>
+                <span translate="INDEX_PAGE.SECTION_1.MENU.TELEGRAM"></span>
               </a>
             </li>
           </ul>
@@ -69,7 +78,7 @@
             <a class="section-2_menu_item_content"
                [routerLink]="['/']" [fragment]="'product'">
               <div class="title">
-                <span>Ready to use</span>
+                <span translate="INDEX_PAGE.SECTION_2.ITEMS_LIST.ITEM_1.TITLE"></span>
               </div>
               <span class="icon">
                 <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -79,7 +88,7 @@
                   <path d="M7.21875 4.64062H10.3125V5.67188H7.21875V4.64062Z" fill="#F8DB14"/>
                 </svg>
               </span>
-              <span class="text">Product is ready to use</span>
+              <span class="text" translate="INDEX_PAGE.SECTION_2.ITEMS_LIST.ITEM_1.TEXT"></span>
             </a>
           </li>
 
@@ -87,7 +96,7 @@
               [routerLink]="['/']" [fragment]="'partnership'">
             <a class="section-2_menu_item_content">
               <div class="title">
-                <span>Partnership</span>
+                <span translate="INDEX_PAGE.SECTION_2.ITEMS_LIST.ITEM_2.TITLE"></span>
               </div>
               <span class="icon">
                 <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -100,7 +109,7 @@
                   </defs>
                 </svg>
               </span>
-              <span class="text">Partnerships with the leading crypto exchanges with $2 bln daily volume</span>
+              <span class="text" translate="INDEX_PAGE.SECTION_2.ITEMS_LIST.ITEM_2.TEXT"></span>
             </a>
           </li>
 
@@ -108,7 +117,7 @@
             <a class="section-2_menu_item_content"
                [routerLink]="['/']" [fragment]="'our-background'">
               <div class="title">
-                <span>Strong team</span>
+                <span translate="INDEX_PAGE.SECTION_2.ITEMS_LIST.ITEM_3.TITLE"></span>
               </div>
               <span class="icon">
                 <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -121,7 +130,7 @@
                   <path d="M19.7191 23.0938L17.1227 20.4849V16.8113C17.1227 16.4675 16.8439 16.1887 16.5 16.1887C16.1562 16.1887 15.8774 16.4675 15.8774 16.8113V20.4849L13.281 23.0813C13.0351 23.3238 13.0323 23.7196 13.2747 23.9655C13.5172 24.2113 13.913 24.2141 14.1589 23.9717L16.5 21.6243L18.8412 23.9717C19.1024 24.1954 19.4954 24.1649 19.7191 23.9037C19.9187 23.6706 19.9187 23.3269 19.7191 23.0938Z" fill="#F8DB14"/>
                 </svg>
               </span>
-              <span class="text">Strong team that has achieved success in blockchain</span>
+              <span class="text" translate="INDEX_PAGE.SECTION_2.ITEMS_LIST.ITEM_3.TEXT"></span>
             </a>
           </li>
 
@@ -129,7 +138,7 @@
             <a class="section-2_menu_item_content"
                [routerLink]="['/']" [fragment]="'crowdfunding-tool'">
               <div class="title">
-                <span>Crowdfunding tool</span>
+                <span translate="INDEX_PAGE.SECTION_2.ITEMS_LIST.ITEM_4.TITLE"></span>
               </div>
               <span class="icon">
                 <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -137,13 +146,14 @@
                   <path d="M16.4999 0C7.40187 0 0 7.40187 0 16.4999C0 25.598 7.40187 32.9999 16.4999 32.9999C16.8707 32.9999 17.1715 32.6992 17.1715 32.3283C17.1715 31.9575 16.8707 31.6568 16.4999 31.6568C8.14247 31.6569 1.34309 24.8575 1.34309 16.4999C1.34309 8.14236 8.14247 1.34309 16.4999 1.34309C24.8574 1.34309 31.6568 8.14247 31.6568 16.4999C31.6568 21.7022 29.0355 26.4815 24.6448 29.2848C24.3322 29.4844 24.2405 29.8996 24.4401 30.2122C24.6396 30.5248 25.0547 30.6165 25.3675 30.4169C30.1466 27.3656 32.9999 22.1631 32.9999 16.5001C33 7.40187 25.5981 0 16.4999 0Z" fill="#F8DB14"/>
                 </svg>
               </span>
-              <span class="text">Crowdfunding Tool: Create Token & Start Crowdsale in 10 minutes without coding</span>
+              <span class="text" translate="INDEX_PAGE.SECTION_2.ITEMS_LIST.ITEM_4.TEXT"></span>
             </a>
           </li>
         </ul>
       </div>
     </div>
   </section>
+
 
   <section class="section-3">
     <div class="app-content-block slider-navigation" *ngIf="countBqSlides > 1">
@@ -178,28 +188,16 @@
             <div class="blockquotes-wrapper">
               <div class="blockquote blockquote-right">
                 <div class="blockquote_content">
-                  <div class="blockquote_content_name">Peter Lin</div>
-                  <div class="blockquote_content_position">
-                    Former Director of R&D NEO
-                  </div>
-                  <div class="blockquote_content_text">
-                    I know a few not successed attempts to implement the idea of cross-chain swaps.<br/>
-                    However SWAPS.NETWORK team has the necessary experience, technological stack and right contacts in the industry, that’s why I believe in the success.
-                  </div>
+                  <div class="blockquote_content_name" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_1.AUTHOR'|translate"></div>
+                  <div class="blockquote_content_position" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_1.POSITION'|translate"></div>
+                  <div class="blockquote_content_text" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_1.TEXT'|translate"></div>
                 </div>
               </div>
               <div class="blockquote blockquote-left blockquote-left__1">
                 <div class="blockquote_content">
-                  <div class="blockquote_content_name">Eric Su</div>
-                  <div class="blockquote_content_position">
-                    founder of the most trusted OTC<br/>
-                    telegram channel - <a href="https://t.me/otcroom" target="_blank">The OTC Room</a>
-                  </div>
-                  <div class="blockquote_content_text">
-                    At The OTC Room, as much as $2m of deals for rare digital assets go through us each month.
-                    SWAPS.NETWORK cuts down on the friction, scams and a waste of time while being a step forward
-                    to the decentralization of the space. If you want a safer and faster way to do OTC, help me support SWAPS.NETWORK.
-                  </div>
+                  <div class="blockquote_content_name" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_2.AUTHOR'|translate"></div>
+                  <div class="blockquote_content_position" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_2.POSITION'|translate"></div>
+                  <div class="blockquote_content_text" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_2.TEXT'|translate"></div>
                 </div>
               </div>
             </div>
@@ -221,26 +219,16 @@
             <div class="blockquotes-wrapper">
               <div class="blockquote blockquote-right">
                 <div class="blockquote_content">
-                  <div class="blockquote_content_name">Eric Benz</div>
-                  <div class="blockquote_content_position">
-                    CEO of Changelly
-                  </div>
-                  <div class="blockquote_content_text">
-                    The popularity of OTC services is growing rapidly. SWAPS.NETWORK will provide interoperability
-                    with exchanges in order to execute orders more efficiently whilst using the Changelly API.
-                  </div>
+                  <div class="blockquote_content_name" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_3.AUTHOR'|translate"></div>
+                  <div class="blockquote_content_position" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_3.POSITION'|translate"></div>
+                  <div class="blockquote_content_text" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_3.TEXT'|translate"></div>
                 </div>
               </div>
               <div class="blockquote blockquote-left blockquote-left__2">
                 <div class="blockquote_content">
-                  <div class="blockquote_content_name">Romal Almazo</div>
-                  <div class="blockquote_content_position">
-                    Former Head of Crypto and DLT at Capco
-                  </div>
-                  <div class="blockquote_content_text">
-                    Atomic swap technology will fix execution and settlement  risks currently in the OTC crypto market.
-                    SWAPS.NETWORK are well placed to be a leader in this field, having built a robust solution and secured major liquidity providers.
-                  </div>
+                  <div class="blockquote_content_name" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_4.AUTHOR'|translate"></div>
+                  <div class="blockquote_content_position" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_4.POSITION'|translate"></div>
+                  <div class="blockquote_content_text" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_4.TEXT'|translate"></div>
                 </div>
               </div>
             </div>
@@ -261,28 +249,16 @@
             <div class="blockquotes-wrapper">
               <div class="blockquote blockquote-right">
                 <div class="blockquote_content">
-                  <div class="blockquote_content_name">Hugo Hellebuyck</div>
-                  <div class="blockquote_content_position">
-                    Partner & VP sales at Tangem
-                  </div>
-                  <div class="blockquote_content_text">
-                    I am very confident to say SWAPS.NETWORK and other decentralized solutions of this kind are much
-                    needed in the ecosystem. Too few projects are focusing on the core values of decentralized finance.
-                    The founders have a solid background and a track record in the industry and have always given their
-                    best to satisfy the needs of their community. I will do my best to spread SWAPS.NETWORK solution in the Asian Market.
-                  </div>
+                  <div class="blockquote_content_name" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_5.AUTHOR'|translate"></div>
+                  <div class="blockquote_content_position" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_5.POSITION'|translate"></div>
+                  <div class="blockquote_content_text" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_5.TEXT'|translate"></div>
                 </div>
               </div>
               <div class="blockquote blockquote-left blockquote-left__1">
                 <div class="blockquote_content">
-                  <div class="blockquote_content_name">Marco Poliquin</div>
-                  <div class="blockquote_content_position">
-                    Blockchain Futurist
-                  </div>
-                  <div class="blockquote_content_text">
-                    SWAPS.NETWORK empowers the trader and elevates all players in the OTC market .
-                    Limitless Trustless Deals by Cypherpunk Brokers. Future-Proof OTC Decentralization with a cause!
-                  </div>
+                  <div class="blockquote_content_name" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_6.AUTHOR'|translate"></div>
+                  <div class="blockquote_content_position" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_6.POSITION'|translate"></div>
+                  <div class="blockquote_content_text" [innerHTML]="'INDEX_PAGE.SECTION_3.QUOTES.QUOTE_6.TEXT'|translate"></div>
                 </div>
               </div>
             </div>
@@ -302,9 +278,7 @@
   <a id="partnership"></a>
   <section class="section-4">
     <div class="app-content-block">
-      <div class="section-4-title">
-        Partnership with leading exchanges:
-      </div>
+      <div class="section-4-title" translate="INDEX_PAGE.SECTION_4.TITLE"></div>
       <div class="partners-list">
         <div class="partners-list_item">
           <a href="https://medium.com/@VladimirTikhomirov/swaps-network-is-pleased-to-announce-a-new-strategic-partnership-with-bw-exchange-7cc9c17765d7"
@@ -312,12 +286,7 @@
             <div class="partner-logo">
               <img src="./assets/images/new-index/logos/3w.png" height="40px"/>
             </div>
-            <div class="partner-description">
-              BW.com -  Having millions of users, they provide mining pool services for mainstream
-              cryptocurrencies to miners from 45 countries and regions. The BW mining pool has produced
-              nearly 300,000 Bitcoins, 1.5 million Litecoins and nearly 2 million Ethers, with a total
-              value of more than 3 billion US Dollars
-            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_4.LIST.ITEM_1"></div>
           </a>
         </div>
 
@@ -326,10 +295,7 @@
             <div class="partner-logo">
               <img src="./assets/images/new-index/logos/bestrate.svg" height="40px"/>
             </div>
-            <div class="partner-description">
-              Bestrate - A crypto payment gateway and aggregator of crypto exchanges
-              with 15,000+ active users of services and $3M+ in overall transactions
-            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_4.LIST.ITEM_2"></div>
           </a>
         </div>
       </div>
@@ -341,14 +307,9 @@
       <div class="app-content-block">
         <div class="section-5-head">
           <div class="section-5-head-texts">
-            <div class="section-pre-title">Crypto OTC market is approximately</div>
-            <div class="section-title">
-              $<span>30</span> billion
-              <small>daily<sup>*</sup></small>
-            </div>
-            <div class="section-desc">
-              <sup>*</sup>According to research published by Bloomberg and TABB Group, April 2018
-            </div>
+            <div class="section-pre-title" translate="INDEX_PAGE.SECTION_5.PRE_TITLE"></div>
+            <div class="section-title" [innerHTML]="'INDEX_PAGE.SECTION_5.TITLE'|translate"></div>
+            <div class="section-desc" [innerHTML]="'INDEX_PAGE.SECTION_5.DESCRIPTION'|translate"></div>
           </div>
           <div class="section-5-head-graphs">
             <img src="./assets/images/new-index/graphs.svg">
@@ -366,52 +327,50 @@
       <ul class="dev-list">
         <li class="dev-list_item">
           <div class="dev-progress">
-            <div class="dev-progress_name">development</div>
+            <div class="dev-progress_name" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_1.NAME"></div>
             <div class="dev-progress_line">
               <span style="width: 86%;"></span>
             </div>
             <div class="dev-progress_digit">86%</div>
           </div>
-
-          <div class="dev-title">OTC Global Liquidity Pool</div>
-          <div class="dev-text">
-            SWAPS.NETWORK is an OTC provider for exchanges. Users trust exchanges and feel comfortable making OTC
-            transactions there. SWAPS.NETWORK provides exchanges with a full-cycle solution: registration, management,
-            and processing for OTC deals. All user requests from all exchanges will be submitted to SWAPS.NETWORK for effective matching.
+          <div class="dev-title" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_1.TITLE"></div>
+          <div class="dev-text" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_1.TEXT"></div>
+          <div class="dev-post-block">
+            <div class="dev-post-block_text" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_1.POST_BLOCK"></div>
           </div>
         </li>
+
         <li class="dev-list_item">
           <div class="dev-progress">
-            <div class="dev-progress_name dev-progress_name__green">completed</div>
+            <div class="dev-progress_name" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.NAME"></div>
             <div class="dev-progress_line dev-progress_line__green">
               <span style="width: 100%;"></span>
             </div>
             <div class="dev-progress_digit">100%</div>
           </div>
 
-          <div class="dev-title">Decentralized P2P Solution</div>
-          <div class="dev-text">
-            It’s a ready-to-use product based on smart contracts. The user sends funds directly to the smart contract
-            and nobody except for them can take it back. When the second party sends the funds, the smart contract
-            distributes the funds. No escrow. No 3rd party. Just blockchain. SWAPS.NETWORK provides a lot of options:
-            Broker fees, multiple participants, min/max investment limitations, expiration dates, private & public trades.
+          <div class="dev-title" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.TITLE"></div>
+          <div class="dev-text" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.TEXT"></div>
+          <div class="dev-post-block without-line">
+            <button class="new-btn new-btn-yellow" (click)="openInviteForm()">
+              <span translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.POST_BLOCK"></span>
+            </button>
           </div>
         </li>
+
         <li class="dev-list_item">
           <div class="dev-progress">
-            <div class="dev-progress_name">testing</div>
+            <div class="dev-progress_name" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_3.NAME"></div>
             <div class="dev-progress_line">
               <span style="width: 79%;"></span>
             </div>
             <div class="dev-progress_digit">79%</div>
           </div>
 
-          <div class="dev-title">Crowdfunding Tool</div>
-          <div class="dev-text">
-            The crowdfunding tool consists of 2 parts: Token creation & selling mechanic. Users can create a token
-            within 5 minutes thanks to our partnership with MyWish Platform. The selling mechanic is also ready thanks
-            to the decentralized p2p solution. By using the crowdfunding tool, everyone will be able to start selling
-            the tokens within 10 minutes. This acts as a great solution for start-ups, small businesses & entrepreneurs.
+          <div class="dev-title" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_3.TITLE"></div>
+          <div class="dev-text" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_3.TEXT"></div>
+          <div class="dev-post-block">
+            <div class="dev-post-block_text" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_3.POST_BLOCK"></div>
           </div>
         </li>
       </ul>
@@ -421,61 +380,40 @@
   <section class="section-5 section-5__without-bg">
     <div class="section-5-background">
       <div class="app-content-block">
-        <div class="section-list-title">
-          Why use SWAPS.NETWORK and not a crypto exchange?
-        </div>
+        <div class="section-list-title" translate="INDEX_PAGE.SECTION_7.TITLE"></div>
         <ul class="why-list">
           <li class="why-list_item">
             <div class="why-list_item_content">
-              <div class="title">Large orders</div>
-              <p class="text">
-                Crypto exchanges often have low liquidity in their order books. For example, you can’t trade 1000 BTC at one
-                time on Binance/Huobi while avoiding strong volatility. SWAPS.NETWORK creates the deepest pool of
-                liquidity in the industry by aggregating large trade orders searching for market liquidity.
-              </p>
+              <div class="title" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_1.TITLE"></div>
+              <p class="text" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_1.TEXT"></p>
             </div>
           </li>
 
           <li class="why-list_item">
             <div class="why-list_item_content">
-              <div class="title">Avoid prohibitive limits</div>
-              <p class="text">
-                The majority of crypto exchanges have prohibitive trading limits. For example, if you are a new client,
-                your daily trading limit may be limited to $2,000 or $3,000. In addition, withdrawal options may be limited.
-                SWAPS.NETWORK specializes in deals with big volumes and therefore makes it possible to avoid restrictions
-                on transactions that exist on the exchanges.
-              </p>
+              <div class="title" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_2.TITLE"></div>
+              <p class="text" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_2.TEXT"></p>
             </div>
           </li>
 
           <li class="why-list_item">
             <div class="why-list_item_content">
-              <div class="title">Avoid price ‘slippage’</div>
-              <p class="text">
-                Price slippage occurs on exchanges when the total transaction cost is higher than expected.
-                This phenomenon is due to orders that take longer than usual.
-              </p>
+              <div class="title" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_3.TITLE"></div>
+              <p class="text" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_3.TEXT"></p>
             </div>
           </li>
 
           <li class="why-list_item">
             <div class="why-list_item_content">
-              <div class="title">Unlisted Tokens</div>
-              <p class="text">
-                For new projects, it is nearly impossible to trade tokens when they are not listed on an exchange.
-                Even if they do want to get listed, this can be a quite expensive process. At SWAPS.NETWORK,
-                anyone can trade, even unlisted tokens.
-              </p>
+              <div class="title" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_4.TITLE"></div>
+              <p class="text" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_4.TEXT"></p>
             </div>
           </li>
 
           <li class="why-list_item">
             <div class="why-list_item_content">
-              <div class="title">No escrow</div>
-              <p class="text">
-                One of the key benefits when trading OTC using Atomic Swap technology means third party
-                escrow accounts are not required to guarantee the trade.
-              </p>
+              <div class="title" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_5.TITLE"></div>
+              <p class="text" translate="INDEX_PAGE.SECTION_7.LIST.ITEM_5.TEXT"></p>
             </div>
           </li>
         </ul>
@@ -489,19 +427,13 @@
   <section class="section-7 blue-background">
     <div class="app-content-block">
       <div class="schemas-section">
-        <div class="schemas-section_title">OTC Global Liquidity Pool</div>
-        <p class="schemas-section_text">
-          All OTC offers from exchanges are accumulated on SWAPS.NETWORK.<br/>
-          In turn, exchanges and brokers can use SWAPS.NETWORK stock for matching their trade orders.
-        </p>
+        <div class="schemas-section_title" translate="INDEX_PAGE.SECTION_8.TITLE"></div>
+        <p class="schemas-section_text" [innerHTML]="'INDEX_PAGE.SECTION_8.TEXT.PART_1'|translate"></p>
         <div class="schemas-section_img">
           <img src="/assets/images/new-index/schema-1.svg?t_1" class="hide-vs">
           <img src="/assets/images/new-index/schema-1-mobile.svg?t_1" class="show-vs">
         </div>
-        <p class="schemas-section_text">
-          Several exchanges have agreed to use our service, and we have already started this implementation process.
-          You will be able to use it as of August 2019.
-        </p>
+        <p class="schemas-section_text" [innerHTML]="'INDEX_PAGE.SECTION_8.TEXT.PART_2'|translate"></p>
       </div>
     </div>
   </section>
@@ -509,25 +441,14 @@
   <section class="section-7">
     <div class="app-content-block">
       <div class="schemas-section">
-        <div class="schemas-section_title">
-          Decentralized Exchange Service. Why it's safe?
-        </div>
-        <p class="schemas-section_text">
-          <b>1.</b> SWAPS.NETWORK solution is based on smart contracts and nobody can’t steal your funds.<br/>
-          For every private swap, smart contract (program in the blockchain) is generated, conditions are fixed inside of the smart contract.
-        </p>
-        <p class="schemas-section_text">
-          <b>2.</b> Only in case of sending the full amount by both parties exchange take place.<br>
-          Each of the parties at any time before the exchange can do the refund.
-        </p>
+        <div class="schemas-section_title" translate="INDEX_PAGE.SECTION_9.TITLE"></div>
+        <p class="schemas-section_text" [innerHTML]="'INDEX_PAGE.SECTION_9.TEXT.PART_1'|translate"></p>
+        <p class="schemas-section_text" [innerHTML]="'INDEX_PAGE.SECTION_9.TEXT.PART_2'|translate"></p>
         <div class="schemas-section_img">
           <img src="/assets/images/new-index/schema-2.svg?t_1" class="hide-vs">
           <img src="/assets/images/new-index/schema-2-mobile.svg?t_1" class="show-vs">
         </div>
-        <p class="schemas-section_text">
-          <b>3.</b> There is no 3rd party during the exchange (users are interacting via blockchain) and exchange’s conditions can’t be changed.<br/>
-          That’s why it’s the safest and transparent way for an exchange.
-        </p>
+        <p class="schemas-section_text" [innerHTML]="'INDEX_PAGE.SECTION_9.TEXT.PART_3'|translate"></p>
       </div>
     </div>
   </section>
@@ -536,50 +457,39 @@
     <div class="app-content-block">
       <a id="crowdfunding-tool" style="top: -70px; position: relative;"></a>
       <div class="schemas-section">
-        <div class="schemas-section_title">
-          Crowdfunding tool
+        <div class="schemas-section_title" translate="INDEX_PAGE.SECTION_10.TITLE">
         </div>
         <div class="crowdfunding_list">
           <div class="crowdfunding_list_item">
-            <p class="schemas-section_text crowdfunding_list_item_text">
-              Tokenization is one of the main trends nowadays
-            </p>
+            <p class="schemas-section_text crowdfunding_list_item_text" translate="INDEX_PAGE.SECTION_10.LIST.ITEM_1"></p>
             <div class="crowdfunding_list_item_img">
               <img src="./assets/images/new-index/crowdfunding/img-1.svg">
             </div>
           </div>
 
           <div class="crowdfunding_list_item">
-            <p class="schemas-section_text crowdfunding_list_item_text">
-              However, it is currently available only to medium and large businesses.
-            </p>
+            <p class="schemas-section_text crowdfunding_list_item_text" translate="INDEX_PAGE.SECTION_10.LIST.ITEM_2"></p>
             <div class="crowdfunding_list_item_img">
               <img src="./assets/images/new-index/crowdfunding/img-2.svg">
             </div>
           </div>
 
           <div class="crowdfunding_list_item">
-            <p class="schemas-section_text crowdfunding_list_item_text">
-              We solve this problem!
-            </p>
+            <p class="schemas-section_text crowdfunding_list_item_text" translate="INDEX_PAGE.SECTION_10.LIST.ITEM_3"></p>
             <div class="crowdfunding_list_item_img">
               <img src="./assets/images/new-index/crowdfunding/img-3.svg">
             </div>
           </div>
 
           <div class="crowdfunding_list_item">
-            <p class="schemas-section_text crowdfunding_list_item_text">
-              Now tokenization and fundraising through blockchain is available to everyone.
-            </p>
+            <p class="schemas-section_text crowdfunding_list_item_text" translate="INDEX_PAGE.SECTION_10.LIST.ITEM_4"></p>
             <div class="crowdfunding_list_item_img">
               <img src="./assets/images/new-index/crowdfunding/img-4.svg">
             </div>
           </div>
 
           <div class="crowdfunding_list_item">
-            <p class="schemas-section_text crowdfunding_list_item_text">
-              Everyone can create their own token and run Crowdsale (free of charge) on SWAPS.NETWORK.
-            </p>
+            <p class="schemas-section_text crowdfunding_list_item_text" translate="INDEX_PAGE.SECTION_10.LIST.ITEM_5"></p>
             <div class="crowdfunding_list_item_img">
               <img src="./assets/images/new-index/crowdfunding/img-5.svg">
             </div>
@@ -593,28 +503,26 @@
 
   <section class="section-8">
     <div class="app-content-block">
-      <div class="section-title">
-        How it works:
-      </div>
+      <div class="section-title" translate="INDEX_PAGE.SECTION_11.TITLE"></div>
 
       <ul class="hiw-steps">
         <li>
-          <span>Create your deal on your terms</span>
+          <span translate="INDEX_PAGE.SECTION_11.STEPS.STEP_1.TEXT"></span>
         </li>
         <li>
-          <span>The deal will be completed as soon as the other side completes its part</span>
+          <span translate="INDEX_PAGE.SECTION_11.STEPS.STEP_2.TEXT"></span>
         </li>
       </ul>
 
       <div class="grid-row hiw-steps_images">
         <div class="grid-cell hiw-steps_images_cell">
-          <div class="one-step-title">Step1</div>
+          <div class="one-step-title" translate="INDEX_PAGE.SECTION_11.STEPS.STEP_1.NAME"></div>
           <div class="one-step-img">
             <img src="./assets/images/new-index/hiw-1.png?t=1">
           </div>
         </div>
         <div class="grid-cell hiw-steps_images_cell">
-          <div class="one-step-title">Step2</div>
+          <div class="one-step-title" translate="INDEX_PAGE.SECTION_11.STEPS.STEP_2.NAME"></div>
           <div class="one-step-img">
             <img src="./assets/images/new-index/hiw-2.png?t=1" class="two-imgs">
             <img src="./assets/images/new-index/hiw-3.png?t=1" class="two-imgs">
@@ -624,7 +532,7 @@
 
 
       <button (click)="openInviteForm()" class="new-btn new-btn-yellow">
-        <span>Try service without commission</span>
+        <span translate="INDEX_PAGE.SECTION_11.BUTTON">Try service without commission</span>
       </button>
 
     </div>
@@ -652,20 +560,19 @@
     <div class="app-content-block">
       <div class="section-content">
         <div class="section-title">
-          SWAPS.NETWORK <br/>
-          FEATURES
+          <span [innerHTML]="'INDEX_PAGE.SECTION_12.TITLE'|translate"></span>
+          <div class="section-title_post" translate="INDEX_PAGE.SECTION_12.POST_TITLE"></div>
         </div>
         <ul class="features-list">
-          <li>Fully decentralized</li>
-          <li>Swap non-listed tokens</li>
-          <li>No volume limits</li>
-          <li>Private and public swaps</li>
-          <li>Intuitive design</li>
-          <!--<li>Friendlu UI</li>-->
-          <li>Multiple participants during a single swap</li>
-          <li>All trading pairs supported</li>
-          <li>Ability to get funds back at anytime</li>
-          <li>No sign-ups</li>
+          <li translate="INDEX_PAGE.SECTION_12.LIST.ITEM_1"></li>
+          <li translate="INDEX_PAGE.SECTION_12.LIST.ITEM_2"></li>
+          <li translate="INDEX_PAGE.SECTION_12.LIST.ITEM_3"></li>
+          <li translate="INDEX_PAGE.SECTION_12.LIST.ITEM_4"></li>
+          <li translate="INDEX_PAGE.SECTION_12.LIST.ITEM_5"></li>
+          <li translate="INDEX_PAGE.SECTION_12.LIST.ITEM_6"></li>
+          <li translate="INDEX_PAGE.SECTION_12.LIST.ITEM_7"></li>
+          <li translate="INDEX_PAGE.SECTION_12.LIST.ITEM_8"></li>
+          <li translate="INDEX_PAGE.SECTION_12.LIST.ITEM_9"></li>
         </ul>
         <img src="./assets/images/new-index/icons/check-2.svg" class="title-check">
       </div>
@@ -683,9 +590,7 @@
   <section class="section-5 section-5__without-bg">
     <div class="section-5-background">
       <div class="app-content-block">
-        <div class="section-list-title">
-          Why is <span>SWAPS.NETWORK</span> important for the whole blockchain community?
-        </div>
+        <div class="section-list-title" [innerHTML]="'INDEX_PAGE.SECTION_13.TITLE'|translate"></div>
       </div>
       <div class="about-wrapper">
         <div class="app-content-block">
@@ -698,15 +603,12 @@
               <div class="grid-cell grid-cell-1-2">
                 <div class="about-content">
                   <div class="about-content_title">
-                    <span>Bring security to OTC trades</span>
+                    <span translate="INDEX_PAGE.SECTION_13.TEXTS.PART_1.TITLE"></span>
                   </div>
                 </div>
               </div>
               <div class="grid-cell grid-cell-1-2 grid-cell-ps-1">
-                <div class="about-content_text">
-                  A lot of fake escrow services & OTC “experts” cheat users.
-                  It’s BAD and HARMFUL for the whole industry. SWAPS.NETWORK does things the right way: decentralized & safe.
-                </div>
+                <div class="about-content_text" translate="INDEX_PAGE.SECTION_13.TEXTS.PART_1.TEXT"></div>
               </div>
             </div>
           </div>
@@ -718,17 +620,12 @@
               <div class="grid-cell grid-cell-1-2 grid-cell-ps-3-5">
                 <div class="about-content with-left-padding">
                   <div class="about-content_title">
-                    <span>Give up-and-coming projects a chance to operate their tokens</span>
+                    <span translate="INDEX_PAGE.SECTION_13.TEXTS.PART_2.TITLE"></span>
                   </div>
                 </div>
               </div>
               <div class="grid-cell grid-cell-1-2 grid-cell-ps-1">
-                <div class="about-content_text">
-                  Today exchanges dictate their rules and have control of what is listed. If you are a small project or
-                  are just starting out, there is almost no way to trade your tokens in a safe and affordable way.
-                  Decentralized exchanges are a good option, but you still need to list your token, and it is likely
-                  that it will only be available to trade via one trading pair.
-                </div>
+                <div class="about-content_text" translate="INDEX_PAGE.SECTION_13.TEXTS.PART_2.TEXT"></div>
               </div>
             </div>
           </div>
@@ -740,67 +637,49 @@
 
   <section class="section-12">
     <div class="app-content-block">
-      <div class="section-title">
-        5 Reasons to Invest in SWAPS.NETWORK
-      </div>
+      <div class="section-title" translate="INDEX_PAGE.SECTION_14.TITLE"></div>
 
       <div class="grid-row reasons-list">
         <div class="grid-cell">
+
           <div class="reasons-list_item">
             <div class="reasons-list_item_title">
-              <span>The OTC market consists of up to $30 bln a day and is continuously growing</span>
+              <span translate="INDEX_PAGE.SECTION_14.LIST.ITEM_1.TITLE"></span>
             </div>
-            <div class="reasons-list_item_text">
-              SWAPS.NETWORK fulfils the need for a secure decentralized solution, allowing deals to be carried out
-              without the involvement of a 3rd party. It is an early mover in the market, which allows for a higher
-              chance of conquering a significant share of the OTC market. Users need an easy, safe, secure and reliable
-              tool to change, buy and sell crypto assets.
-            </div>
-          </div>
-          <div class="reasons-list_item">
-            <div class="reasons-list_item_title">
-              <span>Growing demand for SWAPS.NETWORK services</span>
-            </div>
-            <div class="reasons-list_item_text">
-              The SWAP token is the fuel for our service.<br/>
-              It will be used to:<br/>
-              &nbsp;- Pay for SWAPS.NETWORK platform fees<br/>
-              &nbsp;- Pay traders and brokers their commission<br/>
-              &nbsp;- Create smart contracts on different blockchains<br/>
-              As SWAPS.NETWORK will consistently launch the project’s components, the demand for SWAP will grow.
-            </div>
-          </div>
-        </div>
-        <div class="grid-cell">
-          <div class="reasons-list_item">
-            <div class="reasons-list_item_title">
-              <span>Bonuses for SWAP holders</span>
-            </div>
-            <div class="reasons-list_item_text">
-              SWAP holders will have the opportunity to launch their own tokens, start fundraising companies,
-              get discounts and save money.
-            </div>
+            <div class="reasons-list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_14.LIST.ITEM_1.TEXT'|translate"></div>
           </div>
 
           <div class="reasons-list_item">
             <div class="reasons-list_item_title">
-              <span>SWAPS.NETWORK revolutionizes the OTC market</span>
+              <span translate="INDEX_PAGE.SECTION_14.LIST.ITEM_2.TITLE"></span>
             </div>
-            <div class="reasons-list_item_text">
-              By investing in SWAPS.NETWORK, you are investing in the stock trading market and in the exchanges
-              with which SWAPS.NETWORK works. This market does not depend on fluctuations in the cost
-              of cryptocurrencies and continues to grow.
-            </div>
+            <div class="reasons-list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_14.LIST.ITEM_2.TEXT'|translate"></div>
           </div>
+
+        </div>
+        <div class="grid-cell">
+
           <div class="reasons-list_item">
             <div class="reasons-list_item_title">
-              <span>Product is live</span>
+              <span translate="INDEX_PAGE.SECTION_14.LIST.ITEM_3.TITLE"></span>
             </div>
-            <div class="reasons-list_item_text">
-              Statistics show that just 5 percent of the thousands of startups have a product live.
-              Currently the process of product development of SWAPS.NETWORK for Ethereum is completed. Everyone can use this service.
-            </div>
+            <div class="reasons-list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_14.LIST.ITEM_3.TEXT'|translate"></div>
           </div>
+
+          <div class="reasons-list_item">
+            <div class="reasons-list_item_title">
+              <span translate="INDEX_PAGE.SECTION_14.LIST.ITEM_4.TITLE"></span>
+            </div>
+            <div class="reasons-list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_14.LIST.ITEM_4.TEXT'|translate"></div>
+          </div>
+
+          <div class="reasons-list_item">
+            <div class="reasons-list_item_title">
+              <span translate="INDEX_PAGE.SECTION_14.LIST.ITEM_5.TITLE"></span>
+            </div>
+            <div class="reasons-list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_14.LIST.ITEM_5.TEXT'|translate"></div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -809,17 +688,17 @@
   <a id="team"></a>
   <section class="section-13">
     <div class="app-content-block">
-      <div class="section-title">Team members and advisors</div>
+      <div class="section-title" translate="INDEX_PAGE.SECTION_15.TITLE"></div>
       <ul class="team-list" [ngClass]="{'team-list__all-team': visibleTeam}">
         <li class="team-list_item" *ngFor="let person of teamSource" [ngClass]="{'team-list_item__hidden': person.hidden}">
           <div class="team-member">
             <div class="team-member_ava" [ngStyle]="{'background-image': 'url('+ person.avatarPath + ')'}">
             </div>
             <div class="team-member_name">
-              {{ person.name }}
+              {{ person.name|translate}}
             </div>
             <div class="team-member_position">
-              {{ person.position }}
+              {{ person.position|translate }}
             </div>
             <div class="team-member_social">
               <a *ngIf="person.linkedInUrl" [href]="person.linkedInUrl" target="_blank">
@@ -830,7 +709,7 @@
               </a>
             </div>
             <div class="team-member_description">
-              {{ person.biography }}
+              {{ person.biography|translate }}
             </div>
           </div>
         </li>
@@ -855,13 +734,12 @@
         <div class="section-content-wrapper">
           <div class="section-text-content">
             <div class="section-title">
-              Our background
+              {{'INDEX_PAGE.SECTION_16.TITLE'|translate}}
               <img src="./assets/images/new-index/logos/mywish.svg" class="section-mywish-logo">
             </div>
             <div class="section-text">
-              <b>We have a successful experience in launching projects based on blockchain technology.</b><br/><br/>
-              Our team released the MyWish platform — the leading platform for smart contract generation  for 6 blockchains
-              (NEO, Ethereum, TRON, EOS, RSK, and WAVES) supported by TRON, EOS Community, NEO, Waves and Binance.
+              <b translate="INDEX_PAGE.SECTION_16.POST_TITLE"></b><br/><br/>
+              {{'INDEX_PAGE.SECTION_16.DESCRIPTION'|translate}}
             </div>
           </div>
           <div class="chains-logotypes">
@@ -873,11 +751,11 @@
           </div>
 
           <ul class="mywish-description">
-            <li>More than 8500 users on MyWish platform</li>
-            <li>More than 6 000 contracts created since 2017</li>
-            <li>More than 200 projects used MyWish for their businesses</li>
-            <li>Winner of TRON Accelerator</li>
-            <li>Winner of WAVES Blockchain Grant</li>
+            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_1"></li>
+            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_2"></li>
+            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_3"></li>
+            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_4"></li>
+            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_5"></li>
           </ul>
         </div>
 
@@ -897,83 +775,52 @@
   <a id="roadmap"></a>
   <section class="section-15">
     <div class="app-content-block">
-      <div class="section-title">Roadmap</div>
+      <div class="section-title" translate="INDEX_PAGE.SECTION_17.TITLE"></div>
       <div class="roadmap-container">
-        <div class="roadmap-title">Successfully reached</div>
+        <div class="roadmap-title" translate="INDEX_PAGE.SECTION_17.SUCCESSFULLY.TITLE"></div>
         <div class="roadmap-map successfully">
           <ul class="roadmap-map_list">
             <li class="roadmap-map_list_item">
-              <span class="text">
-                Launch SWAPS.NETWORK on Ethereum<br/>
-                (with the support of all ERC-20 tokens)
-              </span>
-              <span class="subtitle">QII 2019</span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SUCCESSFULLY.LIST.ITEM_1'|translate"></span>
+              <span class="subtitle" translate="INDEX_PAGE.SECTION_17.QII19"></span>
             </li>
             <li class="roadmap-map_list_item">
-              <span class="text">
-                Implementation<br/>
-                of a single smart<br/>
-                contract
-              </span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SUCCESSFULLY.LIST.ITEM_2'|translate"></span>
             </li>
             <li class="roadmap-map_list_item">
-              <span class="text">
-                Implementation <br/>
-                of the functionality,<br/>
-                “Broker”
-              </span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SUCCESSFULLY.LIST.ITEM_3'|translate"></span>
             </li>
           </ul>
         </div>
       </div>
 
       <div class="roadmap-container">
-        <div class="roadmap-title">Soon to be reached</div>
+        <div class="roadmap-title" translate="INDEX_PAGE.SECTION_17.SOON.TITLE">Soon to be reached</div>
         <div class="roadmap-map soon-to">
           <ul class="roadmap-map_list">
-            <!-- li class="roadmap-map_list_item">
-              <span class="text">
-                Run swaps on one f the following blockchains: TRON, NEO, EOS, Binance
-              </span>
-              <span class="subtitle">QII 2019</span>
-            </li -->
             <li class="roadmap-map_list_item">
-              <span class="text">
-                Partnerships with major exchanges, centralized OTC and wallets
-              </span>
-              <span class="subtitle">QIII 2019</span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SOON.LIST.ITEM_1'|translate"></span>
+              <span class="subtitle" translate="INDEX_PAGE.SECTION_17.QIII19"></span>
             </li>
             <li class="roadmap-map_list_item">
-              <span class="text">
-                Run swaps on two other blockchains
-              </span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SOON.LIST.ITEM_2'|translate"></span>
             </li>
             <li class="roadmap-map_list_item">
-              <span class="text">
-                API implementation for the referral program
-              </span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SOON.LIST.ITEM_3'|translate"></span>
             </li>
             <li class="roadmap-map_list_item">
-              <span class="text">
-                Run swaps on BTC
-              </span>
-              <span class="subtitle">QIV 2019</span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SOON.LIST.ITEM_4'|translate"></span>
+              <span class="subtitle" translate="INDEX_PAGE.SECTION_17.QIV19"></span>
             </li>
             <li class="roadmap-map_list_item">
-              <span class="text">
-                IOS & Android mobile application
-              </span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SOON.LIST.ITEM_5'|translate"></span>
             </li>
             <li class="roadmap-map_list_item">
-              <span class="text">
-                Run cross-chain solutions for OTC deals
-              </span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SOON.LIST.ITEM_6'|translate"></span>
             </li>
             <li class="roadmap-map_list_item">
-              <span class="text">
-                SWAPS.NETWORK - the leader in terms of OTC volume in the world
-              </span>
-              <span class="subtitle">QI 2020</span>
+              <span class="text" [innerHTML]="'INDEX_PAGE.SECTION_17.SOON.LIST.ITEM_7'|translate"></span>
+              <span class="subtitle" translate="INDEX_PAGE.SECTION_17.QI20"></span>
             </li>
           </ul>
         </div>
@@ -984,12 +831,8 @@
   <a id="ieo"></a>
   <section class="section-16">
     <div class="app-content-block">
-      <div class="section-title">Bonuses</div>
-      <!--<div class="section-post-title">Bonus for participants</div>-->
-      <div class="section-description">
-        All bonus tokens are not tradable and only can be used on SWAPS.NETWORK platform.
-        Bonus distribution is SWAPS.NETWORK responsibility. For getting bonuses you will have to log in to the platform.
-      </div>
+      <div class="section-title" translate="INDEX_PAGE.SECTION_18.TITLE"></div>
+      <div class="section-description" translate="INDEX_PAGE.SECTION_18.DESCRIPTION"></div>
 
       <div class="bonuses-list">
 
@@ -997,61 +840,38 @@
           <div class="bonuses-list_item_content">
 
             <div class="title title_bonus-1">
-              <span class="title_name">
-                Bronze<br/>
-                From
-              </span>
+              <span class="title_name" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.TITLE'|translate"></span>
               <span class="title_amount">$999</span>
             </div>
 
             <div class="list">
-
               <div class="list_item">
-                <div class="list_item_title">+20% discount for private/public deals</div>
-                <div class="list_item_text">
-                  You will get a discount if you hold 23 000 SWAP tokens (999$) since PTO until 31/07/2020.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_1.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_1.TEXT"></div>
+              </div>
+              <div class="list_item">
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TEXT"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title">+3%  Tokens for Platform Usage</div>
-                <div class="list_item_text">
-                  You will receive an additional 3% of tokens to use solely for services on the platform.<br/>
-                  There will be no possibility of selling them on the exchange.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_3.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_3.TEXT"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title">3 Free Public OTC Deals (No Commission)</div>
-                <div class="list_item_text">
-                  Every OTC deal has a commission starting from 0.5%.
-                  Package owners will receive promo codes that allow them to remove commissions on 3 deals.
-                </div>
-              </div>
-
-
-              <div class="list_item">
-                <div class="list_item_title">1 Free Personal Token </div>
-                <div class="list_item_text">
-                  Creation and minting personal token based on Ethereum. Creating a token by yourself requires at
-                  least 3 weeks and costs from $2000. We will create the token for you, and you will be able to use
-                  it for your desired project and trading.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_4.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_4.TEXT"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title">Free Access to Escrow Service</div>
-                <div class="list_item_text">
-                  SWAPS.NETWORK will collect escrow ratings and direct contacts.<br/>
-                  You will have exclusive access to the ratings & contacts.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_5.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_5.TEXT"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title">1 Free Private OTC Deal (No Commission & No Fee)</div>
-                <div class="list_item_text">
-                  Private OTC deals are not visible to other users, and it’s the safest solution.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_6.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_6.TEXT"></div>
               </div>
             </div>
           </div>
@@ -1060,64 +880,39 @@
 
         <div class="bonuses-list_item">
           <div class="bonuses-list_item_content">
-
             <div class="title title_bonus-2">
-              <span class="title_name">
-                Silver<br/>
-                From
-              </span>
+              <span class="title_name" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.TITLE'|translate"></span>
               <span class="title_amount">$2499</span>
             </div>
 
             <div class="list">
-
               <div class="list_item">
-                <div class="list_item_title">+30% discount for private/public deals</div>
-                <div class="list_item_text">
-                  You will get a discount if you hold 58 000 SWAP tokens ($2499) since PTO until 31/07/2020.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_1.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_1.TEXT"></div>
               </div>
-
-
               <div class="list_item">
-                <div class="list_item_title">+5% Tokens for Platform Usage</div>
-                <div class="list_item_text">
-                  You will receive an additional 5% of tokens to use solely for services on the platform.
-                  There will be no possibility of selling them on the exchange.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TEXT"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title">5 Free Public OTC Deals (No Commission)</div>
-                <div class="list_item_text">
-                  Every OTC deal has a commission starting from 0.5%. Package owners will receive
-                  promo codes that allow them to remove commissions on 5 deals.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_3.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_3.TEXT"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title">2 Free Personal Tokens</div>
-                <div class="list_item_text">
-                  Creation and minting personal token based on Ethereum. Creating a token by yourself requires at
-                  least 3 weeks and costs from $2000. We will create the token for you, and you will be able to use it
-                  for your desired project and trading.
-                </div>
-              </div>
-
-
-              <div class="list_item">
-                <div class="list_item_title">Free Access to Escrow Service</div>
-                <div class="list_item_text">
-                  SWAPS.NETWORK will collect escrow ratings and direct contacts.<br/>
-                  You will have exclusive access to the ratings & contacts.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_4.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_4.TEXT"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title">2 Free Private OTC Deals (No Commission & No Fee)</div>
-                <div class="list_item_text">
-                  Private OTC deals are not visible to other users, and it’s the safest solution.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_5.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_5.TEXT"></div>
+              </div>
+
+              <div class="list_item">
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_6.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_6.TEXT"></div>
               </div>
             </div>
           </div>
@@ -1128,70 +923,39 @@
           <div class="bonuses-list_item_content">
 
             <div class="title title_bonus-3">
-              <span class="title_name">
-                Gold<br/>
-                From
-              </span>
+              <span class="title_name" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.TITLE'|translate"></span>
               <span class="title_amount">$6499</span>
             </div>
 
             <div class="list">
-
               <div class="list_item">
-                <div class="list_item_title">+40% discount for private/public deals</div>
-                <div class="list_item_text">
-                  You will get a discount if you hold 151 000 SWAP tokens ($6499) since PTO until 31/07/2020.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_1.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_1.TEXT"></div>
               </div>
-
               <div class="list_item">
-                <div class="list_item_title">+7% Tokens for Platform Usage</div>
-                <div class="list_item_text">
-                  You will receive an additional 7% of tokens to use solely for services on the platform.
-                  There will be no possibility of selling them on the exchange.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TEXT"></div>
               </div>
-
               <div class="list_item">
-                <div class="list_item_title">7 Free Public OTC Deals (No Commission)</div>
-                <div class="list_item_text">
-                  Every OTC deal has a commission starting from 0.5%.
-                  Package owners will receive promo codes that allow them to remove commissions on 7 deals.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_3.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_3.TEXT"></div>
               </div>
-
               <div class="list_item">
-                <div class="list_item_title">3 Free Personal Tokens</div>
-                <div class="list_item_text">
-                  Creation and minting personal token based on Ethereum. Creating a token by yourself requires at least
-                  3 weeks and costs from $2000. We will create the token for you, and you will be able to use it for
-                  your desired project and trading.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_4.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_4.TEXT"></div>
               </div>
-
               <div class="list_item">
-                <div class="list_item_title">Free Access to Escrow Service</div>
-                <div class="list_item_text">
-                  SWAPS.NETWORK will collect escrow ratings and direct contacts. You will have exclusive access to
-                  the ratings & contacts.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_5.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_5.TEXT"></div>
               </div>
-
               <div class="list_item">
-                <div class="list_item_title">Free Access to Escrow Service</div>
-                <div class="list_item_text">
-                  SWAPS.NETWORK will collect escrow ratings and direct contacts.<br/>
-                  You will have exclusive access to the ratings & contacts.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_6.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_6.TEXT"></div>
               </div>
-
               <div class="list_item">
-                <div class="list_item_title">3 Free Private OTC Deals (No Commission & No Fee)</div>
-                <div class="list_item_text">
-                  Private OTC deals are not visible to other users, and it’s the safest solution.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_7.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_7.TEXT"></div>
               </div>
-
             </div>
           </div>
         </div>
@@ -1201,69 +965,40 @@
           <div class="bonuses-list_item_content">
 
             <div class="title title_bonus-4">
-              <span class="title_name">
-                Prime<br/>
-                From
-              </span>
+              <span class="title_name" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.TITLE'|translate"></span>
               <span class="title_amount">$14499</span>
             </div>
 
             <div class="list">
 
               <div class="list_item">
-                <div class="list_item_title">+50% discount for private/public deals</div>
-                <div class="list_item_text">
-                  You will get a discount if you hold 337 000 SWAP tokens ($14499) since PTO until 31/07/2020.
-                </div>
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_1.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_1.TEXT"></div>
+              </div>
+              <div class="list_item">
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TEXT"></div>
+              </div>
+              <div class="list_item">
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_3.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_3.TEXT"></div>
+              </div>
+              <div class="list_item">
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_4.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_4.TEXT"></div>
+              </div>
+              <div class="list_item">
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_5.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_5.TEXT"></div>
+              </div>
+              <div class="list_item">
+                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_6.TITLE"></div>
+                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_6.TEXT"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title">+10% Tokens for Platform Usage</div>
-                <div class="list_item_text">
-                  You will receive an additional 10% of tokens to use solely for services on the platform.<br/>
-                  There will be no possibility of selling them on the exchange.
-                </div>
-              </div>
-
-              <div class="list_item">
-                <div class="list_item_title">10 Free Public OTC Deals (No Commission)</div>
-                <div class="list_item_text">
-                  Every OTC deal has a commission starting from 0.5%. Package owners will receive promo codes
-                  that allow them to remove commissions on 10 deals.
-                </div>
-              </div>
-
-
-              <div class="list_item">
-                <div class="list_item_title">5 Free Personal Tokens</div>
-                <div class="list_item_text">
-                  Creation and minting personal token based on Ethereum. Creating a token by yourself requires at
-                  least 2 weeks and costs up to $3000. We will create the token for you, and you will be able to use
-                  it for your desired project and trading.
-                </div>
-              </div>
-
-              <div class="list_item">
-                <div class="list_item_title">Free Access to Escrow Service</div>
-                <div class="list_item_text">
-                  SWAPS.NETWORK will collect escrow ratings and direct contacts.<br/>
-                  You will have exclusive access to the ratings & contacts.
-                </div>
-              </div>
-
-              <div class="list_item">
-                <div class="list_item_title">5 Free Private OTC Deals (No Commission & No Fee)</div>
-                <div class="list_item_text">
-                  Private OTC deals are not visible to other users, and it’s the safest solution.
-                </div>
-              </div>
-              <div class="list_item">
-                <div class="list_item_special">
-                  Exclusive access (Prime tickets) to private events organised by SWAPS.NETWORK and partners
-                </div>
-                <div class="list_item_special">
-                  Early access to Beta version & new products
-                </div>
+                <div class="list_item_special" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.EXCLUSIVE.PART_1"></div>
+                <div class="list_item_special" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.EXCLUSIVE.PART_2"></div>
               </div>
             </div>
           </div>
@@ -1280,40 +1015,39 @@
           <div class="grid-cell grid-cell-1-2 grid-cell-sm-1">
             <div class="discount-notice_bonus">+15%</div>
             <div class="discount-notice_msg">
-              Everyone who invests in our IEO in first 10 minutes,
-              will get an additional 15% of tokens to use on SWAPS.NETWORK.<br/><br/>
-              Prepare your bitcoins and set the alarm for 10 minutes before the start.
+              {{'INDEX_PAGE.SECTION_19.TEXT.PART_1'|translate}}<br/><br/>
+              {{'INDEX_PAGE.SECTION_19.TEXT.PART_2'|translate}}
             </div>
             <div class="ieo-time">
               <div class="ieo-time_block">
                 <img class="ieo-time_icon" src="./assets/images/new-index/icons/clock.svg"/>
-                <span class="ieo-time_text">17:00 GMT+8</span>
+                <span class="ieo-time_text" translate="INDEX_PAGE.SECTION_19.TIME"></span>
               </div>
               <div class="ieo-time_block">
                 <img class="ieo-time_icon" src="./assets/images/new-index/icons/calendar.svg"/>
-                <span class="ieo-time_text">15th of July</span>
+                <span class="ieo-time_text" translate="INDEX_PAGE.SECTION_19.DATE"></span>
               </div>
             </div>
           </div>
           <div class="grid-cell grid-cell-1-2 grid-cell-sm-1">
             <div class="discount-notice_timer" *ngIf="timerDigits">
-              <div class="discount-notice_timer_title">IEO starts in:</div>
+              <div class="discount-notice_timer_title" translate="INDEX_PAGE.SECTION_1.TIMER.TITLE"></div>
               <div class="discount-notice_clock">
                 <div class="discount-notice_clock_block">
                   <div class="digit">{{timerDigits.days}}</div>
-                  <div class="name">days</div>
+                  <div class="name" translate="INDEX_PAGE.SECTION_1.TIMER.DAYS"></div>
                 </div>
                 <div class="discount-notice_clock_block">
                   <div class="digit">{{timerDigits.hours}}</div>
-                  <div class="name">hours</div>
+                  <div class="name" translate="INDEX_PAGE.SECTION_1.TIMER.HOURS"></div>
                 </div>
                 <div class="discount-notice_clock_block">
                   <div class="digit">{{timerDigits.minutes}}</div>
-                  <div class="name">minutes</div>
+                  <div class="name" translate="INDEX_PAGE.SECTION_1.TIMER.MINUTES"></div>
                 </div>
                 <div class="discount-notice_clock_block">
                   <div class="digit">{{timerDigits.seconds}}</div>
-                  <div class="name text-left">seconds</div>
+                  <div class="name text-left" translate="INDEX_PAGE.SECTION_1.TIMER.SECONDS"></div>
                 </div>
               </div>
             </div>
@@ -1321,17 +1055,17 @@
         </div>
 
         <div class="ieo-world-times">
-          <div class="ieo-world-times_item">Hong Kong 17:00</div>
-          <div class="ieo-world-times_item">New York 5:00</div>
-          <div class="ieo-world-times_item">Seoul 18:00</div>
-          <div class="ieo-world-times_item">Shanghai 17:00</div>
-          <div class="ieo-world-times_item">Tokyo 18:00</div>
-          <div class="ieo-world-times_item">Moscow 12:00</div>
+          <div class="ieo-world-times_item">{{'INDEX_PAGE.SECTION_19.CITIES.CITY_1'|translate}} 17:00</div>
+          <div class="ieo-world-times_item">{{'INDEX_PAGE.SECTION_19.CITIES.CITY_2'|translate}}  5:00</div>
+          <div class="ieo-world-times_item">{{'INDEX_PAGE.SECTION_19.CITIES.CITY_3'|translate}}  18:00</div>
+          <div class="ieo-world-times_item">{{'INDEX_PAGE.SECTION_19.CITIES.CITY_4'|translate}}  17:00</div>
+          <div class="ieo-world-times_item">{{'INDEX_PAGE.SECTION_19.CITIES.CITY_5'|translate}}  18:00</div>
+          <div class="ieo-world-times_item">{{'INDEX_PAGE.SECTION_19.CITIES.CITY_6'|translate}}  12:00</div>
         </div>
 
         <div class="discount-notice_btn">
-          <button class="new-btn" (click)="openInviteForm()">
-            <span>Join</span>
+          <button class="new-btn" (click)="openFullInviteForm()">
+            <span translate="INDEX_PAGE.SECTION_19.BUTTON"></span>
           </button>
         </div>
       </div>
@@ -1341,50 +1075,47 @@
 
   <section class="section-18">
     <div class="app-content-block">
-      <div class="section-title">Token Data</div>
+      <div class="section-title" translate="INDEX_PAGE.SECTION_20.TITLE"></div>
       <div class="section-description">
-        <div class="title">About SWAP Token</div>
-        <span>
-          SWAP token is based on the Ethereum protocol and will fully comply with the ERC20 standard.
-          Support of this standard ensures compatibility of the token with third-party services and also provides ease of integration.
-        </span>
+        <div class="title" translate="INDEX_PAGE.SECTION_20.POST_TITLE"></div>
+        <span translate="INDEX_PAGE.SECTION_20.DESCRIPTION"></span>
       </div>
       <div class="token-info">
         <div class="token-info_item">
-          <div class="label">Symbol</div>
-          <div class="value">SWAP</div>
+          <div class="label" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_1.LABEL"></div>
+          <div class="value" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_1.VALUE"></div>
         </div>
         <div class="token-info_item">
-          <div class="label">Unsold Tokens</div>
-          <div class="value">Will be burned</div>
+          <div class="label" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_2.LABEL"></div>
+          <div class="value" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_2.VALUE"></div>
         </div>
         <div class="token-info_item">
-          <div class="label">Soft cap</div>
-          <div class="value">300,000 USD</div>
+          <div class="label" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_3.LABEL"></div>
+          <div class="value" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_3.VALUE"></div>
         </div>
         <div class="token-info_item">
-          <div class="label">Total supply</div>
-          <div class="value">100,000,000</div>
+          <div class="label" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_4.LABEL"></div>
+          <div class="value" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_4.VALUE"></div>
         </div>
         <div class="token-info_item">
-          <div class="label">Retail price</div>
-          <div class="value">1 SWAP = 0.043 USD</div>
+          <div class="label" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_5.LABEL"></div>
+          <div class="value" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_5.VALUE"></div>
         </div>
         <div class="token-info_item">
-          <div class="label">Hard cap</div>
-          <div class="value">3,000,000 USD</div>
+          <div class="label" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_6.LABEL"></div>
+          <div class="value" translate="INDEX_PAGE.SECTION_20.TOKEN_INFO.PART_6.VALUE"></div>
         </div>
       </div>
 
       <div class="tokens-budgets">
         <div class="tokens-budgets_item">
           <div class="tokens-budgets_block">
-            <div class="tokens-budgets_title">Allocation</div>
+            <div class="tokens-budgets_title" translate="INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_1.TITLE"></div>
             <div class="grid-row tokens-budgets_info">
               <div class="grid-cell grid-cell-1-2 grid-cell-sm-1">
                 <div class="grant-title">
                   <span class="grant-title_percent">70%</span>
-                  <span class="grant-title_text">Token sale</span>
+                  <span class="grant-title_text" translate="INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_1.PART_1.PART_NAME"></span>
                 </div>
                 <span class="grant-description">&nbsp;</span>
               </div>
@@ -1393,11 +1124,11 @@
                 <div class="grant-title">
                   <span class="grant-title_percent">10%</span>
                   <span class="grant-title_text">
-                    Bounty <span>(BLOCKED)</span>
+                    {{'INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_1.PART_2.PART_NAME'|translate}}
+                    <span translate="INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCKED" class="uppercase"></span>
                   </span>
                 </div>
-                <span class="grant-description">
-                  5 % of tokens will be frozen for a year.
+                <span class="grant-description" translate="INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_1.PART_2.PART_DESC">
                 </span>
               </div>
 
@@ -1405,11 +1136,11 @@
                 <div class="grant-title">
                   <span class="grant-title_percent">15%</span>
                   <span class="grant-title_text">
-                    Team <span>(BLOCKED)</span>
+                    {{'INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_1.PART_3.PART_NAME'|translate}}
+                    <span translate="INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCKED" class="uppercase"></span>
                   </span>
                 </div>
-                <span class="grant-description">
-                  -12% will be unfrozen each time in the amount of 3% over 4 years
+                <span class="grant-description" translate="INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_1.PART_3.PART_DESC">
                 </span>
               </div>
 
@@ -1417,27 +1148,27 @@
                 <div class="grant-title">
                   <span class="grant-title_percent">5%</span>
                   <span class="grant-title_text">
-                    Advisors <span>(BLOCKED)</span>
+                    {{'INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_1.PART_4.PART_NAME'|translate}}
+                    <span translate="INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCKED" class="uppercase"></span>
                   </span>
                 </div>
-                <span class="grant-description">
-                  2.5 % of tokens will be frozen for a year.
+                <span class="grant-description" translate="INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_1.PART_4.PART_DESC">
                 </span>
               </div>
-
-
             </div>
           </div>
         </div>
 
         <div class="tokens-budgets_item">
           <div class="tokens-budgets_block">
-            <div class="tokens-budgets_title">Budget & Spending</div>
+            <div class="tokens-budgets_title" translate="INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_2.TITLE"></div>
             <div class="grid-row tokens-budgets_info">
               <div class="grid-cell grid-cell-1-2 grid-cell-sm-1">
                 <div class="grant-title">
                   <span class="grant-title_percent">40%</span>
-                  <span class="grant-title_text">Development</span>
+                  <span class="grant-title_text">
+                    {{'INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_2.PART_1.PART_NAME'|translate}}
+                  </span>
                 </div>
                 <span class="grant-description">&nbsp;</span>
               </div>
@@ -1446,7 +1177,7 @@
                 <div class="grant-title">
                   <span class="grant-title_percent">15%</span>
                   <span class="grant-title_text">
-                    Partnerships&nbsp;& Integrations
+                    {{'INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_2.PART_2.PART_NAME'|translate}}
                   </span>
                 </div>
                 <span class="grant-description">&nbsp;</span>
@@ -1456,18 +1187,17 @@
                 <div class="grant-title">
                   <span class="grant-title_percent">25%</span>
                   <span class="grant-title_text">
-                    Marketing
+                    {{'INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_2.PART_3.PART_NAME'|translate}}
                   </span>
                 </div>
                 <span class="grant-description">&nbsp;</span>
               </div>
 
-
               <div class="grid-cell grid-cell-1-2 grid-cell-sm-1">
                 <div class="grant-title">
                   <span class="grant-title_percent">10%</span>
                   <span class="grant-title_text">
-                    Legal
+                    {{'INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_2.PART_4.PART_NAME'|translate}}
                   </span>
                 </div>
                 <span class="grant-description">&nbsp;</span>
@@ -1476,7 +1206,7 @@
                 <div class="grant-title">
                   <span class="grant-title_percent">10%</span>
                   <span class="grant-title_text">
-                    Reserve Fund
+                    {{'INDEX_PAGE.SECTION_20.DISTRIBUTE.BLOCK_2.PART_5.PART_NAME'|translate}}
                   </span>
                 </div>
               </div>
@@ -1491,65 +1221,46 @@
 
   <section class="section-19">
     <div class="app-content-block">
-      <div class="section-title">
-        Token Use
-      </div>
+      <div class="section-title" translate="INDEX_PAGE.SECTION_21.TITLE"></div>
 
       <div class="section-content">
 
-        <div class="section-description">
-          The token SWAP bears a pure utility role.
-        </div>
+        <div class="section-description" translate="INDEX_PAGE.SECTION_21.DESCRIPTION"></div>
         <div class="token-use-list">
           <div class="grid-row">
             <div class="grid-cell grid-cell-1-2 grid-cell-ps-4-5 grid-cell-ls-1">
               <div class="token-use-list_item">
-              <span class="token-use-list_item_text">
-                SWAP creation fee
-              </span>
+              <span class="token-use-list_item_text" translate="INDEX_PAGE.SECTION_21.LIST.ITEM_1"></span>
               </div>
               <div class="token-use-list_item">
-              <span class="token-use-list_item_text">
-                Payment for additional deal’s options (long period of validity, number of participants, etc.)
-              </span>
+              <span class="token-use-list_item_text" translate="INDEX_PAGE.SECTION_21.LIST.ITEM_2"></span>
               </div>
               <div class="token-use-list_item">
-              <span class="token-use-list_item_text">
-                Token listing fee (any token can be used for swap, but the presence of a token in the list increases
-                confidence and does not require control of the token address)
-              </span>
+              <span class="token-use-list_item_text" translate="INDEX_PAGE.SECTION_21.LIST.ITEM_3"></span>
               </div>
             </div>
             <div class="grid-cell grid-cell-1-2 grid-cell-ps-4-5 grid-cell-ls-1">
               <div class="token-use-list_item">
-              <span class="token-use-list_item_text">
-                Payment to external services for attracted customers (payment is made on behalf of SWAPS.NETWORK)
-              </span>
+              <span class="token-use-list_item_text" translate="INDEX_PAGE.SECTION_21.LIST.ITEM_4"></span>
               </div>
               <div class="token-use-list_item">
-              <span class="token-use-list_item_text">
-                Fee for promotional listing (mailing, posting on the site, in social networks, etc.)
-              </span>
+              <span class="token-use-list_item_text" translate="INDEX_PAGE.SECTION_21.LIST.ITEM_5"></span>
               </div>
               <div class="token-use-list_item">
-              <span class="token-use-list_item_text">
-                Discounts
-              </span>
+              <span class="token-use-list_item_text" translate="INDEX_PAGE.SECTION_21.LIST.ITEM_6"></span>
               </div>
             </div>
           </div>
         </div>
 
         <div class="when-paying">
-          <div class="when-paying_text">
-            SWAP holders can get the following maximum discounts (depend on holding amount & time)
-          </div>
+          <div class="when-paying_text" translate="INDEX_PAGE.SECTION_21.TABLE.TEXT.PART_1"></div>
 
           <div class="when-paying_table">
             <div class="when-paying_table_row">
               <div class="when-paying_table_cell">
-                <div class="when-paying_table_cell_label">Year</div>
-                <div class="when-paying_table_cell_value">Discount</div>
+                <div class="when-paying_table_cell_label" translate="INDEX_PAGE.SECTION_21.TABLE.YEAR"></div>
+                <div class="when-paying_table_cell_value" translate="INDEX_PAGE.SECTION_21.TABLE.DISCOUNT"></div>
               </div>
               <div class="when-paying_table_cell">
                 <div class="when-paying_table_cell_label">1</div>
@@ -1569,14 +1280,11 @@
               </div>
               <div class="when-paying_table_cell">
                 <div class="when-paying_table_cell_label">5</div>
-                <div class="when-paying_table_cell_value">No discount</div>
+                <div class="when-paying_table_cell_value" translate="INDEX_PAGE.SECTION_21.TABLE.NO_DISCOUNT"></div>
               </div>
             </div>
           </div>
-          <div class="when-paying_text">
-            It will be released 100 million tokens, without the possibility of further emission.
-            In order to later burn 50% of all distributed tokens.
-          </div>
+          <div class="when-paying_text" translate="INDEX_PAGE.SECTION_21.TABLE.TEXT.PART_2"></div>
         </div>
       </div>
 
@@ -1585,7 +1293,7 @@
 
   <section class="section-4 without-bottom">
     <div class="app-content-block">
-      <div class="section-4-title">Partners</div>
+      <div class="section-4-title" translate="INDEX_PAGE.SECTION_22.TITLE"></div>
       <div class="partners-list">
 
         <div class="partners-list_item">
@@ -1594,11 +1302,7 @@
             <div class="partner-logo">
               <img src="./assets/images/new-index/logos/3w.png" height="40px"/>
             </div>
-            <div class="partner-description">
-              Having millions of users, they provide mining pool services for mainstream cryptocurrencies to miners
-              from 45 countries and regions. The BW mining pool has produced nearly 300,000 Bitcoins, 1.5 million
-              Litecoins and nearly 2 million Ethers, with a total value of more than 3 billion US Dollars.
-            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_22.PARTNERS_LIST.PARTNER_1.TEXT"></div>
           </a>
         </div>
 
@@ -1607,10 +1311,7 @@
             <div class="partner-logo">
               <img src="./assets/images/new-index/logos/bestrate.svg" height="40px"/>
             </div>
-            <div class="partner-description">
-              A crypto payment gateway and aggregator of crypto exchanges with 15,000+ active users of services
-              and $3M+ in overall transactions.
-            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_22.PARTNERS_LIST.PARTNER_2.TEXT"></div>
           </a>
         </div>
 
@@ -1620,11 +1321,7 @@
             <div class="partner-logo">
               <img src="./assets/images/new-index/logos/mywish-white.svg" height="40px"/>
             </div>
-            <div class="partner-description">
-              The leading platform for Smart contracts builders for 6 blockchains (NEO, Ethereum, TRON, EOS, RSK, and WAVES)
-              supported by TRON, EOS Community, NEO, Waves and Binance.  More than 8500 users and more than 6 000 contracts
-              created since 2017.
-            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_22.PARTNERS_LIST.PARTNER_3.TEXT"></div>
           </a>
         </div>
 
@@ -1633,10 +1330,7 @@
             <div class="partner-logo">
               <img src="./assets/images/new-index/logos/changelly.svg" height="40px"/>
             </div>
-            <div class="partner-description">
-              A non-custodial instant cryptocurrency exchange, which means that no users’ funds are placing in the service.
-              Changelly acts as an intermediary between crypto exchanges and users, offering access to 140+ cryptocurrencies.
-            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_22.PARTNERS_LIST.PARTNER_4.TEXT"></div>
           </a>
         </div>
 
@@ -1645,9 +1339,7 @@
             <div class="partner-logo">
               <img src="./assets/images/new-index/logos/market-crypto.svg" height="40px"/>
             </div>
-            <div class="partner-description">
-              The oldest Telegram crypto OTC group. Widely known in the Russian community. Since 5 oct 2017.
-            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_22.PARTNERS_LIST.PARTNER_5.TEXT"></div>
           </a>
         </div>
 
@@ -1657,13 +1349,9 @@
             <div class="partner-logo">
               <img src="./assets/images/new-index/logos/otc-room.png"/>
             </div>
-            <div class="partner-description">
-              The OTC Room is the pioneering group of digital assets trading or OTC. Funds and investors have enjoyed
-              a safe and trusted environment for over 1 year and total volume of over $10m completed trades.
-            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_22.PARTNERS_LIST.PARTNER_6.TEXT"></div>
           </a>
         </div>
-
 
       </div>
     </div>
@@ -1679,15 +1367,15 @@
       </div>
       <div class="information_block information_block__text">
         <p>
-          SWAPS.NETWORK is an OTC Global Liquidity Pool. It accumulates all deals on the market and connects sellers and buyers from around the world.<br/>
-          SWAPS.NETWORK provides fully decentralized OTC solutions. Users can make OTC deals without a 3rd party or escrow.<br/>
-          *OTC stands for “over the counter,” meaning assets can be traded through a dealer network rather than over an exchange.
+          {{'INDEX_PAGE.SECTION_23.TEXT.PART_1'|translate}}<br/>
+          {{'INDEX_PAGE.SECTION_23.TEXT.PART_2'|translate}}<br/>
+          {{'INDEX_PAGE.SECTION_23.TEXT.PART_3'|translate}}
         </p>
         <p>
           <small>
-            The development of the SWAPS.NETWORK is conducted by experts and developers of MANZONI LIMITED LIABILITY COMPANY,<br/>
-            Registration number: 116784711990, INN: 7813245218, KPP: 781301001<br/>
-            For all questions regarding the platform operations please contact:
+            {{'INDEX_PAGE.SECTION_23.TEXT.PART_4'|translate}}<br/>
+            {{'INDEX_PAGE.SECTION_23.TEXT.PART_5'|translate}}<br/>
+            {{'INDEX_PAGE.SECTION_23.TEXT.PART_6'|translate}}
             <a href="mailto:support@swaps.network">support@swaps.network</a>
           </small>
         </p>
@@ -1697,21 +1385,21 @@
               <a href="https://drive.google.com/file/d/1q0GaNrd-5UOHfBE1q363kkyHWSOYCM97/edit"
                  target="_blank"
                  class="icon-blank">
-                <span>Whitepaper</span>
+                <span translate="INDEX_PAGE.SECTION_1.MENU.WHITEPAPER"></span>
               </a>
             </li>
             <li>
               <a href="https://drive.google.com/file/d/14QPyhdvTZ5jy6qcdm0Y6bu2ZwlpT3r3c/view"
                  target="_blank"
                  class="icon-blank">
-                <span>Onepager</span>
+                <span translate="INDEX_PAGE.SECTION_1.MENU.ONEPAGER"></span>
               </a>
             </li>
             <li>
               <a href="https://t.me/SWAPS_NETWORK"
                  target="_blank"
                  class="icon-telegram">
-                <span>Telegram</span>
+                <span translate="INDEX_PAGE.SECTION_1.MENU.TELEGRAM"></span>
               </a>
             </li>
           </ul>
@@ -1721,9 +1409,7 @@
 
     <div class="contacts">
       <div class="contacts-section contacts-section__social">
-        <div class="contacts-section_title">
-          Follow us
-        </div>
+        <div class="contacts-section_title" translate="INDEX_PAGE.SECTION_23.FOLLOW_US"></div>
         <div class="contacts-section_social-links">
 
           <a href="https://github.com/swaps-network" target="_blank">
@@ -1748,41 +1434,33 @@
       </div>
 
       <div class="contacts-section contacts-section__links">
-        <div class="contacts-section_title">
-          Contacts
-        </div>
+        <div class="contacts-section_title" translate="INDEX_PAGE.SECTION_23.CONTACTS"></div>
         <div class="contacts-section_links">
           <div class="contacts-section_links_link">
-            Support: <a href="#">support@swaps.network</a>
+            {{'INDEX_PAGE.SECTION_23.SUPPORT'|translate}} <a href="#">support@swaps.network</a>
           </div>
           <div class="contacts-section_links_link">
-            Media: <a href="#">media@swaps.network</a>
+            {{'INDEX_PAGE.SECTION_23.MEDIA'|translate}} <a href="#">media@swaps.network</a>
           </div>
         </div>
       </div>
 
       <div class="contacts-section contacts-section__links">
-        <div class="contacts-section_title">
-          Information
-        </div>
+        <div class="contacts-section_title" translate="INDEX_PAGE.SECTION_23.INFORMATION"></div>
         <div class="contacts-section_links">
           <div class="contacts-section_links_link">
-            <a href="https://docs.google.com/document/d/1SLSun5LetKFYtueuCu3QV7ZSQPOxODoAUl-5LemXAHM/edit?usp=sharing" target="_blank">
-              Privacy Policy
-            </a>
+            <a href="https://docs.google.com/document/d/1SLSun5LetKFYtueuCu3QV7ZSQPOxODoAUl-5LemXAHM/edit?usp=sharing"
+               target="_blank" translate="INDEX_PAGE.SECTION_23.PRIVACY_POLICY"></a>
           </div>
           <div class="contacts-section_links_link">
-            <a href="https://docs.google.com/document/d/1h56cr1eJfQqjU-JObu9qC7PuNkdws2F7RLXhGo2Gp_A/edit?usp=sharing" target="_blank">
-              Website use disclaimers
-            </a>
+            <a href="https://docs.google.com/document/d/1h56cr1eJfQqjU-JObu9qC7PuNkdws2F7RLXhGo2Gp_A/edit?usp=sharing"
+               target="_blank" translate="INDEX_PAGE.SECTION_23.WEB_DISCLAIMERS"></a>
           </div>
         </div>
       </div>
 
     </div>
-    <div class="footer-copy">
-      &copy;Copyright SWAPS.NETWORK 2019
-    </div>
+    <div class="footer-copy" translate="INDEX_PAGE.SECTION_23.COPY"></div>
   </div>
 </footer>
 
@@ -1792,9 +1470,9 @@
     <span>{{msgCount}}</span>
   </a>
   <div class="app-content-block">
-    <span class="float-line_text">Our product is ready, use it without commission</span>
+    <span class="float-line_text" translate="INDEX_PAGE.FLOAT_FOOTER.TEXT"></span>
     <button type="submit" class="new-btn" (click)="openInviteForm()">
-      <span>Join</span>
+      <span translate="INDEX_PAGE.FLOAT_FOOTER.BUTTON"></span>
     </button>
   </div>
 </div>

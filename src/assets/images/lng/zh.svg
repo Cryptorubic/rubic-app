@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512px" height="512px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" fill-rule="nonzero">
+            <circle id="Oval" fill="#DE2910" cx="256" cy="256" r="256"></circle>
+            <polygon id="s" fill="#FFDE00" points="148.5 113 194.641123 255.007835 73.8420255 167.242166 223.157975 167.242166 102.358878 255.007835"></polygon>
+            <polygon id="s" fill="#FFDE00" transform="translate(279.971545, 110.715204) rotate(23.036243) translate(-279.971545, -110.715204) " points="279.971545 87.197983 295.253955 134.232425 255.244063 105.163541 304.699027 105.163541 264.689135 134.232425"></polygon>
+            <polygon id="s" fill="#FFDE00" transform="translate(332.782041, 163.271266) rotate(45.869898) translate(-332.782041, -163.271266) " points="332.782041 139.754045 348.064451 186.788487 308.054559 157.719603 357.509523 157.719603 317.499631 186.788487"></polygon>
+            <polygon id="s" fill="#FFDE00" transform="translate(333.332239, 243.148617) rotate(69.945396) translate(-333.332239, -243.148617) " points="333.332239 219.631396 348.614649 266.665838 308.604757 237.596954 358.059721 237.596954 318.049829 266.665838"></polygon>
+            <polygon id="s" fill="#FFDE00" transform="translate(279.875971, 293.676884) rotate(20.659808) translate(-279.875971, -293.676884) " points="279.875971 270.159663 295.158381 317.194105 255.148489 288.125221 304.603453 288.125221 264.593561 317.194105"></polygon>
+        </g>
+    </g>
+</svg>

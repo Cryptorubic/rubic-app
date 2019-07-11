@@ -56,9 +56,12 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
 
 export function appInitializerFactory(translate: TranslateService, userService: UserService) {
   translate.setDefaultLang('en');
+  console.log(window['jQuery']['cookie']('lng'));
+  const langToSet = window['jQuery']['cookie']('lng') || 'en';
+
   return () => new Promise<any>((resolve: any, reject) => {
     const subscriber = userService.getCurrentUser(true).subscribe((user: UserInterface) => {
-      translate.use(user.lang).subscribe(() => {
+      translate.use(user.lang || langToSet).subscribe(() => {
         resolve(null);
       }, () => {
         resolve(null);

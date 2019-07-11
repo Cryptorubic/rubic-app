@@ -77,7 +77,6 @@ export class IndexIcoComponent implements OnInit {
 
   ngOnInit() {
     this.telegramTimerStart();
-    console.log(this.bqSlider);
     this.countBqSlides = this.bqSlider.$owlChild['el'].nativeElement.childElementCount;
   }
 
@@ -103,6 +102,17 @@ export class IndexIcoComponent implements OnInit {
       width: '380px',
       panelClass: 'custom-dialog-container',
       data: {}
+    });
+  }
+
+
+  public openFullInviteForm() {
+    this.dialog.open(IndexIcoFormComponent, {
+      width: '420px',
+      panelClass: 'custom-dialog-container',
+      data: {
+        fullForm: true
+      }
     });
   }
 

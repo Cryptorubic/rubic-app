@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {HttpService} from '../../services/http/http.service';
 import {Router} from '@angular/router';
-import {MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 
 @Component({
   selector: 'app-index-ico-form',
@@ -11,10 +11,13 @@ import {MatDialogRef} from '@angular/material';
 export class IndexIcoFormComponent implements OnInit {
 
   public request: any;
+  public formSuccess: boolean;
+
   constructor(
     private httpService: HttpService,
     private router: Router,
     private dialogRef: MatDialogRef<IndexIcoFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data
   ) {
     this.request = {};
   }
@@ -24,8 +27,13 @@ export class IndexIcoFormComponent implements OnInit {
     window['ym'](54361084, 'reachGoal', 'lead');
 
     this.httpService.post('/save_swaps_mail/', this.request).toPromise().then((response) => {
-      this.router.navigate(['/create-v2/']);
-      this.dialogRef.close();
+      if (!this.data.fullForm) {
+        this.router.navigate(['/create-v2/']);
+        this.dialogRef.close();
+      } else {
+        this.formSuccess = true;
+        // this.dialogRef.close();
+      }
     });
   }
 

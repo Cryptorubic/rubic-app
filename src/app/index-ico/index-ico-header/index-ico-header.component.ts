@@ -3,6 +3,7 @@ import {MatDialog, MatDialogRef} from '@angular/material';
 import {NavigationStart, Router} from '@angular/router';
 import {isPlatformBrowser} from '@angular/common';
 import {IndexIcoFormComponent} from '../index-ico-form/index-ico-form.component';
+import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-index-ico-header',
@@ -13,8 +14,14 @@ export class IndexIcoHeaderComponent implements OnInit {
   private isBrowser: any;
   public pageScrolled: boolean;
 
+  public currLanguage: string;
+  public openedLngList = false;
+
+  private translator: TranslateService;
   public openedMenu;
   public userMenuOpened;
+
+  public languagesList: { lng: string; title: string; active?: boolean }[];
 
   @ViewChild('logoutConfirmation') logoutConfirmation: TemplateRef<any>;
   @ViewChild('headerPage') headerPage;
@@ -22,16 +29,42 @@ export class IndexIcoHeaderComponent implements OnInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    translate: TranslateService
   ) {
 
     this.isBrowser = isPlatformBrowser(platformId);
+
+    this.translator = translate;
+    this.languagesList = [
+      {
+        lng: 'en',
+        title: 'en'
+      },
+      {
+        lng: 'zh',
+        title: 'zh'
+      },
+      {
+        lng: 'ja',
+        title: 'ja'
+      }
+    ];
+
 
     if (this.isBrowser) {
       window.onscroll = () => {
         const scrolled = window.pageYOffset || document.documentElement.scrollTop;
         this.pageScrolled = scrolled > 50;
       };
+
+
+      translate.onLangChange.subscribe((event: LangChangeEvent) => {
+        this.setActiveLanguage(event);
+      });
+      this.setActiveLanguage({
+        lang: translate.currentLang
+      });
     }
 
     document.getElementsByTagName('body')[0]['addEventListener'](
@@ -43,6 +76,31 @@ export class IndexIcoHeaderComponent implements OnInit {
     );
   }
 
+  private setActiveLanguage(event) {
+    if (this.currLanguage) {
+      this.languagesList.filter((lang) => {
+        return lang['lng'] === this.currLanguage;
+      })[0].active = false;
+    }
+    this.currLanguage = event.lang;
+    window['jQuery']['cookie']('lng', this.currLanguage);
+
+    this.languagesList.filter((lang) => {
+      return lang['lng'] === this.currLanguage;
+    })[0].active = true;
+    this.languagesList.sort((a, b) => {
+      return b.active ? 1 : -1;
+    });
+  }
+
+
+  public toggleLanguage() {
+    this.openedLngList = !this.openedLngList;
+  }
+
+  public setLanguage(lng) {
+    this.translator.use(lng);
+  }
 
   public openInviteForm() {
     this.dialog.open(IndexIcoFormComponent, {

@@ -30,6 +30,39 @@
         box-sizing: border-box;
         padding-left: 20px;
       }
+      &.icon-field {
+        position: relative;
+        input {
+          padding-left: 52px;
+        }
+        &:after {
+          position: absolute;
+          left: 1px;
+          top: 1px;
+          bottom: 1px;
+          width: 40px;
+          content: '';
+          display: block;
+          background-color: #fff;
+          background-repeat: no-repeat;
+          background-position: center center;
+        }
+        &__username {
+          &:after {
+            background-image: url(/assets/images/new-index/icons/form/profile.svg);
+          }
+        }
+        &__email {
+          &:after {
+            background-image: url(/assets/images/new-index/icons/form/email.svg);
+          }
+        }
+        &__telegram {
+          &:after {
+            background-image: url(/assets/images/new-index/icons/form/telegram.svg);
+          }
+        }
+      }
     }
     .new-btn {
       height: 49px;
@@ -42,14 +75,15 @@
   }
   &_closer {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 10px;
+    right: 10px;
     border: 0 none;
     background: none;
     margin: 0;
     width: 20px;
     height: 20px;
     padding: 0;
+    cursor: pointer;
     &:after, &:before {
       content: '';
       display: block;

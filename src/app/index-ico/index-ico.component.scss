@@ -1,10 +1,10 @@
 .app-index-ico {
-  font-family: 'TT Norms', Ubuntu, SansSerif;
+  font-family: 'TT Norms', arial, sans-serif;
   width: 100%;
   overflow: hidden;
 }
 button, input {
-  font-family: 'TT Norms', Ubuntu, SansSerif;
+  font-family: 'TT Norms', arial, sans-serif;
 }
 
 .section-1 {
@@ -46,13 +46,51 @@ button, input {
       top: 50%;
       font-size: 18px;
       line-height: 25px;
-      margin-top: -37px;
+      margin-top: -50px;
       left: 0;
       right: 0;
       text-align: center;
       color: #3B4452;
       transition: transform cubic-bezier(0.35,-1.6, 0.63, 2.85) 0.5s;
     }
+
+    &_clock {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      text-align: center;
+      margin-top: 23px;
+    }
+
+    .timer_clock {
+      &_block {
+        width: 12%;
+        &_digit {
+          &:before {
+            content: ':';
+            float: left;
+            display: block;
+            color: #A6B1C1;
+            margin-left: -2px;
+          }
+        }
+        &:first-child {
+          .timer_clock_block_digit {
+            &:before {
+              content: '';
+            }
+          }
+        }
+        &_label {
+          font-size: 9px;
+          line-height: 1em;
+          text-transform: uppercase;
+          color: #A6B1C1;
+          margin-top: 6px;
+        }
+      }
+    }
+
     &_circle {
       width: 38vw;
       height: 38vw;
@@ -1290,17 +1328,15 @@ button, input {
     list-style-type: none;
     margin: 50px 0 0 0;
     padding: 0;
-    &:after {
-      content: '';
-      display: block;
-      clear: both;
-    }
+    display: flex;
+    flex-wrap: wrap;
     &_item {
       width: 33.333%;
-      float: left;
       padding: 0 30px 0 0;
-      margin: 0;
       box-sizing: border-box;
+      margin: 0 0 120px;
+      overflow: visible;
+      position: relative;
       &:nth-child(1) {
         padding-right: 40px;
       }
@@ -1365,6 +1401,40 @@ button, input {
     font-size: 15px;
     line-height: 18px;
     color: #CFD9E9;
+    margin-bottom: 1.2em;
+  }
+  .dev-post-block {
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    color: #F8DB14;
+    padding-left: inherit;
+    &:not(.without-line) {
+      &:before {
+        content: '';
+        display: block;
+        width: 55%;
+        margin-bottom: 11px;
+        border-top: 2px solid #F3D663;
+      }
+    }
+
+    &_text {
+      width: 55%;
+      font-size: 15px;
+      line-height: 1.2em;
+      font-weight: bold;
+      color: #F8DB14;
+    }
+    .new-btn {
+      line-height: 49px;
+      padding: 0 42px;
+      span {
+        font-weight: bold;
+        font-size: 17px;
+      }
+    }
   }
 }
 
@@ -1750,7 +1820,6 @@ button, input {
   .section-content {
     position: relative;
     z-index: 3;
-    position: relative;
     overflow: visible;
     .title-check {
       width: 203px;
@@ -1767,12 +1836,17 @@ button, input {
     line-height: 1.1818em;
     font-weight: bold;
     color: #3B4452;
+    &_post {
+      text-transform: none;
+      margin-top: 10px;
+      color: #F9D900;
+    }
   }
 
   .features-list {
     position: relative;
     z-index: 2;
-    margin-top: 35px;
+    margin-top: 10px;
     list-style-type: none;
     padding: 0;
     font-size: 17px;
