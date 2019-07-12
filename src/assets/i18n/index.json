@@ -7,7 +7,7 @@
       "ITEM_4": "Team",
       "ITEM_5": "Roadmap"
     },
-    "BUTTON": "Try service"
+    "BUTTON": "Buy tokens"
   },
 
   "SECTION_1": {
@@ -21,7 +21,7 @@
       "WHITEPAPER": "Whitepaper",
       "ONEPAGER": "Onepager",
       "TELEGRAM": "Telegram",
-      "BUTTON": "Try service"
+      "BUTTON": "Buy tokens"
     },
     "TIMER": {
       "TITLE": "IEO Starts in",
@@ -92,7 +92,8 @@
     "TITLE": "Partnership with leading exchanges:",
     "LIST": {
       "ITEM_1": "BW.com -  Having millions of users, they provide mining pool services for mainstream cryptocurrencies to miners from 45 countries and regions. The BW mining pool has produced nearly 300,000 Bitcoins, 1.5 million Litecoins and nearly 2 million Ethers, with a total value of more than 3 billion US Dollars",
-      "ITEM_2": "Bestrate - A crypto payment gateway and aggregator of crypto exchanges with 15,000+ active users of services and $3M+ in overall transactions"
+      "ITEM_2": "Bestrate - A crypto payment gateway and aggregator of crypto exchanges with 15,000+ active users of services and $3M+ in overall transactions",
+      "ITEM_3": "COSS stands for Crypto One-Stop Solution. We are your one-stop shop for all things crypto: an exchange, an e-wallet which supports a broad variety of tokens, a platform for ICO launches and promotional trading campaigns, a fiat gateway, a market cap widget, and more"
     }
   },
 
@@ -183,11 +184,11 @@
     "TITLE": "How it works:",
     "STEPS": {
       "STEP_1": {
-        "NAME": "Step1",
+        "NAME": "Step 1",
         "TEXT": "Create your deal on your terms"
       },
       "STEP_2": {
-        "NAME": "Step2",
+        "NAME": "Step 2",
         "TEXT": "The deal will be completed as soon as the other side completes its part"
       }
     },
@@ -252,6 +253,7 @@
 
   "SECTION_15": {
     "TITLE": "Team members and advisors",
+    "PLUS_DEVELOPERS": "+10 developers",
     "MEMBERS": {
       "MEMBER_1": {
         "NAME": "Peter Lin",
@@ -330,7 +332,8 @@
       "ITEM_2": "More than 6 000 contracts created since 2017",
       "ITEM_3": "More than 200 projects used MyWish for their businesses",
       "ITEM_4": "Winner of TRON Accelerator",
-      "ITEM_5": "Winner of WAVES Blockchain Grant"
+      "ITEM_5": "Winner of WAVES Blockchain Grant",
+      "ITEM_6": "Listed on Binance DEX"
     }
   },
 
@@ -397,7 +400,7 @@
       },
       "PART_2": {
         "TITLE": "Silver<br/> From",
-        "BONUSES_LIST": {
+        "BONUS_LIST": {
           "ITEM_1": {
             "TITLE": "+30% discount for private/public deals",
             "TEXT": "You will get a discount if you hold 58 000 SWAP tokens ($2499) since PTO until 31/07/2020."
@@ -426,7 +429,7 @@
       },
       "PART_3": {
         "TITLE": "Gold<br/> From",
-        "BONUSES_LIST": {
+        "BONUS_LIST": {
           "ITEM_1": {
             "TITLE": "+40% discount for private/public deals",
             "TEXT": "You will get a discount if you hold 151 000 SWAP tokens ($6499) since PTO until 31/07/2020."
@@ -459,7 +462,7 @@
       },
       "PART_4": {
         "TITLE": "Prime<br/> From",
-        "BONUSES_LIST": {
+        "BONUS_LIST": {
           "ITEM_1": {
             "TITLE": "+50% discount for private/public deals",
             "TEXT": "You will get a discount if you hold 337 000 SWAP tokens ($14499) since PTO until 31/07/2020."
@@ -567,7 +570,7 @@
           "PART_NAME": "Development"
         },
         "PART_2": {
-          "PART_NAME": "Partnerships&nbsp;& Integrations"
+          "PART_NAME": "Partnerships & Integrations"
         },
         "PART_3": {
           "PART_NAME": "Marketing"
@@ -600,7 +603,7 @@
       },
       "YEAR": "Year",
       "DISCOUNT": "Discount",
-      "No_DISCOUNT": "No discount"
+      "NO_DISCOUNT": "No discount"
     }
   },
 
@@ -624,6 +627,9 @@
       },
       "PARTNER_6": {
         "TEXT": "The OTC Room is the pioneering group of digital assets trading or OTC. Funds and investors have enjoyed a safe and trusted environment for over 1 year and total volume of over $10m completed trades."
+      },
+      "PARTNER_7": {
+        "TEXT": "COSS stands for Crypto One-Stop Solution. We are your one-stop shop for all things crypto: an exchange, an e-wallet which supports a broad variety of tokens, a platform for ICO launches and promotional trading campaigns, a fiat gateway, a market cap widget, and more"
       }
     }
   },
@@ -635,7 +641,7 @@
       "PART_3": "*OTC stands for “over the counter,” meaning assets can be traded through a dealer network rather than over an exchange.",
       "PART_4": "The development of the SWAPS.NETWORK is conducted by experts and developers of MANZONI LIMITED LIABILITY COMPANY,",
       "PART_5": "Registration number: 116784711990, INN: 7813245218, KPP: 781301001",
-      "PART_6": "For all questions regarding the platform operations please contact: <a href=\"mailto:support@swaps.network\">support@swaps.network</a>"
+      "PART_6": "For all questions regarding the platform operations please contact: "
     },
     "FOLLOW_US": "Follow us",
     "CONTACTS": "Contacts",
@@ -678,5 +684,4 @@
     "TEXT": "Our product is ready, use it without commission",
     "BUTTON": "Join"
   }
-
 }

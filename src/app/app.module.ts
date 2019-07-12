@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import {BrowserModule, makeStateKey, StateKey, TransferState} from '@angular/platform-browser';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
@@ -49,24 +49,59 @@ import { IndexIcoComponent } from './index-ico/index-ico.component';
 import { IndexIcoHeaderComponent } from './index-ico/index-ico-header/index-ico-header.component';
 import { IndexIcoFormComponent } from './index-ico/index-ico-form/index-ico-form.component';
 import {OwlModule} from 'ngx-owl-carousel';
+import {Observable} from 'rxjs';
+import {TransferHttpCacheModule} from '@nguniversal/common';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
 }
 
+export class TranslateBrowserLoader implements TranslateLoader {
+
+  constructor(private prefix: string = 'i18n',
+              private suffix: string = '.json',
+              private transferState: TransferState,
+              private http: HttpClient) {
+
+  }
+
+  public getTranslation(lang: string): Observable<any> {
+
+    const key: StateKey<number> = makeStateKey<number>('transfer-translate-' + lang);
+    const data = this.transferState.get(key, null);
+
+    // First we are looking for the translations in transfer-state, if none found, http load as fallback
+    if (data) {
+      return Observable.create(observer => {
+        observer.next(data);
+        observer.complete();
+      });
+    } else {
+      return new TranslateHttpLoader(this.http, this.prefix, this.suffix).getTranslation(lang);
+    }
+  }
+}
+
+
+export function exportTranslateStaticLoader(http: HttpClient, transferState: TransferState) {
+  return new TranslateBrowserLoader('./assets/i18n/', '.json?_t=' + (new Date).getTime(), transferState, http);
+}
+
+
+
 export function appInitializerFactory(translate: TranslateService, userService: UserService) {
-  translate.setDefaultLang('en');
-  console.log(window['jQuery']['cookie']('lng'));
-  const langToSet = window['jQuery']['cookie']('lng') || 'en';
+
+  const langToSet = window['jQuery']['cookie']('lng') || 'ru';
 
   return () => new Promise<any>((resolve: any, reject) => {
-    const subscriber = userService.getCurrentUser(true).subscribe((user: UserInterface) => {
-      translate.use(user.lang || langToSet).subscribe(() => {
+
+    translate.setDefaultLang('en');
+
+    translate.use(langToSet).subscribe(() => {
+      const subscriber = userService.getCurrentUser(true).subscribe((user: UserInterface) => {
         resolve(null);
-      }, () => {
-        resolve(null);
+        subscriber.unsubscribe();
       });
-      subscriber.unsubscribe();
     });
   });
 }
@@ -121,11 +156,12 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     IndexIcoFormComponent
   ],
   imports: [
+    TransferHttpCacheModule,
     TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
+          useFactory: exportTranslateStaticLoader,
+          deps: [HttpClient, TransferState]
         }
       }
     ),

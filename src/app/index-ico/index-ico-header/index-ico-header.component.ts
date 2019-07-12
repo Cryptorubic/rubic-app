@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit, PLATFORM_ID, TemplateRef, ViewChild} from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material';
-import {NavigationStart, Router} from '@angular/router';
-import {isPlatformBrowser} from '@angular/common';
+import {MatDialog} from '@angular/material';
+import {Router} from '@angular/router';
+
 import {IndexIcoFormComponent} from '../index-ico-form/index-ico-form.component';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 
@@ -11,7 +11,6 @@ import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
   styleUrls: ['./index-ico-header.component.scss']
 })
 export class IndexIcoHeaderComponent implements OnInit {
-  private isBrowser: any;
   public pageScrolled: boolean;
 
   public currLanguage: string;
@@ -33,39 +32,30 @@ export class IndexIcoHeaderComponent implements OnInit {
     translate: TranslateService
   ) {
 
-    this.isBrowser = isPlatformBrowser(platformId);
-
     this.translator = translate;
     this.languagesList = [
       {
         lng: 'en',
-        title: 'en'
+        title: 'EN'
       },
       {
-        lng: 'zh',
-        title: 'zh'
-      },
-      {
-        lng: 'ja',
-        title: 'ja'
+        lng: 'ru',
+        title: 'RU'
       }
     ];
 
-
-    if (this.isBrowser) {
-      window.onscroll = () => {
-        const scrolled = window.pageYOffset || document.documentElement.scrollTop;
-        this.pageScrolled = scrolled > 50;
-      };
+    window.onscroll = () => {
+      const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+      this.pageScrolled = scrolled > 50;
+    };
 
 
-      translate.onLangChange.subscribe((event: LangChangeEvent) => {
-        this.setActiveLanguage(event);
-      });
-      this.setActiveLanguage({
-        lang: translate.currentLang
-      });
-    }
+    translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.setActiveLanguage(event);
+    });
+    this.setActiveLanguage({
+      lang: translate.currentLang
+    });
 
     document.getElementsByTagName('body')[0]['addEventListener'](
       'mousedown',
@@ -81,6 +71,10 @@ export class IndexIcoHeaderComponent implements OnInit {
       this.languagesList.filter((lang) => {
         return lang['lng'] === this.currLanguage;
       })[0].active = false;
+    }
+
+    if (!event.lang) {
+      return;
     }
     this.currLanguage = event.lang;
     window['jQuery']['cookie']('lng', this.currLanguage);

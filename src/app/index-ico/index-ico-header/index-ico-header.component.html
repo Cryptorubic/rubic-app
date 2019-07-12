@@ -18,9 +18,8 @@
 
       <div class="language-select">
         <ul class="language-select-list"
-            *ngIf="isBrowser"
             [ngClass]="{'opened': openedLngList}" (click)="toggleLanguage()">
-          <li (click)="setLanguage(lng['lng'])"
+          <li (click)="!lng['active'] ? setLanguage(lng['lng']) : false"
               [ngClass]="{'active': lng['active']}"
               *ngFor="let lng of languagesList">
             <img src="/assets/images/lng/{{lng['lng']}}.svg"/>
@@ -66,9 +65,10 @@
           </li>
           <li class="header-menu_list_item">
 
-            <button (click)="openInviteForm()" class="new-btn header-btn">
+            <a href="https://event.bitforex.com/en/SWAP.html"
+               target="_blank" class="new-btn header-btn">
               <span>{{'INDEX_PAGE.HEADER.BUTTON'|translate}}</span>
-            </button>
+            </a>
           </li>
         </ul>
       </nav>

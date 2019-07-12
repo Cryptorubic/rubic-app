@@ -25,7 +25,7 @@ export const TEAM_SOURCE = [
     biography: 'INDEX_PAGE.SECTION_15.MEMBERS.MEMBER_4.DESCRIPTION',
     position: 'INDEX_PAGE.SECTION_15.MEMBERS.MEMBER_4.POSITION',
     avatarPath: 'person-20.jpg',
-    linkedInUrl: '',
+    linkedInUrl: 'https://www.linkedin.com/in/ericsu/',
     githubUrl: ''
   }, {
     name: 'INDEX_PAGE.SECTION_15.MEMBERS.MEMBER_5.NAME',
@@ -39,7 +39,7 @@ export const TEAM_SOURCE = [
     biography: 'INDEX_PAGE.SECTION_15.MEMBERS.MEMBER_6.DESCRIPTION',
     position: 'INDEX_PAGE.SECTION_15.MEMBERS.MEMBER_6.POSITION',
     avatarPath: 'person-21.png',
-    // linkedInUrl: 'https://www.linkedin.com/in/marco-pharaoh',
+    linkedInUrl: 'https://www.linkedin.com/in/romal-almazo-90693550/',
     githubUrl: ''
   }, {
     name: 'INDEX_PAGE.SECTION_15.MEMBERS.MEMBER_7.NAME',

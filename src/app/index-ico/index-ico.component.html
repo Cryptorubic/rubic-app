@@ -5,7 +5,17 @@
   <section class="section-1">
     <div class="app-content-block">
       <a href="https://event.bitforex.com/en/SWAP.html" target="_blank" class="section-1_timer">
-        <div class="section-1_timer_circle"></div>
+        <div class="section-1_timer_circle">
+
+          <div class="spinner-wrapper">
+            <div class="spinner-pie spinner" [ngStyle]="{transform: 'rotate('+timerArcDeg+'deg)'}"></div>
+            <div class="spinner-pie filler"></div>
+            <div class="spinner-mask"></div>
+          </div>
+
+
+
+        </div>
         <div class="section-1_timer_text">
           {{'INDEX_PAGE.SECTION_1.TIMER.TITLE'|translate}}
           <div class="section-1_timer_clock" *ngIf="timerDigits">
@@ -38,9 +48,9 @@
         </p>
       </div>
       <div class="section-1_menu">
-        <button (click)="openInviteForm()" class="new-btn new-btn-yellow">
+        <a href="https://event.bitforex.com/en/SWAP.html" target="_blank" class="new-btn new-btn-yellow">
           <span translate="INDEX_PAGE.SECTION_1.MENU.BUTTON"></span>
-        </button>
+        </a>
         <div class="section-1_menu_links">
           <ul>
             <li>
@@ -296,6 +306,15 @@
               <img src="./assets/images/new-index/logos/bestrate.svg" height="40px"/>
             </div>
             <div class="partner-description" translate="INDEX_PAGE.SECTION_4.LIST.ITEM_2"></div>
+          </a>
+        </div>
+
+        <div class="partners-list_item">
+          <a href="https://coss.io" class="partners-list_item_content" target="_blank">
+            <div class="partner-logo">
+              <img src="./assets/images/new-index/logos/coss.png" height="40px"/>
+            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_4.LIST.ITEM_3"></div>
           </a>
         </div>
       </div>
@@ -745,7 +764,7 @@
           <div class="chains-logotypes">
             <img src="./assets/images/new-index/logos/tron.png" alt="tron">
             <img src="./assets/images/new-index/logos/eos.png" alt="eos">
-            <img src="./assets/images/new-index/logos/neo.png" alt="neo"><br/>
+            <img src="./assets/images/new-index/logos/neo.png" alt="neo">
             <img src="./assets/images/new-index/logos/waves.png" alt="waves">
             <img src="./assets/images/new-index/logos/binance.png" alt="binance">
           </div>
@@ -756,17 +775,18 @@
             <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_3"></li>
             <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_4"></li>
             <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_5"></li>
+            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_6"></li>
           </ul>
         </div>
 
-        <div class="section-phone-content">&nbsp;
+        <!-- div class="section-phone-content">&nbsp;
           <div class="section-phone-wrapper">
             <div class="section-phone-wrapper_content">
               <img src="./assets/images/new-index/empty-phone.png" class="phone-empty">
               <img src="./assets/images/new-index/jumbotron__gif.gif" class="phone-content">
             </div>
           </div>
-        </div>
+        </div -->
       </div>
     </div>
   </section>
@@ -965,7 +985,7 @@
           <div class="bonuses-list_item_content">
 
             <div class="title title_bonus-4">
-              <span class="title_name" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.TITLE'|translate"></span>
+              <span class="title_name" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.TITLE'|translate"></span>
               <span class="title_amount">$14499</span>
             </div>
 
@@ -977,7 +997,7 @@
               </div>
               <div class="list_item">
                 <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TEXT"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TEXT'|translate"></div>
               </div>
               <div class="list_item">
                 <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_3.TITLE"></div>
@@ -1317,11 +1337,11 @@
 
 
         <div class="partners-list_item">
-          <a href="https://mywish.io" class="partners-list_item_content" target="_blank">
+          <a href="https://coss.io" class="partners-list_item_content" target="_blank">
             <div class="partner-logo">
-              <img src="./assets/images/new-index/logos/mywish-white.svg" height="40px"/>
+              <img src="./assets/images/new-index/logos/coss.png" height="40px"/>
             </div>
-            <div class="partner-description" translate="INDEX_PAGE.SECTION_22.PARTNERS_LIST.PARTNER_3.TEXT"></div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_22.PARTNERS_LIST.PARTNER_7.TEXT"></div>
           </a>
         </div>
 
@@ -1437,10 +1457,10 @@
         <div class="contacts-section_title" translate="INDEX_PAGE.SECTION_23.CONTACTS"></div>
         <div class="contacts-section_links">
           <div class="contacts-section_links_link">
-            {{'INDEX_PAGE.SECTION_23.SUPPORT'|translate}} <a href="#">support@swaps.network</a>
+            {{'INDEX_PAGE.SECTION_23.SUPPORT'|translate}} <a href="mailto:support@swaps.network">support@swaps.network</a>
           </div>
           <div class="contacts-section_links_link">
-            {{'INDEX_PAGE.SECTION_23.MEDIA'|translate}} <a href="#">media@swaps.network</a>
+            {{'INDEX_PAGE.SECTION_23.MEDIA'|translate}} <a href="mailto:media@swaps.network">media@swaps.network</a>
           </div>
         </div>
       </div>
@@ -1460,7 +1480,7 @@
       </div>
 
     </div>
-    <div class="footer-copy" translate="INDEX_PAGE.SECTION_23.COPY"></div>
+    <div class="footer-copy" [innerHTML]="'INDEX_PAGE.SECTION_23.COPY'|translate"></div>
   </div>
 </footer>
 
@@ -1470,10 +1490,10 @@
     <span>{{msgCount}}</span>
   </a>
   <div class="app-content-block">
-    <span class="float-line_text" translate="INDEX_PAGE.FLOAT_FOOTER.TEXT"></span>
-    <button type="submit" class="new-btn" (click)="openInviteForm()">
+    <span class="float-line_text" translate="INDEX_PAGE.SECTION_19.TEXT.PART_1"></span>
+    <a href="https://event.bitforex.com/en/SWAP.html" target="_blank" class="new-btn">
       <span translate="INDEX_PAGE.FLOAT_FOOTER.BUTTON"></span>
-    </button>
+    </a>
   </div>
 </div>
 

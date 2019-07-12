@@ -90,9 +90,17 @@ html {
   margin-right: auto;
   max-width: 1180px;
   box-sizing: border-box;
-  padding-left: 5vw;
-  padding-right: 5vw;
+  padding-left: 0;
+  padding-right: 0;
 }
+
+@media screen and (max-width: 1240px) {
+  .app-content-block {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+}
+
 
 a:not(.new-btn):not(.btn):not(.minimal-btn) {
   color: #61B9DF;

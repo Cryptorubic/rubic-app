@@ -1,10 +1,10 @@
-.app-index-ico {
-  font-family: 'TT Norms', arial, sans-serif;
+.app-index-ico, footer {
+  font-family: 'TT Norms', Arial, sans-serif;
   width: 100%;
   overflow: hidden;
 }
 button, input {
-  font-family: 'TT Norms', arial, sans-serif;
+  font-family: 'TT Norms', Arial, sans-serif;
 }
 
 .section-1 {
@@ -122,7 +122,7 @@ button, input {
         top: 18%;
         bottom: 18%;
       }
-      &:after, &:before {
+      &:after, &:before, .spinner-wrapper {
         transition: all cubic-bezier(0.35,-1.6, 0.63, 2.85) 0.5s;
       }
     }
@@ -131,8 +131,9 @@ button, input {
         box-shadow: 0 5px 34px rgba(86, 95, 109, 0.2);
       }
     }
+
     &:hover &_circle {
-      &:after, &:before {
+      &:after, &:before, .spinner-wrapper {
         transform: scale(1.05);
       }
     }
@@ -935,7 +936,7 @@ button, input {
     background-size: 100% auto;
   }
   &__without-bg {
-    padding-top: 6%;
+    padding-top: 70px;
     background-color: #fff;
   }
   overflow: hidden;
@@ -1050,7 +1051,7 @@ button, input {
   }
   .about-wrapper {
     margin-top: 30px;
-    padding: 8vw 0 155px;
+    padding: 7vw 0 100px;
     background: url(/assets/images/new-index/backgrounds/fasol.svg) calc(50% - 6vw) center no-repeat #fff;
     background-size: auto 100%;
     img {
@@ -1449,7 +1450,6 @@ button, input {
         float: none;
         padding-left: 0!important;
         padding-right: 0!important;
-        margin-bottom: 5vw;
       }
     }
   }
@@ -2206,9 +2206,9 @@ button, input {
     min-width: 600px;
   }
   .section-content-flex {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    //display: flex;
+    //flex-wrap: wrap;
+    //justify-content: space-between;
   }
   .section-text-content {
     box-sizing: border-box;
@@ -2222,7 +2222,6 @@ button, input {
     margin-top: 37px;
     font-size: 15px;
     line-height: 21px;
-    width: 430px;
     b {
       font-size: 1.333em;
     }
@@ -2393,6 +2392,7 @@ button, input {
           font-size: 17px;
           line-height: 20px;
           left: 0;
+          white-space: nowrap;
         }
       }
     }
@@ -3101,7 +3101,6 @@ button, input {
   background-color: #F6F9FD;
   padding: 70px 0 0;
   color: #3B4352;
-  font-family: 'TT Norms';
   margin-bottom: 80px;
   .information {
     display: flex;
@@ -3408,7 +3407,7 @@ a[id] {
   z-index: 5;
   &_text {
     text-transform: uppercase;
-    font-size: 17px;
+    font-size: 14px;
     line-height: 20px;
   }
   .new-btn {
@@ -3533,3 +3532,57 @@ a[id] {
   }
 }
 
+
+.spinner-wrapper {
+  position: relative;
+  margin: 40px auto;
+  z-index: 20;
+}
+
+.spinner-wrapper, .spinner-wrapper * {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.spinner-wrapper {
+  left: 50%;
+  top: 20%;
+  width: 30%;
+  height: 60%;
+  box-sizing: border-box;
+  margin: 0;
+  overflow: hidden;
+}
+
+.spinner-wrapper .spinner-pie {
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 50%;
+  position: absolute;
+  border: 1px solid #4C679D;
+}
+
+.spinner-wrapper .spinner {
+  border-radius: 0% 100% 100% 0% / 0% 50% 50% 0%;
+  z-index: 200;
+  border-left: none;
+  transform: rotate(0deg);
+}
+
+.spinner-wrapper .filler {
+  border-radius: 0 100% 100% 0 / 0 50% 50% 0;
+  left: 50%;
+  opacity: 0;
+  z-index: 100;
+  border-left: none;
+}
+
+.spinner-wrapper .spinner-mask {
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  background: inherit;
+  opacity: 1;
+  z-index: 300;
+}

@@ -37,7 +37,11 @@ export class IndexIcoComponent implements OnInit {
   public timerDigits: ITimer;
   public visibleTeam: boolean;
 
+  private startTimerTime: any;
+
   public countBqSlides: number;
+
+  public timerArcDeg: number;
 
   constructor(
     private dialog: MatDialog,
@@ -51,14 +55,19 @@ export class IndexIcoComponent implements OnInit {
 
     this.msgCount = 1;
 
+    this.startTimerTime = Date.UTC(2019, 6, 6, 9, 0, 0);
+
+    // 12/03/19 3:00PM GMT
+    this.leftTime = Date.UTC(2019, 6, 15, 9, 0, 0);
+
+    this.currentDateTime = new Date().getTime();
+
+
     this.http.get('/assets/images/1x1.png?_t=' + (new Date()).getTime(), {
       responseType: 'text', observe: 'response'
     })
       .subscribe(res => {
         this.serverDateTime = new Date(res.headers.get('Date')).getTime();
-        this.currentDateTime = new Date().getTime();
-        // 12/03/19 3:00PM GMT
-        this.leftTime = Date.UTC(2019, 6, 15, 9, 0, 0);
 
         setInterval(() => {
           this.checkLeftTIme();
@@ -90,6 +99,8 @@ export class IndexIcoComponent implements OnInit {
       minutes: Math.floor(this.leftSeconds % (3600) / 60),
       seconds: this.leftSeconds % 60
     };
+
+    this.timerArcDeg =  -180 + 360 * (this.leftSeconds * 1000 / (this.leftTime - this.startTimerTime));
 
     this.timerDigits.hours = (this.timerDigits.hours < 10) ? '0' + this.timerDigits.hours : this.timerDigits.hours;
     this.timerDigits.minutes = (this.timerDigits.minutes < 10) ? '0' + this.timerDigits.minutes : this.timerDigits.minutes;
