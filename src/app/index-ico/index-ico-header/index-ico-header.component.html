@@ -1,0 +1,77 @@
+<header [ngClass]="{scrolled: pageScrolled}">
+  <div class="app-content-block">
+    <a routerLink="/">
+      <span class="logo">
+        <img src="./assets/images/logo.svg?t=_1">
+      </span>
+    </a>
+
+    <div class="app-content-block_right">
+
+      <button class="navbar-toggle" type="button"
+              (click)="openedMenu = !openedMenu" (mousedown)="$event.stopPropagation(); $event.preventDefault();" >
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+
+      <div class="language-select">
+        <ul class="language-select-list"
+            [ngClass]="{'opened': openedLngList}" (click)="toggleLanguage()">
+          <li (click)="!lng['active'] ? setLanguage(lng['lng']) : false"
+              [ngClass]="{'active': lng['active']}"
+              *ngFor="let lng of languagesList">
+            <img src="/assets/images/lng/{{lng['lng']}}.svg"/>
+            <span>{{lng['title']}}</span>
+          </li>
+        </ul>
+      </div>
+
+
+      <nav class="header-menu" [ngClass]="{opened: openedMenu}"
+           (mousedown)="$event.stopPropagation(); $event.preventDefault();">
+        <ul class="header-menu_list">
+          <li class="header-menu_list_item">
+            <a href="https://drive.google.com/file/d/1q0GaNrd-5UOHfBE1q363kkyHWSOYCM97/edit"
+               target="_blank"
+               class="header-link">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_1'|translate}}
+            </a>
+          </li>
+          <li class="header-menu_list_item">
+            <a routerLink="team" class="header-link"
+               [routerLink]="['/']" [fragment]="'product'">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_2'|translate}}
+            </a>
+          </li>
+          <li class="header-menu_list_item">
+            <a routerLink="roadmap" class="header-link"
+               [routerLink]="['/']" [fragment]="'ieo'">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_3'|translate}}
+            </a>
+          </li>
+          <li class="header-menu_list_item">
+            <a routerLink="faq" class="header-link"
+               [routerLink]="['/']" [fragment]="'team'">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_4'|translate}}
+            </a>
+          </li>
+          <li class="header-menu_list_item">
+            <a routerLink="faq" class="header-link"
+               [routerLink]="['/']" [fragment]="'roadmap'">
+              {{'INDEX_PAGE.HEADER.MENU.ITEM_5'|translate}}
+            </a>
+          </li>
+          <li class="header-menu_list_item">
+
+            <a href="https://event.bitforex.com/en/SWAP.html"
+               target="_blank" class="new-btn header-btn">
+              <span>{{'INDEX_PAGE.HEADER.BUTTON'|translate}}</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
