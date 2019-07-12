@@ -36,7 +36,12 @@
     "tar": "^4.4.8",
     "tslib": "^1.9.0",
     "web3": "^1.0.0-beta.52",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "ngx-owl-carousel": "^2.0.7",
+    "owl.carousel": "^2.3.4",
+    "jquery": "^3.3.1",
+    "jquery.cookie": "^1.4.1",
+    "@nguniversal/common": "latest"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",

@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   public hideInstructionLink;
   public visibleWatchButton;
   public notCookiesAccept: boolean;
+  public withHeader: boolean;
 
   constructor(
     private userService: UserService,
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe((event) => {
       if (event instanceof ActivationEnd) {
+        this.withHeader = !event.snapshot.data.noheader;
         if (event.snapshot.data.support) {
           this.hideInstructionLink = event.snapshot.data.supportHide;
           this.visibleWatchButton = !event.snapshot.data.hideInstruction;
