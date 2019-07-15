@@ -71,6 +71,7 @@
 }
 
 
+
 body {
   margin: 0;
   padding: 0;
@@ -84,6 +85,9 @@ html {
   background-color: #495569;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
 
 .app-content-block {
   margin-left: auto;

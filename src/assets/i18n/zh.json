@@ -1,0 +1,687 @@
+{
+  "INDEX_PAGE": {
+    "HEADER": {
+      "MENU": {
+        "ITEM_1": "白皮书",
+        "ITEM_2": "产品",
+        "ITEM_3": "IEO",
+        "ITEM_4": "球队",
+        "ITEM_5": "路线图"
+      },
+      "BUTTON": "买代币"
+    },
+
+    "SECTION_1": {
+      "TITLE": "我们正在颠覆 <br/> OTC<sup>*</sup> 市场",
+      "TEXT": {
+        "PART_1": "SWAPS.NETWORK是一个全球性的OTC市场。它汇集了市场里所有的交易，链接全世界的买家买家.",
+        "PART_2": "SWAPS.NETWORK提供完全去中心化的OTC解决方案。用户可以在没有第三方和托管的情况下做OTC交易.",
+        "PART_3": "*OTC指的是“柜台以外”，意为遗产可以通过直接交易者网络而非交易所来交易."
+      },
+      "MENU": {
+        "WHITEPAPER": "白皮书",
+        "ONEPAGER": "简介",
+        "TELEGRAM": "Telegram",
+        "BUTTON": "买代币"
+      },
+      "TIMER": {
+        "TITLE": "IEO 首发于 BitForex 通过",
+        "DAYS": "天",
+        "HOURS": "小时",
+        "MINUTES": "分钟",
+        "SECONDS": "第二"
+      }
+    },
+
+    "SECTION_2": {
+      "ITEMS_LIST": {
+        "ITEM_1": {
+          "TITLE": "可以用了",
+          "TEXT": "即时可用的产品"
+        },
+        "ITEM_2": {
+          "TITLE": "合伙",
+          "TEXT": "和拥有每天20亿美元交易量的头部交易所合作"
+        },
+        "ITEM_3": {
+          "TITLE": "强大的团队",
+          "TEXT": "在区块链业内大获成功的强大团队"
+        },
+        "ITEM_4": {
+          "TITLE": "众筹工具",
+          "TEXT": "众筹工具： 十分钟内创建代币并开始众筹，无需编写代码"
+        }
+      }
+    },
+
+    "SECTION_3": {
+      "QUOTES": {
+        "QUOTE_1": {
+          "AUTHOR": "Peter Lin",
+          "POSITION": "NEO全球发展（NGD）研发部门的前主管",
+          "TEXT": "I know a few not successed attempts to implement the idea of cross-chain swaps.<br/> However SWAPS.NETWORK team has the necessary experience, technological stack and right contacts in the industry, that’s why I believe in the success."
+        },
+        "QUOTE_2": {
+          "AUTHOR": "Eric Su",
+          "POSITION": "最受信任的OTC<br/> 电报频道 - <a href=\"https://t.me/otcroom\" target=\"_blank\">OTC Room 创始人</a>",
+          "TEXT": "在OTC Room，每月有超过200万美元的稀有数字资产交易。 SWAPS.NETWORK减少了摩擦费，诈骗和时间上的浪费，同时向空间的去中心化迈进了一步。 如果您想要一种更安全，更快捷的OTC方式，请帮助我支持SWAPS.NETWORK"
+        },
+        "QUOTE_3": {
+          "AUTHOR": "Eric Benz",
+          "POSITION": "Changelly CEO",
+          "TEXT": "场外交易服务的普及正在迅速增长。 SWAPS.NETWORK将提供与交易所的互操作性，以便在使用Changelly API时更有效地执行订单。"
+        },
+        "QUOTE_4": {
+          "AUTHOR": "Romal Almazo",
+          "POSITION": "Capco前虚拟货币及分布式技术主管",
+          "TEXT": "Atomic swap technology will fix execution and settlement  risks currently in the OTC crypto market. SWAPS.NETWORK are well placed to be a leader in this field, having built a robust solution and secured major liquidity providers."
+        },
+        "QUOTE_5": {
+          "AUTHOR": "Hugo Hellebuyck",
+          "POSITION": "Tangem 合伙人/销售副总裁",
+          "TEXT": "I am very confident to say SWAPS.NETWORK and other decentralized solutions of this kind are much needed in the ecosystem. Too few projects are focusing on the core values of decentralized finance. The founders have a solid background and a track record in the industry and have always given their best to satisfy the needs of their community. I will do my best to spread SWAPS.NETWORK solution in the Asian Market."
+        },
+        "QUOTE_6": {
+          "AUTHOR": "Marco Poliquin",
+          "POSITION": "区块链未来学家",
+          "TEXT": "SWAPS.NETWORK empowers the trader and elevates all players in the OTC market. Limitless Trustless Deals by Cypherpunk Brokers. Future-Proof OTC Decentralization with a cause!"
+        }
+      }
+    },
+
+    "SECTION_4": {
+      "TITLE": "合作方:",
+      "LIST": {
+        "ITEM_1": "BW.com -  拥有数百万用户，他们为来自45个国家和地区的矿工提供主流加密货币的采矿池服务。 BW矿池已经生产了近30万比特币，150万莱特币和近200万个以太坊，总价值超过30亿美元",
+
+        "ITEM_2": "Bestrate - 加密支付网关和加密汇聚器，目前有15,000多个活跃的服务用户，总体交易超过300万美元",
+
+        "ITEM_3": "COSS 代表Crypto的一站式解决方案。 它们是加密一切的一站式商店：交换，支持各种令牌的电子钱包，ICO出版和促销交易平台，合法网关，市值小部件等等。"
+      }
+    },
+
+    "SECTION_5": {
+      "PRE_TITLE": "虚拟货币场外交易（OTC）市场每天大约",
+      "TITLE": "$<span>300</span> 亿美元 <small>日常<sup>*</sup></small>",
+      "DESCRIPTION": "<sup>*</sup>*根据彭博社及TABB集团数据"
+    },
+
+    "SECTION_6": {
+      "BLOCKS": {
+        "BLOCK_1": {
+          "NAME": "正在测试",
+          "TITLE": "的全球OTC市场",
+          "TEXT": "SWAPS.NETWORK是交易所的OTC提供商。 用户相信交易所，并且在那里舒适地进行场外交易。 SWAPS.NETWORK为交易所提供全周期解决方案：OTC交易的注册，管理和处理。 来自所有交易所的所有用户请求都将提交给SWAPS.NETWORK以进行有效匹配."
+        },
+        "BLOCK_2": {
+          "NAME": "完成",
+          "TITLE": "去中心化的P2P解决方案",
+          "TEXT": "它是基于智能合约的即用型产品。 用户直接向智能合约发送资金，除了他们之外的任何人都无法收回资金。 当第二方发送资金时，智能合约分配资金。 没有托管。 没有第三方。 只有区块链。 SWAPS.NETWORK提供了许多选项：经纪人费用，多个参与者，最小/最大投资限制，到期日期，私人和公共交易。",
+          "POST_BLOCK": "尝试服务"
+        },
+        "BLOCK_3": {
+          "NAME": "测试",
+          "TITLE": "众筹工具",
+          "TEXT": "众筹工具由两部分组成：代币创建和销售机制。 由于我们与MyWish平台的合作，用户可以在5分钟内创建代币。 基于去中心化p2p解决方案的销售机制也已准备就绪。 通过使用众筹工具，每个人都可以在10分钟内开始销售代币。 这对初创企业，小企业和企业家来说是一个很好的解决方案",
+          "POST_BLOCK": "将于2019年9月实施"
+        }
+      }
+    },
+
+    "SECTION_7": {
+      "TITLE": "为什么要使用SWAPS.NETWORK?",
+      "LIST": {
+        "ITEM_1": {
+          "TITLE": "流动性",
+          "TEXT": "加密交易所的订单往往流动性较低。 例如，您不能在币安、火币上同时交易1000 BTC，同时避免强烈波动。 SWAPS.NETWORK通过汇总寻找市场流动性的大订单，创造了行业中最好的深度。"
+        },
+        "ITEM_2": {
+          "TITLE": "避免禁止限制",
+          "TEXT": "大多数加密交易都有禁止交易限制。 例如，如果您是新客户，您的每日交易限额可能限制在2,000美元或3,000美元。 此外，提款选项可能有限。 SWAPS.NETWORK专门处理大量交易，因此可以避免对交易所存在的交易进行限制。"
+        },
+        "ITEM_3": {
+          "TITLE": "避免价格'滑点'",
+          "TEXT": "当总交易成本高于预期时，交易所发生价格滑点。 这种现象是由于订单需要比平常更长的时间。"
+        },
+        "ITEM_4": {
+          "TITLE": "未上市代币",
+          "TEXT": "对于新项目，如果未在交易所上市，则几乎不可能交易代币。 即使他们确实想要上市，这也是一个非常昂贵的过程。 在SWAPS.NETWORK，任何人都可以进行交易，甚至是未上架的代币。"
+        },
+        "ITEM_5": {
+          "TITLE": "价格保护",
+          "TEXT": "场外交易服务保持价格率，例如 1000 BTC是一次进行的大型交易，它将被分成几个价格不同的小交易。 SWAPS.NETWORK适用于以特定价格转移大订单。"
+        }
+      }
+    },
+
+    "SECTION_8": {
+      "TITLE": "非处方全球流动资金池",
+      "TEXT": {
+        "PART_1": "来自交易所的所有OTC优惠都在SWAPS.NETWORK上累积。 反过来，交易所和经纪人可以使用SWAPS.NETWORK市场来满足他们的需求。",
+        "PART_2": "一些交易所同意使用我们的服务，我们已经开始实施这一过程。 您将可以在2019年8月使用它。"
+      }
+    },
+
+    "SECTION_9": {
+      "TITLE": "D去中心化的P2P交易所设施",
+      "TEXT": {
+        "PART_1": "<b>1.</b> SWAPS.NETWORK解决方案基于智能合约，没有人可以偷你的钱.<br/> 对于每个私人交易所，生成智能合约（区块链中的程序）并修复智能合约中的条件。",
+        "PART_2": "<b>2.</b> 只有双方发送全额金额才能兑换。<br> 所有各方均可在交易前随时退款。",
+        "PART_3": "<b>3.</b> 交换期间没有第三方（用户通过区块链进行交互），交换条件无法更改。<br/> 这就是为什么它是最安全，最透明的交易方式。"
+      }
+    },
+
+    "SECTION_10": {
+      "TITLE": "众筹工具",
+      "LIST": {
+        "ITEM_1": "代币化是当今的主要趋势之一",
+        "ITEM_2": "但是，它目前仅适用于大中型企业。",
+        "ITEM_3": "我们解决了这个问题！!",
+        "ITEM_4": "现在，每个人都可以通过区块链生成代币和筹款。",
+        "ITEM_5": "每个人都可以创建自己的代币并在SWAPS.NETWORK上完成众筹（免费）。"
+      }
+    },
+
+    "SECTION_11": {
+      "TITLE": "如何运作：",
+      "STEPS": {
+        "STEP_1": {
+          "NAME": "步骤1",
+          "TEXT": "按照您的条款创建交易"
+        },
+        "STEP_2": {
+          "NAME": "第2步",
+          "TEXT": "这项交易将在对方完成其部分后立即完成"
+        }
+      },
+      "BUTTON": "尝试无需佣金的服务"
+    },
+
+    "SECTION_12": {
+      "TITLE": "SWAPS.NETWORK <br/> 特点 ",
+      "POST_TITLE": "可以使用",
+      "LIST": {
+        "ITEM_1": "完全去中心化的智能合约解决方案",
+        "ITEM_2": "没有交易量限制",
+        "ITEM_3": "随时可以把资金体会",
+        "ITEM_4": "支持所有交易对",
+        "ITEM_5": "交换未上架代币",
+        "ITEM_6": "私人和公共的撮合",
+        "ITEM_7": "多参与人一次性撮合",
+        "ITEM_8": "直观的设计",
+        "ITEM_9": "无需注册"
+      }
+    },
+
+    "SECTION_13": {
+      "TITLE": "为什么<span>SWAPS.NETWORK</span> i对整个区块链社区很重要？",
+      "TEXTS": {
+        "PART_1": {
+          "TITLE": "B将订单交给OTC交易",
+          "TEXT": "很多虚假的托管服务和OTC“专家”欺骗用户。 这对整个行业来说都是不好的。 SWAPS.NETWORK以正确的方式做事：去中心化和安全。"
+        },
+        "PART_2": {
+          "TITLE": "为即将到来的项目提供操作其代币的机会。",
+          "TEXT": "今天，交易所规定了他们的规则并控制了所列出的内容。 如果您是一个小项目或刚刚开始，几乎没有办法以安全和负担得起的方式交易您的代币。 去中心化交易是一个不错的选择，但您仍然需要上架您的代币，并且它很可能只能通过一个交易对进行交易。"
+        }
+      }
+    },
+
+    "SECTION_14": {
+      "TITLE": "5个投资SWAPS.NETWORK的理由",
+      "LIST": {
+        "ITEM_1": {
+          "TITLE": "OTC市场每天交易量达到300亿美元并在持续增长",
+          "TEXT": "SWAPS.NETWORK满足了安全去中心化解决方案的需求，允许在没有第三方参与的情况下执行交易。 它是市场上的先行者，可以更有机会获取OTC市场的大量份额。 用户需要一个简单、安全、安全和可靠的工具来更改，购买和出售加密资产"
+        },
+        "ITEM_2": {
+          "TITLE": "对SWAPS.NETWORK服务的持续需求",
+          "TEXT": "SWAP代币是我们服务的燃料。<br/> 它将用于：<br/> &nbsp;- 支付SWAPS.NETWORK平台费用<br/> &nbsp;- 向交易员和经纪人支付佣金<br/> &nbsp;-  在不同的区块链上创建智能合约<br/> 由于SWAPS.NETWORK将始终如一地启动项目的组件，因此对SWAP的需求将会增长。"
+        },
+        "ITEM_3": {
+          "TITLE": "SWAP持有人的奖金",
+          "TEXT": "SWAP持有人将有机会推出自己的代币，开始筹款公司，获得折扣并节省资金。"
+        },
+        "ITEM_4": {
+          "TITLE": "SWAPS.NETWORK彻底改变了场外交易市场",
+          "TEXT": "通过投资SWAPS.NETWORK，您将投资于使用SWAPS.NETWORK的股票交易市场和交易所。 这个市场不依赖于加密货币成本的波动并且继续增长。"
+        },
+        "ITEM_5": {
+          "TITLE": "产品已经上线",
+          "TEXT": "统计数据显示，数以千计的创业公司中只有5％拥有产品。 目前， SWAPS.NETWORK已经完成了在以太坊上的产品开发过程。 每个人都可以使用这项服务。"
+        }
+      }
+    },
+
+    "SECTION_15": {
+      "TITLE": "团队成员及顾问",
+      "PLUS_DEVELOPERS": "+10开发者",
+      "MEMBERS": {
+        "MEMBER_1": {
+          "NAME": "Peter Lin",
+          "POSITION": "NEO全球发展（NGD）研发部门的前主管",
+          "DESCRIPTION": "Peter是NEO全球发展（NGD）研发部门的前主管，也是早期NEO开发人员之一。 他在互联网技术开发方面拥有8年的经验，在区块链行业拥有6年的经验。 在此期间，他一直积极参与财团连锁和公共连锁的发展。"
+        },
+        "MEMBER_2": {
+          "NAME": "Eric Benz",
+          "POSITION": "Changelly CEO ",
+          "DESCRIPTION": "Eric拥有超过10年的金融技术及其周边经验。 他为当今一些涉及支付，身份和银行基础设施的大型机构提供了创新的SaaS系统。 Eric自2012年以来一直从事区块链领域，并作为投资人，董事会主席和创始人参与了许多区块链和金融科技业务。"
+        },
+        "MEMBER_3": {
+          "NAME": "Hugo Hellebuyck",
+          "POSITION": "Tangem 合伙人/销售副总裁",
+          "DESCRIPTION": "Hugo于2008年毕业于韦伯斯特大学，后来担任新加坡风险投资公司的首席投资官。 此外，他还是投资公司LILY S.E.A.的创始人，以及许多新兴国家农业技术和区块链初创公司的可再生能源项目顾问。"
+        },
+        "MEMBER_4": {
+          "NAME": "Eric Clark Su",
+          "POSITION": "最受信任的OTC电报频道-OTC Room 创始人",
+          "DESCRIPTION": "他是一位连续创业者，他的第四家公司得到Skype联合创始人以及菲律宾最大的电信公司的支持，后者在2017年被出售给一家领先的本地加密货币公司。他是最值得信赖的OTC群组之一的创始人。 作为一名充满激情的传播者和全球投资者，他是一个非常注重产品和团队的投资者并最近投资了Casper Labs，Republic.co和Algorand。"
+        },
+        "MEMBER_5": {
+          "NAME": "Marco Poliquin",
+          "POSITION": "区块链未来学家",
+          "DESCRIPTION": "15年的Web开发UI / UX和机器学习经验。 首先在2013年对加密货币产生了兴趣。他真正相信权力下放和无信任的协议，以增强个人自由和未来的社会结构。 2017年 – 他担任国际区块链项目的顾问和营销总监。 2018年 - 共同组织区块链会议，网络活动和著名的全球影响者聚会。 2019年 ，他开始从事健康科学， OTC去中心化交易所，教育以及普及协议的活动。"
+        },
+        "MEMBER_6": {
+          "NAME": "Romal Almazo",
+          "POSITION": "Capco前虚拟货币及分布式技术主管",
+          "DESCRIPTION": "Romal与机构和初创公司合作解决问题。 他拥有20年的IT项目经理经验，擅长使用虚拟货币、数字资产、代币化和区块链等新兴技术。 他通过推向市场的建议和交付执行为初创企业提供支持。"
+        },
+        "MEMBER_7": {
+          "NAME": "Dmitry Machikhin",
+          "POSITION": "GMTLegal领导人",
+          "DESCRIPTION": "德米特里拥有10年的商业和法律领域的高水平知识。 目前，他是众筹律师也是Cointelegraph的律师。"
+        },
+        "MEMBER_8": {
+          "NAME": "Pavel Shterlyaev",
+          "POSITION": "BestRate.org创始人",
+          "DESCRIPTION": "Pavel拥有硕士学位毕业于拉彭兰塔理工大学的计算机学科。 他曾在多家领先的IT公司工作过12年，其中包括华为，Veeam Software，eKassir，Cloudberry Lab，SemRush等。 凭借在开发，工程和技术销售等许多领域的经验，Pavel为团队带来了广泛的技能。 此外，他还在许多会议上代表几家公司担任英语和西班牙语演讲者。"
+        },
+        "MEMBER_9": {
+          "NAME": "Vladimir Tikhomirov",
+          "POSITION": "CEO",
+          "DESCRIPTION": "作为加密爱好者和连续创业者，Vladimir拥有超过11年的IT业务领导经验，包括担任摩托罗拉解决方案的前任产品经理（7年）。 Vladimir是DDG的创始人之一，DDG是一个拥有50名员工的软件开发中心。 除了实践经验，他还拥有计算机科学博士学位，融合了知识和经验。 最近，他创立了MyWish平台，这是由TRON，EOS社区，NEO，Waves和Binance支持的智能合约生成的领先平台。"
+        },
+        "MEMBER_10": {
+          "NAME": "Alexandra Korneva",
+          "POSITION": "公共关系及市场营销合伙人",
+          "DESCRIPTION": "Hapax.tech创始人，Pencil集团联合创始人。在公共关系，营销和媒体有超过六年的经验。与Cointelegraph, BlockchainLife, BlockShow, CryptoFriendsand等媒体合作"
+        },
+        "MEMBER_11": {
+          "NAME": "Veronika Trunina",
+          "POSITION": "业务发展",
+          "DESCRIPTION": "Сryptojunky热衷于将人员和企业与IT领导者联系起来。 前EPAM软件开发总监（3年）"
+        },
+        "MEMBER_12": {
+          "NAME": "Dmitriy Kovalev",
+          "POSITION": "高级前端开发",
+          "DESCRIPTION": "Dmitriy拥有超过7年的累积编程经验，具有高水平的开发知识。 他曾担任区块链行业的前端开发人员已有2年。 他擅长以下语言：JS，TS（CSS，HTML）"
+        },
+        "MEMBER_13": {
+          "NAME": "Max Strenk",
+          "POSITION": "后端开发",
+          "DESCRIPTION": "凭借五年以上的编程经验和2年的区块链领域经验，Max提供高质量的技术技能和背景知识。 在区块链之前，他参与了Linux的基础设施和管理。 此外，他还接受过以下语言的培训：Python。 Solidity，JavaScript。"
+        }
+      }
+    },
+
+    "SECTION_16": {
+      "TITLE": "我们的背景",
+      "POST_TITLE": "我们在推出基于区块链技术的项目方面拥有成功的经验。",
+      "DESCRIPTION": "我们的团队发布了MyWish平台 - 为6个区块链（NEO，以太坊，TRON，EOS，RSK和WAVES）的智能合约建设者提供领先平台",
+      "LIST": {
+        "ITEM_1": "MyWish平台上超过8500名用户",
+        "ITEM_2": "自2017年以来创建了6 000多份合同",
+        "ITEM_3": "超过200个项目使用MyWish进行业务",
+        "ITEM_4": "TRON加速器的获胜者",
+        "ITEM_5": "WAVES区块链大奖的获胜者",
+        "ITEM_6": "在Binance DEX上市"
+      }
+    },
+
+    "SECTION_17": {
+      "TITLE": "路线图",
+      "QII19": "QII 2019",
+      "QIII19": "QIII 2019",
+      "QIV19": "QIV 2019",
+      "QI20": "QI 2020",
+      "SUCCESSFULLY": {
+        "TITLE": "成功达成了",
+        "LIST": {
+          "ITEM_1": "在以太坊上启动Swaps.Network （在所有ERC-20令牌的支持下）",
+          "ITEM_2": "实施单一智能合约",
+          "ITEM_3": "实现“经纪人”功能”"
+        }
+      },
+      "SOON": {
+        "TITLE": "很快就会到达",
+        "LIST": {
+          "ITEM_1": "与主要交易所，中心化场外交易和钱包的合作伙伴关系",
+          "ITEM_2": "在另外两个区块链上运行交换",
+          "ITEM_3": "推荐计划的API实施",
+          "ITEM_4": "为BTC运行交换",
+          "ITEM_5": "IOS和Android端移动应用程序",
+          "ITEM_6": "为场外交易运行跨链解决方案",
+          "ITEM_7": "SWAPS.NETWORK  - 世界上OTC交易量的领导者"
+        }
+      }
+    },
+
+    "SECTION_18": {
+      "TITLE": "参与者奖励",
+      "DESCRIPTION": "所有奖励代币是无法交易的，只能在SWAPS.NETWORK使用。SWAPS.NETWORK（并非BitForex）拥有加成分配的解释权。为了获得奖励代币，你需要登陆到平台",
+      "BONUSES": {
+        "PART_1": {
+          "TITLE": "青铜<br/> 美元起",
+          "BONUS_LIST": {
+            "ITEM_1": {
+              "TITLE": "私人/公共交易 +20%折扣",
+              "TEXT": "如果您从PTO开始到2020年7月31日期间持有23000 SWAP代币（价值999美元），您将获得折扣"
+            },
+            "ITEM_2": {
+              "TITLE": "+3% 平台代币",
+              "TEXT": "您将获得额外3％的代币，仅用于平台上的服务。 您不能在交易所出售它们。"
+            },
+            "ITEM_3": {
+              "TITLE": "3次免费的OTC交易（免除佣金）",
+              "TEXT": "每笔场外交易都有0.5％的佣金。 套餐所有者将收到促销代码，允许他们免除3笔交易的佣金。"
+            },
+            "ITEM_4": {
+              "TITLE": "1次免费的个人代币创建",
+              "TEXT": "基于以太坊铸造个人代币。 自己创建代币需要至少3周，费用为2000美元。 我们将为您创建代币，您将能够将其用于您想要的项目和交易。."
+            },
+            "ITEM_5": {
+              "TITLE": "免费进入托管服务",
+              "TEXT": "SWAPS.NETWORK将收集托管评级和直接联系人信息。 您将拥有对评级和联系人的独家访问权限。"
+            },
+            "ITEM_6": {
+              "TITLE": "1次免费私人场外交易（无佣金和免费）",
+              "TEXT": "私人OTC交易对其他用户不可见，而且是最安全的解决方案。"
+            }
+          }
+        },
+        "PART_2": {
+          "TITLE": "白银<br/> 美元起",
+          "BONUS_LIST": {
+            "ITEM_1": {
+              "TITLE": "私人/公共交易 +30%折扣",
+              "TEXT": "如果您从PTO开始到2020年7月31日期间持有58000 SWAP代币（价值2499美元），您将获得折扣"
+            },
+            "ITEM_2": {
+              "TITLE": "+5% 平台代币",
+              "TEXT": "您将获得额外5％的代币，仅用于平台上的服务。 您不能在交易所出售它们。"
+            },
+            "ITEM_3": {
+              "TITLE": "5次免费的OTC交易（免除佣金）",
+              "TEXT": "每笔场外交易都有0.5％的佣金。 套餐所有者将收到促销代码，允许他们免除3笔交易的佣金。"
+            },
+            "ITEM_4": {
+              "TITLE": "2次免费的个人代币创建",
+              "TEXT": "基于以太坊铸造个人代币。 自己创建代币需要至少3周，费用为2000美元。 我们将为您创建代币，您将能够将其用于您想要的项目和交易。"
+            },
+            "ITEM_5": {
+              "TITLE": "免费进入托管服务",
+              "TEXT": "SWAPS.NETWORK将收集托管评级和直接联系人信息。 您将拥有对评级和联系人的独家访问权限。"
+            },
+            "ITEM_6": {
+              "TITLE": "2次免费私人场外交易（无佣金和免费）",
+              "TEXT": "私人OTC交易对其他用户不可见，而且是最安全的解决方案。"
+            }
+          }
+        },
+        "PART_3": {
+          "TITLE": "黄金<br/> 美元起",
+          "BONUS_LIST": {
+            "ITEM_1": {
+              "TITLE": "私人/公共交易 +40%折扣",
+              "TEXT": "如果您从PTO开始到2020年7月31日期间持有151000 SWAP代币（价值6499美元），您将获得折扣"
+            },
+            "ITEM_2": {
+              "TITLE": "+7% 平台代币",
+              "TEXT": "您将获得额外7％的代币，仅用于平台上的服务。 您不能在交易所出售它们。"
+            },
+            "ITEM_3": {
+              "TITLE": "7次免费的OTC交易（免除佣金）",
+              "TEXT": "每笔场外交易都有0.5％的佣金。 套餐所有者将收到促销代码，允许他们免除3笔交易的佣金。"
+            },
+            "ITEM_4": {
+              "TITLE": "3次免费的个人代币创建",
+              "TEXT": "基于以太坊铸造个人代币。 自己创建代币需要至少3周，费用为2000美元。 我们将为您创建代币，您将能够将其用于您想要的项目和交易。"
+            },
+            "ITEM_5": {
+              "TITLE": "免费进入托管服务",
+              "TEXT": "SWAPS.NETWORK将收集托管评级和直接联系人信息。 您将拥有对评级和联系人的独家访问权限。"
+            },
+            "ITEM_6": {
+              "TITLE": "3次免费私人场外交易（无佣金和免费）",
+              "TEXT": "私人OTC交易对其他用户不可见，而且是最安全的解决方案。"
+            },
+            "ITEM_7": {
+              "TITLE": " ",
+              "TEXT": " "
+            }
+          }
+        },
+        "PART_4": {
+          "TITLE": "旗舰<br/> 美元起",
+          "BONUS_LIST": {
+            "ITEM_1": {
+              "TITLE": "私人/公共交易 +50%折扣",
+              "TEXT": "如果您从PTO开始到2020年7月31日期间持有337000 SWAP代币（价值14499美元），您将获得折扣"
+            },
+            "ITEM_2": {
+              "TITLE": "+10% 平台代币",
+              "TEXT": "您将获得额外10％的代币，仅用于平台上的服务。<br/> 您不能在交易所出售它们。"
+            },
+            "ITEM_3": {
+              "TITLE": "10次免费的OTC交易（免除佣金）",
+              "TEXT": "每笔场外交易都有0.5％的佣金。 套餐所有者将收到促销代码，允许他们免除3笔交易的佣金。"
+            },
+            "ITEM_4": {
+              "TITLE": "5次免费的个人代币创建",
+              "TEXT": "基于以太坊铸造个人代币。 自己创建代币需要至少3周，费用为2000美元。 我们将为您创建代币，您将能够将其用于您想要的项目和交易。"
+            },
+            "ITEM_5": {
+              "TITLE": "免费进入托管服务",
+              "TEXT": "SWAPS.NETWORK将收集托管评级和直接联系人信息。 您将拥有对评级和联系人的独家访问权限。"
+            },
+            "ITEM_6": {
+              "TITLE": "5次免费私人场外交易（无佣金和免费）",
+              "TEXT": "私人OTC交易对其他用户不可见，而且是最安全的解决方案。"
+            }
+          },
+          "EXCLUSIVE": {
+            "PART_1": "独家进入SWAPS NETWORK 和伙伴组织的私人活动（私人票）",
+            "PART_2": "可早期使用测试版本和新功能"
+          }
+        }
+      }
+    },
+
+    "SECTION_19": {
+      "TEXT": {
+        "PART_1": "在前十分钟可以投资我们的PTO的所有人可以多获得15%的代币，并可以在SWAPS.NETWORK使用。",
+        "PART_2": "准备比特币并在开始前设置闹钟10分钟。"
+      },
+      "TIME": "格林威治标准时间17:00 + 8",
+      "DATE": "7月15日",
+      "CITIES": {
+        "CITY_1": "香港",
+        "CITY_2": "纽约",
+        "CITY_3": "汉城",
+        "CITY_4": "上海",
+        "CITY_5": "东京",
+        "CITY_6": "莫斯科"
+      },
+      "BUTTON": "参与IEO"
+    },
+
+    "SECTION_20": {
+      "TITLE": "代币数据",
+      "POST_TITLE": "关于SWAP代币",
+      "DESCRIPTION": "SWAP代币基于以太坊协议，完全符合ERC20标准。 支持此标准可确保代币与第三方服务的兼容性，并且还易于集成。",
+      "TOKEN_INFO": {
+        "PART_1": {
+          "LABEL": "缩写",
+          "VALUE": "SWAP"
+        },
+        "PART_2": {
+          "LABEL": "未售出的代币",
+          "VALUE": "会被烧掉"
+        },
+        "PART_3": {
+          "LABEL": "软顶",
+          "VALUE": "300,000美元"
+        },
+        "PART_4": {
+          "LABEL": "总供应量",
+          "VALUE": "1亿"
+        },
+        "PART_5": {
+          "LABEL": "零售价",
+          "VALUE": "1 SWAP = 0.043美元"
+        },
+        "PART_6": {
+          "LABEL": "硬顶",
+          "VALUE": "3,000,000美元"
+        }
+      },
+      "DISTRIBUTE": {
+        "BLOCKED": "（已封锁）",
+        "BLOCK_1": {
+          "TITLE": "分配",
+          "PART_1": {
+            "PART_NAME": "的销售额"
+          },
+          "PART_2": {
+            "PART_NAME": "Bounty",
+            "PART_DESC": "5％的代币将被冻结一年。"
+          },
+          "PART_3": {
+            "PART_NAME": "团队",
+            "PART_DESC": "-12％将每次解冻3％（超过4年）"
+          },
+          "PART_4": {
+            "PART_NAME": "顾问",
+            "PART_DESC": "2.5％的代币将被冻结一年。"
+          }
+        },
+        "BLOCK_2": {
+          "TITLE": "预算和支出",
+          "PART_1": {
+            "PART_NAME": "的发展"
+          },
+          "PART_2": {
+            "PART_NAME": "的合作伙伴关系和整合"
+          },
+          "PART_3": {
+            "PART_NAME": "营销"
+          },
+          "PART_4": {
+            "PART_NAME": "法律"
+          },
+          "PART_5": {
+            "PART_NAME": "的储备基金"
+          }
+        }
+      }
+    },
+
+    "SECTION_21": {
+      "TITLE": "代币使用",
+      "DESCRIPTION": "SWAP具有纯功能作用。",
+      "LIST": {
+        "ITEM_1": "SWAP创建费",
+        "ITEM_2": "支付额外交易选项（长期有效期，参与人数等）",
+        "ITEM_3": "代币列表费用（任何代币都可以用于交换，但列表中存在代币可增加信心并且不需要控制代币地址）",
+        "ITEM_4": "为吸引客户支付外部服务（代表SWAPS.NETWORK付款）",
+        "ITEM_5": "上架推广费用（邮寄，在网站上发布，在社交网络中发布等）",
+        "ITEM_6": "折扣"
+      },
+      "TABLE": {
+        "TEXT": {
+          "PART_1": "SWAP持有人可以获得以下最大折扣（取决于持有金额和时间）",
+          "PART_2": "它将发布1亿个代币，为了以后燃烧50％的所有已分配的代币，没有进一步增发的可能性。"
+        },
+        "YEAR": "年",
+        "DISCOUNT": "折扣",
+        "NO_DISCOUNT": "没有折扣"
+      }
+    },
+
+    "SECTION_22": {
+      "TITLE": "合作方",
+      "PARTNERS_LIST": {
+        "PARTNER_1": {
+          "TEXT": "拥有数百万用户，他们为来自45个国家和地区的矿工提供主流加密货币的采矿池服务。 BW矿池已经生产了近30万比特币，150万莱特币和近200万个以太坊，总价值超过30亿美元"
+        },
+        "PARTNER_2": {
+          "TEXT": "加密支付网关和加密汇聚器，目前有15,000多个活跃的服务用户，总体交易超过300万美元"
+        },
+        "PARTNER_3": {
+          "TEXT": "为TRON，EOS社区，NEO，Waves和Binance提供支持的6个区块链（NEO，以太坊，TRON，EOS，RSK和WAVES）的智能合约建设者的领先平台。 自2017年以来超过8500个用户创建了超过6 000份合约。"
+        },
+        "PARTNER_4": {
+          "TEXT": "非托管的即时加密货币交易所，用户无需资金就可以投入服务。 Changelly充当加密交换和用户之间的中介，提供对140多种加密货币的访问。"
+        },
+        "PARTNER_5": {
+          "TEXT": "Market Crypto  - 最老牌的电报群加密场外交易组织。 在俄罗斯社区广为人知。 2017年10月5日创立"
+        },
+        "PARTNER_6": {
+          "TEXT": "OTC Room是数字资产交易或场外交易的先驱团体。 超过1年为基金和投资者享有安全可靠的环境，总交易额超过1000万美元。"
+        }
+      }
+    },
+
+    "SECTION_23": {
+      "TEXT": {
+        "PART_1": "SWAPS.NETWORK是OTC全球流动性池。它积累了市场上的所有交易，并连接来自世界各地的卖家和买家。",
+        "PART_2": "SWAPS.NETWORK提供完全去中心化的OTC解决方案。 用户可以在没有第三方或托管的情况下进行场外交易。",
+        "PART_3": "*场外交易代表“场外交易”，意味着资产可以通过交易商网络交易，而不是通过交易所交易。",
+        "PART_4": "SWAPS.NETWORK的开发由MANZONI LIMITED LIABILITY COMPANY的专家和开发人员进行,",
+        "PART_5": "注册号码: 116784711990, INN: 7813245218, KPP: 781301001",
+        "PART_6": "有关平台操作的所有问题，请联系: "
+      },
+      "FOLLOW_US": "关注我们",
+      "CONTACTS": "联系",
+      "SUPPORT": "支持:",
+      "MEDIA": "媒体:",
+      "INFORMATION": "信息:",
+      "PRIVACY_POLICY": "隐私政策",
+      "WEB_DISCLAIMERS": "网站使用条款",
+      "COPY": "&copy;Copyright SWAPS.NETWORK 2019"
+    },
+
+    "MODAL_FORM": {
+      "TITLE_1": "尝试无需佣金的服务",
+      "TITLE_2": "加入我们的邮件列表，获取有关IEO的所有更新",
+      "FIELDS": {
+        "EMAIL": {
+          "LABEL": "输入你的电子邮箱",
+          "PLACEHOLDER": "电子邮件"
+        },
+        "TELEGRAM": {
+          "LABEL": "输入您的Telegram",
+          "PLACEHOLDER": "Telegram用户名"
+        },
+        "NAME": {
+          "PLACEHOLDER": "你的名字"
+        }
+      },
+      "BUTTONS": {
+        "BUTTON_1": "尝试服务",
+        "BUTTON_2": "参与IEO",
+        "CLOSE": "关"
+      },
+      "SUCCESS_MESSAGE": {
+        "PART_1": "谢谢！",
+        "PART_2": "SWAPS.NETWORK将为您提供最新信息"
+      }
+    },
+
+    "FLOAT_FOOTER": {
+      "TEXT": "我们的产品已准备就绪，无需佣金即可使用",
+      "BUTTON": "加入"
+    }
+  }
+}

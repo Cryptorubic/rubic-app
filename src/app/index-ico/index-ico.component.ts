@@ -32,7 +32,7 @@ export class IndexIcoComponent implements OnInit {
   public msgCount: number;
   private serverDateTime: number;
   private currentDateTime: number;
-  private leftSeconds: number;
+  public leftSeconds: number;
   private leftTime: number;
   public timerDigits: ITimer;
   public visibleTeam: boolean;
@@ -61,6 +61,9 @@ export class IndexIcoComponent implements OnInit {
     this.leftTime = Date.UTC(2019, 6, 15, 9, 0, 0);
 
     this.currentDateTime = new Date().getTime();
+
+
+    // this.leftTime = this.currentDateTime + 5000;
 
 
     this.http.get('/assets/images/1x1.png?_t=' + (new Date()).getTime(), {

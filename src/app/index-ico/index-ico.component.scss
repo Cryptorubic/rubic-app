@@ -51,7 +51,9 @@ button, input {
       right: 0;
       text-align: center;
       color: #3B4452;
-      transition: transform cubic-bezier(0.35,-1.6, 0.63, 2.85) 0.5s;
+      &.button {
+        display: none;
+      }
     }
 
     &_clock {
@@ -122,6 +124,7 @@ button, input {
         top: 18%;
         bottom: 18%;
       }
+
       &:after, &:before, .spinner-wrapper {
         transition: all cubic-bezier(0.35,-1.6, 0.63, 2.85) 0.5s;
       }
@@ -137,6 +140,42 @@ button, input {
         transform: scale(1.05);
       }
     }
+
+
+
+    .new-btn {
+      line-height: 42px;
+      font-weight: bold;
+      background-color: #3b4352;
+      color: #F8DB14;
+      margin-top: 10px;
+      display: none;
+    }
+    &.started .new-btn {
+      display: inline-block;
+    }
+    &.started &_text {
+      &:not(.button) {
+        display: none;
+      }
+      &.button {
+        display: block;
+      }
+    }
+    &.started &_circle {
+      background: linear-gradient(166.46deg, rgba(255, 226, 20, 0.05) 47.3%, rgba(239, 212, 19, 0.45) 105.44%);
+      .spinner-wrapper {
+        display: none;
+      }
+      &:before {
+        background: linear-gradient(166.46deg, rgba(255, 225, 20, 0.1) 18.21%, rgba(248, 219, 20, 0.61) 105.44%);
+      }
+      &:after {
+        background: radial-gradient(188.39px at 50.72% 60.07%, #ffe114 0%, #F8DB14 100%);
+      }
+    }
+
+
   }
   &_menu {
     margin-top: 40px;
@@ -209,13 +248,14 @@ button, input {
         }
       }
     }
-  }
-  .new-btn {
-    line-height: 49px;
-    float: left;
-    span {
-      font-weight: bold;
-      font-size: 17px;
+
+    .new-btn {
+      line-height: 49px;
+      float: left;
+      span {
+        font-weight: bold;
+        font-size: 17px;
+      }
     }
   }
 }
@@ -3099,7 +3139,7 @@ button, input {
 
 .section-footer {
   background-color: #F6F9FD;
-  padding: 70px 0 0;
+  padding: 70px 0 40px;
   color: #3B4352;
   margin-bottom: 80px;
   .information {
@@ -3402,9 +3442,12 @@ a[id] {
   padding: 13px 0;
   color: #3b4352;
   font-weight: 600;
-  text-align: center;
   overflow: visible;
   z-index: 5;
+  .app-content-block {
+    display: flex;
+    align-items: center;
+  }
   &_text {
     text-transform: uppercase;
     font-size: 14px;
@@ -3464,6 +3507,14 @@ a[id] {
     .telegram-widget {
       margin-right: 5vw;
       margin-left: -5vw;
+    }
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .float-line {
+    .app-content-block {
+      display: block;
     }
   }
 }

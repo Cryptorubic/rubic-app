@@ -102,6 +102,10 @@
         "HOURS": "hours",
         "MINUTES": "minutes",
         "SECONDS": "seconds"
+      },
+      "AFTER_START": {
+        "TEXT": "IEO has started",
+        "BUTTON": "JOIN"
       }
     },
 
@@ -754,7 +758,7 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "Our product is ready, use it without commission",
+      "TEXT": "Everyone who participates in IEO in first 10 minutes, will get an additional 15% of tokens to use on platform. <span class=\"nowrap\">IEO starts 15th of July, 17:00 GMT+8</span>",
       "BUTTON": "Join"
     }
 

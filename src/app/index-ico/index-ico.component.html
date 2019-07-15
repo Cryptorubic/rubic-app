@@ -4,7 +4,8 @@
 
   <section class="section-1">
     <div class="app-content-block">
-      <a href="https://event.bitforex.com/en/SWAP.html" target="_blank" class="section-1_timer">
+      <a href="https://event.bitforex.com/en/SWAP.html"
+         target="_blank" class="section-1_timer" [ngClass]="{started: leftSeconds === 0}">
         <div class="section-1_timer_circle">
 
           <div class="spinner-wrapper">
@@ -15,6 +16,10 @@
 
 
 
+        </div>
+        <div class="section-1_timer_text button">
+          <div><b translate="INDEX_PAGE.SECTION_1.AFTER_START.TEXT"></b></div>
+          <span class="new-btn" translate="INDEX_PAGE.SECTION_1.AFTER_START.BUTTON"></span>
         </div>
         <div class="section-1_timer_text">
           {{'INDEX_PAGE.SECTION_1.TIMER.TITLE'|translate}}
@@ -301,20 +306,20 @@
         </div>
 
         <div class="partners-list_item">
-          <a href="https://bestrate.org/5327-2/" class="partners-list_item_content" target="_blank">
-            <div class="partner-logo">
-              <img src="./assets/images/new-index/logos/bestrate.svg" height="40px"/>
-            </div>
-            <div class="partner-description" translate="INDEX_PAGE.SECTION_4.LIST.ITEM_2"></div>
-          </a>
-        </div>
-
-        <div class="partners-list_item">
           <a href="https://coss.io" class="partners-list_item_content" target="_blank">
             <div class="partner-logo">
               <img src="./assets/images/new-index/logos/coss.png" height="40px"/>
             </div>
             <div class="partner-description" translate="INDEX_PAGE.SECTION_4.LIST.ITEM_3"></div>
+          </a>
+        </div>
+
+        <div class="partners-list_item">
+          <a href="https://bestrate.org/5327-2/" class="partners-list_item_content" target="_blank">
+            <div class="partner-logo">
+              <img src="./assets/images/new-index/logos/bestrate.svg" height="40px"/>
+            </div>
+            <div class="partner-description" translate="INDEX_PAGE.SECTION_4.LIST.ITEM_2"></div>
           </a>
         </div>
       </div>
@@ -866,32 +871,32 @@
 
             <div class="list">
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_1.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_1.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_1.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_1.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TEXT"></div>
-              </div>
-
-              <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_3.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_3.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TEXT'|translate"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_4.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_4.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_3.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_3.TEXT'|translate"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_5.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_5.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_4.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_4.TEXT'|translate"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_6.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_6.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_5.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_5.TEXT'|translate"></div>
+              </div>
+
+              <div class="list_item">
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_6.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_6.TEXT'|translate"></div>
               </div>
             </div>
           </div>
@@ -907,32 +912,32 @@
 
             <div class="list">
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_1.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_1.TEXT"></div>
+                <div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_1.TITLE'|translate"></div>
+                <div class="list_item_text"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_1.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TEXT"></div>
-              </div>
-
-              <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_3.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_3.TEXT"></div>
+                <div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TITLE'|translate"></div>
+                <div class="list_item_text"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TEXT'|translate"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_4.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_4.TEXT"></div>
+                <div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_3.TITLE'|translate"></div>
+                <div class="list_item_text"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_3.TEXT'|translate"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_5.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_5.TEXT"></div>
+                <div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_4.TITLE'|translate"></div>
+                <div class="list_item_text"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_4.TEXT'|translate"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_6.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_6.TEXT"></div>
+                <div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_5.TITLE'|translate"></div>
+                <div class="list_item_text"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_5.TEXT'|translate"></div>
+              </div>
+
+              <div class="list_item">
+                <div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_6.TITLE'|translate"></div>
+                <div class="list_item_text"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_6.TEXT'|translate"></div>
               </div>
             </div>
           </div>
@@ -949,32 +954,32 @@
 
             <div class="list">
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_1.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_1.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_1.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_1.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_3.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_3.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_3.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_3.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_4.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_4.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_4.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_4.TEXT'|translate"></div>
+              </div>
+              <!--<div class="list_item">-->
+                <!--<div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_5.TITLE"></div>-->
+                <!--<div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_5.TEXT"></div>-->
+              <!--</div>-->
+              <div class="list_item">
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_6.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_6.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_5.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_5.TEXT"></div>
-              </div>
-              <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_6.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_6.TEXT"></div>
-              </div>
-              <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_7.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_7.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_7.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_7.TEXT'|translate"></div>
               </div>
             </div>
           </div>
@@ -992,33 +997,33 @@
             <div class="list">
 
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_1.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_1.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_1.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_1.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TITLE"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TITLE'|translate"></div>
                 <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_3.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_3.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_3.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_3.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_4.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_4.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_4.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_4.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_5.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_5.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_5.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_5.TEXT'|translate"></div>
               </div>
               <div class="list_item">
-                <div class="list_item_title" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_6.TITLE"></div>
-                <div class="list_item_text" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_6.TEXT"></div>
+                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_6.TITLE'|translate"></div>
+                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_6.TEXT'|translate"></div>
               </div>
 
               <div class="list_item">
-                <div class="list_item_special" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.EXCLUSIVE.PART_1"></div>
-                <div class="list_item_special" translate="INDEX_PAGE.SECTION_18.BONUSES.PART_4.EXCLUSIVE.PART_2"></div>
+                <div class="list_item_special" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.EXCLUSIVE.PART_1'|translate"></div>
+                <div class="list_item_special" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.EXCLUSIVE.PART_2'|translate"></div>
               </div>
             </div>
           </div>
@@ -1490,7 +1495,7 @@
     <span>{{msgCount}}</span>
   </a>
   <div class="app-content-block">
-    <span class="float-line_text" translate="INDEX_PAGE.SECTION_19.TEXT.PART_1"></span>
+    <div class="float-line_text" [innerHTML]="'INDEX_PAGE.FLOAT_FOOTER.TEXT'|translate"></div>
     <a href="https://event.bitforex.com/en/SWAP.html" target="_blank" class="new-btn">
       <span translate="INDEX_PAGE.FLOAT_FOOTER.BUTTON"></span>
     </a>
