@@ -60,6 +60,9 @@ export interface IContractV3 {
   isSwapped?: boolean;
   isAuthor?: boolean;
   user?: number;
+
+  isEthereum?: boolean;
+
 }
 
 
@@ -393,7 +396,10 @@ export class ContractEditV3Resolver implements Resolve<any> {
 
   private getContractInformation(observer, isPublic?) {
 
-    const promise = this.contractsService.getContractV3Information(this.contractId);
+
+    const promise = !isPublic ?
+      this.contractsService.getContractV3Information(this.contractId) :
+      this.contractsService.getSwapByPublic(this.publicLink);
 
     promise.then((result: IContractV3) => {
       result.tokens_info = {};
@@ -405,6 +411,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
         quoteToken = window['cmc_tokens'].filter((tk) => {
           return tk.isEthereum && (tk.address === result.quote_address);
         })[0];
+
         this.web3Service.getFullTokenInfo(result.quote_address).then((tokenInfo: TokenInfoInterface) => {
           if (quoteToken) {
             result.tokens_info.quote = {
@@ -412,6 +419,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
             };
             result.tokens_info.quote.token.decimals = tokenInfo.decimals;
           } else {
+            tokenInfo.isEthereum = true;
             result.tokens_info.quote = {
               token: tokenInfo
             };
@@ -437,9 +445,12 @@ export class ContractEditV3Resolver implements Resolve<any> {
         result.tokens_info.quote.token.decimals = 0;
         result.tokens_info.quote.amount = result.quote_limit;
         if (result.tokens_info.base) {
-          observer.complete();
+          setTimeout(() => {
+            observer.complete();
+          });
         }
       }
+
       if (result.base_address) {
         baseToken = window['cmc_tokens'].filter((tk) => {
           return tk.isEthereum && (tk.address === result.base_address);
@@ -451,6 +462,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
             };
             result.tokens_info.base.token.decimals = tokenInfo.decimals;
           } else {
+            tokenInfo.isEthereum = true;
             result.tokens_info.base = {
               token: tokenInfo
             };
@@ -475,7 +487,9 @@ export class ContractEditV3Resolver implements Resolve<any> {
         result.tokens_info.base.token.decimals = 0;
         result.tokens_info.base.amount = result.base_limit;
         if (result.tokens_info.quote) {
-          observer.complete();
+          setTimeout(() => {
+            observer.complete();
+          });
         }
       }
 

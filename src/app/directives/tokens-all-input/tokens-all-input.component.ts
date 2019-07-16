@@ -140,7 +140,6 @@ export class TokensAllInputComponent implements OnInit {
     this.listIsOpened = false;
     this.tokenName = token.token_name + ' (' + token.token_short_name + ')';
 
-
     if (token.isEthereum) {
       this.web3Service.getFullTokenInfo(token.address).then((tokenInfo: TokenInfoInterface) => {
         this.tokenModel.token.decimals = tokenInfo.decimals;
@@ -148,7 +147,6 @@ export class TokensAllInputComponent implements OnInit {
         this.DecimalsEmitter.emit(this.tokenModel.token.decimals);
       }, (error) => {
         // this.tokenModel.token.decimals = 0;
-        console.log(this.tokenModel.token.decimals);
         this.TokenChange.emit(this.tokenModel);
         this.DecimalsEmitter.emit(this.tokenModel.token.decimals);
       });

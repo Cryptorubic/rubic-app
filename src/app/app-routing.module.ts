@@ -153,6 +153,17 @@ const routes: Routes = [
       hideInstruction: true
     }
   }, {
+    path: 'public-v3/:public_link',
+    component: ContractsPreviewV3Component,
+    resolve: {
+      contract: ContractEditV3Resolver
+    },
+    data: {
+      supportHide: 1024,
+      support: true,
+      hideInstruction: true
+    }
+  }, {
     path: 'contracts',
     component: ContractsListComponent,
     resolve: {

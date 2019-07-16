@@ -25,7 +25,14 @@ export class ContractsService {
   public getContractV3Information(id) {
     return this.httpService.get(`get_swap3/`, {
       swap_id: id
-    }).toPromise();
+    }).toPromise().then((result) => {
+      if (result.base_address && result.quote_address) {
+        result.isEthereum = true;
+      } else {
+        result.state = (result.state !== 'WAITING_FOR_ACTIVATION') ? result.state : 'ACTIVE';
+      }
+      return result;
+    });
   }
 
   public updateContract(data) {
@@ -54,6 +61,19 @@ export class ContractsService {
     return this.httpService.get(`get_contract_for_unique_link/`, {
       unique_link: publicLink
     }).toPromise();
+  }
+
+  public getSwapByPublic(publicLink) {
+    return this.httpService.get(`get_swap3_for_unique_link/`, {
+      unique_link: publicLink
+    }).toPromise().then((result) => {
+      if (result.base_address && result.quote_address) {
+        result.isEthereum = true;
+      } else {
+        result.state = (result.state !== 'WAITING_FOR_ACTIVATION') ? result.state : 'ACTIVE';
+      }
+      return result;
+    });
   }
 
   public changeContractState(id) {

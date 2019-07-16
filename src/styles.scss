@@ -320,6 +320,12 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   box-sizing: border-box;
   cursor: pointer;
   position: relative;
+
+  &-auto {
+    display: inline-block;
+    width: auto;
+  }
+
   &:not(&-normal-weight) {
     font-weight: bold;
   }

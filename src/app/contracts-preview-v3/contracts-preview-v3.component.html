@@ -70,15 +70,19 @@
                       {{tokens.base.token.token_name}}
                       ({{tokens.base.token.token_short_name}})
                     </div>
+
                     <div class="token-info_texts__address">
                       <a [href]="!tokens.base.token.isEther ? (tokens.base.token.address | etherscanUrl : 'token') : 'https://etherscan.io/stat/supply'"
+                         *ngIf="tokens.base.token.isEthereum"
                          target="_blank">
                         <small>Check on Etherscan</small>&nbsp;
                         <img src="./assets/images/icons/link.svg">
-                      </a>
+                      </a>&nbsp;
                     </div>
+
+
                   </div>
-                  <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE'">
+                  <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE' && originalContract.isEthereum">
                     <div class="token-info_investments__number">
                       {{ contractInfo.baseInvestors }}/{{maximumInvestors}}
                     </div>
@@ -183,7 +187,7 @@
                 </div>
 
                 <div class="contract-buttons"
-                     *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')">
+                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')) && originalContract.isEthereum">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.base.token)"
                           type="button">
@@ -237,13 +241,14 @@
                     </div>
                     <div class="token-info_texts__address">
                       <a [href]="!tokens.quote.token.isEther ? (tokens.quote.token.address | etherscanUrl : 'token') : 'https://etherscan.io/stat/supply'"
+                         *ngIf="tokens.quote.token.isEthereum"
                          target="_blank">
                         <small>Check on Etherscan</small>&nbsp;
                         <img src="./assets/images/icons/link.svg">
-                      </a>
+                      </a>&nbsp;
                     </div>
                   </div>
-                  <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE'">
+                  <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE' && originalContract.isEthereum">
                     <div class="token-info_investments__number">
                       {{ contractInfo.quoteInvestors }}/{{maximumInvestors}}
                     </div>
@@ -344,7 +349,7 @@
                 </div>
 
                 <div class="contract-buttons"
-                     *ngIf="(originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')">
+                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')) && originalContract.isEthereum">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.quote.token)"
                           type="button">
@@ -477,3 +482,38 @@
   </button>
 </div>
 
+
+
+<ng-template #administratorContact>
+  <div class="dialog-block">
+    <div class="dialog-block__content">
+      <div class="info-modal-text">
+        For the contibution please contact our manager.<br/>
+        SWAP ID: <b>{{ originalContract.unique_link }}</b><br/>
+
+        <!--Please contact our administrator by-->
+        <!--<a href="https://t.me/SWAPS_NETWORK" target="_blank">Telegram</a>,-->
+        <!--<a href="mailto:support@swaps.network">Email</a> or Online Chat.-->
+
+      </div>
+
+      <div><br/><br/>
+
+        <button class="btn btn-transparent btn-min btn-auto float-right"
+                type="button" mat-dialog-close>
+          <span class="just-title">Close</span>
+        </button>
+
+        <button class="btn btn-transparent btn-min btn-auto"
+                type="button" mat-dialog-close>
+          <span class="just-title">Telegram</span>
+        </button>&nbsp;&nbsp;
+        <button class="btn btn-transparent btn-min btn-auto"
+                type="button" mat-dialog-close>
+          <span class="just-title">Email</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>

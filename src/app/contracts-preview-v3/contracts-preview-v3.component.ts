@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {IContract} from '../contract-form/contract-form.component';
 import {ActivatedRoute} from '@angular/router';
 
@@ -24,6 +24,8 @@ import {IContractV3} from '../contract-form-all/contract-form-all.component';
 })
 export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
+  @ViewChild('administratorContact') administratorContact: TemplateRef<any>;
+
   private currentUser: any;
 
   public maximumInvestors;
@@ -40,8 +42,9 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     private contractService: ContractsService,
     private userService: UserService
   ) {
+
     this.originalContract = this.route.snapshot.data.contract;
-    this.originalContract.state = 'CREATED';
+
 
     this.copiedAddresses = {};
     this.analyzeContract();
@@ -102,7 +105,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   private getBaseRaised(web3Contract) {
     const details = this.originalContract;
-    if (details.state === 'ACTIVE') {
+    if (details.state === 'ACTIVE' && details.isEthereum) {
       web3Contract.methods.baseRaised(details.memo_contract).call().then((result) => {
         this.contractInfo.baseRaised = result;
         this.contractInfo.baseLeft = new BigNumber(details.tokens_info.base.amount).minus(result);
@@ -117,7 +120,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   }
   private getQuoteRaised(web3Contract) {
     const details = this.originalContract;
-    if (details.state === 'ACTIVE') {
+    if (details.state === 'ACTIVE' && details.isEthereum) {
       web3Contract.methods.quoteRaised(details.memo_contract).call().then((result) => {
         this.contractInfo.quoteRaised = result;
         this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(result);
@@ -134,7 +137,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   private getBaseInvestors(web3Contract) {
     const details = this.originalContract;
 
-    if (details.state === 'ACTIVE') {
+    if (details.state === 'ACTIVE' && details.isEthereum) {
       web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
         this.contractInfo.baseInvestors = result ? result.length : 0;
       }, err => {
@@ -148,7 +151,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   private getQuoteInvestors(web3Contract) {
     const details = this.originalContract;
-    if (details.state === 'ACTIVE') {
+    if (details.state === 'ACTIVE' && details.isEthereum) {
       web3Contract.methods.quoteInvestors(details.memo_contract).call().then((result) => {
         this.contractInfo.quoteInvestors = result ? result.length : 0;
       }, err => {
@@ -161,7 +164,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   private getBaseBrokersPercent(web3Contract) {
     const details = this.originalContract;
-    if (details.state === 'ACTIVE') {
+    if (details.state === 'ACTIVE' && details.isEthereum) {
       web3Contract.methods.allBrokersBasePercent(details.memo_contract).call().then((result) => {
         this.contractInfo.baseBrokerPercent = result / 100;
         this.contractInfo.baseBrokerAmount =
@@ -169,12 +172,16 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       }, err => {
         console.log(err);
       });
+    } else if (!details.isEthereum) {
+      this.contractInfo.baseBrokerPercent = details.broker_fee_base;
+      this.contractInfo.baseBrokerAmount =
+        new BigNumber(details.tokens_info.base.amount).div(100).times(this.contractInfo.baseBrokerPercent);
     }
   }
 
   private getQuoteBrokersPercent(web3Contract) {
     const details = this.originalContract;
-    if (details.state === 'ACTIVE') {
+    if (details.state === 'ACTIVE' && details.isEthereum) {
       web3Contract.methods.allBrokersQuotePercent(details.memo_contract).call().then((result) => {
         this.contractInfo.quoteBrokerPercent = result / 100;
         this.contractInfo.quoteBrokerAmount =
@@ -182,11 +189,16 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       }, err => {
         console.log(err);
       });
+    } else if (!details.isEthereum) {
+      this.contractInfo.quoteBrokerPercent = details.broker_fee_quote;
+      this.contractInfo.quoteBrokerAmount =
+        new BigNumber(details.tokens_info.quote.amount).div(100).times(this.contractInfo.quoteBrokerPercent);
     }
   }
 
   private getContractInfoFromBlockchain(web3Contract) {
     const details = this.originalContract;
+
     this.getBaseRaised(web3Contract);
     this.getQuoteRaised(web3Contract);
     this.getBaseInvestors(web3Contract);
@@ -195,7 +207,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     this.getBaseBrokersPercent(web3Contract);
     this.getQuoteBrokersPercent(web3Contract);
 
-    if (details.state === 'ACTIVE') {
+    if (details.state === 'ACTIVE' && details.isEthereum) {
       web3Contract.methods.isSwapped(details.memo_contract).call().then((result) => {
         this.originalContract.isSwapped = result;
       }, err => {
@@ -214,6 +226,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       case 'DONE':
       case 'EXPIRED':
       case 'CREATED':
+      case 'WAITING_FOR_ACTIVATION':
         this.contractAdditional.link =
           location.origin + '/public-v3/' + this.originalContract.unique_link;
         this.originalContract.unique_link_url = this.contractAdditional.link;
@@ -235,7 +248,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   }
 
   private getBaseContract() {
-    this.contractService.getContractByPublic(this.originalContract.unique_link).then((result) => {
+    this.contractService.getSwapByPublic(this.originalContract.unique_link).then((result) => {
       const tokens_info = this.originalContract.tokens_info;
       const swapped = this.originalContract.isSwapped;
       this.originalContract = result;
@@ -346,6 +359,11 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   }
 
   public sendContribute(amount, token) {
+
+    if (!this.originalContract.isEthereum) {
+      this.openAdministratorInfo();
+      return;
+    }
 
     let tokenAddress: any;
 
@@ -512,17 +530,27 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   public quoteWillGetValue(amount) {
     const details = this.originalContract;
     const quoteWillValue = new BigNumber(amount).div(details.tokens_info.base.amount).times(details.tokens_info.quote.amount);
-    const quoteFeeValue = quoteWillValue.div(100).times(this.contractInfo.quoteBrokerPercent);
+    // const quoteFeeValue = quoteWillValue.div(100).times(this.contractInfo.quoteBrokerPercent);
 
-    return quoteWillValue.minus(quoteFeeValue);
+    return quoteWillValue;
+    // .minus(quoteFeeValue);
   }
 
   public baseWillGetValue(amount) {
     const details = this.originalContract;
     const baseWillValue = new BigNumber(amount).div(details.tokens_info.quote.amount).times(details.tokens_info.base.amount);
-    const baseFeeValue = baseWillValue.div(100).times(this.contractInfo.baseBrokerPercent);
+    // const baseFeeValue = baseWillValue.div(100).times(this.contractInfo.baseBrokerPercent);
 
-    return baseWillValue.minus(baseFeeValue);
+    return baseWillValue;
+    // .minus(baseFeeValue);
+  }
+
+
+  private openAdministratorInfo() {
+    this.dialog.open(this.administratorContact, {
+      width: '480px',
+      panelClass: 'custom-dialog-container'
+    });
   }
 
 }

@@ -16,6 +16,7 @@ export interface TokenInfoInterface {
   name: string;
   symbol: string;
   isEther: boolean;
+  isEthereum?: boolean;
 }
 
 const IS_PRODUCTION = location.protocol === 'https:';
@@ -122,7 +123,7 @@ export class Web3Service {
   }
 
   private convertTokenInfo(tokenInfo) {
-    return (tokenInfo && tokenInfo.symbol) ? {
+    return tokenInfo ? {
       token_short_name: tokenInfo.symbol,
       token_name: tokenInfo.name,
       address: tokenInfo.address,
@@ -183,9 +184,19 @@ export class Web3Service {
             });
           }
         }, (err) => {
-          reject({
-            tokenAddress: true
-          });
+          if (method !== 'symbol') {
+            reject({
+              tokenAddress: true
+            });
+          } else {
+            fieldsCount--;
+            if (!fieldsCount) {
+              tokenInfo.address = tokenAddress;
+              resolve({
+                data: tokenInfo
+              });
+            }
+          }
         });
       });
     }).then((res) => {
