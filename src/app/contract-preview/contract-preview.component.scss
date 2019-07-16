@@ -257,7 +257,13 @@
 }
 
 
-
+.contact-buttons {
+  .btn {
+    width: 33%;
+    margin-right: 1%;
+    display: inline-block;
+  }
+}
 .info-modal-text {
   text-align: left;
   font-weight: 100;

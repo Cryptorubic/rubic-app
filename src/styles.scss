@@ -350,6 +350,14 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   &-min {
     font-size: 16px;
     height: 42px;
+    line-height: 42px;
+    svg {
+      vertical-align: middle;
+      width: 21px;
+      height: 21px;
+      margin-right: 10px;
+      margin-left: -6px;
+    }
   }
   &-for-field {
     height: 40px;

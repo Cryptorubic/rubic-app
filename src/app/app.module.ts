@@ -113,6 +113,7 @@ export function appInitializerFactory(translate: TranslateService, userService: 
             token.decimals = 0;
           });
           window['cmc_tokens'] = tokens;
+          resolve(null);
         });
 
         subscriber.unsubscribe();
