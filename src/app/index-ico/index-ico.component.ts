@@ -7,6 +7,8 @@ import {MatDialog} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
 
 import {OwlCarousel} from 'ngx-owl-carousel';
+import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
+import {Router} from '@angular/router';
 
 
 export interface ITimer {
@@ -43,10 +45,32 @@ export class IndexIcoComponent implements OnInit {
 
   public timerArcDeg: number;
 
+  private translator: TranslateService;
+
+  public selectedLanguage: string;
+
+  public lngLinks: any;
+
   constructor(
     private dialog: MatDialog,
-    private http: HttpClient
+    private http: HttpClient,
+    translate: TranslateService
   ) {
+
+    this.lngLinks = {
+      ru: 'ru',
+      en: 'en',
+      zh: 'cn',
+      ko: 'kr'
+    };
+
+    this.translator = translate;
+
+    this.selectedLanguage = translate.currentLang;
+
+    translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.selectedLanguage = event.lang;
+    });
 
     this.teamSource = TEAM_SOURCE.map((person: any) => {
       person.avatarPath = './assets/images/team/' + person.avatarPath;
