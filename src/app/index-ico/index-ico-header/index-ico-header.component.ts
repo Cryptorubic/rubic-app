@@ -45,6 +45,10 @@ export class IndexIcoHeaderComponent implements OnInit {
       {
         lng: 'zh',
         title: 'ZH'
+      },
+      {
+        lng: 'ko',
+        title: 'KO'
       }
     ];
 
