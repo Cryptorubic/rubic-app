@@ -2077,6 +2077,7 @@ button, input {
 .section-13 {
   padding: 70px 0;
   background-color: #fff;
+
   .section-title {
     font-size: 44px;
     line-height: 1.1818em;
@@ -2188,6 +2189,35 @@ button, input {
       color: #3B4352;
     }
   }
+
+  .rating {
+    &:after, &:before {
+      content: '';
+      clear: both;
+      display: block;
+    }
+  }
+  .rating-image {
+    float: right;
+    width: 300px;
+    margin-top: -6%;
+    margin-right: 8%;
+    transition: all linear 0.2s;
+    img {
+      width: 100%;
+      display: block;
+    }
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+  .rating-text {
+    float: left;
+    width: 45%;
+    color: #454545;
+    font-style: italic;
+  }
+
 }
 
 
@@ -2214,6 +2244,23 @@ button, input {
     .team-list {
       &_item {
         width: 50%;
+      }
+    }
+    .rating-image,
+    .rating-text {
+      float: none;
+    }
+    .rating-text {
+      width: auto;
+    }
+    .rating-image {
+      text-align: center;
+      img {
+        width: 350px;
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 40px;
       }
     }
   }
