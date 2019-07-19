@@ -1,13 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from './services/user/user.service';
-import { CookieService } from 'ngx-cookie-service';
+import {CookieService} from 'ngx-cookie-service';
 import {ActivationEnd, ActivationStart, NavigationStart, ResolveStart, Router} from '@angular/router';
+
+import {MODE, PROJECT_PARTS} from './app-routing.module';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
+
 export class AppComponent implements OnInit {
   title = 'mywish-swaps';
 
@@ -24,6 +28,20 @@ export class AppComponent implements OnInit {
 
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe((event) => {
+
+      if (event instanceof NavigationStart) {
+        if (MODE === 'PROD') {
+          for (const url in PROJECT_PARTS[MODE]) {
+            if (new RegExp(url).test(event.url)) {
+              if (PROJECT_PARTS[MODE][url] !== location.hostname) {
+                location.hostname = PROJECT_PARTS[MODE][url];
+                return;
+              }
+            }
+          }
+        }
+      }
+
       if (event instanceof ActivationEnd) {
         this.withHeader = !event.snapshot.data.noheader;
         if (event.snapshot.data.support) {

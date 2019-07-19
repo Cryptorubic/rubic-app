@@ -57,7 +57,11 @@
         </a>
       </div>
       <div class="form-field">
-        <a class="btn btn-white-opacity width-100 white-border" routerLink="create">
+        <a class="btn btn-white-opacity width-100 white-border"
+           *ngIf="true ||
+           (!tokensData.base.token.address || tokensData.base.token.isEthereum) &&
+           (!tokensData.quote.token.address || tokensData.quote.token.isEthereum)"
+           routerLink="create">
           <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
           <span>
             Create Private SWAP

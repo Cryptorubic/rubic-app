@@ -12,12 +12,40 @@ import { FaqComponent } from './faq-component/faq.component';
 import { ContactsComponent } from './contacts-component/contacts.component';
 import {IndexIcoComponent} from './index-ico/index-ico.component';
 
+
+export const PROJECT_PARTS = {
+  TEST: {
+    '/': 'devswaps.mywish.io',
+    '.+': 'devswaps.mywish.io'
+  },
+  PROD: {
+    '/': 'swaps.network',
+    '.+': 'trades.swaps.network'
+  },
+  LOCAL: {
+    '/': 'local.devswaps.mywish.io',
+    '.+': 'local.devswaps.mywish.io'
+  }
+};
+
+let currMode;
+for (const m in PROJECT_PARTS) {
+  for (const hostname in PROJECT_PARTS[m]) {
+    if (location.hostname === PROJECT_PARTS[m][hostname]) {
+      currMode = m;
+    }
+  }
+}
+
+export const MODE = currMode;
+
+
 const routes: Routes = [
   {
     path: '',
-    component: IndexIcoComponent,
+    component: (location.hostname === 'trades.swaps.network') ? IndexIcoComponent : IndexComponent,
     data: {
-      noheader: true
+      noheader: location.hostname === 'trades.swaps.network'
     }
   }, {
     path: 'create',
