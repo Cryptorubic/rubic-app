@@ -33,8 +33,8 @@ export class AppComponent implements OnInit {
         if (MODE === 'PROD') {
           for (const url in PROJECT_PARTS[MODE]) {
             if (new RegExp(url).test(event.url)) {
-              if (PROJECT_PARTS[MODE][url] !== location.hostname) {
-                location.hostname = PROJECT_PARTS[MODE][url];
+              if ((PROJECT_PARTS[MODE][url] !== location.hostname) && (location.hostname === PROJECT_PARTS[MODE].from)) {
+                // location.hostname = PROJECT_PARTS[MODE][url];
                 return;
               }
             }
