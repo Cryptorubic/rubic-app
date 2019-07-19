@@ -120,6 +120,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   }
   private getQuoteRaised(web3Contract) {
     const details = this.originalContract;
+    console.log(details.tokens_info.quote.token);
     if (details.state === 'ACTIVE' && details.isEthereum) {
       web3Contract.methods.quoteRaised(details.memo_contract).call().then((result) => {
         this.contractInfo.quoteRaised = result;

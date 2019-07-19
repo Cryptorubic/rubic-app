@@ -127,7 +127,7 @@ export class Web3Service {
       token_short_name: tokenInfo.symbol,
       token_name: tokenInfo.name,
       address: tokenInfo.address,
-      decimals: parseInt(tokenInfo.decimals, 10),
+      decimals: parseInt(tokenInfo.decimals, 10) || 8,
       isEther: tokenInfo.address === '0x0000000000000000000000000000000000000000'
     } : false;
   }

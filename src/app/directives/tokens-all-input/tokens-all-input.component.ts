@@ -190,6 +190,7 @@ export class TokensAllInputComponent implements OnInit {
         break;
       case 'Enter':
         this.selectToken(this.tokensList[this.activeTokenIndex], this.activeTokenIndex);
+        event.preventDefault();
         break;
     }
 

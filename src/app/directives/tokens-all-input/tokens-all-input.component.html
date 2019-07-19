@@ -14,6 +14,7 @@
         type="button"
         [ngClass]="{active: visibleInput}"
         (click)="showAutoInput()">
+
   <span *ngIf="!tokenModel.token.address">Choose Token</span>
   <span *ngIf="tokenModel.token.address" class="ac_res_preview">
     <span class="ac_res_preview_icon">

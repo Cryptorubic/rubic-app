@@ -428,7 +428,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
           result.tokens_info.quote = {
             token: {...quoteToken}
           };
-          result.tokens_info.quote.token.decimals = 0;
+          // result.tokens_info.quote.token.decimals = 0;
         }).finally(() => {
           result.tokens_info.quote.amount = result.quote_limit;
           if (result.tokens_info.base) {
@@ -442,7 +442,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
           })[0]
         };
 
-        result.tokens_info.quote.token.decimals = 0;
+        // result.tokens_info.quote.token.decimals = 0;
         result.tokens_info.quote.amount = result.quote_limit;
         if (result.tokens_info.base) {
           setTimeout(() => {
@@ -471,7 +471,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
           result.tokens_info.base = {
             token: {...baseToken}
           };
-          result.tokens_info.base.token.decimals = 0;
+          // result.tokens_info.base.token.decimals = 0;
         }).finally(() => {
           result.tokens_info.base.amount = result.base_limit;
           if (result.tokens_info.quote) {
@@ -484,7 +484,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
             return tk.mywish_id === result.base_coin_id;
           })[0]
         };
-        result.tokens_info.base.token.decimals = 0;
+        // result.tokens_info.base.token.decimals = 0;
         result.tokens_info.base.amount = result.base_limit;
         if (result.tokens_info.quote) {
           setTimeout(() => {
@@ -527,7 +527,4 @@ export class ContractEditV3Resolver implements Resolve<any> {
       });
     }
   }
-
 }
-
-

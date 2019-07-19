@@ -110,7 +110,7 @@ export function appInitializerFactory(translate: TranslateService, userService: 
             }
             token.platform = token.platform || token.token_name.toLowerCase();
             token.isEthereum = token.platform === 'ethereum';
-            token.decimals = 0;
+            token.decimals = 8;
           });
           window['cmc_tokens'] = tokens;
           resolve(null);

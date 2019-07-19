@@ -48,7 +48,7 @@
 
 
     <div class="grid-row">
-      <div class="grid-cell grid-cell-2-3 grid-cell-sm-3-4 grid-cell-s-1">
+      <div class="grid-cell grid-cell-2-3 grid-cell-sm-7-8 grid-cell-s-1">
         <div class="form-container">
 
           <form class="form-block"
@@ -66,7 +66,7 @@
               <div class="form-field">
                 <div class="form-field">
                   <div class="grid-row">
-                    <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
+                    <div class="grid-cell grid-cell-2-3 grid-cell-ps-1">
                       <div class="form-field_input">
 
                         <input type="hidden" required
@@ -86,10 +86,11 @@
                                               [tokenModel]="requestData.tokens_info.base"></app-tokens-all-input>
                       </div>
                     </div>
-                    <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
+                    <div class="grid-cell grid-cell-1 show-s">&nbsp;</div>
+                    <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
                       <button (click)="openedCustomTokens.base = !openedCustomTokens.base"
                               type="button"
-                              class="btn btn btn-transparent btn-min btn-for-field width-100">
+                              class="btn btn btn-transparent width-100">
                         <span *ngIf="!openedCustomTokens.base">Custom token</span>
                         <span *ngIf="openedCustomTokens.base">Cancel</span>
                       </button>
@@ -129,7 +130,7 @@
               <div class="form-field">
                 <div class="form-field">
                   <div class="grid-row">
-                    <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
+                    <div class="grid-cell grid-cell-2-3 grid-cell-ps-1">
                       <div class="form-field_input">
 
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.token.address"
@@ -147,10 +148,11 @@
                                               [tokenModel]="requestData.tokens_info.quote"></app-tokens-all-input>
                       </div>
                     </div>
-                    <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
+                    <div class="grid-cell grid-cell-1 show-s">&nbsp;</div>
+                    <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
                       <button (click)="openedCustomTokens.quote = !openedCustomTokens.quote"
                               type="button"
-                              class="btn btn btn-transparent btn-min btn-for-field width-100">
+                              class="btn btn-transparent width-100">
                         <span *ngIf="!openedCustomTokens.quote">Custom token</span>
                         <span *ngIf="openedCustomTokens.quote">Cancel</span>
                       </button>
@@ -277,8 +279,8 @@
                   </div>
                 </div>
 
-                <div *ngIf="isEthereumSwap" class="grid-cell grid-cell-1">
-                  <div class="form-field">
+                <div class="grid-cell grid-cell-1">
+                  <div class="form-field" *ngIf="isEthereumSwap">
                     <div class="grid-row">
                       <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
                         <label class="form-field_label">Contract management address</label>

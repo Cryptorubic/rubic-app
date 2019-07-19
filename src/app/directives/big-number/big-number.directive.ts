@@ -162,7 +162,6 @@ export class BigNumberDirective implements OnInit {
         {groupSeparator: ',', groupSize: 3, decimalSeparator: '.'}) + (this.withEndPoint ? '.' : ''
       ) : '';
   }
-
 }
 
 
@@ -179,7 +178,7 @@ export class BigNumberFormat implements PipeTransform {
     }
 
     if (format) {
-      return bigNumberValue.dp(round || decimals).toFormat(formatNumberParams);
+      return (round || decimals || (decimals === 0)) ? bigNumberValue.dp(round || decimals).toFormat(formatNumberParams) : '';
     } else if (!asBN) {
       return bigNumberValue.toString(10);
     } else {

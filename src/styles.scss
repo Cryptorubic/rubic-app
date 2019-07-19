@@ -307,7 +307,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   justify-content: center;
   align-items: center;
   width: 96%;
-  height: 55px;
+  height: 50px;
   padding: 0 15px;
   border: none;
   border-left: 5px solid;
@@ -350,7 +350,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   &-min {
     font-size: 16px;
     height: 42px;
-    line-height: 42px;
     svg {
       vertical-align: middle;
       width: 21px;

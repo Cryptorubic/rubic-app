@@ -12,6 +12,7 @@ import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common'
 import {TokenInfoInterface, Web3Service} from '../services/web3/web3.service';
 import {HttpService} from '../services/http/http.service';
 
+
 import BigNumber from 'bignumber.js';
 
 export interface IContractDetails {
