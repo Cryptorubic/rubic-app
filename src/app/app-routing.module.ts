@@ -33,7 +33,7 @@ export const PROJECT_PARTS = {
 };
 
 
-let currMode;
+let currMode = 'PROD';
 for (const m in PROJECT_PARTS) {
   for (const hostname in PROJECT_PARTS[m]) {
     if (location.hostname === PROJECT_PARTS[m][hostname]) {

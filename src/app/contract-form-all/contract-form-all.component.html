@@ -59,7 +59,9 @@
                     checked: (tokensForm.valid) && (openedForm > 0),
                     'form-block__active': editableContract
                 }">
-            <div class="form-block_title" (click)="openedForm = editableContract ? 0 : openedForm">Created</div>
+            <div class="form-block_title" (click)="openedForm = editableContract ? 0 : openedForm">
+              Basic options
+            </div>
             <div class="form-block_fieldset">
               <!-- Выбор токена -->
               <label class="form-field_label">You have</label>
@@ -816,7 +818,7 @@
                     </span>
                     <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                     <span>
-                      Complete
+                      Publish
                     </span>
                   </button>
                 </div>

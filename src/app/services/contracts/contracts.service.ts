@@ -44,7 +44,31 @@ export class ContractsService {
   }
 
   public getContractsList() {
-    return this.httpService.get('contracts/').toPromise();
+    const allList: {
+      contracts?: any[],
+      trades?: any[]
+    } = {};
+    return new Promise((resolve, reject) => {
+
+      const resolveList = () => {
+        if (allList.trades && allList.contracts) {
+          const allResolveList = allList.contracts.concat(allList.trades);
+          resolve(allResolveList);
+        }
+      };
+
+      this.httpService.get('contracts/').toPromise().then((result) => {
+        allList.contracts = result.results;
+        resolveList();
+      });
+
+      this.httpService.get('get_user_swap3/').toPromise().then((result) => {
+        allList.trades = result;
+        resolveList();
+      });
+
+    });
+
   }
 
   public getPublicContractsList() {

@@ -35,7 +35,7 @@ export class ContractsListComponent implements OnInit {
       }
     });
 
-    this.contractsList = this.route.snapshot.data.contracts.results;
+    this.contractsList = this.route.snapshot.data.contracts;
 
   }
 
