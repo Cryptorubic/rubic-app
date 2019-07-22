@@ -452,6 +452,7 @@
       "BONUSES": {
         "PART_1": {
           "TITLE": "Bronze<br/> From",
+          "TOKENS_PLUS": "+3% Tokens (Tradable)",
           "BONUS_LIST": {
             "ITEM_1": {
               "TITLE": "+20% discount for private/public deals",
@@ -481,6 +482,7 @@
         },
         "PART_2": {
           "TITLE": "Silver<br/> From",
+          "TOKENS_PLUS": "+5% Tokens (Tradable)",
           "BONUS_LIST": {
             "ITEM_1": {
               "TITLE": "+30% discount for private/public deals",
@@ -510,6 +512,7 @@
         },
         "PART_3": {
           "TITLE": "Gold<br/> From",
+          "TOKENS_PLUS": "+7% Tokens (Tradable)",
           "BONUS_LIST": {
             "ITEM_1": {
               "TITLE": "+40% discount for private/public deals",
@@ -543,6 +546,7 @@
         },
         "PART_4": {
           "TITLE": "Prime<br/> From",
+          "TOKENS_PLUS": "+10% Tokens (Tradable)",
           "BONUS_LIST": {
             "ITEM_1": {
               "TITLE": "+50% discount for private/public deals",
@@ -579,11 +583,11 @@
 
     "SECTION_19": {
       "TEXT": {
-        "PART_1": "Everyone who invests in our IEO in first 10 minutes, will get an additional 15% of tokens to use on SWAPS.NETWORK.",
+        "PART_1": "Everyone who invests in PTO in first 10 minutes, will get an additional 10% of tokens (tradable). IEO starts on the 24th of July, 17:00 GMT+8",
         "PART_2": "Prepare your bitcoins and set the alarm for 10 minutes before the start."
       },
       "TIME": "17:00 GMT+8",
-      "DATE": "16th of July",
+      "DATE": "24th of July",
       "CITIES": {
         "CITY_1": "Hong Kong",
         "CITY_2": "New York",
@@ -762,7 +766,7 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "IEO has started. Check our bonuses and participate in an IEO.",
+      "TEXT": "Everyone who participates in IEO in first 10 minutes, will get an additional 15% of tokens to use on platform. <span class=\"nowrap\">IEO starts 24th of July, 17:00 GMT+8</span>",
       "BUTTON": "Join"
     }
 

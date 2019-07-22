@@ -1515,10 +1515,49 @@ button, input {
       line-height: 1.1818em;
       font-weight: 700;
     }
-    &_text {
+    &_text, &_list {
       margin-top: 20px;
       font-size: 15px;
       line-height: 1.2em;
+      &.medium-size {
+        font-size: 25px;
+        line-height: 1.15em;
+      }
+    }
+    &_btn {
+      line-height: 49px;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 17px;
+      padding-left: 37px;
+      padding-right: 37px;
+      margin-top: 10px;
+    }
+    &_list {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+      li {
+        padding: 12px 0 12px 36px;
+        margin: 0;
+        counter-increment: whySwapsList;
+        &:before {
+          content: counter(whySwapsList);
+          display: block;
+          float: left;
+          margin-left: -36px;
+          margin-top: -4px;
+          width: 26px;
+          height: 26px;
+          line-height: 26px;
+          border-radius: 50%;
+          background-color: #f8db14;
+          color: #FFFFFF;
+          font-weight: bold;
+          box-shadow: 0 16px 20px rgba(255, 223, 0, 0.19);
+          text-align: center;
+        }
+      }
     }
     &_img {
       margin-top: 20px;
@@ -2607,6 +2646,9 @@ button, input {
           font-weight: bold;
           font-size: 17px;
           color: #474D54;
+          &_main-bonus {
+            display: block;
+          }
           &_bonus-1 {
             background-image: url(/assets/images/new-index/backgrounds/bonuses-titles/bonus-1.svg.png);
             .title_amount {
