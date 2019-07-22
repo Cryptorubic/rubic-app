@@ -226,6 +226,18 @@
           "TITLE": "No escrow",
           "TEXT": "One of the key benefits when trading OTC using Atomic Swap technology means third party escrow accounts are not required to guarantee the trade."
         }
+      },
+
+      "WHY_SAFE": {
+        "TITLE": "Why SWAPS.NETWORK is safe?",
+        "POST_TITLE": "There is no way to cheat!",
+        "LIST": {
+          "ITEM_1": "Every OTC deal - single smart contract deployed to blockchain",
+          "ITEM_2": "Smart Contract can’t be changed / deleted",
+          "ITEM_3": "Nobody except of participants can get funds",
+          "ITEM_4": "SWAP is possible when both parties send funds, any side can refund any time"
+        },
+        "BUTTON": "See contract’s code here"
       }
     },
 
