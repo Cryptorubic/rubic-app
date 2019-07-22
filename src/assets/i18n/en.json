@@ -452,8 +452,8 @@
       "BONUSES": {
         "PART_1": {
           "TITLE": "Bronze<br/> From",
-          "TOKENS_PLUS": "+3% Tokens (Tradable)",
           "BONUS_LIST": {
+            "TRADABLE": "+3% Tokens (Tradable)",
             "ITEM_1": {
               "TITLE": "+20% discount for private/public deals",
               "TEXT": "You will get a discount if you hold 23 000 SWAP tokens (999$) since PTO until 31/07/2020."
@@ -482,8 +482,8 @@
         },
         "PART_2": {
           "TITLE": "Silver<br/> From",
-          "TOKENS_PLUS": "+5% Tokens (Tradable)",
           "BONUS_LIST": {
+            "TRADABLE": "+5% Tokens (Tradable)",
             "ITEM_1": {
               "TITLE": "+30% discount for private/public deals",
               "TEXT": "You will get a discount if you hold 58 000 SWAP tokens ($2499) since PTO until 31/07/2020."
@@ -512,8 +512,8 @@
         },
         "PART_3": {
           "TITLE": "Gold<br/> From",
-          "TOKENS_PLUS": "+7% Tokens (Tradable)",
           "BONUS_LIST": {
+            "TRADABLE": "+7% Tokens (Tradable)",
             "ITEM_1": {
               "TITLE": "+40% discount for private/public deals",
               "TEXT": "You will get a discount if you hold 151 000 SWAP tokens ($6499) since PTO until 31/07/2020."
@@ -546,8 +546,8 @@
         },
         "PART_4": {
           "TITLE": "Prime<br/> From",
-          "TOKENS_PLUS": "+10% Tokens (Tradable)",
           "BONUS_LIST": {
+            "TRADABLE": "+10% Tokens (Tradable)",
             "ITEM_1": {
               "TITLE": "+50% discount for private/public deals",
               "TEXT": "You will get a discount if you hold 337 000 SWAP tokens ($14499) since PTO until 31/07/2020."

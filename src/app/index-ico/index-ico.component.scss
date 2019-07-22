@@ -2725,6 +2725,25 @@ button, input {
               line-height: 20px;
               color: #474D54;
               font-weight: bold;
+              &.big-size {
+                font-size: 26px;
+                line-height: 1.2em;
+                text-transform: uppercase;
+                display: inline-block;
+                font-weight: 800;
+              }
+              &.border-1 {
+                border-bottom: 4px solid #FFECED;
+              }
+              &.border-2 {
+                border-bottom: 4px solid #E6EEF5;
+              }
+              &.border-3 {
+                border-bottom: 4px solid #FFF9D4;
+              }
+              &.border-4 {
+                border-bottom: 4px solid #E7E6FA;
+              }
             }
             &_text {
               margin-top: 5px;
