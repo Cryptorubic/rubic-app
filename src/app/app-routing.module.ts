@@ -48,9 +48,9 @@ export const MODE = currMode;
 const routes: Routes = [
   {
     path: '',
-    component: ((location.hostname !== 'trades.swaps.network') && (currMode === 'PROD')) ? IndexIcoComponent : IndexComponent,
+    component: false && ((location.hostname !== 'trades.swaps.network') && (currMode === 'PROD')) ? IndexIcoComponent : IndexComponent,
     data: {
-      noheader: location.hostname !== 'trades.swaps.network'
+      noheader: location.hostname === 'trades.swaps.network'
     }
   }, {
     path: 'create',

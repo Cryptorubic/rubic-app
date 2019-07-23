@@ -58,7 +58,9 @@ export class ContractsService {
       };
 
       this.httpService.get('contracts/').toPromise().then((result) => {
-        allList.contracts = result.results;
+        allList.contracts = result.results.filter((contract) => {
+          return contract.contract_type === 20;
+        });
         resolveList();
       });
 

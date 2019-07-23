@@ -43,16 +43,33 @@ export class ContractsListComponent implements OnInit {
   }
 
   public toContract(contract) {
-    switch (contract.state) {
-      case 'CREATED':
-      case 'WAITING_FOR_PAYMENT':
-      case 'WAITING_FOR_DEPLOYMENT':
-        this.router.navigate([`/view/${contract.id}`]);
-        break;
-      default:
-        this.router.navigate([`/contract/${contract.id}`]);
-        break;
+    if (!contract.contract_type) {
+      if (!(contract.base_address && contract.quote_address)) {
+        switch (contract.state) {
+          case 'CREATED':
+          case 'WAITING_FOR_PAYMENT':
+            this.router.navigate([`/view-v3${contract.id}`]);
+            break;
+          default:
+            this.router.navigate([`/contract-v3/${contract.id}`]);
+            break;
+        }
+      } else {
+        this.router.navigate([`/contract-v3/${contract.id}`]);
+      }
+    } else {
+      switch (contract.state) {
+        case 'CREATED':
+        case 'WAITING_FOR_PAYMENT':
+        case 'WAITING_FOR_DEPLOYMENT':
+          this.router.navigate([`/view/${contract.id}`]);
+          break;
+        default:
+          this.router.navigate([`/contract/${contract.id}`]);
+          break;
+      }
     }
+
   }
 
   public deleteContractConfirm() {
