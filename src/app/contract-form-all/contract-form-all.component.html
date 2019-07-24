@@ -116,7 +116,7 @@
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-vs-1-2">
-                      <button class="btn btn-yellow  btn-min btn-for-field width-100"
+                      <button class="btn btn-yellow width-100"
                               type="button"
                               [disabled]="!baseCustomToken.valid"
                               (click)="addCustomToken('base')">
@@ -177,7 +177,7 @@
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-vs-1-2">
-                      <button class="btn btn-yellow  btn-min btn-for-field width-100"
+                      <button class="btn btn-yellow width-100"
                               type="button"
                               [disabled]="!quoteCustomToken.valid"
                               (click)="addCustomToken('quote')">
@@ -809,17 +809,15 @@
 
               <div class="grid-row">
                 <div class="grid-cell grid-cell-1-3 grid-cell-ps-1">
-                  <button class="btn btn-yellow"
-                          (click)="createContract(tokensForm, advancedForm)" [disabled]="confirmationIsProgress || !(tokensForm.valid && extraForm.valid)">
-                    <span class="lds-ellipsis" *ngIf="confirmationIsProgress">
+                  <button class="btn btn-yellow relative"
+                          (click)="createContract(tokensForm, advancedForm)" [disabled]="formIsSending || !(tokensForm.valid && extraForm.valid)">
+                    <span class="lds-ellipsis" *ngIf="formIsSending">
                       <span class="lds-ellipsis-container">
                         <span></span><span></span><span></span><span></span>
                       </span>
                     </span>
                     <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                    <span>
-                      Publish
-                    </span>
+                    <span>Publish</span>
                   </button>
                 </div>
               </div>

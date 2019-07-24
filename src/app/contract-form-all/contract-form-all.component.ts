@@ -61,6 +61,8 @@ export interface IContractV3 {
   isAuthor?: boolean;
   user?: number;
 
+  contract_state?: string;
+
   isEthereum?: boolean;
 
 }
@@ -401,100 +403,13 @@ export class ContractEditV3Resolver implements Resolve<any> {
       this.contractsService.getContractV3Information(this.contractId) :
       this.contractsService.getSwapByPublic(this.publicLink);
 
-    promise.then((result: IContractV3) => {
-      result.tokens_info = {};
-
-      let quoteToken;
-      let baseToken;
-
-      if (result.quote_address) {
-        quoteToken = window['cmc_tokens'].filter((tk) => {
-          return tk.isEthereum && (tk.address === result.quote_address);
-        })[0];
-
-        this.web3Service.getFullTokenInfo(result.quote_address).then((tokenInfo: TokenInfoInterface) => {
-          if (quoteToken) {
-            result.tokens_info.quote = {
-              token: {...quoteToken}
-            };
-            result.tokens_info.quote.token.decimals = tokenInfo.decimals;
-          } else {
-            tokenInfo.isEthereum = true;
-            result.tokens_info.quote = {
-              token: tokenInfo
-            };
-          }
-        }, () => {
-          result.tokens_info.quote = {
-            token: {...quoteToken}
-          };
-          // result.tokens_info.quote.token.decimals = 0;
-        }).finally(() => {
-          result.tokens_info.quote.amount = result.quote_limit;
-          if (result.tokens_info.base) {
-            observer.complete();
-          }
-        });
-      } else {
-        result.tokens_info.quote = {
-          token: window['cmc_tokens'].filter((tk) => {
-            return tk.mywish_id === result.quote_coin_id;
-          })[0]
-        };
-
-        // result.tokens_info.quote.token.decimals = 0;
-        result.tokens_info.quote.amount = result.quote_limit;
-        if (result.tokens_info.base) {
-          setTimeout(() => {
-            observer.complete();
-          });
-        }
-      }
-
-      if (result.base_address) {
-        baseToken = window['cmc_tokens'].filter((tk) => {
-          return tk.isEthereum && (tk.address === result.base_address);
-        })[0];
-        this.web3Service.getFullTokenInfo(result.base_address).then((tokenInfo: TokenInfoInterface) => {
-          if (baseToken) {
-            result.tokens_info.base = {
-              token: baseToken
-            };
-            result.tokens_info.base.token.decimals = tokenInfo.decimals;
-          } else {
-            tokenInfo.isEthereum = true;
-            result.tokens_info.base = {
-              token: tokenInfo
-            };
-          }
-        }, () => {
-          result.tokens_info.base = {
-            token: {...baseToken}
-          };
-          // result.tokens_info.base.token.decimals = 0;
-        }).finally(() => {
-          result.tokens_info.base.amount = result.base_limit;
-          if (result.tokens_info.quote) {
-            observer.complete();
-          }
-        });
-      } else {
-        result.tokens_info.base = {
-          token: window['cmc_tokens'].filter((tk) => {
-            return tk.mywish_id === result.base_coin_id;
-          })[0]
-        };
-        // result.tokens_info.base.token.decimals = 0;
-        result.tokens_info.base.amount = result.base_limit;
-        if (result.tokens_info.quote) {
-          setTimeout(() => {
-            observer.complete();
-          });
-        }
-      }
-
-      observer.next(result);
+    promise.then((trade: IContractV3) => {
+      this.web3Service.getSWAPSCoinInfo(trade).then((result) => {
+        observer.next(result);
+        observer.complete();
+      });
     });
+
   }
 
   resolve(route: ActivatedRouteSnapshot) {

@@ -83,21 +83,13 @@ export class TokensAllInputComponent implements OnInit {
       const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
       const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
 
-
       if (nameIndexMatch || symbolIndexMatch) {
-        result.push({
-          index: symbolIndexMatch || nameIndexMatch,
-          token: {...token}
-        });
+        result.push({...token});
       }
       indexToken++;
     }
 
-    this.tokensList = result.sort((a, b) => {
-      return (a.index > b.index) ? 1 : -1;
-    }).map((tok) => {
-      return tok.token;
-    });
+    this.tokensList = result;
 
 
     if (this.tokensList.length) {

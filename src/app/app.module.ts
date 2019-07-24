@@ -102,6 +102,13 @@ export function appInitializerFactory(translate: TranslateService, userService: 
       const subscriber = userService.getCurrentUser(true).subscribe((user: UserInterface) => {
 
         httpService.get('get_coinmarketcap_tokens/').toPromise().then((tokens) => {
+          tokens = tokens.sort((a, b) => {
+            if (b.rank === 0) {
+              return -1;
+            }
+            return a.rank > b.rank ? 1 : -1;
+          });
+
           tokens.forEach((token) => {
             token.platform = (token.platform !== 'False') ? token.platform : false;
             if (!token.platform && (token.token_short_name === 'ETH') && (token.token_name === 'Ethereum')) {

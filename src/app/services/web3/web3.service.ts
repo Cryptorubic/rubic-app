@@ -123,7 +123,7 @@ export class Web3Service {
   }
 
   private convertTokenInfo(tokenInfo) {
-    return tokenInfo ? {
+    return (tokenInfo && tokenInfo.name) ? {
       token_short_name: tokenInfo.symbol,
       token_name: tokenInfo.name,
       address: tokenInfo.address,
@@ -175,6 +175,11 @@ export class Web3Service {
 
       tokenInfoFields.map((method) => {
         contract.methods[method]().call().then(result => {
+          if ((method !== 'symbol') && (result === null)) {
+            reject({
+              tokenAddress: true
+            });
+          }
           tokenInfo[method] = result;
           fieldsCount--;
           if (!fieldsCount) {
@@ -280,7 +285,104 @@ export class Web3Service {
       });
     });
   }
+
+
+
+  public getSWAPSCoinInfo(data) {
+
+    data.tokens_info = {};
+
+    return new Promise((resolve, reject) => {
+      let quoteToken;
+      let baseToken;
+
+      if (data.quote_address) {
+        quoteToken = window['cmc_tokens'].filter((tk) => {
+          return tk.isEthereum && (tk.address === data.quote_address);
+        })[0];
+
+
+        this.getFullTokenInfo(data.quote_address).then((tokenInfo: TokenInfoInterface) => {
+          if (quoteToken) {
+            data.tokens_info.quote = {
+              token: {...quoteToken}
+            };
+            data.tokens_info.quote.token.decimals = tokenInfo.decimals;
+          } else {
+            tokenInfo.isEthereum = true;
+            data.tokens_info.quote = {
+              token: tokenInfo
+            };
+          }
+        }, () => {
+          data.tokens_info.quote = {
+            token: {...quoteToken}
+          };
+        }).finally(() => {
+          data.tokens_info.quote.amount = data.quote_limit;
+          if (data.tokens_info.base) {
+            resolve(data);
+          }
+        });
+      } else {
+        data.tokens_info.quote = {
+          token: window['cmc_tokens'].filter((tk) => {
+            return tk.mywish_id === data.quote_coin_id;
+          })[0]
+        };
+
+        data.tokens_info.quote.amount = data.quote_limit;
+        if (data.tokens_info.base) {
+          setTimeout(() => {
+            resolve(data);
+          });
+        }
+      }
+
+      if (data.base_address) {
+        baseToken = window['cmc_tokens'].filter((tk) => {
+          return tk.isEthereum && (tk.address === data.base_address);
+        })[0];
+        this.getFullTokenInfo(data.base_address).then((tokenInfo: TokenInfoInterface) => {
+          if (baseToken) {
+            data.tokens_info.base = {
+              token: baseToken
+            };
+            data.tokens_info.base.token.decimals = tokenInfo.decimals;
+          } else {
+            tokenInfo.isEthereum = true;
+            data.tokens_info.base = {
+              token: tokenInfo
+            };
+          }
+        }, () => {
+          data.tokens_info.base = {
+            token: {...baseToken}
+          };
+        }).finally(() => {
+          data.tokens_info.base.amount = data.base_limit;
+          if (data.tokens_info.quote) {
+            resolve(data);
+          }
+        });
+      } else {
+        data.tokens_info.base = {
+          token: window['cmc_tokens'].filter((tk) => {
+            return tk.mywish_id === data.base_coin_id;
+          })[0]
+        };
+
+        data.tokens_info.base.amount = data.base_limit;
+        if (data.tokens_info.quote) {
+          setTimeout(() => {
+            resolve(data);
+          });
+        }
+      }
+    });
+  }
 }
+
 
 
 // noinspection JSAnnotator
@@ -301,6 +403,7 @@ export class EthTokenValidatorDirective implements AsyncValidator {
     ctrl: AbstractControl
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     return this.web3Service.getFullTokenInfo(ctrl.value).then((result: any) => {
+      console.log(result);
       if (result) {
         this.TokenResolve.emit(result);
         return null;

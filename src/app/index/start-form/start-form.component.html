@@ -23,23 +23,43 @@
       <div class="form-field">
         <label class="form-field_label">You have</label>
         <div class="form-field_input">
-          <input type="hidden" required [ngModel]="tokensData.base.token.address" name="base_address">
-          <input type="hidden" required [ngModel]="tokensData.base.amount"
-                 [value]="(tokensData.base.amount == 0) ? '' : tokensData.base.amount"
-                 name="base_limit">
-          <app-token-input [(tokenModel)]="tokensData.base"
-                           [setToken]="baseTokenChanger"></app-token-input>
+
+          <input type="hidden" required
+                 [ngModel]="tokensData.base.token.address"
+                 *ngIf="!tokensData.base.token.token_short_name || tokensData.base.token.isEthereum"
+                 name="base_address">
+
+          <input type="hidden" required
+                 [ngModel]="tokensData.base.token.mywish_id"
+                 *ngIf="!tokensData.base.token.isEthereum"
+                 name="base_coin_id">
+
+          <input type="hidden" required [ngModel]="tokensData.base.amount" name="base_limit">
+
+          <app-tokens-all-input (TokenChange)="changedToken()"
+                                [setToken]="baseTokenChanger"
+                                [tokenModel]="tokensData.base"></app-tokens-all-input>
+
         </div>
       </div>
       <div class="form-field">
         <label class="form-field_label">You want to get</label>
         <div class="form-field_input">
-          <input type="hidden" required [ngModel]="tokensData.quote.token.address" name="quote_address">
-          <input type="hidden" required [ngModel]="tokensData.quote.amount"
-                 [value]="(tokensData.quote.amount == 0) ? '' : tokensData.quote.amount"
-                 name="quote_limit">
-          <app-token-input [(tokenModel)]="tokensData.quote"
-                           [setToken]="quoteTokenChanger"></app-token-input>
+          <input type="hidden" required
+                 [ngModel]="tokensData.quote.token.address"
+                 *ngIf="!tokensData.quote.token.token_short_name || tokensData.quote.token.isEthereum"
+                 name="quote_address">
+
+          <input type="hidden" required
+                 [ngModel]="tokensData.quote.token.mywish_id"
+                 *ngIf="!tokensData.quote.token.isEthereum"
+                 name="quote_coin_id">
+
+          <input type="hidden" required [ngModel]="tokensData.quote.amount" name="quote_limit">
+
+          <app-tokens-all-input (TokenChange)="changedToken()"
+                                [setToken]="quoteTokenChanger"
+                                [tokenModel]="tokensData.quote"></app-tokens-all-input>
         </div>
         <div class="form-field_description"
              *ngIf="startForm.valid">
@@ -58,7 +78,7 @@
       </div>
       <div class="form-field">
         <a class="btn btn-white-opacity width-100 white-border"
-           *ngIf="true ||
+           *ngIf="
            (!tokensData.base.token.address || tokensData.base.token.isEthereum) &&
            (!tokensData.quote.token.address || tokensData.quote.token.isEthereum)"
            routerLink="create">

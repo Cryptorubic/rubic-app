@@ -11,6 +11,8 @@ import {HttpService} from '../services/http/http.service';
 export class ContactOwnerComponent implements OnInit, OnDestroy {
 
   public formData;
+  public formSuccess: boolean;
+  public formIsSending: boolean;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public contractInfo,
@@ -19,7 +21,7 @@ export class ContactOwnerComponent implements OnInit, OnDestroy {
   ) {
 
     this.formData = {
-      link: this.contractInfo.contract_details.unique_link_url,
+      link: this.contractInfo.unique_link_url || this.contractInfo.contract_details.unique_link_url,
       contract_id: this.contractInfo.id
     };
   }
@@ -31,9 +33,11 @@ export class ContactOwnerComponent implements OnInit, OnDestroy {
   }
 
   public sendForm() {
+    this.formIsSending = true;
     this.httpService.post('send_message_author_swap/', this.formData).toPromise().then((result) => {
-      console.log(result);
-      this.dialogRef.close();
+      // this.dialogRef.close();
+      this.formIsSending = false;
+      this.formSuccess = true;
     });
   }
 

@@ -100,7 +100,6 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     } else {
       return bigNumberValue.toString(10);
     }
-
   }
 
   private getBaseRaised(web3Contract) {
@@ -116,6 +115,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       });
     } else {
       this.contractInfo.baseLeft = new BigNumber(details.tokens_info.base.amount);
+      this.contractInfo.baseLeftString =
+        this.contractInfo.baseLeft.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
     }
   }
   private getQuoteRaised(web3Contract) {
@@ -131,6 +132,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       });
     } else {
       this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount);
+      this.contractInfo.quoteLeftString =
+        this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
     }
   }
 
@@ -207,7 +210,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     this.getBaseBrokersPercent(web3Contract);
     this.getQuoteBrokersPercent(web3Contract);
 
-    if (details.state === 'ACTIVE' && details.isEthereum) {
+
+    if (details.contract_state === 'ACTIVE' && details.isEthereum) {
       web3Contract.methods.isSwapped(details.memo_contract).call().then((result) => {
         this.originalContract.isSwapped = result;
       }, err => {
@@ -453,7 +457,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       });
     }
 
-    if (details.state === 'CREATED') {
+    if (details.contract_state === 'WAITING_FOR_ACTIVATION') {
 
       const interfaceMethod = this.web3Service.getMethodInterface('createOrder', SWAPS_V2.ABI);
 

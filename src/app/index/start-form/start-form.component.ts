@@ -37,8 +37,6 @@ export class StartFormComponent implements OnInit, OnDestroy {
     //   new BigNumber(storageData.quote.amount).div(Math.pow(10, storageData.quote.token.decimals)).toString() :
     //   storageData.quote.amount;
 
-    console.log(this.tokensData.base);
-
     localStorage.setItem('form_new_values', JSON.stringify({tokens_info: this.tokensData}));
   }
 

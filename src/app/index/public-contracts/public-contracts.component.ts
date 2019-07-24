@@ -23,7 +23,45 @@ export class PublicContractsComponent implements OnInit {
     this.contractsService.getPublicContractsList().then((result) => {
       this.contractsList = result;
       this.contractsList.forEach((contract) => {
-        this.loadTokensInfo(contract);
+        if (contract.contract_type === 20) {
+          this.loadTokensInfo(contract);
+        } else {
+          contract.contract_details = {...contract};
+          this.web3Service.getSWAPSCoinInfo(contract.contract_details).then((trade: any) => {
+
+            const baseToken = contract.contract_details.tokens_info.base.token;
+            const quoteToken = contract.contract_details.tokens_info.quote.token;
+
+            contract.contract_details.base_token_info = baseToken;
+            contract.contract_details.quote_token_info = quoteToken;
+
+            const contractDetails = contract.contract_details;
+
+            contractDetails.base_token_info.amount =
+              new BigNumber(contractDetails.base_limit).div(Math.pow(10, baseToken.decimals)).dp(3);
+
+            contractDetails.quote_token_info.amount =
+              new BigNumber(contractDetails.quote_limit).div(Math.pow(10, quoteToken.decimals)).dp(3);
+
+            const baseAmount = contractDetails.base_token_info.amount;
+            const quoteAmount = contractDetails.quote_token_info.amount;
+
+            contractDetails.base_token_info.amount = contractDetails.base_token_info.amount.toString();
+            contractDetails.quote_token_info.amount = contractDetails.quote_token_info.amount.toString();
+
+            contractDetails.base_token_info.rate = baseAmount.div(quoteAmount).dp(3).toString();
+            contractDetails.quote_token_info.rate = quoteAmount.div(baseAmount).dp(3).toString();
+
+            contractDetails.swap3 = true;
+
+            if (contractDetails.base_address && contractDetails.quote_address) {
+              this.loadSwapsContractInfo(contractDetails);
+            } else {
+              this.contractsCount++;
+            }
+
+          });
+        }
       });
     });
   }
@@ -54,6 +92,8 @@ export class PublicContractsComponent implements OnInit {
         this.contractsCount++;
       }
     };
+
+
     this.web3Service.getFullTokenInfo(contractDetails.base_address).then((tokenInfo: TokenInfoInterface) => {
       contractDetails.base_token_info = tokenInfo;
       contractDetails.base_token_info.amount = new BigNumber(contractDetails.base_limit).div(Math.pow(10, tokenInfo.decimals)).dp(3);
@@ -61,6 +101,8 @@ export class PublicContractsComponent implements OnInit {
         getRates();
       }
     });
+
+
     this.web3Service.getFullTokenInfo(contractDetails.quote_address).then((tokenInfo: TokenInfoInterface) => {
       contractDetails.quote_token_info = tokenInfo;
       contractDetails.quote_token_info.amount = new BigNumber(contractDetails.quote_limit).div(Math.pow(10, tokenInfo.decimals)).dp(3);
