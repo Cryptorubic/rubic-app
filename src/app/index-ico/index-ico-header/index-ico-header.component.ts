@@ -104,7 +104,7 @@ export class IndexIcoHeaderComponent implements OnInit {
     this.translator.use(lng);
   }
 
-  public openInviteForm() {
+  public openInviteForm($event) {
     this.dialog.open(IndexIcoFormComponent, {
       width: '380px',
       panelClass: 'custom-dialog-container',

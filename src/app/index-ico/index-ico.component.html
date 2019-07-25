@@ -4,8 +4,8 @@
 
   <section class="section-1">
     <div class="app-content-block">
-      <a href="https://www.bitforex.com/ru/spot/swap_usdt"
-         target="_blank" class="section-1_timer" [ngClass]="{started: leftSeconds === 0}">
+      <a (click)="openFullInviteForm()"
+         class="section-1_timer" [ngClass]="{started: leftSeconds === 0}">
         <div class="section-1_timer_circle">
 
           <div class="spinner-wrapper">
@@ -53,9 +53,9 @@
         </p>
       </div>
       <div class="section-1_menu">
-        <a href="https://www.bitforex.com/ru/spot/swap_usdt" target="_blank" class="new-btn new-btn-yellow">
+        <button (click)="openFullInviteForm()" class="new-btn new-btn-yellow">
           <span translate="INDEX_PAGE.SECTION_1.MENU.BUTTON"></span>
-        </a>
+        </button>
         <div class="section-1_menu_links">
           <ul>
             <li>
@@ -602,7 +602,6 @@
         </div>
       </div>
 
-
       <button (click)="openInviteForm()" class="new-btn new-btn-yellow">
         <span translate="INDEX_PAGE.SECTION_11.BUTTON">Try service without commission</span>
       </button>
@@ -1095,7 +1094,7 @@
   </section>
 
 
-  <section class="section-17">
+  <!-- section class="section-17">
     <div class="app-content-block">
       <div class="discount-notice">
         <div class="grid-row">
@@ -1157,7 +1156,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </section -->
 
 
   <section class="section-18">
@@ -1558,10 +1557,10 @@
   </a>
   <div class="app-content-block">
     <div class="app-content-block">
-      <div class="float-line_text" [innerHTML]="'INDEX_PAGE.SECTION_19.TEXT.PART_1'|translate"></div>
-      <a href="https://www.bitforex.com/ru/spot/swap_usdt" target="_blank" class="new-btn">
+      <div class="float-line_text" [innerHTML]="'INDEX_PAGE.FLOAT_FOOTER.TEXT'|translate"></div>
+      <button (click)="openFullInviteForm()" class="new-btn">
         <span translate="INDEX_PAGE.FLOAT_FOOTER.BUTTON"></span>
-      </a>
+      </button>
     </div>
   </div>
 </div>

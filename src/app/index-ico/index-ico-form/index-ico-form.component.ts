@@ -32,6 +32,7 @@ export class IndexIcoFormComponent implements OnInit {
         this.dialogRef.close();
       } else {
         this.formSuccess = true;
+        location.href = 'https://www.bitforex.com/ru/spot/swap_usdt';
         // this.dialogRef.close();
       }
     });
