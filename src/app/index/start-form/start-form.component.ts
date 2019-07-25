@@ -10,7 +10,6 @@ import {MODE} from '../../app-routing.module';
   styleUrls: ['./start-form.component.scss']
 })
 export class StartFormComponent implements OnInit, OnDestroy {
-  public tokensData;
   constructor(
     private web3Service: Web3Service
   ) {
@@ -25,24 +24,17 @@ export class StartFormComponent implements OnInit, OnDestroy {
       }
     };
   }
+  public tokensData;
+
+  public quoteTokenChanger = new EventEmitter<any>();
+  public baseTokenChanger = new EventEmitter<any>();
 
   public changedToken() {
-    // const storageData = {...this.tokensData};
-
-    // storageData.base.amount = (storageData.base.amount && storageData.base.token.decimals) ?
-    //   new BigNumber(storageData.base.amount).div(Math.pow(10, storageData.base.token.decimals)).toString() :
-    //   storageData.base.amount;
-    //
-    // storageData.quote.amount = (storageData.quote.amount && storageData.quote.token.decimals) ?
-    //   new BigNumber(storageData.quote.amount).div(Math.pow(10, storageData.quote.token.decimals)).toString() :
-    //   storageData.quote.amount;
-
     localStorage.setItem('form_new_values', JSON.stringify({tokens_info: this.tokensData}));
   }
 
 
   public checkRate(revert?) {
-
     const baseCoinAmount = new BigNumber(this.tokensData.base.amount)
       .div(Math.pow(10, this.tokensData.base.token.decimals));
 
@@ -53,9 +45,6 @@ export class StartFormComponent implements OnInit, OnDestroy {
       baseCoinAmount.div(quoteCoinAmount).dp(4) :
       quoteCoinAmount.div(baseCoinAmount).dp(4);
   }
-
-  public quoteTokenChanger = new EventEmitter<any>();
-  public baseTokenChanger = new EventEmitter<any>();
 
   ngOnInit() {
     if (MODE === 'PROD') {

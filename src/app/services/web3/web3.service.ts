@@ -248,7 +248,6 @@ export class Web3Service {
     });
   }
 
-
   public getAccounts(owner?) {
     const addressesDictionary: any = {};
     return new Observable((observer) => {
@@ -330,7 +329,6 @@ export class Web3Service {
             return tk.mywish_id === data.quote_coin_id;
           })[0]
         };
-
         data.tokens_info.quote.amount = data.quote_limit;
         if (data.tokens_info.base) {
           setTimeout(() => {
@@ -340,9 +338,11 @@ export class Web3Service {
       }
 
       if (data.base_address) {
-        baseToken = window['cmc_tokens'].filter((tk) => {
+
+        baseToken = {...window['cmc_tokens'].filter((tk) => {
           return tk.isEthereum && (tk.address === data.base_address);
-        })[0];
+        })[0]};
+
         this.getFullTokenInfo(data.base_address).then((tokenInfo: TokenInfoInterface) => {
           if (baseToken) {
             data.tokens_info.base = {
@@ -367,9 +367,9 @@ export class Web3Service {
         });
       } else {
         data.tokens_info.base = {
-          token: window['cmc_tokens'].filter((tk) => {
+          token: {...window['cmc_tokens'].filter((tk) => {
             return tk.mywish_id === data.base_coin_id;
-          })[0]
+          })[0]}
         };
 
         data.tokens_info.base.amount = data.base_limit;

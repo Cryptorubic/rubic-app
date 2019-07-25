@@ -26,7 +26,11 @@ export class PublicContractsComponent implements OnInit {
         if (contract.contract_type === 20) {
           this.loadTokensInfo(contract);
         } else {
+
           contract.contract_details = {...contract};
+          contract.contract_type = 21;
+          contract.contract_details.swap3 = true;
+
           this.web3Service.getSWAPSCoinInfo(contract.contract_details).then((trade: any) => {
 
             const baseToken = contract.contract_details.tokens_info.base.token;
@@ -35,30 +39,13 @@ export class PublicContractsComponent implements OnInit {
             contract.contract_details.base_token_info = baseToken;
             contract.contract_details.quote_token_info = quoteToken;
 
-            const contractDetails = contract.contract_details;
+            contract.contract_details.base_token_info.amount =
+              new BigNumber(contract.contract_details.base_limit).div(Math.pow(10, baseToken.decimals)).dp(3);
 
-            contractDetails.base_token_info.amount =
-              new BigNumber(contractDetails.base_limit).div(Math.pow(10, baseToken.decimals)).dp(3);
+            contract.contract_details.quote_token_info.amount =
+              new BigNumber(contract.contract_details.quote_limit).div(Math.pow(10, quoteToken.decimals)).dp(3);
 
-            contractDetails.quote_token_info.amount =
-              new BigNumber(contractDetails.quote_limit).div(Math.pow(10, quoteToken.decimals)).dp(3);
-
-            const baseAmount = contractDetails.base_token_info.amount;
-            const quoteAmount = contractDetails.quote_token_info.amount;
-
-            contractDetails.base_token_info.amount = contractDetails.base_token_info.amount.toString();
-            contractDetails.quote_token_info.amount = contractDetails.quote_token_info.amount.toString();
-
-            contractDetails.base_token_info.rate = baseAmount.div(quoteAmount).dp(3).toString();
-            contractDetails.quote_token_info.rate = quoteAmount.div(baseAmount).dp(3).toString();
-
-            contractDetails.swap3 = true;
-
-            if (contractDetails.base_address && contractDetails.quote_address) {
-              this.loadSwapsContractInfo(contractDetails);
-            } else {
-              this.contractsCount++;
-            }
+            this.getRates(contract);
 
           });
         }
@@ -70,35 +57,32 @@ export class PublicContractsComponent implements OnInit {
   public contractsList;
 
 
+  private getRates(contract) {
+    const contractDetails = contract.contract_details;
+    const baseAmount = contractDetails.base_token_info.amount;
+    const quoteAmount = contractDetails.quote_token_info.amount;
 
-  static fromBigNumber(num, decimals) {
-    return new BigNumber(num).div(Math.pow(10, decimals)).toString(10);
+    contractDetails.base_token_info.amount = contractDetails.base_token_info.amount.toString();
+    contractDetails.quote_token_info.amount = contractDetails.quote_token_info.amount.toString();
+
+    contractDetails.base_token_info.rate = baseAmount.div(quoteAmount).dp(5).toString();
+    contractDetails.quote_token_info.rate = quoteAmount.div(baseAmount).dp(5).toString();
+
+    if (contract.state === 'ACTIVE' || contract.state === 'DONE' || contract.state === 'CANCEL') {
+      this.loadContractInfo(contractDetails, contract);
+    } else {
+      this.contractsCount++;
+    }
   }
-
 
   private loadTokensInfo(contract) {
     const contractDetails = contract.contract_details;
-    const getRates = () => {
-      const baseAmount = contractDetails.base_token_info.amount;
-      const quoteAmount = contractDetails.quote_token_info.amount;
-      contractDetails.base_token_info.amount = contractDetails.base_token_info.amount.toString();
-      contractDetails.quote_token_info.amount = contractDetails.quote_token_info.amount.toString();
-
-      contractDetails.base_token_info.rate = baseAmount.div(quoteAmount).dp(3).toString();
-      contractDetails.quote_token_info.rate = quoteAmount.div(baseAmount).dp(3).toString();
-      if (contract.state === 'ACTIVE' || contract.state === 'DONE' || contract.state === 'CANCEL') {
-        this.loadContractInfo(contractDetails, contract);
-      } else {
-        this.contractsCount++;
-      }
-    };
-
 
     this.web3Service.getFullTokenInfo(contractDetails.base_address).then((tokenInfo: TokenInfoInterface) => {
       contractDetails.base_token_info = tokenInfo;
       contractDetails.base_token_info.amount = new BigNumber(contractDetails.base_limit).div(Math.pow(10, tokenInfo.decimals)).dp(3);
       if (contractDetails.quote_token_info) {
-        getRates();
+        this.getRates(contract);
       }
     });
 
@@ -107,7 +91,7 @@ export class PublicContractsComponent implements OnInit {
       contractDetails.quote_token_info = tokenInfo;
       contractDetails.quote_token_info.amount = new BigNumber(contractDetails.quote_limit).div(Math.pow(10, tokenInfo.decimals)).dp(3);
       if (contractDetails.base_token_info) {
-        getRates();
+        this.getRates(contract);
       }
     });
   }
@@ -143,7 +127,6 @@ export class PublicContractsComponent implements OnInit {
   }
 
   private loadSwapsContractInfo(contractDetails) {
-
     const web3Contract = this.web3Service.getContract(SWAPS_V2.ABI, SWAPS_V2.ADDRESS);
 
     web3Contract.methods.baseRaised(contractDetails.memo_contract).call().then((result) => {
@@ -173,11 +156,20 @@ export class PublicContractsComponent implements OnInit {
   private loadContractInfo(contractDetails, contract) {
     switch (contract.contract_type) {
       case 20:
+
         this.loadPrivateContractInfo(contractDetails);
         break;
       case 21:
-        this.loadSwapsContractInfo(contractDetails);
+
+        if (contractDetails.base_address && contractDetails.quote_address) {
+          this.loadSwapsContractInfo(contractDetails);
+        } else {
+          this.contractsCount++;
+        }
         break;
+      default:
+        break;
+
     }
   }
 
