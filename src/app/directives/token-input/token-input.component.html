@@ -18,7 +18,7 @@
   <span *ngIf="!tokenModel.token.address">Choose Token</span>
   <span *ngIf="tokenModel.token.address" class="ac_res_preview">
     <span class="ac_res_preview_icon">
-      <img [src]="tokenModel.token.image_link" *ngIf="tokenModel.token.image_link">
+      <img [src]="tokenModel.token.image_link || './assets/images/icons/coins/empty.svg'">
     </span>
     <span class="ac_res_preview_symbol">{{tokenModel.token.token_short_name}}</span>
   </span>

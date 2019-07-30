@@ -98,6 +98,23 @@ html {
   padding-right: 0;
 }
 
+.bold {
+  font-weight: bold;
+}
+
+.text-left {
+  text-align: left!important;
+}
+.text-right {
+  text-align: right!important;
+}
+.text-center {
+  text-align: center!important;
+}
+.clearfix-block {
+  display: table;
+  width: 100%;
+}
 @media screen and (max-width: 1240px) {
   .app-content-block {
     padding-left: 5vw;
@@ -647,8 +664,21 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   }
   &_description {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
+    &:not(.normal-font) {
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+    }
+    &.normal-font {
+      font-size: 15px;
+      &, a {
+        color: #fff!important;
+      }
+      a {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
     &:not(.no-top-margin) {
       margin-top: 22px;
     }
@@ -894,18 +924,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   color: #222!important;
 }
 
-
-.active-swaps-table {
+.active-swaps-table, .public-swaps {
   .ng-scrollbar-layout {
     max-height: 400px!important;
-  }
-}
-
-.index-start-form {
-  .form-field_input input {
-    padding-top: 12px!important;
-    padding-bottom: 10px!important;
-    line-height: 34px!important;
   }
 }
 
@@ -944,5 +965,15 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     &.active {
       background-color: #3B4352;
     }
+  }
+}
+
+
+
+ng-scrollbar-y {
+  display: block!important;
+  visibility: hidden;
+  &.ng-scrollbar-visible {
+    visibility: visible;
   }
 }

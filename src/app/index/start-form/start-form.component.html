@@ -1,25 +1,6 @@
-<div class="index-start-form">
+<form #startForm="ngForm" class="index-start-form">
   <div class="grid-row">
-    <div class="index-start-form_left grid-cell grid-cell-1-2 grid-cell-sm-1">
-      <h1 class="title">
-        Fully decentralized<br/>
-        OTC service
-      </h1>
-      <div class="description">
-        Your deal. Your terms.
-      </div>
-      <div class="btn-block">
-        <a
-          href="https://drive.google.com/file/d/14QPyhdvTZ5jy6qcdm0Y6bu2ZwlpT3r3c/view?usp=sharing"
-          class="btn btn_small btn-white-opacity"
-          target="_blank"
-        >
-          <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
-          <span>One pager</span>
-        </a>
-      </div>
-    </div>
-    <form #startForm="ngForm" class="index-start-form_right grid-cell grid-cell-1-2 grid-cell-s-1">
+    <div class="grid-cell grid-cell-3-8">
       <div class="form-field">
         <label class="form-field_label">You have</label>
         <div class="form-field_input">
@@ -41,7 +22,13 @@
                                 [tokenModel]="tokensData.base"></app-tokens-all-input>
 
         </div>
+
+        <div class="form-field_description normal-font text-right">
+          <a routerLink="create">Custom token</a>
+        </div>
       </div>
+    </div>
+    <div class="grid-cell grid-cell-3-8">
       <div class="form-field">
         <label class="form-field_label">You want to get</label>
         <div class="form-field_input">
@@ -68,7 +55,10 @@
           {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
         </div>
       </div>
+    </div>
+    <div class="grid-cell grid-cell-1-4">
       <div class="form-field">
+        <label class="form-field_label">&nbsp;</label>
         <a class="btn btn-yellow width-100" routerLink="create-swaps">
           <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
           <span>
@@ -76,19 +66,21 @@
           </span>
         </a>
       </div>
-      <div class="form-field">
-        <a class="btn btn-white-opacity width-100 white-border"
-           *ngIf="
-           (!tokensData.base.token.address || tokensData.base.token.isEthereum) &&
-           (!tokensData.quote.token.address || tokensData.quote.token.isEthereum)"
-           routerLink="create">
-          <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
-          <span>
-            Create Private SWAP
-          </span>
-        </a>
-      </div>
-    </form>
+    </div>
   </div>
-</div>
+
+
+  <!--<div class="form-field">-->
+    <!--<a class="btn btn-white-opacity width-100 white-border"-->
+       <!--*ngIf="-->
+       <!--(!tokensData.base.token.address || tokensData.base.token.isEthereum) &&-->
+       <!--(!tokensData.quote.token.address || tokensData.quote.token.isEthereum)"-->
+       <!--routerLink="create">-->
+      <!--<img class="arrow" src="./assets/images/buttons/arrow_w.svg">-->
+      <!--<span>-->
+        <!--Create Private SWAP-->
+      <!--</span>-->
+    <!--</a>-->
+  <!--</div>-->
+</form>
 

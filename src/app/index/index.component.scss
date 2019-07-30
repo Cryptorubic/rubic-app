@@ -1,10 +1,25 @@
 .app-index {
   height: 100%;
   padding-top: 130px;
-}
-
-.section-content-block {
-  margin: 0 2%;
+  background: url('/assets/images/backgrounds/index-page-top.png') right top no-repeat;
+  &__intro {
+    &_title {
+      font-size: 44px;
+      line-height: 52px;
+      color: #FFFFFF;
+      margin: 0;
+    }
+    &_text {
+      max-width: 717px;
+      font-size: 30px;
+      line-height: 40px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 25px;
+    }
+  }
+  &__start-form {
+    margin-top: 80px;
+  }
 }
 
 .how-it-work {

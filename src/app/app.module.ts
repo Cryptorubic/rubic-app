@@ -33,7 +33,6 @@ import { TransactionComponent } from './transaction/transaction.component';
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
 import { FooterComponent } from './footer/footer.component';
 import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
-import { NgScrollbarModule } from 'ngx-scrollbar';
 import {ClipboardModule} from 'ngx-clipboard';
 import { ContractFormTwoComponent } from './contract-form-two/contract-form-two.component';
 import {BigNumberDirective, BigNumberFormat, BigNumberMax, BigNumberMin} from './directives/big-number/big-number.directive';
@@ -55,6 +54,7 @@ import { IndexIcoFormComponent } from './index-ico/index-ico-form/index-ico-form
 import {OwlModule} from 'ngx-owl-carousel';
 import {Observable} from 'rxjs';
 import {TransferHttpCacheModule} from '@nguniversal/common';
+import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 
 
 export class TranslateBrowserLoader implements TranslateLoader {
@@ -174,7 +174,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     ContractsPreviewV3Component,
     IndexIcoComponent,
     IndexIcoHeaderComponent,
-    IndexIcoFormComponent
+    IndexIcoFormComponent,
+    CoinsListComponent
   ],
   entryComponents: [
     AuthComponent,
@@ -208,7 +209,6 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     MatButtonModule,
     BrowserAnimationsModule,
     NgxMaterialTimepickerModule,
-    NgScrollbarModule,
     ClipboardModule,
     OwlModule
   ],

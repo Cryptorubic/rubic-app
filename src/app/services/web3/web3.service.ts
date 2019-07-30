@@ -286,7 +286,6 @@ export class Web3Service {
   }
 
 
-
   public getSWAPSCoinInfo(data) {
 
     data.tokens_info = {};
