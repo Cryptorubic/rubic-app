@@ -72,7 +72,6 @@ export class ContractsService {
       });
 
     });
-
   }
 
   public getPublicContractsList() {
@@ -91,18 +90,19 @@ export class ContractsService {
         }
       };
 
-      this.httpService.get('get_public_contracts/').toPromise().then((result) => {
+      this.httpService.get('get_public_contracts/?t=_' + new Date().getTime()).toPromise().then((result) => {
         allList.contracts = result.filter((contract) => {
           return contract.contract_type === 20;
         });
         resolveList();
       });
 
-      this.httpService.get('get_public_swap3/').toPromise().then((result) => {
+      this.httpService.get('get_public_swap3/?t=_' + new Date().getTime()).toPromise().then((result) => {
         allList.trades = result;
         resolveList();
       });
-
+    }).then((res) => {
+      return res;
     });
   }
 

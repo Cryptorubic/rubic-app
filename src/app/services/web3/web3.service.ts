@@ -9,6 +9,15 @@ import {ERC20_TOKEN_ABI, ETH_NETWORKS} from './web3.constants';
 
 const BigNumber = require('bignumber.js');
 
+const EthereumCoin = {
+  address: '0x0000000000000000000000000000000000000000',
+  token_name: 'Ethereum',
+  token_short_name: 'ETH',
+  decimals: 18,
+  image_link: 'https://github.com/MyWishPlatform/etherscan_top_tokens_images/raw/master/ethereum-icon.png',
+  isEther: true
+};
+
 
 export interface TokenInfoInterface {
   address: string;
@@ -43,13 +52,10 @@ export class EtherscanUrlPipe implements PipeTransform {
 })
 export class Web3Service {
 
-  private providers;
-  private Web3;
-
   constructor(
     private httpService: HttpService
   ) {
-
+    this.cacheTokens = {};
     this.providers = {};
     try {
       // if (metaMaskProvider && metaMaskProvider.publicConfigStore) {
@@ -78,6 +84,13 @@ export class Web3Service {
 
     // this.connectMetamask();
   }
+
+  private providers;
+  private Web3;
+
+  private cacheTokens: {
+    [address: string]: any
+  };
 
 
   public getSignedMetaMaskMsg(msg, addr) {
@@ -127,35 +140,25 @@ export class Web3Service {
       token_short_name: tokenInfo.symbol,
       token_name: tokenInfo.name,
       address: tokenInfo.address,
-      decimals: parseInt(tokenInfo.decimals, 10) || 8,
-      isEther: tokenInfo.address === '0x0000000000000000000000000000000000000000'
+      decimals: parseInt(tokenInfo.decimals, 10) || 8
     } : false;
   }
 
 
   public getFullTokenInfo(tokenAddress) {
-
     return new Promise((resolve, reject) => {
-      this.httpService.get('get_all_tokens/', {
-        address: tokenAddress
-      }).toPromise().then((result) => {
-        result.forEach((tok) => {
-          tok.isEther = tok.address === '0x0000000000000000000000000000000000000000';
+      if (tokenAddress === '0x0000000000000000000000000000000000000000') {
+        resolve({...EthereumCoin});
+      } else {
+        this.getTokenInfo(tokenAddress).then((tokenInfo: {data: TokenInfoInterface}) => {
+          const convertedToken = this.convertTokenInfo(tokenInfo.data);
+          resolve(convertedToken);
+        }, (err) => {
+          reject(err);
         });
-        if (!result.length) {
-          this.getTokenInfo(tokenAddress).then((tokenInfo: {data: TokenInfoInterface}) => {
-            const convertedToken = this.convertTokenInfo(tokenInfo.data);
-            resolve(convertedToken);
-          }, (err) => {
-            reject(err);
-          });
-        } else {
-          resolve(result[0]);
-        }
-      });
+      }
     });
   }
-
 
   public getTokenInfo(tokenAddress) {
     const tokenInfoFields = ['decimals', 'symbol', 'name'];
@@ -163,27 +166,59 @@ export class Web3Service {
     let fieldsCount = tokenInfoFields.length;
     const tokenInfo: any = {};
 
-    return new Promise((resolve, reject) => {
-      const address = tokenAddress ? tokenAddress.toLowerCase() : tokenAddress;
+    const address = tokenAddress ? tokenAddress.toLowerCase() : tokenAddress;
+
+    if (this.cacheTokens[address]) {
+      if (this.cacheTokens[address].token || this.cacheTokens[address].failed) {
+        return new Promise((resolve, reject) => {
+          if (this.cacheTokens[address].failed) {
+            return reject({
+              tokenAddress: true
+            });
+          }
+
+          if (!this.Web3.utils.isAddress(address)) {
+            return resolve({
+              ethAddress: true
+            });
+          }
+          resolve({
+            data: {...this.cacheTokens[address].token}
+          });
+        }).then((res) => {
+          return res;
+        });
+      }
+      if (this.cacheTokens[address].inPromise) {
+        if (this.Web3.utils.isAddress(address)) {
+          return this.cacheTokens[address].inPromise;
+        }
+      }
+    }
+
+    const tokenPromise = new Promise((resolve, reject) => {
       if (!this.Web3.utils.isAddress(address)) {
         return resolve({
           ethAddress: true
         });
       }
-
       const contract = this.Web3.eth.Contract(ERC20_TOKEN_ABI, address);
 
       tokenInfoFields.map((method) => {
+
         contract.methods[method]().call().then(result => {
           if ((method !== 'symbol') && (result === null)) {
             reject({
               tokenAddress: true
             });
+            this.cacheTokens[address].failed = true;
+            return;
           }
           tokenInfo[method] = result;
           fieldsCount--;
           if (!fieldsCount) {
             tokenInfo.address = tokenAddress;
+            this.cacheTokens[address].token = {...tokenInfo};
             resolve({
               data: tokenInfo
             });
@@ -193,20 +228,29 @@ export class Web3Service {
             reject({
               tokenAddress: true
             });
+            this.cacheTokens[address].failed = true;
           } else {
             fieldsCount--;
             if (!fieldsCount) {
               tokenInfo.address = tokenAddress;
+              this.cacheTokens[address].token = {...tokenInfo};
               resolve({
                 data: tokenInfo
               });
             }
           }
         });
+
       });
     }).then((res) => {
       return res;
     });
+
+    this.cacheTokens[address] = {
+      inPromise: tokenPromise
+    };
+
+    return tokenPromise;
   }
 
 
@@ -295,9 +339,13 @@ export class Web3Service {
       let baseToken;
 
       if (data.quote_address) {
-        quoteToken = window['cmc_tokens'].filter((tk) => {
+
+
+        const quoteTokenObject = window['cmc_tokens'].filter((tk) => {
           return tk.isEthereum && (tk.address === data.quote_address);
         })[0];
+
+        quoteToken = quoteTokenObject ? {...quoteTokenObject} : false;
 
 
         this.getFullTokenInfo(data.quote_address).then((tokenInfo: TokenInfoInterface) => {
@@ -338,11 +386,14 @@ export class Web3Service {
 
       if (data.base_address) {
 
-        baseToken = {...window['cmc_tokens'].filter((tk) => {
+        const baseTokenObject = window['cmc_tokens'].filter((tk) => {
           return tk.isEthereum && (tk.address === data.base_address);
-        })[0]};
+        })[0];
+
+        baseToken = baseTokenObject ? {...baseTokenObject} : false;
 
         this.getFullTokenInfo(data.base_address).then((tokenInfo: TokenInfoInterface) => {
+
           if (baseToken) {
             data.tokens_info.base = {
               token: baseToken
@@ -402,7 +453,6 @@ export class EthTokenValidatorDirective implements AsyncValidator {
     ctrl: AbstractControl
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     return this.web3Service.getFullTokenInfo(ctrl.value).then((result: any) => {
-      console.log(result);
       if (result) {
         this.TokenResolve.emit(result);
         return null;

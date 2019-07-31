@@ -2,6 +2,31 @@
   padding: 20px 20px 0;
   background-color: rgba(255, 255, 255, 0.1);
 }
+.personal-swap-info {
+  text-align: right;
+  font-weight: bold;
+  white-space: nowrap;
+  color: #ffff;
+  margin-top: 30px;
+  font-size: 17px;
+  line-height: 22px;
+  a {
+    color: inherit!important;
+  }
+  &_ico {
+    display: inline-block;
+    vertical-align: baseline;
+    width: 22px;
+    height: 22px;
+    background-color: #FCD600;
+    border-radius: 50%;
+    color: #000;
+    text-align: center;
+    line-height: 25px;
+    font-size: 15px;
+    margin-left: 10px;
+  }
+}
 
 @media screen and (max-width: 980px) {
 }

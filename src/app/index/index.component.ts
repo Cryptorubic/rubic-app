@@ -18,7 +18,8 @@ export class IndexComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.httpService.get(STAT_URL).subscribe(res => this.stat = res);
+    // this.httpService.get(STAT_URL).subscribe(res => this.stat = res);
+    new window['ScrollTopButton'](500);
   }
 
 }

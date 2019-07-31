@@ -424,4 +424,30 @@
 }
 
 
-
+.scroll-top-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  &:not(&--visible) {
+    display: none;
+  }
+  &:after {
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    border-width: 2px 2px 0 0;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.7);
+    transform: rotate(-45deg);
+    content: '';
+    position: relative;
+    top: 5px;
+  }
+}

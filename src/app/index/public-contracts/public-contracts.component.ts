@@ -24,6 +24,9 @@ export class PublicContractsComponent implements OnInit {
   public contractsList;
   public displayingContractsList;
 
+  public allLoaded: boolean;
+  public refreshProgress: boolean;
+
   private showedPages: number;
 
   public allFilteredOrdersCount: any;
@@ -89,10 +92,17 @@ export class PublicContractsComponent implements OnInit {
 
 
   public refreshList() {
+    const startRefreshTime = new Date().getTime();
+    this.refreshProgress = true;
     this.contractsService.getPublicContractsList().then((result: IContract[]) => {
       this.contractsCount = 0;
       this.contractsList = result;
       this.loadcoinsInfo(result);
+
+      setTimeout(() => {
+        this.refreshProgress = false;
+      }, 1000 - (new Date().getTime() - startRefreshTime) % 1000);
+
     });
   }
 
@@ -140,58 +150,58 @@ export class PublicContractsComponent implements OnInit {
 
   private loadPrivateContractInfo(contractDetails) {
 
-    const contractData = contractDetails.eth_contract;
-    const web3Contract = this.web3Service.getContract(contractData.abi, contractData.address);
-
-    web3Contract.methods.baseRaised().call().then((result) => {
-      contractDetails.baseProgress =
-        new BigNumber(result).div(contractDetails.base_limit).times(100).toNumber();
-
-      if (!isNaN(contractDetails.quoteProgress)) {
-        this.finishContractLoad(contractDetails);
-      }
-    }, err => {
-      console.log(err);
-    });
-
-    web3Contract.methods.quoteRaised().call().then((result) => {
-      contractDetails.quoteProgress =
-        new BigNumber(result).div(contractDetails.quote_limit).times(100).toNumber();
-
-      if (!isNaN(contractDetails.baseProgress)) {
-        this.finishContractLoad(contractDetails);
-      }
-    }, err => {
-      console.log(err);
-    });
+    // const contractData = contractDetails.eth_contract;
+    // const web3Contract = this.web3Service.getContract(contractData.abi, contractData.address);
+    this.finishContractLoad(contractDetails);
+    // web3Contract.methods.baseRaised().call().then((result) => {
+    //   contractDetails.baseProgress =
+    //     new BigNumber(result).div(contractDetails.base_limit).times(100).toNumber();
+    //
+    //   if (!isNaN(contractDetails.quoteProgress)) {
+    //     this.finishContractLoad(contractDetails);
+    //   }
+    // }, err => {
+    //   console.log(err);
+    // });
+    //
+    // web3Contract.methods.quoteRaised().call().then((result) => {
+    //   contractDetails.quoteProgress =
+    //     new BigNumber(result).div(contractDetails.quote_limit).times(100).toNumber();
+    //
+    //   if (!isNaN(contractDetails.baseProgress)) {
+    //     this.finishContractLoad(contractDetails);
+    //   }
+    // }, err => {
+    //   console.log(err);
+    // });
 
   }
 
 
   private loadSwapsContractInfo(contractDetails) {
-    const web3Contract = this.web3Service.getContract(SWAPS_V2.ABI, SWAPS_V2.ADDRESS);
-
-    web3Contract.methods.baseRaised(contractDetails.memo_contract).call().then((result) => {
-      contractDetails.baseProgress =
-        new BigNumber(result).div(contractDetails.base_limit).times(100).toNumber();
-
-      if (!isNaN(contractDetails.quoteProgress)) {
-        this.finishContractLoad(contractDetails);
-      }
-    }, err => {
-      console.log(err);
-    });
-
-    web3Contract.methods.quoteRaised(contractDetails.memo_contract).call().then((result) => {
-      contractDetails.quoteProgress =
-        new BigNumber(result).div(contractDetails.quote_limit).times(100).toNumber();
-
-      if (!isNaN(contractDetails.baseProgress)) {
-        this.finishContractLoad(contractDetails);
-      }
-    }, err => {
-      console.log(err);
-    });
+    // const web3Contract = this.web3Service.getContract(SWAPS_V2.ABI, SWAPS_V2.ADDRESS);
+    this.finishContractLoad(contractDetails);
+    // web3Contract.methods.baseRaised(contractDetails.memo_contract).call().then((result) => {
+    //   contractDetails.baseProgress =
+    //     new BigNumber(result).div(contractDetails.base_limit).times(100).toNumber();
+    //
+    //   if (!isNaN(contractDetails.quoteProgress)) {
+    //     this.finishContractLoad(contractDetails);
+    //   }
+    // }, err => {
+    //   console.log(err);
+    // });
+    //
+    // web3Contract.methods.quoteRaised(contractDetails.memo_contract).call().then((result) => {
+    //   contractDetails.quoteProgress =
+    //     new BigNumber(result).div(contractDetails.quote_limit).times(100).toNumber();
+    //
+    //   if (!isNaN(contractDetails.baseProgress)) {
+    //     this.finishContractLoad(contractDetails);
+    //   }
+    // }, err => {
+    //   console.log(err);
+    // });
 
   }
 
@@ -223,6 +233,7 @@ export class PublicContractsComponent implements OnInit {
     this.contractsCount++;
 
     if (this.contractsCount === this.contractsList.length) {
+      this.allLoaded = true;
       setInterval(() => {
         this.contractsList.forEach((contractFromList: any) => {
           this.checkExpire(contractFromList.contract_details);

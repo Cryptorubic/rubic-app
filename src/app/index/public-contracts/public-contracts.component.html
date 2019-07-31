@@ -1,21 +1,22 @@
 
 <div class="active-swaps_container">
   <div class="title-section" *ngIf="contractsList && contractsList.length">
-    OTC Order Book&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class="btn btn-white-opacity white-border btn-auto" (click)="refreshList()">
-      <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
-      <span>
-        Refresh&nbsp;&nbsp;
-      </span>
+    OTC Order Book&nbsp;&nbsp;&nbsp;
+
+    <button class="refresh-btn" (click)="refreshList()"
+            [ngClass]="{progress: refreshProgress}"
+            [disabled]="!(contractsList && contractsList.length && (contractsCount === contractsList.length))">
+      <img class="arrow" src="./assets/images/icons/refresh.svg">
     </button>
+
   </div>
 
-  <div class="public-progress-loading" *ngIf="contractsList && (contractsCount !== contractsList.length)">
+  <div class="public-progress-loading" *ngIf="!allLoaded && contractsList && (contractsCount !== contractsList.length)">
     <span [ngStyle]="{width: (contractsCount / contractsList.length) * 100 + '%'}"></span>
   </div>
 
   <div class="public-swaps_table-container"
-       [hidden]="!(contractsList && contractsList.length && (contractsCount === contractsList.length))">
+       [hidden]="!allLoaded && !(contractsList && contractsList.length && (contractsCount === contractsList.length))">
 
     <div class="grid-row public-swaps_row">
       <div class="grid-cell grid-cell-1-4 public-swaps_head-cell">
@@ -71,7 +72,7 @@
 
 
       <div class="public-swaps_body"
-           *ngIf="contractsList && contractsList.length && (contractsCount === contractsList.length)">
+           *ngIf="allLoaded || (contractsList && contractsList.length && (contractsCount === contractsList.length))">
 
         <div class="grid-row public-swaps_row as-link"
            *ngFor="let contract of displayingContractsList"
@@ -80,8 +81,7 @@
             <div class="public-swaps_cell_content">
               <div class="swap-info swap-info_token-name">
                 <img class="swap-info__token-name_icon"
-                     *ngIf="contract.contract_details.base_token_info.image_link"
-                     [src]="contract.contract_details.base_token_info.image_link">
+                     [src]="contract.contract_details.base_token_info.image_link || './assets/images/icons/coins/empty.svg'">
                 <span class="swap-info__token-name_symbol">
                   {{contract.contract_details.base_token_info.token_short_name}}
                 </span>
@@ -161,7 +161,8 @@
 
 
       <div class="public-swaps_empty" *ngIf="contractsList?.length && !displayingContractsList?.length">
-        There is no matching pair, please <span>create your own</span>
+        There is no matching pair, please
+        <a routerLink="create">create your own</a>
       </div>
 
     </div>
