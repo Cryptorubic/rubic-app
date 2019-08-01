@@ -98,10 +98,18 @@
     a {
       display: block;
       height: 100%;
-      filter: grayscale(100%);
       transition: all .2s;
-      &:hover, &:focus {
-        filter: grayscale(0);
+      &.invert {
+        filter: invert(100%) grayscale(100%);
+        &:hover, &:focus {
+          filter: invert(0) grayscale(0);
+        }
+      }
+      &:not(.invert) {
+        filter: grayscale(100%);
+        &:hover, &:focus {
+          filter: grayscale(0);
+        }
       }
     }
     img {

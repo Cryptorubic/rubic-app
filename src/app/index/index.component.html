@@ -3,7 +3,7 @@
 
     <div class="app-index__intro">
       <h1 class="app-index__intro_title">
-        OTC Global Liquidity Pool.
+        OTC Global Liquidity Pool
       </h1>
       <div class="app-index__intro_text">
         It accumulates all deals on the market and connects sellers and buyers from around the world.
@@ -114,9 +114,10 @@
         <div class="title-section">Partners</div>
         <div class="app-index__partners">
           <div class="grid-row">
-            <div *ngFor="let project of projects" class="grid-cell grid-cell-1-6 grid-cell-sm-1-5 grid-cell-s-1-4 grid-cell-ps-1-3 grid-cell-ls-1-2">
+            <div *ngFor="let project of projects"
+                 class="grid-cell grid-cell-1-6 grid-cell-sm-1-5 grid-cell-s-1-4 grid-cell-ps-1-3 grid-cell-ls-1-2">
               <div class="app-index__partners_item">
-                <a href="{{project.link}}" target="_blank">
+                <a href="{{project.link}}" target="_blank" [ngClass]="{invert: project.invert}">
                   <img [src]="project.logo">
                 </a>
               </div>

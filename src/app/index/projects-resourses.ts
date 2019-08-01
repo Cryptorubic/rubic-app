@@ -1,7 +1,8 @@
 const PROJECTS = [
   {
     link: 'https://www.bw.com/',
-    logo: './assets/images/partners/bwcom.png'
+    logo: './assets/images/partners/bwcom.png',
+    invert: true
   },
   {
     link: 'https://bestrate.org',
@@ -9,7 +10,8 @@ const PROJECTS = [
   },
   {
     link: 'https://coss.io',
-    logo: './assets/images/new-index/logos/coss.png'
+    logo: './assets/images/new-index/logos/coss-2.png',
+    invert: true
   },
   {
     link: 'https://changelly.com/',
