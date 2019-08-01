@@ -211,11 +211,23 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     this.getQuoteBrokersPercent(web3Contract);
 
 
-    if (details.contract_state === 'ACTIVE' && details.isEthereum) {
-      web3Contract.methods.isSwapped(details.memo_contract).call().then((result) => {
-        this.originalContract.isSwapped = result;
-      }, err => {
-        console.log(err);
+    if (details.isEthereum) {
+      web3Contract.methods.owners(details.memo_contract).call().then((result) => {
+        if (result) {
+          details.contract_state = 'ACTIVE';
+        } else {
+          details.contract_state = 'WAITING_FOR_ACTIVATION';
+        }
+
+        if (details.contract_state === 'ACTIVE') {
+          web3Contract.methods.isSwapped(details.memo_contract).call().then((res) => {
+            this.originalContract.isSwapped = res;
+          }, err => {
+            console.log(err);
+          });
+        } else {
+          this.originalContract.isSwapped = false;
+        }
       });
     } else {
       this.originalContract.isSwapped = false;

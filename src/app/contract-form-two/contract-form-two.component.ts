@@ -98,7 +98,7 @@ export class ContractFormTwoComponent extends ContractFormComponent {
         this.updateAddresses();
         break;
       default:
-        this.router.navigate(['/contract-v2/' + contract.id]);
+        this.router.navigate(['/contract-v3/' + contract.id]);
         break;
     }
   }

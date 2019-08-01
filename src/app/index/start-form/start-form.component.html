@@ -1,6 +1,6 @@
 <form #startForm="ngForm" class="index-start-form">
   <div class="grid-row">
-    <div class="grid-cell grid-cell-3-8">
+    <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
       <div class="form-field">
         <label class="form-field_label">You have</label>
         <div class="form-field_input">
@@ -24,11 +24,11 @@
         </div>
 
         <div class="form-field_description normal-font text-right">
-          <a routerLink="create-swaps">Custom token</a>
+          <a routerLink="trades/create-v3" class="underline-link">Use custom token</a>
         </div>
       </div>
     </div>
-    <div class="grid-cell grid-cell-3-8">
+    <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
       <div class="form-field">
         <label class="form-field_label">You want to get</label>
         <div class="form-field_input">
@@ -48,18 +48,19 @@
                                 [setToken]="quoteTokenChanger"
                                 [tokenModel]="tokensData.quote"></app-tokens-all-input>
         </div>
-        <div class="form-field_description"
-             *ngIf="startForm.valid">
-          Rate:
-          {{checkRate() | bigNumberFormat : 0 : true : false : 4}}
-          {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
+        <div class="form-field_description">
+          <span *ngIf="startForm.valid">
+            Rate:
+            {{checkRate() | bigNumberFormat : 0 : true : false : 4}}
+            {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
+          </span>&nbsp;
         </div>
       </div>
     </div>
-    <div class="grid-cell grid-cell-1-4">
+    <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1">
       <div class="form-field">
         <label class="form-field_label">&nbsp;</label>
-        <a class="btn btn-yellow width-100" routerLink="create-swaps">
+        <a class="btn btn-yellow width-100" routerLink="create-v3">
           <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
           <span>
             Create SWAP
@@ -84,7 +85,10 @@
 </form>
 
 <div class="personal-swap-info">
-  <a routerLink="create">I need personal SWAP</a>
+  <a routerLink="trades/create">I need an individual SWAP</a>
   <span class="personal-swap-info_ico">?</span>
+  <div class="personal-swap-info_tooltip">
+    A single smart contract created for the trade which guarantees anonymity and security
+  </div>
 </div>
 

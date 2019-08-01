@@ -87,18 +87,39 @@ export class ContractsService {
             return new Date(contract2.created_date) > new Date(contract1.created_date) ? -1 : 1;
           });
           resolve(allResolveList);
+
+          if (expiredTrades.contracts || expiredTrades.trades) {
+            this.httpService.post('set_swap3_expired/', expiredTrades).toPromise().then((res) => {
+              return res;
+            });
+          }
         }
+      };
+
+      const expiredTrades = {
+        contracts: [],
+        trades: []
       };
 
       this.httpService.get('get_public_contracts/?t=_' + new Date().getTime()).toPromise().then((result) => {
         allList.contracts = result.filter((contract) => {
-          return contract.contract_type === 20;
+          const noExpired = new Date(contract.contract_details.stop_date).getTime() > new Date().getTime();
+          if (!noExpired) {
+            expiredTrades.contracts.push(contract.id);
+          }
+          return noExpired;
         });
         resolveList();
       });
 
       this.httpService.get('get_public_swap3/?t=_' + new Date().getTime()).toPromise().then((result) => {
-        allList.trades = result;
+        allList.trades = result.filter((contract) => {
+          const noExpired = new Date(contract.stop_date).getTime() > new Date().getTime();
+          if (!noExpired) {
+            expiredTrades.trades.push(contract.id);
+          }
+          return noExpired;
+        });
         resolveList();
       });
     }).then((res) => {

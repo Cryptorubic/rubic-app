@@ -37,7 +37,7 @@ export interface IContractV3 {
 
   quote_coin_id?: number;
   base_coin_id?: number;
-
+  comment?: string;
   tokens_info?: {
     base?: {
       token: any;
@@ -332,6 +332,8 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
       ...tokenForm.value,
       ...advancedForm.value
     } as IContractV3;
+
+    this.formData.comment = this.requestData.comment;
 
     this.formData.public = !!this.extraForm.value.public;
     this.formData.stop_date = this.extraForm.value.active_to.utc().format('YYYY-MM-DD HH:mm');

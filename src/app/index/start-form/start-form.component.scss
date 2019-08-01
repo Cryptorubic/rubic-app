@@ -10,6 +10,7 @@
   margin-top: 30px;
   font-size: 17px;
   line-height: 22px;
+  position: relative;
   a {
     color: inherit!important;
   }
@@ -25,9 +26,53 @@
     line-height: 25px;
     font-size: 15px;
     margin-left: 10px;
+    cursor: pointer;
+  }
+  &_tooltip {
+    position: absolute;
+    background-color: #383D45;
+    padding: 20px;
+    font-size: 15px;
+    line-height: 18px;
+    color: #fff;
+    right: -5px;
+    width: 260px;
+    bottom: 100%;
+    white-space: normal;
+    text-align: left;
+    font-weight: normal;
+    margin-bottom: 15px;
+    opacity: 0;
+    height: 0;
+    visibility: hidden;
+    transition: linear opacity 0.1s;
+    &:after {
+      background-color: #383D45;
+      width: 16px;
+      height: 16px;
+      content: '';
+      display: block;
+      position: relative;
+      margin-bottom: -16px;
+      top: 30px;
+      float: right;
+      margin-right: -11px;
+      transform: rotate(45deg);
+    }
+  }
+  &_ico:hover + &_tooltip {
+    opacity: 1;
+    height: initial;
+    visibility: visible;
   }
 }
-
+.underline-link {
+  text-decoration: underline!important;
+  &:hover {
+    text-decoration: none!important;
+    color: #FCD600!important;
+  }
+}
 @media screen and (max-width: 980px) {
 }
 

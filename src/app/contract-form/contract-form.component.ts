@@ -309,7 +309,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     let newState;
     switch (contract.contract_type) {
       case 21:
-        newState = `/view-v2/${contract.id}`;
+        newState = `/view-v3/${contract.id}`;
         break;
       case 20:
         newState = `/view/${contract.id}`;
@@ -510,13 +510,13 @@ export class ContractEditResolver implements Resolve<any> {
           switch (result.state) {
             case 'CREATED':
             case 'WAITING_FOR_ACTIVATION':
-              newState = `/view-v2/${result.id}`;
+              newState = `/view-v3/${result.id}`;
               break;
             default:
               if (isPublic) {
-                newState = `/public-v2/${this.publicLink}`;
+                newState = `/public-v3/${this.publicLink}`;
               } else {
-                newState = `/contract-v2/${result.id}`;
+                newState = `/contract-v3/${result.id}`;
               }
               break;
           }

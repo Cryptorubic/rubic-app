@@ -338,6 +338,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   cursor: pointer;
   position: relative;
 
+  &__auto-width {
+    width: auto;
+  }
   &-auto {
     display: inline-block;
     width: auto;

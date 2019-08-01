@@ -63,7 +63,7 @@
 
                 <div class="token-info">
                   <div class="token-info_icon"
-                       [ngStyle]="{'background-image': 'url(' + tokens.base.token.image_link + ')'}">
+                       [ngStyle]="{'background-image': 'url(' + (tokens.base.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
                   </div>
                   <div class="token-info_texts">
                     <div class="token-info_texts__name">
@@ -231,7 +231,7 @@
                 </div>
 
                 <div class="token-info">
-                  <div class="token-info_icon" [ngStyle]="{'background-image': 'url(' + tokens.quote.token.image_link + ')'}">
+                  <div class="token-info_icon" [ngStyle]="{'background-image': 'url(' + (tokens.quote.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
 
                   </div>
                   <div class="token-info_texts">
@@ -461,6 +461,13 @@
               </div>
             </div>
 
+            <div class="one-separated-block">
+              <label class="form-field_label transparent">Additional comment</label>
+              <div class="form-field_value">
+                {{ originalContract.comment }}
+              </div>
+            </div>
+
             <div class="one-separated-block"
                  *ngIf="((originalContract.state === 'ACTIVE') && originalContract.isAuthor) && (originalContract.isSwapped === false)">
               <button type="button" class="btn btn-yellow btn-min btn-normal-weight" (click)="sendCancel()">
@@ -468,6 +475,7 @@
                 <span>Cancel the deal</span>
               </button>
             </div>
+
           </div>
         </div>
       </div>
