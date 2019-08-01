@@ -1,12 +1,8 @@
 <header [ngClass]="{scrolled: pageScrolled}">
   <div class="app-content-block">
-    <a routerLink="/">
+    <a routerLink="/trades">
       <span class="logo">
         <img src="./assets/images/logo.svg">
-        <!-- <map name="logotype">
-          <area shape="rect" coords="0,0,97, 31" routerLink="/">
-          <area shape="rect" coords="97,0,195, 31" href="https://mywish.io">
-        </map> -->
       </span>
     </a>
 
@@ -43,7 +39,7 @@
                   (click)="userMenuOpened = !userMenuOpened">{{currentUser.username}}</span>
             <ul class="header-menu_sublist">
               <li class="header-menu_sublist_item">
-                <a routerLink="contracts" class="sublist-link">My contracts</a>
+                <a routerLink="/trades/contracts" class="sublist-link">My contracts</a>
               </li>
               <li class="header-menu_sublist_item">
                 <span class="sublist-link" (click)="openLogoutConfirmation()">Logout</span>

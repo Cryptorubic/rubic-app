@@ -4,8 +4,8 @@
 
   <section class="section-1">
     <div class="app-content-block">
-      <a href="https://event.bitforex.com/en/SWAP.html"
-         target="_blank" class="section-1_timer" [ngClass]="{started: leftSeconds === 0}">
+      <a (click)="openFullInviteForm()"
+         class="section-1_timer" [ngClass]="{started: leftSeconds === 0}">
         <div class="section-1_timer_circle">
 
           <div class="spinner-wrapper">
@@ -53,9 +53,9 @@
         </p>
       </div>
       <div class="section-1_menu">
-        <a href="https://event.bitforex.com/en/SWAP.html" target="_blank" class="new-btn new-btn-yellow">
+        <button (click)="openFullInviteForm()" class="new-btn new-btn-yellow">
           <span translate="INDEX_PAGE.SECTION_1.MENU.BUTTON"></span>
-        </a>
+        </button>
         <div class="section-1_menu_links">
           <ul>
             <li>
@@ -168,7 +168,6 @@
       </div>
     </div>
   </section>
-
 
   <section class="section-3">
     <div class="app-content-block slider-navigation" *ngIf="countBqSlides > 1">
@@ -290,6 +289,21 @@
     </owl-carousel>
   </section>
 
+
+  <section class="section-13 experts-rating">
+    <div class="app-content-block">
+      <div class="section-title" translate="INDEX_PAGE.SECTION_13.RATING.TITLE"></div>
+      <div class="rating">
+        <p class="rating-text" translate="INDEX_PAGE.SECTION_13.RATING.TEXT"></p>
+
+        <a href="https://cryptodiffer.com/swaps-network-ieo" target="_blank" class="rating-image">
+          <img src="./assets/images/new-index/rating.svg" class="images-block_img images-block_img__center">
+        </a>
+      </div>
+    </div>
+  </section>
+
+
   <a id="partnership"></a>
   <section class="section-4">
     <div class="app-content-block">
@@ -376,9 +390,9 @@
           <div class="dev-title" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.TITLE"></div>
           <div class="dev-text" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.TEXT"></div>
           <div class="dev-post-block without-line">
-            <button class="new-btn new-btn-yellow" (click)="openInviteForm()">
+            <a routerLink="trades/create-v3" class="new-btn new-btn-yellow">
               <span translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.POST_BLOCK"></span>
-            </button>
+            </a>
           </div>
         </li>
 
@@ -525,6 +539,40 @@
   </section>
 
 
+
+  <section class="section-7">
+    <div class="app-content-block">
+      <div class="schemas-section">
+        <div class="schemas-section_title" translate="INDEX_PAGE.SECTION_7.WHY_SAFE.TITLE"></div>
+        <p class="schemas-section_text medium-size">
+          <b translate="INDEX_PAGE.SECTION_7.WHY_SAFE.POST_TITLE"></b>
+        </p>
+
+        <ul class="schemas-section_list">
+          <li translate="INDEX_PAGE.SECTION_7.WHY_SAFE.LIST.ITEM_1"></li>
+          <li translate="INDEX_PAGE.SECTION_7.WHY_SAFE.LIST.ITEM_2"></li>
+          <li translate="INDEX_PAGE.SECTION_7.WHY_SAFE.LIST.ITEM_3"></li>
+          <li translate="INDEX_PAGE.SECTION_7.WHY_SAFE.LIST.ITEM_4"></li>
+        </ul>
+
+        <div class="schemas-section_img" style="display: block!important; width: 120%; margin-left: -10%;">
+          <img src="/assets/images/new-index/why-it-safe.gif">
+        </div>
+
+        <div class="text-center">
+          <a class="new-btn new-btn-yellow schemas-section_btn"
+             target="_blank" href="https://github.com/swaps-network">
+            <span translate="INDEX_PAGE.SECTION_7.WHY_SAFE.BUTTON"></span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+
   <section class="section-8">
     <div class="app-content-block">
       <div class="section-title" translate="INDEX_PAGE.SECTION_11.TITLE"></div>
@@ -554,10 +602,9 @@
         </div>
       </div>
 
-
-      <button (click)="openInviteForm()" class="new-btn new-btn-yellow">
+      <a routerLink="trades/create-v3" class="new-btn new-btn-yellow">
         <span translate="INDEX_PAGE.SECTION_11.BUTTON">Try service without commission</span>
-      </button>
+      </a>
 
     </div>
   </section>
@@ -747,54 +794,53 @@
           </div>
         </li>
       </ul>
-
     </div>
   </section>
 
-  <a id="our-background"></a>
-  <section class="section-14">
-    <div class="app-content-block">
-      <div class="section-content-flex">
-        <div class="section-content-wrapper">
-          <div class="section-text-content">
-            <div class="section-title">
-              {{'INDEX_PAGE.SECTION_16.TITLE'|translate}}
-              <img src="./assets/images/new-index/logos/mywish.svg" class="section-mywish-logo">
-            </div>
-            <div class="section-text">
-              <b translate="INDEX_PAGE.SECTION_16.POST_TITLE"></b><br/><br/>
-              {{'INDEX_PAGE.SECTION_16.DESCRIPTION'|translate}}
-            </div>
-          </div>
-          <div class="chains-logotypes">
-            <img src="./assets/images/new-index/logos/tron.png" alt="tron">
-            <img src="./assets/images/new-index/logos/eos.png" alt="eos">
-            <img src="./assets/images/new-index/logos/neo.png" alt="neo">
-            <img src="./assets/images/new-index/logos/waves.png" alt="waves">
-            <img src="./assets/images/new-index/logos/binance.png" alt="binance">
-          </div>
+  <!--<a id="our-background"></a>-->
+  <!--<section class="section-14">-->
+    <!--<div class="app-content-block">-->
+      <!--<div class="section-content-flex">-->
+        <!--<div class="section-content-wrapper">-->
+          <!--<div class="section-text-content">-->
+            <!--<div class="section-title">-->
+              <!--{{'INDEX_PAGE.SECTION_16.TITLE'|translate}}-->
+              <!--&lt;!&ndash;<img src="./assets/images/new-index/logos/mywish.svg" class="section-mywish-logo">&ndash;&gt;-->
+            <!--</div>-->
+            <!--<div class="section-text">-->
+              <!--<b translate="INDEX_PAGE.SECTION_16.POST_TITLE"></b><br/><br/>-->
+              <!--{{'INDEX_PAGE.SECTION_16.DESCRIPTION'|translate}}-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--&lt;!&ndash; div class="chains-logotypes">-->
+            <!--<img src="./assets/images/new-index/logos/tron.png" alt="tron">-->
+            <!--<img src="./assets/images/new-index/logos/eos.png" alt="eos">-->
+            <!--<img src="./assets/images/new-index/logos/neo.png" alt="neo">-->
+            <!--<img src="./assets/images/new-index/logos/waves.png" alt="waves">-->
+            <!--<img src="./assets/images/new-index/logos/binance.png" alt="binance">-->
+          <!--</div &ndash;&gt;-->
 
-          <ul class="mywish-description">
-            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_1"></li>
-            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_2"></li>
-            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_3"></li>
-            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_4"></li>
-            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_5"></li>
-            <li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_6"></li>
-          </ul>
-        </div>
+          <!--<ul class="mywish-description">-->
+            <!--<li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_1"></li>-->
+            <!--<li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_2"></li>-->
+            <!--<li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_3"></li>-->
+            <!--<li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_4"></li>-->
+            <!--<li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_5"></li>-->
+            <!--<li translate="INDEX_PAGE.SECTION_16.LIST.ITEM_6"></li>-->
+          <!--</ul>-->
+        <!--</div>-->
 
-        <!-- div class="section-phone-content">&nbsp;
-          <div class="section-phone-wrapper">
-            <div class="section-phone-wrapper_content">
-              <img src="./assets/images/new-index/empty-phone.png" class="phone-empty">
-              <img src="./assets/images/new-index/jumbotron__gif.gif" class="phone-content">
-            </div>
-          </div>
-        </div -->
-      </div>
-    </div>
-  </section>
+        <!--&lt;!&ndash; div class="section-phone-content">&nbsp;-->
+          <!--<div class="section-phone-wrapper">-->
+            <!--<div class="section-phone-wrapper_content">-->
+              <!--<img src="./assets/images/new-index/empty-phone.png" class="phone-empty">-->
+              <!--<img src="./assets/images/new-index/jumbotron__gif.gif" class="phone-content">-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div &ndash;&gt;-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</section>-->
 
 
   <a id="roadmap"></a>
@@ -871,13 +917,17 @@
 
             <div class="list">
               <div class="list_item">
+                <div class="list_item_title big-size border-1" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.TRADABLE'|translate">
+                </div>
+              </div>
+              <div class="list_item">
                 <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_1.TITLE'|translate"></div>
                 <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_1.TEXT'|translate"></div>
               </div>
-              <div class="list_item">
-                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TITLE'|translate"></div>
-                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TEXT'|translate"></div>
-              </div>
+              <!--<div class="list_item">-->
+                <!--<div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TITLE'|translate"></div>-->
+                <!--<div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_2.TEXT'|translate"></div>-->
+              <!--</div>-->
 
               <div class="list_item">
                 <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_1.BONUS_LIST.ITEM_3.TITLE'|translate"></div>
@@ -912,13 +962,17 @@
 
             <div class="list">
               <div class="list_item">
+                <div class="list_item_title big-size border-2" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.TRADABLE'|translate">
+                </div>
+              </div>
+              <div class="list_item">
                 <div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_1.TITLE'|translate"></div>
                 <div class="list_item_text"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_1.TEXT'|translate"></div>
               </div>
-              <div class="list_item">
-                <div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TITLE'|translate"></div>
-                <div class="list_item_text"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TEXT'|translate"></div>
-              </div>
+              <!--<div class="list_item">-->
+                <!--<div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TITLE'|translate"></div>-->
+                <!--<div class="list_item_text"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_2.TEXT'|translate"></div>-->
+              <!--</div>-->
 
               <div class="list_item">
                 <div class="list_item_title"  [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_2.BONUS_LIST.ITEM_3.TITLE'|translate"></div>
@@ -954,13 +1008,17 @@
 
             <div class="list">
               <div class="list_item">
+                <div class="list_item_title big-size border-3" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.TRADABLE'|translate">
+                </div>
+              </div>
+              <div class="list_item">
                 <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_1.TITLE'|translate"></div>
                 <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_1.TEXT'|translate"></div>
               </div>
-              <div class="list_item">
-                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TITLE'|translate"></div>
-                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TEXT'|translate"></div>
-              </div>
+              <!--<div class="list_item">-->
+                <!--<div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TITLE'|translate"></div>-->
+                <!--<div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_2.TEXT'|translate"></div>-->
+              <!--</div>-->
               <div class="list_item">
                 <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_3.TITLE'|translate"></div>
                 <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_3.BONUS_LIST.ITEM_3.TEXT'|translate"></div>
@@ -995,15 +1053,18 @@
             </div>
 
             <div class="list">
-
+              <div class="list_item">
+                <div class="list_item_title big-size border-4" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.TRADABLE'|translate">
+                </div>
+              </div>
               <div class="list_item">
                 <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_1.TITLE'|translate"></div>
                 <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_1.TEXT'|translate"></div>
               </div>
-              <div class="list_item">
-                <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TITLE'|translate"></div>
-                <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TEXT'|translate"></div>
-              </div>
+              <!--<div class="list_item">-->
+                <!--<div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TITLE'|translate"></div>-->
+                <!--<div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_2.TEXT'|translate"></div>-->
+              <!--</div>-->
               <div class="list_item">
                 <div class="list_item_title" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_3.TITLE'|translate"></div>
                 <div class="list_item_text" [innerHTML]="'INDEX_PAGE.SECTION_18.BONUSES.PART_4.BONUS_LIST.ITEM_3.TEXT'|translate"></div>
@@ -1033,12 +1094,12 @@
   </section>
 
 
-  <section class="section-17">
+  <!-- section class="section-17">
     <div class="app-content-block">
       <div class="discount-notice">
         <div class="grid-row">
           <div class="grid-cell grid-cell-1-2 grid-cell-sm-1">
-            <div class="discount-notice_bonus">+15%</div>
+            <div class="discount-notice_bonus">+10%</div>
             <div class="discount-notice_msg">
               {{'INDEX_PAGE.SECTION_19.TEXT.PART_1'|translate}}<br/><br/>
               {{'INDEX_PAGE.SECTION_19.TEXT.PART_2'|translate}}
@@ -1095,7 +1156,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </section -->
 
 
   <section class="section-18">
@@ -1495,10 +1556,12 @@
     <span>{{msgCount}}</span>
   </a>
   <div class="app-content-block">
-    <div class="float-line_text" [innerHTML]="'INDEX_PAGE.FLOAT_FOOTER.TEXT'|translate"></div>
-    <a href="https://event.bitforex.com/en/SWAP.html" target="_blank" class="new-btn">
-      <span translate="INDEX_PAGE.FLOAT_FOOTER.BUTTON"></span>
-    </a>
+    <div class="app-content-block">
+      <div class="float-line_text" [innerHTML]="'INDEX_PAGE.FLOAT_FOOTER.TEXT'|translate"></div>
+      <button (click)="openFullInviteForm()" class="new-btn">
+        <span translate="INDEX_PAGE.FLOAT_FOOTER.BUTTON"></span>
+      </button>
+    </div>
   </div>
 </div>
 

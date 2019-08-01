@@ -1,70 +1,94 @@
-<div class="index-start-form">
+<form #startForm="ngForm" class="index-start-form">
   <div class="grid-row">
-    <div class="index-start-form_left grid-cell grid-cell-1-2 grid-cell-sm-1">
-      <h1 class="title">
-        Fully decentralized<br/>
-        OTC service
-      </h1>
-      <div class="description">
-        Your deal. Your terms.
-      </div>
-      <div class="btn-block">
-        <a
-          href="https://drive.google.com/file/d/14QPyhdvTZ5jy6qcdm0Y6bu2ZwlpT3r3c/view?usp=sharing"
-          class="btn btn_small btn-white-opacity"
-          target="_blank"
-        >
-          <img class="arrow" src="./assets/images/buttons/arrow_y.svg">
-          <span>One pager</span>
-        </a>
-      </div>
-    </div>
-    <form #startForm="ngForm" class="index-start-form_right grid-cell grid-cell-1-2 grid-cell-s-1">
+    <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
       <div class="form-field">
         <label class="form-field_label">You have</label>
         <div class="form-field_input">
-          <input type="hidden" required [ngModel]="tokensData.base.token.address" name="base_address">
-          <input type="hidden" required [ngModel]="tokensData.base.amount"
-                 [value]="(tokensData.base.amount == 0) ? '' : tokensData.base.amount"
-                 name="base_limit">
-          <app-token-input [(tokenModel)]="tokensData.base"
-                           [setToken]="baseTokenChanger"></app-token-input>
+
+          <input type="hidden" required
+                 [ngModel]="tokensData.base.token.address"
+                 *ngIf="!tokensData.base.token.token_short_name || tokensData.base.token.isEthereum"
+                 name="base_address">
+
+          <input type="hidden" required
+                 [ngModel]="tokensData.base.token.mywish_id"
+                 *ngIf="!tokensData.base.token.isEthereum"
+                 name="base_coin_id">
+
+          <input type="hidden" required [ngModel]="tokensData.base.amount" name="base_limit">
+
+          <app-tokens-all-input (TokenChange)="changedToken()"
+                                [setToken]="baseTokenChanger"
+                                [tokenModel]="tokensData.base"></app-tokens-all-input>
+
+        </div>
+
+        <div class="form-field_description normal-font text-right">
+          <a routerLink="/trades/create-v3" class="underline-link">Use custom token</a>
         </div>
       </div>
+    </div>
+    <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
       <div class="form-field">
         <label class="form-field_label">You want to get</label>
         <div class="form-field_input">
-          <input type="hidden" required [ngModel]="tokensData.quote.token.address" name="quote_address">
-          <input type="hidden" required [ngModel]="tokensData.quote.amount"
-                 [value]="(tokensData.quote.amount == 0) ? '' : tokensData.quote.amount"
-                 name="quote_limit">
-          <app-token-input [(tokenModel)]="tokensData.quote"
-                           [setToken]="quoteTokenChanger"></app-token-input>
+          <input type="hidden" required
+                 [ngModel]="tokensData.quote.token.address"
+                 *ngIf="!tokensData.quote.token.token_short_name || tokensData.quote.token.isEthereum"
+                 name="quote_address">
+
+          <input type="hidden" required
+                 [ngModel]="tokensData.quote.token.mywish_id"
+                 *ngIf="!tokensData.quote.token.isEthereum"
+                 name="quote_coin_id">
+
+          <input type="hidden" required [ngModel]="tokensData.quote.amount" name="quote_limit">
+
+          <app-tokens-all-input (TokenChange)="changedToken()"
+                                [setToken]="quoteTokenChanger"
+                                [tokenModel]="tokensData.quote"></app-tokens-all-input>
         </div>
-        <div class="form-field_description"
-             *ngIf="startForm.valid">
-          Rate:
-          {{checkRate() | bigNumberFormat : 0 : true : false : 4}}
-          {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
+        <div class="form-field_description">
+          <span *ngIf="startForm.valid">
+            Rate:
+            {{checkRate() | bigNumberFormat : 0 : true : false : 4}}
+            {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
+          </span>&nbsp;
         </div>
       </div>
+    </div>
+    <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1">
       <div class="form-field">
-        <a class="btn btn-yellow width-100" routerLink="create-v2">
+        <label class="form-field_label">&nbsp;</label>
+        <a class="btn btn-yellow width-100" routerLink="create-v3">
           <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
           <span>
             Create SWAP
           </span>
         </a>
       </div>
-      <div class="form-field">
-        <a class="btn btn-white-opacity width-100 white-border" routerLink="create">
-          <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
-          <span>
-            Create Private SWAP
-          </span>
-        </a>
-      </div>
-    </form>
+    </div>
+  </div>
+
+  <!--<div class="form-field">-->
+    <!--<a class="btn btn-white-opacity width-100 white-border"-->
+       <!--*ngIf="-->
+       <!--(!tokensData.base.token.address || tokensData.base.token.isEthereum) &&-->
+       <!--(!tokensData.quote.token.address || tokensData.quote.token.isEthereum)"-->
+       <!--routerLink="create">-->
+      <!--<img class="arrow" src="./assets/images/buttons/arrow_w.svg">-->
+      <!--<span>-->
+        <!--Create Private SWAP-->
+      <!--</span>-->
+    <!--</a>-->
+  <!--</div>-->
+</form>
+
+<div class="personal-swap-info">
+  <a routerLink="/trades/create">I need an individual SWAP</a>
+  <span class="personal-swap-info_ico">?</span>
+  <div class="personal-swap-info_tooltip">
+    A single smart contract created for the trade which guarantees anonymity and security
   </div>
 </div>
 

@@ -12,6 +12,7 @@ import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common'
 import {TokenInfoInterface, Web3Service} from '../services/web3/web3.service';
 import {HttpService} from '../services/http/http.service';
 
+
 import BigNumber from 'bignumber.js';
 
 export interface IContractDetails {
@@ -187,7 +188,6 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   }
 
   public gotToForm(formNumber) {
-    console.log(formNumber)
     if (this.openedForm === formNumber) {
       return;
     }
@@ -309,7 +309,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     let newState;
     switch (contract.contract_type) {
       case 21:
-        newState = `/view-v2/${contract.id}`;
+        newState = `/view-v3/${contract.id}`;
         break;
       case 20:
         newState = `/view/${contract.id}`;
@@ -327,7 +327,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   private contractIsError(error) {
   }
 
-  private sendContractData(data) {
+  protected sendContractData(data) {
     if (this.formIsSending) {
       return;
     }
@@ -510,13 +510,13 @@ export class ContractEditResolver implements Resolve<any> {
           switch (result.state) {
             case 'CREATED':
             case 'WAITING_FOR_ACTIVATION':
-              newState = `/view-v2/${result.id}`;
+              newState = `/view-v3/${result.id}`;
               break;
             default:
               if (isPublic) {
-                newState = `/public-v2/${this.publicLink}`;
+                newState = `/public-v3/${this.publicLink}`;
               } else {
-                newState = `/contract-v2/${result.id}`;
+                newState = `/contract-v3/${result.id}`;
               }
               break;
           }

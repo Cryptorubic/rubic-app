@@ -62,7 +62,7 @@
 
                 <div class="token-info">
                   <div class="token-info_icon"
-                       [ngStyle]="{'background-image': 'url(' + tokens.base.token.image_link + ')'}">
+                       [ngStyle]="{'background-image': 'url(' + (tokens.base.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
                   </div>
                   <div class="token-info_texts">
                     <div class="token-info_texts__name">
@@ -189,7 +189,7 @@
                 </div>
 
                 <div class="token-info">
-                  <div class="token-info_icon" [ngStyle]="{'background-image': 'url(' + tokens.quote.token.image_link + ')'}">
+                  <div class="token-info_icon" [ngStyle]="{'background-image': 'url(' + (tokens.quote.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
 
                   </div>
                   <div class="token-info_texts">

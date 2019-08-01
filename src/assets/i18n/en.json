@@ -94,7 +94,7 @@
         "WHITEPAPER": "Whitepaper",
         "ONEPAGER": "Onepager",
         "TELEGRAM": "Telegram",
-        "BUTTON": "Buy tokens"
+        "BUTTON": "Buy Tokens"
       },
       "TIMER": {
         "TITLE": "IEO Starts in",
@@ -226,6 +226,18 @@
           "TITLE": "No escrow",
           "TEXT": "One of the key benefits when trading OTC using Atomic Swap technology means third party escrow accounts are not required to guarantee the trade."
         }
+      },
+
+      "WHY_SAFE": {
+        "TITLE": "Why SWAPS.NETWORK is safe?",
+        "POST_TITLE": "There is no way to cheat!",
+        "LIST": {
+          "ITEM_1": "Every OTC deal - single smart contract deployed to blockchain",
+          "ITEM_2": "Smart Contract can’t be changed / deleted",
+          "ITEM_3": "Nobody except of participants can get funds",
+          "ITEM_4": "SWAP is possible when both parties send funds, any side can refund any time"
+        },
+        "BUTTON": "See contract’s code here"
       }
     },
 
@@ -299,6 +311,10 @@
           "TITLE": "Give up-and-coming projects a chance to operate their tokens",
           "TEXT": "If you are a small project or are just starting out, there is almost no way to trade your tokens in a safe and affordable way. Decentralized exchanges are a good option, but you still need to list your token, and it is likely that it will only be available to trade via one trading pair."
         }
+      },
+      "RATING": {
+        "TITLE": "Ratings from experts",
+        "TEXT": "\"Swaps Network is a low cap project with a business-ready product. Their team is doing exactly what they are experts at. Their BNB-like tokenomics is perfect, and it absolutely fits their project. The project already has a promising partnerships with crypto exchanges and advisory by OTC market leaders. We expect from Swaps that they will become a useful tool for the whole crypto community. OTC industry has huge potential to grow and weak competition, and Swaps with their product can capture a large market share fast enough. Due to all of these facts, our final grade is: 4.7/5\""
       }
     },
 
@@ -449,6 +465,7 @@
         "PART_1": {
           "TITLE": "Bronze<br/> From",
           "BONUS_LIST": {
+            "TRADABLE": "+3% Tokens (Tradable)",
             "ITEM_1": {
               "TITLE": "+20% discount for private/public deals",
               "TEXT": "You will get a discount if you hold 23 000 SWAP tokens (999$) since PTO until 31/07/2020."
@@ -478,6 +495,7 @@
         "PART_2": {
           "TITLE": "Silver<br/> From",
           "BONUS_LIST": {
+            "TRADABLE": "+5% Tokens (Tradable)",
             "ITEM_1": {
               "TITLE": "+30% discount for private/public deals",
               "TEXT": "You will get a discount if you hold 58 000 SWAP tokens ($2499) since PTO until 31/07/2020."
@@ -507,6 +525,7 @@
         "PART_3": {
           "TITLE": "Gold<br/> From",
           "BONUS_LIST": {
+            "TRADABLE": "+7% Tokens (Tradable)",
             "ITEM_1": {
               "TITLE": "+40% discount for private/public deals",
               "TEXT": "You will get a discount if you hold 151 000 SWAP tokens ($6499) since PTO until 31/07/2020."
@@ -540,6 +559,7 @@
         "PART_4": {
           "TITLE": "Prime<br/> From",
           "BONUS_LIST": {
+            "TRADABLE": "+10% Tokens (Tradable)",
             "ITEM_1": {
               "TITLE": "+50% discount for private/public deals",
               "TEXT": "You will get a discount if you hold 337 000 SWAP tokens ($14499) since PTO until 31/07/2020."
@@ -575,11 +595,11 @@
 
     "SECTION_19": {
       "TEXT": {
-        "PART_1": "Everyone who invests in our IEO in first 10 minutes, will get an additional 15% of tokens to use on SWAPS.NETWORK.",
+        "PART_1": "Everyone who invests in PTO in first 10 minutes, will get an additional 10% of tokens (tradable). IEO starts on the 24th of July, 17:00 GMT+8",
         "PART_2": "Prepare your bitcoins and set the alarm for 10 minutes before the start."
       },
       "TIME": "17:00 GMT+8",
-      "DATE": "15th of July",
+      "DATE": "24th of July",
       "CITIES": {
         "CITY_1": "Hong Kong",
         "CITY_2": "New York",
@@ -731,8 +751,8 @@
     },
 
     "MODAL_FORM": {
-      "TITLE_1": "Try service without commission",
-      "TITLE_2": "Join our mailing list to get all updates regarding IEO",
+      "TITLE_1": "Try our service for free until September",
+      "TITLE_2": "Please leave your email and telegram and you will be redirected to the exchange",
       "FIELDS": {
         "EMAIL": {
           "LABEL": "Enter your email",
@@ -758,7 +778,7 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "Everyone who participates in IEO in first 10 minutes, will get an additional 15% of tokens to use on platform. <span class=\"nowrap\">IEO starts 15th of July, 17:00 GMT+8</span>",
+      "TEXT": "Leave your email, Try our service and get 10% of additional tokens on your investment",
       "BUTTON": "Join"
     }
 

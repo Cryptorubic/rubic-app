@@ -1515,10 +1515,49 @@ button, input {
       line-height: 1.1818em;
       font-weight: 700;
     }
-    &_text {
+    &_text, &_list {
       margin-top: 20px;
       font-size: 15px;
       line-height: 1.2em;
+      &.medium-size {
+        font-size: 25px;
+        line-height: 1.15em;
+      }
+    }
+    &_btn {
+      line-height: 49px;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 17px;
+      padding-left: 37px;
+      padding-right: 37px;
+      margin-top: 10px;
+    }
+    &_list {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+      li {
+        padding: 12px 0 12px 36px;
+        margin: 0;
+        counter-increment: whySwapsList;
+        &:before {
+          content: counter(whySwapsList);
+          display: block;
+          float: left;
+          margin-left: -36px;
+          margin-top: -4px;
+          width: 26px;
+          height: 26px;
+          line-height: 26px;
+          border-radius: 50%;
+          background-color: #f8db14;
+          color: #FFFFFF;
+          font-weight: bold;
+          box-shadow: 0 16px 20px rgba(255, 223, 0, 0.19);
+          text-align: center;
+        }
+      }
     }
     &_img {
       margin-top: 20px;
@@ -2077,6 +2116,7 @@ button, input {
 .section-13 {
   padding: 70px 0;
   background-color: #fff;
+
   .section-title {
     font-size: 44px;
     line-height: 1.1818em;
@@ -2188,6 +2228,35 @@ button, input {
       color: #3B4352;
     }
   }
+
+  .rating {
+    &:after, &:before {
+      content: '';
+      clear: both;
+      display: block;
+    }
+  }
+  .rating-image {
+    float: right;
+    width: 300px;
+    margin-top: -6%;
+    margin-right: 8%;
+    transition: all linear 0.2s;
+    img {
+      width: 100%;
+      display: block;
+    }
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+  .rating-text {
+    float: left;
+    width: 45%;
+    color: #454545;
+    font-style: italic;
+  }
+
 }
 
 
@@ -2214,6 +2283,23 @@ button, input {
     .team-list {
       &_item {
         width: 50%;
+      }
+    }
+    .rating-image,
+    .rating-text {
+      float: none;
+    }
+    .rating-text {
+      width: auto;
+    }
+    .rating-image {
+      text-align: center;
+      img {
+        width: 350px;
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 40px;
       }
     }
   }
@@ -2560,6 +2646,9 @@ button, input {
           font-weight: bold;
           font-size: 17px;
           color: #474D54;
+          &_main-bonus {
+            display: block;
+          }
           &_bonus-1 {
             background-image: url(/assets/images/new-index/backgrounds/bonuses-titles/bonus-1.svg.png);
             .title_amount {
@@ -2636,6 +2725,25 @@ button, input {
               line-height: 20px;
               color: #474D54;
               font-weight: bold;
+              &.big-size {
+                font-size: 23px;
+                line-height: 1.2em;
+                text-transform: uppercase;
+                display: inline-block;
+                font-weight: 800;
+              }
+              &.border-1 {
+                border-bottom: 4px solid #FFECED;
+              }
+              &.border-2 {
+                border-bottom: 4px solid #E6EEF5;
+              }
+              &.border-3 {
+                border-bottom: 4px solid #FFF9D4;
+              }
+              &.border-4 {
+                border-bottom: 4px solid #E7E6FA;
+              }
             }
             &_text {
               margin-top: 5px;

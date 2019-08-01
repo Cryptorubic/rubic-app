@@ -195,7 +195,7 @@ export class ContractPreviewTwoComponent implements OnInit, OnDestroy {
       case 'DONE':
       case 'EXPIRED':
         this.contractAdditional.link =
-          location.origin + '/public-v2/' + this.originalContract.contract_details.unique_link;
+          location.origin + '/trades/public-v3/' + this.originalContract.contract_details.unique_link;
 
         this.originalContract.contract_details.unique_link_url = this.contractAdditional.link;
 

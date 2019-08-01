@@ -33,7 +33,6 @@ import { TransactionComponent } from './transaction/transaction.component';
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
 import { FooterComponent } from './footer/footer.component';
 import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
-import { NgScrollbarModule } from 'ngx-scrollbar';
 import {ClipboardModule} from 'ngx-clipboard';
 import { ContractFormTwoComponent } from './contract-form-two/contract-form-two.component';
 import {BigNumberDirective, BigNumberFormat, BigNumberMax, BigNumberMin} from './directives/big-number/big-number.directive';
@@ -45,16 +44,18 @@ import { FaqComponent } from './faq-component/faq.component';
 import {MinMaxDirective} from './directives/minMax/min-max.directive';
 import { CookieService } from 'ngx-cookie-service';
 import { ContactsComponent } from './contacts-component/contacts.component';
+import { TokensAllInputComponent } from './directives/tokens-all-input/tokens-all-input.component';
+import {HttpService} from './services/http/http.service';
+import {ContractEditV3Resolver, ContractFormAllComponent} from './contract-form-all/contract-form-all.component';
+import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
 import { IndexIcoComponent } from './index-ico/index-ico.component';
 import { IndexIcoHeaderComponent } from './index-ico/index-ico-header/index-ico-header.component';
 import { IndexIcoFormComponent } from './index-ico/index-ico-form/index-ico-form.component';
 import {OwlModule} from 'ngx-owl-carousel';
 import {Observable} from 'rxjs';
 import {TransferHttpCacheModule} from '@nguniversal/common';
+import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 
-export function HttpLoaderFactory(httpClient: HttpClient) {
-  return new TranslateHttpLoader(httpClient);
-}
 
 export class TranslateBrowserLoader implements TranslateLoader {
 
@@ -89,7 +90,7 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
 
 
 
-export function appInitializerFactory(translate: TranslateService, userService: UserService) {
+export function appInitializerFactory(translate: TranslateService, userService: UserService, httpService: HttpService) {
 
   const langToSet = window['jQuery']['cookie']('lng') || 'ru';
 
@@ -99,10 +100,33 @@ export function appInitializerFactory(translate: TranslateService, userService: 
 
     translate.use(langToSet).subscribe(() => {
       const subscriber = userService.getCurrentUser(true).subscribe((user: UserInterface) => {
-        resolve(null);
+
+        httpService.get('get_coinmarketcap_tokens/').toPromise().then((tokens) => {
+          tokens = tokens.sort((a, b) => {
+            if (b.rank === 0) {
+              return -1;
+            }
+            return a.rank > b.rank ? 1 : -1;
+          });
+
+          tokens.forEach((token) => {
+            token.platform = (token.platform !== 'False') ? token.platform : false;
+            if (!token.platform && (token.token_short_name === 'ETH') && (token.token_name === 'Ethereum')) {
+              token.platform = 'ethereum';
+              token.isEther = true;
+            }
+            token.platform = token.platform || token.token_name.toLowerCase();
+            token.isEthereum = token.platform === 'ethereum';
+            token.decimals = 8;
+          });
+          window['cmc_tokens'] = tokens;
+          resolve(null);
+        });
+
         subscriber.unsubscribe();
       });
     });
+
   });
 }
 
@@ -145,9 +169,13 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     RoadmapComponent,
     FaqComponent,
     ContactsComponent,
+    TokensAllInputComponent,
+    ContractFormAllComponent,
+    ContractsPreviewV3Component,
     IndexIcoComponent,
     IndexIcoHeaderComponent,
-    IndexIcoFormComponent
+    IndexIcoFormComponent,
+    CoinsListComponent
   ],
   entryComponents: [
     AuthComponent,
@@ -181,7 +209,6 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     MatButtonModule,
     BrowserAnimationsModule,
     NgxMaterialTimepickerModule,
-    NgScrollbarModule,
     ClipboardModule,
     OwlModule
   ],
@@ -189,11 +216,12 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     CookieService,
     ContractEditResolver,
     ContractsListResolver,
+    ContractEditV3Resolver,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
       deps: [
-        TranslateService, UserService
+        TranslateService, UserService, HttpService
       ],
       multi: true
     }

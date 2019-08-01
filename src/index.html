@@ -66,13 +66,13 @@
 <body>
   <app-root></app-root>
 
-  <script src="//connect.facebook.net/en_US/sdk.js"></script>
+  <!--<script src="//connect.facebook.net/en_US/sdk.js"></script>-->
   <script src="https://apis.google.com/js/platform.js"></script>
 
   <script type="text/javascript">!function(){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.src="https://vk.com/js/api/openapi.js?161",t.onload=function(){VK.Retargeting.Init("VK-RTRG-383240-dMUoz"),VK.Retargeting.Hit()},document.head.appendChild(t)}();</script><noscript><img src="https://vk.com/rtrg?p=VK-RTRG-383240-dMUoz" style="position:fixed; left:-999px;" alt=""/></noscript>
 
   <!-- Start of LiveChat (www.livechatinc.com) code -->
-  <!-- script type="text/javascript">
+  <script type="text/javascript">
     window.__lc = window.__lc || {};
     window.__lc.license = 9683030;
     (function() {
@@ -80,7 +80,7 @@
       lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
     })();
-  </script -->
+  </script>
   <!-- End of LiveChat code -->
 
 
@@ -94,5 +94,48 @@
     gtag('config', 'UA-138730785-1');
   </script -->
 
+
+
+  <script>
+    window.ScrollTopButton = function(pixels) {
+      this.scrolledPixels = 0;
+      this.maxPixels = pixels;
+      this.scrollTopButton = document.getElementById('scroll-btn');
+      this.scrollTopButton.addEventListener('click', scrollTop);
+      var self = this;
+
+      function checkButtonVisible() {
+        return self.scrollTopButton.classList.contains('scroll-top-btn--visible');
+      }
+      function showButton() {
+        self.scrollTopButton.classList.add('scroll-top-btn--visible');
+      }
+      function hideButton() {
+        self.scrollTopButton.classList.remove('scroll-top-btn--visible');
+      }
+
+      function scrollTop() {
+        var scrollStep = -window.scrollY / (500 / 15),
+          scrollInterval = setInterval(function(){
+            if ( window.scrollY != 0 ) {
+              window.scrollBy( 0, scrollStep );
+            } else clearInterval(scrollInterval);
+          }, 15);
+      }
+
+      function ButtonController() {
+        self.scrolledPixels = window.pageYOffset || document.documentElement.scrollTop;
+        if (self.scrolledPixels > self.maxPixels) {
+          if (!checkButtonVisible()) showButton();
+        } else {
+          if (checkButtonVisible()) hideButton();
+        }
+      }
+
+      jQuery(window).on('scroll', function() {
+        return ButtonController();
+      });
+    }
+  </script>
 </body>
 </html>

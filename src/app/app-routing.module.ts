@@ -10,7 +10,39 @@ import { TeamComponent } from './team-component/team.component';
 import { RoadmapComponent } from './roadmap-component/roadmap.component';
 import { FaqComponent } from './faq-component/faq.component';
 import { ContactsComponent } from './contacts-component/contacts.component';
+import {ContractEditV3Resolver, ContractFormAllComponent} from './contract-form-all/contract-form-all.component';
+import {ContractsPreviewV3Component} from './contracts-preview-v3/contracts-preview-v3.component';
 import {IndexIcoComponent} from './index-ico/index-ico.component';
+
+
+
+
+
+export const PROJECT_PARTS = {
+  TEST: {
+    '^/.+$': 'devswaps.mywish.io'
+  },
+  PROD: {
+    '^/$': 'swaps.network',
+    '^/.+$': 'trades.swaps.network',
+    from: 'swaps.network'
+  },
+  LOCAL: {
+    '^/.+$': 'local.devswaps.mywish.io'
+  }
+};
+
+
+let currMode = 'PROD';
+for (const m in PROJECT_PARTS) {
+  for (const hostname in PROJECT_PARTS[m]) {
+    if (location.hostname === PROJECT_PARTS[m][hostname]) {
+      currMode = m;
+    }
+  }
+}
+
+export const MODE = currMode;
 
 const routes: Routes = [
   {
@@ -20,88 +52,132 @@ const routes: Routes = [
       noheader: true
     }
   }, {
-    path: 'create',
-    component: ContractFormComponent,
-    data: {
-      support: true
-    }
+    path: 'create-v3',
+    redirectTo: 'trades/create-v3'
   }, {
-    path: 'create-v2',
-    component: ContractFormTwoComponent,
-    data: {
-      support: true
-    }
+    path: 'create',
+    redirectTo: 'trades/create'
   }, {
     path: 'view/:id',
-    component: ContractFormComponent,
-    resolve: {
-      contract: ContractEditResolver
-    },
-    data: {
-      support: true
-    }
+    redirectTo: 'trades/view/:id'
   }, {
-    path: 'view-v2/:id',
-    component: ContractFormTwoComponent,
-    resolve: {
-      contract: ContractEditResolver
-    },
-    data: {
-      support: true
-    }
+    path: 'view-v3/:id',
+    redirectTo: 'trades/view-v3/:id'
   }, {
     path: 'contract/:id',
-    component: ContractPreviewComponent,
-    resolve: {
-      contract: ContractEditResolver
-    },
-    data: {
-      supportHide: 1024,
-      support: true,
-      hideInstruction: true
-    }
+    redirectTo: 'trades/contract/:id'
   }, {
-    path: 'contract-v2/:id',
-    component: ContractPreviewTwoComponent,
-    resolve: {
-      contract: ContractEditResolver
-    },
-    data: {
-      supportHide: 1024,
-      support: true,
-      hideInstruction: true
-    }
+    path: 'contract-v3/:id',
+    redirectTo: 'trades/contract-v3/:id'
   }, {
     path: 'public/:public_link',
-    component: ContractPreviewComponent,
-    resolve: {
-      contract: ContractEditResolver
-    },
-    data: {
-      supportHide: 1024,
-      support: true,
-      hideInstruction: true
-    }
+    redirectTo: 'trades/public/:public_link'
   }, {
-    path: 'public-v2/:public_link',
-    component: ContractPreviewTwoComponent,
-    resolve: {
-      contract: ContractEditResolver
-    },
-    data: {
-      supportHide: 1024,
-      support: true,
-      hideInstruction: true
-    }
+    path: 'public-v3/:public_link',
+    redirectTo: 'trades/public-v3/:public_link'
   }, {
     path: 'contracts',
-    component: ContractsListComponent,
-    resolve: {
-      contracts: ContractsListResolver
-    },
-    data: {
-      support: true
-    }
+    redirectTo: 'trades/contracts'
+  }, {
+    path: 'trades',
+    children: [
+      {
+        path: '',
+        component: IndexComponent
+      },
+      {
+        path: 'create',
+        component: ContractFormComponent,
+        data: {
+          support: true
+        }
+      },
+      {
+        path: 'create-v3',
+        component: ContractFormAllComponent,
+        data: {
+          support: true
+        }
+      },
+      {
+        path: 'view/:id',
+        component: ContractFormComponent,
+        resolve: {
+          contract: ContractEditResolver
+        },
+        data: {
+          support: true
+        }
+      },
+      {
+        path: 'view-v3/:id',
+        component: ContractFormAllComponent,
+        resolve: {
+          contract: ContractEditV3Resolver
+        },
+        data: {
+          support: true
+        }
+      },
+      {
+        path: 'contract/:id',
+        component: ContractPreviewComponent,
+        resolve: {
+          contract: ContractEditResolver
+        },
+        data: {
+          supportHide: 1024,
+          support: true,
+          hideInstruction: true
+        }
+      },
+      {
+        path: 'contract-v3/:id',
+        component: ContractsPreviewV3Component,
+        resolve: {
+          contract: ContractEditV3Resolver
+        },
+        data: {
+          supportHide: 1024,
+          support: true,
+          hideInstruction: true
+        }
+      },
+      {
+        path: 'public/:public_link',
+        component: ContractPreviewComponent,
+        resolve: {
+          contract: ContractEditResolver
+        },
+        data: {
+          supportHide: 1024,
+          support: true,
+          hideInstruction: true
+        }
+      },
+      {
+        path: 'public-v3/:public_link',
+        component: ContractsPreviewV3Component,
+        resolve: {
+          contract: ContractEditV3Resolver
+        },
+        data: {
+          supportHide: 1024,
+          support: true,
+          hideInstruction: true
+        }
+      },
+      {
+        path: 'contracts',
+        component: ContractsListComponent,
+        resolve: {
+          contracts: ContractsListResolver
+        },
+        data: {
+          support: true
+        }
+      }
+    ]
   }, {
     path: 'dashboard/first_entry',
     redirectTo: '/'
