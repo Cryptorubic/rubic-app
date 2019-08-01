@@ -19,6 +19,21 @@
   }
 }
 
+.textarea {
+  &__black {
+    width: 100%;
+    font-family: inherit;
+    padding: 15px;
+    box-sizing: border-box;
+    border: 0 none;
+    background-color: rgba(0, 0, 0, 0.3);
+    font-size: inherit;
+    max-width: 100%;
+    height: 181px;
+    color: #fff;
+  }
+}
+
 .form-field {
   input, textarea {
     outline: none;

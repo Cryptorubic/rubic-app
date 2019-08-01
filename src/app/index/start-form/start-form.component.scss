@@ -1,55 +1,80 @@
 .index-start-form {
-  padding: 15vh 2%;
-  box-sizing: border-box;
-  &:after {
-    clear: both;
-    content: '';
-    display: block;
+  padding: 20px 20px 0;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.personal-swap-info {
+  text-align: right;
+  font-weight: bold;
+  white-space: nowrap;
+  color: #ffff;
+  margin-top: 30px;
+  font-size: 17px;
+  line-height: 22px;
+  position: relative;
+  a {
+    color: inherit!important;
   }
-  &_left {
-    margin-bottom: 70px;
-    .title {
-      font-size: 44px;
-      color: #FFFFFF;
-      line-height: 53px;
+  &_ico {
+    display: inline-block;
+    vertical-align: baseline;
+    width: 22px;
+    height: 22px;
+    background-color: #FCD600;
+    border-radius: 50%;
+    color: #000;
+    text-align: center;
+    line-height: 25px;
+    font-size: 15px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  &_tooltip {
+    position: absolute;
+    background-color: #383D45;
+    padding: 20px;
+    font-size: 15px;
+    line-height: 18px;
+    color: #fff;
+    right: -5px;
+    width: 260px;
+    bottom: 100%;
+    white-space: normal;
+    text-align: left;
+    font-weight: normal;
+    margin-bottom: 15px;
+    opacity: 0;
+    height: 0;
+    visibility: hidden;
+    transition: linear opacity 0.1s;
+    &:after {
+      background-color: #383D45;
+      width: 16px;
+      height: 16px;
+      content: '';
+      display: block;
+      position: relative;
+      margin-bottom: -16px;
+      top: 30px;
+      float: right;
+      margin-right: -11px;
+      transform: rotate(45deg);
     }
-    .description {
-      margin: 30px 0;
-      font-size: 36px;
-      color: rgba(255, 255, 255, 0.5);
-    }
+  }
+  &_ico:hover + &_tooltip {
+    opacity: 1;
+    height: initial;
+    visibility: visible;
   }
 }
-
-@media screen and (max-width: 980px) {
-  .index-start-form {
-    //padding: 5vh 0.5em;
-    &_right {
-      margin-left: 25%;
-    }
+.underline-link {
+  text-decoration: underline!important;
+  &:hover {
+    text-decoration: none!important;
+    color: #FCD600!important;
   }
+}
+@media screen and (max-width: 980px) {
 }
 
 @media screen and (max-width: 800px) {
-  .index-start-form {
-    &_right {
-      margin-left: 0;
-    }
-  }
-}
-
-@media screen and (max-width: 580px) {
-
-  .index-start-form {
-    &_left {
-      .title {
-        font-size: 34px;
-        line-height: initial;
-      }
-      .description {
-        margin-top: 25px;
-        line-height: initial;
-      }
-    }
-  }
 }

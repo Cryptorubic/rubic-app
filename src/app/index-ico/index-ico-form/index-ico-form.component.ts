@@ -28,7 +28,7 @@ export class IndexIcoFormComponent implements OnInit {
 
     this.httpService.post('/save_swaps_mail/', this.request).toPromise().then((response) => {
       if (!this.data.fullForm) {
-        this.router.navigate(['/create-v2/']);
+        this.router.navigate(['/create-v3/']);
         this.dialogRef.close();
       } else {
         this.formSuccess = true;

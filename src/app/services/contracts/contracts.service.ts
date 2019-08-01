@@ -14,6 +14,27 @@ export class ContractsService {
     return this.httpService.post('contracts/', data).toPromise();
   }
 
+  public createSWAP3(data) {
+    return this.httpService.post('create_swap3/', data).toPromise();
+  }
+
+  public updateSWAP3(data) {
+    return this.httpService.post(`edit_swap3/${data.id}/`, data).toPromise();
+  }
+
+  public getContractV3Information(id) {
+    return this.httpService.get(`get_swap3/`, {
+      swap_id: id
+    }).toPromise().then((result) => {
+      if (result.base_address && result.quote_address) {
+        result.isEthereum = true;
+      } else {
+        result.state = (result.state !== 'WAITING_FOR_ACTIVATION') ? result.state : 'ACTIVE';
+      }
+      return result;
+    });
+  }
+
   public updateContract(data) {
     return this.httpService.patch(`contracts/${data.id}/`, data).toPromise();
   }
@@ -23,11 +44,87 @@ export class ContractsService {
   }
 
   public getContractsList() {
-    return this.httpService.get('contracts/').toPromise();
+    const allList: {
+      contracts?: any[],
+      trades?: any[]
+    } = {};
+    return new Promise((resolve, reject) => {
+
+      const resolveList = () => {
+        if (allList.trades && allList.contracts) {
+          const allResolveList = allList.contracts.concat(allList.trades).sort((contract1, contract2) => {
+            return new Date(contract2.created_date) > new Date(contract1.created_date) ? -1 : 1;
+          });
+          resolve(allResolveList);
+        }
+      };
+
+      this.httpService.get('contracts/').toPromise().then((result) => {
+        allList.contracts = result.results.filter((contract) => {
+          return contract.contract_type === 20;
+        });
+        resolveList();
+      });
+
+      this.httpService.get('get_user_swap3/').toPromise().then((result) => {
+        allList.trades = result;
+        resolveList();
+      });
+
+    });
   }
 
   public getPublicContractsList() {
-    return this.httpService.get('get_public_contracts/').toPromise();
+    const allList: {
+      contracts?: any[],
+      trades?: any[]
+    } = {};
+    return new Promise((resolve, reject) => {
+
+      const resolveList = () => {
+        if (allList.trades && allList.contracts) {
+          const allResolveList = allList.contracts.concat(allList.trades).sort((contract1, contract2) => {
+            return new Date(contract2.created_date) > new Date(contract1.created_date) ? -1 : 1;
+          });
+          resolve(allResolveList);
+
+          if (expiredTrades.contracts || expiredTrades.trades) {
+            this.httpService.post('set_swap3_expired/', expiredTrades).toPromise().then((res) => {
+              return res;
+            });
+          }
+        }
+      };
+
+      const expiredTrades = {
+        contracts: [],
+        trades: []
+      };
+
+      this.httpService.get('get_public_contracts/?t=_' + new Date().getTime()).toPromise().then((result) => {
+        allList.contracts = result.filter((contract) => {
+          const noExpired = new Date(contract.contract_details.stop_date).getTime() > new Date().getTime();
+          if (!noExpired) {
+            expiredTrades.contracts.push(contract.id);
+          }
+          return noExpired;
+        });
+        resolveList();
+      });
+
+      this.httpService.get('get_public_swap3/?t=_' + new Date().getTime()).toPromise().then((result) => {
+        allList.trades = result.filter((contract) => {
+          const noExpired = new Date(contract.stop_date).getTime() > new Date().getTime();
+          if (!noExpired) {
+            expiredTrades.trades.push(contract.id);
+          }
+          return noExpired;
+        });
+        resolveList();
+      });
+    }).then((res) => {
+      return res;
+    });
   }
 
   public startWatchContract(id) {
@@ -40,6 +137,19 @@ export class ContractsService {
     return this.httpService.get(`get_contract_for_unique_link/`, {
       unique_link: publicLink
     }).toPromise();
+  }
+
+  public getSwapByPublic(publicLink) {
+    return this.httpService.get(`get_swap3_for_unique_link/`, {
+      unique_link: publicLink
+    }).toPromise().then((result) => {
+      if (result.base_address && result.quote_address) {
+        result.isEthereum = true;
+      } else {
+        result.state = (result.state !== 'WAITING_FOR_ACTIVATION') ? result.state : 'ACTIVE';
+      }
+      return result;
+    });
   }
 
   public changeContractState(id) {
