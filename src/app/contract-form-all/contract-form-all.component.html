@@ -611,7 +611,7 @@
                   <div class="grid-row">
                     <div class="grid-cell grid-cell-1-2">
                       <div class="token-info_icon"
-                           [ngStyle]="{'background-image': 'url(' + tokens.base.token.image_link + ')'}">
+                           [ngStyle]="{'background-image': 'url(' + (tokens.base.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
                       </div>
                       <div class="token-info_texts">
                         <div class="token-info_texts__name">
@@ -670,7 +670,7 @@
                   <div class="grid-row">
                     <div class="grid-cell grid-cell-1-2">
                       <div class="token-info_icon"
-                           [ngStyle]="{'background-image': 'url(' + tokens.quote.token.image_link + ')'}">
+                           [ngStyle]="{'background-image': 'url(' + (tokens.quote.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
                       </div>
                       <div class="token-info_texts">
                         <div class="token-info_texts__name">
@@ -808,8 +808,11 @@
               <div class="contract-info-block">
                 <div class="form-field">
                   <label class="form-field_label">
-                    Comment
+                    Additional comment
                   </label>
+                  <div class="form-field_description normal-font">
+                    Please add any specific details about your swap
+                  </div>
                   <div class="form-field">
                     <textarea placeholder="Comment" class="textarea__black"
                               [(ngModel)]="requestData.comment"
