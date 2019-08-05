@@ -68,25 +68,23 @@ export class PublicContractsComponent implements OnInit {
 
   private loadcoinsInfo(coinsList) {
     coinsList.forEach((contract) => {
-      if (contract.contract_type === 20) {
-        this.loadTokensInfo(contract);
-      } else {
+      if (contract.contract_type !== 20) {
         contract.contract_details = {...contract};
         contract.contract_type = 21;
         contract.contract_details.swap3 = true;
-
-        this.web3Service.getSWAPSCoinInfo(contract.contract_details).then((trade: any) => {
-          const baseToken = contract.contract_details.tokens_info.base.token;
-          const quoteToken = contract.contract_details.tokens_info.quote.token;
-          contract.contract_details.base_token_info = baseToken;
-          contract.contract_details.quote_token_info = quoteToken;
-          contract.contract_details.base_token_info.amount =
-            new BigNumber(contract.contract_details.base_limit).div(Math.pow(10, baseToken.decimals)).dp(3);
-          contract.contract_details.quote_token_info.amount =
-            new BigNumber(contract.contract_details.quote_limit).div(Math.pow(10, quoteToken.decimals)).dp(3);
-          this.getRates(contract);
-        });
       }
+
+      this.web3Service.getSWAPSCoinInfo(contract.contract_details).then((trade: any) => {
+        const baseToken = contract.contract_details.tokens_info.base.token;
+        const quoteToken = contract.contract_details.tokens_info.quote.token;
+        contract.contract_details.base_token_info = baseToken;
+        contract.contract_details.quote_token_info = quoteToken;
+        contract.contract_details.base_token_info.amount =
+          new BigNumber(contract.contract_details.base_limit).div(Math.pow(10, baseToken.decimals)).dp(3);
+        contract.contract_details.quote_token_info.amount =
+          new BigNumber(contract.contract_details.quote_limit).div(Math.pow(10, quoteToken.decimals)).dp(3);
+        this.getRates(contract);
+      });
     });
   }
 
@@ -125,84 +123,8 @@ export class PublicContractsComponent implements OnInit {
     }
   }
 
-
-  private loadTokensInfo(contract) {
-    const contractDetails = contract.contract_details;
-
-    this.web3Service.getFullTokenInfo(contractDetails.base_address).then((tokenInfo: TokenInfoInterface) => {
-      contractDetails.base_token_info = tokenInfo;
-      contractDetails.base_token_info.amount = new BigNumber(contractDetails.base_limit).div(Math.pow(10, tokenInfo.decimals)).dp(3);
-      if (contractDetails.quote_token_info) {
-        this.getRates(contract);
-      }
-    });
-
-
-    this.web3Service.getFullTokenInfo(contractDetails.quote_address).then((tokenInfo: TokenInfoInterface) => {
-      contractDetails.quote_token_info = tokenInfo;
-      contractDetails.quote_token_info.amount = new BigNumber(contractDetails.quote_limit).div(Math.pow(10, tokenInfo.decimals)).dp(3);
-      if (contractDetails.base_token_info) {
-        this.getRates(contract);
-      }
-    });
-  }
-
-
-  private loadPrivateContractInfo(contractDetails) {
-
-    // const contractData = contractDetails.eth_contract;
-    // const web3Contract = this.web3Service.getContract(contractData.abi, contractData.address);
-    this.finishContractLoad(contractDetails);
-    // web3Contract.methods.baseRaised().call().then((result) => {
-    //   contractDetails.baseProgress =
-    //     new BigNumber(result).div(contractDetails.base_limit).times(100).toNumber();
-    //
-    //   if (!isNaN(contractDetails.quoteProgress)) {
-    //     this.finishContractLoad(contractDetails);
-    //   }
-    // }, err => {
-    //   console.log(err);
-    // });
-    //
-    // web3Contract.methods.quoteRaised().call().then((result) => {
-    //   contractDetails.quoteProgress =
-    //     new BigNumber(result).div(contractDetails.quote_limit).times(100).toNumber();
-    //
-    //   if (!isNaN(contractDetails.baseProgress)) {
-    //     this.finishContractLoad(contractDetails);
-    //   }
-    // }, err => {
-    //   console.log(err);
-    // });
-
-  }
-
-
   private loadSwapsContractInfo(contractDetails) {
-    // const web3Contract = this.web3Service.getContract(SWAPS_V2.ABI, SWAPS_V2.ADDRESS);
     this.finishContractLoad(contractDetails);
-    // web3Contract.methods.baseRaised(contractDetails.memo_contract).call().then((result) => {
-    //   contractDetails.baseProgress =
-    //     new BigNumber(result).div(contractDetails.base_limit).times(100).toNumber();
-    //
-    //   if (!isNaN(contractDetails.quoteProgress)) {
-    //     this.finishContractLoad(contractDetails);
-    //   }
-    // }, err => {
-    //   console.log(err);
-    // });
-    //
-    // web3Contract.methods.quoteRaised(contractDetails.memo_contract).call().then((result) => {
-    //   contractDetails.quoteProgress =
-    //     new BigNumber(result).div(contractDetails.quote_limit).times(100).toNumber();
-    //
-    //   if (!isNaN(contractDetails.baseProgress)) {
-    //     this.finishContractLoad(contractDetails);
-    //   }
-    // }, err => {
-    //   console.log(err);
-    // });
-
   }
 
 
@@ -210,10 +132,9 @@ export class PublicContractsComponent implements OnInit {
     switch (contract.contract_type) {
       case 20:
         contractDetails.isDecentralized = true;
-        this.loadPrivateContractInfo(contractDetails);
+        this.loadSwapsContractInfo(contractDetails);
         break;
       case 21:
-
         if (contractDetails.base_address && contractDetails.quote_address) {
           this.loadSwapsContractInfo(contractDetails);
           contractDetails.isDecentralized = true;
@@ -281,14 +202,17 @@ export class PublicContractsComponent implements OnInit {
 
     switch (this.selectedFilter.name) {
       case 'volume':
-
+        let sortBy = 'base_token_info';
+        if (this.selectedCoins.quote.token && !this.selectedCoins.base.token) {
+          sortBy = 'quote_token_info';
+        }
         this.contractsList = this.contractsList.sort((contract1, contract2) => {
           if (this.selectedFilter.asc) {
-            return (new BigNumber(contract1.contract_details.base_token_info.amount).minus
-              (new BigNumber(contract2.contract_details.base_token_info.amount))).isPositive() ? 1 : -1;
+            return (new BigNumber(contract1.contract_details[sortBy].amount).minus
+              (new BigNumber(contract2.contract_details[sortBy].amount))).isPositive() ? 1 : -1;
           } else {
-            return (new BigNumber(contract2.contract_details.base_token_info.amount).minus
-              (new BigNumber(contract1.contract_details.base_token_info.amount))).isPositive() ? 1 : -1;
+            return (new BigNumber(contract2.contract_details[sortBy].amount).minus
+              (new BigNumber(contract1.contract_details[sortBy].amount))).isPositive() ? 1 : -1;
           }
         });
 
@@ -307,7 +231,7 @@ export class PublicContractsComponent implements OnInit {
 
       default:
         this.contractsList = this.contractsList.sort((contract1, contract2) => {
-          return contract2.id < contract1.id ? -1 : 1;
+          return (new Date(contract2.created_date) < new Date(contract1.created_date)) ? -1 : 1;
         });
       }
 

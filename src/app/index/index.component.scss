@@ -100,9 +100,11 @@
       height: 100%;
       transition: all .2s;
       &.invert {
-        filter: invert(100%) grayscale(100%);
-        &:hover, &:focus {
+        &:hover {
           filter: invert(0) grayscale(0);
+        }
+        &, &:focus {
+          filter: invert(100%) grayscale(100%);
         }
       }
       &:not(.invert) {
@@ -175,6 +177,18 @@
     font-size: 17px;
     line-height: 25px;
     color: #FFFFFF;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .why-we-list {
+    padding-right: 0;
+    li {
+      padding-right: 0;
+    }
+    &_title {
+      margin-right: 0;
+    }
   }
 }
 

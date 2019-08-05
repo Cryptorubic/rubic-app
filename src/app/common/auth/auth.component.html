@@ -13,21 +13,15 @@
           </li>
         </ul>
 
-        <div mat-dialog-content>
-
+        <!--<div mat-dialog-content>-->
           <div *ngIf="(data.chapter === 'sign_in') || (data.chapter === 'sign_up')">
             <app-authentication *ngIf="(data.chapter === 'sign_in') && !socialAuthError" [data]="data"></app-authentication>
             <app-registration *ngIf="data.chapter === 'sign_up' && !socialAuthError" [(registered)]="onRegister"></app-registration>
             <app-social (changedSocialState)="changedSocialState($event)"></app-social>
           </div>
-
-
           <app-email-confirm *ngIf="data.chapter === 'email-confirm'" [currentEmail]="currentEmail"></app-email-confirm>
           <app-forgot-password *ngIf="data.chapter === 'forgot-password'"></app-forgot-password>
-
-
-
-        </div>
+        <!--</div>-->
       </div>
     </div>
   </div>

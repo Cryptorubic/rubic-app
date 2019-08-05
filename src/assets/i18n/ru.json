@@ -63,7 +63,6 @@
   },
   "FOOTER": {
     "SUBSCRIPTION_FORM": {
-      "TITLE": "Keep in touch<br/>with the latest news",
       "FIELD_PLACEHOLDER": "Enter your e-mail",
       "ASK_BUTTON": "Ask us a question"
     },

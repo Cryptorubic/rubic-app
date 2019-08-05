@@ -24,6 +24,10 @@ const PROJECTS = [
   {
     link: 'https://t.me/otcroom',
     logo: './assets/images/new-index/logos/otc-room.png'
+  },
+  {
+    link: 'https://t.me/otcroom',
+    logo: './assets/images/new-index/logos/enecuum.png'
   }
 ];
 

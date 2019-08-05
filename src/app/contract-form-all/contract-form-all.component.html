@@ -113,16 +113,18 @@
                                [ngModelOptions]="{standalone: true}"
                                (TokenResolve)="setCustomToken('base', $event)"
                                [(ngModel)]="customTokens.base.address">
-                      </div>
+                      </div><br/>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-vs-1-2">
-                      <button class="btn btn-yellow width-100"
-                              type="button"
-                              [disabled]="!baseCustomToken.valid"
-                              (click)="addCustomToken('base')">
-                        <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                        <span>Add</span>
-                      </button>
+                      <div class="form-field_input">
+                        <button class="btn btn-yellow width-100"
+                                type="button"
+                                [disabled]="!baseCustomToken.valid"
+                                (click)="addCustomToken('base')">
+                          <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                          <span>Add</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -174,16 +176,18 @@
                                #quoteCustomToken="ngModel"
                                (TokenResolve)="setCustomToken('quote', $event)"
                                [(ngModel)]="customTokens.quote.address">
-                      </div>
+                      </div><br/>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-vs-1-2">
-                      <button class="btn btn-yellow width-100"
-                              type="button"
-                              [disabled]="!quoteCustomToken.valid"
-                              (click)="addCustomToken('quote')">
-                        <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                        <span>Add</span>
-                      </button>
+                      <div class="form-field_input">
+                        <button class="btn btn-yellow width-100"
+                                type="button"
+                                [disabled]="!quoteCustomToken.valid"
+                                (click)="addCustomToken('quote')">
+                          <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                          <span>Add</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -288,12 +292,12 @@
                         <label class="form-field_label">Contract management address</label>
                         <div class="form-field_input">
                           <input type="text"
-                                 class="min-text"
+                                 class="min-text max-placeholder"
                                  maxlength="42"
                                  pattern="0x[0-9a-fA-F]{40}"
                                  required
                                  [(ngModel)]="requestData.owner_address"
-                                 placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
+                                 placeholder="Enter ETH address"
                                  name="owner_address">
                         </div>
                       </div>
@@ -808,13 +812,11 @@
               <div class="contract-info-block">
                 <div class="form-field">
                   <label class="form-field_label">
-                    Additional comment
+                    Additional Comments
                   </label>
-                  <div class="form-field_description normal-font">
-                    Please add any specific details about your swap
-                  </div>
                   <div class="form-field">
-                    <textarea placeholder="Comment" class="textarea__black"
+                    <textarea placeholder="Please add any specific details about your swap"
+                              class="textarea__black"
                               [(ngModel)]="requestData.comment"
                               name="comment"></textarea>
                   </div>

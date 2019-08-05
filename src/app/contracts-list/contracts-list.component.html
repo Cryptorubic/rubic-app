@@ -11,11 +11,15 @@
                (click)="toContract(contract)"
                *ngFor="let contract of contractsList">
             <button class="delete-btn"
-                    [ngClass]="{invisible: !((states[contract.state].NUMBER === 0) || (states[contract.state].NUMBER === 6))}"
+                    [ngClass]="{
+                      invisible: ((contract.contract_type === 20) && !((states[contract.state].NUMBER === 0) || (states[contract.state].NUMBER === 6))) ||
+                      !(!contract.contract_state || (states[contract.contract_state].NUMBER === 0))
+                    }"
                     (click)="$event.stopPropagation(); $event.preventDefault(); deleteContract(contract);">
               <img src="./assets/images/icons/trash.svg">
             </button>
-            <div class="contract-state" [ngClass]="'contract-state__' + states[contract.state].NUMBER">
+            <div class="contract-state"
+                 [ngClass]="'contract-state__' + states[contract.state].NUMBER">
               {{states[contract.state].TEXT}}
             </div>
             <span class="my-contract-name">{{contract.name}}</span>
@@ -31,16 +35,22 @@
     <div class="dialog-block__content">
       <div class="alert-window-title">
         Do you want to remove it?
+      </div><br/><br/>
+      <div class="alert-window-buttons text-center">
+        <div class="grid-row">
+          <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+            <button class="btn btn-transparent btn-min right-padding" type="button"
+                    (click)="deleteContractConfirm()">
+              {{'YES'|translate}}
+            </button><br/>
+          </div>
+          <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+            <button class="btn btn-yellow btn-min right-padding" mat-dialog-close type="button">
+              {{'NO'|translate}}
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="alert-window-buttons text-center">
-      <button class="btn btn-transparent btn-min right-padding" type="button"
-              (click)="deleteContractConfirm()">
-        {{'YES'|translate}}
-      </button>
-      <button class="btn btn-yellow btn-min right-padding" mat-dialog-close type="button">
-        {{'NO'|translate}}
-      </button><br/><br/>
     </div>
   </div>
 </ng-template>

@@ -85,6 +85,7 @@
         width: 22px;
         margin-right: 12px;
         vertical-align: middle;
+        margin-top: -3px;
       }
       &_symbol {
         vertical-align: middle;
@@ -282,7 +283,27 @@
   }
 }
 
+@media screen and (max-width: 1240px) {
+  .public-swaps {
+    .btn {
+      width: 90vw!important;
+      position: absolute;
+      left: 0;
+      margin-left: 5vw;
+      margin-top: 0;
+    }
+  }
+}
 
 
+@media screen and (max-width: 480px) {
+  .active-swaps_container {
+    .btn-yellow {
+      margin-bottom: 30px;
+      width: 100%;
+      float: none!important;
+    }
+  }
+}
 
 

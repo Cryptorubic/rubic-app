@@ -33,6 +33,9 @@ export class StartFormComponent implements OnInit, OnDestroy {
 
 
   public checkRate(revert?) {
+    if (!(this.tokensData.base.token && this.tokensData.quote.token)) {
+      return false;
+    }
     const baseCoinAmount = new BigNumber(this.tokensData.base.amount)
       .div(Math.pow(10, this.tokensData.base.token.decimals));
 

@@ -92,7 +92,9 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
 
 export function appInitializerFactory(translate: TranslateService, userService: UserService, httpService: HttpService) {
 
-  const langToSet = window['jQuery']['cookie']('lng') || 'ru';
+  const defaultLng = (navigator.language || navigator['browserLanguage']).split('-')[0];
+
+  const langToSet = window['jQuery']['cookie']('lng') || ((['en', 'zh', 'ko', 'ru'].indexOf(defaultLng) > -1) ? defaultLng : 'en');
 
   return () => new Promise<any>((resolve: any, reject) => {
 

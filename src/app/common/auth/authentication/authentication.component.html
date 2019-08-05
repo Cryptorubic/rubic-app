@@ -72,11 +72,11 @@
         {{ServerErrors.non_field_errors?.join(' ')}}
   </span>
 
-  <div class="form-field"><br/>
+  <div class="form-field">
     <span class="restore-link float-right"
           translate="AUTH_POPUP.BUTTONS.FORGOT_PASSWORD"
           (click)="data.chapter = 'forgot-password'"></span>
-    <button type="submit" class="btn btn-yellow" [disabled]="formIsProgress">
+    <button type="submit" class="btn btn-yellow width-100" [disabled]="formIsProgress">
       <span class="lds-ellipsis" *ngIf="formIsProgress">
         <span class="lds-ellipsis-container">
           <span></span><span></span><span></span><span></span>

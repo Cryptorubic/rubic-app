@@ -242,8 +242,9 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     } else {
       this.extraForm.controls.time.setErrors(null);
     }
-
-    this.requestData.stop_date = this.extraForm.value.active_to;
+    setTimeout(() => {
+      this.requestData.stop_date = this.extraForm.value.active_to.clone();
+    });
   }
 
   public dateChange() {
@@ -336,7 +337,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     this.formData.comment = this.requestData.comment;
 
     this.formData.public = !!this.extraForm.value.public;
-    this.formData.stop_date = this.extraForm.value.active_to.utc().format('YYYY-MM-DD HH:mm');
+    this.formData.stop_date = this.extraForm.value.active_to.clone().utc().format('YYYY-MM-DD HH:mm');
     this.formData.base_limit = this.requestData.tokens_info.base.amount;
     this.formData.quote_limit = this.requestData.tokens_info.quote.amount;
 
@@ -427,7 +428,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
             this.userService.openAuthForm().then(() => {
               this.getContractInformation(observer);
             }, () => {
-              this.router.navigate(['/']);
+              this.router.navigate(['/trades']);
               //
             });
           }

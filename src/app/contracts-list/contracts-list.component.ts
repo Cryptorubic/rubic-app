@@ -31,7 +31,7 @@ export class ContractsListComponent implements OnInit {
   ) {
     this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
       if (userProfile.is_ghost) {
-        this.router.navigate(['/']);
+        this.router.navigate(['/trades']);
       }
     });
 
@@ -76,9 +76,14 @@ export class ContractsListComponent implements OnInit {
     this.contractsList = this.contractsList.filter((existsContract) => {
       return existsContract !== this.contractForDeleting;
     });
-    this.contractsService.deleteContract(this.contractForDeleting).then(() => {
 
-    });
+
+    if (this.contractForDeleting.contract_type === 20) {
+      this.contractsService.deleteContract(this.contractForDeleting).then(() => {});
+    } else {
+      this.contractsService.deleteSwap(this.contractForDeleting.id).then(() => {});
+    }
+
     this.contractForDeleting = false;
     this.deleteConfirmationModal.close();
   }
@@ -117,7 +122,7 @@ export class ContractsListResolver implements Resolve<any> {
             observer.complete();
           });
         } else {
-          this.router.navigate(['/']);
+          this.router.navigate(['/trades']);
         }
         subscription.unsubscribe();
       });
