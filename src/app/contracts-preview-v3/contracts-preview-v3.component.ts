@@ -201,6 +201,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     }
   }
 
+  private oldCheckedState: string;
 
   private getContractInfoFromBlockchain(web3Contract) {
     const details = this.originalContract;
@@ -215,6 +216,15 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
     if (details.isEthereum) {
       if (details.contract_state === 'ACTIVE') {
+        if (this.oldCheckedState !== details.contract_state) {
+          web3Contract.methods.owners(details.memo_contract).call().then((res) => {
+            console.log(res);
+            this.originalContract.owner_address = res;
+          }, err => {
+            console.log(err);
+          });
+        }
+
         web3Contract.methods.isSwapped(details.memo_contract).call().then((res) => {
           this.originalContract.isSwapped = res;
         }, err => {
@@ -226,6 +236,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     } else {
       this.originalContract.isSwapped = false;
     }
+
+    this.oldCheckedState = details.contract_state;
   }
 
   private analyzeContract() {

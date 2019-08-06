@@ -1157,6 +1157,6 @@ export const SWAPS_V2  = {
       type: 'function'
     }
   ],
-  // ADDRESS: '0x47eca74d1b3a275482371997d41401e939be5f3a' // Test
-  ADDRESS: '0x81006349EbC753d988bc9A71d3431c0752871B2A'
+  // ADDRESS: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d' // Test
+  ADDRESS: '0xaaacff66942df4f1e1cb32c21af875ac971a8117'
 };
