@@ -1,3 +1,7 @@
+input, textarea {
+  -webkit-appearance: none;
+}
+
 @import 'scss/grid';
 @import "scss/elements/dialog";
 @import "scss/elements/form-elements";

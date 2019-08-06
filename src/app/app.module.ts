@@ -105,10 +105,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
 
         httpService.get('get_coinmarketcap_tokens/').toPromise().then((tokens) => {
           tokens = tokens.sort((a, b) => {
-            if (b.rank === 0) {
-              return -1;
-            }
-            return a.rank > b.rank ? 1 : -1;
+
+            return (a.rank || 100000) > (b.rank || 100000) ? 1 : -1;
           });
 
           tokens.forEach((token) => {
@@ -119,7 +117,15 @@ export function appInitializerFactory(translate: TranslateService, userService: 
             }
             token.platform = token.platform || token.token_name.toLowerCase();
             token.isEthereum = token.platform === 'ethereum';
-            token.decimals = 8;
+
+            if (token.platform !== 'fiat') {
+              token.decimals = 8;
+            } else {
+              token.decimals = 2;
+              token.address = token.token_short_name;
+            }
+
+
           });
           window['cmc_tokens'] = tokens;
           resolve(null);

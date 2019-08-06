@@ -94,7 +94,7 @@
                 </div>
 
                 <div class="contract-buttons bottom-correct"
-                     *ngIf="(originalContract.isSwapped === false) && (contractInfo.baseLeft > 0)">
+                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false) && (contractInfo.baseLeft > 0)">
                   <form #baseContributeForm="ngForm"
                         (submit)="sendContribute(baseContributeForm.value.amount, 'base')">
                     <div class="grid-row">
@@ -167,14 +167,12 @@
                     <!--No Min Contribution-->
                   </span>
                 </div>
-
                 <div class="contract-buttons no-bottom-margin"
                      *ngIf="originalContract.whitelist">
                   <span class="normal-text opacity-color">
                     Only Owner can contribute
                   </span>
                 </div>
-
                 <div class="contract-buttons no-bottom-margin"
                      *ngIf="originalContract.broker_fee && contractInfo.baseBrokerPercent">
                   <span class="normal-text">
@@ -188,9 +186,8 @@
                     </span>
                   </span>
                 </div>
-
                 <div class="contract-buttons"
-                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')) && originalContract.isEthereum">
+                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.contract_state === 'ACTIVE')) && originalContract.isEthereum">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.base.token)"
                           type="button">
@@ -263,7 +260,7 @@
                 </div>
 
                 <div class="contract-buttons bottom-correct"
-                     *ngIf="(originalContract.isSwapped === false) && (contractInfo.quoteLeft > 0)">
+                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false) && (contractInfo.quoteLeft > 0)">
                   <form #quoteContributeForm="ngForm"
                         (submit)="sendContribute(quoteContributeForm.value.amount, 'quote')">
                     <div class="grid-row">
@@ -352,7 +349,7 @@
                 </div>
 
                 <div class="contract-buttons"
-                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')) && originalContract.isEthereum">
+                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.contract_state === 'ACTIVE')) && originalContract.isEthereum">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.quote.token)"
                           type="button">
@@ -400,7 +397,7 @@
               </div>
             </div>
 
-            <div class="one-separated-block" *ngIf="originalContract.isAuthor">
+            <div class="one-separated-block" *ngIf="originalContract.isAuthor && originalContract.owner_address">
               <div class="grid-row">
                 <div class="grid-cell grid-cell-1">
                   <div class="form-field">

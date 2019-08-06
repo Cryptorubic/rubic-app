@@ -62,6 +62,8 @@ export class TokensAllInputComponent implements OnInit {
   public searchToken(q) {
     this.listIsOpened = false;
     this.tokensList = [];
+    this.activeTokenIndex = undefined;
+
     if (this.searchSubscriber) {
       this.searchSubscriber.unsubscribe();
     }
@@ -122,13 +124,13 @@ export class TokensAllInputComponent implements OnInit {
     if (!isNaN(this.activeTokenIndex)) {
       this.tokensList[this.activeTokenIndex].active = false;
     }
+
     token.active = true;
     this.activeTokenIndex = tokenIndex;
     if (withoutHide) {
       return;
     }
 
-    this.activeTokenIndex = undefined;
     this.tokenModel.token = token;
     this.listIsOpened = false;
     this.tokenName = token.token_name + ' (' + token.token_short_name + ')';

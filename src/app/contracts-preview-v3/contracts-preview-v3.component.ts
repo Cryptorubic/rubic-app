@@ -204,7 +204,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   private getContractInfoFromBlockchain(web3Contract) {
     const details = this.originalContract;
-
+    console.log(details);
     this.getBaseRaised(web3Contract);
     this.getQuoteRaised(web3Contract);
     this.getBaseInvestors(web3Contract);
@@ -216,7 +216,6 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     if (details.isEthereum) {
       if (details.contract_state === 'ACTIVE') {
         web3Contract.methods.isSwapped(details.memo_contract).call().then((res) => {
-          console.log(res);
           this.originalContract.isSwapped = res;
         }, err => {
           console.log(err);
@@ -230,6 +229,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   }
 
   private analyzeContract() {
+
     switch (this.originalContract.state) {
       case 'POSTPONED':
         return;
@@ -237,6 +237,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       case 'DONE':
       case 'EXPIRED':
       case 'CREATED':
+      case 'CANCELLED':
       case 'WAITING_FOR_ACTIVATION':
         this.contractAdditional.link =
           location.origin + '/public-v3/' + this.originalContract.unique_link;
@@ -259,7 +260,6 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   }
 
   private getBaseContract() {
-    console.log(this.originalContract.unique_link);
     this.contractService.getSwapByPublic(this.originalContract.unique_link).then((result) => {
       const tokens_info = this.originalContract.tokens_info;
       const swapped = this.originalContract.isSwapped;
@@ -482,7 +482,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           details.quote_address,
           details.base_limit || 0,
           details.quote_limit || 0,
-          (new Date(details.stop_date)).getTime(),
+          Math.round((new Date(details.stop_date)).getTime() / 1000),
           details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
           details.min_base_wei || '0',
           details.min_quote_wei || '0',

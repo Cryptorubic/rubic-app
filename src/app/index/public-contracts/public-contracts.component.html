@@ -112,7 +112,7 @@
             <div class="public-swaps_cell_content">
               <div class="swap-info swap-info__token-volume text-right">
                 <div class="swap-info swap-info__token-volume_value">
-                  {{contract.contract_details.base_token_info.amount | number }}
+                  {{contract.contract_details.base_token_info.amount | number : '1.0-8'}}
                   {{contract.contract_details.base_token_info.token_short_name}}
                 </div>
                 <div class="swap-info swap-info__token-volume_rate">
@@ -127,7 +127,7 @@
             <div class="public-swaps_cell_content">
               <div class="swap-info swap-info__token-volume swap-info__token-volume__with-icon text-left">
                 <div class="swap-info swap-info__token-volume_value">
-                  {{contract.contract_details.quote_token_info.amount | number }}
+                  {{contract.contract_details.quote_token_info.amount | number : '1.0-8'}}
                   {{contract.contract_details.quote_token_info.token_short_name}}
                 </div>
                 <div class="swap-info swap-info__token-volume_rate">

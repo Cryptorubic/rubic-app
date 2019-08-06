@@ -80,9 +80,9 @@ export class PublicContractsComponent implements OnInit {
         contract.contract_details.base_token_info = baseToken;
         contract.contract_details.quote_token_info = quoteToken;
         contract.contract_details.base_token_info.amount =
-          new BigNumber(contract.contract_details.base_limit).div(Math.pow(10, baseToken.decimals)).dp(3);
+          new BigNumber(contract.contract_details.base_limit).div(Math.pow(10, baseToken.decimals)).dp(8);
         contract.contract_details.quote_token_info.amount =
-          new BigNumber(contract.contract_details.quote_limit).div(Math.pow(10, quoteToken.decimals)).dp(3);
+          new BigNumber(contract.contract_details.quote_limit).div(Math.pow(10, quoteToken.decimals)).dp(8);
         this.getRates(contract);
       });
     });
