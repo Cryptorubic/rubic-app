@@ -24,6 +24,7 @@
   }
   &_row {
     margin: 0;
+    position: relative;
     &.as-link {
       cursor: pointer;
     }
@@ -189,6 +190,21 @@
   }
 }
 
+.delete-order-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -20px;
+  background: none;
+  border: 0 none;
+  outline: none;
+  cursor: pointer;
+  display: none;
+  padding: 0;
+  .public-swaps_row:hover & {
+    display: block;
+  }
+}
 
 .public-progress-loading {
   height: 8px;

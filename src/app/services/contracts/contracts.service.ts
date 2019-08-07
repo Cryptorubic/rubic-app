@@ -176,4 +176,10 @@ export class ContractsService {
     }).toPromise();
   }
 
+  public deleteTradeFromManager(tradeId) {
+    return this.httpService.post(`admin_delete_swap3/`, {
+      id: tradeId
+    }).toPromise();
+  }
+
 }

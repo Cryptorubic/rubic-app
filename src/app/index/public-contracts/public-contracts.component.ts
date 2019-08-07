@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ContractsService} from '../../services/contracts/contracts.service';
 import {TokenInfoInterface, Web3Service} from '../../services/web3/web3.service';
 
@@ -6,6 +6,9 @@ import BigNumber from 'bignumber.js';
 import {SWAPS_V2} from '../../contract-form-two/contract-v2-details';
 import {HttpClient} from '@angular/common/http';
 import {IContract} from '../../contract-form/contract-form.component';
+import {UserInterface} from '../../services/user/user.interface';
+import {UserService} from '../../services/user/user.service';
+import {MatDialog, MatDialogRef} from '@angular/material';
 
 const PAGE_SIZE = 5;
 
@@ -17,6 +20,10 @@ const PAGE_SIZE = 5;
 
 export class PublicContractsComponent implements OnInit {
 
+  @ViewChild('deleteTradeConfirmation') deleteTradeConfirmation: TemplateRef<any>;
+  private deleteTradeConfirmationModal: MatDialogRef<any>;
+
+  private tradeForDeleting: any;
 
   public contractsCount: number;
   private serverDateTimeRange: number;
@@ -31,6 +38,8 @@ export class PublicContractsComponent implements OnInit {
 
   public allFilteredOrdersCount: any;
 
+  public currentUser: UserInterface;
+
   public selectedCoins: {
     base?: any;
     quote?: any;
@@ -41,8 +50,16 @@ export class PublicContractsComponent implements OnInit {
   constructor(
     private contractsService: ContractsService,
     private web3Service: Web3Service,
-    private http: HttpClient
+    private http: HttpClient,
+    private userService: UserService,
+    private dialog: MatDialog
   ) {
+
+    this.currentUser = this.userService.getUserModel();
+    this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
+      this.currentUser = userProfile;
+    });
+
 
     this.contractsCount = 0;
     this.showedPages = 1;
@@ -263,6 +280,19 @@ export class PublicContractsComponent implements OnInit {
     this.displayingContractsList = this.allFilteredOrdersCount.slice(0, this.showedPages * PAGE_SIZE);
   }
 
+  public deleteTrade(trade) {
+    this.tradeForDeleting = trade;
+    this.deleteTradeConfirmationModal = this.dialog.open(this.deleteTradeConfirmation, {
+      width: '480px',
+      panelClass: 'custom-dialog-container'
+    });
+  }
+  public confirmDeleteTrade() {
+    this.contractsService.deleteTradeFromManager(this.tradeForDeleting).then(() => {
+      this.refreshList();
+      this.deleteTradeConfirmationModal.close();
+    });
+  }
 
   ngOnInit() {
     this.selectedCoins = {

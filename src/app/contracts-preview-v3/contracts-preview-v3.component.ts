@@ -205,7 +205,6 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   private getContractInfoFromBlockchain(web3Contract) {
     const details = this.originalContract;
-    console.log(details);
     this.getBaseRaised(web3Contract);
     this.getQuoteRaised(web3Contract);
     this.getBaseInvestors(web3Contract);
