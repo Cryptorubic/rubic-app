@@ -158,8 +158,8 @@
 
             <button class="delete-order-btn" (click)="$event.stopPropagation(); deleteTrade(contract.id)"
                     *ngIf="
-                      !currentUser.is_swaps_admin && contract.contract_details.swap3 &&
-                      (!contract.isEthereum || (contract.contract_state === 'CREATED'))
+                      currentUser.is_swaps_admin && contract.contract_details.swap3 &&
+                      (!contract.contract_details.isDecentralized || (contract.contract_state === 'CREATED'))
                     ">
               <img src="./assets/images/icons/delete.png">
             </button>
