@@ -345,7 +345,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   public createContract(tokenForm, advancedForm?: any) {
     this.formData.contract_details = {...tokenForm.value} as IContractDetails;
     this.formData.contract_details.public = !!this.extraForm.value.public;
-    this.formData.contract_details.stop_date = this.extraForm.value.active_to.utc().format('YYYY-MM-DD HH:mm');
+    this.formData.contract_details.stop_date = this.extraForm.value.active_to.clone().utc().format('YYYY-MM-DD HH:mm');
     this.formData.contract_details.base_limit = this.requestData.tokens_info.base.amount;
     this.formData.contract_details.quote_limit = this.requestData.tokens_info.quote.amount;
 
@@ -397,8 +397,9 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     } else {
       this.extraForm.controls.time.setErrors(null);
     }
-
-    this.requestData.stop_date = this.extraForm.value.active_to;
+    setTimeout(() => {
+      this.requestData.stop_date = this.extraForm.value.active_to.clone();
+    });
   }
 
   public dateChange() {
@@ -510,13 +511,13 @@ export class ContractEditResolver implements Resolve<any> {
           switch (result.state) {
             case 'CREATED':
             case 'WAITING_FOR_ACTIVATION':
-              newState = `/view-v3/${result.id}`;
+              newState = `/trades/view-v3/${result.id}`;
               break;
             default:
               if (isPublic) {
-                newState = `/public-v3/${this.publicLink}`;
+                newState = `/trades/public-v3/${this.publicLink}`;
               } else {
-                newState = `/contract-v3/${result.id}`;
+                newState = `/trades/contract-v3/${result.id}`;
               }
               break;
           }
@@ -526,13 +527,13 @@ export class ContractEditResolver implements Resolve<any> {
             case 'CREATED':
             case 'WAITING_FOR_PAYMENT':
             case 'WAITING_FOR_DEPLOYMENT':
-              newState = `/view/${result.id}`;
+              newState = `/trades/view/${result.id}`;
               break;
             default:
               if (isPublic) {
-                newState = `/public/${this.publicLink}`;
+                newState = `/trades/public/${this.publicLink}`;
               } else {
-                newState = `/contract/${result.id}`;
+                newState = `/trades/contract/${result.id}`;
               }
               break;
           }
@@ -543,24 +544,8 @@ export class ContractEditResolver implements Resolve<any> {
           return;
       }
 
-      this.web3Service.getFullTokenInfo(result.contract_details.quote_address).then((token: TokenInfoInterface) => {
-        result.contract_details.tokens_info.quote = {
-          token,
-          amount: result.contract_details.quote_limit
-        };
-        if (result.contract_details.tokens_info.base) {
-          observer.complete();
-        }
-      });
-
-      this.web3Service.getFullTokenInfo(result.contract_details.base_address).then((token: TokenInfoInterface) => {
-        result.contract_details.tokens_info.base = {
-          token,
-          amount: result.contract_details.base_limit
-        };
-        if (result.contract_details.tokens_info.quote) {
-          observer.complete();
-        }
+      this.web3Service.getSWAPSCoinInfo(result.contract_details).then(() => {
+        observer.complete();
       });
 
       observer.next(result);
@@ -580,7 +565,7 @@ export class ContractEditResolver implements Resolve<any> {
             this.userService.openAuthForm().then(() => {
               this.getContractInformation(observer);
             }, () => {
-              this.router.navigate(['/']);
+              this.router.navigate(['/trades']);
               //
             });
           }

@@ -12,6 +12,8 @@ export class HttpService {
   constructor(private http: HttpClient) {}
 
   public get(url: string, data?: {}, path?: string): Observable<any> {
+    data = data || {};
+    data['_'] = new Date().getTime();
     return this.http
       .get<any>((path || SERVER_REST_URL) + (url || ''), {
         params: data

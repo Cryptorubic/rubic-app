@@ -24,6 +24,7 @@
   }
   &_row {
     margin: 0;
+    position: relative;
     &.as-link {
       cursor: pointer;
     }
@@ -85,6 +86,7 @@
         width: 22px;
         margin-right: 12px;
         vertical-align: middle;
+        margin-top: -3px;
       }
       &_symbol {
         vertical-align: middle;
@@ -188,6 +190,21 @@
   }
 }
 
+.delete-order-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -20px;
+  background: none;
+  border: 0 none;
+  outline: none;
+  cursor: pointer;
+  display: none;
+  padding: 0;
+  .public-swaps_row:hover & {
+    display: block;
+  }
+}
 
 .public-progress-loading {
   height: 8px;
@@ -282,7 +299,27 @@
   }
 }
 
+@media screen and (max-width: 1240px) {
+  .public-swaps {
+    .btn {
+      width: 90vw!important;
+      position: absolute;
+      left: 0;
+      margin-left: 5vw;
+      margin-top: 0;
+    }
+  }
+}
 
 
+@media screen and (max-width: 480px) {
+  .active-swaps_container {
+    .btn-yellow {
+      margin-bottom: 30px;
+      width: 100%;
+      float: none!important;
+    }
+  }
+}
 
 

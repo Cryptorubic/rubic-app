@@ -13,9 +13,7 @@ export class StartFormComponent implements OnInit, OnDestroy {
   constructor(
     private web3Service: Web3Service
   ) {
-    localStorage.removeItem('form_new_values');
-    const draftData = undefined; // = localStorage.getItem('form_new_values');
-    this.tokensData = draftData ? JSON.parse(draftData).tokens_info : {
+    this.tokensData = {
       base: {
         token: {}
       },
@@ -35,6 +33,9 @@ export class StartFormComponent implements OnInit, OnDestroy {
 
 
   public checkRate(revert?) {
+    if (!(this.tokensData.base.token && this.tokensData.quote.token)) {
+      return false;
+    }
     const baseCoinAmount = new BigNumber(this.tokensData.base.amount)
       .div(Math.pow(10, this.tokensData.base.token.decimals));
 
@@ -47,20 +48,7 @@ export class StartFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (MODE === 'PROD') {
-      if (!this.tokensData.base.token.address) {
-        this.web3Service.getFullTokenInfo('0xB8c77482e45F1F44dE1745F52C74426C631bDD52').then((result) => {
-          this.tokensData.base.token = result;
-          this.baseTokenChanger.emit(this.tokensData.base);
-        });
-      }
-      if (!this.tokensData.quote.token.address) {
-        this.web3Service.getFullTokenInfo('0x0000000000085d4780B73119b644AE5ecd22b376').then((result) => {
-          this.tokensData.quote.token = result;
-          this.quoteTokenChanger.emit(this.tokensData.quote);
-        });
-      }
-    }
+
   }
 
   ngOnDestroy(): void {

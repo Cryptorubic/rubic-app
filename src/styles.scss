@@ -1,3 +1,7 @@
+input, textarea {
+  -webkit-appearance: none;
+}
+
 @import 'scss/grid';
 @import "scss/elements/dialog";
 @import "scss/elements/form-elements";
@@ -87,6 +91,10 @@ html {
 
 .nowrap {
   white-space: nowrap;
+}
+
+.pre {
+  white-space: pre;
 }
 
 .app-content-block {
@@ -556,35 +564,45 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       font-size: 24px!important;
       padding: 10px 10px 8px;
 
-      &:not(.min-text)::-webkit-input-placeholder {
-        font-size: 20px;
+
+      &:not(.min-text), &.max-placeholder {
+        &::-webkit-input-placeholder {
+          font-size: 20px;
+        }
       }
-      &:not(.min-text):-ms-input-placeholder {
-        font-size: 20px;
+      &:not(.min-text), &.max-placeholder {
+        &:-ms-input-placeholder {
+          font-size: 20px;
+        }
       }
-      &:not(.min-text)::-ms-input-placeholder {
-        font-size: 20px;
+      &:not(.min-text), &.max-placeholder {
+        &::-ms-input-placeholder {
+          font-size: 20px;
+        }
       }
-      &:not(.min-text)::placeholder {
-        font-size: 20px;
+      &:not(.min-text), &.max-placeholder {
+        &::placeholder {
+          font-size: 20px;
+        }
       }
 
 
       &.min-text {
         font-size: 18px!important;
         color: #110931;
-
-        &::-webkit-input-placeholder {
-          font-size: 16px;
-        }
-        &:-ms-input-placeholder {
-          font-size: 16px;
-        }
-        &::-ms-input-placeholder {
-          font-size: 16px;
-        }
-        &::placeholder {
-          font-size: 16px;
+        &:not(.max-placeholder) {
+          &::-webkit-input-placeholder {
+            font-size: 16px;
+          }
+          &:-ms-input-placeholder {
+            font-size: 16px;
+          }
+          &::-ms-input-placeholder {
+            font-size: 16px;
+          }
+          &::placeholder {
+            font-size: 16px;
+          }
         }
       }
       &.dark-field {

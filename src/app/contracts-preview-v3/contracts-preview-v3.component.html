@@ -70,18 +70,23 @@
                       {{tokens.base.token.token_name}}
                       ({{tokens.base.token.token_short_name}})
                     </div>
-
-                    <div class="token-info_texts__address">
+                    <div class="token-info_texts__address" *ngIf="tokens.base.token.isEthereum">
                       <a [href]="!tokens.base.token.isEther ? (tokens.base.token.address | etherscanUrl : 'token') : 'https://etherscan.io/stat/supply'"
-                         *ngIf="tokens.base.token.isEthereum"
                          target="_blank">
                         <small>Check on Etherscan</small>&nbsp;
                         <img src="./assets/images/icons/link.svg">
-                      </a>&nbsp;
+                      </a>
                     </div>
-
-
                   </div>
+
+                  <div class="warning-coin" *ngIf="!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')">
+                    <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
+                    <span class="warning-coin_text">
+                        Unverified. Not listed on CMC
+                      </span>
+                  </div>
+
+
                   <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE' && originalContract.isEthereum">
                     <div class="token-info_investments__number">
                       {{ contractInfo.baseInvestors }}/{{maximumInvestors}}
@@ -94,7 +99,7 @@
                 </div>
 
                 <div class="contract-buttons bottom-correct"
-                     *ngIf="(originalContract.isSwapped === false) && (contractInfo.baseLeft > 0)">
+                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false) && (contractInfo.baseLeft > 0)">
                   <form #baseContributeForm="ngForm"
                         (submit)="sendContribute(baseContributeForm.value.amount, 'base')">
                     <div class="grid-row">
@@ -153,7 +158,8 @@
                   </form>
                 </div>
 
-                <div class="contract-buttons no-bottom-margin" *ngIf="originalContract.min_base_wei && (originalContract.min_base_wei != 0)">
+                <div class="contract-buttons no-bottom-margin"
+                     *ngIf="(originalContract.min_base_wei && (originalContract.min_base_wei != 0))">
                   <span class="normal-text">
                     <span>
                       Min Contribution Limit:
@@ -164,14 +170,14 @@
                     </span>
                     <!--<span *ngIf="originalContract.min_base_wei == 0">-->
                     <!--No Min Contribution-->
-                    <!--</span>-->
-                  </span><br/>
-                  <span class="normal-text opacity-color"
-                        *ngIf="originalContract.whitelist"><br/>
+                  </span>
+                </div>
+                <div class="contract-buttons no-bottom-margin"
+                     *ngIf="originalContract.whitelist">
+                  <span class="normal-text opacity-color">
                     Only Owner can contribute
                   </span>
                 </div>
-
                 <div class="contract-buttons no-bottom-margin"
                      *ngIf="originalContract.broker_fee && contractInfo.baseBrokerPercent">
                   <span class="normal-text">
@@ -185,9 +191,8 @@
                     </span>
                   </span>
                 </div>
-
                 <div class="contract-buttons"
-                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')) && originalContract.isEthereum">
+                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.contract_state === 'ACTIVE')) && originalContract.isEthereum">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.base.token)"
                           type="button">
@@ -231,23 +236,31 @@
                 </div>
 
                 <div class="token-info">
-                  <div class="token-info_icon" [ngStyle]="{'background-image': 'url(' + (tokens.quote.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
-
+                  <div class="token-info_icon"
+                       [ngStyle]="{'background-image': 'url(' + (tokens.quote.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
                   </div>
                   <div class="token-info_texts">
                     <div class="token-info_texts__name">
                       {{tokens.quote.token.token_name}}
                       ({{tokens.quote.token.token_short_name}})
                     </div>
-                    <div class="token-info_texts__address">
+                    <div class="token-info_texts__address" *ngIf="tokens.quote.token.isEthereum">
                       <a [href]="!tokens.quote.token.isEther ? (tokens.quote.token.address | etherscanUrl : 'token') : 'https://etherscan.io/stat/supply'"
-                         *ngIf="tokens.quote.token.isEthereum"
                          target="_blank">
                         <small>Check on Etherscan</small>&nbsp;
                         <img src="./assets/images/icons/link.svg">
-                      </a>&nbsp;
+                      </a>
                     </div>
                   </div>
+
+                  <div class="warning-coin" *ngIf="!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat')">
+                    <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
+                    <span class="warning-coin_text">
+                        Unverified. Not listed on CMC
+                      </span>
+                  </div>
+
+
                   <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE' && originalContract.isEthereum">
                     <div class="token-info_investments__number">
                       {{ contractInfo.quoteInvestors }}/{{maximumInvestors}}
@@ -260,7 +273,7 @@
                 </div>
 
                 <div class="contract-buttons bottom-correct"
-                     *ngIf="(originalContract.isSwapped === false) && (contractInfo.quoteLeft > 0)">
+                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false) && (contractInfo.quoteLeft > 0)">
                   <form #quoteContributeForm="ngForm"
                         (submit)="sendContribute(quoteContributeForm.value.amount, 'quote')">
                     <div class="grid-row">
@@ -349,7 +362,7 @@
                 </div>
 
                 <div class="contract-buttons"
-                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.state === 'ACTIVE')) && originalContract.isEthereum">
+                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.contract_state === 'ACTIVE')) && originalContract.isEthereum">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.quote.token)"
                           type="button">
@@ -397,7 +410,7 @@
               </div>
             </div>
 
-            <div class="one-separated-block" *ngIf="originalContract.isAuthor">
+            <div class="one-separated-block" *ngIf="originalContract.isAuthor && originalContract.owner_address">
               <div class="grid-row">
                 <div class="grid-cell grid-cell-1">
                   <div class="form-field">
@@ -461,16 +474,17 @@
               </div>
             </div>
 
-            <div class="one-separated-block">
+
+            <div class="one-separated-block" *ngIf="originalContract.comment">
               <label class="form-field_label transparent">Additional comment</label>
-              <div class="form-field_value">
-                {{ originalContract.comment }}
-              </div>
+              <div class="form-field_value pre">{{ originalContract.comment }}</div>
             </div>
 
+
             <div class="one-separated-block"
-                 *ngIf="((originalContract.state === 'ACTIVE') && originalContract.isAuthor) && (originalContract.isSwapped === false)">
-              <button type="button" class="btn btn-yellow btn-min btn-normal-weight" (click)="sendCancel()">
+                 *ngIf="((originalContract.contract_state === 'ACTIVE') && originalContract.isAuthor) && (originalContract.isSwapped === false)">
+              <button type="button" class="btn btn-yellow btn-min btn-normal-weight btn-auto"
+                      (click)="sendCancel()">
                 <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
                 <span>Cancel the deal</span>
               </button>
@@ -496,11 +510,11 @@
   <div class="dialog-block">
     <div class="dialog-block__content">
       <div class="info-modal-text">
-        For the contibution please contact our manager.<br/>
+        For the contribution please contact our manager.<br/>
         SWAP ID: <b>{{ originalContract.unique_link }}</b><br/>
       </div>
       <div class="contact-buttons"><br/><br/>
-        <a href="https://t.me/SWAPS_NETWORK" target="_blank"
+        <a href="https://t.me/SWAPSNETWORKsupport" target="_blank"
            class="btn btn-white-opacity btn-min btn-normal-weight text-center">
           <svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0.529889 13.4639L7.44249 16.0439L10.1181 24.6486C10.2893 25.1997 10.9632 25.4034 11.4105 25.0377L15.2637 21.8965C15.6676 21.5674 16.2429 21.551 16.665 21.8574L23.6148 26.9031C24.0933 27.2509 24.7712 26.9887 24.8912 26.4105L29.9823 1.9214C30.1133 1.2898 29.4927 0.762899 28.8913 0.995499L0.521789 11.9396C-0.178311 12.2096 -0.172212 13.2008 0.529889 13.4639ZM9.68689 14.6705L23.1967 6.3498C23.4395 6.2007 23.6893 6.529 23.4808 6.7224L12.3313 17.0864C11.9394 17.4512 11.6866 17.9394 11.615 18.4693L11.2352 21.2839C11.1849 21.6597 10.657 21.697 10.5533 21.3333L9.09259 16.2008C8.92529 15.6154 9.16909 14.9901 9.68689 14.6705Z" fill="#f8db14"/>

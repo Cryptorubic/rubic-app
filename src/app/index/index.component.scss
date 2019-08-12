@@ -98,10 +98,20 @@
     a {
       display: block;
       height: 100%;
-      filter: grayscale(100%);
       transition: all .2s;
-      &:hover, &:focus {
-        filter: grayscale(0);
+      &.invert {
+        &:hover {
+          filter: invert(0) grayscale(0);
+        }
+        &, &:focus {
+          filter: invert(100%) grayscale(100%);
+        }
+      }
+      &:not(.invert) {
+        filter: grayscale(100%);
+        &:hover, &:focus {
+          filter: grayscale(0);
+        }
       }
     }
     img {
@@ -167,6 +177,18 @@
     font-size: 17px;
     line-height: 25px;
     color: #FFFFFF;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .why-we-list {
+    padding-right: 0;
+    li {
+      padding-right: 0;
+    }
+    &_title {
+      margin-right: 0;
+    }
   }
 }
 

@@ -122,6 +122,7 @@
 
 .token-info {
   padding: 20px 0;
+  line-height: 52px;
   &:after {
     content: '';
     display: block;
@@ -144,6 +145,9 @@
   }
   &_texts {
     padding: 4px 0;
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 100%;
     &__name {
       font-size: 16px;
       color: #FFFFFF;
@@ -158,14 +162,7 @@
       line-height: 22px;
       overflow: hidden;
       white-space: nowrap;
-      text-overflow: ellipsis;
-      &_link {
-        padding: 20px 0;
-        font-size: 17px;
-        line-height: 20px;
-        clear: both;
-        word-break: break-all;
-      }
+      text-overflow: ellipsis
     }
   }
   &_investments {
@@ -277,3 +274,16 @@
   }
 }
 
+.warning-coin {
+  font-size: 16px;
+  line-height: 16px;
+  color: #61B9DF;
+  margin: 15px 0;
+  &_icon, &_text {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  &_icon {
+    margin-right: 10px;
+  }
+}

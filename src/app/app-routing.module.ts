@@ -53,31 +53,31 @@ const routes: Routes = [
     }
   }, {
     path: 'create-v3',
-    redirectTo: 'trades/create-v3'
+    redirectTo: '/trades/create-v3'
   }, {
     path: 'create',
-    redirectTo: 'trades/create'
+    redirectTo: '/trades/create'
   }, {
     path: 'view/:id',
-    redirectTo: 'trades/view/:id'
+    redirectTo: '/trades/view/:id'
   }, {
     path: 'view-v3/:id',
-    redirectTo: 'trades/view-v3/:id'
+    redirectTo: '/trades/view-v3/:id'
   }, {
     path: 'contract/:id',
-    redirectTo: 'trades/contract/:id'
+    redirectTo: '/trades/contract/:id'
   }, {
     path: 'contract-v3/:id',
-    redirectTo: 'trades/contract-v3/:id'
+    redirectTo: '/trades/contract-v3/:id'
   }, {
     path: 'public/:public_link',
-    redirectTo: 'trades/public/:public_link'
+    redirectTo: '/trades/public/:public_link'
   }, {
     path: 'public-v3/:public_link',
-    redirectTo: 'trades/public-v3/:public_link'
+    redirectTo: '/trades/public-v3/:public_link'
   }, {
     path: 'contracts',
-    redirectTo: 'trades/contracts'
+    redirectTo: '/trades/contracts'
   }, {
     path: 'trades',
     children: [
@@ -180,11 +180,11 @@ const routes: Routes = [
     ]
   }, {
     path: 'dashboard/first_entry',
-    redirectTo: '/'
+    redirectTo: '/trades'
   },
   {
     path: 'accounts/login',
-    redirectTo: '/'
+    redirectTo: '/trades'
   },
   {
     path: 'team',

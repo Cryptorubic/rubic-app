@@ -4,6 +4,11 @@
 }
 
 .questions-container {
+  &:after, &:before {
+    content: '';
+    display: table;
+    width: 100%;
+  }
   &__question {
     display: flex;
     flex-direction: column;

@@ -4,7 +4,8 @@
 
   <section class="section-1">
     <div class="app-content-block">
-      <a (click)="openFullInviteForm()"
+      <a href="https://www.bitforex.com/ru/spot/swap_usdt"
+         target="_blank"
          class="section-1_timer" [ngClass]="{started: leftSeconds === 0}">
         <div class="section-1_timer_circle">
 
@@ -53,9 +54,11 @@
         </p>
       </div>
       <div class="section-1_menu">
-        <button (click)="openFullInviteForm()" class="new-btn new-btn-yellow">
+        <a href="https://www.bitforex.com/ru/spot/swap_usdt"
+           target="_blank"
+           class="new-btn new-btn-yellow">
           <span translate="INDEX_PAGE.SECTION_1.MENU.BUTTON"></span>
-        </button>
+        </a>
         <div class="section-1_menu_links">
           <ul>
             <li>
@@ -390,7 +393,7 @@
           <div class="dev-title" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.TITLE"></div>
           <div class="dev-text" translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.TEXT"></div>
           <div class="dev-post-block without-line">
-            <a routerLink="trades/create-v3" class="new-btn new-btn-yellow">
+            <a routerLink="/trades" class="new-btn new-btn-yellow">
               <span translate="INDEX_PAGE.SECTION_6.BLOCKS.BLOCK_2.POST_BLOCK"></span>
             </a>
           </div>
@@ -602,7 +605,7 @@
         </div>
       </div>
 
-      <a routerLink="trades/create-v3" class="new-btn new-btn-yellow">
+      <a routerLink="/trades" class="new-btn new-btn-yellow">
         <span translate="INDEX_PAGE.SECTION_11.BUTTON">Try service without commission</span>
       </a>
 
@@ -1558,9 +1561,10 @@
   <div class="app-content-block">
     <div class="app-content-block">
       <div class="float-line_text" [innerHTML]="'INDEX_PAGE.FLOAT_FOOTER.TEXT'|translate"></div>
-      <button (click)="openFullInviteForm()" class="new-btn">
+      <a href="https://www.bitforex.com/ru/spot/swap_usdt"
+         target="_blank" class="new-btn">
         <span translate="INDEX_PAGE.FLOAT_FOOTER.BUTTON"></span>
-      </button>
+      </a>
     </div>
   </div>
 </div>

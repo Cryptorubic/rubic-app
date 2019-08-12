@@ -43,6 +43,14 @@ export class ContractsService {
     return this.httpService.get(`contracts/${id}/`).toPromise();
   }
 
+  public cancelSWAP3(id) {
+    return this.httpService.post('cancel_swap3/', {
+      id
+    }).toPromise().then((res) => {
+      return res;
+    });
+  }
+
   public getContractsList() {
     const allList: {
       contracts?: any[],
@@ -53,7 +61,7 @@ export class ContractsService {
       const resolveList = () => {
         if (allList.trades && allList.contracts) {
           const allResolveList = allList.contracts.concat(allList.trades).sort((contract1, contract2) => {
-            return new Date(contract2.created_date) > new Date(contract1.created_date) ? -1 : 1;
+            return new Date(contract2.created_date) < new Date(contract1.created_date) ? -1 : 1;
           });
           resolve(allResolveList);
         }
@@ -84,7 +92,7 @@ export class ContractsService {
       const resolveList = () => {
         if (allList.trades && allList.contracts) {
           const allResolveList = allList.contracts.concat(allList.trades).sort((contract1, contract2) => {
-            return new Date(contract2.created_date) > new Date(contract1.created_date) ? -1 : 1;
+            return new Date(contract2.created_date) < new Date(contract1.created_date) ? -1 : 1;
           });
           resolve(allResolveList);
 
@@ -101,7 +109,7 @@ export class ContractsService {
         trades: []
       };
 
-      this.httpService.get('get_public_contracts/?t=_' + new Date().getTime()).toPromise().then((result) => {
+      this.httpService.get('get_public_contracts/').toPromise().then((result) => {
         allList.contracts = result.filter((contract) => {
           const noExpired = new Date(contract.contract_details.stop_date).getTime() > new Date().getTime();
           if (!noExpired) {
@@ -112,7 +120,7 @@ export class ContractsService {
         resolveList();
       });
 
-      this.httpService.get('get_public_swap3/?t=_' + new Date().getTime()).toPromise().then((result) => {
+      this.httpService.get('get_public_swap3/').toPromise().then((result) => {
         allList.trades = result.filter((contract) => {
           const noExpired = new Date(contract.stop_date).getTime() > new Date().getTime();
           if (!noExpired) {
@@ -160,6 +168,18 @@ export class ContractsService {
 
   public deleteContract(contract) {
     return this.httpService.delete(`contracts/${contract.id}/`).toPromise();
+  }
+
+  public deleteSwap(contractId) {
+    return this.httpService.post(`delete_swap3/`, {
+      id: contractId
+    }).toPromise();
+  }
+
+  public deleteTradeFromManager(tradeId) {
+    return this.httpService.post(`admin_delete_swap3/`, {
+      id: tradeId
+    }).toPromise();
   }
 
 }

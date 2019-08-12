@@ -50,6 +50,11 @@ header {
       &.with-sublist {
         position: relative;
         visibility: visible;
+        span {
+          position: relative;
+          z-index: 2;
+        }
+
         &:after {
           content: '';
           border-width: 0 2px 2px 0;
@@ -178,6 +183,9 @@ header {
           padding-bottom: 15px;
           display: block;
           max-width: initial;
+          &.is-social {
+            max-width: initial;
+          }
           &:hover {
             text-decoration: none;
             background-color: rgba(0, 0, 0, 0.4);

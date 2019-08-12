@@ -51,7 +51,7 @@
                     checked: (tokensForm.valid) && (openedForm > 0),
                     'form-block__active': editableContract
                 }">
-            <div class="form-block_title" (click)="openedForm = editableContract ? 0 : openedForm">Created</div>
+            <div class="form-block_title" (click)="openedForm = editableContract ? 0 : openedForm">Basic options</div>
 
             <div class="form-block_fieldset">
               <!-- Выбор токена -->
@@ -63,9 +63,10 @@
                       <div class="form-field_input">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.token.address" name="base_address">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.amount" name="base_limit">
-                        <app-token-input
+                        <app-tokens-all-input
+                          [blockchain]="'ethereum'"
                           [setToken]="BaseTokenCustom"
-                          [tokenModel]="requestData.tokens_info.base"></app-token-input>
+                          [tokenModel]="requestData.tokens_info.base"></app-tokens-all-input>
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
@@ -92,16 +93,18 @@
                                [ngModelOptions]="{standalone: true}"
                                (TokenResolve)="setCustomToken('base', $event)"
                                [(ngModel)]="customTokens.base.address">
-                      </div>
+                      </div><br/>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-vs-1-2">
-                      <button class="btn btn-yellow  btn-min btn-for-field width-100"
-                              type="button"
-                              [disabled]="!baseCustomToken.valid"
-                              (click)="addCustomToken('base')">
-                        <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                        <span>Add</span>
-                      </button>
+                      <div class="form-field_input">
+                        <button class="btn btn-yellow  btn-min btn-for-field width-100"
+                                type="button"
+                                [disabled]="!baseCustomToken.valid"
+                                (click)="addCustomToken('base')">
+                          <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                          <span>Add</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -116,9 +119,10 @@
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.token.address" name="quote_address">
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.amount" name="quote_limit">
 
-                        <app-token-input
+                        <app-tokens-all-input
+                          [blockchain]="'ethereum'"
                           [setToken]="QuoteTokenCustom"
-                          [tokenModel]="requestData.tokens_info.quote"></app-token-input>
+                          [tokenModel]="requestData.tokens_info.quote"></app-tokens-all-input>
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
@@ -144,16 +148,18 @@
                                #quoteCustomToken="ngModel"
                                (TokenResolve)="setCustomToken('quote', $event)"
                                [(ngModel)]="customTokens.quote.address">
-                      </div>
+                      </div><br/>
                     </div>
                     <div class="grid-cell grid-cell-1-4 grid-cell-vs-1-2">
-                      <button class="btn btn-yellow  btn-min btn-for-field width-100"
-                              type="button"
-                              [disabled]="!quoteCustomToken.valid"
-                              (click)="addCustomToken('quote')">
-                        <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                        <span>Add</span>
-                      </button>
+                      <div class="form-field_input">
+                        <button class="btn btn-yellow  btn-min btn-for-field width-100"
+                                type="button"
+                                [disabled]="!quoteCustomToken.valid"
+                                (click)="addCustomToken('quote')">
+                          <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                          <span>Add</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -258,7 +264,7 @@
                         <label class="form-field_label">Contract management address</label>
                         <div class="form-field_input">
                           <input type="text"
-                                 class="min-text"
+                                 class="min-text max-placeholder"
                                  maxlength="42"
                                  pattern="0x[0-9a-fA-F]{40}"
                                  required
@@ -437,7 +443,7 @@
 
               </div>
 
-              <button class="btn btn-yellow vs-width-100"
+              <button class="btn btn-yellow btn_small"
                       (click)="confirmContract()" [disabled]="confirmationIsProgress || !(tokensForm.valid && extraForm.valid)">
                 <span class="lds-ellipsis" *ngIf="confirmationIsProgress">
                   <span class="lds-ellipsis-container">

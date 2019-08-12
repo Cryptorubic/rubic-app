@@ -13,10 +13,14 @@
   position: relative;
   a {
     color: inherit!important;
+    text-decoration: underline;
+    &:hover {
+      color: #FCD600!important;
+    }
   }
   &_ico {
     display: inline-block;
-    vertical-align: baseline;
+    vertical-align: middle;
     width: 22px;
     height: 22px;
     background-color: #FCD600;
@@ -27,6 +31,8 @@
     font-size: 15px;
     margin-left: 10px;
     cursor: pointer;
+    position: relative;
+    top: -2px;
   }
   &_tooltip {
     position: absolute;
@@ -74,7 +80,4 @@
   }
 }
 @media screen and (max-width: 980px) {
-}
-
-@media screen and (max-width: 800px) {
 }

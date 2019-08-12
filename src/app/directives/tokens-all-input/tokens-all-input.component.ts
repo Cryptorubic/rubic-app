@@ -22,6 +22,7 @@ export class TokensAllInputComponent implements OnInit {
   @Input('tokenModel') public tokenModel: any;
   @Input() public tokenGroup: any;
   @Input() private setToken: any;
+  @Input() private blockchain: string;
 
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
@@ -61,6 +62,8 @@ export class TokensAllInputComponent implements OnInit {
   public searchToken(q) {
     this.listIsOpened = false;
     this.tokensList = [];
+    this.activeTokenIndex = undefined;
+
     if (this.searchSubscriber) {
       this.searchSubscriber.unsubscribe();
     }
@@ -83,7 +86,7 @@ export class TokensAllInputComponent implements OnInit {
       const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
       const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
 
-      if (nameIndexMatch || symbolIndexMatch) {
+      if ((nameIndexMatch || symbolIndexMatch) && (!this.blockchain || (this.blockchain === token.platform))) {
         result.push({...token});
       }
       indexToken++;
@@ -121,13 +124,13 @@ export class TokensAllInputComponent implements OnInit {
     if (!isNaN(this.activeTokenIndex)) {
       this.tokensList[this.activeTokenIndex].active = false;
     }
+
     token.active = true;
     this.activeTokenIndex = tokenIndex;
     if (withoutHide) {
       return;
     }
 
-    this.activeTokenIndex = undefined;
     this.tokenModel.token = token;
     this.listIsOpened = false;
     this.tokenName = token.token_name + ' (' + token.token_short_name + ')';
