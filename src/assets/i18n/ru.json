@@ -83,7 +83,7 @@
     },
 
     "SECTION_1": {
-      "TITLE": "Мы&nbsp;меняем&nbsp;рынок<sup>*</sup> внебиржевых торгов",
+      "TITLE": "Внебиржевое решение:<br/>безопасные и быстрые сделки",
       "TEXT": {
         "PART_1": "SWAPS.NETWORK - это платформа внебиржевых сделок, которая аккумулирует все сделки на рынке и объединяет продавцов и покупателей со всего мира.",
         "PART_2": "SWAPS.NETWORK предоставляет полностью децентрализованный сервис обмена. Пользователи могут заключать внебиржевые сделки без участия третьих лиц или эскроу.",
@@ -104,8 +104,8 @@
         "SECONDS": "секунд"
       },
       "AFTER_START": {
-        "TEXT": "IEO началось",
-        "BUTTON": "Участвовать"
+        "TEXT": "Our product is ready",
+        "BUTTON": "Try"
       }
     },
 
@@ -433,24 +433,36 @@
       "QIII19": "III квартал 2019 года",
       "QIV19": "IV квартал  2019 года",
       "QI20": "I квартал 2020",
+
       "SUCCESSFULLY": {
-        "TITLE": "Успешно выполнено",
+        "TITLE": "Successfully reached",
         "LIST": {
-          "ITEM_1": "Запуск SWAPS.NETWORK на блокчейне Ethereum (с поддержкой всех токенов ERC-20)",
-          "ITEM_2": "Реализация<br/> смарт<br/> контракта",
-          "ITEM_3": "Реализация <br/> функционала,<br/> «Брокер»"
+          "ITEM_1": "Launch SWAPS.NETWORK on Ethereum<br/>(with the support of all ERC-20 tokens)",
+          "ITEM_2": "Implementation<br/> of a single smart<br/> contract",
+          "ITEM_3": "Implementation <br/> of the functionality,<br/> “Broker”",
+
+          "ITEM_4": "Partnership with exchanges:<br/>BW.com, Coss.io, Bestrate.org",
+          "ITEM_5": "Run swaps on Enecuum blockchain",
+          "ITEM_6": "Launch OTC Global Liquidity pool.<br/>It accumulates all deals on the market",
+          "ITEM_7": "Launch trades enrollment for any pair<br/>(more than 2000 tokens supported)"
         }
       },
       "SOON": {
-        "TITLE": "Будет выполнено скоро",
+        "TITLE": "Soon to be reached",
         "LIST": {
-          "ITEM_1": "Партнерство с крупными биржами, централизованными OTC и кошельками",
-          "ITEM_2": "Запуск обмен на двух других блокчейнах",
-          "ITEM_3": "Реализация API для реферальной программы",
-          "ITEM_4": "Запуск обмена для BTC",
-          "ITEM_5": "IOS и Android мобильное приложение",
-          "ITEM_6": "Запуск кроссчейн решений для внебиржевых сделок",
-          "ITEM_7": "SWAPS.NETWORK - лидер по объему OTC торговли в мире"
+          "ITEM_1": "Implementation of crypto-fiat and fiat-crypto solutions in partnership with banks and fintech projects",
+          "ITEM_2": "Implementing KYC by integrating with KYC providers (for the areas and cases where KYC needed)",
+          "ITEM_3": "Release OTC traders and escrow ratings",
+          "ITEM_4": "Partnerships with major exchanges, centralized OTC and wallets",
+          "ITEM_5": "Integration of SWAPS.NETWORK services to the exchanges",
+          "ITEM_6": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_7": "API implementation for the referral program",
+
+          "ITEM_8": "IOS & Android mobile application",
+          "ITEM_9": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_10": "Run swaps on BTC",
+          "ITEM_11": "Run cross-chain solutions for OTC deals",
+          "ITEM_12": "SWAPS.NETWORK, the leader in terms of OTC volume in the world"
         }
       }
     },
@@ -775,7 +787,7 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "Оставьте свой email, попробуйте сервис и получите 10% токенов к вашей инвестиции",
+      "TEXT": "Пожалуйста, свяжитесь с нами, если вы заинтересованы в инвестировании",
       "BUTTON": "Участвовать"
     }
   }

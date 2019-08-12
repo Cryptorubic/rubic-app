@@ -12,7 +12,7 @@
     },
 
     "SECTION_1": {
-      "TITLE": "我们正在颠覆 <br/> OTC<sup>*</sup> 市场",
+      "TITLE": "场外交易解决方案：<br/>安全快速的交易",
       "TEXT": {
         "PART_1": "SWAPS.NETWORK是一个全球性的OTC市场。它汇集了市场里所有的交易，链接全世界的买家买家.",
         "PART_2": "SWAPS.NETWORK提供完全去中心化的OTC解决方案。用户可以在没有第三方和托管的情况下做OTC交易.",
@@ -32,8 +32,8 @@
         "SECONDS": "第二"
       },
       "AFTER_START": {
-        "TEXT": "IEO已经开始",
-        "BUTTON": "加入"
+        "TEXT": "Our product is ready",
+        "BUTTON": "Try"
       }
     },
 
@@ -364,24 +364,36 @@
       "QIII19": "QIII 2019",
       "QIV19": "QIV 2019",
       "QI20": "QI 2020",
+
       "SUCCESSFULLY": {
-        "TITLE": "成功达成了",
+        "TITLE": "Successfully reached",
         "LIST": {
-          "ITEM_1": "在以太坊上启动Swaps.Network （在所有ERC-20令牌的支持下）",
-          "ITEM_2": "实施单一智能合约",
-          "ITEM_3": "实现“经纪人”功能”"
+          "ITEM_1": "Launch SWAPS.NETWORK on Ethereum<br/>(with the support of all ERC-20 tokens)",
+          "ITEM_2": "Implementation<br/> of a single smart<br/> contract",
+          "ITEM_3": "Implementation <br/> of the functionality,<br/> “Broker”",
+
+          "ITEM_4": "Partnership with exchanges:<br/>BW.com, Coss.io, Bestrate.org",
+          "ITEM_5": "Run swaps on Enecuum blockchain",
+          "ITEM_6": "Launch OTC Global Liquidity pool.<br/>It accumulates all deals on the market",
+          "ITEM_7": "Launch trades enrollment for any pair<br/>(more than 2000 tokens supported)"
         }
       },
       "SOON": {
-        "TITLE": "很快就会到达",
+        "TITLE": "Soon to be reached",
         "LIST": {
-          "ITEM_1": "与主要交易所，中心化场外交易和钱包的合作伙伴关系",
-          "ITEM_2": "在另外两个区块链上运行交换",
-          "ITEM_3": "推荐计划的API实施",
-          "ITEM_4": "为BTC运行交换",
-          "ITEM_5": "IOS和Android端移动应用程序",
-          "ITEM_6": "为场外交易运行跨链解决方案",
-          "ITEM_7": "SWAPS.NETWORK  - 世界上OTC交易量的领导者"
+          "ITEM_1": "Implementation of crypto-fiat and fiat-crypto solutions in partnership with banks and fintech projects",
+          "ITEM_2": "Implementing KYC by integrating with KYC providers (for the areas and cases where KYC needed)",
+          "ITEM_3": "Release OTC traders and escrow ratings",
+          "ITEM_4": "Partnerships with major exchanges, centralized OTC and wallets",
+          "ITEM_5": "Integration of SWAPS.NETWORK services to the exchanges",
+          "ITEM_6": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_7": "API implementation for the referral program",
+
+          "ITEM_8": "IOS & Android mobile application",
+          "ITEM_9": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_10": "Run swaps on BTC",
+          "ITEM_11": "Run cross-chain solutions for OTC deals",
+          "ITEM_12": "SWAPS.NETWORK, the leader in terms of OTC volume in the world"
         }
       }
     },
@@ -703,7 +715,7 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "留下您的电子邮件，尝试我们的服务，并获得10％的额外代币",
+      "TEXT": "如果您有兴趣投资，请联系我们。",
       "BUTTON": "加入"
     }
   }

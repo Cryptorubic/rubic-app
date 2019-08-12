@@ -11,7 +11,7 @@
       "BUTTON": "구매 토큰"
     },
     "SECTION_1": {
-      "TITLE": "저희는 OTC 마켓을 더욱 안전하고 빠른 마켓으로 변화 시킵니다",
+      "TITLE": "비처방 거래 솔루션 :<br/>안전하고 빠른 거래,
       "TEXT": {
         "PART_1": "SWAPS.NETWORK는 Global OTC 주식입니다. 그것은 시장의 모든 거래를 축적하고 전세계의 판매자와 구매자를 연결합니다.",
         "PART_2": "SSWAPS.NETWORK는 완전히 분산 된 OTC 솔루션을 제공합니다. 유저는 제 3 자 또는 에스크로없이 OTC 거래를 할 수 있습니다.  ",
@@ -31,8 +31,8 @@
         "SECONDS": "초"
       },
       "AFTER_START": {
-        "TEXT": "IEO가 시작되었습니다.",
-        "BUTTON": "어울리다"
+        "TEXT": "Our product is ready",
+        "BUTTON": "Try"
       }
     },
     "SECTION_2": {
@@ -346,24 +346,36 @@
       "QIII19": "2019년 QIII",
       "QIV19": "2019년 QIV",
       "QI20": "2020년 QI",
+
       "SUCCESSFULLY": {
-        "TITLE": "성공적으로 달성했습니다.",
+        "TITLE": "Successfully reached",
         "LIST": {
-          "ITEM_1": "이더리움에서 Swaps 네트워크 출시 (모든 ERC-20 토큰을 지원)",
-          "ITEM_2": "단일 스마트 컨트랙트의 구현",
-          "ITEM_3": "기능적 \"브로커\" 구현"
+          "ITEM_1": "Launch SWAPS.NETWORK on Ethereum<br/>(with the support of all ERC-20 tokens)",
+          "ITEM_2": "Implementation<br/> of a single smart<br/> contract",
+          "ITEM_3": "Implementation <br/> of the functionality,<br/> “Broker”",
+
+          "ITEM_4": "Partnership with exchanges:<br/>BW.com, Coss.io, Bestrate.org",
+          "ITEM_5": "Run swaps on Enecuum blockchain",
+          "ITEM_6": "Launch OTC Global Liquidity pool.<br/>It accumulates all deals on the market",
+          "ITEM_7": "Launch trades enrollment for any pair<br/>(more than 2000 tokens supported)"
         }
       },
       "SOON": {
-        "TITLE": "곧 도달",
+        "TITLE": "Soon to be reached",
         "LIST": {
-          "ITEM_1": "P주요 거래소, 중앙 집중화된 OTC, 월렛으로 파트너십",
-          "ITEM_2": "R다른 두 블록체인으로 Swaps를 실행",
-          "ITEM_3": "리퍼럴 프로그램에 대한 API 실행",
-          "ITEM_4": "BTC를 위한 Swaps 실행",
-          "ITEM_5": "IIOS 및 안드로이드 모바일 어플리케이션",
-          "ITEM_6": "OTC 거래를 위한 클로스체인 솔루션 실행",
-          "ITEM_7": "SWAPS.NETWORK - 세계 OTC 물량면에서 선두 주자"
+          "ITEM_1": "Implementation of crypto-fiat and fiat-crypto solutions in partnership with banks and fintech projects",
+          "ITEM_2": "Implementing KYC by integrating with KYC providers (for the areas and cases where KYC needed)",
+          "ITEM_3": "Release OTC traders and escrow ratings",
+          "ITEM_4": "Partnerships with major exchanges, centralized OTC and wallets",
+          "ITEM_5": "Integration of SWAPS.NETWORK services to the exchanges",
+          "ITEM_6": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_7": "API implementation for the referral program",
+
+          "ITEM_8": "IOS & Android mobile application",
+          "ITEM_9": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_10": "Run swaps on BTC",
+          "ITEM_11": "Run cross-chain solutions for OTC deals",
+          "ITEM_12": "SWAPS.NETWORK, the leader in terms of OTC volume in the world"
         }
       }
     },
@@ -680,7 +692,7 @@
       }
     },
     "FLOAT_FOOTER": {
-      "TEXT": "귀하의 이메일을 남겨주세요. 우리의 서비스를 이용해 투자에 10 %의 추가 토큰을 받으십시오.",
+      "TEXT": "당신이 투자에 관심이 있다면 연락 주시기 바랍니다",
       "BUTTON": "어울리다"
     }
   }

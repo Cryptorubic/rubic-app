@@ -84,7 +84,7 @@
     },
 
     "SECTION_1": {
-      "TITLE": "We&nbsp;are&nbsp;disrupting <br/> the OTC<sup>*</sup> market",
+      "TITLE": "OTC Solution:<br/>safe and fast trades",
       "TEXT": {
         "PART_1": "SWAPS.NETWORK is an OTC Global Liquidity Pool. It accumulates all deals on the market and connects sellers and buyers from around the world.",
         "PART_2": "SWAPS.NETWORK provides fully decentralized OTC solutions. Users can make OTC deals without a 3rd party or escrow.",
@@ -104,8 +104,8 @@
         "SECONDS": "seconds"
       },
       "AFTER_START": {
-        "TEXT": "IEO has started",
-        "BUTTON": "JOIN"
+        "TEXT": "Our product is ready",
+        "BUTTON": "Try"
       }
     },
 
@@ -439,21 +439,32 @@
       "SUCCESSFULLY": {
         "TITLE": "Successfully reached",
         "LIST": {
-          "ITEM_1": "Launch SWAPS.NETWORK on Ethereum (with the support of all ERC-20 tokens)",
+          "ITEM_1": "Launch SWAPS.NETWORK on Ethereum<br/>(with the support of all ERC-20 tokens)",
           "ITEM_2": "Implementation<br/> of a single smart<br/> contract",
-          "ITEM_3": "Implementation <br/> of the functionality,<br/> “Broker”"
+          "ITEM_3": "Implementation <br/> of the functionality,<br/> “Broker”",
+
+          "ITEM_4": "Partnership with exchanges:<br/>BW.com, Coss.io, Bestrate.org",
+          "ITEM_5": "Run swaps on Enecuum blockchain",
+          "ITEM_6": "Launch OTC Global Liquidity pool.<br/>It accumulates all deals on the market",
+          "ITEM_7": "Launch trades enrollment for any pair<br/>(more than 2000 tokens supported)"
         }
       },
       "SOON": {
         "TITLE": "Soon to be reached",
         "LIST": {
-          "ITEM_1": "Partnerships with major exchanges, centralized OTC and wallets",
-          "ITEM_2": "Run swaps on two other blockchains",
-          "ITEM_3": "API implementation for the referral program",
-          "ITEM_4": "Run swaps on BTC",
-          "ITEM_5": "IOS & Android mobile application",
-          "ITEM_6": "Run cross-chain solutions for OTC deals",
-          "ITEM_7": "SWAPS.NETWORK - the leader in terms of OTC volume in the world"
+          "ITEM_1": "Implementation of crypto-fiat and fiat-crypto solutions in partnership with banks and fintech projects",
+          "ITEM_2": "Implementing KYC by integrating with KYC providers (for the areas and cases where KYC needed)",
+          "ITEM_3": "Release OTC traders and escrow ratings",
+          "ITEM_4": "Partnerships with major exchanges, centralized OTC and wallets",
+          "ITEM_5": "Integration of SWAPS.NETWORK services to the exchanges",
+          "ITEM_6": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_7": "API implementation for the referral program",
+
+          "ITEM_8": "IOS & Android mobile application",
+          "ITEM_9": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_10": "Run swaps on BTC",
+          "ITEM_11": "Run cross-chain solutions for OTC deals",
+          "ITEM_12": "SWAPS.NETWORK, the leader in terms of OTC volume in the world"
         }
       }
     },
@@ -778,7 +789,7 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "Leave your email, Try our service and get 10% of additional tokens on your investment",
+      "TEXT": "Please contact us if you are interested in investing",
       "BUTTON": "Join"
     }
 
