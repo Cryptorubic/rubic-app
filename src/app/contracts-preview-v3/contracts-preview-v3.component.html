@@ -70,18 +70,23 @@
                       {{tokens.base.token.token_name}}
                       ({{tokens.base.token.token_short_name}})
                     </div>
-
-                    <div class="token-info_texts__address">
+                    <div class="token-info_texts__address" *ngIf="tokens.base.token.isEthereum">
                       <a [href]="!tokens.base.token.isEther ? (tokens.base.token.address | etherscanUrl : 'token') : 'https://etherscan.io/stat/supply'"
-                         *ngIf="tokens.base.token.isEthereum"
                          target="_blank">
                         <small>Check on Etherscan</small>&nbsp;
                         <img src="./assets/images/icons/link.svg">
-                      </a>&nbsp;
+                      </a>
                     </div>
-
-
                   </div>
+
+                  <div class="warning-coin" *ngIf="!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')">
+                    <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
+                    <span class="warning-coin_text">
+                        Unverified. Not listed on CMC
+                      </span>
+                  </div>
+
+
                   <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE' && originalContract.isEthereum">
                     <div class="token-info_investments__number">
                       {{ contractInfo.baseInvestors }}/{{maximumInvestors}}
@@ -231,23 +236,31 @@
                 </div>
 
                 <div class="token-info">
-                  <div class="token-info_icon" [ngStyle]="{'background-image': 'url(' + (tokens.quote.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
-
+                  <div class="token-info_icon"
+                       [ngStyle]="{'background-image': 'url(' + (tokens.quote.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
                   </div>
                   <div class="token-info_texts">
                     <div class="token-info_texts__name">
                       {{tokens.quote.token.token_name}}
                       ({{tokens.quote.token.token_short_name}})
                     </div>
-                    <div class="token-info_texts__address">
+                    <div class="token-info_texts__address" *ngIf="tokens.quote.token.isEthereum">
                       <a [href]="!tokens.quote.token.isEther ? (tokens.quote.token.address | etherscanUrl : 'token') : 'https://etherscan.io/stat/supply'"
-                         *ngIf="tokens.quote.token.isEthereum"
                          target="_blank">
                         <small>Check on Etherscan</small>&nbsp;
                         <img src="./assets/images/icons/link.svg">
-                      </a>&nbsp;
+                      </a>
                     </div>
                   </div>
+
+                  <div class="warning-coin" *ngIf="!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat')">
+                    <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
+                    <span class="warning-coin_text">
+                        Unverified. Not listed on CMC
+                      </span>
+                  </div>
+
+
                   <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE' && originalContract.isEthereum">
                     <div class="token-info_investments__number">
                       {{ contractInfo.quoteInvestors }}/{{maximumInvestors}}

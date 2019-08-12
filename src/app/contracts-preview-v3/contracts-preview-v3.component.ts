@@ -495,8 +495,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           details.quote_limit || 0,
           Math.round((new Date(details.stop_date)).getTime() / 1000),
           details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
-          details.min_base_wei || '0',
-          details.min_quote_wei || '0',
+          (details.min_base_wei || '0').toString(),
+          (details.min_quote_wei || '0').toString(),
           details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
           details.broker_fee ? (new BigNumber(details.broker_fee_base).times(100)).toString(10) : '0',
           details.broker_fee ? (new BigNumber(details.broker_fee_quote).times(100)).toString(10) : '0'
