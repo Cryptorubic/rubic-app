@@ -79,7 +79,7 @@
         "ITEM_4": "Команда",
         "ITEM_5": "Планы"
       },
-      "BUTTON": "Участвовать"
+      "BUTTON": "Посмотреть сделки"
     },
 
     "SECTION_1": {
@@ -104,8 +104,8 @@
         "SECONDS": "секунд"
       },
       "AFTER_START": {
-        "TEXT": "Our product is ready",
-        "BUTTON": "Try"
+        "TEXT": "Продукт готов",
+        "BUTTON": "Использовать"
       }
     },
 
@@ -761,7 +761,7 @@
 
     "MODAL_FORM": {
       "TITLE_1": "Попробуйте наш сервис бесплатно до сентября",
-      "TITLE_2": "Оставьте Email и Telegram и вы будете перенаправлены на страницу биржи",
+      "TITLE_2": "Please leave your details and we will contact you",
       "FIELDS": {
         "EMAIL": {
           "LABEL": "Введите email",
@@ -777,7 +777,7 @@
       },
       "BUTTONS": {
         "BUTTON_1": "Попробуйте сервис",
-        "BUTTON_2": "Участвуйте в IEO",
+        "BUTTON_2": "Отправить",
         "CLOSE": "Закрыть"
       },
       "SUCCESS_MESSAGE": {
@@ -787,8 +787,8 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "Пожалуйста, свяжитесь с нами, если вы заинтересованы в инвестировании",
-      "BUTTON": "Участвовать"
+      "TEXT": "Если вы заинтересованы в инвестировании",
+      "BUTTON": "Связаться"
     }
   }
 }

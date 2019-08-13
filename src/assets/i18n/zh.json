@@ -8,7 +8,7 @@
         "ITEM_4": "球队",
         "ITEM_5": "路线图"
       },
-      "BUTTON": "买代币"
+      "BUTTON": "查看交易"
     },
 
     "SECTION_1": {
@@ -32,8 +32,8 @@
         "SECONDS": "第二"
       },
       "AFTER_START": {
-        "TEXT": "Our product is ready",
-        "BUTTON": "Try"
+        "TEXT": "即时可用的产品",
+        "BUTTON": "试"
       }
     },
 
@@ -689,7 +689,7 @@
 
     "MODAL_FORM": {
       "TITLE_1": "免费试用我们的服务到9月",
-      "TITLE_2": "请留下您的电子邮件和电报，您将被重定向到交易所",
+      "TITLE_2": "Please leave your details and we will contact you",
       "FIELDS": {
         "EMAIL": {
           "LABEL": "输入你的电子邮箱",
@@ -705,7 +705,7 @@
       },
       "BUTTONS": {
         "BUTTON_1": "尝试服务",
-        "BUTTON_2": "参与IEO",
+        "BUTTON_2": "Send",
         "CLOSE": "关"
       },
       "SUCCESS_MESSAGE": {
@@ -715,8 +715,8 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "如果您有兴趣投资，请联系我们。",
-      "BUTTON": "加入"
+      "TEXT": "如果您有兴趣投资",
+      "BUTTON": "联系我们"
     }
   }
 }

@@ -187,7 +187,7 @@ button, input {
       display: block;
     }
     &_links {
-      margin-left: 15px;
+      //margin-left: 15px;
       background-color: #fafbfd;
       padding: 16px;
       line-height: 18px;
@@ -3559,7 +3559,8 @@ a[id] {
   &_text {
     text-transform: uppercase;
     font-size: 14px;
-    line-height: 20px;
+    line-height: 21px;
+    padding-top: 3px;
   }
   .new-btn {
     background-color: #3b4352;

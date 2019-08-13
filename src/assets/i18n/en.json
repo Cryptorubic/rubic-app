@@ -80,7 +80,7 @@
         "ITEM_4": "Team",
         "ITEM_5": "Roadmap"
       },
-      "BUTTON": "Buy tokens"
+      "BUTTON": "View Trades"
     },
 
     "SECTION_1": {
@@ -763,7 +763,7 @@
 
     "MODAL_FORM": {
       "TITLE_1": "Try our service for free until September",
-      "TITLE_2": "Please leave your email and telegram and you will be redirected to the exchange",
+      "TITLE_2": "Please leave your details and we will contact you",
       "FIELDS": {
         "EMAIL": {
           "LABEL": "Enter your email",
@@ -779,7 +779,7 @@
       },
       "BUTTONS": {
         "BUTTON_1": "Try service",
-        "BUTTON_2": "Participate in IEO",
+        "BUTTON_2": "Send",
         "CLOSE": "Close"
       },
       "SUCCESS_MESSAGE": {
@@ -789,8 +789,8 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "Please contact us if you are interested in investing",
-      "BUTTON": "Join"
+      "TEXT": "If you are interested in investing",
+      "BUTTON": "Contact us"
     }
 
   }

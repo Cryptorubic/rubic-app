@@ -8,10 +8,10 @@
         "ITEM_4": "T팀",
         "ITEM_5": "로드맵"
       },
-      "BUTTON": "구매 토큰"
+      "BUTTON": "거래보기"
     },
     "SECTION_1": {
-      "TITLE": "비처방 거래 솔루션 :<br/>안전하고 빠른 거래,
+      "TITLE": "비처방 거래 솔루션 :<br/>안전하고 빠른 거래",
       "TEXT": {
         "PART_1": "SWAPS.NETWORK는 Global OTC 주식입니다. 그것은 시장의 모든 거래를 축적하고 전세계의 판매자와 구매자를 연결합니다.",
         "PART_2": "SSWAPS.NETWORK는 완전히 분산 된 OTC 솔루션을 제공합니다. 유저는 제 3 자 또는 에스크로없이 OTC 거래를 할 수 있습니다.  ",
@@ -31,8 +31,8 @@
         "SECONDS": "초"
       },
       "AFTER_START": {
-        "TEXT": "Our product is ready",
-        "BUTTON": "Try"
+        "TEXT": "사용할 준비가 되어 있는 제품",
+        "BUTTON": "해보다"
       }
     },
     "SECTION_2": {
@@ -667,7 +667,7 @@
     },
     "MODAL_FORM": {
       "TITLE_1": "9 월까지 무료로 저희 서비스를 이용해보십시오.",
-      "TITLE_2": "이메일과 전보를 남겨주세요. 교환기로 리디렉션됩니다.",
+      "TITLE_2": "Please leave your details and we will contact you",
       "FIELDS": {
         "EMAIL": {
           "LABEL": "이메일을 입력하십시오.",
@@ -683,7 +683,7 @@
       },
       "BUTTONS": {
         "BUTTON_1": "Try service",
-        "BUTTON_2": "IEO에 참여하십시오.",
+        "BUTTON_2": "Send",
         "CLOSE": "닫기"
       },
       "SUCCESS_MESSAGE": {
@@ -692,8 +692,8 @@
       }
     },
     "FLOAT_FOOTER": {
-      "TEXT": "당신이 투자에 관심이 있다면 연락 주시기 바랍니다",
-      "BUTTON": "어울리다"
+      "TEXT": "투자에 관심이 있다면",
+      "BUTTON": "연락"
     }
   }
 }

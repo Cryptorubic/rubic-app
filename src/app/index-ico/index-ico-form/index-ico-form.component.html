@@ -22,17 +22,17 @@
                name="email" required>
       </div>
     </div>
-    <!--<div class="invite-form-field">-->
-      <!--<div class="invite-form-field_label" *ngIf="!data.fullForm"-->
-           <!--translate="INDEX_PAGE.MODAL_FORM.FIELDS.TELEGRAM.LABEL">-->
-      <!--</div>-->
-      <!--<div class="invite-form-field_input icon-field icon-field__telegram">-->
-        <!--<input type="text"-->
-               <!--[placeholder]="'INDEX_PAGE.MODAL_FORM.FIELDS.TELEGRAM.PLACEHOLDER'|translate"-->
-               <!--[(ngModel)]="request.telegram"-->
-               <!--name="telegram" [required]="!inviteForm.value?.email">-->
-      <!--</div>-->
-    <!--</div>-->
+    <div class="invite-form-field">
+      <div class="invite-form-field_label" *ngIf="!data.fullForm"
+           translate="INDEX_PAGE.MODAL_FORM.FIELDS.TELEGRAM.LABEL">
+      </div>
+      <div class="invite-form-field_input icon-field icon-field__telegram">
+        <input type="text"
+               [placeholder]="'INDEX_PAGE.MODAL_FORM.FIELDS.TELEGRAM.PLACEHOLDER'|translate"
+               [(ngModel)]="request.telegram"
+               name="telegram" [required]="!inviteForm.value?.email">
+      </div>
+    </div>
     <div class="invite-form-field text-center">
       <button class="new-btn new-btn-yellow" [disabled]="!inviteForm.valid" type="submit">
         <span *ngIf="!data.fullForm" translate="INDEX_PAGE.MODAL_FORM.BUTTONS.BUTTON_1"></span>
