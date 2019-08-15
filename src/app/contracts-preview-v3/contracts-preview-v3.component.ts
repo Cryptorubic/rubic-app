@@ -501,9 +501,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           details.broker_fee ? (new BigNumber(details.broker_fee_base).times(100)).toString(10) : '0',
           details.broker_fee ? (new BigNumber(details.broker_fee_quote).times(100)).toString(10) : '0'
         ];
-
         const activateSignature = this.web3Service.encodeFunctionCall(interfaceMethod, trxRequest);
-
         const sendActivateTrx = (wallet) => {
           this.web3Service.sendTransaction({
             from: wallet.address,
@@ -517,12 +515,21 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
         };
 
 
-        transactionsList.unshift({
-          title: 'Initialization',
-          to: SWAPS_V2.ADDRESS,
-          data: activateSignature,
-          action: sendActivateTrx
+        this.dialog.open(TransactionComponent, {
+          width: '38.65em',
+          panelClass: 'custom-dialog-container',
+          data: {
+            transactions: [{
+              to: SWAPS_V2.ADDRESS,
+              data: activateSignature,
+              action: sendActivateTrx
+            }],
+            title: 'Initialization',
+            description: 'Before the contribution it’s needed to initialize the contract (once per trade)'
+          }
         });
+
+        return;
       }
 
 
