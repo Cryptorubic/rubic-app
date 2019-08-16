@@ -4,7 +4,7 @@
 
   <section class="section-1">
     <div class="app-content-block">
-      <a routerLink="/trades"
+      <a href="https://medium.com/coss-official/coss-exchange-launches-its-ieo-platform-liftoff-here-s-what-to-expect-f5844c9c12c3"
          target="_blank"
          class="section-1_timer" [ngClass]="{started: leftSeconds === 0}">
         <div class="section-1_timer_circle">
@@ -23,7 +23,7 @@
           <span class="new-btn" translate="INDEX_PAGE.HEADER.BUTTON"></span>
         </div>
         <div class="section-1_timer_text">
-          {{'INDEX_PAGE.SECTION_1.TIMER.TITLE'|translate}}
+          <span [innerHTML]="'INDEX_PAGE.SECTION_1.TIMER.TITLE'|translate"></span>
           <div class="section-1_timer_clock" *ngIf="timerDigits">
             <div class="timer_clock_block">
               <div class="timer_clock_block_digit">{{timerDigits.days}}</div>

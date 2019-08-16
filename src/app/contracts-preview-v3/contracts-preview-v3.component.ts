@@ -491,12 +491,12 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           details.memo_contract,
           details.base_address,
           details.quote_address,
-          details.base_limit || 0,
-          details.quote_limit || 0,
+          (details.base_limit || '0').toString(),
+          (details.quote_limit || '0').toString(),
           Math.round((new Date(details.stop_date)).getTime() / 1000),
           details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
-          (details.min_base_wei || '0').toString(),
-          (details.min_quote_wei || '0').toString(),
+          new BigNumber(details.min_base_wei || '0').toString(10),
+          new BigNumber(details.min_quote_wei || '0').toString(10),
           details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
           details.broker_fee ? (new BigNumber(details.broker_fee_base).times(100)).toString(10) : '0',
           details.broker_fee ? (new BigNumber(details.broker_fee_quote).times(100)).toString(10) : '0'
@@ -569,26 +569,28 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   public quoteWillGetValue(amount) {
     const details = this.originalContract;
-    const quoteWillValue = new BigNumber(amount).div(details.tokens_info.base.amount).times(details.tokens_info.quote.amount);
+
+    const quoteWillValue = new BigNumber(details.tokens_info.quote.amount).div(new BigNumber(details.tokens_info.base.amount).div(amount));
     const quoteFeeValue = quoteWillValue.div(100).times(this.contractInfo.quoteBrokerPercent);
+
     if (!quoteFeeValue.isNaN()) {
       return quoteWillValue
-        .minus(quoteFeeValue);
+        .minus(quoteFeeValue).toString(10);
     } else {
-      return quoteWillValue;
+      return quoteWillValue.toString(10);
     }
   }
 
   public baseWillGetValue(amount) {
     const details = this.originalContract;
-    const baseWillValue = new BigNumber(amount).div(details.tokens_info.quote.amount).times(details.tokens_info.base.amount);
+    const baseWillValue = new BigNumber(details.tokens_info.base.amount).div(new BigNumber(details.tokens_info.quote.amount).div(amount));
     const baseFeeValue = baseWillValue.div(100).times(this.contractInfo.baseBrokerPercent);
 
     if (!baseFeeValue.isNaN()) {
       return baseWillValue
-        .minus(baseFeeValue);
+        .minus(baseFeeValue).toString(10);
     } else {
-      return baseWillValue;
+      return baseWillValue.toString(10);
     }
   }
 
