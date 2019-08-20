@@ -416,6 +416,8 @@ export class ContractEditV3Resolver implements Resolve<any> {
         observer.next(result);
         observer.complete();
       });
+    }, () => {
+      this.router.navigate(['/trades']);
     });
 
   }
