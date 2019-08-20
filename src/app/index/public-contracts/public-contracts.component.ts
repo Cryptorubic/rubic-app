@@ -300,5 +300,4 @@ export class PublicContractsComponent implements OnInit {
       quote: {}
     };
   }
-
 }

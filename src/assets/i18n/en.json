@@ -170,7 +170,8 @@
       "LIST": {
         "ITEM_1": "BW.com -  Having millions of users, they provide mining pool services for mainstream cryptocurrencies to miners from 45 countries and regions. The BW mining pool has produced nearly 300,000 Bitcoins, 1.5 million Litecoins and nearly 2 million Ethers, with a total value of more than 3 billion US Dollars",
         "ITEM_2": "Bestrate - A crypto payment gateway and aggregator of crypto exchanges with 15,000+ active users of services and $3M+ in overall transactions",
-        "ITEM_3": "COSS stands for Crypto One-Stop Solution. We are your one-stop shop for all things crypto: an exchange, an e-wallet which supports a broad variety of tokens, a platform for ICO launches and promotional trading campaigns, a fiat gateway, a market cap widget, and more"
+        "ITEM_3": "COSS stands for Crypto One-Stop Solution. We are your one-stop shop for all things crypto: an exchange, an e-wallet which supports a broad variety of tokens, a platform for ICO launches and promotional trading campaigns, a fiat gateway, a market cap widget, and more",
+        "ITEM_4": "BitForex - International platform is in the top 15 world crypto exchanges in terms of trading volume and serves 3 million users. The exchange features token trading, margin trading, futures and options contracts. BitForex customers can trade with about 300 trading pairs. BitForex monitors global changes in digital assets in real time in order to timely identify and identify risks in the world of cryptocurrencies."
       }
     },
 
@@ -738,6 +739,16 @@
         },
         "PARTNER_7": {
           "TEXT": "COSS stands for Crypto One-Stop Solution. We are your one-stop shop for all things crypto: an exchange, an e-wallet which supports a broad variety of tokens, a platform for ICO launches and promotional trading campaigns, a fiat gateway, a market cap widget, and more"
+        },
+
+        "PARTNER_8": {
+          "TEXT": "A decentralized anonymous payment system with the main idea of the project - privacy protection technology. In addition to anonymity, the Daps cryptocurrency focuses on security and scalability.The DAPS project aims to solve the problem of trust in a completely anonymous system with a completely new protocol called PoA (Proof of Audit)."
+        },
+        "PARTNER_9": {
+          "TEXT": "A mobile blockchain network for decentralized applications that can take blockchain and cryptocurrencies to a new level and make them more accessible by including mobile and stationary devices in the blockchain network, as well as providing powerful tools for DApps developers who can create fast and affordable WEB 3.0 applications for million people."
+        },
+        "PARTNER_10": {
+          "TEXT": "International platform is in the top 15 world crypto exchanges in terms of trading volume and serves 3 million users. The exchange features token trading, margin trading, futures and options contracts. BitForex customers can trade with about 300 trading pairs. BitForex monitors global changes in digital assets in real time in order to timely identify and identify risks in the world of cryptocurrencies."
         }
       }
     },
