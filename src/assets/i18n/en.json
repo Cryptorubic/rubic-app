@@ -641,7 +641,7 @@
         },
         "PART_4": {
           "LABEL": "Total supply",
-          "VALUE": "100,000,000"
+          "VALUE": "10,000,000"
         },
         "PART_5": {
           "LABEL": "Retail price",
@@ -649,7 +649,7 @@
         },
         "PART_6": {
           "LABEL": "Hard cap",
-          "VALUE": "3,000,000 USD"
+          "VALUE": "300,000 USD"
         }
       },
       "DISTRIBUTE": {
@@ -707,7 +707,7 @@
       "TABLE": {
         "TEXT": {
           "PART_1": "SWAP holders can get the following maximum discounts (depend on holding amount & time)",
-          "PART_2": "It will be released 100 million tokens, without the possibility of further emission. In order to later burn 50% of all distributed tokens."
+          "PART_2": "It will be released 10 million tokens, without the possibility of further emission. In order to later burn 50% of all distributed tokens."
         },
         "YEAR": "Year",
         "DISCOUNT": "Discount",

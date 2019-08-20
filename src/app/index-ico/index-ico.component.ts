@@ -81,7 +81,7 @@ export class IndexIcoComponent implements OnInit {
 
     this.startTimerTime = Date.UTC(2019, 7, 6, 9, 0, 0);
 
-    this.leftTime = Date.UTC(2019, 7, 21, 9, 30, 0);
+    this.leftTime = Date.UTC(2019, 7, 21, 6, 30, 0);
 
     this.currentDateTime = new Date().getTime();
 

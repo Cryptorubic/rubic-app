@@ -26,14 +26,16 @@ export class IndexComponent implements OnInit {
   ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.dialog.open(ChangePasswordComponent, {
-          width: '480px',
-          panelClass: 'custom-dialog-container',
-          data: {
-            params: route.snapshot.params
-          }
-        });
+        if (route.snapshot.params.uid && route.snapshot.params.token) {
+          this.dialog.open(ChangePasswordComponent, {
+            width: '480px',
+            panelClass: 'custom-dialog-container',
+            data: {
+              params: route.snapshot.params
+            }
+          });
 
+        }
         if ((event.url === '/dashboard/first_entry') && window['dataLayer']) {
           window['dataLayer'].push({'event': 'sign-up'});
         }
