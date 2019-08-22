@@ -31,8 +31,8 @@
         "SECONDS": "초"
       },
       "AFTER_START": {
-        "TEXT": "사용할 준비가 되어 있는 제품",
-        "BUTTON": "해보다"
+        "TEXT": "IEO가 시작되었습니다.",
+        "BUTTON": "어울리다"
       }
     },
     "SECTION_2": {

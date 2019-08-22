@@ -104,8 +104,8 @@
         "SECONDS": "seconds"
       },
       "AFTER_START": {
-        "TEXT": "Our product is ready",
-        "BUTTON": "Try"
+        "TEXT": "IEO has started",
+        "BUTTON": "JOIN"
       }
     },
 
