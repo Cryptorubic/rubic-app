@@ -216,6 +216,11 @@ export class UserService {
   }
 
 
+  public passwordChange(data) {
+    return this.httpService.post(URLS.PASSWORD_RESET_CONFIRM, data, URLS.HOSTS.AUTH_PATH).toPromise();
+  }
+
+
   public socialAuthRequest(network, data) {
     switch (network) {
       case 'fb':
@@ -293,15 +298,6 @@ export class UserService {
 
 
 
-
-  // passwordChange: function(data) {
-  //   var params = {
-  //     data: data
-  //   };
-  //   params.API_PATH = API.HOSTS.AUTH_PATH;
-  //   params.path = API.PASSWORD_RESET_CONFIRM;
-  //   return requestService.post(params);
-  // },
 
 
   // setLanguage: function(lng) {

@@ -846,6 +846,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   span {
     display: block;
     white-space: nowrap;
+    position: relative;
+    margin-top: 0.1em;
   }
   &-yellow {
     background: #F3D663;

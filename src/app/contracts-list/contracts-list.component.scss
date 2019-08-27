@@ -15,44 +15,105 @@
   color: #fff;
   font-size: 20px;
 }
-.my-contracts-list {
-  margin-top: 20px;
-  &_item {
-    display: block;
-    color: #fff!important;
-    background-color: rgba(0, 0, 0, 0.1);
-    padding: 29px 15px;
-    font-size: 20px;
-    line-height: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    &:after {
-      content: '';
-      display: block;
-      clear: both;
-    }
-    &, &:hover, &:focus {
-      text-decoration: none!important;
-    }
-    &:hover, &:focus {
-      background-color: rgba(0, 0, 0, 0.3);
-    }
-  }
-  &_item + &_item {
-    margin-top: 10px;
-  }
-}
 
 .delete-btn {
-  float: right;
   background: none;
   border: 0 none;
   padding: 10px;
   cursor: pointer;
   line-height: 24px;
-  margin: -12px 0 -10px 15px;
   img {
     width: 24px;
     vertical-align: middle;
   }
+}
+
+.swap-info {
+  line-height: 26px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.public-swaps {
+  min-width: 800px;
+  white-space: nowrap;
+  &_table-container {
+    overflow: auto;
+  }
+  &_body {
+    overflow:  auto;
+  }
+  &_empty {
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    color: #FFFFFF;
+    a {
+      color: #FCD600!important;
+    }
+  }
+  &_row {
+    margin: 0;
+    position: relative;
+    &.as-link {
+      cursor: pointer;
+    }
+  }
+  &_cell {
+    padding: 0;
+    &_content {
+      line-height: 70px;
+      margin: 2px 2px 1px 1px;
+      padding: 0 14px;
+      background-color: rgba(0, 0, 0, 0.1);
+      color: #fff;
+    }
+  }
+  &_row:hover &_cell {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  &_head {
+    &-row {
+      position: relative;
+      z-index: 3;
+      margin: 0;
+    }
+    &-cell {
+      color: #fff;
+      padding: 0;
+      &__sortable {
+        color: #FCD600;
+        .sort-btn {
+          background-image: url(/assets/images/icons/table/sort-2.svg);
+        }
+
+        &.asc {
+          .sort-btn {
+            background-image: url(/assets/images/icons/table/sort-3.svg);
+          }
+        }
+      }
+    }
+    &_content {
+      line-height: 38px;
+      margin: 2px 2px 1px 1px;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      text-align: left;
+    }
+  }
+}
+
+.sort-btn {
+  float: right;
+  width: 28px;
+  height: 28px;
+  background: center center no-repeat rgba(0, 0, 0, 0.2);
+  text-align: center;
+  padding: 0;
+  border: 0 none;
+  line-height: 28px;
+  cursor: pointer;
+  background-image: url(/assets/images/icons/table/sort-1.svg);
+  margin-top: 5px;
 }

@@ -80,11 +80,11 @@
         "ITEM_4": "Team",
         "ITEM_5": "Roadmap"
       },
-      "BUTTON": "Buy tokens"
+      "BUTTON": "View Trades"
     },
 
     "SECTION_1": {
-      "TITLE": "We&nbsp;are&nbsp;disrupting <br/> the OTC<sup>*</sup> market",
+      "TITLE": "OTC Solution:<br/>safe and fast trades",
       "TEXT": {
         "PART_1": "SWAPS.NETWORK is an OTC Global Liquidity Pool. It accumulates all deals on the market and connects sellers and buyers from around the world.",
         "PART_2": "SWAPS.NETWORK provides fully decentralized OTC solutions. Users can make OTC deals without a 3rd party or escrow.",
@@ -97,7 +97,7 @@
         "BUTTON": "Buy Tokens"
       },
       "TIMER": {
-        "TITLE": "IEO Starts in",
+        "TITLE": "IEO on COSS<br/>Starts in",
         "DAYS": "days",
         "HOURS": "hours",
         "MINUTES": "minutes",
@@ -170,7 +170,8 @@
       "LIST": {
         "ITEM_1": "BW.com -  Having millions of users, they provide mining pool services for mainstream cryptocurrencies to miners from 45 countries and regions. The BW mining pool has produced nearly 300,000 Bitcoins, 1.5 million Litecoins and nearly 2 million Ethers, with a total value of more than 3 billion US Dollars",
         "ITEM_2": "Bestrate - A crypto payment gateway and aggregator of crypto exchanges with 15,000+ active users of services and $3M+ in overall transactions",
-        "ITEM_3": "COSS stands for Crypto One-Stop Solution. We are your one-stop shop for all things crypto: an exchange, an e-wallet which supports a broad variety of tokens, a platform for ICO launches and promotional trading campaigns, a fiat gateway, a market cap widget, and more"
+        "ITEM_3": "COSS stands for Crypto One-Stop Solution. We are your one-stop shop for all things crypto: an exchange, an e-wallet which supports a broad variety of tokens, a platform for ICO launches and promotional trading campaigns, a fiat gateway, a market cap widget, and more",
+        "ITEM_4": "BitForex - International platform is in the top 15 world crypto exchanges in terms of trading volume and serves 3 million users. The exchange features token trading, margin trading, futures and options contracts. BitForex customers can trade with about 300 trading pairs. BitForex monitors global changes in digital assets in real time in order to timely identify and identify risks in the world of cryptocurrencies."
       }
     },
 
@@ -439,21 +440,32 @@
       "SUCCESSFULLY": {
         "TITLE": "Successfully reached",
         "LIST": {
-          "ITEM_1": "Launch SWAPS.NETWORK on Ethereum (with the support of all ERC-20 tokens)",
+          "ITEM_1": "Launch SWAPS.NETWORK on Ethereum<br/>(with the support of all ERC-20 tokens)",
           "ITEM_2": "Implementation<br/> of a single smart<br/> contract",
-          "ITEM_3": "Implementation <br/> of the functionality,<br/> “Broker”"
+          "ITEM_3": "Implementation <br/> of the functionality,<br/> “Broker”",
+
+          "ITEM_4": "Partnership with exchanges:<br/>BW.com, Coss.io, Bestrate.org",
+          "ITEM_5": "Run swaps on Enecuum blockchain",
+          "ITEM_6": "Launch OTC Global Liquidity pool.<br/>It accumulates all deals on the market",
+          "ITEM_7": "Launch trades enrollment for any pair<br/>(more than 2000 tokens supported)"
         }
       },
       "SOON": {
         "TITLE": "Soon to be reached",
         "LIST": {
-          "ITEM_1": "Partnerships with major exchanges, centralized OTC and wallets",
-          "ITEM_2": "Run swaps on two other blockchains",
-          "ITEM_3": "API implementation for the referral program",
-          "ITEM_4": "Run swaps on BTC",
-          "ITEM_5": "IOS & Android mobile application",
-          "ITEM_6": "Run cross-chain solutions for OTC deals",
-          "ITEM_7": "SWAPS.NETWORK - the leader in terms of OTC volume in the world"
+          "ITEM_1": "Implementation of crypto-fiat and fiat-crypto solutions in partnership with banks and fintech projects",
+          "ITEM_2": "Implementing KYC by integrating with KYC providers (for the areas and cases where KYC needed)",
+          "ITEM_3": "Release OTC traders and escrow ratings",
+          "ITEM_4": "Partnerships with major exchanges, centralized OTC and wallets",
+          "ITEM_5": "Integration of SWAPS.NETWORK services to the exchanges",
+          "ITEM_6": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_7": "API implementation for the referral program",
+
+          "ITEM_8": "IOS & Android mobile application",
+          "ITEM_9": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_10": "Run swaps on BTC",
+          "ITEM_11": "Run cross-chain solutions for OTC deals",
+          "ITEM_12": "SWAPS.NETWORK, the leader in terms of OTC volume in the world"
         }
       }
     },
@@ -630,7 +642,7 @@
         },
         "PART_4": {
           "LABEL": "Total supply",
-          "VALUE": "100,000,000"
+          "VALUE": "10,000,000"
         },
         "PART_5": {
           "LABEL": "Retail price",
@@ -638,7 +650,7 @@
         },
         "PART_6": {
           "LABEL": "Hard cap",
-          "VALUE": "3,000,000 USD"
+          "VALUE": "300,000 USD"
         }
       },
       "DISTRIBUTE": {
@@ -696,7 +708,7 @@
       "TABLE": {
         "TEXT": {
           "PART_1": "SWAP holders can get the following maximum discounts (depend on holding amount & time)",
-          "PART_2": "It will be released 100 million tokens, without the possibility of further emission. In order to later burn 50% of all distributed tokens."
+          "PART_2": "It will be released 10 million tokens, without the possibility of further emission. In order to later burn 50% of all distributed tokens."
         },
         "YEAR": "Year",
         "DISCOUNT": "Discount",
@@ -727,6 +739,16 @@
         },
         "PARTNER_7": {
           "TEXT": "COSS stands for Crypto One-Stop Solution. We are your one-stop shop for all things crypto: an exchange, an e-wallet which supports a broad variety of tokens, a platform for ICO launches and promotional trading campaigns, a fiat gateway, a market cap widget, and more"
+        },
+
+        "PARTNER_8": {
+          "TEXT": "A decentralized anonymous payment system with the main idea of the project - privacy protection technology. In addition to anonymity, the Daps cryptocurrency focuses on security and scalability.The DAPS project aims to solve the problem of trust in a completely anonymous system with a completely new protocol called PoA (Proof of Audit)."
+        },
+        "PARTNER_9": {
+          "TEXT": "A mobile blockchain network for decentralized applications that can take blockchain and cryptocurrencies to a new level and make them more accessible by including mobile and stationary devices in the blockchain network, as well as providing powerful tools for DApps developers who can create fast and affordable WEB 3.0 applications for million people."
+        },
+        "PARTNER_10": {
+          "TEXT": "International platform is in the top 15 world crypto exchanges in terms of trading volume and serves 3 million users. The exchange features token trading, margin trading, futures and options contracts. BitForex customers can trade with about 300 trading pairs. BitForex monitors global changes in digital assets in real time in order to timely identify and identify risks in the world of cryptocurrencies."
         }
       }
     },
@@ -752,7 +774,7 @@
 
     "MODAL_FORM": {
       "TITLE_1": "Try our service for free until September",
-      "TITLE_2": "Please leave your email and telegram and you will be redirected to the exchange",
+      "TITLE_2": "Please leave your details and we will contact you",
       "FIELDS": {
         "EMAIL": {
           "LABEL": "Enter your email",
@@ -768,7 +790,7 @@
       },
       "BUTTONS": {
         "BUTTON_1": "Try service",
-        "BUTTON_2": "Participate in IEO",
+        "BUTTON_2": "Send",
         "CLOSE": "Close"
       },
       "SUCCESS_MESSAGE": {
@@ -778,8 +800,8 @@
     },
 
     "FLOAT_FOOTER": {
-      "TEXT": "Leave your email, Try our service and get 10% of additional tokens on your investment",
-      "BUTTON": "Join"
+      "TEXT": "If you are interested in investing",
+      "BUTTON": "Contact us"
     }
 
   }

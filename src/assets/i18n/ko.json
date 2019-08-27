@@ -8,10 +8,10 @@
         "ITEM_4": "T팀",
         "ITEM_5": "로드맵"
       },
-      "BUTTON": "구매 토큰"
+      "BUTTON": "거래보기"
     },
     "SECTION_1": {
-      "TITLE": "저희는 OTC 마켓을 더욱 안전하고 빠른 마켓으로 변화 시킵니다",
+      "TITLE": "비처방 거래 솔루션 :<br/>안전하고 빠른 거래",
       "TEXT": {
         "PART_1": "SWAPS.NETWORK는 Global OTC 주식입니다. 그것은 시장의 모든 거래를 축적하고 전세계의 판매자와 구매자를 연결합니다.",
         "PART_2": "SSWAPS.NETWORK는 완전히 분산 된 OTC 솔루션을 제공합니다. 유저는 제 3 자 또는 에스크로없이 OTC 거래를 할 수 있습니다.  ",
@@ -94,7 +94,8 @@
       "LIST": {
         "ITEM_1": "BW.com -  수백만 명의 유저가 있는 이 회사는  45 개 국가 및 지역의 광부들에게 주류 암호화폐를 위한 광업 풀 서비스를 제공합니다. BW 광업 풀은 약 30만 비트코인, 150 만 리테코인, 거의 200만 에테르를 생산했으며, 총 가치는 30 억 달러 이상입니다.",
         "ITEM_2": "Bestrate - 전체 거래에서 15,000명 이상의 액티브 유저와 300만 달러 이상 거래 안의 암호화폐 결제 게이트웨이와 암호화의 집계",
-        "ITEM_3": "COSS는 Crypto One-Stop Solution의 약자입니다. 우리는 모든 물건을 암호화 할 수있는 원 스톱 상점입니다 : 교환기, 다양한 토큰을 지원하는 전자 지갑, ICO 실행 및 판촉 거래 캠페인을위한 플랫폼, fiat 게이트웨이, 시가 총액 위젯 등"
+        "ITEM_3": "COSS는 Crypto One-Stop Solution의 약자입니다. 우리는 모든 물건을 암호화 할 수있는 원 스톱 상점입니다 : 교환기, 다양한 토큰을 지원하는 전자 지갑, ICO 실행 및 판촉 거래 캠페인을위한 플랫폼, fiat 게이트웨이, 시가 총액 위젯 등",
+        "ITEM_4": "국제 플랫폼은 거래량 측면에서 세계 15 대 암호 화폐 거래소에 있으며 3 백만 명의 사용자에게 서비스를 제공합니다.거래소에는 토큰 거래, 마진 거래, 선물 및 옵션 계약이 있습니다. BitForex 고객은 약 300 개의 거래 쌍으로 거래 할 수 있습니다. BitForex는 암호 화폐 세계의 위험을 적시에 식별하고 식별하기 위해 디지털 자산의 글로벌 변화를 실시간으로 모니터링합니다."
       }
     },
     "SECTION_5": {
@@ -346,24 +347,36 @@
       "QIII19": "2019년 QIII",
       "QIV19": "2019년 QIV",
       "QI20": "2020년 QI",
+
       "SUCCESSFULLY": {
-        "TITLE": "성공적으로 달성했습니다.",
+        "TITLE": "Successfully reached",
         "LIST": {
-          "ITEM_1": "이더리움에서 Swaps 네트워크 출시 (모든 ERC-20 토큰을 지원)",
-          "ITEM_2": "단일 스마트 컨트랙트의 구현",
-          "ITEM_3": "기능적 \"브로커\" 구현"
+          "ITEM_1": "Launch SWAPS.NETWORK on Ethereum<br/>(with the support of all ERC-20 tokens)",
+          "ITEM_2": "Implementation<br/> of a single smart<br/> contract",
+          "ITEM_3": "Implementation <br/> of the functionality,<br/> “Broker”",
+
+          "ITEM_4": "Partnership with exchanges:<br/>BW.com, Coss.io, Bestrate.org",
+          "ITEM_5": "Run swaps on Enecuum blockchain",
+          "ITEM_6": "Launch OTC Global Liquidity pool.<br/>It accumulates all deals on the market",
+          "ITEM_7": "Launch trades enrollment for any pair<br/>(more than 2000 tokens supported)"
         }
       },
       "SOON": {
-        "TITLE": "곧 도달",
+        "TITLE": "Soon to be reached",
         "LIST": {
-          "ITEM_1": "P주요 거래소, 중앙 집중화된 OTC, 월렛으로 파트너십",
-          "ITEM_2": "R다른 두 블록체인으로 Swaps를 실행",
-          "ITEM_3": "리퍼럴 프로그램에 대한 API 실행",
-          "ITEM_4": "BTC를 위한 Swaps 실행",
-          "ITEM_5": "IIOS 및 안드로이드 모바일 어플리케이션",
-          "ITEM_6": "OTC 거래를 위한 클로스체인 솔루션 실행",
-          "ITEM_7": "SWAPS.NETWORK - 세계 OTC 물량면에서 선두 주자"
+          "ITEM_1": "Implementation of crypto-fiat and fiat-crypto solutions in partnership with banks and fintech projects",
+          "ITEM_2": "Implementing KYC by integrating with KYC providers (for the areas and cases where KYC needed)",
+          "ITEM_3": "Release OTC traders and escrow ratings",
+          "ITEM_4": "Partnerships with major exchanges, centralized OTC and wallets",
+          "ITEM_5": "Integration of SWAPS.NETWORK services to the exchanges",
+          "ITEM_6": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_7": "API implementation for the referral program",
+
+          "ITEM_8": "IOS & Android mobile application",
+          "ITEM_9": "Run swaps on two other blockchains (candidates: BNB, TRON, EOS, WAVES)",
+          "ITEM_10": "Run swaps on BTC",
+          "ITEM_11": "Run cross-chain solutions for OTC deals",
+          "ITEM_12": "SWAPS.NETWORK, the leader in terms of OTC volume in the world"
         }
       }
     },
@@ -537,7 +550,7 @@
         },
         "PART_4": {
           "LABEL": "총 공급량",
-          "VALUE": "100,000,000"
+          "VALUE": "10,000,000"
         },
         "PART_5": {
           "LABEL": "소매 가격",
@@ -545,7 +558,7 @@
         },
         "PART_6": {
           "LABEL": "하드 캡",
-          "VALUE": "3,000,000 달러"
+          "VALUE": "300,000 달러"
         }
       },
       "DISTRIBUTE": {
@@ -602,7 +615,7 @@
         "TABLE": {
           "TEXT": {
             "PART_1": "SWAP 소지자는 다음과 같은 최대 할인 혜택을 받을 수 있습니다 (보유량 및 시간에 따라 다름)",
-            "PART_2": "추가 방출 가능성 없이 1억 토큰이 출시됩니다. 나중에 모든 분산 토큰의 50 %를 소각합니다."
+            "PART_2": "추가 배출없이 천만 개의 토큰을 발행 할 것입니다. 나중에 모든 탈 중앙화 토큰의 50 %가 소각됩니다."
           },
           "YEAR": "연도",
           "DISCOUNT": "할인",
@@ -632,6 +645,16 @@
         },
         "PARTNER_7": {
           "TEXT": "COSS는 Crypto One-Stop Solution의 약자입니다. 우리는 모든 물건을 암호화 할 수있는 원 스톱 상점입니다 : 교환기, 다양한 토큰을 지원하는 전자 지갑, ICO 실행 및 판촉 거래 캠페인을위한 플랫폼, fiat 게이트웨이, 시가 총액 위젯 등"
+        },
+
+        "PARTNER_8": {
+          "TEXT": "개인 정보 보호 기술-프로젝트의 주요 아이디어를 가진 분산 익명 지불 시스템. 익명 성 외에도 Daps cryptocurrency는 보안 및 확장성에 중점을 둡니다. DAPS 프로젝트는 PoA (Proof of Audit)라는 완전히 새로운 프로토콜을 사용하여 완전히 익명 인 시스템에서 신뢰 문제를 해결하는 것을 목표로합니다."
+        },
+        "PARTNER_9": {
+          "TEXT": "블록 체인 및 암호 화폐를 새로운 수준으로 끌어 올릴 수 있고 분산 된 애플리케이션을위한 모바일 블록 체인 네트워크는 블록 체인 네트워크에 모바일 및 고정 장치를 포함시키고보다 빠르고 저렴한 WEB 3.0을 생성 할 수있는 DApp 개발자를위한 강력한 도구를 제공함으로써보다 쉽게 액세스 할 수있게합니다. 백만명의 사람들을위한 신청."
+        },
+        "PARTNER_10": {
+          "TEXT": "개인 정보 보호 기술-프로젝트의 주요 아이디어를 가진 분산 익명 지불 시스템. 익명 성 외에도 Daps cryptocurrency는 보안 및 확장성에 중점을 둡니다. DAPS 프로젝트는 PoA (Proof of Audit)라는 완전히 새로운 프로토콜을 사용하여 완전히 익명 인 시스템에서 신뢰 문제를 해결하는 것을 목표로합니다."
         }
       }
     },
@@ -655,7 +678,7 @@
     },
     "MODAL_FORM": {
       "TITLE_1": "9 월까지 무료로 저희 서비스를 이용해보십시오.",
-      "TITLE_2": "이메일과 전보를 남겨주세요. 교환기로 리디렉션됩니다.",
+      "TITLE_2": "Please leave your details and we will contact you",
       "FIELDS": {
         "EMAIL": {
           "LABEL": "이메일을 입력하십시오.",
@@ -671,7 +694,7 @@
       },
       "BUTTONS": {
         "BUTTON_1": "Try service",
-        "BUTTON_2": "IEO에 참여하십시오.",
+        "BUTTON_2": "Send",
         "CLOSE": "닫기"
       },
       "SUCCESS_MESSAGE": {
@@ -680,8 +703,8 @@
       }
     },
     "FLOAT_FOOTER": {
-      "TEXT": "귀하의 이메일을 남겨주세요. 우리의 서비스를 이용해 투자에 10 %의 추가 토큰을 받으십시오.",
-      "BUTTON": "어울리다"
+      "TEXT": "투자에 관심이 있다면",
+      "BUTTON": "연락"
     }
   }
 }

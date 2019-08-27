@@ -187,6 +187,10 @@ const routes: Routes = [
     redirectTo: '/trades'
   },
   {
+    path: 'reset/:uid/:token',
+    component: IndexComponent
+  },
+  {
     path: 'team',
     component: TeamComponent,
   },

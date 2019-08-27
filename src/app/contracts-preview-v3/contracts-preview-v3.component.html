@@ -13,11 +13,11 @@
           <span class="form-field_description rate-info">
             Rate:
             <span *ngIf="!revertedRate">
-              {{ rates.normal.dp(4).toFormat(rateFormat) }}
+              {{ rates.normal.dp(8).toFormat(rateFormat) }}
               {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
             </span>
             <span *ngIf="revertedRate">
-              {{ rates.reverted.dp(4).toFormat(rateFormat) }}
+              {{ rates.reverted.dp(8).toFormat(rateFormat) }}
               {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
             </span>
 

@@ -55,6 +55,7 @@ import {OwlModule} from 'ngx-owl-carousel';
 import {Observable} from 'rxjs';
 import {TransferHttpCacheModule} from '@nguniversal/common';
 import { CoinsListComponent } from './directives/coins-list/coins-list.component';
+import { ChangePasswordComponent } from './common/change-password/change-password.component';
 
 
 export class TranslateBrowserLoader implements TranslateLoader {
@@ -183,13 +184,15 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     IndexIcoComponent,
     IndexIcoHeaderComponent,
     IndexIcoFormComponent,
-    CoinsListComponent
+    CoinsListComponent,
+    ChangePasswordComponent
   ],
   entryComponents: [
     AuthComponent,
     TransactionComponent,
     ContactOwnerComponent,
-    IndexIcoFormComponent
+    IndexIcoFormComponent,
+    ChangePasswordComponent
   ],
   imports: [
     TransferHttpCacheModule,

@@ -317,6 +317,11 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
       return;
     }
     this.formIsSending = true;
+
+    if (window['dataLayer']) {
+      window['dataLayer'].push({event: 'publish'});
+    }
+
     this.contractsService[data.id ? 'updateSWAP3' : 'createSWAP3'](data)
       .then((result) => {
         this.contractIsCreated(result);
@@ -411,6 +416,8 @@ export class ContractEditV3Resolver implements Resolve<any> {
         observer.next(result);
         observer.complete();
       });
+    }, () => {
+      this.router.navigate(['/trades']);
     });
 
   }

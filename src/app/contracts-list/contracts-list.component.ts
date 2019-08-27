@@ -7,6 +7,7 @@ import {Observable} from 'rxjs';
 import {CONTRACT_STATES} from '../contract-preview/contract-states';
 import {UserInterface} from '../services/user/user.interface';
 import {MatDialog, MatDialogRef} from '@angular/material';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-contracts-list',
@@ -18,6 +19,8 @@ export class ContractsListComponent implements OnInit {
   public contractsList: any[] = [];
   public states = CONTRACT_STATES;
   private contractForDeleting;
+  public selectedFilter: any;
+
 
   @ViewChild('deleteConfirmation') deleteConfirmation;
   private deleteConfirmationModal: MatDialogRef<any>;
@@ -36,7 +39,7 @@ export class ContractsListComponent implements OnInit {
     });
 
     this.contractsList = this.route.snapshot.data.contracts;
-
+    this.selectedFilter = {};
   }
 
   ngOnInit() {
@@ -97,7 +100,66 @@ export class ContractsListComponent implements OnInit {
     });
   }
 
+  public applySort(sortName?: any) {
 
+    if (sortName) {
+      if (this.selectedFilter.name && this.selectedFilter.asc) {
+        sortName = undefined;
+      }
+      this.selectedFilter = {
+        name: sortName,
+        asc: this.selectedFilter.name === sortName
+      };
+    }
+
+    switch (this.selectedFilter.name) {
+      case 'creation':
+        this.contractsList = this.contractsList.sort((contract1, contract2) => {
+          if (this.selectedFilter.asc) {
+            return (new Date(contract1.created_date)).getTime() >
+            (new Date(contract2.created_date)).getTime() ? 1 : -1;
+          } else {
+            return (new Date(contract2.created_date)).getTime() >
+            (new Date(contract1.created_date)).getTime() ? 1 : -1;
+          }
+        });
+        break;
+      case 'expire':
+        this.contractsList = this.contractsList.sort((contract1, contract2) => {
+
+          const date1 = contract1.stop_date || contract1.contract_details.stop_date;
+          const date2 = contract2.stop_date || contract2.contract_details.stop_date;
+
+          if (this.selectedFilter.asc) {
+            return (new Date(date1)).getTime() >
+            (new Date(date2)).getTime() ? 1 : -1;
+          } else {
+            return (new Date(date2)).getTime() >
+            (new Date(date1)).getTime() ? 1 : -1;
+          }
+        });
+        break;
+
+      case 'status':
+        this.contractsList = this.contractsList.sort((contract1, contract2) => {
+          if (this.selectedFilter.asc) {
+            return (this.states[contract1.state].NUMBER >
+            this.states[contract2.state].NUMBER) ? 1 : -1;
+          } else {
+            return (this.states[contract2.state].NUMBER >
+            this.states[contract1.state].NUMBER) ? 1 : -1;
+          }
+        });
+
+        break;
+
+      default:
+        this.contractsList = this.contractsList.sort((contract1, contract2) => {
+          return (new Date(contract2.created_date) < new Date(contract1.created_date)) ? -1 : 1;
+        });
+    }
+
+  }
 
 }
 
