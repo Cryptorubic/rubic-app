@@ -4,13 +4,13 @@
     <div class="invite-form_title" *ngIf="!data.fullForm" translate="INDEX_PAGE.MODAL_FORM.TITLE_1"></div>
     <div class="invite-form_title" *ngIf="data.fullForm" translate="INDEX_PAGE.MODAL_FORM.TITLE_2"></div>
 
-    <!-- div class="invite-form-field" *ngIf="data.fullForm">
+    <div class="invite-form-field" *ngIf="data.fullForm">
       <div class="invite-form-field_input icon-field icon-field__username">
         <input type="text" [placeholder]="'INDEX_PAGE.MODAL_FORM.FIELDS.NAME.PLACEHOLDER'|translate"
                [(ngModel)]="request.name"
                name="name">
       </div>
-    </div -->
+    </div>
 
     <div class="invite-form-field">
       <div class="invite-form-field_label" *ngIf="!data.fullForm" translate="INDEX_PAGE.MODAL_FORM.FIELDS.EMAIL.LABEL"></div>

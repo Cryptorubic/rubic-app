@@ -92,6 +92,8 @@ export class Web3Service {
     [address: string]: any
   };
 
+  private currentCall;
+
 
   public getSignedMetaMaskMsg(msg, addr) {
 
@@ -127,14 +129,6 @@ export class Web3Service {
     })[0];
   }
 
-  public tokenContract(address) {
-    return this.Web3.eth.Contract(ERC20_TOKEN_ABI, address);
-  }
-
-  public BatchRequest() {
-    return new this.Web3.BatchRequest();
-  }
-
   private convertTokenInfo(tokenInfo) {
     return (tokenInfo && tokenInfo.name) ? {
       token_short_name: tokenInfo.symbol,
@@ -151,13 +145,12 @@ export class Web3Service {
         resolve({...EthereumCoin});
       } else {
         let tokenObject;
-        if (!withoutSearch) {
-          tokenObject = window['cmc_tokens'].filter((tk) => {
-            return tk.isEthereum && (tk.address.toLowerCase() === tokenAddress.toLowerCase());
-          })[0];
-        }
 
-        this.getTokenInfo(tokenAddress).then((tokenInfo: {data: TokenInfoInterface}) => {
+        tokenObject = window['cmc_tokens'].filter((tk) => {
+          return tk.isEthereum && (tk.address.toLowerCase() === tokenAddress.toLowerCase());
+        })[0];
+
+        this.getTokenInfo(tokenAddress, tokenObject).then((tokenInfo: {data: TokenInfoInterface}) => {
           const convertedToken = this.convertTokenInfo(tokenInfo.data);
           if (convertedToken) {
             const returnCoin = tokenObject ? {...tokenObject} : {...convertedToken};
@@ -173,11 +166,13 @@ export class Web3Service {
     });
   }
 
-  public getTokenInfo(tokenAddress) {
-    const tokenInfoFields = ['decimals', 'symbol', 'name'];
-
+  public getTokenInfo(tokenAddress, tokenObject?) {
+    const tokenInfoFields = !tokenObject ? ['decimals', 'symbol', 'name'] : ['decimals'];
     let fieldsCount = tokenInfoFields.length;
-    const tokenInfo: any = {};
+    const tokenInfo: any = tokenObject ? {
+      symbol: tokenObject.token_short_name,
+      name: tokenObject.token_name
+    } : {};
 
     const address = tokenAddress ? tokenAddress.toLowerCase() : tokenAddress;
 
@@ -217,9 +212,10 @@ export class Web3Service {
       }
       const contract = this.Web3.eth.Contract(ERC20_TOKEN_ABI, address);
 
-      tokenInfoFields.map((method) => {
 
-        contract.methods[method]().call().then(result => {
+      const callMethod = (methodCall, method) => {
+        const promise = methodCall.call();
+        promise.then(result => {
           if ((method !== 'symbol') && (result === null)) {
             reject({
               tokenAddress: true
@@ -253,7 +249,21 @@ export class Web3Service {
             }
           }
         });
+        this.currentCall = false;
+        return promise;
+      };
 
+      tokenInfoFields.map((method) => {
+
+        const methodCall = contract.methods[method]();
+
+        if (!this.currentCall) {
+          this.currentCall = callMethod(methodCall, method);
+        } else {
+          this.currentCall.then((result) => {
+            this.currentCall = callMethod(methodCall, method);
+          });
+        }
       });
     }).then((res) => {
       return res;

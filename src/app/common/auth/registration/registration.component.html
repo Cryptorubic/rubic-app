@@ -33,6 +33,7 @@
              formControlName="password1"
              [ngClass]="{
                 'ng-invalid-server': ServerErrors.password1,
+                'ng-invalid-minlength': f.password1.errors?.minlength,
                 'ng-invalid-required': f.password1.errors?.required,
                 'ng-invalid': f.password1.errors || ServerErrors.password1
              }"

@@ -75,7 +75,6 @@ export class RegistrationComponent implements OnInit {
     this._userService.registration(this.registrationForm.value).then((response) => {
       this.registered(this.registrationForm.value.username);
     }, (error) => {
-      console.log(error);
       switch (error.status) {
         case 403:
 

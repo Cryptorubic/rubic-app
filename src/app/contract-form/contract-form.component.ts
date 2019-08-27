@@ -332,6 +332,11 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
       return;
     }
     this.formIsSending = true;
+
+    if (window['dataLayer']) {
+      window['dataLayer'].push({event: 'publish'});
+    }
+
     this.contractsService[data.id ? 'updateContract' : 'createContract'](this.formData)
       .then((result) => {
         this.contractIsCreated(result);
