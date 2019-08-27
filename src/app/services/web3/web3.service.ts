@@ -92,6 +92,8 @@ export class Web3Service {
     [address: string]: any
   };
 
+  private currentCall;
+
 
   public getSignedMetaMaskMsg(msg, addr) {
 
@@ -164,7 +166,6 @@ export class Web3Service {
     });
   }
 
-
   public getTokenInfo(tokenAddress, tokenObject?) {
     const tokenInfoFields = !tokenObject ? ['decimals', 'symbol', 'name'] : ['decimals'];
     let fieldsCount = tokenInfoFields.length;
@@ -211,8 +212,10 @@ export class Web3Service {
       }
       const contract = this.Web3.eth.Contract(ERC20_TOKEN_ABI, address);
 
-      tokenInfoFields.map((method) => {
-        contract.methods[method]().call().then(result => {
+
+      const callMethod = (methodCall, method) => {
+        const promise = methodCall.call();
+        promise.then(result => {
           if ((method !== 'symbol') && (result === null)) {
             reject({
               tokenAddress: true
@@ -246,7 +249,21 @@ export class Web3Service {
             }
           }
         });
+        this.currentCall = false;
+        return promise;
+      };
 
+      tokenInfoFields.map((method) => {
+
+        const methodCall = contract.methods[method]();
+
+        if (!this.currentCall) {
+          this.currentCall = callMethod(methodCall, method);
+        } else {
+          this.currentCall.then((result) => {
+            this.currentCall = callMethod(methodCall, method);
+          });
+        }
       });
     }).then((res) => {
       return res;
