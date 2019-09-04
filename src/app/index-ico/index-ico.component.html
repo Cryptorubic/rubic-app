@@ -4,42 +4,46 @@
 
   <section class="section-1">
     <div class="app-content-block">
-      <a href="https://coss.io/c/accounts/ieo_list"
-         target="_blank"
-         class="section-1_timer" [ngClass]="{started: leftSeconds === 0}">
-        <div class="section-1_timer_circle">
 
-          <div class="spinner-wrapper">
-            <div class="spinner-pie spinner" [ngStyle]="{transform: 'rotate('+timerArcDeg+'deg)'}"></div>
-            <div class="spinner-pie filler"></div>
-            <div class="spinner-mask"></div>
-          </div>
+      <!--[ngClass]="{started: leftSeconds === 0}"-->
+
+      <a routerLink="/trades"
+         class="section-1_timer started">
+        <div class="section-1_timer_circle">
+          <!--<div class="spinner-wrapper">-->
+            <!--<div class="spinner-pie spinner" [ngStyle]="{transform: 'rotate('+timerArcDeg+'deg)'}"></div>-->
+            <!--<div class="spinner-pie filler"></div>-->
+            <!--<div class="spinner-mask"></div>-->
+          <!--</div>-->
         </div>
-        <div class="section-1_timer_text button"><br/>
-          <div><b translate="INDEX_PAGE.SECTION_1.AFTER_START.TEXT"></b>&nbsp;</div>
-          <span class="new-btn" translate="INDEX_PAGE.SECTION_1.AFTER_START.BUTTON"></span>
+
+        <div class="section-1_timer_text button">
+          <!--<div><b translate="INDEX_PAGE.SECTION_1.AFTER_START.TEXT"></b>&nbsp;</div>-->
+          <!--<span class="new-btn" translate="INDEX_PAGE.SECTION_1.AFTER_START.BUTTON"></span>-->
+          <span class="new-btn" translate="INDEX_PAGE.HEADER.BUTTON"></span>
         </div>
-        <div class="section-1_timer_text">
-          <span [innerHTML]="'INDEX_PAGE.SECTION_1.TIMER.TITLE'|translate"></span>
-          <div class="section-1_timer_clock" *ngIf="timerDigits">
-            <div class="timer_clock_block">
-              <div class="timer_clock_block_digit">{{timerDigits.days}}</div>
-              <div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.DAYS"></div>
-            </div>
-            <div class="timer_clock_block">
-              <div class="timer_clock_block_digit">{{timerDigits.hours}}</div>
-              <div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.HOURS"></div>
-            </div>
-            <div class="timer_clock_block">
-              <div class="timer_clock_block_digit">{{timerDigits.minutes}}</div>
-              <div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.MINUTES"></div>
-            </div>
-            <div class="timer_clock_block">
-              <div class="timer_clock_block_digit">{{timerDigits.seconds}}</div>
-              <div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.SECONDS"></div>
-            </div>
-          </div>
-        </div>
+
+        <!--<div class="section-1_timer_text">-->
+          <!--<span [innerHTML]="'INDEX_PAGE.SECTION_1.TIMER.TITLE'|translate"></span>-->
+          <!--<div class="section-1_timer_clock" *ngIf="timerDigits">-->
+            <!--<div class="timer_clock_block">-->
+              <!--<div class="timer_clock_block_digit">{{timerDigits.days}}</div>-->
+              <!--<div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.DAYS"></div>-->
+            <!--</div>-->
+            <!--<div class="timer_clock_block">-->
+              <!--<div class="timer_clock_block_digit">{{timerDigits.hours}}</div>-->
+              <!--<div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.HOURS"></div>-->
+            <!--</div>-->
+            <!--<div class="timer_clock_block">-->
+              <!--<div class="timer_clock_block_digit">{{timerDigits.minutes}}</div>-->
+              <!--<div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.MINUTES"></div>-->
+            <!--</div>-->
+            <!--<div class="timer_clock_block">-->
+              <!--<div class="timer_clock_block_digit">{{timerDigits.seconds}}</div>-->
+              <!--<div class="timer_clock_block_label" translate="INDEX_PAGE.SECTION_1.TIMER.SECONDS"></div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
       </a>
       <div class="section-1_left">
         <h1 [innerHTML]="'INDEX_PAGE.SECTION_1.TITLE'|translate"></h1>
@@ -51,11 +55,11 @@
         </p>
       </div>
       <div class="section-1_menu">
-        <a href="https://coss.io/c/accounts/ieo_list"
-           target="_blank"
-           class="new-btn new-btn-yellow">
-          <span translate="INDEX_PAGE.SECTION_1.MENU.BUTTON"></span>
-        </a>
+        <!--<a href="https://coss.io/c/accounts/ieo_list"-->
+           <!--target="_blank"-->
+           <!--class="new-btn new-btn-yellow">-->
+          <!--<span translate="INDEX_PAGE.SECTION_1.MENU.BUTTON"></span>-->
+        <!--</a>-->
         <div class="section-1_menu_links">
           <ul>
             <li>

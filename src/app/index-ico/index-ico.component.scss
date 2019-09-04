@@ -46,7 +46,8 @@ button, input {
       top: 50%;
       font-size: 18px;
       line-height: 25px;
-      margin-top: -70px;
+      margin-top: -21px;
+      //margin-top: -70px;
       left: 0;
       right: 0;
       text-align: center;
@@ -148,7 +149,6 @@ button, input {
       font-weight: bold;
       background-color: #3b4352;
       color: #F8DB14;
-      margin-top: 10px;
       display: none;
     }
     &.started .new-btn {
