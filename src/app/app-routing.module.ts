@@ -47,6 +47,9 @@ export const MODE = currMode;
 const routes: Routes = [
   {
     path: '',
+    component: IndexComponent
+  }, {
+    path: 'about',
     component: IndexIcoComponent,
     data: {
       noheader: true
@@ -83,7 +86,8 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: IndexComponent
+        redirectTo: '/',
+        pathMatch: 'full'
       },
       {
         path: 'create',
