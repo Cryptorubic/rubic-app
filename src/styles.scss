@@ -157,7 +157,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 .watch-instruction-btn {
   position: fixed;
   left: 50%;
-  top: 287px;
+  top: 135px;
   bottom: auto;
   right: auto;
   margin-left: 207px;
@@ -173,10 +173,13 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     }
   }
 }
+.with-support .watch-instruction-btn {
+  top: 205px;
+}
 #livechat-compact-container {
   position: fixed!important;
   left: 50%!important;
-  top: 200px!important;
+  top: 135px!important;
   bottom: auto!important;
   right: auto!important;
   margin-left: 207px!important;
@@ -243,7 +246,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 
 
 .base-block-content {
-  padding-top: 200px;
+  padding-top: 129px;
   // background: transparent url('/assets/images/backgrounds/bg-gradient.png') no-repeat center top;
   // background-size: 100%;
   min-height: 100vh;

@@ -94,8 +94,18 @@ export class PublicContractsComponent implements OnInit {
       this.web3Service.getSWAPSCoinInfo(contract.contract_details).then((trade: any) => {
         const baseToken = contract.contract_details.tokens_info.base.token;
         const quoteToken = contract.contract_details.tokens_info.quote.token;
+
+        contract.contract_details.base_filled =
+          new BigNumber(contract.contract_details.base_amount_contributed)
+            .div(contract.contract_details.base_limit).times(100).dp(0).toString();
+
+        contract.contract_details.quote_filled =
+          new BigNumber(contract.contract_details.quote_amount_contributed)
+            .div(contract.contract_details.quote_limit).times(100).dp(0).toString();
+
         contract.contract_details.base_token_info = baseToken;
         contract.contract_details.quote_token_info = quoteToken;
+
         contract.contract_details.base_token_info.amount =
           new BigNumber(contract.contract_details.base_limit).div(Math.pow(10, baseToken.decimals)).dp(8);
         contract.contract_details.quote_token_info.amount =

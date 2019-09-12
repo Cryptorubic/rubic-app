@@ -12,6 +12,114 @@
 .preview-container {
   padding: 19px 15px;
   background-color: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  &_title {
+    font-size: 28px;
+    line-height: 38px;
+    font-weight: 600;
+  }
+  + .preview-container {
+    &:not(.closed) {
+      margin-top: 5px;
+    }
+  }
+  &_reminder {
+    position: relative;
+    transition: all linear 0.1s;
+    box-sizing: border-box;
+    &.closed {
+      height: 0;
+      opacity: 0;
+      overflow: hidden;
+      margin: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    &__title {
+      font-size: 24px;
+      line-height: 27px;
+      font-weight: bold;
+    }
+    &__description {
+      margin-top: 10px;
+      font-size: 18px;
+      line-height: 18px;
+    }
+    &__list {
+      font-size: 18px;
+      line-height: 18px;
+      margin: 8px 0 0;
+      padding: 0;
+      list-style-type: none;
+      .copy-text {
+        &.copied {
+          &:after {
+            font-weight: 100;
+            content: 'copied';
+            display: inline-block;
+            padding: 5px 10px;
+            margin: -5px 10px;
+            border-radius: 2px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            vertical-align: bottom;
+          }
+        }
+      }
+      .as_link {
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+          color: #fcd600;
+        }
+      }
+      li {
+        margin: 0 0 0 37px;
+        padding: 8px;
+        counter-increment: ReminderItem;
+        overflow: visible;
+        position: relative;
+        &:before {
+          content: counter(ReminderItem);
+          display: block;
+          position: absolute;
+          top: 3px;
+          left: -37px;
+          border: 1px solid #FCD600;
+          width: 22px;
+          height: 22px;
+          font-size: 16px;
+          line-height: 25px;
+          text-align: center;
+        }
+      }
+    }
+    &__closer {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: none;
+      border: 0 none;
+      width: 16px;
+      height: 16px;
+      padding: 6px 0;
+      cursor: pointer;
+      &:after, &:before {
+        display: block;
+        content: '';
+        height: 1px;
+        background: #fff;
+        position: relative;
+      }
+      &:after {
+        top: -1px;
+        transform: rotate(45deg);
+      }
+      &:before {
+        transform: rotate(-45deg);
+      }
+    }
+  }
 }
 
 .revert-btn {
@@ -25,6 +133,8 @@
   vertical-align: middle;
   background-color: rgba(216, 216, 216, 0.26);
   cursor: pointer;
+  position: relative;
+  top: -2px;
   img {
     margin-top: -2px;
     width: 14px;

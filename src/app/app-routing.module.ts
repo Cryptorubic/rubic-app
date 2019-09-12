@@ -176,9 +176,6 @@ const routes: Routes = [
         component: ContractsListComponent,
         resolve: {
           contracts: ContractsListResolver
-        },
-        data: {
-          support: true
         }
       }
     ]
