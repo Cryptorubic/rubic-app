@@ -594,7 +594,7 @@
                 <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
 
                   <div class="form-field">
-                    <ul class="radio-buttons-list" *ngIf="isEthereumSwap">
+                    <ul class="radio-buttons-list" [hidden]="!isEthereumSwap">
                       <li>
                         <label class="radio-button-decorated">
                           <input type="radio"
