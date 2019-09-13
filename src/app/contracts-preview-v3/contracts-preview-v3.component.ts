@@ -13,7 +13,7 @@ import {ContractsService} from '../services/contracts/contracts.service';
 import {UserInterface} from '../services/user/user.interface';
 import {UserService} from '../services/user/user.service';
 
-import {SWAPS_V2} from '../contract-form-two/contract-v2-details';
+import {SWAPS_V2} from '../contract-form-all/contract-v2-details';
 import {ContactOwnerComponent} from '../contact-owner/contact-owner.component';
 import {IContractV3} from '../contract-form-all/contract-form-all.component';
 

@@ -34,9 +34,7 @@ import {ContractsListComponent, ContractsListResolver} from './contracts-list/co
 import { FooterComponent } from './footer/footer.component';
 import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
 import {ClipboardModule} from 'ngx-clipboard';
-import { ContractFormTwoComponent } from './contract-form-two/contract-form-two.component';
 import {BigNumberDirective, BigNumberFormat, BigNumberMax, BigNumberMin} from './directives/big-number/big-number.directive';
-import { ContractPreviewTwoComponent } from './contract-preview-two/contract-preview-two.component';
 import { ContactOwnerComponent } from './contact-owner/contact-owner.component';
 import { TeamComponent } from './team-component/team.component';
 import { RoadmapComponent } from './roadmap-component/roadmap.component';
@@ -117,7 +115,7 @@ export function appInitializerFactory(translate: TranslateService, userService: 
               token.isEther = true;
             }
             token.platform = token.platform || token.token_name.toLowerCase();
-            token.isEthereum = token.platform === 'ethereum';
+            token.isEthereum = (token.platform === 'ethereum') && (token.address);
 
             if (token.platform !== 'fiat') {
               token.decimals = 8;
@@ -168,9 +166,7 @@ export function appInitializerFactory(translate: TranslateService, userService: 
     BigNumberMin,
     BigNumberMax,
     PublicContractsComponent,
-    ContractFormTwoComponent,
     BigNumberDirective,
-    ContractPreviewTwoComponent,
 
     MinMaxDirective,
     ContactOwnerComponent,

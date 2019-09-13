@@ -13,7 +13,7 @@
 
         <div class="preview-container preview-container_reminder"
              [ngClass]="{closed: isRemindered || (originalContract.contract_state !== 'CREATED')}"
-             *ngIf="originalContract.isAuthor">
+             *ngIf="originalContract.isAuthor && originalContract.isEthereum">
           <div class="preview-container_reminder__title">
             Reminder
           </div>

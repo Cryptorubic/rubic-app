@@ -3,7 +3,7 @@ import {ContractsService} from '../../services/contracts/contracts.service';
 import {TokenInfoInterface, Web3Service} from '../../services/web3/web3.service';
 
 import BigNumber from 'bignumber.js';
-import {SWAPS_V2} from '../../contract-form-two/contract-v2-details';
+import {SWAPS_V2} from '../../contract-form-all/contract-v2-details';
 import {HttpClient} from '@angular/common/http';
 import {IContract} from '../../contract-form/contract-form.component';
 import {UserInterface} from '../../services/user/user.interface';

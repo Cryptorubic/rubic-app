@@ -1,10 +1,10 @@
-import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import {ContractFormComponent, IContract, IContractDetails, MY_FORMATS} from '../contract-form/contract-form.component';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {UserService} from '../services/user/user.service';
 import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
 import {ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router} from '@angular/router';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker} from '@angular/material';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker, MatDialog, MatDialogRef} from '@angular/material';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 
 import BigNumber from 'bignumber.js';
@@ -64,7 +64,9 @@ export interface IContractV3 {
   contract_state?: string;
 
   isEthereum?: boolean;
-
+  notification_type: number;
+  notification_tg: string;
+  notification_email: string;
 }
 
 
@@ -87,6 +89,9 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   @Output() QuoteTokenChange = new EventEmitter<string>();
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
+
+
+  @ViewChild('contactsReminderModal') contactsReminderModal: TemplateRef<any>;
 
   public originalContract: IContractV3;
 
@@ -122,6 +127,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   @ViewChild('extraForm') public extraForm;
 
   @ViewChild('brokersForm') private brokersForm;
+  @ViewChild('notificationForm') private notificationForm;
 
 
   constructor(
@@ -129,7 +135,8 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     private userService: UserService,
     private location: Location,
     private route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
+    private dialog: MatDialog
   ) {
 
     this.originalContract = this.route.snapshot.data.contract;
@@ -150,7 +157,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
     this.minDate = moment().add(1, 'hour');
     const startDateTime = moment(this.minDate);
-    this.datePickerDate = startDateTime.add(1, 'hour');
+    this.datePickerDate = startDateTime.add(2, 'day');
     this.datePickerTime = `${startDateTime.hour()}:${startDateTime.minutes()}`;
 
   }
@@ -158,13 +165,12 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
 
   ngOnInit() {
-    const draftData = localStorage.getItem('form_new_values');
-
     if (this.originalContract) {
-      this.requestData = {...this.originalContract};
+      this.requestData = {...this.originalContract as IContractV3};
       this.gotToForm(100);
     } else {
-      this.requestData = draftData ? JSON.parse(draftData) : {
+      this.requestData = {
+        notification_type: 1,
         tokens_info: {
           base: {
             token: {},
@@ -173,13 +179,24 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
             token: {},
           }
         }
-      };
+      } as IContractV3;
 
       this.requestData.public = true;
       this.originalContract = {...this.requestData};
       this.gotToForm(0);
     }
 
+  }
+
+
+  public checkContactsReminder() {
+    if (!this.requestData.notification_type) {
+      this.dialog.open(this.contactsReminderModal, {
+        width: '480px'
+      });
+    } else {
+      this.gotToForm(100);
+    }
   }
 
   ngAfterContentInit() {
@@ -203,7 +220,8 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   }
 
   get isEthereumSwap() {
-    return this.requestData.tokens_info.quote.token.isEthereum && this.requestData.tokens_info.base.token.isEthereum;
+    return this.requestData.tokens_info.quote.token.isEthereum &&
+      this.requestData.tokens_info.base.token.isEthereum;
   }
 
   get tokens() {
@@ -336,7 +354,8 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
     this.formData = {
       ...tokenForm.value,
-      ...advancedForm.value
+      ...advancedForm.value,
+      ...this.notificationForm.value
     } as IContractV3;
 
     this.formData.comment = this.requestData.comment;

@@ -4,8 +4,7 @@ import {IndexComponent} from './index/index.component';
 import {ContractEditResolver, ContractFormComponent} from './contract-form/contract-form.component';
 import {ContractPreviewComponent} from './contract-preview/contract-preview.component';
 import {ContractsListComponent, ContractsListResolver} from './contracts-list/contracts-list.component';
-import {ContractFormTwoComponent} from './contract-form-two/contract-form-two.component';
-import {ContractPreviewTwoComponent} from './contract-preview-two/contract-preview-two.component';
+
 import { TeamComponent } from './team-component/team.component';
 import { RoadmapComponent } from './roadmap-component/roadmap.component';
 import { FaqComponent } from './faq-component/faq.component';

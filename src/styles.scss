@@ -394,7 +394,12 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     margin: 5px 0;
   }
   &-transparent {
-    background-color: transparent;
+    &:not(.with-bg) {
+      background-color: transparent;
+    }
+    &.with-bg {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
     border: 1px solid #B9BDC2;
     border-left-width: 5px;
     &:not([disabled]):hover {
@@ -688,14 +693,16 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   }
   &_description {
     font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
     &:not(.normal-font) {
-      color: rgba(255, 255, 255, 0.5);
       text-transform: uppercase;
     }
     &.normal-font {
       font-size: 15px;
       &, a {
-        color: #fff!important;
+        &:not(.transparent) {
+          color: #fff!important;
+        }
       }
       a {
         &:hover {
