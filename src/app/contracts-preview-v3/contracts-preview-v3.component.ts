@@ -327,6 +327,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       const contractState = this.originalContract.contract_state;
       const ownerAddress = this.originalContract.owner_address;
       const isAuthor = this.originalContract.isAuthor;
+      const isEthereum = this.originalContract.isEthereum;
 
       this.originalContract = result;
       this.originalContract.tokens_info = tokens_info;
@@ -337,6 +338,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       this.originalContract.isAuthor = isAuthor;
       this.originalContract.unique_link_url =
         this.contractAdditional.link;
+      this.originalContract.isEthereum = isEthereum;
 
     }).finally(() => {
       this.analyzeContract();
@@ -455,8 +457,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
     const trxRequest = [
       details.memo_contract,
-      details.base_address,
-      details.quote_address,
+      details.tokens_info.base.token.address,
+      details.tokens_info.quote.token.address,
       (details.base_limit || '0').toString(),
       (details.quote_limit || '0').toString(),
       Math.round((new Date(details.stop_date)).getTime() / 1000),

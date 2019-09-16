@@ -64,7 +64,7 @@ export interface IContractV3 {
   contract_state?: string;
 
   isEthereum?: boolean;
-  notification_type: number;
+  notification?: boolean;
   notification_tg: string;
   notification_email: string;
 }
@@ -170,7 +170,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
       this.gotToForm(100);
     } else {
       this.requestData = {
-        notification_type: 1,
+        notification: true,
         tokens_info: {
           base: {
             token: {},
@@ -190,7 +190,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
 
   public checkContactsReminder() {
-    if (!this.requestData.notification_type) {
+    if (!this.requestData.notification) {
       this.dialog.open(this.contactsReminderModal, {
         width: '480px'
       });
@@ -431,7 +431,11 @@ export class ContractEditV3Resolver implements Resolve<any> {
       this.contractsService.getSwapByPublic(this.publicLink);
 
     promise.then((trade: IContractV3) => {
-      this.web3Service.getSWAPSCoinInfo(trade).then((result) => {
+      this.web3Service.getSWAPSCoinInfo(trade).then((result: any) => {
+        if (result.tokens_info.base.token.isEthereum && result.tokens_info.quote.token.isEthereum) {
+          result.isEthereum = true;
+        }
+
         observer.next(result);
         observer.complete();
       });

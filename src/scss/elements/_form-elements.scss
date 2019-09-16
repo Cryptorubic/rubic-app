@@ -172,6 +172,7 @@
     left: 0;
     top: -7px;
     cursor: pointer;
+    border-radius: 50%;
   }
 
   &_input[readonly] + &_mask {

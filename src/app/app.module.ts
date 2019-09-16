@@ -103,9 +103,11 @@ export function appInitializerFactory(translate: TranslateService, userService: 
       const subscriber = userService.getCurrentUser(true).subscribe((user: UserInterface) => {
 
         httpService.get('get_coinmarketcap_tokens/').toPromise().then((tokens) => {
-          tokens = tokens.sort((a, b) => {
 
-            return (a.rank || 100000) > (b.rank || 100000) ? 1 : -1;
+          tokens = tokens.sort((a, b) => {
+            const aRank = a.rank || 100000;
+            const bRank = b.rank || 100000;
+            return aRank > bRank ? 1 : aRank < bRank ? -1 : 0;
           });
 
           tokens.forEach((token) => {
@@ -115,7 +117,7 @@ export function appInitializerFactory(translate: TranslateService, userService: 
               token.isEther = true;
             }
             token.platform = token.platform || token.token_name.toLowerCase();
-            token.isEthereum = (token.platform === 'ethereum') && (token.address);
+            token.isEthereum = !!((token.platform === 'ethereum') && (token.address));
 
             if (token.platform !== 'fiat') {
               token.decimals = 8;

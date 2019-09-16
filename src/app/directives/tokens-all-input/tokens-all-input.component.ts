@@ -70,31 +70,24 @@ export class TokensAllInputComponent implements OnInit {
       this.searchSubscriber.unsubscribe();
     }
 
-    if (!q) {
-      this.tokensList = window['cmc_tokens'].slice(6, 16);
-    } else {
-      const result = [];
-      let indexToken = 0;
-      while ((indexToken < (window['cmc_tokens'].length - 1)) && (result.length < 10)) {
-        const token = window['cmc_tokens'][indexToken];
-        const tokenName = token.token_name.toLowerCase();
-        const tokenSymbol = token.token_short_name.toLowerCase();
-        const seqrchQ = q.toLowerCase();
+    const result = [];
+    let indexToken = q ? 0 : 6;
+    while ((indexToken < (window['cmc_tokens'].length - 1)) && (result.length < 10)) {
+      const token = window['cmc_tokens'][indexToken];
+      const tokenName = token.token_name.toLowerCase();
+      const tokenSymbol = token.token_short_name.toLowerCase();
+      const seqrchQ = q.toLowerCase();
 
-        const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
-        const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
+      const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
+      const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
 
-        if ((nameIndexMatch || symbolIndexMatch) && (!this.blockchain || (this.blockchain === token.platform))) {
-          result.push({...token});
-        }
-        indexToken++;
+      if ((nameIndexMatch || symbolIndexMatch) && (!this.blockchain || (this.blockchain === token.platform))) {
+        result.push({...token});
       }
-
-      this.tokensList = result;
+      indexToken++;
     }
 
-
-
+    this.tokensList = result;
 
     if (this.tokensList.length) {
       this.listIsOpened = true;

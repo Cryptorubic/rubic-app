@@ -60,7 +60,7 @@
                     'form-block__active': editableContract
                 }">
             <div class="form-block_title" (click)="openedForm = editableContract ? 0 : openedForm">
-              Basic options
+              Choose your token and amount
             </div>
             <div class="form-block_fieldset">
               <!-- Выбор токена -->
@@ -594,83 +594,64 @@
                 <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
 
                   <div class="form-field">
-                    <ul class="radio-buttons-list" [hidden]="!isEthereumSwap">
-                      <li>
-                        <label class="radio-button-decorated">
-                          <input type="radio"
-                                 [value]="1"
-                                 [(ngModel)]="requestData.notification_type"
-                                 name="notification_type"
-                                 class="radio-button-decorated_input">
-                          <span class="radio-button-decorated_mask"></span>
-                          <span class="radio-button-decorated_label">
-                            I want to receive a notification about my trade
-                          </span>
-                        </label>
-                      </li>
-                      <li>
-                        <label class="radio-button-decorated">
-                          <input type="radio"
-                                 [value]="2"
-                                 [(ngModel)]="requestData.notification_type"
-                                 name="notification_type"
-                                 class="radio-button-decorated_input">
-                          <span class="radio-button-decorated_mask"></span>
-                          <span class="radio-button-decorated_label">
-                            I want to be contacted when there is a second party
-                          </span>
-                        </label>
-                      </li>
-                      <li>
-                        <label class="radio-button-decorated">
-                          <input type="radio"
-                                 [value]="0"
-                                 [(ngModel)]="requestData.notification_type"
-                                 name="notification_type"
-                                 class="radio-button-decorated_input">
-                          <span class="radio-button-decorated_mask"></span>
-                          <span class="radio-button-decorated_label">
-                            I don`t want to receive any notification
-                          </span>
-                        </label>
-                      </li>
-                    </ul>
+                    <div class="form-field">
+                      <div class="grid-row">
+                        <div class="grid-cell">
+                          <div class="form-field_input">
+                            <label class="form-field_input-checkbox">
+                              <input type="checkbox"
+                                     name="notification"
+                                     [value]="true"
+                                     [(ngModel)]="requestData.notification">
+                              <span class="checkbox-text checkbox-text_on">Yes</span>
+                              <span class="checkbox-text checkbox-text_off">No</span>
+                              <span class="checkbox-rect"></span>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="grid-cell">
+                          <div class="form-field_small-desc for-checkbox">
+                            <span>I want to receive notifications about my trade</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngIf="requestData.notification">
+
                     <div class="form-field_description normal-font transparent" [ngClass]="{'no-top-margin': !isEthereumSwap}">
                       <span>Please fill in your contact details</span>
                     </div>
-                  </div>
+                    <div class="form-field">
+                      <label class="form-field_label">
+                        Email
+                      </label>
+                      <div class="form-field_input">
+                        <input type="email"
+                               [email]="true"
+                               [required]="!requestData.notification_tg"
+                               class="min-text"
+                               [(ngModel)]="requestData.notification_email"
+                               placeholder="Enter your email"
+                               name="notification_email">
+                      </div>
+                    </div>
 
-                  <div class="form-field">
-                    <label class="form-field_label">
-                      Email
-                    </label>
-                    <div class="form-field_input">
-                      <input type="email"
-                             [email]="!!requestData.notification_type"
-                             [required]="requestData.notification_type && !requestData.notification_tg"
-                             [disabled]="!requestData.notification_type"
-                             class="min-text"
-                             [(ngModel)]="requestData.notification_email"
-                             placeholder="Enter your email"
-                             name="notification_email">
+                    <div class="form-field">
+                      <label class="form-field_label">
+                        Telegram
+                      </label>
+                      <div class="form-field_input">
+                        <input type="text"
+                               [required]="!requestData.notification_email"
+                               class="min-text"
+                               [(ngModel)]="requestData.notification_tg"
+                               placeholder="Enter your Telegram"
+                               name="notification_tg">
+                      </div>
                     </div>
                   </div>
-
-                  <div class="form-field">
-                    <label class="form-field_label">
-                      Telegram
-                    </label>
-                    <div class="form-field_input">
-                      <input type="text"
-                             [required]="requestData.notification_type && !requestData.notification_email"
-                             [disabled]="!requestData.notification_type"
-                             class="min-text"
-                             [(ngModel)]="requestData.notification_tg"
-                             placeholder="Enter your Telegram"
-                             name="notification_tg">
-                    </div>
-                  </div>
-
 
                   <button class="btn btn_small btn-yellow"
                           [disabled]="!notificationForm.valid" type="submit">

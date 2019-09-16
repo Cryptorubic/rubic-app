@@ -4,7 +4,7 @@
      routerLink="create-v3" style="margin-top: -10px; padding: 0 3.89%;">
     <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
     <span>
-      Create SWAP
+      Create trade
     </span>
   </a>
   <div *ngIf="contractsList && contractsList.length">
@@ -122,8 +122,11 @@
                     / 1 {{contract.contract_details.quote_token_info?.token_short_name}}
                   </div>
                 </div>
-                <div class="swap-info__token-filled text-left" [ngClass]="{'partiality-filled': contract.contract_details.base_filled !== '0'}">
-                  {{contract.contract_details.base_filled !== '0' ? contract.contract_details.base_filled + '%' : ''}}
+
+                <div class="swap-info__token-filled text-left"
+                     *ngIf="contract.contract_details.base_filled !== '0'"
+                     [ngClass]="{'partiality-filled': contract.contract_details.base_filled !== '0'}">
+                  {{ contract.contract_details.base_filled + '%' }}
                   <span [ngStyle]="{'width': contract.contract_details.base_filled + '%'}"></span>
                 </div>
               </div>
@@ -141,8 +144,10 @@
                     / 1 {{contract.contract_details.base_token_info?.token_short_name}}
                   </div>
                 </div>
-                <div class="swap-info__token-filled text-right" [ngClass]="{'partiality-filled': contract.contract_details.quote_filled !== '0'}">
-                  {{contract.contract_details.quote_filled !== '0' ? contract.contract_details.quote_filled + '%' : ''}}
+                <div class="swap-info__token-filled text-right"
+                     *ngIf="contract.contract_details.quote_filled !== '0'"
+                     [ngClass]="{'partiality-filled': contract.contract_details.quote_filled !== '0'}">
+                  {{ contract.contract_details.quote_filled + '%' }}
                   <span [ngStyle]="{'width': contract.contract_details.quote_filled + '%'}"></span>
                 </div>
               </div>
