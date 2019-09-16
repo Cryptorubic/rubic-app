@@ -410,6 +410,16 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       margin: -1px 0;
     }
   }
+  &-link {
+    background-color: transparent;
+    border: 0 none;
+    padding: 0;
+    font-weight: normal;
+    &:hover, &:focus {
+      color: #fcd600;
+      text-decoration: underline;
+    }
+  }
   &-white-opacity {
     border-color: #fcd600;
     background-color: rgba(255, 255, 255, 0.1);
@@ -686,9 +696,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       right: 10px;
     }
     &__btn.active + &__ac_input {
-      width: 100%;
+      width: 50%;
       opacity: 1;
       top: 0;
+      border-left: 1px solid #D8D8D8!important;
     }
   }
   &_description {

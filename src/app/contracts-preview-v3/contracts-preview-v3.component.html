@@ -21,12 +21,10 @@
             Please follow these steps to close your trade faster
           </div>
           <ul class="preview-container_reminder__list">
+            <li>Fill in your part of the trade</li>
             <li>
-              <span class="as_link" (click)="openInitialisation()">Initialize your trade</span>
-            </li>
-            <li>Make sure that you have filled your part of the trade </li>
-            <li>
-              <span class="as_link copy-text" [ngClass]="{copied: copiedAddresses['link']}"
+              <span class="as_link copy-text"
+                    [ngClass]="{copied: copiedAddresses['link']}"
                     (cbOnSuccess)="onCopied('link')"
                     ngxClipboard [cbContent]="contractAdditional.link">
                 Copy the link and share with your community
