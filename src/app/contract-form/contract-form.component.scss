@@ -250,8 +250,8 @@
     counter-increment: mobileItemNumber;
   }
   &_item {
-    height: 62px;
-    line-height: 62px;
+    height: 40px;
+    line-height: 40px;
     box-sizing: border-box;
     background-color: rgba(255, 255, 255, 0.1);
     text-align: center;
@@ -262,8 +262,10 @@
     &:before {
       content: counter(mobileItemNumber);
       display: inline;
-      font-size: 30px;
+      font-size: 28px;
       font-weight: bold;
+      position: relative;
+      top: 2px;
     }
     &.opened {
       border-left: 5px solid;

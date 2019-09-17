@@ -1,7 +1,7 @@
 <div class="base-block-content">
   <div class="app-content-block">
     <div class="grid-row steps-mobile">
-      <div class="grid-cell grid-cell-1-5">
+      <div class="grid-cell grid-cell-1-6">
         <div class="steps-mobile_item"
              (click)="gotToForm(openedForm = editableContract ? 0 : openedForm)"
              [ngClass]="{
@@ -10,7 +10,7 @@
                 'opened': openedForm === 0
              }"></div>
       </div>
-      <div class="grid-cell grid-cell-1-5">
+      <div class="grid-cell grid-cell-1-6">
         <div class="steps-mobile_item"
              (click)="gotToForm(openedForm = (tokensForm.valid && editableContract) ? 1 : openedForm)"
              [ngClass]="{
@@ -19,7 +19,7 @@
                 'opened': openedForm === 1
              }"></div>
       </div>
-      <div class="grid-cell grid-cell-1-5">
+      <div class="grid-cell grid-cell-1-6">
         <div class="steps-mobile_item"
              (click)="gotToForm((tokensForm.valid && extraForm.valid && editableContract) ? 2 : openedForm);"
              [ngClass]="{
@@ -28,7 +28,7 @@
                 'opened': openedForm === 2
              }"></div>
       </div>
-      <div class="grid-cell grid-cell-1-5">
+      <div class="grid-cell grid-cell-1-6">
         <div class="steps-mobile_item"
              (click)="gotToForm((advancedForm.valid && tokensForm.valid && extraForm.valid && editableContract) ? 3 : openedForm);"
              [ngClass]="{
@@ -37,7 +37,17 @@
                 'opened': openedForm === 3
              }"></div>
       </div>
-      <div class="grid-cell grid-cell-1-5">
+
+      <div class="grid-cell grid-cell-1-6">
+        <div class="steps-mobile_item"
+             (click)="gotToForm((advancedForm.valid && tokensForm.valid && extraForm.valid && brokersForm.valid && editableContract) ? 3 : openedForm);"
+             [ngClass]="{
+                'active': advancedForm.valid && tokensForm.valid && extraForm.valid && brokersForm.valid && editableContract,
+                'checked': (openedForm > 4) && notificationForm.valid,
+                'opened': openedForm === 4
+             }"></div>
+      </div>
+      <div class="grid-cell grid-cell-1-6">
         <div class="steps-mobile_item"
              [ngClass]="{
                 'checked': (openedForm > 100) && extraForm.valid,
@@ -194,7 +204,6 @@
                 </div>
               </div>
 
-
               <div class="form-field">
                 <div class="form-field_description"
                      *ngIf="
@@ -213,15 +222,18 @@
                 </div>
               </div>
 
-
-              <button class="btn btn_small btn-yellow"
-                      [disabled]="!tokensForm.valid || ((tokens.base.token.address === tokens.quote.token.address) && (tokens.base.token.platform === tokens.quote.token.platform))"
-                      type="submit">
-                <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                <span>
-                  Next step
-                </span>
-              </button>
+              <div class="grid-row">
+                <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
+                  <button class="btn btn__auto-width btn-yellow width-100"
+                          [disabled]="!tokensForm.valid || ((tokens.base.token.address === tokens.quote.token.address) && (tokens.base.token.platform === tokens.quote.token.platform))"
+                          type="submit">
+                    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                    <span>
+                    Next step
+                  </span>
+                  </button>
+                </div>
+              </div>
             </div>
           </form>
           <div class="form-block"
@@ -335,17 +347,17 @@
                 </div>
               </div>
 
-              <button class="btn btn_small btn-yellow" [disabled]="!extraForm.valid || formIsSending" type="submit">
-                <span class="lds-ellipsis" *ngIf="formIsSending">
-                  <span class="lds-ellipsis-container">
-                    <span></span><span></span><span></span><span></span>
-                  </span>
-                </span>
-                <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                <span>
-                  Next step
-                </span>
-              </button>
+              <div class="grid-row">
+                <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
+                  <button class="btn btn__auto-width btn-yellow width-100"
+                        [disabled]="!extraForm.valid || formIsSending" type="submit">
+                    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                    <span>
+                      Next step
+                    </span>
+                  </button>
+                </div>
+              </div>
             </form>
           </div>
           <div class="form-block"
@@ -444,12 +456,17 @@
                 </div>
               </div>
 
-              <button class="btn btn_small btn-yellow" [disabled]="!advancedForm.valid" type="submit">
-                <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                <span>
-                  Next step
-                </span>
-              </button>
+              <div class="grid-row">
+                <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
+                  <button class="btn btn__auto-width btn-yellow width-100"
+                      [disabled]="!advancedForm.valid" type="submit">
+                    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                    <span>
+                      Next step
+                    </span>
+                  </button>
+                </div>
+              </div>
             </form>
           </div>
 
@@ -579,12 +596,17 @@
                     </div>
                   </div>
 
-                  <button class="btn btn_small btn-yellow" [disabled]="!brokersForm.valid" type="submit">
-                    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                    <span>
-                      Next step
-                    </span>
-                  </button>
+                  <div class="grid-row">
+                    <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
+                      <button class="btn btn__auto-width btn-yellow width-100"
+                          [disabled]="!brokersForm.valid" type="submit">
+                        <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                        <span>
+                          Next step
+                        </span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </form>
@@ -661,14 +683,17 @@
                     </div>
                   </div>
 
-                  <button class="btn btn_small btn-yellow"
+                  <div class="grid-row">
+                    <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
+                      <button class="btn btn__auto-width btn-yellow width-100"
                           [disabled]="!notificationForm.valid" type="submit">
-                    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                    <span>
-                      Next step
-                    </span>
-                  </button>
-
+                          <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                          <span>
+                            Next step
+                          </span>
+                        </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </form>
@@ -901,8 +926,8 @@
               </div>
 
               <div class="grid-row">
-                <div class="grid-cell grid-cell-1-3 grid-cell-ps-1">
-                  <button class="btn btn-yellow relative"
+                <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
+                  <button class="btn btn-yellow relative width-100"
                           (click)="createContract(tokensForm, advancedForm)" [disabled]="formIsSending || !(tokensForm.valid && extraForm.valid)">
                     <span class="lds-ellipsis" *ngIf="formIsSending">
                       <span class="lds-ellipsis-container">
@@ -934,14 +959,21 @@
         As our practice shows, if we can stay in touch with you, we can quicker find you a second participant for the trade.
       </div>
       <div class="contact-buttons"><br/><br/>
-        <button class="btn btn-yellow btn-min text-center btn-auto" (click)="requestData.notification = true" mat-dialog-close>
-          <span class="just-title">Add contact information</span>
-        </button>&nbsp;&nbsp;
-        <button class="btn btn-transparent btn-min text-center btn-auto with-bg"
-                mat-dialog-close
-                (click)="gotToForm(100)">
-          <span class="just-title">Skip this step</span>
-        </button>
+        <div class="grid-row">
+          <div class="grid-cell grid-cell-ls-2-3 grid-cell-vs-1">
+            <button class="btn btn-yellow btn-min text-center btn-auto ls-width-100" (click)="requestData.notification = true" mat-dialog-close>
+              <span class="just-title">Add contact information</span>
+            </button>
+          </div>
+          <div class="grid-cell grid-cell-1 show-ls">&nbsp;</div>
+          <div class="grid-cell grid-cell-ls-2-3 grid-cell-vs-1">
+            <button class="btn btn-transparent btn-min text-center btn-auto with-bg ls-width-100"
+                    mat-dialog-close
+                    (click)="gotToForm(100)">
+              <span class="just-title">Skip this step</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

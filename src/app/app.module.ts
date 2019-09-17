@@ -110,6 +110,8 @@ export function appInitializerFactory(translate: TranslateService, userService: 
             return aRank > bRank ? 1 : aRank < bRank ? -1 : 0;
           });
 
+          console.log(tokens);
+
           tokens.forEach((token) => {
             token.platform = (token.platform !== 'False') ? token.platform : false;
             if (!token.platform && (token.token_short_name === 'ETH') && (token.token_name === 'Ethereum')) {
