@@ -141,13 +141,17 @@ export class Web3Service {
 
   public getFullTokenInfo(tokenAddress, withoutSearch?: boolean) {
     return new Promise((resolve, reject) => {
+      if (!tokenAddress) {
+        resolve();
+        return;
+      }
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
         resolve({...EthereumCoin});
       } else {
         let tokenObject;
 
         tokenObject = window['cmc_tokens'].filter((tk) => {
-          return tk.isEthereum && (tk.address.toLowerCase() === tokenAddress.toLowerCase());
+          return tk.isEthereum && tk.address && (tk.address.toLowerCase() === tokenAddress.toLowerCase());
         })[0];
 
         this.getTokenInfo(tokenAddress, tokenObject).then((tokenInfo: {data: TokenInfoInterface}) => {

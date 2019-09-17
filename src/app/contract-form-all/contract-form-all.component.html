@@ -72,8 +72,14 @@
                       <div class="form-field_input">
 
                         <input type="hidden" required
+                               *ngIf="!requestData.tokens_info.base.token.custom"
                                [ngModel]="requestData.tokens_info.base.token.mywish_id"
                                name="base_coin_id">
+
+                        <input type="hidden" required
+                               *ngIf="requestData.tokens_info.base.token.custom"
+                               [ngModel]="requestData.tokens_info.base.token.address"
+                               name="base_address">
 
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.amount" name="base_limit">
 
@@ -132,8 +138,14 @@
                       <div class="form-field_input">
 
                         <input type="hidden" required
+                               *ngIf="!requestData.tokens_info.quote.token.custom"
                                [ngModel]="requestData.tokens_info.quote.token.mywish_id"
                                name="quote_coin_id">
+
+                        <input type="hidden" required
+                               *ngIf="requestData.tokens_info.quote.token.custom"
+                               [ngModel]="requestData.tokens_info.quote.token.address"
+                               name="quote_address">
 
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.amount" name="quote_limit">
                         <app-tokens-all-input (TokenChange)="changedToken('quote')"

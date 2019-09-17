@@ -319,6 +319,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
   public addCustomToken(name) {
     this.requestData.tokens_info[name].token = {...this.customTokens[name]};
+    this.requestData.tokens_info[name].token.custom = true;
     switch (name) {
       case 'base':
         this.BaseTokenCustom.emit(this.requestData.tokens_info[name]);
