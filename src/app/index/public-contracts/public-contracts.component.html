@@ -4,13 +4,13 @@
      routerLink="create-v3" style="margin-top: -10px; padding: 0 3.89%;">
     <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
     <span>
-      Create SWAP
+      Create trade
     </span>
   </a>
   <div *ngIf="contractsList && contractsList.length">
     <div class="title-section">
 
-      OTC Order Book&nbsp;&nbsp;&nbsp;
+      Order Book&nbsp;&nbsp;&nbsp;
 
       <button class="refresh-btn" (click)="refreshList()"
               [ngClass]="{progress: refreshProgress}"
@@ -112,30 +112,43 @@
             <div class="grid-cell grid-cell-1-4 public-swaps_cell">
               <div class="public-swaps_cell_content">
                 <div class="swap-info swap-info__token-volume text-right">
-                  <div class="swap-info swap-info__token-volume_value">
+                  <div class="swap-info__token-volume_value">
                     {{contract.contract_details.base_token_info.amount | number : '1.0-8'}}
                     {{contract.contract_details.base_token_info.token_short_name}}
                   </div>
-                  <div class="swap-info swap-info__token-volume_rate">
+                  <div class="swap-info__token-volume_rate">
                     {{contract.contract_details.base_token_info.rate}}
                     {{contract.contract_details.base_token_info.token_short_name}}
                     / 1 {{contract.contract_details.quote_token_info?.token_short_name}}
                   </div>
+                </div>
+
+                <div class="swap-info__token-filled text-left"
+                     *ngIf="contract.contract_details.base_filled !== '0'"
+                     [ngClass]="{'partiality-filled': contract.contract_details.base_filled !== '0'}">
+                  {{ contract.contract_details.base_filled + '%' }}
+                  <span [ngStyle]="{'width': contract.contract_details.base_filled + '%'}"></span>
                 </div>
               </div>
             </div>
             <div class="grid-cell grid-cell-1-4 public-swaps_cell">
               <div class="public-swaps_cell_content">
                 <div class="swap-info swap-info__token-volume swap-info__token-volume__with-icon text-left">
-                  <div class="swap-info swap-info__token-volume_value">
+                  <div class="swap-info__token-volume_value">
                     {{contract.contract_details.quote_token_info.amount | number : '1.0-8'}}
                     {{contract.contract_details.quote_token_info.token_short_name}}
                   </div>
-                  <div class="swap-info swap-info__token-volume_rate">
+                  <div class="swap-info__token-volume_rate">
                     {{contract.contract_details.quote_token_info.rate}}
                     {{contract.contract_details.quote_token_info.token_short_name}}
                     / 1 {{contract.contract_details.base_token_info?.token_short_name}}
                   </div>
+                </div>
+                <div class="swap-info__token-filled text-right"
+                     *ngIf="contract.contract_details.quote_filled !== '0'"
+                     [ngClass]="{'partiality-filled': contract.contract_details.quote_filled !== '0'}">
+                  {{ contract.contract_details.quote_filled + '%' }}
+                  <span [ngStyle]="{'width': contract.contract_details.quote_filled + '%'}"></span>
                 </div>
               </div>
             </div>

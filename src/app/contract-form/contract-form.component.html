@@ -51,7 +51,9 @@
                     checked: (tokensForm.valid) && (openedForm > 0),
                     'form-block__active': editableContract
                 }">
-            <div class="form-block_title" (click)="openedForm = editableContract ? 0 : openedForm">Basic options</div>
+            <div class="form-block_title" (click)="openedForm = editableContract ? 0 : openedForm">
+              Choose your token and amount
+            </div>
 
             <div class="form-block_fieldset">
               <!-- Выбор токена -->
@@ -72,7 +74,7 @@
                     <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
                       <button (click)="openedCustomTokens.base = !openedCustomTokens.base"
                               type="button"
-                              class="btn btn btn-transparent btn-min btn-for-field width-100">
+                              class="btn btn-link width-100">
                         <span *ngIf="!openedCustomTokens.base">Custom token</span>
                         <span *ngIf="openedCustomTokens.base">Cancel</span>
                       </button>
@@ -128,7 +130,7 @@
                     <div class="grid-cell grid-cell-1-4 grid-cell-ps-1">
                       <button (click)="openedCustomTokens.quote = !openedCustomTokens.quote"
                               type="button"
-                              class="btn btn btn-transparent btn-min btn-for-field width-100">
+                              class="btn btn-link width-100">
                         <span *ngIf="!openedCustomTokens.quote">Custom token</span>
                         <span *ngIf="openedCustomTokens.quote">Cancel</span>
                       </button>

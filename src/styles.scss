@@ -157,7 +157,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 .watch-instruction-btn {
   position: fixed;
   left: 50%;
-  top: 287px;
+  top: 135px;
   bottom: auto;
   right: auto;
   margin-left: 207px;
@@ -173,10 +173,13 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     }
   }
 }
+.with-support .watch-instruction-btn {
+  top: 205px;
+}
 #livechat-compact-container {
   position: fixed!important;
   left: 50%!important;
-  top: 200px!important;
+  top: 135px!important;
   bottom: auto!important;
   right: auto!important;
   margin-left: 207px!important;
@@ -243,7 +246,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 
 
 .base-block-content {
-  padding-top: 200px;
+  padding-top: 129px;
   // background: transparent url('/assets/images/backgrounds/bg-gradient.png') no-repeat center top;
   // background-size: 100%;
   min-height: 100vh;
@@ -391,7 +394,12 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     margin: 5px 0;
   }
   &-transparent {
-    background-color: transparent;
+    &:not(.with-bg) {
+      background-color: transparent;
+    }
+    &.with-bg {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
     border: 1px solid #B9BDC2;
     border-left-width: 5px;
     &:not([disabled]):hover {
@@ -400,6 +408,16 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     .just-title {
       display: block;
       margin: -1px 0;
+    }
+  }
+  &-link {
+    background-color: transparent;
+    border: 0 none;
+    padding: 0;
+    font-weight: normal;
+    &:hover, &:focus {
+      color: #fcd600;
+      text-decoration: underline;
     }
   }
   &-white-opacity {
@@ -678,21 +696,24 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       right: 10px;
     }
     &__btn.active + &__ac_input {
-      width: 100%;
+      width: 50%;
       opacity: 1;
       top: 0;
+      border-left: 1px solid #D8D8D8!important;
     }
   }
   &_description {
     font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
     &:not(.normal-font) {
-      color: rgba(255, 255, 255, 0.5);
       text-transform: uppercase;
     }
     &.normal-font {
       font-size: 15px;
       &, a {
-        color: #fff!important;
+        &:not(.transparent) {
+          color: #fff!important;
+        }
       }
       a {
         &:hover {

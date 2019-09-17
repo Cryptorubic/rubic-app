@@ -2,6 +2,39 @@
   <div class="app-content-block">
     <div class="grid-row">
       <div class="grid-cell grid-cell-2-3 grid-cell-sm-1">
+        <div class="preview-container preview-container_reminder"
+             [ngClass]="{closed: originalContract.contract_state !== 'CREATED'}"
+             *ngIf="originalContract.isAuthor">
+          <div class="preview-container_title">
+            Congratulations!<br/>
+            The trade was created and added to our Order Вook
+          </div>
+        </div>
+
+        <div class="preview-container preview-container_reminder"
+             [ngClass]="{closed: isRemindered || (originalContract.contract_state !== 'CREATED')}"
+             *ngIf="originalContract.isAuthor && originalContract.isEthereum">
+          <div class="preview-container_reminder__title">
+            Reminder
+          </div>
+          <div class="preview-container_reminder__description">
+            Please follow these steps to close your trade faster
+          </div>
+          <ul class="preview-container_reminder__list">
+            <li>Fill in your part of the trade</li>
+            <li>
+              <span class="as_link copy-text"
+                    [ngClass]="{copied: copiedAddresses['link']}"
+                    (cbOnSuccess)="onCopied('link')"
+                    ngxClipboard [cbContent]="contractAdditional.link">
+                Copy the link and share with your community
+              </span>
+            </li>
+          </ul>
+          <button type="button" (click)="isRemindered = true;"
+                  class="preview-container_reminder__closer"></button>
+        </div>
+
         <div class="preview-container">
           <div class="contract-state" [ngClass]="'contract-state__' + states[originalContract.state].NUMBER">
             {{states[originalContract.state].TEXT}}

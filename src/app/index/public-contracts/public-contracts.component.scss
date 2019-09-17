@@ -37,6 +37,7 @@
       padding: 0 14px;
       background-color: rgba(0, 0, 0, 0.1);
       color: #fff;
+      position: relative;
     }
   }
   &_row:hover &_cell {
@@ -80,6 +81,31 @@
   display: inline-block;
   vertical-align: middle;
   width: 100%;
+  &__token-filled {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: rgba(255, 255, 255, 0.27);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.27);
+    font-size: 12px;
+    line-height: 12px;
+    padding: 3px 5px;
+    span {
+      display: block;
+      border-bottom: 1px solid transparent;
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: auto;
+    }
+    &.partiality-filled {
+      color: #FCD600;
+      span {
+        border-color: #FCD600;
+      }
+    }
+  }
   &__token {
     &-name {
       &_icon {
@@ -94,6 +120,7 @@
     }
 
     &-volume {
+      line-height: 1.2em;
       &_value {
         font-weight: bold;
       }

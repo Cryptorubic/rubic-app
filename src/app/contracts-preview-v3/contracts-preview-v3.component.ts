@@ -13,7 +13,7 @@ import {ContractsService} from '../services/contracts/contracts.service';
 import {UserInterface} from '../services/user/user.interface';
 import {UserService} from '../services/user/user.service';
 
-import {SWAPS_V2} from '../contract-form-two/contract-v2-details';
+import {SWAPS_V2} from '../contract-form-all/contract-v2-details';
 import {ContactOwnerComponent} from '../contact-owner/contact-owner.component';
 import {IContractV3} from '../contract-form-all/contract-form-all.component';
 
@@ -27,6 +27,7 @@ import {IContractV3} from '../contract-form-all/contract-form-all.component';
 export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   private web3Contract;
+  public isRemindered: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -65,8 +66,9 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       reverted: quoteAmount.div(baseAmount)
     };
 
-    this.contractAdditional.link =
-      location.origin + '/public-v3/' + this.originalContract.unique_link;
+    this.originalContract.unique_link_url =
+      this.contractAdditional.link =
+        location.origin + '/public-v3/' + this.originalContract.unique_link;
   }
 
 
@@ -325,6 +327,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       const contractState = this.originalContract.contract_state;
       const ownerAddress = this.originalContract.owner_address;
       const isAuthor = this.originalContract.isAuthor;
+      const isEthereum = this.originalContract.isEthereum;
+
       this.originalContract = result;
       this.originalContract.tokens_info = tokens_info;
       this.originalContract.isSwapped = swapped;
@@ -332,6 +336,10 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       this.originalContract.contract_state = contractState;
       this.originalContract.owner_address = ownerAddress;
       this.originalContract.isAuthor = isAuthor;
+      this.originalContract.unique_link_url =
+        this.contractAdditional.link;
+      this.originalContract.isEthereum = isEthereum;
+
     }).finally(() => {
       this.analyzeContract();
     });
@@ -440,6 +448,57 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     });
   }
 
+
+  public openInitialisation() {
+
+    const details = this.originalContract;
+
+    const interfaceMethod = this.web3Service.getMethodInterface('createOrder', SWAPS_V2.ABI);
+
+    const trxRequest = [
+      details.memo_contract,
+      details.tokens_info.base.token.address,
+      details.tokens_info.quote.token.address,
+      (details.base_limit || '0').toString(),
+      (details.quote_limit || '0').toString(),
+      Math.round((new Date(details.stop_date)).getTime() / 1000),
+      details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
+      new BigNumber(details.min_base_wei || '0').toString(10),
+      new BigNumber(details.min_quote_wei || '0').toString(10),
+      details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
+      details.broker_fee ? (new BigNumber(details.broker_fee_base).times(100)).toString(10) : '0',
+      details.broker_fee ? (new BigNumber(details.broker_fee_quote).times(100)).toString(10) : '0'
+    ];
+    const activateSignature = this.web3Service.encodeFunctionCall(interfaceMethod, trxRequest);
+    const sendActivateTrx = (wallet) => {
+      this.web3Service.sendTransaction({
+        from: wallet.address,
+        to: SWAPS_V2.ADDRESS,
+        data: activateSignature
+      }, wallet.type).then((result) => {
+        console.log(result);
+      }, (err) => {
+        console.log(err);
+      });
+    };
+
+
+    this.dialog.open(TransactionComponent, {
+      width: '38.65em',
+      panelClass: 'custom-dialog-container',
+      data: {
+        transactions: [{
+          to: SWAPS_V2.ADDRESS,
+          data: activateSignature,
+          action: sendActivateTrx
+        }],
+        title: 'Initialization',
+        description: 'Before the contribution it’s needed to initialize the contract (once per trade)'
+      }
+    });
+  }
+
+
   public sendContribute(amount, token) {
 
     if (!this.originalContract.isEthereum) {
@@ -537,49 +596,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
       if (details.contract_state === 'CREATED') {
 
-        const interfaceMethod = this.web3Service.getMethodInterface('createOrder', SWAPS_V2.ABI);
-
-        const trxRequest = [
-          details.memo_contract,
-          details.base_address,
-          details.quote_address,
-          (details.base_limit || '0').toString(),
-          (details.quote_limit || '0').toString(),
-          Math.round((new Date(details.stop_date)).getTime() / 1000),
-          details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
-          new BigNumber(details.min_base_wei || '0').toString(10),
-          new BigNumber(details.min_quote_wei || '0').toString(10),
-          details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
-          details.broker_fee ? (new BigNumber(details.broker_fee_base).times(100)).toString(10) : '0',
-          details.broker_fee ? (new BigNumber(details.broker_fee_quote).times(100)).toString(10) : '0'
-        ];
-        const activateSignature = this.web3Service.encodeFunctionCall(interfaceMethod, trxRequest);
-        const sendActivateTrx = (wallet) => {
-          this.web3Service.sendTransaction({
-            from: wallet.address,
-            to: SWAPS_V2.ADDRESS,
-            data: activateSignature
-          }, wallet.type).then((result) => {
-            console.log(result);
-          }, (err) => {
-            console.log(err);
-          });
-        };
-
-
-        this.dialog.open(TransactionComponent, {
-          width: '38.65em',
-          panelClass: 'custom-dialog-container',
-          data: {
-            transactions: [{
-              to: SWAPS_V2.ADDRESS,
-              data: activateSignature,
-              action: sendActivateTrx
-            }],
-            title: 'Initialization',
-            description: 'Before the contribution it’s needed to initialize the contract (once per trade)'
-          }
-        });
+        this.openInitialisation();
 
         return;
       }

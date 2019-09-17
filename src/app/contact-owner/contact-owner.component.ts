@@ -19,7 +19,6 @@ export class ContactOwnerComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<ContactOwnerComponent>,
     private httpService: HttpService
   ) {
-
     this.formData = {
       link: this.contractInfo.unique_link_url || this.contractInfo.contract_details.unique_link_url,
       contract_id: this.contractInfo.id

@@ -44,13 +44,17 @@ export class AppComponent implements OnInit {
 
       if (event instanceof ActivationEnd) {
         this.withHeader = !event.snapshot.data.noheader;
-        if (event.snapshot.data.support) {
-          this.hideInstructionLink = event.snapshot.data.supportHide;
-          this.visibleWatchButton = !event.snapshot.data.hideInstruction;
-          body.className = 'with-support ' + (event.snapshot.data.supportHide ? 'support-hide-' + event.snapshot.data.supportHide : '');
-        } else {
-          body.className = '';
-          this.visibleWatchButton = false;
+
+        if (!event.snapshot.firstChild) {
+          if (event.snapshot.data.support) {
+            this.hideInstructionLink = event.snapshot.data.supportHide;
+            this.visibleWatchButton = !event.snapshot.data.hideInstruction;
+            body.classList.add('with-support');
+            event.snapshot.data.supportHide ? body.classList.add('support-hide-' + event.snapshot.data.supportHide) : '';
+          } else {
+            body.className = '';
+            this.visibleWatchButton = false;
+          }
         }
       }
 
@@ -88,6 +92,7 @@ export class AppComponent implements OnInit {
     liveChatButtonFrame.style.opacity = '0';
     liveChatButtonFrame.style.top = '0';
     liveChatButtonFrame.style.marginTop = '-62px';
+    liveChatButtonFrame.style.display = '-62px';
 
     frameContent.document.getElementById('full-view-button').style.height = '100%';
 

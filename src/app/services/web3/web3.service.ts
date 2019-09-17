@@ -141,13 +141,17 @@ export class Web3Service {
 
   public getFullTokenInfo(tokenAddress, withoutSearch?: boolean) {
     return new Promise((resolve, reject) => {
+      if (!tokenAddress) {
+        resolve();
+        return;
+      }
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
         resolve({...EthereumCoin});
       } else {
         let tokenObject;
 
         tokenObject = window['cmc_tokens'].filter((tk) => {
-          return tk.isEthereum && (tk.address.toLowerCase() === tokenAddress.toLowerCase());
+          return tk.isEthereum && tk.address && (tk.address.toLowerCase() === tokenAddress.toLowerCase());
         })[0];
 
         this.getTokenInfo(tokenAddress, tokenObject).then((tokenInfo: {data: TokenInfoInterface}) => {
@@ -353,6 +357,9 @@ export class Web3Service {
   }
 
 
+
+
+
   public getSWAPSCoinInfo(data) {
 
     data.tokens_info = {};
@@ -361,16 +368,18 @@ export class Web3Service {
       let quoteToken;
       let baseToken;
 
+
+      // Check quote coin
+      const quoteTokenObject = window['cmc_tokens'].filter((tk) => {
+        return tk.isEthereum && ((tk.address === data.quote_address) || (tk.mywish_id === data.quote_coin_id));
+      })[0];
+
+      if (quoteTokenObject && !data.quote_address) {
+        data.quote_address = quoteTokenObject.address;
+      }
+
       if (data.quote_address) {
-
-
-        const quoteTokenObject = window['cmc_tokens'].filter((tk) => {
-          return tk.isEthereum && (tk.address === data.quote_address);
-        })[0];
-
         quoteToken = quoteTokenObject ? {...quoteTokenObject} : false;
-
-
         this.getFullTokenInfo(data.quote_address, true).then((tokenInfo: TokenInfoInterface) => {
           if (quoteToken) {
             data.tokens_info.quote = {
@@ -407,16 +416,19 @@ export class Web3Service {
         }
       }
 
+
+      // Check base coin
+      const baseTokenObject = window['cmc_tokens'].filter((tk) => {
+        return tk.isEthereum && ((tk.address === data.base_address) || (tk.mywish_id === data.base_coin_id));
+      })[0];
+
+      if (baseTokenObject && !data.base_address) {
+        data.base_address = baseTokenObject.address;
+      }
+
       if (data.base_address) {
-
-        const baseTokenObject = window['cmc_tokens'].filter((tk) => {
-          return tk.isEthereum && (tk.address === data.base_address);
-        })[0];
-
         baseToken = baseTokenObject ? {...baseTokenObject} : false;
-
         this.getFullTokenInfo(data.base_address, true).then((tokenInfo: TokenInfoInterface) => {
-
           if (baseToken) {
             data.tokens_info.base = {
               token: {...baseToken}
@@ -444,7 +456,6 @@ export class Web3Service {
             return tk.mywish_id === data.base_coin_id;
           })[0]}
         };
-
         data.tokens_info.base.amount = data.base_limit;
         if (data.tokens_info.quote) {
           setTimeout(() => {

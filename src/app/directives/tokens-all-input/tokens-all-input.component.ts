@@ -58,6 +58,8 @@ export class TokensAllInputComponent implements OnInit {
     this.tokenField.nativeElement.addEventListener('blur', () => {
       this.listIsOpened = false;
     });
+
+    this.searchToken('');
   }
   public searchToken(q) {
     this.listIsOpened = false;
@@ -68,15 +70,8 @@ export class TokensAllInputComponent implements OnInit {
       this.searchSubscriber.unsubscribe();
     }
 
-    if (q.length < 2) {
-      return;
-    }
-
-
     const result = [];
-
-    let indexToken = 0;
-
+    let indexToken = q ? 0 : 6;
     while ((indexToken < (window['cmc_tokens'].length - 1)) && (result.length < 10)) {
       const token = window['cmc_tokens'][indexToken];
       const tokenName = token.token_name.toLowerCase();
@@ -93,7 +88,6 @@ export class TokensAllInputComponent implements OnInit {
     }
 
     this.tokensList = result;
-
 
     if (this.tokensList.length) {
       this.listIsOpened = true;
