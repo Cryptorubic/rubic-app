@@ -50,9 +50,11 @@ export class AppComponent implements OnInit {
             this.hideInstructionLink = event.snapshot.data.supportHide;
             this.visibleWatchButton = !event.snapshot.data.hideInstruction;
             body.classList.add('with-support');
+            body.classList.remove('without-support');
             event.snapshot.data.supportHide ? body.classList.add('support-hide-' + event.snapshot.data.supportHide) : '';
           } else {
-            body.className = '';
+            body.classList.remove('with-support');
+            body.classList.add('without-support');
             this.visibleWatchButton = false;
           }
         }
@@ -77,22 +79,31 @@ export class AppComponent implements OnInit {
   private checkLiveChat() {
 
     const liveChatButtonFrame = document.getElementById('livechat-compact-view');
+    const liveChatContainer = document.getElementById('livechat-compact-container');
+
+    const mutationObserver = new window['MutationObserver']((res) => {
+      liveChatContainer.removeAttribute('style');
+    });
+    mutationObserver.observe(liveChatContainer, {
+      attributes: true,
+      attributeFilter: ['style']
+    });
+    liveChatContainer.removeAttribute('style');
+
 
     if (!liveChatButtonFrame) {
       setTimeout(() => {
         this.checkLiveChat();
-      }, 2000);
+      });
       return;
     }
+
 
     const frameContent = liveChatButtonFrame['contentWindow'] || liveChatButtonFrame['contentDocument'];
     const frameContentContainer = frameContent.document.getElementById('content-container');
 
+
     frameContentContainer.setAttribute('style', 'padding: 0 !important');
-    liveChatButtonFrame.style.opacity = '0';
-    liveChatButtonFrame.style.top = '0';
-    liveChatButtonFrame.style.marginTop = '-62px';
-    liveChatButtonFrame.style.display = '-62px';
 
     frameContent.document.getElementById('full-view-button').style.height = '100%';
 

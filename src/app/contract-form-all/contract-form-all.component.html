@@ -236,6 +236,7 @@
               </div>
             </div>
           </form>
+
           <div class="form-block"
                [ngClass]="{
                   hidden: !(tokensForm.valid && (openedForm === 1)),
@@ -246,252 +247,166 @@
                  (click)="openedForm = (tokensForm.valid && editableContract) ? 1 : openedForm;">
               Extra options
             </div>
-            <form class="form-block_fieldset" #extraForm="ngForm"
-                  (submit)="gotToForm(2)">
-              <div class="grid-row">
-                <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
-                  <div class="grid-row">
-                    <div class="grid-cell grid-cell-1-2">
-                      <div class="form-field">
-                        <label class="form-field_label">Closing date</label>
-                        <div class="form-field_input">
-                          <input matInput [matDatepicker]="datepicker"
-                                 required
-                                 readonly
-                                 [(ngModel)]="datePickerDate"
-                                 (dateChange)="dateChange()"
-                                 [min]="minDate"
-                                 name="active_to"
-                                 (click)="datepicker.open()" placeholder="Choose a date" class="min-text">
-                          <mat-datepicker #datepicker></mat-datepicker>
-                          <span class="mat-datepicker-toggle" (click)="datepicker.open()" >
+
+            <div class="form-block_fieldset">
+              <form #extraForm="ngForm">
+                <div class="grid-row">
+                  <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
+                    <div class="grid-row">
+                      <div class="grid-cell grid-cell-1-2">
+                        <div class="form-field">
+                          <label class="form-field_label">Closing date</label>
+                          <div class="form-field_input">
+                            <input matInput [matDatepicker]="datepicker"
+                                   required
+                                   readonly
+                                   [(ngModel)]="datePickerDate"
+                                   (dateChange)="dateChange()"
+                                   [min]="minDate"
+                                   name="active_to"
+                                   (click)="datepicker.open()" placeholder="Choose a date" class="min-text">
+                            <mat-datepicker #datepicker></mat-datepicker>
+                            <span class="mat-datepicker-toggle" (click)="datepicker.open()" >
                             <button mat-button mat-icon-button type="button">
                               <img src="./assets/images/icons/calendar.svg">
                             </button>
                           </span>
+                          </div>
                         </div>
-                      </div>
 
-                    </div>
-                    <div class="grid-cell grid-cell-1-2">
-                      <div class="form-field">
-                        <label class="form-field_label">Closing time</label>
-                        <div class="form-field_input">
-                          <input [ngxTimepicker]="picker"
-                                 [format]="24"
-                                 [min]="minTime"
-                                 required
-                                 readonly
-                                 (ngModelChange)="timeChange()"
-                                 [(ngModel)]="datePickerTime"
-                                 name="time"
-                                 class="min-text" placeholder="Choose a time">
-                          <ngx-material-timepicker #picker></ngx-material-timepicker>
-                          <span class="mat-datepicker-toggle" (click)="picker.open()" >
+                      </div>
+                      <div class="grid-cell grid-cell-1-2">
+                        <div class="form-field">
+                          <label class="form-field_label">Closing time</label>
+                          <div class="form-field_input">
+                            <input [ngxTimepicker]="picker"
+                                   [format]="24"
+                                   [min]="minTime"
+                                   required
+                                   readonly
+                                   (ngModelChange)="timeChange()"
+                                   [(ngModel)]="datePickerTime"
+                                   name="time"
+                                   class="min-text" placeholder="Choose a time">
+                            <ngx-material-timepicker #picker></ngx-material-timepicker>
+                            <span class="mat-datepicker-toggle" (click)="picker.open()" >
                               <button mat-button mat-icon-button type="button">
                                 <img src="./assets/images/icons/time.svg">
                               </button>
                             </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="grid-cell grid-cell-1">
+                    <div class="form-field" *ngIf="false && isEthereumSwap">
+                      <div class="grid-row">
+                        <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
+                          <label class="form-field_label">Contract management address</label>
+                          <div class="form-field_input">
+                            <input type="text"
+                                   class="min-text max-placeholder"
+                                   maxlength="42"
+                                   pattern="0x[0-9a-fA-F]{40}"
+                                   required
+                                   [(ngModel)]="requestData.owner_address"
+                                   placeholder="Enter ETH address"
+                                   name="owner_address">
+                          </div>
+                        </div>
+                        <div class="grid-cell grid-cell-1">
+                          <div class="form-field_small-desc">
+                            Owner of this address will be able to manage the contract
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-field">
+                      <label class="form-field_label">Public deal</label>
+                      <div class="grid-row">
+                        <div class="grid-cell">
+                          <div class="form-field_input">
+                            <label class="form-field_input-checkbox">
+                              <input type="checkbox"
+                                     name="public"
+                                     [(ngModel)]="requestData.public">
+                              <span class="checkbox-text checkbox-text_on">Yes</span>
+                              <span class="checkbox-text checkbox-text_off">No</span>
+                              <span class="checkbox-rect"></span>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="grid-cell">
+                          <div class="form-field_small-desc for-checkbox">
+                            <span>SWAP will be listed on the main page</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              </form>
 
-                <div class="grid-cell grid-cell-1">
-                  <div class="form-field" *ngIf="false && isEthereumSwap">
+              <span class="form-block_advanced-link"
+                    [ngClass]="{opened: openedAdvanced}"
+                    (click)="openedAdvanced = !openedAdvanced">
+                Advanced settings
+              </span>
+
+              <div class="form-block_advanced" [hidden]="!openedAdvanced">
+                <form #advancedForm="ngForm">
+                  <div class="form-field">
+                    <label class="form-field_label">Minimum contribution in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})</label>
                     <div class="grid-row">
-                      <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
-                        <label class="form-field_label">Contract management address</label>
+                      <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
                         <div class="form-field_input">
                           <input type="text"
-                                 class="min-text max-placeholder"
-                                 maxlength="42"
-                                 pattern="0x[0-9a-fA-F]{40}"
-                                 required
-                                 [(ngModel)]="requestData.owner_address"
-                                 placeholder="Enter ETH address"
-                                 name="owner_address">
-                        </div>
-                      </div>
-                      <div class="grid-cell grid-cell-1">
-                        <div class="form-field_small-desc">
-                          Owner of this address will be able to manage the contract
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="form-field">
-                    <label class="form-field_label">Public deal</label>
-                    <div class="grid-row">
-                      <div class="grid-cell">
-                        <div class="form-field_input">
-                          <label class="form-field_input-checkbox">
-                            <input type="checkbox"
-                                   name="public"
-                                   [(ngModel)]="requestData.public">
-                            <span class="checkbox-text checkbox-text_on">Yes</span>
-                            <span class="checkbox-text checkbox-text_off">No</span>
-                            <span class="checkbox-rect"></span>
-                          </label>
-                        </div>
-                      </div>
-                      <div class="grid-cell">
-                        <div class="form-field_small-desc for-checkbox">
-                          <span>SWAP will be listed on the main page</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid-row">
-                <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
-                  <button class="btn btn__auto-width btn-yellow width-100"
-                        [disabled]="!extraForm.valid || formIsSending" type="submit">
-                    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                    <span>
-                      Next step
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="form-block"
-               [ngClass]="{
-                  hidden: !(extraForm.valid && (openedForm === 2)),
-                  'form-block__active': tokensForm.valid && extraForm.valid && editableContract,
-                  checked: advancedForm.valid && (openedForm > 2)
-               }">
-            <div class="form-block_title"
-                 (click)="gotToForm((tokensForm.valid && extraForm.valid && editableContract) ? 2 : openedForm);">
-              Advanced options
-            </div>
-            <form class="form-block_fieldset" #advancedForm="ngForm" (submit)="gotToForm(3)">
-              <div class="form-field">
-                <label class="form-field_label">Minimum contribution in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})</label>
-                <div class="grid-row">
-                  <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
-                    <div class="form-field_input">
-                      <input type="text"
-                             placeholder="0"
-                             name="min_base_wei"
-                             [decimalsChange]="BaseTokenChange"
-                             [(ngModel)]="requestData.min_base_wei"
-                             [appBigNumber]="{
+                                 placeholder="0"
+                                 name="min_base_wei"
+                                 [decimalsChange]="BaseTokenChange"
+                                 [(ngModel)]="requestData.min_base_wei"
+                                 [appBigNumber]="{
                                 decimals: tokens.base.token.decimals,
                                 min: 0,
                                 max: tokens.base.amount
                              }">
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div class="form-field">
-                <label class="form-field_label">Minimum contribution in {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})</label>
-                <div class="grid-row">
-                  <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
-                    <div class="form-field_input">
-                      <input type="text"
-                             placeholder="0"
-                             name="min_quote_wei"
-                             [decimalsChange]="QuoteTokenChange"
-                             [(ngModel)]="requestData.min_quote_wei"
-                             [appBigNumber]="{
+                  <div class="form-field">
+                    <label class="form-field_label">Minimum contribution in {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})</label>
+                    <div class="grid-row">
+                      <div class="grid-cell grid-cell-2-3 grid-cell-vs-1">
+                        <div class="form-field_input">
+                          <input type="text"
+                                 placeholder="0"
+                                 name="min_quote_wei"
+                                 [decimalsChange]="QuoteTokenChange"
+                                 [(ngModel)]="requestData.min_quote_wei"
+                                 [appBigNumber]="{
                                 decimals: tokens.quote.token.decimals,
                                 min: 0,
                                 max: tokens.quote.amount
                              }">
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div class="form-field" *ngIf="isEthereumSwap">
-                <label class="form-field_label">
-                  Contribution limit in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
-                </label>
-                <div class="grid-row">
-                  <div class="grid-cell">
-                    <div class="form-field_input">
-                      <label class="form-field_input-checkbox">
-                        <input type="checkbox"
-                               name="whitelist"
-                               [(ngModel)]="requestData.whitelist">
-                        <span class="checkbox-text checkbox-text_on">Yes</span>
-                        <span class="checkbox-text checkbox-text_off">No</span>
-                        <span class="checkbox-rect"></span>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="grid-cell">
-                    <div class="form-field_small-desc for-checkbox">
-                      <span>Only specified address</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-field" *ngIf="advancedForm.value.whitelist">
-                <label class="form-field_label">
-                  Only this address can contribute in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
-                </label>
-                <div class="grid-row">
-                  <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
-                    <div class="form-field_input">
-                      <input type="text"
-                             class="min-text"
-                             maxlength="42"
-                             pattern="0x[0-9a-fA-F]{40}"
-                             required="required"
-                             [(ngModel)]="requestData.whitelist_address"
-                             placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
-                             name="whitelist_address">
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid-row">
-                <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
-                  <button class="btn btn__auto-width btn-yellow width-100"
-                      [disabled]="!advancedForm.valid" type="submit">
-                    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                    <span>
-                      Next step
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div class="form-block"
-               [ngClass]="{
-                  hidden: !(advancedForm.valid && (openedForm === 3)),
-                  'form-block__active': tokensForm.valid && extraForm.valid && editableContract,
-                  checked: brokersForm.valid && (openedForm > 3)
-               }">
-            <div class="form-block_title"
-                 (click)="gotToForm((advancedForm.valid && tokensForm.valid && extraForm.valid && editableContract) ? 3 : openedForm);">
-              Brokerage Fee
-            </div>
-            <form class="form-block_fieldset" #brokersForm="ngForm" (submit)="gotToForm(4)">
-              <div class="grid-row">
-                <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
-
-                  <div class="form-field">
+                  <div class="form-field" *ngIf="isEthereumSwap">
+                    <label class="form-field_label">
+                      Contribution limit in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
+                    </label>
                     <div class="grid-row">
                       <div class="grid-cell">
                         <div class="form-field_input">
                           <label class="form-field_input-checkbox">
                             <input type="checkbox"
-                                   name="broker_fee"
-                                   [(ngModel)]="requestData.broker_fee">
+                                   name="whitelist"
+                                   [(ngModel)]="requestData.whitelist">
                             <span class="checkbox-text checkbox-text_on">Yes</span>
                             <span class="checkbox-text checkbox-text_off">No</span>
                             <span class="checkbox-rect"></span>
@@ -500,116 +415,168 @@
                       </div>
                       <div class="grid-cell">
                         <div class="form-field_small-desc for-checkbox">
-                          <span>You can specify <b>%</b> for Broker</span>
+                          <span>Only specified address</span>
                         </div>
                       </div>
                     </div>
                   </div>
-
-                  <div class="form-field" *ngIf="requestData.broker_fee && isEthereumSwap">
+                  <div class="form-field" *ngIf="advancedForm.value.whitelist">
                     <label class="form-field_label">
-                      Enter Broker Address
+                      Only this address can contribute in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
                     </label>
-                    <div class="form-field_input">
-                      <input type="text"
-                             required
-                             class="min-text"
-                             maxlength="42"
-                             [pattern]="'0x[0-9a-fA-F]{40}'"
-                             [(ngModel)]="requestData.broker_fee_address"
-                             placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
-                             name="broker_fee_address">
+                    <div class="grid-row">
+                      <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
+                        <div class="form-field_input">
+                          <input type="text"
+                                 class="min-text"
+                                 maxlength="42"
+                                 pattern="0x[0-9a-fA-F]{40}"
+                                 required="required"
+                                 [(ngModel)]="requestData.whitelist_address"
+                                 placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
+                                 name="whitelist_address">
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  <div class="grid-row" *ngIf="requestData.broker_fee">
-                    <div class="grid-cell grid-cell-1">
+                </form>
+                <form #brokersForm="ngForm">
+                  <div class="grid-row">
+                    <div class="grid-cell grid-cell-3-4 grid-cell-ps-1">
                       <div class="form-field">
+                        <label class="form-field_label">Brokerage fee</label>
                         <div class="grid-row">
-                          <div class="grid-cell grid-cell-1">
-                            <label class="form-field_label">
-                              Specify % for {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
-                            </label>
-                          </div>
-                          <div class="grid-cell grid-cell-1-4">
-                            <div class="form-field_input with-after-text" data-after-text="%">
-                              <input type="number"
-                                     required
-                                     placeholder="0.1"
-                                     [(ngModel)]="requestData.broker_fee_base"
-                                     name="broker_fee_base"
-                                     min="0"
-                                     max="50"
-                                     appMinValue
-                                     [minValue]="0"
-                                     [step]="0.01"
-                                     [maxValue]="50"
-                                     class="min-text"/>
+                          <div class="grid-cell">
+                            <div class="form-field_input">
+                              <label class="form-field_input-checkbox">
+                                <input type="checkbox"
+                                       name="broker_fee"
+                                       [(ngModel)]="requestData.broker_fee">
+                                <span class="checkbox-text checkbox-text_on">Yes</span>
+                                <span class="checkbox-text checkbox-text_off">No</span>
+                                <span class="checkbox-rect"></span>
+                              </label>
                             </div>
                           </div>
-                          <div class="grid-cell grid-cell-3-4"
-                               *ngIf="requestData.broker_fee_base && tokens.base.amount">
-                            <div class="form-field_description__inline">
+                          <div class="grid-cell">
+                            <div class="form-field_small-desc for-checkbox">
+                              <span>You can specify <b>%</b> for Broker</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-field" *ngIf="requestData.broker_fee && isEthereumSwap">
+                        <label class="form-field_label">
+                          Enter Broker Address
+                        </label>
+                        <div class="form-field_input">
+                          <input type="text"
+                                 required
+                                 class="min-text"
+                                 maxlength="42"
+                                 [pattern]="'0x[0-9a-fA-F]{40}'"
+                                 [(ngModel)]="requestData.broker_fee_address"
+                                 placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
+                                 name="broker_fee_address">
+                        </div>
+                      </div>
+
+                      <div class="grid-row" *ngIf="requestData.broker_fee">
+                        <div class="grid-cell grid-cell-1">
+                          <div class="form-field">
+                            <div class="grid-row">
+                              <div class="grid-cell grid-cell-1">
+                                <label class="form-field_label">
+                                  Specify % for {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
+                                </label>
+                              </div>
+                              <div class="grid-cell grid-cell-1-4">
+                                <div class="form-field_input with-after-text" data-after-text="%">
+                                  <input type="number"
+                                         required
+                                         placeholder="0.1"
+                                         [(ngModel)]="requestData.broker_fee_base"
+                                         name="broker_fee_base"
+                                         min="0"
+                                         max="50"
+                                         appMinValue
+                                         [minValue]="0"
+                                         [step]="0.01"
+                                         [maxValue]="50"
+                                         class="min-text"/>
+                                </div>
+                              </div>
+                              <div class="grid-cell grid-cell-3-4"
+                                   *ngIf="requestData.broker_fee_base && tokens.base.amount">
+                                <div class="form-field_description__inline">
                               <span *ngIf="brokersForm.controls.broker_fee_base?.valid">
                                 {{ baseBrokerFee | bigNumberFormat : tokens.base.token.decimals : true}}
                                 {{tokens.base.token.token_short_name}}</span>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
 
 
-                      <div class="form-field">
-                        <div class="grid-row">
-                          <div class="grid-cell grid-cell-1">
-                            <label class="form-field_label">
-                              Specify % for {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
-                            </label>
-                          </div>
-                          <div class="grid-cell grid-cell-1-4">
-                            <div class="form-field_input with-after-text" data-after-text="%">
-                              <input type="number"
-                                     required
-                                     placeholder="0.1"
-                                     [(ngModel)]="requestData.broker_fee_quote"
-                                     name="broker_fee_quote"
-                                     min="0"
-                                     step="0.01"
-                                     max="50"
-                                     appMinValue
-                                     [minValue]="0"
-                                     [step]="0.01"
-                                     [maxValue]="50"
-                                     class="min-text"/>
-                            </div>
-                          </div>
-                          <div class="grid-cell grid-cell-3-4"
-                               *ngIf="requestData.broker_fee_quote && tokens.quote.amount">
-                            <div class="form-field_description__inline">
+                          <div class="form-field">
+                            <div class="grid-row">
+                              <div class="grid-cell grid-cell-1">
+                                <label class="form-field_label">
+                                  Specify % for {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
+                                </label>
+                              </div>
+                              <div class="grid-cell grid-cell-1-4">
+                                <div class="form-field_input with-after-text" data-after-text="%">
+                                  <input type="number"
+                                         required
+                                         placeholder="0.1"
+                                         [(ngModel)]="requestData.broker_fee_quote"
+                                         name="broker_fee_quote"
+                                         min="0"
+                                         step="0.01"
+                                         max="50"
+                                         appMinValue
+                                         [minValue]="0"
+                                         [step]="0.01"
+                                         [maxValue]="50"
+                                         class="min-text"/>
+                                </div>
+                              </div>
+                              <div class="grid-cell grid-cell-3-4"
+                                   *ngIf="requestData.broker_fee_quote && tokens.quote.amount">
+                                <div class="form-field_description__inline">
                               <span *ngIf="brokersForm.controls.broker_fee_quote?.valid">
                                 {{ quoteBrokerFee | bigNumberFormat : tokens.quote.token.decimals : true}}
                                 {{tokens.quote.token.token_short_name}}</span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                </form>
+              </div>
 
-                  <div class="grid-row">
-                    <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
-                      <button class="btn btn__auto-width btn-yellow width-100"
-                          [disabled]="!brokersForm.valid" type="submit">
-                        <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                        <span>
-                          Next step
-                        </span>
-                      </button>
-                    </div>
-                  </div>
+              <div class="grid-row">
+                <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
+                  <button class="btn btn__auto-width btn-yellow width-100"
+                          [disabled]="!(extraForm.valid && advancedForm.valid && brokersForm.valid)"
+                          type="button"
+                          (click)="gotToForm(4)">
+                    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                    <span>
+                      Next step
+                    </span>
+                  </button>
                 </div>
               </div>
-            </form>
+
+
+            </div>
+
           </div>
 
 

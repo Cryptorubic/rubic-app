@@ -17,10 +17,12 @@ export class TransactionComponent implements OnInit, OnDestroy {
     private web3Service: Web3Service
   ) {
     this.copiedData = {};
+    this.openedInstruction = {};
   }
 
   public copiedData: any = {};
   public providedAddresses: any = {};
+  public openedInstruction: any;
 
   ngOnInit() {
     this.updateAddresses();

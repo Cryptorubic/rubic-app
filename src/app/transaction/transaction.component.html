@@ -18,19 +18,6 @@
           </div>
           <div class="form-field_input">
             <div class="grid-row">
-              <div class="grid-cell grid-cell-vs-1-2">
-                <a [href]="
-                    'https://vintage.myetherwallet.com/' +
-                    (!transaction.data ?
-                      '?sendMode=ether&to=' + transaction.to + '&value=' + transaction.ethValue + '#send-transaction' :
-                      '?data=' + transaction.data + '&value=' + (transaction.ethValue || '0') + '&to=' + transaction.to + '#send-transaction'
-                    )"
-                   target="_blank"
-                   type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
-                  <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
-                  MyEtherWallet
-                </a>
-              </div>
               <!--this.originalContract.contract_details.owner_address-->
               <div class="grid-cell grid-cell-vs-1-2">
                 <button type="button"
@@ -44,13 +31,32 @@
                   Metamask
                 </button>
               </div>
+
+              <div class="grid-cell grid-cell-vs-1-2">
+                <a [href]="
+                    'https://vintage.myetherwallet.com/' +
+                    (!transaction.data ?
+                      '?sendMode=ether&to=' + transaction.to + '&value=' + transaction.ethValue + '#send-transaction' :
+                      '?data=' + transaction.data + '&value=' + (transaction.ethValue || '0') + '&to=' + transaction.to + '#send-transaction'
+                    )"
+                   target="_blank"
+                   type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
+                  <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
+                  MyEtherWallet
+                </a>
+              </div>
+
             </div>
           </div>
         </div>
-        <div class="or-delimiter">
-          <span>OR</span>
+
+        <div class="transaction-fields_opener" [ngClass]="{opened: openedInstruction[index]}">
+          <span (click)="openedInstruction[index] = !openedInstruction[index]">
+            Transaction details for manual execution
+          </span>
         </div>
-        <div class="transaction-fields">
+
+        <div [hidden]="!openedInstruction[index]" class="transaction-fields">
           <div class="form-field" *ngIf="transaction.from">
             <div class="form-field_label">
               Send transaction (0 ETH) from your management address
@@ -117,6 +123,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </mat-dialog-content>
 

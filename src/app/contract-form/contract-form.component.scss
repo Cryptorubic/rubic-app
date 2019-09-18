@@ -38,8 +38,41 @@
 .form-block {
   position: relative;
   counter-increment: blockNumber;
-  padding: 20px 2vw 0;
+  padding: 20px 1.5vw 0;
   background-color: rgba(0, 0, 0, 0.2);
+  &_advanced {
+    margin-bottom: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 1vw;
+    &-link {
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-block;
+      font-size: 14px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      color: #fff;
+      &:after {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        transform: rotate(45deg);
+        border-width: 0 1px 1px 0;
+        border-style: solid;
+        border-color: #fff;
+        margin-left: 10px;
+        width: 6px;
+        height: 6px;
+        margin-top: -5px;
+      }
+      &.opened {
+        &:after {
+          transform: rotate(-135deg);
+          margin-top: -1px;
+        }
+      }
+    }
+  }
   &:after {
     display: block;
     position: absolute;
@@ -63,14 +96,14 @@
     font-size: 25px;
     color: #FFFFFF;
     font-weight: bold;
-    padding: 20px 2vw;
-    margin-left: -2vw;
-    margin-right: -2vw;
+    padding: 20px 1.5vw;
+    margin-left: -1.5vw;
+    margin-right: -1.5vw;
     margin-top: -20px;
-    line-height: 22px;
+    line-height: 24px;
     transition: all linear 0.1s;
     position: relative;
-    top: 2px;
+    height: 22px;
   }
   &_fieldset {
     padding: 20px 0;
@@ -112,6 +145,21 @@
     }
   }
 }
+
+
+@media screen and (max-width: 1240px) {
+  .form-block {
+    padding-left: 2vw;
+    padding-right: 2vw;
+    &_title {
+      margin-left: -2vw;
+      margin-right: -2vw;
+      padding-left: 2vw;
+      padding-right: 2vw;
+    }
+  }
+}
+
 
 .token-block {
   background-color: rgba(0, 0, 0, 0.1);

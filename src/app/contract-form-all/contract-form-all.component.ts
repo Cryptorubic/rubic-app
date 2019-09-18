@@ -129,6 +129,8 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   @ViewChild('brokersForm') private brokersForm;
   @ViewChild('notificationForm') private notificationForm;
 
+  public openedAdvanced: boolean;
+
 
   constructor(
     protected contractsService: ContractsService,
