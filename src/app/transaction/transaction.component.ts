@@ -50,4 +50,9 @@ export class TransactionComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
+  public sendTransaction(wallet, transaction) {
+    transaction.action(wallet).then((result) => {
+      transaction.confirmed = true;
+    });
+  }
 }

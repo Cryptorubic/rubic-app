@@ -345,9 +345,31 @@ export class Web3Service {
     if (provider) {
       this.Web3.eth.setProvider(this.providers[provider]);
     }
-    return new Promise((resolve) => {
-      this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
-        resolve(result);
+    return new Promise((resolve, reject) => {
+      this.Web3.eth.sendTransaction(transactionConfig, (err, response) => {
+        if (!err) {
+          const trxSubscription = setInterval(() => {
+            this.Web3.eth.getTransactionReceipt(response, (error, transaction) => {
+              if (transaction) {
+                if (transaction.status) {
+                  resolve(transaction);
+                } else {
+                  reject(err);
+                }
+                clearInterval(trxSubscription);
+              }
+              if (error) {
+                clearInterval(trxSubscription);
+              }
+            });
+          }, 1000);
+        } else {
+          reject(err);
+        }
+      }).then((result) => {
+        console.log(result);
+      }, (err) => {
+        console.log(err);
       }).finally(() => {
         if (provider) {
           this.Web3.eth.setProvider(this.providers.infura);

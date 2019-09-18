@@ -168,6 +168,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     box-sizing: border-box;
     &-icon {
       margin-right: 10px;
+      &.arrow {
+        margin-left: 8px;
+        margin-right: 16px;
+      }
     }
     &.text-center {
       justify-content: center;

@@ -13,19 +13,20 @@
     <mat-dialog-content>
       <div *ngFor="let transaction of trxData.transactions; let index = index" class="transaction-instruction">
         <div class="transaction-buttons">
-          <div *ngIf="transaction.title" class="transaction-item-title">
+          <div *ngIf="transaction.title"
+               class="transaction-item-title" [ngClass]="{checked: transaction.confirmed}">
             {{ transaction.title }}
           </div>
-          <div class="form-field_input">
+          <div class="form-field_input" *ngIf="!transaction.confirmed">
             <div class="grid-row">
               <!--this.originalContract.contract_details.owner_address-->
               <div class="grid-cell grid-cell-vs-1-2">
                 <button type="button"
                         [disabled]="!providedAddresses.metamask?.length || (transaction.onlyOwner && (providedAddresses.metamask[0] !== transaction.onlyOwner))"
-                        (click)="transaction.action({
-                        type: 'metamask',
-                        address: providedAddresses.metamask[0]
-                      })"
+                        (click)="sendTransaction({
+                          type: 'metamask',
+                          address: providedAddresses.metamask[0]
+                        }, transaction)"
                         class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
                   <img src="./assets/images/icons/web3clients/metamask.svg" class="btn-ico">
                   Metamask
@@ -47,82 +48,81 @@
               </div>
 
             </div>
+            <div class="transaction-fields_opener" [ngClass]="{opened: openedInstruction[index]}">
+              <span (click)="openedInstruction[index] = !openedInstruction[index]">
+                Transaction details for manual execution
+              </span>
+            </div>
+            <div [hidden]="!openedInstruction[index]" class="transaction-fields">
+              <div class="form-field" *ngIf="transaction.from">
+                <div class="form-field_label">
+                  Send transaction (0 ETH) from your management address
+                </div>
+                <div class="form-field_input">
+                  <div class="form-field_copy">
+                    <button type="button"
+                            class="copy-btn"
+                            [ngClass]="{copied: copiedData['owner_address' + index]}"
+                            ngxClipboard [cbContent]="transaction.from"
+                            (cbOnSuccess)="onCopied('owner_address' + index)">
+                      <img src="./assets/images/icons/copy.svg"/>
+                    </button>
+                  </div>
+                  <div class="form-field_input_data">
+                    <div class="textarea min-text dark-field minimal-input">
+                      {{ transaction.from }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-field">
+                <div class="form-field_label">
+                  <span *ngIf="!transaction.from && !transaction.ethValue">Send transaction (0 ETH)</span>
+                  <span *ngIf="!transaction.from && transaction.ethValue">Send {{transaction.ethValue}} ETH</span>
+                  To contract address
+                </div>
+                <div class="form-field_input">
+                  <div class="form-field_copy">
+                    <button type="button"
+                            class="copy-btn"
+                            [ngClass]="{copied: copiedData['contract_address' + index]}"
+                            ngxClipboard [cbContent]="transaction.to"
+                            (cbOnSuccess)="onCopied('contract_address' + index)">
+                      <img src="./assets/images/icons/copy.svg"/>
+                    </button>
+                  </div>
+                  <div class="form-field_input_data">
+                    <div class="textarea min-text dark-field minimal-input">
+                      {{ transaction.to }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-field" *ngIf="transaction.data">
+                <div class="form-field_label">
+                  With data field
+                </div>
+                <div class="form-field_input">
+                  <div class="form-field_copy">
+                    <button type="button"
+                            class="copy-btn"
+                            [ngClass]="{copied: copiedData['data' + index]}"
+                            ngxClipboard [cbContent]="transaction.data"
+                            (cbOnSuccess)="onCopied('data' + index)">
+                      <img src="./assets/images/icons/copy.svg"/>
+                    </button>
+                  </div>
+                  <div class="form-field_input_data">
+                    <div class="textarea min-text dark-field minimal-input">
+                      {{ transaction.data }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="transaction-fields_opener" [ngClass]="{opened: openedInstruction[index]}">
-          <span (click)="openedInstruction[index] = !openedInstruction[index]">
-            Transaction details for manual execution
-          </span>
-        </div>
-
-        <div [hidden]="!openedInstruction[index]" class="transaction-fields">
-          <div class="form-field" *ngIf="transaction.from">
-            <div class="form-field_label">
-              Send transaction (0 ETH) from your management address
-            </div>
-            <div class="form-field_input">
-              <div class="form-field_copy">
-                <button type="button"
-                        class="copy-btn"
-                        [ngClass]="{copied: copiedData['owner_address' + index]}"
-                        ngxClipboard [cbContent]="transaction.from"
-                        (cbOnSuccess)="onCopied('owner_address' + index)">
-                  <img src="./assets/images/icons/copy.svg"/>
-                </button>
-              </div>
-              <div class="form-field_input_data">
-                <div class="textarea min-text dark-field minimal-input">
-                  {{ transaction.from }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-field">
-            <div class="form-field_label">
-              <span *ngIf="!transaction.from && !transaction.ethValue">Send transaction (0 ETH)</span>
-              <span *ngIf="!transaction.from && transaction.ethValue">Send {{transaction.ethValue}} ETH</span>
-              To contract address
-            </div>
-            <div class="form-field_input">
-              <div class="form-field_copy">
-                <button type="button"
-                        class="copy-btn"
-                        [ngClass]="{copied: copiedData['contract_address' + index]}"
-                        ngxClipboard [cbContent]="transaction.to"
-                        (cbOnSuccess)="onCopied('contract_address' + index)">
-                  <img src="./assets/images/icons/copy.svg"/>
-                </button>
-              </div>
-              <div class="form-field_input_data">
-                <div class="textarea min-text dark-field minimal-input">
-                  {{ transaction.to }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-field" *ngIf="transaction.data">
-            <div class="form-field_label">
-              With data field
-            </div>
-            <div class="form-field_input">
-              <div class="form-field_copy">
-                <button type="button"
-                        class="copy-btn"
-                        [ngClass]="{copied: copiedData['data' + index]}"
-                        ngxClipboard [cbContent]="transaction.data"
-                        (cbOnSuccess)="onCopied('data' + index)">
-                  <img src="./assets/images/icons/copy.svg"/>
-                </button>
-              </div>
-              <div class="form-field_input_data">
-                <div class="textarea min-text dark-field minimal-input">
-                  {{ transaction.data }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
     </mat-dialog-content>

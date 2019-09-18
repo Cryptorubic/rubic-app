@@ -230,7 +230,7 @@
                      *ngIf="(
                      (originalContract.state === 'EXPIRED') ||
                      (originalContract.contract_state === 'ACTIVE')
-                     ) && originalContract.isEthereum && (contractInfo.baseRaised != 0)">
+                     ) && originalContract.isEthereum && (contractInfo.baseRaised * 1 > 0)">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.base.token)"
                           type="button">
@@ -404,7 +404,8 @@
                 <div class="contract-buttons"
                      *ngIf="(
                      (originalContract.state === 'EXPIRED') ||
-                     (originalContract.contract_state === 'ACTIVE')) && originalContract.isEthereum && (contractInfo.quoteRaised != 0)">
+                     (originalContract.contract_state === 'ACTIVE')) &&
+                     originalContract.isEthereum && (contractInfo.quoteRaised * 1 > 0)">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.quote.token)"
                           type="button">
@@ -544,8 +545,8 @@
     <img src="./assets/images/icons/conown.svg" class="btn-icon">
     <span>Contact swap owner</span>
   </button><br/>
-  <a routerLink="/create-v3" class="btn btn-white-opacity text-center">
-    <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
+  <a routerLink="/create-v3" class="btn btn-white-opacity">
+    <img class="arrow btn-icon" src="./assets/images/buttons/arrow_y.svg">
     <span>Create new trade</span>
   </a>
 </div>
