@@ -290,6 +290,7 @@ export class Web3Service {
     };
     return new Observable((observer) => {
       const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
+
       if (window['ethereum'] && window['ethereum'].isMetaMask) {
         const networkVersion = Number(window['ethereum'].networkVersion);
         if (usedNetworkVersion !== networkVersion) {
@@ -302,14 +303,19 @@ export class Web3Service {
             addresses: accounts
           });
         });
-        window['ethereum'].enable().then((accounts) => {
-          observer.next({
-            type: providerName,
-            addresses: accounts
-          });
-        }, () => {
+
+        if (window['ethereum'].isConnected() && !window['ethereum'].selectedAddress) {
           sendNull(observer);
-        });
+        } else {
+          window['ethereum'].enable().then((accounts) => {
+            observer.next({
+              type: providerName,
+              addresses: accounts
+            });
+          }, () => {
+            sendNull(observer);
+          });
+        }
       } else {
         sendNull(observer);
       }

@@ -614,17 +614,23 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
     const metamaskSubscriber = this.web3Service.getAccounts().subscribe((response: any) => {
       if (response && response.metamask) {
+        const contributeData = this.getContributeTransaction(amount, token);
         if (tokenModel.isEther) {
+          contributeData.action({
+            type: 'metamask',
+            address: response.metamask[0]
+          });
         } else {
           this.tokenContract = this.web3Service.getContract(ERC20_TOKEN_ABI, tokenModel.address);
           this.tokenContract.methods.allowance(
             response.metamask[0],
             SWAPS_V2.ADDRESS
           ).call().then((result) => {
+
             result = result ? result.toString(10) : result;
             result = result === '0' ? null : result;
+
             if (result && new BigNumber(result).minus(amount).isPositive()) {
-              const contributeData = this.getContributeTransaction(amount, token);
               contributeData.action({
                 type: 'metamask',
                 address: response.metamask[0]
@@ -632,16 +638,16 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
             } else {
               this.createTransactions(amount, token);
             }
+
           });
         }
       } else {
         this.createTransactions(amount, token);
       }
-      metamaskSubscriber.unsubscribe();
     }, (error) => {
       this.createTransactions(amount, token);
-      metamaskSubscriber.unsubscribe();
     });
+    metamaskSubscriber.unsubscribe();
   }
 
   ngOnDestroy(): void {

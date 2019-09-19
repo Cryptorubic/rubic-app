@@ -92,14 +92,14 @@ const routes: Routes = [
         path: 'create',
         component: ContractFormComponent,
         data: {
-          support: true
+          // support: true
         }
       },
       {
         path: 'create-v3',
         component: ContractFormAllComponent,
         data: {
-          support: true
+          // support: true
         }
       },
       {
