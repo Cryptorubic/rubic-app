@@ -91,8 +91,7 @@ export class TokensAllInputComponent implements OnInit {
     } else {
       while (result.length < 10) {
         const token = window['cmc_tokens'][indexToken];
-
-        if (token.cmc_id) {
+        if (token.cmc_id && (!this.blockchain || (this.blockchain === token.platform))) {
           result.push({...token});
         }
         indexToken++;
