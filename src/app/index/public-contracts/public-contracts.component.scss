@@ -6,9 +6,39 @@
 .public-swaps {
   min-width: 1015px;
   white-space: nowrap;
+  &_table-toggler {
+    float: right;
+    padding: 0;
+    list-style-type: none;
+    white-space: nowrap;
+    margin: 0 2px -20px;
+    position: relative;
+    z-index: 5;
+    li {
+      padding: 0;
+      display: inline-block;
+      margin: 0 0 0 3px;
+      span {
+        cursor: pointer;
+        display: block;
+        padding: 12px 35px 9px;
+        font-size: 15px;
+        line-height: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.25);
+        border-bottom-width: 0;
+      }
+      &.active span {
+        background-color: rgba(107, 107, 107, 0.2);
+        color: #fff;
+        border-color: rgba(107, 107, 107, 0.2);
+      }
+    }
+  }
   &_table-container {
     overflow: auto;
     padding-bottom: 110px;
+    clear: both;
   }
   &_body {
     overflow:  auto;
@@ -38,6 +68,9 @@
       background-color: rgba(0, 0, 0, 0.1);
       color: #fff;
       position: relative;
+    }
+    &:last-child {
+      margin-right: 0;
     }
   }
   &_row:hover &_cell {

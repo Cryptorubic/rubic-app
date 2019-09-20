@@ -20,6 +20,40 @@ const PAGE_SIZE = 5;
 
 export class PublicContractsComponent implements OnInit {
 
+  constructor(
+    private contractsService: ContractsService,
+    private web3Service: Web3Service,
+    private http: HttpClient,
+    private userService: UserService,
+    private dialog: MatDialog
+  ) {
+
+    this.currentUser = this.userService.getUserModel();
+    this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
+      this.currentUser = userProfile;
+    });
+
+    this.http.get('/assets/images/1x1.png?_t=' + (new Date()).getTime(), {
+      responseType: 'text', observe: 'response'
+    }).toPromise().then(res => {
+      this.serverDateTimeRange = new Date().getTime() - new Date(res.headers.get('Date')).getTime();
+    });
+
+    this.selectedFilter = {
+      name: '',
+      asc: false
+    };
+
+    // Список активных контрактов
+
+    this.contractsService.getPublicContractsList().then((result) => {
+      this.activeTradesList = result;
+      this.setTradesList(result);
+    });
+
+    this.openedTradesTab = 'ACTIVE';
+  }
+
   @ViewChild('deleteTradeConfirmation') deleteTradeConfirmation: TemplateRef<any>;
   private deleteTradeConfirmationModal: MatDialogRef<any>;
 
@@ -40,6 +74,8 @@ export class PublicContractsComponent implements OnInit {
 
   public currentUser: UserInterface;
 
+  public openedTradesTab: string;
+
   public selectedCoins: {
     base?: any;
     quote?: any;
@@ -47,43 +83,29 @@ export class PublicContractsComponent implements OnInit {
 
   public selectedFilter: { name: string; asc: boolean };
 
-  constructor(
-    private contractsService: ContractsService,
-    private web3Service: Web3Service,
-    private http: HttpClient,
-    private userService: UserService,
-    private dialog: MatDialog
-  ) {
-
-    this.currentUser = this.userService.getUserModel();
-    this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
-      this.currentUser = userProfile;
-    });
+  private activeTradesList: any[];
 
 
+  public pastTradesInfo: {
+    inProgress: boolean;
+    total: number;
+    pages: number;
+    list: any[];
+    page?: number;
+  };
+
+
+  private setTradesList(list) {
     this.contractsCount = 0;
     this.showedPages = 1;
-
-    this.http.get('/assets/images/1x1.png?_t=' + (new Date()).getTime(), {
-      responseType: 'text', observe: 'response'
-    }).toPromise()
-      .then(res => {
-        this.serverDateTimeRange = new Date().getTime() - new Date(res.headers.get('Date')).getTime();
-      });
-
-    this.selectedFilter = {
-      name: '',
-      asc: false
-    };
-    this.contractsService.getPublicContractsList().then((result) => {
-      this.contractsList =
-        this.displayingContractsList = result;
-
-      this.loadcoinsInfo(this.contractsList);
-    });
+    this.allLoaded = false;
+    this.contractsList = list;
+    this.loadCoinsInfo(list);
   }
 
-  private loadcoinsInfo(coinsList) {
+
+
+  private loadCoinsInfo(coinsList) {
     coinsList.forEach((contract) => {
       if (contract.contract_type !== 20) {
         contract.contract_details = {...contract};
@@ -110,11 +132,11 @@ export class PublicContractsComponent implements OnInit {
           new BigNumber(contract.contract_details.base_limit).div(Math.pow(10, baseToken.decimals)).dp(8);
         contract.contract_details.quote_token_info.amount =
           new BigNumber(contract.contract_details.quote_limit).div(Math.pow(10, quoteToken.decimals)).dp(8);
+
         this.getRates(contract);
       });
     });
   }
-
 
   public refreshList() {
     const startRefreshTime = new Date().getTime();
@@ -122,7 +144,7 @@ export class PublicContractsComponent implements OnInit {
     this.contractsService.getPublicContractsList().then((result: IContract[]) => {
       this.contractsCount = 0;
       this.contractsList = result;
-      this.loadcoinsInfo(result);
+      this.loadCoinsInfo(result);
 
       setTimeout(() => {
         this.refreshProgress = false;
@@ -130,7 +152,6 @@ export class PublicContractsComponent implements OnInit {
 
     });
   }
-
 
   private getRates(contract) {
     const contractDetails = contract.contract_details;
@@ -150,20 +171,15 @@ export class PublicContractsComponent implements OnInit {
     }
   }
 
-  private loadSwapsContractInfo(contractDetails) {
-    this.finishContractLoad(contractDetails);
-  }
-
-
   private loadContractInfo(contractDetails, contract) {
     switch (contract.contract_type) {
       case 20:
         contractDetails.isDecentralized = true;
-        this.loadSwapsContractInfo(contractDetails);
+        this.finishContractLoad(contractDetails);
         break;
       case 21:
         if (contractDetails.base_address && contractDetails.quote_address) {
-          this.loadSwapsContractInfo(contractDetails);
+          this.finishContractLoad(contractDetails);
           contractDetails.isDecentralized = true;
         } else {
           this.finishContractLoad(contractDetails);
@@ -175,24 +191,40 @@ export class PublicContractsComponent implements OnInit {
     }
   }
 
-
   private finishContractLoad(contract) {
     this.checkExpire(contract);
     this.contractsCount++;
 
-    if (this.contractsCount === this.contractsList.length) {
-      this.allLoaded = true;
-      setInterval(() => {
-        this.contractsList.forEach((contractFromList: any) => {
-          this.checkExpire(contractFromList.contract_details);
-        });
-      }, 3000);
+    switch (this.openedTradesTab) {
+      case 'ACTIVE':
+        if (this.contractsCount === this.contractsList.length) {
+          if (this.openedTradesTab === 'ACTIVE') {
+            this.allLoaded = true;
+            setInterval(() => {
+              this.contractsList.forEach((contractFromList: any) => {
+                this.checkExpire(contractFromList.contract_details);
+              });
+            }, 3000);
+            this.applySort();
+          }
+        }
+        break;
 
-      this.applySort();
-
+      case 'PAST':
+        if (this.pastTradesInfo.page > 1) {
+          if (this.contractsCount === this.pastTradesInfo.list.length) {
+            this.pastTradesInfo.inProgress = false;
+            this.displayingContractsList =
+              this.allFilteredOrdersCount =
+                this.contractsList = this.pastTradesInfo.list;
+          }
+        } else if (this.contractsCount === this.contractsList.length) {
+          this.pastTradesInfo.inProgress = false;
+          this.allLoaded = true;
+        }
+        break;
     }
   }
-
 
   private checkExpire(contractDetails) {
     const leftTime = (new Date(contractDetails.stop_date).getTime() - (new Date().getTime() - this.serverDateTimeRange)) / 1000;
@@ -230,9 +262,11 @@ export class PublicContractsComponent implements OnInit {
     switch (this.selectedFilter.name) {
       case 'volume':
         let sortBy = 'base_token_info';
+
         if (this.selectedCoins.quote.token && !this.selectedCoins.base.token) {
           sortBy = 'quote_token_info';
         }
+
         this.contractsList = this.contractsList.sort((contract1, contract2) => {
           if (this.selectedFilter.asc) {
             return (new BigNumber(contract1.contract_details[sortBy].amount).minus
@@ -242,8 +276,8 @@ export class PublicContractsComponent implements OnInit {
               (new BigNumber(contract1.contract_details[sortBy].amount))).isPositive() ? 1 : -1;
           }
         });
-
         break;
+
       case 'expired':
         this.contractsList = this.contractsList.sort((contract1, contract2) => {
           if (this.selectedFilter.asc) {
@@ -260,19 +294,24 @@ export class PublicContractsComponent implements OnInit {
         this.contractsList = this.contractsList.sort((contract1, contract2) => {
           return (new Date(contract2.created_date) < new Date(contract1.created_date)) ? -1 : 1;
         });
-      }
-
+    }
     this.selectCoin();
   }
 
   public selectCoin() {
-    this.allFilteredOrdersCount = this.contractsList.filter((trade) => {
-      const details = trade.contract_details;
-      return (!this.selectedCoins.base.token || (this.selectedCoins.base.token.cmc_id === details.base_token_info.cmc_id)) &&
-          (!this.selectedCoins.quote.token || (this.selectedCoins.quote.token.cmc_id === details.quote_token_info.cmc_id));
-    });
-
-    this.showSelectedPages();
+    switch (this.openedTradesTab) {
+      case 'ACTIVE':
+        this.allFilteredOrdersCount = this.contractsList.filter((trade) => {
+          const details = trade.contract_details;
+          return (!this.selectedCoins.base.token || (this.selectedCoins.base.token.mywish_id === details.base_token_info.mywish_id)) &&
+            (!this.selectedCoins.quote.token || (this.selectedCoins.quote.token.mywish_id === details.quote_token_info.mywish_id));
+        });
+        this.showSelectedPages();
+        break;
+      case 'PAST':
+        this.loadPastTrades();
+        break;
+    }
   }
 
   public revertCoinFilters() {
@@ -282,7 +321,6 @@ export class PublicContractsComponent implements OnInit {
     this.selectCoin();
   }
 
-
   public showSelectedPages(addOne?: boolean) {
     if (addOne) {
       this.showedPages++;
@@ -290,6 +328,73 @@ export class PublicContractsComponent implements OnInit {
     this.displayingContractsList = this.allFilteredOrdersCount.slice(0, this.showedPages * PAGE_SIZE);
   }
 
+  ngOnInit() {
+    this.selectedCoins = {
+      base: {},
+      quote: {}
+    };
+  }
+
+
+  public showPostSelectedPages() {
+    this.loadPastTrades(true);
+  }
+
+  private loadPastTrades(nextPage?) {
+    if (this.pastTradesInfo) {
+      this.pastTradesInfo.page = !nextPage ? 1 : this.pastTradesInfo.page++;
+    }
+
+    if (!nextPage) {
+      this.allLoaded = false;
+      this.contractsCount = 0;
+    } else {
+      this.pastTradesInfo.inProgress = true;
+    }
+
+    this.contractsService.getPastTrades({
+      base_coin_id: this.selectedCoins.base.token ? this.selectedCoins.base.token.mywish_id : '',
+      quote_coin_id: this.selectedCoins.quote.token ? this.selectedCoins.quote.token.mywish_id : '',
+      p: this.pastTradesInfo ? this.pastTradesInfo.page : 1
+    }).then((result) => {
+      if (nextPage) {
+        this.pastTradesInfo.page++;
+        this.loadCoinsInfo(result.list);
+        this.pastTradesInfo.list = this.pastTradesInfo.list.concat(result.list);
+      } else {
+        this.pastTradesInfo = result;
+        this.pastTradesInfo.page = 1;
+        this.setTradesList(this.pastTradesInfo.list);
+        this.displayingContractsList = this.pastTradesInfo.list;
+      }
+    });
+  }
+
+
+  public openActiveTrades() {
+    this.pastTradesInfo = undefined;
+    this.contractsList = [];
+    if (this.openedTradesTab === 'ACTIVE') {
+      return;
+    }
+    this.openedTradesTab = 'ACTIVE';
+    this.setTradesList(this.activeTradesList);
+  }
+
+
+
+  public openPastTrades() {
+    this.contractsList = [];
+    this.allLoaded = false;
+    if (this.openedTradesTab === 'PAST') {
+      return;
+    }
+    this.openedTradesTab = 'PAST';
+    this.loadPastTrades();
+  }
+
+
+  // Deleting
   public deleteTrade(trade) {
     this.tradeForDeleting = trade;
     this.deleteTradeConfirmationModal = this.dialog.open(this.deleteTradeConfirmation, {
@@ -304,10 +409,5 @@ export class PublicContractsComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.selectedCoins = {
-      base: {},
-      quote: {}
-    };
-  }
+
 }
