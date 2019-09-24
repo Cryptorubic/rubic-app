@@ -304,18 +304,15 @@ export class Web3Service {
           });
         });
 
-        if (window['ethereum'].isConnected() && !window['ethereum'].selectedAddress) {
-          sendNull(observer);
-        } else {
-          window['ethereum'].enable().then((accounts) => {
-            observer.next({
-              type: providerName,
-              addresses: accounts
-            });
-          }, () => {
-            sendNull(observer);
+        window['ethereum'].enable().then((accounts) => {
+          observer.next({
+            type: providerName,
+            addresses: accounts
           });
-        }
+        }, () => {
+          sendNull(observer);
+        });
+
       } else {
         sendNull(observer);
       }
@@ -329,7 +326,7 @@ export class Web3Service {
     const addressesDictionary: any = {};
     return new Observable((observer) => {
       const accountsSubscriber = this.getAccountsByProvider('metamask').subscribe((addresses: any) => {
-        addressesDictionary[addresses.type] = addresses.addresses === null ? null : owner ? addresses.addresses.filter((addr) => {
+        addressesDictionary[addresses.type] = addresses.addresses === null ? undefined : owner ? addresses.addresses.filter((addr) => {
           return addr.toLowerCase() === owner.toLowerCase();
         }) : addresses.addresses;
 

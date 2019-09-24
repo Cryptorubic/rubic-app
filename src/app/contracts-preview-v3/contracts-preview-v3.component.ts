@@ -483,7 +483,11 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           action: sendActivateTrx
         }],
         title: 'Initialization',
-        description: 'Before the contribution it’s needed to initialize the contract (once per trade)'
+        description: 'Before the contribution it’s needed to initialize the contract (once per trade)',
+        afterComplete: {
+          title: 'Completed',
+          description: ''
+        }
       }
     });
   }
@@ -552,6 +556,26 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       const contributeData = this.getContributeTransaction(amount, token);
       const textAmount = this.fromBigNumber(amount, contributeData.token.decimals);
 
+
+      const checkAllowance = (wallet) => {
+        return new Promise((resolve, reject) => {
+          const tokenModel = this.originalContract.tokens_info[token].token;
+          this.tokenContract = this.web3Service.getContract(ERC20_TOKEN_ABI, tokenModel.address);
+          this.tokenContract.methods.allowance(wallet, SWAPS_V2.ADDRESS).call().then((result) => {
+            result = result ? result.toString(10) : result;
+            result = result === '0' ? null : result;
+            if (result && new BigNumber(result).minus(amount).isPositive()) {
+              resolve(true);
+            } else {
+              reject(false);
+            }
+          }, () => {
+            reject(false);
+          });
+        });
+      };
+
+
       const approveTransaction = (wallet) => {
         return this.web3Service.sendTransaction({
           from: wallet.address,
@@ -573,6 +597,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           title: 'Authorise the contract for getting ' + textAmount + ' ' + contributeData.token.token_short_name + ' tokens',
           to: contributeData.token.address,
           data: approveSignature,
+          checkComplete: checkAllowance,
           action: approveTransaction
         });
       }
@@ -609,45 +634,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       return;
     }
 
-    const tokenModel = details.tokens_info[token].token;
+    this.createTransactions(amount, token);
 
-
-    const metamaskSubscriber = this.web3Service.getAccounts().subscribe((response: any) => {
-      if (response && response.metamask) {
-        const contributeData = this.getContributeTransaction(amount, token);
-        if (tokenModel.isEther) {
-          contributeData.action({
-            type: 'metamask',
-            address: response.metamask[0]
-          });
-        } else {
-          this.tokenContract = this.web3Service.getContract(ERC20_TOKEN_ABI, tokenModel.address);
-          this.tokenContract.methods.allowance(
-            response.metamask[0],
-            SWAPS_V2.ADDRESS
-          ).call().then((result) => {
-
-            result = result ? result.toString(10) : result;
-            result = result === '0' ? null : result;
-
-            if (result && new BigNumber(result).minus(amount).isPositive()) {
-              contributeData.action({
-                type: 'metamask',
-                address: response.metamask[0]
-              });
-            } else {
-              this.createTransactions(amount, token);
-            }
-
-          });
-        }
-      } else {
-        this.createTransactions(amount, token);
-      }
-    }, (error) => {
-      this.createTransactions(amount, token);
-    });
-    metamaskSubscriber.unsubscribe();
   }
 
   ngOnDestroy(): void {

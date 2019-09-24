@@ -5,13 +5,15 @@
       <img src="./assets/images/icons/cross-w.svg">
     </button>
     <div class="transaction-title">
-      {{trxData.title}}
+      {{!(trxData.afterComplete && trxData.transactions[0].confirmed) ? trxData.title : trxData.afterComplete.title}}
     </div>
-    <div class="transaction-description">
+    <div class="transaction-description" *ngIf="!(trxData.afterComplete && trxData.transactions[0].confirmed)">
       {{trxData.description}}
     </div>
     <mat-dialog-content>
-      <div *ngFor="let transaction of trxData.transactions; let index = index" class="transaction-instruction">
+      <div *ngFor="let transaction of trxData.transactions; let index = index"
+           [hidden]="!trxData.checked"
+           class="transaction-instruction">
         <div class="transaction-buttons">
           <div *ngIf="transaction.title"
                class="transaction-item-title" [ngClass]="{checked: transaction.confirmed}">
