@@ -1,7 +1,7 @@
 <div class="base-block-content">
   <div class="app-content-block">
     <div class="grid-row steps-mobile">
-      <div class="grid-cell grid-cell-1-6">
+      <div class="grid-cell grid-cell-1-4">
         <div class="steps-mobile_item"
              (click)="gotToForm(openedForm = editableContract ? 0 : openedForm)"
              [ngClass]="{
@@ -10,7 +10,7 @@
                 'opened': openedForm === 0
              }"></div>
       </div>
-      <div class="grid-cell grid-cell-1-6">
+      <div class="grid-cell grid-cell-1-4">
         <div class="steps-mobile_item"
              (click)="gotToForm(openedForm = (tokensForm.valid && editableContract) ? 1 : openedForm)"
              [ngClass]="{
@@ -19,35 +19,16 @@
                 'opened': openedForm === 1
              }"></div>
       </div>
-      <div class="grid-cell grid-cell-1-6">
+      <div class="grid-cell grid-cell-1-4">
         <div class="steps-mobile_item"
-             (click)="gotToForm((tokensForm.valid && extraForm.valid && editableContract) ? 2 : openedForm);"
+             (click)="gotToForm((advancedForm.valid && tokensForm.valid && extraForm.valid && editableContract && brokersForm.valid) ? 4 : openedForm);"
              [ngClass]="{
                 'active': tokensForm.valid && extraForm.valid && editableContract,
-                'checked': (openedForm > 2) && advancedForm.valid,
-                'opened': openedForm === 2
-             }"></div>
-      </div>
-      <div class="grid-cell grid-cell-1-6">
-        <div class="steps-mobile_item"
-             (click)="gotToForm((advancedForm.valid && tokensForm.valid && extraForm.valid && editableContract) ? 3 : openedForm);"
-             [ngClass]="{
-                'active': advancedForm.valid && tokensForm.valid && extraForm.valid && editableContract,
-                'checked': (openedForm > 3) && brokersForm.valid,
-                'opened': openedForm === 3
-             }"></div>
-      </div>
-
-      <div class="grid-cell grid-cell-1-6">
-        <div class="steps-mobile_item"
-             (click)="gotToForm((advancedForm.valid && tokensForm.valid && extraForm.valid && brokersForm.valid && editableContract) ? 3 : openedForm);"
-             [ngClass]="{
-                'active': advancedForm.valid && tokensForm.valid && extraForm.valid && brokersForm.valid && editableContract,
-                'checked': (openedForm > 4) && notificationForm.valid,
+                'checked': notificationForm.valid && (openedForm > 4),
                 'opened': openedForm === 4
              }"></div>
       </div>
-      <div class="grid-cell grid-cell-1-6">
+      <div class="grid-cell grid-cell-1-4">
         <div class="steps-mobile_item"
              [ngClass]="{
                 'checked': (openedForm > 100) && extraForm.valid,
