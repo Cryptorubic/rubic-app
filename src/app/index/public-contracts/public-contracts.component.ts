@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ContractsService} from '../../services/contracts/contracts.service';
+import {ContractsService, InterfacePastSwaps} from '../../services/contracts/contracts.service';
 import {TokenInfoInterface, Web3Service} from '../../services/web3/web3.service';
 
 import BigNumber from 'bignumber.js';
@@ -11,6 +11,13 @@ import {UserService} from '../../services/user/user.service';
 import {MatDialog, MatDialogRef} from '@angular/material';
 
 const PAGE_SIZE = 5;
+
+export interface InterfacePastSwapsRequest {
+  p?: number;
+  base_coin_id?: number;
+  quote_coin_id?: number;
+  size?: number;
+}
 
 @Component({
   selector: 'app-public-contracts',
@@ -83,16 +90,10 @@ export class PublicContractsComponent implements OnInit {
 
   public selectedFilter: { name: string; asc: boolean };
 
-  private activeTradesList: any[];
+  private activeTradesList: any;
 
 
-  public pastTradesInfo: {
-    inProgress: boolean;
-    total: number;
-    pages: number;
-    list: any[];
-    page?: number;
-  };
+  public pastTradesInfo: InterfacePastSwaps;
 
 
   private setTradesList(list) {
@@ -352,11 +353,18 @@ export class PublicContractsComponent implements OnInit {
       this.pastTradesInfo.inProgress = true;
     }
 
-    this.contractsService.getPastTrades({
-      base_coin_id: this.selectedCoins.base.token ? this.selectedCoins.base.token.mywish_id : '',
-      quote_coin_id: this.selectedCoins.quote.token ? this.selectedCoins.quote.token.mywish_id : '',
+    const requestData = {
       p: this.pastTradesInfo ? this.pastTradesInfo.page : 1
-    }).then((result) => {
+    } as InterfacePastSwapsRequest;
+
+    if (this.selectedCoins.base.token) {
+      requestData.base_coin_id = this.selectedCoins.base.token.mywish_id;
+    }
+    if (this.selectedCoins.quote.token) {
+      requestData.quote_coin_id = this.selectedCoins.quote.token.mywish_id;
+    }
+
+    this.contractsService.getPastTrades(requestData).then((result) => {
       if (nextPage) {
         this.pastTradesInfo.page++;
         this.loadCoinsInfo(result.list);

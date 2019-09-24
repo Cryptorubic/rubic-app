@@ -2,9 +2,19 @@ import { Injectable } from '@angular/core';
 import {HttpService} from '../http/http.service';
 import {IContractV3} from '../../contract-form-all/contract-form-all.component';
 
+export interface InterfacePastSwaps {
+  total: number;
+  pages: number;
+  list: any[];
+  inProgress?: boolean;
+  page?: number;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class ContractsService {
 
   constructor(
@@ -45,7 +55,7 @@ export class ContractsService {
       } else {
         result.state = (result.state !== 'WAITING_FOR_ACTIVATION') ? result.state : 'ACTIVE';
       }
-      return result;
+      return result as InterfacePastSwaps;
     });
   }
 

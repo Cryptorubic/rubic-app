@@ -13,10 +13,14 @@ export class HttpService {
 
   public get(url: string, data?: {}, path?: string): Observable<any> {
     data = data || {};
-    data['_'] = new Date().getTime();
     return this.http
       .get<any>((path || SERVER_REST_URL) + (url || ''), {
-        params: data
+        params: data,
+        headers: {
+          'Cache-Control':  'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
+          Pragma: 'no-cache',
+          Expires: '0'
+        }
       });
   }
 
