@@ -25,7 +25,7 @@
               <div class="grid-cell grid-cell-vs-1-2">
 
                 <button type="button"
-                        [disabled]="!providedAddresses.metamask?.length || (transaction.onlyOwner && (providedAddresses.metamask[0] !== transaction.onlyOwner))"
+                        [disabled]="transaction.inProgress || !providedAddresses.metamask?.length || (transaction.onlyOwner && (providedAddresses.metamask[0] !== transaction.onlyOwner))"
                         (click)="sendTransaction({
                           type: 'metamask',
                           address: providedAddresses.metamask[0]
@@ -48,10 +48,16 @@
                       '?sendMode=ether&to=' + transaction.to + '&value=' + transaction.ethValue + '#send-transaction' :
                       '?data=' + transaction.data + '&value=' + (transaction.ethValue || '0') + '&to=' + transaction.to
                     )"
+                   *ngIf="!transaction.inProgress"
                    target="_blank"
                    type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
                   <img src="./assets/images/icons/web3clients/mew.png" class="btn-ico">
                 </a>
+
+                <button *ngIf="transaction.inProgress" disabled="disabled"
+                   type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
+                  <img src="./assets/images/icons/web3clients/mew.png" class="btn-ico">
+                </button>
               </div>
 
             </div>

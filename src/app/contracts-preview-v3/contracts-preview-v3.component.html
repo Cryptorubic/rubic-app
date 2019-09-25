@@ -112,7 +112,9 @@
                     </div>
                   </div>
 
-                  <div class="warning-coin" *ngIf="!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')">
+                  <div class="warning-coin"
+                       [ngClass]="{invisible: tokens.base.token.cmc_id || (tokens.base.token.platform === 'fiat')}"
+                       *ngIf="(!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')) || (!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat'))">
                     <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
                     <span class="warning-coin_text">
                         Unverified. Not listed on CMC
@@ -293,7 +295,9 @@
                     </div>
                   </div>
 
-                  <div class="warning-coin" *ngIf="!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat')">
+                  <div class="warning-coin"
+                       [ngClass]="{invisible: tokens.quote.token.cmc_id || (tokens.quote.token.platform === 'fiat')}"
+                       *ngIf="(!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')) || (!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat'))">
                     <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
                     <span class="warning-coin_text">
                         Unverified. Not listed on CMC

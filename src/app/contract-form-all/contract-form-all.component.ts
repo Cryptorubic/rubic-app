@@ -363,6 +363,12 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
     this.formData.comment = this.requestData.comment;
 
+
+    if (this.requestData.tokens_info.quote.token.isEthereum && this.requestData.tokens_info.base.token.isEthereum) {
+      this.formData.base_address = this.requestData.tokens_info.base.token.address;
+      this.formData.quote_address = this.requestData.tokens_info.quote.token.address;
+    }
+
     this.formData.public = !!this.extraForm.value.public;
     this.formData.stop_date = this.extraForm.value.active_to.clone().utc().format('YYYY-MM-DD HH:mm');
     this.formData.base_limit = this.requestData.tokens_info.base.amount;
