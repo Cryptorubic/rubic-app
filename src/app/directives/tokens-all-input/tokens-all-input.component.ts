@@ -50,6 +50,7 @@ export class TokensAllInputComponent implements OnInit {
 
     if (this.setToken) {
       this.setToken.subscribe((result) => {
+        this.visibleInput = false;
         this.TokenChange.emit(result);
         this.DecimalsEmitter.emit(result.token.decimals);
       });
@@ -123,7 +124,6 @@ export class TokensAllInputComponent implements OnInit {
       }
     });
   }
-
 
   public selectToken(token, tokenIndex, withoutHide?: boolean) {
     if (!isNaN(this.activeTokenIndex)) {

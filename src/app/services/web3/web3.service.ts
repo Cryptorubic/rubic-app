@@ -290,6 +290,7 @@ export class Web3Service {
     };
     return new Observable((observer) => {
       const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
+
       if (window['ethereum'] && window['ethereum'].isMetaMask) {
         const networkVersion = Number(window['ethereum'].networkVersion);
         if (usedNetworkVersion !== networkVersion) {
@@ -302,6 +303,7 @@ export class Web3Service {
             addresses: accounts
           });
         });
+
         window['ethereum'].enable().then((accounts) => {
           observer.next({
             type: providerName,
@@ -310,6 +312,7 @@ export class Web3Service {
         }, () => {
           sendNull(observer);
         });
+
       } else {
         sendNull(observer);
       }
@@ -323,7 +326,7 @@ export class Web3Service {
     const addressesDictionary: any = {};
     return new Observable((observer) => {
       const accountsSubscriber = this.getAccountsByProvider('metamask').subscribe((addresses: any) => {
-        addressesDictionary[addresses.type] = addresses.addresses === null ? null : owner ? addresses.addresses.filter((addr) => {
+        addressesDictionary[addresses.type] = addresses.addresses === null ? undefined : owner ? addresses.addresses.filter((addr) => {
           return addr.toLowerCase() === owner.toLowerCase();
         }) : addresses.addresses;
 
@@ -345,9 +348,31 @@ export class Web3Service {
     if (provider) {
       this.Web3.eth.setProvider(this.providers[provider]);
     }
-    return new Promise((resolve) => {
-      this.Web3.eth.sendTransaction(transactionConfig).then((result) => {
-        resolve(result);
+    return new Promise((resolve, reject) => {
+      this.Web3.eth.sendTransaction(transactionConfig, (err, response) => {
+        if (!err) {
+          const trxSubscription = setInterval(() => {
+            this.Web3.eth.getTransactionReceipt(response, (error, transaction) => {
+              if (transaction) {
+                if (transaction.status) {
+                  resolve(transaction);
+                } else {
+                  reject(err);
+                }
+                clearInterval(trxSubscription);
+              }
+              if (error) {
+                clearInterval(trxSubscription);
+              }
+            });
+          }, 1000);
+        } else {
+          reject(err);
+        }
+      }).then((result) => {
+        console.log(result);
+      }, (err) => {
+        console.log(err);
       }).finally(() => {
         if (provider) {
           this.Web3.eth.setProvider(this.providers.infura);

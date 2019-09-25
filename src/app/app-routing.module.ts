@@ -92,14 +92,14 @@ const routes: Routes = [
         path: 'create',
         component: ContractFormComponent,
         data: {
-          support: true
+          // support: true
         }
       },
       {
         path: 'create-v3',
         component: ContractFormAllComponent,
         data: {
-          support: true
+          // support: true
         }
       },
       {
@@ -109,7 +109,7 @@ const routes: Routes = [
           contract: ContractEditResolver
         },
         data: {
-          support: true
+          createButton: true
         }
       },
       {
@@ -119,7 +119,7 @@ const routes: Routes = [
           contract: ContractEditV3Resolver
         },
         data: {
-          support: true
+          createButton: true
         }
       },
       {
@@ -130,7 +130,7 @@ const routes: Routes = [
         },
         data: {
           supportHide: 1024,
-          support: true,
+          createButton: true,
           hideInstruction: true
         }
       },
@@ -142,7 +142,7 @@ const routes: Routes = [
         },
         data: {
           supportHide: 1024,
-          support: true,
+          createButton: true,
           hideInstruction: true
         }
       },
@@ -153,8 +153,7 @@ const routes: Routes = [
           contract: ContractEditResolver
         },
         data: {
-          supportHide: 1024,
-          support: true,
+          createButton: true,
           hideInstruction: true
         }
       },
@@ -165,8 +164,7 @@ const routes: Routes = [
           contract: ContractEditV3Resolver
         },
         data: {
-          supportHide: 1024,
-          support: true,
+          createButton: true,
           hideInstruction: true
         }
       },
