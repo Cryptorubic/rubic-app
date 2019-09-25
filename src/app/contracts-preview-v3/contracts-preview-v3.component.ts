@@ -602,7 +602,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
       if (!contributeData.token.isEther) {
         transactionsList.unshift({
-          title: 'Authorise the contract for getting ' + textAmount + ' ' + contributeData.token.token_short_name + ' tokens',
+          title: 'Authorise the contract for getting ' + contributeData.token.token_short_name + ' tokens',
           to: contributeData.token.address,
           data: approveSignature,
           checkComplete: checkAllowance,
