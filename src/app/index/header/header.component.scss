@@ -1,5 +1,5 @@
 header {
-  padding-top: 53px;
+  padding-top: 20px;
   padding-bottom: 20px;
   position: fixed;
   top: 0;
@@ -7,6 +7,7 @@ header {
   right: 0;
   transition: all linear 0.2s;
   z-index: 10;
+  background-color: rgba(0,0,0,0.8);
   &.scrolled {
     background: rgba(56, 67, 84, 0.9);
     padding-top: 13px;

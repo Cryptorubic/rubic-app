@@ -77,8 +77,11 @@ export class TransactionComponent implements OnInit, OnDestroy {
   }
 
   public sendTransaction(wallet, transaction) {
+    transaction.inProgress = true;
     transaction.action(wallet).then((result) => {
       transaction.confirmed = true;
+    }).finally(() => {
+      transaction.inProgress = false;
     });
   }
 }
