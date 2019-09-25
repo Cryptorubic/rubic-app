@@ -4,21 +4,26 @@
     <button class="dialog-closer" mat-dialog-close>
       <img src="./assets/images/icons/cross-w.svg">
     </button>
+
     <div class="transaction-title">
       {{!(trxData.afterComplete && trxData.transactions[0].confirmed) ? trxData.title : trxData.afterComplete.title}}
     </div>
+
     <div class="transaction-description" *ngIf="!(trxData.afterComplete && trxData.transactions[0].confirmed)">
       {{trxData.description}}
     </div>
-    <mat-dialog-content>
+
+    <mat-dialog-content *ngIf="!(trxData.afterComplete && trxData.transactions[0].confirmed)">
       <div *ngFor="let transaction of trxData.transactions; let index = index"
            [hidden]="!trxData.checked"
            class="transaction-instruction">
-        <div class="transaction-buttons">
+
+        <div class="transaction-item">
           <div *ngIf="transaction.title"
                class="transaction-item-title" [ngClass]="{checked: transaction.confirmed}">
             {{ transaction.title }}
           </div>
+
           <div class="form-field_input" *ngIf="!transaction.confirmed">
             <div class="grid-row">
               <!--this.originalContract.contract_details.owner_address-->
@@ -37,7 +42,7 @@
                       <span></span><span></span><span></span><span></span>
                     </span>
                   </span>
-                  <span>Metamask</span>
+                  <span class="uppercase">Metamask</span>
                 </button>
               </div>
 
@@ -135,8 +140,6 @@
             </div>
           </div>
         </div>
-
-
       </div>
     </mat-dialog-content>
 

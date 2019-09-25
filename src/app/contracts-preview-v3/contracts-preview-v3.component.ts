@@ -396,7 +396,11 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           to: SWAPS_V2.ADDRESS,
           data: methodSignature,
           action: sendTransaction
-        }]
+        }],
+        afterComplete: {
+          title: 'Refund completed',
+          description: ''
+        }
       }
     });
   }
@@ -437,7 +441,11 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           onlyOwner: details.owner_address.toLowerCase()
         }],
         title: 'Cancel',
-        description: 'To cancel the swap you need to make the transaction from the management address'
+        description: 'To cancel the swap you need to make the transaction from the management address',
+        afterComplete: {
+          title: 'Cancellation completed',
+          description: ''
+        }
       }
     });
   }
@@ -485,7 +493,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
         title: 'Initialization',
         description: 'Before the contribution it’s needed to initialize the contract (once per trade)',
         afterComplete: {
-          title: 'Completed',
+          title: 'Initialization completed',
           description: ''
         }
       }
@@ -655,9 +663,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   public quoteWillGetValue(amount) {
     const details = this.originalContract;
 
-    const quoteWillValue = new BigNumber(details.tokens_info.quote.amount).div(new BigNumber(details.tokens_info.base.amount).div(amount));
+    const quoteWillValue = new BigNumber(amount).times(new BigNumber(details.tokens_info.quote.amount).div(new BigNumber(details.tokens_info.base.amount)));
     const quoteFeeValue = quoteWillValue.div(100).times(this.contractInfo.quoteBrokerPercent);
-
     if (!quoteFeeValue.isNaN()) {
       return quoteWillValue
         .minus(quoteFeeValue).toString(10);
@@ -668,7 +675,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   public baseWillGetValue(amount) {
     const details = this.originalContract;
-    const baseWillValue = new BigNumber(details.tokens_info.base.amount).div(new BigNumber(details.tokens_info.quote.amount).div(amount));
+    const baseWillValue = new BigNumber(amount).times(new BigNumber(details.tokens_info.base.amount).div(new BigNumber(details.tokens_info.quote.amount)));
     const baseFeeValue = baseWillValue.div(100).times(this.contractInfo.baseBrokerPercent);
 
     if (!baseFeeValue.isNaN()) {
