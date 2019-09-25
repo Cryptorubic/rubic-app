@@ -1,4 +1,4 @@
-<div class="dialog-block">
+<div class="dialog-block" [hidden]="!trxData.checked">
   <div class="dialog-block__content">
 
     <button class="dialog-closer" mat-dialog-close>
@@ -15,7 +15,6 @@
 
     <mat-dialog-content *ngIf="!(trxData.afterComplete && trxData.transactions[0].confirmed)">
       <div *ngFor="let transaction of trxData.transactions; let index = index"
-           [hidden]="!trxData.checked"
            class="transaction-instruction">
 
         <div class="transaction-item">
