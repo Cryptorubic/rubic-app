@@ -371,7 +371,7 @@
     display: initial!important;
   }
   .ls-width-100 {
-    width: 100%;
+    width: 100% !important;
   }
 }
 @media screen and (min-width: 481px) {
@@ -410,7 +410,7 @@
     display: block!important;
   }
   .vs-width-100 {
-    width: 100%;
+    width: 100% !important;
   }
 }
 

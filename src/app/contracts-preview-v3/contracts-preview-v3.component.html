@@ -112,7 +112,9 @@
                     </div>
                   </div>
 
-                  <div class="warning-coin" *ngIf="!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')">
+                  <div class="warning-coin"
+                       [ngClass]="{invisible: tokens.base.token.cmc_id || (tokens.base.token.platform === 'fiat')}"
+                       *ngIf="(!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')) || (!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat'))">
                     <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
                     <span class="warning-coin_text">
                         Unverified. Not listed on CMC
@@ -224,8 +226,13 @@
                     </span>
                   </span>
                 </div>
+
+
                 <div class="contract-buttons"
-                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.contract_state === 'ACTIVE')) && originalContract.isEthereum">
+                     *ngIf="(
+                     (originalContract.state === 'EXPIRED') ||
+                     (originalContract.contract_state === 'ACTIVE')
+                     ) && originalContract.isEthereum && (contractInfo.baseRaised * 1 > 0)">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.base.token)"
                           type="button">
@@ -233,6 +240,8 @@
                     <span>Refund</span>
                   </button>
                 </div>
+
+
               </div>
 
             </div>
@@ -286,7 +295,9 @@
                     </div>
                   </div>
 
-                  <div class="warning-coin" *ngIf="!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat')">
+                  <div class="warning-coin"
+                       [ngClass]="{invisible: tokens.quote.token.cmc_id || (tokens.quote.token.platform === 'fiat')}"
+                       *ngIf="(!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')) || (!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat'))">
                     <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
                     <span class="warning-coin_text">
                         Unverified. Not listed on CMC
@@ -395,7 +406,10 @@
                 </div>
 
                 <div class="contract-buttons"
-                     *ngIf="((originalContract.state === 'EXPIRED') || (originalContract.contract_state === 'ACTIVE')) && originalContract.isEthereum">
+                     *ngIf="(
+                     (originalContract.state === 'EXPIRED') ||
+                     (originalContract.contract_state === 'ACTIVE')) &&
+                     originalContract.isEthereum && (contractInfo.quoteRaised * 1 > 0)">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.quote.token)"
                           type="button">
@@ -519,7 +533,7 @@
               <button type="button" class="btn btn-yellow btn-min btn-normal-weight btn-auto"
                       (click)="sendCancel()">
                 <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                <span>Cancel the deal</span>
+                <span>Cancel trade</span>
               </button>
             </div>
 
@@ -534,7 +548,11 @@
   <button (click)="openContactForm()" class="btn btn-white-opacity">
     <img src="./assets/images/icons/conown.svg" class="btn-icon">
     <span>Contact swap owner</span>
-  </button>
+  </button><br/>
+  <a routerLink="/create-v3" class="btn btn-white-opacity">
+    <img class="arrow btn-icon" src="./assets/images/buttons/arrow_y.svg">
+    <span>Create new trade</span>
+  </a>
 </div>
 
 

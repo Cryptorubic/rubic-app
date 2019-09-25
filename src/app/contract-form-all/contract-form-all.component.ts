@@ -1,5 +1,5 @@
 import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
-import {ContractFormComponent, IContract, IContractDetails, MY_FORMATS} from '../contract-form/contract-form.component';
+import {MY_FORMATS} from '../contract-form/contract-form.component';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {UserService} from '../services/user/user.service';
 import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
@@ -10,7 +10,7 @@ import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/mater
 import BigNumber from 'bignumber.js';
 import * as moment from 'moment';
 import {HttpService} from '../services/http/http.service';
-import {TokenInfoInterface, Web3Service} from '../services/web3/web3.service';
+import {Web3Service} from '../services/web3/web3.service';
 import {Observable} from 'rxjs';
 import {UserInterface} from '../services/user/user.interface';
 
@@ -95,7 +95,6 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
   public originalContract: IContractV3;
 
-  public confirmationIsProgress: boolean;
   public formIsSending: boolean;
 
   public currentUser;
@@ -128,6 +127,8 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
   @ViewChild('brokersForm') private brokersForm;
   @ViewChild('notificationForm') private notificationForm;
+
+  public openedAdvanced: boolean;
 
 
   constructor(
@@ -305,7 +306,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
 
   private contractIsCreated(contract) {
-    this.router.navigate(['/contract-v3/' + contract.id]);
+    this.router.navigate(['/public-v3/' + contract.unique_link]);
   }
 
   private contractIsError(error) {
@@ -360,6 +361,12 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     } as IContractV3;
 
     this.formData.comment = this.requestData.comment;
+
+
+    if (this.requestData.tokens_info.quote.token.isEthereum && this.requestData.tokens_info.base.token.isEthereum) {
+      this.formData.base_address = this.requestData.tokens_info.base.token.address;
+      this.formData.quote_address = this.requestData.tokens_info.quote.token.address;
+    }
 
     this.formData.public = !!this.extraForm.value.public;
     this.formData.stop_date = this.extraForm.value.active_to.clone().utc().format('YYYY-MM-DD HH:mm');

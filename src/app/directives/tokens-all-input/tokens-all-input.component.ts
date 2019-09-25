@@ -50,6 +50,7 @@ export class TokensAllInputComponent implements OnInit {
 
     if (this.setToken) {
       this.setToken.subscribe((result) => {
+        this.visibleInput = false;
         this.TokenChange.emit(result);
         this.DecimalsEmitter.emit(result.token.decimals);
       });
@@ -71,20 +72,31 @@ export class TokensAllInputComponent implements OnInit {
     }
 
     const result = [];
-    let indexToken = q ? 0 : 6;
-    while ((indexToken < (window['cmc_tokens'].length - 1)) && (result.length < 10)) {
-      const token = window['cmc_tokens'][indexToken];
-      const tokenName = token.token_name.toLowerCase();
-      const tokenSymbol = token.token_short_name.toLowerCase();
-      const seqrchQ = q.toLowerCase();
+    let indexToken = 0;
 
-      const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
-      const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
+    if (q) {
+      while ((indexToken < (window['cmc_tokens'].length - 1)) && (result.length < 10)) {
+        const token = window['cmc_tokens'][indexToken];
+        const tokenName = token.token_name.toLowerCase();
+        const tokenSymbol = token.token_short_name.toLowerCase();
+        const seqrchQ = q.toLowerCase();
 
-      if ((nameIndexMatch || symbolIndexMatch) && (!this.blockchain || (this.blockchain === token.platform))) {
-        result.push({...token});
+        const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
+        const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
+
+        if ((nameIndexMatch || symbolIndexMatch) && (!this.blockchain || (this.blockchain === token.platform))) {
+          result.push({...token});
+        }
+        indexToken++;
       }
-      indexToken++;
+    } else {
+      while (result.length < 10) {
+        const token = window['cmc_tokens'][indexToken];
+        if (token.cmc_id && (!this.blockchain || (this.blockchain === token.platform))) {
+          result.push({...token});
+        }
+        indexToken++;
+      }
     }
 
     this.tokensList = result;
@@ -112,7 +124,6 @@ export class TokensAllInputComponent implements OnInit {
       }
     });
   }
-
 
   public selectToken(token, tokenIndex, withoutHide?: boolean) {
     if (!isNaN(this.activeTokenIndex)) {

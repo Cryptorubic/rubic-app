@@ -5,6 +5,14 @@
   width: 50%;
   top: 100%;
 }
+
+@media screen and (max-width: 640px) {
+  .form-field_input__ac_res,
+  .form-field_input__btn.active + .form-field_input__ac_input {
+    width: 100%;
+  }
+}
+
 .ac_res {
   &_preview {
     margin: -10px -11px;
