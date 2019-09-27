@@ -569,7 +569,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       const approveSignature = this.web3Service.encodeFunctionCall(
         approveMethod, [
           SWAPS_V2.ADDRESS,
-          '900719925474099'
+          new BigNumber(2).pow(256).minus(1).toString(10)
         ]
       );
 
