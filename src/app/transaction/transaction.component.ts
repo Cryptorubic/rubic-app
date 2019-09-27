@@ -119,7 +119,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
         width: '480px',
         panelClass: 'custom-dialog-container'
       });
-      console.log(this.metaMaskErrorModal);
+
       this.metaMaskErrorModal.afterClosed().subscribe(() => {
         this.metamaskError = false;
       });

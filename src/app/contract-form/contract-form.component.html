@@ -468,6 +468,7 @@
             <app-contract-form-pay
               *ngIf="originalContract.state === 'WAITING_FOR_PAYMENT'"
               [contractCosts]="originalContract.cost"
+              [costsEmitter]="costEmitter"
               [currentUser]="currentUser"></app-contract-form-pay>
 
           </div>
