@@ -564,17 +564,17 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
         return;
       }
 
+      const contributeData = this.getContributeTransaction(amount, token);
+      const textAmount = this.fromBigNumber(amount, contributeData.token.decimals);
+
 
       const approveMethod = this.web3Service.getMethodInterface('approve');
       const approveSignature = this.web3Service.encodeFunctionCall(
         approveMethod, [
           SWAPS_V2.ADDRESS,
-          new BigNumber(2).pow(256).minus(1).toString(10)
+          new BigNumber(90071992.5474099).times(Math.pow(10, contributeData.token.decimals)).toString(10)
         ]
       );
-
-      const contributeData = this.getContributeTransaction(amount, token);
-      const textAmount = this.fromBigNumber(amount, contributeData.token.decimals);
 
 
       const checkAllowance = (wallet) => {
