@@ -31,6 +31,9 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   public isRemindered: boolean;
   private tokenContract: any;
 
+  private updatePromise;
+
+
   constructor(
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
@@ -42,6 +45,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     this.web3Contract = this.web3Service.getContract(SWAPS_V2.ABI, SWAPS_V2.ADDRESS);
     this.originalContract = this.route.snapshot.data.contract;
 
+    this.updatePromise = true;
 
     this.copiedAddresses = {};
     this.analyzeContract();
@@ -175,6 +179,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
         console.log(err);
       });
     } else {
+      this.contractInfo.baseRaised = 0;
       this.contractInfo.baseLeft = new BigNumber(details.tokens_info.base.amount);
       this.contractInfo.baseLeftString =
         this.contractInfo.baseLeft.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
@@ -192,6 +197,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
         console.log(err);
       });
     } else {
+      this.contractInfo.quoteRaised = 0;
       this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount);
       this.contractInfo.quoteLeftString =
         this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
@@ -294,7 +300,10 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   }
 
   private analyzeContract() {
-    this.checkSwapState().then((state) => {
+    if (!this.updatePromise) {
+      return;
+    }
+    this.updatePromise = this.checkSwapState().then((state) => {
       switch (this.originalContract.state) {
         case 'ACTIVE':
         case 'DONE':
@@ -322,7 +331,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
 
   private getBaseContract() {
-    this.contractService.getSwapByPublic(this.originalContract.unique_link).then((result) => {
+    this.updatePromise = this.contractService.getSwapByPublic(this.originalContract.unique_link).then((result) => {
       const tokens_info = this.originalContract.tokens_info;
       const swapped = this.originalContract.isSwapped;
       const state = this.originalContract.state;
@@ -488,7 +497,10 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
         transactions: [{
           to: SWAPS_V2.ADDRESS,
           data: activateSignature,
-          action: sendActivateTrx
+          action: sendActivateTrx,
+          onComplete: () => {
+            this.checkSwapState().then((state) => {});
+          }
         }],
         title: 'Initialization',
         description: 'Before the contribution it’s needed to initialize the contract (once per trade)',
@@ -552,17 +564,17 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
         return;
       }
 
+      const contributeData = this.getContributeTransaction(amount, token);
+      const textAmount = this.fromBigNumber(amount, contributeData.token.decimals);
+
 
       const approveMethod = this.web3Service.getMethodInterface('approve');
       const approveSignature = this.web3Service.encodeFunctionCall(
         approveMethod, [
           SWAPS_V2.ADDRESS,
-          new BigNumber(2).pow(256).minus(1).toString(10)
+          new BigNumber(90071992.5474099).times(Math.pow(10, contributeData.token.decimals)).toString(10)
         ]
       );
-
-      const contributeData = this.getContributeTransaction(amount, token);
-      const textAmount = this.fromBigNumber(amount, contributeData.token.decimals);
 
 
       const checkAllowance = (wallet) => {
@@ -650,6 +662,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     if (this.updateContractTimer) {
       window.clearTimeout(this.updateContractTimer);
     }
+    this.updatePromise = false;
   }
 
   public openContactForm() {

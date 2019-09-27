@@ -99,6 +99,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
 
+  @Output() costEmitter = new EventEmitter<any>();
+
   constructor(
     protected contractsService: ContractsService,
     private userService: UserService,
@@ -211,6 +213,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
         this.editableContract = false;
         this.gotToForm(101);
         this.checkContractState();
+        this.costEmitter.emit(contract.cost);
         break;
       case 'WAITING_FOR_DEPLOYMENT':
         this.editableContract = false;

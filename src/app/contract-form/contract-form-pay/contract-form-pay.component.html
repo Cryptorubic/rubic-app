@@ -6,7 +6,23 @@
     <label class="form-field_label">Choose replenish method</label>
     <div class="form-field_input">
       <div class="grid-row">
+
         <div class="grid-cell grid-cell-ps-1-4 grid-cell-ls-1-2">
+          <label class="checkbox-block">
+            <input type="radio"
+                   name="payment-method"
+                   [(ngModel)]="replenishMethod"
+                   value="SWAP" checked="checked"/>
+            <span class="btn btn-payment btn-normal-weight width-100">
+                <img class="btn-payment_ico" src="./assets/images/swap-icon.svg">
+                <span class="btn-payment_txt">SWAP</span>
+              </span>
+          </label>
+        </div>
+
+
+        <div class="grid-cell grid-cell-ps-1-4 grid-cell-ls-1-2">
+
           <label class="checkbox-block">
             <input type="radio"
                    name="payment-method"
@@ -66,6 +82,9 @@
         <span *ngIf="replenishMethod === 'ETH'">
           {{fromBigNumber(contractCosts.ETH, 18) | number : '.0-5'}} ETH
         </span>
+        <span *ngIf="replenishMethod === 'SWAP'">
+          {{fromBigNumber(contractCosts.SWAP, 18) | number : '.0-5'}} SWAP
+        </span>
         <span *ngIf="replenishMethod === 'WISH'">
           {{fromBigNumber(contractCosts.WISH, 18) | number : '.0-5'}} WISH
         </span>
@@ -108,27 +127,44 @@
       <div class="grid-row">
         <div class="grid-cell grid-cell-ls-1-2 grid-cell-vs-1">
           <div class="form-field">
-            <a [href]="'https://vintage.myetherwallet.com/' +
+            <a [href]="'https://myetherwallet.com/interface/send-transaction/' +
                     (replenishMethod === 'ETH' ?
-                      '?sendMode=ether&to=' + currentUser.internal_address + '&value=' + fromBigNumber(costValue, 18) + '#send-transaction' :
-                      '?data=' + trxDataFields[replenishMethod] + '&value=0&to=' + tokensAddresses[replenishMethod] + '#send-transaction'
+                      '?sendMode=ether&to=' + currentUser.internal_address + '&value=' + fromBigNumber(costValue, 18) :
+                      '?data=' + trxDataFields[replenishMethod] + '&value=0&to=' + tokensAddresses[replenishMethod]
                     )"
+               *ngIf="!inProgress"
                target="_blank"
                type="button"
                class="btn btn-transparent btn-min btn-normal-weight wallet-btn ls-width-100">
               <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
               MyEtherWallet
             </a>
+
+            <button type="button"
+                    disabled="disabled"
+                    *ngIf="inProgress"
+                    class="btn btn-transparent btn-min btn-normal-weight wallet-btn ls-width-100">
+              <img src="./assets/images/icons/web3clients/myetherwallet.svg" class="btn-ico">
+              MyEtherWallet
+            </button>
+
           </div>
         </div>
         <div class="grid-cell grid-cell-ls-1-2 grid-cell-vs-1">
           <div class="form-field">
             <button type="button"
+                    [disabled]="inProgress"
                     (click)="payContractVia(replenishMethod)"
-                    [disabled]="!providedAddresses.metamask?.length"
                     class="btn btn-transparent btn-min btn-normal-weight wallet-btn ls-width-100">
               <img src="./assets/images/icons/web3clients/metamask.svg" class="btn-ico">
-              Metamask
+
+              <span class="lds-ellipsis" *ngIf="inProgress">
+                <span class="lds-ellipsis-container">
+                  <span></span><span></span><span></span><span></span>
+                </span>
+              </span>
+
+              <span>Metamask</span>
             </button>
           </div>
         </div>
@@ -173,3 +209,30 @@
   </div>
 
 </div>
+
+
+<ng-template #metaMaskErrorTpl>
+  <div class="dialog-block">
+    <div class="dialog-block__content">
+
+      <button class="dialog-closer" mat-dialog-close>
+        <img src="./assets/images/icons/cross-w.svg">
+      </button>
+
+      <div class="transaction-title">
+        Error
+      </div>
+
+      <div class="transaction-description"
+           [innerHTML]="this.metaMaskError.msg"></div>
+
+      <div class="alert-window-buttons text-center">
+        <button class="btn btn-yellow btn-auto btn-min" mat-dialog-close="" type="button">
+          <span>&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
