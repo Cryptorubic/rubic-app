@@ -81,6 +81,13 @@ export class AppComponent implements OnInit {
     const liveChatButtonFrame = document.getElementById('livechat-compact-view');
     const liveChatContainer = document.getElementById('livechat-compact-container');
 
+    if (!liveChatButtonFrame) {
+      setTimeout(() => {
+        this.checkLiveChat();
+      });
+      return;
+    }
+
     const mutationObserver = new window['MutationObserver']((res) => {
       liveChatContainer.removeAttribute('style');
     });
@@ -90,13 +97,6 @@ export class AppComponent implements OnInit {
     });
     liveChatContainer.removeAttribute('style');
 
-
-    if (!liveChatButtonFrame) {
-      setTimeout(() => {
-        this.checkLiveChat();
-      });
-      return;
-    }
 
 
     const frameContent = liveChatButtonFrame['contentWindow'] || liveChatButtonFrame['contentDocument'];

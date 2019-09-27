@@ -145,6 +145,22 @@
   }
 }
 
+.custom-token-link {
+  font-size: 18px;
+  line-height: 50px;
+  float: right;
+  border: 0 none;
+  background: none;
+  padding: 0 8px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  &:hover {
+    text-decoration: underline;
+  }
+}
 
 @media screen and (max-width: 1240px) {
   .form-block {

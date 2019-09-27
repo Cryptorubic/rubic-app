@@ -80,10 +80,10 @@
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1 show-s">&nbsp;</div>
-                    <div class="grid-cell grid-cell-1-4 grid-cell-ps-1-2 grid-cell-vs-1">
+                    <div class="grid-cell grid-cell-1-4 grid-cell-s-3-4 grid-cell-ps-1">
                       <button (click)="openedCustomTokens.base = !openedCustomTokens.base"
                               type="button"
-                              class="btn btn-link width-100">
+                              class="custom-token-link">
                         <span *ngIf="!openedCustomTokens.base">Custom token</span>
                         <span *ngIf="openedCustomTokens.base">Cancel</span>
                       </button>
@@ -145,10 +145,10 @@
                       </div>
                     </div>
                     <div class="grid-cell grid-cell-1 show-s">&nbsp;</div>
-                    <div class="grid-cell grid-cell-1-4 grid-cell-ps-1-2 grid-cell-vs-1">
+                    <div class="grid-cell grid-cell-1-4 grid-cell-s-3-4 grid-cell-ps-1">
                       <button (click)="openedCustomTokens.quote = !openedCustomTokens.quote"
                               type="button"
-                              class="btn btn-link width-100">
+                              class="custom-token-link">
                         <span *ngIf="!openedCustomTokens.quote">Custom token</span>
                         <span *ngIf="openedCustomTokens.quote">Cancel</span>
                       </button>
@@ -615,7 +615,6 @@
                                name="notification_email">
                       </div>
                     </div>
-
                     <div class="form-field">
                       <label class="form-field_label">
                         Telegram
@@ -631,19 +630,22 @@
                     </div>
                   </div>
 
-                  <div class="grid-row">
-                    <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
-                      <button class="btn btn__auto-width btn-yellow width-100"
-                          [disabled]="!notificationForm.valid" type="submit">
-                          <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-                          <span>
-                            Next step
-                          </span>
-                        </button>
-                    </div>
-                  </div>
                 </div>
               </div>
+
+              <div class="grid-row">
+                <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
+                  <button class="btn btn__auto-width btn-yellow width-100"
+                          [disabled]="!notificationForm.valid" type="submit">
+                    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                    <span>
+                      Next step
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+
             </form>
           </div>
 

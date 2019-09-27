@@ -281,15 +281,11 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
 
   private sendEth(amount, amountDecimals) {
     const transferEth = (wallet) => {
-      this.web3Service.sendTransaction({
+      return this.web3Service.sendTransaction({
         from: wallet.address,
         to: this.originalContract.contract_details.eth_contract.address,
         value: amountDecimals
-      }, 'metamask').then((result) => {
-        console.log(result);
-      }, (err) => {
-        console.log(err);
-      });
+      }, 'metamask');
     };
 
     this.dialog.open(TransactionComponent, {
