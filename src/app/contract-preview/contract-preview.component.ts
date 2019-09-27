@@ -13,6 +13,8 @@ import {ContractsService} from '../services/contracts/contracts.service';
 import {UserInterface} from '../services/user/user.interface';
 import {UserService} from '../services/user/user.service';
 import {ContactOwnerComponent} from '../contact-owner/contact-owner.component';
+import {ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
+import {SWAPS_V2} from '../contract-form-all/contract-v2-details';
 
 @Component({
   selector: 'app-contract-preview',
@@ -216,15 +218,11 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     const methodSignature = this.web3Service.encodeFunctionCall(interfaceMethod, []);
 
     const sendTransaction = (wallet) => {
-      this.web3Service.sendTransaction({
+      return this.web3Service.sendTransaction({
         from: wallet.address,
         to: contract.address,
         data: methodSignature
-      }, wallet.type).then((result) => {
-        console.log(result);
-      }, (err) => {
-        console.log(err);
-      });
+      }, wallet.type);
     };
 
     this.dialog.open(TransactionComponent, {
@@ -239,7 +237,11 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
             to: contract.address,
           data: methodSignature,
           action: sendTransaction
-        }]
+        }],
+        afterComplete: {
+          title: 'Refund completed',
+          description: ''
+        }
       }
     });
   }
@@ -252,15 +254,11 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     );
 
     const cancelTransaction = (wallet) => {
-      this.web3Service.sendTransaction({
+      return this.web3Service.sendTransaction({
         from: wallet.address,
         to: this.originalContract.contract_details.eth_contract.address,
         data: cancelSignature
-      }, wallet.type).then((result) => {
-        console.log(result);
-      }, (err) => {
-        console.log(err);
-      });
+      }, wallet.type);
     };
 
     this.dialog.open(TransactionComponent, {
@@ -274,7 +272,11 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
           action: cancelTransaction
         }],
         title: 'Cancel',
-        description: 'To Cancel the swap you need to make the transaction from the management address'
+        description: 'To Cancel the swap you need to make the transaction from the management address',
+        afterComplete: {
+          title: 'Cancellation completed',
+          description: ''
+        }
       }
     });
   }
@@ -352,28 +354,42 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       depositMethod, [amountDecimals]
     );
 
-    const approveTransaction = (wallet) => {
-      this.web3Service.sendTransaction({
-        from: wallet.address,
-        to: tokenAddress.token.address,
-        data: approveSignature
-      }, wallet.type).then((result) => {
-        console.log(result);
-      }, (err) => {
-        console.log(err);
+
+    const checkAllowance = (wallet) => {
+      return new Promise((resolve, reject) => {
+        const tokenModel = tokenAddress.token;
+        const tokenContract = this.web3Service.getContract(ERC20_TOKEN_ABI, tokenModel.address);
+
+        tokenContract.methods.allowance(wallet, this.originalContract.contract_details.eth_contract.address).call().then((result) => {
+          result = result ? result.toString(10) : result;
+          result = result === '0' ? null : result;
+          if (result && new BigNumber(result).minus(amount).isPositive()) {
+            resolve(true);
+          } else {
+            reject(false);
+          }
+        }, () => {
+          reject(false);
+        });
       });
     };
 
+
+
+    const approveTransaction = (wallet) => {
+      return this.web3Service.sendTransaction({
+        from: wallet.address,
+        to: tokenAddress.token.address,
+        data: approveSignature
+      }, wallet.type);
+    };
+
     const contributeTransaction = (wallet) => {
-      this.web3Service.sendTransaction({
+      return this.web3Service.sendTransaction({
         from: wallet.address,
         to: contract.address,
         data: depositSignature
-      }, wallet.type).then((result) => {
-        console.log(result);
-      }, (err) => {
-        console.log(err);
-      });
+      }, wallet.type);
     };
 
 
@@ -387,7 +403,8 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
           title: 'Authorise the contract for getting ' + amount + ' ' + tokenAddress.token.token_short_name + ' tokens',
           to: tokenAddress.token.address,
           data: approveSignature,
-          action: approveTransaction
+          action: approveTransaction,
+          checkComplete: checkAllowance
         }, {
           title: 'Make the transfer of ' + amount + ' ' + tokenAddress.token.token_short_name + ' tokens to contract',
           to: contract.address,
