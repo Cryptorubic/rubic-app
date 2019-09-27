@@ -29,10 +29,10 @@
               <div class="grid-cell grid-cell-vs-1-2">
 
                 <button type="button"
-                        [disabled]="transaction.inProgress || !providedAddresses.metamask?.length || (transaction.onlyOwner && (providedAddresses.metamask[0] !== transaction.onlyOwner))"
+                        [disabled]="transaction.inProgress"
                         (click)="sendTransaction({
                           type: 'metamask',
-                          address: providedAddresses.metamask[0]
+                          address: providedAddresses.metamask ? providedAddresses.metamask[0] : false
                         }, transaction)"
                         class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
                   <img src="./assets/images/icons/web3clients/metamask.svg" class="btn-ico">
@@ -154,3 +154,30 @@
 
   </div>
 </div>
+
+
+<ng-template #metaMaskError>
+  <div class="dialog-block" [hidden]="!trxData.checked">
+    <div class="dialog-block__content">
+
+      <button class="dialog-closer" mat-dialog-close>
+        <img src="./assets/images/icons/cross-w.svg">
+      </button>
+
+      <div class="transaction-title">
+        Error
+      </div>
+
+      <div class="transaction-description"
+           [innerHTML]="this.metamaskError.msg"></div>
+
+      <div class="alert-window-buttons text-center">
+        <button class="btn btn-yellow btn-auto btn-min" (click)="closeMetaMaskError()" type="button">
+          <span>&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+

@@ -281,7 +281,7 @@ export class Web3Service {
   }
 
 
-  private getAccountsByProvider(providerName) {
+  private getAccountsByProvider(providerName, ifEnabled?) {
     const sendNull = (observer) => {
       observer.next({
         type: providerName,
@@ -294,7 +294,10 @@ export class Web3Service {
       if (window['ethereum'] && window['ethereum'].isMetaMask) {
         const networkVersion = Number(window['ethereum'].networkVersion);
         if (usedNetworkVersion !== networkVersion) {
-          sendNull(observer);
+          observer.error({
+            code: 2,
+            msg: 'Please choose main net network in Metamask.'
+          });
           return;
         }
         window['ethereum'].on('accountsChanged', (accounts) => {
@@ -304,17 +307,27 @@ export class Web3Service {
           });
         });
 
-        window['ethereum'].enable().then((accounts) => {
-          observer.next({
-            type: providerName,
-            addresses: accounts
+        if (!ifEnabled || window['ethereum'].selectedAddress) {
+          window['ethereum'].enable().then((accounts) => {
+            observer.next({
+              type: providerName,
+              addresses: accounts
+            });
+          }, () => {
+            observer.error({
+              code: 3
+            });
           });
-        }, () => {
-          sendNull(observer);
-        });
-
+        } else {
+          observer.error({
+            code: 3
+          });
+        }
       } else {
-        sendNull(observer);
+        observer.error({
+          code: 1,
+          msg: 'Metamask extension is not found. You can install it from <a href="https://metamask.io" target="_blank">metamask.io</a>'
+        });
       }
       return {
         unsubscribe() {}
@@ -322,10 +335,10 @@ export class Web3Service {
     });
   }
 
-  public getAccounts(owner?) {
+  public getAccounts(owner?, ifEnabled?) {
     const addressesDictionary: any = {};
     return new Observable((observer) => {
-      const accountsSubscriber = this.getAccountsByProvider('metamask').subscribe((addresses: any) => {
+      const accountsSubscriber = this.getAccountsByProvider('metamask', ifEnabled).subscribe((addresses: any) => {
         addressesDictionary[addresses.type] = addresses.addresses === null ? undefined : owner ? addresses.addresses.filter((addr) => {
           return addr.toLowerCase() === owner.toLowerCase();
         }) : addresses.addresses;
@@ -336,6 +349,8 @@ export class Web3Service {
             accountsSubscriber.unsubscribe();
           }
         };
+      }, (error) => {
+        observer.error(error);
       });
     });
   }
