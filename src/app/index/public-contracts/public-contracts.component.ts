@@ -382,6 +382,9 @@ export class PublicContractsComponent implements OnInit {
   public openActiveTrades() {
     this.pastTradesInfo = undefined;
     this.contractsList = [];
+    if (!this.allLoaded) {
+      return;
+    }
     if (this.openedTradesTab === 'ACTIVE') {
       return;
     }
