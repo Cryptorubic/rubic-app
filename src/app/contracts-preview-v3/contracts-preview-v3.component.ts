@@ -137,6 +137,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           console.log(err);
         });
       };
+
       if (this.originalContract.isEthereum) {
         if ((this.originalContract.contract_state === 'CREATED') || (!this.originalContract.owner_address)) {
           this.web3Contract.methods.owners(memo).call().then((address) => {
@@ -303,7 +304,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     if (!this.updatePromise) {
       return;
     }
-    this.updatePromise = this.checkSwapState().then((state) => {
+
+    const getContractInfo = () => {
       switch (this.originalContract.state) {
         case 'ACTIVE':
         case 'DONE':
@@ -319,7 +321,15 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           this.getBaseContract();
         }, 4000);
       }
-    });
+    };
+
+    if ((this.originalContract.state === 'ACTIVE') || (this.originalContract.state === 'CREATED')) {
+      this.updatePromise = this.checkSwapState().then((state) => {
+        getContractInfo();
+      });
+    } else {
+      getContractInfo();
+    }
   }
 
 
