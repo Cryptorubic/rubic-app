@@ -21,8 +21,8 @@
     </div>
 
 
-    <ul class="public-swaps_table-toggler" *ngIf="allLoaded || (contractsList && !contractsList.length)">
-      <li [ngClass]="{active: openedTradesTab === 'ACTIVE'}" *ngIf="contractsList?.length">
+    <ul class="public-swaps_table-toggler">
+      <li [ngClass]="{active: openedTradesTab === 'ACTIVE'}">
         <span (click)="openActiveTrades()">Active trades</span>
       </li>
       <li [ngClass]="{active: openedTradesTab === 'PAST'}">
