@@ -165,31 +165,22 @@ export class PublicContractsComponent implements OnInit {
     contractDetails.base_token_info.rate = baseAmount.div(quoteAmount).dp(5).toString();
     contractDetails.quote_token_info.rate = quoteAmount.div(baseAmount).dp(5).toString();
 
-    if (contract.state === 'ACTIVE' || contract.state === 'DONE' || contract.state === 'CANCEL') {
-      this.loadContractInfo(contractDetails, contract);
-    } else {
-      this.finishContractLoad(contractDetails);
-    }
+
+    this.checkDecentralized(contract);
   }
 
-  private loadContractInfo(contractDetails, contract) {
+  private checkDecentralized(contract) {
     switch (contract.contract_type) {
       case 20:
-        contractDetails.isDecentralized = true;
-        this.finishContractLoad(contractDetails);
+        contract.contract_details.isDecentralized = true;
         break;
       case 21:
-        if (contractDetails.base_address && contractDetails.quote_address) {
-          this.finishContractLoad(contractDetails);
-          contractDetails.isDecentralized = true;
-        } else {
-          this.finishContractLoad(contractDetails);
-        }
+        contract.contract_details.isDecentralized = contract.contract_details.base_address && contract.contract_details.quote_address;
         break;
       default:
         break;
-
     }
+    this.finishContractLoad(contract.contract_details);
   }
 
   private finishContractLoad(contract) {
