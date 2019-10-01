@@ -334,7 +334,7 @@ export class PublicContractsComponent implements OnInit {
 
   private loadPastTrades(nextPage?) {
     if (this.pastTradesInfo) {
-      this.pastTradesInfo.page = !nextPage ? 1 : this.pastTradesInfo.page++;
+      this.pastTradesInfo.page = !nextPage ? 1 : (this.pastTradesInfo.page + 1);
     }
 
     if (!nextPage) {
