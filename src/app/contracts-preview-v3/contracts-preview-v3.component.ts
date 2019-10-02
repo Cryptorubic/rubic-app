@@ -22,18 +22,15 @@ import {ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
 
 export class ETHSwap {
 
-
-  private web3Contract;
-
   private blockChainInfo: {
-    baseRaised: string;
-    quoteRaised: string;
+    baseRaised?: string;
+    quoteRaised?: string;
 
-    baseLeft: BigNumber;
-    quoteLeft: BigNumber;
+    baseLeft?: BigNumber;
+    quoteLeft?: BigNumber;
 
-    baseLeftString: string;
-    quoteLeftString: string;
+    baseLeftString?: string;
+    quoteLeftString?: string;
   };
 
   constructor(
@@ -88,69 +85,69 @@ export class ETHSwap {
     }
   }
 
-  private getBaseInvestors() {
-    const details = this.originalContract;
-
-    if (details.contract_state === 'ACTIVE' && details.isEthereum) {
-      this.web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
-        this.contractInfo.baseInvestors = result ? result.length : 0;
-      }, err => {
-        this.contractInfo.baseInvestors = 0;
-        // console.log(err);
-      });
-    } else {
-      this.contractInfo.baseInvestors = 0;
-    }
-  }
-
-  private getQuoteInvestors() {
-    const details = this.originalContract;
-    if (details.contract_state === 'ACTIVE' && details.isEthereum) {
-      this.web3Contract.methods.quoteInvestors(details.memo_contract).call().then((result) => {
-        this.contractInfo.quoteInvestors = result ? result.length : 0;
-      }, err => {
-        this.contractInfo.quoteInvestors = 0;
-      });
-    } else {
-      this.contractInfo.quoteInvestors = 0;
-    }
-  }
-
-  private getBaseBrokersPercent() {
-    const details = this.originalContract;
-
-    if (details.isEthereum) {
-      this.web3Contract.methods.myWishBasePercent().call().then((result) => {
-        this.contractInfo.baseBrokerPercent = result / 100 + details.broker_fee_base;
-        this.contractInfo.baseBrokerAmount =
-          new BigNumber(details.tokens_info.base.amount).div(100).times(this.contractInfo.baseBrokerPercent);
-      }, err => {
-        console.log(err);
-      });
-    } else {
-      this.contractInfo.baseBrokerPercent = details.broker_fee_base;
-      this.contractInfo.baseBrokerAmount =
-        new BigNumber(details.tokens_info.base.amount).div(100).times(this.contractInfo.baseBrokerPercent);
-    }
-  }
-
-  private getQuoteBrokersPercent() {
-    const details = this.originalContract;
-
-    if (details.isEthereum) {
-      this.web3Contract.methods.myWishQuotePercent().call().then((result) => {
-        this.contractInfo.quoteBrokerPercent = result / 100 + details.broker_fee_quote;
-        this.contractInfo.quoteBrokerAmount =
-          new BigNumber(details.tokens_info.quote.amount).div(100).times(this.contractInfo.quoteBrokerPercent);
-      }, err => {
-        console.log(err);
-      });
-    } else {
-      this.contractInfo.quoteBrokerPercent = details.broker_fee_quote;
-      this.contractInfo.quoteBrokerAmount =
-        new BigNumber(details.tokens_info.quote.amount).div(100).times(this.contractInfo.quoteBrokerPercent);
-    }
-  }
+  // private getBaseInvestors() {
+  //   const details = this.originalContract;
+  //
+  //   if (details.contract_state === 'ACTIVE' && details.isEthereum) {
+  //     this.web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
+  //       this.contractInfo.baseInvestors = result ? result.length : 0;
+  //     }, err => {
+  //       this.contractInfo.baseInvestors = 0;
+  //       // console.log(err);
+  //     });
+  //   } else {
+  //     this.contractInfo.baseInvestors = 0;
+  //   }
+  // }
+  //
+  // private getQuoteInvestors() {
+  //   const details = this.originalContract;
+  //   if (details.contract_state === 'ACTIVE' && details.isEthereum) {
+  //     this.web3Contract.methods.quoteInvestors(details.memo_contract).call().then((result) => {
+  //       this.contractInfo.quoteInvestors = result ? result.length : 0;
+  //     }, err => {
+  //       this.contractInfo.quoteInvestors = 0;
+  //     });
+  //   } else {
+  //     this.contractInfo.quoteInvestors = 0;
+  //   }
+  // }
+  //
+  // private getBaseBrokersPercent() {
+  //   const details = this.originalContract;
+  //
+  //   if (details.isEthereum) {
+  //     this.web3Contract.methods.myWishBasePercent().call().then((result) => {
+  //       this.contractInfo.baseBrokerPercent = result / 100 + details.broker_fee_base;
+  //       this.contractInfo.baseBrokerAmount =
+  //         new BigNumber(details.tokens_info.base.amount).div(100).times(this.contractInfo.baseBrokerPercent);
+  //     }, err => {
+  //       console.log(err);
+  //     });
+  //   } else {
+  //     this.contractInfo.baseBrokerPercent = details.broker_fee_base;
+  //     this.contractInfo.baseBrokerAmount =
+  //       new BigNumber(details.tokens_info.base.amount).div(100).times(this.contractInfo.baseBrokerPercent);
+  //   }
+  // }
+  //
+  // private getQuoteBrokersPercent() {
+  //   const details = this.originalContract;
+  //
+  //   if (details.isEthereum) {
+  //     this.web3Contract.methods.myWishQuotePercent().call().then((result) => {
+  //       this.contractInfo.quoteBrokerPercent = result / 100 + details.broker_fee_quote;
+  //       this.contractInfo.quoteBrokerAmount =
+  //         new BigNumber(details.tokens_info.quote.amount).div(100).times(this.contractInfo.quoteBrokerPercent);
+  //     }, err => {
+  //       console.log(err);
+  //     });
+  //   } else {
+  //     this.contractInfo.quoteBrokerPercent = details.broker_fee_quote;
+  //     this.contractInfo.quoteBrokerAmount =
+  //       new BigNumber(details.tokens_info.quote.amount).div(100).times(this.contractInfo.quoteBrokerPercent);
+  //   }
+  // }
 
 
 }
@@ -185,10 +182,10 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     this.web3Contract = this.web3Service.getContract(SWAPS_V2.ABI, SWAPS_V2.ADDRESS);
     this.originalContract = this.route.snapshot.data.contract;
 
-    if (this.originalContract.isEthereum) {
-      const swapModel = new ETHSwap(this.web3Contract, this.originalContract);
-
-    }
+    // if (this.originalContract.isEthereum) {
+    //   const swapModel = new ETHSwap(this.web3Contract, this.originalContract);
+    //
+    // }
 
 
     this.updatePromise = true;
