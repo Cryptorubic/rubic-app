@@ -31,6 +31,7 @@
     </ul>
 
     <div class="public-progress-loading" *ngIf="!allLoaded && contractsList && ((contractsCount !== contractsList.length) || (openedTradesTab === 'PAST'))">
+    <!--<div class="public-progress-loading">-->
       <span [ngStyle]="{width: (contractsList.length ? (contractsCount / contractsList.length) : 0.05) * 100 + '%'}"></span>
     </div>
 

@@ -44,7 +44,7 @@
 
           <form class="form-block"
                 #tokensForm="ngForm"
-                (submit)="gotToForm(1)"
+                (submit)="checkRates()"
                 [ngClass]="{
                     hidden: openedForm !== 0,
                     checked: (tokensForm.valid) && (openedForm > 0),
@@ -192,11 +192,19 @@
                         (requestData.tokens_info.quote.token?.address || requestData.tokens_info.quote.token?.mywish_id) &&
                         requestData.tokens_info.base.amount &&
                         requestData.tokens_info.quote.amount">
-                      <span>
-                        Rate:
-                        {{checkRate()  | bigNumberFormat : 0 : true : false : 4}}
-                        {{requestData.tokens_info.base.token.token_short_name}} / 1 {{requestData.tokens_info.quote.token.token_short_name}}
-                      </span>
+                  <span>
+                    Rate:
+                    {{getRate()  | bigNumberFormat : 0 : true : false : 4}}
+                    {{requestData.tokens_info.base.token.token_short_name}} / 1 {{requestData.tokens_info.quote.token.token_short_name}}
+                  </span>
+
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <span *ngIf="cmcRate" class="cmc-rate">
+                    <img src="./assets/images/icons/cmc.svg" class="cmc-rate-icon">
+                    {{cmcRate.direct | number: '1.0-6'}}
+                    {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
+                  </span>
+
                   <button class="revert-btn" (click)="revertCoins()" type="button">
                     <img src="./assets/images/icons/revert.svg">
                   </button>
@@ -705,22 +713,38 @@
                   <span class="token-info_balance_count">{{tokens.base.amount | bigNumberFormat : tokens.base.token.decimals : true}}</span>
                 </div>
 
-                <div class="form-field_description info-content-block">
+                <div class="form-field_description info-content-block preview-rate">
                   <span>
                     <span>Rate:</span>
                     <span *ngIf="!revertedRate">
-                      {{checkRate()  | bigNumberFormat : 0 : true : false : 4}}
+                      {{getRate()  | bigNumberFormat : 0 : true : false : 4}}
                       {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
                     </span>
                     <span *ngIf="revertedRate">
-                      {{checkRate(true)  | bigNumberFormat : 0 : true : false : 4}}
+                      {{getRate(true)  | bigNumberFormat : 0 : true : false : 4}}
                       {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
                     </span>
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span *ngIf="cmcRate && !revertedRate" class="cmc-rate">
+                      <img src="./assets/images/icons/cmc.svg" class="cmc-rate-icon">
+                      {{cmcRate.direct | number: '1.0-6'}}
+                      {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
+                    </span>
+
+                    <span *ngIf="cmcRate && revertedRate" class="cmc-rate">
+                      <img src="./assets/images/icons/cmc.svg" class="cmc-rate-icon">
+                      {{cmcRate.revert | number: '1.0-6'}}
+                      {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
+                    </span>
+
+
                   </span>
                   <button class="revert-btn" (click)="revertedRate = !revertedRate">
                     <img src="./assets/images/icons/revert.svg">
                   </button>
                 </div>
+
 
                 <div class="token-info info-content-block">
                   <div class="grid-row">
@@ -921,6 +945,62 @@
                     mat-dialog-close
                     (click)="gotToForm(100)">
               <span class="just-title">Skip this step</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #rateNotification>
+  <div class="dialog-block">
+    <div class="dialog-block__content">
+      <div class="info-modal-text">
+        Your rate is
+        <span class="yellow-text">></span>
+        <span class="bold yellow-text">20</span>
+        <span class="yellow-text">%</span>
+        {{cmcRate.isLower ? 'lower' : 'higher'}} than coinmarketcap rate. Please double check.
+        <span *ngIf="!cmcRate.isLower">Trade’s rate should be attractive for the second party.</span>
+        <table class="rates-info">
+          <tr>
+            <td class="rates-info_name">Your Rate:</td>
+            <td class="rates-info_value">
+              {{getRate(true)  | bigNumberFormat : 0 : true : false : 4}}
+              {{requestData.tokens_info.quote.token.token_short_name}}
+            </td>
+            <td class="rates-info_quote-coin">
+              / 1 {{requestData.tokens_info.base.token.token_short_name}}
+            </td>
+          </tr>
+          <tr>
+            <td class="rates-info_name">CoinMarketCap Rate:</td>
+            <td class="rates-info_value">
+              {{cmcRate.revert | number : '1.0-6'}}
+              {{requestData.tokens_info.quote.token.token_short_name}}
+            </td>
+            <td class="rates-info_quote-coin">
+              / 1 {{requestData.tokens_info.base.token.token_short_name}}
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="contact-buttons"><br/><br/>
+        <div class="grid-row">
+          <div class="grid-cell grid-cell-ls-2-3 grid-cell-vs-1">
+            <button class="btn btn-yellow btn-min text-center btn-auto ls-width-100"
+                    mat-dialog-close>
+              <span class="just-title">Change rate</span>
+            </button>
+          </div>
+          <div class="grid-cell grid-cell-1 show-ls">&nbsp;</div>
+          <div class="grid-cell grid-cell-ls-2-3 grid-cell-vs-1">
+            <button class="btn btn-transparent btn-min text-center btn-auto with-bg ls-width-100"
+                    mat-dialog-close
+                    (click)="gotToForm(1)">
+              <span class="just-title">Skip & continue</span>
             </button>
           </div>
         </div>

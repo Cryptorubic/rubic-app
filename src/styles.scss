@@ -123,6 +123,12 @@ html {
   display: table;
   width: 100%;
 }
+
+.yellow-text {
+  color: #fcd600;
+}
+
+
 @media screen and (max-width: 1240px) {
   .app-content-block {
     padding-left: 2vw;
@@ -144,6 +150,17 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   text-align: left!important;
 }
 
+
+.info-modal-text {
+  text-align: left;
+  font-weight: 100;
+  font-size: 16px;
+  line-height: 22px;
+  b {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+}
 
 
 
