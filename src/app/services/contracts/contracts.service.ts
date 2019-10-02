@@ -1,9 +1,20 @@
 import { Injectable } from '@angular/core';
 import {HttpService} from '../http/http.service';
+import {IContractV3} from '../../contract-form-all/contract-form-all.component';
+
+export interface InterfacePastSwaps {
+  total: number;
+  pages: number;
+  list: any[];
+  inProgress?: boolean;
+  page?: number;
+}
+
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ContractsService {
 
   constructor(
@@ -22,6 +33,19 @@ export class ContractsService {
     return this.httpService.post(`edit_swap3/${data.id}/`, data).toPromise();
   }
 
+
+  public getPastTrades(filters?) {
+    return this.httpService.get(`get_non_active_swap3/`, filters).toPromise().
+    then((result: {total: number, pages: number, list: any[]}) => {
+      result.list = result.list.sort((contract1, contract2) => {
+        return new Date(contract2.stop_date) < new Date(contract1.stop_date) ? -1 : 1;
+      });
+      return result;
+    });
+  }
+
+
+
   public getContractV3Information(id) {
     return this.httpService.get(`get_swap3/`, {
       swap_id: id
@@ -31,7 +55,7 @@ export class ContractsService {
       } else {
         result.state = (result.state !== 'WAITING_FOR_ACTIVATION') ? result.state : 'ACTIVE';
       }
-      return result;
+      return result as InterfacePastSwaps;
     });
   }
 

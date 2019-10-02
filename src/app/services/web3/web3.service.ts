@@ -282,17 +282,13 @@ export class Web3Service {
 
 
   private getAccountsByProvider(providerName, ifEnabled?) {
-    const sendNull = (observer) => {
-      observer.next({
-        type: providerName,
-        addresses: null
-      });
-    };
+
     return new Observable((observer) => {
       const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
 
       if (window['ethereum'] && window['ethereum'].isMetaMask) {
         const networkVersion = Number(window['ethereum'].networkVersion);
+
         if (usedNetworkVersion !== networkVersion) {
           observer.error({
             code: 2,

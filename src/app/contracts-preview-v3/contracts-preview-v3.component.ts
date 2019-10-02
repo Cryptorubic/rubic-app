@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {IContract} from '../contract-form/contract-form.component';
+import {IContract, IContractDetails} from '../contract-form/contract-form.component';
 import {ActivatedRoute} from '@angular/router';
 
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
@@ -17,6 +17,142 @@ import {SWAPS_V2} from '../contract-form-all/contract-v2-details';
 import {ContactOwnerComponent} from '../contact-owner/contact-owner.component';
 import {IContractV3} from '../contract-form-all/contract-form-all.component';
 import {ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
+
+
+
+export class ETHSwap {
+
+  private blockChainInfo: {
+    baseRaised?: string;
+    quoteRaised?: string;
+
+    baseLeft?: BigNumber;
+    quoteLeft?: BigNumber;
+
+    baseLeftString?: string;
+    quoteLeftString?: string;
+  };
+
+  constructor(
+    private web3Contract,
+    private details: IContractV3
+  ) {
+    this.blockChainInfo = {};
+  }
+
+
+  private getBaseRaised() {
+
+    const checkRaised = () => {
+      this.blockChainInfo.baseLeft = new BigNumber(this.details.tokens_info.base.amount).minus(this.blockChainInfo.baseRaised);
+      this.blockChainInfo.baseLeftString =
+        this.blockChainInfo.baseLeft.div(Math.pow(10, this.details.tokens_info.base.token.decimals)).toString(10);
+    };
+
+    if (this.details.contract_state === 'ACTIVE') {
+      this.web3Contract.methods.baseRaised(this.details.memo_contract).call().then((result) => {
+        this.blockChainInfo.baseRaised = result;
+      }, err => {
+        this.blockChainInfo.baseRaised = '0';
+      }).finally(() => {
+        checkRaised();
+      });
+    } else {
+      this.blockChainInfo.baseRaised = '0';
+      checkRaised();
+    }
+
+  }
+
+  private getQuoteRaised() {
+    const checkRaised = () => {
+      this.blockChainInfo.quoteLeft = new BigNumber(this.details.tokens_info.quote.amount).minus(this.blockChainInfo.quoteRaised);
+      this.blockChainInfo.quoteLeftString =
+        this.blockChainInfo.quoteLeft.div(Math.pow(10, this.details.tokens_info.quote.token.decimals)).toString(10);
+    };
+
+    if (this.details.contract_state === 'ACTIVE') {
+      this.web3Contract.methods.quoteRaised(this.details.memo_contract).call().then((result) => {
+        this.blockChainInfo.quoteRaised = result;
+      }, err => {
+        this.blockChainInfo.quoteRaised = '0';
+      }).finally(() => {
+        checkRaised();
+      });
+    } else {
+      this.blockChainInfo.quoteRaised = '0';
+      checkRaised();
+    }
+  }
+
+  // private getBaseInvestors() {
+  //   const details = this.originalContract;
+  //
+  //   if (details.contract_state === 'ACTIVE' && details.isEthereum) {
+  //     this.web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
+  //       this.contractInfo.baseInvestors = result ? result.length : 0;
+  //     }, err => {
+  //       this.contractInfo.baseInvestors = 0;
+  //       // console.log(err);
+  //     });
+  //   } else {
+  //     this.contractInfo.baseInvestors = 0;
+  //   }
+  // }
+  //
+  // private getQuoteInvestors() {
+  //   const details = this.originalContract;
+  //   if (details.contract_state === 'ACTIVE' && details.isEthereum) {
+  //     this.web3Contract.methods.quoteInvestors(details.memo_contract).call().then((result) => {
+  //       this.contractInfo.quoteInvestors = result ? result.length : 0;
+  //     }, err => {
+  //       this.contractInfo.quoteInvestors = 0;
+  //     });
+  //   } else {
+  //     this.contractInfo.quoteInvestors = 0;
+  //   }
+  // }
+  //
+  // private getBaseBrokersPercent() {
+  //   const details = this.originalContract;
+  //
+  //   if (details.isEthereum) {
+  //     this.web3Contract.methods.myWishBasePercent().call().then((result) => {
+  //       this.contractInfo.baseBrokerPercent = result / 100 + details.broker_fee_base;
+  //       this.contractInfo.baseBrokerAmount =
+  //         new BigNumber(details.tokens_info.base.amount).div(100).times(this.contractInfo.baseBrokerPercent);
+  //     }, err => {
+  //       console.log(err);
+  //     });
+  //   } else {
+  //     this.contractInfo.baseBrokerPercent = details.broker_fee_base;
+  //     this.contractInfo.baseBrokerAmount =
+  //       new BigNumber(details.tokens_info.base.amount).div(100).times(this.contractInfo.baseBrokerPercent);
+  //   }
+  // }
+  //
+  // private getQuoteBrokersPercent() {
+  //   const details = this.originalContract;
+  //
+  //   if (details.isEthereum) {
+  //     this.web3Contract.methods.myWishQuotePercent().call().then((result) => {
+  //       this.contractInfo.quoteBrokerPercent = result / 100 + details.broker_fee_quote;
+  //       this.contractInfo.quoteBrokerAmount =
+  //         new BigNumber(details.tokens_info.quote.amount).div(100).times(this.contractInfo.quoteBrokerPercent);
+  //     }, err => {
+  //       console.log(err);
+  //     });
+  //   } else {
+  //     this.contractInfo.quoteBrokerPercent = details.broker_fee_quote;
+  //     this.contractInfo.quoteBrokerAmount =
+  //       new BigNumber(details.tokens_info.quote.amount).div(100).times(this.contractInfo.quoteBrokerPercent);
+  //   }
+  // }
+
+
+}
+
+
 
 
 
@@ -42,8 +178,15 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     private contractService: ContractsService,
     private userService: UserService
   ) {
+
     this.web3Contract = this.web3Service.getContract(SWAPS_V2.ABI, SWAPS_V2.ADDRESS);
     this.originalContract = this.route.snapshot.data.contract;
+
+    // if (this.originalContract.isEthereum) {
+    //   const swapModel = new ETHSwap(this.web3Contract, this.originalContract);
+    //
+    // }
+
 
     this.updatePromise = true;
 
@@ -137,6 +280,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           console.log(err);
         });
       };
+
       if (this.originalContract.isEthereum) {
         if ((this.originalContract.contract_state === 'CREATED') || (!this.originalContract.owner_address)) {
           this.web3Contract.methods.owners(memo).call().then((address) => {
@@ -166,6 +310,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       return bigNumberValue.toString(10);
     }
   }
+
+
 
   private getBaseRaised() {
     const details = this.originalContract;
@@ -264,6 +410,9 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     }
   }
 
+
+
+
   private getContractInfoFromBlockchain() {
     const details = this.originalContract;
     this.getBaseRaised();
@@ -303,7 +452,8 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     if (!this.updatePromise) {
       return;
     }
-    this.updatePromise = this.checkSwapState().then((state) => {
+
+    const getContractInfo = () => {
       switch (this.originalContract.state) {
         case 'ACTIVE':
         case 'DONE':
@@ -319,7 +469,15 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           this.getBaseContract();
         }, 4000);
       }
-    });
+    };
+
+    if ((this.originalContract.state === 'ACTIVE') || (this.originalContract.state === 'CREATED')) {
+      this.updatePromise = this.checkSwapState().then((state) => {
+        getContractInfo();
+      });
+    } else {
+      getContractInfo();
+    }
   }
 
 
