@@ -11,17 +11,36 @@
           </div>
         </div>
 
-
         <div class="preview-container preview-container_reminder"
              *ngIf="originalContract.contract_state === 'DONE'">
           <div class="preview-container_reminder__title">
             Done
           </div>
           <div class="preview-container_reminder__description">
-            This trade has been successfully processed. If you participated in this trade, please check your wallet.
+            The trade was completed. If you participated in this trade, please check your wallet.
           </div>
         </div>
 
+        <div class="preview-container preview-container_reminder"
+             *ngIf="originalContract.contract_state === 'EXPIRED'">
+          <div class="preview-container_reminder__title">
+            Expired
+          </div>
+          <div class="preview-container_reminder__description">
+            The trade is no longer available.
+          </div>
+        </div>
+
+
+        <div class="preview-container preview-container_reminder"
+             *ngIf="originalContract.contract_state === 'CANCELLED'">
+          <div class="preview-container_reminder__title">
+            Cancelled
+          </div>
+          <div class="preview-container_reminder__description">
+            The trade was cancelled.
+          </div>
+        </div>
 
         <div class="preview-container preview-container_reminder"
              [ngClass]="{closed: isRemindered || (originalContract.contract_state !== 'CREATED')}"

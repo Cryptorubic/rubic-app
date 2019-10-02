@@ -7,7 +7,7 @@
       Create trade
     </span>
   </a>
-  <div *ngIf="contractsList && contractsList.length">
+  <div>
     <div class="title-section">
 
       Order Book&nbsp;&nbsp;&nbsp;
@@ -20,8 +20,18 @@
 
     </div>
 
-    <div class="public-progress-loading" *ngIf="!allLoaded && contractsList && (contractsCount !== contractsList.length)">
-      <span [ngStyle]="{width: (contractsCount / contractsList.length) * 100 + '%'}"></span>
+
+    <ul class="public-swaps_table-toggler">
+      <li [ngClass]="{active: openedTradesTab === 'ACTIVE'}">
+        <span (click)="openActiveTrades()">Active trades</span>
+      </li>
+      <li [ngClass]="{active: openedTradesTab === 'PAST'}">
+        <span (click)="openPastTrades()">Past trades</span>
+      </li>
+    </ul>
+
+    <div class="public-progress-loading" *ngIf="!allLoaded && contractsList && ((contractsCount !== contractsList.length) || (openedTradesTab === 'PAST'))">
+      <span [ngStyle]="{width: (contractsList.length ? (contractsCount / contractsList.length) : 0.05) * 100 + '%'}"></span>
     </div>
 
     <div class="public-swaps_table-container"
@@ -56,7 +66,7 @@
           <div class="grid-cell grid-cell-1-2 public-swaps_head-cell"
                [ngClass]="{'public-swaps_head-cell__sortable': selectedFilter.name === 'volume', 'asc': selectedFilter.asc}">
             <div class="public-swaps_head_content bold">
-              <button class="sort-btn" (click)="applySort('volume')">
+              <button class="sort-btn" (click)="applySort('volume')" *ngIf="openedTradesTab === 'ACTIVE'">
                 <span></span>
               </button>
               Volume
@@ -70,13 +80,12 @@
           <div class="grid-cell grid-cell-1-8 public-swaps_head-cell"
                [ngClass]="{'public-swaps_head-cell__sortable': selectedFilter.name === 'expired', 'asc': selectedFilter.asc}">
             <div class="public-swaps_head_content bold text-center">
-              <button class="sort-btn" (click)="applySort('expired')">
+              <button class="sort-btn" (click)="applySort('expired')" *ngIf="openedTradesTab === 'ACTIVE'">
                 <span></span>
               </button>
-              Expires in
+              {{ openedTradesTab === 'ACTIVE' ? 'Expires in' : 'Status' }}
             </div>
           </div>
-          <div class="clearfix-block"></div>
         </div>
 
 
@@ -161,10 +170,14 @@
             </div>
             <div class="grid-cell grid-cell-1-8 public-swaps_cell">
               <div class="public-swaps_cell_content text-center">
-                <div class="swap-info" *ngIf="contract.contract_details.left_times">
+                <div class="swap-info" *ngIf="contract.contract_details.left_times && openedTradesTab === 'ACTIVE'">
                   {{contract.contract_details.left_times.times_parts[0]}}d:
                   {{contract.contract_details.left_times.times_parts[1]}}h:
                   {{contract.contract_details.left_times.times_parts[2]}}m
+                </div>
+
+                <div class="swap-info" *ngIf="openedTradesTab === 'PAST'">
+                  {{contract.contract_details.state}}
                 </div>
               </div>
             </div>
@@ -177,25 +190,35 @@
               <img src="./assets/images/icons/delete.png">
             </button>
           </div>
-
           <br/>
-          <button class="btn btn-white-opacity width-100 white-border"
-                  (click)="showSelectedPages(true)"
-                  *ngIf="displayingContractsList.length < allFilteredOrdersCount.length">
+          <button class="btn btn-white-opacity width-100 white-border relative"
+                  (click)="showPostSelectedPages()"
+                  [disabled]="pastTradesInfo.inProgress"
+                  *ngIf="openedTradesTab === 'PAST' && pastTradesInfo?.page < pastTradesInfo?.pages">
+            <span class="lds-ellipsis" *ngIf="pastTradesInfo.inProgress">
+              <span class="lds-ellipsis-container">
+                <span></span><span></span><span></span><span></span>
+              </span>
+            </span>
+
             <span>
               Show more
             </span>
           </button>
-
+          <button class="btn btn-white-opacity width-100 white-border"
+                  (click)="showSelectedPages(true)"
+                  *ngIf="openedTradesTab === 'ACTIVE' && displayingContractsList.length < allFilteredOrdersCount.length">
+            <span>
+              Show more
+            </span>
+          </button>
         </div>
-
-
         <div class="public-swaps_empty" *ngIf="contractsList?.length && !displayingContractsList?.length">
           There is no matching pair, please
           <a routerLink="/trades/create">create your own</a>
         </div>
-
       </div>
+
     </div>
   </div>
 </div>
