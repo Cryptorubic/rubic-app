@@ -31,20 +31,23 @@
     </ul>
 
     <div class="public-progress-loading" *ngIf="!allLoaded && contractsList && ((contractsCount !== contractsList.length) || (openedTradesTab === 'PAST'))">
+    <!--<div class="public-progress-loading">-->
       <span [ngStyle]="{width: (contractsList.length ? (contractsCount / contractsList.length) : 0.05) * 100 + '%'}"></span>
     </div>
 
     <div class="public-swaps_table-container"
          [hidden]="!allLoaded && !(contractsList && contractsList.length && (contractsCount === contractsList.length))">
 
-      <div class="grid-row public-swaps_row">
-        <div class="grid-cell grid-cell-1-4 public-swaps_head-cell">
-          <div class="titles-coins">SEND</div>
-          <div class="titles-coins">GET</div>
-        </div>
-      </div>
 
       <div class="public-swaps">
+
+        <div class="grid-row public-swaps_row">
+          <div class="grid-cell grid-cell-1-4 public-swaps_head-cell">
+            <div class="titles-coins">SEND</div>
+            <div class="titles-coins">GET</div>
+          </div>
+        </div>
+
         <div class="grid-row public-swaps_head-row">
           <div class="grid-cell grid-cell-1-4 public-swaps_head-cell">
             <div class="public-swaps_head_content">

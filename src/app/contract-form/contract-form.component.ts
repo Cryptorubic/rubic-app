@@ -1,5 +1,16 @@
-import {AfterContentInit, Component, EventEmitter, Injectable, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker} from '@angular/material';
+import {
+  AfterContentInit,
+  Component,
+  EventEmitter,
+  Injectable,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker, MatDialog} from '@angular/material';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router} from '@angular/router';
@@ -94,19 +105,27 @@ export const MY_FORMATS = {
 })
 export class ContractFormComponent implements AfterContentInit, OnInit, OnDestroy {
 
-  @Output() BaseTokenChange = new EventEmitter<string>();
-  @Output() QuoteTokenChange = new EventEmitter<string>();
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
 
   @Output() costEmitter = new EventEmitter<any>();
+
+  @ViewChild('rateNotification') rateNotification: TemplateRef<any>;
+
+
+  public cmcRate: {
+    isLower?: boolean;
+    direct: number;
+    revert: number;
+  };
 
   constructor(
     protected contractsService: ContractsService,
     private userService: UserService,
     private location: Location,
     private route: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
+    private dialog: MatDialog
   ) {
 
     this.formData = {
@@ -450,7 +469,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     }
   }
 
-  public checkRate(revert?) {
+  public getRate(revert?) {
 
     const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount)
       .div(Math.pow(10, this.requestData.tokens_info.base.token.decimals));
@@ -467,16 +486,39 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
 
   public changedToken(coin) {
-    setTimeout(() => {
-      switch (coin) {
-        case 'base':
-          this.BaseTokenChange.emit(this.requestData.tokens_info[coin].token.decimals);
-          break;
-        case 'quote':
-          this.QuoteTokenChange.emit(this.requestData.tokens_info[coin].token.decimals);
-          break;
+
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+
+    if (baseCoin.cmc_id && quoteCoin.cmc_id && baseCoin.cmc_id > 0 && quoteCoin.cmc_id > 0) {
+      this.contractsService.getCMCTokensRates(baseCoin.cmc_id, quoteCoin.cmc_id).then((result) => {
+        this.cmcRate = {
+          direct: new BigNumber(result.coin2).div(result.coin1).toNumber(),
+          revert: new BigNumber(result.coin1).div(result.coin2).toNumber()
+        };
+      }, (err) => {
+        this.cmcRate = undefined;
+      });
+    } else {
+      this.cmcRate = undefined;
+    }
+  }
+
+
+  public checkRates() {
+    if (this.cmcRate) {
+      const rateChanges = this.getRate().toNumber() - this.cmcRate.direct;
+      if (Math.abs(rateChanges) > (this.cmcRate.direct / 100 * 20)) {
+        this.cmcRate.isLower = rateChanges > 0;
+        this.dialog.open(this.rateNotification, {
+          width: '480px'
+        });
+      } else {
+        this.gotToForm(1);
       }
-    });
+    } else {
+      this.gotToForm(1);
+    }
   }
 
 }

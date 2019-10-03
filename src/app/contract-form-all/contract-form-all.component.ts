@@ -92,6 +92,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
 
   @ViewChild('contactsReminderModal') contactsReminderModal: TemplateRef<any>;
+  @ViewChild('rateNotification') rateNotification: TemplateRef<any>;
 
   public originalContract: IContractV3;
 
@@ -113,8 +114,13 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   };
 
   public revertedRate: boolean;
-
   public requestData: IContractV3;
+
+  public cmcRate: {
+    isLower?: boolean;
+    direct: number;
+    revert: number;
+  };
 
   // For request form data
   protected formData: IContractV3;
@@ -239,7 +245,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     this.QuoteTokenCustom.emit(this.requestData.tokens_info.quote);
   }
 
-  public checkRate(revert?) {
+  public getRate(revert?) {
     const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount)
       .div(Math.pow(10, this.requestData.tokens_info.base.token.decimals));
 
@@ -292,6 +298,23 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   }
 
   public changedToken(coin) {
+
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+
+    if (baseCoin.cmc_id && quoteCoin.cmc_id && baseCoin.cmc_id > 0 && quoteCoin.cmc_id > 0) {
+      this.contractsService.getCMCTokensRates(baseCoin.cmc_id, quoteCoin.cmc_id).then((result) => {
+        this.cmcRate = {
+          direct: new BigNumber(result.coin2).div(result.coin1).toNumber(),
+          revert: new BigNumber(result.coin1).div(result.coin2).toNumber()
+        };
+      }, (err) => {
+        this.cmcRate = undefined;
+      });
+    } else {
+      this.cmcRate = undefined;
+    }
+
     setTimeout(() => {
       switch (coin) {
         case 'base':
@@ -304,6 +327,21 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     });
   }
 
+  public checkRates() {
+    if (this.cmcRate) {
+      const rateChanges = this.getRate().toNumber() - this.cmcRate.direct;
+      if (Math.abs(rateChanges) > (this.cmcRate.direct / 100 * 20)) {
+        this.cmcRate.isLower = rateChanges > 0;
+        this.dialog.open(this.rateNotification, {
+          width: '480px'
+        });
+      } else {
+        this.gotToForm(1);
+      }
+    } else {
+      this.gotToForm(1);
+    }
+  }
 
   private contractIsCreated(contract) {
     this.router.navigate(['/public-v3/' + contract.unique_link]);

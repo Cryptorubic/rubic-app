@@ -206,4 +206,13 @@ export class ContractsService {
     }).toPromise();
   }
 
+
+  public getCMCTokensRates(baseCmcId, quoteCmcId) {
+    return this.httpService.get(`get_cmc_token_rate/`, {
+      id1: baseCmcId,
+      id2: quoteCmcId
+    }).toPromise();
+  }
+
+
 }
