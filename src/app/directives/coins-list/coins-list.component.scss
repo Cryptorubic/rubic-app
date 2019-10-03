@@ -7,9 +7,11 @@
     background: 4px center no-repeat rgba(255, 255, 255, 0.2);
     background-size: 28px auto;
     border: 0 none;
+    border-radius: 0;
     font-size: 15px;
     line-height: 18px;
     padding: 10px 7px;
+    height: 38px;
     box-sizing: border-box;
 
     &::-webkit-input-placeholder {

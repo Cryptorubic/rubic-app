@@ -527,7 +527,9 @@
         <span class="yellow-text">></span>
         <span class="bold yellow-text">20</span>
         <span class="yellow-text">%</span>
-        {{cmcRate.isLower ? 'lower' : 'higher'}} than coinmarketcap rate. Please double check.
+        {{cmcRate.isLower ? 'lower' : 'higher'}} than
+        <a href="https://coinmarketcap.com/" target="_blank">coinmarketcap</a>
+        rate. Please double check.
         <span *ngIf="!cmcRate.isLower">Trade’s rate should be attractive for the second party.</span>
         <table class="rates-info">
           <tr>

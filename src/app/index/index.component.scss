@@ -344,6 +344,7 @@
   right: 0;
   bottom: 0;
   padding: 0.75em 50px 0.75em 1em;
+  z-index: 3;
   &, &:hover, &:active, &:visited {
     color: #fff!important;
     text-decoration: none!important;
@@ -398,5 +399,12 @@
   }
 }
 
+@media (max-width: 480px) {
+  .daps-swap-footer {
+    &_logo {
+      display: none;
+    }
+  }
+}
 
 
