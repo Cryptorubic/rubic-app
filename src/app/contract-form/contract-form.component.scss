@@ -16,6 +16,17 @@
     vertical-align: middle;
   }
 }
+.preview-rate {
+  padding-top: 7px!important;
+}
+.cmc-rate {
+  white-space: nowrap;
+}
+.cmc-rate-icon {
+  width: 24px;
+  vertical-align: top;
+  margin-right: 10px;
+}
 .revert-btn {
   display: inline-block;
   border: 0 none;
@@ -405,5 +416,27 @@
   color: #8E939B;
   line-height: 22px;
   padding: 15px 10px;
+}
+
+
+
+.rates-info {
+  width: 100%;
+  margin-top: 30px;
+  font-size: 17px;
+  td {
+    padding: 5px 0;
+  }
+  &_name {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &_value {
+    font-weight: bold;
+  }
+
+  &_quote-coin {
+    color: rgba(255, 255, 255, 0.5);
+  }
 }
 
