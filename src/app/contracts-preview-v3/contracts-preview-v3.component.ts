@@ -163,12 +163,6 @@ export class ETHSwap {
 })
 export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
-  private web3Contract;
-  public isRemindered: boolean;
-  private tokenContract: any;
-
-  private updatePromise;
-
 
   constructor(
     private route: ActivatedRoute,
@@ -218,12 +212,28 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     this.originalContract.unique_link_url =
       this.contractAdditional.link =
         location.origin + '/public-v3/' + this.originalContract.unique_link;
-  }
 
+
+    this.checkCMCRate();
+
+  }
 
   get tokens() {
     return this.originalContract.tokens_info;
   }
+
+  private web3Contract;
+  public isRemindered: boolean;
+  private tokenContract: any;
+
+  private updatePromise;
+
+  public cmcRate: {
+    absCmcRange?: number;
+    direct: number;
+    revert: number;
+    cmcRange?: number;
+  };
 
   @ViewChild('administratorContact') administratorContact: TemplateRef<any>;
 
@@ -252,6 +262,28 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   private updateContractTimer;
 
   private oldCheckedState: string;
+
+  private checkCMCRate() {
+
+    const baseCoin = this.originalContract.tokens_info.base.token;
+    const quoteCoin = this.originalContract.tokens_info.quote.token;
+
+
+    if (baseCoin.cmc_id && quoteCoin.cmc_id && baseCoin.cmc_id > 0 && quoteCoin.cmc_id > 0) {
+      this.contractService.getCMCTokensRates(baseCoin.cmc_id, quoteCoin.cmc_id).then((result) => {
+        this.cmcRate = {
+          direct: new BigNumber(result.coin2).div(result.coin1).toNumber(),
+          revert: new BigNumber(result.coin1).div(result.coin2).toNumber()
+        };
+        this.cmcRate.cmcRange = - (this.rates.reverted.toNumber() / (this.cmcRate.revert / 100) - 100);
+        this.cmcRate.absCmcRange = Math.abs(this.cmcRate.cmcRange);
+      }, (err) => {
+        this.cmcRate = undefined;
+      });
+    } else {
+      this.cmcRate = undefined;
+    }
+  }
 
   private checkSwapState() {
     const memo = this.originalContract.memo_contract;
@@ -315,7 +347,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   private getBaseRaised() {
     const details = this.originalContract;
-    if (details.contract_state === 'ACTIVE' && details.isEthereum) {
+    if (details.isEthereum) {
       this.web3Contract.methods.baseRaised(details.memo_contract).call().then((result) => {
         this.contractInfo.baseRaised = result;
         this.contractInfo.baseLeft = new BigNumber(details.tokens_info.base.amount).minus(result);
@@ -333,7 +365,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   }
   private getQuoteRaised() {
     const details = this.originalContract;
-    if (details.contract_state === 'ACTIVE' && details.isEthereum) {
+    if (details.isEthereum) {
       this.web3Contract.methods.quoteRaised(details.memo_contract).call().then((result) => {
         this.contractInfo.quoteRaised = result;
         this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(result);
@@ -352,7 +384,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   private getBaseInvestors() {
     const details = this.originalContract;
 
-    if (details.contract_state === 'ACTIVE' && details.isEthereum) {
+    if (details.isEthereum) {
       this.web3Contract.methods.baseInvestors(details.memo_contract).call().then((result) => {
         this.contractInfo.baseInvestors = result ? result.length : 0;
       }, err => {
@@ -365,7 +397,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   }
   private getQuoteInvestors() {
     const details = this.originalContract;
-    if (details.contract_state === 'ACTIVE' && details.isEthereum) {
+    if (details.isEthereum) {
       this.web3Contract.methods.quoteInvestors(details.memo_contract).call().then((result) => {
         this.contractInfo.quoteInvestors = result ? result.length : 0;
       }, err => {

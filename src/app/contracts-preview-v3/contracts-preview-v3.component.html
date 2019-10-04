@@ -83,12 +83,34 @@
             <span *ngIf="revertedRate">
               {{ rates.reverted.dp(8).toFormat(rateFormat) }}
               {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
+            </span>&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <span *ngIf="cmcRate" class="cmc-rate">
+              <img src="./assets/images/icons/cmc.svg" class="cmc-rate-icon">
+              {{(!revertedRate ? cmcRate.direct : cmcRate.revert) | number: '1.0-8'}}
+              {{tokens[revertedRate ? 'quote' : 'base'].token.token_short_name}} /
+              1 {{tokens[!revertedRate ? 'quote' : 'base'].token.token_short_name}}
             </span>
 
             <button class="revert-btn" (click)="revertedRate = !revertedRate">
               <img src="./assets/images/icons/revert.svg">
             </button>
           </span>
+
+          <div class="cmc-rate-notice"
+               [ngClass]="{
+                'cmc-rate-notice__positive': cmcRate.cmcRange > 0,
+                'cmc-rate-notice__negative': cmcRate.cmcRange < 0
+               }"
+               *ngIf="cmcRate">
+            <span *ngIf="cmcRate.cmcRange > 0">
+              The trade's rate is {{ cmcRate.absCmcRange | number : '1.0-1'}}% more profitable than coinmarketcap rate
+            </span>
+            <span *ngIf="cmcRate.cmcRange < 0">
+              The trade's rate is {{ cmcRate.absCmcRange | number : '1.0-1'}}% less profitable than coinmarketcap rate
+            </span>
+          </div>
+
 
           <div class="grid-row all-tokens-info-row">
             <div class="grid-cell grid-cell-1-2 grid-cell-ps-1 one-token-info-cell"
@@ -260,10 +282,7 @@
 
 
                 <div class="contract-buttons"
-                     *ngIf="(
-                     (originalContract.state === 'EXPIRED') ||
-                     (originalContract.contract_state === 'ACTIVE')
-                     ) && originalContract.isEthereum && (contractInfo.baseRaised * 1 > 0)">
+                     *ngIf="originalContract.isEthereum && (contractInfo.baseRaised * 1 > 0)">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.base.token)"
                           type="button">
@@ -437,10 +456,7 @@
                 </div>
 
                 <div class="contract-buttons"
-                     *ngIf="(
-                     (originalContract.state === 'EXPIRED') ||
-                     (originalContract.contract_state === 'ACTIVE')) &&
-                     originalContract.isEthereum && (contractInfo.quoteRaised * 1 > 0)">
+                     *ngIf="originalContract.isEthereum && (contractInfo.quoteRaised * 1 > 0)">
                   <button class="btn btn-transparent btn-min btn-normal-weight width-100"
                           (click)="sendRefund(tokens.quote.token)"
                           type="button">
