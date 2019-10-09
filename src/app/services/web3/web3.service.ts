@@ -15,7 +15,8 @@ const EthereumCoin = {
   token_short_name: 'ETH',
   decimals: 18,
   image_link: 'https://github.com/MyWishPlatform/etherscan_top_tokens_images/raw/master/ethereum-icon.png',
-  isEther: true
+  isEther: true,
+  cmc_id: 2
 };
 
 
