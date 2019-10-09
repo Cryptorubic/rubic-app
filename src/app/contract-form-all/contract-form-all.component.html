@@ -211,6 +211,18 @@
                 </div>
               </div>
 
+
+              <div class="form-notice" *ngIf="cmcRate && cmcRate.isMessage">
+                <div class="form-notice_text">
+                  Your rate is
+                  <span class="yellow-text">>20%</span>
+                  {{cmcRate.isLower ? 'lower' : 'higher'}} than
+                  <a href="https://coinmarketcap.com/" target="_blank">coinmarketcap</a> rate. Please double check.
+                  <span *ngIf="!cmcRate.isLower">Trade’s rate should be attractive for the second party.</span>
+                </div>
+              </div>
+
+
               <div class="grid-row">
                 <div class="grid-cell grid-cell-1-3 grid-cell-ps-1-2 grid-cell-vs-1">
                   <button class="btn btn__auto-width btn-yellow width-100"
@@ -355,12 +367,13 @@
                           <input type="text"
                                  placeholder="0"
                                  name="min_base_wei"
+                                 [decimalsChange]="BaseTokenChange"
                                  [(ngModel)]="requestData.min_base_wei"
                                  [appBigNumber]="{
-                                    decimals: 8,
-                                    min: 0,
-                                    max: tokens.base.amount
-                                 }">
+                                decimals: tokens.base.token.decimals,
+                                min: 0,
+                                max: tokens.base.amount
+                             }">
                         </div>
                       </div>
                     </div>
@@ -373,12 +386,13 @@
                           <input type="text"
                                  placeholder="0"
                                  name="min_quote_wei"
+                                 [decimalsChange]="QuoteTokenChange"
                                  [(ngModel)]="requestData.min_quote_wei"
                                  [appBigNumber]="{
-                                    decimals: 8,
-                                    min: 0,
-                                    max: tokens.quote.amount
-                                 }">
+                                decimals: tokens.quote.token.decimals,
+                                min: 0,
+                                max: tokens.quote.amount
+                             }">
                         </div>
                       </div>
                     </div>
@@ -498,7 +512,7 @@
                                    *ngIf="requestData.broker_fee_base && tokens.base.amount">
                                 <div class="form-field_description__inline">
                               <span *ngIf="brokersForm.controls.broker_fee_base?.valid">
-                                {{ baseBrokerFee  | number : '1.0-8' }}
+                                {{ baseBrokerFee | bigNumberFormat : tokens.base.token.decimals : true}}
                                 {{tokens.base.token.token_short_name}}</span>
                                 </div>
                               </div>
@@ -534,7 +548,7 @@
                                    *ngIf="requestData.broker_fee_quote && tokens.quote.amount">
                                 <div class="form-field_description__inline">
                               <span *ngIf="brokersForm.controls.broker_fee_quote?.valid">
-                                {{ quoteBrokerFee | number : '1.0-8' }}
+                                {{ quoteBrokerFee | bigNumberFormat : tokens.quote.token.decimals : true}}
                                 {{tokens.quote.token.token_short_name}}</span>
                                 </div>
                               </div>
@@ -697,7 +711,7 @@
                         </div>
                         <div class="token-info_texts__address">
                           {{ requestData.broker_fee_base }}%
-                          ({{ baseBrokerFee | number : '1.0-8' }}
+                          ({{ baseBrokerFee | bigNumberFormat : tokens.base.token.decimals : true}}
                           {{tokens.base.token.token_short_name}})
                         </div>
                       </div>
@@ -708,18 +722,18 @@
 
                 <div class="token-info_balance info-content-block">
                   <span class="token-info_balance_title">You have</span>
-                  <span class="token-info_balance_count">{{tokens.base.amount | number : '1.0-8'}}</span>
+                  <span class="token-info_balance_count">{{tokens.base.amount | bigNumberFormat : tokens.base.token.decimals : true}}</span>
                 </div>
 
                 <div class="form-field_description info-content-block preview-rate">
                   <span>
                     <span>Rate:</span>
                     <span *ngIf="!revertedRate">
-                      {{getRate() | number : '1.0-8' }}
+                      {{getRate()  | bigNumberFormat : 0 : true : false : 4}}
                       {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
                     </span>
                     <span *ngIf="revertedRate">
-                      {{getRate(true) | number : '1.0-8' }}
+                      {{getRate(true)  | bigNumberFormat : 0 : true : false : 4}}
                       {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
                     </span>
 
@@ -770,7 +784,7 @@
                         </div>
                         <div class="token-info_texts__address">
                           {{requestData.broker_fee_quote}}%
-                          ({{ quoteBrokerFee | number : '1.0-8' }}
+                          ({{ quoteBrokerFee | bigNumberFormat : tokens.quote.token.decimals : true}}
                           {{tokens.quote.token.token_short_name}})
                         </div>
                       </div>
@@ -780,7 +794,7 @@
                 </div>
                 <div class="token-info_balance info-content-block">
                   <span class="token-info_balance_title">You want to get</span>
-                  <span class="token-info_balance_count">{{tokens.quote.amount | number : '1.0-8'}}</span>
+                  <span class="token-info_balance_count">{{tokens.quote.amount | bigNumberFormat : tokens.quote.token.decimals : true}}</span>
                 </div>
               </div>
 
@@ -849,7 +863,7 @@
                         Minimum contribution in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
                       </label>
                       <div class="form-field_value">
-                        {{(requestData.min_base_wei || 0) | number : '1.0-8' }}
+                        {{(requestData.min_base_wei || 0) | bigNumberFormat : tokens.base.token.decimals : true }}
                         {{tokens.base.token.token_short_name}}
                       </div>
                     </div>
@@ -861,7 +875,7 @@
                         Minimum contribution in {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
                       </label>
                       <div class="form-field_value">
-                        {{(requestData.min_quote_wei || 0) | number : '1.0-8' }}
+                        {{(requestData.min_quote_wei || 0) | bigNumberFormat : tokens.quote.token.decimals : true }}
                         {{tokens.quote.token.token_short_name}}
                       </div>
                     </div>
@@ -952,46 +966,18 @@
 </ng-template>
 
 
-<ng-template #rateNotification>
+<ng-template #ethSwapNotification>
   <div class="dialog-block">
     <div class="dialog-block__content">
       <div class="info-modal-text">
-        Your rate is
-        <span class="yellow-text">></span>
-        <span class="bold yellow-text">20</span>
-        <span class="yellow-text">%</span>
-        {{cmcRate.isLower ? 'lower' : 'higher'}} than
-        <a href="https://coinmarketcap.com/" target="_blank">coinmarketcap</a> rate. Please double check.
-        <span *ngIf="!cmcRate.isLower">Trade’s rate should be attractive for the second party.</span>
-        <table class="rates-info">
-          <tr>
-            <td class="rates-info_name">Your Rate:</td>
-            <td class="rates-info_value">
-              {{getRate(true) | number : '1.0-8' }}
-              {{requestData.tokens_info.quote.token.token_short_name}}
-            </td>
-            <td class="rates-info_quote-coin">
-              / 1 {{requestData.tokens_info.base.token.token_short_name}}
-            </td>
-          </tr>
-          <tr>
-            <td class="rates-info_name">CoinMarketCap Rate:</td>
-            <td class="rates-info_value">
-              {{cmcRate.revert | number : '1.0-6'}}
-              {{requestData.tokens_info.quote.token.token_short_name}}
-            </td>
-            <td class="rates-info_quote-coin">
-              / 1 {{requestData.tokens_info.base.token.token_short_name}}
-            </td>
-          </tr>
-        </table>
+        Please note: If you use ERC20 pair, your trade will be decentralized and will be close faster
       </div>
       <div class="contact-buttons"><br/><br/>
         <div class="grid-row">
           <div class="grid-cell grid-cell-ls-2-3 grid-cell-vs-1">
             <button class="btn btn-yellow btn-min text-center btn-auto ls-width-100"
                     mat-dialog-close>
-              <span class="just-title">Change rate</span>
+              <span class="just-title">Change</span>
             </button>
           </div>
           <div class="grid-cell grid-cell-1 show-ls">&nbsp;</div>

@@ -440,3 +440,18 @@
   }
 }
 
+.form-notice {
+  &_text {
+    font-weight: bold;
+    color: #fff;
+    font-size: 17px;
+    line-height: 17px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-left: 5px solid rgba(255, 255, 255, 0.25);
+    margin-bottom: 20px;
+    a {
+      color: #61B9DF;
+    }
+  }
+}

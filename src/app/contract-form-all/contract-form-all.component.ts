@@ -93,7 +93,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
 
   @ViewChild('contactsReminderModal') contactsReminderModal: TemplateRef<any>;
-  @ViewChild('rateNotification') rateNotification: TemplateRef<any>;
+  @ViewChild('ethSwapNotification') ethSwapNotification: TemplateRef<any>;
 
   public originalContract: IContractV3;
 
@@ -118,6 +118,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   public requestData: IContractV3;
 
   public cmcRate: {
+    isMessage?: boolean;
     isLower?: boolean;
     direct: number;
     revert: number;
@@ -317,6 +318,12 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
           direct: new BigNumber(result.coin2).div(result.coin1).toNumber(),
           revert: new BigNumber(result.coin1).div(result.coin2).toNumber()
         };
+
+        const rateChanges = this.getRate().toNumber() - this.cmcRate.direct;
+
+        this.cmcRate.isMessage = Math.abs(rateChanges) > (this.cmcRate.direct / 100 * 20);
+        this.cmcRate.isLower = rateChanges > 0;
+
       }, (err) => {
         this.cmcRate = undefined;
       });
@@ -326,16 +333,11 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   }
 
   public checkRates() {
-    if (this.cmcRate) {
-      const rateChanges = parseInt(this.getRate(), 10) - this.cmcRate.direct;
-      if (Math.abs(rateChanges) > (this.cmcRate.direct / 100 * 20)) {
-        this.cmcRate.isLower = rateChanges > 0;
-        this.dialog.open(this.rateNotification, {
-          width: '480px'
-        });
-      } else {
-        this.gotToForm(1);
-      }
+    const tokens = this.requestData.tokens_info;
+    if (tokens.base.token.isEthereum && !tokens.quote.token.isEthereum) {
+      this.dialog.open(this.ethSwapNotification, {
+        width: '480px'
+      });
     } else {
       this.gotToForm(1);
     }
