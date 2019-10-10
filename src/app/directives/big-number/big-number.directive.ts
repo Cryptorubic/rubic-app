@@ -19,7 +19,6 @@ export class BigNumberDirective implements OnInit {
   @Input ('appBigNumber') appBigNumber;
   @Input ('ngModel') ngModel;
 
-  @Input ('decimalsChange') decimalsChange;
   @Input ('minValueChange') minValueChange;
   @Input ('maxValueChange') maxValueChange;
 
@@ -37,20 +36,6 @@ export class BigNumberDirective implements OnInit {
     this.control.valueAccessor.writeValue = (value) => originalWriteVal(this.maskValue(value));
 
     this.currentDecimals = !isNaN(this.appBigNumber.decimals) ? parseInt(this.appBigNumber.decimals, 10) : 0;
-
-    if (this.decimalsChange) {
-      this.decimalsChange.subscribe((decimals) => {
-
-        this.oldDecimal = this.appBigNumber.decimals;
-        this.appBigNumber.decimals = decimals;
-
-        this.currentDecimals = !isNaN(decimals) ? parseInt(decimals, 10) : 0;
-        this.control.control.setValue(
-          this.latestValue
-        );
-        this.oldDecimal = undefined;
-      });
-    }
 
 
     if (this.minValueChange) {
@@ -76,13 +61,6 @@ export class BigNumberDirective implements OnInit {
 
     this.control.valueChanges.subscribe((result: string) => {
 
-      const is10 = (this.latestValue + '0') === result;
-
-      if ((result !== '') && (result === this.ngModel) && (this.oldDecimal === undefined) && !is10) {
-        result = new BigNumber(result).div(Math.pow(10, this.currentDecimals)).toString(10);
-      }
-
-
       result = result || '';
 
       let originalValue = result.split(',').join('').replace(/\.$/, '');
@@ -101,7 +79,7 @@ export class BigNumberDirective implements OnInit {
 
       const errors: any = {};
 
-      let decimalsValue;
+      let modelValue;
 
       if (!originalValue || bigNumberValue.isNaN()) {
         if (originalValue) {
@@ -109,28 +87,27 @@ export class BigNumberDirective implements OnInit {
         } else if (this.required) {
           errors.required = true;
         }
+        modelValue = '';
       } else {
 
         if (this.decimalPart && (this.decimalPart.length > this.currentDecimals)) {
           bigNumberValue = bigNumberValue.dp(this.currentDecimals);
         }
 
-        decimalsValue = bigNumberValue.times(Math.pow(10, this.currentDecimals));
+        modelValue = bigNumberValue.toString(10);
 
-        if (decimalsValue.div(Math.pow(2, 256) - 1).toNumber() > 1) {
+        if (bigNumberValue.div(Math.pow(2, 256) - 1).toNumber() > 1) {
           errors.totalMaximum = true;
         }
 
-        if (decimalsValue.minus(this.appBigNumber.min).toNumber() < 0) {
+        if (bigNumberValue.minus(this.appBigNumber.min).toNumber() < 0) {
           errors.min = true;
         }
 
-        if (decimalsValue.minus(this.appBigNumber.max).toNumber() > 0) {
+        if (bigNumberValue.minus(this.appBigNumber.max).toNumber() > 0) {
           errors.max = true;
         }
       }
-
-      const modelValue = decimalsValue ? decimalsValue.toString(10) : '';
 
       if (JSON.stringify(errors) === '{}') {
         this.control.control.setValue(modelValue, {

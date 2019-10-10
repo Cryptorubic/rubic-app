@@ -161,6 +161,7 @@ export class Web3Service {
           const convertedToken = this.convertTokenInfo(tokenInfo.data);
           if (convertedToken) {
             const returnCoin = tokenObject ? {...tokenObject} : {...convertedToken};
+            returnCoin.custom = !tokenObject;
             returnCoin.decimals = convertedToken.decimals;
             resolve(returnCoin);
           } else {
@@ -526,7 +527,8 @@ export class EthTokenValidatorDirective implements AsyncValidator {
     ctrl: AbstractControl
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     return this.web3Service.getFullTokenInfo(ctrl.value).then((result: any) => {
-      if (result) {
+
+      if (result && (result.token_short_name)) {
         this.TokenResolve.emit(result);
         return null;
       } else {

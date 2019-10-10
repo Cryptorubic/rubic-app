@@ -152,6 +152,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
       base: {},
       quote: {}
     };
+
     this.openedCustomTokens = {
       base: false,
       quote: false
@@ -219,11 +220,17 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
 
   get baseBrokerFee() {
-    return new BigNumber(this.requestData.tokens_info.base.amount).div(100).times(this.requestData.broker_fee_base);
+    if (!(this.requestData.tokens_info.base.amount && this.requestData.broker_fee_base)) {
+      return 0;
+    }
+    return new BigNumber(this.requestData.tokens_info.base.amount).div(100).times(this.requestData.broker_fee_base).toString();
   }
 
   get quoteBrokerFee() {
-    return new BigNumber(this.requestData.tokens_info.quote.amount).div(100).times(this.requestData.broker_fee_quote);
+    if (!(this.requestData.tokens_info.quote.amount && this.requestData.broker_fee_quote)) {
+      return 0;
+    }
+    return new BigNumber(this.requestData.tokens_info.quote.amount).div(100).times(this.requestData.broker_fee_quote).toString();
   }
 
   get isEthereumSwap() {
@@ -246,15 +253,16 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   }
 
   public getRate(revert?) {
-    const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount)
-      .div(Math.pow(10, this.requestData.tokens_info.base.token.decimals));
 
-    const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount)
-      .div(Math.pow(10, this.requestData.tokens_info.quote.token.decimals));
+    if (!(this.requestData.tokens_info.base.amount && this.requestData.tokens_info.quote.amount)) {
+      return 0;
+    }
 
-    return !revert ?
+    const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount);
+    const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount);
+    return (!revert ?
       baseCoinAmount.div(quoteCoinAmount).dp(4) :
-      quoteCoinAmount.div(baseCoinAmount).dp(4);
+      quoteCoinAmount.div(baseCoinAmount).dp(4)).toString();
   }
 
   private setFullDateTime() {
@@ -314,17 +322,6 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     } else {
       this.cmcRate = undefined;
     }
-
-    setTimeout(() => {
-      switch (coin) {
-        case 'base':
-          this.BaseTokenChange.emit(this.requestData.tokens_info[coin].token.decimals);
-          break;
-        case 'quote':
-          this.QuoteTokenChange.emit(this.requestData.tokens_info[coin].token.decimals);
-          break;
-      }
-    });
   }
 
   public checkRates() {
@@ -408,13 +405,14 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
     this.formData.public = !!this.extraForm.value.public;
     this.formData.stop_date = this.extraForm.value.active_to.clone().utc().format('YYYY-MM-DD HH:mm');
+
     this.formData.base_limit = this.requestData.tokens_info.base.amount;
     this.formData.quote_limit = this.requestData.tokens_info.quote.amount;
 
     this.formData.owner_address = this.extraForm.value.owner_address;
+
     this.formData.name = this.requestData.tokens_info.base.token.token_short_name +
       '<>' + this.requestData.tokens_info.quote.token.token_short_name;
-
 
     this.formData.min_quote_wei = this.formData.min_quote_wei || '0';
     this.formData.min_base_wei = this.formData.min_base_wei || '0';
@@ -471,17 +469,13 @@ export class ContractEditV3Resolver implements Resolve<any> {
 
   private getContractInformation(observer, isPublic?) {
 
-
-    const promise = !isPublic ?
+    const promise = (!isPublic ?
       this.contractsService.getContractV3Information(this.contractId) :
-      this.contractsService.getSwapByPublic(this.publicLink);
+      this.contractsService.getSwapByPublic(this.publicLink)) as Promise<any>;
 
     promise.then((trade: IContractV3) => {
       this.web3Service.getSWAPSCoinInfo(trade).then((result: any) => {
-        if (result.tokens_info.base.token.isEthereum && result.tokens_info.quote.token.isEthereum) {
-          result.isEthereum = true;
-        }
-
+        result.isEthereum = result.tokens_info.base.token.isEthereum && result.tokens_info.quote.token.isEthereum;
         observer.next(result);
         observer.complete();
       });

@@ -1,14 +1,14 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ContractsService, InterfacePastSwaps} from '../../services/contracts/contracts.service';
-import {TokenInfoInterface, Web3Service} from '../../services/web3/web3.service';
+import {Web3Service} from '../../services/web3/web3.service';
 
 import BigNumber from 'bignumber.js';
-import {SWAPS_V2} from '../../contract-form-all/contract-v2-details';
 import {HttpClient} from '@angular/common/http';
 import {IContract} from '../../contract-form/contract-form.component';
 import {UserInterface} from '../../services/user/user.interface';
 import {UserService} from '../../services/user/user.service';
 import {MatDialog, MatDialogRef} from '@angular/material';
+import {FIX_TIME} from '../../contracts-preview-v3/contracts-preview-v3.component';
 
 const PAGE_SIZE = 5;
 
@@ -25,7 +25,7 @@ export interface InterfacePastSwapsRequest {
   styleUrls: ['./public-contracts.component.scss']
 })
 
-export class PublicContractsComponent implements OnInit {
+export class PublicContractsComponent implements OnInit, OnDestroy {
 
   constructor(
     private contractsService: ContractsService,
@@ -35,16 +35,16 @@ export class PublicContractsComponent implements OnInit {
     private dialog: MatDialog
   ) {
 
+    this.selectedCoins = {
+      base: {},
+      quote: {}
+    };
+
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
       this.currentUser = userProfile;
     });
 
-    this.http.get('/assets/images/1x1.png?_t=' + (new Date()).getTime(), {
-      responseType: 'text', observe: 'response'
-    }).toPromise().then(res => {
-      this.serverDateTimeRange = new Date().getTime() - new Date(res.headers.get('Date')).getTime();
-    });
 
     this.selectedFilter = {
       name: '',
@@ -52,6 +52,12 @@ export class PublicContractsComponent implements OnInit {
     };
 
     // Список активных контрактов
+    this.serverDateTimeRange = 0;
+    this.http.get('/assets/images/1x1.png?_t=' + (new Date()).getTime(), {
+      responseType: 'text', observe: 'response'
+    }).toPromise().then(res => {
+      this.serverDateTimeRange = new Date().getTime() - new Date(res.headers.get('Date')).getTime();
+    });
 
     this.contractsService.getPublicContractsList().then((result) => {
       this.activeTradesList = result;
@@ -95,6 +101,11 @@ export class PublicContractsComponent implements OnInit {
 
   public pastTradesInfo: InterfacePastSwaps;
 
+  private checkExpireInterval;
+  ngOnDestroy(): void {
+    clearInterval(this.checkExpireInterval);
+  }
+
 
   private setTradesList(list) {
     this.contractsCount = 0;
@@ -114,17 +125,26 @@ export class PublicContractsComponent implements OnInit {
         contract.contract_details.swap3 = true;
       }
 
+
       this.web3Service.getSWAPSCoinInfo(contract.contract_details).then((trade: any) => {
         const baseToken = contract.contract_details.tokens_info.base.token;
         const quoteToken = contract.contract_details.tokens_info.quote.token;
 
-        contract.contract_details.base_filled =
-          new BigNumber(contract.contract_details.base_amount_contributed)
-            .div(contract.contract_details.base_limit).times(100).dp(0).toString();
+        if (contract.contract_details.swap3 && (new Date(contract.created_date).getTime() > FIX_TIME)) {
+          contract.contract_details.quote_limit =
+            new BigNumber(contract.contract_details.quote_limit).times(Math.pow(10, quoteToken.decimals));
+          contract.contract_details.base_limit =
+            new BigNumber(contract.contract_details.base_limit).times(Math.pow(10, baseToken.decimals));
+        }
 
-        contract.contract_details.quote_filled =
+
+        contract.contract_details.base_filled = contract.contract_details.base_amount_contributed ?
+          new BigNumber(contract.contract_details.base_amount_contributed)
+            .div(contract.contract_details.base_limit).times(100).dp(0).toString() : '0';
+
+        contract.contract_details.quote_filled = contract.contract_details.quote_amount_contributed ?
           new BigNumber(contract.contract_details.quote_amount_contributed)
-            .div(contract.contract_details.quote_limit).times(100).dp(0).toString();
+            .div(contract.contract_details.quote_limit).times(100).dp(0).toString() : '0';
 
         contract.contract_details.base_token_info = baseToken;
         contract.contract_details.quote_token_info = quoteToken;
@@ -192,7 +212,7 @@ export class PublicContractsComponent implements OnInit {
         if (this.contractsCount === this.contractsList.length) {
           if (this.openedTradesTab === 'ACTIVE') {
             this.allLoaded = true;
-            setInterval(() => {
+            this.checkExpireInterval = setInterval(() => {
               this.contractsList.forEach((contractFromList: any) => {
                 this.checkExpire(contractFromList.contract_details);
               });
@@ -219,6 +239,7 @@ export class PublicContractsComponent implements OnInit {
   }
 
   private checkExpire(contractDetails) {
+
     const leftTime = (new Date(contractDetails.stop_date).getTime() - (new Date().getTime() - this.serverDateTimeRange)) / 1000;
 
     if (leftTime <= 0) {
@@ -321,10 +342,6 @@ export class PublicContractsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selectedCoins = {
-      base: {},
-      quote: {}
-    };
   }
 
 

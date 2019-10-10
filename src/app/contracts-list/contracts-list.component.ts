@@ -7,7 +7,6 @@ import {Observable} from 'rxjs';
 import {CONTRACT_STATES} from '../contract-preview/contract-states';
 import {UserInterface} from '../services/user/user.interface';
 import {MatDialog, MatDialogRef} from '@angular/material';
-import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-contracts-list',
