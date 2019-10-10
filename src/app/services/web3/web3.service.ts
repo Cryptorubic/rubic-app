@@ -16,6 +16,8 @@ const EthereumCoin = {
   decimals: 18,
   image_link: 'https://github.com/MyWishPlatform/etherscan_top_tokens_images/raw/master/ethereum-icon.png',
   isEther: true,
+  isEthereum: true,
+  platform: 'ethereum',
   cmc_id: 2
 };
 
