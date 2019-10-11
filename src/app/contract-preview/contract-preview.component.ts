@@ -87,14 +87,17 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
 
   private updateContractTimer;
 
-
+  public decimalsPow(decimals) {
+    return Math.pow(10, decimals);
+  }
 
   private getBaseRaised(web3Contract) {
     web3Contract.methods.baseRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
       this.contractInfo.baseRaised = result;
-      this.contractInfo.baseLeft = new BigNumber(details.tokens_info.base.amount).minus(result);
-      this.contractInfo.baseLeftString = this.contractInfo.baseLeft.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
+      this.contractInfo.baseLeft =
+        new BigNumber(details.tokens_info.base.amount).minus(result).div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
+      this.contractInfo.baseLeftString = this.contractInfo.baseLeft;
     }, err => {
       console.log(err);
     });
@@ -103,8 +106,9 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     web3Contract.methods.quoteRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
       this.contractInfo.quoteRaised = result;
-      this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(result);
-      this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
+      this.contractInfo.quoteLeft =
+        new BigNumber(details.tokens_info.quote.amount).minus(result).div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
+      this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft;
     }, err => {
       console.log(err);
     });

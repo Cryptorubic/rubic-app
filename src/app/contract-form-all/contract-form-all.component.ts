@@ -67,6 +67,7 @@ export interface IContractV3 {
   notification?: boolean;
   notification_tg: string;
   notification_email: string;
+  created_date: string;
 }
 
 
@@ -252,10 +253,10 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     this.QuoteTokenCustom.emit(this.requestData.tokens_info.quote);
   }
 
-  public getRate(revert?) {
+  public getRate(revert?): string {
 
     if (!(this.requestData.tokens_info.base.amount && this.requestData.tokens_info.quote.amount)) {
-      return 0;
+      return '0';
     }
 
     const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount);
@@ -326,7 +327,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
   public checkRates() {
     if (this.cmcRate) {
-      const rateChanges = this.getRate().toNumber() - this.cmcRate.direct;
+      const rateChanges = parseInt(this.getRate(), 10) - this.cmcRate.direct;
       if (Math.abs(rateChanges) > (this.cmcRate.direct / 100 * 20)) {
         this.cmcRate.isLower = rateChanges > 0;
         this.dialog.open(this.rateNotification, {
