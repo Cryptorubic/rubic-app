@@ -194,7 +194,7 @@
                         requestData.tokens_info.quote.amount">
                   <span>
                     Rate:
-                    {{getRate()  | bigNumberFormat : 0 : true : false : 4}}
+                    {{getRate() | number : '1.0-8' }}
                     {{requestData.tokens_info.base.token.token_short_name}} / 1 {{requestData.tokens_info.quote.token.token_short_name}}
                   </span>
 
@@ -355,13 +355,12 @@
                           <input type="text"
                                  placeholder="0"
                                  name="min_base_wei"
-                                 [decimalsChange]="BaseTokenChange"
                                  [(ngModel)]="requestData.min_base_wei"
                                  [appBigNumber]="{
-                                decimals: tokens.base.token.decimals,
-                                min: 0,
-                                max: tokens.base.amount
-                             }">
+                                    decimals: 8,
+                                    min: 0,
+                                    max: tokens.base.amount
+                                 }">
                         </div>
                       </div>
                     </div>
@@ -374,13 +373,12 @@
                           <input type="text"
                                  placeholder="0"
                                  name="min_quote_wei"
-                                 [decimalsChange]="QuoteTokenChange"
                                  [(ngModel)]="requestData.min_quote_wei"
                                  [appBigNumber]="{
-                                decimals: tokens.quote.token.decimals,
-                                min: 0,
-                                max: tokens.quote.amount
-                             }">
+                                    decimals: 8,
+                                    min: 0,
+                                    max: tokens.quote.amount
+                                 }">
                         </div>
                       </div>
                     </div>
@@ -500,7 +498,7 @@
                                    *ngIf="requestData.broker_fee_base && tokens.base.amount">
                                 <div class="form-field_description__inline">
                               <span *ngIf="brokersForm.controls.broker_fee_base?.valid">
-                                {{ baseBrokerFee | bigNumberFormat : tokens.base.token.decimals : true}}
+                                {{ baseBrokerFee  | number : '1.0-8' }}
                                 {{tokens.base.token.token_short_name}}</span>
                                 </div>
                               </div>
@@ -536,7 +534,7 @@
                                    *ngIf="requestData.broker_fee_quote && tokens.quote.amount">
                                 <div class="form-field_description__inline">
                               <span *ngIf="brokersForm.controls.broker_fee_quote?.valid">
-                                {{ quoteBrokerFee | bigNumberFormat : tokens.quote.token.decimals : true}}
+                                {{ quoteBrokerFee | number : '1.0-8' }}
                                 {{tokens.quote.token.token_short_name}}</span>
                                 </div>
                               </div>
@@ -699,7 +697,7 @@
                         </div>
                         <div class="token-info_texts__address">
                           {{ requestData.broker_fee_base }}%
-                          ({{ baseBrokerFee | bigNumberFormat : tokens.base.token.decimals : true}}
+                          ({{ baseBrokerFee | number : '1.0-8' }}
                           {{tokens.base.token.token_short_name}})
                         </div>
                       </div>
@@ -710,18 +708,18 @@
 
                 <div class="token-info_balance info-content-block">
                   <span class="token-info_balance_title">You have</span>
-                  <span class="token-info_balance_count">{{tokens.base.amount | bigNumberFormat : tokens.base.token.decimals : true}}</span>
+                  <span class="token-info_balance_count">{{tokens.base.amount | number : '1.0-8'}}</span>
                 </div>
 
                 <div class="form-field_description info-content-block preview-rate">
                   <span>
                     <span>Rate:</span>
                     <span *ngIf="!revertedRate">
-                      {{getRate()  | bigNumberFormat : 0 : true : false : 4}}
+                      {{getRate() | number : '1.0-8' }}
                       {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
                     </span>
                     <span *ngIf="revertedRate">
-                      {{getRate(true)  | bigNumberFormat : 0 : true : false : 4}}
+                      {{getRate(true) | number : '1.0-8' }}
                       {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
                     </span>
 
@@ -772,7 +770,7 @@
                         </div>
                         <div class="token-info_texts__address">
                           {{requestData.broker_fee_quote}}%
-                          ({{ quoteBrokerFee | bigNumberFormat : tokens.quote.token.decimals : true}}
+                          ({{ quoteBrokerFee | number : '1.0-8' }}
                           {{tokens.quote.token.token_short_name}})
                         </div>
                       </div>
@@ -782,7 +780,7 @@
                 </div>
                 <div class="token-info_balance info-content-block">
                   <span class="token-info_balance_title">You want to get</span>
-                  <span class="token-info_balance_count">{{tokens.quote.amount | bigNumberFormat : tokens.quote.token.decimals : true}}</span>
+                  <span class="token-info_balance_count">{{tokens.quote.amount | number : '1.0-8'}}</span>
                 </div>
               </div>
 
@@ -851,7 +849,7 @@
                         Minimum contribution in {{tokens.base.token.token_name}} ({{tokens.base.token.token_short_name}})
                       </label>
                       <div class="form-field_value">
-                        {{(requestData.min_base_wei || 0) | bigNumberFormat : tokens.base.token.decimals : true }}
+                        {{(requestData.min_base_wei || 0) | number : '1.0-8' }}
                         {{tokens.base.token.token_short_name}}
                       </div>
                     </div>
@@ -863,7 +861,7 @@
                         Minimum contribution in {{tokens.quote.token.token_name}} ({{tokens.quote.token.token_short_name}})
                       </label>
                       <div class="form-field_value">
-                        {{(requestData.min_quote_wei || 0) | bigNumberFormat : tokens.quote.token.decimals : true }}
+                        {{(requestData.min_quote_wei || 0) | number : '1.0-8' }}
                         {{tokens.quote.token.token_short_name}}
                       </div>
                     </div>
@@ -969,7 +967,7 @@
           <tr>
             <td class="rates-info_name">Your Rate:</td>
             <td class="rates-info_value">
-              {{getRate(true)  | bigNumberFormat : 0 : true : false : 4}}
+              {{getRate(true) | number : '1.0-8' }}
               {{requestData.tokens_info.quote.token.token_short_name}}
             </td>
             <td class="rates-info_quote-coin">

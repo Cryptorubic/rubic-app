@@ -203,11 +203,6 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
   protected onDestroyPage;
 
-
-  protected setContractType(typeNumber) {
-    this.formData.contract_type = typeNumber;
-  }
-
   public gotToForm(formNumber) {
     if (this.openedForm === formNumber) {
       return;
@@ -221,6 +216,7 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
   protected analyzeContractState(contract) {
 
     const tokensInfo = this.originalContract.contract_details.tokens_info;
+
     this.originalContract = contract;
     this.originalContract.contract_details.tokens_info = tokensInfo;
 
@@ -265,6 +261,15 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     const draftData = localStorage.getItem('form_new_values');
     if (this.originalContract) {
       this.requestData = {...this.originalContract.contract_details};
+
+      this.requestData.base_limit =
+        new BigNumber(this.requestData.base_limit).div(Math.pow(10, this.requestData.tokens_info.base.token.decimals)).toString();
+      this.requestData.tokens_info.base.amount = this.requestData.base_limit;
+
+      this.requestData.quote_limit =
+        new BigNumber(this.requestData.quote_limit).div(Math.pow(10, this.requestData.tokens_info.quote.token.decimals)).toString();
+      this.requestData.tokens_info.quote.amount = this.requestData.quote_limit;
+
       this.analyzeContractState(this.originalContract);
     } else {
       this.requestData = draftData ? JSON.parse(draftData) : {
@@ -373,8 +378,17 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
     this.formData.contract_details = {...tokenForm.value} as IContractDetails;
     this.formData.contract_details.public = !!this.extraForm.value.public;
     this.formData.contract_details.stop_date = this.extraForm.value.active_to.clone().utc().format('YYYY-MM-DD HH:mm');
-    this.formData.contract_details.base_limit = this.requestData.tokens_info.base.amount;
-    this.formData.contract_details.quote_limit = this.requestData.tokens_info.quote.amount;
+
+
+    this.formData.contract_details.base_limit =
+      new BigNumber(this.requestData.tokens_info.base.amount)
+        .times(Math.pow(10, this.requestData.tokens_info.base.token.decimals)).toString();
+
+
+    this.formData.contract_details.quote_limit =
+      new BigNumber(this.requestData.tokens_info.quote.amount)
+        .times(Math.pow(10, this.requestData.tokens_info.quote.token.decimals)).toString();
+
 
     this.formData.contract_details.owner_address = this.extraForm.value.owner_address;
     this.formData.name = this.requestData.tokens_info.base.token.token_short_name +
@@ -385,10 +399,6 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
         ...this.formData.contract_details,
         ...advancedForm.value
       };
-
-      this.formData.contract_details.min_quote_wei = this.formData.contract_details.min_quote_wei || '0';
-      this.formData.contract_details.min_base_wei = this.formData.contract_details.min_base_wei || '0';
-
     }
 
 
@@ -471,14 +481,8 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
 
   public getRate(revert?) {
 
-    const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount)
-      .div(Math.pow(10, this.requestData.tokens_info.base.token.decimals));
-
-    const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount)
-      .div(Math.pow(10, this.requestData.tokens_info.quote.token.decimals));
-
-
-
+    const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount);
+    const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount);
     return !revert ?
       baseCoinAmount.div(quoteCoinAmount).dp(4) :
       quoteCoinAmount.div(baseCoinAmount).dp(4);
