@@ -86,8 +86,6 @@ export interface IContractV3 {
 })
 export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
-  @Output() BaseTokenChange = new EventEmitter<string>();
-  @Output() QuoteTokenChange = new EventEmitter<string>();
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
 
@@ -319,7 +317,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
           revert: new BigNumber(result.coin1).div(result.coin2).toNumber()
         };
 
-        const rateChanges = this.getRate().toNumber() - this.cmcRate.direct;
+        const rateChanges = parseInt(this.getRate(), 10) - this.cmcRate.direct;
 
         this.cmcRate.isMessage = Math.abs(rateChanges) > (this.cmcRate.direct / 100 * 20);
         this.cmcRate.isLower = rateChanges > 0;

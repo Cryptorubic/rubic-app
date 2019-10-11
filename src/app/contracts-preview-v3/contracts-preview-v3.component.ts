@@ -19,7 +19,7 @@ import {IContractV3} from '../contract-form-all/contract-form-all.component';
 import {ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
 
 
-export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
+export const FIX_TIME = new Date(2019, 9, 10, 12, 11).getTime();
 
 
 @Component({
