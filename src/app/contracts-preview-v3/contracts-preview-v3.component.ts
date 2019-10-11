@@ -19,7 +19,7 @@ import {IContractV3} from '../contract-form-all/contract-form-all.component';
 import {ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
 
 
-export const FIX_TIME = new Date(2019, 9, 10, 15, 0).getTime();
+export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
 
 
 @Component({
@@ -519,8 +519,14 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     const details = this.originalContract;
 
     const interfaceMethod = this.web3Service.getMethodInterface('createOrder', SWAPS_V2.ABI);
-    const baseDecimalsTimes = Math.pow(10, details.tokens_info.base.token.decimals);
-    const quoteDecimalsTimes = Math.pow(10, details.tokens_info.quote.token.decimals);
+
+    let baseDecimalsTimes = 1;
+    let quoteDecimalsTimes = 1;
+
+    if (new Date(this.originalContract.created_date).getTime() > FIX_TIME) {
+      baseDecimalsTimes = Math.pow(10, details.tokens_info.base.token.decimals);
+      quoteDecimalsTimes = Math.pow(10, details.tokens_info.quote.token.decimals);
+    }
 
     const trxRequest = [
       details.memo_contract,
@@ -696,20 +702,24 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
 
   public sendContribute(amount, token) {
+    try {
+      const details = this.originalContract;
 
-    const details = this.originalContract;
+      if (!details.isEthereum) {
+        this.openAdministratorInfo();
+        return;
+      }
 
-    if (!details.isEthereum) {
-      this.openAdministratorInfo();
-      return;
+      if (details.contract_state === 'CREATED') {
+        this.openInitialisation();
+        return;
+      }
+
+      this.createTransactions(amount, token);
+    } catch (err) {
+      console.log(err);
     }
 
-    if (details.contract_state === 'CREATED') {
-      this.openInitialisation();
-      return;
-    }
-
-    this.createTransactions(amount, token);
 
   }
 
