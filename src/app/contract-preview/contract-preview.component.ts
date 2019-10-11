@@ -14,7 +14,6 @@ import {UserInterface} from '../services/user/user.interface';
 import {UserService} from '../services/user/user.service';
 import {ContactOwnerComponent} from '../contact-owner/contact-owner.component';
 import {ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
-import {SWAPS_V2} from '../contract-form-all/contract-v2-details';
 
 @Component({
   selector: 'app-contract-preview',
@@ -88,16 +87,17 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
 
   private updateContractTimer;
 
-  public fromBigNumber(num, decimals) {
-    return new BigNumber(num).div(Math.pow(10, decimals)).toString(10);
+  public decimalsPow(decimals) {
+    return Math.pow(10, decimals);
   }
 
   private getBaseRaised(web3Contract) {
     web3Contract.methods.baseRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
       this.contractInfo.baseRaised = result;
-      this.contractInfo.baseLeft = new BigNumber(details.tokens_info.base.amount).minus(result);
-      this.contractInfo.baseLeftString = this.contractInfo.baseLeft.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
+      this.contractInfo.baseLeft =
+        new BigNumber(details.tokens_info.base.amount).minus(result).div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
+      this.contractInfo.baseLeftString = this.contractInfo.baseLeft;
     }, err => {
       console.log(err);
     });
@@ -106,8 +106,9 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     web3Contract.methods.quoteRaised().call().then((result) => {
       const details = this.originalContract.contract_details;
       this.contractInfo.quoteRaised = result;
-      this.contractInfo.quoteLeft = new BigNumber(details.tokens_info.quote.amount).minus(result);
-      this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
+      this.contractInfo.quoteLeft =
+        new BigNumber(details.tokens_info.quote.amount).minus(result).div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
+      this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft;
     }, err => {
       console.log(err);
     });
@@ -314,24 +315,22 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
     const details = this.originalContract.contract_details;
     const contract = this.originalContract.contract_details.eth_contract;
 
-    const bigNumberAmount = new BigNumber(amount);
 
-    if (bigNumberAmount.isNaN()) {
+    if (isNaN(amount)) {
       return;
     }
 
-    amountDecimals = bigNumberAmount.toString(10);
 
     switch (token) {
       case 'base':
+        amountDecimals = new BigNumber(amount).times(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
         tokenAddress = details.tokens_info.base;
         depositMethodName = 'depositBaseTokens';
-        amount = bigNumberAmount.div(Math.pow(10, details.tokens_info.base.token.decimals)).toString(10);
         break;
       case 'quote':
+        amountDecimals = new BigNumber(amount).times(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
         tokenAddress = details.tokens_info.quote;
         depositMethodName = 'depositQuoteTokens';
-        amount = bigNumberAmount.div(Math.pow(10, details.tokens_info.quote.token.decimals)).toString(10);
         break;
     }
 
@@ -436,12 +435,12 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
 
   public quoteWillGetValue(amount) {
     const details = this.originalContract.contract_details;
-    return new BigNumber(amount).div(details.tokens_info.base.amount).times(details.tokens_info.quote.amount);
+    return new BigNumber(amount).times(Math.pow(10, details.tokens_info.base.token.decimals)).div(details.tokens_info.base.amount).times(details.tokens_info.quote.amount);
   }
 
   public baseWillGetValue(amount) {
     const details = this.originalContract.contract_details;
-    return new BigNumber(amount).div(details.tokens_info.quote.amount).times(details.tokens_info.base.amount);
+    return new BigNumber(amount).times(Math.pow(10, details.tokens_info.quote.token.decimals)).div(details.tokens_info.quote.amount).times(details.tokens_info.base.amount);
   }
 
 

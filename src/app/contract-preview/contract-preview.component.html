@@ -49,8 +49,8 @@
                         Left
                       </div>
                       <div class="tokens-info-block_filled__complete"
-                           [title]="contractInfo.baseLeft | bigNumberFormat : tokens.base.token.decimals : true">
-                        {{contractInfo.baseLeft | bigNumberFormat : tokens.base.token.decimals : true}}
+                           [title]="contractInfo.baseLeft | number : '1.0-8'">
+                        {{contractInfo.baseLeft | number : '1.0-8'}}
                       </div>
                     </div>
                   </div>
@@ -102,7 +102,7 @@
                                    [required]="true"
                                    [appBigNumber]="{
                                       decimals: tokens.base.token.decimals,
-                                      min: 1,
+                                      min: 1 / decimalsPow(tokens.base.token.decimals),
                                       max: contractInfo.baseLeft
                                    }"
                                    [ngClass]="{'without-error-lightning': activeSide !== 'base'}"
@@ -178,8 +178,8 @@
                         Left
                       </div>
                       <div class="tokens-info-block_filled__complete"
-                           [title]="contractInfo.quoteLeft | bigNumberFormat : tokens.quote.token.decimals : true">
-                        {{contractInfo.quoteLeft | bigNumberFormat : tokens.quote.token.decimals : true}}
+                           [title]="contractInfo.quoteLeft | number : '1.0-8'">
+                        {{contractInfo.quoteLeft | number : '1.0-8'}}
                       </div>
                     </div>
                   </div>
@@ -232,7 +232,7 @@
                                    [required]="true"
                                    [appBigNumber]="{
                                       decimals: tokens.quote.token.decimals,
-                                      min: 1,
+                                      min: 1 / decimalsPow(tokens.quote.token.decimals),
                                       max: contractInfo.quoteLeft
                                    }"
                                    [ngClass]="{'without-error-lightning': activeSide !== 'quote'}"

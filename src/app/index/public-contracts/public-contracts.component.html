@@ -210,7 +210,7 @@
           </button>
           <button class="btn btn-white-opacity width-100 white-border"
                   (click)="showSelectedPages(true)"
-                  *ngIf="openedTradesTab === 'ACTIVE' && displayingContractsList.length < allFilteredOrdersCount.length">
+                  *ngIf="openedTradesTab === 'ACTIVE' && displayingContractsList?.length < allFilteredOrdersCount?.length">
             <span>
               Show more
             </span>

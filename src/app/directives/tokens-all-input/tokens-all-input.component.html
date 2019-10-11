@@ -2,10 +2,9 @@
        #amountField
        [required]="true"
        [appBigNumber]="{
-          decimals: (tokenModel.token?.decimals === undefined) ? 50 : tokenModel.token.decimals,
+          decimals: 8,
           min: 1
        }"
-       [decimalsChange]="DecimalsEmitter"
        name="amountField"
        [tabindex]="visibleInput ? '-1' : ''"
        [(ngModel)]="tokenModel.amount">

@@ -119,7 +119,7 @@
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    {{tokens.base.amount | bigNumberFormat : tokens.base.token.decimals : true}}
+                    {{tokens.base.amount | number : '1.0-8'}}
                   </div>
 
                   <div *ngIf="originalContract.state === 'ACTIVE'">
@@ -128,8 +128,9 @@
                         <b>Sent</b>
                       </div>
                       <div class="tokens-info-block_filled__complete"
-                           [title]="contractInfo.baseRaised | bigNumberFormat : tokens.base.token.decimals : true">
-                        <b>{{ contractInfo.baseRaised | bigNumberFormat : tokens.base.token.decimals : true }}</b>
+                           *ngIf="contractInfo.baseRaised"
+                           [title]="contractInfo.baseRaised | number : '1.0-8'">
+                        <b>{{ contractInfo.baseRaised | number : '1.0-8' }}</b>
                       </div>
                     </div>
                     <div class="tokens-info-block_filled_item left">
@@ -227,7 +228,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{quoteWillGetValue(baseContributeForm.value.amount) | bigNumberFormat : tokens.quote.token.decimals : true }}
+                            {{quoteWillGetValue(baseContributeForm.value.amount) | number : '1.0-8' }}
                             {{tokens.quote.token.token_short_name}}
                             after SWAP
                           </span>
@@ -252,7 +253,7 @@
                     <span>
                       Min Contribution Limit:
                       <b>
-                        {{originalContract.min_base_wei | bigNumberFormat : tokens.base.token.decimals : true}}
+                        {{originalContract.min_base_wei | number : '1.0-8'}}
                         {{tokens.base.token.token_short_name}}
                       </b>
                     </span>
@@ -273,7 +274,7 @@
                       Brokers fee:
                       <b>
                         {{contractInfo.baseBrokerPercent}}%
-                        ({{contractInfo.baseBrokerAmount | bigNumberFormat : tokens.base.token.decimals : true}}
+                        ({{contractInfo.baseBrokerAmount | number : '1.0-8'}}
                         {{tokens.base.token.token_short_name}})
                       </b>
                     </span>
@@ -300,7 +301,7 @@
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    {{tokens.quote.amount | bigNumberFormat : tokens.quote.token.decimals : true}}
+                    {{tokens.quote.amount | number : '1.0-8'}}
                   </div>
                   <div *ngIf="originalContract.state === 'ACTIVE'">
                     <div class="tokens-info-block_filled_item send">
@@ -308,8 +309,9 @@
                         <b>Sent</b>
                       </div>
                       <div class="tokens-info-block_filled__complete"
-                           [title]="contractInfo.quoteRaised | bigNumberFormat : tokens.quote.token.decimals : true">
-                        <b>{{ contractInfo.quoteRaised | bigNumberFormat : tokens.quote.token.decimals : true }}</b>
+                           *ngIf="contractInfo.quoteRaised"
+                           [title]="contractInfo.quoteRaised | number : '1.0-8'">
+                        <b>{{ contractInfo.quoteRaised | number : '1.0-8' }}</b>
                       </div>
                     </div>
                     <div class="tokens-info-block_filled_item left">
@@ -406,7 +408,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{baseWillGetValue(quoteContributeForm.value.amount) | bigNumberFormat : tokens.base.token.decimals : true }}
+                            {{baseWillGetValue(quoteContributeForm.value.amount) | number : '1.0-8' }}
                             {{tokens.base.token.token_short_name}}
                             after SWAP
                           </span>
@@ -430,7 +432,7 @@
                     <span>
                       Min Contribution Limit:
                       <b>
-                        {{originalContract.min_quote_wei | bigNumberFormat : tokens.quote.token.decimals : true}}
+                        {{originalContract.min_quote_wei | number : '1.0-8'}}
                         {{tokens.quote.token.token_short_name}}
                       </b>
                     </span>
@@ -448,7 +450,7 @@
                       Brokers fee:
                       <b>
                         {{contractInfo.quoteBrokerPercent}}%
-                        ({{contractInfo.quoteBrokerAmount | bigNumberFormat : tokens.quote.token.decimals : true}}
+                        ({{contractInfo.quoteBrokerAmount | number : '1.0-8'}}
                         {{tokens.quote.token.token_short_name}})
                       </b>
                     </span>

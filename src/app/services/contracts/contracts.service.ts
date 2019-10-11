@@ -118,9 +118,10 @@ export class ContractsService {
           const allResolveList = allList.contracts.concat(allList.trades).sort((contract1, contract2) => {
             return new Date(contract2.created_date) < new Date(contract1.created_date) ? -1 : 1;
           });
+
           resolve(allResolveList);
 
-          if (expiredTrades.contracts || expiredTrades.trades) {
+          if (expiredTrades.contracts.length || expiredTrades.trades.length) {
             this.httpService.post('set_swap3_expired/', expiredTrades).toPromise().then((res) => {
               return res;
             });
