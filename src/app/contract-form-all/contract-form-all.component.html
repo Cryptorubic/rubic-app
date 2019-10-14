@@ -72,10 +72,12 @@
                                [ngModel]="requestData.tokens_info.base.token.address"
                                name="base_address">
 
+
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.amount" name="base_limit">
 
                         <app-tokens-all-input (TokenChange)="changedToken('base')"
                                               [setToken]="BaseTokenCustom"
+                                              [blockchain]="'ethereum'"
                                               [tokenModel]="requestData.tokens_info.base"></app-tokens-all-input>
                       </div>
                     </div>
@@ -141,6 +143,7 @@
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.amount" name="quote_limit">
                         <app-tokens-all-input (TokenChange)="changedToken('quote')"
                                               [setToken]="QuoteTokenCustom"
+                                              [blockchain]="'ethereum'"
                                               [tokenModel]="requestData.tokens_info.quote"></app-tokens-all-input>
                       </div>
                     </div>
@@ -194,15 +197,15 @@
                         requestData.tokens_info.quote.amount">
                   <span>
                     Rate:
-                    {{getRate() | number : '1.0-8' }}
-                    {{requestData.tokens_info.base.token.token_short_name}} / 1 {{requestData.tokens_info.quote.token.token_short_name}}
+                    {{getRate(true) | number : '1.0-8' }}
+                    {{requestData.tokens_info.quote.token.token_short_name}} / 1 {{requestData.tokens_info.base.token.token_short_name}}
                   </span>
 
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <span *ngIf="cmcRate" class="cmc-rate">
                     <img src="./assets/images/icons/cmc.svg" class="cmc-rate-icon">
-                    {{cmcRate.direct | number: '1.0-6'}}
-                    {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
+                    {{cmcRate.revert | number: '1.0-6'}}
+                    {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
                   </span>
 
                   <button class="revert-btn" (click)="revertCoins()" type="button">
@@ -215,7 +218,7 @@
               <div class="form-notice" *ngIf="cmcRate && cmcRate.isMessage">
                 <div class="form-notice_text">
                   Your rate is
-                  <span class="yellow-text">>20%</span>
+                  <span class="yellow-text">{{cmcRate.change}}%</span>
                   {{cmcRate.isLower ? 'lower' : 'higher'}} than
                   <a href="https://coinmarketcap.com/" target="_blank">coinmarketcap</a> rate. Please double check.
                   <span *ngIf="!cmcRate.isLower">Trade’s rate should be attractive for the second party.</span>
@@ -968,7 +971,7 @@
   <div class="dialog-block">
     <div class="dialog-block__content">
       <div class="info-modal-text">
-        Please note: If you use ERC20 pair, your trade will be decentralized and will be close faster
+        Please note: That your pair can not be executed by smart contract. To make it decentralized please choose Ethereum based tokens.
       </div>
       <div class="contact-buttons"><br/><br/>
         <div class="grid-row">

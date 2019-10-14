@@ -116,6 +116,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   public requestData: IContractV3;
 
   public cmcRate: {
+    change?: number;
     isMessage?: boolean;
     isLower?: boolean;
     direct: number;
@@ -136,6 +137,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
   public openedAdvanced: boolean;
 
+  private CMCRates;
 
   constructor(
     protected contractsService: ContractsService,
@@ -145,7 +147,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     protected router: Router,
     private dialog: MatDialog
   ) {
-
+    this.CMCRates = {};
     this.originalContract = this.route.snapshot.data.contract;
 
     this.customTokens = {
@@ -261,8 +263,8 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount);
     const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount);
     return (!revert ?
-      baseCoinAmount.div(quoteCoinAmount).dp(4) :
-      quoteCoinAmount.div(baseCoinAmount).dp(4)).toString();
+      baseCoinAmount.div(quoteCoinAmount) :
+      quoteCoinAmount.div(baseCoinAmount)).toString();
   }
 
   private setFullDateTime() {
@@ -306,29 +308,43 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   }
 
   public changedToken(coin) {
-
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
 
-    if (baseCoin.cmc_id && quoteCoin.cmc_id && baseCoin.cmc_id > 0 && quoteCoin.cmc_id > 0) {
-      this.contractsService.getCMCTokensRates(baseCoin.cmc_id, quoteCoin.cmc_id).then((result) => {
+    if (this.requestData.tokens_info.base.amount && this.requestData.tokens_info.quote.amount &&
+      baseCoin.cmc_id && quoteCoin.cmc_id && baseCoin.cmc_id > 0 && quoteCoin.cmc_id > 0) {
+
+      const checkRatesRange = () => {
         this.cmcRate = {
-          direct: new BigNumber(result.coin2).div(result.coin1).toNumber(),
-          revert: new BigNumber(result.coin1).div(result.coin2).toNumber()
+          direct: new BigNumber(this.CMCRates[quoteCoin.cmc_id]).div(this.CMCRates[baseCoin.cmc_id]).toNumber(),
+          revert: new BigNumber(this.CMCRates[baseCoin.cmc_id]).div(this.CMCRates[quoteCoin.cmc_id]).toNumber()
         };
+        const rate = parseFloat(this.getRate(true));
+        const rateChanges = parseFloat(this.getRate()) - this.cmcRate.direct;
 
-        const rateChanges = parseInt(this.getRate(), 10) - this.cmcRate.direct;
-
-        this.cmcRate.isMessage = Math.abs(rateChanges) > (this.cmcRate.direct / 100 * 20);
+        this.cmcRate.isMessage = true;
         this.cmcRate.isLower = rateChanges > 0;
+        this.cmcRate.change = Math.round(Math.abs(-((rate / this.cmcRate.revert) - 1)) * 100);
+      };
 
-      }, (err) => {
-        this.cmcRate = undefined;
-      });
+      if (!this.CMCRates[baseCoin.cmc_id] || !this.CMCRates[quoteCoin.cmc_id]) {
+        this.contractsService.getCMCTokensRates(baseCoin.cmc_id, quoteCoin.cmc_id).then((result) => {
+          this.CMCRates[quoteCoin.cmc_id] = result.coin2;
+          this.CMCRates[baseCoin.cmc_id] = result.coin1;
+          checkRatesRange();
+        }, (err) => {
+          this.cmcRate = undefined;
+        });
+      } else {
+        checkRatesRange();
+      }
+
     } else {
       this.cmcRate = undefined;
     }
+
   }
+
 
   public checkRates() {
     const tokens = this.requestData.tokens_info;

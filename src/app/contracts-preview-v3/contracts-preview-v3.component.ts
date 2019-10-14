@@ -141,7 +141,9 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           direct: new BigNumber(result.coin2).div(result.coin1).toNumber(),
           revert: new BigNumber(result.coin1).div(result.coin2).toNumber()
         };
-        this.cmcRate.cmcRange = - (this.rates.reverted.toNumber() / (this.cmcRate.revert / 100) - 100);
+
+        const oneDirectPercent = this.cmcRate.direct / 100;
+        this.cmcRate.cmcRange = (this.rates.normal.toNumber() - this.cmcRate.direct) / oneDirectPercent;
         this.cmcRate.absCmcRange = Math.abs(this.cmcRate.cmcRange);
       }, (err) => {
         this.cmcRate = undefined;

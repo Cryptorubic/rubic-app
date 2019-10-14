@@ -125,6 +125,8 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
         contract.contract_details.swap3 = true;
       }
 
+      contract.contract_details.base_filled = '0';
+      contract.contract_details.quote_filled = '0';
 
       this.web3Service.getSWAPSCoinInfo(contract.contract_details).then((trade: any) => {
         const baseToken = contract.contract_details.tokens_info.base.token;
