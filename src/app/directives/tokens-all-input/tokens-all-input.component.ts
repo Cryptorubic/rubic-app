@@ -35,7 +35,7 @@ export class TokensAllInputComponent implements OnInit {
   public tokenName;
   private activeTokenIndex;
 
-  @Output() TokenChange = new EventEmitter<string>();
+  @Output() public TokenChange = new EventEmitter<string>();
 
   private searchSubscriber;
 

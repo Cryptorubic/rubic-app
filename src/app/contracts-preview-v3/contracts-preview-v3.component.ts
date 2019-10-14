@@ -19,7 +19,7 @@ import {IContractV3} from '../contract-form-all/contract-form-all.component';
 import {ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
 
 
-export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
+export const FIX_TIME = new Date(2019, 9, 10, 12, 11).getTime();
 
 
 @Component({
@@ -141,7 +141,9 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
           direct: new BigNumber(result.coin2).div(result.coin1).toNumber(),
           revert: new BigNumber(result.coin1).div(result.coin2).toNumber()
         };
-        this.cmcRate.cmcRange = - (this.rates.reverted.toNumber() / (this.cmcRate.revert / 100) - 100);
+
+        const oneDirectPercent = this.cmcRate.direct / 100;
+        this.cmcRate.cmcRange = (this.rates.normal.toNumber() - this.cmcRate.direct) / oneDirectPercent;
         this.cmcRate.absCmcRange = Math.abs(this.cmcRate.cmcRange);
       }, (err) => {
         this.cmcRate = undefined;
