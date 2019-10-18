@@ -19,7 +19,7 @@ import {IContractV3} from '../contract-form-all/contract-form-all.component';
 import {ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
 
 
-export const FIX_TIME = new Date(2019, 9, 10, 12, 11).getTime();
+export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
 
 
 @Component({
@@ -130,24 +130,16 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
   private oldCheckedState: string;
 
   private checkCMCRate() {
-
     const baseCoin = this.originalContract.tokens_info.base.token;
     const quoteCoin = this.originalContract.tokens_info.quote.token;
 
-
     if (baseCoin.cmc_id && quoteCoin.cmc_id && baseCoin.cmc_id > 0 && quoteCoin.cmc_id > 0) {
-      this.contractService.getCMCTokensRates(baseCoin.cmc_id, quoteCoin.cmc_id).then((result) => {
-        this.cmcRate = {
-          direct: new BigNumber(result.coin2).div(result.coin1).toNumber(),
-          revert: new BigNumber(result.coin1).div(result.coin2).toNumber()
-        };
-
-        const oneDirectPercent = this.cmcRate.direct / 100;
-        this.cmcRate.cmcRange = (this.rates.normal.toNumber() - this.cmcRate.direct) / oneDirectPercent;
-        this.cmcRate.absCmcRange = Math.abs(this.cmcRate.cmcRange);
-      }, (err) => {
-        this.cmcRate = undefined;
-      });
+      this.cmcRate = {
+        direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber(),
+        revert: new BigNumber(baseCoin.rate).div(quoteCoin.rate).toNumber()
+      };
+      this.cmcRate.cmcRange = this.rates.normal.toNumber() - this.cmcRate.direct;
+      this.cmcRate.absCmcRange = Math.abs(-((this.rates.normal.toNumber() / this.cmcRate.direct) - 1)) * 100;
     } else {
       this.cmcRate = undefined;
     }

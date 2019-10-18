@@ -144,7 +144,11 @@
               </div>
             </div>
             <div class="grid-cell grid-cell-1-4 public-swaps_cell">
-              <div class="public-swaps_cell_content">
+              <div class="public-swaps_cell_content"
+                   [ngClass]="{
+                      'is-profit': contract.contract_details.isProfit,
+                      'no-profit': contract.contract_details.isProfit === false
+                    }">
                 <div class="swap-info swap-info__token-volume swap-info__token-volume__with-icon text-left">
                   <div class="swap-info__token-volume_value">
                     {{contract.contract_details.quote_token_info.amount | number : '1.0-8'}}

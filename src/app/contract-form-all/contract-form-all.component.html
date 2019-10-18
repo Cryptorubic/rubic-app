@@ -75,7 +75,7 @@
 
                         <input type="hidden" required [ngModel]="requestData.tokens_info.base.amount" name="base_limit">
 
-                        <app-tokens-all-input (TokenChange)="changedToken('base')"
+                        <app-tokens-all-input (TokenChange)="changedToken()"
                                               [setToken]="BaseTokenCustom"
                                               [blockchain]="'ethereum'"
                                               [tokenModel]="requestData.tokens_info.base"></app-tokens-all-input>
@@ -141,7 +141,7 @@
                                name="quote_address">
 
                         <input type="hidden" required [ngModel]="requestData.tokens_info.quote.amount" name="quote_limit">
-                        <app-tokens-all-input (TokenChange)="changedToken('quote')"
+                        <app-tokens-all-input (TokenChange)="changedToken()"
                                               [setToken]="QuoteTokenCustom"
                                               [blockchain]="'ethereum'"
                                               [tokenModel]="requestData.tokens_info.quote"></app-tokens-all-input>
@@ -267,6 +267,7 @@
                                    [(ngModel)]="datePickerDate"
                                    (dateChange)="dateChange()"
                                    [min]="minDate"
+                                   [max]="maxDate"
                                    name="active_to"
                                    (click)="datepicker.open()" placeholder="Choose a date" class="min-text">
                             <mat-datepicker #datepicker></mat-datepicker>

@@ -24,6 +24,21 @@
             </button>
           </span>
 
+          <div class="cmc-rate-notice"
+               [ngClass]="{
+                'cmc-rate-notice__positive': cmcRate.cmcRange > 0,
+                'cmc-rate-notice__negative': cmcRate.cmcRange < 0
+               }"
+               *ngIf="cmcRate">
+            <span *ngIf="cmcRate.cmcRange > 0">
+              The trade's rate is {{ cmcRate.absCmcRange | number : '1.0-1'}}% more profitable than coinmarketcap rate
+            </span>
+            <span *ngIf="cmcRate.cmcRange < 0">
+              The trade's rate is {{ cmcRate.absCmcRange | number : '1.0-1'}}% less profitable than coinmarketcap rate
+            </span>
+          </div>
+
+
           <div class="grid-row all-tokens-info-row">
             <div class="grid-cell grid-cell-1-2 grid-cell-ps-1 one-token-info-cell"
                  [ngClass]="{'active-side-info': activeSide === 'base'}">

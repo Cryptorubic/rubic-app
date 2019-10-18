@@ -63,7 +63,32 @@ export class ContractPreviewComponent implements OnInit, OnDestroy {
       normal: baseAmount.div(quoteAmount),
       reverted: quoteAmount.div(baseAmount)
     };
+    this.checkCMCRate();
+  }
 
+  public cmcRate: {
+    absCmcRange?: number;
+    direct: number;
+    revert: number;
+    cmcRange?: number;
+  };
+
+  private checkCMCRate() {
+    const tokens = this.originalContract.contract_details.tokens_info;
+
+    const baseCoin = tokens.base.token;
+    const quoteCoin = tokens.quote.token;
+
+    if (baseCoin.cmc_id && quoteCoin.cmc_id && baseCoin.cmc_id > 0 && quoteCoin.cmc_id > 0) {
+      this.cmcRate = {
+        direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber(),
+        revert: new BigNumber(baseCoin.rate).div(quoteCoin.rate).toNumber()
+      };
+      this.cmcRate.cmcRange = this.rates.normal.toNumber() - this.cmcRate.direct;
+      this.cmcRate.absCmcRange = Math.abs(-((this.rates.normal.toNumber() / this.cmcRate.direct) - 1)) * 100;
+    } else {
+      this.cmcRate = undefined;
+    }
   }
 
 

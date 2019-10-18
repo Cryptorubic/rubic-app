@@ -102,6 +102,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
   public minTime;
   public minDate: moment.Moment;
+  public maxDate: moment.Moment;
 
   public datePickerDate;
   public datePickerTime;
@@ -166,6 +167,8 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     });
 
     this.minDate = moment().add(1, 'hour');
+    this.maxDate = moment().add(14, 'day');
+
     const startDateTime = moment(this.minDate);
     this.datePickerDate = startDateTime.add(2, 'day');
     this.datePickerTime = `${startDateTime.hour()}:${startDateTime.minutes()}`;
@@ -307,42 +310,23 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     }
   }
 
-  public changedToken(coin) {
+  public changedToken() {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
-
     if (this.requestData.tokens_info.base.amount && this.requestData.tokens_info.quote.amount &&
       baseCoin.cmc_id && quoteCoin.cmc_id && baseCoin.cmc_id > 0 && quoteCoin.cmc_id > 0) {
-
-      const checkRatesRange = () => {
-        this.cmcRate = {
-          direct: new BigNumber(this.CMCRates[quoteCoin.cmc_id]).div(this.CMCRates[baseCoin.cmc_id]).toNumber(),
-          revert: new BigNumber(this.CMCRates[baseCoin.cmc_id]).div(this.CMCRates[quoteCoin.cmc_id]).toNumber()
-        };
-        const rate = parseFloat(this.getRate(true));
-        const rateChanges = parseFloat(this.getRate()) - this.cmcRate.direct;
-
-        this.cmcRate.isMessage = true;
-        this.cmcRate.isLower = rateChanges > 0;
-        this.cmcRate.change = Math.round(Math.abs(-((rate / this.cmcRate.revert) - 1)) * 100);
+      this.cmcRate = {
+        revert: new BigNumber(baseCoin.rate).div(quoteCoin.rate).toNumber(),
+        direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber()
       };
-
-      if (!this.CMCRates[baseCoin.cmc_id] || !this.CMCRates[quoteCoin.cmc_id]) {
-        this.contractsService.getCMCTokensRates(baseCoin.cmc_id, quoteCoin.cmc_id).then((result) => {
-          this.CMCRates[quoteCoin.cmc_id] = result.coin2;
-          this.CMCRates[baseCoin.cmc_id] = result.coin1;
-          checkRatesRange();
-        }, (err) => {
-          this.cmcRate = undefined;
-        });
-      } else {
-        checkRatesRange();
-      }
-
+      const rate = parseFloat(this.getRate(true));
+      const rateChanges = parseFloat(this.getRate()) - this.cmcRate.direct;
+      this.cmcRate.isMessage = true;
+      this.cmcRate.isLower = rateChanges > 0;
+      this.cmcRate.change = Math.round(Math.abs(-((rate / this.cmcRate.revert) - 1)) * 100);
     } else {
       this.cmcRate = undefined;
     }
-
   }
 
 

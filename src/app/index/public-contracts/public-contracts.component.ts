@@ -178,15 +178,21 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
 
   private getRates(contract) {
     const contractDetails = contract.contract_details;
+    const baseToken = contractDetails.base_token_info;
+    const quoteToken = contractDetails.quote_token_info;
+
     const baseAmount = contractDetails.base_token_info.amount;
     const quoteAmount = contractDetails.quote_token_info.amount;
 
-    contractDetails.base_token_info.amount = contractDetails.base_token_info.amount.toString();
-    contractDetails.quote_token_info.amount = contractDetails.quote_token_info.amount.toString();
-
-    contractDetails.base_token_info.rate = baseAmount.div(quoteAmount).dp(5).toString();
-    contractDetails.quote_token_info.rate = quoteAmount.div(baseAmount).dp(5).toString();
-
+    baseToken.amount = baseToken.amount.toString();
+    quoteToken.amount = quoteToken.amount.toString();
+    let cmcRate;
+    if (quoteToken.rate && baseToken.rate) {
+      cmcRate = quoteToken.rate / baseToken.rate;
+    }
+    baseToken.rate = baseAmount.div(quoteAmount).dp(5).toNumber();
+    quoteToken.rate = quoteAmount.div(baseAmount).dp(5).toNumber();
+    contractDetails.isProfit = cmcRate ? cmcRate <= baseToken.rate : undefined;
 
     this.checkDecentralized(contract);
   }
