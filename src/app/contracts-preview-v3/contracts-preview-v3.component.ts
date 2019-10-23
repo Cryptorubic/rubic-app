@@ -526,9 +526,9 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       details.memo_contract,
       details.tokens_info.base.token.address,
       details.tokens_info.quote.token.address,
-      new BigNumber((details.base_limit || '0')).times(baseDecimalsTimes).toString(),
-      new BigNumber((details.quote_limit || '0')).times(quoteDecimalsTimes).toString(),
-      Math.round((new Date(details.stop_date)).getTime() / 1000).toString(),
+      new BigNumber((details.base_limit || '0')).times(baseDecimalsTimes).toString(10),
+      new BigNumber((details.quote_limit || '0')).times(quoteDecimalsTimes).toString(10),
+      Math.round((new Date(details.stop_date)).getTime() / 1000).toString(10),
       details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
       new BigNumber(details.min_base_wei || '0').times(baseDecimalsTimes).toString(10),
       new BigNumber(details.min_quote_wei || '0').times(quoteDecimalsTimes).toString(10),
@@ -536,7 +536,6 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       details.broker_fee ? (new BigNumber(details.broker_fee_base).times(100)).toString(10) : '0',
       details.broker_fee ? (new BigNumber(details.broker_fee_quote).times(100)).toString(10) : '0'
     ];
-
 
     const activateSignature = this.web3Service.encodeFunctionCall(interfaceMethod, trxRequest);
     const sendActivateTrx = (wallet) => {
@@ -627,7 +626,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       const approveSignature = this.web3Service.encodeFunctionCall(
         approveMethod, [
           SWAPS_V2.ADDRESS,
-          new BigNumber(90071992.5474099).times(Math.pow(10, contributeData.token.decimals)).toString(10)
+          new BigNumber(90071992.5474099).times(Math.pow(10, Math.max(contributeData.token.decimals, 7))).toString(10)
         ]
       );
 
