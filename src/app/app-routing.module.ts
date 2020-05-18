@@ -47,13 +47,13 @@ const routes: Routes = [
   {
     path: '',
     component: IndexComponent
-  }, {
+  }/*, {
     path: 'about',
     component: IndexIcoComponent,
     data: {
       noheader: true
     }
-  }, {
+  }*/, {
     path: 'create-v3',
     redirectTo: '/trades/create-v3'
   }, {
@@ -188,22 +188,22 @@ const routes: Routes = [
     path: 'reset/:uid/:token',
     component: IndexComponent
   },
-  {
+  /*{
     path: 'team',
     component: TeamComponent,
   },
   {
     path: 'roadmap',
     component: RoadmapComponent,
-  },
+  },*/
   {
     path: 'faq',
     component: FaqComponent,
-  },
+  }/*,
   {
     path: 'contacts',
     component: ContactsComponent,
-  }
+  }*/
 ];
 
 @NgModule({
@@ -217,4 +217,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-
