@@ -228,7 +228,9 @@ export class ContractFormComponent implements AfterContentInit, OnInit, OnDestro
         this.editableContract = false;
         this.gotToForm(101);
         this.checkContractState();
+        console.log(contract)
         this.costEmitter.emit(contract.cost);
+        console.log(contract, 'contract')
         break;
       case 'WAITING_FOR_DEPLOYMENT':
         this.editableContract = false;
