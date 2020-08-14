@@ -1,6 +1,65 @@
 .index-start-form {
-  padding: 20px 20px 0;
-  background-color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  padding: 30px 20px 0;
+  background: linear-gradient(0deg, #ffffff, #ffffff);
+
+  .btn-blue {
+    height: 62px;
+  }
+  &__settings {
+    width: fit-content;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 3px);
+    padding: 25px 30px;
+    background: linear-gradient(0deg, #ffffff, #ffffff);
+    display: flex;
+    &.hidden {
+      display: none;
+    }
+    &-item {
+      & + & {
+        margin-left: 30px;
+      }
+      &-head {
+        font-size: 12px;
+        line-height: 14px;
+        color: #000000;
+        text-transform: uppercase;
+        opacity: 0.5;
+      }
+      &-content {
+        background: #f4f4f4;
+        margin-top: 5px;
+        position: relative;
+        .mat-datepicker-toggle {
+          right: 0;
+        }
+        input {
+          border: none;
+          background: none;
+          font-size: 16px;
+          line-height: 18px;
+          color: #110931;
+        }
+        .form-field_input-checkbox {
+          background: none;
+        }
+        .form-field_input-checkbox input:checked ~ .checkbox-rect {
+          background-color: #2873fb;
+        }
+      }
+      &-date {
+        padding: 13px 10px;
+        width: 130px !important;
+      }
+      &-time {
+        width: 80px !important;
+        padding: 13px 20px;
+        box-sizing: border-box;
+      }
+    }
+  }
 }
 .personal-swap-info {
   text-align: right;
@@ -12,10 +71,10 @@
   line-height: 22px;
   position: relative;
   a {
-    color: inherit!important;
+    color: inherit !important;
     text-decoration: underline;
     &:hover {
-      color: #FCD600!important;
+      color: #fcd600 !important;
     }
   }
   &_ico {
@@ -23,7 +82,7 @@
     vertical-align: middle;
     width: 22px;
     height: 22px;
-    background-color: #FCD600;
+    background-color: #fcd600;
     border-radius: 50%;
     color: #000;
     text-align: center;
@@ -36,7 +95,7 @@
   }
   &_tooltip {
     position: absolute;
-    background-color: #383D45;
+    background-color: #383d45;
     padding: 20px;
     font-size: 15px;
     line-height: 18px;
@@ -53,7 +112,7 @@
     visibility: hidden;
     transition: linear opacity 0.1s;
     &:after {
-      background-color: #383D45;
+      background-color: #383d45;
       width: 16px;
       height: 16px;
       content: '';
@@ -73,10 +132,27 @@
   }
 }
 .underline-link {
-  text-decoration: underline!important;
+  text-decoration: underline !important;
   &:hover {
-    text-decoration: none!important;
-    color: #FCD600!important;
+    text-decoration: none !important;
+    color: #fcd600 !important;
+  }
+  &--show {
+    cursor: pointer;
+    text-decoration: none !important;
+    &:hover {
+      color: inherit !important;
+    }
+  }
+  &_btn {
+    cursor: pointer;
+    color: #2873fb !important;
+    text-decoration: none !important;
+    font-weight: 700;
+    opacity: 1 !important;
+    &:hover {
+      color: #2873fb !important;
+    }
   }
 }
 @media screen and (max-width: 980px) {

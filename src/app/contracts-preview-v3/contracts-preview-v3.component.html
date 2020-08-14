@@ -1,28 +1,24 @@
 <div class="base-block-content">
   <div class="app-content-block">
     <div class="grid-row">
-      <div class="grid-cell grid-cell-2-3 grid-cell-sm-1">
-        <div class="preview-container preview-container_reminder"
-             [ngClass]="{closed: originalContract.contract_state !== 'CREATED'}"
-             *ngIf="originalContract.isAuthor">
-          <div class="preview-container_title">
-            Congratulations!<br/>
-            The trade was created and added to our Order Вook
-          </div>
-        </div>
-
-        <div class="preview-container preview-container_reminder"
-             *ngIf="originalContract.contract_state === 'DONE'">
+      <div class="grid-cell grid-cell-1 grid-cell-sm-1">
+        <div
+          class="preview-container preview-container_reminder"
+          *ngIf="originalContract.contract_state === 'DONE'"
+        >
           <div class="preview-container_reminder__title">
             Done
           </div>
           <div class="preview-container_reminder__description">
-            The trade was completed. If you participated in this trade, please check your wallet.
+            The trade was completed. If you participated in this trade, please
+            check your wallet.
           </div>
         </div>
 
-        <div class="preview-container preview-container_reminder"
-             *ngIf="originalContract.contract_state === 'EXPIRED'">
+        <div
+          class="preview-container preview-container_reminder"
+          *ngIf="originalContract.contract_state === 'EXPIRED'"
+        >
           <div class="preview-container_reminder__title">
             Expired
           </div>
@@ -31,9 +27,10 @@
           </div>
         </div>
 
-
-        <div class="preview-container preview-container_reminder"
-             *ngIf="originalContract.contract_state === 'CANCELLED'">
+        <div
+          class="preview-container preview-container_reminder"
+          *ngIf="originalContract.contract_state === 'CANCELLED'"
+        >
           <div class="preview-container_reminder__title">
             Cancelled
           </div>
@@ -42,203 +39,305 @@
           </div>
         </div>
 
-        <div class="preview-container preview-container_reminder"
-             [ngClass]="{closed: isRemindered || (originalContract.contract_state !== 'CREATED')}"
-             *ngIf="originalContract.isAuthor && originalContract.isEthereum">
-          <div class="preview-container_reminder__title">
-            Reminder
-          </div>
-          <div class="preview-container_reminder__description">
-            Please follow these steps to close your trade faster
-          </div>
-          <ul class="preview-container_reminder__list">
-            <li>Fill in your part of the trade</li>
-            <li>
-              <span class="as_link copy-text"
-                    [ngClass]="{copied: copiedAddresses['link']}"
-                    (cbOnSuccess)="onCopied('link')"
-                    ngxClipboard [cbContent]="contractAdditional.link">
-                Copy the link and share with your community
-              </span>
-            </li>
-          </ul>
-          <button type="button" (click)="isRemindered = true;"
-                  class="preview-container_reminder__closer"></button>
-        </div>
-
         <div class="preview-container">
-          <div class="contract-state" [ngClass]="'contract-state__' + states[originalContract.state].NUMBER">
-            {{states[originalContract.state].TEXT}}
+          <div
+            class="contract-state"
+            [ngClass]="
+              'contract-state__' + states[originalContract.state].NUMBER
+            "
+          >
+            {{ states[originalContract.state].TEXT }}
           </div>
-          <div class="contract-title">{{ originalContract.name }}</div>
+          <div class="contract-title">SWAP {{ originalContract.name }}</div>
+          <div class="c-preview__rate-wrapper">
+            <span class="form-field_description rate-info">
+              Rate:
+              <span *ngIf="!revertedRate">
+                {{ rates.normal.dp(8).toFormat(rateFormat) }}
+                {{ tokens.base.token.token_short_name }} / 1
+                {{ tokens.quote.token.token_short_name }}
+              </span>
+              <span *ngIf="revertedRate">
+                {{ rates.reverted.dp(8).toFormat(rateFormat) }}
+                {{ tokens.quote.token.token_short_name }} / 1
+                {{ tokens.base.token.token_short_name }} </span
+              >&nbsp;&nbsp;&nbsp;&nbsp;
 
+              <span *ngIf="cmcRate" class="cmc-rate">
+                <img
+                  src="./assets/images/icons/cmc.svg"
+                  class="cmc-rate-icon"
+                />
+                {{
+                  (!revertedRate ? cmcRate.direct : cmcRate.revert)
+                    | number: '1.0-8'
+                }}
+                {{
+                  tokens[revertedRate ? 'quote' : 'base'].token.token_short_name
+                }}
+                / 1
+                {{
+                  tokens[!revertedRate ? 'quote' : 'base'].token
+                    .token_short_name
+                }}
+              </span>
 
-
-          <span class="form-field_description rate-info">
-            Rate:
-            <span *ngIf="!revertedRate">
-              {{ rates.normal.dp(8).toFormat(rateFormat) }}
-              {{tokens.base.token.token_short_name}} / 1 {{tokens.quote.token.token_short_name}}
+              <button class="revert-btn" (click)="revertedRate = !revertedRate">
+                <img src="./assets/images/icons/revert.svg" />
+              </button>
             </span>
-            <span *ngIf="revertedRate">
-              {{ rates.reverted.dp(8).toFormat(rateFormat) }}
-              {{tokens.quote.token.token_short_name}} / 1 {{tokens.base.token.token_short_name}}
-            </span>&nbsp;&nbsp;&nbsp;&nbsp;
 
-            <span *ngIf="cmcRate" class="cmc-rate">
-              <img src="./assets/images/icons/cmc.svg" class="cmc-rate-icon">
-              {{(!revertedRate ? cmcRate.direct : cmcRate.revert) | number: '1.0-8'}}
-              {{tokens[revertedRate ? 'quote' : 'base'].token.token_short_name}} /
-              1 {{tokens[!revertedRate ? 'quote' : 'base'].token.token_short_name}}
-            </span>
-
-            <button class="revert-btn" (click)="revertedRate = !revertedRate">
-              <img src="./assets/images/icons/revert.svg">
-            </button>
-          </span>
-
-          <div class="cmc-rate-notice"
-               [ngClass]="{
+            <div
+              class="cmc-rate-notice"
+              [ngClass]="{
                 'cmc-rate-notice__positive': cmcRate.cmcRange > 0,
                 'cmc-rate-notice__negative': cmcRate.cmcRange < 0
-               }"
-               *ngIf="cmcRate">
-            <span *ngIf="cmcRate.cmcRange > 0">
-              The trade's rate is {{ cmcRate.absCmcRange | number : '1.0-1'}}% more profitable than coinmarketcap rate
-            </span>
-            <span *ngIf="cmcRate.cmcRange < 0">
-              The trade's rate is {{ cmcRate.absCmcRange | number : '1.0-1'}}% less profitable than coinmarketcap rate
-            </span>
+              }"
+              *ngIf="cmcRate"
+            >
+              <span *ngIf="cmcRate.cmcRange > 0">
+                The trade's rate is {{ cmcRate.absCmcRange | number: '1.0-1' }}%
+                more profitable than coinmarketcap rate
+              </span>
+              <span *ngIf="cmcRate.cmcRange < 0">
+                The trade's rate is {{ cmcRate.absCmcRange | number: '1.0-1' }}%
+                less profitable than coinmarketcap rate
+              </span>
+            </div>
           </div>
-
-
           <div class="grid-row all-tokens-info-row">
-            <div class="grid-cell grid-cell-1-2 grid-cell-ps-1 one-token-info-cell"
-                 [ngClass]="{'active-side-info': activeSide === 'base'}">
-
+            <div
+              class="grid-cell grid-cell-1-2 grid-cell-ps-1 one-token-info-cell"
+              [ngClass]="{ 'active-side-info': activeSide === 'base' }"
+            >
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
-                  <div class="tokens-info-block_filled__count">
-                    {{tokens.base.amount | number : '1.0-8'}}
+                  <div
+                    class="tokens-info-block_filled__count tokens-info-block_filled__count--right"
+                  >
+                    {{ tokens.base.amount | number: '1.0-8' }}
                   </div>
 
-                  <div *ngIf="originalContract.state === 'ACTIVE'">
+                  <div
+                    *ngIf="originalContract.state === 'ACTIVE'"
+                    class="tokens-info-block_filled-wrapper"
+                  >
                     <div class="tokens-info-block_filled_item send">
                       <div class="tokens-info-block_filled__text">
                         <b>Sent</b>
                       </div>
-                      <div class="tokens-info-block_filled__complete"
-                           *ngIf="contractInfo.baseRaised"
-                           [title]="contractInfo.baseRaised | number : '1.0-8'">
-                        <b>{{ contractInfo.baseRaised | number : '1.0-8' }}</b>
+                      <div
+                        class="tokens-info-block_filled__complete"
+                        *ngIf="contractInfo.baseRaised"
+                        [title]="contractInfo.baseRaised | number: '1.0-8'"
+                      >
+                        <b>{{ contractInfo.baseRaised | number: '1.0-8' }}</b>
                       </div>
                     </div>
                     <div class="tokens-info-block_filled_item left">
                       <div class="tokens-info-block_filled__text">
                         Left
                       </div>
-                      <div class="tokens-info-block_filled__complete"
-                           [title]="contractInfo.baseLeft | bigNumberFormat : tokens.base.token.decimals : true">
-                        {{contractInfo.baseLeft | bigNumberFormat : tokens.base.token.decimals : true}}
+                      <div
+                        class="tokens-info-block_filled__complete"
+                        [title]="
+                          contractInfo.baseLeft
+                            | bigNumberFormat: tokens.base.token.decimals:true
+                        "
+                      >
+                        {{
+                          contractInfo.baseLeft
+                            | bigNumberFormat: tokens.base.token.decimals:true
+                        }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="tokens-info-block_progress" *ngIf="originalContract.state === 'ACTIVE'">
-                  <span [ngStyle]="{width:  (contractInfo.baseRaised / tokens.base.amount * 100) + '%'}"></span>
+                <div
+                  class="tokens-info-block_progress"
+                  *ngIf="originalContract.state === 'ACTIVE'"
+                >
+                  <span
+                    [ngStyle]="{
+                      width:
+                        (contractInfo.baseRaised / tokens.base.amount) * 100 +
+                        '%'
+                    }"
+                  ></span>
                 </div>
 
                 <div class="token-info">
-                  <div class="token-info_icon"
-                       [ngStyle]="{'background-image': 'url(' + (tokens.base.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
-                  </div>
-                  <div class="token-info_texts">
-                    <div class="token-info_texts__name">
-                      {{tokens.base.token.token_name}}
-                      ({{tokens.base.token.token_short_name}})
-                    </div>
-                    <div class="token-info_texts__address" *ngIf="tokens.base.token.isEthereum">
-                      <a [href]="!tokens.base.token.isEther ? (tokens.base.token.address | etherscanUrl : 'token') : 'https://etherscan.io/stat/supply'"
-                         target="_blank">
-                        <small>Check on Etherscan</small>&nbsp;
-                        <img src="./assets/images/icons/link.svg">
-                      </a>
+                  <div class="token-info__wrapper">
+                    <div
+                      class="token-info_icon"
+                      [ngStyle]="{
+                        'background-image':
+                          'url(' +
+                          (tokens.base.token.image_link ||
+                            './assets/images/icons/coins/empty.svg') +
+                          ')'
+                      }"
+                    ></div>
+                    <div class="token-info_texts">
+                      <div class="token-info_texts__name">
+                        {{ tokens.base.token.token_name }}
+                        ({{ tokens.base.token.token_short_name }})
+                      </div>
+                      <div
+                        class="token-info_texts__address"
+                        *ngIf="tokens.base.token.isEthereum"
+                      >
+                        <a
+                          [href]="
+                            !tokens.base.token.isEther
+                              ? (tokens.base.token.address
+                                | etherscanUrl: 'token')
+                              : 'https://etherscan.io/stat/supply'
+                          "
+                          target="_blank"
+                        >
+                          <small>Check on Etherscan</small>&nbsp;
+                          <img src="./assets/images/icons/link.svg" />
+                        </a>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="warning-coin"
-                       [ngClass]="{invisible: tokens.base.token.cmc_id || (tokens.base.token.platform === 'fiat')}"
-                       *ngIf="(!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')) || (!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat'))">
-                    <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
+                  <div
+                    class="warning-coin"
+                    [ngClass]="{
+                      invisible:
+                        tokens.base.token.cmc_id ||
+                        tokens.base.token.platform === 'fiat'
+                    }"
+                    *ngIf="
+                      (!tokens.base.token.cmc_id &&
+                        tokens.base.token.platform !== 'fiat') ||
+                      (!tokens.quote.token.cmc_id &&
+                        tokens.quote.token.platform !== 'fiat')
+                    "
+                  >
+                    <img
+                      class="warning-coin_icon"
+                      src="./assets/images/icons/warning.svg"
+                    />
                     <span class="warning-coin_text">
-                        Unverified. Not listed on CMC
-                      </span>
+                      Unverified. Not listed on CMC
+                    </span>
                   </div>
 
-
-                  <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE' && originalContract.isEthereum">
+                  <div
+                    class="token-info_investments"
+                    *ngIf="
+                      originalContract.state === 'ACTIVE' &&
+                      originalContract.isEthereum
+                    "
+                  >
                     <div class="token-info_investments__number">
-                      {{ contractInfo.baseInvestors }}/{{maximumInvestors}}
+                      {{ contractInfo.baseInvestors }}/{{ maximumInvestors }}
                     </div>
                     <div class="token-info_investments__desc">
-                      Number<br/>
-                      of&nbsp;contributors
+                      Number of investors
                     </div>
                   </div>
                 </div>
 
-                <div class="contract-buttons bottom-correct"
-                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false) && (contractInfo.baseLeft > 0)">
-                  <form #baseContributeForm="ngForm"
-                        (submit)="sendContribute(baseContributeForm.value.amount, 'base')">
+                <div
+                  class="contract-buttons bottom-correct"
+                  *ngIf="
+                    originalContract.state === 'ACTIVE' &&
+                    originalContract.isSwapped === false &&
+                    contractInfo.baseLeft > 0
+                  "
+                >
+                  <form
+                    #baseContributeForm="ngForm"
+                    (submit)="
+                      sendContribute(baseContributeForm.value.amount, 'base')
+                    "
+                  >
                     <div class="grid-row">
-                      <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+                      <div class="grid-cell grid-cell-3-5 grid-cell-vs-1">
                         <div class="form-field">
                           <div class="form-field_input">
-                            <input type="text"
-                                   (focus)="activeSide = 'base'"
-                                   (blur)="activeSide = false"
-                                   autocomplete="off"
-                                   [required]="true"
-                                   [appBigNumber]="{
-                                      decimals: tokens.base.token.decimals,
-                                      min: [contractInfo.baseLeft, originalContract.min_base_wei] | bigNumberMin,
-                                      max: contractInfo.baseLeft
-                                   }"
-                                   [ngClass]="{'without-error-lightning': activeSide !== 'base'}"
-                                   name="amount"
-                                   [ngModel]="baseValueContribution"
-                                   placeholder="Enter amount"
-                                   class="min-text minimal-input">
+                            <input
+                              type="text"
+                              (focus)="activeSide = 'base'"
+                              (blur)="activeSide = false"
+                              autocomplete="off"
+                              [required]="true"
+                              [appBigNumber]="{
+                                decimals: tokens.base.token.decimals,
+                                min:
+                                  [
+                                    contractInfo.baseLeft,
+                                    originalContract.min_base_wei
+                                  ] | bigNumberMin,
+                                max: contractInfo.baseLeft
+                              }"
+                              [ngClass]="{
+                                'without-error-lightning': activeSide !== 'base'
+                              }"
+                              name="amount"
+                              [ngModel]="baseValueContribution"
+                              placeholder="Enter amount"
+                              class="min-text minimal-input"
+                            />
                           </div>
                         </div>
                       </div>
 
-                      <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+                      <div class="grid-cell grid-cell-2-5 grid-cell-vs-1">
                         <div class="form-field">
-                          <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
-                                  [disabled]="!baseContributeForm.valid || contractInfo.baseLeft <= 0"
-                                  type="submit">
-                            <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                          <button
+                            class="btn btn-blue width-100 btn-normal-weight"
+                            [disabled]="
+                              !baseContributeForm.valid ||
+                              contractInfo.baseLeft <= 0
+                            "
+                            type="submit"
+                          >
+                            <img
+                              class="arrow"
+                              src="./assets/images/buttons/arrow_w.svg"
+                            />
                             <span>Contribute</span>
                           </button>
                         </div>
                       </div>
-                      <div class="grid-cell grid-cell-1" *ngIf="baseContributeForm.value.amount && baseContributeForm.valid">
+                      <div
+                        class="grid-cell grid-cell-1"
+                        *ngIf="
+                          baseContributeForm.value.amount &&
+                          baseContributeForm.valid
+                        "
+                      >
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{quoteWillGetValue(baseContributeForm.value.amount) | number : '1.0-8' }}
-                            {{tokens.quote.token.token_short_name}}
+                            {{
+                              quoteWillGetValue(
+                                baseContributeForm.value.amount
+                              ) | number: '1.0-8'
+                            }}
+                            {{ tokens.quote.token.token_short_name }}
                             after SWAP
                           </span>
                         </div>
                       </div>
                       <div class="grid-cell grid-cell-1">
                         <div class="form-field">
-                          <span class="action-link"
-                                [ngClass]="{invisible: contractInfo.baseLeft <= 0}"
-                                (click)="baseContributeForm.controls.amount.setValue(contractInfo.baseLeftString)">
+                          <span
+                            class="action-link"
+                            [ngClass]="{
+                              invisible: contractInfo.baseLeft <= 0
+                            }"
+                            (click)="
+                              baseContributeForm.controls.amount.setValue(
+                                contractInfo.baseLeftString
+                              )
+                            "
+                          >
                             Fill all
                           </span>
                         </div>
@@ -247,178 +346,297 @@
                   </form>
                 </div>
 
-                <div class="contract-buttons no-bottom-margin"
-                     *ngIf="(originalContract.min_base_wei && (originalContract.min_base_wei != 0))">
+                <div
+                  class="contract-buttons no-bottom-margin"
+                  *ngIf="
+                    originalContract.min_base_wei &&
+                    originalContract.min_base_wei != 0
+                  "
+                >
                   <span class="normal-text">
                     <span>
                       Min Contribution Limit:
                       <b>
-                        {{originalContract.min_base_wei | number : '1.0-8'}}
-                        {{tokens.base.token.token_short_name}}
+                        {{ originalContract.min_base_wei | number: '1.0-8' }}
+                        {{ tokens.base.token.token_short_name }}
                       </b>
                     </span>
                     <!--<span *ngIf="originalContract.min_base_wei == 0">-->
                     <!--No Min Contribution-->
                   </span>
                 </div>
-                <div class="contract-buttons no-bottom-margin"
-                     *ngIf="originalContract.whitelist">
+                <div
+                  class="contract-buttons no-bottom-margin"
+                  *ngIf="originalContract.whitelist"
+                >
                   <span class="normal-text opacity-color">
                     Only Owner can contribute
                   </span>
                 </div>
-                <div class="contract-buttons no-bottom-margin"
-                     *ngIf="originalContract.broker_fee && contractInfo.baseBrokerPercent">
+                <div
+                  class="contract-buttons no-bottom-margin"
+                  *ngIf="
+                    originalContract.broker_fee &&
+                    contractInfo.baseBrokerPercent
+                  "
+                >
                   <span class="normal-text">
                     <span>
                       Brokers fee:
                       <b>
-                        {{contractInfo.baseBrokerPercent}}%
-                        ({{contractInfo.baseBrokerAmount | number : '1.0-8'}}
-                        {{tokens.base.token.token_short_name}})
+                        {{ contractInfo.baseBrokerPercent }}% ({{
+                          contractInfo.baseBrokerAmount | number: '1.0-8'
+                        }}
+                        {{ tokens.base.token.token_short_name }})
                       </b>
                     </span>
                   </span>
                 </div>
-
-
-                <div class="contract-buttons"
-                     *ngIf="originalContract.isEthereum && (contractInfo.baseRaised * 1 > 0)">
-                  <button class="btn btn-transparent btn-min btn-normal-weight width-100"
-                          (click)="sendRefund(tokens.base.token)"
-                          type="button">
-                    <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
-                    <span>Refund</span>
-                  </button>
-                </div>
-
-
               </div>
 
+              <div
+                *ngIf="
+                  originalContract.isEthereum && contractInfo.baseRaised * 1 > 0
+                "
+              >
+                <button
+                  class="btn btn-refund btn-min btn-normal-weight width-100"
+                  (click)="sendRefund(tokens.base.token)"
+                  type="button"
+                >
+                  <img
+                    class="arrow"
+                    src="./assets/images/buttons/arrow_blue.svg"
+                  />
+                  <span>Refund</span>
+                </button>
+              </div>
             </div>
-            <div class="grid-cell grid-cell-1-2 grid-cell-ps-1 one-token-info-cell"
-                 [ngClass]="{'active-side-info': activeSide === 'quote'}">
+            <div
+              class="grid-cell grid-cell-1-2 grid-cell-ps-1 one-token-info-cell"
+              [ngClass]="{ 'active-side-info': activeSide === 'quote' }"
+            >
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    {{tokens.quote.amount | number : '1.0-8'}}
+                    {{ tokens.quote.amount | number: '1.0-8' }}
                   </div>
-                  <div *ngIf="originalContract.state === 'ACTIVE'">
+                  <div
+                    *ngIf="originalContract.state === 'ACTIVE'"
+                    class="tokens-info-block_filled-wrapper"
+                  >
                     <div class="tokens-info-block_filled_item send">
                       <div class="tokens-info-block_filled__text">
                         <b>Sent</b>
                       </div>
-                      <div class="tokens-info-block_filled__complete"
-                           *ngIf="contractInfo.quoteRaised"
-                           [title]="contractInfo.quoteRaised | number : '1.0-8'">
-                        <b>{{ contractInfo.quoteRaised | number : '1.0-8' }}</b>
+                      <div
+                        class="tokens-info-block_filled__complete"
+                        *ngIf="contractInfo.quoteRaised"
+                        [title]="contractInfo.quoteRaised | number: '1.0-8'"
+                      >
+                        <b>{{ contractInfo.quoteRaised | number: '1.0-8' }}</b>
                       </div>
                     </div>
                     <div class="tokens-info-block_filled_item left">
                       <div class="tokens-info-block_filled__text">
                         Left
                       </div>
-                      <div class="tokens-info-block_filled__complete"
-                           [title]="contractInfo.quoteLeft | bigNumberFormat : tokens.quote.token.decimals : true">
-                        {{contractInfo.quoteLeft | bigNumberFormat : tokens.quote.token.decimals : true}}
+                      <div
+                        class="tokens-info-block_filled__complete"
+                        [title]="
+                          contractInfo.quoteLeft
+                            | bigNumberFormat: tokens.quote.token.decimals:true
+                        "
+                      >
+                        {{
+                          contractInfo.quoteLeft
+                            | bigNumberFormat: tokens.quote.token.decimals:true
+                        }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="tokens-info-block_progress" *ngIf="originalContract.state === 'ACTIVE'">
-                  <span [ngStyle]="{width:  (contractInfo.quoteRaised / tokens.quote.amount * 100) + '%'}"></span>
+                <div
+                  class="tokens-info-block_progress"
+                  *ngIf="originalContract.state === 'ACTIVE'"
+                >
+                  <span
+                    [ngStyle]="{
+                      width:
+                        (contractInfo.quoteRaised / tokens.quote.amount) * 100 +
+                        '%'
+                    }"
+                  ></span>
                 </div>
 
                 <div class="token-info">
-                  <div class="token-info_icon"
-                       [ngStyle]="{'background-image': 'url(' + (tokens.quote.token.image_link || './assets/images/icons/coins/empty.svg') + ')'}">
-                  </div>
-                  <div class="token-info_texts">
-                    <div class="token-info_texts__name">
-                      {{tokens.quote.token.token_name}}
-                      ({{tokens.quote.token.token_short_name}})
+                  <div class="token-info__wrapper">
+                    <div
+                      class="token-info_icon"
+                      [ngStyle]="{
+                        'background-image':
+                          'url(' +
+                          (tokens.quote.token.image_link ||
+                            './assets/images/icons/coins/empty.svg') +
+                          ')'
+                      }"
+                    ></div>
+                    <div class="token-info_texts">
+                      <div class="token-info_texts__name">
+                        {{ tokens.quote.token.token_name }}
+                        ({{ tokens.quote.token.token_short_name }})
+                      </div>
+                      <div
+                        class="token-info_texts__address"
+                        *ngIf="tokens.quote.token.isEthereum"
+                      >
+                        <a
+                          [href]="
+                            !tokens.quote.token.isEther
+                              ? (tokens.quote.token.address
+                                | etherscanUrl: 'token')
+                              : 'https://etherscan.io/stat/supply'
+                          "
+                          target="_blank"
+                        >
+                          <small>Check on Etherscan</small>&nbsp;
+                          <img src="./assets/images/icons/link.svg" />
+                        </a>
+                      </div>
                     </div>
-                    <div class="token-info_texts__address" *ngIf="tokens.quote.token.isEthereum">
-                      <a [href]="!tokens.quote.token.isEther ? (tokens.quote.token.address | etherscanUrl : 'token') : 'https://etherscan.io/stat/supply'"
-                         target="_blank">
-                        <small>Check on Etherscan</small>&nbsp;
-                        <img src="./assets/images/icons/link.svg">
-                      </a>
-                    </div>
                   </div>
-
-                  <div class="warning-coin"
-                       [ngClass]="{invisible: tokens.quote.token.cmc_id || (tokens.quote.token.platform === 'fiat')}"
-                       *ngIf="(!tokens.base.token.cmc_id && (tokens.base.token.platform !== 'fiat')) || (!tokens.quote.token.cmc_id && (tokens.quote.token.platform !== 'fiat'))">
-                    <img class="warning-coin_icon" src="./assets/images/icons/warning.svg">
+                  <div
+                    class="warning-coin"
+                    [ngClass]="{
+                      invisible:
+                        tokens.quote.token.cmc_id ||
+                        tokens.quote.token.platform === 'fiat'
+                    }"
+                    *ngIf="
+                      (!tokens.base.token.cmc_id &&
+                        tokens.base.token.platform !== 'fiat') ||
+                      (!tokens.quote.token.cmc_id &&
+                        tokens.quote.token.platform !== 'fiat')
+                    "
+                  >
+                    <img
+                      class="warning-coin_icon"
+                      src="./assets/images/icons/warning.svg"
+                    />
                     <span class="warning-coin_text">
-                        Unverified. Not listed on CMC
-                      </span>
+                      Unverified. Not listed on CMC
+                    </span>
                   </div>
 
-
-                  <div class="token-info_investments" *ngIf="originalContract.state === 'ACTIVE' && originalContract.isEthereum">
+                  <div
+                    class="token-info_investments"
+                    *ngIf="
+                      originalContract.state === 'ACTIVE' &&
+                      originalContract.isEthereum
+                    "
+                  >
                     <div class="token-info_investments__number">
-                      {{ contractInfo.quoteInvestors }}/{{maximumInvestors}}
+                      {{ contractInfo.quoteInvestors }}/{{ maximumInvestors }}
                     </div>
                     <div class="token-info_investments__desc">
-                      Number<br/>
-                      of&nbsp;contributors
+                      Number of investors
                     </div>
                   </div>
                 </div>
 
-                <div class="contract-buttons bottom-correct"
-                     *ngIf="(originalContract.state === 'ACTIVE') && (originalContract.isSwapped === false) && (contractInfo.quoteLeft > 0)">
-                  <form #quoteContributeForm="ngForm"
-                        (submit)="sendContribute(quoteContributeForm.value.amount, 'quote')">
+                <div
+                  class="contract-buttons bottom-correct"
+                  *ngIf="
+                    originalContract.state === 'ACTIVE' &&
+                    originalContract.isSwapped === false &&
+                    contractInfo.quoteLeft > 0
+                  "
+                >
+                  <form
+                    #quoteContributeForm="ngForm"
+                    (submit)="
+                      sendContribute(quoteContributeForm.value.amount, 'quote')
+                    "
+                  >
                     <div class="grid-row">
-                      <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+                      <div class="grid-cell grid-cell-3-5 grid-cell-vs-1">
                         <div class="form-field">
                           <div class="form-field_input">
-                            <input type="text"
-                                   (focus)="activeSide = 'quote'"
-                                   (blur)="activeSide = false"
-                                   autocomplete="off"
-                                   [required]="true"
-                                   [appBigNumber]="{
-                                      decimals: tokens.quote.token.decimals,
-                                      min: [contractInfo.quoteLeft, originalContract.min_quote_wei] | bigNumberMin,
-                                      max: contractInfo.quoteLeft
-                                   }"
-                                   [ngClass]="{'without-error-lightning': activeSide !== 'quote'}"
-                                   name="amount"
-                                   [ngModel]="quoteValueContribution"
-                                   placeholder="Enter amount"
-                                   class="min-text minimal-input">
+                            <input
+                              type="text"
+                              (focus)="activeSide = 'quote'"
+                              (blur)="activeSide = false"
+                              autocomplete="off"
+                              [required]="true"
+                              [appBigNumber]="{
+                                decimals: tokens.quote.token.decimals,
+                                min:
+                                  [
+                                    contractInfo.quoteLeft,
+                                    originalContract.min_quote_wei
+                                  ] | bigNumberMin,
+                                max: contractInfo.quoteLeft
+                              }"
+                              [ngClass]="{
+                                'without-error-lightning':
+                                  activeSide !== 'quote'
+                              }"
+                              name="amount"
+                              [ngModel]="quoteValueContribution"
+                              placeholder="Enter amount"
+                              class="min-text minimal-input"
+                            />
                           </div>
                         </div>
                       </div>
-                      <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+                      <div class="grid-cell grid-cell-2-5 grid-cell-vs-1">
                         <div class="form-field">
-                          <button class="btn btn-yellow width-100 btn-min btn-normal-weight"
-                                  [disabled]="!quoteContributeForm.valid"
-                                  type="submit">
-                            <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+                          <button
+                            class="btn btn-blue width-100 btn-normal-weight"
+                            [disabled]="!quoteContributeForm.valid"
+                            type="submit"
+                          >
+                            <img
+                              class="arrow"
+                              src="./assets/images/buttons/arrow_w.svg"
+                            />
                             <span>Contribute</span>
                           </button>
                         </div>
                       </div>
-                      <div class="grid-cell grid-cell-1" *ngIf="quoteContributeForm.value.amount && quoteContributeForm.valid">
+                      <div
+                        class="grid-cell grid-cell-1"
+                        *ngIf="
+                          quoteContributeForm.value.amount &&
+                          quoteContributeForm.valid
+                        "
+                      >
                         <div class="form-field">
                           <span class="normal-text">
                             You will get
-                            {{baseWillGetValue(quoteContributeForm.value.amount) | number : '1.0-8' }}
-                            {{tokens.base.token.token_short_name}}
+                            {{
+                              baseWillGetValue(
+                                quoteContributeForm.value.amount
+                              ) | number: '1.0-8'
+                            }}
+                            {{ tokens.base.token.token_short_name }}
                             after SWAP
                           </span>
                         </div>
                       </div>
                       <div class="grid-cell grid-cell-1">
                         <div class="form-field">
-                          <span class="action-link"
-                                [ngClass]="{invisible: contractInfo.quoteLeft <= 0}"
-                                (click)="quoteContributeForm.controls.amount.setValue(contractInfo.quoteLeftString)">
+                          <span
+                            class="action-link"
+                            [ngClass]="{
+                              invisible: contractInfo.quoteLeft <= 0
+                            }"
+                            (click)="
+                              quoteContributeForm.controls.amount.setValue(
+                                contractInfo.quoteLeftString
+                              )
+                            "
+                          >
                             Fill all
                           </span>
                         </div>
@@ -427,13 +645,19 @@
                   </form>
                 </div>
 
-                <div class="contract-buttons no-bottom-margin" *ngIf="originalContract.min_quote_wei && (originalContract.min_quote_wei != 0)">
+                <div
+                  class="contract-buttons no-bottom-margin"
+                  *ngIf="
+                    originalContract.min_quote_wei &&
+                    originalContract.min_quote_wei != 0
+                  "
+                >
                   <span class="normal-text">
                     <span>
                       Min Contribution Limit:
                       <b>
-                        {{originalContract.min_quote_wei | number : '1.0-8'}}
-                        {{tokens.quote.token.token_short_name}}
+                        {{ originalContract.min_quote_wei | number: '1.0-8' }}
+                        {{ tokens.quote.token.token_short_name }}
                       </b>
                     </span>
                     <!--<span *ngIf="originalContract.min_quote_wei == 0">-->
@@ -442,52 +666,90 @@
                   </span>
                 </div>
 
-
-                <div class="contract-buttons no-bottom-margin"
-                     *ngIf="originalContract.broker_fee && contractInfo.quoteBrokerPercent">
+                <!-- <div
+                  class="contract-buttons no-bottom-margin"
+                  *ngIf="
+                    originalContract.broker_fee &&
+                    contractInfo.quoteBrokerPercent
+                  "
+                >
                   <span class="normal-text">
                     <span>
                       Brokers fee:
                       <b>
-                        {{contractInfo.quoteBrokerPercent}}%
-                        ({{contractInfo.quoteBrokerAmount | number : '1.0-8'}}
-                        {{tokens.quote.token.token_short_name}})
+                        {{ contractInfo.quoteBrokerPercent }}% ({{
+                          contractInfo.quoteBrokerAmount | number: '1.0-8'
+                        }}
+                        {{ tokens.quote.token.token_short_name }})
                       </b>
                     </span>
                   </span>
-                </div>
-
-                <div class="contract-buttons"
-                     *ngIf="originalContract.isEthereum && (contractInfo.quoteRaised * 1 > 0)">
-                  <button class="btn btn-transparent btn-min btn-normal-weight width-100"
-                          (click)="sendRefund(tokens.quote.token)"
-                          type="button">
-                    <img class="arrow" src="./assets/images/buttons/arrow_w.svg">
-                    <span>Refund</span>
-                  </button>
-                </div>
+                </div> -->
               </div>
-              <img src="./assets/images/icons/ch_03.svg" class="exchange-ico"/>
+              <img src="./assets/images/icons/ch_03.svg" class="exchange-ico" />
+
+              <div
+                *ngIf="
+                  originalContract.isEthereum && contractInfo.baseRaised * 1 > 0
+                "
+              >
+                <button
+                  class="btn btn-refund btn-min btn-normal-weight width-100"
+                  (click)="sendRefund(tokens.quote.token)"
+                  type="button"
+                >
+                  <img
+                    class="arrow"
+                    src="./assets/images/buttons/arrow_blue.svg"
+                  />
+                  <span>Refund</span>
+                </button>
+              </div>
             </div>
           </div>
 
-
-
           <div class="contract-info-block">
             <div class="grid-row">
-              <div class="grid-cell grid-cell-1-5 grid-cell-ps-1-2">
+              <div class="grid-cell grid-cell-1-8 grid-cell-ps-1-2">
                 <div class="form-field">
-                  <label class="form-field_label transparent">Closing date</label>
-                  <div class="form-field_value">{{originalContract.stop_date | date : 'dd.MM.yyyy'}}</div>
+                  <label class="form-field_label">Closing date</label>
+                  <div class="form-field_value">
+                    {{ originalContract.stop_date | date: 'dd.MM.yyyy' }}
+                  </div>
                 </div>
               </div>
-              <div class="grid-cell grid-cell-1-5 grid-cell-ps-1-2">
+              <div class="grid-cell grid-cell-1-8 grid-cell-ps-1-2">
                 <div class="form-field">
-                  <label class="form-field_label transparent">Closing time</label>
-                  <div class="form-field_value">{{originalContract.stop_date | date : 'HH:mm'}}</div>
+                  <label class="form-field_label">Closing time</label>
+                  <div class="form-field_value">
+                    {{ originalContract.stop_date | date: 'HH:mm' }}
+                  </div>
                 </div>
               </div>
-              <div class="grid-cell grid-cell-3-5 text-right grid-cell-ps-1">
+              <div class="grid-cell grid-cell-4-8 grid-cell-ps-1-2">
+                <div class="form-field">
+                  <label class="form-field_label">Link to deal</label>
+                  <div class="form-field_value">
+                    <a [href]="contractAdditional.link" target="_blank">
+                      {{ contractAdditional.link }}
+                    </a>
+                    &nbsp;&nbsp;
+                    <button
+                      type="button"
+                      class="copy-btn"
+                      [ngClass]="{ copied: copiedAddresses['link'] }"
+                      ngxClipboard
+                      [cbContent]="contractAdditional.link"
+                      (cbOnSuccess)="onCopied('link')"
+                    >
+                      <img src="./assets/images/icons/copy.svg" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="grid-cell grid-cell-2-8 text-right grid-cell-ps-1 float-right"
+              >
                 <div class="form-field ps-float-left">
                   <div class="form-field_checkbox-val float-right">
                     <div class="form-field_checkbox-val_label">
@@ -495,10 +757,10 @@
                     </div>
                     <div class="form-field_checkbox-val_stat">
                       <div *ngIf="originalContract.public">
-                        Yes<img src="./assets/images/icons/yes.svg">
+                        Yes<img src="./assets/images/icons/yes.svg" />
                       </div>
                       <div *ngIf="!originalContract.public">
-                        No<img src="./assets/images/icons/pd_icon.svg">
+                        No<img src="./assets/images/icons/pd_icon.svg" />
                       </div>
                     </div>
                   </div>
@@ -506,25 +768,37 @@
               </div>
             </div>
 
-            <div class="one-separated-block" *ngIf="originalContract.isAuthor && originalContract.owner_address">
+            <div
+              class="one-separated-block"
+              *ngIf="
+                originalContract.isAuthor && originalContract.owner_address
+              "
+            >
               <div class="grid-row">
                 <div class="grid-cell grid-cell-1">
                   <div class="form-field">
-                    <label class="form-field_label transparent">Management address</label>
+                    <label class="form-field_label">Management address</label>
                     <div class="form-field_value">
-                      <a [href]="originalContract.owner_address | etherscanUrl : 'address'"
-                         target="_blank">
-                        {{originalContract.owner_address}}
+                      <a
+                        [href]="
+                          originalContract.owner_address
+                            | etherscanUrl: 'address'
+                        "
+                        target="_blank"
+                      >
+                        {{ originalContract.owner_address }}
                       </a>
 
-                      <button type="button"
-                              class="copy-btn"
-                              [ngClass]="{copied: copiedAddresses['owner_address']}"
-                              ngxClipboard [cbContent]="originalContract.owner_address"
-                              (cbOnSuccess)="onCopied('owner_address')">
-                        <img src="./assets/images/icons/copy.svg"/>
+                      <button
+                        type="button"
+                        class="copy-btn"
+                        [ngClass]="{ copied: copiedAddresses['owner_address'] }"
+                        ngxClipboard
+                        [cbContent]="originalContract.owner_address"
+                        (cbOnSuccess)="onCopied('owner_address')"
+                      >
+                        <img src="./assets/images/icons/copy.svg" />
                       </button>
-
                     </div>
                   </div>
                 </div>
@@ -532,60 +806,80 @@
               <div class="grid-row" *ngIf="originalContract.broker_fee">
                 <div class="grid-cell grid-cell-1">
                   <div class="form-field">
-                    <label class="form-field_label transparent">Broker address</label>
+                    <label class="form-field_label">Broker address</label>
                     <div class="form-field_value">
-                      <a [href]="originalContract.broker_fee_address | etherscanUrl : 'address'"
-                         target="_blank">
-                        {{originalContract.broker_fee_address.toLowerCase()}}
+                      <a
+                        [href]="
+                          originalContract.broker_fee_address
+                            | etherscanUrl: 'address'
+                        "
+                        target="_blank"
+                      >
+                        {{ originalContract.broker_fee_address.toLowerCase() }}
                       </a>
 
-                      <button type="button"
-                              class="copy-btn"
-                              [ngClass]="{copied: copiedAddresses['broker_fee_address']}"
-                              ngxClipboard [cbContent]="originalContract.broker_fee_address"
-                              (cbOnSuccess)="onCopied('broker_fee_address')">
-                        <img src="./assets/images/icons/copy.svg"/>
+                      <button
+                        type="button"
+                        class="copy-btn"
+                        [ngClass]="{
+                          copied: copiedAddresses['broker_fee_address']
+                        }"
+                        ngxClipboard
+                        [cbContent]="originalContract.broker_fee_address"
+                        (cbOnSuccess)="onCopied('broker_fee_address')"
+                      >
+                        <img src="./assets/images/icons/copy.svg" />
                       </button>
-
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="one-separated-block">
-              <label class="form-field_label transparent">Link to deal</label>
+            <!-- <div class="one-separated-block">
+              <label class="form-field_label">Link to deal</label>
               <div class="form-field_value">
                 <a [href]="contractAdditional.link" target="_blank">
-                  {{contractAdditional.link}}
+                  {{ contractAdditional.link }}
                 </a>
                 &nbsp;&nbsp;
-                <button type="button"
-                        class="copy-btn"
-                        [ngClass]="{copied: copiedAddresses['link']}"
-                        ngxClipboard [cbContent]="contractAdditional.link"
-                        (cbOnSuccess)="onCopied('link')">
-                  <img src="./assets/images/icons/copy.svg"/>
+                <button
+                  type="button"
+                  class="copy-btn"
+                  [ngClass]="{ copied: copiedAddresses['link'] }"
+                  ngxClipboard
+                  [cbContent]="contractAdditional.link"
+                  (cbOnSuccess)="onCopied('link')"
+                >
+                  <img src="./assets/images/icons/copy.svg" />
                 </button>
+              </div>
+            </div> -->
+
+            <div class="one-separated-block" *ngIf="originalContract.comment">
+              <label class="form-field_label">Additional comment</label>
+              <div class="form-field_value pre">
+                {{ originalContract.comment }}
               </div>
             </div>
 
-
-            <div class="one-separated-block" *ngIf="originalContract.comment">
-              <label class="form-field_label transparent">Additional comment</label>
-              <div class="form-field_value pre">{{ originalContract.comment }}</div>
-            </div>
-
-
-            <div class="one-separated-block"
-                 *ngIf="((originalContract.contract_state === 'ACTIVE') && originalContract.isAuthor) && (originalContract.isSwapped === false)">
-              <button type="button" class="btn btn-yellow btn-min btn-normal-weight btn-auto"
-                      (click)="sendCancel()">
-                <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+            <div
+              class="one-separated-block"
+              *ngIf="
+                originalContract.contract_state === 'ACTIVE' &&
+                originalContract.isAuthor &&
+                originalContract.isSwapped === false
+              "
+            >
+              <button
+                type="button"
+                class="btn btn-yellow btn-min btn-normal-weight btn-auto"
+                (click)="sendCancel()"
+              >
+                <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
                 <span>Cancel trade</span>
               </button>
             </div>
-
           </div>
         </div>
       </div>
@@ -593,40 +887,93 @@
   </div>
 </div>
 
-<div class="watch-instruction-btn hide-1024">
+<!-- <div class="watch-instruction-btn hide-1024">
   <button (click)="openContactForm()" class="btn btn-white-opacity">
-    <img src="./assets/images/icons/conown.svg" class="btn-icon">
-    <span>Contact swap owner</span>
-  </button><br/>
+    <img src="./assets/images/icons/conown.svg" class="btn-icon" />
+    <span>Contact swap owner</span></button
+  ><br />
   <a routerLink="/create-v3" class="btn btn-white-opacity">
-    <img class="arrow btn-icon" src="./assets/images/buttons/arrow_y.svg">
+    <img class="arrow btn-icon" src="./assets/images/buttons/arrow_y.svg" />
     <span>Create new trade</span>
   </a>
-</div>
-
-
+</div> -->
 
 <ng-template #administratorContact>
   <div class="dialog-block">
     <div class="dialog-block__content">
       <div class="info-modal-text">
-        For the contribution please contact our manager.<br/>
-        SWAP ID: <b>{{ originalContract.unique_link }}</b><br/>
+        For the contribution please contact our manager.<br />
+        SWAP ID: <b>{{ originalContract.unique_link }}</b
+        ><br />
       </div>
-      <div class="contact-buttons"><br/><br/>
-        <a href="https://t.me/SWAPSNETWORKsupport" target="_blank"
-           class="btn btn-white-opacity btn-min btn-normal-weight text-center">
-          <svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0.529889 13.4639L7.44249 16.0439L10.1181 24.6486C10.2893 25.1997 10.9632 25.4034 11.4105 25.0377L15.2637 21.8965C15.6676 21.5674 16.2429 21.551 16.665 21.8574L23.6148 26.9031C24.0933 27.2509 24.7712 26.9887 24.8912 26.4105L29.9823 1.9214C30.1133 1.2898 29.4927 0.762899 28.8913 0.995499L0.521789 11.9396C-0.178311 12.2096 -0.172212 13.2008 0.529889 13.4639ZM9.68689 14.6705L23.1967 6.3498C23.4395 6.2007 23.6893 6.529 23.4808 6.7224L12.3313 17.0864C11.9394 17.4512 11.6866 17.9394 11.615 18.4693L11.2352 21.2839C11.1849 21.6597 10.657 21.697 10.5533 21.3333L9.09259 16.2008C8.92529 15.6154 9.16909 14.9901 9.68689 14.6705Z" fill="#f8db14"/>
+      <div class="contact-buttons">
+        <br /><br />
+        <a
+          href="https://t.me/SWAPSNETWORKsupport"
+          target="_blank"
+          class="btn btn-white-opacity btn-min btn-normal-weight text-center"
+        >
+          <svg
+            width="30"
+            height="28"
+            viewBox="0 0 30 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0.529889 13.4639L7.44249 16.0439L10.1181 24.6486C10.2893 25.1997 10.9632 25.4034 11.4105 25.0377L15.2637 21.8965C15.6676 21.5674 16.2429 21.551 16.665 21.8574L23.6148 26.9031C24.0933 27.2509 24.7712 26.9887 24.8912 26.4105L29.9823 1.9214C30.1133 1.2898 29.4927 0.762899 28.8913 0.995499L0.521789 11.9396C-0.178311 12.2096 -0.172212 13.2008 0.529889 13.4639ZM9.68689 14.6705L23.1967 6.3498C23.4395 6.2007 23.6893 6.529 23.4808 6.7224L12.3313 17.0864C11.9394 17.4512 11.6866 17.9394 11.615 18.4693L11.2352 21.2839C11.1849 21.6597 10.657 21.697 10.5533 21.3333L9.09259 16.2008C8.92529 15.6154 9.16909 14.9901 9.68689 14.6705Z"
+              fill="#f8db14"
+            />
           </svg>
-          <span class="just-title">Telegram</span>
-        </a>&nbsp;&nbsp;
-        <a href="mailto:support@swaps.network?subject={{'SWAP ' + originalContract.unique_link}}"
-           class="btn btn-white-opacity btn-min btn-normal-weight text-center">
+          <span class="just-title">Telegram</span> </a
+        >&nbsp;&nbsp;
+        <a
+          href="mailto:support@swaps.network?subject={{
+            'SWAP ' + originalContract.unique_link
+          }}"
+          class="btn btn-white-opacity btn-min btn-normal-weight text-center"
+        >
           <!--mat-dialog-close-->
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" data-tags="envelope"><g fill="#f8db14" transform="scale(0.01953125 0.01953125)"><path d="M921.6 102.4c56.554 0 102.4 45.846 102.4 102.4v0 614.4c0 56.554-45.846 102.4-102.4 102.4v0h-819.2c-56.554 0-102.4-45.846-102.4-102.4v0-614.4c0-56.32 46.080-102.4 102.4-102.4h819.2zM697.856 568.32l326.144 250.88v-102.4l-262.144-199.68 262.144-209.92v-102.4l-512 409.6-512-409.6v102.4l262.144 209.92-262.144 199.68v102.4l326.144-250.88 185.856 148.48 185.856-148.48z" /></g></svg>
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            data-tags="envelope"
+          >
+            <g fill="#f8db14" transform="scale(0.01953125 0.01953125)">
+              <path
+                d="M921.6 102.4c56.554 0 102.4 45.846 102.4 102.4v0 614.4c0 56.554-45.846 102.4-102.4 102.4v0h-819.2c-56.554 0-102.4-45.846-102.4-102.4v0-614.4c0-56.32 46.080-102.4 102.4-102.4h819.2zM697.856 568.32l326.144 250.88v-102.4l-262.144-199.68 262.144-209.92v-102.4l-512 409.6-512-409.6v102.4l262.144 209.92-262.144 199.68v102.4l326.144-250.88 185.856 148.48 185.856-148.48z"
+              />
+            </g>
+          </svg>
           <span class="just-title">Email</span>
         </a>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #metaMaskError>
+  <div class="dialog-block">
+    <div class="dialog-block__content">
+
+      <button class="dialog-closer" (click)="closeMetaMaskError()" type="button">
+        <img src="./assets/images/icons/cross-w.svg">
+      </button>
+
+      <div class="transaction-title">
+        Error
+      </div>
+
+      <div class="transaction-description"
+           [innerHTML]="this.metamaskError.msg"></div>
+
+      <div class="alert-window-buttons text-center">
+        <button class="btn btn-yellow btn-auto btn-min" (click)="closeMetaMaskError()" type="button">
+          <span>&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</span>
+        </button>
       </div>
 
     </div>

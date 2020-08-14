@@ -1,4 +1,12 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 
 export interface ITokenInfo {
   active?: boolean;
@@ -13,13 +21,13 @@ export interface ITokenInfo {
 @Component({
   selector: 'app-tokens-all-input',
   templateUrl: './tokens-all-input.component.html',
-  styleUrls: ['./tokens-all-input.component.scss']
+  styleUrls: ['./tokens-all-input.component.scss'],
 })
 export class TokensAllInputComponent implements OnInit {
-
   @Input('tokenModel') public tokenModel: any;
   @Input() public tokenGroup: any;
   @Input() private setToken: any;
+  @Input() private isCustomAddress: boolean;
   @Input() private blockchain: string;
 
   @ViewChild('tokenField') tokenField: ElementRef;
@@ -39,9 +47,7 @@ export class TokensAllInputComponent implements OnInit {
 
   private searchSubscriber;
 
-
   ngOnInit() {
-
     if (this.setToken) {
       this.setToken.subscribe((result) => {
         this.visibleInput = false;
@@ -68,7 +74,10 @@ export class TokensAllInputComponent implements OnInit {
     let indexToken = 0;
 
     if (q) {
-      while ((indexToken < (window['cmc_tokens'].length - 1)) && (result.length < 10)) {
+      while (
+        indexToken < window['cmc_tokens'].length - 1 &&
+        result.length < 10
+      ) {
         const token = window['cmc_tokens'][indexToken];
         const tokenName = token.token_name.toLowerCase();
         const tokenSymbol = token.token_short_name.toLowerCase();
@@ -77,16 +86,22 @@ export class TokensAllInputComponent implements OnInit {
         const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
         const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
 
-        if ((nameIndexMatch || symbolIndexMatch) && (!this.blockchain || (this.blockchain === token.platform))) {
-          result.push({...token});
+        if (
+          (nameIndexMatch || symbolIndexMatch) &&
+          (!this.blockchain || this.blockchain === token.platform)
+        ) {
+          result.push({ ...token });
         }
         indexToken++;
       }
     } else {
       while (result.length < 10) {
         const token = window['cmc_tokens'][indexToken];
-        if (token.cmc_id && (!this.blockchain || (this.blockchain === token.platform))) {
-          result.push({...token});
+        if (
+          token.cmc_id &&
+          (!this.blockchain || this.blockchain === token.platform)
+        ) {
+          result.push({ ...token });
         }
         indexToken++;
       }
@@ -98,7 +113,6 @@ export class TokensAllInputComponent implements OnInit {
       this.listIsOpened = true;
       this.selectToken(this.tokensList[0], 0, true);
     }
-
   }
 
   public showList() {
@@ -137,14 +151,14 @@ export class TokensAllInputComponent implements OnInit {
   }
 
   public keyDownResult(event) {
-
     if (event.code === 'Escape') {
       this.showAutoInput();
       return;
     }
 
-    const listTokensNode = event.target.parentNode.querySelector('.form-field_input__ac_res').querySelector('ul.ac_res_list');
-
+    const listTokensNode = event.target.parentNode
+      .querySelector('.form-field_input__ac_res')
+      .querySelector('ul.ac_res_list');
 
     if (!this.tokensList.length) {
       return;
@@ -166,7 +180,10 @@ export class TokensAllInputComponent implements OnInit {
         this.selectToken(this.tokensList[newNextIndex], newNextIndex, true);
         break;
       case 'Enter':
-        this.selectToken(this.tokensList[this.activeTokenIndex], this.activeTokenIndex);
+        this.selectToken(
+          this.tokensList[this.activeTokenIndex],
+          this.activeTokenIndex,
+        );
         event.preventDefault();
         break;
     }
@@ -177,7 +194,8 @@ export class TokensAllInputComponent implements OnInit {
       }
       const activeItem = listTokensNode.querySelector('.active');
       const bottomPosition = activeItem.offsetTop + activeItem.offsetHeight;
-      const maxBottomPosition = listTokensNode.scrollTop + listTokensNode.offsetHeight;
+      const maxBottomPosition =
+        listTokensNode.scrollTop + listTokensNode.offsetHeight;
       const heightRange = maxBottomPosition - bottomPosition;
       if (heightRange < 0) {
         listTokensNode.scroll(0, listTokensNode.scrollTop - heightRange);
@@ -186,6 +204,4 @@ export class TokensAllInputComponent implements OnInit {
       }
     });
   }
-
 }
-

@@ -1,30 +1,123 @@
-<form #startForm="ngForm" class="index-start-form">
+<form #startForm="ngForm" class="index-start-form" (submit)="createContract()">
+  <div
+    class="index-start-form__settings"
+    [ngClass]="{ hidden: !isAdvSettingsOpen }"
+  >
+    <div class="index-start-form__settings-item">
+      <div class="index-start-form__settings-item-head">closing date</div>
+      <div class="index-start-form__settings-item-content">
+        <input
+          matInput
+          [matDatepicker]="datepicker"
+          required
+          readonly
+          [(ngModel)]="datePickerDate"
+          (dateChange)="dateChange()"
+          [min]="minDate"
+          name="active_to"
+          (click)="datepicker.open()"
+          placeholder="Choose a date"
+          class="min-text index-start-form__settings-item-date"
+        />
+        <mat-datepicker #datepicker></mat-datepicker>
+        <span class="mat-datepicker-toggle" (click)="datepicker.open()">
+          <button mat-button mat-icon-button type="button">
+            <img src="./assets/images/icons/calendar.svg" />
+          </button>
+        </span>
+      </div>
+    </div>
+    <div class="index-start-form__settings-item">
+      <div class="index-start-form__settings-item-head">closing time</div>
+      <div class="index-start-form__settings-item-content">
+        <input
+          [ngxTimepicker]="picker"
+          [format]="24"
+          [min]="minTime"
+          required
+          readonly
+          (ngModelChange)="timeChange()"
+          [(ngModel)]="datePickerTime"
+          name="time"
+          class="min-text index-start-form__settings-item-time"
+          placeholder="Choose a time"
+        />
+        <ngx-material-timepicker #picker></ngx-material-timepicker>
+      </div>
+    </div>
+    <div class="index-start-form__settings-item">
+      <div class="index-start-form__settings-item-head">Public deal</div>
+      <div class="index-start-form__settings-item-content">
+        <label class="form-field_input-checkbox">
+          <input
+            type="checkbox"
+            name="public"
+            [(ngModel)]="requestData.public"
+          />
+          <span class="checkbox-text checkbox-text_on">Yes</span>
+          <span class="checkbox-text checkbox-text_off">No</span>
+          <span class="checkbox-rect"></span>
+        </label>
+      </div>
+    </div>
+  </div>
   <div class="grid-row">
     <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
       <div class="form-field">
         <label class="form-field_label">You have</label>
         <div class="form-field_input">
-
-          <input type="hidden" required
-                 [ngModel]="tokensData.base.token.address"
-                 *ngIf="!tokensData.base.token.token_short_name || tokensData.base.token.isEthereum"
-                 name="base_address">
-
-          <input type="hidden" required
-                 [ngModel]="tokensData.base.token.mywish_id"
-                 *ngIf="!tokensData.base.token.isEthereum"
-                 name="base_coin_id">
-
-          <input type="hidden" required [ngModel]="tokensData.base.amount" name="base_limit">
-
-          <app-tokens-all-input (TokenChange)="changedToken()"
-                                [setToken]="baseTokenChanger"
-                                [tokenModel]="tokensData.base"></app-tokens-all-input>
-
+          <input
+            type="hidden"
+            required
+            [ngModel]="requestData.tokens_info.base.token.address"
+            name="base_address"
+          />
+          <input
+            type="hidden"
+            required
+            [ngModel]="requestData.tokens_info.base.amount"
+            name="base_limit"
+          />
+          <app-tokens-all-input
+            (TokenChange)="changedToken('base')"
+            [blockchain]="'ethereum'"
+            [setToken]="BaseTokenCustom"
+            [tokenModel]="requestData.tokens_info.base"
+          ></app-tokens-all-input>
         </div>
-
-        <div class="form-field_description normal-font text-right">
-          <a routerLink="/trades/create-v3" class="underline-link">Use custom token</a>
+        <div
+          class="form-field_description normal-font text-right form-field_description-show"
+        >
+          <span (click)="openedCustomTokens.base = !openedCustomTokens.base">{{
+            openedCustomTokens.base ? 'Cancel' : 'Use custom token'
+          }}</span>
+          <div *ngIf="openedCustomTokens.base">
+            <div class="form-field_input">
+              <input
+                type="text"
+                placeholder="Token Contract Address"
+                appEthTokenValidator
+                class="min-text"
+                required
+                pattern="0x[0-9a-fA-F]{40}"
+                #baseCustomToken="ngModel"
+                [ngModelOptions]="{ standalone: true }"
+                (TokenResolve)="setCustomToken('base', $event)"
+                [(ngModel)]="customTokens.base.address"
+              />
+            </div>
+            <div class="form-field_input">
+              <button
+                class="btn btn-blue btn-min btn-for-field width-100"
+                type="button"
+                [disabled]="!baseCustomToken.valid"
+                (click)="addCustomToken('base')"
+              >
+                <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
+                <span>Add</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -32,63 +125,103 @@
       <div class="form-field">
         <label class="form-field_label">You want to get</label>
         <div class="form-field_input">
-          <input type="hidden" required
-                 [ngModel]="tokensData.quote.token.address"
-                 *ngIf="!tokensData.quote.token.token_short_name || tokensData.quote.token.isEthereum"
-                 name="quote_address">
+          <input
+            type="hidden"
+            required
+            [ngModel]="requestData.tokens_info.quote.token.address"
+            name="quote_address"
+          />
+          <input
+            type="hidden"
+            required
+            [ngModel]="requestData.tokens_info.quote.amount"
+            name="quote_limit"
+          />
 
-          <input type="hidden" required
-                 [ngModel]="tokensData.quote.token.mywish_id"
-                 *ngIf="!tokensData.quote.token.isEthereum"
-                 name="quote_coin_id">
-
-          <input type="hidden" required [ngModel]="tokensData.quote.amount" name="quote_limit">
-
-          <app-tokens-all-input (TokenChange)="changedToken()"
-                                [setToken]="quoteTokenChanger"
-                                [tokenModel]="tokensData.quote"></app-tokens-all-input>
+          <app-tokens-all-input
+            (TokenChange)="changedToken('quote')"
+            [blockchain]="'ethereum'"
+            [setToken]="QuoteTokenCustom"
+            [tokenModel]="requestData.tokens_info.quote"
+          ></app-tokens-all-input>
         </div>
-        <div class="form-field_description">
-          <span *ngIf="startForm.valid">
-            Rate:
-            {{checkRate() | bigNumberFormat : 0 : true : false : 4}}
-            {{tokensData.base.token.token_short_name}} / 1 {{tokensData.quote.token.token_short_name}}
-          </span>&nbsp;
+        <div
+          class="form-field_description normal-font text-right form-field_description-show"
+        >
+          <span
+            (click)="openedCustomTokens.quote = !openedCustomTokens.quote"
+            >{{
+              openedCustomTokens.quote ? 'Cancel' : 'Use custom token'
+            }}</span
+          >
+          <div *ngIf="openedCustomTokens.quote">
+            <div class="form-field_input">
+              <input
+                placeholder="Token Contract Address"
+                type="text"
+                appEthTokenValidator
+                class="min-text"
+                [ngModelOptions]="{ standalone: true }"
+                #quoteCustomToken="ngModel"
+                (TokenResolve)="setCustomToken('quote', $event)"
+                [(ngModel)]="customTokens.quote.address"
+              />
+            </div>
+            <div class="form-field_input">
+              <button
+                class="btn btn-blue btn-min btn-for-field width-100"
+                type="button"
+                [disabled]="!quoteCustomToken.valid"
+                (click)="addCustomToken('quote')"
+              >
+                <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
+                <span>Add</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1">
-      <div class="form-field">
+      <div class="form-field form-field_btn">
         <label class="form-field_label">&nbsp;</label>
-        <a class="btn btn-yellow width-100" routerLink="create-v3">
-          <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+        <button class="btn btn-blue width-100">
+          <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
           <span>
             Create trade
           </span>
-        </a>
+        </button>
+      </div>
+      <div
+        class="form-field_description normal-font normal-font--visible text-right"
+      >
+        <span
+          class="underline-link underline-link_btn"
+          (click)="toogleAdvSettings()"
+          >{{ isAdvSettingsOpen ? 'Cancel' : 'Advanced Settings' }}</span
+        >
       </div>
     </div>
   </div>
 
   <!--<div class="form-field">-->
-    <!--<a class="btn btn-white-opacity width-100 white-border"-->
-       <!--*ngIf="-->
-       <!--(!tokensData.base.token.address || tokensData.base.token.isEthereum) &&-->
-       <!--(!tokensData.quote.token.address || tokensData.quote.token.isEthereum)"-->
-       <!--routerLink="create">-->
-      <!--<img class="arrow" src="./assets/images/buttons/arrow_w.svg">-->
-      <!--<span>-->
-        <!--Create Private SWAP-->
-      <!--</span>-->
-    <!--</a>-->
+  <!--<a class="btn btn-white-opacity width-100 white-border"-->
+  <!--*ngIf="-->
+  <!--(!tokensData.base.token.address || tokensData.base.token.isEthereum) &&-->
+  <!--(!tokensData.quote.token.address || tokensData.quote.token.isEthereum)"-->
+  <!--routerLink="create">-->
+  <!--<img class="arrow" src="./assets/images/buttons/arrow_w.svg">-->
+  <!--<span>-->
+  <!--Create Private SWAP-->
+  <!--</span>-->
+  <!--</a>-->
   <!--</div>-->
 </form>
 
-<div class="personal-swap-info">
+<!-- <div class="personal-swap-info">
   <a routerLink="/trades/create">I need an individual SWAP</a>
   <img class="personal-swap-info_ico" src="./assets/images/icons/help.svg">
   <div class="personal-swap-info_tooltip">
     A single smart contract created for the trade which guarantees anonymity and security
   </div>
-</div>
-
+</div> -->

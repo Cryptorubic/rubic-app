@@ -1,58 +1,79 @@
-<input type="text" placeholder="Enter Amount"
-       #amountField
-       [required]="true"
-       [appBigNumber]="{
-          decimals: 8,
-          min: 1
-       }"
-       name="amountField"
-       [tabindex]="visibleInput ? '-1' : ''"
-       (ngModelChange)="TokenChange.emit(tokenModel)"
-       [(ngModel)]="tokenModel.amount">
+<input
+  type="text"
+  placeholder="Enter Amount"
+  #amountField
+  [required]="true"
+  [appBigNumber]="{
+    decimals: 8,
+    min: 1
+  }"
+  name="amountField"
+  [tabindex]="visibleInput ? '-1' : ''"
+  (ngModelChange)="TokenChange.emit(tokenModel)"
+  [(ngModel)]="tokenModel.amount"
+/>
 
-<button class="form-field_input__btn"
-        type="button"
-        [ngClass]="{active: visibleInput}"
-        (click)="showAutoInput()">
-
-  <span *ngIf="!(tokenModel.token.mywish_id || tokenModel.token.custom)">Choose Token</span>
-  <span *ngIf="tokenModel.token.mywish_id || tokenModel.token.custom" class="ac_res_preview">
+<button
+  class="form-field_input__btn"
+  type="button"
+  [ngClass]="{ active: visibleInput }"
+  (click)="showAutoInput()"
+>
+  <span *ngIf="!(tokenModel.token.mywish_id || tokenModel.token.custom)"
+    >Choose Token</span
+  >
+  <span
+    *ngIf="tokenModel.token.mywish_id || tokenModel.token.custom"
+    class="ac_res_preview"
+  >
     <span class="ac_res_preview_icon">
-      <img [src]="tokenModel.token.image_link || './assets/images/icons/coins/empty.svg'">
+      <img
+        [src]="
+          tokenModel.token.image_link || './assets/images/icons/coins/empty.svg'
+        "
+      />
     </span>
-    <span class="ac_res_preview_symbol">{{tokenModel.token.token_short_name}}</span>
+    <span class="ac_res_preview_symbol">{{
+      tokenModel.token.token_short_name
+    }}</span>
   </span>
 </button>
-<input type="text" placeholder="Search"
-       autocomplete="off"
-       [tabindex]="!visibleInput ? '-1' : ''"
-       name="token"
-       [(ngModel)]="tokenName"
-       #tokenField
-       (focus)="showList()"
-       (ngModelChange)="searchToken(tokenName)"
-       (keydown)="keyDownResult($event)"
-       class="form-field_input__ac_input">
+<input
+  type="text"
+  placeholder="Search"
+  autocomplete="off"
+  [tabindex]="!visibleInput ? '-1' : ''"
+  name="token"
+  [(ngModel)]="tokenName"
+  #tokenField
+  (focus)="showList()"
+  (ngModelChange)="searchToken(tokenName)"
+  (keydown)="keyDownResult($event)"
+  class="form-field_input__ac_input"
+/>
 <span class="form-field_input__ac_closer" (click)="showAutoInput()">
-  <img src="./assets/images/icons/cross.svg">
+  <img src="./assets/images/icons/cross.svg" />
 </span>
 <div class="form-field_input__ac_res">
-  <ul *ngIf="tokensList.length && listIsOpened && visibleInput"
-      (mousedown)="$event.stopPropagation(); $event.preventDefault();"
-      class="ac_res_list">
-    <li class="ac_res_list_item"
-        *ngFor="let item of tokensList; let ind = index;"
-        [ngClass]="{active: item.active}"
-        (click)="selectToken(item, ind)">
+  <ul
+    *ngIf="tokensList.length && listIsOpened && visibleInput"
+    (mousedown)="$event.stopPropagation(); $event.preventDefault()"
+    class="ac_res_list"
+  >
+    <li
+      class="ac_res_list_item"
+      *ngFor="let item of tokensList; let ind = index"
+      [ngClass]="{ active: item.active }"
+      (click)="selectToken(item, ind)"
+    >
       <span class="ac_res_list_item-content">
         <span class="ac_res_list_item-content_ico">
-          <img [src]="item.image_link">
+          <img [src]="item.image_link" />
         </span>
         <span class="ac_res_list_item-content_name">
-          {{item.token_name}} ({{item.token_short_name}})
+          {{ item.token_name }} ({{ item.token_short_name }})
         </span>
       </span>
     </li>
   </ul>
 </div>
-
