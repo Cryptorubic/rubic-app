@@ -63,13 +63,12 @@
   },
   "FOOTER": {
     "SUBSCRIPTION_FORM": {
-      "TITLE": "Keep in touch with SWAPS.NETWORK",
+      "TITLE": "Keep in touch with the latest news",
       "FIELD_PLACEHOLDER": "Enter your e-mail",
       "ASK_BUTTON": "Ask us a question"
     },
     "COPY": "Copyright"
   },
-
 
   "INDEX_PAGE": {
     "HEADER": {
@@ -803,9 +802,5 @@
       "TEXT": "If you are interested in investing",
       "BUTTON": "Contact us"
     }
-
   }
-
-
-
 }

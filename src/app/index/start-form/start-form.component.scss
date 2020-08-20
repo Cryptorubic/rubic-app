@@ -4,7 +4,22 @@
   background: linear-gradient(0deg, #ffffff, #ffffff);
 
   .btn-blue {
-    height: 62px;
+    height: 52px;
+  }
+  &__all-input input {
+    padding-top: 11px;
+    padding-bottom: 11px;
+    margin-top: -1px;
+  }
+  &__choose-token {
+    input {
+      padding-top: 11px;
+      padding-bottom: 11px;
+      margin-top: -1px;
+    }
+    .form-field_input + .form-field_input {
+      margin-left: 5px;
+    }
   }
   &__settings {
     width: fit-content;
@@ -32,6 +47,8 @@
         background: #f4f4f4;
         margin-top: 5px;
         position: relative;
+        display: flex;
+        align-items: center;
         .mat-datepicker-toggle {
           right: 0;
         }
@@ -39,6 +56,7 @@
           border: none;
           background: none;
           font-size: 16px;
+          font-family: inherit;
           line-height: 18px;
           color: #110931;
         }

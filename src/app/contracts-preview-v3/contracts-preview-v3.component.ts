@@ -33,7 +33,7 @@ export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
   styleUrls: ['../contract-preview/contract-preview.component.scss'],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
 })
-export class ContractsPreviewV3Component implements OnInit, OnDestroy {
+export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
 
   private metaMaskErrorModal: MatDialogRef<any>;
@@ -50,6 +50,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       SWAPS_V2.ABI,
       SWAPS_V2.ADDRESS,
     );
+
     this.originalContract = this.route.snapshot.data.contract;
 
     this.updatePromise = true;
@@ -103,7 +104,21 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
     this.checkCMCRate();
     this.countChecked = 0;
+    this.isAuth = false;
+    this.allowanceObj = {
+      quote: {
+        isAllowance: true,
+        isAllowancing: false,
+      },
+      base: {
+        isAllowance: true,
+        isAllowancing: false,
+      },
+    };
   }
+  public allowanceObj;
+  private token;
+  private amount;
   private countChecked: number;
 
   public metamaskError: any;
@@ -132,6 +147,7 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
 
   private currentUser: any;
 
+  public isAuth;
   public maximumInvestors;
   public rates;
   private formatNumberParams;
@@ -262,7 +278,6 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
         .call()
         .then(
           (result) => {
-            console.log(result, 'result');
             result = new BigNumber(result);
             this.contractInfo.baseRaised = result
               .div(Math.pow(10, details.tokens_info.base.token.decimals))
@@ -542,10 +557,6 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     this.getContractInfoFromBlockchain();
   }
 
-  ngOnInit() {
-    this.updateAddresses(true);
-  }
-
   public onCopied(field) {
     if (this.copiedAddresses[field]) {
       return;
@@ -569,37 +580,20 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       [details.memo_contract, token.address],
     );
 
-    const sendTransaction = (wallet) => {
+    const sendTransaction = (wallet?) => {
       return this.web3Service.sendTransaction(
         {
-          from: wallet.address,
+          from: wallet,
           to: SWAPS_V2.ADDRESS,
           data: methodSignature,
         },
-        wallet.type,
+        'metamask',
       );
     };
 
-    this.dialog.open(TransactionComponent, {
-      width: '38.65em',
-      panelClass: 'custom-dialog-container',
-      data: {
-        title: 'Refund',
-        description:
-          'You can take back your contributions at any time until the contract’s execution.\n' +
-          'Use the same address which you used for the contribution.',
-        transactions: [
-          {
-            to: SWAPS_V2.ADDRESS,
-            data: methodSignature,
-            action: sendTransaction,
-          },
-        ],
-        afterComplete: {
-          title: 'Refund completed',
-          description: '',
-        },
-      },
+    window['ethereum'].enable().then((accounts) => {
+      const address = accounts[0];
+      sendTransaction(address);
     });
   }
 
@@ -624,39 +618,21 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     const cancelTransaction = (wallet) => {
       return this.web3Service.sendTransaction(
         {
-          from: wallet.address,
+          from: wallet,
           to: SWAPS_V2.ADDRESS,
           data: cancelSignature,
         },
-        wallet.type,
+        'metamask',
       );
     };
 
-    this.dialog.open(TransactionComponent, {
-      width: '38.65em',
-      panelClass: 'custom-dialog-container',
-      data: {
-        transactions: [
-          {
-            from: this.originalContract.owner_address,
-            to: SWAPS_V2.ADDRESS,
-            data: cancelSignature,
-            action: cancelTransaction,
-            onlyOwner: details.owner_address.toLowerCase(),
-          },
-        ],
-        title: 'Cancel',
-        description:
-          'To cancel the swap you need to make the transaction from the management address',
-        afterComplete: {
-          title: 'Cancellation completed',
-          description: '',
-        },
-      },
+    window['ethereum'].enable().then((accounts) => {
+      const address = accounts[0];
+      cancelTransaction(address);
     });
   }
 
-  public openInitialisation() {
+  public initialisationTrade() {
     const details = this.originalContract;
 
     const interfaceMethod = this.web3Service.getMethodInterface(
@@ -710,40 +686,20 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       interfaceMethod,
       trxRequest,
     );
-    const sendActivateTrx = (wallet) => {
+    window['ethereum'].enable().then((accounts) => {
+      const address = accounts[0];
+      sendActivateTrx(address);
+    });
+    const sendActivateTrx = (wallet?) => {
       return this.web3Service.sendTransaction(
         {
-          from: wallet.address,
+          from: wallet,
           to: SWAPS_V2.ADDRESS,
           data: activateSignature,
         },
-        wallet.type,
+        'metamask',
       );
     };
-
-    this.dialog.open(TransactionComponent, {
-      width: '38.65em',
-      panelClass: 'custom-dialog-container',
-      data: {
-        transactions: [
-          {
-            to: SWAPS_V2.ADDRESS,
-            data: activateSignature,
-            action: sendActivateTrx,
-            onComplete: () => {
-              this.checkSwapState().then((state) => {});
-            },
-          },
-        ],
-        title: 'Initialization',
-        description:
-          'Before the contribution it’s needed to initialize the contract (once per trade)',
-        afterComplete: {
-          title: 'Initialization completed',
-          description: '',
-        },
-      },
-    });
   }
 
   private getContributeTransaction(amount, token) {
@@ -796,134 +752,24 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     };
   }
 
-  private createTransactions(amount, token) {
-    try {
-      if (isNaN(amount)) {
-        return;
-      }
-
-      const contributeData = this.getContributeTransaction(amount, token);
-      const textAmount = amount;
-
-      const approveMethod = this.web3Service.getMethodInterface('approve');
-      const approveSignature = this.web3Service.encodeFunctionCall(
-        approveMethod,
-        [
-          SWAPS_V2.ADDRESS,
-          new BigNumber(90071992.5474099)
-            .times(Math.pow(10, Math.max(contributeData.token.decimals, 7)))
-            .toString(10),
-        ],
-      );
-
-      const checkAllowance = (wallet) => {
-        return new Promise((resolve, reject) => {
-          const tokenModel = this.originalContract.tokens_info[token].token;
-          this.tokenContract = this.web3Service.getContract(
-            ERC20_TOKEN_ABI,
-            tokenModel.address,
-          );
-          this.tokenContract.methods
-            .allowance(wallet, SWAPS_V2.ADDRESS)
-            .call()
-            .then(
-              (result) => {
-                result = result ? result.toString(10) : result;
-                result = result === '0' ? null : result;
-                if (
-                  result &&
-                  new BigNumber(result).minus(amount).isPositive()
-                ) {
-                  resolve(true);
-                } else {
-                  reject(false);
-                }
-              },
-              () => {
-                reject(false);
-              },
-            );
-        });
-      };
-
-      const approveTransaction = (wallet) => {
-        return this.web3Service.sendTransaction(
-          {
-            from: wallet.address,
-            to: contributeData.token.address,
-            data: approveSignature,
-          },
-          wallet.type,
-        );
-      };
-
-      const transactionsList: any[] = [
-        {
-          title:
-            'Make the transfer of ' +
-            textAmount +
-            ' ' +
-            contributeData.token.token_short_name +
-            ' tokens to contract',
-          to: SWAPS_V2.ADDRESS,
-          data: contributeData.signature,
-          action: contributeData.action,
-          ethValue: !contributeData.token.isEther ? undefined : textAmount,
-        },
-      ];
-
-      if (!contributeData.token.isEther) {
-        transactionsList.unshift({
-          title:
-            'Authorise the contract for getting ' +
-            contributeData.token.token_short_name +
-            ' tokens',
-          to: contributeData.token.address,
-          data: approveSignature,
-          checkComplete: checkAllowance,
-          action: approveTransaction,
-        });
-      }
-
-      // this.dialog.open(TransactionComponent, {
-      //   width: '38.65em',
-      //   panelClass: 'custom-dialog-container',
-      //   data: {
-      //     transactions: transactionsList,
-      //     title: 'Contribute',
-      //     description: !contributeData.token.isEther
-      //       ? `For contribution you need to make ${transactionsList.length} transactions: authorise the contract and make the transfer`
-      //       : '',
-      //   },
-      // });
-      this.sendTransaction(
-        {
-          type: 'metamask',
-          address: this.providedAddresses.metamask
-            ? this.providedAddresses.metamask[0]
-            : false,
-        },
-        this.trxData.transactions[0],
-      );
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   public sendTransaction(wallet, transaction) {
     if (this.metamaskError) {
       switch (this.metamaskError.code) {
         case 3:
           this.getAccountsSubscriber.unsubscribe();
-          this.updateAddresses(false, (address) => {
-            this.sendTransaction(
-              {
-                type: 'metamask',
-                address,
-              },
-              transaction,
-            );
-          });
+          this.updateAddresses(
+            false,
+            (address) => {
+              this.sendTransaction(
+                {
+                  type: 'metamask',
+                  address,
+                },
+                transaction,
+              );
+            },
+            transaction,
+          );
           break;
         default:
           this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
@@ -956,11 +802,14 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
       .action(wallet)
       .then((result) => {
         transaction.confirmed = true;
+        this.isAuth = true;
       })
       .finally(() => {
+        this.allowanceObj[this.token].isAllowancing = false;
+        this.allowanceObj[this.token].isAllowance = true;
         transaction.inProgress = false;
         if (transaction.onComplete) {
-          transaction.onComplete();
+          // transaction.onComplete();
         }
       });
   }
@@ -972,73 +821,12 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     }
   }
 
-  private updateAddresses(ifEnabled?, cb?) {
-    this.getAccountsSubscriber = this.web3Service
-      .getAccounts(false, ifEnabled)
-      .subscribe(
-        (addresses: any) => {
-          this.metamaskError = false;
-          this.providedAddresses = addresses;
-          if (cb) {
-            cb(addresses.metamask[0]);
-          }
-          this.trxData.transactions.forEach((transaction) => {
-            if (
-              transaction.checkComplete &&
-              addresses.metamask &&
-              addresses.metamask[0]
-            ) {
-              transaction.checkComplete(addresses.metamask[0]).then(
-                (result) => {
-                  if (result) {
-                    transaction.confirmed = true;
-                    this.checkAllChecked();
-                  }
-                },
-                (err) => {
-                  this.checkAllChecked();
-                },
-              );
-            } else {
-              this.checkAllChecked();
-            }
-          });
-        },
-        (error) => {
-          this.metamaskError = error;
-          this.checkAllChecked(true);
-        },
-      );
-
-    return this.getAccountsSubscriber;
-  }
-
-  public sendContribute(amount, token) {
-    try {
-      const details = this.originalContract;
-
-      if (!details.isEthereum) {
-        this.openAdministratorInfo();
-        return;
-      }
-
-      if (details.contract_state === 'CREATED') {
-        this.openInitialisation();
-        return;
-      }
-
-      this.createTransactions(amount, token);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   ngOnDestroy(): void {
     if (this.updateContractTimer) {
       window.clearTimeout(this.updateContractTimer);
     }
     this.updatePromise = false;
-    this.getAccountsSubscriber.unsubscribe();
+    // this.getAccountsSubscriber.unsubscribe();
   }
 
   public openContactForm() {
@@ -1092,6 +880,203 @@ export class ContractsPreviewV3Component implements OnInit, OnDestroy {
     this.dialog.open(this.administratorContact, {
       width: '480px',
       panelClass: 'custom-dialog-container',
+    });
+  }
+
+  public sendContribute(amount, token) {
+    try {
+      this.amount = amount;
+      this.token = token;
+      const details = this.originalContract;
+
+      if (!details.isEthereum) {
+        this.openAdministratorInfo();
+        return;
+      }
+
+      if (details.contract_state === 'CREATED') {
+        this.initialisationTrade();
+        return;
+      }
+
+      this.createTransactions(amount, token);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  private checkAllowance = (wallet, token, amount) => {
+    return new Promise((resolve, reject) => {
+      const tokenModel = this.originalContract.tokens_info[token].token;
+      this.tokenContract = this.web3Service.getContract(
+        ERC20_TOKEN_ABI,
+        tokenModel.address,
+      );
+      this.tokenContract.methods
+        .allowance(wallet, SWAPS_V2.ADDRESS)
+        .call()
+        .then(
+          (result) => {
+            result = result ? result.toString(10) : result;
+            result = result === '0' ? null : result;
+            if (result && new BigNumber(result).minus(amount).isPositive()) {
+              resolve(true);
+            } else {
+              reject(false);
+            }
+          },
+          () => {
+            reject(false);
+          },
+        );
+    });
+  };
+  private createTransactions(amount, token) {
+    try {
+      if (isNaN(amount)) {
+        return;
+      }
+
+      const contributeData = this.getContributeTransaction(amount, token);
+      const textAmount = amount;
+
+      const approveMethod = this.web3Service.getMethodInterface('approve');
+      const approveSignature = this.web3Service.encodeFunctionCall(
+        approveMethod,
+        [
+          SWAPS_V2.ADDRESS,
+          new BigNumber(90071992.5474099)
+            .times(Math.pow(10, Math.max(contributeData.token.decimals, 7)))
+            .toString(10),
+        ],
+      );
+
+      const approveTransaction = (wallet) => {
+        return this.web3Service.sendTransaction(
+          {
+            from: wallet.address,
+            to: contributeData.token.address,
+            data: approveSignature,
+          },
+          wallet.type,
+        );
+      };
+      this.updateAddresses(true);
+
+      let transaction: any = {
+        title:
+          'Make the transfer of ' +
+          textAmount +
+          ' ' +
+          contributeData.token.token_short_name +
+          ' tokens to contract',
+        to: SWAPS_V2.ADDRESS,
+        data: contributeData.signature,
+        action: contributeData.action,
+        ethValue: !contributeData.token.isEther ? undefined : textAmount,
+      };
+
+      if (!contributeData.token.isEther) {
+        window['ethereum'].enable().then((accounts) => {
+          return new Promise((resolve, _) => {
+            const address = accounts[0];
+            if (!this.allowanceObj[token].isAllowance) {
+              this.allowanceObj[token].isAllowancing = true;
+            }
+            this.checkAllowance(address, token, amount)
+              .then((status) => {
+                this.createTransactionObj(transaction);
+              })
+              .catch(() => {
+                transaction = {
+                  title:
+                    'Authorise the contract for getting ' +
+                    contributeData.token.token_short_name +
+                    ' tokens',
+                  to: contributeData.token.address,
+                  data: approveSignature,
+                  checkComplete: this.checkAllowance,
+                  action: approveTransaction,
+                };
+                this.createTransactionObj(transaction);
+              });
+          });
+        });
+      } else {
+        this.createTransactionObj(transaction);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  private createTransactionObj(transaction) {
+    window['ethereum'].enable().then((accounts) => {
+      const address = accounts[0];
+      this.sendTransaction(
+        {
+          type: 'metamask',
+          address,
+        },
+        transaction,
+      );
+    });
+  }
+
+  private updateAddresses(ifEnabled?, cb?, transaction?) {
+    this.getAccountsSubscriber = this.web3Service
+      .getAccounts(false, ifEnabled)
+      .subscribe(
+        (addresses: any) => {
+          this.metamaskError = false;
+          this.providedAddresses = addresses;
+          if (cb) {
+            cb(addresses.metamask[0]);
+          }
+          if (
+            transaction.checkComplete &&
+            addresses.metamask &&
+            addresses.metamask[0]
+          ) {
+            transaction
+              .checkComplete(addresses.metamask[0], this.token, this.amount)
+              .then(
+                (result) => {
+                  if (result) {
+                    transaction.confirmed = true;
+                    this.checkAllChecked();
+                  }
+                },
+                (err) => {
+                  this.checkAllChecked();
+                },
+              );
+          } else {
+            this.checkAllChecked();
+          }
+        },
+        (error) => {
+          this.metamaskError = error;
+          this.checkAllChecked(true);
+        },
+      );
+
+    return this.getAccountsSubscriber;
+  }
+  ngOnInit() {
+    const tokens = ['base', 'quote'];
+    tokens.forEach((token) => {
+      const contributeData = this.getContributeTransaction(0, token);
+
+      window['ethereum'].enable().then((accounts) => {
+        const address = accounts[0];
+
+        if (!contributeData.token.isEther) {
+          this.checkAllowance(address, token, 0).catch(() => {
+            this.allowanceObj[token].isAllowance = false;
+          });
+        }
+      });
     });
   }
 }

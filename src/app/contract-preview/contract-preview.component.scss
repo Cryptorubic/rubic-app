@@ -164,49 +164,55 @@
   background-color: white;
   margin-bottom: 15px;
   &_filled {
-    padding: 0 0px 15px;
-    border-bottom: 1px solid #f4f4f4;
+    // padding: 0 0px 15px;
+    // border-bottom: 1px solid #f4f4f4;
     &:after {
       content: '';
       display: block;
       clear: both;
     }
     &-wrapper {
-      display: flex;
-      justify-content: space-between;
+      // display: flex;
+      // justify-content: space-between;
     }
     &__count {
       font-size: 40px;
-      font-weight: bold;
       line-height: 46px;
       color: #000;
-      padding: 12px 60px 20px;
+      padding: 2px 50px 10px 30px;
       border-bottom: 1px solid #f4f4f4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       &--right {
         text-align: right;
       }
     }
     &_item {
-      width: 48%;
+      // width: 48%;
+      display: flex;
+      align-items: center;
       &.left {
-        padding-right: 40px;
+        // padding-right: 40px;
         div {
           color: #000 !important;
           opacity: 0.5 !important;
         }
       }
       &.send {
-        color: #2873fb;
-        padding-left: 40px;
+        // color: #2873fb;
+        div {
+          opacity: 0.5;
+        }
       }
-      &:first-child {
-        text-align: left;
-        float: left;
-      }
-      &:last-child {
-        text-align: right;
-        float: right;
-      }
+      // &:first-child {
+      //   text-align: left;
+      //   float: left;
+      // }
+      // &:last-child {
+      //   text-align: right;
+      //   float: right;
+      // }
     }
     &_item.left &__text {
       color: rgba(255, 255, 255, 0.5);
@@ -215,13 +221,14 @@
       color: rgba(255, 255, 255, 0.7);
     }
     &__text {
-      margin-top: 15px;
       font-size: 12px;
       line-height: 14px;
       text-transform: uppercase;
+      min-width: 30px;
+      text-align: left;
     }
     &__complete {
-      margin-top: 3px;
+      margin-left: 6px;
       font-size: 17px;
       line-height: 20px;
 
@@ -235,12 +242,11 @@
   &_progress {
     height: 5px;
     background-color: rgba(255, 255, 255, 0.27);
-    margin: 0 -20px;
     span {
       display: block;
       height: 100%;
       float: left;
-      background-color: #fcd600;
+      background-color: #2873fb;
       transition: all linear 0.2s;
     }
   }
@@ -251,6 +257,23 @@
   line-height: 52px;
   display: flex;
   justify-content: space-between;
+  &--reverse {
+    flex-direction: row-reverse;
+    .token-info__wrapper {
+      display: flex;
+      flex-direction: row-reverse;
+    }
+    .token-info_icon {
+      margin-left: 18px;
+      margin-right: 0;
+    }
+    .token-info_texts__name {
+      text-align: right;
+    }
+    .token-info_investments__number {
+      text-align: left;
+    }
+  }
   &_icon {
     width: 52px;
     height: 52px;
@@ -286,10 +309,17 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      a:not(.new-btn):not(.btn):not(.minimal-btn) {
+        display: flex;
+        align-items: center;
+        img {
+          margin-top: -4px;
+        }
+      }
     }
   }
   &_investments {
-    line-height: 34px;
+    line-height: 36px;
     display: flex;
     flex-direction: column;
     &__number {
@@ -298,6 +328,8 @@
       vertical-align: middle;
       color: #000000;
       margin-bottom: 0px;
+      margin-top: -6px;
+      text-align: right;
     }
     &__desc {
       display: inline-block;
@@ -320,6 +352,9 @@
   }
   input {
     height: 50px;
+  }
+  .normal-text {
+    color: #000;
   }
 }
 
@@ -352,7 +387,7 @@
   position: absolute;
   left: 0;
   margin-left: -28px;
-  top: 20px;
+  top: 45px;
 }
 
 @media screen and (max-width: 680px) {

@@ -48,7 +48,7 @@
           >
             {{ states[originalContract.state].TEXT }}
           </div>
-          <div class="contract-title">SWAP {{ originalContract.name }}</div>
+          <div class="contract-title">{{ originalContract.name }}</div>
           <div class="c-preview__rate-wrapper">
             <span class="form-field_description rate-info">
               Rate:
@@ -115,9 +115,43 @@
                   <div
                     class="tokens-info-block_filled__count tokens-info-block_filled__count--right"
                   >
-                    {{ tokens.base.amount | number: '1.0-8' }}
+                    <div
+                      *ngIf="originalContract.state === 'ACTIVE'"
+                      class="tokens-info-block_filled-wrapper"
+                    >
+                      <div class="tokens-info-block_filled_item send">
+                        <div class="tokens-info-block_filled__text">
+                          Sent
+                        </div>
+                        <div
+                          class="tokens-info-block_filled__complete"
+                          *ngIf="contractInfo.baseRaised"
+                          [title]="contractInfo.baseRaised | number: '1.0-8'"
+                        >
+                          {{ contractInfo.baseRaised | number: '1.0-8' }}
+                        </div>
+                      </div>
+                      <div class="tokens-info-block_filled_item left">
+                        <div class="tokens-info-block_filled__text">
+                          Left
+                        </div>
+                        <div
+                          class="tokens-info-block_filled__complete"
+                          [title]="
+                            contractInfo.baseLeft
+                              | bigNumberFormat: tokens.base.token.decimals:true
+                          "
+                        >
+                          {{
+                            contractInfo.baseLeft
+                              | bigNumberFormat: tokens.base.token.decimals:true
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                    <span>{{ tokens.base.amount | number: '1.0-8' }}</span>
                   </div>
-
+                  <!-- 
                   <div
                     *ngIf="originalContract.state === 'ACTIVE'"
                     class="tokens-info-block_filled-wrapper"
@@ -151,7 +185,7 @@
                         }}
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <div
                   class="tokens-info-block_progress"
@@ -166,7 +200,7 @@
                   ></span>
                 </div>
 
-                <div class="token-info">
+                <div class="token-info token-info--reverse">
                   <div class="token-info__wrapper">
                     <div
                       class="token-info_icon"
@@ -203,7 +237,7 @@
                     </div>
                   </div>
 
-                  <div
+                  <!-- <div
                     class="warning-coin"
                     [ngClass]="{
                       invisible:
@@ -224,7 +258,7 @@
                     <span class="warning-coin_text">
                       Unverified. Not listed on CMC
                     </span>
-                  </div>
+                  </div> -->
 
                   <div
                     class="token-info_investments"
@@ -293,15 +327,36 @@
                             class="btn btn-blue width-100 btn-normal-weight"
                             [disabled]="
                               !baseContributeForm.valid ||
-                              contractInfo.baseLeft <= 0
+                              contractInfo.baseLeft <= 0 ||
+                              allowanceObj.base.isAllowancing
                             "
                             type="submit"
                           >
                             <img
                               class="arrow"
                               src="./assets/images/buttons/arrow_w.svg"
+                              *ngIf="!allowanceObj.base.isAllowancing"
                             />
-                            <span>Contribute</span>
+                            <img
+                              class="arrow spiner"
+                              src="./assets/images/new-index/oval.svg"
+                              *ngIf="
+                                allowanceObj.base.isAllowancing &&
+                                !allowanceObj.base.isAllowance
+                              "
+                            />
+                            <span *ngIf="!allowanceObj.base.isAllowancing">{{
+                              allowanceObj.base.isAllowance
+                                ? 'Contribute'
+                                : 'Apply token'
+                            }}</span>
+                            <span
+                              *ngIf="
+                                allowanceObj.base.isAllowancing &&
+                                !allowanceObj.base.isAllowance
+                              "
+                              >Applying token</span
+                            >
                           </button>
                         </div>
                       </div>
@@ -419,9 +474,47 @@
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    {{ tokens.quote.amount | number: '1.0-8' }}
+                    <span>{{ tokens.quote.amount | number: '1.0-8' }}</span>
+                    <div
+                      *ngIf="originalContract.state === 'ACTIVE'"
+                      class="tokens-info-block_filled-wrapper"
+                    >
+                      <div class="tokens-info-block_filled_item send">
+                        <div class="tokens-info-block_filled__text">
+                          Sent
+                        </div>
+                        <div
+                          class="tokens-info-block_filled__complete"
+                          *ngIf="contractInfo.quoteRaised"
+                          [title]="contractInfo.quoteRaised | number: '1.0-8'"
+                        >
+                          {{ contractInfo.quoteRaised | number: '1.0-8' }}
+                        </div>
+                      </div>
+                      <div class="tokens-info-block_filled_item left">
+                        <div class="tokens-info-block_filled__text">
+                          Left
+                        </div>
+                        <div
+                          class="tokens-info-block_filled__complete"
+                          [title]="
+                            contractInfo.quoteLeft
+                              | bigNumberFormat
+                                : tokens.quote.token.decimals
+                                : true
+                          "
+                        >
+                          {{
+                            contractInfo.quoteLeft
+                              | bigNumberFormat
+                                : tokens.quote.token.decimals
+                                : true
+                          }}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div
+                  <!-- <div
                     *ngIf="originalContract.state === 'ACTIVE'"
                     class="tokens-info-block_filled-wrapper"
                   >
@@ -454,7 +547,7 @@
                         }}
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <div
                   class="tokens-info-block_progress"
@@ -505,7 +598,7 @@
                       </div>
                     </div>
                   </div>
-                  <div
+                  <!-- <div
                     class="warning-coin"
                     [ngClass]="{
                       invisible:
@@ -526,7 +619,7 @@
                     <span class="warning-coin_text">
                       Unverified. Not listed on CMC
                     </span>
-                  </div>
+                  </div> -->
 
                   <div
                     class="token-info_investments"
@@ -593,14 +686,37 @@
                         <div class="form-field">
                           <button
                             class="btn btn-blue width-100 btn-normal-weight"
-                            [disabled]="!quoteContributeForm.valid"
+                            [disabled]="
+                              !quoteContributeForm.valid ||
+                              allowanceObj.quote.isAllowancing
+                            "
                             type="submit"
                           >
                             <img
                               class="arrow"
                               src="./assets/images/buttons/arrow_w.svg"
+                              *ngIf="!allowanceObj.quote.isAllowancing"
                             />
-                            <span>Contribute</span>
+                            <img
+                              class="arrow spiner"
+                              src="./assets/images/new-index/oval.svg"
+                              *ngIf="
+                                allowanceObj.quote.isAllowancing &&
+                                !allowanceObj.quote.isAllowance
+                              "
+                            />
+                            <span *ngIf="!allowanceObj.quote.isAllowancing">{{
+                              allowanceObj.quote.isAllowance
+                                ? 'Contribute'
+                                : 'Apply token'
+                            }}</span>
+                            <span
+                              *ngIf="
+                                allowanceObj.quote.isAllowancing &&
+                                !allowanceObj.quote.isAllowance
+                              "
+                              >Applying token</span
+                            >
                           </button>
                         </div>
                       </div>
@@ -788,7 +904,7 @@
                       >
                         {{ originalContract.owner_address }}
                       </a>
-
+                      &nbsp;&nbsp;
                       <button
                         type="button"
                         class="copy-btn"
@@ -873,7 +989,7 @@
             >
               <button
                 type="button"
-                class="btn btn-yellow btn-min btn-normal-weight btn-auto"
+                class="btn btn-blue btn-min btn-normal-weight btn-auto"
                 (click)="sendCancel()"
               >
                 <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
@@ -958,24 +1074,32 @@
 <ng-template #metaMaskError>
   <div class="dialog-block">
     <div class="dialog-block__content">
-
-      <button class="dialog-closer" (click)="closeMetaMaskError()" type="button">
-        <img src="./assets/images/icons/cross-w.svg">
+      <button
+        class="dialog-closer"
+        (click)="closeMetaMaskError()"
+        type="button"
+      >
+        <img src="./assets/images/icons/cross-w.svg" />
       </button>
 
       <div class="transaction-title">
         Error
       </div>
 
-      <div class="transaction-description"
-           [innerHTML]="this.metamaskError.msg"></div>
+      <div
+        class="transaction-description"
+        [innerHTML]="this.metamaskError.msg"
+      ></div>
 
       <div class="alert-window-buttons text-center">
-        <button class="btn btn-yellow btn-auto btn-min" (click)="closeMetaMaskError()" type="button">
+        <button
+          class="btn btn-yellow btn-auto btn-min"
+          (click)="closeMetaMaskError()"
+          type="button"
+        >
           <span>&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</span>
         </button>
       </div>
-
     </div>
   </div>
 </ng-template>

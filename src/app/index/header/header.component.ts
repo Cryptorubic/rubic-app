@@ -5,13 +5,15 @@ import {
   PLATFORM_ID,
   TemplateRef,
   ViewChild,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../../services/user/user.service';
+import { Web3Service } from '../../services/web3/web3.service';
 import { UserInterface } from '../../services/user/user.interface';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { NavigationStart, Router } from '@angular/router';
-import { Web3Service } from '../../services/web3/web3.service';
 
 @Component({
   selector: 'app-header',
@@ -25,21 +27,20 @@ export class HeaderComponent implements OnInit {
 
   public openedMenu;
   public userMenuOpened;
-  public userMetamaskAddr;
 
   @ViewChild('logoutConfirmation') logoutConfirmation: TemplateRef<any>;
   @ViewChild('headerPage') headerPage;
 
   private logoutConfirmationModal: MatDialogRef<any>;
   private logoutProgress: boolean;
+  @Output() changedSocialState = new EventEmitter<string>();
 
   constructor(
     @Inject(PLATFORM_ID) private platformId,
     private userService: UserService,
     private dialog: MatDialog,
     private router: Router,
-
-    private Web3Service: Web3Service,
+    private web3Service: Web3Service,
   ) {
     this.currentUser = this.userService.getUserModel();
     this.userService
@@ -72,21 +73,65 @@ export class HeaderComponent implements OnInit {
       }
     });
   }
+  private socialFormData: {
+    network: string;
+    data: any;
+  };
+  public socialAuthError;
 
   public openAuth() {
-    this.userService.openAuthForm().then(
-      () => {},
-      () => {},
+    // this.userService.openAuthForm().then(
+    //   () => {},
+    //   () => {},
+    // );
+    // this.socialComponent.MetamaskAuth();
+  }
+  private sendMetaMaskRequest(data) {
+    this.socialFormData = {
+      network: 'mm',
+      data,
+    };
+    this.userService.metaMaskAuth(data).then(
+      (result) => {
+        console.log(result);
+      },
+      (error) => {
+        this.onTotpError(error);
+      },
     );
   }
-
-  public authMetamask() {
-    this.Web3Service.authMetamask();
+  private onTotpError(error) {
+    switch (error.status) {
+      case 403:
+        this.socialAuthError = error.error.detail;
+        switch (error.error.detail) {
+          case '1032':
+          case '1033':
+            this.changedSocialState.emit(error.error.detail);
+            break;
+        }
+        break;
+    }
   }
 
-  ngOnInit() {
-    this.userMetamaskAddr = this.Web3Service.getUserAddress();
+  public MetamaskAuth() {
+    if (window['ethereum'] && window['ethereum'].isMetaMask) {
+      window['ethereum'].enable().then((accounts) => {
+        const address = accounts[0];
+        this.userService.getMetaMaskAuthMsg().then((msg) => {
+          this.web3Service.getSignedMetaMaskMsg(msg, address).then((signed) => {
+            this.sendMetaMaskRequest({
+              address,
+              msg,
+              signed_msg: signed,
+            });
+          });
+        });
+      });
+    }
   }
+
+  ngOnInit() {}
 
   public openLogoutConfirmation() {
     this.logoutConfirmationModal = this.dialog.open(this.logoutConfirmation, {

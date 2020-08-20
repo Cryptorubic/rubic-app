@@ -124,6 +124,9 @@ html {
 .yellow-text {
   color: #fcd600;
 }
+.blue-text {
+  color: #2873fb;
+}
 
 @media screen and (max-width: 1240px) {
   .app-content-block {
@@ -339,7 +342,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 
 .title-section {
   font-size: 28px;
-  color: #ffffff;
+  color: #000;
   font-weight: bold;
   margin-bottom: 1em;
 }
@@ -383,7 +386,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   border: none;
   border-left: 5px solid;
   outline: none;
-  font-family: 'Poppins', sans-serif;
+  // font-family: 'Poppins', sans-serif;
+  font-family: inherit;
   font-size: 18px;
   color: #fff;
   text-decoration: none;
@@ -406,6 +410,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   &:disabled {
     opacity: 0.6;
     cursor: default;
+  }
+  .spiner {
+    width: 20px;
   }
   .arrow {
     margin-right: 10px;
@@ -437,6 +444,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     margin: 5px 0;
   }
   &-transparent {
+    color: #000;
     &:not(.with-bg) {
       background-color: transparent;
     }
@@ -564,6 +572,20 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     text-transform: uppercase;
     display: block;
     opacity: 0.85;
+    &--rate {
+      display: flex;
+      justify-content: flex-end;
+      width: max-content;
+      height: 13px;
+      width: 100%;
+      position: relative;
+      .form-notice {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: max-content;
+      }
+    }
     &.transparent {
       color: rgba(255, 255, 255, 0.25);
     }
@@ -578,7 +600,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       display: inline-block;
       position: relative;
       background-color: #fff;
-      padding: 4px;
+      padding: 8px 4px;
       line-height: 28px;
       overflow: hidden;
       &:after {
@@ -600,7 +622,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
         height: 28px;
         position: absolute;
         left: 4px;
-        top: 4px;
+        top: 8px;
         display: block;
         transition: 0.1s linear;
         background: url(./assets/images/icons/no.svg) center center no-repeat
@@ -645,7 +667,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       font-size: 24px !important;
       background: #f4f4f4;
       border: 1px solid #ffffff;
-      padding: 15.5px 10px 15.5px 22px;
+      padding: 11px 10px 11px 22px;
+      margin-top: -1px;
 
       &:not(.min-text),
       &.max-placeholder {
@@ -740,7 +763,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       opacity: 0;
       transition: all linear 0.2s;
       font-size: 16px;
-      padding: 0;
+      padding: 0 !important;
     }
     &__ac_closer {
       transition: all linear 0.2s;
@@ -767,6 +790,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     &__btn.active + &__ac_input {
       width: 50%;
       opacity: 1;
+      padding: 11px 10px 11px 22px !important;
       top: 0;
       border-left: 1px solid #d8d8d8 !important;
     }

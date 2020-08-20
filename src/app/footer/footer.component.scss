@@ -3,9 +3,9 @@ footer {
 }
 
 .subscribe {
-  padding-top: 50px;
-  color: #fff;
-  padding-bottom: 120px;
+  padding-top: 10px;
+  color: #000;
+  padding-bottom: 50px;
   .page-content__title {
     font-size: 28px;
     letter-spacing: 0;
@@ -13,7 +13,6 @@ footer {
     font-weight: bold;
   }
 }
-
 
 .subscribe__row {
   margin-bottom: 60px;
@@ -43,17 +42,19 @@ footer {
     transition: all linear 0.1s;
     transform: scale(1);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-    width: 75px;
+    width: 50px;
     max-width: 70%;
   }
   span {
     float: left;
-    width: 8%;
+    width: 7%;
     text-align: left;
   }
   a {
     outline: 0 none;
-    &:hover, &:focus, &:active {
+    &:hover,
+    &:focus,
+    &:active {
       img {
         transform: scale(1.05);
         //box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
@@ -69,7 +70,7 @@ footer {
 .copyright {
   text-align: center;
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(0, 0, 0, 0.5);
   padding: 30px 0;
 }
 

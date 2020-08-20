@@ -63,7 +63,7 @@
   </div>
   <div class="grid-row">
     <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
-      <div class="form-field">
+      <div class="form-field index-start-form__all-input">
         <label class="form-field_label">You have</label>
         <div class="form-field_input">
           <input
@@ -91,7 +91,10 @@
           <span (click)="openedCustomTokens.base = !openedCustomTokens.base">{{
             openedCustomTokens.base ? 'Cancel' : 'Use custom token'
           }}</span>
-          <div *ngIf="openedCustomTokens.base">
+          <div
+            *ngIf="openedCustomTokens.base"
+            class="index-start-form__choose-token"
+          >
             <div class="form-field_input">
               <input
                 type="text"
@@ -106,7 +109,7 @@
                 [(ngModel)]="customTokens.base.address"
               />
             </div>
-            <div class="form-field_input">
+            <div class="form-field_input index-start-form__choose-token__btn">
               <button
                 class="btn btn-blue btn-min btn-for-field width-100"
                 type="button"
@@ -154,7 +157,10 @@
               openedCustomTokens.quote ? 'Cancel' : 'Use custom token'
             }}</span
           >
-          <div *ngIf="openedCustomTokens.quote">
+          <div
+            *ngIf="openedCustomTokens.quote"
+            class="index-start-form__choose-token"
+          >
             <div class="form-field_input">
               <input
                 placeholder="Token Contract Address"
@@ -183,12 +189,47 @@
       </div>
     </div>
     <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1">
-      <div class="form-field form-field_btn">
-        <label class="form-field_label">&nbsp;</label>
-        <button class="btn btn-blue width-100">
-          <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
+      <div class="form-field form-field_btn form-field_btn--rate">
+        <label class="form-field_label form-field_label--rate">
+          <div class="form-notice" *ngIf="cmcRate && cmcRate.isMessage">
+            <div class="form-notice_text">
+              Your rate is
+              <b
+                ><span class="blue-text">{{ cmcRate.change }}%</span>
+                <span class="blue-text">
+                  {{ cmcRate.isLower ? 'lower' : 'higher' }}</span
+                >
+              </b>
+              than
+              <a href="https://coinmarketcap.com/" target="_blank"
+                >coinmarketcap</a
+              >
+              rate.
+            </div>
+          </div>
+        </label>
+        <button
+          class="btn btn-blue width-100"
+          [disabled]="
+            !requestData.tokens_info.base.amount ||
+            !requestData.tokens_info.quote.amount ||
+            !this.requestData.tokens_info.base.token.address ||
+            !this.requestData.tokens_info.quote.token.address ||
+            isCreatingContract
+          "
+        >
+          <img
+            class="arrow"
+            src="./assets/images/buttons/arrow_w.svg"
+            *ngIf="!isCreatingContract"
+          />
+          <img
+            class="arrow spiner"
+            src="./assets/images/new-index/oval.svg"
+            *ngIf="isCreatingContract"
+          />
           <span>
-            Create trade
+            {{ isCreatingContract ? 'Creating Trade' : 'Create Trade' }}
           </span>
         </button>
       </div>
@@ -198,7 +239,9 @@
         <span
           class="underline-link underline-link_btn"
           (click)="toogleAdvSettings()"
-          >{{ isAdvSettingsOpen ? 'Cancel' : 'Advanced Settings' }}</span
+          >{{
+            isAdvSettingsOpen ? 'Close Settings' : 'Advanced Settings'
+          }}</span
         >
       </div>
     </div>

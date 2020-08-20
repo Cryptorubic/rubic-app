@@ -7,7 +7,9 @@ import {
   ViewChild,
   Output,
 } from '@angular/core';
+import { SWAPS_V2 } from '../../contract-form-all/contract-v2-details';
 import { Web3Service } from '../../services/web3/web3.service';
+import { UserService } from '../../services/user/user.service';
 import BigNumber from 'bignumber.js';
 import { Router } from '@angular/router';
 
@@ -26,6 +28,7 @@ import {
 } from '@angular/material-moment-adapter';
 
 import { MODE } from '../../app-routing.module';
+export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
 
 export interface IContractDetails {
   base_address?: string;
@@ -90,11 +93,27 @@ export const MY_FORMATS = {
 export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
+  @Output() changedSocialState = new EventEmitter<string>();
+  public currentUser;
+  public cmcRate: {
+    change?: number;
+    isMessage?: boolean;
+    isLower?: boolean;
+    direct: number;
+    revert: number;
+  };
+  private CMCRates;
   constructor(
     protected contractsService: ContractsService,
     private web3Service: Web3Service,
     protected router: Router,
+    private userService: UserService,
   ) {
+    this.CMCRates = {};
+    this.currentUser = this.userService.getUserModel();
+    this.userService.getCurrentUser().subscribe((userProfile: any) => {
+      this.currentUser = userProfile;
+    });
     this.sendData = {
       contract_type: 20,
       network: 1,
@@ -125,7 +144,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.datePickerDate = startDateTime.add(1, 'week');
     this.datePickerTime = `${startDateTime.hour()}:${startDateTime.minutes()}`;
+    this.isCreatingContract = false;
   }
+  private socialFormData: {
+    network: string;
+    data: any;
+  };
+  public isCreatingContract;
+  public socialAuthError;
   public tokensData;
   public isAdvSettingsOpen;
 
@@ -153,7 +179,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   @ViewChild('startForm') public startForm;
 
-  public changedToken() {
+  public isChangedToken(...args) {
     localStorage.setItem(
       'form_new_values',
       JSON.stringify({ tokens_info: this.tokensData }),
@@ -174,6 +200,54 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     return !revert
       ? baseCoinAmount.div(quoteCoinAmount).dp(4)
       : quoteCoinAmount.div(baseCoinAmount).dp(4);
+  }
+
+  public getRate(revert?): string {
+    if (
+      !(
+        this.requestData.tokens_info.base.amount &&
+        this.requestData.tokens_info.quote.amount
+      )
+    ) {
+      return '0';
+    }
+
+    const baseCoinAmount = new BigNumber(
+      this.requestData.tokens_info.base.amount,
+    );
+    const quoteCoinAmount = new BigNumber(
+      this.requestData.tokens_info.quote.amount,
+    );
+    return (!revert
+      ? baseCoinAmount.div(quoteCoinAmount)
+      : quoteCoinAmount.div(baseCoinAmount)
+    ).toString();
+  }
+  public changedToken(token?) {
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+    if (
+      this.requestData.tokens_info.base.amount &&
+      this.requestData.tokens_info.quote.amount &&
+      baseCoin.cmc_id &&
+      quoteCoin.cmc_id &&
+      baseCoin.cmc_id > 0 &&
+      quoteCoin.cmc_id > 0
+    ) {
+      this.cmcRate = {
+        revert: new BigNumber(baseCoin.rate).div(quoteCoin.rate).toNumber(),
+        direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber(),
+      };
+      const rate = parseFloat(this.getRate(true));
+      const rateChanges = parseFloat(this.getRate()) - this.cmcRate.direct;
+      this.cmcRate.isMessage = true;
+      this.cmcRate.isLower = rateChanges > 0;
+      this.cmcRate.change = Math.round(
+        Math.abs(-(rate / this.cmcRate.revert - 1)) * 100,
+      );
+    } else {
+      this.cmcRate = undefined;
+    }
   }
 
   public toogleShowCustomToken(type) {
@@ -202,11 +276,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   ngOnDestroy(): void {
-    this.changedToken();
+    this.isChangedToken();
   }
 
   ngAfterContentInit() {
-    console.log(this.startForm);
     setTimeout(() => {
       this.setFullDateTime();
     });
@@ -256,6 +329,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public createContract() {
+    console.log(this.requestData);
     this.sendData.stop_date = this.startForm.value.active_to
       .clone()
       .utc()
@@ -279,9 +353,58 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.sendData.notification = false;
 
-    console.log(this.sendData, this.requestData);
+    if (this.currentUser.is_ghost) {
+      this.MetamaskAuth();
+    } else {
+      this.isCreatingContract = true;
+      this.sendContractData(this.sendData);
+    }
+  }
 
-    this.sendContractData(this.sendData);
+  private sendMetaMaskRequest(data) {
+    this.socialFormData = {
+      network: 'mm',
+      data,
+    };
+    this.userService.metaMaskAuth(data).then(
+      (result) => {
+        console.log(result);
+        this.sendContractData(this.sendData);
+      },
+      (error) => {
+        this.onTotpError(error);
+      },
+    );
+  }
+  private onTotpError(error) {
+    switch (error.status) {
+      case 403:
+        this.socialAuthError = error.error.detail;
+        switch (error.error.detail) {
+          case '1032':
+          case '1033':
+            this.changedSocialState.emit(error.error.detail);
+            break;
+        }
+        break;
+    }
+  }
+
+  public MetamaskAuth() {
+    if (window['ethereum'] && window['ethereum'].isMetaMask) {
+      window['ethereum'].enable().then((accounts) => {
+        const address = accounts[0];
+        this.userService.getMetaMaskAuthMsg().then((msg) => {
+          this.web3Service.getSignedMetaMaskMsg(msg, address).then((signed) => {
+            this.sendMetaMaskRequest({
+              address,
+              msg,
+              signed_msg: signed,
+            });
+          });
+        });
+      });
+    }
   }
 
   protected sendContractData(data) {
@@ -297,7 +420,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.contractsService[data.id ? 'updateSWAP3' : 'createSWAP3'](data)
       .then(
         (result) => {
-          this.contractIsCreated(result);
+          this.initialisationTrade(result);
         },
         (err) => {
           console.log(err);
@@ -310,5 +433,82 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   private contractIsCreated(contract) {
     this.router.navigate(['/public-v3/' + contract.unique_link]);
+  }
+
+  public initialisationTrade(originalContract) {
+    const details = originalContract;
+
+    const interfaceMethod = this.web3Service.getMethodInterface(
+      'createOrder',
+      SWAPS_V2.ABI,
+    );
+
+    let baseDecimalsTimes = 1;
+    let quoteDecimalsTimes = 1;
+
+    if (new Date(originalContract.created_date).getTime() > FIX_TIME) {
+      baseDecimalsTimes = Math.pow(
+        10,
+        this.requestData.tokens_info.base.token.decimals,
+      );
+      quoteDecimalsTimes = Math.pow(
+        10,
+        this.requestData.tokens_info.quote.token.decimals,
+      );
+    }
+
+    const trxRequest = [
+      details.memo_contract,
+      this.requestData.tokens_info.base.token.address,
+      this.requestData.tokens_info.quote.token.address,
+      new BigNumber(details.base_limit || '0')
+        .times(baseDecimalsTimes)
+        .toString(10),
+      new BigNumber(details.quote_limit || '0')
+        .times(quoteDecimalsTimes)
+        .toString(10),
+      Math.round(new Date(details.stop_date).getTime() / 1000).toString(10),
+      details.whitelist
+        ? details.whitelist_address
+        : '0x0000000000000000000000000000000000000000',
+      new BigNumber(details.min_base_wei || '0')
+        .times(baseDecimalsTimes)
+        .toString(10),
+      new BigNumber(details.min_quote_wei || '0')
+        .times(quoteDecimalsTimes)
+        .toString(10),
+      details.broker_fee
+        ? details.broker_fee_address
+        : '0x0000000000000000000000000000000000000000',
+      details.broker_fee
+        ? new BigNumber(details.broker_fee_base).times(100).toString(10)
+        : '0',
+      details.broker_fee
+        ? new BigNumber(details.broker_fee_quote).times(100).toString(10)
+        : '0',
+    ];
+
+    const activateSignature = this.web3Service.encodeFunctionCall(
+      interfaceMethod,
+      trxRequest,
+    );
+    window['ethereum'].enable().then((accounts) => {
+      const address = accounts[0];
+      sendActivateTrx(address);
+    });
+    const sendActivateTrx = (wallet?) => {
+      return this.web3Service
+        .sendTransaction(
+          {
+            from: wallet,
+            to: SWAPS_V2.ADDRESS,
+            data: activateSignature,
+          },
+          'metamask',
+        )
+        .then(() => {
+          this.contractIsCreated(originalContract);
+        });
+    };
   }
 }

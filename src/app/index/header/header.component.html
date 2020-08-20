@@ -33,7 +33,11 @@
           <!--class="header-link">Contribute</a>-->
           <!--</li>-->
           <li class="header-menu_list_item">
-            <a fragment="features" routerLink="/trades" class="header-link"
+            <a
+              fragment="features"
+              href="https://mywish.io/"
+              class="header-link"
+              target="_blank"
               >Features</a
             >
           </li>
@@ -49,10 +53,14 @@
           <li class="header-menu_list_item">
             <a routerLink="faq" class="header-link">Faq</a>
           </li>
-          <li class="header-menu_list_item" *ngIf="currentUser.is_ghost">
-            <span (click)="authMetamask()" class="header-link">{{
-              !userMetamaskAddr ? 'Approve Metamask' : userMetamaskAddr
-            }}</span>
+          <li
+            class="header-menu_list_item header-menu_list_item--login btn btn-blue btn-min btn-normal-weight btn-auto"
+            *ngIf="currentUser.is_ghost"
+          >
+            <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
+            <span (click)="MetamaskAuth()" class="header-link"
+              >Login by MetaMask</span
+            >
           </li>
           <li
             class="header-menu_list_item with-sublist"
@@ -113,11 +121,7 @@
             ><br />
           </div>
           <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <button
-              class="btn btn-yellow btn-min"
-              mat-dialog-close
-              type="button"
-            >
+            <button class="btn btn-blue btn-min" mat-dialog-close type="button">
               <span
                 >&nbsp;&nbsp;&nbsp;{{
                   'NO' | translate

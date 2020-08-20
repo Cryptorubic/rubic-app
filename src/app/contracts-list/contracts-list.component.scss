@@ -7,8 +7,9 @@
 .my-contracts-title {
   font-size: 25px;
   line-height: 30px;
-  color: #fff;
+  color: #000;
   font-weight: bold;
+  margin-bottom: 30px;
 }
 .my-contracts-empty {
   margin-top: 20px;
@@ -41,15 +42,15 @@
     overflow: auto;
   }
   &_body {
-    overflow:  auto;
+    overflow: auto;
   }
   &_empty {
     font-size: 15px;
     line-height: 18px;
     text-align: center;
-    color: #FFFFFF;
+    color: #ffffff;
     a {
-      color: #FCD600!important;
+      color: #fcd600 !important;
     }
   }
   &_row {
@@ -65,13 +66,13 @@
       line-height: 70px;
       margin: 2px 2px 1px 1px;
       padding: 0 14px;
-      background-color: rgba(0, 0, 0, 0.1);
-      color: #fff;
+      background-color: #ffffff;
+      color: #000;
     }
   }
-  &_row:hover &_cell {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
+  // &_row:hover &_cell {
+  //   background-color: rgba(255, 255, 255, 0.8);
+  // }
   &_head {
     &-row {
       position: relative;
@@ -79,10 +80,10 @@
       margin: 0;
     }
     &-cell {
-      color: #fff;
+      color: #000;
       padding: 0;
       &__sortable {
-        color: #FCD600;
+        color: #2873fb;
         .sort-btn {
           background-image: url(/assets/images/icons/table/sort-2.svg);
         }
@@ -98,7 +99,7 @@
       line-height: 38px;
       margin: 2px 2px 1px 1px;
       padding: 10px;
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: white;
       text-align: left;
     }
   }

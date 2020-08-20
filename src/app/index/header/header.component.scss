@@ -7,9 +7,9 @@ header {
   right: 0;
   transition: all linear 0.2s;
   z-index: 10;
-  background-color: rgba(0,0,0,0.8);
+  background-color: white;
   &.scrolled {
-    background: rgba(56, 67, 84, 0.9);
+    background-сщдщк: rgba(255, 255, 255, 0.8);
     padding-top: 13px;
     padding-bottom: 10px;
     z-index: 10;
@@ -44,10 +44,28 @@ header {
     list-style-type: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    align-items: center;
     &_item {
       display: inline-block;
       line-height: 13px;
       padding: 0;
+      &--login {
+        display: flex;
+        align-items: center;
+        color: #fff !important;
+        text-transform: none;
+        margin-top: -4px;
+        img {
+          margin-left: 16px;
+        }
+        .header-link {
+          color: #fff !important;
+          font-size: 14px;
+          line-height: 14px;
+          padding-left: 0 !important;
+        }
+      }
       &.with-sublist {
         position: relative;
         visibility: visible;
@@ -76,7 +94,7 @@ header {
         }
       }
       .header-link {
-        color: inherit;
+        color: #000;
         text-decoration: none;
         display: inline-block;
         vertical-align: middle;
@@ -102,26 +120,31 @@ header {
   position: absolute;
   right: 5px;
   border-radius: 3px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background: linear-gradient(0deg, #ffffff, #ffffff);
+  border: 1px solid #f4f4f4;
   display: none;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.05);
   .opened-list & {
     display: block;
   }
   &_item {
+    & + & {
+      .sublist-link {
+        border-top: 1px solid #f4f4f4;
+      }
+    }
   }
   .sublist-link {
-    color: #fff;
+    color: #000;
     padding: 15px 25px;
     display: block;
     cursor: pointer;
     &:hover {
-      background-color: rgba(0, 0, 0, 0.2);
-      color: #FCD600;
+      color: #2873fb;
       text-decoration: none;
     }
   }
 }
-
 
 .navbar-toggle {
   background: none;
@@ -148,8 +171,8 @@ header {
     margin-left: 10px;
   }
   header {
-    padding-top: 0!important;
-    padding-bottom: 0!important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
     .app-content-block {
       padding-top: 3vw;
       padding-bottom: 3vw;
@@ -204,4 +227,3 @@ header {
     display: block;
   }
 }
-

@@ -46,15 +46,15 @@
     clear: both;
   }
   &_body {
-    overflow:  auto;
+    overflow: auto;
   }
   &_empty {
     font-size: 15px;
     line-height: 18px;
     text-align: center;
-    color: #FFFFFF;
+    color: #ffffff;
     a {
-      color: #FCD600!important;
+      color: #fcd600 !important;
     }
   }
   &_row {
@@ -70,10 +70,11 @@
       line-height: 70px;
       margin: 2px 2px 1px 1px;
       padding: 0 14px;
-      background-color: rgba(0, 0, 0, 0.1);
-      color: #fff;
+      background-color: white;
+      color: #000;
       position: relative;
-      &.is-profit, &.no-profit {
+      &.is-profit,
+      &.no-profit {
         background-repeat: no-repeat;
         background-position: calc(100% - 15px) center;
       }
@@ -88,9 +89,9 @@
       margin-right: 0;
     }
   }
-  &_row:hover &_cell {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
+  // &_row:hover &_cell {
+  //   background-color: rgba(255, 255, 255, 0.8);
+  // }
   &_head {
     &-row {
       position: relative;
@@ -98,10 +99,10 @@
       margin: 0;
     }
     &-cell {
-      color: #fff;
+      color: #110931;
       padding: 0;
       &__sortable {
-        color: #FCD600;
+        color: #2873fb;
         .sort-btn {
           background-image: url(/assets/images/icons/table/sort-2.svg);
         }
@@ -117,15 +118,13 @@
       line-height: 38px;
       margin: 2px 2px 1px 1px;
       padding: 10px;
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: white;
       text-align: left;
     }
   }
 }
 
-
 @media screen and (max-width: 420px) {
-
   .public-swaps {
     &_table-toggler {
       float: none;
@@ -163,9 +162,9 @@
       right: auto;
     }
     &.partiality-filled {
-      color: #FCD600;
+      color: #fcd600;
       span {
-        border-color: #FCD600;
+        border-color: #fcd600;
       }
     }
   }
@@ -188,7 +187,7 @@
         font-weight: bold;
       }
       &_rate {
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(0, 0, 0, 0.5);
         font-size: 14px;
         margin-top: 14px;
         display: block;
@@ -202,7 +201,8 @@
           height: 50px;
           position: absolute;
           left: -41px;
-          background: url(/assets/images/icons/ch_03.svg) center center/24px no-repeat;
+          background: url(/assets/images/icons/ch_03.svg) center center/24px
+            no-repeat;
           top: 50%;
           margin-top: -25px;
         }
@@ -235,7 +235,7 @@
   &_btn {
     width: 28px;
     height: 38px;
-    background: center center no-repeat rgba(0, 0, 0, 0.2);
+    background: center center no-repeat rgba(0, 0, 0, 0.05);
     text-align: center;
     padding: 0;
     border: 0 none;
@@ -251,9 +251,9 @@
       transform: rotate(90deg);
       width: 18px;
       height: 18px;
-      background: url(/assets/images/icons/table/sort-1.svg) center center no-repeat;
+      background: url(/assets/images/icons/table/sort-1.svg) center center
+        no-repeat;
     }
-
   }
 }
 .coin-filter {
@@ -270,7 +270,8 @@
 .titles-coins {
   font-size: 15px;
   line-height: 18px;
-  color: #FFFFFF;
+  color: #110931;
+  opacity: 0.25;
   display: block;
   float: left;
   width: 50%;
@@ -304,7 +305,7 @@
     width: 100% !important;
     display: block;
     height: 100%;
-    background-color: #FFD900;
+    background-color: #2873fb;
     transition: linear 0.2s;
   }
 }
@@ -325,26 +326,23 @@
     -ms-animation-name: refreshProgressElement;
     -webkit-animation-name: refreshProgressElement;
     -moz-animation-name: refreshProgressElement;
-    animation-duration:1s;
-    -o-animation-duration:1s;
-    -ms-animation-duration:1s;
-    -webkit-animation-duration:1s;
-    -moz-animation-duration:1s;
-    animation-iteration-count:infinite;
-    -o-animation-iteration-count:infinite;
-    -ms-animation-iteration-count:infinite;
-    -webkit-animation-iteration-count:infinite;
-    -moz-animation-iteration-count:infinite;
-    animation-direction:normal;
-    -o-animation-direction:normal;
-    -ms-animation-direction:normal;
-    -webkit-animation-direction:normal;
-    -moz-animation-direction:normal;
+    animation-duration: 1s;
+    -o-animation-duration: 1s;
+    -ms-animation-duration: 1s;
+    -webkit-animation-duration: 1s;
+    -moz-animation-duration: 1s;
+    animation-iteration-count: infinite;
+    -o-animation-iteration-count: infinite;
+    -ms-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    animation-direction: normal;
+    -o-animation-direction: normal;
+    -ms-animation-direction: normal;
+    -webkit-animation-direction: normal;
+    -moz-animation-direction: normal;
   }
 }
-
-
-
 
 @keyframes refreshProgressElement {
   0% {
@@ -394,7 +392,7 @@
 @media screen and (max-width: 1240px) {
   .public-swaps {
     .btn {
-      width: 90vw!important;
+      width: 90vw !important;
       position: absolute;
       left: 0;
       margin-left: 5vw;
@@ -403,15 +401,12 @@
   }
 }
 
-
 @media screen and (max-width: 480px) {
   .active-swaps_container {
     .btn-yellow {
       margin-bottom: 30px;
       width: 100%;
-      float: none!important;
+      float: none !important;
     }
   }
 }
-
-
