@@ -25,7 +25,7 @@ const PROJECTS = [
     logo: './assets/images/new-partners/rsk.svg',
   },
   {
-    link: 'https://www.coss.io',
+    link: 'https://www.okex.com/',
     logo: './assets/images/new-partners/coss.svg',
   },
   {

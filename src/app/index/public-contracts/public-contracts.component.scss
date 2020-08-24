@@ -21,28 +21,29 @@
       span {
         cursor: pointer;
         display: block;
-        padding: 12px 35px 9px;
+        padding: 12px 29px 9px;
         font-size: 15px;
         line-height: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: rgba(255, 255, 255, 0.25);
+        border: 1px solid #2873fb;
+        background: white;
+        color: black;
         margin-bottom: 5px;
       }
       &.active span {
-        background-color: rgba(107, 107, 107, 0.2);
+        background-color: #2873fb;
         color: #fff;
-        border-color: rgba(107, 107, 107, 0.2);
+        border-color: #2873fb;
       }
       & + li {
         span {
           border-left-width: 0;
+          padding: 12px 34px 9px;
         }
       }
     }
   }
   &_table-container {
     overflow: auto;
-    padding-bottom: 110px;
     clear: both;
   }
   &_body {

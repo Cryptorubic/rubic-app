@@ -115,10 +115,7 @@
                   <div
                     class="tokens-info-block_filled__count tokens-info-block_filled__count--right"
                   >
-                    <div
-                      *ngIf="originalContract.state === 'ACTIVE'"
-                      class="tokens-info-block_filled-wrapper"
-                    >
+                    <div class="tokens-info-block_filled-wrapper">
                       <div class="tokens-info-block_filled_item send">
                         <div class="tokens-info-block_filled__text">
                           Sent
@@ -151,41 +148,6 @@
                     </div>
                     <span>{{ tokens.base.amount | number: '1.0-8' }}</span>
                   </div>
-                  <!-- 
-                  <div
-                    *ngIf="originalContract.state === 'ACTIVE'"
-                    class="tokens-info-block_filled-wrapper"
-                  >
-                    <div class="tokens-info-block_filled_item send">
-                      <div class="tokens-info-block_filled__text">
-                        <b>Sent</b>
-                      </div>
-                      <div
-                        class="tokens-info-block_filled__complete"
-                        *ngIf="contractInfo.baseRaised"
-                        [title]="contractInfo.baseRaised | number: '1.0-8'"
-                      >
-                        <b>{{ contractInfo.baseRaised | number: '1.0-8' }}</b>
-                      </div>
-                    </div>
-                    <div class="tokens-info-block_filled_item left">
-                      <div class="tokens-info-block_filled__text">
-                        Left
-                      </div>
-                      <div
-                        class="tokens-info-block_filled__complete"
-                        [title]="
-                          contractInfo.baseLeft
-                            | bigNumberFormat: tokens.base.token.decimals:true
-                        "
-                      >
-                        {{
-                          contractInfo.baseLeft
-                            | bigNumberFormat: tokens.base.token.decimals:true
-                        }}
-                      </div>
-                    </div>
-                  </div> -->
                 </div>
                 <div
                   class="tokens-info-block_progress"
@@ -262,10 +224,7 @@
 
                   <div
                     class="token-info_investments"
-                    *ngIf="
-                      originalContract.state === 'ACTIVE' &&
-                      originalContract.isEthereum
-                    "
+                    *ngIf="originalContract.isEthereum"
                   >
                     <div class="token-info_investments__number">
                       {{ contractInfo.baseInvestors }}/{{ maximumInvestors }}
@@ -340,22 +299,15 @@
                             <img
                               class="arrow spiner"
                               src="./assets/images/new-index/oval.svg"
-                              *ngIf="
-                                allowanceObj.base.isAllowancing &&
-                                !allowanceObj.base.isAllowance
-                              "
+                              *ngIf="allowanceObj.base.isAllowancing"
                             />
                             <span *ngIf="!allowanceObj.base.isAllowancing">{{
                               allowanceObj.base.isAllowance
                                 ? 'Contribute'
-                                : 'Apply token'
+                                : 'Approve'
                             }}</span>
-                            <span
-                              *ngIf="
-                                allowanceObj.base.isAllowancing &&
-                                !allowanceObj.base.isAllowance
-                              "
-                              >Applying token</span
+                            <span *ngIf="allowanceObj.base.isAllowancing"
+                              >Waiting</span
                             >
                           </button>
                         </div>
@@ -451,7 +403,9 @@
 
               <div
                 *ngIf="
-                  originalContract.isEthereum && contractInfo.baseRaised * 1 > 0
+                  originalContract.isEthereum &&
+                  contractInfo.baseRaised * 1 > 0 &&
+                  originalContract.state === 'ACTIVE'
                 "
               >
                 <button
@@ -475,10 +429,7 @@
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
                     <span>{{ tokens.quote.amount | number: '1.0-8' }}</span>
-                    <div
-                      *ngIf="originalContract.state === 'ACTIVE'"
-                      class="tokens-info-block_filled-wrapper"
-                    >
+                    <div class="tokens-info-block_filled-wrapper">
                       <div class="tokens-info-block_filled_item send">
                         <div class="tokens-info-block_filled__text">
                           Sent
@@ -514,40 +465,6 @@
                       </div>
                     </div>
                   </div>
-                  <!-- <div
-                    *ngIf="originalContract.state === 'ACTIVE'"
-                    class="tokens-info-block_filled-wrapper"
-                  >
-                    <div class="tokens-info-block_filled_item send">
-                      <div class="tokens-info-block_filled__text">
-                        <b>Sent</b>
-                      </div>
-                      <div
-                        class="tokens-info-block_filled__complete"
-                        *ngIf="contractInfo.quoteRaised"
-                        [title]="contractInfo.quoteRaised | number: '1.0-8'"
-                      >
-                        <b>{{ contractInfo.quoteRaised | number: '1.0-8' }}</b>
-                      </div>
-                    </div>
-                    <div class="tokens-info-block_filled_item left">
-                      <div class="tokens-info-block_filled__text">
-                        Left
-                      </div>
-                      <div
-                        class="tokens-info-block_filled__complete"
-                        [title]="
-                          contractInfo.quoteLeft
-                            | bigNumberFormat: tokens.quote.token.decimals:true
-                        "
-                      >
-                        {{
-                          contractInfo.quoteLeft
-                            | bigNumberFormat: tokens.quote.token.decimals:true
-                        }}
-                      </div>
-                    </div>
-                  </div> -->
                 </div>
                 <div
                   class="tokens-info-block_progress"
@@ -623,10 +540,7 @@
 
                   <div
                     class="token-info_investments"
-                    *ngIf="
-                      originalContract.state === 'ACTIVE' &&
-                      originalContract.isEthereum
-                    "
+                    *ngIf="originalContract.isEthereum"
                   >
                     <div class="token-info_investments__number">
                       {{ contractInfo.quoteInvestors }}/{{ maximumInvestors }}
@@ -700,22 +614,15 @@
                             <img
                               class="arrow spiner"
                               src="./assets/images/new-index/oval.svg"
-                              *ngIf="
-                                allowanceObj.quote.isAllowancing &&
-                                !allowanceObj.quote.isAllowance
-                              "
+                              *ngIf="allowanceObj.quote.isAllowancing"
                             />
                             <span *ngIf="!allowanceObj.quote.isAllowancing">{{
                               allowanceObj.quote.isAllowance
                                 ? 'Contribute'
-                                : 'Apply token'
+                                : 'Approve'
                             }}</span>
-                            <span
-                              *ngIf="
-                                allowanceObj.quote.isAllowancing &&
-                                !allowanceObj.quote.isAllowance
-                              "
-                              >Applying token</span
+                            <span *ngIf="allowanceObj.quote.isAllowancing"
+                              >Waiting</span
                             >
                           </button>
                         </div>
@@ -806,7 +713,9 @@
 
               <div
                 *ngIf="
-                  originalContract.isEthereum && contractInfo.baseRaised * 1 > 0
+                  originalContract.isEthereum &&
+                  contractInfo.baseRaised * 1 > 0 &&
+                  originalContract.state === 'ACTIVE'
                 "
               >
                 <button

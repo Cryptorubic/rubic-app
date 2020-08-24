@@ -109,10 +109,12 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       quote: {
         isAllowance: true,
         isAllowancing: false,
+        isContributing: false,
       },
       base: {
         isAllowance: true,
         isAllowancing: false,
+        isContributing: false,
       },
     };
   }
@@ -975,13 +977,13 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         action: contributeData.action,
         ethValue: !contributeData.token.isEther ? undefined : textAmount,
       };
+      this.allowanceObj[token].isAllowancing = true;
 
       if (!contributeData.token.isEther) {
         window['ethereum'].enable().then((accounts) => {
           return new Promise((resolve, _) => {
             const address = accounts[0];
             if (!this.allowanceObj[token].isAllowance) {
-              this.allowanceObj[token].isAllowancing = true;
             }
             this.checkAllowance(address, token, amount)
               .then((status) => {
