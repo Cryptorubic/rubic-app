@@ -22,19 +22,99 @@
     }
   }
   &__settings {
-    width: fit-content;
-    position: absolute;
-    right: 0;
-    top: calc(100% + 3px);
-    padding: 25px 30px;
+    padding: 20px 0;
     background: linear-gradient(0deg, #ffffff, #ffffff);
-    display: flex;
+    border-top: 2px solid #f4f4f4;
     &.hidden {
       display: none;
+    }
+    &-title {
+      font-size: 14px;
+      line-height: 16px;
+      color: #2873fb;
+      font-family: inherit;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    &-block {
+      padding: 0 20px 25px;
+      & + & {
+        padding-top: 25px;
+        padding-bottom: 0;
+        border-top: 2px solid #f4f4f4;
+      }
+      &-wrapper {
+        display: flex;
+      }
+      .form-field_input {
+        input {
+          padding: 6px 10px 6px 12px;
+          font-size: 16px !important;
+          &::placeholder {
+            font-size: 16px !important;
+          }
+        }
+      }
     }
     &-item {
       & + & {
         margin-left: 30px;
+      }
+      &-checkbox {
+        margin-top: 20px;
+        &.active {
+          padding: 20px;
+          margin-top: 10px;
+          background: linear-gradient(0deg, #f4f4f4, #f4f4f4);
+          .form-field_input-checkbox {
+            background: #ffffff;
+          }
+        }
+        .form-field_input {
+          width: 620px;
+          input {
+            background: inherit;
+            background: #fff;
+          }
+        }
+        &-head {
+          display: flex;
+          align-items: center;
+        }
+        &-text {
+          margin: 19px 0 0;
+        }
+        &-input {
+          margin: 30px 0;
+        }
+        &-percent {
+          display: flex;
+          .form-field + .form-field {
+            margin-left: 145px;
+          }
+          .form-field > span {
+            font-size: 16px;
+            line-height: 27px;
+            font-family: inherit;
+            opacity: 0.5;
+            margin-top: 10px;
+            display: block;
+            width: 100px;
+            text-align: center;
+          }
+          .form-field_input {
+            display: flex;
+            align-items: center;
+            width: 115px;
+            span {
+              font-size: 16px;
+              line-height: 27px;
+              font-family: inherit;
+              opacity: 0.5;
+              margin-left: 5px;
+            }
+          }
+        }
       }
       &-head {
         font-size: 12px;
@@ -42,12 +122,24 @@
         color: #000000;
         text-transform: uppercase;
         opacity: 0.5;
+        margin-bottom: 5px;
+        display: block;
+        width: max-content;
+      }
+      &-wrapper {
+        display: flex;
+        .form-field {
+          width: 300px;
+          margin-bottom: 0;
+        }
+        .form-field + .form-field {
+          margin-left: 20px;
+        }
       }
       &-content {
-        background: #f4f4f4;
-        margin-top: 5px;
         position: relative;
         display: flex;
+        width: fit-content;
         align-items: center;
         .mat-datepicker-toggle {
           right: 0;
@@ -59,6 +151,10 @@
           font-family: inherit;
           line-height: 18px;
           color: #110931;
+        }
+        input,
+        label {
+          background: #f4f4f4 !important;
         }
         .form-field_input-checkbox {
           background: none;

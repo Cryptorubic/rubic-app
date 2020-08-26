@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   AfterContentInit,
+  TemplateRef,
   ViewChild,
   Output,
 } from '@angular/core';
@@ -21,6 +22,7 @@ import {
   MAT_DATE_LOCALE,
   MatDatepicker,
   MatDialog,
+  MatDialogRef,
 } from '@angular/material';
 import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
@@ -37,6 +39,7 @@ export interface IContractDetails {
   quote_limit?: string;
   stop_date?: number;
   owner_address?: string;
+  permanent?: boolean | false;
   public?: boolean | undefined;
   unique_link?: string;
   unique_link_url?: string;
@@ -91,6 +94,7 @@ export const MY_FORMATS = {
   ],
 })
 export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
+  @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
   @Output() changedSocialState = new EventEmitter<string>();
@@ -103,7 +107,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     revert: number;
   };
   private CMCRates;
+  private metaMaskErrorModal: MatDialogRef<any>;
   constructor(
+    private dialog: MatDialog,
     protected contractsService: ContractsService,
     private web3Service: Web3Service,
     protected router: Router,
@@ -150,6 +156,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     network: string;
     data: any;
   };
+  public metamaskError: any;
   public isCreatingContract;
   public socialAuthError;
   public tokensData;
@@ -178,6 +185,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public formIsSending: boolean;
 
   @ViewChild('startForm') public startForm;
+  @ViewChild('advSettings') public advSettings;
 
   public isChangedToken(...args) {
     localStorage.setItem(
@@ -258,6 +266,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   ngOnInit() {
+    this.updateAddresses(true);
     const draftData = localStorage.getItem('form_new_values');
     this.requestData = draftData
       ? JSON.parse(draftData)
@@ -273,6 +282,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         };
 
     this.requestData.public = true;
+    this.requestData.permanent = false;
+
+    this.requestData.broker_fee_base = 0.1;
+    this.requestData.broker_fee_quote = 0.1;
   }
 
   ngOnDestroy(): void {
@@ -285,7 +298,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     });
   }
   public dateChange() {
-    if (this.startForm.value.active_to.isSame(this.minDate, 'day')) {
+    if (this.advSettings.value.active_to.isSame(this.minDate, 'day')) {
       this.minTime = `${this.minDate.hour()}:${this.minDate.minutes()}`;
     } else {
       this.minTime = null;
@@ -297,22 +310,57 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   private setFullDateTime() {
-    const times = this.startForm.value.time.split(':');
-    this.startForm.value.active_to.hour(times[0]);
-    this.startForm.value.active_to.minutes(times[1]);
+    const times = this.advSettings.value.time.split(':');
+    this.advSettings.value.active_to.hour(times[0]);
+    this.advSettings.value.active_to.minutes(times[1]);
 
-    if (this.startForm.value.active_to.isBefore(this.minDate)) {
-      this.startForm.controls.time.setErrors({ incorrect: true });
+    if (this.advSettings.value.active_to.isBefore(this.minDate)) {
+      this.advSettings.controls.time.setErrors({ incorrect: true });
     } else {
-      this.startForm.controls.time.setErrors(null);
+      this.advSettings.controls.time.setErrors(null);
     }
     setTimeout(() => {
-      this.requestData.stop_date = this.startForm.value.active_to.clone();
+      this.requestData.stop_date = this.advSettings.value.active_to.clone();
     });
   }
 
+  get isEthereumSwap() {
+    return (
+      this.requestData.tokens_info.quote.token.isEthereum &&
+      this.requestData.tokens_info.base.token.isEthereum
+    );
+  }
   public setCustomToken(field, token) {
     this.customTokens[field] = token;
+  }
+  get baseBrokerFee() {
+    if (
+      !(
+        this.requestData.tokens_info.base.amount &&
+        this.requestData.broker_fee_base
+      )
+    ) {
+      return 0;
+    }
+    return new BigNumber(this.requestData.tokens_info.base.amount)
+      .div(100)
+      .times(this.requestData.broker_fee_base)
+      .toString();
+  }
+
+  get quoteBrokerFee() {
+    if (
+      !(
+        this.requestData.tokens_info.quote.amount &&
+        this.requestData.broker_fee_quote
+      )
+    ) {
+      return 0;
+    }
+    return new BigNumber(this.requestData.tokens_info.quote.amount)
+      .div(100)
+      .times(this.requestData.broker_fee_quote)
+      .toString();
   }
 
   public addCustomToken(name) {
@@ -329,8 +377,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public createContract() {
-    console.log(this.requestData);
-    this.sendData.stop_date = this.startForm.value.active_to
+    if (this.metamaskError) {
+      this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+        width: '480px',
+        panelClass: 'custom-dialog-container',
+      });
+      return;
+    }
+    this.sendData.stop_date = this.advSettings.value.active_to
       .clone()
       .utc()
       .format('YYYY-MM-DD HH:mm');
@@ -340,7 +394,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.sendData.name =
       this.requestData.tokens_info.base.token.token_short_name +
-      '<>' +
+      ' <> ' +
       this.requestData.tokens_info.quote.token.token_short_name;
 
     this.sendData.base_address = this.requestData.tokens_info.base.token.address;
@@ -350,8 +404,23 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.sendData.quote_coin_id = this.requestData.tokens_info.quote.token.mywish_id;
 
     this.sendData.public = this.requestData.public;
+    this.sendData.permanent = this.requestData.permanent;
 
     this.sendData.notification = false;
+
+    this.sendData.min_quote_wei = this.requestData.min_quote_wei || '0';
+    this.sendData.min_base_wei = this.requestData.min_base_wei || '0';
+
+    if (!this.requestData.broker_fee) {
+      this.requestData.broker_fee_address = null;
+      this.requestData.broker_fee_base = null;
+      this.requestData.broker_fee_quote = null;
+    } else {
+      this.sendData.broker_fee_address = this.requestData.broker_fee_address;
+      this.sendData.broker_fee = this.requestData.broker_fee;
+      this.sendData.broker_fee_base = this.requestData.broker_fee_base;
+      this.sendData.broker_fee_quote = this.requestData.broker_fee_quote;
+    }
 
     if (this.currentUser.is_ghost) {
       this.MetamaskAuth();
@@ -368,7 +437,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     };
     this.userService.metaMaskAuth(data).then(
       (result) => {
-        console.log(result);
         this.sendContractData(this.sendData);
       },
       (error) => {
@@ -510,5 +578,16 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           this.contractIsCreated(originalContract);
         });
     };
+  }
+  public closeMetaMaskError() {
+    this.metaMaskErrorModal.close();
+  }
+  private updateAddresses(ifEnabled?) {
+    this.web3Service.getAccounts(false, ifEnabled).subscribe(
+      () => {},
+      (error) => {
+        this.metamaskError = error;
+      },
+    );
   }
 }

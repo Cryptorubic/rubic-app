@@ -1,266 +1,466 @@
-<form #startForm="ngForm" class="index-start-form" (submit)="createContract()">
-  <div
-    class="index-start-form__settings"
-    [ngClass]="{ hidden: !isAdvSettingsOpen }"
+<div class="index-start-form__wrapper">
+  <form
+    #startForm="ngForm"
+    class="index-start-form"
+    (submit)="createContract()"
   >
-    <div class="index-start-form__settings-item">
-      <div class="index-start-form__settings-item-head">closing date</div>
-      <div class="index-start-form__settings-item-content">
-        <input
-          matInput
-          [matDatepicker]="datepicker"
-          required
-          readonly
-          [(ngModel)]="datePickerDate"
-          (dateChange)="dateChange()"
-          [min]="minDate"
-          name="active_to"
-          (click)="datepicker.open()"
-          placeholder="Choose a date"
-          class="min-text index-start-form__settings-item-date"
-        />
-        <mat-datepicker #datepicker></mat-datepicker>
-        <span class="mat-datepicker-toggle" (click)="datepicker.open()">
-          <button mat-button mat-icon-button type="button">
-            <img src="./assets/images/icons/calendar.svg" />
-          </button>
-        </span>
-      </div>
-    </div>
-    <div class="index-start-form__settings-item">
-      <div class="index-start-form__settings-item-head">closing time</div>
-      <div class="index-start-form__settings-item-content">
-        <input
-          [ngxTimepicker]="picker"
-          [format]="24"
-          [min]="minTime"
-          required
-          readonly
-          (ngModelChange)="timeChange()"
-          [(ngModel)]="datePickerTime"
-          name="time"
-          class="min-text index-start-form__settings-item-time"
-          placeholder="Choose a time"
-        />
-        <ngx-material-timepicker #picker></ngx-material-timepicker>
-      </div>
-    </div>
-    <div class="index-start-form__settings-item">
-      <div class="index-start-form__settings-item-head">Public deal</div>
-      <div class="index-start-form__settings-item-content">
-        <label class="form-field_input-checkbox">
-          <input
-            type="checkbox"
-            name="public"
-            [(ngModel)]="requestData.public"
-          />
-          <span class="checkbox-text checkbox-text_on">Yes</span>
-          <span class="checkbox-text checkbox-text_off">No</span>
-          <span class="checkbox-rect"></span>
-        </label>
-      </div>
-    </div>
-  </div>
-  <div class="grid-row">
-    <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
-      <div class="form-field index-start-form__all-input">
-        <label class="form-field_label">You have</label>
-        <div class="form-field_input">
-          <input
-            type="hidden"
-            required
-            [ngModel]="requestData.tokens_info.base.token.address"
-            name="base_address"
-          />
-          <input
-            type="hidden"
-            required
-            [ngModel]="requestData.tokens_info.base.amount"
-            name="base_limit"
-          />
-          <app-tokens-all-input
-            (TokenChange)="changedToken('base')"
-            [blockchain]="'ethereum'"
-            [setToken]="BaseTokenCustom"
-            [tokenModel]="requestData.tokens_info.base"
-          ></app-tokens-all-input>
-        </div>
-        <div
-          class="form-field_description normal-font text-right form-field_description-show"
-        >
-          <span (click)="openedCustomTokens.base = !openedCustomTokens.base">{{
-            openedCustomTokens.base ? 'Cancel' : 'Use custom token'
-          }}</span>
+    <div class="grid-row">
+      <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
+        <div class="form-field index-start-form__all-input">
+          <label class="form-field_label">You have</label>
+          <div class="form-field_input">
+            <input
+              type="hidden"
+              required
+              [ngModel]="requestData.tokens_info.base.token.address"
+              name="base_address"
+            />
+            <input
+              type="hidden"
+              required
+              [ngModel]="requestData.tokens_info.base.amount"
+              name="base_limit"
+            />
+            <app-tokens-all-input
+              (TokenChange)="changedToken('base')"
+              [blockchain]="'ethereum'"
+              [setToken]="BaseTokenCustom"
+              [tokenModel]="requestData.tokens_info.base"
+            ></app-tokens-all-input>
+          </div>
           <div
-            *ngIf="openedCustomTokens.base"
-            class="index-start-form__choose-token"
+            class="form-field_description normal-font text-right form-field_description-show"
           >
-            <div class="form-field_input">
-              <input
-                type="text"
-                placeholder="Token Contract Address"
-                appEthTokenValidator
-                class="min-text"
-                required
-                pattern="0x[0-9a-fA-F]{40}"
-                #baseCustomToken="ngModel"
-                [ngModelOptions]="{ standalone: true }"
-                (TokenResolve)="setCustomToken('base', $event)"
-                [(ngModel)]="customTokens.base.address"
-              />
-            </div>
-            <div class="form-field_input index-start-form__choose-token__btn">
-              <button
-                class="btn btn-blue btn-min btn-for-field width-100"
-                type="button"
-                [disabled]="!baseCustomToken.valid"
-                (click)="addCustomToken('base')"
-              >
-                <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
-                <span>Add</span>
-              </button>
+            <span
+              (click)="openedCustomTokens.base = !openedCustomTokens.base"
+              >{{
+                openedCustomTokens.base ? 'Cancel' : 'Use custom token'
+              }}</span
+            >
+            <div
+              *ngIf="openedCustomTokens.base"
+              class="index-start-form__choose-token"
+            >
+              <div class="form-field_input">
+                <input
+                  type="text"
+                  placeholder="Token Contract Address"
+                  appEthTokenValidator
+                  class="min-text"
+                  required
+                  pattern="0x[0-9a-fA-F]{40}"
+                  #baseCustomToken="ngModel"
+                  autocomplete="on"
+                  [ngModelOptions]="{ standalone: true }"
+                  (TokenResolve)="setCustomToken('base', $event)"
+                  [(ngModel)]="customTokens.base.address"
+                />
+              </div>
+              <div class="form-field_input index-start-form__choose-token__btn">
+                <button
+                  class="btn btn-blue btn-min btn-for-field width-100"
+                  type="button"
+                  [disabled]="!baseCustomToken.valid"
+                  (click)="addCustomToken('base')"
+                >
+                  <img
+                    class="arrow"
+                    src="./assets/images/buttons/arrow_w.svg"
+                  />
+                  <span>Add</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
-      <div class="form-field">
-        <label class="form-field_label">You want to get</label>
-        <div class="form-field_input">
-          <input
-            type="hidden"
-            required
-            [ngModel]="requestData.tokens_info.quote.token.address"
-            name="quote_address"
-          />
-          <input
-            type="hidden"
-            required
-            [ngModel]="requestData.tokens_info.quote.amount"
-            name="quote_limit"
-          />
+      <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
+        <div class="form-field">
+          <label class="form-field_label">You want to get</label>
+          <div class="form-field_input">
+            <input
+              type="hidden"
+              required
+              [ngModel]="requestData.tokens_info.quote.token.address"
+              name="quote_address"
+            />
+            <input
+              type="hidden"
+              required
+              [ngModel]="requestData.tokens_info.quote.amount"
+              name="quote_limit"
+            />
 
-          <app-tokens-all-input
-            (TokenChange)="changedToken('quote')"
-            [blockchain]="'ethereum'"
-            [setToken]="QuoteTokenCustom"
-            [tokenModel]="requestData.tokens_info.quote"
-          ></app-tokens-all-input>
+            <app-tokens-all-input
+              (TokenChange)="changedToken('quote')"
+              [blockchain]="'ethereum'"
+              [setToken]="QuoteTokenCustom"
+              [tokenModel]="requestData.tokens_info.quote"
+            ></app-tokens-all-input>
+          </div>
+          <div
+            class="form-field_description normal-font text-right form-field_description-show"
+          >
+            <span
+              (click)="openedCustomTokens.quote = !openedCustomTokens.quote"
+              >{{
+                openedCustomTokens.quote ? 'Cancel' : 'Use custom token'
+              }}</span
+            >
+            <div
+              *ngIf="openedCustomTokens.quote"
+              class="index-start-form__choose-token"
+            >
+              <div class="form-field_input">
+                <input
+                  placeholder="Token Contract Address"
+                  type="text"
+                  appEthTokenValidator
+                  class="min-text"
+                  [ngModelOptions]="{ standalone: true }"
+                  #quoteCustomToken="ngModel"
+                  (TokenResolve)="setCustomToken('quote', $event)"
+                  [(ngModel)]="customTokens.quote.address"
+                />
+              </div>
+              <div class="form-field_input">
+                <button
+                  class="btn btn-blue btn-min btn-for-field width-100"
+                  type="button"
+                  [disabled]="!quoteCustomToken.valid"
+                  (click)="addCustomToken('quote')"
+                >
+                  <img
+                    class="arrow"
+                    src="./assets/images/buttons/arrow_w.svg"
+                  />
+                  <span>Add</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1">
+        <div class="form-field form-field_btn form-field_btn--rate">
+          <label class="form-field_label form-field_label--rate">
+            <div class="form-notice" *ngIf="cmcRate && cmcRate.isMessage">
+              <div class="form-notice_text">
+                Your rate is
+                <b
+                  ><span class="blue-text">{{ cmcRate.change }}%</span>
+                  <span class="blue-text">
+                    {{ cmcRate.isLower ? 'lower' : 'higher' }}</span
+                  >
+                </b>
+                than
+                <a href="https://coinmarketcap.com/" target="_blank"
+                  >coinmarketcap</a
+                >
+                rate.
+              </div>
+            </div>
+          </label>
+          <button
+            class="btn btn-blue width-100"
+            [disabled]="
+              !requestData.tokens_info.base.amount ||
+              !requestData.tokens_info.quote.amount ||
+              !this.requestData.tokens_info.base.token.address ||
+              !this.requestData.tokens_info.quote.token.address ||
+              isCreatingContract
+            "
+          >
+            <img
+              class="arrow"
+              src="./assets/images/buttons/arrow_w.svg"
+              *ngIf="!isCreatingContract"
+            />
+            <img
+              class="arrow spiner"
+              src="./assets/images/new-index/oval.svg"
+              *ngIf="isCreatingContract"
+            />
+            <span>
+              {{ isCreatingContract ? 'Creating Trade' : 'Create Trade' }}
+            </span>
+          </button>
         </div>
         <div
-          class="form-field_description normal-font text-right form-field_description-show"
+          class="form-field_description normal-font normal-font--visible text-right"
         >
           <span
-            (click)="openedCustomTokens.quote = !openedCustomTokens.quote"
+            class="underline-link underline-link_btn"
+            (click)="toogleAdvSettings()"
             >{{
-              openedCustomTokens.quote ? 'Cancel' : 'Use custom token'
+              isAdvSettingsOpen ? 'Close Settings' : 'Advanced Settings'
             }}</span
           >
-          <div
-            *ngIf="openedCustomTokens.quote"
-            class="index-start-form__choose-token"
-          >
-            <div class="form-field_input">
-              <input
-                placeholder="Token Contract Address"
-                type="text"
-                appEthTokenValidator
-                class="min-text"
-                [ngModelOptions]="{ standalone: true }"
-                #quoteCustomToken="ngModel"
-                (TokenResolve)="setCustomToken('quote', $event)"
-                [(ngModel)]="customTokens.quote.address"
-              />
-            </div>
-            <div class="form-field_input">
-              <button
-                class="btn btn-blue btn-min btn-for-field width-100"
-                type="button"
-                [disabled]="!quoteCustomToken.valid"
-                (click)="addCustomToken('quote')"
-              >
-                <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
-                <span>Add</span>
+        </div>
+      </div>
+    </div>
+  </form>
+  <form
+    class="index-start-form__settings"
+    [ngClass]="{ hidden: !isAdvSettingsOpen }"
+    #advSettings="ngForm"
+  >
+    <div class="index-start-form__settings-block">
+      <div class="index-start-form__settings-title">Advanced Settings</div>
+      <div class="index-start-form__settings-block-wrapper">
+        <div class="index-start-form__settings-item">
+          <div class="index-start-form__settings-item-head">closing date</div>
+          <div class="index-start-form__settings-item-content">
+            <input
+              matInput
+              [matDatepicker]="datepicker"
+              required
+              readonly
+              [(ngModel)]="datePickerDate"
+              (dateChange)="dateChange()"
+              [min]="minDate"
+              name="active_to"
+              (click)="datepicker.open()"
+              placeholder="Choose a date"
+              class="min-text index-start-form__settings-item-date"
+            />
+
+            <mat-datepicker #datepicker></mat-datepicker>
+            <span class="mat-datepicker-toggle" (click)="datepicker.open()">
+              <button mat-button mat-icon-button type="button">
+                <img src="./assets/images/icons/calendar.svg" />
               </button>
-            </div>
+            </span>
+          </div>
+        </div>
+        <div class="index-start-form__settings-item">
+          <div class="index-start-form__settings-item-head">closing time</div>
+          <div class="index-start-form__settings-item-content">
+            <input
+              [ngxTimepicker]="picker"
+              [format]="24"
+              [min]="minTime"
+              required
+              readonly
+              (ngModelChange)="timeChange()"
+              [(ngModel)]="datePickerTime"
+              name="time"
+              class="min-text index-start-form__settings-item-time"
+              placeholder="Choose a time"
+            />
+            <ngx-material-timepicker #picker></ngx-material-timepicker>
+          </div>
+        </div>
+        <div class="index-start-form__settings-item">
+          <div class="index-start-form__settings-item-head">Public deal</div>
+          <div class="index-start-form__settings-item-content">
+            <label class="form-field_input-checkbox">
+              <input
+                type="checkbox"
+                name="public"
+                [(ngModel)]="requestData.public"
+              />
+              <span class="checkbox-text checkbox-text_on">Yes</span>
+              <span class="checkbox-text checkbox-text_off">No</span>
+              <span class="checkbox-rect"></span>
+            </label>
+          </div>
+        </div>
+        <div class="index-start-form__settings-item">
+          <div class="index-start-form__settings-item-head">
+            Permanent trade
+          </div>
+          <div class="index-start-form__settings-item-content">
+            <label class="form-field_input-checkbox">
+              <input
+                type="checkbox"
+                name="public"
+                [(ngModel)]="requestData.permanent"
+              />
+              <span class="checkbox-text checkbox-text_on">Yes</span>
+              <span class="checkbox-text checkbox-text_off">No</span>
+              <span class="checkbox-rect"></span>
+            </label>
+            <span *ngIf="requestData.permanent"
+              >you cannot close the trade until closing time</span
+            >
           </div>
         </div>
       </div>
     </div>
-    <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1">
-      <div class="form-field form-field_btn form-field_btn--rate">
-        <label class="form-field_label form-field_label--rate">
-          <div class="form-notice" *ngIf="cmcRate && cmcRate.isMessage">
-            <div class="form-notice_text">
-              Your rate is
-              <b
-                ><span class="blue-text">{{ cmcRate.change }}%</span>
-                <span class="blue-text">
-                  {{ cmcRate.isLower ? 'lower' : 'higher' }}</span
-                >
-              </b>
-              than
-              <a href="https://coinmarketcap.com/" target="_blank"
-                >coinmarketcap</a
-              >
-              rate.
-            </div>
+    <div
+      class="index-start-form__settings-block"
+      *ngIf="
+        requestData.tokens_info.base.token.token_name &&
+        requestData.tokens_info.quote.token.token_name
+      "
+    >
+      <div class="index-start-form__settings-item-wrapper">
+        <div class="form-field">
+          <label class="index-start-form__settings-item-head"
+            >Minimum contribution in
+            {{ requestData.tokens_info.base.token.token_name }} ({{
+              requestData.tokens_info.base.token.token_short_name
+            }})</label
+          >
+          <div class="form-field_input">
+            <input
+              type="text"
+              placeholder="0"
+              name="min_base_wei"
+              [(ngModel)]="requestData.min_base_wei"
+              [appBigNumber]="{
+                decimals: 8,
+                min: 0,
+                max: requestData.tokens_info.base.amount
+              }"
+            />
           </div>
-        </label>
-        <button
-          class="btn btn-blue width-100"
-          [disabled]="
-            !requestData.tokens_info.base.amount ||
-            !requestData.tokens_info.quote.amount ||
-            !this.requestData.tokens_info.base.token.address ||
-            !this.requestData.tokens_info.quote.token.address ||
-            isCreatingContract
-          "
-        >
-          <img
-            class="arrow"
-            src="./assets/images/buttons/arrow_w.svg"
-            *ngIf="!isCreatingContract"
-          />
-          <img
-            class="arrow spiner"
-            src="./assets/images/new-index/oval.svg"
-            *ngIf="isCreatingContract"
-          />
-          <span>
-            {{ isCreatingContract ? 'Creating Trade' : 'Create Trade' }}
-          </span>
-        </button>
+        </div>
+        <div class="form-field">
+          <label class="index-start-form__settings-item-head"
+            >Minimum contribution in
+            {{ requestData.tokens_info.quote.token.token_name }} ({{
+              requestData.tokens_info.quote.token.token_short_name
+            }})</label
+          >
+          <div class="form-field_input">
+            <input
+              type="text"
+              placeholder="0"
+              name="min_quote_wei"
+              [(ngModel)]="requestData.min_quote_wei"
+              [appBigNumber]="{
+                decimals: 8,
+                min: 0,
+                max: requestData.tokens_info.quote.amount
+              }"
+            />
+          </div>
+        </div>
       </div>
       <div
-        class="form-field_description normal-font normal-font--visible text-right"
+        class="index-start-form__settings-item-checkbox"
+        [ngClass]="{ active: requestData.broker_fee }"
+        *ngIf="
+          requestData.tokens_info.base.amount &&
+          requestData.tokens_info.quote.amount
+        "
       >
-        <span
-          class="underline-link underline-link_btn"
-          (click)="toogleAdvSettings()"
-          >{{
-            isAdvSettingsOpen ? 'Close Settings' : 'Advanced Settings'
-          }}</span
+        <div class="index-start-form__settings-item-checkbox-head">
+          <div class="index-start-form__settings-item">
+            <div class="index-start-form__settings-item-head">
+              Brokerage fee
+            </div>
+            <div class="index-start-form__settings-item-content">
+              <label class="form-field_input-checkbox">
+                <input
+                  type="checkbox"
+                  name="broker_fee"
+                  [(ngModel)]="requestData.broker_fee"
+                />
+                <span class="checkbox-text checkbox-text_on">Yes</span>
+                <span class="checkbox-text checkbox-text_off">No</span>
+                <span class="checkbox-rect"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div
+          class="index-start-form__settings-item-checkbox-input"
+          *ngIf="requestData.broker_fee"
         >
+          <div class="form-field">
+            <label class="index-start-form__settings-item-head"
+              >ENTER BROKER ADDRESS</label
+            >
+            <div class="form-field_input">
+              <input
+                maxlength="42"
+                type="text"
+                placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
+                name="broker_fee_address"
+                [(ngModel)]="requestData.broker_fee_address"
+                [pattern]="'0x[0-9a-fA-F]{40}'"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="index-start-form__settings-item-checkbox-percent"
+          *ngIf="requestData.broker_fee"
+        >
+          <div class="form-field">
+            <label class="index-start-form__settings-item-head"
+              >ESpecify % for
+              {{ requestData.tokens_info.base.token.token_name }} ({{
+                requestData.tokens_info.base.token.token_short_name
+              }})</label
+            >
+            <div class="form-field_input">
+              <input
+                placeholder="0.1"
+                [(ngModel)]="requestData.broker_fee_base"
+                name="broker_fee_base"
+                min="0"
+                max="50"
+                appMinValue
+                [minValue]="0"
+                value="0.1"
+                [step]="0.01"
+                [maxValue]="50"
+                type="number"
+              />
+              <span>%</span>
+            </div>
+            <span
+              *ngIf="
+                requestData.broker_fee_base >= 0 &&
+                requestData.broker_fee_base <= 50
+              "
+            >
+              {{ baseBrokerFee | number: '1.0-8' }}
+              {{ requestData.tokens_info.base.token.token_short_name }}</span
+            >
+          </div>
+          <div class="form-field">
+            <label class="index-start-form__settings-item-head"
+              >ESpecify % for
+              {{ requestData.tokens_info.quote.token.token_name }} ({{
+                requestData.tokens_info.quote.token.token_short_name
+              }})</label
+            >
+            <div class="form-field_input">
+              <input
+                placeholder="0.1"
+                [(ngModel)]="requestData.broker_fee_quote"
+                name="broker_fee_base"
+                min="0"
+                max="50"
+                value="0.1"
+                appMinValue
+                [minValue]="0"
+                [step]="0.01"
+                [maxValue]="50"
+                type="number"
+              />
+              <span>%</span>
+            </div>
+            <span
+              *ngIf="
+                requestData.broker_fee_quote >= 0 &&
+                requestData.broker_fee_quote <= 50
+              "
+            >
+              {{ quoteBrokerFee | number: '1.0-8' }}
+              {{ requestData.tokens_info.quote.token.token_short_name }}</span
+            >
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <!--<div class="form-field">-->
-  <!--<a class="btn btn-white-opacity width-100 white-border"-->
-  <!--*ngIf="-->
-  <!--(!tokensData.base.token.address || tokensData.base.token.isEthereum) &&-->
-  <!--(!tokensData.quote.token.address || tokensData.quote.token.isEthereum)"-->
-  <!--routerLink="create">-->
-  <!--<img class="arrow" src="./assets/images/buttons/arrow_w.svg">-->
-  <!--<span>-->
-  <!--Create Private SWAP-->
-  <!--</span>-->
-  <!--</a>-->
-  <!--</div>-->
-</form>
-
+  </form>
+</div>
 <!-- <div class="personal-swap-info">
   <a routerLink="/trades/create">I need an individual SWAP</a>
   <img class="personal-swap-info_ico" src="./assets/images/icons/help.svg">
@@ -268,3 +468,35 @@
     A single smart contract created for the trade which guarantees anonymity and security
   </div>
 </div> -->
+
+<ng-template #metaMaskError>
+  <div class="dialog-block">
+    <div class="dialog-block__content">
+      <button
+        class="dialog-closer"
+        (click)="closeMetaMaskError()"
+        type="button"
+      >
+        <img src="./assets/images/icons/cross-blue.svg" />
+      </button>
+
+      <div class="transaction-title">
+        Error
+      </div>
+
+      <div class="transaction-description">
+        Please choose ropsten test net network in Metamask.
+      </div>
+
+      <div class="alert-window-buttons text-center">
+        <button
+          class="btn btn-blue btn-auto btn-min"
+          (click)="closeMetaMaskError()"
+          type="button"
+        >
+          <span>&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>

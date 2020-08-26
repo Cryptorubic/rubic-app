@@ -151,6 +151,7 @@
     color: #000;
     border: none;
     font-weight: 300;
+    margin-top: 15px;
   }
 }
 .rate-info {
@@ -162,7 +163,6 @@
 .tokens-info-block {
   padding: 15px 0px 0px;
   background-color: white;
-  margin-bottom: 15px;
   &_filled {
     // padding: 0 0px 15px;
     // border-bottom: 1px solid #f4f4f4;
@@ -179,7 +179,7 @@
       font-size: 40px;
       line-height: 46px;
       color: #000;
-      padding: 2px 50px 10px 30px;
+      padding: 2px 30px 10px 30px;
       border-bottom: 1px solid #f4f4f4;
       display: flex;
       justify-content: space-between;
@@ -253,7 +253,7 @@
 }
 
 .token-info {
-  padding: 20px 50px 45px 30px;
+  padding: 20px 30px 45px 30px;
   line-height: 52px;
   display: flex;
   justify-content: space-between;
@@ -282,7 +282,7 @@
     border-radius: 50%;
     float: left;
     margin-right: 18px;
-    background: #fff no-repeat center center;
+    background: #f7f7f7 no-repeat center center;
     background-size: 80%;
     img {
       vertical-align: middle;
@@ -343,7 +343,10 @@
 }
 
 .contract-buttons {
-  padding: 0px 40px 0 30px;
+  padding: 0px 30px 0 30px;
+  &--wei {
+    padding-bottom: 20px;
+  }
   &.no-bottom-margin {
     margin-bottom: 0;
   }

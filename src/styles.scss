@@ -308,6 +308,11 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   border-bottom: 1px dashed;
   display: inline-block;
   cursor: pointer;
+  &--right {
+    margin-left: auto;
+    display: block;
+    width: fit-content;
+  }
   &:hover {
     color: #000;
   }
@@ -607,6 +612,14 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
         clear: both;
         display: block;
         content: '';
+      }
+      & + span {
+        font-size: 12px;
+        line-height: 14px;
+        color: #000000;
+        opacity: 0.5;
+        margin-left: 5px;
+        max-width: 100px;
       }
       input {
         position: absolute;

@@ -236,7 +236,7 @@
                 </div>
 
                 <div
-                  class="contract-buttons bottom-correct"
+                  class="contract-buttons"
                   *ngIf="
                     originalContract.state === 'ACTIVE' &&
                     originalContract.isSwapped === false &&
@@ -328,14 +328,14 @@
                               ) | number: '1.0-8'
                             }}
                             {{ tokens.quote.token.token_short_name }}
-                            after SWAP
+                            after Trade
                           </span>
                         </div>
                       </div>
                       <div class="grid-cell grid-cell-1">
                         <div class="form-field">
                           <span
-                            class="action-link"
+                            class="action-link action-link--right"
                             [ngClass]="{
                               invisible: contractInfo.baseLeft <= 0
                             }"
@@ -354,13 +354,13 @@
                 </div>
 
                 <div
-                  class="contract-buttons no-bottom-margin"
+                  class="contract-buttons contract-buttons--wei"
                   *ngIf="
                     originalContract.min_base_wei &&
                     originalContract.min_base_wei != 0
                   "
                 >
-                  <span class="normal-text">
+                  <span class="normal-text action-link--right">
                     <span>
                       Min Contribution Limit:
                       <b>
@@ -381,13 +381,13 @@
                   </span>
                 </div>
                 <div
-                  class="contract-buttons no-bottom-margin"
+                  class="contract-buttons contract-buttons--wei"
                   *ngIf="
                     originalContract.broker_fee &&
                     contractInfo.baseBrokerPercent
                   "
                 >
-                  <span class="normal-text">
+                  <span class="normal-text action-link--right">
                     <span>
                       Brokers fee:
                       <b>
@@ -405,7 +405,8 @@
                 *ngIf="
                   originalContract.isEthereum &&
                   contractInfo.baseRaised * 1 > 0 &&
-                  originalContract.state === 'ACTIVE'
+                  originalContract.state === 'ACTIVE' &&
+                  contractInfo.baseRaised != 0
                 "
               >
                 <button
@@ -552,7 +553,7 @@
                 </div>
 
                 <div
-                  class="contract-buttons bottom-correct"
+                  class="contract-buttons"
                   *ngIf="
                     originalContract.state === 'ACTIVE' &&
                     originalContract.isSwapped === false &&
@@ -643,7 +644,7 @@
                               ) | number: '1.0-8'
                             }}
                             {{ tokens.base.token.token_short_name }}
-                            after SWAP
+                            after Trade
                           </span>
                         </div>
                       </div>
@@ -669,7 +670,7 @@
                 </div>
 
                 <div
-                  class="contract-buttons no-bottom-margin"
+                  class="contract-buttons contract-buttons--wei"
                   *ngIf="
                     originalContract.min_quote_wei &&
                     originalContract.min_quote_wei != 0
@@ -689,8 +690,8 @@
                   </span>
                 </div>
 
-                <!-- <div
-                  class="contract-buttons no-bottom-margin"
+                <div
+                  class="contract-buttons contract-buttons--wei"
                   *ngIf="
                     originalContract.broker_fee &&
                     contractInfo.quoteBrokerPercent
@@ -707,7 +708,7 @@
                       </b>
                     </span>
                   </span>
-                </div> -->
+                </div>
               </div>
               <img src="./assets/images/icons/ch_03.svg" class="exchange-ico" />
 
@@ -715,7 +716,8 @@
                 *ngIf="
                   originalContract.isEthereum &&
                   contractInfo.baseRaised * 1 > 0 &&
-                  originalContract.state === 'ACTIVE'
+                  originalContract.state === 'ACTIVE' &&
+                  contractInfo.quoteRaised != 0
                 "
               >
                 <button
@@ -842,7 +844,7 @@
                       >
                         {{ originalContract.broker_fee_address.toLowerCase() }}
                       </a>
-
+                      &nbsp;&nbsp;
                       <button
                         type="button"
                         class="copy-btn"
