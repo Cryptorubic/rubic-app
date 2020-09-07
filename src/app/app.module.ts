@@ -31,7 +31,6 @@ import {
 import {
   MatNativeDateModule,
   MatDatepickerModule,
-  MAT_DATE_FORMATS,
   MatDialogModule,
   MatButtonModule,
 } from '@angular/material';
@@ -88,18 +87,19 @@ import { Observable } from 'rxjs';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { ChangePasswordComponent } from './common/change-password/change-password.component';
+import { MainPageComponent } from './main-page/main-page.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
     private prefix: string = 'i18n',
     private suffix: string = '.json',
     private transferState: TransferState,
-    private http: HttpClient,
+    private http: HttpClient
   ) {}
 
   public getTranslation(lang: string): Observable<any> {
     const key: StateKey<number> = makeStateKey<number>(
-      'transfer-translate-' + lang,
+      'transfer-translate-' + lang
     );
     const data = this.transferState.get(key, null);
 
@@ -113,7 +113,7 @@ export class TranslateBrowserLoader implements TranslateLoader {
       return new TranslateHttpLoader(
         this.http,
         this.prefix,
-        this.suffix,
+        this.suffix
       ).getTranslation(lang);
     }
   }
@@ -121,23 +121,23 @@ export class TranslateBrowserLoader implements TranslateLoader {
 
 export function exportTranslateStaticLoader(
   http: HttpClient,
-  transferState: TransferState,
+  transferState: TransferState
 ) {
   return new TranslateBrowserLoader(
     './assets/i18n/',
     '.json?_t=' + new Date().getTime(),
     transferState,
-    http,
+    http
   );
 }
 
 export function appInitializerFactory(
   translate: TranslateService,
   userService: UserService,
-  httpService: HttpService,
+  httpService: HttpService
 ) {
   const defaultLng = (navigator.language || navigator['browserLanguage']).split(
-    '-',
+    '-'
   )[0];
 
   const langToSet =
@@ -201,6 +201,7 @@ export function appInitializerFactory(
     HeaderComponent,
     StartFormComponent,
     IndexComponent,
+    MainPageComponent,
     ContractFormComponent,
     EthAddressDirective,
     EthTokenValidatorDirective,
