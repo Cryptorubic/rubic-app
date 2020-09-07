@@ -9,7 +9,7 @@
   background-image: url(../../assets/images/props/cubes-lines.svg);
   background-repeat: no-repeat;
   background-position: right 11%;
-  padding-bottom: 150px;
+  padding-bottom: 50px;
   background-size: 16%;
 
   @include b(1100) {
@@ -288,7 +288,7 @@
   }
 
   .mission {
-    margin-top: 130px;
+    margin-top: 50px;
 
     @include b(850) {
       margin-top: 50px;

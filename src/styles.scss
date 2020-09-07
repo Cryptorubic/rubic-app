@@ -15,6 +15,8 @@
 @import 'scss/elements/buttons';
 @import 'scss/elements/icons';
 
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
 /* You can add global styles to this file, and also import other style files */
 @font-face {
   font-family: 'TT Norms';
@@ -81,49 +83,50 @@
 }
 @font-face {
   font-family: 'Josefin Sans';
-  src: local('Sofia Pro Extra Light'), local('Sofia-Pro-Extra-Light'),
+  src: local('Josefin Sans Extra Light'), local('Josefin-Sans-Extra-Light'),
     url('./assets/fonts/JosefinSans-ExtraLight.ttf') format('ttf');
   font-weight: 100;
   font-style: normal;
 }
 @font-face {
   font-family: 'Josefin Sans';
-  src: local('Sofia Pro Extra Thin'), local('Sofia-Pro-Extra-Thin'),
+  src: local('Josefin Sans Extra Thin'), local('Josefin-Sans-Extra-Thin'),
     url('./assets/fonts/JosefinSans-Thin.ttf') format('ttf');
   font-weight: 200;
   font-style: normal;
 }
 @font-face {
   font-family: 'Josefin Sans';
-  src: local('Sofia Pro Extra Light'), local('Sofia-Pro-Extra-Light'),
+  src: local('Josefin Sans Extra Light'), local('Josefin-Sans-Extra-Light'),
     url('./assets/fonts/JosefinSans-Light.ttf') format('ttf');
   font-weight: lighter;
   font-style: normal;
 }
 @font-face {
   font-family: 'Josefin Sans';
-  src: local('Sofia Pro Extra Regular'), local('Sofia-Pro-Extra-Regular'),
+  src: local('Josefin Sans Extra Regular'), local('Josefin-Sans-Extra-Regular'),
     url('./assets/fonts/JosefinSans-Regular.ttf') format('ttf');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: 'Josefin Sans';
-  src: local('Sofia Pro Extra Medium'), local('Sofia-Pro-Extra-Medium'),
+  src: local('Josefin Sans Extra Medium'), local('Josefin-Sans-Extra-Medium'),
     url('./assets/fonts/JosefinSans-Medium.ttf') format('ttf');
   font-weight: 600;
   font-style: normal;
 }
 @font-face {
   font-family: 'Josefin Sans';
-  src: local('Sofia Pro Extra Bold'), local('Sofia-Pro-Extra-Bold'),
+  src: local('Josefin Sans Extra Bold'), local('Josefin-Sans-Extra-Bold'),
     url('./assets/fonts/JosefinSans-Bold.ttf') format('ttf');
   font-weight: bold;
   font-style: normal;
 }
 @font-face {
   font-family: 'Josefin Sans';
-  src: local('Sofia Pro Extra SemiBold'), local('Sofia-Pro-Extra-SemiBold'),
+  src: local('Josefin Sans Extra SemiBold'),
+    local('Josefin-Sans-Extra-SemiBold'),
     url('./assets/fonts/JosefinSans-SemiBold.ttf') format('ttf');
   font-weight: 700;
   font-style: normal;
