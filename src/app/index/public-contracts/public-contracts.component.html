@@ -19,15 +19,6 @@
       </button>
     </div>
 
-    <ul class="public-swaps_table-toggler">
-      <li [ngClass]="{ active: openedTradesTab === 'ACTIVE' }">
-        <span (click)="openActiveTrades()">Active trades</span>
-      </li>
-      <li [ngClass]="{ active: openedTradesTab === 'PAST' }">
-        <span (click)="openPastTrades()">Past trades</span>
-      </li>
-    </ul>
-
     <div
       class="public-progress-loading"
       *ngIf="
@@ -98,7 +89,7 @@
               asc: selectedFilter.asc
             }"
           >
-            <div class="public-swaps_head_content bold">
+            <div class="public-swaps_head_content bold cl-green">
               <button
                 class="sort-btn"
                 (click)="applySort('volume')"
@@ -339,9 +330,7 @@
               </span>
             </span>
 
-            <span>
-              Show more
-            </span>
+            <span> Show more </span>
           </button>
           <button
             class="btn btn-white-opacity width-100 white-border"
@@ -351,9 +340,7 @@
               displayingContractsList?.length < allFilteredOrdersCount?.length
             "
           >
-            <span>
-              Show more
-            </span>
+            <span> Show more </span>
           </button>
         </div>
         <div
@@ -371,9 +358,7 @@
 <ng-template #deleteTradeConfirmation>
   <div class="dialog-block">
     <div class="dialog-block__content">
-      <div class="alert-window-title">
-        Ты точно этого хочешь?
-      </div>
+      <div class="alert-window-title">Ты точно этого хочешь?</div>
       <br /><br />
       <div class="alert-window-buttons text-center">
         <div class="grid-row">

@@ -48,6 +48,9 @@ const routes: Routes = [
   {
     path: '',
     component: MainPageComponent,
+    data: {
+      noheader: true,
+    },
   },
   {
     path: 'app',

@@ -6,6 +6,16 @@
   font-weight: normal;
   background-color: #ffffff;
 
+  background-image: url(../../assets/images/props/cubes-lines.svg);
+  background-repeat: no-repeat;
+  background-position: right 11%;
+  padding-bottom: 150px;
+  background-size: 16%;
+
+  @include b(1100) {
+    background-image: none;
+  }
+
   .first-section {
     padding-top: 200px;
 
@@ -169,6 +179,15 @@
 
   .build-with-rubic {
     margin-top: 130px;
+    background-image: url(../../assets/images/props/cube-lines-2.svg);
+    background-repeat: no-repeat;
+    background-position: 0 200px;
+    padding-bottom: 150px;
+    background-size: 22%;
+
+    @include b(1100) {
+      background-image: none;
+    }
 
     @include b(850) {
       margin-top: 50px;

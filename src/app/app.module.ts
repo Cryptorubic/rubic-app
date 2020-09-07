@@ -88,6 +88,8 @@ import { TransferHttpCacheModule } from '@nguniversal/common';
 import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { ChangePasswordComponent } from './common/change-password/change-password.component';
 import { MainPageComponent } from './main-page/main-page.component';
+import { HeaderMainPageComponent } from './main-page/header/header.component';
+import { FooterMainPageComponent } from './main-page/footer/footer.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -201,6 +203,8 @@ export function appInitializerFactory(
     HeaderComponent,
     StartFormComponent,
     IndexComponent,
+    FooterMainPageComponent,
+    HeaderMainPageComponent,
     MainPageComponent,
     ContractFormComponent,
     EthAddressDirective,

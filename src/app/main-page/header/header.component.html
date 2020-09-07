@@ -1,0 +1,84 @@
+<header class="header-main-page" [ngClass]="{ scrolled: pageScrolled }">
+  <div class="app-content-block" style="max-width: 1440px">
+    <a routerLink="/trades">
+      <span class="logo">
+        <img src="./assets/images/rubic-logo-main.svg" alt="rubic logo main" />
+      </span>
+    </a>
+
+    <div class="app-content-block_right">
+      <button
+        class="navbar-toggle"
+        type="button"
+        (click)="openedMenu = !openedMenu"
+        (mousedown)="$event.stopPropagation(); $event.preventDefault()"
+      >
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <nav
+        class="header-menu"
+        [ngClass]="{ opened: openedMenu }"
+        (mousedown)="$event.stopPropagation(); $event.preventDefault()"
+      >
+        <ul class="header-menu_list">
+          <li
+            class="header-menu_list_item with-sublist"
+            [ngClass]="{ 'opened-list': productMenuOpened }"
+          >
+            <span
+              class="header-link"
+              (click)="productMenuOpened = !productMenuOpened"
+              >Product</span
+            >
+            <ul class="header-menu_sublist">
+              <li class="header-menu_sublist_item">
+                <a class="sublist-link">Item 1</a>
+              </li>
+              <li class="header-menu_sublist_item">
+                <span class="sublist-link">Item 2</span>
+              </li>
+            </ul>
+          </li>
+          <li
+            class="header-menu_list_item with-sublist"
+            [ngClass]="{ 'opened-list': devMenuOpened }"
+          >
+            <span class="header-link" (click)="devMenuOpened = !devMenuOpened"
+              >Developers</span
+            >
+            <ul class="header-menu_sublist">
+              <li class="header-menu_sublist_item">
+                <a class="sublist-link">One</a>
+              </li>
+              <li class="header-menu_sublist_item">
+                <span class="sublist-link">Two</span>
+              </li>
+            </ul>
+          </li>
+          <li
+            class="header-menu_list_item with-sublist"
+            [ngClass]="{ 'opened-list': infoMenuOpened }"
+          >
+            <span class="header-link" (click)="infoMenuOpened = !infoMenuOpened"
+              >Info</span
+            >
+            <ul class="header-menu_sublist">
+              <li class="header-menu_sublist_item">
+                <a class="sublist-link">Info 1</a>
+              </li>
+              <li class="header-menu_sublist_item">
+                <span class="sublist-link">Info 2</span>
+              </li>
+            </ul>
+          </li>
+          <li class="header-menu_list_item">
+            <span class="rubic-btn rubic-btn-green">Launch platform</span>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>

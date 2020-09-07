@@ -183,6 +183,9 @@ html {
 .blue-text {
   color: #2873fb;
 }
+.green-text {
+  color: #4aa956;
+}
 
 @media screen and (max-width: 1240px) {
   .app-content-block {
@@ -192,12 +195,12 @@ html {
 }
 
 a:not(.new-btn):not(.btn):not(.minimal-btn) {
-  color: #2873fb;
+  color: #4aa956;
   text-decoration: none;
   &:hover,
   &:focus {
     text-decoration: underline;
-    color: #2873fb;
+    color: #4aa956;
   }
 }
 
