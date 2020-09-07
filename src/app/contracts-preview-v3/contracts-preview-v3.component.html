@@ -6,9 +6,7 @@
           class="preview-container preview-container_reminder"
           *ngIf="originalContract.contract_state === 'DONE'"
         >
-          <div class="preview-container_reminder__title">
-            Done
-          </div>
+          <div class="preview-container_reminder__title">Done</div>
           <div class="preview-container_reminder__description">
             The trade was completed. If you participated in this trade, please
             check your wallet.
@@ -19,9 +17,7 @@
           class="preview-container preview-container_reminder"
           *ngIf="originalContract.contract_state === 'EXPIRED'"
         >
-          <div class="preview-container_reminder__title">
-            Expired
-          </div>
+          <div class="preview-container_reminder__title">Expired</div>
           <div class="preview-container_reminder__description">
             The trade is no longer available.
           </div>
@@ -31,9 +27,7 @@
           class="preview-container preview-container_reminder"
           *ngIf="originalContract.contract_state === 'CANCELLED'"
         >
-          <div class="preview-container_reminder__title">
-            Cancelled
-          </div>
+          <div class="preview-container_reminder__title">Cancelled</div>
           <div class="preview-container_reminder__description">
             The trade was cancelled.
           </div>
@@ -117,9 +111,7 @@
                   >
                     <div class="tokens-info-block_filled-wrapper">
                       <div class="tokens-info-block_filled_item send">
-                        <div class="tokens-info-block_filled__text">
-                          Sent
-                        </div>
+                        <div class="tokens-info-block_filled__text">Sent</div>
                         <div
                           class="tokens-info-block_filled__complete"
                           *ngIf="contractInfo.baseRaised"
@@ -129,9 +121,7 @@
                         </div>
                       </div>
                       <div class="tokens-info-block_filled_item left">
-                        <div class="tokens-info-block_filled__text">
-                          Left
-                        </div>
+                        <div class="tokens-info-block_filled__text">Left</div>
                         <div
                           class="tokens-info-block_filled__complete"
                           [title]="
@@ -323,9 +313,8 @@
                           <span class="normal-text">
                             You will get
                             {{
-                              quoteWillGetValue(
-                                baseContributeForm.value.amount
-                              ) | number: '1.0-8'
+                              quoteWillGetValue(baseContributeForm.value.amount)
+                                | number: '1.0-8'
                             }}
                             {{ tokens.quote.token.token_short_name }}
                             after Trade
@@ -335,7 +324,7 @@
                       <div class="grid-cell grid-cell-1">
                         <div class="form-field">
                           <span
-                            class="action-link action-link--right"
+                            class="action-link"
                             [ngClass]="{
                               invisible: contractInfo.baseLeft <= 0
                             }"
@@ -360,7 +349,7 @@
                     originalContract.min_base_wei != 0
                   "
                 >
-                  <span class="normal-text action-link--right">
+                  <span class="normal-text">
                     <span>
                       Min Contribution Limit:
                       <b>
@@ -387,7 +376,7 @@
                     contractInfo.baseBrokerPercent
                   "
                 >
-                  <span class="normal-text action-link--right">
+                  <span class="normal-text">
                     <span>
                       Brokers fee:
                       <b>
@@ -432,9 +421,7 @@
                     <span>{{ tokens.quote.amount | number: '1.0-8' }}</span>
                     <div class="tokens-info-block_filled-wrapper">
                       <div class="tokens-info-block_filled_item send">
-                        <div class="tokens-info-block_filled__text">
-                          Sent
-                        </div>
+                        <div class="tokens-info-block_filled__text">Sent</div>
                         <div
                           class="tokens-info-block_filled__complete"
                           *ngIf="contractInfo.quoteRaised"
@@ -444,9 +431,7 @@
                         </div>
                       </div>
                       <div class="tokens-info-block_filled_item left">
-                        <div class="tokens-info-block_filled__text">
-                          Left
-                        </div>
+                        <div class="tokens-info-block_filled__text">Left</div>
                         <div
                           class="tokens-info-block_filled__complete"
                           [title]="
@@ -639,9 +624,8 @@
                           <span class="normal-text">
                             You will get
                             {{
-                              baseWillGetValue(
-                                quoteContributeForm.value.amount
-                              ) | number: '1.0-8'
+                              baseWillGetValue(quoteContributeForm.value.amount)
+                                | number: '1.0-8'
                             }}
                             {{ tokens.base.token.token_short_name }}
                             after Trade
@@ -779,9 +763,7 @@
               >
                 <div class="form-field ps-float-left">
                   <div class="form-field_checkbox-val float-right">
-                    <div class="form-field_checkbox-val_label">
-                      Public deal
-                    </div>
+                    <div class="form-field_checkbox-val_label">Public deal</div>
                     <div class="form-field_checkbox-val_stat">
                       <div *ngIf="originalContract.public">
                         Yes<img src="./assets/images/icons/yes.svg" />
@@ -993,9 +975,7 @@
         <img src="./assets/images/icons/cross-w.svg" />
       </button>
 
-      <div class="transaction-title">
-        Error
-      </div>
+      <div class="transaction-title">Error</div>
 
       <div
         class="transaction-description"

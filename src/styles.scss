@@ -599,6 +599,17 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       font-weight: bold;
     }
   }
+  input[type='number'] {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
   &_input {
     position: relative;
     &-checkbox {
@@ -614,12 +625,11 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
         content: '';
       }
       & + span {
-        font-size: 12px;
+        font-size: 14px;
         line-height: 14px;
         color: #000000;
         opacity: 0.5;
-        margin-left: 5px;
-        max-width: 100px;
+        margin-left: 20px;
       }
       input {
         position: absolute;

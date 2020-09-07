@@ -40,8 +40,10 @@
       padding: 0 20px 25px;
       & + & {
         padding-top: 25px;
-        padding-bottom: 0;
         border-top: 2px solid #f4f4f4;
+      }
+      &:last-child {
+        padding-bottom: 0;
       }
       &-wrapper {
         display: flex;
@@ -61,21 +63,8 @@
         margin-left: 30px;
       }
       &-checkbox {
-        margin-top: 20px;
-        &.active {
-          padding: 20px;
-          margin-top: 10px;
-          background: linear-gradient(0deg, #f4f4f4, #f4f4f4);
-          .form-field_input-checkbox {
-            background: #ffffff;
-          }
-        }
         .form-field_input {
           width: 620px;
-          input {
-            background: inherit;
-            background: #fff;
-          }
         }
         &-head {
           display: flex;
@@ -100,7 +89,6 @@
             margin-top: 10px;
             display: block;
             width: 100px;
-            text-align: center;
           }
           .form-field_input {
             display: flex;
@@ -128,6 +116,7 @@
       }
       &-wrapper {
         display: flex;
+        margin-top: 25px;
         .form-field {
           width: 300px;
           margin-bottom: 0;
@@ -165,10 +154,10 @@
       }
       &-date {
         padding: 13px 10px;
-        width: 130px !important;
+        width: 81px !important;
       }
       &-time {
-        width: 80px !important;
+        width: 81px !important;
         padding: 13px 20px;
         box-sizing: border-box;
       }

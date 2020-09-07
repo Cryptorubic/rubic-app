@@ -166,9 +166,10 @@
             [disabled]="
               !requestData.tokens_info.base.amount ||
               !requestData.tokens_info.quote.amount ||
-              !this.requestData.tokens_info.base.token.address ||
-              !this.requestData.tokens_info.quote.token.address ||
-              isCreatingContract
+              !requestData.tokens_info.base.token.address ||
+              !requestData.tokens_info.quote.token.address ||
+              isCreatingContract ||
+              (requestData.broker_fee && !requestData.broker_fee_address)
             "
           >
             <img
@@ -206,7 +207,6 @@
     #advSettings="ngForm"
   >
     <div class="index-start-form__settings-block">
-      <div class="index-start-form__settings-title">Advanced Settings</div>
       <div class="index-start-form__settings-block-wrapper">
         <div class="index-start-form__settings-item">
           <div class="index-start-form__settings-item-head">closing date</div>
@@ -226,11 +226,6 @@
             />
 
             <mat-datepicker #datepicker></mat-datepicker>
-            <span class="mat-datepicker-toggle" (click)="datepicker.open()">
-              <button mat-button mat-icon-button type="button">
-                <img src="./assets/images/icons/calendar.svg" />
-              </button>
-            </span>
           </div>
         </div>
         <div class="index-start-form__settings-item">
@@ -259,31 +254,13 @@
                 type="checkbox"
                 name="public"
                 [(ngModel)]="requestData.public"
+                [value]="requestData.public"
               />
               <span class="checkbox-text checkbox-text_on">Yes</span>
               <span class="checkbox-text checkbox-text_off">No</span>
               <span class="checkbox-rect"></span>
             </label>
-          </div>
-        </div>
-        <div class="index-start-form__settings-item">
-          <div class="index-start-form__settings-item-head">
-            Permanent trade
-          </div>
-          <div class="index-start-form__settings-item-content">
-            <label class="form-field_input-checkbox">
-              <input
-                type="checkbox"
-                name="public"
-                [(ngModel)]="requestData.permanent"
-              />
-              <span class="checkbox-text checkbox-text_on">Yes</span>
-              <span class="checkbox-text checkbox-text_off">No</span>
-              <span class="checkbox-rect"></span>
-            </label>
-            <span *ngIf="requestData.permanent"
-              >you cannot close the trade until closing time</span
-            >
+            <span>Trade will be listed on the main page</span>
           </div>
         </div>
       </div>
@@ -295,6 +272,22 @@
         requestData.tokens_info.quote.token.token_name
       "
     >
+      <div class="index-start-form__settings-item">
+        <div class="index-start-form__settings-item-head">Permanent trade</div>
+        <div class="index-start-form__settings-item-content">
+          <label class="form-field_input-checkbox">
+            <input
+              type="checkbox"
+              name="public"
+              [(ngModel)]="requestData.permanent"
+            />
+            <span class="checkbox-text checkbox-text_on">Yes</span>
+            <span class="checkbox-text checkbox-text_off">No</span>
+            <span class="checkbox-rect"></span>
+          </label>
+          <span>Lock liquidity until the trade completion</span>
+        </div>
+      </div>
       <div class="index-start-form__settings-item-wrapper">
         <div class="form-field">
           <label class="index-start-form__settings-item-head"
@@ -339,9 +332,16 @@
           </div>
         </div>
       </div>
+    </div>
+    <div
+      class="index-start-form__settings-block"
+      *ngIf="
+        requestData.tokens_info.base.token.token_name &&
+        requestData.tokens_info.quote.token.token_name
+      "
+    >
       <div
         class="index-start-form__settings-item-checkbox"
-        [ngClass]="{ active: requestData.broker_fee }"
         *ngIf="
           requestData.tokens_info.base.amount &&
           requestData.tokens_info.quote.amount
@@ -363,6 +363,7 @@
                 <span class="checkbox-text checkbox-text_off">No</span>
                 <span class="checkbox-rect"></span>
               </label>
+              <span>You can specify % for Broker</span>
             </div>
           </div>
         </div>
@@ -392,7 +393,7 @@
         >
           <div class="form-field">
             <label class="index-start-form__settings-item-head"
-              >ESpecify % for
+              >Specify % for
               {{ requestData.tokens_info.base.token.token_name }} ({{
                 requestData.tokens_info.base.token.token_short_name
               }})</label
@@ -425,7 +426,7 @@
           </div>
           <div class="form-field">
             <label class="index-start-form__settings-item-head"
-              >ESpecify % for
+              >Specify % for
               {{ requestData.tokens_info.quote.token.token_name }} ({{
                 requestData.tokens_info.quote.token.token_short_name
               }})</label
@@ -480,9 +481,7 @@
         <img src="./assets/images/icons/cross-blue.svg" />
       </button>
 
-      <div class="transaction-title">
-        Error
-      </div>
+      <div class="transaction-title">Error</div>
 
       <div class="transaction-description">
         Please choose ropsten test net network in Metamask.
