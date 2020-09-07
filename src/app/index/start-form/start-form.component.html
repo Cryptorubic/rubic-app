@@ -58,7 +58,7 @@
               </div>
               <div class="form-field_input index-start-form__choose-token__btn">
                 <button
-                  class="btn btn-blue btn-min btn-for-field width-100"
+                  class="btn btn-green btn-min btn-for-field width-100"
                   type="button"
                   [disabled]="!baseCustomToken.valid"
                   (click)="addCustomToken('base')"
@@ -125,7 +125,7 @@
               </div>
               <div class="form-field_input">
                 <button
-                  class="btn btn-blue btn-min btn-for-field width-100"
+                  class="btn btn-green btn-min btn-for-field width-100"
                   type="button"
                   [disabled]="!quoteCustomToken.valid"
                   (click)="addCustomToken('quote')"
@@ -162,7 +162,7 @@
             </div>
           </label>
           <button
-            class="btn btn-blue width-100"
+            class="btn btn-green width-100"
             [disabled]="
               !requestData.tokens_info.base.amount ||
               !requestData.tokens_info.quote.amount ||
@@ -489,7 +489,7 @@
 
       <div class="alert-window-buttons text-center">
         <button
-          class="btn btn-blue btn-auto btn-min"
+          class="btn btn-green btn-auto btn-min"
           (click)="closeMetaMaskError()"
           type="button"
         >

@@ -50,7 +50,7 @@
             <a routerLink="faq" class="header-link">Faq</a>
           </li>
           <li
-            class="header-menu_list_item header-menu_list_item--login btn btn-blue btn-min btn-normal-weight btn-auto"
+            class="header-menu_list_item header-menu_list_item--login btn btn-green btn-min btn-normal-weight btn-auto"
             *ngIf="currentUser.is_ghost"
           >
             <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
@@ -117,7 +117,11 @@
             ><br />
           </div>
           <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <button class="btn btn-blue btn-min" mat-dialog-close type="button">
+            <button
+              class="btn btn-green btn-min"
+              mat-dialog-close
+              type="button"
+            >
               <span
                 >&nbsp;&nbsp;&nbsp;{{
                   'NO' | translate

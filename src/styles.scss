@@ -8,6 +8,13 @@
 @import 'scss/elements/preloader';
 @import 'scss/elements/contracts';
 
+// ! new 07.09.2020
+@import 'scss/elements/vars';
+@import 'scss/mixins';
+@import 'scss/elements/typography';
+@import 'scss/elements/buttons';
+@import 'scss/elements/icons';
+
 /* You can add global styles to this file, and also import other style files */
 @font-face {
   font-family: 'TT Norms';
@@ -72,11 +79,60 @@
   font-weight: 700;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Sofia Pro Extra Light'), local('Sofia-Pro-Extra-Light'),
+    url('./assets/fonts/JosefinSans-ExtraLight.ttf') format('ttf');
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Sofia Pro Extra Thin'), local('Sofia-Pro-Extra-Thin'),
+    url('./assets/fonts/JosefinSans-Thin.ttf') format('ttf');
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Sofia Pro Extra Light'), local('Sofia-Pro-Extra-Light'),
+    url('./assets/fonts/JosefinSans-Light.ttf') format('ttf');
+  font-weight: lighter;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Sofia Pro Extra Regular'), local('Sofia-Pro-Extra-Regular'),
+    url('./assets/fonts/JosefinSans-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Sofia Pro Extra Medium'), local('Sofia-Pro-Extra-Medium'),
+    url('./assets/fonts/JosefinSans-Medium.ttf') format('ttf');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Sofia Pro Extra Bold'), local('Sofia-Pro-Extra-Bold'),
+    url('./assets/fonts/JosefinSans-Bold.ttf') format('ttf');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Sofia Pro Extra SemiBold'), local('Sofia-Pro-Extra-SemiBold'),
+    url('./assets/fonts/JosefinSans-SemiBold.ttf') format('ttf');
+  font-weight: 700;
+  font-style: normal;
+}
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Sofia Pro', Arial, sans-serif;
+  font-family: 'Sofia Pro', 'Josefin Sans', Arial, sans-serif;
   min-width: 320px;
   background: #f4f4f4;
   background-size: cover;
@@ -508,6 +564,17 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     }
     &:not([disabled]):active {
       background-color: #2873fb;
+    }
+  }
+  &-green {
+    background: #4aa956;
+    border-left-color: rgba(255, 255, 255, 0.67);
+    color: white;
+    &:not([disabled]):hover {
+      background-color: #4aa956;
+    }
+    &:not([disabled]):active {
+      background-color: #4aa956;
     }
   }
   &-payment {

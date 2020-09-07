@@ -1,0 +1,82 @@
+@import 'vars';
+@import '../_mixins';
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+li {
+  cursor: default;
+}
+
+.h1 {
+  &-title {
+    font-family: $main-font;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 7vw;
+    text-align: center;
+    margin: 10px 0;
+  }
+}
+
+.cl {
+  &-green {
+    color: var(--main-green);
+  }
+}
+
+.p {
+  &-info {
+    &-text {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 28px;
+    }
+  }
+}
+
+.h3 {
+  &-info {
+    &-text {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 27px;
+      line-height: 27px;
+    }
+  }
+
+  &-block {
+    &-title {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 50px;
+      line-height: 50px;
+    }
+  }
+}
+.p {
+  &-info {
+    &-text {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 28px;
+    }
+  }
+}
+
+.container {
+  max-width: var(--container-max-width);
+  padding: 10px 50px;
+  margin: 0 auto;
+
+  @include b(850) {
+    padding: 10px 25px;
+  }
+}

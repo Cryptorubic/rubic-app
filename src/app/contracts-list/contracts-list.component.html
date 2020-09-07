@@ -112,7 +112,7 @@
             <div class="swap-info">
               <span
                 class="contract-state"
-                style="float: none;"
+                style="float: none"
                 [ngClass]="'contract-state__' + states[contract.state].NUMBER"
               >
                 {{ states[contract.state].TEXT }}
@@ -154,9 +154,7 @@
   <ng-template #deleteConfirmation>
     <div class="dialog-block">
       <div class="dialog-block__content">
-        <div class="alert-window-title">
-          Do you want to remove it?
-        </div>
+        <div class="alert-window-title">Do you want to remove it?</div>
         <br /><br />
         <div class="alert-window-buttons text-center">
           <div class="grid-row">
@@ -171,7 +169,7 @@
             </div>
             <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
               <button
-                class="btn btn-blue btn-min right-padding"
+                class="btn btn-green btn-min right-padding"
                 mat-dialog-close
                 type="button"
               >

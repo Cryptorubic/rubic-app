@@ -1,0 +1,22 @@
+// *****  buttons styles *****
+
+.icon {
+  &:before {
+    content: '';
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: initial;
+  }
+
+  // &__swap-arrows {
+  //   @include before-img(block, 30px, 30px, r) {
+  //     background-color: #f7f3eb;
+  //     background-image: url('assets/img/icons/swap-arrows.svg');
+  //     border-radius: 5em;
+  //   }
+  // }
+}
