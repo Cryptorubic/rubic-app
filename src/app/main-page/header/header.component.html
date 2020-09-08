@@ -31,18 +31,36 @@
             <span
               class="header-link"
               (click)="productMenuOpened = !productMenuOpened"
-              >Product</span
+              >Products</span
             >
             <ul class="header-menu_sublist">
               <li class="header-menu_sublist_item">
-                <a class="sublist-link">Item 1</a>
+                <a
+                  class="sublist-link"
+                  href="https://contracts.mywish.io"
+                  target="_blank"
+                  >Create token</a
+                >
               </li>
               <li class="header-menu_sublist_item">
-                <span class="sublist-link">Item 2</span>
+                <a
+                  class="sublist-link"
+                  href="https://contracts.mywish.io"
+                  target="_blank"
+                  >Airdrop</a
+                >
+              </li>
+              <li class="header-menu_sublist_item">
+                <a
+                  class="sublist-link"
+                  href="https://rubic.exchange/"
+                  target="_blank"
+                  >Trade platform</a
+                >
               </li>
             </ul>
           </li>
-          <li
+          <!-- <li
             class="header-menu_list_item with-sublist"
             [ngClass]="{ 'opened-list': devMenuOpened }"
           >
@@ -57,8 +75,8 @@
                 <span class="sublist-link">Two</span>
               </li>
             </ul>
-          </li>
-          <li
+          </li> -->
+          <!-- <li
             class="header-menu_list_item with-sublist"
             [ngClass]="{ 'opened-list': infoMenuOpened }"
           >
@@ -73,7 +91,7 @@
                 <span class="sublist-link">Info 2</span>
               </li>
             </ul>
-          </li>
+          </li> -->
           <li class="header-menu_list_item">
             <a class="rubic-btn rubic-btn-green" [routerLink]="'/app'"
               >Launch platform</a

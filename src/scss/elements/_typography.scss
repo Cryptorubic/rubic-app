@@ -13,6 +13,38 @@ li {
   cursor: default;
 }
 
+// svg:hover,
+// object:hover {
+//   filter: invert(156.9%) sepia(39%) saturate(2307%) hue-rotate(66deg)
+//     brightness(134%) contrast(107%);
+// }
+
+.span {
+  &-icon-svg {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+
+    &-link {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      z-index: 1;
+
+      &:hover {
+        ~ svg,
+        ~ object {
+          filter: invert(156.9%) sepia(39%) saturate(2307%) hue-rotate(66deg)
+            brightness(134%) contrast(107%);
+        }
+      }
+    }
+  }
+}
+
 .h1 {
   &-title {
     font-family: $main-font;
