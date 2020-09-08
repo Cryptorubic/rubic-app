@@ -24,15 +24,15 @@
         padding: 12px 29px 9px;
         font-size: 15px;
         line-height: 15px;
-        border: 1px solid #2873fb;
+        border: 1px solid #4aa956;
         background: white;
         color: black;
         margin-bottom: 5px;
       }
       &.active span {
-        background-color: #2873fb;
+        background-color: #4aa956;
         color: #fff;
-        border-color: #2873fb;
+        border-color: #4aa956;
       }
       & + li {
         span {
@@ -103,7 +103,7 @@
       color: #110931;
       padding: 0;
       &__sortable {
-        color: #4AA956;
+        color: #4aa956;
         .sort-btn {
           background-image: url(/assets/images/icons/table/sort-2.svg);
         }
@@ -306,7 +306,7 @@
     width: 100% !important;
     display: block;
     height: 100%;
-    background-color: #2873fb;
+    background-color: #4aa956;
     transition: linear 0.2s;
   }
 }
