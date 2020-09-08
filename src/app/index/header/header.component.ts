@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit {
   @ViewChild('headerPage') headerPage;
 
   private logoutConfirmationModal: MatDialogRef<any>;
-  private logoutProgress: boolean;
+  public logoutProgress: boolean;
   @Output() changedSocialState = new EventEmitter<string>();
 
   constructor(
@@ -40,7 +40,7 @@ export class HeaderComponent implements OnInit {
     private userService: UserService,
     private dialog: MatDialog,
     private router: Router,
-    private web3Service: Web3Service,
+    private web3Service: Web3Service
   ) {
     this.currentUser = this.userService.getUserModel();
     this.userService
@@ -97,7 +97,7 @@ export class HeaderComponent implements OnInit {
       },
       (error) => {
         this.onTotpError(error);
-      },
+      }
     );
   }
   private onTotpError(error) {

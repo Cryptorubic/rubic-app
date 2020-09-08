@@ -14,6 +14,7 @@ export interface UserInterface {
   use_totp: boolean;
   username: string;
   is_ghost?: boolean;
+  is_swaps_admin?: any;
 }
 
 export interface AuthUserInterface {

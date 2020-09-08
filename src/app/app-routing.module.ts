@@ -34,6 +34,7 @@ export const PROJECT_PARTS = {
 };
 
 let currMode = 'PROD';
+// tslint:disable-next-line: forin
 for (const m in PROJECT_PARTS) {
   for (const hostname in PROJECT_PARTS[m]) {
     if (location.hostname === PROJECT_PARTS[m][hostname]) {
@@ -45,15 +46,16 @@ for (const m in PROJECT_PARTS) {
 export const MODE = currMode;
 
 const routes: Routes = [
+  // landing
+  // {
+  //   path: '',
+  //   component: MainPageComponent,
+  //   data: {
+  //     noheader: true,
+  //   },
+  // },
   {
     path: '',
-    component: MainPageComponent,
-    data: {
-      noheader: true,
-    },
-  },
-  {
-    path: 'app',
     component: IndexComponent,
   },
   {
