@@ -760,7 +760,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       color: #110931;
       line-height: 30px;
       font-family: inherit;
-      font-size: 24px !important;
+      font-size: 18px !important;
       background: #f4f4f4;
       border: 1px solid #ffffff;
       padding: 11px 10px 11px 22px;
@@ -881,6 +881,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       opacity: 1;
       width: 30px;
       margin-top: -15px;
+      background: #f4f4f4;
       right: 10px;
     }
     &__btn.active + &__ac_input {
