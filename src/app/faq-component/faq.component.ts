@@ -61,7 +61,7 @@ export class FaqComponent implements OnInit {
         isActive: false,
       },
       {
-        title: 'How to create a swap?',
+        title: 'How to create a trade?',
         text: `Step 1. Fill out the form, enter amount what you have and enter amount what you want to get
         Step 2. Add advanced options, such as closing date and time, minimum and maximum contribution, privacy, brokerage fee, lock liquidity until the trade completion
         Step 3. Check details of the trade

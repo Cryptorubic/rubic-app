@@ -18,6 +18,7 @@ import {
 } from './contract-form-all/contract-form-all.component';
 import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
 import { MainPageComponent } from './main-page/main-page.component';
+import { AboutageComponent } from './about/about.component';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -57,6 +58,10 @@ const routes: Routes = [
   {
     path: '',
     component: IndexComponent,
+  },
+  {
+    path: 'about',
+    component: AboutageComponent,
   },
   {
     path: 'create-v3',

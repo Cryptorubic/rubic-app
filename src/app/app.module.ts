@@ -90,6 +90,7 @@ import { ChangePasswordComponent } from './common/change-password/change-passwor
 import { MainPageComponent } from './main-page/main-page.component';
 import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
+import { AboutageComponent } from './about/about.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -202,6 +203,7 @@ export function appInitializerFactory(
     AppComponent,
     HeaderComponent,
     StartFormComponent,
+    AboutageComponent,
     IndexComponent,
     FooterMainPageComponent,
     HeaderMainPageComponent,
