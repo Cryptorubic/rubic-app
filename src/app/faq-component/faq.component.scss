@@ -19,12 +19,12 @@
     min-height: 25px;
     margin: 10px 0;
     padding: 20px;
-    border-left: 5px solid #2873fb;
+    border-left: 5px solid #4aa956;
     background: white;
     color: #000;
     cursor: pointer;
     &_active {
-      border-left: 5px solid #2873fb;
+      border-left: 5px solid #4aa956;
       color: #000;
       .questions-container__arrow {
         transform: rotate(45deg);
@@ -43,7 +43,7 @@
     display: inline-block;
     width: 10px;
     height: 10px;
-    border: solid #2873fb;
+    border: solid #4aa956;
     border-width: 0 2px 2px 0;
     transform: rotate(315deg);
   }
