@@ -43,6 +43,22 @@ li {
       }
     }
   }
+
+  &-title {
+    &-benefits {
+      font-weight: 500;
+      font-size: 30px;
+      line-height: 34px;
+    }
+
+    &-section {
+      font-weight: bold;
+      font-size: 28px;
+      line-height: 32px;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+  }
 }
 
 .h1 {
@@ -71,6 +87,14 @@ li {
       line-height: 28px;
     }
   }
+
+  &-text {
+    &-benefits {
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 25px;
+    }
+  }
 }
 
 .h3 {
@@ -89,6 +113,11 @@ li {
       font-weight: normal;
       font-size: 50px;
       line-height: 50px;
+    }
+
+    &-title-s1 {
+      font-size: 28px;
+      line-height: 44px;
     }
   }
 }

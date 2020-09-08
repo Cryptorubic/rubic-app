@@ -1,26 +1,112 @@
 <app-header-main-page></app-header-main-page>
+
 <div class="about-page">
-  <section class="first-section">
+  <section class="first-block cl-green">
     <div class="container">
-      <h1 class="h1-title">
-        Multichain DeFi <br />
-        platform
-      </h1>
-      <div class="first-section-buttons">
-        <a class="rubic-btn rubic-btn-green" [routerLink]="'/app'"
-          >Launch platform
-        </a>
-        <a
-          href="https://contracts.mywish.io"
-          target="_blank"
-          class="rubic-btn rubic-btn-green rubic-btn-border"
-          >Other products
-        </a>
+      <img src="assets/images/about/cube-img.svg" alt="cube" />
+      <h3 class="h3-block-title-s1">
+        Rubic p2p trades is a decentralized p2p platform. It helps users to make
+        trades on their terms, share and generate revenue.
+      </h3>
+    </div>
+  </section>
+
+  <section class="benefit">
+    <div class="container">
+      <div class="benefit-blocks">
+        <div class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">P2P trade </span>
+          <p class="p-text-benefits">Create your trade and choose your rate.</p>
+        </div>
+        <div class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">Instant Trade </span>
+          <p class="p-text-benefits">
+            You can create an instant trade using external DEX integration
+          </p>
+        </div>
+        <div class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">Order</span>
+          <p class="p-text-benefits">
+            Set the desired rate and the deal will be executed when one of the
+            DEX meets these requirements
+          </p>
+        </div>
+
+        <div class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">Farming</span>
+          <p class="p-text-benefits">
+            If you provide liquidity for trades you will be rewarded by Rubic
+            tokens when the trade is executed.
+          </p>
+        </div>
+        <div class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">Pool</span>
+          <p class="p-text-benefits">
+            Create pools for DEXs by having only 1 token
+          </p>
+        </div>
+        <div class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">Multichain support</span>
+          <p class="p-text-benefits">
+            Ethereum now, Tron and Binance Smart Chain are coming soon
+          </p>
+        </div>
       </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <span class="span-title-section">Rubic P2P trades features</span>
+      <div class="features-blocks">
+        <div class="features-blocks-item">
+          <span class="icon icon__checked"
+            >Option to lock liquidity until trade is closed</span
+          >
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked"
+            >Uniswap / curve integration (in progress)</span
+          >
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">No volume limits</span>
+        </div>
+
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">Ability to make crowdsales </span>
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">Public/Private deals</span>
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">No need to list token</span>
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked"
+            >Investors get % from every successful trade</span
+          >
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked"
+            >% of platform revenue can be regulated</span
+          >
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">Brokers support</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rubic-contract">
+    <div class="container">
+      <span class="span-title-section">Rubic contract</span>
+      <div class="rubic-contract-image"></div>
     </div>
   </section>
 </div>
 
-<app-footer-main-page></app-footer-main-page>
+<app-footer></app-footer>
 
 <div class="scroll-top-btn" id="scroll-btn"></div>

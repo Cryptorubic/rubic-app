@@ -1,2 +1,144 @@
+@import '../../scss/_mixins';
+@import '../../scss/elements/vars';
+
 .about-page {
+  font-family: var(--main-font) !important;
+  font-weight: normal;
+  background-color: #ffffff;
+
+  @include b(1100) {
+    background-image: none;
+  }
+
+  .first-block {
+    padding-top: 200px;
+
+    @include b(850) {
+      padding-top: 100px;
+    }
+
+    .container {
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: minmax(300px, 450px) minmax(300px, 1fr);
+      grid-gap: 50px;
+      justify-content: center;
+      align-items: center;
+
+      @include b(850) {
+        grid-template-columns: 1fr;
+        grid-gap: 25px;
+      }
+
+      img {
+        max-width: 415px;
+        width: 100%;
+      }
+
+      h3 {
+        padding-right: 100px;
+
+        @include b(1100) {
+          padding-right: 0px;
+        }
+      }
+    }
+  }
+
+  .benefit {
+    margin-top: 100px;
+
+    .container {
+      max-width: 1100px;
+    }
+
+    &-blocks {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(200px, 335px));
+      grid-gap: 15px;
+
+      @include b(700) {
+        grid-template-columns: 1fr;
+      }
+
+      &-item {
+        background-color: #fafafa;
+        padding: 25px 40px 25px 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 230px;
+
+        @include b(850) {
+          padding: 20px;
+        }
+
+        @include b(700) {
+          min-height: 0px;
+        }
+      }
+    }
+  }
+
+  .features {
+    margin-top: 100px;
+
+    .container {
+      max-width: 1100px;
+    }
+
+    &-blocks {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(200px, 335px));
+      grid-gap: 15px;
+      margin-top: 20px;
+
+      @include b(700) {
+        grid-template-columns: 1fr;
+      }
+
+      &-item {
+        background-color: #fafafa;
+        padding: 25px 35px 25px 35px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 140px;
+
+        @include b(850) {
+          padding: 20px;
+        }
+
+        @include b(700) {
+          min-height: 0px;
+        }
+      }
+    }
+  }
+
+  .rubic-contract {
+    margin-top: 100px;
+
+    .container {
+      max-width: 1100px;
+    }
+
+    &-image {
+      background-image: url('src/assets/images/about/rubic-contract.svg');
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 100%;
+      padding-bottom: 36%;
+      margin-top: 20px;
+
+      @include b(500) {
+        background-image: url('src/assets/images/about/rubic-contract-mob.svg');
+        padding-bottom: 0;
+        min-height: 400px;
+      }
+    }
+  }
 }

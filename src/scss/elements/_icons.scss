@@ -12,11 +12,17 @@
     background-size: initial;
   }
 
-  // &__swap-arrows {
-  //   @include before-img(block, 30px, 30px, r) {
-  //     background-color: #f7f3eb;
-  //     background-image: url('assets/img/icons/swap-arrows.svg');
-  //     border-radius: 5em;
-  //   }
-  // }
+  &__checked {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @include before-img(block, 20px, 20px, r) {
+      background-image: url('assets/images/icons/icon-checked.svg');
+      background-size: contain;
+      margin-right: 25px;
+      min-width: 20px !important;
+      min-height: 20px !important;
+    }
+  }
 }
