@@ -1,5 +1,5 @@
 {
-  "name": "mywish-swaps",
+  "name": "rubic",
   "version": "1.3.0",
   "scripts": {
     "start": "ng serve --proxy-config proxy.conf.json --host local.rubic.mywish.io --port 4224 --disableHostCheck",
