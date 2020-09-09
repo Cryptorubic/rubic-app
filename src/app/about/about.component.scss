@@ -63,12 +63,12 @@
 
       &-item {
         background-color: #fafafa;
-        padding: 25px 40px 25px 60px;
+        padding: 40px 60px 25px 25px;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: flex-start;
-        min-height: 230px;
+        min-height: 155px;
 
         @include b(850) {
           padding: 20px;
@@ -105,7 +105,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
-        min-height: 140px;
+        min-height: 50px;
 
         @include b(850) {
           padding: 20px;
