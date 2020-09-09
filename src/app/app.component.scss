@@ -1,3 +1,6 @@
+.white-bg {
+  background-color: #fff !important;
+}
 
 .cookies-info {
   display: flex;
@@ -31,7 +34,7 @@
       line-height: 1.45em;
       margin-right: 15px;
       a {
-        color: #FCD600;
+        color: #fcd600;
       }
       br {
         display: none;
@@ -52,7 +55,8 @@
       &:hover {
         opacity: 1;
       }
-      &:after, &:before {
+      &:after,
+      &:before {
         content: '';
         display: block;
         width: 1.6em;

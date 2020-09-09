@@ -29,11 +29,18 @@ export class AppComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private cookieService: CookieService,
-    private Web3Service: Web3Service,
+    private Web3Service: Web3Service
   ) {
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
+        if (event.url === '/about') {
+          body.classList.add('white-bg');
+        }
+        if (event.url !== '/about') {
+          body.classList.remove('white-bg');
+        }
+
         if (MODE === 'PROD') {
           for (const url in PROJECT_PARTS[MODE]) {
             if (new RegExp(url).test(event.url)) {
@@ -60,7 +67,7 @@ export class AppComponent implements OnInit {
             body.classList.remove('without-support');
             event.snapshot.data.supportHide
               ? body.classList.add(
-                  'support-hide-' + event.snapshot.data.supportHide,
+                  'support-hide-' + event.snapshot.data.supportHide
                 )
               : '';
           } else {
@@ -88,10 +95,10 @@ export class AppComponent implements OnInit {
 
   private checkLiveChat() {
     const liveChatButtonFrame = document.getElementById(
-      'livechat-compact-view',
+      'livechat-compact-view'
     );
     const liveChatContainer = document.getElementById(
-      'livechat-compact-container',
+      'livechat-compact-container'
     );
 
     if (!liveChatButtonFrame) {
@@ -114,7 +121,7 @@ export class AppComponent implements OnInit {
       liveChatButtonFrame['contentWindow'] ||
       liveChatButtonFrame['contentDocument'];
     const frameContentContainer = frameContent.document.getElementById(
-      'content-container',
+      'content-container'
     );
 
     frameContentContainer.setAttribute('style', 'padding: 0 !important');
@@ -143,7 +150,7 @@ export class AppComponent implements OnInit {
       visibilityAttr === undefined
     ) {
       console.log(
-        'This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.',
+        'This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.'
       );
     } else {
       document.addEventListener(
@@ -153,7 +160,7 @@ export class AppComponent implements OnInit {
             this.userService.updateUser();
           }
         },
-        false,
+        false
       );
     }
 

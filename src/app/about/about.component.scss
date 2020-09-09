@@ -141,4 +141,94 @@
       }
     }
   }
+
+  .rubic-roadmap {
+    margin-top: 100px;
+    padding-bottom: 150px;
+
+    .container {
+      max-width: 1100px;
+    }
+
+    &-block {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 50px;
+      position: relative;
+
+      @include b(1100) {
+        flex-direction: column;
+      }
+
+      &:after {
+        content: '';
+        background-color: #4aa956;
+        height: 2px;
+        position: absolute;
+        width: 105%;
+        bottom: -69.5px;
+        left: -30px;
+
+        @include b(1100) {
+          height: 100%;
+          position: absolute;
+          width: 2px;
+          left: 1px;
+          top: 0;
+        }
+      }
+
+      &-item {
+        background-color: #fafafa;
+        border-radius: 5px;
+        padding: 25px 20px;
+        position: relative;
+        width: 165px;
+        height: 165px;
+
+        @include b(1100) {
+          max-width: 100%;
+          margin-left: 60px;
+          width: auto;
+          margin-bottom: 15px;
+        }
+
+        &:after {
+          content: '';
+          border: 1px dashed #4aa956;
+          height: 50px;
+          position: absolute;
+          bottom: -55px;
+
+          @include b(1100) {
+            border: 1px dashed #4aa956;
+            height: 50px;
+            position: absolute;
+            top: 0px;
+            left: -30px;
+            transform: rotate(90deg);
+          }
+        }
+
+        &:before {
+          content: '';
+          height: 15px;
+          width: 15px;
+          background-color: #4aa956;
+          position: absolute;
+          bottom: -75px;
+          left: 14.5px;
+
+          @include b(1100) {
+            height: 15px;
+            width: 15px;
+            background-color: #4aa956;
+            position: absolute;
+            top: 18px;
+            left: -65px;
+          }
+        }
+      }
+    }
+  }
 }

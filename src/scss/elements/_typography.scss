@@ -44,6 +44,14 @@ li {
     }
   }
 
+  &-roadmap-title {
+    font-weight: bold;
+    font-size: 17px;
+    line-height: 27px;
+    color: #4aa956;
+    margin-bottom: 5px;
+  }
+
   &-title {
     &-benefits {
       font-weight: 500;
@@ -86,6 +94,13 @@ li {
       font-size: 18px;
       line-height: 28px;
     }
+  }
+
+  &-roadmap-text {
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 27px;
+    color: #000000;
   }
 
   &-text {
