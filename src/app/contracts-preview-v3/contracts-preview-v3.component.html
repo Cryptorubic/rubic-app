@@ -394,7 +394,7 @@
                 *ngIf="
                   originalContract.isEthereum &&
                   contractInfo.baseRaised * 1 > 0 &&
-                  originalContract.state === 'ACTIVE' &&
+                  ['ACTIVE', 'EXPIRED'].includes(originalContract.state) &&
                   contractInfo.baseRaised != 0
                 "
               >
@@ -407,7 +407,7 @@
                     class="arrow"
                     src="./assets/images/buttons/arrow_blue.svg"
                   />
-                  <span>Refund</span>
+                  <span>Refund 1</span>
                 </button>
               </div>
             </div>
