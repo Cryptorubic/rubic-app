@@ -95,14 +95,9 @@
         <div class="grid-cell grid-cell-3-13 public-swaps_cell">
           <div class="public-swaps_cell_content">
             <div class="swap-info">
-              <b>{{
-                contract.stop_date || contract.contract_details.stop_date
-                  | date: 'dd.MM.yyyy'
-              }}</b>
-              {{
-                contract.stop_date || contract.contract_details.stop_date
-                  | date: 'HH:mm'
-              }}
+              {{ contract.left_times.times_parts[0] }}d:
+              {{ contract.left_times.times_parts[1] }}h:
+              {{ contract.left_times.times_parts[2] }}m
             </div>
           </div>
         </div>
