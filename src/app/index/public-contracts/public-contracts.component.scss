@@ -163,9 +163,9 @@
       right: auto;
     }
     &.partiality-filled {
-      color: #fcd600;
+      color: var(--main-green);
       span {
-        border-color: #fcd600;
+        border-color: var(--main-green);
       }
     }
   }
