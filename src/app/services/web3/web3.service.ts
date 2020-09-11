@@ -49,8 +49,8 @@ export interface TokenInfoInterface {
   isEthereum?: boolean;
 }
 
-const IS_PRODUCTION = location.protocol === 'https:';
-// const IS_PRODUCTION = true;
+// const IS_PRODUCTION = location.protocol === 'https:';
+const IS_PRODUCTION = true;
 
 const ETHERSCAN_URLS = {
   ETHERSCAN_ADDRESS: 'https://etherscan.io/',

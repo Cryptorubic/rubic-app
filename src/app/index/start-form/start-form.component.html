@@ -169,7 +169,19 @@
               !requestData.tokens_info.base.token.address ||
               !requestData.tokens_info.quote.token.address ||
               isCreatingContract ||
-              (requestData.broker_fee && !requestData.broker_fee_address)
+              (requestData.broker_fee && !requestData.broker_fee_address) ||
+              (requestData.broker_fee &&
+                !(
+                  requestData.broker_fee_quote <= 50 &&
+                  requestData.broker_fee_quote >= 0
+                )) ||
+              (requestData.broker_fee &&
+                !(
+                  requestData.broker_fee_base <= 50 &&
+                  requestData.broker_fee_base >= 0
+                )) ||
+              requestData.tokens_info.base.token.mywish_id ===
+                requestData.tokens_info.quote.token.mywish_id
             "
           >
             <img
@@ -435,7 +447,7 @@
               <input
                 placeholder="0.1"
                 [(ngModel)]="requestData.broker_fee_quote"
-                name="broker_fee_base"
+                name="broker_fee_quote"
                 min="0"
                 max="50"
                 value="0.1"
@@ -484,7 +496,7 @@
       <div class="transaction-title">Error</div>
 
       <div class="transaction-description">
-        Please choose ropsten test net network in Metamask.
+        Please choose main net network in Metamask.
       </div>
 
       <div class="alert-window-buttons text-center">

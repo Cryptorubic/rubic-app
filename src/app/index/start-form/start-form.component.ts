@@ -576,6 +576,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         )
         .then(() => {
           this.contractIsCreated(originalContract);
+        })
+        .catch((err) => {
+          this.isCreatingContract = false;
         });
     };
   }

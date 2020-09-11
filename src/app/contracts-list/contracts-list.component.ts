@@ -34,7 +34,7 @@ export class ContractsListComponent implements OnInit {
     private userService: UserService,
     private dialog: MatDialog,
     private contractsService: ContractsService,
-    private http: HttpClient
+    private http: HttpClient,
   ) {
     this.userService
       .getCurrentUser()
@@ -223,7 +223,7 @@ export class ContractsListResolver implements Resolve<any> {
   constructor(
     private contractsService: ContractsService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
