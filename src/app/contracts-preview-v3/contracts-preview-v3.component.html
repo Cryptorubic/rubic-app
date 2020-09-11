@@ -256,7 +256,11 @@
                                     contractInfo.baseLeft,
                                     originalContract.min_base_wei
                                   ] | bigNumberMin,
-                                max: contractInfo.baseLeft
+                                max:
+                                  contractInfo.baseLeft
+                                  | bigNumberFormat
+                                    : tokens.base.token.decimals
+                                    : true
                               }"
                               [ngClass]="{
                                 'without-error-lightning': activeSide !== 'base'
@@ -568,7 +572,11 @@
                                     contractInfo.quoteLeft,
                                     originalContract.min_quote_wei
                                   ] | bigNumberMin,
-                                max: contractInfo.quoteLeft
+                                max:
+                                  contractInfo.quoteLeft
+                                  | bigNumberFormat
+                                    : tokens.quote.token.decimals
+                                    : true
                               }"
                               [ngClass]="{
                                 'without-error-lightning':

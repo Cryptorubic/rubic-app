@@ -286,12 +286,27 @@
     >
       <div class="index-start-form__settings-item">
         <div class="index-start-form__settings-item-head">Permanent trade</div>
-        <div class="index-start-form__settings-item-content">
+        <div
+          class="index-start-form__settings-item-content"
+          style="position: relative"
+        >
+          <div
+            class="input-content-disabled"
+            style="
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              z-index: 2;
+            "
+          ></div>
           <label class="form-field_input-checkbox">
             <input
               type="checkbox"
               name="public"
               [(ngModel)]="requestData.permanent"
+              disabled="true"
             />
             <span class="checkbox-text checkbox-text_on">Yes</span>
             <span class="checkbox-text checkbox-text_off">No</span>
