@@ -66,81 +66,78 @@
           </div>
           <div class="clearfix-block"></div>
         </div>
-      </div>
-    </div>
-
-    <div class="public-swaps_body" *ngIf="contractsList.length">
-      <div
-        class="grid-row public-swaps_row as-link"
-        (click)="toContract(contract)"
-        *ngFor="let contract of contractsList"
-      >
-        <div class="grid-cell grid-cell-3-13 public-swaps_cell">
-          <div class="public-swaps_cell_content">
-            <div class="swap-info">
-              <b class="my-contract-name">{{ contract.name }}</b>
+        <div
+          class="grid-row public-swaps_row as-link"
+          (click)="toContract(contract)"
+          *ngFor="let contract of contractsList"
+        >
+          <div class="grid-cell grid-cell-3-13 public-swaps_cell">
+            <div class="public-swaps_cell_content">
+              <div class="swap-info">
+                <b class="my-contract-name">{{ contract.name }}</b>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="grid-cell grid-cell-3-13 public-swaps_cell">
-          <div class="public-swaps_cell_content">
-            <div class="swap-info">
-              <b>{{ contract.created_date | date: 'dd.MM.yyyy' }}</b>
-              {{ contract.created_date | date: 'HH:mm' }}
+          <div class="grid-cell grid-cell-3-13 public-swaps_cell">
+            <div class="public-swaps_cell_content">
+              <div class="swap-info">
+                <b>{{ contract.created_date | date: 'dd.MM.yyyy' }}</b>
+                {{ contract.created_date | date: 'HH:mm' }}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="grid-cell grid-cell-3-13 public-swaps_cell">
-          <div class="public-swaps_cell_content">
-            <div class="swap-info">
-              {{ contract.left_times.times_parts[0] }}d:
-              {{ contract.left_times.times_parts[1] }}h:
-              {{ contract.left_times.times_parts[2] }}m
+          <div class="grid-cell grid-cell-3-13 public-swaps_cell">
+            <div class="public-swaps_cell_content">
+              <div class="swap-info">
+                {{ contract.left_times.times_parts[0] }}d:
+                {{ contract.left_times.times_parts[1] }}h:
+                {{ contract.left_times.times_parts[2] }}m
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="grid-cell grid-cell-3-13 public-swaps_cell">
-          <div class="public-swaps_cell_content">
-            <div class="swap-info">
-              <span
-                class="contract-state"
-                style="float: none"
-                [ngClass]="'contract-state__' + states[contract.state].NUMBER"
-              >
-                {{ states[contract.state].TEXT }}
-              </span>
+          <div class="grid-cell grid-cell-3-13 public-swaps_cell">
+            <div class="public-swaps_cell_content">
+              <div class="swap-info">
+                <span
+                  class="contract-state"
+                  style="float: none"
+                  [ngClass]="'contract-state__' + states[contract.state].NUMBER"
+                >
+                  {{ states[contract.state].TEXT }}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="grid-cell grid-cell-1-13 public-swaps_cell">
-          <div class="public-swaps_cell_content text-center">
-            <button
-              class="delete-btn"
-              [ngClass]="{
-                invisible:
-                  (contract.contract_type === 20 &&
+          <div class="grid-cell grid-cell-1-13 public-swaps_cell">
+            <div class="public-swaps_cell_content text-center">
+              <button
+                class="delete-btn"
+                [ngClass]="{
+                  invisible:
+                    (contract.contract_type === 20 &&
+                      !(
+                        states[contract.state].NUMBER === 0 ||
+                        states[contract.state].NUMBER === 2 ||
+                        states[contract.state].NUMBER === 6
+                      )) ||
                     !(
-                      states[contract.state].NUMBER === 0 ||
-                      states[contract.state].NUMBER === 2 ||
-                      states[contract.state].NUMBER === 6
-                    )) ||
-                  !(
-                    !contract.contract_state ||
-                    states[contract.contract_state].NUMBER === 0
-                  )
-              }"
-              (click)="
-                $event.stopPropagation();
-                $event.preventDefault();
-                deleteContract(contract)
-              "
-            >
-              <img src="./assets/images/icons/trash.svg" />
-            </button>
+                      !contract.contract_state ||
+                      states[contract.contract_state].NUMBER === 0
+                    )
+                }"
+                (click)="
+                  $event.stopPropagation();
+                  $event.preventDefault();
+                  deleteContract(contract)
+                "
+              >
+                <img src="./assets/images/icons/trash.svg" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

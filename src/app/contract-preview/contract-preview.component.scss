@@ -1,3 +1,5 @@
+@import '../../scss/mixins';
+
 .base-block-content {
   box-sizing: border-box;
   background-attachment: fixed;
@@ -257,8 +259,19 @@
   line-height: 52px;
   display: flex;
   justify-content: space-between;
+
+  @include b(950) {
+    flex-direction: column;
+    text-align: left;
+  }
+
   &--reverse {
     flex-direction: row-reverse;
+
+    @include b(950) {
+      flex-direction: column;
+    }
+
     .token-info__wrapper {
       display: flex;
       flex-direction: row-reverse;
@@ -269,9 +282,29 @@
     }
     .token-info_texts__name {
       text-align: right;
+
+      @include b(950) {
+        text-align: right;
+      }
     }
+
+    .token-info_investments {
+      @include b(950) {
+        margin-top: 20px;
+      }
+    }
+    .token-info_investments__desc {
+      @include b(950) {
+        text-align: right;
+      }
+    }
+
     .token-info_investments__number {
       text-align: left;
+
+      @include b(950) {
+        text-align: right;
+      }
     }
   }
   &_icon {
@@ -322,6 +355,11 @@
     line-height: 36px;
     display: flex;
     flex-direction: column;
+
+    @include b(950) {
+      margin-top: 20px;
+    }
+
     &__number {
       font-size: 16px;
       display: inline-block;
@@ -330,6 +368,10 @@
       margin-bottom: 0px;
       margin-top: -6px;
       text-align: right;
+
+      @include b(950) {
+        text-align: left;
+      }
     }
     &__desc {
       display: inline-block;
@@ -338,6 +380,10 @@
       font-size: 14px;
       margin: -2px 0 auto;
       color: rgba(0, 0, 0, 0.5);
+
+      @include b(950) {
+        text-align: left;
+      }
     }
   }
 }
@@ -359,12 +405,35 @@
   .normal-text {
     color: #000;
   }
+
+  form {
+    .grid-row {
+      @include b(800) {
+        flex-direction: column;
+
+        div {
+          width: 100%;
+        }
+      }
+    }
+  }
 }
 
 .contract-info-block {
   margin-top: 15px;
   background: #ffffff;
   padding: 30px 40px 10px 30px;
+
+  .grid-row {
+    .grid-cell {
+      &:nth-child(3) {
+        @include b(680) {
+          width: 100%;
+        }
+      }
+    }
+  }
+
   .form-field_value {
     color: #000;
     display: flex;
@@ -486,6 +555,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
     }
   }
 }
