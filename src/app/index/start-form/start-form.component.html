@@ -62,6 +62,7 @@
                   type="button"
                   [disabled]="!baseCustomToken.valid"
                   (click)="addCustomToken('base')"
+                  style="height: 100%"
                 >
                   <img
                     class="arrow"
@@ -129,6 +130,7 @@
                   type="button"
                   [disabled]="!quoteCustomToken.valid"
                   (click)="addCustomToken('quote')"
+                  style="height: 100%"
                 >
                   <img
                     class="arrow"
@@ -141,7 +143,10 @@
           </div>
         </div>
       </div>
-      <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1">
+      <div
+        class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1"
+        style="float: right"
+      >
         <div class="form-field form-field_btn form-field_btn--rate">
           <label class="form-field_label form-field_label--rate">
             <div class="form-notice" *ngIf="cmcRate && cmcRate.isMessage">
@@ -261,7 +266,7 @@
         <div class="index-start-form__settings-item">
           <div class="index-start-form__settings-item-head">Public deal</div>
           <div class="index-start-form__settings-item-content">
-            <label class="form-field_input-checkbox">
+            <label class="form-field_input-checkbox" style="min-width: 70px">
               <input
                 type="checkbox"
                 name="public"
@@ -301,7 +306,7 @@
               z-index: 2;
             "
           ></div>
-          <label class="form-field_input-checkbox">
+          <label class="form-field_input-checkbox" style="min-width: 70px">
             <input
               type="checkbox"
               name="public"
@@ -380,7 +385,7 @@
               Brokerage fee
             </div>
             <div class="index-start-form__settings-item-content">
-              <label class="form-field_input-checkbox">
+              <label class="form-field_input-checkbox" style="min-width: 70px">
                 <input
                   type="checkbox"
                   name="broker_fee"

@@ -661,6 +661,11 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       height: 13px;
       width: 100%;
       position: relative;
+
+      @include b(450) {
+        font-size: 10px;
+      }
+
       .form-notice {
         position: absolute;
         right: 0;

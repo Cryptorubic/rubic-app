@@ -1,3 +1,5 @@
+@import '../../../scss/_mixins';
+
 .index-start-form {
   position: relative;
   padding: 30px 20px 0;
@@ -47,6 +49,10 @@
       }
       &-wrapper {
         display: flex;
+
+        @include b(600) {
+          flex-wrap: wrap;
+        }
       }
       .form-field_input {
         input {
@@ -62,6 +68,15 @@
       & + & {
         margin-left: 30px;
       }
+
+      &:nth-last-child(1) {
+        @include b(600) {
+          margin-left: 0px !important;
+          margin-top: 20px;
+          width: 100%;
+        }
+      }
+
       &-checkbox {
         .form-field_input {
           width: 620px;
@@ -117,12 +132,23 @@
       &-wrapper {
         display: flex;
         margin-top: 25px;
+
+        @include b(500) {
+          flex-wrap: wrap;
+        }
+
         .form-field {
           width: 300px;
           margin-bottom: 0;
         }
         .form-field + .form-field {
           margin-left: 20px;
+
+          @include b(500) {
+            width: 100%;
+            margin-top: 20px;
+            margin-left: 0;
+          }
         }
       }
       &-content {

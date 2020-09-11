@@ -1,3 +1,5 @@
+@import '../../../scss/mixins';
+
 header {
   padding-top: 20px;
   padding-bottom: 20px;
@@ -48,6 +50,11 @@ header {
     margin: 0;
     display: flex;
     align-items: center;
+
+    @include b(500) {
+      flex-wrap: wrap;
+    }
+
     &_item {
       display: inline-block;
       line-height: 13px;
@@ -161,7 +168,7 @@ header {
     width: 22px;
     height: 2px;
     border-radius: 1px;
-    background-color: #fff;
+    background-color: black;
     + .icon-bar {
       margin-top: 4px;
     }
@@ -188,7 +195,8 @@ header {
   }
   .header-menu {
     display: none;
-    background: rgba(56, 67, 84, 0.9);
+    // background: rgba(56, 67, 84, 0.9);
+    background: rgba(255, 255, 255, 0.9);
     position: absolute;
     left: 0;
     right: 0;
@@ -196,7 +204,8 @@ header {
     &_sublist {
       left: 0;
       right: 0;
-      background: rgba(56, 67, 84, 0.9);
+      // background: rgba(56, 67, 84, 0.9);
+      background: rgba(255, 255, 255, 0.9);
       .sublist-link {
         padding-left: 35px;
       }
@@ -214,7 +223,8 @@ header {
           }
           &:hover {
             text-decoration: none;
-            background-color: rgba(0, 0, 0, 0.4);
+            // background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(255, 255, 255, 0.4);
           }
         }
       }
