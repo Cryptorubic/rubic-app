@@ -8,7 +8,6 @@
 }
 .form-container {
   padding-left: 62px;
-
 }
 .form-field_description {
   line-height: 28px;
@@ -17,7 +16,7 @@
   }
 }
 .preview-rate {
-  padding-top: 7px!important;
+  padding-top: 7px !important;
 }
 .cmc-rate {
   white-space: nowrap;
@@ -98,14 +97,14 @@
     // border-color: #FCD600;
     background-color: rgba(255, 255, 255, 0.1);
     font-size: 30px;
-    color: #FFFFFF;
+    color: #ffffff;
     font-weight: bold;
     content: counter(blockNumber);
   }
 
   &_title {
     font-size: 25px;
-    color: #FFFFFF;
+    color: #ffffff;
     font-weight: bold;
     padding: 20px 1.5vw;
     margin-left: -1.5vw;
@@ -133,7 +132,7 @@
   }
   &__active {
     &:after {
-      border-color: #FCD600;
+      border-color: #fcd600;
     }
   }
   &.checked {
@@ -150,7 +149,7 @@
       height: 20px;
       border-width: 0 4px 4px 0;
       border-style: solid;
-      border-color: #FCD600;
+      border-color: #fcd600;
       transform: rotate(45deg);
     }
   }
@@ -185,7 +184,6 @@
     }
   }
 }
-
 
 .token-block {
   background-color: rgba(0, 0, 0, 0.1);
@@ -227,7 +225,7 @@
     max-width: 100%;
     &__name {
       font-size: 16px;
-      color: #FFFFFF;
+      color: #ffffff;
       letter-spacing: -0.43px;
       font-weight: bold;
       line-height: 19px;
@@ -235,11 +233,11 @@
     &__address {
       margin-top: 4px;
       font-size: 18px;
-      color: #FFFFFF;
+      color: #ffffff;
       line-height: 22px;
       overflow: hidden;
       white-space: nowrap;
-      text-overflow: ellipsis
+      text-overflow: ellipsis;
     }
   }
   &_balance {
@@ -269,7 +267,7 @@
       padding: 7px 10px;
       line-height: 34px;
       font-size: 28px;
-      color: #FFFFFF;
+      color: #ffffff;
       background-color: rgba(69, 79, 95, 0.5);
     }
   }
@@ -281,7 +279,6 @@
 .info-content-block {
   padding-left: 2vw;
   padding-right: 2vw;
-
 }
 .deployment-progress-container {
   padding: 12px 0 32px;
@@ -316,7 +313,6 @@
   color: rgba(255, 255, 255, 0.55);
 }
 
-
 .steps-mobile {
   margin-bottom: 20px;
   display: none;
@@ -343,7 +339,7 @@
     }
     &.opened {
       border-left: 5px solid;
-      border-color: #FCD600;
+      border-color: #fcd600;
     }
     &.active {
       border-left: 5px solid;
@@ -353,7 +349,7 @@
         background-color: rgba(0, 0, 0, 0.3);
       }
       &.opened {
-        border-color: #FCD600;
+        border-color: #fcd600;
       }
     }
     &.checked:before {
@@ -371,7 +367,7 @@
       margin-left: -6px;
       border-width: 0 4px 4px 0;
       border-style: solid;
-      border-color: #FCD600;
+      border-color: #fcd600;
       -webkit-transform: rotate(45deg);
       transform: rotate(45deg);
     }
@@ -393,14 +389,15 @@
     display: block;
   }
   .form-block {
-    margin-top: 0!important;
+    margin-top: 0 !important;
     &_fieldset {
       padding-top: 0;
     }
     &.hidden {
       display: none;
     }
-    &:after, &:before {
+    &:after,
+    &:before {
       display: none;
     }
   }
@@ -409,16 +406,13 @@
   }
 }
 
-
 .contract-pay-state {
   border-top: 1px dashed rgba(255, 255, 255, 0.25);
   font-size: 18px;
-  color: #8E939B;
+  color: #8e939b;
   line-height: 22px;
   padding: 15px 10px;
 }
-
-
 
 .rates-info {
   width: 100%;
@@ -451,7 +445,7 @@
     border-left: 5px solid rgba(255, 255, 255, 0.25);
     margin-bottom: 20px;
     a {
-      color: #61B9DF;
+      color: #61b9df;
     }
   }
 }

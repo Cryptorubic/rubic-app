@@ -1,25 +1,37 @@
 <div class="dialog-block" [hidden]="!trxData.checked">
   <div class="dialog-block__content">
-
     <button class="dialog-closer" mat-dialog-close>
-      <img src="./assets/images/icons/cross-w.svg">
+      <img src="./assets/images/icons/cross-w.svg" />
     </button>
 
     <div class="transaction-title">
-      {{!(trxData.afterComplete && trxData.transactions[0].confirmed) ? trxData.title : trxData.afterComplete.title}}
+      {{
+        !(trxData.afterComplete && trxData.transactions[0].confirmed)
+          ? trxData.title
+          : trxData.afterComplete.title
+      }}
     </div>
 
-    <div class="transaction-description" *ngIf="!(trxData.afterComplete && trxData.transactions[0].confirmed)">
-      {{trxData.description}}
+    <div
+      class="transaction-description"
+      *ngIf="!(trxData.afterComplete && trxData.transactions[0].confirmed)"
+    >
+      {{ trxData.description }}
     </div>
 
-    <mat-dialog-content *ngIf="!(trxData.afterComplete && trxData.transactions[0].confirmed)">
-      <div *ngFor="let transaction of trxData.transactions; let index = index"
-           class="transaction-instruction">
-
+    <mat-dialog-content
+      *ngIf="!(trxData.afterComplete && trxData.transactions[0].confirmed)"
+    >
+      <div
+        *ngFor="let transaction of trxData.transactions; let index = index"
+        class="transaction-instruction"
+      >
         <div class="transaction-item">
-          <div *ngIf="transaction.title"
-               class="transaction-item-title" [ngClass]="{checked: transaction.confirmed}">
+          <div
+            *ngIf="transaction.title"
+            class="transaction-item-title"
+            [ngClass]="{ checked: transaction.confirmed }"
+          >
             {{ transaction.title }}
           </div>
 
@@ -27,15 +39,26 @@
             <div class="grid-row">
               <!--this.originalContract.contract_details.owner_address-->
               <div class="grid-cell grid-cell-vs-1-2">
-
-                <button type="button"
-                        [disabled]="transaction.inProgress"
-                        (click)="sendTransaction({
-                          type: 'metamask',
-                          address: providedAddresses.metamask ? providedAddresses.metamask[0] : false
-                        }, transaction)"
-                        class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
-                  <img src="./assets/images/icons/web3clients/metamask.svg" class="btn-ico">
+                <button
+                  type="button"
+                  [disabled]="transaction.inProgress"
+                  (click)="
+                    sendTransaction(
+                      {
+                        type: 'metamask',
+                        address: providedAddresses.metamask
+                          ? providedAddresses.metamask[0]
+                          : false
+                      },
+                      transaction
+                    )
+                  "
+                  class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100"
+                >
+                  <img
+                    src="./assets/images/icons/web3clients/metamask.svg"
+                    class="btn-ico"
+                  />
                   <span class="lds-ellipsis" *ngIf="transaction.inProgress">
                     <span class="lds-ellipsis-container">
                       <span></span><span></span><span></span><span></span>
@@ -46,43 +69,77 @@
               </div>
 
               <div class="grid-cell grid-cell-vs-1-2">
-                <a [href]="
+                <a
+                  [href]="
                     'https://myetherwallet.com/interface/send-transaction/' +
-                    (!transaction.data ?
-                      '?sendMode=ether&to=' + transaction.to + '&value=' + transaction.ethValue + '#send-transaction' :
-                      '?data=' + transaction.data + '&value=' + (transaction.ethValue || '0') + '&to=' + transaction.to
-                    )"
-                   *ngIf="!transaction.inProgress"
-                   target="_blank"
-                   type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
-                  <img src="./assets/images/icons/web3clients/mew.png" class="btn-ico">
+                    (!transaction.data
+                      ? '?sendMode=ether&to=' +
+                        transaction.to +
+                        '&value=' +
+                        transaction.ethValue +
+                        '#send-transaction'
+                      : '?data=' +
+                        transaction.data +
+                        '&value=' +
+                        (transaction.ethValue || '0') +
+                        '&to=' +
+                        transaction.to)
+                  "
+                  *ngIf="!transaction.inProgress"
+                  target="_blank"
+                  type="button"
+                  class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100"
+                >
+                  <img
+                    src="./assets/images/icons/web3clients/mew.png"
+                    class="btn-ico"
+                  />
                 </a>
 
-                <button *ngIf="transaction.inProgress" disabled="disabled"
-                   type="button" class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100">
-                  <img src="./assets/images/icons/web3clients/mew.png" class="btn-ico">
+                <button
+                  *ngIf="transaction.inProgress"
+                  disabled="disabled"
+                  type="button"
+                  class="btn btn-transparent btn-min btn-normal-weight wallet-btn vs-width-100"
+                >
+                  <img
+                    src="./assets/images/icons/web3clients/mew.png"
+                    class="btn-ico"
+                  />
                 </button>
               </div>
-
             </div>
-            <div class="transaction-fields_opener" [ngClass]="{opened: openedInstruction[index]}">
-              <span (click)="openedInstruction[index] = !openedInstruction[index]">
+            <div
+              class="transaction-fields_opener"
+              [ngClass]="{ opened: openedInstruction[index] }"
+            >
+              <span
+                (click)="openedInstruction[index] = !openedInstruction[index]"
+              >
                 Transaction details for manual execution
               </span>
             </div>
-            <div [hidden]="!openedInstruction[index]" class="transaction-fields">
+            <div
+              [hidden]="!openedInstruction[index]"
+              class="transaction-fields"
+            >
               <div class="form-field" *ngIf="transaction.from">
                 <div class="form-field_label">
                   Send transaction (0 ETH) from your management address
                 </div>
                 <div class="form-field_input">
                   <div class="form-field_copy">
-                    <button type="button"
-                            class="copy-btn"
-                            [ngClass]="{copied: copiedData['owner_address' + index]}"
-                            ngxClipboard [cbContent]="transaction.from"
-                            (cbOnSuccess)="onCopied('owner_address' + index)">
-                      <img src="./assets/images/icons/copy.svg"/>
+                    <button
+                      type="button"
+                      class="copy-btn"
+                      [ngClass]="{
+                        copied: copiedData['owner_address' + index]
+                      }"
+                      ngxClipboard
+                      [cbContent]="transaction.from"
+                      (cbOnSuccess)="onCopied('owner_address' + index)"
+                    >
+                      <img src="./assets/images/icons/copy.svg" />
                     </button>
                   </div>
                   <div class="form-field_input_data">
@@ -94,18 +151,27 @@
               </div>
               <div class="form-field">
                 <div class="form-field_label">
-                  <span *ngIf="!transaction.from && !transaction.ethValue">Send transaction (0 ETH)</span>
-                  <span *ngIf="!transaction.from && transaction.ethValue">Send {{transaction.ethValue}} ETH</span>
+                  <span *ngIf="!transaction.from && !transaction.ethValue"
+                    >Send transaction (0 ETH)</span
+                  >
+                  <span *ngIf="!transaction.from && transaction.ethValue"
+                    >Send {{ transaction.ethValue }} ETH</span
+                  >
                   To contract address
                 </div>
                 <div class="form-field_input">
                   <div class="form-field_copy">
-                    <button type="button"
-                            class="copy-btn"
-                            [ngClass]="{copied: copiedData['contract_address' + index]}"
-                            ngxClipboard [cbContent]="transaction.to"
-                            (cbOnSuccess)="onCopied('contract_address' + index)">
-                      <img src="./assets/images/icons/copy.svg"/>
+                    <button
+                      type="button"
+                      class="copy-btn"
+                      [ngClass]="{
+                        copied: copiedData['contract_address' + index]
+                      }"
+                      ngxClipboard
+                      [cbContent]="transaction.to"
+                      (cbOnSuccess)="onCopied('contract_address' + index)"
+                    >
+                      <img src="./assets/images/icons/copy.svg" />
                     </button>
                   </div>
                   <div class="form-field_input_data">
@@ -116,17 +182,18 @@
                 </div>
               </div>
               <div class="form-field" *ngIf="transaction.data">
-                <div class="form-field_label">
-                  With data field
-                </div>
+                <div class="form-field_label">With data field</div>
                 <div class="form-field_input">
                   <div class="form-field_copy">
-                    <button type="button"
-                            class="copy-btn"
-                            [ngClass]="{copied: copiedData['data' + index]}"
-                            ngxClipboard [cbContent]="transaction.data"
-                            (cbOnSuccess)="onCopied('data' + index)">
-                      <img src="./assets/images/icons/copy.svg"/>
+                    <button
+                      type="button"
+                      class="copy-btn"
+                      [ngClass]="{ copied: copiedData['data' + index] }"
+                      ngxClipboard
+                      [cbContent]="transaction.data"
+                      (cbOnSuccess)="onCopied('data' + index)"
+                    >
+                      <img src="./assets/images/icons/copy.svg" />
                     </button>
                   </div>
                   <div class="form-field_input_data">
@@ -151,33 +218,36 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
-
 
 <ng-template #metaMaskError>
   <div class="dialog-block">
     <div class="dialog-block__content">
-
-      <button class="dialog-closer" (click)="closeMetaMaskError()" type="button">
-        <img src="./assets/images/icons/cross-w.svg">
+      <button
+        class="dialog-closer"
+        (click)="closeMetaMaskError()"
+        type="button"
+      >
+        <img src="./assets/images/icons/cross-w.svg" />
       </button>
 
-      <div class="transaction-title">
-        Error
-      </div>
+      <div class="transaction-title">Error</div>
 
-      <div class="transaction-description"
-           [innerHTML]="this.metamaskError.msg"></div>
+      <div
+        class="transaction-description"
+        [innerHTML]="this.metamaskError.msg"
+      ></div>
 
       <div class="alert-window-buttons text-center">
-        <button class="btn btn-yellow btn-auto btn-min" (click)="closeMetaMaskError()" type="button">
+        <button
+          class="btn btn-yellow btn-auto btn-min"
+          (click)="closeMetaMaskError()"
+          type="button"
+        >
           <span>&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</span>
         </button>
       </div>
-
     </div>
   </div>
 </ng-template>
-

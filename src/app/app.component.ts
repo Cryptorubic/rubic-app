@@ -1,17 +1,22 @@
-import {Component, OnInit} from '@angular/core';
-import {UserService} from './services/user/user.service';
-import {CookieService} from 'ngx-cookie-service';
-import {ActivationEnd, ActivationStart, NavigationStart, ResolveStart, Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { UserService } from './services/user/user.service';
+import { Web3Service } from './services/web3/web3.service';
+import { CookieService } from 'ngx-cookie-service';
+import {
+  ActivationEnd,
+  ActivationStart,
+  NavigationStart,
+  ResolveStart,
+  Router,
+} from '@angular/router';
 
-import {MODE, PROJECT_PARTS} from './app-routing.module';
+import { MODE, PROJECT_PARTS } from './app-routing.module';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
-
-
 export class AppComponent implements OnInit {
   title = 'mywish-swaps';
 
@@ -23,17 +28,26 @@ export class AppComponent implements OnInit {
   constructor(
     private userService: UserService,
     private router: Router,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private Web3Service: Web3Service
   ) {
-
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe((event) => {
-
       if (event instanceof NavigationStart) {
+        if (event.url === '/about') {
+          body.classList.add('white-bg');
+        }
+        if (event.url !== '/about') {
+          body.classList.remove('white-bg');
+        }
+
         if (MODE === 'PROD') {
           for (const url in PROJECT_PARTS[MODE]) {
             if (new RegExp(url).test(event.url)) {
-              if ((PROJECT_PARTS[MODE][url] !== location.hostname) && (location.hostname === PROJECT_PARTS[MODE].from)) {
+              if (
+                PROJECT_PARTS[MODE][url] !== location.hostname &&
+                location.hostname === PROJECT_PARTS[MODE].from
+              ) {
                 // location.hostname = PROJECT_PARTS[MODE][url];
                 return;
               }
@@ -51,7 +65,11 @@ export class AppComponent implements OnInit {
             this.visibleWatchButton = !event.snapshot.data.hideInstruction;
             body.classList.add('with-support');
             body.classList.remove('without-support');
-            event.snapshot.data.supportHide ? body.classList.add('support-hide-' + event.snapshot.data.supportHide) : '';
+            event.snapshot.data.supportHide
+              ? body.classList.add(
+                  'support-hide-' + event.snapshot.data.supportHide
+                )
+              : '';
           } else {
             body.classList.remove('with-support');
             body.classList.add('without-support');
@@ -62,7 +80,6 @@ export class AppComponent implements OnInit {
 
       if (event instanceof NavigationStart) {
         if (event.id === 2) {
-
         }
       }
       this.notCookiesAccept = !this.cookieService.get('cookies-accept');
@@ -77,9 +94,12 @@ export class AppComponent implements OnInit {
   }
 
   private checkLiveChat() {
-
-    const liveChatButtonFrame = document.getElementById('livechat-compact-view');
-    const liveChatContainer = document.getElementById('livechat-compact-container');
+    const liveChatButtonFrame = document.getElementById(
+      'livechat-compact-view'
+    );
+    const liveChatContainer = document.getElementById(
+      'livechat-compact-container'
+    );
 
     if (!liveChatButtonFrame) {
       setTimeout(() => {
@@ -93,20 +113,21 @@ export class AppComponent implements OnInit {
     });
     mutationObserver.observe(liveChatContainer, {
       attributes: true,
-      attributeFilter: ['style']
+      attributeFilter: ['style'],
     });
     liveChatContainer.removeAttribute('style');
 
-
-
-    const frameContent = liveChatButtonFrame['contentWindow'] || liveChatButtonFrame['contentDocument'];
-    const frameContentContainer = frameContent.document.getElementById('content-container');
-
+    const frameContent =
+      liveChatButtonFrame['contentWindow'] ||
+      liveChatButtonFrame['contentDocument'];
+    const frameContentContainer = frameContent.document.getElementById(
+      'content-container'
+    );
 
     frameContentContainer.setAttribute('style', 'padding: 0 !important');
 
-    frameContent.document.getElementById('full-view-button').style.height = '100%';
-
+    frameContent.document.getElementById('full-view-button').style.height =
+      '100%';
   }
 
   ngOnInit(): void {
@@ -124,17 +145,29 @@ export class AppComponent implements OnInit {
       visibilityEvent = 'webkitvisibilitychange';
     }
 
-    if (typeof document.addEventListener === 'undefined' || visibilityAttr === undefined) {
-      console.log('This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.');
+    if (
+      typeof document.addEventListener === 'undefined' ||
+      visibilityAttr === undefined
+    ) {
+      console.log(
+        'This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.'
+      );
     } else {
-      document.addEventListener(visibilityEvent, () => {
-        if (!document[visibilityAttr]) {
-          this.userService.updateUser();
-        }
-      }, false);
+      document.addEventListener(
+        visibilityEvent,
+        () => {
+          if (!document[visibilityAttr]) {
+            this.userService.updateUser();
+          }
+        },
+        false
+      );
     }
 
     this.checkLiveChat();
 
+    if (this.Web3Service.ethereum.isConnected()) {
+      this.Web3Service.setUserAddress();
+    }
   }
 }

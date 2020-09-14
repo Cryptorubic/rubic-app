@@ -1,46 +1,57 @@
-
 <div class="active-swaps_container">
-  <a class="btn btn-yellow btn__auto-width float-right"
-     routerLink="create-v3" style="margin-top: -10px; padding: 0 3.89%;">
-    <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
-    <span>
-      Create trade
-    </span>
-  </a>
   <div>
     <div class="title-section">
-
       Order Book&nbsp;&nbsp;&nbsp;
 
-      <button class="refresh-btn" (click)="refreshList()"
-              [ngClass]="{progress: refreshProgress}"
-              [disabled]="!(contractsList && contractsList.length && (contractsCount === contractsList.length))">
-        <img class="arrow" src="./assets/images/icons/refresh.svg">
+      <button
+        class="refresh-btn"
+        (click)="refreshList()"
+        [ngClass]="{ progress: refreshProgress }"
+        [disabled]="
+          !(
+            contractsList &&
+            contractsList.length &&
+            contractsCount === contractsList.length
+          )
+        "
+      >
+        <img class="arrow" src="./assets/images/icons/refresh.svg" />
       </button>
-
     </div>
 
-
-    <ul class="public-swaps_table-toggler">
-      <li [ngClass]="{active: openedTradesTab === 'ACTIVE'}">
-        <span (click)="openActiveTrades()">Active trades</span>
-      </li>
-      <li [ngClass]="{active: openedTradesTab === 'PAST'}">
-        <span (click)="openPastTrades()">Past trades</span>
-      </li>
-    </ul>
-
-    <div class="public-progress-loading" *ngIf="!allLoaded && contractsList && ((contractsCount !== contractsList.length) || (openedTradesTab === 'PAST'))">
-    <!--<div class="public-progress-loading">-->
-      <span [ngStyle]="{width: (contractsList.length ? (contractsCount / contractsList.length) : 0.05) * 100 + '%'}"></span>
+    <div
+      class="public-progress-loading"
+      *ngIf="
+        !allLoaded &&
+        contractsList &&
+        (contractsCount !== contractsList.length || openedTradesTab === 'PAST')
+      "
+    >
+      <!--<div class="public-progress-loading">-->
+      <span
+        [ngStyle]="{
+          width:
+            (contractsList.length
+              ? contractsCount / contractsList.length
+              : 0.05) *
+              100 +
+            '%'
+        }"
+      ></span>
     </div>
 
-    <div class="public-swaps_table-container"
-         [hidden]="!allLoaded && !(contractsList && contractsList.length && (contractsCount === contractsList.length))">
-
-
+    <div
+      class="public-swaps_table-container"
+      [hidden]="
+        !allLoaded &&
+        !(
+          contractsList &&
+          contractsList.length &&
+          contractsCount === contractsList.length
+        )
+      "
+    >
       <div class="public-swaps">
-
         <div class="grid-row public-swaps_row">
           <div class="grid-cell grid-cell-1-4 public-swaps_head-cell">
             <div class="titles-coins">SEND</div>
@@ -55,21 +66,35 @@
                 <div class="coin-filter coin-filter__left">
                   <app-coins-list
                     (TokenChange)="selectCoin()"
-                    [(tokenModel)]="selectedCoins.base"></app-coins-list>
+                    [(tokenModel)]="selectedCoins.base"
+                  ></app-coins-list>
                 </div>
                 <div class="coin-filter coin-filter__right">
                   <app-coins-list
                     (TokenChange)="selectCoin()"
-                    [(tokenModel)]="selectedCoins.quote"></app-coins-list>
+                    [(tokenModel)]="selectedCoins.quote"
+                  ></app-coins-list>
                 </div>
-                <button class="coin-filters_btn" (click)="revertCoinFilters()"><span></span></button>
+                <button class="coin-filters_btn" (click)="revertCoinFilters()">
+                  <span></span>
+                </button>
               </div>
             </div>
           </div>
-          <div class="grid-cell grid-cell-1-2 public-swaps_head-cell"
-               [ngClass]="{'public-swaps_head-cell__sortable': selectedFilter.name === 'volume', 'asc': selectedFilter.asc}">
-            <div class="public-swaps_head_content bold">
-              <button class="sort-btn" (click)="applySort('volume')" *ngIf="openedTradesTab === 'ACTIVE'">
+          <div
+            class="grid-cell grid-cell-1-2 public-swaps_head-cell"
+            [ngClass]="{
+              'public-swaps_head-cell__sortable':
+                selectedFilter.name === 'volume',
+              asc: selectedFilter.asc
+            }"
+          >
+            <div class="public-swaps_head_content bold cl-green">
+              <button
+                class="sort-btn"
+                (click)="applySort('volume')"
+                *ngIf="openedTradesTab === 'ACTIVE'"
+              >
                 <span></span>
               </button>
               Volume
@@ -80,10 +105,20 @@
               Decentralized
             </div>
           </div>
-          <div class="grid-cell grid-cell-1-8 public-swaps_head-cell"
-               [ngClass]="{'public-swaps_head-cell__sortable': selectedFilter.name === 'expired', 'asc': selectedFilter.asc}">
+          <div
+            class="grid-cell grid-cell-1-8 public-swaps_head-cell"
+            [ngClass]="{
+              'public-swaps_head-cell__sortable':
+                selectedFilter.name === 'expired',
+              asc: selectedFilter.asc
+            }"
+          >
             <div class="public-swaps_head_content bold text-center">
-              <button class="sort-btn" (click)="applySort('expired')" *ngIf="openedTradesTab === 'ACTIVE'">
+              <button
+                class="sort-btn"
+                (click)="applySort('expired')"
+                *ngIf="openedTradesTab === 'ACTIVE'"
+              >
                 <span></span>
               </button>
               {{ openedTradesTab === 'ACTIVE' ? 'Expires in' : 'Status' }}
@@ -91,20 +126,37 @@
           </div>
         </div>
 
-
-        <div class="public-swaps_body"
-             *ngIf="allLoaded || (contractsList && contractsList.length && (contractsCount === contractsList.length))">
-
-          <div class="grid-row public-swaps_row as-link"
-             *ngFor="let contract of displayingContractsList"
-             [routerLink]="(!contract.contract_details.swap3 ? 'public/' : 'public-v3/') + contract.contract_details.unique_link">
+        <div
+          class="public-swaps_body"
+          *ngIf="
+            allLoaded ||
+            (contractsList &&
+              contractsList.length &&
+              contractsCount === contractsList.length)
+          "
+        >
+          <div
+            class="grid-row public-swaps_row as-link"
+            *ngFor="let contract of displayingContractsList"
+            [routerLink]="
+              (!contract.contract_details.swap3 ? 'public/' : 'public-v3/') +
+              contract.contract_details.unique_link
+            "
+          >
             <div class="grid-cell grid-cell-1-8 public-swaps_cell">
               <div class="public-swaps_cell_content">
                 <div class="swap-info swap-info_token-name">
-                  <img class="swap-info__token-name_icon"
-                       [src]="contract.contract_details.base_token_info.image_link || './assets/images/icons/coins/empty.svg'">
+                  <img
+                    class="swap-info__token-name_icon"
+                    [src]="
+                      contract.contract_details.base_token_info.image_link ||
+                      './assets/images/icons/coins/empty.svg'
+                    "
+                  />
                   <span class="swap-info__token-name_symbol">
-                    {{contract.contract_details.base_token_info.token_short_name}}
+                    {{
+                      contract.contract_details.base_token_info.token_short_name
+                    }}
                   </span>
                 </div>
               </div>
@@ -113,10 +165,18 @@
             <div class="grid-cell grid-cell-1-8 public-swaps_cell">
               <div class="public-swaps_cell_content">
                 <div class="swap-info swap-info__token-name">
-                  <img class="swap-info__token-name_icon"
-                       [src]="contract.contract_details.quote_token_info.image_link || './assets/images/icons/coins/empty.svg'">
+                  <img
+                    class="swap-info__token-name_icon"
+                    [src]="
+                      contract.contract_details.quote_token_info.image_link ||
+                      './assets/images/icons/coins/empty.svg'
+                    "
+                  />
                   <span class="swap-info__token-name_symbol">
-                    {{contract.contract_details.quote_token_info.token_short_name}}
+                    {{
+                      contract.contract_details.quote_token_info
+                        .token_short_name
+                    }}
                   </span>
                 </div>
               </div>
@@ -125,128 +185,206 @@
               <div class="public-swaps_cell_content">
                 <div class="swap-info swap-info__token-volume text-right">
                   <div class="swap-info__token-volume_value">
-                    {{contract.contract_details.base_token_info.amount | number : '1.0-8'}}
-                    {{contract.contract_details.base_token_info.token_short_name}}
+                    {{
+                      contract.contract_details.base_token_info.amount
+                        | number: '1.0-8'
+                    }}
+                    {{
+                      contract.contract_details.base_token_info.token_short_name
+                    }}
                   </div>
                   <div class="swap-info__token-volume_rate">
-                    {{contract.contract_details.base_token_info.rate}}
-                    {{contract.contract_details.base_token_info.token_short_name}}
-                    / 1 {{contract.contract_details.quote_token_info?.token_short_name}}
+                    {{ contract.contract_details.base_token_info.rate }}
+                    {{
+                      contract.contract_details.base_token_info.token_short_name
+                    }}
+                    / 1
+                    {{
+                      contract.contract_details.quote_token_info
+                        ?.token_short_name
+                    }}
                   </div>
                 </div>
 
-                <div class="swap-info__token-filled text-left"
-                     *ngIf="contract.contract_details.base_filled !== '0'"
-                     [ngClass]="{'partiality-filled': contract.contract_details.base_filled !== '0'}">
+                <div
+                  class="swap-info__token-filled text-left"
+                  *ngIf="contract.contract_details.base_filled !== '0'"
+                  [ngClass]="{
+                    'partiality-filled':
+                      contract.contract_details.base_filled !== '0'
+                  }"
+                >
                   {{ contract.contract_details.base_filled + '%' }}
-                  <span [ngStyle]="{'width': contract.contract_details.base_filled + '%'}"></span>
+                  <span
+                    [ngStyle]="{
+                      width: contract.contract_details.base_filled + '%'
+                    }"
+                  ></span>
                 </div>
               </div>
             </div>
             <div class="grid-cell grid-cell-1-4 public-swaps_cell">
-              <div class="public-swaps_cell_content"
-                   [ngClass]="{
-                      'is-profit': contract.contract_details.isProfit,
-                      'no-profit': contract.contract_details.isProfit === false
-                    }">
-                <div class="swap-info swap-info__token-volume swap-info__token-volume__with-icon text-left">
+              <div
+                class="public-swaps_cell_content"
+                [ngClass]="{
+                  'is-profit': contract.contract_details.isProfit,
+                  'no-profit': contract.contract_details.isProfit === false
+                }"
+              >
+                <div
+                  class="swap-info swap-info__token-volume swap-info__token-volume__with-icon text-left"
+                >
                   <div class="swap-info__token-volume_value">
-                    {{contract.contract_details.quote_token_info.amount | number : '1.0-8'}}
-                    {{contract.contract_details.quote_token_info.token_short_name}}
+                    {{
+                      contract.contract_details.quote_token_info.amount
+                        | number: '1.0-8'
+                    }}
+                    {{
+                      contract.contract_details.quote_token_info
+                        .token_short_name
+                    }}
                   </div>
                   <div class="swap-info__token-volume_rate">
-                    {{contract.contract_details.quote_token_info.rate}}
-                    {{contract.contract_details.quote_token_info.token_short_name}}
-                    / 1 {{contract.contract_details.base_token_info?.token_short_name}}
+                    {{ contract.contract_details.quote_token_info.rate }}
+                    {{
+                      contract.contract_details.quote_token_info
+                        .token_short_name
+                    }}
+                    / 1
+                    {{
+                      contract.contract_details.base_token_info
+                        ?.token_short_name
+                    }}
                   </div>
                 </div>
-                <div class="swap-info__token-filled text-right"
-                     *ngIf="contract.contract_details.quote_filled !== '0'"
-                     [ngClass]="{'partiality-filled': contract.contract_details.quote_filled !== '0'}">
+                <div
+                  class="swap-info__token-filled text-right"
+                  *ngIf="contract.contract_details.quote_filled !== '0'"
+                  [ngClass]="{
+                    'partiality-filled':
+                      contract.contract_details.quote_filled !== '0'
+                  }"
+                >
                   {{ contract.contract_details.quote_filled + '%' }}
-                  <span [ngStyle]="{'width': contract.contract_details.quote_filled + '%'}"></span>
+                  <span
+                    [ngStyle]="{
+                      width: contract.contract_details.quote_filled + '%'
+                    }"
+                  ></span>
                 </div>
               </div>
             </div>
             <div class="grid-cell grid-cell-1-8 public-swaps_cell">
               <div class="public-swaps_cell_content text-center">
                 <div class="swap-info">
-                  {{contract.contract_details.isDecentralized ? 'YES' : 'NO'}}
+                  {{ contract.contract_details.isDecentralized ? 'YES' : 'NO' }}
                 </div>
               </div>
             </div>
             <div class="grid-cell grid-cell-1-8 public-swaps_cell">
               <div class="public-swaps_cell_content text-center">
-                <div class="swap-info" *ngIf="contract.contract_details.left_times && openedTradesTab === 'ACTIVE'">
-                  {{contract.contract_details.left_times.times_parts[0]}}d:
-                  {{contract.contract_details.left_times.times_parts[1]}}h:
-                  {{contract.contract_details.left_times.times_parts[2]}}m
+                <div
+                  class="swap-info"
+                  *ngIf="
+                    contract.contract_details.left_times &&
+                    openedTradesTab === 'ACTIVE'
+                  "
+                >
+                  {{ contract.contract_details.left_times.times_parts[0] }}d:
+                  {{ contract.contract_details.left_times.times_parts[1] }}h:
+                  {{ contract.contract_details.left_times.times_parts[2] }}m
                 </div>
 
                 <div class="swap-info" *ngIf="openedTradesTab === 'PAST'">
-                  {{contract.contract_details.state}}
+                  {{ contract.contract_details.state }}
                 </div>
               </div>
             </div>
 
-            <button class="delete-order-btn" (click)="$event.stopPropagation(); deleteTrade(contract.id)"
-                    *ngIf="
-                      currentUser.is_swaps_admin && contract.contract_details.swap3 &&
-                      (!contract.contract_details.isDecentralized || (contract.contract_state === 'CREATED'))
-                    ">
-              <img src="./assets/images/icons/delete.png">
+            <button
+              class="delete-order-btn"
+              (click)="$event.stopPropagation(); deleteTrade(contract.id)"
+              *ngIf="
+                currentUser.is_swaps_admin &&
+                contract.contract_details.swap3 &&
+                (!contract.contract_details.isDecentralized ||
+                  contract.contract_state === 'CREATED')
+              "
+            >
+              <img src="./assets/images/icons/delete.png" />
             </button>
           </div>
-          <br/>
-          <button class="btn btn-white-opacity width-100 white-border relative"
-                  (click)="showPostSelectedPages()"
-                  [disabled]="pastTradesInfo.inProgress"
-                  *ngIf="openedTradesTab === 'PAST' && pastTradesInfo?.page < pastTradesInfo?.pages">
+          <br />
+          <button
+            class="btn btn-white-opacity width-100 white-border relative"
+            (click)="showPostSelectedPages()"
+            [disabled]="pastTradesInfo.inProgress"
+            *ngIf="
+              openedTradesTab === 'PAST' &&
+              pastTradesInfo?.page < pastTradesInfo?.pages
+            "
+          >
             <span class="lds-ellipsis" *ngIf="pastTradesInfo.inProgress">
               <span class="lds-ellipsis-container">
                 <span></span><span></span><span></span><span></span>
               </span>
             </span>
 
-            <span>
-              Show more
-            </span>
+            <span> Show more </span>
           </button>
-          <button class="btn btn-white-opacity width-100 white-border"
-                  (click)="showSelectedPages(true)"
-                  *ngIf="openedTradesTab === 'ACTIVE' && displayingContractsList?.length < allFilteredOrdersCount?.length">
-            <span>
-              Show more
-            </span>
+          <button
+            class="btn btn-white-opacity width-100 white-border"
+            (click)="showSelectedPages(true)"
+            *ngIf="
+              openedTradesTab === 'ACTIVE' &&
+              displayingContractsList?.length < allFilteredOrdersCount?.length
+            "
+          >
+            <span> Show more </span>
           </button>
         </div>
-        <div class="public-swaps_empty" *ngIf="contractsList?.length && !displayingContractsList?.length">
+        <div
+          class="public-swaps_empty"
+          *ngIf="contractsList?.length && !displayingContractsList?.length"
+          style="color: black"
+        >
           There is no matching pair, please
           <a routerLink="/trades/create">create your own</a>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
-
 <ng-template #deleteTradeConfirmation>
   <div class="dialog-block">
     <div class="dialog-block__content">
-      <div class="alert-window-title">
-        Ты точно этого хочешь?
-      </div><br/><br/>
+      <div class="alert-window-title">Ты точно этого хочешь?</div>
+      <br /><br />
       <div class="alert-window-buttons text-center">
         <div class="grid-row">
           <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <button class="btn btn-transparent btn-min " type="button" (click)="confirmDeleteTrade()">
-              <span class="just-title">&nbsp;&nbsp;&nbsp;О, даа!&nbsp;&nbsp;&nbsp;</span>
-            </button><br/>
+            <button
+              class="btn btn-transparent btn-min"
+              type="button"
+              (click)="confirmDeleteTrade()"
+            >
+              <span class="just-title"
+                >&nbsp;&nbsp;&nbsp;О, даа!&nbsp;&nbsp;&nbsp;</span
+              ></button
+            ><br />
           </div>
           <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <button class="btn btn-yellow btn-min" mat-dialog-close type="button">
-              <span>&nbsp;&nbsp;&nbsp;{{'NO'|translate}}&nbsp;&nbsp;&nbsp;</span>
+            <button
+              class="btn btn-yellow btn-min"
+              mat-dialog-close
+              type="button"
+            >
+              <span
+                >&nbsp;&nbsp;&nbsp;{{
+                  'NO' | translate
+                }}&nbsp;&nbsp;&nbsp;</span
+              >
             </button>
           </div>
         </div>
@@ -254,8 +392,3 @@
     </div>
   </div>
 </ng-template>
-
-
-
-
-

@@ -43,7 +43,7 @@ export class ContractFormPayComponent implements OnInit, OnDestroy {
     this.trxDataFields.WISH = this.checkTRXData(this.contractCosts.WISH);
     this.trxDataFields.SWAP = this.checkTRXData(this.contractCosts.SWAP);
     this.trxDataFields.BNB = this.checkTRXData(this.contractCosts.BNB);
-
+    this.trxDataFields.OKB = this.checkTRXData(this.contractCosts.OKB);
     this.costValue = new BigNumber(this.contractCosts.ETH).toString(10);
   }
 

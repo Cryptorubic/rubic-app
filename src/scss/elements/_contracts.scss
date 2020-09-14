@@ -1,7 +1,6 @@
-
 .contract-state {
   float: right;
-  color: #61B9DF;
+  color: #4aa956;
   font-size: 20px;
   font-weight: bold;
   white-space: nowrap;
@@ -22,8 +21,8 @@
   }
   &__1 {
     &:before {
-      background-color: #15ff0f;
-      box-shadow: 0 0 9px rgba(21, 255, 15, 0.68);
+      background: #2bcf78;
+      box-shadow: 0px 0px 9px #65f7b0;
     }
   }
   &__2 {
@@ -31,7 +30,8 @@
       background-color: #660002;
     }
   }
-  &__3, &__6 {
+  &__3,
+  &__6 {
     &:before {
       background-color: #ffd139;
       box-shadow: 0 0 9px rgba(255, 209, 57, 0.68);
@@ -43,9 +43,9 @@
     }
   }
   &__5 {
+    color: #660002;
     &:before {
       background-color: #660002;
     }
   }
 }
-

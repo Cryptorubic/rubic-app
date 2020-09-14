@@ -1,0 +1,292 @@
+// ****** mixins ******
+
+@mixin font-face(
+  $font-family,
+  $file-path,
+  $weight: normal,
+  $style: normal,
+  $asset-pipeline: false
+) {
+  @font-face {
+    font-family: $font-family;
+    font-weight: $weight;
+    font-style: $style;
+
+    @if $asset-pipeline==true {
+      src: font-url('#{$file-path}.eot');
+      src: font-url('#{$file-path}.eot?#iefix') format('embedded-opentype'),
+        font-url('#{$file-path}.woff') format('woff'),
+        font-url('#{$file-path}.ttf') format('truetype');
+    } @else {
+      src: url('#{$file-path}.eot');
+      src: url('#{$file-path}.eot?#iefix') format('embedded-opentype'),
+        url('#{$file-path}.woff') format('woff'),
+        url('#{$file-path}.ttf') format('truetype');
+    }
+  }
+}
+
+@mixin notext {
+  overflow: hidden;
+  text-indent: -9999px;
+}
+
+.clearfix:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.centered {
+  display: table;
+  width: 100%;
+  height: 100%;
+
+  > * {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+  }
+}
+
+@mixin placeholderColor($input-text-color) {
+  &::-webkit-input-placeholder {
+    color: $input-text-color;
+  }
+
+  &:-moz-placeholder {
+    color: $input-text-color;
+    opacity: 1;
+  }
+
+  &::-moz-placeholder {
+    color: $input-text-color;
+    opacity: 1;
+  }
+
+  &:-ms-input-placeholder {
+    color: $input-text-color;
+  }
+
+  &::placeholder {
+    color: $input-text-color;
+    opacity: 1;
+  }
+
+  &:focus:-moz-placeholder {
+    color: transparent;
+    opacity: 1;
+  }
+
+  &:focus::-moz-placeholder {
+    color: transparent;
+    opacity: 1;
+  }
+
+  &:focus::-webkit-input-placeholder {
+    color: transparent;
+  }
+
+  &:focus:-ms-input-placeholder {
+    color: transparent;
+  }
+
+  &:focus::placeholder {
+    color: transparent;
+  }
+}
+
+@mixin clearfix {
+  &:after {
+    content: ' ';
+    display: block;
+    clear: both;
+  }
+}
+
+// clear select without default button
+@mixin clearSelect {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+
+// elements get appended with "__" and the $name
+@mixin e($name) {
+  @at-root #{&}_#{$name} {
+    @content;
+  }
+}
+
+// modifiers get appended with "--" and the $name
+@mixin m($name) {
+  @at-root #{&}--#{$name} {
+    @content;
+  }
+}
+
+// breakpoints
+@mixin b($point) {
+  @if $point==desktop {
+    @media (max-width: 1366px) and (min-width: 1024px) {
+      @content;
+    }
+  } @else if $point==tablet {
+    @media (max-width: 1000px) {
+      @content;
+    }
+  } @else if $point==mobile {
+    @media (max-width: 767px) {
+      @content;
+    }
+  } @else if $point==mobile3x {
+    @media only screen and (-webkit-min-device-pixel-ratio: 3),
+      only screen and (min-resolution: 3dppx),
+      only screen and (min-resolution: 350dpi) {
+      @content;
+    }
+  } @else {
+    @media (max-width: $point + 'px') {
+      @content;
+    }
+  }
+}
+
+// breakpoints
+@mixin bb($pointMax, $pointMin) {
+  @media (max-width: $pointMax + 'px') and (min-width: $pointMin + 'px') {
+    @content;
+  }
+}
+
+@mixin ie() {
+  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    @content;
+  }
+}
+
+@mixin before-img($display, $width, $height, $position) {
+  @at-root #{&}:before {
+    content: '';
+    display: $display;
+
+    @if $position==a {
+      position: absolute;
+    }
+
+    @if $position==r {
+      position: relative;
+    }
+
+    width: $width;
+    height: $height;
+    @content;
+  }
+}
+
+@mixin after-img($display, $width, $height, $position) {
+  @at-root #{&}:after {
+    content: '';
+    display: $display;
+
+    @if $position==a {
+      position: absolute;
+    }
+
+    @if $position==r {
+      position: relative;
+    }
+
+    width: $width;
+    height: $height;
+    @content;
+  }
+}
+
+/* rem font size with fallback | usage:
+	p {
+		@include font-size(14px)
+	}*/
+
+@function calculateRem($size) {
+  $remSize: $size / 16px;
+  @return $remSize * 1rem;
+}
+
+@mixin font-size($size) {
+  font-size: $size;
+  font-size: calculateRem($size);
+}
+
+@mixin textCut($col, $height) {
+  display: -webkit-box;
+  -webkit-line-clamp: $col;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: $height;
+}
+
+// button gradient
+@mixin btn-gradient(
+  $cText,
+  $cHover,
+  $direction,
+  $cFirst,
+  $cSecons,
+  $cThird,
+  $hover
+) {
+  color: $cText;
+  transition: 0.5s;
+  background-size: 200% auto;
+  background-image: linear-gradient(
+    $direction,
+    $cFirst 0%,
+    $cSecons 51%,
+    $cThird 100%
+  );
+
+  &:hover {
+    text-decoration: none;
+    background-position: $hover;
+    color: $cHover;
+    box-shadow: 0px 20px 30px -15px $cThird;
+  }
+}
+
+@mixin gradient($top, $bottom) {
+  background: $top;
+  background: -moz-linear-gradient(top, $top 0%, $bottom 100%);
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0%, $top),
+    color-stop(100%, $bottom)
+  );
+  background: -webkit-linear-gradient(top, $top 0%, $bottom 100%);
+  background: -o-linear-gradient(top, $top 0%, $bottom 100%);
+  background: -ms-linear-gradient(top, $top 0%, $bottom 100%);
+  background: linear-gradient(to bottom, $top 0%, $bottom 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$top}', endColorstr='#{$bottom} ', GradientType=0);
+}
+
+@mixin button-color($bgcolor, $size) {
+  @if $bgcolor == none {
+    background-color: transparent;
+  }
+  @if $bgcolor != none {
+    background-color: $bgcolor;
+  }
+
+  font-size: $size;
+
+  &:hover {
+    @if $bgcolor != none {
+      box-shadow: 0px 0px 15px -4px $bgcolor;
+    }
+  }
+}

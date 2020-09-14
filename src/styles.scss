@@ -3,23 +3,36 @@
 }
 
 @import 'scss/grid';
-@import "scss/elements/dialog";
-@import "scss/elements/form-elements";
-@import "scss/elements/preloader";
-@import "scss/elements/contracts";
+@import 'scss/elements/dialog';
+@import 'scss/elements/form-elements';
+@import 'scss/elements/preloader';
+@import 'scss/elements/contracts';
+
+// ! new 07.09.2020
+@import 'scss/elements/vars';
+@import 'scss/mixins';
+@import 'scss/elements/typography';
+@import 'scss/elements/buttons';
+@import 'scss/elements/icons';
+
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+.white-bg {
+  background-color: #fff !important;
+}
 
 /* You can add global styles to this file, and also import other style files */
 @font-face {
   font-family: 'TT Norms';
   src: url('./assets/fonts/ttnorms-bold-webfont.woff2') format('woff2'),
-  url('./assets/fonts/ttnorms-bold-webfont.woff') format('woff');
+    url('./assets/fonts/ttnorms-bold-webfont.woff') format('woff');
   font-weight: 700;
   font-style: normal;
 }
 @font-face {
   font-family: 'TT Norms';
   src: url('./assets/fonts/ttnorms-regular-webfont.woff2') format('woff2'),
-  url('./assets/fonts/ttnorms-regular-webfont.woff') format('woff');
+    url('./assets/fonts/ttnorms-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -27,7 +40,7 @@
 @font-face {
   font-family: 'TT Norms';
   src: url('./assets/fonts/ttnorms-light-webfont.woff2') format('woff2'),
-  url('./assets/fonts/ttnorms-light-webfont.woff') format('woff');
+    url('./assets/fonts/ttnorms-light-webfont.woff') format('woff');
   font-weight: 300;
   font-style: normal;
 }
@@ -35,58 +48,105 @@
 @font-face {
   font-family: 'TT Norms';
   src: url('./assets/fonts/ttnorms-black-webfont.woff2') format('woff2'),
-  url('./assets/fonts/ttnorms-black-webfont.woff') format('woff');
+    url('./assets/fonts/ttnorms-black-webfont.woff') format('woff');
   font-weight: 800;
   font-style: normal;
 }
 
-
 @font-face {
   font-family: 'Sofia Pro';
   src: local('Sofia Pro Regular'), local('Sofia-Pro-Bold'),
-  url('./assets/fonts/SofiaProRegular.woff2') format('woff2'),
-  url('./assets/fonts/SofiaProRegular.woff') format('woff'),
-  url('./assets/fonts/SofiaProRegular.ttf') format('truetype');
+    url('./assets/fonts/SofiaProRegular.woff2') format('woff2'),
+    url('./assets/fonts/SofiaProRegular.woff') format('woff'),
+    url('./assets/fonts/SofiaProRegular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: 'Sofia Pro';
   src: local('Sofia Pro Bold'), local('Sofia-Pro-Bold'),
-  url('./assets/fonts/SofiaProBold.woff2') format('woff2'),
-  url('./assets/fonts/SofiaProBold.woff') format('woff'),
-  url('./assets/fonts/SofiaProBold.ttf') format('truetype');
+    url('./assets/fonts/SofiaProBold.woff2') format('woff2'),
+    url('./assets/fonts/SofiaProBold.woff') format('woff'),
+    url('./assets/fonts/SofiaProBold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
 }
 @font-face {
   font-family: 'Poppins';
   src: local('Poppins-Regular'),
-  url('./assets/fonts/Poppins-Regular.ttf') format('ttf');
+    url('./assets/fonts/Poppins-Regular.ttf') format('ttf');
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: 'Poppins';
   src: local('Poppins-Bold'),
-  url('./assets/fonts/Poppins-Bold.ttf') format('ttf');
+    url('./assets/fonts/Poppins-Bold.ttf') format('ttf');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Josefin Sans Extra Light'), local('Josefin-Sans-Extra-Light'),
+    url('./assets/fonts/JosefinSans-ExtraLight.ttf') format('ttf');
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Josefin Sans Extra Thin'), local('Josefin-Sans-Extra-Thin'),
+    url('./assets/fonts/JosefinSans-Thin.ttf') format('ttf');
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Josefin Sans Extra Light'), local('Josefin-Sans-Extra-Light'),
+    url('./assets/fonts/JosefinSans-Light.ttf') format('ttf');
+  font-weight: lighter;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Josefin Sans Extra Regular'), local('Josefin-Sans-Extra-Regular'),
+    url('./assets/fonts/JosefinSans-Regular.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Josefin Sans Extra Medium'), local('Josefin-Sans-Extra-Medium'),
+    url('./assets/fonts/JosefinSans-Medium.ttf') format('ttf');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Josefin Sans Extra Bold'), local('Josefin-Sans-Extra-Bold'),
+    url('./assets/fonts/JosefinSans-Bold.ttf') format('ttf');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Josefin Sans';
+  src: local('Josefin Sans Extra SemiBold'),
+    local('Josefin-Sans-Extra-SemiBold'),
+    url('./assets/fonts/JosefinSans-SemiBold.ttf') format('ttf');
   font-weight: 700;
   font-style: normal;
 }
 
-
-
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Sofia Pro', Arial, sans-serif;
+  font-family: 'Sofia Pro', 'Josefin Sans', Arial, sans-serif;
   min-width: 320px;
-  background: url('/assets/images/backgrounds/bg-gradient.png');
+  background: #f4f4f4;
   background-size: cover;
 }
 
 html {
-  background-color: #495569;
+  background-color: #f4f4f4;
 }
 
 .nowrap {
@@ -111,13 +171,13 @@ html {
 }
 
 .text-left {
-  text-align: left!important;
+  text-align: left !important;
 }
 .text-right {
-  text-align: right!important;
+  text-align: right !important;
 }
 .text-center {
-  text-align: center!important;
+  text-align: center !important;
 }
 .clearfix-block {
   display: table;
@@ -127,7 +187,12 @@ html {
 .yellow-text {
   color: #fcd600;
 }
-
+.blue-text {
+  color: #2873fb;
+}
+.green-text {
+  color: #4aa956;
+}
 
 @media screen and (max-width: 1240px) {
   .app-content-block {
@@ -136,20 +201,19 @@ html {
   }
 }
 
-
-a:not(.new-btn):not(.btn):not(.minimal-btn) {
-  color: #61B9DF;
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+  color: #4aa956;
   text-decoration: none;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     text-decoration: underline;
-    color: #6ad7ff;
+    color: #4aa956;
   }
 }
 
 .text-left {
-  text-align: left!important;
+  text-align: left !important;
 }
-
 
 .info-modal-text {
   text-align: left;
@@ -161,8 +225,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     text-transform: uppercase;
   }
 }
-
-
 
 #livechat-top-button {
   @extend .app-content-block;
@@ -199,47 +261,49 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   position: fixed;
 }
 .without-support #livechat-compact-container {
-  width: 64px!important;
-  height: 64px!important;
-  border-radius: 50%!important;
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 50% !important;
   box-sizing: border-box;
-  bottom: 20px!important;
-  background: #FCD600 url("data:image/svg+xml;base64,PCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjU3NiIgaGVpZ2h0PSI1MTIiIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj4KPHRpdGxlPjwvdGl0bGU+CjxnIGlkPSJpY29tb29uLWlnbm9yZSI+CjwvZz4KPHBhdGggZD0iTTU0NCA0NTAuNTgzYzAgMjIuNzUgMTMuMDE0IDQyLjQ1NCAzMiA1Mi4wOTJ2Ny45NjljLTUuMzEzIDAuNzI3LTEwLjczNiAxLjExMi0xNi4yNSAxLjExMi0zNC4wMDQgMC02NC42NzQtMTQuMjY0LTg2LjM2MS0zNy4xMzItMTMuMTExIDMuNDkxLTI3LjAwMSA1LjM3Ni00MS4zODkgNS4zNzYtNzkuNTI5IDAtMTQ0LTU3LjMwOC0xNDQtMTI4czY0LjQ3MS0xMjggMTQ0LTEyOGM3OS41MjkgMCAxNDQgNTcuMzA4IDE0NCAxMjggMCAyNy42NzQtOS44ODIgNTMuMjk2LTI2LjY3OCA3NC4yMzMtMy40MTIgNy40MTItNS4zMjIgMTUuNjU2LTUuMzIyIDI0LjM1ek0yNTYgMGMxMzkuMjI5IDAgMjUyLjQ5NiA5MC4zMDcgMjU1LjkxOCAyMDIuNzYtMjQuNTkxLTEwLjk2LTUxLjc5My0xNi43Ni03OS45MTgtMTYuNzYtNDcuNzggMC05Mi45MDggMTYuNzIzLTEyNy4wNjkgNDcuMDg5LTM1LjQyMyAzMS40ODYtNTQuOTMxIDczLjcxNy01NC45MzEgMTE4LjkxMSAwIDIyLjMzNiA0Ljc3MiA0My45NDQgMTMuODY4IDYzLjg5NC0yLjYxNCAwLjA2My01LjIzNCAwLjEwNi03Ljg2OCAwLjEwNi0xMy41NzggMC0yNi45MDUtMC44NjctMzkuOTEyLTIuNTIyLTU0Ljk4OSA1NC45ODktMTIwLjYyNSA2NC44NS0xODQuMDg4IDY2LjI5OHYtMTMuNDU4YzM0LjI2OC0xNi43ODkgNjQtNDcuMzcgNjQtODIuMzE4IDAtNC44NzctMC4zNzktOS42NjUtMS4wODItMTQuMzQ4LTU3Ljg5OC0zOC4xMzItOTQuOTE4LTk2LjM3Ny05NC45MTgtMTYxLjY1MiAwLTExNC44NzUgMTE0LjYxNS0yMDggMjU2LTIwOHoiPjwvcGF0aD4KPC9zdmc+Cg==") no-repeat center center !important;
-  background-size: 60%!important;
-  padding: 0!important;
-  right: 20px!important;
+  bottom: 20px !important;
+  background: #fcd600
+    url('data:image/svg+xml;base64,PCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjU3NiIgaGVpZ2h0PSI1MTIiIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj4KPHRpdGxlPjwvdGl0bGU+CjxnIGlkPSJpY29tb29uLWlnbm9yZSI+CjwvZz4KPHBhdGggZD0iTTU0NCA0NTAuNTgzYzAgMjIuNzUgMTMuMDE0IDQyLjQ1NCAzMiA1Mi4wOTJ2Ny45NjljLTUuMzEzIDAuNzI3LTEwLjczNiAxLjExMi0xNi4yNSAxLjExMi0zNC4wMDQgMC02NC42NzQtMTQuMjY0LTg2LjM2MS0zNy4xMzItMTMuMTExIDMuNDkxLTI3LjAwMSA1LjM3Ni00MS4zODkgNS4zNzYtNzkuNTI5IDAtMTQ0LTU3LjMwOC0xNDQtMTI4czY0LjQ3MS0xMjggMTQ0LTEyOGM3OS41MjkgMCAxNDQgNTcuMzA4IDE0NCAxMjggMCAyNy42NzQtOS44ODIgNTMuMjk2LTI2LjY3OCA3NC4yMzMtMy40MTIgNy40MTItNS4zMjIgMTUuNjU2LTUuMzIyIDI0LjM1ek0yNTYgMGMxMzkuMjI5IDAgMjUyLjQ5NiA5MC4zMDcgMjU1LjkxOCAyMDIuNzYtMjQuNTkxLTEwLjk2LTUxLjc5My0xNi43Ni03OS45MTgtMTYuNzYtNDcuNzggMC05Mi45MDggMTYuNzIzLTEyNy4wNjkgNDcuMDg5LTM1LjQyMyAzMS40ODYtNTQuOTMxIDczLjcxNy01NC45MzEgMTE4LjkxMSAwIDIyLjMzNiA0Ljc3MiA0My45NDQgMTMuODY4IDYzLjg5NC0yLjYxNCAwLjA2My01LjIzNCAwLjEwNi03Ljg2OCAwLjEwNi0xMy41NzggMC0yNi45MDUtMC44NjctMzkuOTEyLTIuNTIyLTU0Ljk4OSA1NC45ODktMTIwLjYyNSA2NC44NS0xODQuMDg4IDY2LjI5OHYtMTMuNDU4YzM0LjI2OC0xNi43ODkgNjQtNDcuMzcgNjQtODIuMzE4IDAtNC44NzctMC4zNzktOS42NjUtMS4wODItMTQuMzQ4LTU3Ljg5OC0zOC4xMzItOTQuOTE4LTk2LjM3Ny05NC45MTgtMTYxLjY1MiAwLTExNC44NzUgMTE0LjYxNS0yMDggMjU2LTIwOHoiPjwvcGF0aD4KPC9zdmc+Cg==')
+    no-repeat center center !important;
+  background-size: 60% !important;
+  padding: 0 !important;
+  right: 20px !important;
   iframe {
     opacity: 0;
-    top: 0!important;
+    top: 0 !important;
   }
 }
-
 
 .with-support .watch-instruction-btn {
   top: 205px;
 }
 
 .with-support #livechat-compact-container {
-  position: fixed!important;
-  left: 50%!important;
-  top: 135px!important;
-  bottom: auto!important;
-  right: auto!important;
-  margin-left: 207px!important;
-  height: 62px!important;
-  border-left: 5px solid #FCD600!important;
+  position: fixed !important;
+  left: 50% !important;
+  top: 135px !important;
+  bottom: auto !important;
+  right: auto !important;
+  margin-left: 207px !important;
+  height: 62px !important;
+  border-left: 5px solid #fcd600 !important;
   line-height: 62px;
-  padding: 0!important;
-  background: url(/assets/images/icons/support.svg) 15px 17px no-repeat rgba(255, 255, 255, 0.1)!important;
+  padding: 0 !important;
+  background: url(/assets/images/icons/support.svg) 15px 17px no-repeat
+    rgba(255, 255, 255, 0.1) !important;
 
-  transform: translateY(0%)!important;
-  opacity: 1!important;
-  visibility: visible!important;
-  z-index: 5!important;
-  display: none!important;
+  transform: translateY(0%) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 5 !important;
+  display: none !important;
   width: 285px;
   &:hover {
-    background-color:  rgba(255, 255, 255, 0.2) !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
   }
   &:before {
     content: 'Support';
@@ -255,23 +319,23 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 }
 
 #livechat-compact-container {
-  visibility: hidden!important;
+  visibility: hidden !important;
 }
 
 .with-support #livechat-compact-container,
 .without-support #livechat-compact-container {
-  visibility: visible!important;
+  visibility: visible !important;
 }
 
 .with-support #livechat-compact-container {
-  display: block!important;
+  display: block !important;
   overflow: hidden;
 }
 
 .with-support #livechat-compact-view {
   opacity: 0;
-  top: 0!important;
-  margin-top: -62px!important;
+  top: 0 !important;
+  margin-top: -62px !important;
 }
 
 @media screen and (max-width: 1180px) {
@@ -282,7 +346,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     margin-left: 16.66666666%;
   }
 }
-
 
 @media screen and (max-width: 1020px) {
   .with-support #livechat-compact-container {
@@ -297,12 +360,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   }
 }
 
-
-
-
-
-
-
 .base-block-content {
   padding-top: 129px;
   // background: transparent url('/assets/images/backgrounds/bg-gradient.png') no-repeat center top;
@@ -313,15 +370,19 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 }
 
 .action-link {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(0, 0, 0, 0.5);
   border-bottom: 1px dashed;
   display: inline-block;
   cursor: pointer;
+  &--right {
+    margin-left: auto;
+    display: block;
+    width: fit-content;
+  }
   &:hover {
-    color: #fff;
+    color: #000;
   }
 }
-
 
 .invisible {
   visibility: hidden;
@@ -350,10 +411,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   }
 }
 
-
 .title-section {
   font-size: 28px;
-  color: #FFFFFF;
+  color: #000;
   font-weight: bold;
   margin-bottom: 1em;
 }
@@ -379,7 +439,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     padding: 0 12px;
     font-weight: bold;
   }
-
 }
 
 @media screen and (max-width: 540px) {
@@ -398,7 +457,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   border: none;
   border-left: 5px solid;
   outline: none;
-  font-family: 'Poppins', sans-serif;
+  // font-family: 'Poppins', sans-serif;
+  font-family: inherit;
   font-size: 18px;
   color: #fff;
   text-decoration: none;
@@ -421,6 +481,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   &:disabled {
     opacity: 0.6;
     cursor: default;
+  }
+  .spiner {
+    width: 20px;
   }
   .arrow {
     margin-right: 10px;
@@ -452,13 +515,14 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     margin: 5px 0;
   }
   &-transparent {
+    color: #000;
     &:not(.with-bg) {
       background-color: transparent;
     }
     &.with-bg {
       background-color: rgba(255, 255, 255, 0.5);
     }
-    border: 1px solid #B9BDC2;
+    border: 1px solid #b9bdc2;
     border-left-width: 5px;
     &:not([disabled]):hover {
       border-color: #dbe0e6;
@@ -473,23 +537,25 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     border: 0 none;
     padding: 0;
     font-weight: normal;
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       color: #fcd600;
       text-decoration: underline;
     }
   }
   &-white-opacity {
-    border-color: #fcd600;
-    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #2873fb;
+    background-color: rgb(255, 255, 255);
+    color: black;
     &.white-border {
       border-color: rgba(255, 255, 255, 0.67);
     }
     &:hover {
-      background-color:  rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 1);
     }
   }
   &-yellow {
-    background: #FCD600;
+    background: #fcd600;
     border-left-color: rgba(255, 255, 255, 0.67);
     color: #000;
     &:not([disabled]):hover {
@@ -497,6 +563,28 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     }
     &:not([disabled]):active {
       background-color: #c7a800;
+    }
+  }
+  &-blue {
+    background: #2873fb;
+    border-left-color: rgba(255, 255, 255, 0.67);
+    color: white;
+    &:not([disabled]):hover {
+      background-color: #2872fbcc;
+    }
+    &:not([disabled]):active {
+      background-color: #2873fb;
+    }
+  }
+  &-green {
+    background: #4aa956;
+    border-left-color: rgba(255, 255, 255, 0.67);
+    color: white;
+    &:not([disabled]):hover {
+      background-color: #4aa956;
+    }
+    &:not([disabled]):active {
+      background-color: #4aa956;
     }
   }
   &-payment {
@@ -546,22 +634,45 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     width: 1px;
     height: 1px;
     &:checked {
-     ~ .btn-payment {
-       background-color: #fff;
-       color: #000;
-     }
+      ~ .btn-payment {
+        background-color: #fff;
+        color: #000;
+      }
     }
   }
 }
 
 .form-field {
   margin-bottom: 20px;
+  &_btn {
+    margin-bottom: 15px;
+  }
   &_label {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.85);
-    margin-bottom: 5px;
+    font-size: 13px;
+    color: #242424;
+    margin-bottom: 8px;
     text-transform: uppercase;
     display: block;
+    opacity: 0.85;
+    &--rate {
+      display: flex;
+      justify-content: flex-end;
+      width: max-content;
+      height: 13px;
+      width: 100%;
+      position: relative;
+
+      @include b(450) {
+        font-size: 10px;
+      }
+
+      .form-notice {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: max-content;
+      }
+    }
     &.transparent {
       color: rgba(255, 255, 255, 0.25);
     }
@@ -570,19 +681,37 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       font-weight: bold;
     }
   }
+  input[type='number'] {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
   &_input {
     position: relative;
     &-checkbox {
       display: inline-block;
       position: relative;
       background-color: #fff;
-      padding: 4px;
+      padding: 8px 4px;
       line-height: 28px;
       overflow: hidden;
       &:after {
         clear: both;
         display: block;
         content: '';
+      }
+      & + span {
+        font-size: 14px;
+        line-height: 14px;
+        color: #000000;
+        opacity: 0.5;
+        margin-left: 20px;
       }
       input {
         position: absolute;
@@ -598,10 +727,11 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
         height: 28px;
         position: absolute;
         left: 4px;
-        top: 4px;
+        top: 8px;
         display: block;
         transition: 0.1s linear;
-        background: url(./assets/images/icons/no.svg) center center no-repeat #d8d8d8;
+        background: url(./assets/images/icons/no.svg) center center no-repeat
+          #d8d8d8;
       }
       .checkbox-text {
         float: left;
@@ -619,7 +749,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       input:checked ~ .checkbox-rect {
         left: 100%;
         margin-left: -32px;
-        background: url(./assets/images/icons/yes.svg) center center no-repeat #FCD600;
+        background: url(./assets/images/icons/yes.svg) center center no-repeat
+          #fcd600;
       }
       input:checked ~ .checkbox-text {
         &_on {
@@ -630,41 +761,47 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
         }
       }
     }
-    input:not([type="checkbox"]):not([type="radio"]), textarea, .textarea {
+    input:not([type='checkbox']):not([type='radio']),
+    textarea,
+    .textarea {
       box-sizing: border-box;
-      background-color: #fff;
       border: 1px solid #fff;
       color: #110931;
       line-height: 30px;
       font-family: inherit;
-      font-size: 24px!important;
-      padding: 10px 10px 8px;
+      font-size: 18px !important;
+      background: #f4f4f4;
+      border: 1px solid #ffffff;
+      padding: 11px 10px 11px 22px;
+      margin-top: -1px;
 
-
-      &:not(.min-text), &.max-placeholder {
+      &:not(.min-text),
+      &.max-placeholder {
         &::-webkit-input-placeholder {
           font-size: 20px;
         }
       }
-      &:not(.min-text), &.max-placeholder {
+      &:not(.min-text),
+      &.max-placeholder {
         &:-ms-input-placeholder {
           font-size: 20px;
         }
       }
-      &:not(.min-text), &.max-placeholder {
+      &:not(.min-text),
+      &.max-placeholder {
         &::-ms-input-placeholder {
           font-size: 20px;
         }
       }
-      &:not(.min-text), &.max-placeholder {
+      &:not(.min-text),
+      &.max-placeholder {
         &::placeholder {
           font-size: 20px;
         }
       }
 
-
       &.min-text {
-        font-size: 18px!important;
+        font-size: 18px !important;
         color: #110931;
         &:not(.max-placeholder) {
           &::-webkit-input-placeholder {
@@ -699,7 +836,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       word-break: break-all;
     }
 
-    input:not(&__ac_input):not([type="checkbox"]):not([type="radio"]), textarea, .textarea {
+    input:not(&__ac_input):not([type='checkbox']):not([type='radio']),
+    textarea,
+    .textarea {
       width: 100%;
       &[disabled] {
         opacity: 0.5;
@@ -708,11 +847,11 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     &__btn {
       position: absolute;
       top: 50%;
-      background: #F7F7F7;
-      border: 2px solid #E5E5E5;
+      background: #fff;
+      border: 2px solid #e5e5e5;
       border-radius: 0 4px 4px 0;
       font-size: 16px;
-      color: #43476C;
+      color: #43476c;
       letter-spacing: -0.43px;
       line-height: 18px;
       padding: 10px 11px;
@@ -729,7 +868,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       opacity: 0;
       transition: all linear 0.2s;
       font-size: 16px;
-      padding: 0;
+      padding: 0 !important;
     }
     &__ac_closer {
       transition: all linear 0.2s;
@@ -751,26 +890,48 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       opacity: 1;
       width: 30px;
       margin-top: -15px;
+      background: #f4f4f4;
       right: 10px;
     }
     &__btn.active + &__ac_input {
       width: 50%;
       opacity: 1;
+      padding: 11px 10px 11px 22px !important;
       top: 0;
-      border-left: 1px solid #D8D8D8!important;
+      border-left: 1px solid #d8d8d8 !important;
     }
   }
   &_description {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 0, 0, 0.5) !important;
+    &-show {
+      margin-bottom: 15px;
+      & > span {
+        cursor: pointer;
+      }
+      .ng-star-inserted {
+        display: flex;
+        margin-top: 15px;
+      }
+      .form-field_input {
+        width: 100%;
+      }
+      .form-field_input + .form-field_input {
+        width: fit-content;
+        .btn {
+          margin: 0;
+        }
+      }
+    }
     &:not(.normal-font) {
       text-transform: uppercase;
     }
     &.normal-font {
       font-size: 15px;
-      &, a {
+      &,
+      a {
         &:not(.transparent) {
-          color: #fff!important;
+          color: rgba(0, 0, 0, 0.5) !important;
         }
       }
       a {
@@ -778,9 +939,12 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
           text-decoration: underline;
         }
       }
+      &--visible {
+        opacity: 1 !important;
+      }
     }
     &:not(.no-top-margin) {
-      margin-top: 22px;
+      margin-top: 15px;
     }
     &__inline {
       line-height: 50px;
@@ -808,10 +972,11 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   }
   &_checkbox-val {
     display: block;
-    border: 1px solid #E2E2E2;
+    border: 1px solid #e2e2e2;
     text-transform: uppercase;
 
-    &_stat, &_label {
+    &_stat,
+    &_label {
       display: inline-block;
       vertical-align: middle;
     }
@@ -821,7 +986,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
       font-size: 13px;
       color: #110931;
       line-height: 25px;
-      background: #E2E2E2;
+      background: #e2e2e2;
       padding-top: 3px;
       min-width: 65px;
       white-space: nowrap;
@@ -836,7 +1001,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     }
     &_label {
       font-size: 14px;
-      color: #E2E2E2;
+      color: #e2e2e2;
       line-height: 18px;
       padding: 3px 10px 0;
     }
@@ -844,7 +1009,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 
   &_value {
     font-size: 18px;
-    color: #FFFFFF;
+    color: #ffffff;
     word-break: break-all;
   }
   &_copy {
@@ -857,7 +1022,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     margin-right: 40px;
   }
   &_info-field {
-    color: #8E939B;
+    color: #8e939b;
     &:after {
       clear: both;
       content: '';
@@ -919,7 +1084,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   cursor: pointer;
   outline: 0 none;
 
-  &, &:hover, &:focus {
+  &,
+  &:hover,
+  &:focus {
     text-decoration: none;
   }
   span {
@@ -929,14 +1096,15 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     margin-top: 0.1em;
   }
   &-yellow {
-    background: #F3D663;
-    color: #3B4452;
+    background: #f3d663;
+    color: #3b4452;
     &:disabled {
       opacity: 0.8;
     }
     &:not(:disabled) {
       box-shadow: 0 15px 19px rgba(0, 0, 0, 0.09);
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         background: #ffe268;
         color: #2a313b;
       }
@@ -945,17 +1113,21 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
 }
 .minimal-btn {
   border: 1px solid #979797;
-  color: #EEEEEE;
+  color: #eeeeee;
   background: none;
   font-size: 14px;
   line-height: 18px;
   padding: 5px 7px;
   cursor: pointer;
   white-space: nowrap;
-  &, &:hover, &:focus, &:active {
+  &,
+  &:hover,
+  &:focus,
+  &:active {
     text-decoration: none;
   }
-  img, span {
+  img,
+  span {
     vertical-align: middle;
   }
   img {
@@ -968,7 +1140,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   }
 }
 
-
 .or-delimiter {
   height: 0;
   border-top: 1px dashed rgba(255, 255, 255, 0.25);
@@ -976,7 +1147,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   text-align: center;
   margin: 25px 0;
   span {
-    background-color: #6A727E;
+    background-color: #6a727e;
     color: rgba(255, 255, 255, 0.85);
     font-size: 14px;
     line-height: 22px;
@@ -990,7 +1161,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   }
 }
 
-
 .mat-datepicker-toggle {
   position: absolute;
   top: 50%;
@@ -998,56 +1168,57 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
   margin-top: -22px;
   color: rgba(57, 69, 83, 0.86) !important;
   &.mat-datepicker-toggle-active {
-    color: #394553!important;
+    color: #394553 !important;
   }
 }
 .mat-button-focus-overlay {
-  background: none!important;
+  background: none !important;
 }
 .mat-calendar-body-selected {
-  background-color: #394553!important;
+  background-color: #394553 !important;
 }
-
-
 
 .timepicker__header {
-  background-color: #222!important;
+  background-color: #222 !important;
 }
 .clock-face__number > span.active {
-  background-color: #222!important;
+  background-color: #222 !important;
 }
 .clock-face__clock-hand {
-  background-color: #222!important;
+  background-color: #222 !important;
 }
 .clock-face__clock-hand_minute:before {
-  border-color: #222!important;
+  border-color: #222 !important;
 }
 .timepicker-button {
-  color: #222!important;
+  color: #222 !important;
 }
-
-.active-swaps-table, .public-swaps {
+.second-index-block {
+  padding-top: 80px;
+}
+.active-swaps-table,
+.public-swaps {
   .ng-scrollbar-layout {
-    max-height: 400px!important;
+    max-height: 400px !important;
   }
 }
 
 @media screen and (max-width: 1020px) {
-  .support-hide-1024.with-support #livechat-compact-container, .watch-instruction-btn.hide-1024{
-    display: none!important;
+  .support-hide-1024.with-support #livechat-compact-container,
+  .watch-instruction-btn.hide-1024 {
+    display: none !important;
   }
 }
-
 
 @media screen and (max-width: 800px) {
   .base-block-content {
     padding-top: 17vw;
   }
-  .with-support #livechat-compact-container, .watch-instruction-btn {
-    display: none!important;
+  .with-support #livechat-compact-container,
+  .watch-instruction-btn {
+    display: none !important;
   }
 }
-
 
 .owl-dots {
   text-align: center;
@@ -1061,19 +1232,17 @@ a:not(.new-btn):not(.btn):not(.minimal-btn) {
     vertical-align: middle;
     width: 10px;
     height: 10px;
-    border: 1px solid #3B4352;
+    border: 1px solid #3b4352;
     background-color: #fff;
     margin: 0 10px;
     &.active {
-      background-color: #3B4352;
+      background-color: #3b4352;
     }
   }
 }
 
-
-
 ng-scrollbar-y {
-  display: block!important;
+  display: block !important;
   visibility: hidden;
   &.ng-scrollbar-visible {
     visibility: visible;

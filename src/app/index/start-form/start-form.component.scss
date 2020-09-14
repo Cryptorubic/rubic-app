@@ -1,6 +1,198 @@
+@import '../../../scss/_mixins';
+
 .index-start-form {
-  padding: 20px 20px 0;
-  background-color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  padding: 30px 20px 0;
+  background: linear-gradient(0deg, #ffffff, #ffffff);
+
+  .btn-blue {
+    height: 52px;
+  }
+  &__all-input input {
+    padding-top: 11px;
+    padding-bottom: 11px;
+    margin-top: -1px;
+  }
+  &__choose-token {
+    input {
+      padding-top: 11px;
+      padding-bottom: 11px;
+      margin-top: -1px;
+    }
+    .form-field_input + .form-field_input {
+      margin-left: 5px;
+    }
+  }
+  &__settings {
+    padding: 20px 0;
+    background: linear-gradient(0deg, #ffffff, #ffffff);
+    border-top: 2px solid #f4f4f4;
+    &.hidden {
+      display: none;
+    }
+    &-title {
+      font-size: 14px;
+      line-height: 16px;
+      color: #2873fb;
+      font-family: inherit;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    &-block {
+      padding: 0 20px 25px;
+      & + & {
+        padding-top: 25px;
+        border-top: 2px solid #f4f4f4;
+      }
+      &:last-child {
+        padding-bottom: 0;
+      }
+      &-wrapper {
+        display: flex;
+
+        @include b(600) {
+          flex-wrap: wrap;
+        }
+      }
+      .form-field_input {
+        input {
+          padding: 6px 10px 6px 12px;
+          font-size: 16px !important;
+          &::placeholder {
+            font-size: 16px !important;
+          }
+        }
+      }
+    }
+    &-item {
+      & + & {
+        margin-left: 30px;
+      }
+
+      &:nth-last-child(1) {
+        @include b(600) {
+          margin-left: 0px !important;
+          margin-top: 20px;
+          width: 100%;
+        }
+      }
+
+      &-checkbox {
+        .form-field_input {
+          width: 620px;
+        }
+        &-head {
+          display: flex;
+          align-items: center;
+        }
+        &-text {
+          margin: 19px 0 0;
+        }
+        &-input {
+          margin: 30px 0;
+        }
+        &-percent {
+          display: flex;
+          .form-field + .form-field {
+            margin-left: 145px;
+          }
+          .form-field > span {
+            font-size: 16px;
+            line-height: 27px;
+            font-family: inherit;
+            opacity: 0.5;
+            margin-top: 10px;
+            display: block;
+            width: 100px;
+          }
+          .form-field_input {
+            display: flex;
+            align-items: center;
+            width: 115px;
+            span {
+              font-size: 16px;
+              line-height: 27px;
+              font-family: inherit;
+              opacity: 0.5;
+              margin-left: 5px;
+            }
+          }
+        }
+      }
+      &-head {
+        font-size: 12px;
+        line-height: 14px;
+        color: #000000;
+        text-transform: uppercase;
+        opacity: 0.5;
+        margin-bottom: 5px;
+        display: block;
+        width: max-content;
+
+        @include b(400) {
+          font-size: 10px;
+        }
+      }
+      &-wrapper {
+        display: flex;
+        margin-top: 25px;
+
+        @include b(500) {
+          flex-wrap: wrap;
+        }
+
+        .form-field {
+          width: 300px;
+          margin-bottom: 0;
+        }
+        .form-field + .form-field {
+          margin-left: 20px;
+
+          @include b(500) {
+            width: 100%;
+            margin-top: 20px;
+            margin-left: 0;
+          }
+        }
+      }
+      &-content {
+        position: relative;
+        display: flex;
+        width: fit-content;
+        align-items: center;
+        .mat-datepicker-toggle {
+          right: 0;
+        }
+        input {
+          border: none;
+          background: none;
+          font-size: 16px;
+          font-family: inherit;
+          line-height: 18px;
+          color: #110931;
+        }
+        input,
+        label {
+          background: #f4f4f4 !important;
+        }
+        .form-field_input-checkbox {
+          background: none;
+        }
+        .form-field_input-checkbox input:checked ~ .checkbox-rect {
+          background-color: #4aa956;
+        }
+      }
+      &-date {
+        padding: 13px 10px;
+        width: 81px !important;
+      }
+      &-time {
+        width: 81px !important;
+        padding: 13px 20px;
+        box-sizing: border-box;
+      }
+    }
+  }
 }
 .personal-swap-info {
   text-align: right;
@@ -12,10 +204,10 @@
   line-height: 22px;
   position: relative;
   a {
-    color: inherit!important;
+    color: inherit !important;
     text-decoration: underline;
     &:hover {
-      color: #FCD600!important;
+      color: #fcd600 !important;
     }
   }
   &_ico {
@@ -23,7 +215,7 @@
     vertical-align: middle;
     width: 22px;
     height: 22px;
-    background-color: #FCD600;
+    background-color: #fcd600;
     border-radius: 50%;
     color: #000;
     text-align: center;
@@ -36,7 +228,7 @@
   }
   &_tooltip {
     position: absolute;
-    background-color: #383D45;
+    background-color: #383d45;
     padding: 20px;
     font-size: 15px;
     line-height: 18px;
@@ -53,7 +245,7 @@
     visibility: hidden;
     transition: linear opacity 0.1s;
     &:after {
-      background-color: #383D45;
+      background-color: #383d45;
       width: 16px;
       height: 16px;
       content: '';
@@ -73,10 +265,27 @@
   }
 }
 .underline-link {
-  text-decoration: underline!important;
+  text-decoration: underline !important;
   &:hover {
-    text-decoration: none!important;
-    color: #FCD600!important;
+    text-decoration: none !important;
+    color: #fcd600 !important;
+  }
+  &--show {
+    cursor: pointer;
+    text-decoration: none !important;
+    &:hover {
+      color: inherit !important;
+    }
+  }
+  &_btn {
+    cursor: pointer;
+    color: #4aa956 !important;
+    text-decoration: none !important;
+    font-weight: 700;
+    opacity: 1 !important;
+    &:hover {
+      color: #4aa956 !important;
+    }
   }
 }
 @media screen and (max-width: 980px) {

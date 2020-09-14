@@ -1,13 +1,14 @@
 <div class="base-block-content">
   <div class="app-content-block">
     <div class="my-contracts-title">My trades</div>
-    <div class="my-contracts-empty" *ngIf="contractsList && !contractsList.length">
+    <div
+      class="my-contracts-empty"
+      *ngIf="contractsList && !contractsList.length"
+    >
       No trades
     </div>
 
-
     <div class="public-swaps_table-container" *ngIf="contractsList.length">
-
       <div class="public-swaps">
         <div class="grid-row public-swaps_head-row">
           <div class="grid-cell grid-cell-3-13 public-swaps_head-cell">
@@ -15,8 +16,14 @@
               <b>Name</b>
             </div>
           </div>
-          <div class="grid-cell grid-cell-3-13 public-swaps_head-cell"
-               [ngClass]="{'public-swaps_head-cell__sortable': selectedFilter.name === 'creation', 'asc': selectedFilter.asc}">
+          <div
+            class="grid-cell grid-cell-3-13 public-swaps_head-cell"
+            [ngClass]="{
+              'public-swaps_head-cell__sortable':
+                selectedFilter.name === 'creation',
+              asc: selectedFilter.asc
+            }"
+          >
             <div class="public-swaps_head_content bold">
               <button class="sort-btn" (click)="applySort('creation')">
                 <span></span>
@@ -24,8 +31,14 @@
               Creation date
             </div>
           </div>
-          <div class="grid-cell grid-cell-3-13 public-swaps_head-cell"
-               [ngClass]="{'public-swaps_head-cell__sortable': selectedFilter.name === 'expire', 'asc': selectedFilter.asc}">
+          <div
+            class="grid-cell grid-cell-3-13 public-swaps_head-cell"
+            [ngClass]="{
+              'public-swaps_head-cell__sortable':
+                selectedFilter.name === 'expire',
+              asc: selectedFilter.asc
+            }"
+          >
             <div class="public-swaps_head_content bold">
               <button class="sort-btn" (click)="applySort('expire')">
                 <span></span>
@@ -33,8 +46,14 @@
               Expires in
             </div>
           </div>
-          <div class="grid-cell grid-cell-3-13 public-swaps_head-cell"
-               [ngClass]="{'public-swaps_head-cell__sortable': selectedFilter.name === 'status', 'asc': selectedFilter.asc}">
+          <div
+            class="grid-cell grid-cell-3-13 public-swaps_head-cell"
+            [ngClass]="{
+              'public-swaps_head-cell__sortable':
+                selectedFilter.name === 'status',
+              asc: selectedFilter.asc
+            }"
+          >
             <div class="public-swaps_head_content bold">
               <button class="sort-btn" (click)="applySort('status')">
                 <span></span>
@@ -47,97 +66,112 @@
           </div>
           <div class="clearfix-block"></div>
         </div>
-      </div>
-    </div>
-
-
-
-    <div class="public-swaps_body" *ngIf="contractsList.length">
-
-      <div class="grid-row public-swaps_row as-link"
-           (click)="toContract(contract)"
-           *ngFor="let contract of contractsList">
-
-        <div class="grid-cell grid-cell-3-13 public-swaps_cell">
-          <div class="public-swaps_cell_content">
-            <div class="swap-info">
-              <b class="my-contract-name">{{contract.name}}</b>
+        <div
+          class="grid-row public-swaps_row as-link"
+          (click)="toContract(contract)"
+          *ngFor="let contract of contractsList"
+        >
+          <div class="grid-cell grid-cell-3-13 public-swaps_cell">
+            <div class="public-swaps_cell_content">
+              <div class="swap-info">
+                <b class="my-contract-name">{{ contract.name }}</b>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="grid-cell grid-cell-3-13 public-swaps_cell">
-          <div class="public-swaps_cell_content">
-            <div class="swap-info">
-              <b>{{contract.created_date | date : 'dd.MM.yyyy'}}</b>
-              {{contract.created_date | date : 'HH:mm'}}
+          <div class="grid-cell grid-cell-3-13 public-swaps_cell">
+            <div class="public-swaps_cell_content">
+              <div class="swap-info">
+                <b>{{ contract.created_date | date: 'dd.MM.yyyy' }}</b>
+                {{ contract.created_date | date: 'HH:mm' }}
+              </div>
             </div>
           </div>
-        </div>
 
-
-        <div class="grid-cell grid-cell-3-13 public-swaps_cell">
-          <div class="public-swaps_cell_content">
-            <div class="swap-info">
-              <b>{{contract.stop_date || contract.contract_details.stop_date | date : 'dd.MM.yyyy'}}</b>
-              {{contract.stop_date || contract.contract_details.stop_date | date : 'HH:mm'}}
+          <div class="grid-cell grid-cell-3-13 public-swaps_cell">
+            <div class="public-swaps_cell_content">
+              <div class="swap-info">
+                {{ contract.left_times.times_parts[0] }}d:
+                {{ contract.left_times.times_parts[1] }}h:
+                {{ contract.left_times.times_parts[2] }}m
+              </div>
             </div>
           </div>
-        </div>
 
-
-        <div class="grid-cell grid-cell-3-13 public-swaps_cell">
-          <div class="public-swaps_cell_content">
-            <div class="swap-info">
-              <span class="contract-state"
-                    style="float: none;"
-                   [ngClass]="'contract-state__' + states[contract.state].NUMBER">
-                {{states[contract.state].TEXT}}
-              </span>
+          <div class="grid-cell grid-cell-3-13 public-swaps_cell">
+            <div class="public-swaps_cell_content">
+              <div class="swap-info">
+                <span
+                  class="contract-state"
+                  style="float: none"
+                  [ngClass]="'contract-state__' + states[contract.state].NUMBER"
+                >
+                  {{ states[contract.state].TEXT }}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="grid-cell grid-cell-1-13 public-swaps_cell">
-          <div class="public-swaps_cell_content text-center">
-
-            <button class="delete-btn"
-                    [ngClass]="{
-                      invisible: ((contract.contract_type === 20) && !((states[contract.state].NUMBER === 0) || (states[contract.state].NUMBER === 6))) ||
-                      !(!contract.contract_state || (states[contract.contract_state].NUMBER === 0))
-                    }"
-                    (click)="$event.stopPropagation(); $event.preventDefault(); deleteContract(contract);">
-              <img src="./assets/images/icons/trash.svg">
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-</div>
-
-<ng-template #deleteConfirmation>
-  <div class="dialog-block">
-    <div class="dialog-block__content">
-      <div class="alert-window-title">
-        Do you want to remove it?
-      </div><br/><br/>
-      <div class="alert-window-buttons text-center">
-        <div class="grid-row">
-          <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <button class="btn btn-transparent btn-min right-padding" type="button"
-                    (click)="deleteContractConfirm()">
-              {{'YES'|translate}}
-            </button><br/>
-          </div>
-          <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <button class="btn btn-yellow btn-min right-padding" mat-dialog-close type="button">
-              {{'NO'|translate}}
-            </button>
+          <div class="grid-cell grid-cell-1-13 public-swaps_cell">
+            <div class="public-swaps_cell_content text-center">
+              <button
+                class="delete-btn"
+                [ngClass]="{
+                  invisible:
+                    (contract.contract_type === 20 &&
+                      !(
+                        states[contract.state].NUMBER === 0 ||
+                        states[contract.state].NUMBER === 2 ||
+                        states[contract.state].NUMBER === 6
+                      )) ||
+                    !(
+                      !contract.contract_state ||
+                      states[contract.contract_state].NUMBER === 0
+                    )
+                }"
+                (click)="
+                  $event.stopPropagation();
+                  $event.preventDefault();
+                  deleteContract(contract)
+                "
+              >
+                <img src="./assets/images/icons/trash.svg" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</ng-template>
+
+  <ng-template #deleteConfirmation>
+    <div class="dialog-block">
+      <div class="dialog-block__content">
+        <div class="alert-window-title">Do you want to remove it?</div>
+        <br /><br />
+        <div class="alert-window-buttons text-center">
+          <div class="grid-row">
+            <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+              <button
+                class="btn btn-transparent btn-min right-padding"
+                type="button"
+                (click)="deleteContractConfirm()"
+              >
+                {{ 'YES' | translate }}</button
+              ><br />
+            </div>
+            <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+              <button
+                class="btn btn-green btn-min right-padding"
+                mat-dialog-close
+                type="button"
+              >
+                {{ 'NO' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

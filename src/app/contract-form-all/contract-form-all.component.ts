@@ -1,22 +1,49 @@
-import {AfterContentInit, Component, EventEmitter, Injectable, OnDestroy, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
-import {MY_FORMATS} from '../contract-form/contract-form.component';
-import {ContractsService} from '../services/contracts/contracts.service';
-import {UserService} from '../services/user/user.service';
-import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
-import {ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router} from '@angular/router';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDatepicker, MatDialog, MatDialogRef} from '@angular/material';
-import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {
+  AfterContentInit,
+  Component,
+  EventEmitter,
+  Injectable,
+  OnDestroy,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
+import { MY_FORMATS } from '../contract-form/contract-form.component';
+import { ContractsService } from '../services/contracts/contracts.service';
+import { UserService } from '../services/user/user.service';
+import {
+  Location,
+  LocationStrategy,
+  PathLocationStrategy,
+} from '@angular/common';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  Resolve,
+  Router,
+} from '@angular/router';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  MatDatepicker,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material';
+import {
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  MomentDateAdapter,
+} from '@angular/material-moment-adapter';
 
 import BigNumber from 'bignumber.js';
 import * as moment from 'moment';
-import {HttpService} from '../services/http/http.service';
-import {Web3Service} from '../services/web3/web3.service';
-import {Observable} from 'rxjs';
-import {UserInterface} from '../services/user/user.interface';
-
+import { HttpService } from '../services/http/http.service';
+import { Web3Service } from '../services/web3/web3.service';
+import { Observable } from 'rxjs';
+import { UserInterface } from '../services/user/user.interface';
 
 export interface IContractV3 {
-
   id?: number;
   name: string;
 
@@ -26,7 +53,7 @@ export interface IContractV3 {
   quote_limit?: string;
   stop_date?: number;
   owner_address?: string;
-  public?: boolean|undefined;
+  public?: boolean | undefined;
   unique_link?: string;
   unique_link_url?: string;
 
@@ -49,7 +76,6 @@ export interface IContractV3 {
     };
   };
 
-
   whitelist?: any;
   whitelist_address?: any;
   min_base_wei?: any;
@@ -70,25 +96,24 @@ export interface IContractV3 {
   created_date: string;
 }
 
-
-
-
 @Component({
   selector: 'app-contract-form-all',
   templateUrl: './contract-form-all.component.html',
   styleUrls: ['../contract-form/contract-form.component.scss'],
   providers: [
     Location,
-    {provide: LocationStrategy, useClass: PathLocationStrategy},
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}
-  ]
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 export class ContractFormAllComponent implements AfterContentInit, OnInit {
-
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
-
 
   @ViewChild('contactsReminderModal') contactsReminderModal: TemplateRef<any>;
   @ViewChild('ethSwapNotification') ethSwapNotification: TemplateRef<any>;
@@ -127,7 +152,6 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   // For request form data
   protected formData: IContractV3;
 
-
   public openedForm: any;
 
   @ViewChild(MatDatepicker) datepicker: MatDatepicker<Date>;
@@ -153,18 +177,20 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
 
     this.customTokens = {
       base: {},
-      quote: {}
+      quote: {},
     };
 
     this.openedCustomTokens = {
       base: false,
-      quote: false
+      quote: false,
     };
 
     this.currentUser = this.userService.getUserModel();
-    this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
-      this.currentUser = userProfile;
-    });
+    this.userService
+      .getCurrentUser()
+      .subscribe((userProfile: UserInterface) => {
+        this.currentUser = userProfile;
+      });
 
     this.minDate = moment().add(1, 'hour');
     this.maxDate = moment().add(14, 'day');
@@ -172,14 +198,11 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     const startDateTime = moment(this.minDate);
     this.datePickerDate = startDateTime.add(2, 'day');
     this.datePickerTime = `${startDateTime.hour()}:${startDateTime.minutes()}`;
-
   }
-
-
 
   ngOnInit() {
     if (this.originalContract) {
-      this.requestData = {...this.originalContract as IContractV3};
+      this.requestData = { ...(this.originalContract as IContractV3) };
       this.gotToForm(100);
     } else {
       this.requestData = {
@@ -190,22 +213,20 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
           },
           quote: {
             token: {},
-          }
-        }
+          },
+        },
       } as IContractV3;
 
       this.requestData.public = true;
-      this.originalContract = {...this.requestData};
+      this.originalContract = { ...this.requestData };
       this.gotToForm(0);
     }
-
   }
-
 
   public checkContactsReminder() {
     if (!this.requestData.notification) {
       this.dialog.open(this.contactsReminderModal, {
-        width: '480px'
+        width: '480px',
       });
     } else {
       this.gotToForm(100);
@@ -223,51 +244,78 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     }
   }
 
-
   get baseBrokerFee() {
-    if (!(this.requestData.tokens_info.base.amount && this.requestData.broker_fee_base)) {
+    if (
+      !(
+        this.requestData.tokens_info.base.amount &&
+        this.requestData.broker_fee_base
+      )
+    ) {
       return 0;
     }
-    return new BigNumber(this.requestData.tokens_info.base.amount).div(100).times(this.requestData.broker_fee_base).toString();
+    return new BigNumber(this.requestData.tokens_info.base.amount)
+      .div(100)
+      .times(this.requestData.broker_fee_base)
+      .toString();
   }
 
   get quoteBrokerFee() {
-    if (!(this.requestData.tokens_info.quote.amount && this.requestData.broker_fee_quote)) {
+    if (
+      !(
+        this.requestData.tokens_info.quote.amount &&
+        this.requestData.broker_fee_quote
+      )
+    ) {
       return 0;
     }
-    return new BigNumber(this.requestData.tokens_info.quote.amount).div(100).times(this.requestData.broker_fee_quote).toString();
+    return new BigNumber(this.requestData.tokens_info.quote.amount)
+      .div(100)
+      .times(this.requestData.broker_fee_quote)
+      .toString();
   }
 
   get isEthereumSwap() {
-    return this.requestData.tokens_info.quote.token.isEthereum &&
-      this.requestData.tokens_info.base.token.isEthereum;
+    return (
+      this.requestData.tokens_info.quote.token.isEthereum &&
+      this.requestData.tokens_info.base.token.isEthereum
+    );
   }
 
   get tokens() {
     return this.requestData.tokens_info;
   }
 
-
   public revertCoins() {
-    const baseCoin = {...this.requestData.tokens_info.base};
-    this.requestData.tokens_info.base = {...this.requestData.tokens_info.quote};
-    this.requestData.tokens_info.quote = {...baseCoin};
+    const baseCoin = { ...this.requestData.tokens_info.base };
+    this.requestData.tokens_info.base = {
+      ...this.requestData.tokens_info.quote,
+    };
+    this.requestData.tokens_info.quote = { ...baseCoin };
 
     this.BaseTokenCustom.emit(this.requestData.tokens_info.base);
     this.QuoteTokenCustom.emit(this.requestData.tokens_info.quote);
   }
 
   public getRate(revert?): string {
-
-    if (!(this.requestData.tokens_info.base.amount && this.requestData.tokens_info.quote.amount)) {
+    if (
+      !(
+        this.requestData.tokens_info.base.amount &&
+        this.requestData.tokens_info.quote.amount
+      )
+    ) {
       return '0';
     }
 
-    const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount);
-    const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount);
-    return (!revert ?
-      baseCoinAmount.div(quoteCoinAmount) :
-      quoteCoinAmount.div(baseCoinAmount)).toString();
+    const baseCoinAmount = new BigNumber(
+      this.requestData.tokens_info.base.amount
+    );
+    const quoteCoinAmount = new BigNumber(
+      this.requestData.tokens_info.quote.amount
+    );
+    return (!revert
+      ? baseCoinAmount.div(quoteCoinAmount)
+      : quoteCoinAmount.div(baseCoinAmount)
+    ).toString();
   }
 
   private setFullDateTime() {
@@ -276,7 +324,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     this.extraForm.value.active_to.minutes(times[1]);
 
     if (this.extraForm.value.active_to.isBefore(this.minDate)) {
-      this.extraForm.controls.time.setErrors({incorrect: true});
+      this.extraForm.controls.time.setErrors({ incorrect: true });
     } else {
       this.extraForm.controls.time.setErrors(null);
     }
@@ -292,13 +340,11 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
       this.minTime = null;
     }
     this.setFullDateTime();
-
   }
 
   public timeChange() {
     this.setFullDateTime();
   }
-
 
   public gotToForm(formNumber) {
     if (this.openedForm === formNumber) {
@@ -313,28 +359,35 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   public changedToken() {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
-    if (this.requestData.tokens_info.base.amount && this.requestData.tokens_info.quote.amount &&
-      baseCoin.cmc_id && quoteCoin.cmc_id && baseCoin.cmc_id > 0 && quoteCoin.cmc_id > 0) {
+    if (
+      this.requestData.tokens_info.base.amount &&
+      this.requestData.tokens_info.quote.amount &&
+      baseCoin.cmc_id &&
+      quoteCoin.cmc_id &&
+      baseCoin.cmc_id > 0 &&
+      quoteCoin.cmc_id > 0
+    ) {
       this.cmcRate = {
         revert: new BigNumber(baseCoin.rate).div(quoteCoin.rate).toNumber(),
-        direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber()
+        direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber(),
       };
       const rate = parseFloat(this.getRate(true));
       const rateChanges = parseFloat(this.getRate()) - this.cmcRate.direct;
       this.cmcRate.isMessage = true;
       this.cmcRate.isLower = rateChanges > 0;
-      this.cmcRate.change = Math.round(Math.abs(-((rate / this.cmcRate.revert) - 1)) * 100);
+      this.cmcRate.change = Math.round(
+        Math.abs(-(rate / this.cmcRate.revert - 1)) * 100
+      );
     } else {
       this.cmcRate = undefined;
     }
   }
 
-
   public checkRates() {
     const tokens = this.requestData.tokens_info;
     if (tokens.base.token.isEthereum && !tokens.quote.token.isEthereum) {
       this.dialog.open(this.ethSwapNotification, {
-        width: '480px'
+        width: '480px',
       });
     } else {
       this.gotToForm(1);
@@ -355,7 +408,7 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
   }
 
   public addCustomToken(name) {
-    this.requestData.tokens_info[name].token = {...this.customTokens[name]};
+    this.requestData.tokens_info[name].token = { ...this.customTokens[name] };
     this.requestData.tokens_info[name].token.custom = true;
     switch (name) {
       case 'base':
@@ -375,54 +428,63 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     this.formIsSending = true;
 
     if (window['dataLayer']) {
-      window['dataLayer'].push({event: 'publish'});
+      window['dataLayer'].push({ event: 'publish' });
     }
 
     this.contractsService[data.id ? 'updateSWAP3' : 'createSWAP3'](data)
-      .then((result) => {
-        this.contractIsCreated(result);
-      }, (err) => {
-        this.contractIsError(err);
-      }).finally(() => {
-      this.formIsSending = false;
-    });
+      .then(
+        (result) => {
+          this.contractIsCreated(result);
+        },
+        (err) => {
+          this.contractIsError(err);
+        }
+      )
+      .finally(() => {
+        this.formIsSending = false;
+      });
   }
 
   public createContract(tokenForm, advancedForm?: any) {
-
     this.formData = {
       ...tokenForm.value,
       ...advancedForm.value,
-      ...this.notificationForm.value
+      ...this.notificationForm.value,
     } as IContractV3;
 
     this.formData.comment = this.requestData.comment;
 
-
-    if (this.requestData.tokens_info.quote.token.isEthereum && this.requestData.tokens_info.base.token.isEthereum) {
+    if (
+      this.requestData.tokens_info.quote.token.isEthereum &&
+      this.requestData.tokens_info.base.token.isEthereum
+    ) {
       this.formData.base_address = this.requestData.tokens_info.base.token.address;
       this.formData.quote_address = this.requestData.tokens_info.quote.token.address;
     }
 
     this.formData.public = !!this.extraForm.value.public;
-    this.formData.stop_date = this.extraForm.value.active_to.clone().utc().format('YYYY-MM-DD HH:mm');
+    this.formData.stop_date = this.extraForm.value.active_to
+      .clone()
+      .utc()
+      .format('YYYY-MM-DD HH:mm');
 
     this.formData.base_limit = this.requestData.tokens_info.base.amount;
     this.formData.quote_limit = this.requestData.tokens_info.quote.amount;
 
     this.formData.owner_address = this.extraForm.value.owner_address;
 
-    this.formData.name = this.requestData.tokens_info.base.token.token_short_name +
-      '<>' + this.requestData.tokens_info.quote.token.token_short_name;
+    this.formData.name =
+      this.requestData.tokens_info.base.token.token_short_name +
+      '<>' +
+      this.requestData.tokens_info.quote.token.token_short_name;
 
     this.formData.min_quote_wei = this.formData.min_quote_wei || '0';
     this.formData.min_base_wei = this.formData.min_base_wei || '0';
 
-
     if (this.brokersForm) {
       this.formData = {
         ...this.formData,
-        ...this.brokersForm.value
+        ...this.brokersForm.value,
       };
 
       if (!this.formData.broker_fee) {
@@ -441,13 +503,8 @@ export class ContractFormAllComponent implements AfterContentInit, OnInit {
     } else {
       this.sendContractData(this.formData);
     }
-
   }
-
 }
-
-
-
 
 @Injectable()
 export class ContractEditV3Resolver implements Resolve<any> {
@@ -460,30 +517,32 @@ export class ContractEditV3Resolver implements Resolve<any> {
     private httpService: HttpService,
     private web3Service: Web3Service,
     private router: Router
-  ) {
-
-  }
+  ) {}
 
   private contractId: number;
   private publicLink: string;
 
-
   private getContractInformation(observer, isPublic?) {
+    const promise = (!isPublic
+      ? this.contractsService.getContractV3Information(this.contractId)
+      : this.contractsService.getSwapByPublic(this.publicLink)) as Promise<any>;
 
-    const promise = (!isPublic ?
-      this.contractsService.getContractV3Information(this.contractId) :
-      this.contractsService.getSwapByPublic(this.publicLink)) as Promise<any>;
+    promise.then(
+      (trade: IContractV3) => {
+        this.web3Service.getSWAPSCoinInfo(trade).then((result: any) => {
+          console.log('result', result);
 
-    promise.then((trade: IContractV3) => {
-      this.web3Service.getSWAPSCoinInfo(trade).then((result: any) => {
-        result.isEthereum = result.tokens_info.base.token.isEthereum && result.tokens_info.quote.token.isEthereum;
-        observer.next(result);
-        observer.complete();
-      });
-    }, () => {
-      this.router.navigate(['/trades']);
-    });
-
+          result.isEthereum =
+            result.tokens_info.base.token.isEthereum &&
+            result.tokens_info.quote.token.isEthereum;
+          observer.next(result);
+          observer.complete();
+        });
+      },
+      () => {
+        this.router.navigate(['/trades']);
+      }
+    );
   }
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -491,22 +550,27 @@ export class ContractEditV3Resolver implements Resolve<any> {
     if (route.params.id) {
       this.contractId = route.params.id;
       return new Observable((observer) => {
-        const subscription = this.userService.getCurrentUser(false, true).subscribe((user) => {
-          this.currentUser = user;
-          if (!user.is_ghost) {
-            this.getContractInformation(observer);
-          } else {
-            this.userService.openAuthForm().then(() => {
+        const subscription = this.userService
+          .getCurrentUser(false, true)
+          .subscribe((user) => {
+            this.currentUser = user;
+            if (!user.is_ghost) {
               this.getContractInformation(observer);
-            }, () => {
-              this.router.navigate(['/trades']);
-              //
-            });
-          }
-          subscription.unsubscribe();
-        });
+            } else {
+              this.userService.openAuthForm().then(
+                () => {
+                  this.getContractInformation(observer);
+                },
+                () => {
+                  this.router.navigate(['/trades']);
+                  //
+                }
+              );
+            }
+            subscription.unsubscribe();
+          });
         return {
-          unsubscribe() {}
+          unsubscribe() {},
         };
       });
     } else if (route.params.public_link) {

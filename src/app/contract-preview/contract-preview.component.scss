@@ -1,3 +1,5 @@
+@import '../../scss/mixins';
+
 .base-block-content {
   box-sizing: border-box;
   background-attachment: fixed;
@@ -6,13 +8,12 @@
 .contract-title {
   font-size: 25px;
   line-height: 30px;
-  color: #fff;
+  color: #000;
   font-weight: bold;
 }
 .preview-container {
   padding: 19px 15px;
-  background-color: rgba(0, 0, 0, 0.2);
-  color: #fff;
+  color: #000000;
   &_title {
     font-size: 28px;
     line-height: 38px;
@@ -85,7 +86,7 @@
           position: absolute;
           top: 3px;
           left: -37px;
-          border: 1px solid #FCD600;
+          border: 1px solid #fcd600;
           width: 22px;
           height: 22px;
           font-size: 16px;
@@ -104,7 +105,8 @@
       height: 16px;
       padding: 6px 0;
       cursor: pointer;
-      &:after, &:before {
+      &:after,
+      &:before {
         display: block;
         content: '';
         height: 1px;
@@ -141,57 +143,78 @@
     vertical-align: middle;
   }
 }
-
+.all-tokens-info-row {
+  .one-token-info-cell {
+    padding: 0 7px;
+  }
+  .btn-refund {
+    background: #ffffff;
+    height: 62px;
+    color: #000;
+    border: none;
+    font-weight: 300;
+    margin-top: 15px;
+  }
+}
 .rate-info {
   padding: 7px 0;
   display: block;
   margin-top: 0;
 }
 
-
 .tokens-info-block {
-  padding: 8px 20px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
-  border-top: 1px dashed rgba(255, 255, 255, 0.25);
-  transition: all 0.2s;
-  opacity: 0.9;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-    opacity: 0.95;
-  }
-  .active-side-info & {
-    background-color: rgba(0, 0, 0, 0.4);
-    opacity: 1;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-    //transform: scale(1.02);
-  }
+  padding: 15px 0px 0px;
+  background-color: white;
   &_filled {
-    padding-bottom: 11px;
+    // padding: 0 0px 15px;
+    // border-bottom: 1px solid #f4f4f4;
     &:after {
       content: '';
       display: block;
       clear: both;
     }
+    &-wrapper {
+      // display: flex;
+      // justify-content: space-between;
+    }
     &__count {
-      font-size: 50px;
-      font-weight: bold;
-      line-height: 61px;
-      color: #fff;
+      font-size: 40px;
+      line-height: 46px;
+      color: #000;
+      padding: 2px 30px 10px 30px;
+      border-bottom: 1px solid #f4f4f4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &--right {
+        text-align: right;
+      }
     }
     &_item {
-      width: 48%;
+      // width: 48%;
+      display: flex;
+      align-items: center;
+      &.left {
+        // padding-right: 40px;
+        div {
+          color: #000 !important;
+          opacity: 0.5 !important;
+        }
+      }
       &.send {
-        color: #FCD600;
+        // color: #2873fb;
+        div {
+          opacity: 0.5;
+        }
       }
-      &:first-child {
-        text-align: left;
-        float: left;
-      }
-      &:last-child {
-        text-align: right;
-        float: right;
-      }
+      // &:first-child {
+      //   text-align: left;
+      //   float: left;
+      // }
+      // &:last-child {
+      //   text-align: right;
+      //   float: right;
+      // }
     }
     &_item.left &__text {
       color: rgba(255, 255, 255, 0.5);
@@ -200,13 +223,14 @@
       color: rgba(255, 255, 255, 0.7);
     }
     &__text {
-      margin-top: 9px;
       font-size: 12px;
       line-height: 14px;
       text-transform: uppercase;
+      min-width: 30px;
+      text-align: left;
     }
     &__complete {
-      margin-top: 3px;
+      margin-left: 6px;
       font-size: 17px;
       line-height: 20px;
 
@@ -220,24 +244,68 @@
   &_progress {
     height: 5px;
     background-color: rgba(255, 255, 255, 0.27);
-    margin: 0 -20px;
     span {
       display: block;
       height: 100%;
       float: left;
-      background-color: #FCD600;
+      background-color: #4aa956;
       transition: all linear 0.2s;
     }
   }
 }
 
 .token-info {
-  padding: 20px 0;
+  padding: 20px 30px 45px 30px;
   line-height: 52px;
-  &:after {
-    content: '';
-    display: block;
-    clear: both;
+  display: flex;
+  justify-content: space-between;
+
+  @include b(950) {
+    flex-direction: column;
+    text-align: left;
+  }
+
+  &--reverse {
+    flex-direction: row-reverse;
+
+    @include b(950) {
+      flex-direction: column;
+    }
+
+    .token-info__wrapper {
+      display: flex;
+      flex-direction: row-reverse;
+    }
+    .token-info_icon {
+      margin-left: 18px;
+      margin-right: 0;
+    }
+    .token-info_texts__name {
+      text-align: right;
+
+      @include b(950) {
+        text-align: right;
+      }
+    }
+
+    .token-info_investments {
+      @include b(950) {
+        margin-top: 20px;
+      }
+    }
+    .token-info_investments__desc {
+      @include b(950) {
+        text-align: right;
+      }
+    }
+
+    .token-info_investments__number {
+      text-align: left;
+
+      @include b(950) {
+        text-align: right;
+      }
+    }
   }
   &_icon {
     width: 52px;
@@ -247,7 +315,7 @@
     border-radius: 50%;
     float: left;
     margin-right: 18px;
-    background: #fff no-repeat center center;
+    background: #f7f7f7 no-repeat center center;
     background-size: 80%;
     img {
       vertical-align: middle;
@@ -261,7 +329,7 @@
     max-width: 100%;
     &__name {
       font-size: 16px;
-      color: #FFFFFF;
+      color: #000;
       letter-spacing: -0.43px;
       font-weight: bold;
       line-height: 19px;
@@ -269,22 +337,41 @@
     &__address {
       margin-top: 4px;
       font-size: 18px;
-      color: #FFFFFF;
+      color: #2873fb;
       line-height: 22px;
       overflow: hidden;
       white-space: nowrap;
-      text-overflow: ellipsis
+      text-overflow: ellipsis;
+      a:not(.new-btn):not(.btn):not(.minimal-btn) {
+        display: flex;
+        align-items: center;
+        img {
+          margin-top: -4px;
+        }
+      }
     }
   }
   &_investments {
-    line-height: 34px;
-    margin-top: 25px;
+    line-height: 36px;
+    display: flex;
+    flex-direction: column;
+
+    @include b(950) {
+      margin-top: 20px;
+    }
+
     &__number {
-      font-size: 35px;
+      font-size: 16px;
       display: inline-block;
       vertical-align: middle;
-      color: #fff;
-      margin-right: 15px;
+      color: #000000;
+      margin-bottom: 0px;
+      margin-top: -6px;
+      text-align: right;
+
+      @include b(950) {
+        text-align: left;
+      }
     }
     &__desc {
       display: inline-block;
@@ -292,25 +379,68 @@
       line-height: 16px;
       font-size: 14px;
       margin: -2px 0 auto;
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(0, 0, 0, 0.5);
+
+      @include b(950) {
+        text-align: left;
+      }
     }
   }
 }
 
 .contract-buttons {
-  border-top: 1px dashed rgba(255, 255, 255, 0.25);
-  margin: 0 -20px -8px;
-  padding: 20px;
+  padding: 0px 30px 0 30px;
+  &--wei {
+    padding-bottom: 20px;
+  }
   &.no-bottom-margin {
     margin-bottom: 0;
   }
   &.bottom-correct {
     margin-bottom: -20px;
   }
+  input {
+    height: 50px;
+  }
+  .normal-text {
+    color: #000;
+  }
+
+  form {
+    .grid-row {
+      @include b(800) {
+        flex-direction: column;
+
+        div {
+          width: 100%;
+        }
+      }
+    }
+  }
 }
 
 .contract-info-block {
-  margin-top: 35px;
+  margin-top: 15px;
+  background: #ffffff;
+  padding: 30px 40px 10px 30px;
+
+  .grid-row {
+    .grid-cell {
+      &:nth-child(3) {
+        @include b(680) {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .form-field_value {
+    color: #000;
+    display: flex;
+  }
+  .copy-btn {
+    top: 0;
+  }
 }
 .one-separated-block {
   border-top: 1px dashed rgba(255, 255, 255, 0.25);
@@ -328,8 +458,8 @@
 .exchange-ico {
   position: absolute;
   left: 0;
-  margin-left: -20px;
-  top: 46px;
+  margin-left: -28px;
+  top: 45px;
 }
 
 @media screen and (max-width: 680px) {
@@ -364,7 +494,6 @@
   }
 }
 
-
 .contact-buttons {
   .btn {
     width: 33%;
@@ -377,9 +506,10 @@
 .warning-coin {
   font-size: 16px;
   line-height: 16px;
-  color: #61B9DF;
+  color: #61b9df;
   margin: 15px 0;
-  &_icon, &_text {
+  &_icon,
+  &_text {
     display: inline-block;
     vertical-align: middle;
   }
@@ -389,11 +519,9 @@
 }
 
 .cmc-rate-notice {
-
   background-color: rgba(0, 0, 0, 0.2);
   border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
   border-top: 1px dashed rgba(255, 255, 255, 0.25);
-  margin-bottom: 10px;
   padding: 14px 8px 14px 45px;
   font-size: 14px;
   line-height: 14px;
@@ -402,12 +530,14 @@
     top: 2px;
   }
   &__positive {
-    background: url("/assets/images/icons/positive-rate.svg") 5px center no-repeat;
-    color: #2BCF78;
+    background: url('/assets/images/icons/positive-rate.svg') 5px center
+      no-repeat;
+    color: #2bcf78;
   }
   &__negative {
-    background: url("/assets/images/icons/negative-rate.svg") 5px center no-repeat;
-    color: #DA7B83;
+    background: url('/assets/images/icons/negative-rate.svg') 5px center
+      no-repeat;
+    color: #da7b83;
   }
 }
 
@@ -418,4 +548,14 @@
   width: 24px;
   vertical-align: top;
   margin-right: 10px;
+}
+.c-preview {
+  &__rate {
+    &-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  }
 }

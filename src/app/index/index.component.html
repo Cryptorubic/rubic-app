@@ -1,28 +1,23 @@
 <div class="app-index">
   <div class="app-content-block">
-
     <div class="app-index__intro">
-      <h1 class="app-index__intro_title">
-        OTC Global Liquidity Pool
-      </h1>
       <div class="app-index__intro_text">
-        It accumulates all deals on the market and connects sellers and buyers from around the world.
+        Make trades on your terms, share and generate revenue
       </div>
+    </div>
+
+    <div class="app-index__start-form">
+      <div class="title-section">Create your Trade</div>
+      <app-start-form></app-start-form>
     </div>
 
     <div class="app-index__contracts">
       <app-public-contracts></app-public-contracts>
     </div>
-
-    <div class="app-index__start-form">
-      <div class="title-section">Create trade</div>
-      <app-start-form></app-start-form>
-    </div>
-
   </div>
 
   <a id="features"></a>
-  <div class="second-index-block">
+  <!-- <div class="second-index-block">
     <div class="app-content-block">
       <div class="app-index__why-we">
         <div class="title-section">Features</div>
@@ -30,11 +25,9 @@
           <li>
             <div class="why-we-list_title">
               <div class="why-we-list_title_ico">
-                <img src="./assets/images/index/features/feature-1.svg">
+                <img src="./assets/images/index/features/feature-1.svg" />
               </div>
-              <div class="why-we-list_title_text">
-                Swap non-listed tokens
-              </div>
+              <div class="why-we-list_title_text">Swap non-listed tokens</div>
             </div>
             <div class="why-we-list_description">
               You can swap any tokens you want before listing them on exchange
@@ -43,11 +36,9 @@
           <li>
             <div class="why-we-list_title">
               <div class="why-we-list_title_ico">
-                <img src="./assets/images/index/features/feature-2.svg">
+                <img src="./assets/images/index/features/feature-2.svg" />
               </div>
-              <div class="why-we-list_title_text">
-                No volume limits
-              </div>
+              <div class="why-we-list_title_text">No volume limits</div>
             </div>
             <div class="why-we-list_description">
               You can create any order with your own terms
@@ -56,7 +47,7 @@
           <li>
             <div class="why-we-list_title">
               <div class="why-we-list_title_ico">
-                <img src="./assets/images/index/features/feature-3.svg">
+                <img src="./assets/images/index/features/feature-3.svg" />
               </div>
               <div class="why-we-list_title_text">
                 Multiple participants during a single swap
@@ -69,38 +60,35 @@
           <li>
             <div class="why-we-list_title">
               <div class="why-we-list_title_ico">
-                <img src="./assets/images/index/features/feature-4.svg">
+                <img src="./assets/images/index/features/feature-4.svg" />
               </div>
               <div class="why-we-list_title_text">
                 All trading pairs supported
               </div>
             </div>
             <div class="why-we-list_description">
-              You can create any trading pair, so you don't need to do several swaps
+              You can create any trading pair, so you don't need to do several
+              swaps
             </div>
           </li>
-          <li>
+          <li class="no-padding">
             <div class="why-we-list_title">
               <div class="why-we-list_title_ico">
-                <img src="./assets/images/index/features/feature-5.svg">
+                <img src="./assets/images/index/features/feature-5.svg" />
               </div>
-              <div class="why-we-list_title_text">
-                Private and public swaps
-              </div>
+              <div class="why-we-list_title_text">Private and public swaps</div>
             </div>
             <div class="why-we-list_description">
-              If you already know another part, you can create a private swap and share a link.
-              It won't go to our main page
+              If you already know another part, you can create a private swap
+              and share a link. It won't go to our main page
             </div>
           </li>
           <li>
             <div class="why-we-list_title">
               <div class="why-we-list_title_ico">
-                <img src="./assets/images/index/features/feature-6.svg">
+                <img src="./assets/images/index/features/feature-6.svg" />
               </div>
-              <div class="why-we-list_title_text">
-                No sign-ups
-              </div>
+              <div class="why-we-list_title_text">No sign-ups</div>
             </div>
             <div class="why-we-list_description">
               You don't have to sign up and pass verification to use our service
@@ -109,41 +97,9 @@
         </ul>
       </div>
     </div>
-
-    <div class="app-content-block">
-      <div class="app-index__our-clients">
-        <div class="title-section">Partners</div>
-        <div class="app-index__partners">
-          <div class="grid-row">
-            <div *ngFor="let project of projects"
-                 class="grid-cell grid-cell-1-7 grid-cell-sm-1-5 grid-cell-s-1-4 grid-cell-ps-1-3 grid-cell-ls-1-2">
-              <div class="app-index__partners_item">
-                <a href="{{project.link}}" target="_blank" [ngClass]="{invert: project.invert}">
-                  <img [src]="project.logo">
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  </div> -->
 </div>
 
 <app-footer></app-footer>
 
-
-<!--<a class="daps-swap-footer" href="https://daps.swaps.network" target="_blank">-->
-  <!--<div class="daps-swap-footer_content">-->
-    <!--<span class="daps-swap-footer_text">-->
-      <!--<img src="./assets/images/icons/daps-arrow.png">-->
-      <!--Exchange your ERC-20 DAPS Token to DAPS Coin at 1:1 rate!-->
-    <!--</span>-->
-    <!--<img src="./assets/images/partners/daps-logo-h.svg" class="daps-swap-footer_logo">-->
-  <!--</div>-->
-<!--</a>-->
-
 <div class="scroll-top-btn" id="scroll-btn"></div>
-
-
