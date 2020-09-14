@@ -12,7 +12,7 @@ import { SWAPS_V2 } from '../../contract-form-all/contract-v2-details';
 import { Web3Service } from '../../services/web3/web3.service';
 import { UserService } from '../../services/user/user.service';
 import BigNumber from 'bignumber.js';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { ContractsService } from '../../services/contracts/contracts.service';
 import * as moment from 'moment';
@@ -114,7 +114,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private web3Service: Web3Service,
     protected router: Router,
     private userService: UserService,
+    private route: ActivatedRoute,
   ) {
+    console.log(this.route.snapshot.data.contract);
     this.CMCRates = {};
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: any) => {
@@ -410,6 +412,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.sendData.min_quote_wei = this.requestData.min_quote_wei || '0';
     this.sendData.min_base_wei = this.requestData.min_base_wei || '0';
+    this.sendData.rubic_initialized = false;
 
     if (!this.requestData.broker_fee) {
       this.requestData.broker_fee_address = null;
@@ -488,7 +491,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.contractsService[data.id ? 'updateSWAP3' : 'createSWAP3'](data)
       .then(
         (result) => {
-          this.initialisationTrade(result);
+          !data.id
+            ? this.initialisationTrade(result)
+            : this.contractIsCreated(result);
         },
         (err) => {
           console.log(err);
@@ -575,7 +580,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           'metamask',
         )
         .then(() => {
-          this.contractIsCreated(originalContract);
+          this.sendData.id = details.id;
+          this.sendData.rubic_initialized = true;
+          this.sendContractData(this.sendData);
         })
         .catch((err) => {
           this.isCreatingContract = false;
