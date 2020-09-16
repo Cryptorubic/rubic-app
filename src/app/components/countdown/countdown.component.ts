@@ -60,14 +60,16 @@ export class CountdownComponent implements OnInit {
     }
 
     const future = new Date(this.timeStart);
-    future.setDate(future.getDate() + this.timeEndDayPlus);
+
+    if (this.timeEndDayPlus) {
+      future.setDate(future.getDate() + this.timeEndDayPlus);
+    }
     this.counter$ = interval(1000).pipe(
       map(() => Math.floor((future.getTime() - new Date().getTime()) / 1000))
     );
     this.subscription = this.counter$.subscribe(
       (x) => (this.message = this.dhms(x))
     );
-    console.log(this.message);
   }
 
   OnDestroy(): void {
