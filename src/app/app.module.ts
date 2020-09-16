@@ -91,6 +91,8 @@ import { MainPageComponent } from './main-page/main-page.component';
 import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { AboutageComponent } from './about/about.component';
+import { TokenSaleComponent } from './token-sale/token-sale.component';
+import { CountdownComponent } from './components/countdown/countdown.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -204,6 +206,7 @@ export function appInitializerFactory(
     HeaderComponent,
     StartFormComponent,
     AboutageComponent,
+    TokenSaleComponent,
     IndexComponent,
     FooterMainPageComponent,
     HeaderMainPageComponent,
@@ -243,6 +246,8 @@ export function appInitializerFactory(
     IndexIcoFormComponent,
     CoinsListComponent,
     ChangePasswordComponent,
+
+    CountdownComponent,
   ],
   entryComponents: [
     AuthComponent,
