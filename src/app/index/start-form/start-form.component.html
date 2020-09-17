@@ -265,7 +265,10 @@
         </div>
         <div class="index-start-form__settings-item">
           <div class="index-start-form__settings-item-head">Public deal</div>
-          <div class="index-start-form__settings-item-content">
+          <div
+            class="index-start-form__settings-item-content"
+            (click)="changePD()"
+          >
             <label class="form-field_input-checkbox" style="min-width: 70px">
               <input
                 type="checkbox"
@@ -309,7 +312,7 @@
           <label class="form-field_input-checkbox" style="min-width: 70px">
             <input
               type="checkbox"
-              name="public"
+              name="permanent"
               [(ngModel)]="requestData.permanent"
               disabled="true"
             />

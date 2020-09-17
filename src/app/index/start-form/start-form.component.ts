@@ -114,7 +114,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private web3Service: Web3Service,
     protected router: Router,
     private userService: UserService,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {
     console.log(this.route.snapshot.data.contract);
     this.CMCRates = {};
@@ -192,7 +192,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public isChangedToken(...args) {
     localStorage.setItem(
       'form_new_values',
-      JSON.stringify({ tokens_info: this.tokensData }),
+      JSON.stringify({ tokens_info: this.tokensData })
     );
   }
   public checkRate(revert?) {
@@ -200,11 +200,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       return false;
     }
     const baseCoinAmount = new BigNumber(this.tokensData.base.amount).div(
-      Math.pow(10, this.tokensData.base.token.decimals),
+      Math.pow(10, this.tokensData.base.token.decimals)
     );
 
     const quoteCoinAmount = new BigNumber(this.tokensData.quote.amount).div(
-      Math.pow(10, this.tokensData.quote.token.decimals),
+      Math.pow(10, this.tokensData.quote.token.decimals)
     );
 
     return !revert
@@ -223,10 +223,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     const baseCoinAmount = new BigNumber(
-      this.requestData.tokens_info.base.amount,
+      this.requestData.tokens_info.base.amount
     );
     const quoteCoinAmount = new BigNumber(
-      this.requestData.tokens_info.quote.amount,
+      this.requestData.tokens_info.quote.amount
     );
     return (!revert
       ? baseCoinAmount.div(quoteCoinAmount)
@@ -253,7 +253,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.cmcRate.isMessage = true;
       this.cmcRate.isLower = rateChanges > 0;
       this.cmcRate.change = Math.round(
-        Math.abs(-(rate / this.cmcRate.revert - 1)) * 100,
+        Math.abs(-(rate / this.cmcRate.revert - 1)) * 100
       );
     } else {
       this.cmcRate = undefined;
@@ -309,6 +309,16 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
   public timeChange() {
     this.setFullDateTime();
+  }
+  public changePD() {
+    if (
+      this.requestData.tokens_info.base.token.token_name &&
+      this.requestData.tokens_info.quote.token.token_name
+    ) {
+      this.requestData.public = this.requestData.public;
+
+      console.log('requestData.public', this.requestData.public);
+    }
   }
 
   private setFullDateTime() {
@@ -444,7 +454,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       },
       (error) => {
         this.onTotpError(error);
-      },
+      }
     );
   }
   private onTotpError(error) {
@@ -497,7 +507,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         },
         (err) => {
           console.log(err);
-        },
+        }
       )
       .finally(() => {
         this.formIsSending = false;
@@ -513,7 +523,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     const interfaceMethod = this.web3Service.getMethodInterface(
       'createOrder',
-      SWAPS_V2.ABI,
+      SWAPS_V2.ABI
     );
 
     let baseDecimalsTimes = 1;
@@ -522,11 +532,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     if (new Date(originalContract.created_date).getTime() > FIX_TIME) {
       baseDecimalsTimes = Math.pow(
         10,
-        this.requestData.tokens_info.base.token.decimals,
+        this.requestData.tokens_info.base.token.decimals
       );
       quoteDecimalsTimes = Math.pow(
         10,
-        this.requestData.tokens_info.quote.token.decimals,
+        this.requestData.tokens_info.quote.token.decimals
       );
     }
 
@@ -563,7 +573,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     const activateSignature = this.web3Service.encodeFunctionCall(
       interfaceMethod,
-      trxRequest,
+      trxRequest
     );
     window['ethereum'].enable().then((accounts) => {
       const address = accounts[0];
@@ -577,7 +587,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
             to: SWAPS_V2.ADDRESS,
             data: activateSignature,
           },
-          'metamask',
+          'metamask'
         )
         .then(() => {
           this.sendData.id = details.id;
@@ -597,7 +607,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       () => {},
       (error) => {
         this.metamaskError = error;
-      },
+      }
     );
   }
 }

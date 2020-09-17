@@ -20,6 +20,8 @@ export class TokenSaleComponent implements OnInit {
   ngOnInit() {}
 
   public openModal() {
+    this.confirmCheckbox = false;
+
     this.tokenSaleModal = this.dialog.open(this.tokenSale, {
       width: '650px',
       panelClass: 'dialog-ts-container',
