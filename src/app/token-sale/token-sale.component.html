@@ -209,33 +209,37 @@
           />Twitter</a
         >
       </div>
-      <div class="alert-window-address">
-        <span class="alert-window-address-title">Contract address</span>
-        <p class="alert-window-address-text">
-          0xe83a1d1b0a9d0398947f95ac6270bc3d5ae9f76b947f95ac6270bc3d5ae9f76b
+      <div class="alert-window-text">
+        <p>
+          <b style="color: #4aa956">Important</b> You must send contributions
+          from your personal eth address, not from exchanges.
         </p>
       </div>
-      <div class="alert-window-buttons text-center">
-        <div class="grid-row">
-          <div class="grid-cell grid-cell-1-2 grid-cell-vs-1"></div>
-          <div style="display: flex; align-items: center">
-            <button
-              style="max-width: 100px"
-              class="btn btn-green btn-min"
-              type="button"
-              ngxClipboard
-              [cbContent]="
-                '0xe83a1d1b0a9d0398947f95ac6270bc3d5ae9f76b947f95ac6270bc3d5ae9f76b'
-              "
-              (cbOnSuccess)="onCopied()"
-            >
-              <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
-              {{ 'Copy' | translate }}
-            </button>
-            <span style="color: #4aa956" *ngIf="addressCopy">
-              address copied
-            </span>
-          </div>
+      <div class="alert-window-address">
+        <div class="alert-window-address-one">
+          <span class="alert-window-address-title">Contract address</span>
+          <p class="alert-window-address-text">
+            0xe83a1d1b0a9d0398947f95ac6270bc3d5ae9f76b947f95ac6270bc3d5ae9f76b
+          </p>
+        </div>
+
+        <div class="alert-window-address-two">
+          <button
+            style="max-width: 100px"
+            class="btn btn-green btn-min"
+            type="button"
+            ngxClipboard
+            [cbContent]="
+              '0xe83a1d1b0a9d0398947f95ac6270bc3d5ae9f76b947f95ac6270bc3d5ae9f76b'
+            "
+            (cbOnSuccess)="onCopied()"
+          >
+            <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
+            {{ 'Copy' | translate }}
+          </button>
+          <span style="color: #4aa956" *ngIf="addressCopy">
+            address copied
+          </span>
         </div>
       </div>
     </div>

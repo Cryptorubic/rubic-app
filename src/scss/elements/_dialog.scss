@@ -283,6 +283,30 @@
           background: #fafafa;
           padding: 20px;
           margin-bottom: 20px;
+          display: grid;
+          grid-template-columns: 1fr 100px;
+          grid-gap: 20px;
+          justify-content: space-between;
+
+          @include b(500) {
+            grid-template-columns: 1fr;
+          }
+
+          &-one {
+            word-break: break-all;
+          }
+
+          &-two {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            @include b(500) {
+              align-items: flex-start;
+            }
+          }
 
           &-title {
             font-weight: normal;

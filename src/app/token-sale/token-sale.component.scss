@@ -47,6 +47,10 @@
       background-image: none;
     }
 
+    @include b(450) {
+      padding-top: 0px;
+    }
+
     .container {
       display: flex;
       justify-content: center;
@@ -104,6 +108,12 @@
       margin-bottom: 25px;
       justify-content: space-between;
       width: 100%;
+
+      img {
+        @include b(600) {
+          margin: 0 auto;
+        }
+      }
 
       @include b(600) {
         grid-template-columns: 1fr;
