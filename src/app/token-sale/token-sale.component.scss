@@ -62,7 +62,7 @@
   }
 
   .first-block {
-    padding-top: 200px;
+    padding-top: 80px;
 
     @include b(850) {
       padding-top: 100px;
@@ -278,6 +278,11 @@
 
   .wide-text-block {
     margin-top: 60px;
+
+    &-title {
+      font-size: 25px;
+      font-weight: 500;
+    }
 
     .container {
       background-color: #fafafa;

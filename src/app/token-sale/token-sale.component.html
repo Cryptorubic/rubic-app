@@ -8,9 +8,12 @@
         [timeEndDayPlus]="0"
       >
       </app-countdown>
-      <span class="btn btn-green btn-min btn-normal-weight btn-auto">
+      <span
+        (click)="openModal()"
+        class="btn btn-green btn-min btn-normal-weight btn-auto"
+      >
         <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
-        <span class="header-link">Participate in token sale</span>
+        Participate in token sale
       </span>
     </div>
   </section>
@@ -127,6 +130,7 @@
 
   <section class="wide-text-block">
     <div class="container">
+      <span class="wide-text-block-title">Restriction countries</span>
       <p>
         For the citizens and residents of United States, New Zealand, Iceland,
         Thailand, Afghanistan, Burundi, Balkan, Burma (Myanmar), Cote d’Ivoire,
@@ -145,3 +149,117 @@
 <app-footer></app-footer>
 
 <div class="scroll-top-btn" id="scroll-btn"></div>
+
+<ng-template #tokenSaleModal>
+  <div class="dialog-block">
+    <div class="dialog-block__content" *ngIf="!tsmodalStep">
+      <span class="alert-window-title">Countries restriction</span>
+      <div class="alert-window-text">
+        <p>
+          For the citizens and residents of United States, New Zealand, Iceland,
+          Thailand, Afghanistan, Burundi, Balkan, Burma (Myanmar), Cote
+          d’Ivoire, Cuba, Democratic Republic of Congo, Democratic Peoples’
+          Republic of Korea, Iran, Iraq, Liberia, Lebanon, Libya, Rwanda, Sierra
+          Leone, Somalia, Sudan, Syria, Tanzania, Uganda, Zaire, Zimbawe and
+          countries or territories or individuals under the sanctions of the
+          United Nations or the European Union or countries where the use of
+          virtual currencies is prohibited by applicable law, decree,
+          regulation, treaty, or administrative act.
+        </p>
+      </div>
+
+      <hr />
+
+      <div class="alert-window-inputs">
+        <label>
+          <span class="alert-window-inputs-text"
+            >I confirm that I have read the list of countries restriction and I
+            am not a citizen of any of them.</span
+          >
+          <input
+            type="checkbox"
+            [(ngModel)]="confirmCheckbox"
+            name="confirm"
+            checked="checked"
+          />
+          <span class="checkmark"></span>
+        </label>
+      </div>
+
+      <div class="alert-window-buttons text-center">
+        <div class="grid-row">
+          <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+            <button
+              style="
+                max-width: 200px;
+                font-size: 23px;
+                height: 60px;
+                margin: 20px 0px 0px 0px;
+              "
+              class="btn btn-green btn-min"
+              type="button"
+              (click)="tsmodalStep = !tsmodalStep"
+              [disabled]="!confirmCheckbox"
+            >
+              <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
+              {{ 'Confirm' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-block__content" *ngIf="tsmodalStep">
+      <span class="alert-window-title">Contract address</span>
+      <div class="alert-window-text">
+        <p>
+          Before sending funds please check the address on our telegram group or
+          twitter
+        </p>
+      </div>
+      <div class="alert-window-links">
+        <a href="#" target="_blank" class="alert-window-link"
+          ><img
+            src="assets/images/token-sale/telegram.svg"
+            alt="stats"
+          />Telegram</a
+        >
+        <a href="#" target="_blank" class="alert-window-link"
+          ><img
+            src="assets/images/token-sale/twitter.svg"
+            alt="stats"
+          />Twitter</a
+        >
+      </div>
+      <div class="alert-window-address">
+        <span class="alert-window-address-title">Contract address</span>
+        <p class="alert-window-address-text">
+          0xe83a1d1b0a9d0398947f95ac6270bc3d5ae9f76b947f95ac6270bc3d5ae9f76b
+        </p>
+      </div>
+      <div class="alert-window-buttons text-center">
+        <div class="grid-row">
+          <div class="grid-cell grid-cell-1-2 grid-cell-vs-1"></div>
+          <div style="display: flex; align-items: center">
+            <button
+              style="max-width: 100px"
+              class="btn btn-green btn-min"
+              type="button"
+              ngxClipboard
+              [cbContent]="
+                '0xe83a1d1b0a9d0398947f95ac6270bc3d5ae9f76b947f95ac6270bc3d5ae9f76b'
+              "
+              (cbOnSuccess)="onCopied()"
+            >
+              <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
+              {{ 'Copy' | translate }}
+            </button>
+            <span style="color: #4aa956" *ngIf="addressCopy">
+              address copied
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
