@@ -243,6 +243,10 @@
           display: flex;
           flex-wrap: wrap;
           margin-bottom: 30px;
+
+          @include b(550) {
+            margin-bottom: 0;
+          }
         }
 
         &-link {
@@ -304,20 +308,20 @@
             }
           }
         }
+      }
 
-        .btn {
-          &-confirm {
-            max-width: 200px;
-            font-size: 23px;
-            height: 60px;
-            margin: 20px 0px 0px 0px;
+      .btn {
+        &-confirm {
+          max-width: 200px;
+          font-size: 23px;
+          height: 60px;
+          margin: 20px 0px 0px 0px;
 
-            @include b(550) {
-              max-width: 100%;
-              font-size: 17px;
-              height: 50px;
-              margin: 10px 0px 0px 0px;
-            }
+          @include b(550) {
+            max-width: 100%;
+            font-size: 17px;
+            height: 50px;
+            margin: 10px 0px 0px 0px;
           }
         }
       }
