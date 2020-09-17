@@ -5,6 +5,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(45px, 120px));
   grid-gap: 20px;
+  margin-top: 25px;
 
   &-item {
     display: flex;
@@ -18,6 +19,7 @@
     text-align: center;
     color: #4aa956;
     position: relative;
+    border-radius: 5px;
 
     @include b(700) {
       font-size: 25px;
@@ -34,8 +36,7 @@
       font-size: 15px;
       line-height: 17px;
       text-align: center;
-      color: #000000;
-      opacity: 0.5;
+      color: white;
       bottom: -30px;
     }
   }

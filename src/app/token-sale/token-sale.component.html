@@ -1,7 +1,19 @@
 <div class="token-sale-page">
   <section class="count-block">
     <div class="container">
-      <span class="count-block-title">Token Sale for Rubic</span>
+      <span class="count-block-title">Rubic Token Sale</span>
+      <span class="count-block-text"
+        >Rubic organizes defi services to enable a project to create, manage and
+        trade tokens decentralized in ONE PLACE.
+      </span>
+      <div class="count-block-icons">
+        <img src="assets/images/token-sale/eth.svg" alt="eth" />
+        <img
+          src="assets/images/token-sale/binance-chain.svg"
+          alt="binance-chain"
+        />
+        <img src="assets/images/token-sale/tron.svg" alt="tron" />
+      </div>
       <app-countdown
         [timeStart]="1600603200"
         [correctTimeStart]="1000"
@@ -12,32 +24,21 @@
         (click)="openModal()"
         class="btn btn-green btn-min btn-normal-weight btn-auto"
       >
-        <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
         Participate in token sale
       </span>
     </div>
   </section>
 
-  <section class="first-block cl-green">
-    <div class="container">
-      <img src="assets/images/about/cube-img.svg" alt="cube" />
-      <h3 class="h3-block-title-s1">
-        Rubic p2p trades is a decentralized p2p platform. It helps users to make
-        trades on their terms, share and generate revenue.
-      </h3>
-    </div>
-  </section>
-
   <section class="rubic-platform-ts">
     <div class="container">
-      <div class="rubic-platform-ts-title">
-        Rubic platform will have an ERC-20 “RBC” token which will be used as the
-        fuel inside the Platform.
-      </div>
+      <div class="rubic-platform-ts-title">Tokenomics</div>
       <div class="rubic-platform-ts-text">
         Platform will charge the users for the following actions on the service:
       </div>
-      <span class="rubic-platform-ts-boxes"></span>
+      <div class="rubic-platform-ts-text">
+        Rubic platform will have an ERC-20 “RBC” token which will be used as the
+        fuel inside the Platform.
+      </div>
       <div class="rubic-platform-ts-items">
         <div class="rubic-platform-ts-item">
           <span class="rubic-platform-ts-item-title">Trade creation</span>
@@ -73,9 +74,6 @@
       </div>
       <div class="fees-text-block-two">
         <p>
-          30% of exchange tokens will be used later as bonus for stakers
-          (Staking to be implemented in Dec’2020). Other 70% will be used for
-          operational needs. <br /><br />
           Accounting with Relayers, external services, marketing services will
           be made in RBC token.
         </p>
@@ -87,44 +85,30 @@
     <div class="container">
       <img src="assets/images/token-sale/stats.svg" alt="stats" />
       <div class="stats-block-items">
-        <div class="stats-block-items-one">
-          <div class="stats-block-item">
-            <span class="stats-block-item-percent">10%</span>
-            <p class="stats-block-item-text">
-              of tokens will be reserved for the team. All tokens will be
-              locked, and every 3 months will be unlocked by 2% (over a year)
-            </p>
-          </div>
-          <div class="stats-block-item">
-            <span class="stats-block-item-percent">8%</span>
-            <p class="stats-block-item-text">
-              of tokens will be distributed to MyWish holders and will be
-              unlocked every 3 months by 2% (over a year).
-            </p>
-          </div>
-        </div>
-        <div class="stats-block-items-two">
-          <div class="stats-block-item">
-            <span class="stats-block-item-percent">8%</span>
-            <p class="stats-block-item-text">
-              of tokens will be directed at conducting marketing and bounty
-              campaigns. 4% of tokens will be frozen for 4 months.
-            </p>
-          </div>
-          <div class="stats-block-item">
-            <span class="stats-block-item-percent">66%</span>
-            <p class="stats-block-item-text">
-              of tokens will be put up for sale.
-            </p>
-          </div>
-          <div class="stats-block-item">
-            <span class="stats-block-item-percent">8%</span>
-            <p class="stats-block-item-text">
-              of tokens will be allocated for Uniswap Liquidity.
-            </p>
-          </div>
-        </div>
+        • 10% of tokens will be reserved for the team. All tokens will be
+        locked, and every 3 months will be unlocked by 2% (over a year)
+        <br /><br />
+        • 8% of tokens will be directed at conducting marketing and bounty
+        campaigns. 4% of tokens will be frozen for 4 months.
+        <br /><br />
+        • 8% of tokens will be distributed to MyWish holders and will be
+        unlocked every 3 months by 2% (over a year).
+        <br /><br />
+        • 66% of tokens will be put up for sale.
+        <br /><br />
+        • 8% of tokens will be allocated for Uniswap Liquidity.
       </div>
+    </div>
+  </section>
+
+  <section class="button-block">
+    <div class="container">
+      <span
+        (click)="openModal()"
+        class="btn btn-green btn-min btn-normal-weight btn-auto"
+      >
+        Participate
+      </span>
     </div>
   </section>
 
