@@ -1,3 +1,5 @@
+@import '../_mixins';
+
 .cdk-global-overlay-wrapper,
 .cdk-overlay-container {
   pointer-events: none;
@@ -137,6 +139,13 @@
           display: block;
           margin: 0 0 20px 0;
           text-align: left;
+
+          @include b(550) {
+            font-size: 20px;
+            line-height: 40px;
+            color: #4aa956;
+            margin: 0 0 10px;
+          }
         }
 
         &-text {
@@ -145,6 +154,12 @@
           line-height: 27px;
           color: #000000;
           margin-bottom: 20px;
+
+          @include b(550) {
+            font-size: 14px;
+            line-height: 19px;
+            margin-bottom: 10px;
+          }
 
           p {
             padding: 0;
@@ -163,6 +178,11 @@
             font-size: 16px;
             line-height: 20px;
             color: #4aa956;
+
+            @include b(550) {
+              font-size: 12px;
+              line-height: 14px;
+            }
           }
 
           &:hover {
@@ -240,6 +260,7 @@
           margin-right: 15px;
           text-decoration: none !important;
           cursor: pointer;
+          margin-bottom: 10px;
 
           &:hover {
             text-decoration: none !important;
@@ -276,6 +297,27 @@
             color: #4aa956;
             margin: 0;
             padding: 0;
+
+            @include b(550) {
+              font-size: 15px;
+              line-height: 18px;
+            }
+          }
+        }
+
+        .btn {
+          &-confirm {
+            max-width: 200px;
+            font-size: 23px;
+            height: 60px;
+            margin: 20px 0px 0px 0px;
+
+            @include b(550) {
+              max-width: 100%;
+              font-size: 17px;
+              height: 50px;
+              margin: 10px 0px 0px 0px;
+            }
           }
         }
       }
