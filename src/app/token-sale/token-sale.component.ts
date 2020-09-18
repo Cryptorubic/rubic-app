@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-token-sale-page',
@@ -15,7 +16,19 @@ export class TokenSaleComponent implements OnInit {
   public confirmCheckbox = false;
   public addressCopy = false;
 
-  constructor(private dialog: MatDialog) {}
+  public tokenSaleEnd = false;
+  public tokenSaleTime = 1600592400000;
+
+  constructor(private dialog: MatDialog, protected route: ActivatedRoute) {
+    const routeSub = this.route.queryParams.subscribe((params) => {
+      this.tokenSaleTime = +params.tsEndDate || this.tokenSaleTime;
+    });
+
+    routeSub.unsubscribe();
+
+    this.tokenSaleEnd =
+      new Date(this.tokenSaleTime).getTime() < new Date().getTime();
+  }
 
   ngOnInit() {}
 
@@ -26,6 +39,10 @@ export class TokenSaleComponent implements OnInit {
       width: '650px',
       panelClass: 'dialog-ts-container',
     });
+  }
+
+  public countdownEvent(state) {
+    this.tokenSaleEnd = state;
   }
 
   public onCopied() {

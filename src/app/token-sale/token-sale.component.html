@@ -1,5 +1,5 @@
 <div class="token-sale-page">
-  <section class="count-block">
+  <section class="count-block" *ngIf="!tokenSaleEnd">
     <div class="container">
       <span class="count-block-title">Rubic Token Sale</span>
       <span class="count-block-text"
@@ -15,9 +15,8 @@
         <img src="assets/images/token-sale/tron.svg" alt="tron" />
       </div>
       <app-countdown
-        [timeStart]="1600603200"
-        [correctTimeStart]="1000"
-        [timeEndDayPlus]="0"
+        [timeStart]="tokenSaleTime"
+        (countdownEvent)="countdownEvent($event)"
       >
       </app-countdown>
       <span
@@ -26,6 +25,30 @@
       >
         Participate in token sale
       </span>
+    </div>
+  </section>
+
+  <section class="finish-block" *ngIf="tokenSaleEnd">
+    <div class="container">
+      <span class="finish-block-title">Token sale completed</span>
+      <span class="finish-block-text"
+        >Uniswap listing soon. For more details
+      </span>
+      <div class="finish-block-links">
+        <a href="#" target="_blank" class="finish-block-link"
+          ><img
+            src="assets/images/token-sale/telegram-green.svg"
+            alt="telegram"
+          />Telegram</a
+        >
+
+        <a href="#" target="_blank" class="finish-block-link"
+          ><img
+            src="assets/images/token-sale/twitter-green.svg"
+            alt="twitter"
+          />Twitter</a
+        >
+      </div>
     </div>
   </section>
 
@@ -199,13 +222,13 @@
         <a href="#" target="_blank" class="alert-window-link"
           ><img
             src="assets/images/token-sale/telegram.svg"
-            alt="stats"
+            alt="telegram"
           />Telegram</a
         >
         <a href="#" target="_blank" class="alert-window-link"
           ><img
             src="assets/images/token-sale/twitter.svg"
-            alt="stats"
+            alt="twitter"
           />Twitter</a
         >
       </div>

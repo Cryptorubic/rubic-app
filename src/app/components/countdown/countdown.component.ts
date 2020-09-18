@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable, Subscription, interval } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -18,6 +18,8 @@ export class CountdownComponent implements OnInit {
   @Input() timeStart: number;
   @Input() correctTimeStart: number;
   @Input() timeEndDayPlus: number;
+
+  @Output() countdownEvent = new EventEmitter<any>();
 
   private counter$: Observable<number>;
   private subscription: Subscription;
@@ -56,7 +58,7 @@ export class CountdownComponent implements OnInit {
 
   ngOnInit() {
     if (this.correctTimeStart) {
-      this.timeStart = this.timeStart * 1000;
+      this.timeStart = this.timeStart * this.correctTimeStart;
     }
 
     const future = new Date(this.timeStart);
@@ -64,12 +66,19 @@ export class CountdownComponent implements OnInit {
     if (this.timeEndDayPlus) {
       future.setDate(future.getDate() + this.timeEndDayPlus);
     }
+
     this.counter$ = interval(1000).pipe(
       map(() => Math.floor((future.getTime() - new Date().getTime()) / 1000))
     );
-    this.subscription = this.counter$.subscribe(
-      (x) => (this.message = this.dhms(x))
-    );
+
+    this.subscription = this.counter$.subscribe((x) => {
+      if (new Date(future).getTime() < new Date().getTime()) {
+        this.subscription.unsubscribe();
+        this.countdownEvent.emit(true);
+      }
+
+      this.message = this.dhms(x);
+    });
   }
 
   OnDestroy(): void {

@@ -137,6 +137,98 @@
     }
   }
 
+  .finish-block {
+    background-color: #4aa956;
+    min-height: 400px;
+    display: flex;
+    background-image: url('src/assets/images/token-sale/lines-left.svg'),
+      url('src/assets/images/token-sale/lines-right.svg');
+    background-repeat: no-repeat, no-repeat;
+    background-position: left 300px, right 0;
+    background-size: 200px;
+    padding-top: 100px;
+
+    @include b(700) {
+      max-height: max-content;
+      padding-top: 50px;
+      background-image: none;
+    }
+
+    @include b(450) {
+      padding-top: 0px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 650px !important;
+      flex-direction: column;
+    }
+
+    &-title {
+      font-weight: bold;
+      font-size: 60px;
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    &-text {
+      font-weight: normal;
+      font-size: 16px;
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    &-links {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      max-width: 350px;
+      width: 100%;
+      justify-content: space-evenly;
+
+      @include b(550) {
+        margin-bottom: 0;
+      }
+    }
+
+    &-link {
+      background: #ffffff;
+      border-radius: 44px;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 27px;
+      color: #000000 !important;
+      padding: 5px 15px 5px 5px;
+      min-width: max-content;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-right: 15px;
+      text-decoration: none !important;
+      cursor: pointer;
+      margin-bottom: 10px;
+
+      &:hover {
+        text-decoration: none !important;
+      }
+
+      img {
+        min-width: 40px;
+        max-width: 40px;
+        max-height: 40px;
+        min-height: 40px;
+        margin-right: 5px;
+      }
+    }
+  }
+
   .first-block {
     padding-top: 80px;
 
