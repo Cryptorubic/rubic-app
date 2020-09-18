@@ -1,6 +1,10 @@
 @import '../../scss/_mixins';
 @import '../../scss/elements/vars';
 
+.token-sale-end {
+  padding-bottom: 0px !important;
+}
+
 .token-sale-page {
   font-family: var(--main-font) !important;
   font-weight: normal;
@@ -149,13 +153,13 @@
     padding-top: 100px;
 
     @include b(700) {
-      max-height: max-content;
-      padding-top: 50px;
+      min-height: max-content;
+      padding-top: 100px;
       background-image: none;
     }
 
     @include b(450) {
-      padding-top: 0px;
+      padding: 90px 0 20px 0;
     }
 
     .container {
@@ -173,6 +177,12 @@
       margin-top: 20px;
       margin-bottom: 20px;
       color: #ffffff;
+
+      @include b(450) {
+        font-size: 30px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
     }
 
     &-text {
@@ -182,6 +192,11 @@
       margin-top: 20px;
       margin-bottom: 20px;
       color: #ffffff;
+
+      @include b(450) {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
     }
 
     &-links {
@@ -193,8 +208,9 @@
       width: 100%;
       justify-content: space-evenly;
 
-      @include b(550) {
-        margin-bottom: 0;
+      @include b(450) {
+        margin-top: 10px;
+        margin-bottom: 10px;
       }
     }
 
@@ -202,7 +218,7 @@
       background: #ffffff;
       border-radius: 44px;
       font-weight: normal;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 27px;
       color: #000000 !important;
       padding: 5px 15px 5px 5px;
@@ -225,6 +241,13 @@
         max-height: 40px;
         min-height: 40px;
         margin-right: 5px;
+
+        @include b(450) {
+          min-width: 30px;
+          max-width: 30px;
+          max-height: 30px;
+          min-height: 30px;
+        }
       }
     }
   }
@@ -295,7 +318,7 @@
       display: block;
       font-weight: normal;
       font-size: 20px;
-      // line-height: 27px;
+      line-height: 1.7;
       text-align: center;
       color: #000000;
       margin-bottom: 30px;

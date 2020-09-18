@@ -1,4 +1,4 @@
-<div class="token-sale-page">
+<div class="token-sale-page" [ngClass]="{ 'token-sale-end': tokenSaleEnd }">
   <section class="count-block" *ngIf="!tokenSaleEnd">
     <div class="container">
       <span class="count-block-title">Rubic Token Sale</span>
@@ -52,105 +52,108 @@
     </div>
   </section>
 
-  <section class="rubic-platform-ts">
-    <div class="container">
-      <div class="rubic-platform-ts-title">Tokenomics</div>
-      <div class="rubic-platform-ts-text">
-        Platform will charge the users for the following actions on the service:
+  <div *ngIf="!tokenSaleEnd">
+    <section class="rubic-platform-ts">
+      <div class="container">
+        <div class="rubic-platform-ts-title">Tokenomics</div>
+        <div class="rubic-platform-ts-text">
+          Platform will charge the users for the following actions on the
+          service:
+        </div>
+        <div class="rubic-platform-ts-text">
+          Rubic platform will have an ERC-20 “RBC” token which will be used as
+          the fuel inside the Platform.
+        </div>
+        <div class="rubic-platform-ts-items">
+          <div class="rubic-platform-ts-item">
+            <span class="rubic-platform-ts-item-title">Trade creation</span>
+          </div>
+          <div class="rubic-platform-ts-item">
+            <span class="rubic-platform-ts-item-title"
+              >Brokers function usage</span
+            >
+          </div>
+          <div class="rubic-platform-ts-item">
+            <span class="rubic-platform-ts-item-title">Token listing </span>
+          </div>
+          <div class="rubic-platform-ts-item">
+            <span class="rubic-platform-ts-item-title"
+              >Crowdsale contract usage</span
+            >
+          </div>
+          <div class="rubic-platform-ts-item">
+            <span class="rubic-platform-ts-item-title">Others services</span>
+          </div>
+        </div>
       </div>
-      <div class="rubic-platform-ts-text">
-        Rubic platform will have an ERC-20 “RBC” token which will be used as the
-        fuel inside the Platform.
-      </div>
-      <div class="rubic-platform-ts-items">
-        <div class="rubic-platform-ts-item">
-          <span class="rubic-platform-ts-item-title">Trade creation</span>
-        </div>
-        <div class="rubic-platform-ts-item">
-          <span class="rubic-platform-ts-item-title"
-            >Brokers function usage</span
-          >
-        </div>
-        <div class="rubic-platform-ts-item">
-          <span class="rubic-platform-ts-item-title">Token listing </span>
-        </div>
-        <div class="rubic-platform-ts-item">
-          <span class="rubic-platform-ts-item-title"
-            >Crowdsale contract usage</span
-          >
-        </div>
-        <div class="rubic-platform-ts-item">
-          <span class="rubic-platform-ts-item-title">Others services</span>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="fees-text-block">
-    <div class="container">
-      <div class="fees-text-block-one">
+    <section class="fees-text-block">
+      <div class="container">
+        <div class="fees-text-block-one">
+          <p>
+            Fees can be in RBC, Ethers, TRX or BNB depending on blockchain. The
+            fees will be immediately exchanged to RBC token by using Uniswap (or
+            other DEXes).
+          </p>
+        </div>
+        <div class="fees-text-block-two">
+          <p>
+            Accounting with Relayers, external services, marketing services will
+            be made in RBC token.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-block">
+      <div class="container">
+        <img src="assets/images/token-sale/stats.svg" alt="stats" />
+        <div class="stats-block-items">
+          • 10% of tokens will be reserved for the team. All tokens will be
+          locked, and every 3 months will be unlocked by 2% (over a year)
+          <br /><br />
+          • 8% of tokens will be directed at conducting marketing and bounty
+          campaigns. 4% of tokens will be frozen for 4 months.
+          <br /><br />
+          • 8% of tokens will be distributed to MyWish holders and will be
+          unlocked every 3 months by 2% (over a year).
+          <br /><br />
+          • 66% of tokens will be put up for sale.
+          <br /><br />
+          • 8% of tokens will be allocated for Uniswap Liquidity.
+        </div>
+      </div>
+    </section>
+
+    <section class="button-block">
+      <div class="container">
+        <span
+          (click)="openModal()"
+          class="btn btn-green btn-min btn-normal-weight btn-auto"
+        >
+          Participate
+        </span>
+      </div>
+    </section>
+
+    <section class="wide-text-block">
+      <div class="container">
+        <span class="wide-text-block-title">Restriction countries</span>
         <p>
-          Fees can be in RBC, Ethers, TRX or BNB depending on blockchain. The
-          fees will be immediately exchanged to RBC token by using Uniswap (or
-          other DEXes).
+          For the citizens and residents of United States, New Zealand, Iceland,
+          Thailand, Afghanistan, Burundi, Balkan, Burma (Myanmar), Cote
+          d’Ivoire, Cuba, Democratic Republic of Congo, Democratic Peoples’
+          Republic of Korea, Iran, Iraq, Liberia, Lebanon, Libya, Rwanda, Sierra
+          Leone, Somalia, Sudan, Syria, Tanzania, Uganda, Zaire, Zimbawe and
+          countries or territories or individuals under the sanctions of the
+          United Nations or the European Union or countries where the use of
+          virtual currencies is prohibited by applicable law, decree,
+          regulation, treaty, or administrative act.
         </p>
       </div>
-      <div class="fees-text-block-two">
-        <p>
-          Accounting with Relayers, external services, marketing services will
-          be made in RBC token.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="stats-block">
-    <div class="container">
-      <img src="assets/images/token-sale/stats.svg" alt="stats" />
-      <div class="stats-block-items">
-        • 10% of tokens will be reserved for the team. All tokens will be
-        locked, and every 3 months will be unlocked by 2% (over a year)
-        <br /><br />
-        • 8% of tokens will be directed at conducting marketing and bounty
-        campaigns. 4% of tokens will be frozen for 4 months.
-        <br /><br />
-        • 8% of tokens will be distributed to MyWish holders and will be
-        unlocked every 3 months by 2% (over a year).
-        <br /><br />
-        • 66% of tokens will be put up for sale.
-        <br /><br />
-        • 8% of tokens will be allocated for Uniswap Liquidity.
-      </div>
-    </div>
-  </section>
-
-  <section class="button-block">
-    <div class="container">
-      <span
-        (click)="openModal()"
-        class="btn btn-green btn-min btn-normal-weight btn-auto"
-      >
-        Participate
-      </span>
-    </div>
-  </section>
-
-  <section class="wide-text-block">
-    <div class="container">
-      <span class="wide-text-block-title">Restriction countries</span>
-      <p>
-        For the citizens and residents of United States, New Zealand, Iceland,
-        Thailand, Afghanistan, Burundi, Balkan, Burma (Myanmar), Cote d’Ivoire,
-        Cuba, Democratic Republic of Congo, Democratic Peoples’ Republic of
-        Korea, Iran, Iraq, Liberia, Lebanon, Libya, Rwanda, Sierra Leone,
-        Somalia, Sudan, Syria, Tanzania, Uganda, Zaire, Zimbawe and countries or
-        territories or individuals under the sanctions of the United Nations or
-        the European Union or countries where the use of virtual currencies is
-        prohibited by applicable law, decree, regulation, treaty, or
-        administrative act.
-      </p>
-    </div>
-  </section>
+    </section>
+  </div>
 </div>
 
 <app-footer></app-footer>

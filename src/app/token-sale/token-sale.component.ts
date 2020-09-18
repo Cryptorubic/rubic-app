@@ -34,6 +34,7 @@ export class TokenSaleComponent implements OnInit {
 
   public openModal() {
     this.confirmCheckbox = false;
+    this.tsmodalStep = false;
 
     this.tokenSaleModal = this.dialog.open(this.tokenSale, {
       width: '650px',
