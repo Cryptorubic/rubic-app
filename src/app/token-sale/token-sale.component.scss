@@ -293,6 +293,111 @@
     }
   }
 
+  .token-sale {
+    margin-top: 80px;
+
+    @include b(500) {
+      margin-top: 50px;
+    }
+
+    .container {
+      position: relative;
+    }
+
+    &-title {
+      font-weight: normal;
+      font-size: 50px;
+      line-height: 44px;
+      color: #4aa956;
+      display: block;
+      margin-bottom: 50px;
+      text-align: center;
+      width: 100%;
+    }
+
+    &-text {
+      display: block;
+      font-weight: normal;
+      font-size: 14px;
+      opacity: 0.7;
+      line-height: 1.7;
+      text-align: center;
+      color: #000000;
+      margin-bottom: 30px;
+      margin-top: 30px;
+      width: 100%;
+      text-align: center;
+
+      font-size: 14px;
+      line-height: 27px;
+      text-align: center;
+
+      color: #000000;
+
+      opacity: 0.7;
+    }
+
+    &-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      margin: 0 -10px;
+    }
+
+    &-item {
+      background: #fafafa;
+      border-radius: 4px;
+      max-width: 210px;
+      width: 100%;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      height: 110px;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      margin: 20px 10px 20px 10px;
+
+      @include b(500) {
+        max-width: 100%;
+        margin: 10px 0;
+      }
+
+      &-text {
+        font-weight: 500;
+        font-size: 22px;
+        line-height: 27px;
+        color: #4aa956;
+      }
+
+      &-title {
+        font-weight: normal;
+        display: block;
+        margin-bottom: 10px;
+        font-size: 20px;
+        text-align: center;
+        color: #000000;
+      }
+    }
+
+    &-boxes {
+      position: absolute;
+      background-image: url('src/assets/images/token-sale/cubes.png');
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 200px;
+      padding-bottom: 30%;
+      top: 0;
+      right: 70px;
+
+      @include b(1000) {
+        display: none;
+      }
+    }
+  }
+
   .rubic-platform-ts {
     margin-top: 80px;
 

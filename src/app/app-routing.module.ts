@@ -66,6 +66,10 @@ const routes: Routes = [
   },
   {
     path: 'token-sale',
+    redirectTo: '',
+  },
+  {
+    path: 'token-sale-1600783200000',
     component: TokenSaleComponent,
   },
   {

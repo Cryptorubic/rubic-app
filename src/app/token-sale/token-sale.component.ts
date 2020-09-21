@@ -17,7 +17,7 @@ export class TokenSaleComponent implements OnInit {
   public addressCopy = false;
 
   public tokenSaleEnd = false;
-  public tokenSaleTime = 1600592400000;
+  public tokenSaleTime = 1600783200000;
 
   constructor(private dialog: MatDialog, protected route: ActivatedRoute) {
     const routeSub = this.route.queryParams.subscribe((params) => {
