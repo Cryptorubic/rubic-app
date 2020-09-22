@@ -17,7 +17,7 @@ export class TokenSaleComponent implements OnInit {
   public addressCopy = false;
 
   public tokenSaleEnd = false;
-  public tokenSaleFullEnd = false;
+  public tokenSaleFullEnd = true;
   public tokenSaleTime = 1600783200000;
 
   constructor(private dialog: MatDialog, protected route: ActivatedRoute) {
@@ -31,7 +31,7 @@ export class TokenSaleComponent implements OnInit {
       new Date(this.tokenSaleTime).getTime() < new Date().getTime();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   public openModal() {
     if (this.tokenSaleEnd) {
