@@ -11,8 +11,15 @@
   background-color: #ffffff;
   padding-bottom: 50px;
 
+  .separate {
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+    height: 0;
+  }
+
   .btn-green {
-    margin-top: 80px;
+    margin-top: 60px;
     max-width: 400px;
     width: 100%;
     height: 67px;

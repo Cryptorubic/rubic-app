@@ -15,10 +15,12 @@
         <img src="assets/images/token-sale/tron.svg" alt="tron" />
       </div>
       <app-countdown
+        *ngIf="!tokenSaleEnd"
         [timeStart]="tokenSaleTime"
         (countdownEvent)="countdownEvent($event)"
       >
       </app-countdown>
+      <div class="separate" *ngIf="!tokenSaleEnd"></div>
       <span
         (click)="openModal()"
         class="btn btn-green btn-min btn-normal-weight btn-auto"
