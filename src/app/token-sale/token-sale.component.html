@@ -1,5 +1,5 @@
-<div class="token-sale-page" [ngClass]="{ 'token-sale-end': tokenSaleEnd }">
-  <section class="count-block" *ngIf="!tokenSaleEnd">
+<div class="token-sale-page" [ngClass]="{ 'token-sale-end': tokenSaleFullEnd }">
+  <section class="count-block" *ngIf="!tokenSaleFullEnd">
     <div class="container">
       <span class="count-block-title">Rubic Token Sale</span>
       <span class="count-block-text"
@@ -28,11 +28,11 @@
     </div>
   </section>
 
-  <section class="finish-block" *ngIf="tokenSaleEnd">
+  <section class="finish-block" *ngIf="tokenSaleFullEnd">
     <div class="container">
       <span class="finish-block-title">Token sale completed</span>
       <span class="finish-block-text"
-        >Uniswap listing soon. For more details
+        >Uniswap will be on 24th of September. For more details
       </span>
       <div class="finish-block-links">
         <a
@@ -55,16 +55,10 @@
           />Twitter</a
         >
       </div>
-      <span
-        (click)="openModal()"
-        class="btn btn-green btn-min btn-normal-weight btn-auto"
-      >
-        Participate in token sale
-      </span>
     </div>
   </section>
 
-  <div *ngIf="!tokenSaleEnd">
+  <div *ngIf="!tokenSaleFullEnd">
     <section class="token-sale">
       <div class="container">
         <div class="token-sale-title">Token Sale</div>
@@ -83,7 +77,7 @@
           </div>
           <div class="token-sale-item">
             <span class="token-sale-item-title">Hard Cap: </span>
-            <span class="token-sale-item-text">1000 ETH</span>
+            <span class="token-sale-item-text">300 ETH</span>
           </div>
         </div>
         <div class="token-sale-text">

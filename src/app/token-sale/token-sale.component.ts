@@ -17,6 +17,7 @@ export class TokenSaleComponent implements OnInit {
   public addressCopy = false;
 
   public tokenSaleEnd = false;
+  public tokenSaleFullEnd = false;
   public tokenSaleTime = 1600783200000;
 
   constructor(private dialog: MatDialog, protected route: ActivatedRoute) {
@@ -33,13 +34,15 @@ export class TokenSaleComponent implements OnInit {
   ngOnInit() {}
 
   public openModal() {
-    this.confirmCheckbox = false;
-    this.tsmodalStep = false;
+    if (this.tokenSaleEnd) {
+      this.confirmCheckbox = false;
+      this.tsmodalStep = false;
 
-    this.tokenSaleModal = this.dialog.open(this.tokenSale, {
-      width: '650px',
-      panelClass: 'dialog-ts-container',
-    });
+      this.tokenSaleModal = this.dialog.open(this.tokenSale, {
+        width: '650px',
+        panelClass: 'dialog-ts-container',
+      });
+    }
   }
 
   public countdownEvent(state) {
