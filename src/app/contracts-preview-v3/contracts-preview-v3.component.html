@@ -707,7 +707,7 @@
               <div
                 *ngIf="
                   originalContract.isEthereum &&
-                  contractInfo.baseRaised * 1 > 0 &&
+                  contractInfo.quoteRaised * 1 > 0 &&
                   ['ACTIVE', 'EXPIRED'].includes(originalContract.state) &&
                   contractInfo.quoteRaised != 0
                 "

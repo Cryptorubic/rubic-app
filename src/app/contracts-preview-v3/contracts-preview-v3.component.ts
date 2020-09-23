@@ -44,11 +44,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     private web3Service: Web3Service,
     private dialog: MatDialog,
     private contractService: ContractsService,
-    private userService: UserService
+    private userService: UserService,
   ) {
     this.web3Contract = this.web3Service.getContract(
       SWAPS_V2.ABI,
-      SWAPS_V2.ADDRESS
+      SWAPS_V2.ADDRESS,
     );
 
     this.originalContract = this.route.snapshot.data.contract;
@@ -233,7 +233,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             },
             (err) => {
               console.log(err);
-            }
+            },
           );
       };
 
@@ -259,7 +259,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
               },
               (err) => {
                 console.log(err);
-              }
+              },
             );
         } else {
           checkAfterActive();
@@ -273,7 +273,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private getBaseRaised() {
     const details = this.originalContract;
     const decimalsAmount = new BigNumber(details.tokens_info.base.amount).times(
-      Math.pow(10, details.tokens_info.base.token.decimals)
+      Math.pow(10, details.tokens_info.base.token.decimals),
     );
 
     if (details.isEthereum) {
@@ -293,7 +293,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           },
           (err) => {
             console.log(err);
-          }
+          },
         );
     } else {
       this.contractInfo.baseRaised = 0;
@@ -306,7 +306,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private getQuoteRaised() {
     const details = this.originalContract;
     const decimalsAmount = new BigNumber(
-      details.tokens_info.quote.amount
+      details.tokens_info.quote.amount,
     ).times(Math.pow(10, details.tokens_info.quote.token.decimals));
 
     if (details.isEthereum) {
@@ -327,7 +327,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           },
           (err) => {
             console.log(err);
-          }
+          },
         );
     } else {
       this.contractInfo.quoteRaised = 0;
@@ -351,7 +351,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           (err) => {
             this.contractInfo.baseInvestors = 0;
             // console.log(err);
-          }
+          },
         );
     } else {
       this.contractInfo.baseInvestors = 0;
@@ -369,7 +369,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           },
           (err) => {
             this.contractInfo.quoteInvestors = 0;
-          }
+          },
         );
     } else {
       this.contractInfo.quoteInvestors = 0;
@@ -387,7 +387,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             this.contractInfo.baseBrokerPercent =
               result / 100 + details.broker_fee_base;
             this.contractInfo.baseBrokerAmount = new BigNumber(
-              details.tokens_info.base.amount
+              details.tokens_info.base.amount,
             )
               .div(100)
               .times(this.contractInfo.baseBrokerPercent)
@@ -395,12 +395,12 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           },
           (err) => {
             console.log(err);
-          }
+          },
         );
     } else {
       this.contractInfo.baseBrokerPercent = details.broker_fee_base;
       this.contractInfo.baseBrokerAmount = new BigNumber(
-        details.tokens_info.base.amount
+        details.tokens_info.base.amount,
       )
         .div(100)
         .times(this.contractInfo.baseBrokerPercent)
@@ -419,7 +419,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             this.contractInfo.quoteBrokerPercent =
               result / 100 + details.broker_fee_quote;
             this.contractInfo.quoteBrokerAmount = new BigNumber(
-              details.tokens_info.quote.amount
+              details.tokens_info.quote.amount,
             )
               .div(100)
               .times(this.contractInfo.quoteBrokerPercent)
@@ -427,12 +427,12 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           },
           (err) => {
             console.log(err);
-          }
+          },
         );
     } else {
       this.contractInfo.quoteBrokerPercent = details.broker_fee_quote;
       this.contractInfo.quoteBrokerAmount = new BigNumber(
-        details.tokens_info.quote.amount
+        details.tokens_info.quote.amount,
       )
         .div(100)
         .times(this.contractInfo.quoteBrokerPercent)
@@ -462,7 +462,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
               },
               (err) => {
                 console.log(err);
-              }
+              },
             );
         }
 
@@ -475,7 +475,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             },
             (err) => {
               console.log(err);
-            }
+            },
           );
       } else {
         this.originalContract.isSwapped = false;
@@ -577,11 +577,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     const interfaceMethod = this.web3Service.getMethodInterface(
       'refund',
-      SWAPS_V2.ABI
+      SWAPS_V2.ABI,
     );
     const methodSignature = this.web3Service.encodeFunctionCall(
       interfaceMethod,
-      [details.memo_contract, token.address]
+      [details.memo_contract, token.address],
     );
 
     const sendTransaction = (wallet?) => {
@@ -591,7 +591,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           to: SWAPS_V2.ADDRESS,
           data: methodSignature,
         },
-        'metamask'
+        'metamask',
       );
     };
 
@@ -613,7 +613,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     const cancelMethod = this.web3Service.getMethodInterface(
       'cancel',
-      SWAPS_V2.ABI
+      SWAPS_V2.ABI,
     );
     const cancelSignature = this.web3Service.encodeFunctionCall(cancelMethod, [
       details.memo_contract,
@@ -626,7 +626,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           to: SWAPS_V2.ADDRESS,
           data: cancelSignature,
         },
-        'metamask'
+        'metamask',
       );
     };
 
@@ -641,7 +641,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     const interfaceMethod = this.web3Service.getMethodInterface(
       'createOrder',
-      SWAPS_V2.ABI
+      SWAPS_V2.ABI,
     );
 
     let baseDecimalsTimes = 1;
@@ -651,7 +651,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       baseDecimalsTimes = Math.pow(10, details.tokens_info.base.token.decimals);
       quoteDecimalsTimes = Math.pow(
         10,
-        details.tokens_info.quote.token.decimals
+        details.tokens_info.quote.token.decimals,
       );
     }
 
@@ -688,7 +688,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     const activateSignature = this.web3Service.encodeFunctionCall(
       interfaceMethod,
-      trxRequest
+      trxRequest,
     );
     window['ethereum'].enable().then((accounts) => {
       const address = accounts[0];
@@ -701,7 +701,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           to: SWAPS_V2.ADDRESS,
           data: activateSignature,
         },
-        'metamask'
+        'metamask',
       );
     };
   }
@@ -730,11 +730,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     const depositMethod = this.web3Service.getMethodInterface(
       'deposit',
-      SWAPS_V2.ABI
+      SWAPS_V2.ABI,
     );
     const depositSignature = this.web3Service.encodeFunctionCall(
       depositMethod,
-      [details.memo_contract, tokenModel.token.address, stringAmountValue]
+      [details.memo_contract, tokenModel.token.address, stringAmountValue],
     );
 
     const contributeTransaction = (wallet) => {
@@ -745,7 +745,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           data: depositSignature,
           value: value || undefined,
         },
-        wallet.type
+        wallet.type,
       );
     };
 
@@ -769,10 +769,10 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
                   type: 'metamask',
                   address,
                 },
-                transaction
+                transaction,
               );
             },
-            transaction
+            transaction,
           );
           break;
         default:
@@ -846,8 +846,8 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     const quoteWillValue = new BigNumber(amount).times(
       new BigNumber(details.tokens_info.quote.amount).div(
-        new BigNumber(details.tokens_info.base.amount)
-      )
+        new BigNumber(details.tokens_info.base.amount),
+      ),
     );
 
     const quoteFeeValue = quoteWillValue
@@ -865,8 +865,8 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     const details = this.originalContract;
     const baseWillValue = new BigNumber(amount).times(
       new BigNumber(details.tokens_info.base.amount).div(
-        new BigNumber(details.tokens_info.quote.amount)
-      )
+        new BigNumber(details.tokens_info.quote.amount),
+      ),
     );
 
     const baseFeeValue = baseWillValue
@@ -914,7 +914,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       const tokenModel = this.originalContract.tokens_info[token].token;
       this.tokenContract = this.web3Service.getContract(
         ERC20_TOKEN_ABI,
-        tokenModel.address
+        tokenModel.address,
       );
       this.tokenContract.methods
         .allowance(wallet, SWAPS_V2.ADDRESS)
@@ -931,7 +931,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           },
           () => {
             reject(false);
-          }
+          },
         );
     });
   };
@@ -952,7 +952,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           new BigNumber(90071992.5474099)
             .times(Math.pow(10, Math.max(contributeData.token.decimals, 7)))
             .toString(10),
-        ]
+        ],
       );
 
       const approveTransaction = (wallet) => {
@@ -962,7 +962,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             to: contributeData.token.address,
             data: approveSignature,
           },
-          wallet.type
+          wallet.type,
         );
       };
       this.updateAddresses(true);
@@ -1022,7 +1022,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           type: 'metamask',
           address,
         },
-        transaction
+        transaction,
       );
     });
   }
@@ -1053,7 +1053,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
                 },
                 (err) => {
                   this.checkAllChecked();
-                }
+                },
               );
           } else {
             this.checkAllChecked();
@@ -1062,7 +1062,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         (error) => {
           this.metamaskError = error;
           this.checkAllChecked(true);
-        }
+        },
       );
 
     return this.getAccountsSubscriber;
@@ -1082,5 +1082,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         }
       });
     });
+    console.log(this.originalContract, this.contractInfo, 'sefsdf');
   }
 }
