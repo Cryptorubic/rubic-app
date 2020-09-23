@@ -2,24 +2,14 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { IndexComponent } from './index/index.component';
 import {
-  ContractEditResolver,
-  ContractFormComponent,
-} from './contract-form/contract-form.component';
-import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
-import {
   ContractsListComponent,
   ContractsListResolver,
 } from './contracts-list/contracts-list.component';
 
 import { FaqComponent } from './faq-component/faq.component';
-import {
-  ContractEditV3Resolver,
-  ContractFormAllComponent,
-} from './contract-form-all/contract-form-all.component';
-import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
+import { ContractsPreviewV3Component, ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.component';
 // import { MainPageComponent } from './main-page/main-page.component';
 import { AboutageComponent } from './about/about.component';
-import { TokenSaleComponent } from './token-sale/token-sale.component';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -65,10 +55,6 @@ const routes: Routes = [
     component: AboutageComponent,
   },
   {
-    path: 'token-sale',
-    component: TokenSaleComponent,
-  },
-  {
     path: 'create-v3',
     redirectTo: '/trades/create-v3',
   },
@@ -111,75 +97,6 @@ const routes: Routes = [
         path: '',
         redirectTo: '/',
         pathMatch: 'full',
-      },
-      {
-        path: 'create',
-        component: ContractFormComponent,
-        data: {
-          // support: true
-        },
-      },
-      {
-        path: 'create-v3',
-        component: ContractFormAllComponent,
-        data: {
-          // support: true
-        },
-      },
-      {
-        path: 'view/:id',
-        component: ContractFormComponent,
-        resolve: {
-          contract: ContractEditResolver,
-        },
-        data: {
-          createButton: true,
-        },
-      },
-      {
-        path: 'view-v3/:id',
-        component: ContractFormAllComponent,
-        resolve: {
-          contract: ContractEditV3Resolver,
-        },
-        data: {
-          createButton: true,
-        },
-      },
-      {
-        path: 'contract/:id',
-        component: ContractPreviewComponent,
-        resolve: {
-          contract: ContractEditResolver,
-        },
-        data: {
-          supportHide: 1024,
-          createButton: true,
-          hideInstruction: true,
-        },
-      },
-      {
-        path: 'contract-v3/:id',
-        component: ContractsPreviewV3Component,
-        resolve: {
-          contract: ContractEditV3Resolver,
-        },
-        data: {
-          supportHide: 1024,
-          createButton: true,
-          hideInstruction: true,
-        },
-      },
-      {
-        path: 'public/:public_link',
-        component: ContractPreviewComponent,
-        resolve: {
-          contract: ContractEditResolver,
-        },
-        data: {
-          createButton: true,
-          hideInstruction: true,
-        },
       },
       {
         path: 'public-v3/:public_link',

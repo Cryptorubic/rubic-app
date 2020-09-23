@@ -1,8 +1,7 @@
-import { HttpService } from '../http/http.service';
 import {
   Directive,
   EventEmitter,
-  Injectable,
+  Injectable, Input,
   Output,
   Pipe,
   PipeTransform,
@@ -17,9 +16,14 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-import { ERC20_TOKEN_ABI, ETH_NETWORKS } from './web3.constants';
+import { ERC20_TOKEN_ABI, ETH_NETWORKS, CHAIN_OF_NETWORK } from './web3.constants';
 
 const BigNumber = require('bignumber.js');
+
+const chainIdOfNetwork = {
+  1: [1, 3],
+  22: [56, 97]
+};
 
 const EthereumCoin = {
   address: '0x0000000000000000000000000000000000000000',
@@ -32,6 +36,19 @@ const EthereumCoin = {
   isEthereum: true,
   platform: 'ethereum',
   cmc_id: 2,
+};
+
+
+const BinanceCoin = {
+  address: '0x0000000000000000000000000000000000000000',
+  token_name: 'Binance',
+  token_short_name: 'BNB',
+  decimals: 18,
+  image_link:
+      'https://github.com/MyWishPlatform/etherscan_top_tokens_images/raw/master/ethereum-icon.png',
+  isEther: true,
+  isEthereum: true,
+  platform: 'binance'
 };
 
 declare global {
@@ -49,12 +66,13 @@ export interface TokenInfoInterface {
   isEthereum?: boolean;
 }
 
-// const IS_PRODUCTION = location.protocol === 'https:';
-const IS_PRODUCTION = true;
+const IS_PRODUCTION = location.protocol === 'https:';
 
 const ETHERSCAN_URLS = {
   ETHERSCAN_ADDRESS: 'https://etherscan.io/',
   ROPSTEN_ETHERSCAN_ADDRESS: 'https://ropsten.etherscan.io/',
+  BNB_ETHERSCAN_ADDRESS: 'https://explorer.binance.org/smart/',
+  ROPSTEN_BNB_ETHERSCAN_ADDRESS: 'https://explorer.binance.org/smart-testnet/',
 };
 
 @Pipe({ name: 'etherscanUrl' })
@@ -71,15 +89,16 @@ export class EtherscanUrlPipe implements PipeTransform {
   providedIn: 'root',
 })
 export class Web3Service {
-  constructor(private httpService: HttpService) {
-    this.cacheTokens = {};
+  constructor() {
+    this.cacheTokens = {
+      binance: {},
+      ethereum: {}
+    };
     this.providers = {};
     try {
-      // if (metaMaskProvider && metaMaskProvider.publicConfigStore) {
       this.providers.metamask =
         Web3.givenProvider ||
         new Web3.providers.WebsocketProvider('ws://localhost:8546');
-      // }
     } catch (err) {
       console.log('Metamask not found');
     }
@@ -92,18 +111,13 @@ export class Web3Service {
       console.log('Parity not found');
     }
 
-    try {
-      this.providers.infura = new Web3.providers.HttpProvider(
-        IS_PRODUCTION
-          ? ETH_NETWORKS.INFURA_ADDRESS
-          : ETH_NETWORKS.ROPSTEN_INFURA_ADDRESS,
-      );
-    } catch (err) {
-      console.log('Infura not found');
-    }
-    this.Web3 = new Web3(this.providers.infura);
-
-    // this.connectMetamask();
+    // this.providers.infura = new Web3.providers.HttpProvider(
+    //   IS_PRODUCTION
+    //     ? ETH_NETWORKS.INFURA_ADDRESS
+    //     : ETH_NETWORKS.ROPSTEN_INFURA_ADDRESS,
+    // );
+    //
+    // this.Web3 = new Web3(this.providers.infura);
   }
 
   private providers;
@@ -120,7 +134,6 @@ export class Web3Service {
   public getSignedMetaMaskMsg(msg, addr) {
     return new Promise((resolve, reject) => {
       this.Web3.eth.setProvider(this.providers.metamask);
-
       this.Web3.eth.personal.sign(
         msg,
         addr,
@@ -139,18 +152,26 @@ export class Web3Service {
     this.ethereum.request({
       method: 'eth_requestAccounts',
     });
-    // window.ethereum.selectedAddress
   }
 
   public setUserAddress() {
     this.userAddr = window.ethereum.selectedAddress;
-    console.log(this.userAddr);
   }
   public getUserAddress() {
     return this.userAddr;
   }
 
-  public getContract(abi, address) {
+  public getContract(abi, address, network) {
+    const currentProvider = new Web3.providers.HttpProvider(
+        IS_PRODUCTION
+            ? ETH_NETWORKS[CHAIN_OF_NETWORK[network]].INFURA_ADDRESS
+            : ETH_NETWORKS[CHAIN_OF_NETWORK[network]].ROPSTEN_INFURA_ADDRESS,
+    );
+    if (!this.Web3) {
+      this.Web3 = new Web3(currentProvider);
+    } else {
+      this.Web3.eth.setProvider(currentProvider)
+    }
     return this.Web3.eth.Contract(abi, address);
   }
 
@@ -172,7 +193,7 @@ export class Web3Service {
       : false;
   }
 
-  public getFullTokenInfo(tokenAddress, withoutSearch?: boolean) {
+  public getFullTokenInfo(tokenAddress, withoutSearch?: boolean, network?: string) {
     return new Promise((resolve, reject) => {
       if (!tokenAddress) {
         resolve();
@@ -191,7 +212,7 @@ export class Web3Service {
           );
         })[0];
 
-        this.getTokenInfo(tokenAddress, tokenObject).then(
+        this.getTokenInfo(tokenAddress, tokenObject, CHAIN_OF_NETWORK[network]).then(
           (tokenInfo: { data: TokenInfoInterface }) => {
             const convertedToken = this.convertTokenInfo(tokenInfo.data);
             if (convertedToken) {
@@ -213,7 +234,7 @@ export class Web3Service {
     });
   }
 
-  public getTokenInfo(tokenAddress, tokenObject?) {
+  public getTokenInfo(tokenAddress, tokenObject, blockchain) {
     const tokenInfoFields = !tokenObject
       ? ['decimals', 'symbol', 'name']
       : ['decimals'];
@@ -226,11 +247,11 @@ export class Web3Service {
       : {};
 
     const address = tokenAddress ? tokenAddress.toLowerCase() : tokenAddress;
-
-    if (this.cacheTokens[address]) {
-      if (this.cacheTokens[address].token || this.cacheTokens[address].failed) {
+    const tokensCache = this.cacheTokens[blockchain];
+    if (tokensCache[address]) {
+      if (tokensCache[address].token || tokensCache[address].failed) {
         return new Promise((resolve, reject) => {
-          if (this.cacheTokens[address].failed) {
+          if (tokensCache[address].failed) {
             return reject({
               tokenAddress: true,
             });
@@ -242,15 +263,15 @@ export class Web3Service {
             });
           }
           resolve({
-            data: { ...this.cacheTokens[address].token },
+            data: { ...tokensCache[address].token },
           });
         }).then((res) => {
           return res;
         });
       }
-      if (this.cacheTokens[address].inPromise) {
+      if (tokensCache[address].inPromise) {
         if (this.Web3.utils.isAddress(address)) {
-          return this.cacheTokens[address].inPromise;
+          return tokensCache[address].inPromise;
         }
       }
     }
@@ -261,7 +282,14 @@ export class Web3Service {
           ethAddress: true,
         });
       }
-      const contract = this.Web3.eth.Contract(ERC20_TOKEN_ABI, address);
+
+      const currentProvider = new Web3.providers.HttpProvider(
+          IS_PRODUCTION
+              ? ETH_NETWORKS[blockchain].INFURA_ADDRESS
+              : ETH_NETWORKS[blockchain].ROPSTEN_INFURA_ADDRESS,
+      );
+
+      const contract = new (new Web3(currentProvider).eth.Contract)(ERC20_TOKEN_ABI as any[], address);
 
       const callMethod = (methodCall, method) => {
         const promise = methodCall.call();
@@ -271,16 +299,16 @@ export class Web3Service {
               reject({
                 tokenAddress: true,
               });
-              this.cacheTokens[address].failed = true;
+              tokensCache[address].failed = true;
               return;
             }
             tokenInfo[method] = result;
             fieldsCount--;
             if (!fieldsCount) {
               tokenInfo.address = tokenAddress;
-              this.cacheTokens[address].token = { ...tokenInfo };
+              tokensCache[address].token = { ...tokenInfo };
               resolve({
-                data: { ...this.cacheTokens[address].token },
+                data: { ...tokensCache[address].token },
               });
             }
           },
@@ -289,14 +317,14 @@ export class Web3Service {
               reject({
                 tokenAddress: true,
               });
-              this.cacheTokens[address].failed = true;
+              tokensCache[address].failed = true;
             } else {
               fieldsCount--;
               if (!fieldsCount) {
                 tokenInfo.address = tokenAddress;
-                this.cacheTokens[address].token = { ...tokenInfo };
+                tokensCache[address].token = { ...tokenInfo };
                 resolve({
-                  data: { ...this.cacheTokens[address].token },
+                  data: { ...tokensCache[address].token },
                 });
               }
             }
@@ -321,19 +349,25 @@ export class Web3Service {
       return res;
     });
 
-    this.cacheTokens[address] = {
+    tokensCache[address] = {
       inPromise: tokenPromise,
     };
 
     return tokenPromise;
   }
 
-  private getAccountsByProvider(providerName, ifEnabled?) {
+  private getAccountsByProvider(providerName, ifEnabled?, network?) {
     return new Observable((observer) => {
-      const usedNetworkVersion = IS_PRODUCTION ? 1 : 3;
+
+      network = network || 1;
+
+      const chainIds = chainIdOfNetwork[network];
+      const usedNetworkVersion = chainIds[IS_PRODUCTION ? 0 : 1];
 
       if (window['ethereum'] && window['ethereum'].isMetaMask) {
         const networkVersion = Number(window['ethereum'].networkVersion);
+
+        console.log(usedNetworkVersion, networkVersion);
 
         if (usedNetworkVersion !== networkVersion) {
           observer.error({
@@ -350,6 +384,11 @@ export class Web3Service {
         });
 
         if (!ifEnabled || window['ethereum'].selectedAddress) {
+          // this.ethereum.request('eth_requestAccounts').then((a) => {
+          //   console.log(a);
+          // }, (b) => {
+          //   console.log(b);
+          // })
           window['ethereum'].enable().then(
             (accounts) => {
               observer.next({
@@ -381,12 +420,13 @@ export class Web3Service {
     });
   }
 
-  public getAccounts(owner?, ifEnabled?) {
+  public getAccounts(owner?, ifEnabled?, network?) {
     const addressesDictionary: any = {};
     return new Observable((observer) => {
       const accountsSubscriber = this.getAccountsByProvider(
         'metamask',
         ifEnabled,
+        network
       ).subscribe(
         (addresses: any) => {
           addressesDictionary[addresses.type] =
@@ -416,10 +456,14 @@ export class Web3Service {
     return this.Web3.eth.abi.encodeFunctionCall(abi, data);
   }
 
-  public sendTransaction(transactionConfig, provider?) {
-    if (provider) {
-      this.Web3.eth.setProvider(this.providers[provider]);
-    }
+  public sendTransaction(transactionConfig, network) {
+    const currentProvider = new Web3.providers.HttpProvider(
+        IS_PRODUCTION
+            ? ETH_NETWORKS[CHAIN_OF_NETWORK[network]].INFURA_ADDRESS
+            : ETH_NETWORKS[CHAIN_OF_NETWORK[network]].ROPSTEN_INFURA_ADDRESS,
+    );
+
+    this.Web3.eth.setProvider(this.providers['metamask']);
     return new Promise((resolve, reject) => {
       this.Web3.eth
         .sendTransaction(transactionConfig, (err, response) => {
@@ -455,9 +499,7 @@ export class Web3Service {
           },
         )
         .finally(() => {
-          if (provider) {
-            this.Web3.eth.setProvider(this.providers.infura);
-          }
+          this.Web3.eth.setProvider(currentProvider);
         });
     });
   }
@@ -481,10 +523,20 @@ export class Web3Service {
       if (quoteTokenObject && !data.quote_address) {
         data.quote_address = quoteTokenObject.address;
       }
+      const currentProvider = new Web3.providers.HttpProvider(
+          IS_PRODUCTION
+              ? ETH_NETWORKS[CHAIN_OF_NETWORK[data.network]].INFURA_ADDRESS
+              : ETH_NETWORKS[CHAIN_OF_NETWORK[data.network]].ROPSTEN_INFURA_ADDRESS,
+      );
+      if (!this.Web3) {
+        this.Web3 = new Web3(currentProvider);
+      } else {
+        this.Web3.eth.setProvider(currentProvider)
+      }
 
-      if (data.quote_address) {
+      if (!data.quote_coin_id) {
         quoteToken = quoteTokenObject ? { ...quoteTokenObject } : false;
-        this.getFullTokenInfo(data.quote_address, true)
+        this.getFullTokenInfo(data.quote_address, true, data.network)
           .then(
             (tokenInfo: TokenInfoInterface) => {
               if (quoteToken) {
@@ -540,9 +592,9 @@ export class Web3Service {
         data.base_address = baseTokenObject.address;
       }
 
-      if (data.base_address) {
+      if (!data.base_coin_id) {
         baseToken = baseTokenObject ? { ...baseTokenObject } : false;
-        this.getFullTokenInfo(data.base_address, true)
+        this.getFullTokenInfo(data.base_address, true, data.network)
           .then(
             (tokenInfo: TokenInfoInterface) => {
               if (baseToken) {
@@ -601,13 +653,14 @@ export class Web3Service {
 })
 export class EthTokenValidatorDirective implements AsyncValidator {
   @Output() TokenResolve = new EventEmitter<any>();
+  @Input() network;
 
   constructor(private web3Service: Web3Service) {}
 
   validate(
     ctrl: AbstractControl,
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    return this.web3Service.getFullTokenInfo(ctrl.value).then((result: any) => {
+    return this.web3Service.getFullTokenInfo(ctrl.value, false, this.network).then((result: any) => {
       if (result && result.token_short_name) {
         this.TokenResolve.emit(result);
         return null;

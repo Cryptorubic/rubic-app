@@ -53,8 +53,16 @@ export class TokensAllInputComponent implements OnInit {
   ngOnInit() {
     if (this.setToken) {
       this.setToken.subscribe((result) => {
-        this.visibleInput = false;
-        this.TokenChange.emit(result);
+        if (result) {
+          this.visibleInput = false;
+          this.TokenChange.emit(result);
+        } else {
+          setTimeout(() => {
+            this.tokenName = '';
+            this.searchToken('');
+            this.listIsOpened = false;
+          });
+        }
       });
     }
 
@@ -76,19 +84,22 @@ export class TokensAllInputComponent implements OnInit {
     const result = [];
     let indexToken = 0;
 
+    const tokensForSearch = this.blockchain ? window['cmc_tokens'].filter((t) => {
+      return t.platform === this.blockchain;
+    }) : window['cmc_tokens'];
+
     if (q) {
       while (
-        indexToken < window['cmc_tokens'].length &&
+        indexToken < tokensForSearch.length &&
         result.length < 10
       ) {
-        const token = window['cmc_tokens'][indexToken];
+        const token = tokensForSearch[indexToken];
         const tokenName = token.token_name.toLowerCase();
         const tokenSymbol = token.token_short_name.toLowerCase();
         const seqrchQ = q.toLowerCase();
 
         const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
         const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
-
         if (
           (nameIndexMatch || symbolIndexMatch) &&
           (!this.blockchain || this.blockchain === token.platform)
@@ -99,12 +110,12 @@ export class TokensAllInputComponent implements OnInit {
       }
     } else {
       while (
-          indexToken < window['cmc_tokens'].length &&
+          indexToken < tokensForSearch.length &&
           result.length < 10
         ) {
-        const token = window['cmc_tokens'][indexToken];
+        const token = tokensForSearch[indexToken];
         if (
-          token.cmc_id &&
+          token &&
           (!this.blockchain || this.blockchain === token.platform)
         ) {
           result.push({ ...token });

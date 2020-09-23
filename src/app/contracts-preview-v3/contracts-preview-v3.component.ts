@@ -1,13 +1,1245 @@
+import {Observable} from "rxjs";
+
+interface IContractV3 {
+  id?: number;
+  name: string;
+  network?: number;
+  base_address?: string;
+  quote_address?: string;
+  base_limit?: string;
+  quote_limit?: string;
+  stop_date?: number;
+  owner_address?: string;
+  public?: boolean | undefined;
+  unique_link?: string;
+  unique_link_url?: string;
+
+  broker_fee: boolean;
+  broker_fee_address: string;
+  broker_fee_base: number;
+  broker_fee_quote: number;
+
+  quote_coin_id?: number;
+  base_coin_id?: number;
+  comment?: string;
+  tokens_info?: {
+    base?: {
+      token: any;
+      amount?: string;
+    };
+    quote?: {
+      token: any;
+      amount?: string;
+    };
+  };
+
+  whitelist?: any;
+  whitelist_address?: any;
+  min_base_wei?: any;
+  memo_contract?: any;
+  min_quote_wei?: any;
+
+  state?: string;
+  isSwapped?: boolean;
+  isAuthor?: boolean;
+  user?: number;
+
+  contract_state?: string;
+
+  isEthereum?: boolean;
+  notification?: boolean;
+  notification_tg: string;
+  notification_email: string;
+  created_date: string;
+}
+
+export const CHAINS_OF_NETWORKS = {
+  1: {
+    image: './assets/images/icons/coins/eth.png',
+    name: 'Ethereum'
+  },
+  22: {
+    image: './assets/images/icons/coins/bnb.svg',
+    name: 'Binance chain'
+  }
+}
+export const SWAPS_V2 = {
+  ABI: [
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'raised',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'myWishBasePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'isSwapped',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'quoteAddresses',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'expirationTimestamps',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseOnlyInvestor',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'myWishAddress',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'limits',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'MAX_INVESTORS',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [],
+      name: 'renounceOwnership',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'myWishQuotePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'brokers',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'investors',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'minInvestments',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'owner',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'isOwner',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'isCancelled',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'brokerPercents',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'investments',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseAddresses',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: 'newOwner',
+          type: 'address',
+        },
+      ],
+      name: 'transferOwnership',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'owners',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'vault',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'baseAddress',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'quoteAddress',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'baseLimit',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'quoteLimit',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'expirationTimestamp',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'baseOnlyInvestor',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'minBaseInvestment',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'minQuoteInvestment',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'broker',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'brokerBasePercent',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'brokerQuotePercent',
+          type: 'uint256',
+        },
+      ],
+      name: 'OrderCreated',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'OrderCancelled',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'user',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'amount',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'balance',
+          type: 'uint256',
+        },
+      ],
+      name: 'Deposit',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'user',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'Refund',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'byUser',
+          type: 'address',
+        },
+      ],
+      name: 'OrderSwapped',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'user',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'SwapSend',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'broker',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'BrokerSend',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'oldMyWishAddress',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'newMyWishAddress',
+          type: 'address',
+        },
+      ],
+      name: 'MyWishAddressChange',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'oldBasePercent',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'oldQuotePercent',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'newBasePercent',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'newQuotePercent',
+          type: 'uint256',
+        },
+      ],
+      name: 'MyWishPercentsChange',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          name: 'previousOwner',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          name: 'newOwner',
+          type: 'address',
+        },
+      ],
+      name: 'OwnershipTransferred',
+      type: 'event',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+        {
+          name: '',
+          type: 'uint256',
+        },
+        {
+          name: '',
+          type: 'bytes',
+        },
+      ],
+      name: 'tokenFallback',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_baseAddress',
+          type: 'address',
+        },
+        {
+          name: '_quoteAddress',
+          type: 'address',
+        },
+        {
+          name: '_baseLimit',
+          type: 'uint256',
+        },
+        {
+          name: '_quoteLimit',
+          type: 'uint256',
+        },
+        {
+          name: '_expirationTimestamp',
+          type: 'uint256',
+        },
+        {
+          name: '_baseOnlyInvestor',
+          type: 'address',
+        },
+        {
+          name: '_minBaseInvestment',
+          type: 'uint256',
+        },
+        {
+          name: '_minQuoteInvestment',
+          type: 'uint256',
+        },
+        {
+          name: '_brokerAddress',
+          type: 'address',
+        },
+        {
+          name: '_brokerBasePercent',
+          type: 'uint256',
+        },
+        {
+          name: '_brokerQuotePercent',
+          type: 'uint256',
+        },
+      ],
+      name: 'createOrder',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_token',
+          type: 'address',
+        },
+        {
+          name: '_amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'deposit',
+      outputs: [],
+      payable: true,
+      stateMutability: 'payable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'cancel',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_token',
+          type: 'address',
+        },
+      ],
+      name: 'refund',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_vault',
+          type: 'address',
+        },
+      ],
+      name: 'setVault',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_basePercent',
+          type: 'uint256',
+        },
+        {
+          name: '_quotePercent',
+          type: 'uint256',
+        },
+      ],
+      name: 'setMyWishPercents',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_myWishAddress',
+          type: 'address',
+        },
+      ],
+      name: 'setMyWishAddress',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_owner',
+          type: 'address',
+        },
+      ],
+      name: 'createKey',
+      outputs: [
+        {
+          name: 'result',
+          type: 'bytes32',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'allBrokersBasePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'allBrokersQuotePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseLimit',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'quoteLimit',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseRaised',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'quoteRaised',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'isBaseFilled',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'isQuoteFilled',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseInvestors',
+      outputs: [
+        {
+          name: '',
+          type: 'address[]',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'quoteInvestors',
+      outputs: [
+        {
+          name: '',
+          type: 'address[]',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_user',
+          type: 'address',
+        },
+      ],
+      name: 'baseUserInvestment',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_user',
+          type: 'address',
+        },
+      ],
+      name: 'quoteUserInvestment',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'orderBrokers',
+      outputs: [
+        {
+          name: '',
+          type: 'address[]',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ],
+  // ADDRESS: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d', // Test
+  ADDRESS: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
+  ADDRESSES: {
+    ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
+    binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E'
+  }
+};
+
+
 import {
-  Component,
+  Component, Injectable,
   OnDestroy,
   OnInit,
   TemplateRef,
-  ViewChild,
-  Inject,
+  ViewChild
 } from '@angular/core';
 
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router} from '@angular/router';
 
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Web3Service } from '../services/web3/web3.service';
@@ -15,30 +1247,32 @@ import BigNumber from 'bignumber.js';
 
 import { CONTRACT_STATES } from '../contract-preview/contract-states';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
-import { TransactionComponent } from '../transaction/transaction.component';
+// import { TransactionComponent } from '../transaction/transaction.component';
 import { ContractsService } from '../services/contracts/contracts.service';
 import { UserInterface } from '../services/user/user.interface';
 import { UserService } from '../services/user/user.service';
 
-import { SWAPS_V2 } from '../contract-form-all/contract-v2-details';
-import { ContactOwnerComponent } from '../contact-owner/contact-owner.component';
-import { IContractV3 } from '../contract-form-all/contract-form-all.component';
-import { ERC20_TOKEN_ABI } from '../services/web3/web3.constants';
+// import { SWAPS_V2 } from '../contract-form-all/contract-v2-details';
+// import { ContactOwnerComponent } from '../contact-owner/contact-owner.component';
+// import { IContractV3 } from '../contract-form-all/contract-form-all.component';
+import {CHAIN_OF_NETWORK, ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
+import {HttpService} from "../services/http/http.service";
 
 export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
 
 @Component({
   selector: 'app-contracts-preview-v3',
   templateUrl: './contracts-preview-v3.component.html',
-  styleUrls: ['../contract-preview/contract-preview.component.scss'],
+  styleUrls: ['./contracts-preview-v3.component.scss'],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
 })
 export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
 
   private metaMaskErrorModal: MatDialogRef<any>;
+  private contractAddress: string;
+  public displayingBlockchains = CHAINS_OF_NETWORKS;
   constructor(
-    @Inject(MAT_DIALOG_DATA) public trxData,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private web3Service: Web3Service,
@@ -46,12 +1280,14 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     private contractService: ContractsService,
     private userService: UserService,
   ) {
-    this.web3Contract = this.web3Service.getContract(
-      SWAPS_V2.ABI,
-      SWAPS_V2.ADDRESS,
-    );
 
     this.originalContract = this.route.snapshot.data.contract;
+    this.contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.originalContract.network]];
+    this.web3Contract = this.web3Service.getContract(
+        SWAPS_V2.ABI,
+        this.contractAddress,
+        this.originalContract.network
+    );
 
     this.updatePromise = true;
 
@@ -588,10 +1824,10 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       return this.web3Service.sendTransaction(
         {
           from: wallet,
-          to: SWAPS_V2.ADDRESS,
+          to: this.contractAddress,
           data: methodSignature,
         },
-        'metamask',
+          this.originalContract.network
       );
     };
 
@@ -623,10 +1859,10 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       return this.web3Service.sendTransaction(
         {
           from: wallet,
-          to: SWAPS_V2.ADDRESS,
+          to: this.contractAddress,
           data: cancelSignature,
         },
-        'metamask',
+          this.originalContract.network
       );
     };
 
@@ -698,10 +1934,10 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       return this.web3Service.sendTransaction(
         {
           from: wallet,
-          to: SWAPS_V2.ADDRESS,
+          to: this.contractAddress,
           data: activateSignature,
         },
-        'metamask',
+          this.originalContract.network
       );
     };
   }
@@ -741,11 +1977,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       return this.web3Service.sendTransaction(
         {
           from: wallet.address,
-          to: SWAPS_V2.ADDRESS,
+          to: this.contractAddress,
           data: depositSignature,
           value: value || undefined,
         },
-        wallet.type,
+          this.originalContract.network
       );
     };
 
@@ -818,27 +2054,12 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       });
   }
 
-  private checkAllChecked(forceCheck?) {
-    this.countChecked++;
-    if (this.countChecked === this.trxData.transactions.length || forceCheck) {
-      this.trxData.checked = true;
-    }
-  }
-
   ngOnDestroy(): void {
     if (this.updateContractTimer) {
       window.clearTimeout(this.updateContractTimer);
     }
     this.updatePromise = false;
     // this.getAccountsSubscriber.unsubscribe();
-  }
-
-  public openContactForm() {
-    this.dialog.open(ContactOwnerComponent, {
-      width: '38.65em',
-      panelClass: 'custom-dialog-container',
-      data: this.originalContract,
-    });
   }
 
   public quoteWillGetValue(amount) {
@@ -915,9 +2136,10 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       this.tokenContract = this.web3Service.getContract(
         ERC20_TOKEN_ABI,
         tokenModel.address,
+        this.originalContract.network
       );
       this.tokenContract.methods
-        .allowance(wallet, SWAPS_V2.ADDRESS)
+        .allowance(wallet, this.contractAddress)
         .call()
         .then(
           (result) => {
@@ -948,7 +2170,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       const approveSignature = this.web3Service.encodeFunctionCall(
         approveMethod,
         [
-          SWAPS_V2.ADDRESS,
+          this.contractAddress,
           new BigNumber(90071992.5474099)
             .times(Math.pow(10, Math.max(contributeData.token.decimals, 7)))
             .toString(10),
@@ -962,7 +2184,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             to: contributeData.token.address,
             data: approveSignature,
           },
-          wallet.type,
+          this.originalContract.network
         );
       };
       this.updateAddresses(true);
@@ -974,7 +2196,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           ' ' +
           contributeData.token.token_short_name +
           ' tokens to contract',
-        to: SWAPS_V2.ADDRESS,
+        to: this.contractAddress,
         data: contributeData.signature,
         action: contributeData.action,
         ethValue: !contributeData.token.isEther ? undefined : textAmount,
@@ -1029,7 +2251,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
   private updateAddresses(ifEnabled?, cb?, transaction?) {
     this.getAccountsSubscriber = this.web3Service
-      .getAccounts(false, ifEnabled)
+      .getAccounts(false, ifEnabled, this.originalContract.network)
       .subscribe(
         (addresses: any) => {
           this.metamaskError = false;
@@ -1038,6 +2260,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             cb(addresses.metamask[0]);
           }
           if (
+            transaction &&
             transaction.checkComplete &&
             addresses.metamask &&
             addresses.metamask[0]
@@ -1048,21 +2271,16 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
                 (result) => {
                   if (result) {
                     transaction.confirmed = true;
-                    this.checkAllChecked();
                   }
                 },
-                (err) => {
-                  this.checkAllChecked();
-                },
+                (err) => {}
               );
           } else {
-            this.checkAllChecked();
           }
         },
         (error) => {
           this.metamaskError = error;
-          this.checkAllChecked(true);
-        },
+        }
       );
 
     return this.getAccountsSubscriber;
@@ -1074,7 +2292,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
       window['ethereum'].enable().then((accounts) => {
         const address = accounts[0];
-
         if (!contributeData.token.isEther) {
           this.checkAllowance(address, token, 0).catch(() => {
             this.allowanceObj[token].isAllowance = false;
@@ -1082,6 +2299,78 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         }
       });
     });
-    console.log(this.originalContract, this.contractInfo, 'sefsdf');
+  }
+}
+
+
+
+@Injectable()
+export class ContractEditV3Resolver implements Resolve<any> {
+  private currentUser;
+  private route;
+
+  constructor(
+      private contractsService: ContractsService,
+      private userService: UserService,
+      private httpService: HttpService,
+      private web3Service: Web3Service,
+      private router: Router
+  ) {}
+
+  private contractId: number;
+  private publicLink: string;
+
+  private getContractInformation(observer, isPublic?) {
+    const promise = (!isPublic
+        ? this.contractsService.getContractV3Information(this.contractId)
+        : this.contractsService.getSwapByPublic(this.publicLink)) as Promise<any>;
+
+    promise.then(
+        (trade: IContractV3) => {
+          this.web3Service.getSWAPSCoinInfo(trade).then((result: any) => {
+            observer.next(result);
+            observer.complete();
+          });
+        },
+        () => {
+          this.router.navigate(['/trades']);
+        }
+    );
+  }
+
+  resolve(route: ActivatedRouteSnapshot) {
+    this.route = route;
+    if (route.params.id) {
+      this.contractId = route.params.id;
+      return new Observable((observer) => {
+        const subscription = this.userService
+            .getCurrentUser(false, true)
+            .subscribe((user) => {
+              this.currentUser = user;
+              if (!user.is_ghost) {
+                this.getContractInformation(observer);
+              } else {
+                this.userService.openAuthForm().then(
+                    () => {
+                      this.getContractInformation(observer);
+                    },
+                    () => {
+                      this.router.navigate(['/trades']);
+                      //
+                    }
+                );
+              }
+              subscription.unsubscribe();
+            });
+        return {
+          unsubscribe() {},
+        };
+      });
+    } else if (route.params.public_link) {
+      this.publicLink = route.params.public_link;
+      return new Observable((observer) => {
+        this.getContractInformation(observer, true);
+      });
+    }
   }
 }

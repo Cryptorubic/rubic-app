@@ -265,6 +265,10 @@
     text-align: left;
   }
 
+  &__wrapper {
+    display: flex;
+    align-items: center;
+  }
   &--reverse {
     flex-direction: row-reverse;
 
@@ -273,7 +277,6 @@
     }
 
     .token-info__wrapper {
-      display: flex;
       flex-direction: row-reverse;
     }
     .token-info_icon {
@@ -531,12 +534,12 @@
   }
   &__positive {
     background: url('/assets/images/icons/positive-rate.svg') 5px center
-      no-repeat;
+    no-repeat;
     color: #2bcf78;
   }
   &__negative {
     background: url('/assets/images/icons/negative-rate.svg') 5px center
-      no-repeat;
+    no-repeat;
     color: #da7b83;
   }
 }
@@ -553,9 +556,17 @@
   &__rate {
     &-wrapper {
       display: flex;
-      justify-content: space-between;
+      //justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      .block-tabs_item {
+        margin-right: 15px;
+        position: relative;
+        top: -3px;
+      }
     }
   }
 }
+

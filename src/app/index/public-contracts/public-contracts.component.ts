@@ -1,14 +1,63 @@
+
+export interface IContractDetails {
+  network?: number;
+  base_address?: string;
+  quote_address?: string;
+  base_limit?: string;
+  quote_limit?: string;
+  stop_date?: number;
+  owner_address?: string;
+  public?: boolean | undefined;
+  unique_link?: string;
+  unique_link_url?: string;
+  eth_contract?: any;
+
+  broker_fee: boolean;
+  broker_fee_address: string;
+  broker_fee_base: number;
+  broker_fee_quote: number;
+
+  tokens_info?: {
+    base: {
+      token: any;
+      amount: string;
+    };
+    quote: {
+      token: any;
+      amount: string;
+    };
+  };
+
+  whitelist?: any;
+  whitelist_address?: any;
+  min_base_wei?: any;
+  memo_contract?: any;
+  min_quote_wei?: any;
+}
+
+export interface IContract {
+  isSwapped?: boolean;
+  contract_details?: IContractDetails;
+  id?: number | undefined;
+  contract_type?: number;
+  network?: 1;
+  state?: string;
+  cost?: any;
+  name?: string;
+  isAuthor?: boolean;
+  user?: number;
+}
+
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ContractsService, InterfacePastSwaps} from '../../services/contracts/contracts.service';
 import {Web3Service} from '../../services/web3/web3.service';
 
 import BigNumber from 'bignumber.js';
 import {HttpClient} from '@angular/common/http';
-import {IContract} from '../../contract-form/contract-form.component';
 import {UserInterface} from '../../services/user/user.interface';
 import {UserService} from '../../services/user/user.service';
 import {MatDialog, MatDialogRef} from '@angular/material';
-import {FIX_TIME} from '../../contracts-preview-v3/contracts-preview-v3.component';
+import {CHAINS_OF_NETWORKS, FIX_TIME} from '../../contracts-preview-v3/contracts-preview-v3.component';
 
 const PAGE_SIZE = 5;
 
@@ -27,6 +76,7 @@ export interface InterfacePastSwapsRequest {
 
 export class PublicContractsComponent implements OnInit, OnDestroy {
 
+  public displayingBlockchains = CHAINS_OF_NETWORKS;
   constructor(
     private contractsService: ContractsService,
     private web3Service: Web3Service,
@@ -127,6 +177,7 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
 
       contract.contract_details.base_filled = '0';
       contract.contract_details.quote_filled = '0';
+      contract.contract_details.network = contract.network;
 
       this.web3Service.getSWAPSCoinInfo(contract.contract_details).then((trade: any) => {
         const baseToken = contract.contract_details.tokens_info.base.token;

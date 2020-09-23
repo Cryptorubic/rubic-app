@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {HttpService} from '../http/http.service';
-import {IContractV3} from '../../contract-form-all/contract-form-all.component';
 
 export interface InterfacePastSwaps {
   total: number;

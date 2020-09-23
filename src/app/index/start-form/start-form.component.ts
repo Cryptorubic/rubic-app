@@ -8,12 +8,12 @@ import {
   ViewChild,
   Output,
 } from '@angular/core';
-import { SWAPS_V2 } from '../../contract-form-all/contract-v2-details';
+import { SWAPS_V2 } from '../../contracts-preview-v3/contracts-preview-v3.component';
 import { Web3Service } from '../../services/web3/web3.service';
 import { UserService } from '../../services/user/user.service';
 import BigNumber from 'bignumber.js';
 import { Router, ActivatedRoute } from '@angular/router';
-
+import { CHAIN_OF_NETWORK } from '../../services/web3/web3.constants';
 import { ContractsService } from '../../services/contracts/contracts.service';
 import * as moment from 'moment';
 import {
@@ -32,7 +32,10 @@ import {
 import { MODE } from '../../app-routing.module';
 export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
 
+const defaultNetwork = 1;
+
 export interface IContractDetails {
+  network?: number;
   base_address?: string;
   quote_address?: string;
   base_limit?: string;
@@ -45,19 +48,19 @@ export interface IContractDetails {
   unique_link_url?: string;
   eth_contract?: any;
 
-  broker_fee: boolean;
-  broker_fee_address: string;
-  broker_fee_base: number;
-  broker_fee_quote: number;
+  broker_fee?: boolean;
+  broker_fee_address?: string;
+  broker_fee_base?: number;
+  broker_fee_quote?: number;
 
   tokens_info?: {
     base: {
       token: any;
-      amount: string;
+      amount?: string;
     };
     quote: {
       token: any;
-      amount: string;
+      amount?: string;
     };
   };
 
@@ -108,6 +111,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   };
   private CMCRates;
   private metaMaskErrorModal: MatDialogRef<any>;
+  public blockchainsOfNetworks = {
+    1: 'ethereum',
+    22: 'binance'
+  };
   constructor(
     private dialog: MatDialog,
     protected contractsService: ContractsService,
@@ -116,15 +123,13 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private userService: UserService,
     private route: ActivatedRoute
   ) {
-    console.log(this.route.snapshot.data.contract);
     this.CMCRates = {};
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: any) => {
       this.currentUser = userProfile;
     });
     this.sendData = {
-      contract_type: 20,
-      network: 1,
+      contract_type: 20
     };
     this.tokensData = {
       base: {
@@ -268,26 +273,41 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   ngOnInit() {
-    this.updateAddresses(true);
     const draftData = localStorage.getItem('form_new_values');
-    this.requestData = draftData
-      ? JSON.parse(draftData)
-      : {
-          tokens_info: {
-            base: {
-              token: {},
-            },
-            quote: {
-              token: {},
-            },
-          },
-        };
+    if (!draftData) {
+      this.resetStartForm();
+    } else {
+      this.requestData = JSON.parse(draftData);
+      this.requestData.network = this.requestData.network || defaultNetwork;
+    }
+  }
 
-    this.requestData.public = true;
-    this.requestData.permanent = false;
+  private resetStartForm(network?) {
+    this.requestData = {
+      tokens_info: {
+        base: {
+          token: {},
+        },
+        quote: {
+          token: {},
+        },
+      },
+      network: network || defaultNetwork,
+      public: true,
+      permanent: false,
+      broker_fee_base: 0.1,
+      broker_fee_quote: 0.1,
+    };
+    this.customTokens = {
+      base: {},
+      quote: {},
+    };
+    this.BaseTokenCustom.emit(false);
+    this.QuoteTokenCustom.emit(false);
+  }
 
-    this.requestData.broker_fee_base = 0.1;
-    this.requestData.broker_fee_quote = 0.1;
+  public setNetwork(network) {
+    this.resetStartForm(network);
   }
 
   ngOnDestroy(): void {
@@ -361,12 +381,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   get quoteBrokerFee() {
-    if (
-      !(
-        this.requestData.tokens_info.quote.amount &&
-        this.requestData.broker_fee_quote
-      )
-    ) {
+    if (!(this.requestData.tokens_info.quote.amount && this.requestData.broker_fee_quote)) {
       return 0;
     }
     return new BigNumber(this.requestData.tokens_info.quote.amount)
@@ -388,26 +403,20 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.openedCustomTokens[name] = false;
   }
 
-  public createContract() {
-    if (this.metamaskError) {
-      this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
-        width: '480px',
-        panelClass: 'custom-dialog-container',
-      });
-      return;
-    }
+  private buildAndCreate() {
+    this.sendData.network = this.requestData.network;
     this.sendData.stop_date = this.advSettings.value.active_to
-      .clone()
-      .utc()
-      .format('YYYY-MM-DD HH:mm');
+        .clone()
+        .utc()
+        .format('YYYY-MM-DD HH:mm');
 
     this.sendData.base_limit = this.requestData.tokens_info.base.amount;
     this.sendData.quote_limit = this.requestData.tokens_info.quote.amount;
 
     this.sendData.name =
-      this.requestData.tokens_info.base.token.token_short_name +
-      ' <> ' +
-      this.requestData.tokens_info.quote.token.token_short_name;
+        this.requestData.tokens_info.base.token.token_short_name +
+        ' <> ' +
+        this.requestData.tokens_info.quote.token.token_short_name;
 
     this.sendData.base_address = this.requestData.tokens_info.base.token.address;
     this.sendData.quote_address = this.requestData.tokens_info.quote.token.address;
@@ -441,6 +450,20 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.isCreatingContract = true;
       this.sendContractData(this.sendData);
     }
+  }
+
+  public createContract() {
+    const accSubscriber = this.updateAddresses(true).subscribe((res) => {
+      console.log(res);
+      this.buildAndCreate();
+    }, (err) => {
+      this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+        width: '480px',
+        panelClass: 'custom-dialog-container',
+      });
+    }, () => {
+      accSubscriber.unsubscribe();
+    });
   }
 
   private sendMetaMaskRequest(data) {
@@ -520,17 +543,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public initialisationTrade(originalContract) {
     const details = originalContract;
-
-    const interfaceMethod = this.web3Service.getMethodInterface(
-      'createOrder',
-      SWAPS_V2.ABI
-    );
+    const interfaceMethod = this.web3Service.getMethodInterface('createOrder', SWAPS_V2.ABI);
 
     let baseDecimalsTimes = 1;
     let quoteDecimalsTimes = 1;
 
-    console.log(this.requestData.tokens_info.base.token.decimals);
-    console.log(this.requestData.tokens_info.quote.token.decimals);
 
     if (new Date(originalContract.created_date).getTime() > FIX_TIME) {
       baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
@@ -541,31 +558,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       details.memo_contract,
       this.requestData.tokens_info.base.token.address,
       this.requestData.tokens_info.quote.token.address,
-      new BigNumber(details.base_limit || '0')
-        .times(baseDecimalsTimes)
-        .toString(10),
-      new BigNumber(details.quote_limit || '0')
-        .times(quoteDecimalsTimes)
-        .toString(10),
+      new BigNumber(details.base_limit || '0').times(baseDecimalsTimes).toString(10),
+      new BigNumber(details.quote_limit || '0').times(quoteDecimalsTimes).toString(10),
       Math.round(new Date(details.stop_date).getTime() / 1000).toString(10),
-      details.whitelist
-        ? details.whitelist_address
-        : '0x0000000000000000000000000000000000000000',
-      new BigNumber(details.min_base_wei || '0')
-        .times(baseDecimalsTimes)
-        .toString(10),
-      new BigNumber(details.min_quote_wei || '0')
-        .times(quoteDecimalsTimes)
-        .toString(10),
-      details.broker_fee
-        ? details.broker_fee_address
-        : '0x0000000000000000000000000000000000000000',
-      details.broker_fee
-        ? new BigNumber(details.broker_fee_base).times(100).toString(10)
-        : '0',
-      details.broker_fee
-        ? new BigNumber(details.broker_fee_quote).times(100).toString(10)
-        : '0',
+      details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
+      new BigNumber(details.min_base_wei || '0').times(baseDecimalsTimes).toString(10),
+      new BigNumber(details.min_quote_wei || '0').times(quoteDecimalsTimes).toString(10),
+      details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
+      details.broker_fee ? new BigNumber(details.broker_fee_base).times(100).toString(10) : '0',
+      details.broker_fee ? new BigNumber(details.broker_fee_quote).times(100).toString(10) : '0',
     ];
 
     const activateSignature = this.web3Service.encodeFunctionCall(
@@ -577,14 +578,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       sendActivateTrx(address);
     });
     const sendActivateTrx = (wallet?) => {
+      const contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.sendData.network]];
       return this.web3Service
         .sendTransaction(
           {
             from: wallet,
-            to: SWAPS_V2.ADDRESS,
+            to: contractAddress,
             data: activateSignature,
           },
-          'metamask'
+          this.sendData.network
         )
         .then(() => {
           this.sendData.id = details.id;
@@ -600,11 +602,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.metaMaskErrorModal.close();
   }
   private updateAddresses(ifEnabled?) {
-    this.web3Service.getAccounts(false, ifEnabled).subscribe(
-      () => {},
-      (error) => {
-        this.metamaskError = error;
-      }
-    );
+    return this.web3Service.getAccounts(false, ifEnabled, this.requestData.network);
   }
 }

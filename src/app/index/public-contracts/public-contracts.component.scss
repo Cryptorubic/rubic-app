@@ -144,6 +144,21 @@
   display: inline-block;
   vertical-align: middle;
   width: 100%;
+  &__blockchain {
+    line-height: 25px;
+    text-align: center;
+    &_icon {
+      height: 25px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    //&_name {
+    //  line-height: 14px;
+    //  display: inline-block;
+    //  vertical-align: middle;
+    //  white-space: initial;
+    //}
+  }
   &__token-filled {
     position: absolute;
     bottom: 0;

@@ -43,43 +43,53 @@
             {{ states[originalContract.state].TEXT }}
           </div>
           <div class="contract-title">{{ originalContract.name }}</div>
-          <div class="c-preview__rate-wrapper">
-            <span class="form-field_description rate-info">
-              Rate:
-              <span *ngIf="!revertedRate">
-                {{ rates.normal.dp(8).toFormat(rateFormat) }}
-                {{ tokens.base.token.token_short_name }} / 1
-                {{ tokens.quote.token.token_short_name }}
-              </span>
-              <span *ngIf="revertedRate">
-                {{ rates.reverted.dp(8).toFormat(rateFormat) }}
-                {{ tokens.quote.token.token_short_name }} / 1
-                {{ tokens.base.token.token_short_name }} </span
-              >&nbsp;&nbsp;&nbsp;&nbsp;
 
-              <span *ngIf="cmcRate" class="cmc-rate">
-                <img
-                  src="./assets/images/icons/cmc.svg"
-                  class="cmc-rate-icon"
-                />
-                {{
-                  (!revertedRate ? cmcRate.direct : cmcRate.revert)
-                    | number: '1.0-8'
-                }}
-                {{
-                  tokens[revertedRate ? 'quote' : 'base'].token.token_short_name
-                }}
-                / 1
-                {{
-                  tokens[!revertedRate ? 'quote' : 'base'].token
-                    .token_short_name
-                }}
-              </span>
+          <div class="grid-row all-tokens-info-row">
+            <div class="grid-cell grid-cell-1 one-token-info-cell">
+              <div class="c-preview__rate-wrapper">
+                <div class="block-tabs_item active">
+                  <img class="block-tabs_item_icon" [src]="displayingBlockchains[originalContract.network].image"/>
+                  <span class="block-tabs_item_text">{{displayingBlockchains[originalContract.network].name}}</span>
+                </div>
 
-              <button class="revert-btn" (click)="revertedRate = !revertedRate">
-                <img src="./assets/images/icons/revert.svg" />
-              </button>
-            </span>
+                <span class="form-field_description rate-info">
+                  Rate:
+                  <span *ngIf="!revertedRate">
+                    {{ rates.normal.dp(8).toFormat(rateFormat) }}
+                    {{ tokens.base.token.token_short_name }} / 1
+                    {{ tokens.quote.token.token_short_name }}
+                  </span>
+                  <span *ngIf="revertedRate">
+                    {{ rates.reverted.dp(8).toFormat(rateFormat) }}
+                    {{ tokens.quote.token.token_short_name }} / 1
+                    {{ tokens.base.token.token_short_name }} </span
+                  >&nbsp;&nbsp;&nbsp;&nbsp;
+
+                  <span *ngIf="cmcRate" class="cmc-rate">
+                    <img
+                      src="./assets/images/icons/cmc.svg"
+                      class="cmc-rate-icon"
+                    />
+                    {{
+                      (!revertedRate ? cmcRate.direct : cmcRate.revert)
+                        | number: '1.0-8'
+                    }}
+                    {{
+                      tokens[revertedRate ? 'quote' : 'base'].token.token_short_name
+                    }}
+                    / 1
+                    {{
+                      tokens[!revertedRate ? 'quote' : 'base'].token
+                        .token_short_name
+                    }}
+                  </span>
+
+                  <button class="revert-btn" (click)="revertedRate = !revertedRate">
+                    <img src="./assets/images/icons/revert.svg" />
+                  </button>
+                </span>
+              </div>
+            </div>
 
             <div
               class="cmc-rate-notice"

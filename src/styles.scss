@@ -1248,3 +1248,45 @@ ng-scrollbar-y {
     visibility: visible;
   }
 }
+
+.block-tabs {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  &_item {
+    padding: 15px;
+    line-height: 17px;
+    transition: all linear 0.2s;
+    font-size: 14px;
+    font-weight: bold;
+    &.active {
+      background-color: #fff;
+      color: #000;
+    }
+    &:not(.active) {
+      cursor: pointer;
+      background-color: #ddd;
+      color: #777;
+      &:hover {
+        background-color: #e8e8e8;
+        color: #000;
+      }
+    }
+    &_icon {
+      height: 18px;
+      vertical-align: middle;
+      margin-right: 15px;
+    }
+    &_text {
+      font-weight: 700;
+      cursor: inherit;
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+  }
+  &_item + &_item {
+    margin-left: 2px;
+  }
+}

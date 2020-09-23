@@ -1,4 +1,16 @@
 <div class="index-start-form__wrapper">
+  <ul class="block-tabs">
+    <li class="block-tabs_item"
+        (click)="setNetwork(1)" [ngClass]="{active: requestData.network === 1}">
+      <img class="block-tabs_item_icon" src="./assets/images/icons/coins/eth.png"/>
+      <span class="block-tabs_item_text">Ethereum</span>
+    </li>
+    <li class="block-tabs_item"
+        (click)="setNetwork(22)" [ngClass]="{active: requestData.network === 22}">
+      <img class="block-tabs_item_icon" src="./assets/images/icons/coins/bnb.svg"/>
+      <span class="block-tabs_item_text">Binance Chain</span>
+    </li>
+  </ul>
   <form
     #startForm="ngForm"
     class="index-start-form"
@@ -23,7 +35,7 @@
             />
             <app-tokens-all-input
               (TokenChange)="changedToken('base')"
-              [blockchain]="'ethereum'"
+              [blockchain]="blockchainsOfNetworks[requestData.network]"
               [setToken]="BaseTokenCustom"
               [tokenModel]="requestData.tokens_info.base"
             ></app-tokens-all-input>
@@ -31,11 +43,9 @@
           <div
             class="form-field_description normal-font text-right form-field_description-show"
           >
-            <span
-              (click)="openedCustomTokens.base = !openedCustomTokens.base"
-              >{{
-                openedCustomTokens.base ? 'Cancel' : 'Use custom token'
-              }}</span
+            <span (click)="openedCustomTokens.base = !openedCustomTokens.base">
+              {{openedCustomTokens.base ? 'Cancel' : 'Use custom token'}}
+            </span
             >
             <div
               *ngIf="openedCustomTokens.base"
@@ -53,6 +63,7 @@
                   autocomplete="on"
                   [ngModelOptions]="{ standalone: true }"
                   (TokenResolve)="setCustomToken('base', $event)"
+                  [network]="requestData.network"
                   [(ngModel)]="customTokens.base.address"
                 />
               </div>
@@ -94,7 +105,7 @@
 
             <app-tokens-all-input
               (TokenChange)="changedToken('quote')"
-              [blockchain]="'ethereum'"
+              [blockchain]="blockchainsOfNetworks[requestData.network]"
               [setToken]="QuoteTokenCustom"
               [tokenModel]="requestData.tokens_info.quote"
             ></app-tokens-all-input>
@@ -120,6 +131,7 @@
                   class="min-text"
                   [ngModelOptions]="{ standalone: true }"
                   #quoteCustomToken="ngModel"
+                  [network]="requestData.network"
                   (TokenResolve)="setCustomToken('quote', $event)"
                   [(ngModel)]="customTokens.quote.address"
                 />
@@ -185,8 +197,7 @@
                   requestData.broker_fee_base <= 50 &&
                   requestData.broker_fee_base >= 0
                 )) ||
-              requestData.tokens_info.base.token.mywish_id ===
-                requestData.tokens_info.quote.token.mywish_id
+              (requestData.tokens_info.base.token.address.toLowerCase() === requestData.tokens_info.quote.token.address.toLowerCase())
             "
           >
             <img
@@ -204,16 +215,10 @@
             </span>
           </button>
         </div>
-        <div
-          class="form-field_description normal-font normal-font--visible text-right"
-        >
+        <div class="form-field_description normal-font normal-font--visible text-right">
           <span
             class="underline-link underline-link_btn"
-            (click)="toogleAdvSettings()"
-            >{{
-              isAdvSettingsOpen ? 'Close Settings' : 'Advanced Settings'
-            }}</span
-          >
+            (click)="toogleAdvSettings()">{{isAdvSettingsOpen ? 'Close Settings' : 'Advanced Settings'}}</span>
         </div>
       </div>
     </div>

@@ -102,7 +102,7 @@
           </div>
           <div class="grid-cell grid-cell-1-8 public-swaps_head-cell">
             <div class="public-swaps_head_content bold text-center">
-              Decentralized
+              Chain
             </div>
           </div>
           <div
@@ -276,8 +276,9 @@
             </div>
             <div class="grid-cell grid-cell-1-8 public-swaps_cell">
               <div class="public-swaps_cell_content text-center">
-                <div class="swap-info">
-                  {{ contract.contract_details.isDecentralized ? 'YES' : 'NO' }}
+                <div class="swap-info swap-info__blockchain">
+                  <img [src]="displayingBlockchains[contract.network].image" class="swap-info__blockchain_icon"/>
+<!--                  <span class="swap-info__blockchain_name">{{ displayingBlockchains[contract.network].name }}</span>-->
                 </div>
               </div>
             </div>

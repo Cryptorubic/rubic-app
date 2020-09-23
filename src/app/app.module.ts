@@ -24,10 +24,7 @@ import {
   HttpClientXsrfModule,
 } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  ContractEditResolver,
-  ContractFormComponent,
-} from './contract-form/contract-form.component';
+
 import {
   MatNativeDateModule,
   MatDatepickerModule,
@@ -49,9 +46,6 @@ import { RegistrationComponent } from './common/auth/registration/registration.c
 import { SocialComponent } from './common/auth/social/social.component';
 import { EmailConfirmComponent } from './common/auth/email-confirm/email-confirm.component';
 import { ForgotPasswordComponent } from './common/auth/forgot-password/forgot-password.component';
-import { ContractFormPayComponent } from './contract-form/contract-form-pay/contract-form-pay.component';
-import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
-import { TransactionComponent } from './transaction/transaction.component';
 import {
   ContractsListComponent,
   ContractsListResolver,
@@ -65,9 +59,6 @@ import {
   BigNumberMax,
   BigNumberMin,
 } from './directives/big-number/big-number.directive';
-import { ContactOwnerComponent } from './contact-owner/contact-owner.component';
-import { TeamComponent } from './team-component/team.component';
-import { RoadmapComponent } from './roadmap-component/roadmap.component';
 import { FaqComponent } from './faq-component/faq.component';
 import { MinMaxDirective } from './directives/minMax/min-max.directive';
 import { CookieService } from 'ngx-cookie-service';
@@ -76,12 +67,8 @@ import { TokensAllInputComponent } from './directives/tokens-all-input/tokens-al
 import { HttpService } from './services/http/http.service';
 import {
   ContractEditV3Resolver,
-  ContractFormAllComponent,
-} from './contract-form-all/contract-form-all.component';
-import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
-import { IndexIcoComponent } from './index-ico/index-ico.component';
-import { IndexIcoHeaderComponent } from './index-ico/index-ico-header/index-ico-header.component';
-import { IndexIcoFormComponent } from './index-ico/index-ico-form/index-ico-form.component';
+  ContractsPreviewV3Component
+} from './contracts-preview-v3/contracts-preview-v3.component';
 import { OwlModule } from 'ngx-owl-carousel';
 import { Observable } from 'rxjs';
 import { TransferHttpCacheModule } from '@nguniversal/common';
@@ -91,7 +78,6 @@ import { MainPageComponent } from './main-page/main-page.component';
 import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { AboutageComponent } from './about/about.component';
-import { TokenSaleComponent } from './token-sale/token-sale.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
@@ -206,12 +192,10 @@ export function appInitializerFactory(
     HeaderComponent,
     StartFormComponent,
     AboutageComponent,
-    TokenSaleComponent,
     IndexComponent,
     FooterMainPageComponent,
     HeaderMainPageComponent,
     MainPageComponent,
-    ContractFormComponent,
     EthAddressDirective,
     EthTokenValidatorDirective,
     RegistrationComponent,
@@ -220,9 +204,6 @@ export function appInitializerFactory(
     SocialComponent,
     EmailConfirmComponent,
     ForgotPasswordComponent,
-    ContractFormPayComponent,
-    ContractPreviewComponent,
-    TransactionComponent,
     ContractsListComponent,
     EtherscanUrlPipe,
     FooterComponent,
@@ -233,17 +214,10 @@ export function appInitializerFactory(
     BigNumberDirective,
 
     MinMaxDirective,
-    ContactOwnerComponent,
-    TeamComponent,
-    RoadmapComponent,
     FaqComponent,
     ContactsComponent,
     TokensAllInputComponent,
-    ContractFormAllComponent,
     ContractsPreviewV3Component,
-    IndexIcoComponent,
-    IndexIcoHeaderComponent,
-    IndexIcoFormComponent,
     CoinsListComponent,
     ChangePasswordComponent,
 
@@ -251,9 +225,6 @@ export function appInitializerFactory(
   ],
   entryComponents: [
     AuthComponent,
-    TransactionComponent,
-    ContactOwnerComponent,
-    IndexIcoFormComponent,
     ChangePasswordComponent,
   ],
   imports: [
@@ -286,7 +257,6 @@ export function appInitializerFactory(
   ],
   providers: [
     CookieService,
-    ContractEditResolver,
     ContractsListResolver,
     ContractEditV3Resolver,
     {
