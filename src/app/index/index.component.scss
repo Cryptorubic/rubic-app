@@ -1,3 +1,5 @@
+@import '../../scss//mixins';
+
 .app-index {
   height: 100%;
   padding-top: 140px;
@@ -20,6 +22,56 @@
   }
   &__start-form {
     margin-top: 60px;
+  }
+}
+
+.section-listing {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
+  padding: 40px 0px;
+  text-align: center;
+  background-image: url(/assets/images/index/listing-left.svg),
+    url(/assets/images/index/listing-right.svg);
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+  background-size: contain;
+  color: #000000;
+  font-weight: normal;
+  background-color: #fff;
+  margin-bottom: 30px;
+
+  @include b(550) {
+    background-image: none;
+    padding: 30px 10px;
+    grid-gap: 10px;
+    margin-top: 30px;
+  }
+
+  &-title {
+    font-weight: bold;
+    font-size: 33px;
+
+    @include b(550) {
+      font-size: 24px;
+    }
+  }
+  &-text {
+    font-size: 22px;
+    opacity: 0.4;
+
+    @include b(550) {
+      font-size: 15px;
+    }
+  }
+
+  .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 200px;
+    width: 100%;
   }
 }
 
