@@ -7,6 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import {Web3Service} from "../../services/web3/web3.service";
 
 export interface ITokenInfo {
   active?: boolean;
@@ -33,7 +34,9 @@ export class TokensAllInputComponent implements OnInit {
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
 
-  constructor() {
+  constructor(
+      private web3Service: Web3Service
+  ) {
     this.tokensList = [];
   }
 
@@ -136,17 +139,18 @@ export class TokensAllInputComponent implements OnInit {
     if (!isNaN(this.activeTokenIndex)) {
       this.tokensList[this.activeTokenIndex].active = false;
     }
-
     token.active = true;
     this.activeTokenIndex = tokenIndex;
     if (withoutHide) {
       return;
     }
-
     this.tokenModel.token = token;
     this.listIsOpened = false;
     this.tokenName = token.token_name + ' (' + token.token_short_name + ')';
-    this.TokenChange.emit(this.tokenModel);
+    this.web3Service.getFullTokenInfo(this.tokenModel.token.address).then((res: any) => {
+      this.tokenModel.token.decimals = res.decimals;
+      this.TokenChange.emit(this.tokenModel);
+    })
     this.showAutoInput();
   }
 

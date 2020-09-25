@@ -529,15 +529,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     let baseDecimalsTimes = 1;
     let quoteDecimalsTimes = 1;
 
+    console.log(this.requestData.tokens_info.base.token.decimals);
+    console.log(this.requestData.tokens_info.quote.token.decimals);
+
     if (new Date(originalContract.created_date).getTime() > FIX_TIME) {
-      baseDecimalsTimes = Math.pow(
-        10,
-        this.requestData.tokens_info.base.token.decimals
-      );
-      quoteDecimalsTimes = Math.pow(
-        10,
-        this.requestData.tokens_info.quote.token.decimals
-      );
+      baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
+      quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
     }
 
     const trxRequest = [
