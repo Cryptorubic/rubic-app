@@ -290,7 +290,6 @@ export class Web3Service {
       );
 
       const contract = new (new Web3(currentProvider).eth.Contract)(ERC20_TOKEN_ABI as any[], address);
-
       const callMethod = (methodCall, method) => {
         const promise = methodCall.call();
         promise.then(

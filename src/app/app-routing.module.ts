@@ -10,6 +10,7 @@ import { FaqComponent } from './faq-component/faq.component';
 import { ContractsPreviewV3Component, ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.component';
 // import { MainPageComponent } from './main-page/main-page.component';
 import { AboutageComponent } from './about/about.component';
+import {TokenSaleComponent} from "./token-sale/token-sale.component";
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -146,6 +147,10 @@ const routes: Routes = [
     path: 'contacts',
     component: ContactsComponent,
   }*/,
+  {
+    path: 'token-sale',
+    component: TokenSaleComponent,
+  },
 ];
 
 @NgModule({

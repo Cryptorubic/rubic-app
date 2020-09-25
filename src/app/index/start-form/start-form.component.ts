@@ -279,6 +279,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     } else {
       this.requestData = JSON.parse(draftData);
       this.requestData.network = this.requestData.network || defaultNetwork;
+      this.requestData.public = this.requestData.public === undefined ? true : this.requestData.public;
     }
   }
 

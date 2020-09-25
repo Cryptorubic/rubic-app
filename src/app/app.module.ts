@@ -79,6 +79,7 @@ import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { AboutageComponent } from './about/about.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
+import {TokenSaleComponent} from "./token-sale/token-sale.component";
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -220,7 +221,7 @@ export function appInitializerFactory(
     ContractsPreviewV3Component,
     CoinsListComponent,
     ChangePasswordComponent,
-
+    TokenSaleComponent,
     CountdownComponent,
   ],
   entryComponents: [
