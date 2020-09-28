@@ -78,7 +78,7 @@ export class TokensAllInputComponent implements OnInit {
 
     if (q) {
       while (
-        indexToken < window['cmc_tokens'].length - 1 &&
+        indexToken < window['cmc_tokens'].length &&
         result.length < 10
       ) {
         const token = window['cmc_tokens'][indexToken];
@@ -98,7 +98,10 @@ export class TokensAllInputComponent implements OnInit {
         indexToken++;
       }
     } else {
-      while (result.length < 10) {
+      while (
+          indexToken < window['cmc_tokens'].length &&
+          result.length < 10
+        ) {
         const token = window['cmc_tokens'][indexToken];
         if (
           token.cmc_id &&
