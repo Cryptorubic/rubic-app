@@ -161,7 +161,7 @@ export class TokensAllInputComponent implements OnInit {
     this.tokenModel.token = token;
     this.listIsOpened = false;
     this.tokenName = token.token_name + ' (' + token.token_short_name + ')';
-    this.web3Service.getFullTokenInfo(this.tokenModel.token.address).then((res: any) => {
+    this.web3Service.getFullTokenInfo(this.tokenModel.token.address, false, this.blockchain).then((res: any) => {
       this.tokenModel.token.decimals = res.decimals;
       this.TokenChange.emit(this.tokenModel);
     })

@@ -211,8 +211,15 @@ export class Web3Service {
             tk.address.toLowerCase() === tokenAddress.toLowerCase()
           );
         })[0];
-
-        this.getTokenInfo(tokenAddress, tokenObject, CHAIN_OF_NETWORK[network]).then(
+        let blockchain;
+        if (network) {
+          if (typeof network === 'string' ) {
+            blockchain = network;
+          } else {
+            blockchain = CHAIN_OF_NETWORK[network];
+          }
+        }
+        this.getTokenInfo(tokenAddress, tokenObject, blockchain).then(
           (tokenInfo: { data: TokenInfoInterface }) => {
             const convertedToken = this.convertTokenInfo(tokenInfo.data);
             if (convertedToken) {
@@ -235,6 +242,18 @@ export class Web3Service {
   }
 
   public getTokenInfo(tokenAddress, tokenObject, blockchain) {
+
+    const currentProvider = new Web3.providers.HttpProvider(
+        IS_PRODUCTION
+            ? ETH_NETWORKS[blockchain].INFURA_ADDRESS
+            : ETH_NETWORKS[blockchain].ROPSTEN_INFURA_ADDRESS,
+    );
+    if (!this.Web3) {
+      this.Web3 = new Web3(currentProvider);
+    } else {
+      this.Web3.eth.setProvider(currentProvider)
+    }
+
     const tokenInfoFields = !tokenObject
       ? ['decimals', 'symbol', 'name']
       : ['decimals'];
