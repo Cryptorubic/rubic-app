@@ -239,3 +239,23 @@ header {
     display: block;
   }
 }
+.header-warning {
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: -20px;
+  line-height: 27px;
+  padding: 10px;
+  transition: all linear 0.2s;
+  &_icon {
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  &_message {
+    vertical-align: middle;
+    color: #444;
+    font-size: 14px;
+  }
+  header.scrolled & {
+    margin-bottom: -10px;
+  }
+}

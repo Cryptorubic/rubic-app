@@ -1222,11 +1222,11 @@ export const SWAPS_V2 = {
       type: 'function',
     },
   ],
-  // ADDRESS: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d', // Test
-  ADDRESS: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
+  // '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d', // ETH Test
+  // '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E', // BNB Test
   ADDRESSES: {
-    ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
-    binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E'
+    ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
+    binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3'
   }
 };
 
