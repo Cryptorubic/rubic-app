@@ -133,7 +133,11 @@ export class Web3Service {
 
   public getSignedMetaMaskMsg(msg, addr) {
     return new Promise((resolve, reject) => {
-      this.Web3.eth.setProvider(this.providers.metamask);
+      if (this.Web3) {
+        this.Web3.eth.setProvider(this.providers.metamask);
+      } else {
+        this.Web3 = new Web3(this.providers.metamask);
+      }
       this.Web3.eth.personal.sign(
         msg,
         addr,
@@ -313,6 +317,7 @@ export class Web3Service {
         const promise = methodCall.call();
         promise.then(
           (result) => {
+            console.log(method + ': ' + result);
             if (method !== 'symbol' && result === null) {
               reject({
                 tokenAddress: true,
@@ -331,6 +336,7 @@ export class Web3Service {
             }
           },
           (err) => {
+            console.log(method + ': ' + err);
             if (method !== 'symbol') {
               reject({
                 tokenAddress: true,
@@ -384,9 +390,6 @@ export class Web3Service {
 
       if (window['ethereum'] && window['ethereum'].isMetaMask) {
         const networkVersion = Number(window['ethereum'].networkVersion);
-
-        console.log(usedNetworkVersion, networkVersion);
-
         if (usedNetworkVersion !== networkVersion) {
           observer.error({
             code: 2,
@@ -457,6 +460,7 @@ export class Web3Service {
               : addresses.addresses;
 
           observer.next(addressesDictionary);
+          observer.complete();
           return {
             unsubscribe() {
               accountsSubscriber.unsubscribe();
@@ -480,46 +484,58 @@ export class Web3Service {
             ? ETH_NETWORKS[CHAIN_OF_NETWORK[network]].INFURA_ADDRESS
             : ETH_NETWORKS[CHAIN_OF_NETWORK[network]].ROPSTEN_INFURA_ADDRESS,
     );
-
-    this.Web3.eth.setProvider(this.providers['metamask']);
     return new Promise((resolve, reject) => {
-      this.Web3.eth
-        .sendTransaction(transactionConfig, (err, response) => {
-          if (!err) {
-            const trxSubscription = setInterval(() => {
-              this.Web3.eth.getTransactionReceipt(
-                response,
-                (error, transaction) => {
-                  if (transaction) {
-                    if (transaction.status) {
-                      resolve(transaction);
-                    } else {
-                      reject(err);
-                    }
-                    clearInterval(trxSubscription);
-                  }
-                  if (error) {
-                    clearInterval(trxSubscription);
-                  }
-                },
-              );
-            }, 1000);
-          } else {
-            reject(err);
-          }
-        })
-        .then(
-          (result) => {
-            console.log(result);
-          },
-          (err) => {
-            console.log(err);
-          },
-        )
-        .finally(() => {
-          this.Web3.eth.setProvider(currentProvider);
+      return this.getAccounts(false, false, network).toPromise().then((res: any) => {
+        transactionConfig.from = res.metamask[0];
+
+        this.Web3.eth.setProvider(this.providers['metamask']);
+
+        this.Web3.eth
+          .sendTransaction(transactionConfig, (err, response) => {
+            if (!err) {
+              const trxSubscription = setInterval(() => {
+                this.Web3.eth.getTransactionReceipt(
+                    response,
+                    (error, transaction) => {
+                      if (transaction) {
+                        if (transaction.status) {
+                          resolve(transaction);
+                        } else {
+                          reject(err);
+                        }
+                        clearInterval(trxSubscription);
+                      }
+                      if (error) {
+                        clearInterval(trxSubscription);
+                      }
+                    },
+                );
+              }, 1000);
+            } else {
+              reject(err);
+            }
+          })
+          .then(
+              (result) => {
+                console.log(result);
+              },
+              (err) => {
+                console.log(err);
+              },
+          )
+          .finally(() => {
+            this.Web3.eth.setProvider(currentProvider);
+          });
+      }, () => {
+        reject({
+          code: 2,
+          msg: 'Please choose main net network in Metamask.',
         });
+      });
     });
+
+
+
   }
 
   public getSWAPSCoinInfo(data) {
@@ -531,10 +547,10 @@ export class Web3Service {
 
       // Check quote coin
       const quoteTokenObject = window['cmc_tokens'].filter((tk) => {
+
         return (
-          tk.isEthereum &&
-          (tk.address === data.quote_address ||
-            tk.mywish_id === data.quote_coin_id)
+            (CHAIN_OF_NETWORK[data.network] === tk.platform) &&
+            (tk.address === data.quote_address || tk.mywish_id === data.quote_coin_id)
         );
       })[0];
 
@@ -552,7 +568,7 @@ export class Web3Service {
         this.Web3.eth.setProvider(currentProvider)
       }
 
-      if (!data.quote_coin_id) {
+      if (data.quote_address) {
         quoteToken = quoteTokenObject ? { ...quoteTokenObject } : false;
         this.getFullTokenInfo(data.quote_address, true, data.network)
           .then(
@@ -600,9 +616,8 @@ export class Web3Service {
       // Check base coin
       const baseTokenObject = window['cmc_tokens'].filter((tk) => {
         return (
-          tk.isEthereum &&
-          (tk.address === data.base_address ||
-            tk.mywish_id === data.base_coin_id)
+            (CHAIN_OF_NETWORK[data.network] === tk.platform) &&
+            (tk.address === data.base_address || tk.mywish_id === data.base_coin_id)
         );
       })[0];
 
@@ -610,7 +625,7 @@ export class Web3Service {
         data.base_address = baseTokenObject.address;
       }
 
-      if (!data.base_coin_id) {
+      if (data.base_address) {
         baseToken = baseTokenObject ? { ...baseTokenObject } : false;
         this.getFullTokenInfo(data.base_address, true, data.network)
           .then(

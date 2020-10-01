@@ -1222,8 +1222,11 @@ export const SWAPS_V2 = {
       type: 'function',
     },
   ],
-  // '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d', // ETH Test
-  // '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E', // BNB Test
+  // TestNets
+  // ADDRESSES: {
+  //   ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
+  //   binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E'
+  // }
   ADDRESSES: {
     ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
     binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3'
@@ -1828,13 +1831,23 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           data: methodSignature,
         },
           this.originalContract.network
-      );
+      ).catch((err) => {
+        this.metamaskError = err;
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container',
+        });
+      });
     };
 
-    window['ethereum'].enable().then((accounts) => {
-      const address = accounts[0];
-      sendTransaction(address);
-    });
+    // window['ethereum'].enable().then((accounts) => {
+    //   const address = accounts[0];
+      return sendTransaction();
+    // });
+  }
+
+  public closeMetaMaskError() {
+    this.metaMaskErrorModal.close();
   }
 
   public sendCancel() {
@@ -1855,7 +1868,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       details.memo_contract,
     ]);
 
-    const cancelTransaction = (wallet) => {
+    const cancelTransaction = (wallet?) => {
       return this.web3Service.sendTransaction(
         {
           from: wallet,
@@ -1863,13 +1876,19 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           data: cancelSignature,
         },
           this.originalContract.network
-      );
+      ).catch((err) => {
+        this.metamaskError = err;
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container',
+        });
+      });
     };
 
-    window['ethereum'].enable().then((accounts) => {
-      const address = accounts[0];
-      cancelTransaction(address);
-    });
+    // window['ethereum'].enable().then((accounts) => {
+    //   const address = accounts[0];
+    return cancelTransaction();
+    // });
   }
 
   public initialisationTrade() {
@@ -1926,10 +1945,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       interfaceMethod,
       trxRequest,
     );
-    window['ethereum'].enable().then((accounts) => {
-      const address = accounts[0];
-      sendActivateTrx(address);
-    });
     const sendActivateTrx = (wallet?) => {
       return this.web3Service.sendTransaction(
         {
@@ -1938,8 +1953,18 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           data: activateSignature,
         },
           this.originalContract.network
-      );
+      ).catch((err) => {
+        this.metamaskError = err;
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container',
+        });
+      });
     };
+    // window['ethereum'].enable().then((accounts) => {
+    //   const address = accounts[0];
+    return sendActivateTrx();
+    // });
   }
 
   private getContributeTransaction(amount, token) {
@@ -1982,7 +2007,13 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           value: value || undefined,
         },
           this.originalContract.network
-      );
+      ).catch((err) => {
+        this.metamaskError = err;
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container',
+        });
+      });
     };
 
     return {
@@ -2114,11 +2145,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       this.token = token;
       const details = this.originalContract;
 
-      if (!details.isEthereum) {
-        this.openAdministratorInfo();
-        return;
-      }
-
       if (details.contract_state === 'CREATED') {
         this.initialisationTrade();
         return;
@@ -2133,6 +2159,8 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private checkAllowance = (wallet, token, amount) => {
     return new Promise((resolve, reject) => {
       const tokenModel = this.originalContract.tokens_info[token].token;
+      amount = new BigNumber(amount).times(Math.pow(10, tokenModel.decimals));
+
       this.tokenContract = this.web3Service.getContract(
         ERC20_TOKEN_ABI,
         tokenModel.address,
@@ -2143,6 +2171,9 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         .call()
         .then(
           (result) => {
+            console.log('ALLOWANCE: ' + result);
+            console.log('NEED AMOUNT: ' + amount);
+
             result = result ? result.toString(10) : result;
             result = result === '0' ? null : result;
             if (result && new BigNumber(result).minus(amount).isPositive()) {
@@ -2185,7 +2216,13 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             data: approveSignature,
           },
           this.originalContract.network
-        );
+        ).catch((err) => {
+          this.metamaskError = err;
+          this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+            width: '480px',
+            panelClass: 'custom-dialog-container',
+          });
+        });
       };
       this.updateAddresses(true);
 

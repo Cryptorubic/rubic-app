@@ -455,7 +455,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public createContract() {
     const accSubscriber = this.updateAddresses(true).subscribe((res) => {
-      console.log(res);
       this.buildAndCreate();
     }, (err) => {
       this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
@@ -546,14 +545,13 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const details = originalContract;
     const interfaceMethod = this.web3Service.getMethodInterface('createOrder', SWAPS_V2.ABI);
 
-    let baseDecimalsTimes = 1;
-    let quoteDecimalsTimes = 1;
+    const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
+    const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
 
-
-    if (new Date(originalContract.created_date).getTime() > FIX_TIME) {
-      baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
-      quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
-    }
+    console.log(details.base_limit);
+    console.log(details.quote_limit);
+    console.log(baseDecimalsTimes);
+    console.log(quoteDecimalsTimes);
 
     const trxRequest = [
       details.memo_contract,
@@ -574,10 +572,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       interfaceMethod,
       trxRequest
     );
-    window['ethereum'].enable().then((accounts) => {
-      const address = accounts[0];
-      sendActivateTrx(address);
-    });
     const sendActivateTrx = (wallet?) => {
       const contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.sendData.network]];
       return this.web3Service
@@ -598,6 +592,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           this.isCreatingContract = false;
         });
     };
+    return sendActivateTrx();
   }
   public closeMetaMaskError() {
     this.metaMaskErrorModal.close();
