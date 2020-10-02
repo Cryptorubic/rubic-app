@@ -43,10 +43,7 @@ interface IContractV3 {
   isSwapped?: boolean;
   isAuthor?: boolean;
   user?: number;
-
   contract_state?: string;
-
-  isEthereum?: boolean;
   notification?: boolean;
   notification_tg: string;
   notification_email: string;
@@ -1475,36 +1472,31 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             },
           );
       };
-
-      if (this.originalContract.isEthereum) {
-        if (
-          this.originalContract.contract_state === 'CREATED' ||
-          !this.originalContract.owner_address
-        ) {
-          this.web3Contract.methods
-            .owners(memo)
-            .call()
-            .then(
-              (address) => {
-                if (
-                  address &&
-                  address !== '0x0000000000000000000000000000000000000000'
-                ) {
-                  this.originalContract.owner_address = address;
-                  checkAfterActive();
-                } else {
-                  resolve(this.originalContract.state);
-                }
-              },
-              (err) => {
-                console.log(err);
-              },
-            );
-        } else {
-          checkAfterActive();
-        }
+      if (
+        this.originalContract.contract_state === 'CREATED' ||
+        !this.originalContract.owner_address
+      ) {
+        this.web3Contract.methods
+          .owners(memo)
+          .call()
+          .then(
+            (address) => {
+              if (
+                address &&
+                address !== '0x0000000000000000000000000000000000000000'
+              ) {
+                this.originalContract.owner_address = address;
+                checkAfterActive();
+              } else {
+                resolve(this.originalContract.state);
+              }
+            },
+            (err) => {
+              console.log(err);
+            },
+          );
       } else {
-        resolve(this.originalContract.state);
+        checkAfterActive();
       }
     });
   }
@@ -1515,32 +1507,25 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       Math.pow(10, details.tokens_info.base.token.decimals),
     );
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .baseRaised(details.memo_contract)
-        .call()
-        .then(
-          (result) => {
-            result = new BigNumber(result);
-            this.contractInfo.baseRaised = result
-              .div(Math.pow(10, details.tokens_info.base.token.decimals))
-              .toString();
-            this.contractInfo.baseLeft = decimalsAmount.minus(result);
-            this.contractInfo.baseLeftString = this.contractInfo.baseLeft
-              .div(Math.pow(10, details.tokens_info.base.token.decimals))
-              .toString(10);
-          },
-          (err) => {
-            console.log(err);
-          },
-        );
-    } else {
-      this.contractInfo.baseRaised = 0;
-      this.contractInfo.baseLeft = decimalsAmount;
-      this.contractInfo.baseLeftString = this.contractInfo.baseLeft
-        .div(Math.pow(10, details.tokens_info.base.token.decimals))
-        .toString(10);
-    }
+
+    this.web3Contract.methods
+      .baseRaised(details.memo_contract)
+      .call()
+      .then(
+        (result) => {
+          result = new BigNumber(result);
+          this.contractInfo.baseRaised = result
+            .div(Math.pow(10, details.tokens_info.base.token.decimals))
+            .toString();
+          this.contractInfo.baseLeft = decimalsAmount.minus(result);
+          this.contractInfo.baseLeftString = this.contractInfo.baseLeft
+            .div(Math.pow(10, details.tokens_info.base.token.decimals))
+            .toString(10);
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
   }
   private getQuoteRaised() {
     const details = this.originalContract;
@@ -1548,135 +1533,103 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       details.tokens_info.quote.amount,
     ).times(Math.pow(10, details.tokens_info.quote.token.decimals));
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .quoteRaised(details.memo_contract)
-        .call()
-        .then(
-          (result) => {
-            result = new BigNumber(result);
-            this.contractInfo.quoteRaised = result
-              .div(Math.pow(10, details.tokens_info.quote.token.decimals))
-              .toString();
-            this.contractInfo.quoteLeft = decimalsAmount.minus(result);
 
-            this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft
-              .div(Math.pow(10, details.tokens_info.quote.token.decimals))
-              .toString(10);
-          },
-          (err) => {
-            console.log(err);
-          },
-        );
-    } else {
-      this.contractInfo.quoteRaised = 0;
-      this.contractInfo.quoteLeft = decimalsAmount;
-      this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft
-        .div(Math.pow(10, details.tokens_info.quote.token.decimals))
-        .toString(10);
-    }
+    this.web3Contract.methods
+      .quoteRaised(details.memo_contract)
+      .call()
+      .then(
+        (result) => {
+          result = new BigNumber(result);
+          this.contractInfo.quoteRaised = result
+            .div(Math.pow(10, details.tokens_info.quote.token.decimals))
+            .toString();
+          this.contractInfo.quoteLeft = decimalsAmount.minus(result);
+
+          this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft
+            .div(Math.pow(10, details.tokens_info.quote.token.decimals))
+            .toString(10);
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
   }
   private getBaseInvestors() {
     const details = this.originalContract;
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .baseInvestors(details.memo_contract)
-        .call()
-        .then(
-          (result) => {
-            this.contractInfo.baseInvestors = result ? result.length : 0;
-          },
-          (err) => {
-            this.contractInfo.baseInvestors = 0;
-            // console.log(err);
-          },
-        );
-    } else {
-      this.contractInfo.baseInvestors = 0;
-    }
+
+    this.web3Contract.methods
+      .baseInvestors(details.memo_contract)
+      .call()
+      .then(
+        (result) => {
+          this.contractInfo.baseInvestors = result ? result.length : 0;
+        },
+        (err) => {
+          this.contractInfo.baseInvestors = 0;
+          // console.log(err);
+        },
+      );
   }
   private getQuoteInvestors() {
     const details = this.originalContract;
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .quoteInvestors(details.memo_contract)
-        .call()
-        .then(
-          (result) => {
-            this.contractInfo.quoteInvestors = result ? result.length : 0;
-          },
-          (err) => {
-            this.contractInfo.quoteInvestors = 0;
-          },
-        );
-    } else {
-      this.contractInfo.quoteInvestors = 0;
-    }
+    this.web3Contract.methods
+      .quoteInvestors(details.memo_contract)
+      .call()
+      .then(
+        (result) => {
+          this.contractInfo.quoteInvestors = result ? result.length : 0;
+        },
+        (err) => {
+          this.contractInfo.quoteInvestors = 0;
+        },
+      );
   }
   private getBaseBrokersPercent() {
     const details = this.originalContract;
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .myWishBasePercent()
-        .call()
-        .then(
-          (result) => {
-            this.contractInfo.baseBrokerPercent =
-              result / 100 + details.broker_fee_base;
-            this.contractInfo.baseBrokerAmount = new BigNumber(
-              details.tokens_info.base.amount,
-            )
-              .div(100)
-              .times(this.contractInfo.baseBrokerPercent)
-              .toString();
-          },
-          (err) => {
-            console.log(err);
-          },
-        );
-    } else {
-      this.contractInfo.baseBrokerPercent = details.broker_fee_base;
-      this.contractInfo.baseBrokerAmount = new BigNumber(
-        details.tokens_info.base.amount,
-      )
-        .div(100)
-        .times(this.contractInfo.baseBrokerPercent)
-        .toString();
-    }
+
+    this.web3Contract.methods
+      .myWishBasePercent()
+      .call()
+      .then(
+        (result) => {
+          this.contractInfo.baseBrokerPercent =
+            result / 100 + details.broker_fee_base;
+          this.contractInfo.baseBrokerAmount = new BigNumber(
+            details.tokens_info.base.amount,
+          )
+            .div(100)
+            .times(this.contractInfo.baseBrokerPercent)
+            .toString();
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
   }
   private getQuoteBrokersPercent() {
     const details = this.originalContract;
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .myWishQuotePercent()
-        .call()
-        .then(
-          (result) => {
-            this.contractInfo.quoteBrokerPercent =
-              result / 100 + details.broker_fee_quote;
-            this.contractInfo.quoteBrokerAmount = new BigNumber(
-              details.tokens_info.quote.amount,
-            )
-              .div(100)
-              .times(this.contractInfo.quoteBrokerPercent)
-              .toString();
-          },
-          (err) => {
-            console.log(err);
-          },
-        );
-    } else {
-      this.contractInfo.quoteBrokerPercent = details.broker_fee_quote;
-      this.contractInfo.quoteBrokerAmount = new BigNumber(
-        details.tokens_info.quote.amount,
-      )
-        .div(100)
-        .times(this.contractInfo.quoteBrokerPercent)
-        .toString();
-    }
+
+    this.web3Contract.methods
+      .myWishQuotePercent()
+      .call()
+      .then(
+        (result) => {
+          this.contractInfo.quoteBrokerPercent =
+            result / 100 + details.broker_fee_quote;
+          this.contractInfo.quoteBrokerAmount = new BigNumber(
+            details.tokens_info.quote.amount,
+          )
+            .div(100)
+            .times(this.contractInfo.quoteBrokerPercent)
+            .toString();
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
   }
 
   private getContractInfoFromBlockchain() {
@@ -1689,40 +1642,36 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     this.getBaseBrokersPercent();
     this.getQuoteBrokersPercent();
 
-    if (details.isEthereum) {
-      if (details.contract_state === 'ACTIVE') {
-        if (this.oldCheckedState !== details.contract_state) {
-          this.web3Contract.methods
-            .owners(details.memo_contract)
-            .call()
-            .then(
-              (res) => {
-                this.originalContract.owner_address = res;
-              },
-              (err) => {
-                console.log(err);
-              },
-            );
-        }
 
+    if (details.contract_state === 'ACTIVE') {
+      if (this.oldCheckedState !== details.contract_state) {
         this.web3Contract.methods
-          .isSwapped(details.memo_contract)
+          .owners(details.memo_contract)
           .call()
           .then(
             (res) => {
-              this.originalContract.isSwapped = res;
+              this.originalContract.owner_address = res;
             },
             (err) => {
               console.log(err);
             },
           );
-      } else {
-        this.originalContract.isSwapped = false;
       }
+
+      this.web3Contract.methods
+        .isSwapped(details.memo_contract)
+        .call()
+        .then(
+          (res) => {
+            this.originalContract.isSwapped = res;
+          },
+          (err) => {
+            console.log(err);
+          },
+        );
     } else {
       this.originalContract.isSwapped = false;
     }
-
     this.oldCheckedState = details.contract_state;
   }
 
@@ -1778,7 +1727,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         const contractState = this.originalContract.contract_state;
         const ownerAddress = this.originalContract.owner_address;
         const isAuthor = this.originalContract.isAuthor;
-        const isEthereum = this.originalContract.isEthereum;
 
         this.originalContract = result;
         this.originalContract.tokens_info = tokens_info;
@@ -1788,7 +1736,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         this.originalContract.owner_address = ownerAddress;
         this.originalContract.isAuthor = isAuthor;
         this.originalContract.unique_link_url = this.contractAdditional.link;
-        this.originalContract.isEthereum = isEthereum;
       })
       .finally(() => {
         this.analyzeContract();
@@ -1852,14 +1799,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
   public sendCancel() {
     const details = this.originalContract;
-
-    if (!details.isEthereum) {
-      this.contractService.cancelSWAP3(details.id).then((result) => {
-        console.log(result);
-      });
-      return;
-    }
-
     const cancelMethod = this.web3Service.getMethodInterface(
       'cancel',
       SWAPS_V2.ABI,
@@ -1984,10 +1923,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       .times(Math.pow(10, tokenModel.token.decimals))
       .toString(10);
 
-    let value: string;
-    if (tokenModel.token.isEther) {
-      value = stringAmountValue;
-    }
+    const value = stringAmountValue;
 
     const depositMethod = this.web3Service.getMethodInterface(
       'deposit',
@@ -2236,16 +2172,14 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         to: this.contractAddress,
         data: contributeData.signature,
         action: contributeData.action,
-        ethValue: !contributeData.token.isEther ? undefined : textAmount,
+        ethValue: !contributeData.token.isNative ? undefined : textAmount,
       };
       this.allowanceObj[token].isAllowancing = true;
 
-      if (!contributeData.token.isEther) {
+      if (!contributeData.token.isNative) {
         window['ethereum'].enable().then((accounts) => {
           return new Promise((resolve, _) => {
             const address = accounts[0];
-            if (!this.allowanceObj[token].isAllowance) {
-            }
             this.checkAllowance(address, token, amount)
               .then((status) => {
                 this.createTransactionObj(transaction);
@@ -2329,7 +2263,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
       window['ethereum'].enable().then((accounts) => {
         const address = accounts[0];
-        if (!contributeData.token.isEther) {
+        if (!contributeData.token.isNative) {
           this.checkAllowance(address, token, 0).catch(() => {
             this.allowanceObj[token].isAllowance = false;
           });

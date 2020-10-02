@@ -179,13 +179,10 @@
                         {{ tokens.base.token.token_name }}
                         ({{ tokens.base.token.token_short_name }})
                       </div>
-                      <div
-                        class="token-info_texts__address"
-                        *ngIf="tokens.base.token.isEthereum"
-                      >
+                      <div class="token-info_texts__address">
                         <a
                           [href]="
-                            !tokens.base.token.isEther
+                            !tokens.base.token.isNative
                               ? (tokens.base.token.address
                                 | etherscanUrl: 'token')
                               : 'https://etherscan.io/stat/supply'
@@ -222,10 +219,7 @@
                     </span>
                   </div> -->
 
-                  <div
-                    class="token-info_investments"
-                    *ngIf="originalContract.isEthereum"
-                  >
+                  <div class="token-info_investments">
                     <div class="token-info_investments__number">
                       {{ contractInfo.baseInvestors }}/{{ maximumInvestors }}
                     </div>
@@ -406,7 +400,6 @@
 
               <div
                 *ngIf="
-                  originalContract.isEthereum &&
                   contractInfo.baseRaised * 1 > 0 &&
                   ['ACTIVE', 'EXPIRED'].includes(originalContract.state) &&
                   contractInfo.baseRaised != 0
@@ -496,13 +489,10 @@
                         {{ tokens.quote.token.token_name }}
                         ({{ tokens.quote.token.token_short_name }})
                       </div>
-                      <div
-                        class="token-info_texts__address"
-                        *ngIf="tokens.quote.token.isEthereum"
-                      >
+                      <div class="token-info_texts__address">
                         <a
                           [href]="
-                            !tokens.quote.token.isEther
+                            !tokens.quote.token.isNative
                               ? (tokens.quote.token.address
                                 | etherscanUrl: 'token')
                               : 'https://etherscan.io/stat/supply'
@@ -515,33 +505,8 @@
                       </div>
                     </div>
                   </div>
-                  <!-- <div
-                    class="warning-coin"
-                    [ngClass]="{
-                      invisible:
-                        tokens.quote.token.cmc_id ||
-                        tokens.quote.token.platform === 'fiat'
-                    }"
-                    *ngIf="
-                      (!tokens.base.token.cmc_id &&
-                        tokens.base.token.platform !== 'fiat') ||
-                      (!tokens.quote.token.cmc_id &&
-                        tokens.quote.token.platform !== 'fiat')
-                    "
-                  >
-                    <img
-                      class="warning-coin_icon"
-                      src="./assets/images/icons/warning.svg"
-                    />
-                    <span class="warning-coin_text">
-                      Unverified. Not listed on CMC
-                    </span>
-                  </div> -->
 
-                  <div
-                    class="token-info_investments"
-                    *ngIf="originalContract.isEthereum"
-                  >
+                  <div class="token-info_investments">
                     <div class="token-info_investments__number">
                       {{ contractInfo.quoteInvestors }}/{{ maximumInvestors }}
                     </div>
@@ -716,7 +681,6 @@
 
               <div
                 *ngIf="
-                  originalContract.isEthereum &&
                   contractInfo.quoteRaised * 1 > 0 &&
                   ['ACTIVE', 'EXPIRED'].includes(originalContract.state) &&
                   contractInfo.quoteRaised != 0

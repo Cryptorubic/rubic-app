@@ -25,30 +25,25 @@ const chainIdOfNetwork = {
   22: [56, 97]
 };
 
-const EthereumCoin = {
-  address: '0x0000000000000000000000000000000000000000',
-  token_name: 'Ethereum',
-  token_short_name: 'ETH',
-  decimals: 18,
-  image_link:
-    'https://github.com/MyWishPlatform/etherscan_top_tokens_images/raw/master/ethereum-icon.png',
-  isEther: true,
-  isEthereum: true,
-  platform: 'ethereum',
-  cmc_id: 2,
-};
-
-
-const BinanceCoin = {
-  address: '0x0000000000000000000000000000000000000000',
-  token_name: 'Binance',
-  token_short_name: 'BNB',
-  decimals: 18,
-  image_link:
-      'https://github.com/MyWishPlatform/etherscan_top_tokens_images/raw/master/ethereum-icon.png',
-  isEther: true,
-  isEthereum: true,
-  platform: 'binance'
+const nativeCoins = {
+  ethereum: {
+    address: '0x0000000000000000000000000000000000000000',
+    token_name: 'Ethereum',
+    token_short_name: 'ETH',
+    decimals: 18,
+    image_link: 'https://github.com/MyWishPlatform/etherscan_top_tokens_images/raw/master/ethereum-icon.png',
+    platform: 'ethereum',
+    isNative: true
+  },
+  binance: {
+    address: '0x0000000000000000000000000000000000000000',
+    token_name: 'Binance',
+    token_short_name: 'BNB',
+    decimals: 18,
+    image_link: 'http://dev.mywish.io/media/token_images/1839_wbtQJd4.png',
+    platform: 'binance',
+    isNative: true
+  }
 };
 
 declare global {
@@ -62,8 +57,6 @@ export interface TokenInfoInterface {
   decimals: number;
   name: string;
   symbol: string;
-  isEther: boolean;
-  isEthereum?: boolean;
 }
 
 const IS_PRODUCTION = location.protocol === 'https:';
@@ -198,31 +191,32 @@ export class Web3Service {
   }
 
   public getFullTokenInfo(tokenAddress, withoutSearch?: boolean, network?: string) {
+
+    let blockchain;
+    if (network) {
+      if (typeof network === 'string' ) {
+        blockchain = network;
+      } else {
+        blockchain = CHAIN_OF_NETWORK[network];
+      }
+    }
+
     return new Promise((resolve, reject) => {
       if (!tokenAddress) {
         resolve();
         return;
       }
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
-        resolve({ ...EthereumCoin });
+        resolve({ ...nativeCoins[blockchain] });
       } else {
         let tokenObject;
 
         tokenObject = window['cmc_tokens'].filter((tk) => {
           return (
-            tk.isEthereum &&
             tk.address &&
             tk.address.toLowerCase() === tokenAddress.toLowerCase()
           );
         })[0];
-        let blockchain;
-        if (network) {
-          if (typeof network === 'string' ) {
-            blockchain = network;
-          } else {
-            blockchain = CHAIN_OF_NETWORK[network];
-          }
-        }
         this.getTokenInfo(tokenAddress, tokenObject, blockchain).then(
           (tokenInfo: { data: TokenInfoInterface }) => {
             const convertedToken = this.convertTokenInfo(tokenInfo.data);
@@ -579,7 +573,6 @@ export class Web3Service {
                 };
                 data.tokens_info.quote.token.decimals = tokenInfo.decimals;
               } else {
-                tokenInfo.isEthereum = true;
                 data.tokens_info.quote = {
                   token: { ...tokenInfo },
                 };
@@ -636,7 +629,6 @@ export class Web3Service {
                 };
                 data.tokens_info.base.token.decimals = tokenInfo.decimals;
               } else {
-                tokenInfo.isEthereum = true;
                 data.tokens_info.base = {
                   token: { ...tokenInfo },
                 };

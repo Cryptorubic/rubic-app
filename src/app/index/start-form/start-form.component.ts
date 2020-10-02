@@ -548,11 +548,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
     const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
 
-    console.log(details.base_limit);
-    console.log(details.quote_limit);
-    console.log(baseDecimalsTimes);
-    console.log(quoteDecimalsTimes);
-
     const trxRequest = [
       details.memo_contract,
       this.requestData.tokens_info.base.token.address,
