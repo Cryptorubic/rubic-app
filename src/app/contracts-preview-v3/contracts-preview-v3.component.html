@@ -183,13 +183,12 @@
                         <a
                           [href]="
                             !tokens.base.token.isNative
-                              ? (tokens.base.token.address
-                                | etherscanUrl: 'token')
-                              : 'https://etherscan.io/stat/supply'
+                              ? (tokens.base.token.address | etherscanUrl : originalContract.network : 'token')
+                              : (originalContract.network | nativeCoinUrl)
                           "
                           target="_blank"
                         >
-                          <small>Check on Etherscan</small>&nbsp;
+                          <small>Check on Explorer</small>&nbsp;
                           <img src="./assets/images/icons/link.svg" />
                         </a>
                       </div>
@@ -493,13 +492,12 @@
                         <a
                           [href]="
                             !tokens.quote.token.isNative
-                              ? (tokens.quote.token.address
-                                | etherscanUrl: 'token')
-                              : 'https://etherscan.io/stat/supply'
+                              ? (tokens.quote.token.address | etherscanUrl : originalContract.network : 'token')
+                              : (originalContract.network | nativeCoinUrl)
                           "
                           target="_blank"
                         >
-                          <small>Check on Etherscan</small>&nbsp;
+                          <small>Check on Explorer</small>&nbsp;
                           <img src="./assets/images/icons/link.svg" />
                         </a>
                       </div>
@@ -770,11 +768,7 @@
                   <div class="form-field">
                     <label class="form-field_label">Management address</label>
                     <div class="form-field_value">
-                      <a
-                        [href]="
-                          originalContract.owner_address
-                            | etherscanUrl: 'address'
-                        "
+                      <a [href]="originalContract.owner_address | etherscanUrl : originalContract.network : 'address'"
                         target="_blank"
                       >
                         {{ originalContract.owner_address }}
@@ -800,10 +794,7 @@
                     <label class="form-field_label">Broker address</label>
                     <div class="form-field_value">
                       <a
-                        [href]="
-                          originalContract.broker_fee_address
-                            | etherscanUrl: 'address'
-                        "
+                        [href]="originalContract.broker_fee_address | etherscanUrl : originalContract.network: 'address'"
                         target="_blank"
                       >
                         {{ originalContract.broker_fee_address.toLowerCase() }}

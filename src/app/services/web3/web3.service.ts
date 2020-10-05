@@ -64,17 +64,40 @@ const IS_PRODUCTION = location.protocol === 'https:';
 const ETHERSCAN_URLS = {
   ETHERSCAN_ADDRESS: 'https://etherscan.io/',
   ROPSTEN_ETHERSCAN_ADDRESS: 'https://ropsten.etherscan.io/',
-  BNB_ETHERSCAN_ADDRESS: 'https://explorer.binance.org/smart/',
-  ROPSTEN_BNB_ETHERSCAN_ADDRESS: 'https://explorer.binance.org/smart-testnet/',
+  BNB_ETHERSCAN_ADDRESS: 'https://bscscan.com/',
+  ROPSTEN_BNB_ETHERSCAN_ADDRESS: 'https://testnet.bscscan.com/',
 };
 
 @Pipe({ name: 'etherscanUrl' })
 export class EtherscanUrlPipe implements PipeTransform {
-  transform(address, type) {
-    const url = IS_PRODUCTION
-      ? ETHERSCAN_URLS.ETHERSCAN_ADDRESS
-      : ETHERSCAN_URLS.ROPSTEN_ETHERSCAN_ADDRESS;
+  transform(address, network, type) {
+    let url;
+    switch(network) {
+      case 1:
+        url = IS_PRODUCTION
+            ? ETHERSCAN_URLS.ETHERSCAN_ADDRESS
+            : ETHERSCAN_URLS.ROPSTEN_ETHERSCAN_ADDRESS;
+        break;
+      case 22:
+        url = IS_PRODUCTION
+            ? ETHERSCAN_URLS.BNB_ETHERSCAN_ADDRESS
+            : ETHERSCAN_URLS.ROPSTEN_BNB_ETHERSCAN_ADDRESS;
+        break;
+    }
     return url + type + '/' + address;
+  }
+}
+
+
+@Pipe({ name: 'nativeCoinUrl' })
+export class NativeUrlPipe implements PipeTransform {
+  transform(network) {
+    switch(network) {
+      case 1:
+        return 'https://etherscan.io/stat/supply';
+      case 22:
+        return 'https://bscscan.com/stat/supply';
+    }
   }
 }
 
@@ -311,7 +334,6 @@ export class Web3Service {
         const promise = methodCall.call();
         promise.then(
           (result) => {
-            console.log(method + ': ' + result);
             if (method !== 'symbol' && result === null) {
               reject({
                 tokenAddress: true,
@@ -540,127 +562,154 @@ export class Web3Service {
       let baseToken;
 
       // Check quote coin
-      const quoteTokenObject = window['cmc_tokens'].filter((tk) => {
-
-        return (
-            (CHAIN_OF_NETWORK[data.network] === tk.platform) &&
-            (tk.address === data.quote_address || tk.mywish_id === data.quote_coin_id)
-        );
-      })[0];
-
-      if (quoteTokenObject && !data.quote_address) {
-        data.quote_address = quoteTokenObject.address;
-      }
-      const currentProvider = new Web3.providers.HttpProvider(
-          IS_PRODUCTION
-              ? ETH_NETWORKS[CHAIN_OF_NETWORK[data.network]].INFURA_ADDRESS
-              : ETH_NETWORKS[CHAIN_OF_NETWORK[data.network]].ROPSTEN_INFURA_ADDRESS,
-      );
-      if (!this.Web3) {
-        this.Web3 = new Web3(currentProvider);
-      } else {
-        this.Web3.eth.setProvider(currentProvider)
-      }
-
-      if (data.quote_address) {
-        quoteToken = quoteTokenObject ? { ...quoteTokenObject } : false;
-        this.getFullTokenInfo(data.quote_address, true, data.network)
-          .then(
-            (tokenInfo: TokenInfoInterface) => {
-              if (quoteToken) {
-                data.tokens_info.quote = {
-                  token: { ...quoteToken },
-                };
-                data.tokens_info.quote.token.decimals = tokenInfo.decimals;
-              } else {
-                data.tokens_info.quote = {
-                  token: { ...tokenInfo },
-                };
-              }
-            },
-            () => {
-              data.tokens_info.quote = {
-                token: { ...quoteToken },
-              };
-            },
-          )
-          .finally(() => {
-            data.tokens_info.quote.amount = data.quote_limit;
-            if (data.tokens_info.base) {
-              resolve(data);
-            }
-          });
-      } else {
+      let quoteTokenObject;
+      if (data.quote_address === '0x0000000000000000000000000000000000000000') {
+        quoteTokenObject = {...nativeCoins[CHAIN_OF_NETWORK[data.network]]};
         data.tokens_info.quote = {
-          token: {
-            ...window['cmc_tokens'].filter((tk) => {
-              return tk.mywish_id === data.quote_coin_id;
-            })[0],
-          },
+          token: { ...quoteTokenObject },
+          amount: data.quote_limit
         };
-        data.tokens_info.quote.amount = data.quote_limit;
         if (data.tokens_info.base) {
-          setTimeout(() => {
-            resolve(data);
-          });
+          resolve(data);
         }
+      } else {
+        quoteTokenObject = window['cmc_tokens'].filter((tk) => {
+          return (
+              (CHAIN_OF_NETWORK[data.network] === tk.platform) &&
+              (tk.address === data.quote_address || tk.mywish_id === data.quote_coin_id)
+          );
+        })[0];
+        if (quoteTokenObject && !data.quote_address) {
+          data.quote_address = quoteTokenObject.address;
+        }
+        const currentProvider = new Web3.providers.HttpProvider(
+            IS_PRODUCTION
+                ? ETH_NETWORKS[CHAIN_OF_NETWORK[data.network]].INFURA_ADDRESS
+                : ETH_NETWORKS[CHAIN_OF_NETWORK[data.network]].ROPSTEN_INFURA_ADDRESS,
+        );
+        if (!this.Web3) {
+          this.Web3 = new Web3(currentProvider);
+        } else {
+          this.Web3.eth.setProvider(currentProvider)
+        }
+
+        if (data.quote_address) {
+          quoteToken = quoteTokenObject ? { ...quoteTokenObject } : false;
+          this.getFullTokenInfo(data.quote_address, true, data.network)
+              .then(
+                  (tokenInfo: TokenInfoInterface) => {
+                    if (quoteToken) {
+                      data.tokens_info.quote = {
+                        token: { ...quoteToken },
+                      };
+                      data.tokens_info.quote.token.decimals = tokenInfo.decimals;
+                    } else {
+                      data.tokens_info.quote = {
+                        token: { ...tokenInfo },
+                      };
+                    }
+                  },
+                  () => {
+                    data.tokens_info.quote = {
+                      token: { ...quoteToken },
+                    };
+                  },
+              )
+              .finally(() => {
+                data.tokens_info.quote.amount = data.quote_limit;
+                if (data.tokens_info.base) {
+                  resolve(data);
+                }
+              });
+        } else {
+          data.tokens_info.quote = {
+            token: {
+              ...window['cmc_tokens'].filter((tk) => {
+                return tk.mywish_id === data.quote_coin_id;
+              })[0],
+            },
+          };
+          data.tokens_info.quote.amount = data.quote_limit;
+          if (data.tokens_info.base) {
+            setTimeout(() => {
+              resolve(data);
+            });
+          }
+        }
+
+
       }
+
+
 
       // Check base coin
-      const baseTokenObject = window['cmc_tokens'].filter((tk) => {
-        return (
-            (CHAIN_OF_NETWORK[data.network] === tk.platform) &&
-            (tk.address === data.base_address || tk.mywish_id === data.base_coin_id)
-        );
-      })[0];
-
-      if (baseTokenObject && !data.base_address) {
-        data.base_address = baseTokenObject.address;
-      }
-
-      if (data.base_address) {
-        baseToken = baseTokenObject ? { ...baseTokenObject } : false;
-        this.getFullTokenInfo(data.base_address, true, data.network)
-          .then(
-            (tokenInfo: TokenInfoInterface) => {
-              if (baseToken) {
-                data.tokens_info.base = {
-                  token: { ...baseToken },
-                };
-                data.tokens_info.base.token.decimals = tokenInfo.decimals;
-              } else {
-                data.tokens_info.base = {
-                  token: { ...tokenInfo },
-                };
-              }
-            },
-            () => {
-              data.tokens_info.base = {
-                token: { ...baseToken },
-              };
-            },
-          )
-          .finally(() => {
-            data.tokens_info.base.amount = data.base_limit;
-            if (data.tokens_info.quote) {
-              resolve(data);
-            }
-          });
-      } else {
+      let baseTokenObject;
+      if (data.base_address === '0x0000000000000000000000000000000000000000') {
+        quoteTokenObject = {...nativeCoins[CHAIN_OF_NETWORK[data.network]]};
         data.tokens_info.base = {
-          token: {
-            ...window['cmc_tokens'].filter((tk) => {
-              return tk.mywish_id === data.base_coin_id;
-            })[0],
-          },
+          token: { ...quoteTokenObject },
+          amount: data.base_limit
         };
-        data.tokens_info.base.amount = data.base_limit;
         if (data.tokens_info.quote) {
-          setTimeout(() => {
-            resolve(data);
-          });
+          resolve(data);
+        }
+      } else {
+        baseTokenObject = window['cmc_tokens'].filter((tk) => {
+          return (
+              (CHAIN_OF_NETWORK[data.network] === tk.platform) &&
+              (tk.address === data.base_address || tk.mywish_id === data.base_coin_id)
+          );
+        })[0];
+
+        if (baseTokenObject && !data.base_address) {
+          data.base_address = baseTokenObject.address;
+        }
+
+        if (data.base_address) {
+          baseToken = baseTokenObject ? { ...baseTokenObject } : false;
+          this.getFullTokenInfo(data.base_address, true, data.network)
+              .then(
+                  (tokenInfo: TokenInfoInterface) => {
+                    if (baseToken) {
+                      data.tokens_info.base = {
+                        token: { ...baseToken },
+                      };
+                      data.tokens_info.base.token.decimals = tokenInfo.decimals;
+                    } else {
+                      data.tokens_info.base = {
+                        token: { ...tokenInfo },
+                      };
+                    }
+                  },
+                  () => {
+                    data.tokens_info.base = {
+                      token: { ...baseToken },
+                    };
+                  },
+              )
+              .finally(() => {
+                data.tokens_info.base.amount = data.base_limit;
+                if (data.tokens_info.quote) {
+                  resolve(data);
+                }
+              });
+        } else {
+          data.tokens_info.base = {
+            token: {
+              ...window['cmc_tokens'].filter((tk) => {
+                return tk.mywish_id === data.base_coin_id;
+              })[0],
+            },
+          };
+          data.tokens_info.base.amount = data.base_limit;
+          if (data.tokens_info.quote) {
+            setTimeout(() => {
+              resolve(data);
+            });
+          }
         }
       }
+
     });
   }
 }

@@ -1282,6 +1282,9 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   ) {
 
     this.originalContract = this.route.snapshot.data.contract;
+
+    console.log(this.originalContract);
+
     this.contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.originalContract.network]];
     this.web3Contract = this.web3Service.getContract(
         SWAPS_V2.ABI,
@@ -1529,6 +1532,10 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   }
   private getQuoteRaised() {
     const details = this.originalContract;
+
+    console.log('T: ' + details.tokens_info.quote.token);
+    console.log('A: ' + details.tokens_info.quote.amount);
+
     const decimalsAmount = new BigNumber(
       details.tokens_info.quote.amount,
     ).times(Math.pow(10, details.tokens_info.quote.token.decimals));
@@ -1539,12 +1546,14 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       .call()
       .then(
         (result) => {
+          console.log(result);
           result = new BigNumber(result);
           this.contractInfo.quoteRaised = result
             .div(Math.pow(10, details.tokens_info.quote.token.decimals))
             .toString();
+          console.log(3 + ': ' + decimalsAmount);
           this.contractInfo.quoteLeft = decimalsAmount.minus(result);
-
+          console.log(5 + ': ' + this.contractInfo.quoteLeft);
           this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft
             .div(Math.pow(10, details.tokens_info.quote.token.decimals))
             .toString(10);

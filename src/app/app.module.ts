@@ -36,7 +36,7 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { EthAddressDirective } from './directives/eth-address/eth-address.directive';
 import {
   EtherscanUrlPipe,
-  EthTokenValidatorDirective,
+  EthTokenValidatorDirective, NativeUrlPipe,
 } from './services/web3/web3.service';
 import { UserService } from './services/user/user.service';
 import { UserInterface } from './services/user/user.interface';
@@ -207,6 +207,7 @@ export function appInitializerFactory(
     ForgotPasswordComponent,
     ContractsListComponent,
     EtherscanUrlPipe,
+    NativeUrlPipe,
     FooterComponent,
     BigNumberFormat,
     BigNumberMin,
