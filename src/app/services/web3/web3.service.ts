@@ -31,7 +31,7 @@ const nativeCoins = {
     token_name: 'Ethereum',
     token_short_name: 'ETH',
     decimals: 18,
-    image_link: 'https://github.com/MyWishPlatform/etherscan_top_tokens_images/raw/master/ethereum-icon.png',
+    image_link: 'https://contracts.mywish.io/media/token_images/1027_YdV4BM9.png',
     platform: 'ethereum',
     isNative: true
   },
@@ -40,7 +40,7 @@ const nativeCoins = {
     token_name: 'Binance',
     token_short_name: 'BNB',
     decimals: 18,
-    image_link: 'http://dev.mywish.io/media/token_images/1839_wbtQJd4.png',
+    image_link: 'https://contracts.mywish.io/media/token_images/1839_X2YWdhl.png',
     platform: 'binance',
     isNative: true
   }
