@@ -1,6 +1,7 @@
 export const CHAIN_OF_NETWORK = {
   1: 'ethereum',
-  22: 'binance'
+  22: 'binance',
+  24: 'matic'
 }
 
 export const ETH_NETWORKS = {
@@ -11,6 +12,10 @@ export const ETH_NETWORKS = {
   binance: {
     INFURA_ADDRESS: 'https://bsc-dataseed1.binance.org',
     ROPSTEN_INFURA_ADDRESS: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+  },
+  matic: {
+    INFURA_ADDRESS: 'https://rpc-mainnet.matic.network',
+    ROPSTEN_INFURA_ADDRESS: ' https://rpc-mumbai.maticvigil.com',
   }
 };
 //

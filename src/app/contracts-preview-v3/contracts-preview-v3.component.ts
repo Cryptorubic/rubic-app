@@ -58,6 +58,10 @@ export const CHAINS_OF_NETWORKS = {
   22: {
     image: './assets/images/icons/coins/bnb.svg',
     name: 'Binance chain'
+  },
+  24: {
+    image: './assets/images/icons/coins/matic.svg',
+    name: 'Matic'
   }
 }
 export const SWAPS_V2 = {
@@ -1220,14 +1224,15 @@ export const SWAPS_V2 = {
     },
   ],
   // TestNets
-  // ADDRESSES: {
-  //   ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
-  //   binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E'
-  // }
   ADDRESSES: {
-    ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
-    binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3'
+    ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
+    binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E',
+    matic: '0x86842ac94c1Eab9f00076464769e1eB4F6Ad6F90'
   }
+  // ADDRESSES: {
+  //   ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
+  //   binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3'
+  // }
 };
 
 
@@ -1282,8 +1287,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   ) {
 
     this.originalContract = this.route.snapshot.data.contract;
-
-    console.log(this.originalContract);
 
     this.contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.originalContract.network]];
     this.web3Contract = this.web3Service.getContract(

@@ -22,7 +22,8 @@ const BigNumber = require('bignumber.js');
 
 const chainIdOfNetwork = {
   1: [1, 3],
-  22: [56, 97]
+  22: [56, 97],
+  24: [137, 80001]
 };
 
 const nativeCoins = {
@@ -41,6 +42,15 @@ const nativeCoins = {
     token_short_name: 'BNB',
     decimals: 18,
     image_link: 'https://contracts.mywish.io/media/token_images/1839_X2YWdhl.png',
+    platform: 'binance',
+    isNative: true
+  },
+  matic: {
+    address: '0x0000000000000000000000000000000000000000',
+    token_name: 'Matic',
+    token_short_name: 'MATIC',
+    decimals: 18,
+    image_link: './assets/images/icons/coins/matic.svg',
     platform: 'binance',
     isNative: true
   }
@@ -66,6 +76,8 @@ const ETHERSCAN_URLS = {
   ROPSTEN_ETHERSCAN_ADDRESS: 'https://ropsten.etherscan.io/',
   BNB_ETHERSCAN_ADDRESS: 'https://bscscan.com/',
   ROPSTEN_BNB_ETHERSCAN_ADDRESS: 'https://testnet.bscscan.com/',
+  MATIC_ETHERSCAN_ADDRESS: 'https://bscscan.com/',
+  ROPSTEN_MATIC_ETHERSCAN_ADDRESS: 'https://testnet.bscscan.com/',
 };
 
 @Pipe({ name: 'etherscanUrl' })
@@ -83,6 +95,11 @@ export class EtherscanUrlPipe implements PipeTransform {
             ? ETHERSCAN_URLS.BNB_ETHERSCAN_ADDRESS
             : ETHERSCAN_URLS.ROPSTEN_BNB_ETHERSCAN_ADDRESS;
         break;
+      case 24:
+        url = IS_PRODUCTION
+            ? ETHERSCAN_URLS.MATIC_ETHERSCAN_ADDRESS
+            : ETHERSCAN_URLS.ROPSTEN_MATIC_ETHERSCAN_ADDRESS;
+        break;
     }
     return url + type + '/' + address;
   }
@@ -97,6 +114,8 @@ export class NativeUrlPipe implements PipeTransform {
         return 'https://etherscan.io/stat/supply';
       case 22:
         return 'https://bscscan.com/stat/supply';
+      case 24:
+        return '';
     }
   }
 }
@@ -108,7 +127,8 @@ export class Web3Service {
   constructor() {
     this.cacheTokens = {
       binance: {},
-      ethereum: {}
+      ethereum: {},
+      matic: {},
     };
     this.providers = {};
     try {

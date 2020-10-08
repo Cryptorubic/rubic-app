@@ -113,7 +113,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private metaMaskErrorModal: MatDialogRef<any>;
   public blockchainsOfNetworks = {
     1: 'ethereum',
-    22: 'binance'
+    22: 'binance',
+    24: 'matic'
   };
   constructor(
     private dialog: MatDialog,
