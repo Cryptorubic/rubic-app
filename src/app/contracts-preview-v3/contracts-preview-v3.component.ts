@@ -1952,7 +1952,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           from: wallet.address,
           to: this.contractAddress,
           data: depositSignature,
-          value: value || undefined,
+          value: tokenModel.token.isNative ? value : undefined,
         },
           this.originalContract.network
       ).catch((err) => {
