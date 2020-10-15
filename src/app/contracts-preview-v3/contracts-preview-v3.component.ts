@@ -57,7 +57,7 @@ export const CHAINS_OF_NETWORKS = {
   },
   22: {
     image: './assets/images/icons/coins/bnb.svg',
-    name: 'Binance chain'
+    name: 'Binance Smart Chain'
   },
   24: {
     image: './assets/images/icons/coins/matic.svg',
@@ -1224,15 +1224,15 @@ export const SWAPS_V2 = {
     },
   ],
   // TestNets
-  ADDRESSES: {
-    ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
-    binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E',
-    matic: '0x86842ac94c1Eab9f00076464769e1eB4F6Ad6F90'
-  }
   // ADDRESSES: {
-  //   ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
-  //   binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3'
+  //   ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
+  //   binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E',
+  //   matic: '0x86842ac94c1Eab9f00076464769e1eB4F6Ad6F90'
   // }
+  ADDRESSES: {
+    ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
+    binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3'
+  }
 };
 
 
@@ -1535,10 +1535,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   }
   private getQuoteRaised() {
     const details = this.originalContract;
-
-    console.log('T: ' + details.tokens_info.quote.token);
-    console.log('A: ' + details.tokens_info.quote.amount);
-
     const decimalsAmount = new BigNumber(
       details.tokens_info.quote.amount,
     ).times(Math.pow(10, details.tokens_info.quote.token.decimals));
@@ -1549,14 +1545,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       .call()
       .then(
         (result) => {
-          console.log(result);
           result = new BigNumber(result);
           this.contractInfo.quoteRaised = result
             .div(Math.pow(10, details.tokens_info.quote.token.decimals))
             .toString();
-          console.log(3 + ': ' + decimalsAmount);
           this.contractInfo.quoteLeft = decimalsAmount.minus(result);
-          console.log(5 + ': ' + this.contractInfo.quoteLeft);
           this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft
             .div(Math.pow(10, details.tokens_info.quote.token.decimals))
             .toString(10);
