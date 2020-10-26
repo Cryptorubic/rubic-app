@@ -1,11 +1,11 @@
 <div class="base-block-content">
   <div class="app-content-block">
-    <div class="my-contracts-title">My trades</div>
+    <div class="my-contracts-title">{{'My trades' | translate}}</div>
     <div
       class="my-contracts-empty"
       *ngIf="contractsList && !contractsList.length"
     >
-      No trades
+      {{'No trades' | translate}}
     </div>
 
     <div class="public-swaps_table-container" *ngIf="contractsList.length">
@@ -13,7 +13,7 @@
         <div class="grid-row public-swaps_head-row">
           <div class="grid-cell grid-cell-3-13 public-swaps_head-cell">
             <div class="public-swaps_head_content bold">
-              <b>Name</b>
+              <b>{{'Name' | translate}}</b>
             </div>
           </div>
           <div
@@ -28,7 +28,7 @@
               <button class="sort-btn" (click)="applySort('creation')">
                 <span></span>
               </button>
-              Creation date
+              {{'Creation date' | translate}}
             </div>
           </div>
           <div
@@ -43,7 +43,7 @@
               <button class="sort-btn" (click)="applySort('expire')">
                 <span></span>
               </button>
-              Expires in
+              {{'Expires in' | translate}}
             </div>
           </div>
           <div
@@ -58,7 +58,7 @@
               <button class="sort-btn" (click)="applySort('status')">
                 <span></span>
               </button>
-              Status
+              {{'Status' | translate}}
             </div>
           </div>
           <div class="grid-cell grid-cell-1-13 public-swaps_head-cell">
@@ -106,7 +106,7 @@
                   style="float: none"
                   [ngClass]="'contract-state__' + states[contract.state].NUMBER"
                 >
-                  {{ states[contract.state].TEXT }}
+                  {{ states[contract.state].TEXT | translate }}
                 </span>
               </div>
             </div>
@@ -147,7 +147,7 @@
   <ng-template #deleteConfirmation>
     <div class="dialog-block">
       <div class="dialog-block__content">
-        <div class="alert-window-title">Do you want to remove it?</div>
+        <div class="alert-window-title">{{'Do you want to remove it?' | translate}}</div>
         <br /><br />
         <div class="alert-window-buttons text-center">
           <div class="grid-row">

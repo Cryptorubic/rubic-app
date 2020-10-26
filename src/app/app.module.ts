@@ -134,7 +134,7 @@ export function appInitializerFactory(
 
   const langToSet =
     window['jQuery']['cookie']('lng') ||
-    (['en', 'zh', 'ko', 'ru'].indexOf(defaultLng) > -1 ? defaultLng : 'en');
+    (['en', 'ko'].indexOf(defaultLng) > -1 ? defaultLng : 'en');
 
   return () =>
     new Promise<any>((resolve: any, reject) => {

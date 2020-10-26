@@ -1231,7 +1231,8 @@ export const SWAPS_V2 = {
   // }
   ADDRESSES: {
     ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
-    binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3'
+    binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3',
+    matic: '0xcae0b5F3b4256572875E4E2A2ee2C83434097Af8'
   }
 };
 
@@ -1388,8 +1389,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     revert: number;
     cmcRange?: number;
   };
-
-  @ViewChild('administratorContact') administratorContact: TemplateRef<any>;
 
   private currentUser: any;
 
@@ -2071,13 +2070,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     } else {
       return baseWillValue.toString(10);
     }
-  }
-
-  private openAdministratorInfo() {
-    this.dialog.open(this.administratorContact, {
-      width: '480px',
-      panelClass: 'custom-dialog-container',
-    });
   }
 
   public sendContribute(amount, token) {

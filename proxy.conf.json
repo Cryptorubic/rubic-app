@@ -1,12 +1,12 @@
 {
   "/api": {
-    "target": "http://devswaps.mywish.io",
+    "target": "https://devswaps.mywish.io",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/rest-auth": {
-    "target": "http://devswaps.mywish.io",
+    "target": "https://devswaps.mywish.io",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

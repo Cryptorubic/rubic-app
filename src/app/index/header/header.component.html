@@ -24,33 +24,27 @@
         (mousedown)="$event.stopPropagation(); $event.preventDefault()"
       >
         <ul class="header-menu_list">
-          <!--<li class="header-menu_list_item">-->
-          <!--<a routerLink="/about" class="header-link">About</a>-->
-          <!--</li>-->
-          <!--<li class="header-menu_list_item">-->
-          <!--<a href="https://swaps.network/contribute"-->
-          <!--target="_blank"-->
-          <!--class="header-link">Contribute</a>-->
-          <!--</li>-->
           <li class="header-menu_list_item">
             <a href="https://rubic.finance/" target="_blank" class="header-link"
-              >About</a
+              >{{'About' | translate}}</a
             >
           </li>
           <li class="header-menu_list_item">
-            <a routerLink="/about" class="header-link">Features</a>
-          </li>
-          <!--- li class="header-menu_list_item">
-            <a [routerLink]="['/']" [fragment]="'how-it-works'" class="header-link">How it works</a>
+            <a routerLink="/about" class="header-link">{{'Features' | translate}}</a>
           </li>
           <li class="header-menu_list_item">
-            <a routerLink="team" class="header-link">Team</a>
+            <a routerLink="faq" class="header-link">{{'Faq' | translate}}</a>
           </li>
-          <li class="header-menu_list_item">
-            <a routerLink="roadmap" class="header-link">Roadmap</a>
-          </li --->
-          <li class="header-menu_list_item">
-            <a routerLink="faq" class="header-link">Faq</a>
+          <li class="language-select">
+            <ul class="language-select-list"
+                [ngClass]="{'opened': openedLngList}" (click)="toggleLanguage()">
+              <li (click)="setLanguage(lng['lng'])"
+                  [ngClass]="{'active': lng['active']}"
+                  *ngFor="let lng of languagesList">
+                <img src="/assets/images/lng/{{lng['lng']}}.svg"/>
+                <span>{{lng['title']}}</span>
+              </li>
+            </ul>
           </li>
           <li
             class="header-menu_list_item header-menu_list_item--login btn btn-green btn-min btn-normal-weight btn-auto"
@@ -58,7 +52,7 @@
           >
             <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
             <span (click)="MetamaskAuth()" class="header-link"
-              >Login by MetaMask</span
+              >{{'Login by MetaMask' | translate}}</span
             >
           </li>
           <li
@@ -75,12 +69,12 @@
             <ul class="header-menu_sublist">
               <li class="header-menu_sublist_item">
                 <a routerLink="/trades/contracts" class="sublist-link"
-                  >My trades</a
+                  >{{'My trades' | translate}}</a
                 >
               </li>
               <li class="header-menu_sublist_item">
                 <span class="sublist-link" (click)="openLogoutConfirmation()"
-                  >Logout</span
+                  >{{'Logout' | translate}}</span
                 >
               </li>
             </ul>
@@ -123,7 +117,7 @@
               </span>
               <span class="just-title"
                 >&nbsp;&nbsp;&nbsp;{{
-                  'YES' | translate
+                  'Yes' | translate
                 }}&nbsp;&nbsp;&nbsp;</span
               ></button
             ><br />
@@ -136,7 +130,7 @@
             >
               <span
                 >&nbsp;&nbsp;&nbsp;{{
-                  'NO' | translate
+                  'No' | translate
                 }}&nbsp;&nbsp;&nbsp;</span
               >
             </button>
