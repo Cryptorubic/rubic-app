@@ -1,0 +1,620 @@
+@import '../../scss/_mixins';
+@import '../../scss/elements/vars';
+
+.token-sale-end {
+  padding-bottom: 0px !important;
+}
+
+.token-sale-page {
+  font-family: var(--main-font) !important;
+  font-weight: normal;
+  background-color: #ffffff;
+  padding-bottom: 50px;
+
+  .separate {
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+    height: 0;
+  }
+
+  .btn-green {
+    margin-top: 60px;
+    max-width: 400px;
+    width: 100%;
+    height: 67px;
+    background-color: #4aa956;
+    font-weight: bold;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.25);
+  }
+
+  .container {
+    max-width: 1100px !important;
+  }
+
+  @include b(1100) {
+    background-image: none;
+  }
+
+  .count-block {
+    background-color: #4aa956;
+    min-height: 820px;
+    display: flex;
+    background-image: url('src/assets/images/token-sale/lines.svg');
+    background-repeat: no-repeat;
+    background-position: right 0;
+    background-size: 220px;
+    padding-top: 100px;
+
+    @include b(700) {
+      max-height: max-content;
+      padding-top: 50px;
+      background-image: none;
+    }
+
+    @include b(450) {
+      padding-top: 0px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 850px !important;
+      flex-direction: column;
+    }
+
+    &-title {
+      font-weight: normal;
+      font-size: 75px;
+      color: #ffffff;
+      display: block;
+      margin-bottom: 25px;
+
+      @include b(750) {
+        font-size: 50px;
+        margin-bottom: 20px;
+      }
+
+      @include b(450) {
+        font-size: 35px;
+        margin-bottom: 10px;
+      }
+    }
+
+    &-text {
+      margin-top: 25px;
+      font-weight: normal;
+      font-size: 28px;
+      line-height: 48px;
+      text-align: center;
+      color: #ffffff;
+      display: block;
+      margin-bottom: 25px;
+
+      @include b(750) {
+        font-size: 20px;
+        line-height: 35px;
+        margin-bottom: 20px;
+      }
+
+      @include b(450) {
+        font-size: 18px;
+        line-height: 25px;
+        margin-bottom: 10px;
+      }
+    }
+
+    &-icons {
+      display: grid;
+      grid-template-columns: repeat(3, max-content);
+      grid-gap: 20px;
+      margin-top: 25px;
+      margin-bottom: 25px;
+      justify-content: space-between;
+      width: 100%;
+
+      img {
+        @include b(600) {
+          margin: 0 auto;
+        }
+      }
+
+      @include b(600) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .btn {
+      margin-top: 80px;
+      max-width: 400px;
+      width: 100%;
+      height: 67px;
+      background-color: #ffffff;
+      font-weight: bold;
+      font-size: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #4aa956;
+      box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  .finish-block {
+    background-color: #4aa956;
+    min-height: 400px;
+    display: flex;
+    background-image: url('src/assets/images/token-sale/lines-left.svg'),
+      url('src/assets/images/token-sale/lines-right.svg');
+    background-repeat: no-repeat, no-repeat;
+    background-position: left 300px, right 0;
+    background-size: 200px;
+    padding-top: 100px;
+
+    @include b(700) {
+      min-height: max-content;
+      padding-top: 100px;
+      background-image: none;
+    }
+
+    @include b(450) {
+      padding: 90px 0 20px 0;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 650px !important;
+      flex-direction: column;
+    }
+
+    .btn {
+      background-color: #ffffff;
+      color: #4aa956;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    &-title {
+      font-weight: bold;
+      font-size: 60px;
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      color: #ffffff;
+
+      @include b(450) {
+        font-size: 30px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+    }
+
+    &-text {
+      font-weight: normal;
+      font-size: 20px;
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      color: #ffffff;
+
+      @include b(450) {
+        font-size: 16px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+    }
+
+    &-links {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      max-width: 350px;
+      width: 100%;
+      justify-content: space-evenly;
+
+      @include b(450) {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+    }
+
+    &-link {
+      background: #ffffff;
+      border-radius: 44px;
+      font-weight: normal;
+      font-size: 15px;
+      line-height: 27px;
+      color: #000000 !important;
+      padding: 5px 15px 5px 5px;
+      min-width: max-content;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-right: 15px;
+      text-decoration: none !important;
+      cursor: pointer;
+      margin-bottom: 10px;
+
+      &:hover {
+        text-decoration: none !important;
+      }
+
+      img {
+        min-width: 40px;
+        max-width: 40px;
+        max-height: 40px;
+        min-height: 40px;
+        margin-right: 5px;
+
+        @include b(450) {
+          min-width: 30px;
+          max-width: 30px;
+          max-height: 30px;
+          min-height: 30px;
+        }
+      }
+    }
+  }
+
+  .first-block {
+    padding-top: 80px;
+
+    @include b(850) {
+      padding-top: 100px;
+    }
+
+    .container {
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: minmax(300px, 450px) minmax(300px, 1fr);
+      grid-gap: 50px;
+      justify-content: center;
+      align-items: center;
+
+      @include b(850) {
+        grid-template-columns: 1fr;
+        grid-gap: 25px;
+      }
+
+      img {
+        max-width: 415px;
+        width: 100%;
+      }
+
+      h3 {
+        padding-right: 100px;
+
+        @include b(1100) {
+          padding-right: 0px;
+        }
+
+        @include b(500) {
+          font-size: 17px;
+          line-height: 24px;
+        }
+      }
+    }
+  }
+
+  .token-sale {
+    margin-top: 80px;
+
+    @include b(500) {
+      margin-top: 50px;
+    }
+
+    .container {
+      position: relative;
+    }
+
+    &-title {
+      font-weight: normal;
+      font-size: 50px;
+      line-height: 44px;
+      color: #4aa956;
+      display: block;
+      margin-bottom: 50px;
+      text-align: center;
+      width: 100%;
+    }
+
+    &-text {
+      display: block;
+      font-weight: normal;
+      font-size: 14px;
+      opacity: 0.7;
+      line-height: 1.7;
+      text-align: center;
+      color: #000000;
+      margin-bottom: 30px;
+      margin-top: 30px;
+      width: 100%;
+      text-align: center;
+
+      font-size: 14px;
+      line-height: 27px;
+      text-align: center;
+
+      color: #000000;
+
+      opacity: 0.7;
+    }
+
+    &-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      margin: 0 -10px;
+    }
+
+    &-item {
+      background: #fafafa;
+      border-radius: 4px;
+      max-width: 210px;
+      width: 100%;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      height: 110px;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      margin: 20px 10px 20px 10px;
+
+      @include b(500) {
+        max-width: 100%;
+        margin: 10px 0;
+      }
+
+      &-text {
+        font-weight: 500;
+        font-size: 22px;
+        line-height: 27px;
+        color: #4aa956;
+      }
+
+      &-title {
+        font-weight: normal;
+        display: block;
+        margin-bottom: 10px;
+        font-size: 20px;
+        text-align: center;
+        color: #000000;
+      }
+    }
+
+    &-boxes {
+      position: absolute;
+      background-image: url('src/assets/images/token-sale/cubes.png');
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 200px;
+      padding-bottom: 30%;
+      top: 0;
+      right: 70px;
+
+      @include b(1000) {
+        display: none;
+      }
+    }
+  }
+
+  .rubic-platform-ts {
+    margin-top: 80px;
+
+    @include b(500) {
+      margin-top: 50px;
+    }
+
+    .container {
+      position: relative;
+    }
+
+    &-title {
+      font-weight: normal;
+      font-size: 50px;
+      line-height: 44px;
+      color: #4aa956;
+      display: block;
+      margin-bottom: 50px;
+      text-align: center;
+      width: 100%;
+    }
+
+    &-text {
+      display: block;
+      font-weight: normal;
+      font-size: 20px;
+      line-height: 1.7;
+      text-align: center;
+      color: #000000;
+      margin-bottom: 30px;
+      width: 100%;
+      text-align: center;
+    }
+
+    &-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      margin: 0 -10px;
+    }
+
+    &-item {
+      background: #fafafa;
+      border-radius: 4px;
+      border-bottom: 2px solid #4aa956;
+      max-width: 160px;
+      width: 100%;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      margin: 20px 10px 20px 10px;
+
+      @include b(500) {
+        max-width: 100%;
+        margin: 10px 0;
+      }
+
+      &-title {
+        font-weight: 500;
+        font-size: 22px;
+        line-height: 27px;
+        color: #4aa956;
+      }
+    }
+
+    &-boxes {
+      position: absolute;
+      background-image: url('src/assets/images/token-sale/cubes.png');
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 200px;
+      padding-bottom: 30%;
+      top: 0;
+      right: 70px;
+
+      @include b(1000) {
+        display: none;
+      }
+    }
+  }
+
+  .fees-text-block {
+    margin-top: 60px;
+
+    .container {
+      display: grid;
+      grid-template-columns: minmax(320px, 450px) minmax(320px, 450px);
+      justify-content: space-between;
+      grid-gap: 20px;
+
+      @include b(850) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    &-one {
+      p {
+        font-weight: normal;
+        font-size: 20px;
+        line-height: 27px;
+        color: #000000;
+
+        @include b(700) {
+          font-size: 18px;
+          line-height: 24px;
+        }
+      }
+    }
+
+    &-two {
+      p {
+        font-weight: normal;
+        font-size: 20px;
+        line-height: 27px;
+        color: #000000;
+      }
+    }
+  }
+
+  .button-block {
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .stats-block {
+    // margin-top: 60px;
+
+    .container {
+      display: grid;
+      grid-template-columns: minmax(320px, 550px) minmax(450px, 500px);
+      grid-gap: 20px;
+      justify-content: space-between;
+
+      @include b(900) {
+        grid-template-columns: 1fr;
+        grid-gap: 50px;
+      }
+
+      img {
+        max-width: 100%;
+        margin-top: 40px;
+      }
+    }
+    &-items {
+      display: grid;
+      // grid-gap: 20px;
+      // grid-template-columns: repeat(2, 220px);
+      font-weight: normal;
+      font-size: 20px;
+      line-height: 27px;
+
+      // @include b(900) {
+      //   grid-template-columns: repeat(2, 1fr);
+      // }
+
+      // @include b(550) {
+      //   grid-template-columns: 1fr;
+      // }
+    }
+
+    // &-item {
+    //   background: #fafafa;
+    //   border-radius: 4px;
+    //   border-bottom: 2px solid #4aa956;
+    //   padding: 30px;
+    //   margin-bottom: 20px;
+
+    //   &-percent {
+    //     font-weight: 500;
+    //     font-size: 22px;
+    //     line-height: 27px;
+    //     display: inline-block;
+    //     color: #4aa956;
+    //     margin-bottom: 15px;
+    //   }
+
+    //   &-text {
+    //     font-size: 15px;
+    //     line-height: 27px;
+    //     color: #000000;
+    //   }
+    // }
+  }
+
+  .wide-text-block {
+    margin-top: 60px;
+
+    &-title {
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    .container {
+      background-color: #fafafa;
+      padding: 20px;
+      font-size: 14px;
+      line-height: 27px;
+      color: #000000;
+    }
+  }
+}

@@ -1,12 +1,12 @@
 {
   "/api": {
-    "target": "http://devswaps.mywish.io",
+    "target": "https://rubic.exchange",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/rest-auth": {
-    "target": "http://devswaps.mywish.io",
+    "target": "https://rubic.exchange",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

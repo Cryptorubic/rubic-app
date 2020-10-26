@@ -7,6 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import {Web3Service} from "../../services/web3/web3.service";
 
 export interface ITokenInfo {
   active?: boolean;
@@ -33,7 +34,9 @@ export class TokensAllInputComponent implements OnInit {
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
 
-  constructor() {
+  constructor(
+      private web3Service: Web3Service
+  ) {
     this.tokensList = [];
   }
 
@@ -50,8 +53,16 @@ export class TokensAllInputComponent implements OnInit {
   ngOnInit() {
     if (this.setToken) {
       this.setToken.subscribe((result) => {
-        this.visibleInput = false;
-        this.TokenChange.emit(result);
+        if (result) {
+          this.visibleInput = false;
+          this.TokenChange.emit(result);
+        } else {
+          setTimeout(() => {
+            this.tokenName = '';
+            this.searchToken('');
+            this.listIsOpened = false;
+          });
+        }
       });
     }
 
@@ -73,19 +84,22 @@ export class TokensAllInputComponent implements OnInit {
     const result = [];
     let indexToken = 0;
 
+    const tokensForSearch = this.blockchain ? window['cmc_tokens'].filter((t) => {
+      return t.platform === this.blockchain;
+    }) : window['cmc_tokens'];
+
     if (q) {
       while (
-        indexToken < window['cmc_tokens'].length - 1 &&
+        indexToken < tokensForSearch.length &&
         result.length < 10
       ) {
-        const token = window['cmc_tokens'][indexToken];
+        const token = tokensForSearch[indexToken];
         const tokenName = token.token_name.toLowerCase();
         const tokenSymbol = token.token_short_name.toLowerCase();
         const seqrchQ = q.toLowerCase();
 
         const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
         const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
-
         if (
           (nameIndexMatch || symbolIndexMatch) &&
           (!this.blockchain || this.blockchain === token.platform)
@@ -95,10 +109,13 @@ export class TokensAllInputComponent implements OnInit {
         indexToken++;
       }
     } else {
-      while (result.length < 10) {
-        const token = window['cmc_tokens'][indexToken];
+      while (
+          indexToken < tokensForSearch.length &&
+          result.length < 10
+        ) {
+        const token = tokensForSearch[indexToken];
         if (
-          token.cmc_id &&
+          token &&
           (!this.blockchain || this.blockchain === token.platform)
         ) {
           result.push({ ...token });
@@ -136,17 +153,18 @@ export class TokensAllInputComponent implements OnInit {
     if (!isNaN(this.activeTokenIndex)) {
       this.tokensList[this.activeTokenIndex].active = false;
     }
-
     token.active = true;
     this.activeTokenIndex = tokenIndex;
     if (withoutHide) {
       return;
     }
-
     this.tokenModel.token = token;
     this.listIsOpened = false;
     this.tokenName = token.token_name + ' (' + token.token_short_name + ')';
-    this.TokenChange.emit(this.tokenModel);
+    this.web3Service.getFullTokenInfo(this.tokenModel.token.address, false, this.blockchain).then((res: any) => {
+      this.tokenModel.token.decimals = res.decimals;
+      this.TokenChange.emit(this.tokenModel);
+    })
     this.showAutoInput();
   }
 

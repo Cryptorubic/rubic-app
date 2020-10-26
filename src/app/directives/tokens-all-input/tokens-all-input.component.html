@@ -1,6 +1,6 @@
 <input
   type="text"
-  placeholder="Enter Amount"
+  placeholder="{{'Enter Amount' | translate}}"
   #amountField
   [required]="true"
   [appBigNumber]="{
@@ -20,19 +20,10 @@
   [ngClass]="{ active: visibleInput }"
   (click)="showAutoInput()"
 >
-  <span *ngIf="!(tokenModel.token.mywish_id || tokenModel.token.custom)"
-    >Choose Token</span
-  >
-  <span
-    *ngIf="tokenModel.token.mywish_id || tokenModel.token.custom"
-    class="ac_res_preview"
-  >
+  <span *ngIf="!tokenModel.token.address">{{'Choose Token' | translate}}</span>
+  <span *ngIf="tokenModel.token.address" class="ac_res_preview">
     <span class="ac_res_preview_icon">
-      <img
-        [src]="
-          tokenModel.token.image_link || './assets/images/icons/coins/empty.svg'
-        "
-      />
+      <img [src]="tokenModel.token.image_link || './assets/images/icons/coins/empty.svg'"/>
     </span>
     <span class="ac_res_preview_symbol">{{
       tokenModel.token.token_short_name

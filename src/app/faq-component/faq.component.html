@@ -1,21 +1,24 @@
 <div class="faq-container">
   <div class="app-content-block">
-    <h2 class="title-section">FAQ</h2>
+    <h2 class="title-section">{{'FAQ' | translate}}</h2>
 
     <div class="questions-container">
 
       <div
-        *ngFor="let question of questions"
+        *ngFor="let question of questions; let $index = index;"
         (click)="question.isActive = !question.isActive"
         [ngClass]="{'questions-container__question_active': question.isActive}"
         class="questions-container__question"
       >
         <div class="questions-container__question-head">
-          <span class="questions-container__title">– {{ question.title }}</span>
+          <span class="questions-container__title">
+            – {{ 'FAQ_QUESTIONS.' + $index + '.QUESTION' | translate }}
+          </span>
           <div class="questions-container__arrow"></div>
         </div>
-
-        <p *ngIf="question.isActive" class="questions-container__text">{{ question.text }}</p>
+        <p *ngIf="question.isActive" class="questions-container__text">
+          {{ 'FAQ_QUESTIONS.' + $index + '.ANSWER' | translate }}
+        </p>
       </div>
 
     </div>

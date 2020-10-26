@@ -1,4 +1,21 @@
 <div class="index-start-form__wrapper">
+  <ul class="block-tabs">
+    <li class="block-tabs_item"
+        (click)="setNetwork(1)" [ngClass]="{active: requestData.network === 1}">
+      <img class="block-tabs_item_icon" src="./assets/images/icons/coins/eth.png"/>
+      <span class="block-tabs_item_text">Ethereum</span>
+    </li>
+    <li class="block-tabs_item"
+        (click)="setNetwork(22)" [ngClass]="{active: requestData.network === 22}">
+      <img class="block-tabs_item_icon" src="./assets/images/icons/coins/bnb.svg"/>
+      <span class="block-tabs_item_text">Binance Smart Chain</span>
+    </li>
+    <li class="block-tabs_item"
+        (click)="setNetwork(24)" [ngClass]="{active: requestData.network === 24}">
+      <img class="block-tabs_item_icon" src="./assets/images/icons/coins/matic.svg"/>
+      <span class="block-tabs_item_text">Matic</span>
+    </li>
+  </ul>
   <form
     #startForm="ngForm"
     class="index-start-form"
@@ -7,7 +24,7 @@
     <div class="grid-row">
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
         <div class="form-field index-start-form__all-input">
-          <label class="form-field_label">You have</label>
+          <label class="form-field_label">{{'You have' | translate}}</label>
           <div class="form-field_input">
             <input
               type="hidden"
@@ -23,7 +40,7 @@
             />
             <app-tokens-all-input
               (TokenChange)="changedToken('base')"
-              [blockchain]="'ethereum'"
+              [blockchain]="blockchainsOfNetworks[requestData.network]"
               [setToken]="BaseTokenCustom"
               [tokenModel]="requestData.tokens_info.base"
             ></app-tokens-all-input>
@@ -31,12 +48,9 @@
           <div
             class="form-field_description normal-font text-right form-field_description-show"
           >
-            <span
-              (click)="openedCustomTokens.base = !openedCustomTokens.base"
-              >{{
-                openedCustomTokens.base ? 'Cancel' : 'Use custom token'
-              }}</span
-            >
+            <span (click)="openedCustomTokens.base = !openedCustomTokens.base">
+              {{(openedCustomTokens.base ? 'Cancel' : 'Use custom token') | translate}}
+            </span>
             <div
               *ngIf="openedCustomTokens.base"
               class="index-start-form__choose-token"
@@ -44,7 +58,7 @@
               <div class="form-field_input">
                 <input
                   type="text"
-                  placeholder="Token Contract Address"
+                  [placeholder]="'Token Contract Address' | translate"
                   appEthTokenValidator
                   class="min-text"
                   required
@@ -53,6 +67,7 @@
                   autocomplete="on"
                   [ngModelOptions]="{ standalone: true }"
                   (TokenResolve)="setCustomToken('base', $event)"
+                  [network]="requestData.network"
                   [(ngModel)]="customTokens.base.address"
                 />
               </div>
@@ -68,7 +83,7 @@
                     class="arrow"
                     src="./assets/images/buttons/arrow_w.svg"
                   />
-                  <span>Add</span>
+                  <span>{{'Add' | translate}}</span>
                 </button>
               </div>
             </div>
@@ -77,7 +92,7 @@
       </div>
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
         <div class="form-field">
-          <label class="form-field_label">You want to get</label>
+          <label class="form-field_label">{{'You want to get' | translate}}</label>
           <div class="form-field_input">
             <input
               type="hidden"
@@ -94,7 +109,7 @@
 
             <app-tokens-all-input
               (TokenChange)="changedToken('quote')"
-              [blockchain]="'ethereum'"
+              [blockchain]="blockchainsOfNetworks[requestData.network]"
               [setToken]="QuoteTokenCustom"
               [tokenModel]="requestData.tokens_info.quote"
             ></app-tokens-all-input>
@@ -105,7 +120,7 @@
             <span
               (click)="openedCustomTokens.quote = !openedCustomTokens.quote"
               >{{
-                openedCustomTokens.quote ? 'Cancel' : 'Use custom token'
+              (openedCustomTokens.quote ? 'Cancel' : 'Use custom token') | translate
               }}</span
             >
             <div
@@ -114,12 +129,13 @@
             >
               <div class="form-field_input">
                 <input
-                  placeholder="Token Contract Address"
+                  [placeholder]="'Token Contract Address' | translate"
                   type="text"
                   appEthTokenValidator
                   class="min-text"
                   [ngModelOptions]="{ standalone: true }"
                   #quoteCustomToken="ngModel"
+                  [network]="requestData.network"
                   (TokenResolve)="setCustomToken('quote', $event)"
                   [(ngModel)]="customTokens.quote.address"
                 />
@@ -136,7 +152,7 @@
                     class="arrow"
                     src="./assets/images/buttons/arrow_w.svg"
                   />
-                  <span>Add</span>
+                  <span>{{'Add' | translate}}</span>
                 </button>
               </div>
             </div>
@@ -151,18 +167,18 @@
           <label class="form-field_label form-field_label--rate">
             <div class="form-notice" *ngIf="cmcRate && cmcRate.isMessage">
               <div class="form-notice_text">
-                Your rate is
+                {{'Your rate is' | translate}}
                 <b
                   ><span class="green-text">{{ cmcRate.change }}%</span>
                   <span class="green-text">
                     {{ cmcRate.isLower ? 'lower' : 'higher' }}</span
                   >
                 </b>
-                than
+                {{'than' | translate}}
                 <a href="https://coinmarketcap.com/" target="_blank"
-                  >coinmarketcap</a
+                  >{{'coinmarketcap' | translate}}</a
                 >
-                rate.
+                {{'rate.' | translate}}
               </div>
             </div>
           </label>
@@ -185,8 +201,7 @@
                   requestData.broker_fee_base <= 50 &&
                   requestData.broker_fee_base >= 0
                 )) ||
-              requestData.tokens_info.base.token.mywish_id ===
-                requestData.tokens_info.quote.token.mywish_id
+              (requestData.tokens_info.base.token.address.toLowerCase() === requestData.tokens_info.quote.token.address.toLowerCase())
             "
           >
             <img
@@ -200,20 +215,16 @@
               *ngIf="isCreatingContract"
             />
             <span>
-              {{ isCreatingContract ? 'Creating Trade' : 'Create Trade' }}
+              {{ (isCreatingContract ? 'Creating Trade' : 'Create Trade') | translate }}
             </span>
           </button>
         </div>
-        <div
-          class="form-field_description normal-font normal-font--visible text-right"
-        >
+        <div class="form-field_description normal-font normal-font--visible text-right">
           <span
             class="underline-link underline-link_btn"
-            (click)="toogleAdvSettings()"
-            >{{
-              isAdvSettingsOpen ? 'Close Settings' : 'Advanced Settings'
-            }}</span
-          >
+            (click)="toogleAdvSettings()">
+            {{(isAdvSettingsOpen ? 'Close Settings' : 'Advanced Settings') | translate}}
+          </span>
         </div>
       </div>
     </div>
@@ -226,7 +237,7 @@
     <div class="index-start-form__settings-block">
       <div class="index-start-form__settings-block-wrapper">
         <div class="index-start-form__settings-item">
-          <div class="index-start-form__settings-item-head">closing date</div>
+          <div class="index-start-form__settings-item-head">{{'closing date' | translate}}</div>
           <div class="index-start-form__settings-item-content">
             <input
               matInput
@@ -246,7 +257,7 @@
           </div>
         </div>
         <div class="index-start-form__settings-item">
-          <div class="index-start-form__settings-item-head">closing time</div>
+          <div class="index-start-form__settings-item-head">{{'closing time' | translate}}</div>
           <div class="index-start-form__settings-item-content">
             <input
               [ngxTimepicker]="picker"
@@ -264,8 +275,11 @@
           </div>
         </div>
         <div class="index-start-form__settings-item">
-          <div class="index-start-form__settings-item-head">Public deal</div>
-          <div class="index-start-form__settings-item-content">
+          <div class="index-start-form__settings-item-head">{{'Public deal' | translate}}</div>
+          <div
+            class="index-start-form__settings-item-content"
+            (click)="changePD()"
+          >
             <label class="form-field_input-checkbox" style="min-width: 70px">
               <input
                 type="checkbox"
@@ -273,11 +287,11 @@
                 [(ngModel)]="requestData.public"
                 [value]="requestData.public"
               />
-              <span class="checkbox-text checkbox-text_on">Yes</span>
-              <span class="checkbox-text checkbox-text_off">No</span>
+              <span class="checkbox-text checkbox-text_on">{{'Yes' | translate}}</span>
+              <span class="checkbox-text checkbox-text_off">{{'No' | translate}}</span>
               <span class="checkbox-rect"></span>
             </label>
-            <span>Trade will be listed on the main page</span>
+            <span>{{'Trade will be listed on the main page' | translate}}</span>
           </div>
         </div>
       </div>
@@ -290,7 +304,7 @@
       "
     >
       <div class="index-start-form__settings-item">
-        <div class="index-start-form__settings-item-head">Permanent trade</div>
+        <div class="index-start-form__settings-item-head">{{'Permanent trade' | translate}}</div>
         <div
           class="index-start-form__settings-item-content"
           style="position: relative"
@@ -309,21 +323,23 @@
           <label class="form-field_input-checkbox" style="min-width: 70px">
             <input
               type="checkbox"
-              name="public"
+              name="permanent"
               [(ngModel)]="requestData.permanent"
               disabled="true"
             />
-            <span class="checkbox-text checkbox-text_on">Yes</span>
-            <span class="checkbox-text checkbox-text_off">No</span>
+            <span class="checkbox-text checkbox-text_on">{{'Yes' | translate}}</span>
+            <span class="checkbox-text checkbox-text_off">{{'No' | translate}}</span>
             <span class="checkbox-rect"></span>
           </label>
-          <span>Lock liquidity until the trade completion</span>
+          <span>
+            {{'Lock liquidity until the trade completion' | translate}}
+          </span>
         </div>
       </div>
       <div class="index-start-form__settings-item-wrapper">
         <div class="form-field">
           <label class="index-start-form__settings-item-head"
-            >Minimum contribution in
+            >{{'Minimum contribution in' | translate}}
             {{ requestData.tokens_info.base.token.token_name }} ({{
               requestData.tokens_info.base.token.token_short_name
             }})</label
@@ -344,7 +360,7 @@
         </div>
         <div class="form-field">
           <label class="index-start-form__settings-item-head"
-            >Minimum contribution in
+            >{{'Minimum contribution in' | translate}}
             {{ requestData.tokens_info.quote.token.token_name }} ({{
               requestData.tokens_info.quote.token.token_short_name
             }})</label
@@ -382,7 +398,7 @@
         <div class="index-start-form__settings-item-checkbox-head">
           <div class="index-start-form__settings-item">
             <div class="index-start-form__settings-item-head">
-              Brokerage fee
+              {{'Brokerage fee' | translate}}
             </div>
             <div class="index-start-form__settings-item-content">
               <label class="form-field_input-checkbox" style="min-width: 70px">
@@ -391,11 +407,11 @@
                   name="broker_fee"
                   [(ngModel)]="requestData.broker_fee"
                 />
-                <span class="checkbox-text checkbox-text_on">Yes</span>
-                <span class="checkbox-text checkbox-text_off">No</span>
+                <span class="checkbox-text checkbox-text_on">{{'Yes' | translate}}</span>
+                <span class="checkbox-text checkbox-text_off">{{'No' | translate}}</span>
                 <span class="checkbox-rect"></span>
               </label>
-              <span>You can specify % for Broker</span>
+              <span>{{'You can specify % for Broker' | translate}}</span>
             </div>
           </div>
         </div>
@@ -404,8 +420,8 @@
           *ngIf="requestData.broker_fee"
         >
           <div class="form-field">
-            <label class="index-start-form__settings-item-head"
-              >ENTER BROKER ADDRESS</label
+            <label class="index-start-form__settings-item-head uppercase"
+              >{{'Enter Broker Address' | translate}}</label
             >
             <div class="form-field_input">
               <input
@@ -425,7 +441,7 @@
         >
           <div class="form-field">
             <label class="index-start-form__settings-item-head"
-              >Specify % for
+              >{{'Specify % for' | translate}}
               {{ requestData.tokens_info.base.token.token_name }} ({{
                 requestData.tokens_info.base.token.token_short_name
               }})</label
@@ -458,7 +474,7 @@
           </div>
           <div class="form-field">
             <label class="index-start-form__settings-item-head"
-              >Specify % for
+              >{{'Specify % for' | translate}}
               {{ requestData.tokens_info.quote.token.token_name }} ({{
                 requestData.tokens_info.quote.token.token_short_name
               }})</label
@@ -494,13 +510,6 @@
     </div>
   </form>
 </div>
-<!-- <div class="personal-swap-info">
-  <a routerLink="/trades/create">I need an individual SWAP</a>
-  <img class="personal-swap-info_ico" src="./assets/images/icons/help.svg">
-  <div class="personal-swap-info_tooltip">
-    A single smart contract created for the trade which guarantees anonymity and security
-  </div>
-</div> -->
 
 <ng-template #metaMaskError>
   <div class="dialog-block">
@@ -513,10 +522,10 @@
         <img src="./assets/images/icons/cross-blue.svg" />
       </button>
 
-      <div class="transaction-title">Error</div>
+      <div class="transaction-title">{{'Error' | translate}}</div>
 
       <div class="transaction-description">
-        Please choose main net network in Metamask.
+        {{'Please choose main net network in Metamask.' | translate}}
       </div>
 
       <div class="alert-window-buttons text-center">
@@ -525,7 +534,7 @@
           (click)="closeMetaMaskError()"
           type="button"
         >
-          <span>&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;{{'Close' | translate}}&nbsp;&nbsp;&nbsp;</span>
         </button>
       </div>
     </div>

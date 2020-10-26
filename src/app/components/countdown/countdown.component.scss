@@ -1,0 +1,43 @@
+@import '../../../scss/_mixins';
+@import '../../../scss/elements/vars';
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(45px, 120px));
+  grid-gap: 20px;
+  margin-top: 25px;
+
+  &-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 20%;
+    font-weight: bold;
+    font-size: 44px;
+    line-height: 51px;
+    text-align: center;
+    color: #4aa956;
+    position: relative;
+    border-radius: 5px;
+
+    @include b(700) {
+      font-size: 25px;
+    }
+
+    @include b(450) {
+      font-size: 20px;
+    }
+
+    &:after {
+      content: attr(data-title);
+      position: absolute;
+      font-weight: normal;
+      font-size: 15px;
+      line-height: 17px;
+      text-align: center;
+      color: white;
+      bottom: -30px;
+    }
+  }
+}

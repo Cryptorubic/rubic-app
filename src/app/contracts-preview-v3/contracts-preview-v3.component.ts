@@ -1,13 +1,1251 @@
+import {Observable} from "rxjs";
+
+interface IContractV3 {
+  id?: number;
+  name: string;
+  network?: number;
+  base_address?: string;
+  quote_address?: string;
+  base_limit?: string;
+  quote_limit?: string;
+  stop_date?: number;
+  owner_address?: string;
+  public?: boolean | undefined;
+  unique_link?: string;
+  unique_link_url?: string;
+
+  broker_fee: boolean;
+  broker_fee_address: string;
+  broker_fee_base: number;
+  broker_fee_quote: number;
+
+  quote_coin_id?: number;
+  base_coin_id?: number;
+  comment?: string;
+  tokens_info?: {
+    base?: {
+      token: any;
+      amount?: string;
+    };
+    quote?: {
+      token: any;
+      amount?: string;
+    };
+  };
+
+  whitelist?: any;
+  whitelist_address?: any;
+  min_base_wei?: any;
+  memo_contract?: any;
+  min_quote_wei?: any;
+
+  state?: string;
+  isSwapped?: boolean;
+  isAuthor?: boolean;
+  user?: number;
+  contract_state?: string;
+  notification?: boolean;
+  notification_tg: string;
+  notification_email: string;
+  created_date: string;
+}
+
+export const CHAINS_OF_NETWORKS = {
+  1: {
+    image: './assets/images/icons/coins/eth.png',
+    name: 'Ethereum'
+  },
+  22: {
+    image: './assets/images/icons/coins/bnb.svg',
+    name: 'Binance Smart Chain'
+  },
+  24: {
+    image: './assets/images/icons/coins/matic.svg',
+    name: 'Matic'
+  }
+}
+export const SWAPS_V2 = {
+  ABI: [
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'raised',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'myWishBasePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'isSwapped',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'quoteAddresses',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'expirationTimestamps',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseOnlyInvestor',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'myWishAddress',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'limits',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'MAX_INVESTORS',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [],
+      name: 'renounceOwnership',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'myWishQuotePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'brokers',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'investors',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'minInvestments',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'owner',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'isOwner',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'isCancelled',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'brokerPercents',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'investments',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseAddresses',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: 'newOwner',
+          type: 'address',
+        },
+      ],
+      name: 'transferOwnership',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'owners',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [],
+      name: 'vault',
+      outputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'baseAddress',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'quoteAddress',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'baseLimit',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'quoteLimit',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'expirationTimestamp',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'baseOnlyInvestor',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'minBaseInvestment',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'minQuoteInvestment',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'broker',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'brokerBasePercent',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'brokerQuotePercent',
+          type: 'uint256',
+        },
+      ],
+      name: 'OrderCreated',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'OrderCancelled',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'user',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'amount',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'balance',
+          type: 'uint256',
+        },
+      ],
+      name: 'Deposit',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'user',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'Refund',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'byUser',
+          type: 'address',
+        },
+      ],
+      name: 'OrderSwapped',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'user',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'SwapSend',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'id',
+          type: 'bytes32',
+        },
+        {
+          indexed: false,
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'broker',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'BrokerSend',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'oldMyWishAddress',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          name: 'newMyWishAddress',
+          type: 'address',
+        },
+      ],
+      name: 'MyWishAddressChange',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'oldBasePercent',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'oldQuotePercent',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'newBasePercent',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          name: 'newQuotePercent',
+          type: 'uint256',
+        },
+      ],
+      name: 'MyWishPercentsChange',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          name: 'previousOwner',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          name: 'newOwner',
+          type: 'address',
+        },
+      ],
+      name: 'OwnershipTransferred',
+      type: 'event',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '',
+          type: 'address',
+        },
+        {
+          name: '',
+          type: 'uint256',
+        },
+        {
+          name: '',
+          type: 'bytes',
+        },
+      ],
+      name: 'tokenFallback',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_baseAddress',
+          type: 'address',
+        },
+        {
+          name: '_quoteAddress',
+          type: 'address',
+        },
+        {
+          name: '_baseLimit',
+          type: 'uint256',
+        },
+        {
+          name: '_quoteLimit',
+          type: 'uint256',
+        },
+        {
+          name: '_expirationTimestamp',
+          type: 'uint256',
+        },
+        {
+          name: '_baseOnlyInvestor',
+          type: 'address',
+        },
+        {
+          name: '_minBaseInvestment',
+          type: 'uint256',
+        },
+        {
+          name: '_minQuoteInvestment',
+          type: 'uint256',
+        },
+        {
+          name: '_brokerAddress',
+          type: 'address',
+        },
+        {
+          name: '_brokerBasePercent',
+          type: 'uint256',
+        },
+        {
+          name: '_brokerQuotePercent',
+          type: 'uint256',
+        },
+      ],
+      name: 'createOrder',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_token',
+          type: 'address',
+        },
+        {
+          name: '_amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'deposit',
+      outputs: [],
+      payable: true,
+      stateMutability: 'payable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'cancel',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_token',
+          type: 'address',
+        },
+      ],
+      name: 'refund',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_vault',
+          type: 'address',
+        },
+      ],
+      name: 'setVault',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_basePercent',
+          type: 'uint256',
+        },
+        {
+          name: '_quotePercent',
+          type: 'uint256',
+        },
+      ],
+      name: 'setMyWishPercents',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: false,
+      inputs: [
+        {
+          name: '_myWishAddress',
+          type: 'address',
+        },
+      ],
+      name: 'setMyWishAddress',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_owner',
+          type: 'address',
+        },
+      ],
+      name: 'createKey',
+      outputs: [
+        {
+          name: 'result',
+          type: 'bytes32',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'allBrokersBasePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'allBrokersQuotePercent',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseLimit',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'quoteLimit',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseRaised',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'quoteRaised',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'isBaseFilled',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'isQuoteFilled',
+      outputs: [
+        {
+          name: '',
+          type: 'bool',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'baseInvestors',
+      outputs: [
+        {
+          name: '',
+          type: 'address[]',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'quoteInvestors',
+      outputs: [
+        {
+          name: '',
+          type: 'address[]',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_user',
+          type: 'address',
+        },
+      ],
+      name: 'baseUserInvestment',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+        {
+          name: '_user',
+          type: 'address',
+        },
+      ],
+      name: 'quoteUserInvestment',
+      outputs: [
+        {
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      constant: true,
+      inputs: [
+        {
+          name: '_id',
+          type: 'bytes32',
+        },
+      ],
+      name: 'orderBrokers',
+      outputs: [
+        {
+          name: '',
+          type: 'address[]',
+        },
+      ],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ],
+  // TestNets
+  ADDRESSES: {
+    ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
+    binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E',
+    matic: '0x86842ac94c1Eab9f00076464769e1eB4F6Ad6F90'
+  }
+  // ADDRESSES: {
+  //   ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
+  //   binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3',
+  //   matic: '0xcae0b5F3b4256572875E4E2A2ee2C83434097Af8'
+  // }
+};
+
+
 import {
-  Component,
+  Component, Injectable,
   OnDestroy,
   OnInit,
   TemplateRef,
-  ViewChild,
-  Inject,
+  ViewChild
 } from '@angular/core';
 
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router} from '@angular/router';
 
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Web3Service } from '../services/web3/web3.service';
@@ -15,43 +1253,48 @@ import BigNumber from 'bignumber.js';
 
 import { CONTRACT_STATES } from '../contract-preview/contract-states';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
-import { TransactionComponent } from '../transaction/transaction.component';
+// import { TransactionComponent } from '../transaction/transaction.component';
 import { ContractsService } from '../services/contracts/contracts.service';
 import { UserInterface } from '../services/user/user.interface';
 import { UserService } from '../services/user/user.service';
 
-import { SWAPS_V2 } from '../contract-form-all/contract-v2-details';
-import { ContactOwnerComponent } from '../contact-owner/contact-owner.component';
-import { IContractV3 } from '../contract-form-all/contract-form-all.component';
-import { ERC20_TOKEN_ABI } from '../services/web3/web3.constants';
+// import { SWAPS_V2 } from '../contract-form-all/contract-v2-details';
+// import { ContactOwnerComponent } from '../contact-owner/contact-owner.component';
+// import { IContractV3 } from '../contract-form-all/contract-form-all.component';
+import {CHAIN_OF_NETWORK, ERC20_TOKEN_ABI} from '../services/web3/web3.constants';
+import {HttpService} from "../services/http/http.service";
 
 export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
 
 @Component({
   selector: 'app-contracts-preview-v3',
   templateUrl: './contracts-preview-v3.component.html',
-  styleUrls: ['../contract-preview/contract-preview.component.scss'],
+  styleUrls: ['./contracts-preview-v3.component.scss'],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
 })
 export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
 
   private metaMaskErrorModal: MatDialogRef<any>;
+  private contractAddress: string;
+  public displayingBlockchains = CHAINS_OF_NETWORKS;
   constructor(
-    @Inject(MAT_DIALOG_DATA) public trxData,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private web3Service: Web3Service,
     private dialog: MatDialog,
     private contractService: ContractsService,
-    private userService: UserService
+    private userService: UserService,
   ) {
-    this.web3Contract = this.web3Service.getContract(
-      SWAPS_V2.ABI,
-      SWAPS_V2.ADDRESS
-    );
 
     this.originalContract = this.route.snapshot.data.contract;
+
+    this.contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.originalContract.network]];
+    this.web3Contract = this.web3Service.getContract(
+        SWAPS_V2.ABI,
+        this.contractAddress,
+        this.originalContract.network
+    );
 
     this.updatePromise = true;
 
@@ -147,8 +1390,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     cmcRange?: number;
   };
 
-  @ViewChild('administratorContact') administratorContact: TemplateRef<any>;
-
   private currentUser: any;
 
   public isAuth;
@@ -233,39 +1474,34 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             },
             (err) => {
               console.log(err);
-            }
+            },
           );
       };
-
-      if (this.originalContract.isEthereum) {
-        if (
-          this.originalContract.contract_state === 'CREATED' ||
-          !this.originalContract.owner_address
-        ) {
-          this.web3Contract.methods
-            .owners(memo)
-            .call()
-            .then(
-              (address) => {
-                if (
-                  address &&
-                  address !== '0x0000000000000000000000000000000000000000'
-                ) {
-                  this.originalContract.owner_address = address;
-                  checkAfterActive();
-                } else {
-                  resolve(this.originalContract.state);
-                }
-              },
-              (err) => {
-                console.log(err);
+      if (
+        this.originalContract.contract_state === 'CREATED' ||
+        !this.originalContract.owner_address
+      ) {
+        this.web3Contract.methods
+          .owners(memo)
+          .call()
+          .then(
+            (address) => {
+              if (
+                address &&
+                address !== '0x0000000000000000000000000000000000000000'
+              ) {
+                this.originalContract.owner_address = address;
+                checkAfterActive();
+              } else {
+                resolve(this.originalContract.state);
               }
-            );
-        } else {
-          checkAfterActive();
-        }
+            },
+            (err) => {
+              console.log(err);
+            },
+          );
       } else {
-        resolve(this.originalContract.state);
+        checkAfterActive();
       }
     });
   }
@@ -273,171 +1509,134 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private getBaseRaised() {
     const details = this.originalContract;
     const decimalsAmount = new BigNumber(details.tokens_info.base.amount).times(
-      Math.pow(10, details.tokens_info.base.token.decimals)
+      Math.pow(10, details.tokens_info.base.token.decimals),
     );
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .baseRaised(details.memo_contract)
-        .call()
-        .then(
-          (result) => {
-            result = new BigNumber(result);
-            this.contractInfo.baseRaised = result
-              .div(Math.pow(10, details.tokens_info.base.token.decimals))
-              .toString();
-            this.contractInfo.baseLeft = decimalsAmount.minus(result);
-            this.contractInfo.baseLeftString = this.contractInfo.baseLeft
-              .div(Math.pow(10, details.tokens_info.base.token.decimals))
-              .toString(10);
-          },
-          (err) => {
-            console.log(err);
-          }
-        );
-    } else {
-      this.contractInfo.baseRaised = 0;
-      this.contractInfo.baseLeft = decimalsAmount;
-      this.contractInfo.baseLeftString = this.contractInfo.baseLeft
-        .div(Math.pow(10, details.tokens_info.base.token.decimals))
-        .toString(10);
-    }
+
+    this.web3Contract.methods
+      .baseRaised(details.memo_contract)
+      .call()
+      .then(
+        (result) => {
+          result = result === null ? 0 : result;
+          result = new BigNumber(result);
+          this.contractInfo.baseRaised = result
+            .div(Math.pow(10, details.tokens_info.base.token.decimals))
+            .toString();
+          this.contractInfo.baseLeft = decimalsAmount.minus(result);
+          this.contractInfo.baseLeftString = this.contractInfo.baseLeft
+            .div(Math.pow(10, details.tokens_info.base.token.decimals))
+            .toString(10);
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
   }
   private getQuoteRaised() {
     const details = this.originalContract;
     const decimalsAmount = new BigNumber(
-      details.tokens_info.quote.amount
+      details.tokens_info.quote.amount,
     ).times(Math.pow(10, details.tokens_info.quote.token.decimals));
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .quoteRaised(details.memo_contract)
-        .call()
-        .then(
-          (result) => {
-            result = new BigNumber(result);
-            this.contractInfo.quoteRaised = result
-              .div(Math.pow(10, details.tokens_info.quote.token.decimals))
-              .toString();
-            this.contractInfo.quoteLeft = decimalsAmount.minus(result);
 
-            this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft
-              .div(Math.pow(10, details.tokens_info.quote.token.decimals))
-              .toString(10);
-          },
-          (err) => {
-            console.log(err);
-          }
-        );
-    } else {
-      this.contractInfo.quoteRaised = 0;
-      this.contractInfo.quoteLeft = decimalsAmount;
-      this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft
-        .div(Math.pow(10, details.tokens_info.quote.token.decimals))
-        .toString(10);
-    }
+    this.web3Contract.methods
+      .quoteRaised(details.memo_contract)
+      .call()
+      .then(
+        (result) => {
+          result = result === null ? 0 : result;
+          result = new BigNumber(result);
+          this.contractInfo.quoteRaised = result
+            .div(Math.pow(10, details.tokens_info.quote.token.decimals))
+            .toString();
+          console.log(this.contractInfo.quoteRaised);
+          this.contractInfo.quoteLeft = decimalsAmount.minus(result);
+          this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft
+            .div(Math.pow(10, details.tokens_info.quote.token.decimals))
+            .toString(10);
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
   }
   private getBaseInvestors() {
     const details = this.originalContract;
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .baseInvestors(details.memo_contract)
-        .call()
-        .then(
-          (result) => {
-            this.contractInfo.baseInvestors = result ? result.length : 0;
-          },
-          (err) => {
-            this.contractInfo.baseInvestors = 0;
-            // console.log(err);
-          }
-        );
-    } else {
-      this.contractInfo.baseInvestors = 0;
-    }
+
+    this.web3Contract.methods
+      .baseInvestors(details.memo_contract)
+      .call()
+      .then(
+        (result) => {
+          this.contractInfo.baseInvestors = result ? result.length : 0;
+        },
+        (err) => {
+          this.contractInfo.baseInvestors = 0;
+          // console.log(err);
+        },
+      );
   }
   private getQuoteInvestors() {
     const details = this.originalContract;
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .quoteInvestors(details.memo_contract)
-        .call()
-        .then(
-          (result) => {
-            this.contractInfo.quoteInvestors = result ? result.length : 0;
-          },
-          (err) => {
-            this.contractInfo.quoteInvestors = 0;
-          }
-        );
-    } else {
-      this.contractInfo.quoteInvestors = 0;
-    }
+    this.web3Contract.methods
+      .quoteInvestors(details.memo_contract)
+      .call()
+      .then(
+        (result) => {
+          this.contractInfo.quoteInvestors = result ? result.length : 0;
+        },
+        (err) => {
+          this.contractInfo.quoteInvestors = 0;
+        },
+      );
   }
   private getBaseBrokersPercent() {
     const details = this.originalContract;
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .myWishBasePercent()
-        .call()
-        .then(
-          (result) => {
-            this.contractInfo.baseBrokerPercent =
-              result / 100 + details.broker_fee_base;
-            this.contractInfo.baseBrokerAmount = new BigNumber(
-              details.tokens_info.base.amount
-            )
-              .div(100)
-              .times(this.contractInfo.baseBrokerPercent)
-              .toString();
-          },
-          (err) => {
-            console.log(err);
-          }
-        );
-    } else {
-      this.contractInfo.baseBrokerPercent = details.broker_fee_base;
-      this.contractInfo.baseBrokerAmount = new BigNumber(
-        details.tokens_info.base.amount
-      )
-        .div(100)
-        .times(this.contractInfo.baseBrokerPercent)
-        .toString();
-    }
+
+    this.web3Contract.methods
+      .myWishBasePercent()
+      .call()
+      .then(
+        (result) => {
+          this.contractInfo.baseBrokerPercent =
+            result / 100 + details.broker_fee_base;
+          this.contractInfo.baseBrokerAmount = new BigNumber(
+            details.tokens_info.base.amount,
+          )
+            .div(100)
+            .times(this.contractInfo.baseBrokerPercent)
+            .toString();
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
   }
   private getQuoteBrokersPercent() {
     const details = this.originalContract;
 
-    if (details.isEthereum) {
-      this.web3Contract.methods
-        .myWishQuotePercent()
-        .call()
-        .then(
-          (result) => {
-            this.contractInfo.quoteBrokerPercent =
-              result / 100 + details.broker_fee_quote;
-            this.contractInfo.quoteBrokerAmount = new BigNumber(
-              details.tokens_info.quote.amount
-            )
-              .div(100)
-              .times(this.contractInfo.quoteBrokerPercent)
-              .toString();
-          },
-          (err) => {
-            console.log(err);
-          }
-        );
-    } else {
-      this.contractInfo.quoteBrokerPercent = details.broker_fee_quote;
-      this.contractInfo.quoteBrokerAmount = new BigNumber(
-        details.tokens_info.quote.amount
-      )
-        .div(100)
-        .times(this.contractInfo.quoteBrokerPercent)
-        .toString();
-    }
+
+    this.web3Contract.methods
+      .myWishQuotePercent()
+      .call()
+      .then(
+        (result) => {
+          this.contractInfo.quoteBrokerPercent =
+            result / 100 + details.broker_fee_quote;
+          this.contractInfo.quoteBrokerAmount = new BigNumber(
+            details.tokens_info.quote.amount,
+          )
+            .div(100)
+            .times(this.contractInfo.quoteBrokerPercent)
+            .toString();
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
   }
 
   private getContractInfoFromBlockchain() {
@@ -450,40 +1649,36 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     this.getBaseBrokersPercent();
     this.getQuoteBrokersPercent();
 
-    if (details.isEthereum) {
-      if (details.contract_state === 'ACTIVE') {
-        if (this.oldCheckedState !== details.contract_state) {
-          this.web3Contract.methods
-            .owners(details.memo_contract)
-            .call()
-            .then(
-              (res) => {
-                this.originalContract.owner_address = res;
-              },
-              (err) => {
-                console.log(err);
-              }
-            );
-        }
 
+    if (details.contract_state === 'ACTIVE') {
+      if (this.oldCheckedState !== details.contract_state) {
         this.web3Contract.methods
-          .isSwapped(details.memo_contract)
+          .owners(details.memo_contract)
           .call()
           .then(
             (res) => {
-              this.originalContract.isSwapped = res;
+              this.originalContract.owner_address = res;
             },
             (err) => {
               console.log(err);
-            }
+            },
           );
-      } else {
-        this.originalContract.isSwapped = false;
       }
+
+      this.web3Contract.methods
+        .isSwapped(details.memo_contract)
+        .call()
+        .then(
+          (res) => {
+            this.originalContract.isSwapped = res;
+          },
+          (err) => {
+            console.log(err);
+          },
+        );
     } else {
       this.originalContract.isSwapped = false;
     }
-
     this.oldCheckedState = details.contract_state;
   }
 
@@ -539,7 +1734,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         const contractState = this.originalContract.contract_state;
         const ownerAddress = this.originalContract.owner_address;
         const isAuthor = this.originalContract.isAuthor;
-        const isEthereum = this.originalContract.isEthereum;
 
         this.originalContract = result;
         this.originalContract.tokens_info = tokens_info;
@@ -549,7 +1743,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         this.originalContract.owner_address = ownerAddress;
         this.originalContract.isAuthor = isAuthor;
         this.originalContract.unique_link_url = this.contractAdditional.link;
-        this.originalContract.isEthereum = isEthereum;
       })
       .finally(() => {
         this.analyzeContract();
@@ -577,63 +1770,71 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     const interfaceMethod = this.web3Service.getMethodInterface(
       'refund',
-      SWAPS_V2.ABI
+      SWAPS_V2.ABI,
     );
     const methodSignature = this.web3Service.encodeFunctionCall(
       interfaceMethod,
-      [details.memo_contract, token.address]
+      [details.memo_contract, token.address],
     );
 
     const sendTransaction = (wallet?) => {
       return this.web3Service.sendTransaction(
         {
           from: wallet,
-          to: SWAPS_V2.ADDRESS,
+          to: this.contractAddress,
           data: methodSignature,
         },
-        'metamask'
-      );
+          this.originalContract.network
+      ).catch((err) => {
+        this.metamaskError = err;
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container',
+        });
+      });
     };
 
-    window['ethereum'].enable().then((accounts) => {
-      const address = accounts[0];
-      sendTransaction(address);
-    });
+    // window['ethereum'].enable().then((accounts) => {
+    //   const address = accounts[0];
+      return sendTransaction();
+    // });
+  }
+
+  public closeMetaMaskError() {
+    this.metaMaskErrorModal.close();
   }
 
   public sendCancel() {
     const details = this.originalContract;
-
-    if (!details.isEthereum) {
-      this.contractService.cancelSWAP3(details.id).then((result) => {
-        console.log(result);
-      });
-      return;
-    }
-
     const cancelMethod = this.web3Service.getMethodInterface(
       'cancel',
-      SWAPS_V2.ABI
+      SWAPS_V2.ABI,
     );
     const cancelSignature = this.web3Service.encodeFunctionCall(cancelMethod, [
       details.memo_contract,
     ]);
 
-    const cancelTransaction = (wallet) => {
+    const cancelTransaction = (wallet?) => {
       return this.web3Service.sendTransaction(
         {
           from: wallet,
-          to: SWAPS_V2.ADDRESS,
+          to: this.contractAddress,
           data: cancelSignature,
         },
-        'metamask'
-      );
+          this.originalContract.network
+      ).catch((err) => {
+        this.metamaskError = err;
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container',
+        });
+      });
     };
 
-    window['ethereum'].enable().then((accounts) => {
-      const address = accounts[0];
-      cancelTransaction(address);
-    });
+    // window['ethereum'].enable().then((accounts) => {
+    //   const address = accounts[0];
+    return cancelTransaction();
+    // });
   }
 
   public initialisationTrade() {
@@ -641,7 +1842,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     const interfaceMethod = this.web3Service.getMethodInterface(
       'createOrder',
-      SWAPS_V2.ABI
+      SWAPS_V2.ABI,
     );
 
     let baseDecimalsTimes = 1;
@@ -651,7 +1852,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       baseDecimalsTimes = Math.pow(10, details.tokens_info.base.token.decimals);
       quoteDecimalsTimes = Math.pow(
         10,
-        details.tokens_info.quote.token.decimals
+        details.tokens_info.quote.token.decimals,
       );
     }
 
@@ -688,22 +1889,28 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     const activateSignature = this.web3Service.encodeFunctionCall(
       interfaceMethod,
-      trxRequest
+      trxRequest,
     );
-    window['ethereum'].enable().then((accounts) => {
-      const address = accounts[0];
-      sendActivateTrx(address);
-    });
     const sendActivateTrx = (wallet?) => {
       return this.web3Service.sendTransaction(
         {
           from: wallet,
-          to: SWAPS_V2.ADDRESS,
+          to: this.contractAddress,
           data: activateSignature,
         },
-        'metamask'
-      );
+          this.originalContract.network
+      ).catch((err) => {
+        this.metamaskError = err;
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container',
+        });
+      });
     };
+    // window['ethereum'].enable().then((accounts) => {
+    //   const address = accounts[0];
+    return sendActivateTrx();
+    // });
   }
 
   private getContributeTransaction(amount, token) {
@@ -723,30 +1930,33 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       .times(Math.pow(10, tokenModel.token.decimals))
       .toString(10);
 
-    let value: string;
-    if (tokenModel.token.isEther) {
-      value = stringAmountValue;
-    }
+    const value = stringAmountValue;
 
     const depositMethod = this.web3Service.getMethodInterface(
       'deposit',
-      SWAPS_V2.ABI
+      SWAPS_V2.ABI,
     );
     const depositSignature = this.web3Service.encodeFunctionCall(
       depositMethod,
-      [details.memo_contract, tokenModel.token.address, stringAmountValue]
+      [details.memo_contract, tokenModel.token.address, stringAmountValue],
     );
 
     const contributeTransaction = (wallet) => {
       return this.web3Service.sendTransaction(
         {
           from: wallet.address,
-          to: SWAPS_V2.ADDRESS,
+          to: this.contractAddress,
           data: depositSignature,
-          value: value || undefined,
+          value: tokenModel.token.isNative ? value : undefined,
         },
-        wallet.type
-      );
+          this.originalContract.network
+      ).catch((err) => {
+        this.metamaskError = err;
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container',
+        });
+      });
     };
 
     return {
@@ -769,10 +1979,10 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
                   type: 'metamask',
                   address,
                 },
-                transaction
+                transaction,
               );
             },
-            transaction
+            transaction,
           );
           break;
         default:
@@ -818,13 +2028,6 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       });
   }
 
-  private checkAllChecked(forceCheck?) {
-    this.countChecked++;
-    if (this.countChecked === this.trxData.transactions.length || forceCheck) {
-      this.trxData.checked = true;
-    }
-  }
-
   ngOnDestroy(): void {
     if (this.updateContractTimer) {
       window.clearTimeout(this.updateContractTimer);
@@ -833,21 +2036,13 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     // this.getAccountsSubscriber.unsubscribe();
   }
 
-  public openContactForm() {
-    this.dialog.open(ContactOwnerComponent, {
-      width: '38.65em',
-      panelClass: 'custom-dialog-container',
-      data: this.originalContract,
-    });
-  }
-
   public quoteWillGetValue(amount) {
     const details = this.originalContract;
 
     const quoteWillValue = new BigNumber(amount).times(
       new BigNumber(details.tokens_info.quote.amount).div(
-        new BigNumber(details.tokens_info.base.amount)
-      )
+        new BigNumber(details.tokens_info.base.amount),
+      ),
     );
 
     const quoteFeeValue = quoteWillValue
@@ -865,8 +2060,8 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     const details = this.originalContract;
     const baseWillValue = new BigNumber(amount).times(
       new BigNumber(details.tokens_info.base.amount).div(
-        new BigNumber(details.tokens_info.quote.amount)
-      )
+        new BigNumber(details.tokens_info.quote.amount),
+      ),
     );
 
     const baseFeeValue = baseWillValue
@@ -880,23 +2075,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     }
   }
 
-  private openAdministratorInfo() {
-    this.dialog.open(this.administratorContact, {
-      width: '480px',
-      panelClass: 'custom-dialog-container',
-    });
-  }
-
   public sendContribute(amount, token) {
     try {
       this.amount = amount;
       this.token = token;
       const details = this.originalContract;
-
-      if (!details.isEthereum) {
-        this.openAdministratorInfo();
-        return;
-      }
 
       if (details.contract_state === 'CREATED') {
         this.initialisationTrade();
@@ -912,15 +2095,21 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private checkAllowance = (wallet, token, amount) => {
     return new Promise((resolve, reject) => {
       const tokenModel = this.originalContract.tokens_info[token].token;
+      amount = new BigNumber(amount).times(Math.pow(10, tokenModel.decimals));
+
       this.tokenContract = this.web3Service.getContract(
         ERC20_TOKEN_ABI,
-        tokenModel.address
+        tokenModel.address,
+        this.originalContract.network
       );
       this.tokenContract.methods
-        .allowance(wallet, SWAPS_V2.ADDRESS)
+        .allowance(wallet, this.contractAddress)
         .call()
         .then(
           (result) => {
+            console.log('ALLOWANCE: ' + result);
+            console.log('NEED AMOUNT: ' + amount);
+
             result = result ? result.toString(10) : result;
             result = result === '0' ? null : result;
             if (result && new BigNumber(result).minus(amount).isPositive()) {
@@ -931,7 +2120,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           },
           () => {
             reject(false);
-          }
+          },
         );
     });
   };
@@ -948,11 +2137,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       const approveSignature = this.web3Service.encodeFunctionCall(
         approveMethod,
         [
-          SWAPS_V2.ADDRESS,
+          this.contractAddress,
           new BigNumber(90071992.5474099)
             .times(Math.pow(10, Math.max(contributeData.token.decimals, 7)))
             .toString(10),
-        ]
+        ],
       );
 
       const approveTransaction = (wallet) => {
@@ -962,8 +2151,14 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             to: contributeData.token.address,
             data: approveSignature,
           },
-          wallet.type
-        );
+          this.originalContract.network
+        ).catch((err) => {
+          this.metamaskError = err;
+          this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+            width: '480px',
+            panelClass: 'custom-dialog-container',
+          });
+        });
       };
       this.updateAddresses(true);
 
@@ -974,19 +2169,17 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           ' ' +
           contributeData.token.token_short_name +
           ' tokens to contract',
-        to: SWAPS_V2.ADDRESS,
+        to: this.contractAddress,
         data: contributeData.signature,
         action: contributeData.action,
-        ethValue: !contributeData.token.isEther ? undefined : textAmount,
+        ethValue: !contributeData.token.isNative ? undefined : textAmount,
       };
       this.allowanceObj[token].isAllowancing = true;
 
-      if (!contributeData.token.isEther) {
+      if (!contributeData.token.isNative) {
         window['ethereum'].enable().then((accounts) => {
           return new Promise((resolve, _) => {
             const address = accounts[0];
-            if (!this.allowanceObj[token].isAllowance) {
-            }
             this.checkAllowance(address, token, amount)
               .then((status) => {
                 this.createTransactionObj(transaction);
@@ -1022,14 +2215,14 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           type: 'metamask',
           address,
         },
-        transaction
+        transaction,
       );
     });
   }
 
   private updateAddresses(ifEnabled?, cb?, transaction?) {
     this.getAccountsSubscriber = this.web3Service
-      .getAccounts(false, ifEnabled)
+      .getAccounts(false, ifEnabled, this.originalContract.network)
       .subscribe(
         (addresses: any) => {
           this.metamaskError = false;
@@ -1038,6 +2231,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             cb(addresses.metamask[0]);
           }
           if (
+            transaction &&
             transaction.checkComplete &&
             addresses.metamask &&
             addresses.metamask[0]
@@ -1048,20 +2242,15 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
                 (result) => {
                   if (result) {
                     transaction.confirmed = true;
-                    this.checkAllChecked();
                   }
                 },
-                (err) => {
-                  this.checkAllChecked();
-                }
+                (err) => {}
               );
           } else {
-            this.checkAllChecked();
           }
         },
         (error) => {
           this.metamaskError = error;
-          this.checkAllChecked(true);
         }
       );
 
@@ -1074,13 +2263,85 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
       window['ethereum'].enable().then((accounts) => {
         const address = accounts[0];
-
-        if (!contributeData.token.isEther) {
+        if (!contributeData.token.isNative) {
           this.checkAllowance(address, token, 0).catch(() => {
             this.allowanceObj[token].isAllowance = false;
           });
         }
       });
     });
+  }
+}
+
+
+
+@Injectable()
+export class ContractEditV3Resolver implements Resolve<any> {
+  private currentUser;
+  private route;
+
+  constructor(
+      private contractsService: ContractsService,
+      private userService: UserService,
+      private httpService: HttpService,
+      private web3Service: Web3Service,
+      private router: Router
+  ) {}
+
+  private contractId: number;
+  private publicLink: string;
+
+  private getContractInformation(observer, isPublic?) {
+    const promise = (!isPublic
+        ? this.contractsService.getContractV3Information(this.contractId)
+        : this.contractsService.getSwapByPublic(this.publicLink)) as Promise<any>;
+
+    promise.then(
+        (trade: IContractV3) => {
+          this.web3Service.getSWAPSCoinInfo(trade).then((result: any) => {
+            observer.next(result);
+            observer.complete();
+          });
+        },
+        () => {
+          this.router.navigate(['/trades']);
+        }
+    );
+  }
+
+  resolve(route: ActivatedRouteSnapshot) {
+    this.route = route;
+    if (route.params.id) {
+      this.contractId = route.params.id;
+      return new Observable((observer) => {
+        const subscription = this.userService
+            .getCurrentUser(false, true)
+            .subscribe((user) => {
+              this.currentUser = user;
+              if (!user.is_ghost) {
+                this.getContractInformation(observer);
+              } else {
+                this.userService.openAuthForm().then(
+                    () => {
+                      this.getContractInformation(observer);
+                    },
+                    () => {
+                      this.router.navigate(['/trades']);
+                      //
+                    }
+                );
+              }
+              subscription.unsubscribe();
+            });
+        return {
+          unsubscribe() {},
+        };
+      });
+    } else if (route.params.public_link) {
+      this.publicLink = route.params.public_link;
+      return new Observable((observer) => {
+        this.getContractInformation(observer, true);
+      });
+    }
   }
 }

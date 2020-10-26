@@ -14,6 +14,8 @@ import { Web3Service } from '../../services/web3/web3.service';
 import { UserInterface } from '../../services/user/user.interface';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { NavigationStart, Router } from '@angular/router';
+import { CookieService } from "ngx-cookie-service";
+import {LangChangeEvent, TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-header',
@@ -28,6 +30,11 @@ export class HeaderComponent implements OnInit {
   public openedMenu;
   public userMenuOpened;
 
+  public openedLngList: boolean;
+  private translator: TranslateService;
+  public languagesList: { lng: string; title: string; active?: boolean }[];
+  public currLanguage: string;
+
   @ViewChild('logoutConfirmation') logoutConfirmation: TemplateRef<any>;
   @ViewChild('headerPage') headerPage;
 
@@ -40,8 +47,29 @@ export class HeaderComponent implements OnInit {
     private userService: UserService,
     private dialog: MatDialog,
     private router: Router,
-    private web3Service: Web3Service
+    private web3Service: Web3Service,
+    private translate: TranslateService,
+    private cookieService: CookieService
   ) {
+    this.translator = translate;
+    this.languagesList = [
+      {
+        lng: "en",
+        title: "English",
+      },
+      {
+        lng: "ko",
+        title: "한국어",
+      },
+    ];
+
+    translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.setActiveLanguage(event);
+    });
+    this.setActiveLanguage({
+      lang: translate.currentLang,
+    });
+
     this.currentUser = this.userService.getUserModel();
     this.userService
       .getCurrentUser()
@@ -151,4 +179,31 @@ export class HeaderComponent implements OnInit {
         this.logoutProgress = false;
       });
   }
+
+
+  private setActiveLanguage(event) {
+    if (this.currLanguage) {
+      this.languagesList.filter((lang) => {
+        return lang["lng"] === this.currLanguage;
+      })[0].active = false;
+    }
+    this.currLanguage = event.lang;
+    this.cookieService.set("lng", this.currLanguage, null, null, null, null, null);
+
+    this.languagesList.filter((lang) => {
+      return lang["lng"] === this.currLanguage;
+    })[0].active = true;
+    this.languagesList.sort((a, b) => {
+      return b.active ? 1 : -1;
+    });
+  }
+
+  public toggleLanguage() {
+    this.openedLngList = !this.openedLngList;
+  }
+
+  public setLanguage(lng) {
+    this.translator.use(lng);
+  }
+
 }

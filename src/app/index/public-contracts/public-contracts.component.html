@@ -1,7 +1,7 @@
 <div class="active-swaps_container">
   <div>
     <div class="title-section">
-      Order Book&nbsp;&nbsp;&nbsp;
+      {{'Order Book' | translate}}&nbsp;&nbsp;&nbsp;
 
       <button
         class="refresh-btn"
@@ -54,8 +54,8 @@
       <div class="public-swaps">
         <div class="grid-row public-swaps_row">
           <div class="grid-cell grid-cell-1-4 public-swaps_head-cell">
-            <div class="titles-coins">SEND</div>
-            <div class="titles-coins">GET</div>
+            <div class="titles-coins">{{'SEND' | translate}}</div>
+            <div class="titles-coins">{{'GET' | translate}}</div>
           </div>
         </div>
 
@@ -97,12 +97,12 @@
               >
                 <span></span>
               </button>
-              Volume
+              {{'Volume' | translate}}
             </div>
           </div>
           <div class="grid-cell grid-cell-1-8 public-swaps_head-cell">
             <div class="public-swaps_head_content bold text-center">
-              Decentralized
+              {{'Chain' | translate}}
             </div>
           </div>
           <div
@@ -121,7 +121,7 @@
               >
                 <span></span>
               </button>
-              {{ openedTradesTab === 'ACTIVE' ? 'Expires in' : 'Status' }}
+              {{ (openedTradesTab === 'ACTIVE' ? 'Expires in' : 'Status') | translate }}
             </div>
           </div>
         </div>
@@ -276,8 +276,9 @@
             </div>
             <div class="grid-cell grid-cell-1-8 public-swaps_cell">
               <div class="public-swaps_cell_content text-center">
-                <div class="swap-info">
-                  {{ contract.contract_details.isDecentralized ? 'YES' : 'NO' }}
+                <div class="swap-info swap-info__blockchain">
+                  <img [src]="displayingBlockchains[contract.network].image" class="swap-info__blockchain_icon"/>
+<!--                  <span class="swap-info__blockchain_name">{{ displayingBlockchains[contract.network].name }}</span>-->
                 </div>
               </div>
             </div>
@@ -290,9 +291,9 @@
                     openedTradesTab === 'ACTIVE'
                   "
                 >
-                  {{ contract.contract_details.left_times.times_parts[0] }}d:
-                  {{ contract.contract_details.left_times.times_parts[1] }}h:
-                  {{ contract.contract_details.left_times.times_parts[2] }}m
+                  {{'d:h:m' | translate :
+                '{days:' + contract.contract_details.left_times.times_parts[0] + ', hours:' + contract.contract_details.left_times.times_parts[1] + ', minutes:' + contract.contract_details.left_times.times_parts[2] + '}'
+                  }}
                 </div>
 
                 <div class="swap-info" *ngIf="openedTradesTab === 'PAST'">
@@ -330,7 +331,7 @@
               </span>
             </span>
 
-            <span> Show more </span>
+            <span> {{'Show more' | translate}} </span>
           </button>
           <button
             class="btn btn-white-opacity width-100 white-border"
@@ -340,7 +341,7 @@
               displayingContractsList?.length < allFilteredOrdersCount?.length
             "
           >
-            <span> Show more </span>
+            <span> {{'Show more' | translate}} </span>
           </button>
         </div>
         <div
@@ -348,8 +349,8 @@
           *ngIf="contractsList?.length && !displayingContractsList?.length"
           style="color: black"
         >
-          There is no matching pair, please
-          <a routerLink="/trades/create">create your own</a>
+          {{'There is no matching pair, please' | translate}}
+          <a routerLink="/trades/create">{{'create your own' | translate}}</a>
         </div>
       </div>
     </div>
