@@ -7,6 +7,7 @@
   "Logout": "로그 아웃",
   "Yes": "예",
   "No": "아니오",
+  "Any": "어떤",
 
   "Copyright": "Copyright",
   "Privacy policy": "Privacy policy",
@@ -42,6 +43,7 @@
   "Use custom token": "맞춤 토큰 사용",
   "Token Contract Address": "토큰 계약 주소",
   "Choose Token": "토큰 선택",
+  "Enter Amount": "금액을 입력하세요",
 
   "Error": "오류",
   "Please choose main net network in Metamask.": "Metamask에서 메인 넷 네트워크를 선택하세요.",
@@ -54,7 +56,7 @@
   "Chain": "체인",
   "Expires in": "만료",
   "Status": "상태",
-  "d:h:m": "{{일}}d: {{시간}}h: {{의사록}}m",
+  "d:h:m": "{{days}}일: {{hours}}시간: {{minutes}}분",
   "Show more": "자세히보기",
   "There is no matching pair, please": "일치하는 쌍이 없습니다.",
   "create your own": "직접 만들어 봐",
@@ -169,17 +171,17 @@
   "The trade was cancelled.": "거래가 취소되었습니다.",
   "Rate:": "율:",
 
-  "The trade's rate is { rate }% more profitable than coinmarketcap rate":
+  "The trade's rate is {rate}% more profitable than coinmarketcap rate":
   "거래의 이자율은 코인 시가 총액보다 {{rate}} % 더 수익성이 높습니다.",
 
-  "The trade's rate is { rate }% less profitable than coinmarketcap rate":
+  "The trade's rate is {rate}% less profitable than coinmarketcap rate":
   "거래의 이자율은 코인 시가 총액보다 수익성이 {{rate}} % 낮습니다.",
 
   "Sent": "보냄",
   "Check on Explorer": "Explorer에서 확인",
   "Number of investors": "투자자 수",
 
-  "You will get { amount } { token } after Trade": "거래 후 {{금액}} {{토큰}}을 받게됩니다.",
+  "You will get {amount} {token} after Trade": "거래 후 {{amount}} {{token}}을 받게됩니다.",
   "Fill all": "모두 채우기",
   "Min Contribution Limit:": "최소 기부 한도 :",
   "Only Owner can contribute": "소유자 만 기여할 수 있습니다.",

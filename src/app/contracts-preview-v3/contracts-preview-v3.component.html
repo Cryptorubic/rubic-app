@@ -99,10 +99,10 @@
               *ngIf="cmcRate"
             >
               <span *ngIf="cmcRate.cmcRange > 0">
-                {{'The trade\'s rate is {rate}% more profitable than coinmarketcap rate' | translate : '{rate: ' + (cmcRate.absCmcRange | number: '1.0-1') + '}'}}
+                {{"The trade's rate is {rate}% more profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}
               </span>
               <span *ngIf="cmcRate.cmcRange < 0">
-                {{'The trade\'s rate is {rate}% more less than coinmarketcap rate' | translate : '{rate: ' + (cmcRate.absCmcRange | number: '1.0-1') + '}'}}
+                {{"The trade's rate is {rate}% less profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}
               </span>
             </div>
           </div>
@@ -267,7 +267,7 @@
                               }"
                               name="amount"
                               [ngModel]="baseValueContribution"
-                              placeholder="Enter amount"
+                              placeholder="{{'Enter Amount' | translate}}"
                               class="min-text minimal-input"
                             />
                           </div>
@@ -315,8 +315,8 @@
                       >
                         <div class="form-field">
                           <span class="normal-text">
-                            {{'You will get { amount } { token } after Trade' | translate :
-                            '{amount: ' + quoteWillGetValue(baseContributeForm.value.amount) | number: '1.0-8'+', token: '+ tokens.quote.token.token_short_name +'}'}}
+                            {{'You will get {amount} {token} after Trade' | translate :
+                            '{amount: "' + (quoteWillGetValue(baseContributeForm.value.amount) | number : '1.0-8') + '", token: "'+ tokens.quote.token.token_short_name +'"}'}}
                           </span>
                         </div>
                       </div>
@@ -414,7 +414,7 @@
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    <span>{{ tokens.quote.amount | number: '1.0-8' }}</span>
+                    <span>{{ (tokens.quote.amount || 0) | number: '1.0-8' }}</span>
                     <div class="tokens-info-block_filled-wrapper">
                       <div class="tokens-info-block_filled_item send">
                         <div class="tokens-info-block_filled__text">{{'Sent' | translate}}</div>
@@ -547,7 +547,7 @@
                               }"
                               name="amount"
                               [ngModel]="quoteValueContribution"
-                              placeholder="Enter amount"
+                              placeholder="{{'Enter Amount' | translate}}"
                               class="min-text minimal-input"
                             />
                           </div>
@@ -593,8 +593,8 @@
                       >
                         <div class="form-field">
                           <span class="normal-text">
-                            {{'You will get { amount } { token } after Trade' | translate :
-                          '{amount: ' + baseWillGetValue(quoteContributeForm.value.amount) | number: '1.0-8'+', token: '+ tokens.base.token.token_short_name +'}'}}
+                            {{'You will get {amount} {token} after Trade' | translate :
+                          '{amount: "' + (baseWillGetValue(quoteContributeForm.value.amount) | number: '1.0-8') + '", token: "'+ tokens.base.token.token_short_name +'"}'}}
                           </span>
                         </div>
                       </div>

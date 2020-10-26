@@ -7,6 +7,7 @@
   "Logout": "Logout",
   "Yes": "Yes",
   "No": "No",
+  "Any": "Any",
 
   "Copyright": "Copyright",
   "Privacy policy": "Privacy policy",
@@ -42,6 +43,7 @@
   "Use custom token": "Use custom token",
   "Token Contract Address": "Token Contract Address",
   "Choose Token": "Choose Token",
+  "Enter Amount": "Enter Amount",
 
   "Error": "Error",
   "Please choose main net network in Metamask.": "Please choose main net network in Metamask.",
@@ -169,17 +171,17 @@
   "The trade was cancelled.": "The trade was cancelled.",
   "Rate:": "Rate:",
 
-  "The trade's rate is { rate }% more profitable than coinmarketcap rate":
+  "The trade's rate is {rate}% more profitable than coinmarketcap rate":
   "The trade's rate is {{ rate }}% more profitable than coinmarketcap rate",
 
-  "The trade's rate is { rate }% less profitable than coinmarketcap rate":
+  "The trade's rate is {rate}% less profitable than coinmarketcap rate":
   "The trade's rate is {{ rate }}% less profitable than coinmarketcap rate",
 
   "Sent": "Sent",
   "Check on Explorer": "Check on Explorer",
   "Number of investors": "Number of investors",
 
-  "You will get { amount } { token } after Trade": "You will get {{ amount }} {{ token }} after Trade",
+  "You will get {amount} {token} after Trade": "You will get {{ amount }} {{ token }} after Trade",
   "Fill all": "Fill all",
   "Min Contribution Limit:": "Min Contribution Limit:",
   "Only Owner can contribute": "Only Owner can contribute",
