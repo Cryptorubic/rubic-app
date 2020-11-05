@@ -1224,16 +1224,16 @@ export const SWAPS_V2 = {
     },
   ],
   // TestNets
-  ADDRESSES: {
-    ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
-    binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E',
-    matic: '0x86842ac94c1Eab9f00076464769e1eB4F6Ad6F90'
-  }
   // ADDRESSES: {
-  //   ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
-  //   binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3',
-  //   matic: '0xcae0b5F3b4256572875E4E2A2ee2C83434097Af8'
+  //   ethereum: '0x02a9cc38b711c8349cca67a82f5cbd3c0021ab1d',
+  //   binance: '0x2822a211905c10EFf60Eb9bc2777F34243Cef83E',
+  //   matic: '0x86842ac94c1Eab9f00076464769e1eB4F6Ad6F90'
   // }
+  ADDRESSES: {
+    ethereum: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',
+    binance: '0xEAFbb34e5200Fff4F3998e8af43721090A3Aeef3',
+    matic: '0xcae0b5F3b4256572875E4E2A2ee2C83434097Af8'
+  }
 };
 
 
