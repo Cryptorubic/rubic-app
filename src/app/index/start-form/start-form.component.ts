@@ -13,7 +13,7 @@ import { Web3Service } from '../../services/web3/web3.service';
 import { UserService } from '../../services/user/user.service';
 import BigNumber from 'bignumber.js';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CHAIN_OF_NETWORK } from '../../services/web3/web3.constants';
+import {CHAIN_OF_NETWORK, ERC20_TOKEN_ABI} from '../../services/web3/web3.constants';
 import { ContractsService } from '../../services/contracts/contracts.service';
 import * as moment from 'moment';
 import {
@@ -30,6 +30,7 @@ import {
 } from '@angular/material-moment-adapter';
 
 import { MODE } from '../../app-routing.module';
+import {OneInchService} from "../../models/1inch";
 export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
 
 const defaultNetwork = 1;
@@ -116,13 +117,19 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     22: 'binance',
     24: 'matic'
   };
+
+  public instantTradesAvailable: boolean;
+  public instanceTrade: boolean;
+  private instanceTradeParams: any = {};
+
   constructor(
     private dialog: MatDialog,
     protected contractsService: ContractsService,
     private web3Service: Web3Service,
     protected router: Router,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private oneInchService: OneInchService
   ) {
     this.CMCRates = {};
     this.currentUser = this.userService.getUserModel();
@@ -239,9 +246,76 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       : quoteCoinAmount.div(baseCoinAmount)
     ).toString();
   }
-  public changedToken(token?) {
+
+  public getInstanceQuoteProgress = false;
+  public getInstanceQuoteTimeout: any;
+
+  public checkInstancePrice() {
+    if (this.instanceTrade && this.instantTradesAvailable) {
+      const params = this.getOrderParams();
+      if (!(+params.amount > 0)) {
+        return;
+      }
+      const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
+      this.getInstanceQuoteProgress = true;
+
+      if (this.getInstanceQuoteTimeout) {
+        clearTimeout(this.getInstanceQuoteTimeout);
+      }
+
+      this.getInstanceQuoteTimeout = setTimeout(() => {
+        this.oneInchService.getQuote(params).then((result: any) => {
+          this.instanceTradeParams = result;
+          this.requestData.tokens_info.quote.amount = new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10);
+          this.QuoteTokenCustom.emit();
+          this.getInstanceQuoteProgress = false;
+        });
+      }, 1000);
+    }
+  }
+
+  private tokensCache = {
+    quote: '',
+    base: '',
+    baseAmount: ''
+  };
+
+  private checkAndGetInstanceQuote() {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
+
+    const identical = this.tokensCache.base === baseCoin.address && this.tokensCache.quote === quoteCoin.address;
+
+    if (!identical) {
+      this.tokensCache.base = baseCoin.address;
+      this.tokensCache.quote = quoteCoin.address;
+      if (baseCoin.address && quoteCoin.address && baseCoin.address !== quoteCoin.address && this.requestData.network === 1) {
+        this.instantTradesAvailable = this.oneInchService.checkTokensPair(baseCoin, quoteCoin);
+      } else {
+        this.instantTradesAvailable = false;
+      }
+    }
+
+    if (this.instantTradesAvailable) {
+      if (!identical || (this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount)) {
+        this.checkInstancePrice();
+        this.tokensCache.baseAmount = this.requestData.tokens_info.base.amount;
+      } else {
+        const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
+        this.requestData.tokens_info.quote.amount = new BigNumber(
+            this.instanceTradeParams.toTokenAmount
+        ).div(quoteDecimalsTimes).toString(10);
+        this.QuoteTokenCustom.emit();
+      }
+    }
+  }
+
+  public changedToken(token?) {
+
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+    this.checkAndGetInstanceQuote();
+
     if (
       this.requestData.tokens_info.base.amount &&
       this.requestData.tokens_info.quote.amount &&
@@ -266,9 +340,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
-  public toogleShowCustomToken(type) {
-    this.tokensData[type].customToken = !this.tokensData[type].customToken;
-  }
   public toogleAdvSettings() {
     this.isAdvSettingsOpen = !this.isAdvSettingsOpen;
   }
@@ -454,9 +525,103 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
+  private getOrderParams() {
+
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+    const params = {} as any;
+    params.fromTokenSymbol = baseCoin.token_short_name;
+    params.toTokenSymbol = quoteCoin.token_short_name;
+    const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
+    params.amount = new BigNumber(this.requestData.tokens_info.base.amount).times(baseDecimalsTimes).toString(10);
+    return params;
+  }
+
+  private createInstanceTrade() {
+    const params = this.getOrderParams();
+    params.fromAddress = this.metamaskAccount;
+    this.getInstanceQuoteProgress = true;
+
+    this.getInstanceQuoteTimeout = setTimeout(() => {
+      this.oneInchService.getSwap(params, this.instanceTradeParams).then((result) => {
+        this.send1InchTransaction(result, params).then(() => {
+          alert('Видимо ты смог!');
+          this.resetStartForm();
+          const win = window.open('https://etherscan.io', 'target=_blank');
+        }, () => {
+          alert('Нужно доделывать!');
+        }).finally(() => {
+          this.getInstanceQuoteProgress = false;
+        });
+      });
+    }, 1000);
+  }
+
+
+  private send1InchTransaction(txData, params) {
+    const remoteContractAddress = '0xe4c9194962532feb467dce8b3d42419641c6ed2e';
+    let tokenContract;
+    const baseToken = this.requestData.tokens_info.base.token;
+
+    const sendFinishTx = () => {
+      return this.web3Service.sendTransaction(txData, this.requestData.network);
+    }
+
+    const sendApproveTx = () => {
+      const approveMethod = this.web3Service.getMethodInterface('approve');
+      const approveSignature = this.web3Service.encodeFunctionCall(
+          approveMethod,
+          [
+            remoteContractAddress,
+            params.amount.toString(10),
+          ],
+      );
+
+      return this.web3Service.sendTransaction(
+          {
+            from: this.metamaskAccount,
+            to: baseToken.address,
+            data: approveSignature,
+          },
+          this.requestData.network
+      ).then((res) => {
+        return sendFinishTx();
+      });
+    };
+
+    if (baseToken.token_short_name === 'ETH') {
+      return sendFinishTx();
+    } else {
+      tokenContract = this.web3Service.getContract(
+          ERC20_TOKEN_ABI,
+          baseToken.address,
+          this.requestData.network
+      );
+      return tokenContract.methods
+          .allowance(this.metamaskAccount, remoteContractAddress)
+          .call()
+          .then((result) => {
+            const fromParamsAmount = new BigNumber(params.amount);
+            const isAllowance = !fromParamsAmount.minus(result).isPositive();
+            if (isAllowance) {
+              return sendFinishTx();
+            } else {
+              return sendApproveTx();
+            }
+          })
+    }
+  }
+
+
+  private metamaskAccount: string;
   public createContract() {
     const accSubscriber = this.updateAddresses(true).subscribe((res) => {
-      this.buildAndCreate();
+      this.metamaskAccount = res['metamask'][0];
+      if (this.instanceTrade && this.instantTradesAvailable) {
+        this.createInstanceTrade();
+      } else {
+        this.buildAndCreate();
+      }
     }, (err) => {
       this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
         width: '480px',

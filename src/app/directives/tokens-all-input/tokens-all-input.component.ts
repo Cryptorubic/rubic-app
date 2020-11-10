@@ -26,6 +26,7 @@ export interface ITokenInfo {
 })
 export class TokensAllInputComponent implements OnInit {
   @Input('tokenModel') public tokenModel: any;
+  @Input('disabled') public disabled: boolean;
   @Input() public tokenGroup: any;
   @Input() private setToken: any;
   @Input() private isCustomAddress: boolean;

@@ -1,6 +1,7 @@
 <input
   type="text"
   placeholder="{{'Enter Amount' | translate}}"
+  [disabled]="disabled"
   #amountField
   [required]="true"
   [appBigNumber]="{

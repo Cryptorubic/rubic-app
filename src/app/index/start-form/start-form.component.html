@@ -108,10 +108,11 @@
             />
 
             <app-tokens-all-input
-              (TokenChange)="changedToken('quote')"
-              [blockchain]="blockchainsOfNetworks[requestData.network]"
-              [setToken]="QuoteTokenCustom"
-              [tokenModel]="requestData.tokens_info.quote"
+                    [disabled]="instantTradesAvailable && instanceTrade"
+                    (TokenChange)="changedToken('quote')"
+                    [blockchain]="blockchainsOfNetworks[requestData.network]"
+                    [setToken]="QuoteTokenCustom"
+                    [tokenModel]="requestData.tokens_info.quote"
             ></app-tokens-all-input>
           </div>
           <div
@@ -159,8 +160,7 @@
           </div>
         </div>
       </div>
-      <div
-        class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1"
+      <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1"
         style="float: right"
       >
         <div class="form-field form-field_btn form-field_btn--rate">
@@ -185,6 +185,7 @@
           <button
             class="btn btn-green width-100"
             [disabled]="
+              getInstanceQuoteProgress ||
               !requestData.tokens_info.base.amount ||
               !requestData.tokens_info.quote.amount ||
               !requestData.tokens_info.base.token.address ||
@@ -221,17 +222,33 @@
         </div>
         <div class="form-field_description normal-font normal-font--visible text-right">
           <span
-            class="underline-link underline-link_btn"
-            (click)="toogleAdvSettings()">
+                  [hidden]="instantTradesAvailable && instanceTrade"
+                  class="underline-link underline-link_btn"
+                  (click)="toogleAdvSettings()">
             {{(isAdvSettingsOpen ? 'Close Settings' : 'Advanced Settings') | translate}}
           </span>
+        </div>
+      </div>
+    </div>
+    <div class="index-start-form__settings"
+         *ngIf="instantTradesAvailable">
+      <div class="index-start-form__settings-item">
+        <div class="index-start-form__settings-item-head">{{'Быстрый обмен' | translate}}</div>
+        <div class="index-start-form__settings-item-content">
+          <label class="form-field_input-checkbox" style="min-width: 70px">
+            <input type="checkbox" name="instance" [(ngModel)]="instanceTrade" (ngModelChange)="checkInstancePrice()"/>
+            <span class="checkbox-text checkbox-text_on">{{'Yes' | translate}}</span>
+            <span class="checkbox-text checkbox-text_off">{{'No' | translate}}</span>
+            <span class="checkbox-rect"></span>
+          </label>
+          <span>{{'Включите, чтобы посчитать, сколько получите токенов при моментальной сделке' | translate}}</span>
         </div>
       </div>
     </div>
   </form>
   <form
     class="index-start-form__settings"
-    [ngClass]="{ hidden: !isAdvSettingsOpen }"
+    [ngClass]="{ hidden: !isAdvSettingsOpen || (instantTradesAvailable && instanceTrade)}"
     #advSettings="ngForm"
   >
     <div class="index-start-form__settings-block">
