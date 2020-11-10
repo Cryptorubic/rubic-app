@@ -350,7 +350,7 @@
           style="color: black"
         >
           {{'There is no matching pair, please' | translate}}
-          <a routerLink="/trades/create">{{'create your own' | translate}}</a>
+          <span (click)="scrollTop()">{{'create your own' | translate}}</span>
         </div>
       </div>
     </div>

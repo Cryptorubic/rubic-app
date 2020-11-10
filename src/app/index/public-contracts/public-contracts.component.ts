@@ -370,13 +370,28 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
     this.selectCoin();
   }
 
+  public scrollTop() {
+    const scrollStep = -window.scrollY / (500 / 15);
+
+    const scrollInterval = setInterval(() => {
+        if (window.scrollY !== 0) {
+          window.scrollBy(0, scrollStep);
+        } else {
+          clearInterval(scrollInterval);
+        }
+      }, 15);
+  }
+
   public selectCoin() {
     switch (this.openedTradesTab) {
       case 'ACTIVE':
         this.allFilteredOrdersCount = this.contractsList.filter((trade) => {
           const details = trade.contract_details;
-          return (!this.selectedCoins.base.token || (this.selectedCoins.base.token.mywish_id === details.base_token_info.mywish_id)) &&
-            (!this.selectedCoins.quote.token || (this.selectedCoins.quote.token.mywish_id === details.quote_token_info.mywish_id));
+          return (!this.selectedCoins.base.token || (this.selectedCoins.base.token.mywish_id === details.base_token_info.mywish_id ||
+            (this.selectedCoins.base.token.platform === details.base_token_info.platform && this.selectedCoins.base.token.address === details.base_token_info.address))) &&
+            (!this.selectedCoins.quote.token || (this.selectedCoins.quote.token.mywish_id === details.quote_token_info.mywish_id ||
+              (this.selectedCoins.quote.token.platform === details.quote_token_info.platform && this.selectedCoins.quote.token.address === details.quote_token_info.address)
+              ));
         });
         this.showSelectedPages();
         break;
