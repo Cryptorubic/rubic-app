@@ -69,7 +69,7 @@ export interface TokenInfoInterface {
   symbol: string;
 }
 
-const IS_PRODUCTION = location.protocol === 'https:';
+const IS_PRODUCTION = true; // location.protocol === 'https:';
 
 const ETHERSCAN_URLS = {
   ETHERSCAN_ADDRESS: 'https://etherscan.io/',

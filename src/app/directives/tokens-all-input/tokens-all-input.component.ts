@@ -138,6 +138,11 @@ export class TokensAllInputComponent implements OnInit {
     }
   }
 
+  public hideAutoInput() {
+    this.visibleInput = false;
+    this.listIsOpened = false;
+  }
+
   public showAutoInput() {
     this.visibleInput = !this.visibleInput;
     setTimeout(() => {

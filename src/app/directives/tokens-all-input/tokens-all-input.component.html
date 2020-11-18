@@ -36,14 +36,17 @@
   autocomplete="off"
   [tabindex]="!visibleInput ? '-1' : ''"
   name="token"
+  required
   [(ngModel)]="tokenName"
   #tokenField
   (focus)="showList()"
   (ngModelChange)="searchToken(tokenName)"
   (keydown)="keyDownResult($event)"
+  (blur)="hideAutoInput()"
   class="form-field_input__ac_input"
 />
-<span class="form-field_input__ac_closer" (click)="showAutoInput()">
+<span class="form-field_input__ac_closer"
+      (mousedown)="tokenName = ''; tokenModel.token = {}">
   <img src="./assets/images/icons/cross.svg" />
 </span>
 <div class="form-field_input__ac_res">
@@ -56,7 +59,7 @@
       class="ac_res_list_item"
       *ngFor="let item of tokensList; let ind = index"
       [ngClass]="{ active: item.active }"
-      (click)="selectToken(item, ind)"
+      (click)="selectToken(item, ind);"
     >
       <span class="ac_res_list_item-content">
         <span class="ac_res_list_item-content_ico">
