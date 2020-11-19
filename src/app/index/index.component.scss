@@ -420,38 +420,3 @@
     }
   }
 }
-
-@media (max-width: 960px) {
-  .daps-swap-footer {
-    font-size: 2.08vw;
-    &_logo {
-      left: 0;
-    }
-    &_text {
-      margin-right: 0;
-      display: flex;
-      align-items: flex-start;
-      margin-left: 10em;
-    }
-  }
-}
-@media (max-width: 680px) {
-  .daps-swap-footer {
-    font-size: 15px;
-    &_logo {
-      position: static;
-      margin-top: 1em;
-    }
-    &_text {
-      margin-left: 0;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .daps-swap-footer {
-    &_logo {
-      display: none;
-    }
-  }
-}

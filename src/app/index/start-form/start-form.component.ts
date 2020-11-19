@@ -102,6 +102,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
   @Output() changedSocialState = new EventEmitter<string>();
+  @Output() instanceTradesSelect = new EventEmitter<any>();
+  @Output() blockchainTradesSelect = new EventEmitter<any>();
   public currentUser;
   public cmcRate: {
     change?: number;
@@ -121,6 +123,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public instantTradesAvailable: boolean;
   public instanceTrade: boolean;
   private instanceTradeParams: any = {};
+
+  public instanceTradesTokens: any[];
 
   constructor(
     private dialog: MatDialog,
@@ -166,12 +170,16 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.datePickerDate = startDateTime.add(1, 'week');
     this.datePickerTime = `${startDateTime.hour()}:${startDateTime.minutes()}`;
     this.isCreatingContract = false;
+
+    this.instanceTradesTokens = this.oneInchService.getAutocompleteTokensList();
+    setTimeout(() => {
+      this.setNetwork(1);
+    });
   }
   private socialFormData: {
     network: string;
     data: any;
   };
-  public metamaskError: any;
   public isCreatingContract;
   public socialAuthError;
   public tokensData;
@@ -189,9 +197,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     base: boolean;
     quote: boolean;
   };
-
-  public quoteTokenChanger = new EventEmitter<any>();
-  public baseTokenChanger = new EventEmitter<any>();
 
   public requestData: IContractDetails;
 
@@ -251,28 +256,26 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public getInstanceQuoteTimeout: any;
 
   public checkInstancePrice() {
-    if (this.instanceTrade && this.instantTradesAvailable) {
-      const params = this.getOrderParams();
-      if (!(+params.amount > 0)) {
-        return;
-      }
-      const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
-      this.getInstanceQuoteProgress = true;
-
-      if (this.getInstanceQuoteTimeout) {
-        clearTimeout(this.getInstanceQuoteTimeout);
-      }
-
-      this.getInstanceQuoteTimeout = setTimeout(() => {
-        this.oneInchService.getQuote(params).then((result: any) => {
-          this.instanceTradeParams = result;
-          this.requestData.tokens_info.quote.amount = new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10);
-          this.QuoteTokenCustom.emit();
-          this.getInstanceQuoteProgress = false;
-        });
-      }, 1000);
+    const params = this.getOrderParams();
+    if (!(+params.amount > 0)) {
+      return;
     }
+    const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
+    this.getInstanceQuoteProgress = true;
+    if (this.getInstanceQuoteTimeout) {
+      clearTimeout(this.getInstanceQuoteTimeout);
+    }
+
+    this.getInstanceQuoteTimeout = setTimeout(() => {
+      this.oneInchService.getQuote(params).then((result: any) => {
+        this.instanceTradeParams = result;
+        this.requestData.tokens_info.quote.amount = new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10);
+        this.QuoteTokenCustom.emit();
+        this.getInstanceQuoteProgress = false;
+      });
+    }, 1000);
   }
+
 
   private tokensCache = {
     quote: '',
@@ -280,13 +283,13 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     baseAmount: ''
   };
 
-  private checkAndGetInstanceQuote() {
+  private checkAndGetInstanceQuote(force?: boolean) {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
 
     const identical = this.tokensCache.base === baseCoin.address && this.tokensCache.quote === quoteCoin.address;
 
-    if (!identical) {
+    if (!identical || force) {
       this.tokensCache.base = baseCoin.address;
       this.tokensCache.quote = quoteCoin.address;
       if (baseCoin.address && quoteCoin.address && baseCoin.address !== quoteCoin.address && this.requestData.network === 1) {
@@ -297,7 +300,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     if (this.instantTradesAvailable) {
-      if (!identical || (this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount)) {
+      if (!identical || force || (this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount)) {
         this.checkInstancePrice();
         this.tokensCache.baseAmount = this.requestData.tokens_info.base.amount;
       } else {
@@ -310,11 +313,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
-  public changedToken(token?) {
+  public changedToken(force?: boolean) {
 
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
-    this.checkAndGetInstanceQuote();
+    this.checkAndGetInstanceQuote(force);
 
     if (
       this.requestData.tokens_info.base.amount &&
@@ -381,6 +384,65 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public setNetwork(network) {
     this.resetStartForm(network);
+    this.instanceTrade = false;
+    this.instanceTradesSelect.emit(false);
+    this.blockchainTradesSelect.emit(network);
+  }
+
+  public activateInstanceTrade() {
+    if (this.instanceTrade) {
+      return;
+    }
+    this.instanceTrade = true;
+    this.instanceTradesSelect.emit(true);
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+    const isBase = this.oneInchService.checkToken(baseCoin);
+    const isQuote = this.oneInchService.checkToken(quoteCoin);
+    if (!isBase) {
+      this.requestData.tokens_info.base = {
+        token: {},
+      };
+    }
+    if (!isQuote) {
+      this.requestData.tokens_info.quote = {
+        token: {},
+      };
+    }
+    if (isBase && isQuote) {
+      this.changedToken(true);
+    }
+  }
+
+  public deActivateInstanceTrade() {
+    if (!this.instanceTrade) {
+      return;
+    }
+    this.instanceTrade = false;
+    this.instanceTradesSelect.emit(false);
+
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+
+    const cmcBaseToken = window['cmc_tokens'].find((t) => {
+      return t.token_short_name === baseCoin.token_short_name &&
+          t.address.toLowerCase() === baseCoin.address.toLowerCase();
+    });
+    const cmcQuoteToken = window['cmc_tokens'].find((t) => {
+      return t.token_short_name === quoteCoin.token_short_name &&
+          t.address.toLowerCase() === quoteCoin.address.toLowerCase();
+    });
+
+    if (!cmcBaseToken) {
+      this.requestData.tokens_info.base = {
+        token: {},
+      };
+    }
+    if (!cmcQuoteToken) {
+      this.requestData.tokens_info.quote = {
+        token: {},
+      };
+    }
   }
 
   ngOnDestroy(): void {
@@ -429,12 +491,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     });
   }
 
-  get isEthereumSwap() {
-    return (
-      this.requestData.tokens_info.quote.token.isEthereum &&
-      this.requestData.tokens_info.base.token.isEthereum
-    );
-  }
+
   public setCustomToken(field, token) {
     this.customTokens[field] = token;
   }

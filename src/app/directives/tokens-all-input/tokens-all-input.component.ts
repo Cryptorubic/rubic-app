@@ -32,6 +32,19 @@ export class TokensAllInputComponent implements OnInit {
   @Input() private isCustomAddress: boolean;
   @Input() private blockchain: string;
 
+  private _otherTokens: any;
+
+  @Input() set otherTokens(value: string) {
+    if (this._otherTokens !== value) {
+      this._otherTokens = value;
+      this.tokenName = '';
+      this.searchToken('');
+    }
+  }
+  get() {
+    return this._otherTokens;
+  }
+
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
 
@@ -66,12 +79,6 @@ export class TokensAllInputComponent implements OnInit {
         }
       });
     }
-
-    this.tokenField.nativeElement.addEventListener('blur', () => {
-      this.listIsOpened = false;
-    });
-
-    this.searchToken('');
   }
   public searchToken(q) {
     this.listIsOpened = false;
@@ -84,10 +91,9 @@ export class TokensAllInputComponent implements OnInit {
 
     const result = [];
     let indexToken = 0;
-
-    const tokensForSearch = this.blockchain ? window['cmc_tokens'].filter((t) => {
+    const tokensForSearch = !this._otherTokens ? this.blockchain ? window['cmc_tokens'].filter((t) => {
       return t.platform === this.blockchain;
-    }) : window['cmc_tokens'];
+    }) : window['cmc_tokens'] : this._otherTokens;
 
     if (q) {
       while (

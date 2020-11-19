@@ -48,7 +48,7 @@ export interface IContract {
   user?: number;
 }
 
-import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ContractsService, InterfacePastSwaps} from '../../services/contracts/contracts.service';
 import {Web3Service} from '../../services/web3/web3.service';
 
@@ -75,6 +75,16 @@ export interface InterfacePastSwapsRequest {
 })
 
 export class PublicContractsComponent implements OnInit, OnDestroy {
+  private _blockChain: string;
+  private allOrdersList: any[];
+  @Input() set blockchain(value: string) {
+    this._blockChain = value;
+    this.setTradesList();
+  }
+  get() {
+    return this._blockChain;
+  }
+
 
   public displayingBlockchains = CHAINS_OF_NETWORKS;
   constructor(
@@ -109,12 +119,16 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
       this.serverDateTimeRange = new Date().getTime() - new Date(res.headers.get('Date')).getTime();
     });
 
-    this.contractsService.getPublicContractsList().then((result) => {
-      this.activeTradesList = result;
-      this.setTradesList(result);
+    this.contractsService.getPublicContractsList().then((result: any[]) => {
+      this.allOrdersList = result;
+      this.setTradesList();
     });
 
     this.openedTradesTab = 'ACTIVE';
+  }
+
+  private filterOrdersByNetwork() {
+
   }
 
   @ViewChild('deleteTradeConfirmation') deleteTradeConfirmation: TemplateRef<any>;
@@ -157,12 +171,17 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
   }
 
 
-  private setTradesList(list) {
+  private setTradesList() {
+    if (!this.allOrdersList) return;
     this.contractsCount = 0;
     this.showedPages = 1;
     this.allLoaded = false;
-    this.contractsList = list;
-    this.loadCoinsInfo(list);
+    const filteredOrders = this.allOrdersList.filter((order) => {
+      return order.network === this._blockChain;
+    });
+    this.contractsList = filteredOrders;
+    this.activeTradesList = filteredOrders;
+    this.loadCoinsInfo(filteredOrders);
   }
 
 
@@ -396,7 +415,7 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
         this.showSelectedPages();
         break;
       case 'PAST':
-        this.loadPastTrades();
+        // this.loadPastTrades();
         break;
     }
   }
@@ -420,71 +439,56 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
 
 
   public showPostSelectedPages() {
-    this.loadPastTrades(true);
+    // this.loadPastTrades(true);
   }
 
-  private loadPastTrades(nextPage?) {
-    if (this.pastTradesInfo) {
-      this.pastTradesInfo.page = !nextPage ? 1 : (this.pastTradesInfo.page + 1);
-    }
-
-    if (!nextPage) {
-      this.allLoaded = false;
-      this.contractsCount = 0;
-    } else {
-      this.pastTradesInfo.inProgress = true;
-    }
-
-    const requestData = {
-      p: this.pastTradesInfo ? this.pastTradesInfo.page : 1
-    } as InterfacePastSwapsRequest;
-
-    if (this.selectedCoins.base.token) {
-      requestData.base_coin_id = this.selectedCoins.base.token.mywish_id;
-    }
-    if (this.selectedCoins.quote.token) {
-      requestData.quote_coin_id = this.selectedCoins.quote.token.mywish_id;
-    }
-
-    this.contractsService.getPastTrades(requestData).then((result) => {
-      if (nextPage) {
-        this.pastTradesInfo.page++;
-        this.loadCoinsInfo(result.list);
-        this.pastTradesInfo.list = this.pastTradesInfo.list.concat(result.list);
-      } else {
-        this.pastTradesInfo = result;
-        this.pastTradesInfo.page = 1;
-        this.setTradesList(this.pastTradesInfo.list);
-        this.displayingContractsList = this.pastTradesInfo.list;
-      }
-    });
-  }
-
-
-  public openActiveTrades() {
-    this.pastTradesInfo = undefined;
-    this.contractsList = [];
-    if (!this.allLoaded) {
-      return;
-    }
-    if (this.openedTradesTab === 'ACTIVE') {
-      return;
-    }
-    this.openedTradesTab = 'ACTIVE';
-    this.setTradesList(this.activeTradesList);
-  }
-
-
-
-  public openPastTrades() {
-    this.contractsList = [];
-    this.allLoaded = false;
-    if (this.openedTradesTab === 'PAST') {
-      return;
-    }
-    this.openedTradesTab = 'PAST';
-    this.loadPastTrades();
-  }
+  // private loadPastTrades(nextPage?) {
+  //   if (this.pastTradesInfo) {
+  //     this.pastTradesInfo.page = !nextPage ? 1 : (this.pastTradesInfo.page + 1);
+  //   }
+  //
+  //   if (!nextPage) {
+  //     this.allLoaded = false;
+  //     this.contractsCount = 0;
+  //   } else {
+  //     this.pastTradesInfo.inProgress = true;
+  //   }
+  //
+  //   const requestData = {
+  //     p: this.pastTradesInfo ? this.pastTradesInfo.page : 1
+  //   } as InterfacePastSwapsRequest;
+  //
+  //   if (this.selectedCoins.base.token) {
+  //     requestData.base_coin_id = this.selectedCoins.base.token.mywish_id;
+  //   }
+  //   if (this.selectedCoins.quote.token) {
+  //     requestData.quote_coin_id = this.selectedCoins.quote.token.mywish_id;
+  //   }
+  //
+  //   this.contractsService.getPastTrades(requestData).then((result) => {
+  //     if (nextPage) {
+  //       this.pastTradesInfo.page++;
+  //       this.loadCoinsInfo(result.list);
+  //       this.pastTradesInfo.list = this.pastTradesInfo.list.concat(result.list);
+  //     } else {
+  //       this.pastTradesInfo = result;
+  //       this.pastTradesInfo.page = 1;
+  //       this.setTradesList(this.pastTradesInfo.list);
+  //       this.displayingContractsList = this.pastTradesInfo.list;
+  //     }
+  //   });
+  // }
+  //
+  //
+  // public openPastTrades() {
+  //   this.contractsList = [];
+  //   this.allLoaded = false;
+  //   if (this.openedTradesTab === 'PAST') {
+  //     return;
+  //   }
+  //   this.openedTradesTab = 'PAST';
+  //   this.loadPastTrades();
+  // }
 
 
   // Deleting

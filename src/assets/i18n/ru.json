@@ -1,0 +1,203 @@
+{
+  "About": "О компании",
+  "Features": "Функции",
+  "Faq": "Faq",
+  "Login by MetaMask": "Войти через MetaMask",
+  "My trades": "Мои сделки",
+  "Logout": "Выйти",
+  "Yes": "Да",
+  "No": "Нет",
+  "Any": "Любое",
+
+  "Copyright": "Авторские права",
+  "Privacy policy": "Политика конфиденциальности",
+
+  "Make trades on your terms, share and generate revenue":
+  "Торгуйте на ваших условиях, делитесь сделками и получайте доход.",
+
+  "Create your Trade": "Создайте свою Сделку",
+  "Listing on Uniswap": "Листинг на Uniswap",
+
+  "You have": "У вас есть",
+  "Add": "Добавить",
+  "You want to get": "Вы хотите получить",
+  "Your rate is": "Ваша ставка",
+  "than": "чем",
+  "coinmarketcap": "coinmarketcap",
+  "rate.": "ставка.",
+  "Closing date": "Дата закрытия",
+  "Closing time": "Время закрытия",
+  "Public deal": "Публичная сделка",
+  "Trade will be listed on the main page": "Сделка будет отображена на главной старнице",
+  "Permanent trade": "Постоянная сделка",
+  "Lock liquidity until the trade completion": "Заморозьте ликвидность до завершения сделки",
+  "Minimum contribution in": "Минимальный взнос в",
+  "Brokerage fee": "Брокерская комиссия",
+  "You can specify % for Broker": "Вы можете указать% для брокера",
+  "Enter Broker Address": "Введите адрес брокера",
+  "Specify % for": "Укажите % для",
+  "Close Settings": "Окончательные настройки",
+  "Advanced Settings": "Расширенные настройки",
+  "Creating Trade": "Создание сделки",
+  "Create Trade": "Создать сделку",
+  "Use custom token": "Используйте кастомный токен",
+  "Token Contract Address": "Адрес контракта токена",
+  "Choose Token": "Выберете токен",
+  "Enter Amount": "Введите количество",
+
+  "Error": "Ошибка",
+  "Please choose main net network in Metamask.": "Пожалуйста, выберите основную сеть в Metamask.",
+  "Close": "Закрыть",
+  "Cancel": "Отмена",
+  "Order Book": "Order Book",
+  "SEND": "ОТПРАВИТЬ",
+  "GET": "ПОЛУЧИТЬ",
+  "Volume": "Объем",
+  "Chain": "Сеть",
+  "Expires in": "Истекает через",
+  "Status": "Статус",
+  "d:h:m": "{{days}}д: {{hours}}ч: {{minutes}}м",
+  "Show more": "Показать больше",
+  "There is no matching pair, please": "Нет подходящей пары, пожалуйста",
+  "create your own": "создаqnt свою собственную",
+
+  "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue.":
+  "Rubic p2p trades - это децентрализованная платформа p2p. Она помогает пользователям совершать сделки на своих условиях, делиться ими и получать доход..",
+
+  "P2P trade": "P2P сделка",
+  "Create your trade and choose your rate.": "Создайте свою сделку и выберите свой курс.",
+  "Instant Trade": "Мгновенная сделка",
+  "You can create an instant trade using external DEX integration": "Вы можете создать мгновенную сделку с помощью внешней интеграции DEX",
+  "Order": "Заказ",
+
+  "Set the desired rate and the deal will be executed when one of the DEX meets these requirements":
+  "Установите желаемый курс, и сделка будет выполнена, когда одна из DEX будет соответствовать этим требованиям.",
+
+  "Farming": "Доходное фермерство",
+
+  "If you provide liquidity for trades you will be rewarded by Rubic tokens when the trade is executed.":
+  "Если вы предоставите ликвидность для сделок, вы будете вознаграждены токенами Rubic, когда сделка будет выполнена..",
+
+  "Pool": "Пул",
+  "Create pools for DEXs by having only 1 token": "Создавайте пулы для DEX, имея только 1 токен",
+  "Multichain support": "Мультичейн поддержка",
+  "Ethereum now, Tron and Binance Smart Chain are coming soon": "Ethereum сейчас, Tron и Binance Smart Chain скоро",
+  "Rubic P2P trades features": "Rubic P2P особенности сделок",
+  "Option to lock liquidity until trade is closed": "Возможность заморозить ликвидность до закрытия сделки",
+  "Uniswap / curve integration (in progress)": "Uniswap / curve интеграция (в процессе)",
+  "No volume limits": "Нет ограничений по объему",
+  "Ability to make crowdsales": "Возможность проводить краудсейлы",
+  "Public/Private deals": "Публичные/Приватные сделки",
+  "No need to list token": "Нет необходимости листить токен",
+  "% of platform revenue can be regulated": "% дохода платформы можно регулировать",
+  "Brokers support": "Поддержка брокеров",
+  "Rubic contract": "Rubic контракт",
+  "Roadmap": "Roadmap",
+  "October 2020": "Октябрь 2020",
+  "Integration with Tron, Binance Smart Chain": "Интеграция с Tron, Binance Smart Chain",
+  "November 2020": "Ноябрь 2020",
+  "Instant trades": "Мгновенные сделки",
+  "January 2021": "Январь 2021",
+
+  "Multichain solution with the help of other projects such as Ren, PolkaDot":
+  "Мультичейн решение с помощью других проектов, таких как Ren, PolkaDot",
+
+  "February 2021": "Февраль 2021",
+  "Anonymizer": "Анонимайзер",
+  "April 2021": "April 2021",
+  "Liquidity Pool Platform": "Платформа пулов ликвидности",
+  "FAQ": "FAQ",
+  "FAQ_QUESTIONS": [
+    {
+      "QUESTION": "Что такое p2p-сделки Rubic?",
+      "ANSWER": "Rubic - это мультичейн defi платформа. Rubic организует сервисы defi, чтобы проект мог создавать, управлять токенами и торговать ими в ОДНОМ МЕСТЕ. Это помогает пользователям совершать сделки на их условиях, делиться и получать доход."
+    }, {
+      "QUESTION": "Кто может пользоваться нашим сервисом?",
+      "ANSWER": "Всем, кто хочет создавать токены и управлять ими, и всем, у кого есть криптовалюта, и кто хотел бы ее обменять. KYC не требуется. "
+    }, {
+      "QUESTION": "Каков минимальный и максимальный размер сделки?",
+      "ANSWER": "Нет никаких ограничений."
+    }, {
+      "QUESTION": "Как это работает?",
+      "ANSWER": "Есть два варианта для трейдинга:\n Сначала вы создаете сделку на своих условиях и ждете, пока другая часть согласится с вашими условиями и заполнит свою часть.\n Во-вторых, вы выбираете мгновенную торговлю и соглашаетесь с условиями другой части. Уже скоро.\n\nВы может создать свой собственный токен без навыков кодирования и торговать им без листинга."
+    }, {
+      "QUESTION": "Какие криптовалюты поддерживаются?",
+      "ANSWER": "В настоящий момент Rubic работает с токенами на основе Ethereum для торговли. Вскоре будут выпущены блокчейны Tron, Binance Chain, BTC. Однако для создания токенов и управления ими мы уже предоставляем услугу мультичейн, поддерживаемую Ethereum, Tron, EOS, NEO, Waves, Binance Smart Chain Blockchains.."
+    }, {
+      "QUESTION": "Должен ли я залистить свой токен перед использованием вашего сервиса?",
+      "ANSWER": "Нет, вы можете торговать любыми токенами. Однако вы можете связаться с нами, и мы добавим ваш токен в наш список."
+    }, {
+      "QUESTION": "Как начать?",
+      "ANSWER": "Это просто и быстро. Вам нужен только MetaMask для запуска.\n FЗаполните поля желаемых условий и нажмите «Создать сделку»."
+    }, {
+      "QUESTION": "Как создать сделку?",
+      "ANSWER": "Шаг 1. Заполните форму, введите сумму, которая у вас есть, и укажите сумму, которую вы хотите получить.\n Шаг 2. Добавьте дополнительные параметры, такие как дата и время закрытия, минимальный и максимальный взнос, конфиденциальность, брокерская комиссия, блокировка ликвидности до завершения сделки \n Шаг 3. Проверьте детали сделки \n Шаг 4. Нажмите «Создать сделку» \n Шаг 5. Используйте Metamask для подтверждения вашей сделки \n Шаг 6. Внесите свой вклад в сделку."
+    }, {
+      "QUESTION": "Сколько это стоит?",
+      "ANSWER": "Плата за обслуживание 0,3% с каждой созданной сделки."
+    }, {
+      "QUESTION": "Сколько времени нужно, чтобы завершить сделку?",
+      "ANSWER": "Сделка будет завершена, как только другая сторона завершит свою часть сделки."
+    }, {
+      "QUESTION": "Как обеспечивается конфиденциальность и безопасность сделки?",
+      "ANSWER": "Сделка обеспечивается смарт-контрактами, проверенными опытными разработчиками и внешним аудитом.."
+    }, {
+      "QUESTION": "Сколько человек может участвовать в одной сделке?",
+      "ANSWER": "С каждой стороны могут участвовать до 10 человек"
+    }, {
+      "QUESTION": "Что будет, если вторая сторона не завершит сделку?",
+      "ANSWER": "Срок действия сделки истечет, и вы получите все свои токены обратно."
+    }, {
+      "QUESTION": "Если я заключил сделку, но передумал, могу ли я отменить сделку?",
+      "ANSWER": "Да, вы можете отменить сделку в любое время до того, как вторая сторона завершит сделку. Если вы отмените сделку, вы можете вернуть свои токены."
+    }
+  ],
+
+
+  "Done": "Готово",
+  "Created": "Создано",
+  "Active": "Активно",
+  "Postponed": "Отложено",
+  "Waiting": "В ожидании",
+  "Waiting for initialization": "Ожидание инициализации",
+
+
+  "The trade was completed. If you participated in this trade, please check your wallet.":
+  "Сделка была завершена. Если вы участвовали в этой сделке, проверьте свой кошелек.",
+
+  "Expired": "Окончено",
+  "The trade is no longer available.": "Сделка больше не доступна.",
+  "Cancelled": "Отменено",
+  "The trade was cancelled.": "Сделка отменена.",
+  "Rate:": "Курс:",
+
+  "The trade's rate is {rate}% more profitable than coinmarketcap rate":
+  "Курс сделки {{ rate }}% более выгодно, чем ставка Coinmarketcap",
+
+  "The trade's rate is {rate}% less profitable than coinmarketcap rate":
+  "Курс сделки {{ rate }}% менее выгодно, чем ставка Coinmarketcap",
+
+  "Sent": "Отправить",
+  "Check on Explorer": "Проверить в эксплорере",
+  "Number of investors": "Количество инвесторов",
+
+  "You will get {amount} {token} after Trade": "Вы получите {{ amount }} {{ token }} после сделки",
+  "Fill all": "Заполните все поля",
+  "Min Contribution Limit:": "Минимальный лимит взноса:",
+  "Only Owner can contribute": "Только владелец может сделать взнос",
+  "Brokers fee:": "Комиссия брокера:",
+  "Refund": "Возврат",
+  "Left": "Осталось",
+
+  "Link to deal": "Ссылка на сделку",
+  "Management address": "Адрес управления",
+  "Broker address": "Адрес брокера",
+  "Additional comment": "Дополнительный комментарий",
+  "Cancel trade": "Отменить сделку",
+
+  "No trades": "Нет сделок",
+  "Name": "Название",
+  "Creation date": "Дата создания",
+  "Do you want to remove it?": "Вы хотите удалить?",
+  "Do you really want to Log Out?": "Вы действительно хотите выйти?"
+}

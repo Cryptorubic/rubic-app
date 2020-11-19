@@ -61,6 +61,14 @@ export class HeaderComponent implements OnInit {
         lng: "ko",
         title: "한국어",
       },
+      {
+        lng: "zh",
+        title: "中国",
+      },
+      {
+        lng: "ru",
+        title: "Русский",
+      },
     ];
 
     translate.onLangChange.subscribe((event: LangChangeEvent) => {

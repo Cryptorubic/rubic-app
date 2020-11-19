@@ -1,4 +1,4 @@
-import {EventEmitter, Injectable} from "@angular/core";
+import {EventEmitter, Injectable, Output} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable, Subscriber} from "rxjs";
 import BigNumber from "bignumber.js";
@@ -24,7 +24,7 @@ const swapContractAddress = '0x111111125434b319222CdBf8C261674aDB56F3ae';
 export class OneInchService {
     private availableTokens: TokensMap<TokenInterface>;
     private tokenOnLoadEmitter = new EventEmitter<any>();
-
+    private tokensAutocompleteList: any[] = [];
     constructor(
         private httpClient: HttpClient
     ) {
@@ -54,23 +54,54 @@ export class OneInchService {
         return this.getHttpPromise('tokens', 'get');
     }
 
+    public getAutocompleteTokensList(): any {
+        return this.tokensAutocompleteList;
+    }
+
     public onLoadTokens(): EventEmitter<any> {
         if (this.availableTokens) {
             setTimeout(() => {
+                for (let k in this.availableTokens) {
+                    const t = this.availableTokens[k];
+                    const cmcToken = window['cmc_tokens'].find((cmcT) => {
+                        return k === cmcT.token_short_name && t.address.toLowerCase() === cmcT.address.toLowerCase();
+                    });
+                    this.tokensAutocompleteList.push({
+                        address: t.address,
+                        cmc_id: cmcToken ? cmcToken.cmc_id : null,
+                        decimals: t.decimals,
+                        image_link: cmcToken ?
+                            cmcToken.image_link :
+                            './assets/images/icons/coins/empty.svg',
+                        platform: "ethereum",
+                        rank: cmcToken ? cmcToken.rank : null,
+                        rate: cmcToken ? cmcToken.rate : null,
+                        token_name: t.name,
+                        isEthereum: cmcToken ? cmcToken.isEthereum : null,
+                        token_short_name: k
+                    });
+                }
+
+                this.tokensAutocompleteList.sort((a, b) => {
+                    const aRank = a.rank || 100000;
+                    const bRank = b.rank || 100000;
+                    return aRank > bRank ? 1 : aRank < bRank ? -1 : 0;
+                });
+
                 this.tokenOnLoadEmitter.emit();
             });
         }
+
         return this.tokenOnLoadEmitter;
     }
 
+    public checkToken(token): boolean {
+        const availableToken = this.availableTokens[token.token_short_name];
+        return availableToken && (availableToken.address.toLowerCase() === token.address.toLowerCase());
+    }
+
     public checkTokensPair(quoteToken, baseToken): boolean {
-        const base = this.availableTokens[baseToken.token_short_name];
-        const quote = this.availableTokens[quoteToken.token_short_name];
-        if (!base || !quote) {
-            return false;
-        }
-        return base.address.toLowerCase() === baseToken.address.toLowerCase() &&
-            quote.address.toLowerCase() === quoteToken.address.toLowerCase();
+        return this.checkToken(baseToken) && this.checkToken(quoteToken);
     }
 
     private checkSwap(params) {
