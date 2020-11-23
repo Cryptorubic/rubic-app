@@ -183,24 +183,31 @@ export class OneInchService {
         });
     };
 
+    public async getApproveSpender() {
+        return this.httpClient.get(
+            'https://api.1inch.exchange/v2.0/approve/spender'
+        ).toPromise()
+    }
+
     public async getSwap(params, queryData) {
         const fromAddress = this.availableTokens[params.fromTokenSymbol].address;
         const toAddress = this.availableTokens[params.toTokenSymbol].address;
         const ethValue = params.fromTokenSymbol === 'ETH' ? params.amount : 0
         const requestParams = {
+            fromAddress: params.fromAddress,
             fromTokenAddress: OneInchService.checkETHAddress(fromAddress),
             toTokenAddress: OneInchService.checkETHAddress(toAddress),
             amount: params.amount,
             guaranteedAmount: queryData.toTokenAmount,
             minTokensAmount: new BigNumber(queryData.toTokenAmount).div(100).times(100 - slippageValue).dp(0, 1).toString(10),
-            allowedSlippagePercent: slippageValue,
             burnChi: false,
-            enableEstimate: false,
+            disableEstimate: false,
             ethValue: ethValue,
             gasPrice: await this.getGasPrice(),
-            referrerAddress: '0xce85a63F5093b28F15aa7C2C1f1b4b0037011cbE',
-            fee: 0.1,
+            referrerAddress: '0x7367409E0c12b2B7cAa5c990E11A75E0D86580fc',
+            fee: 3,
             walletAddress: params.fromAddress,
+            slippage: slippageValue,
             pathfinderData: {
                 routes: queryData.routes,
                 mainParts: 20,
@@ -210,16 +217,16 @@ export class OneInchService {
             allowPartialFill: true
         };
 
-        return this.httpClient.post(
-            'https://swap-builder.1inch.exchange/v2.0/swap/build',
-            requestParams
-        ).toPromise().then((result: any) => {
-            return {
-                from: params.FromAddress,
-                data: result.data,
-                to: swapContractAddress,
-                value: result.ethValue,
+        const getQuery = (params) => {
+            const pairsParams = [];
+            for (let k in params) {
+                pairsParams.push(`${k}=${params[k]}`);
             }
-        });
+            return pairsParams.join('&');
+        };
+
+        return this.httpClient.get(
+            'https://api.1inch.exchange/v2.0/swap?' + getQuery(requestParams)
+        ).toPromise();
     }
 }

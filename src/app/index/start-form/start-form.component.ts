@@ -20,7 +20,6 @@ import {
   DateAdapter,
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
-  MatDatepicker,
   MatDialog,
   MatDialogRef,
 } from '@angular/material';
@@ -29,9 +28,7 @@ import {
   MomentDateAdapter,
 } from '@angular/material-moment-adapter';
 
-import { MODE } from '../../app-routing.module';
 import {OneInchService} from "../../models/1inch";
-export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
 
 const defaultNetwork = 1;
 
@@ -121,8 +118,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   };
 
   public instantTradesAvailable: boolean;
-  public instanceTrade: boolean;
+  public instanceTrade: boolean = true;
   private instanceTradeParams: any = {};
+
 
   public instanceTradesTokens: any[];
 
@@ -378,14 +376,19 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       base: {},
       quote: {},
     };
+
     this.BaseTokenCustom.emit(false);
     this.QuoteTokenCustom.emit(false);
+    this.startForm.resetForm();
+    this.startForm.form.reset();
   }
 
   public setNetwork(network) {
     this.resetStartForm(network);
-    this.instanceTrade = false;
-    this.instanceTradesSelect.emit(false);
+    if (network !== 1) {
+      this.instanceTrade = false;
+    }
+    this.instanceTradesSelect.emit(this.instanceTrade);
     this.blockchainTradesSelect.emit(network);
   }
 
@@ -454,6 +457,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.setFullDateTime();
     });
   }
+
   public dateChange() {
     if (this.advSettings.value.active_to.isSame(this.minDate, 'day')) {
       this.minTime = `${this.minDate.hour()}:${this.minDate.minutes()}`;
@@ -462,9 +466,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
     this.setFullDateTime();
   }
+
   public timeChange() {
     this.setFullDateTime();
   }
+
   public changePD() {
     if (
       this.requestData.tokens_info.base.token.token_name &&
@@ -491,10 +497,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     });
   }
 
-
   public setCustomToken(field, token) {
     this.customTokens[field] = token;
   }
+
   get baseBrokerFee() {
     if (
       !(
@@ -594,36 +600,35 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     return params;
   }
 
-  private createInstanceTrade() {
+  private async createInstanceTrade() {
     const params = this.getOrderParams();
     params.fromAddress = this.metamaskAccount;
     this.getInstanceQuoteProgress = true;
 
-    this.getInstanceQuoteTimeout = setTimeout(() => {
-      this.oneInchService.getSwap(params, this.instanceTradeParams).then((result) => {
-        this.send1InchTransaction(result, params).then(() => {
-          alert('Видимо ты смог!');
-          this.resetStartForm();
-          const win = window.open('https://etherscan.io', 'target=_blank');
-        }, () => {
-          alert('Нужно доделывать!');
-        }).finally(() => {
-          this.getInstanceQuoteProgress = false;
-        });
+
+    const remoteContractAddress = (await this.oneInchService.getApproveSpender() as any).address;
+    const baseToken = this.requestData.tokens_info.base.token;
+    if (baseToken.token_short_name !== 'ETH') {
+      const approved = await this.check1InchAllowance(remoteContractAddress, params)
+    }
+    this.oneInchService.getSwap(params, this.instanceTradeParams).then((result: any) => {
+      this.web3Service.sendTransaction(result.tx, this.requestData.network).then((res: any) => {
+        this.resetStartForm();
+        const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
+      }, () => {
+      }).finally(() => {
+        this.getInstanceQuoteProgress = false;
       });
-    }, 1000);
+    });
   }
 
-
-  private send1InchTransaction(txData, params) {
-    const remoteContractAddress = '0xe4c9194962532feb467dce8b3d42419641c6ed2e';
-    let tokenContract;
+  private async check1InchAllowance(remoteContractAddress, params) {
     const baseToken = this.requestData.tokens_info.base.token;
-
-    const sendFinishTx = () => {
-      return this.web3Service.sendTransaction(txData, this.requestData.network);
-    }
-
+    let tokenContract = this.web3Service.getContract(
+        ERC20_TOKEN_ABI,
+        baseToken.address,
+        this.requestData.network
+    );
     const sendApproveTx = () => {
       const approveMethod = this.web3Service.getMethodInterface('approve');
       const approveSignature = this.web3Service.encodeFunctionCall(
@@ -641,36 +646,22 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
             data: approveSignature,
           },
           this.requestData.network
-      ).then((res) => {
-        return sendFinishTx();
-      });
-    };
-
-    if (baseToken.token_short_name === 'ETH') {
-      return sendFinishTx();
-    } else {
-      tokenContract = this.web3Service.getContract(
-          ERC20_TOKEN_ABI,
-          baseToken.address,
-          this.requestData.network
       );
-      return tokenContract.methods
-          .allowance(this.metamaskAccount, remoteContractAddress)
-          .call()
-          .then((result) => {
-            const fromParamsAmount = new BigNumber(params.amount);
-            const isAllowance = !fromParamsAmount.minus(result).isPositive();
-            if (isAllowance) {
-              return sendFinishTx();
-            } else {
-              return sendApproveTx();
-            }
-          })
-    }
+    };
+    return tokenContract.methods
+        .allowance(this.metamaskAccount, remoteContractAddress)
+        .call()
+        .then((result) => {
+          result = new BigNumber(result);
+          const noAllowance = result.minus(params.amount).isNegative();
+          if (noAllowance) {
+            return sendApproveTx();
+          }
+        })
   }
 
-
   private metamaskAccount: string;
+
   public createContract() {
     const accSubscriber = this.updateAddresses(true).subscribe((res) => {
       this.metamaskAccount = res['metamask'][0];
@@ -703,6 +694,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       }
     );
   }
+
   private onTotpError(error) {
     switch (error.status) {
       case 403:
@@ -812,9 +804,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     };
     return sendActivateTrx();
   }
+
   public closeMetaMaskError() {
     this.metaMaskErrorModal.close();
   }
+
   private updateAddresses(ifEnabled?) {
     return this.web3Service.getAccounts(false, ifEnabled, this.requestData.network);
   }

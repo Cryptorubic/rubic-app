@@ -31,6 +31,9 @@ export class TokensAllInputComponent implements OnInit {
   @Input() private setToken: any;
   @Input() private isCustomAddress: boolean;
   @Input() private blockchain: string;
+  @Input() public amountPlaceholder: boolean = true;
+
+  @ViewChild('tokenForm') tokenForm;
 
   private _otherTokens: any;
 
@@ -54,6 +57,7 @@ export class TokensAllInputComponent implements OnInit {
     this.tokensList = [];
   }
 
+
   public visibleInput: boolean;
   public tokensList: ITokenInfo[];
   public listIsOpened: boolean;
@@ -71,6 +75,10 @@ export class TokensAllInputComponent implements OnInit {
           this.visibleInput = false;
           this.TokenChange.emit(result);
         } else {
+
+          this.tokenForm.resetForm();
+          this.tokenForm.form.reset();
+
           setTimeout(() => {
             this.tokenName = '';
             this.searchToken('');

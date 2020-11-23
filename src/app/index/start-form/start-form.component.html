@@ -22,13 +22,23 @@
       <li class="block-tabs_item" [ngClass]="{active: instanceTrade, hidden: requestData.network !== 1}"
           (click)="activateInstanceTrade()">
         <span class="block-tabs_item_text">
-          Instant Trades
+          {{'Instant Trades' | translate }}
+        </span>
+        <span class="block-tabs_item_ico">
+          <svg width="12" height="21" viewBox="0 0 12 21" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.8835 9.50781L6.83827 8.19567C6.75249 8.15662 6.70571 8.05507 6.7291 7.96134L8.9125 0.251608C8.96708 0.0485147 8.70975 -0.0920883 8.56939 0.0719485L0.0463406 11.1875C-0.0394358 11.2891 -0.000446528 11.4375 0.116521 11.4922L5.16173 12.8043C5.24751 12.8434 5.29429 12.9449 5.2709 13.0387L3.0875 20.7484C3.03292 20.9515 3.29025 21.0921 3.43061 20.9281L11.9537 9.81245C12.0394 9.71871 12.0004 9.56249 11.8835 9.50781Z"/>
+          </svg>
         </span>
       </li>
       <li class="block-tabs_item" [ngClass]="{active: !instanceTrade}"
           (click)="deActivateInstanceTrade()">
         <span class="block-tabs_item_text">
-          Order Book
+          {{'Order Book' | translate }}
+        </span>
+        <span class="block-tabs_item_ico">
+          <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.11889 12.7728H13.4535C13.4883 12.7728 13.5219 12.768 13.5542 12.7606C13.5568 12.7606 13.5589 12.761 13.5615 12.761C13.8034 12.761 14 12.5722 14 12.3394V0.421667C14 0.188905 13.8034 0 13.5615 0H13.4544H2.82026H2.11951C0.952258 0 0.00280719 0.913141 0.00280719 2.03518C0.00280719 2.05023 0.00588649 2.06451 0.00740805 2.07904C0.00588649 3.11553 -0.00748146 12.6396 0.0058865 13.8916C0.00505327 13.9161 0.00193766 13.94 0.00193766 13.9647C0.00193766 15.0436 0.880528 15.9269 1.98565 15.9936C2.00782 15.9969 2.02956 16 2.05256 16H13.5614C13.8034 16 14 15.8112 14 15.5783V13.9911C14 13.7584 13.8034 13.5695 13.5614 13.5695C13.3195 13.5695 13.1229 13.7585 13.1229 13.9911V15.1567H2.11889C1.45249 15.1567 0.908495 14.6479 0.88176 14.0136C0.882412 14.0022 0.884549 13.9915 0.884332 13.98C0.883897 13.9615 0.883245 13.9327 0.88281 13.8943C0.921139 13.27 1.4601 12.7728 2.11889 12.7728ZM2.41792 2.03518C2.41792 1.80242 2.61438 1.61352 2.85645 1.61352C3.09852 1.61352 3.29498 1.80242 3.29498 2.03518V10.6004C3.29498 10.833 3.09852 11.022 2.85645 11.022C2.61438 11.022 2.41792 10.833 2.41792 10.6004V2.03518Z"/>
+          </svg>
         </span>
       </li>
     </ul>
@@ -115,7 +125,8 @@
       </div>
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
         <div class="form-field">
-          <label class="form-field_label">{{'You want to get' | translate}}</label>
+          <label class="form-field_label" *ngIf="!instanceTrade">{{'You want to get' | translate}}</label>
+          <label class="form-field_label" *ngIf="instanceTrade">{{'You get' | translate}}</label>
           <div class="form-field_input">
             <input
               type="hidden"
@@ -132,15 +143,16 @@
 
             <app-tokens-all-input
                     [otherTokens]="instanceTrade ? instanceTradesTokens : false"
-                    [disabled]="instantTradesAvailable && instanceTrade"
+                    [disabled]="instanceTrade"
                     (TokenChange)="changedToken()"
                     [blockchain]="blockchainsOfNetworks[requestData.network]"
                     [setToken]="QuoteTokenCustom"
+                    [amountPlaceholder]="!instanceTrade"
                     [tokenModel]="requestData.tokens_info.quote"
             ></app-tokens-all-input>
 
             <label class="form-field_label form-field_label--rate"
-                   *ngIf="cmcRate && cmcRate.isMessage && cmcRate.change">
+                   *ngIf="!instanceTrade && cmcRate && cmcRate.isMessage && cmcRate.change">
               <div class="form-field_label--rate-short">
                 <span class="form-field_label--rate-short-txt">
                   {{ cmcRate.change }}% {{ cmcRate.isLower ? 'lower' : 'higher' }}
@@ -250,16 +262,11 @@
               (requestData.tokens_info.base.token.address.toLowerCase() === requestData.tokens_info.quote.token.address.toLowerCase())
             "
           >
-            <img
-              class="arrow"
-              src="./assets/images/buttons/arrow_w.svg"
-              *ngIf="!isCreatingContract"
-            />
-            <img
-              class="arrow spiner"
-              src="./assets/images/new-index/oval.svg"
-              *ngIf="isCreatingContract"
-            />
+            <span class="lds-ellipsis" *ngIf="getInstanceQuoteProgress || isCreatingContract">
+              <span class="lds-ellipsis-container">
+                <span></span><span></span><span></span><span></span>
+              </span>
+            </span>
             <span>
               {{ (isCreatingContract ? 'Creating Trade' : 'Create Trade') | translate }}
             </span>

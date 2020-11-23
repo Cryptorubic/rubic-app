@@ -1298,8 +1298,8 @@ ng-scrollbar-y {
   margin: 0;
   display: flex;
   &_item {
-    padding: 15px;
-    line-height: 17px;
+    padding: 11px 15px;
+    line-height: 25px;
     transition: all linear 0.1s;
     font-size: 14px;
     margin-bottom: 5px;
@@ -1310,8 +1310,8 @@ ng-scrollbar-y {
       background-color: #fff;
       color: #000;
       font-weight: 700;
-      padding-top: 17px;
-      padding-bottom: 18px;
+      padding-top: 13px;
+      padding-bottom: 14px;
       margin-bottom: 0;
     }
     &:not(.active) {
@@ -1327,6 +1327,7 @@ ng-scrollbar-y {
       height: 18px;
       vertical-align: middle;
       margin-right: 15px;
+      margin-top: -4px;
     }
     &_text {
       cursor: inherit;
@@ -1342,22 +1343,25 @@ ng-scrollbar-y {
   &_order-type &_item {
     padding-left: 42px;
     padding-right: 42px;
+    svg {
+      fill: #CACACA;
+    }
     &.active {
       position: relative;
-      &:after {
-        content: '';
-        position: absolute;
-        width: 8px;
-        height: 8px;
-        border-width: 0 2px 2px 0;
-        border-color: #4AA956;
-        border-style: solid;
-        top: 50%;
-        transform: rotate(45deg);
-        right: 15px;
-        margin-top: -10px;
+    }
+    &_ico {
+      vertical-align: middle;
+      display: inline-block;
+      margin-left: 10px;
+      position: relative;
+      margin-bottom: -6px;
+    }
+    &.active {
+      svg {
+        fill: #4AA956;
       }
     }
+
   }
   &_item + &_item {
     margin-left: 5px;
