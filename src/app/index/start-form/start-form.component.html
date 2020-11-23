@@ -74,6 +74,7 @@
               (TokenChange)="changedToken()"
               [blockchain]="blockchainsOfNetworks[requestData.network]"
               [setToken]="BaseTokenCustom"
+              [resetForm]="resetFormEmitter"
               [tokenModel]="requestData.tokens_info.base"
             ></app-tokens-all-input>
           </div>
@@ -147,6 +148,7 @@
                     (TokenChange)="changedToken()"
                     [blockchain]="blockchainsOfNetworks[requestData.network]"
                     [setToken]="QuoteTokenCustom"
+                    [resetForm]="resetFormEmitter"
                     [amountPlaceholder]="!instanceTrade"
                     [tokenModel]="requestData.tokens_info.quote"
             ></app-tokens-all-input>

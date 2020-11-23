@@ -887,6 +887,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     }
     &__btn {
       position: absolute;
+      z-index: 2;
       top: 50%;
       background: #fff;
       border: 2px solid #e5e5e5;
@@ -903,6 +904,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     }
     &__ac_input {
       position: absolute;
+      z-index: 1;
       right: 0;
       top: 0;
       width: 0;
@@ -918,7 +920,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       height: 30px;
       top: 50%;
       margin-top: 0;
-      z-index: 2;
+      z-index: 4;
       right: 25px;
       cursor: pointer;
       img {
@@ -939,6 +941,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       padding: 11px 10px 11px 22px !important;
       top: 0;
       border-left: 1px solid #d8d8d8 !important;
+      z-index: 3;
     }
   }
   &_description {

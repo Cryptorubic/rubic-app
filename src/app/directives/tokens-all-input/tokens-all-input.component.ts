@@ -32,6 +32,7 @@ export class TokensAllInputComponent implements OnInit {
   @Input() private isCustomAddress: boolean;
   @Input() private blockchain: string;
   @Input() public amountPlaceholder: boolean = true;
+  @Input() public resetForm: EventEmitter<any>;
 
   @ViewChild('tokenForm') tokenForm;
 
@@ -76,9 +77,6 @@ export class TokensAllInputComponent implements OnInit {
           this.TokenChange.emit(result);
         } else {
 
-          this.tokenForm.resetForm();
-          this.tokenForm.form.reset();
-
           setTimeout(() => {
             this.tokenName = '';
             this.searchToken('');
@@ -87,6 +85,10 @@ export class TokensAllInputComponent implements OnInit {
         }
       });
     }
+    this.resetForm.subscribe(() => {
+      this.tokenForm.resetForm();
+      this.tokenForm.form.reset();
+    });
   }
   public searchToken(q) {
     this.listIsOpened = false;

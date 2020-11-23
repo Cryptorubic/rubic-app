@@ -356,6 +356,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
+  public resetFormEmitter = new EventEmitter();
+
   private resetStartForm(network?) {
     this.requestData = {
       tokens_info: {
@@ -381,6 +383,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.QuoteTokenCustom.emit(false);
     this.startForm.resetForm();
     this.startForm.form.reset();
+    this.resetFormEmitter.emit();
   }
 
   public setNetwork(network) {
