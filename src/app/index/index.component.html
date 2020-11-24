@@ -15,12 +15,16 @@
     <div class="app-index__contracts" [hidden]="isInstanceTrade" *ngIf="selectedBlockchain">
       <app-public-contracts [blockchain]="selectedBlockchain"></app-public-contracts>
     </div>
+
+
     <div class="one-inch" *ngIf="isInstanceTrade">
       <div class="one-inch_text">With the assistance of</div>
       <div class="one-inch_logo">
         <img src="./assets/images/one-inch.svg">
       </div>
     </div>
+
+
   </div>
 </div>
 

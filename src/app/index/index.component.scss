@@ -422,7 +422,7 @@
 }
 .one-inch {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 14px;
   align-items: center;
   &_text {
@@ -444,8 +444,8 @@
   }
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (min-width: 641px) {
   .one-inch {
-    justify-content: center;
+    display: none;
   }
 }
