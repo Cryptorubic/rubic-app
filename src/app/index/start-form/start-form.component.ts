@@ -315,7 +315,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
-    this.checkAndGetInstanceQuote(force);
+    if (this.instanceTrade) {
+      this.checkAndGetInstanceQuote(force);
+    }
 
     if (
       this.requestData.tokens_info.base.amount &&
