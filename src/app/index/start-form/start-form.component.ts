@@ -13,14 +13,13 @@ import { Web3Service } from '../../services/web3/web3.service';
 import { UserService } from '../../services/user/user.service';
 import BigNumber from 'bignumber.js';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CHAIN_OF_NETWORK } from '../../services/web3/web3.constants';
+import {CHAIN_OF_NETWORK, ERC20_TOKEN_ABI} from '../../services/web3/web3.constants';
 import { ContractsService } from '../../services/contracts/contracts.service';
 import * as moment from 'moment';
 import {
   DateAdapter,
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
-  MatDatepicker,
   MatDialog,
   MatDialogRef,
 } from '@angular/material';
@@ -29,8 +28,7 @@ import {
   MomentDateAdapter,
 } from '@angular/material-moment-adapter';
 
-import { MODE } from '../../app-routing.module';
-export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
+import {OneInchService} from "../../models/1inch";
 
 const defaultNetwork = 1;
 
@@ -101,6 +99,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
   @Output() changedSocialState = new EventEmitter<string>();
+  @Output() instanceTradesSelect = new EventEmitter<any>();
+  @Output() blockchainTradesSelect = new EventEmitter<any>();
   public currentUser;
   public cmcRate: {
     change?: number;
@@ -116,13 +116,22 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     22: 'binance',
     24: 'matic'
   };
+
+  public instantTradesAvailable: boolean;
+  public instanceTrade: boolean = true;
+  private instanceTradeParams: any = {};
+
+
+  public instanceTradesTokens: any[];
+
   constructor(
     private dialog: MatDialog,
     protected contractsService: ContractsService,
     private web3Service: Web3Service,
     protected router: Router,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private oneInchService: OneInchService
   ) {
     this.CMCRates = {};
     this.currentUser = this.userService.getUserModel();
@@ -159,12 +168,16 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.datePickerDate = startDateTime.add(1, 'week');
     this.datePickerTime = `${startDateTime.hour()}:${startDateTime.minutes()}`;
     this.isCreatingContract = false;
+
+    this.instanceTradesTokens = this.oneInchService.getAutocompleteTokensList();
+    setTimeout(() => {
+      this.setNetwork(1);
+    });
   }
   private socialFormData: {
     network: string;
     data: any;
   };
-  public metamaskError: any;
   public isCreatingContract;
   public socialAuthError;
   public tokensData;
@@ -182,9 +195,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     base: boolean;
     quote: boolean;
   };
-
-  public quoteTokenChanger = new EventEmitter<any>();
-  public baseTokenChanger = new EventEmitter<any>();
 
   public requestData: IContractDetails;
 
@@ -239,9 +249,76 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       : quoteCoinAmount.div(baseCoinAmount)
     ).toString();
   }
-  public changedToken(token?) {
+
+  public getInstanceQuoteProgress = false;
+  public getInstanceQuoteTimeout: any;
+
+  public checkInstancePrice() {
+    const params = this.getOrderParams();
+    if (!(+params.amount > 0)) {
+      return;
+    }
+    const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
+    this.getInstanceQuoteProgress = true;
+    if (this.getInstanceQuoteTimeout) {
+      clearTimeout(this.getInstanceQuoteTimeout);
+    }
+
+    this.getInstanceQuoteTimeout = setTimeout(() => {
+      this.oneInchService.getQuote(params).then((result: any) => {
+        this.instanceTradeParams = result;
+        this.requestData.tokens_info.quote.amount = new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10);
+        this.QuoteTokenCustom.emit();
+        this.getInstanceQuoteProgress = false;
+      });
+    }, 1000);
+  }
+
+
+  private tokensCache = {
+    quote: '',
+    base: '',
+    baseAmount: ''
+  };
+
+  private checkAndGetInstanceQuote(force?: boolean) {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
+
+    const identical = this.tokensCache.base === baseCoin.address && this.tokensCache.quote === quoteCoin.address;
+
+    if (!identical || force) {
+      this.tokensCache.base = baseCoin.address;
+      this.tokensCache.quote = quoteCoin.address;
+      if (baseCoin.address && quoteCoin.address && baseCoin.address !== quoteCoin.address && this.requestData.network === 1) {
+        this.instantTradesAvailable = this.oneInchService.checkTokensPair(baseCoin, quoteCoin);
+      } else {
+        this.instantTradesAvailable = false;
+      }
+    }
+
+    if (this.instantTradesAvailable) {
+      if (!identical || force || (this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount)) {
+        this.checkInstancePrice();
+        this.tokensCache.baseAmount = this.requestData.tokens_info.base.amount;
+      } else {
+        const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
+        this.requestData.tokens_info.quote.amount = new BigNumber(
+            this.instanceTradeParams.toTokenAmount
+        ).div(quoteDecimalsTimes).toString(10);
+        this.QuoteTokenCustom.emit();
+      }
+    }
+  }
+
+  public changedToken(force?: boolean) {
+
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+    if (this.instanceTrade) {
+      this.checkAndGetInstanceQuote(force);
+    }
+
     if (
       this.requestData.tokens_info.base.amount &&
       this.requestData.tokens_info.quote.amount &&
@@ -266,9 +343,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
-  public toogleShowCustomToken(type) {
-    this.tokensData[type].customToken = !this.tokensData[type].customToken;
-  }
   public toogleAdvSettings() {
     this.isAdvSettingsOpen = !this.isAdvSettingsOpen;
   }
@@ -283,6 +357,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.requestData.public = this.requestData.public === undefined ? true : this.requestData.public;
     }
   }
+
+  public resetFormEmitter = new EventEmitter();
 
   private resetStartForm(network?) {
     this.requestData = {
@@ -304,12 +380,77 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       base: {},
       quote: {},
     };
+
     this.BaseTokenCustom.emit(false);
     this.QuoteTokenCustom.emit(false);
+    this.startForm.resetForm();
+    this.startForm.form.reset();
+    this.resetFormEmitter.emit();
   }
 
   public setNetwork(network) {
     this.resetStartForm(network);
+    if (network !== 1) {
+      this.instanceTrade = false;
+    }
+    this.instanceTradesSelect.emit(this.instanceTrade);
+    this.blockchainTradesSelect.emit(network);
+  }
+
+  public activateInstanceTrade() {
+    if (this.instanceTrade) {
+      return;
+    }
+    this.instanceTrade = true;
+    this.instanceTradesSelect.emit(true);
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+    const isBase = this.oneInchService.checkToken(baseCoin);
+    const isQuote = this.oneInchService.checkToken(quoteCoin);
+    if (!isBase) {
+      this.requestData.tokens_info.base = {
+        token: {},
+      };
+    }
+    if (!isQuote) {
+      this.requestData.tokens_info.quote = {
+        token: {},
+      };
+    }
+    if (isBase && isQuote) {
+      this.changedToken(true);
+    }
+  }
+
+  public deActivateInstanceTrade() {
+    if (!this.instanceTrade) {
+      return;
+    }
+    this.instanceTrade = false;
+    this.instanceTradesSelect.emit(false);
+
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+
+    const cmcBaseToken = window['cmc_tokens'].find((t) => {
+      return t.token_short_name === baseCoin.token_short_name &&
+          t.address.toLowerCase() === baseCoin.address.toLowerCase();
+    });
+    const cmcQuoteToken = window['cmc_tokens'].find((t) => {
+      return t.token_short_name === quoteCoin.token_short_name &&
+          t.address.toLowerCase() === quoteCoin.address.toLowerCase();
+    });
+
+    if (!cmcBaseToken) {
+      this.requestData.tokens_info.base = {
+        token: {},
+      };
+    }
+    if (!cmcQuoteToken) {
+      this.requestData.tokens_info.quote = {
+        token: {},
+      };
+    }
   }
 
   ngOnDestroy(): void {
@@ -321,6 +462,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.setFullDateTime();
     });
   }
+
   public dateChange() {
     if (this.advSettings.value.active_to.isSame(this.minDate, 'day')) {
       this.minTime = `${this.minDate.hour()}:${this.minDate.minutes()}`;
@@ -329,9 +471,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
     this.setFullDateTime();
   }
+
   public timeChange() {
     this.setFullDateTime();
   }
+
   public changePD() {
     if (
       this.requestData.tokens_info.base.token.token_name &&
@@ -358,15 +502,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     });
   }
 
-  get isEthereumSwap() {
-    return (
-      this.requestData.tokens_info.quote.token.isEthereum &&
-      this.requestData.tokens_info.base.token.isEthereum
-    );
-  }
   public setCustomToken(field, token) {
     this.customTokens[field] = token;
   }
+
   get baseBrokerFee() {
     if (
       !(
@@ -454,9 +593,88 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
+  private getOrderParams() {
+
+    const baseCoin = this.requestData.tokens_info.base.token;
+    const quoteCoin = this.requestData.tokens_info.quote.token;
+    const params = {} as any;
+    params.fromTokenSymbol = baseCoin.token_short_name;
+    params.toTokenSymbol = quoteCoin.token_short_name;
+    const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
+    params.amount = new BigNumber(this.requestData.tokens_info.base.amount).times(baseDecimalsTimes).toString(10);
+    return params;
+  }
+
+  private async createInstanceTrade() {
+    const params = this.getOrderParams();
+    params.fromAddress = this.metamaskAccount;
+    this.getInstanceQuoteProgress = true;
+
+
+    const remoteContractAddress = (await this.oneInchService.getApproveSpender() as any).address;
+    const baseToken = this.requestData.tokens_info.base.token;
+    if (baseToken.token_short_name !== 'ETH') {
+      const approved = await this.check1InchAllowance(remoteContractAddress, params)
+    }
+    this.oneInchService.getSwap(params, this.instanceTradeParams).then((result: any) => {
+      this.web3Service.sendTransaction(result.tx, this.requestData.network).then((res: any) => {
+        this.resetStartForm();
+        const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
+      }, () => {
+      }).finally(() => {
+        this.getInstanceQuoteProgress = false;
+      });
+    });
+  }
+
+  private async check1InchAllowance(remoteContractAddress, params) {
+    const baseToken = this.requestData.tokens_info.base.token;
+    let tokenContract = this.web3Service.getContract(
+        ERC20_TOKEN_ABI,
+        baseToken.address,
+        this.requestData.network
+    );
+    const sendApproveTx = () => {
+      const approveMethod = this.web3Service.getMethodInterface('approve');
+      const approveSignature = this.web3Service.encodeFunctionCall(
+          approveMethod,
+          [
+            remoteContractAddress,
+            params.amount.toString(10),
+          ],
+      );
+
+      return this.web3Service.sendTransaction(
+          {
+            from: this.metamaskAccount,
+            to: baseToken.address,
+            data: approveSignature,
+          },
+          this.requestData.network
+      );
+    };
+    return tokenContract.methods
+        .allowance(this.metamaskAccount, remoteContractAddress)
+        .call()
+        .then((result) => {
+          result = new BigNumber(result);
+          const noAllowance = result.minus(params.amount).isNegative();
+          if (noAllowance) {
+            return sendApproveTx();
+          }
+        })
+  }
+
+  private metamaskAccount: string;
+
   public createContract() {
     const accSubscriber = this.updateAddresses(true).subscribe((res) => {
-      this.buildAndCreate();
+      this.metamaskAccount = res['metamask'][0];
+      if (this.instanceTrade && this.instantTradesAvailable) {
+        this.createInstanceTrade();
+      } else {
+        this.buildAndCreate();
+      }
     }, (err) => {
       this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
         width: '480px',
@@ -481,6 +699,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       }
     );
   }
+
   private onTotpError(error) {
     switch (error.status) {
       case 403:
@@ -590,9 +809,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     };
     return sendActivateTrx();
   }
+
   public closeMetaMaskError() {
     this.metaMaskErrorModal.close();
   }
+
   private updateAddresses(ifEnabled?) {
     return this.web3Service.getAccounts(false, ifEnabled, this.requestData.network);
   }

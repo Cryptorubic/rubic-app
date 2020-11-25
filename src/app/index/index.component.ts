@@ -1,11 +1,8 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import PROJECTS from './projects-resourses';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { HttpService } from '../services/http/http.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ChangePasswordComponent } from '../common/change-password/change-password.component';
-
-const STAT_URL = 'get_statistics_landing/';
 
 @Component({
   selector: 'app-index',
@@ -13,12 +10,14 @@ const STAT_URL = 'get_statistics_landing/';
   styleUrls: ['./index.component.scss'],
 })
 export class IndexComponent implements OnInit {
-  public projects = PROJECTS;
-  public stat;
+
+  public isInstanceTrade: boolean = false;
 
   @ViewChild('listingModal') listing: TemplateRef<any>;
 
   protected listingModal: MatDialogRef<any>;
+
+  public selectedBlockchain: string;
 
   constructor(
     private httpService: HttpService,
@@ -42,6 +41,14 @@ export class IndexComponent implements OnInit {
         }
       }
     });
+  }
+
+  public changeOrderType(res) {
+    this.isInstanceTrade = res;
+  }
+
+  public changeBlockchain(blockchain) {
+    this.selectedBlockchain = blockchain;
   }
 
   ngOnInit() {

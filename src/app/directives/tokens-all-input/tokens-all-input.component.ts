@@ -26,10 +26,28 @@ export interface ITokenInfo {
 })
 export class TokensAllInputComponent implements OnInit {
   @Input('tokenModel') public tokenModel: any;
+  @Input('disabled') public disabled: boolean;
   @Input() public tokenGroup: any;
   @Input() private setToken: any;
   @Input() private isCustomAddress: boolean;
   @Input() private blockchain: string;
+  @Input() public amountPlaceholder: boolean = true;
+  @Input() public resetForm: EventEmitter<any>;
+
+  @ViewChild('tokenForm') tokenForm;
+
+  private _otherTokens: any;
+
+  @Input() set otherTokens(value: string) {
+    if (this._otherTokens !== value) {
+      this._otherTokens = value;
+      this.tokenName = '';
+      this.searchToken('');
+    }
+  }
+  get() {
+    return this._otherTokens;
+  }
 
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
@@ -39,6 +57,7 @@ export class TokensAllInputComponent implements OnInit {
   ) {
     this.tokensList = [];
   }
+
 
   public visibleInput: boolean;
   public tokensList: ITokenInfo[];
@@ -57,6 +76,7 @@ export class TokensAllInputComponent implements OnInit {
           this.visibleInput = false;
           this.TokenChange.emit(result);
         } else {
+
           setTimeout(() => {
             this.tokenName = '';
             this.searchToken('');
@@ -65,12 +85,10 @@ export class TokensAllInputComponent implements OnInit {
         }
       });
     }
-
-    this.tokenField.nativeElement.addEventListener('blur', () => {
-      this.listIsOpened = false;
+    this.resetForm.subscribe(() => {
+      this.tokenForm.resetForm();
+      this.tokenForm.form.reset();
     });
-
-    this.searchToken('');
   }
   public searchToken(q) {
     this.listIsOpened = false;
@@ -83,10 +101,9 @@ export class TokensAllInputComponent implements OnInit {
 
     const result = [];
     let indexToken = 0;
-
-    const tokensForSearch = this.blockchain ? window['cmc_tokens'].filter((t) => {
+    const tokensForSearch = !this._otherTokens ? this.blockchain ? window['cmc_tokens'].filter((t) => {
       return t.platform === this.blockchain;
-    }) : window['cmc_tokens'];
+    }) : window['cmc_tokens'] : this._otherTokens;
 
     if (q) {
       while (

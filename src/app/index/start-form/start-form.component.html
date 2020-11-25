@@ -1,21 +1,59 @@
 <div class="index-start-form__wrapper">
-  <ul class="block-tabs">
-    <li class="block-tabs_item"
-        (click)="setNetwork(1)" [ngClass]="{active: requestData.network === 1}">
-      <img class="block-tabs_item_icon" src="./assets/images/icons/coins/eth.png"/>
-      <span class="block-tabs_item_text">Ethereum</span>
-    </li>
-    <li class="block-tabs_item"
-        (click)="setNetwork(22)" [ngClass]="{active: requestData.network === 22}">
-      <img class="block-tabs_item_icon" src="./assets/images/icons/coins/bnb.svg"/>
-      <span class="block-tabs_item_text">Binance Smart Chain</span>
-    </li>
-    <li class="block-tabs_item"
-        (click)="setNetwork(24)" [ngClass]="{active: requestData.network === 24}">
-      <img class="block-tabs_item_icon" src="./assets/images/icons/coins/matic.svg"/>
-      <span class="block-tabs_item_text">Matic</span>
-    </li>
-  </ul>
+  <div class="start-form-menus">
+    <ul class="block-tabs block-tabs_blockchains">
+      <li class="block-tabs_item"
+          (click)="setNetwork(1)" [ngClass]="{active: requestData.network === 1}">
+        <img class="block-tabs_item_icon" src="./assets/images/icons/coins/eth.png"/>
+        <span class="block-tabs_item_text">Ethereum</span>
+      </li>
+      <li class="block-tabs_item"
+          (click)="setNetwork(22)" [ngClass]="{active: requestData.network === 22}">
+        <img class="block-tabs_item_icon" src="./assets/images/icons/coins/bnb.svg"/>
+        <span class="block-tabs_item_text">Binance Smart Chain</span>
+      </li>
+      <li class="block-tabs_item"
+          (click)="setNetwork(24)" [ngClass]="{active: requestData.network === 24}">
+        <img class="block-tabs_item_icon" src="./assets/images/icons/coins/matic.svg"/>
+        <span class="block-tabs_item_text">Matic</span>
+      </li>
+    </ul>
+
+    <ul class="block-tabs block-tabs_order-type">
+      <li class="block-tabs_item" [ngClass]="{active: instanceTrade, hidden: requestData.network !== 1}"
+          (click)="activateInstanceTrade()">
+        <span class="block-tabs_item_text">
+          {{'Instant Trades' | translate }}
+        </span>
+        <span class="block-tabs_item_ico">
+          <svg width="12" height="21" viewBox="0 0 12 21" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.8835 9.50781L6.83827 8.19567C6.75249 8.15662 6.70571 8.05507 6.7291 7.96134L8.9125 0.251608C8.96708 0.0485147 8.70975 -0.0920883 8.56939 0.0719485L0.0463406 11.1875C-0.0394358 11.2891 -0.000446528 11.4375 0.116521 11.4922L5.16173 12.8043C5.24751 12.8434 5.29429 12.9449 5.2709 13.0387L3.0875 20.7484C3.03292 20.9515 3.29025 21.0921 3.43061 20.9281L11.9537 9.81245C12.0394 9.71871 12.0004 9.56249 11.8835 9.50781Z"/>
+          </svg>
+        </span>
+      </li>
+      <li class="block-tabs_item" [ngClass]="{active: !instanceTrade}"
+          (click)="deActivateInstanceTrade()">
+        <span class="block-tabs_item_text">
+          {{'Order Book' | translate }}
+        </span>
+        <span class="block-tabs_item_ico">
+
+        <svg width="18" height="16" viewBox="0 0 18 16" xmlns="http://www.w3.org/2000/svg">
+          <g opacity="0.9">
+            <path d="M3.23367 1.00006C3.23322 1.00006 3.23271 1.00006 3.23227 1.00006C3.0751 1.00006 2.92727 1.06133 2.81564 1.17267C2.70279 1.28525 2.64062 1.43515 2.64062 1.59472V10.5116C2.64062 10.8386 2.90769 11.1053 3.23602 11.1061C4.62017 11.1094 6.93918 11.3979 8.53897 13.072V3.74028C8.53897 3.62944 8.51066 3.52531 8.45722 3.43914C7.14419 1.32459 4.62095 1.00331 3.23367 1.00006Z"/>
+            <path d="M15.3592 10.5116V1.59466C15.3592 1.43509 15.2971 1.28519 15.1842 1.17261C15.0726 1.06127 14.9246 1 14.7676 1C14.7671 1 14.7666 1 14.7662 1C13.379 1.0033 10.8557 1.32458 9.54263 3.43914C9.48919 3.5253 9.46094 3.62943 9.46094 3.74027V13.072C11.0607 11.3978 13.3797 11.1093 14.7639 11.106C15.0922 11.1052 15.3592 10.8385 15.3592 10.5116Z"/>
+            <path d="M16.7155 3.05641H16.2844V10.5116C16.2844 11.3464 15.6042 12.0272 14.768 12.0293C13.594 12.0321 11.6581 12.2617 10.2871 13.5593C12.6583 12.9787 15.1579 13.3561 16.5824 13.6807C16.7603 13.7212 16.9441 13.6794 17.0866 13.5658C17.2286 13.4525 17.3101 13.2831 17.3101 13.1013V3.65096C17.3102 3.32314 17.0434 3.05641 16.7155 3.05641Z"/>
+            <path d="M1.71713 10.5116V3.05641H1.28596C0.958188 3.05641 0.691406 3.32314 0.691406 3.65096V13.1012C0.691406 13.283 0.772873 13.4523 0.914881 13.5656C1.05728 13.6792 1.24092 13.7212 1.41907 13.6806C2.84362 13.3559 5.3433 12.9785 7.71434 13.5591C6.34339 12.2616 4.40755 12.032 3.2335 12.0292C2.3974 12.0272 1.71713 11.3464 1.71713 10.5116Z"/>
+          </g>
+        </svg>
+
+        </span>
+      </li>
+    </ul>
+
+  </div>
+
+
+
   <form
     #startForm="ngForm"
     class="index-start-form"
@@ -39,14 +77,17 @@
               name="base_limit"
             />
             <app-tokens-all-input
-              (TokenChange)="changedToken('base')"
+              [otherTokens]="instanceTrade ? instanceTradesTokens : false"
+              (TokenChange)="changedToken()"
               [blockchain]="blockchainsOfNetworks[requestData.network]"
               [setToken]="BaseTokenCustom"
+              [resetForm]="resetFormEmitter"
               [tokenModel]="requestData.tokens_info.base"
             ></app-tokens-all-input>
           </div>
           <div
             class="form-field_description normal-font text-right form-field_description-show"
+            [ngStyle]="{visibility: instanceTrade ? 'hidden' : 'visible'}"
           >
             <span (click)="openedCustomTokens.base = !openedCustomTokens.base">
               {{(openedCustomTokens.base ? 'Cancel' : 'Use custom token') | translate}}
@@ -92,7 +133,8 @@
       </div>
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
         <div class="form-field">
-          <label class="form-field_label">{{'You want to get' | translate}}</label>
+          <label class="form-field_label" *ngIf="!instanceTrade">{{'You want to get' | translate}}</label>
+          <label class="form-field_label" *ngIf="instanceTrade">{{'You get' | translate}}</label>
           <div class="form-field_input">
             <input
               type="hidden"
@@ -108,14 +150,56 @@
             />
 
             <app-tokens-all-input
-              (TokenChange)="changedToken('quote')"
-              [blockchain]="blockchainsOfNetworks[requestData.network]"
-              [setToken]="QuoteTokenCustom"
-              [tokenModel]="requestData.tokens_info.quote"
+                    [otherTokens]="instanceTrade ? instanceTradesTokens : false"
+                    [disabled]="instanceTrade"
+                    (TokenChange)="changedToken()"
+                    [blockchain]="blockchainsOfNetworks[requestData.network]"
+                    [setToken]="QuoteTokenCustom"
+                    [resetForm]="resetFormEmitter"
+                    [amountPlaceholder]="!instanceTrade"
+                    [tokenModel]="requestData.tokens_info.quote"
             ></app-tokens-all-input>
+
+            <label class="form-field_label form-field_label--rate"
+                   *ngIf="!instanceTrade && cmcRate && cmcRate.isMessage && cmcRate.change">
+              <div class="form-field_label--rate-short">
+                <span class="form-field_label--rate-short-txt">
+                  {{ cmcRate.change }}% {{ cmcRate.isLower ? 'lower' : 'higher' }}
+                </span>
+                <div class="form-field_label--rate-short-icon">
+                  <img src="./assets/images/icons/info.svg">
+
+                  <div class="form-notice">
+                    <div class="form-notice_content">
+                      <div class="form-notice_text form-field_label--rate_text">
+                        {{'Your rate is' | translate}}
+                        <b
+                        ><span class="green-text">{{ cmcRate.change }}%</span>
+                          <span class="green-text">
+                      {{ cmcRate.isLower ? 'lower' : 'higher' }}</span
+                          >
+                        </b>
+                        {{'than' | translate}}
+                        <a href="https://coinmarketcap.com/" target="_blank"
+                        >{{'coinmarketcap' | translate}}</a
+                        >
+                        {{'rate.' | translate}}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </label>
+
           </div>
+
+
+
+
           <div
             class="form-field_description normal-font text-right form-field_description-show"
+            [ngStyle]="{visibility: instanceTrade ? 'hidden' : 'visible'}"
           >
             <span
               (click)="openedCustomTokens.quote = !openedCustomTokens.quote"
@@ -159,32 +243,15 @@
           </div>
         </div>
       </div>
-      <div
-        class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1"
+      <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1"
         style="float: right"
       >
+        <label class="form-field_label">&nbsp;</label>
         <div class="form-field form-field_btn form-field_btn--rate">
-          <label class="form-field_label form-field_label--rate">
-            <div class="form-notice" *ngIf="cmcRate && cmcRate.isMessage">
-              <div class="form-notice_text">
-                {{'Your rate is' | translate}}
-                <b
-                  ><span class="green-text">{{ cmcRate.change }}%</span>
-                  <span class="green-text">
-                    {{ cmcRate.isLower ? 'lower' : 'higher' }}</span
-                  >
-                </b>
-                {{'than' | translate}}
-                <a href="https://coinmarketcap.com/" target="_blank"
-                  >{{'coinmarketcap' | translate}}</a
-                >
-                {{'rate.' | translate}}
-              </div>
-            </div>
-          </label>
           <button
             class="btn btn-green width-100"
             [disabled]="
+              getInstanceQuoteProgress ||
               !requestData.tokens_info.base.amount ||
               !requestData.tokens_info.quote.amount ||
               !requestData.tokens_info.base.token.address ||
@@ -204,25 +271,27 @@
               (requestData.tokens_info.base.token.address.toLowerCase() === requestData.tokens_info.quote.token.address.toLowerCase())
             "
           >
-            <img
-              class="arrow"
-              src="./assets/images/buttons/arrow_w.svg"
-              *ngIf="!isCreatingContract"
-            />
-            <img
-              class="arrow spiner"
-              src="./assets/images/new-index/oval.svg"
-              *ngIf="isCreatingContract"
-            />
+            <span class="lds-ellipsis" *ngIf="getInstanceQuoteProgress || isCreatingContract">
+              <span class="lds-ellipsis-container">
+                <span></span><span></span><span></span><span></span>
+              </span>
+            </span>
             <span>
               {{ (isCreatingContract ? 'Creating Trade' : 'Create Trade') | translate }}
             </span>
           </button>
+          <div class="one-inch">
+            <div class="one-inch_text">With the assistance of</div>
+            <div class="one-inch_logo">
+              <img src="./assets/images/one-inch.svg">
+            </div>
+          </div>
         </div>
         <div class="form-field_description normal-font normal-font--visible text-right">
           <span
-            class="underline-link underline-link_btn"
-            (click)="toogleAdvSettings()">
+                  [hidden]="instanceTrade"
+                  class="underline-link underline-link_btn"
+                  (click)="toogleAdvSettings()">
             {{(isAdvSettingsOpen ? 'Close Settings' : 'Advanced Settings') | translate}}
           </span>
         </div>
@@ -231,7 +300,7 @@
   </form>
   <form
     class="index-start-form__settings"
-    [ngClass]="{ hidden: !isAdvSettingsOpen }"
+    [ngClass]="{ hidden: !isAdvSettingsOpen || instanceTrade}"
     #advSettings="ngForm"
   >
     <div class="index-start-form__settings-block">
