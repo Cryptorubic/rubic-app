@@ -4,7 +4,7 @@ import {
   StateKey,
   TransferState,
 } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
 
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {
@@ -80,6 +80,7 @@ import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { AboutageComponent } from './about/about.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import {TokenSaleComponent} from "./token-sale/token-sale.component";
+import {OneInchService} from "./models/1inch";
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -126,8 +127,10 @@ export function exportTranslateStaticLoader(
 export function appInitializerFactory(
   translate: TranslateService,
   userService: UserService,
-  httpService: HttpService
+  httpService: HttpService,
+  injector: Injector
 ) {
+
   const defaultLng = (navigator.language || navigator['browserLanguage']).split(
     '-'
   )[0];
@@ -138,6 +141,12 @@ export function appInitializerFactory(
 
   return () =>
     new Promise<any>((resolve: any, reject) => {
+
+      const oneInchService = injector.get(
+          OneInchService,
+          Promise.resolve(null)
+      );
+
       translate.setDefaultLang('en');
 
       translate.use(langToSet).subscribe(() => {
@@ -178,7 +187,9 @@ export function appInitializerFactory(
                   );
                 });
                 window['cmc_tokens'] = tokens;
-                resolve(null);
+                oneInchService.onLoadTokens().subscribe(() => {
+                  resolve(null);
+                });
               });
 
             subscriber.unsubscribe();
@@ -264,7 +275,7 @@ export function appInitializerFactory(
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
-      deps: [TranslateService, UserService, HttpService],
+      deps: [TranslateService, UserService, HttpService, Injector],
       multi: true,
     },
   ],

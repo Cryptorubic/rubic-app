@@ -290,3 +290,35 @@
 }
 @media screen and (max-width: 980px) {
 }
+
+
+.one-inch {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+  white-space: nowrap;
+  align-items: center;
+  &_text {
+    color: #A8A8A8;
+    margin-right: 10px;
+    font-size: 12px;
+  }
+  &_logo {
+    img {
+      width: 65px;
+      filter: grayscale(1);
+      opacity: 0.5;
+      transition: all linear 0.1s;
+      &:hover {
+        filter: grayscale(0);
+        opacity: 1;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .one-inch {
+    display: none;
+  }
+}

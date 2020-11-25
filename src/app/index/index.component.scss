@@ -420,38 +420,32 @@
     }
   }
 }
-
-@media (max-width: 960px) {
-  .daps-swap-footer {
-    font-size: 2.08vw;
-    &_logo {
-      left: 0;
-    }
-    &_text {
-      margin-right: 0;
-      display: flex;
-      align-items: flex-start;
-      margin-left: 10em;
-    }
+.one-inch {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+  align-items: center;
+  &_text {
+    color: #A8A8A8;
+    margin-right: 10px;
+    font-size: 12px;
   }
-}
-@media (max-width: 680px) {
-  .daps-swap-footer {
-    font-size: 15px;
-    &_logo {
-      position: static;
-      margin-top: 1em;
-    }
-    &_text {
-      margin-left: 0;
+  &_logo {
+    img {
+      width: 65px;
+      filter: grayscale(1);
+      opacity: 0.5;
+      transition: all linear 0.1s;
+      &:hover {
+        filter: grayscale(0);
+        opacity: 1;
+      }
     }
   }
 }
 
-@media (max-width: 480px) {
-  .daps-swap-footer {
-    &_logo {
-      display: none;
-    }
+@media screen and (min-width: 641px) {
+  .one-inch {
+    display: none;
   }
 }

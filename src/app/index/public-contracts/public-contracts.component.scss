@@ -91,6 +91,17 @@
       margin-right: 0;
     }
   }
+  .grid-cell {
+    &:last-child {
+      width: 16%;
+    }
+    &-1-4:not(:first-child) {
+      width: 23.25%;
+    }
+    &-1-2 {
+      width: 46.5%;
+    }
+  }
   // &_row:hover &_cell {
   //   background-color: rgba(255, 255, 255, 0.8);
   // }

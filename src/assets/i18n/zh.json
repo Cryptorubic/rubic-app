@@ -1,0 +1,204 @@
+{
+  "About":"关于",
+  "Features":"特点",
+  "Faq":"Faq",
+  "Login by MetaMask":"通过MetaMask登录",
+  "My trades":"我的行业",
+  "Logout":"注销",
+  "Yes":"是的",
+  "No":"没有",
+  "Any":"任何",
+
+  "Copyright":"版权",
+  "Privacy policy":"隐私政策",
+
+  "Make trades on your terms, share and generate revenue":
+  "用自己的方式做交易，分享并产生收益",
+
+  "Create your Trade":"创造你的贸易",
+  "Listing on Uniswap":"在Uniswap上列名",
+
+  "You have":"你有",
+  "Add":"添加",
+  "You want to get":"你想得到",
+  "You get": "你会得到",
+  "Your rate is":"你的价格是",
+  "than":"比",
+  "coinmarketcap":"coinmarketcap",
+  "rate.":"利率",
+  "Closing date": "截止日期",
+  "Closing time":"关门时间",
+  "Public deal":"公开交易",
+  "Trade will be listed on the main page":"贸易将在主页上列出",
+  "Permanent trade":"长期贸易",
+  "Lock liquidity until the trade completion":"在交易完成前锁定流动性",
+  "Minimum contribution in":"最低缴款额",
+  "Brokerage fee":"经纪费",
+  "You can specify % for Broker":"您可以指定%的经纪人",
+  "Enter Broker Address":"输入经纪人地址",
+  "Specify % for":"指定%",
+  "Close Settings":"关闭设置",
+  "Advanced Settings":"高级设置",
+  "Creating Trade":"创造贸易",
+  "Create Trade":"创建贸易",
+  "Use custom token":"使用自定义标记",
+  "Token Contract Address":"代币合约地址",
+  "Choose Token":"选择代币",
+  "Enter Amount":"输入金额",
+
+  "Error":"错误",
+  "Please choose main net network in Metamask.":"请在Metamask中选择主网网络",
+  "Close": "关闭",
+  "Cancel":"取消",
+  "Order Book":"订单簿",
+  "SEND":"发送",
+  "GET": "得到",
+  "Volume": "体积",
+  "Chain":"链",
+  "Expires in":"有效期",
+  "Status":"状态",
+  "d：h：m":"{{days}}天: {{hours}}小时: {{minutes}}分钟",
+  "Show more":"更多",
+  "There is no matching pair, please":"没有匹配的一对，请",
+  "create your own":"创造你自己的",
+
+  "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue.":
+  "Rubic p2p trades是一个去中心化的p2p平台。它帮助用户按照自己的条件进行交易，分享和创收。",
+
+  "P2P trade":"P2P贸易",
+  "Create your trade and choose your rate。":"创建您的贸易，并选择您的利率",
+  "Instant Trade": "即时交易",
+  "You can create an instant trade using external DEX integration":"您可以使用外部DEX集成创建一个即时交易",
+  "Order":"命令",
+
+  "Set the desired rate and the deal will be executed when one of the DEX meets these requirements":
+  "设置所需的费率，当DEX之一满足这些要求时，交易将被执行",
+
+  "Farming":"农耕",
+
+  "If you provide liquidity for trades you will be rewarded by Rubic tokens when the trade is executed.":
+  "如果你为交易提供流动性 当交易被执行时，你将得到Rubic代币的奖励",
+
+  "Pool": "Pool",
+  "Create pools for DEXs by having only 1 token":"通过只有1个令牌为DEXs创建池子",
+  "Multichain support":"多链支持",
+  "Ethereum now, Tron and Binance Smart Chain are coming soon": "%现在的Ethereum，Tron和Binance智能链即将到来",
+  "Rubic P2P trades features":"Rubic P2P行业的特点",
+  "Option to lock liquidity until trade is closed":"在交易结束前锁定流动性的选择",
+  "Uniswap / curve integration (in progress)":"Uniswap/曲线一体化(进行中)",
+  "No volume limits":"没有数量限制",
+  "Ability to make crowdsales":"做众包销售的能力",
+  "Public/Private deals":"公共/私人交易",
+  "No need to list token":"不需要列出令牌",
+  "% of platform revenue can be regulated":"%的平台收益可以被监管",
+  "Brokers support":"经纪人支持",
+  "Rubic contract":"Rubic合同",
+  "Roadmap":"路线图",
+  "October 2020":"2020年10月",
+  "Integration with Tron, Binance Smart Chain":"与Tron整合，Binance智能链",
+  "November 2020":"2020年11月",
+  "Instant trades":"即时交易",
+  "January 2021":"2021年1月",
+
+  "Multichain solution with the help of other projects such as Ren, PolkaDot":
+  "在Ren、PolkaDot等其他项目帮助下的多链解决方案",
+
+  "February 2021":"2021年2月",
+  "Anonymizer":"匿名者",
+  "April 2021":"2021年4月",
+  "Liquidity Pool Platform":"流动资金池平台",
+  "FAQ": "常见问题解答",
+  "FAQ_QUESTIONS": [
+    {
+      "QUESTION": "什么是Rubic p2p交易？",
+      "ANSWER": "Rubic是一个多链defi平台。Rubic组织defi服务，使一个项目能够在ONE PLACE中去中心化地创建、管理和交易代币。它帮助用户按照自己的条件进行交易，分享和创收"
+    }, {
+      "QUESTION": "谁可以使用我们的服务？",
+      "ANSWER": "任何想要创建和管理代币的人 任何拥有加密货币并想兑换的人。不需要KYC。"
+    }, {
+      "QUESTION": "最小和最大的交易规模是多少？",
+      "ANSWER": "没有限制"
+    }, {
+      "QUESTION": "它是如何工作的？",
+      "ANSWER": "交易有两种选择： 第一，你根据自己的条件创建交易，然后等待另一个部分同意你的条件，并填补其部分。 第二，你选择即时交易，你同意另一个部分的条件。即将推出。你可以在没有任何编码技能的情况下创建自己的代币，并在不上市的情况下进行交易。"
+    }, {
+      "QUESTION": "支持哪些加密货币？",
+      "ANSWER": "Rubic使用基于Ethereum的代币进行交易。Rubic目前使用基于Ethereum的代币进行交易. Tron、Binance Chain、BTC区块链即将发布。 然而为了创建和管理代币，我们已经提供了Ethereum、Tron、EOS、NEO、Waves、Binance智能链区块链支持的多链服务。"
+    }, {
+      "QUESTION": "我应该在使用你们的服务之前列出我的令牌吗？",
+      "ANSWER": "不，你可以交易任何代币。但您可以联系我们，我们会将您的代币添加到我们的列表中。"
+    }, {
+      "QUESTION": "如何开始？",
+      "ANSWER": "这很简单，也很快速，你只需要MetaMask就可以开始了。您只需要MetaMask就可以开始了.\n 填写所需条款的字段，然后点击创建交易。"
+    }, {
+      "QUESTION":"如何创建一个贸易？",
+      "ANSWER": "步骤一： 填写表格，输入您拥有的金额，并输入您想获得的金额 步骤2. 添加高级选项，如关闭日期和时间，最低和最高出资额，隐私，经纪费，锁定流动性，直到交易完成 第3步. Check details of the trade Step 4. 点击创建交易 步骤5. 使用Metamask确认你的交易步骤 6. 贡献你的部分交易。"
+    }, {
+      "QUESTION": "多少钱？",
+      "答案": "服务费从每笔交易中收取0. 3%的费用"
+    }, {
+      "QUESTION": "完成一笔交易需要多长时间？",
+      "ANSWER": "只要对方完成了自己这边的交易，交易就会完成。"
+    }, {
+      "QUESTION":"如何确保交易的隐私和安全？",
+      "答案": "交易是通过智能合约来保障的，由经验丰富的开发人员和外部审计来验证。"
+    }, {
+      "QUESTION": "有多少人可以参加一次交易？",
+      "ANSWER": "每一方最多可以有10个人参加"
+    }, {
+      "QUESTION": "如果第二部分没有完成交易，会发生什么，如果第二部分没有完成交易会发生什么？",
+      "ANSWER": "交易会过期，你会收到所有的代币。"
+    }, {
+      "QUESTION": "如果我创建了一个交易，但是，我改变了主意，我可以取消交易吗？",
+      "ANSWER": "是的，你可以在第二部分完成交易前的任何时候取消交易. 如果你取消交易，你可以拿回你的代币。"
+    }
+  ],
+
+
+  "Done":"完成",
+  "Created":"创建",
+  "Active":"活跃",
+  "Postponed":"推迟",
+  "Waiting":"等待",
+  "Waiting for initialization":"等待初始化",
+
+
+  "The trade was completed. If you participated in this trade, please check your wallet。":
+  "交易已经完成。如果你参与了这次交易，请检查你的钱包。",
+
+  "Expired":"过期",
+  "The trade is no longer available.":"交易已经没有了。",
+  "Cancelled":"取消",
+  "The trade was cancelled.":"交易被取消了",
+  "Rate:": "利率：",
+
+  "该The trade's rate is {rate}% more profitable than coinmarketcap rate":
+  "该交易的利率是{利率}%比coinmarketcap利率更有利可图",
+
+  "The trade's rate is {rate}% less profitable than coinmarketcap rate":
+  "该交易的利率是{{利率}}% 比Coinmarketcap利率更低的利润",
+
+  "Sent":"发送",
+  "Check on Explorer":"检查资源管理器",
+  "Number of investors":"投资者人数",
+
+  "You will get {amount} {token} after Trade":"你会得到{金额}{令牌} 交易后的{{代币}}",
+  "Fill all":"全部填满",
+  "Min Contribution Limit:":"最低出资限额",
+  "Only Owner can contribute":"只有业主可以出资",
+  "Brokers fee：":"经纪人费用",
+  "Refund": "退款",
+  "Left":"左",
+
+  "Link to deal":"链接到交易",
+  "Management address":"管理地址",
+  "Broker address":"经纪人地址",
+  "Additional comment":"补充意见",
+  "Cancel trade":"取消交易",
+
+  "No trades":"没有交易",
+  "Name": "姓名",
+  "Creation date":"创建日期",
+  "Do you want to remove it?":"你想删除它吗？",
+  "Do you really want to Log Out?": "你真的想注销吗？"
+}
