@@ -280,7 +280,7 @@
               {{ (isCreatingContract ? 'Creating Trade' : 'Create Trade') | translate }}
             </span>
           </button>
-          <div class="one-inch">
+          <div class="one-inch" *ngIf="instanceTrade">
             <div class="one-inch_text">With the assistance of</div>
             <div class="one-inch_logo">
               <img src="./assets/images/one-inch.svg">
