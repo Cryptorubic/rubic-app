@@ -81,7 +81,19 @@ export class OneInchService {
                         token_short_name: k
                     });
                 }
-
+                const rubicAddress = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
+                const rubicTokenIsExists = this.tokensAutocompleteList.find((exToken: TokenInterface) => {
+                    return exToken.address.toLowerCase() === rubicAddress;
+                });
+                if (!rubicTokenIsExists) {
+                    const cmcRubic = window['cmc_tokens'].find((exToken: TokenInterface) => {
+                        return exToken.address.toLowerCase() === rubicAddress;
+                    });
+                    if (cmcRubic) {
+                        this.tokensAutocompleteList.push(cmcRubic);
+                        this.availableTokens[cmcRubic.token_short_name] = cmcRubic;
+                    }
+                }
                 this.tokensAutocompleteList.sort((a, b) => {
                     const aRank = a.rank || 100000;
                     const bRank = b.rank || 100000;

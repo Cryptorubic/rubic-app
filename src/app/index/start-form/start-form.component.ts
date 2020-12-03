@@ -614,7 +614,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const remoteContractAddress = (await this.oneInchService.getApproveSpender() as any).address;
     const baseToken = this.requestData.tokens_info.base.token;
     if (baseToken.token_short_name !== 'ETH') {
-      const approved = await this.check1InchAllowance(remoteContractAddress, params)
+      let error;
+      const approved = await this.check1InchAllowance(remoteContractAddress, params).catch(() => {
+        this.getInstanceQuoteProgress = false;
+        error = true;
+      })
+      if (error) {
+        return;
+      }
     }
     this.oneInchService.getSwap(params, this.instanceTradeParams).then((result: any) => {
       this.web3Service.sendTransaction(result.tx, this.requestData.network).then((res: any) => {
