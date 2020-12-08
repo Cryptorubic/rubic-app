@@ -1,6 +1,6 @@
 {
   "name": "rubic",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "scripts": {
     "start": "ng serve --proxy-config proxy.conf.json --host local.rubic.mywish.io --port 4224 --disableHostCheck",
     "ng": "ng",
