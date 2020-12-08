@@ -81,6 +81,7 @@ import { AboutageComponent } from './about/about.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import {TokenSaleComponent} from "./token-sale/token-sale.component";
 import {OneInchService} from "./models/1inch";
+import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -235,10 +236,12 @@ export function appInitializerFactory(
     ChangePasswordComponent,
     TokenSaleComponent,
     CountdownComponent,
+    DisclaimerComponent,
   ],
   entryComponents: [
     AuthComponent,
     ChangePasswordComponent,
+    DisclaimerComponent
   ],
   imports: [
     TransferHttpCacheModule,

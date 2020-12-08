@@ -1,16 +1,19 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { HttpService } from '../services/http/http.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ChangePasswordComponent } from '../common/change-password/change-password.component';
+import {DisclaimerComponent} from "../components/disclaimer/disclaimer.component";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, AfterViewInit {
 
+  @ViewChild('disclaimerText') disclaimerText;
   public isInstanceTrade: boolean = false;
 
   @ViewChild('listingModal') listing: TemplateRef<any>;
@@ -41,6 +44,29 @@ export class IndexComponent implements OnInit {
         }
       }
     });
+  }
+
+  private openDisclaimer(): void {
+    this.dialog.open(DisclaimerComponent, {
+      width: '650px',
+      disableClose: true,
+      data: {
+        text: 'DISCLAIMERS.START.TEXT',
+        title: 'DISCLAIMERS.START.TITLE',
+        actions: {}
+      },
+    });
+  }
+
+  ngAfterViewInit() {
+    const link = this.disclaimerText.nativeElement.getElementsByClassName('as-link')[0];
+    if (link) {
+      link.onclick = (event) => {
+        event.preventDefault();
+        this.openDisclaimer();
+        return false;
+      };
+    }
   }
 
   public changeOrderType(res) {
