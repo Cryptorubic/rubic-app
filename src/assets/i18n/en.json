@@ -202,6 +202,8 @@
   "Do you want to remove it?": "Do you want to remove it?",
   "Do you really want to Log Out?": "Do you really want to Log Out?",
 
+  "By trading on our platform you agree with the following terms and conditions":
+  "By trading on our platform you agree with the following <a href=\"#\" class=\"as-link\" data-disclaimer>terms and conditions</span>",
 
   "DISCLAIMERS": {
     "START": {

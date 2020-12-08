@@ -9,9 +9,7 @@ import {
 } from '@angular/router';
 
 import { MODE, PROJECT_PARTS } from './app-routing.module';
-import {ChangePasswordComponent} from "./common/change-password/change-password.component";
 import {MatDialog} from "@angular/material/dialog";
-import {DisclaimerComponent} from "./components/disclaimer/disclaimer.component";
 
 @Component({
   selector: 'app-root',
@@ -31,7 +29,6 @@ export class AppComponent implements OnInit {
     private router: Router,
     private cookieService: CookieService,
     private Web3Service: Web3Service,
-    private dialog: MatDialog,
   ) {
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe((event) => {
@@ -86,24 +83,6 @@ export class AppComponent implements OnInit {
       }
       this.notCookiesAccept = !this.cookieService.get('cookies-accept');
     });
-
-    const setAccessDisclaimerToCookie = () => {
-      this.cookieService.set('disclaimer-accept', '1');
-    }
-
-    if (!this.cookieService.get('disclaimer-accept')) {
-      this.dialog.open(DisclaimerComponent, {
-        width: '650px',
-        disableClose: true,
-        data: {
-          text: 'DISCLAIMERS.START.TEXT',
-          title: 'DISCLAIMERS.START.TITLE',
-          actions: {
-            success: setAccessDisclaimerToCookie
-          }
-        },
-      });
-    }
 
 
   }
