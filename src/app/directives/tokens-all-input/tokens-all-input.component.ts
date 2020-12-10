@@ -65,7 +65,7 @@ export class TokensAllInputComponent implements OnInit {
   public tokenName;
   private activeTokenIndex;
 
-  @Output() public TokenChange = new EventEmitter<string>();
+  @Output() public TokenChange = new EventEmitter<string|false>();
 
   private searchSubscriber;
 
@@ -75,8 +75,8 @@ export class TokensAllInputComponent implements OnInit {
         if (result) {
           this.visibleInput = false;
           this.TokenChange.emit(result);
+          this.tokenName = result.token.token_name + ' (' + result.token.token_short_name + ')';
         } else {
-
           setTimeout(() => {
             this.tokenName = '';
             this.searchToken('');
@@ -85,6 +85,7 @@ export class TokensAllInputComponent implements OnInit {
         }
       });
     }
+
     this.resetForm.subscribe(() => {
       this.tokenForm.resetForm();
       this.tokenForm.form.reset();
@@ -190,6 +191,12 @@ export class TokensAllInputComponent implements OnInit {
     this.showAutoInput();
   }
 
+  public resetToken() {
+    this.tokenName = '';
+    this.tokenModel.token = {};
+    this.TokenChange.emit(false);
+
+  }
   public keyDownResult(event) {
     if (event.code === 'Escape') {
       this.showAutoInput();

@@ -11,6 +11,8 @@ import { ContractsPreviewV3Component, ContractEditV3Resolver } from './contracts
 // import { MainPageComponent } from './main-page/main-page.component';
 import { AboutageComponent } from './about/about.component';
 import {TokenSaleComponent} from "./token-sale/token-sale.component";
+import {Observable} from "rxjs";
+import {StartFormResolver} from "./index/start-form/start-form.component";
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -50,6 +52,9 @@ const routes: Routes = [
   {
     path: '',
     component: IndexComponent,
+    resolve: {
+      checkedTokens: StartFormResolver
+    }
   },
   {
     path: 'about',
@@ -131,25 +136,20 @@ const routes: Routes = [
     path: 'reset/:uid/:token',
     component: IndexComponent,
   },
-  /*{
-    path: 'team',
-    component: TeamComponent,
-  },
-  {
-    path: 'roadmap',
-    component: RoadmapComponent,
-  },*/
   {
     path: 'faq',
     component: FaqComponent,
-  } /*,
-  {
-    path: 'contacts',
-    component: ContactsComponent,
-  }*/,
+  },
   {
     path: 'token-sale',
     component: TokenSaleComponent,
+  },
+  {
+    path: ':token',
+    component: IndexComponent,
+    resolve: {
+      checkedTokens: StartFormResolver
+    }
   },
 ];
 

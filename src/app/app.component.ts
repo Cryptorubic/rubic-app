@@ -161,7 +161,7 @@ export class AppComponent implements OnInit {
 
     this.checkLiveChat();
 
-    if (this.Web3Service.ethereum.isConnected()) {
+    if (this.Web3Service.ethereum && this.Web3Service.ethereum.isConnected()) {
       this.Web3Service.setUserAddress();
     }
   }

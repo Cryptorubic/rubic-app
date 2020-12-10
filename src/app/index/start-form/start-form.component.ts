@@ -6,13 +6,13 @@ import {
   AfterContentInit,
   TemplateRef,
   ViewChild,
-  Output,
+  Output, Injectable,
 } from '@angular/core';
 import { SWAPS_V2 } from '../../contracts-preview-v3/contracts-preview-v3.component';
 import { Web3Service } from '../../services/web3/web3.service';
 import { UserService } from '../../services/user/user.service';
 import BigNumber from 'bignumber.js';
-import { Router, ActivatedRoute } from '@angular/router';
+import {Router, ActivatedRoute, Resolve, ActivatedRouteSnapshot} from '@angular/router';
 import {CHAIN_OF_NETWORK, ERC20_TOKEN_ABI} from '../../services/web3/web3.constants';
 import { ContractsService } from '../../services/contracts/contracts.service';
 import * as moment from 'moment';
@@ -28,7 +28,9 @@ import {
   MomentDateAdapter,
 } from '@angular/material-moment-adapter';
 
-import {OneInchService} from "../../models/1inch";
+import {OneInchService} from "../../models/1inch/1inch";
+import {HttpService} from "../../services/http/http.service";
+import {Observable} from "rxjs";
 
 const defaultNetwork = 1;
 
@@ -170,10 +172,23 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.isCreatingContract = false;
 
     this.instanceTradesTokens = this.oneInchService.getAutocompleteTokensList();
-    setTimeout(() => {
-      this.setNetwork(1);
-    });
+
   }
+
+  private checkQueryParams() {
+    const tokens = this.route.snapshot.data.checkedTokens;
+    tokens.forEach((t, i) => {
+      if (t) {
+        this.addCustomToken(i ? 'quote' : 'base', t);
+      }
+    });
+    if (tokens[0] && tokens[1]) {
+      this.requestData.tokens_info.base.amount = '1';
+    }
+    this.changedToken(true);
+  }
+
+
   private socialFormData: {
     network: string;
     data: any;
@@ -211,22 +226,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       JSON.stringify({ tokens_info: this.tokensData })
     );
   }
-  public checkRate(revert?) {
-    if (!(this.tokensData.base.token && this.tokensData.quote.token)) {
-      return false;
-    }
-    const baseCoinAmount = new BigNumber(this.tokensData.base.amount).div(
-      Math.pow(10, this.tokensData.base.token.decimals)
-    );
 
-    const quoteCoinAmount = new BigNumber(this.tokensData.quote.amount).div(
-      Math.pow(10, this.tokensData.quote.token.decimals)
-    );
-
-    return !revert
-      ? baseCoinAmount.div(quoteCoinAmount).dp(4)
-      : quoteCoinAmount.div(baseCoinAmount).dp(4);
-  }
 
   public getRate(revert?): string {
     if (
@@ -265,10 +265,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     this.getInstanceQuoteTimeout = setTimeout(() => {
-      this.oneInchService.getQuote(params).then((result: any) => {
+      this.oneInchService.getQuote(
+          params,
+          !this.instantTradesAvailable ? this.requestData.tokens_info.quote.token.address : false
+      ).then((result: any) => {
         this.instanceTradeParams = result;
-        this.requestData.tokens_info.quote.amount = new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10);
-        this.QuoteTokenCustom.emit();
+        this.requestData.tokens_info.quote.amount =
+        Number(result.toTokenAmount) ?
+            new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10) : '';
+        // this.QuoteTokenCustom.emit();
         this.getInstanceQuoteProgress = false;
       });
     }, 1000);
@@ -286,7 +291,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const quoteCoin = this.requestData.tokens_info.quote.token;
 
     const identical = this.tokensCache.base === baseCoin.address && this.tokensCache.quote === quoteCoin.address;
-
+    if (identical) {
+      this.requestData.tokens_info.quote.amount = '';
+    }
     if (!identical || force) {
       this.tokensCache.base = baseCoin.address;
       this.tokensCache.quote = quoteCoin.address;
@@ -297,17 +304,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       }
     }
 
-    if (this.instantTradesAvailable) {
-      if (!identical || force || (this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount)) {
-        this.checkInstancePrice();
-        this.tokensCache.baseAmount = this.requestData.tokens_info.base.amount;
-      } else {
-        const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
-        this.requestData.tokens_info.quote.amount = new BigNumber(
-            this.instanceTradeParams.toTokenAmount
-        ).div(quoteDecimalsTimes).toString(10);
-        this.QuoteTokenCustom.emit();
-      }
+    if (!identical || force || (this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount)) {
+      this.checkInstancePrice();
+      this.tokensCache.baseAmount = this.requestData.tokens_info.base.amount;
+    } else {
+      const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
+      this.requestData.tokens_info.quote.amount = new BigNumber(
+          this.instanceTradeParams.toTokenAmount
+      ).div(quoteDecimalsTimes).toString(10);
+      // this.QuoteTokenCustom.emit();
     }
   }
 
@@ -316,8 +321,13 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
     if (this.instanceTrade) {
-      this.checkAndGetInstanceQuote(force);
+      if (!quoteCoin.address) {
+        this.requestData.tokens_info.quote.amount = '';
+      } else {
+        this.checkAndGetInstanceQuote(force);
+      }
     }
+
 
     if (
       this.requestData.tokens_info.base.amount &&
@@ -347,15 +357,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.isAdvSettingsOpen = !this.isAdvSettingsOpen;
   }
 
+  private onInit = false;
+
   ngOnInit() {
-    const draftData = localStorage.getItem('form_new_values');
-    if (!draftData) {
-      this.resetStartForm();
-    } else {
-      this.requestData = JSON.parse(draftData);
-      this.requestData.network = this.requestData.network || defaultNetwork;
-      this.requestData.public = this.requestData.public === undefined ? true : this.requestData.public;
-    }
+    this.setNetwork(1);
+    this.onInit = true;
+    this.checkQueryParams();
   }
 
   public resetFormEmitter = new EventEmitter();
@@ -381,15 +388,20 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       quote: {},
     };
 
-    this.BaseTokenCustom.emit(false);
-    this.QuoteTokenCustom.emit(false);
-    this.startForm.resetForm();
-    this.startForm.form.reset();
-    this.resetFormEmitter.emit();
+    if (this.onInit) {
+      this.BaseTokenCustom.emit(false);
+      this.QuoteTokenCustom.emit(false);
+      this.startForm.resetForm();
+      this.startForm.form.reset();
+      this.resetFormEmitter.emit();
+    }
   }
+
+  public selectedNetwork;
 
   public setNetwork(network) {
     this.resetStartForm(network);
+    this.selectedNetwork = network
     if (network !== 1) {
       this.instanceTrade = false;
     }
@@ -531,8 +543,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       .toString();
   }
 
-  public addCustomToken(name) {
-    this.requestData.tokens_info[name].token = { ...this.customTokens[name] };
+  public addCustomToken(name, token?) {
+    this.requestData.tokens_info[name].token = { ...(token || this.customTokens[name]) };
     switch (name) {
       case 'base':
         this.BaseTokenCustom.emit(this.requestData.tokens_info[name]);
@@ -825,3 +837,57 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     return this.web3Service.getAccounts(false, ifEnabled, this.requestData.network);
   }
 }
+
+
+
+@Injectable()
+export class StartFormResolver implements Resolve<any> {
+
+  private ethTokens: any[] = window['cmc_tokens'].filter((t) => {
+    return t.platform === 'ethereum';
+  });
+
+  constructor(
+      private web3Service: Web3Service,
+  ) {
+
+  }
+
+  private getTokenPromise(token_symbol) {
+    const token = token_symbol ? this.ethTokens.find((exToken) => {
+      return token_symbol === exToken.token_short_name.toLowerCase();
+    }) : false;
+    if (token) {
+      return this.web3Service.getFullTokenInfo(token.address, false, 1).then((res: any) => {
+        token.decimals = res.decimals;
+        return token;
+      })
+    } else {
+      return Promise.resolve(false);
+    }
+  }
+
+  resolve(route: ActivatedRouteSnapshot) {
+    const routeParams = route.params;
+    return new Observable((observer) => {
+      const params = {...route.queryParams};
+      params.to = routeParams.token || params.to;
+      const queryParams = {
+        from: (
+            params.from || (!!params.to ? 'ETH' : '')
+        ).toLowerCase(),
+        to: params.to ? params.to.toLowerCase() : false
+      };
+
+      const promises = [
+        this.getTokenPromise(queryParams.from),
+        this.getTokenPromise(queryParams.to),
+      ];
+      Promise.all(promises).then((res) => {
+        observer.next(res);
+        observer.complete();
+      });
+    });
+  }
+}
+

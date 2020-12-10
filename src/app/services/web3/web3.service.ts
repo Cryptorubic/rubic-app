@@ -233,7 +233,7 @@ export class Web3Service {
       : false;
   }
 
-  public getFullTokenInfo(tokenAddress, withoutSearch?: boolean, network?: string) {
+  public getFullTokenInfo(tokenAddress, withoutSearch?: boolean, network?: string|number) {
 
     let blockchain;
     if (network) {
