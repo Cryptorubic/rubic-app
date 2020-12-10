@@ -288,6 +288,25 @@
     }
   }
 }
+.etherscan-link {
+  margin-top: 4px;
+  font-size: 18px;
+  line-height: 22px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  float: right;
+  padding-top: 4px;
+  a {
+    display: flex;
+    align-items: center;
+  }
+  img {
+    margin-top: -4px;
+  }
+}
+
+
 @media screen and (max-width: 980px) {
 }
 

@@ -16,7 +16,7 @@ import {
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './index/header/header.component';
-import { StartFormComponent } from './index/start-form/start-form.component';
+import {StartFormComponent, StartFormResolver} from './index/start-form/start-form.component';
 import { IndexComponent } from './index/index.component';
 import {
   HttpClient,
@@ -80,7 +80,7 @@ import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { AboutageComponent } from './about/about.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import {TokenSaleComponent} from "./token-sale/token-sale.component";
-import {OneInchService} from "./models/1inch";
+import {OneInchService} from "./models/1inch/1inch";
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
@@ -275,6 +275,7 @@ export function appInitializerFactory(
     CookieService,
     ContractsListResolver,
     ContractEditV3Resolver,
+    StartFormResolver,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,

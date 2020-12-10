@@ -194,12 +194,25 @@
 
           </div>
 
+          <div class="etherscan-link"
+               *ngIf="instanceTrade"
+               [ngStyle]="{visibility: !requestData.tokens_info.quote.token.address ? 'hidden' : 'visible'}">
+            <a
+              [href]="
+                      !requestData.tokens_info.quote.token.isNative
+                        ? (requestData.tokens_info.quote.token.address | etherscanUrl : selectedNetwork : 'token')
+                        : (selectedNetwork | nativeCoinUrl)
+                    "
+              target="_blank">
 
-
+              <small>Check on Explorer</small>&nbsp;
+              <img src="./assets/images/icons/link.svg">
+            </a>
+          </div>
 
           <div
+            *ngIf="!instanceTrade"
             class="form-field_description normal-font text-right form-field_description-show"
-            [ngStyle]="{visibility: instanceTrade ? 'hidden' : 'visible'}"
           >
             <span
               (click)="openedCustomTokens.quote = !openedCustomTokens.quote"

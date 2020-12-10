@@ -1,6 +1,6 @@
 import {EventEmitter, Injectable, Output} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Observable, Subscriber} from "rxjs";
+import {INSTANT_TRADES_TOKENS} from './tokens.sources';
 import BigNumber from "bignumber.js";
 
 interface TokenInterface {
@@ -16,7 +16,6 @@ const api = {
 }
 
 const slippageValue = 1;
-const swapContractAddress = '0x111111125434b319222CdBf8C261674aDB56F3ae';
 
 @Injectable({
     providedIn: "root",
@@ -81,19 +80,24 @@ export class OneInchService {
                         token_short_name: k
                     });
                 }
-                const rubicAddress = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
-                const rubicTokenIsExists = this.tokensAutocompleteList.find((exToken: TokenInterface) => {
-                    return exToken.address.toLowerCase() === rubicAddress;
-                });
-                if (!rubicTokenIsExists) {
-                    const cmcRubic = window['cmc_tokens'].find((exToken: TokenInterface) => {
-                        return exToken.address.toLowerCase() === rubicAddress;
+
+
+                INSTANT_TRADES_TOKENS.forEach((tokenAddress) => {
+                    const tokenIsExists = this.tokensAutocompleteList.find((exToken: TokenInterface) => {
+                        return exToken.address.toLowerCase() === tokenAddress;
                     });
-                    if (cmcRubic) {
-                        this.tokensAutocompleteList.push(cmcRubic);
-                        this.availableTokens[cmcRubic.token_short_name] = cmcRubic;
+                    if (!tokenIsExists) {
+                        const cmcToken = window['cmc_tokens'].find((exToken: TokenInterface) => {
+                            return exToken.address.toLowerCase() === tokenAddress;
+                        });
+                        if (cmcToken) {
+                            this.tokensAutocompleteList.push(cmcToken);
+                            this.availableTokens[cmcToken.token_short_name] = cmcToken;
+                        }
                     }
-                }
+                });
+
+
                 this.tokensAutocompleteList.sort((a, b) => {
                     const aRank = a.rank || 100000;
                     const bRank = b.rank || 100000;
@@ -178,10 +182,10 @@ export class OneInchService {
         return address;
     }
 
-    public getQuote(params) {
+    public getQuote(params, tokenAddress?: string) {
         params = params || {};
         const fromAddress = this.availableTokens[params.fromTokenSymbol].address;
-        const toAddress = this.availableTokens[params.toTokenSymbol].address;
+        const toAddress = tokenAddress || this.availableTokens[params.toTokenSymbol].address;
         return this.checkSwap({
             fromTokenAddress: OneInchService.checkETHAddress(fromAddress),
             toTokenAddress: OneInchService.checkETHAddress(toAddress),
