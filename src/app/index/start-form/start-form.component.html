@@ -59,9 +59,9 @@
     class="index-start-form"
     (submit)="createContract()"
   >
-    <div class="grid-row">
+    <div class="grid-row start-form-row">
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
-        <div class="form-field index-start-form__all-input">
+        <div class="form-field">
           <label class="form-field_label">{{'You have' | translate}}</label>
           <div class="form-field_input">
             <input
@@ -254,6 +254,12 @@
               </div>
             </div>
           </div>
+
+
+          <button class="revert-btn" type="button" (click)="revertCoins()">
+            <img src="./assets/images/icons/revert.svg"
+                 class="revert-btn_icon">
+          </button>
         </div>
       </div>
       <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1"
