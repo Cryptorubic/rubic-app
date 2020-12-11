@@ -836,6 +836,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private updateAddresses(ifEnabled?) {
     return this.web3Service.getAccounts(false, ifEnabled, this.requestData.network);
   }
+
+  public revertCoins():void {
+    const baseToken = this.requestData.tokens_info.base;
+    this.requestData.tokens_info.base = this.requestData.tokens_info.quote;
+    this.requestData.tokens_info.quote = baseToken;
+    this.BaseTokenCustom.emit(this.requestData.tokens_info[name]);
+    this.QuoteTokenCustom.emit(this.requestData.tokens_info[name]);
+  }
+
 }
 
 
