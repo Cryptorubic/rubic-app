@@ -306,7 +306,7 @@
   }
 }
 .start-form-row {
-  @media screen and (min-width: 861px) {
+  @media screen and (min-width: 681px) {
     .grid-cell:first-child {
       .form-field {
         margin-right: 9px;
@@ -319,7 +319,7 @@
       }
     }
   }
-  @media screen and (max-width: 860px) {
+  @media screen and (max-width: 680px) {
     .grid-cell:first-child {
       .form-field {
         margin-bottom: 4px;
@@ -341,15 +341,18 @@
   padding: 0;
   outline: none;
   cursor: pointer;
-  @media screen and (min-width: 861px) {
+  @media screen and (min-width: 681px) {
     top: 38px;
     left: -1vw;
     margin-left: -17px;
   }
-  @media screen and (max-width: 680px) {
-    top: 26px;
+  @media screen and (min-width: 1421px) {
+    left: -10px;
   }
   @media screen and (max-width: 860px) {
+    top: 26px;
+  }
+  @media screen and (max-width: 680px) {
     top: auto;
     bottom: 100%;
     left: 50%;
