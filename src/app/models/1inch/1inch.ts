@@ -1,6 +1,5 @@
 import {EventEmitter, Injectable, Output} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {INSTANT_TRADES_TOKENS} from './tokens.sources';
 import BigNumber from "bignumber.js";
 
 interface TokenInterface {
@@ -81,8 +80,12 @@ export class OneInchService {
                     });
                 }
 
+                const allETHTokens = window['cmc_tokens'].filter((token) => {
+                    return token.platform === 'ethereum';
+                });
 
-                INSTANT_TRADES_TOKENS.forEach((tokenAddress) => {
+                allETHTokens.forEach((token) => {
+                    const tokenAddress = token.address.toLowerCase();
                     const tokenIsExists = this.tokensAutocompleteList.find((exToken: TokenInterface) => {
                         return exToken.address.toLowerCase() === tokenAddress;
                     });
@@ -219,7 +222,7 @@ export class OneInchService {
             burnChi: false,
             disableEstimate: false,
             ethValue: ethValue,
-            gasPrice: await this.getGasPrice(),
+            // gasPrice: await this.getGasPrice(),
             referrerAddress: '0x7367409E0c12b2B7cAa5c990E11A75E0D86580fc',
             fee: 3,
             walletAddress: params.fromAddress,
