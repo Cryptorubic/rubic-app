@@ -76,6 +76,11 @@
     text-align: center;
     max-width: 390px;
     margin: 0 auto 20px;
+
+    &__row {
+      margin-bottom: 10px;
+      display: block;
+    }
   }
 }
 .dialog-closer {
