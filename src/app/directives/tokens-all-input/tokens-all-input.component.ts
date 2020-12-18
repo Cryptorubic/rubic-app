@@ -92,6 +92,7 @@ export class TokensAllInputComponent implements OnInit {
     });
   }
   public searchToken(q) {
+    const resultsNumber = 10;
     this.listIsOpened = false;
     this.tokensList = [];
     this.activeTokenIndex = undefined;
@@ -100,49 +101,34 @@ export class TokensAllInputComponent implements OnInit {
       this.searchSubscriber.unsubscribe();
     }
 
-    const result = [];
-    let indexToken = 0;
     const tokensForSearch = !this._otherTokens ? this.blockchain ? window['cmc_tokens'].filter((t) => {
       return t.platform === this.blockchain;
     }) : window['cmc_tokens'] : this._otherTokens;
 
-    if (q) {
-      while (
-        indexToken < tokensForSearch.length &&
-        result.length < 10
-      ) {
-        const token = tokensForSearch[indexToken];
-        const tokenName = token.token_name.toLowerCase();
-        const tokenSymbol = token.token_short_name.toLowerCase();
-        const seqrchQ = q.toLowerCase();
+    const lowerCaseQuery = q.toLowerCase();
+    const shortNameMatchTokens = tokensForSearch.filter(token =>
+        token
+        && token.token_short_name
+            .toLowerCase()
+            .includes(lowerCaseQuery)
+        && (this.blockchain || this.blockchain === token.platform)
+    );
+    const nameMatchTokens = tokensForSearch.filter(token =>
+        token
+        && token.token_name
+            .toLowerCase()
+            .includes(lowerCaseQuery)
+        && !token.token_short_name
+            .toLowerCase()
+            .includes(lowerCaseQuery)
+        && (this.blockchain || this.blockchain === token.platform)
+    );
 
-        const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
-        const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
-        if (
-          (nameIndexMatch || symbolIndexMatch) &&
-          (!this.blockchain || this.blockchain === token.platform)
-        ) {
-          result.push({ ...token });
-        }
-        indexToken++;
-      }
-    } else {
-      while (
-          indexToken < tokensForSearch.length &&
-          result.length < 10
-        ) {
-        const token = tokensForSearch[indexToken];
-        if (
-          token &&
-          (!this.blockchain || this.blockchain === token.platform)
-        ) {
-          result.push({ ...token });
-        }
-        indexToken++;
-      }
-    }
+    this.tokensList = shortNameMatchTokens
+        .concat(nameMatchTokens)
+        .slice(0, resultsNumber)
+        .map(obj => ({...obj}));
 
-    this.tokensList = result;
 
     if (this.tokensList.length) {
       this.listIsOpened = true;
