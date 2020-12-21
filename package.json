@@ -2,7 +2,7 @@
   "name": "rubic",
   "version": "1.4.3",
   "scripts": {
-    "start": "ng serve --proxy-config proxy.conf.json --host local.rubic.mywish.io --port 4224 --disableHostCheck",
+    "start": "ng serve --proxy-config proxy.conf.json --host local.rubic.exchange --port 4224 --disableHostCheck",
     "ng": "ng",
     "build": "ng build --prod",
     "test": "ng test",
