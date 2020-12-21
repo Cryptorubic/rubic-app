@@ -1,0 +1,28 @@
+<div class="dialog-block">
+  <div class="dialog-block__content">
+    <button
+            class="dialog-closer"
+            (click)="close()"
+            type="button"
+    >
+      <img src="./assets/images/icons/cross-blue.svg" />
+    </button>
+
+    <div class="transaction-title">{{title | translate}}</div>
+
+    <div class="transaction-description">
+      <span class="transaction-description__row">{{description | translate}}</span>
+      <span>{{additionalDescription | translate}}</span>
+    </div>
+
+    <div class="alert-window-buttons text-center">
+      <button
+              class="btn btn-green btn-auto btn-min"
+              (click)="close()"
+              type="button"
+      >
+        <span>&nbsp;&nbsp;&nbsp;{{'Close' | translate}}&nbsp;&nbsp;&nbsp;</span>
+      </button>
+    </div>
+  </div>
+</div>

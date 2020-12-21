@@ -599,32 +599,20 @@
   </form>
 </div>
 
+
 <ng-template #metaMaskError>
-  <div class="dialog-block">
-    <div class="dialog-block__content">
-      <button
-        class="dialog-closer"
-        (click)="closeMetaMaskError()"
-        type="button"
-      >
-        <img src="./assets/images/icons/cross-blue.svg" />
-      </button>
+  <app-message-box
+          title="Error"
+          description="Please choose main net network in Metamask."
+          (onClose)="closeMetaMaskError()">
+  </app-message-box>
+</ng-template>
 
-      <div class="transaction-title">{{'Error' | translate}}</div>
-
-      <div class="transaction-description">
-        {{'Please choose main net network in Metamask.' | translate}}
-      </div>
-
-      <div class="alert-window-buttons text-center">
-        <button
-          class="btn btn-green btn-auto btn-min"
-          (click)="closeMetaMaskError()"
-          type="button"
-        >
-          <span>&nbsp;&nbsp;&nbsp;{{'Close' | translate}}&nbsp;&nbsp;&nbsp;</span>
-        </button>
-      </div>
-    </div>
-  </div>
+<ng-template #insufficientFundsError>
+  <app-message-box
+          title="Warning"
+          description="Insufficient funds to complete the transaction."
+          additionalDescription="Please check the transition details."
+          (onClose)="closeMetaMaskError()">
+  </app-message-box>
 </ng-template>

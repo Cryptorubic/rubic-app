@@ -98,6 +98,7 @@ export const MY_FORMATS = {
 })
 export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
+  @ViewChild('insufficientFundsError') insufficientFundsError: TemplateRef<any>;
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
   @Output() changedSocialState = new EventEmitter<string>();
@@ -635,15 +636,23 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         return;
       }
     }
-    this.oneInchService.getSwap(params, this.instanceTradeParams).then((result: any) => {
-      this.web3Service.sendTransaction(result.tx, this.requestData.network).then((res: any) => {
-        this.resetStartForm();
-        const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
-      }, () => {
-      }).finally(() => {
+    this.oneInchService.getSwap(params, this.instanceTradeParams)
+      .then((result: any) => {
+        this.web3Service.sendTransaction(result.tx, this.requestData.network).then((res: any) => {
+          this.resetStartForm();
+          const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
+        }, () => {
+        }).finally(() => {
+          this.getInstanceQuoteProgress = false;
+        });
+      })
+      .catch(() => {
+        this.metaMaskErrorModal = this.dialog.open(this.insufficientFundsError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container',
+        });
         this.getInstanceQuoteProgress = false;
       });
-    });
   }
 
   private async check1InchAllowance(remoteContractAddress, params) {
