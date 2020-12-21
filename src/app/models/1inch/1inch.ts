@@ -157,18 +157,18 @@ export class OneInchService {
             const sendRequest = () => {
                 deepLevel++;
                 const query = getQuery(requestParams);
-                this.httpClient.get(`https://pathfinder-v3.1inch.exchange/v1.0/quotes?${query}`).toPromise().then((result: any) => {
+                this.httpClient.get(`https://api.1inch.exchange/v2.0/quote?${query}`).toPromise().then((result: any) => {
                     if (deepLevel < 2) {
-                        latestResult = result.bestResult;
+                        latestResult = result;
                         sendRequest();
                     } else {
                         let bestResult;
                         const oldToAmountValue = new BigNumber(latestResult.toTokenAmount);
                         const currToAmountValue = new BigNumber(result.toTokenAmount);
                         if (oldToAmountValue.minus(currToAmountValue).isPositive()) {
-                            bestResult = latestResult.bestResult;
+                            bestResult = latestResult;
                         } else {
-                            bestResult = result.bestResult;
+                            bestResult = result;
                         }
                         resolve(bestResult);
                     }
