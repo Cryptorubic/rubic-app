@@ -82,6 +82,7 @@ import { CountdownComponent } from './components/countdown/countdown.component';
 import {TokenSaleComponent} from "./token-sale/token-sale.component";
 import {OneInchService} from "./models/1inch/1inch";
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
+import { MessageBoxComponent } from './components/message-box/message-box.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -237,6 +238,7 @@ export function appInitializerFactory(
     TokenSaleComponent,
     CountdownComponent,
     DisclaimerComponent,
+    MessageBoxComponent,
   ],
   entryComponents: [
     AuthComponent,
