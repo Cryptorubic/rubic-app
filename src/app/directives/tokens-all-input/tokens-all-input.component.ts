@@ -113,6 +113,7 @@ export class TokensAllInputComponent implements OnInit {
             .includes(lowerCaseQuery)
         && (this.blockchain || this.blockchain === token.platform)
     );
+    const shortNameMatchTokensSorted = shortNameMatchTokens.sort((token1, token2) => token1.length - token2.length);
     const nameMatchTokens = tokensForSearch.filter(token =>
         token
         && token.token_name
@@ -124,7 +125,7 @@ export class TokensAllInputComponent implements OnInit {
         && (this.blockchain || this.blockchain === token.platform)
     );
 
-    this.tokensList = shortNameMatchTokens
+    this.tokensList = shortNameMatchTokensSorted
         .concat(nameMatchTokens)
         .slice(0, resultsNumber)
         .map(obj => ({...obj}));
