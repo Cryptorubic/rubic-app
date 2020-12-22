@@ -628,7 +628,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseToken = this.requestData.tokens_info.base.token;
     if (baseToken.token_short_name !== 'ETH') {
       let error;
-      const approved = await this.check1InchAllowance(remoteContractAddress, params).catch(() => {
+      await this.check1InchAllowance(remoteContractAddress, params).catch(e => {
+        console.log(e);
         this.getInstanceQuoteProgress = false;
         error = true;
       })
