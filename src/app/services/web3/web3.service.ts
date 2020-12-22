@@ -212,7 +212,7 @@ export class Web3Service {
     } else {
       this.Web3.eth.setProvider(currentProvider)
     }
-    return this.Web3.eth.Contract(abi, address);
+    return new this.Web3.eth.Contract(abi, address);
   }
 
   public getMethodInterface(methodName, abi?) {
