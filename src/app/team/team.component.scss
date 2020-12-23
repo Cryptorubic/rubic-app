@@ -24,9 +24,10 @@ $font-family: "Ubuntu", Arial, sans-serif;;
 
   &__content-wrapper {
     position: relative;
-    display: flex;
+    display: grid;
     width: 100%;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(auto-fit, 330px);
+    justify-content: space-between;
 
   }
 
@@ -34,7 +35,8 @@ $font-family: "Ubuntu", Arial, sans-serif;;
     margin-bottom: 60px;
     /*margin-right: 20px;*/
     padding: 0 5px;
-    flex: 1 0 auto;
+    /*flex: 1 0 auto;*/
+    width: 320px;
     z-index: 1;
   }
 
