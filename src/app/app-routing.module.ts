@@ -13,6 +13,7 @@ import { AboutageComponent } from './about/about.component';
 import {TokenSaleComponent} from "./token-sale/token-sale.component";
 import {Observable} from "rxjs";
 import {StartFormResolver} from "./index/start-form/start-form.component";
+import {TeamComponent} from './team/team.component';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -59,6 +60,10 @@ const routes: Routes = [
   {
     path: 'about',
     component: AboutageComponent,
+  },
+  {
+    path: 'team',
+    component: TeamComponent,
   },
   {
     path: 'create-v3',

@@ -1,0 +1,52 @@
+@import '../../scss/elements/vars';
+
+$font-family: "Ubuntu", Arial, sans-serif;;
+
+.team-page {
+  position: relative;
+  font-family: $font-family !important;
+  font-weight: normal;
+  background-color: #ffffff;
+
+  &__container {
+    padding: 150px 80px 0;
+  }
+
+  &__title {
+    max-width: 1180px;
+    margin: 0 auto 55px;
+
+    color: $main-green;
+    font-weight: bold;
+    font-size: 28px;
+    line-height: 44px;
+  }
+
+  &__content-wrapper {
+    position: relative;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+
+  }
+
+  &__card {
+    margin-bottom: 60px;
+    /*margin-right: 20px;*/
+    padding: 0 5px;
+    flex: 1 0 auto;
+    z-index: 1;
+  }
+
+  &__triangles {
+    position: absolute;
+    top: 720px;
+    left: -80px;
+  }
+
+  &__triangles-rotated {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+}
