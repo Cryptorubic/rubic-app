@@ -83,6 +83,8 @@ import {TokenSaleComponent} from "./token-sale/token-sale.component";
 import {OneInchService} from "./models/1inch/1inch";
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { MessageBoxComponent } from './components/message-box/message-box.component';
+import { TeamComponent } from './team/team.component';
+import { TeamCardComponent } from './team/team-card/team-card.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -239,6 +241,8 @@ export function appInitializerFactory(
     CountdownComponent,
     DisclaimerComponent,
     MessageBoxComponent,
+    TeamComponent,
+    TeamCardComponent,
   ],
   entryComponents: [
     AuthComponent,

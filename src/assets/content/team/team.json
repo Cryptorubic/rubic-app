@@ -1,0 +1,79 @@
+[
+  {
+    "img": "VladimirTikhomirov.png",
+    "name": "Vladimir Tikhomirov",
+    "role": "Founder",
+    "links": [
+      {
+        "icon": "LinkedIn.svg",
+        "url": "https://ru.linkedin.com/in/vtikhomirov"
+      }
+    ]
+  },
+  {
+    "img": "AlexandraKorneva.png",
+    "name": "Alexandra Korneva",
+    "role": "PR and Marketing",
+    "links": [
+      {
+        "icon": "LinkedIn.svg",
+        "url": "https://ru.linkedin.com/in/alexandrakorneva"
+      }
+    ]
+  },
+  {
+    "img": "VladislavGreen.png",
+    "name": "Vladislav Green",
+    "role": "Product manager",
+    "links": [
+      {
+        "icon": "Telegram.svg",
+        "url": "https://teleg.run/VladGren"
+      }
+    ]
+  },
+  {
+    "img": "AlexandrKelepko.png",
+    "name": "Alexandr Kelepko",
+    "role": "Backend Developer",
+    "links": [
+      {
+        "icon": "Github.svg",
+        "url": "https://github.com/slycaptcha"
+      }
+    ]
+  },
+  {
+    "img": "SergeyAndreev.png",
+    "name": "Sergey Andreev",
+    "role": "Frontend Developer",
+    "links": [
+      {
+        "icon": "Github.svg",
+        "url": "https://github.com/siandreev"
+      }
+    ]
+  },
+  {
+    "img": "DaniilSvetlov.png",
+    "name": "Daniil Svetlov",
+    "role": "Python Back-End Developer",
+    "links": [
+      {
+        "icon": "Github.svg",
+        "url": "https://github.com/ddsvetlov"
+      }
+    ]
+  },
+  {
+    "img": "GeorgeStefan.png",
+    "name": "George Stefan",
+    "role": "SMM",
+    "links": [
+      {
+        "icon": "Telegram.svg",
+        "url": "https://teleg.run/GeorgeDLT"
+      }
+    ]
+  }
+]
