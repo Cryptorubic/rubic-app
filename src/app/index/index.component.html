@@ -28,6 +28,20 @@
     <div class="disclaimer-text" #disclaimerText
          [innerHTML]="'By trading on our platform you agree with the following terms and conditions' | translate">
     </div>
+
+    <div class="collaborations">
+      <div class="collaborations__title">
+        Software Integrations And Collaborations With
+      </div>
+      <div class="collaborations__description">
+        Integrations and collaborations do not constitute endorsements
+      </div>
+      <div class="collaborations__content">
+        <a class="collaborations__item" target="_blank" *ngFor="let company of collaborations" [href]="company.url">
+          <img [src]="'assets/images/icons/collaborations/' + company.img" alt="" />
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 

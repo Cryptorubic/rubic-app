@@ -1,4 +1,5 @@
-@import '../../scss//mixins';
+@import '../../scss/mixins';
+@import '../../scss/elements/vars';
 
 .app-index {
   height: 100%;
@@ -449,7 +450,106 @@
   line-height: 40px;
   color: #000000;
   margin-top: 0;
+  margin-bottom: 92px;
 }
+
+.collaborations {
+  &__title {
+    margin-bottom: 8px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 25px;
+    color: #110931;
+
+  }
+
+  &__description {
+    margin-bottom: 50px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    line-height: 40px;
+    color: #000000;
+  }
+
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__item {
+    width: 295px;
+    margin-bottom: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    transition: transform 0.1s linear;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}
+
+@media (min-width: 1240px) {
+  .collaborations {
+    &__item {
+      &:nth-child(4n+1) {
+        justify-content: flex-start;
+      }
+
+      &:nth-child(4n) {
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+@media (max-width: 1240px) and (min-width: 920px) {
+  .collaborations {
+    &__item {
+      box-sizing: border-box;
+      width: 33.33%;
+      &:nth-child(3n+1) {
+        padding-left: 20px;
+        justify-content: flex-start;
+      }
+
+      &:nth-child(3n) {
+        padding-right: 20px;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+@media (max-width: 920px) and (min-width: 620px) {
+  .collaborations {
+    &__item {
+      width: 50%;
+    }
+  }
+}
+
+@media (max-width: 620px) {
+  .collaborations {
+    &__item {
+      width: 100%;
+    }
+  }
+}
+
 
 @media screen and (min-width: 641px) {
   .one-inch {

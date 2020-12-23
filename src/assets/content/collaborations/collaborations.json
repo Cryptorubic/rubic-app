@@ -1,0 +1,34 @@
+[
+  {
+    "img": "Binance.svg",
+    "url": "https://www.binance.org/"
+  },
+  {
+    "img": "Cryptogeek.svg",
+    "url": "https://cryptogeek.info/"
+  },
+  {
+    "img": "Matic.svg",
+    "url": "https://matic.network/"
+  },
+  {
+    "img": "Mywish.svg",
+    "url": "https://mywish.io/"
+  },
+  {
+    "img": "OneInch.svg",
+    "url": "https://1inch.exchange/"
+  },
+  {
+    "img": "Probit.svg",
+    "url": "https://www.probit.com/en-us/"
+  },
+  {
+    "img": "RockNBlock.svg",
+    "url": "https://rocknblock.io/"
+  },
+  {
+    "img": "Uniswap.svg",
+    "url": "https://uniswap.org/"
+  }
+]
