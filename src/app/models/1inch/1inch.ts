@@ -222,18 +222,12 @@ export class OneInchService {
             burnChi: false,
             disableEstimate: false,
             ethValue: ethValue,
-            // gasPrice: await this.getGasPrice(),
             referrerAddress: '0x7367409E0c12b2B7cAa5c990E11A75E0D86580fc',
             fee: 3,
             walletAddress: params.fromAddress,
             slippage: slippageValue,
-            pathfinderData: {
-                routes: queryData.routes,
-                mainParts: 20,
-                splitParts: 20,
-                virtualParts:20
-            },
-            allowPartialFill: true
+            parts: 20,
+            mainRouteParts:20
         };
 
         const getQuery = (params) => {
