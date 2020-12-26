@@ -212,8 +212,24 @@ header {
       }
     }
     &_list {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+
+      background-color: white;
+      box-shadow: inset 0 7px 9px -7px rgba(0,0,0,0.1);
+
+      & > li {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+      }
+
       &_item {
-        display: block;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+
         .header-link {
           padding-top: 15px;
           padding-bottom: 15px;
@@ -228,6 +244,31 @@ header {
             background-color: rgba(255, 255, 255, 0.4);
           }
         }
+
+        &.with-sublist {
+          display: block !important;
+          height: 90px;
+        }
+
+        .account-code {
+          font-size: 10px;
+          padding: 15px 0;
+          text-align: center;
+
+          &::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-width: 2px 2px 0 0;
+            border-style: solid;
+            border-color: #4AA956;
+
+            bottom: 3px;
+            right: calc(50% - 3px);
+            transform: rotate(135deg);
+          }
+        }
       }
     }
     &.opened {
@@ -238,6 +279,32 @@ header {
   }
   .navbar-toggle {
     display: block;
+  }
+
+  .header-menu_sublist {
+    display: flex !important;
+    align-items: center;
+    background: unset;
+    border: unset;
+    box-shadow: none;
+
+    li:first-child {
+      border-right: 1px solid black;
+    }
+
+    &_item {
+      width: 50%;
+      text-align: center;
+      margin: 10px 0;
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      height: 23px;
+
+      & span {
+        border-top: none !important;
+      }
+    }
   }
 }
 .header-warning {

@@ -94,6 +94,9 @@ export class OneInchService {
                             return exToken.address.toLowerCase() === tokenAddress;
                         });
                         if (cmcToken) {
+                            if (cmcToken.token_short_name === "ETH" && cmcToken.address !== '0x0000000000000000000000000000000000000000') {
+                                return;
+                            }
                             this.tokensAutocompleteList.push(cmcToken);
                             this.availableTokens[cmcToken.token_short_name] = cmcToken;
                         }
@@ -120,7 +123,6 @@ export class OneInchService {
     }
 
     public checkTokensPair(quoteToken, baseToken): boolean {
-        debugger
         return this.checkToken(baseToken) && this.checkToken(quoteToken);
     }
 

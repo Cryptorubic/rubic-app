@@ -96,7 +96,7 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
-export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
+export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
   @ViewChild('insufficientFundsError') insufficientFundsError: TemplateRef<any>;
   @ViewChild('container') container: ElementRef;
@@ -177,19 +177,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit, 
 
     this.instanceTradesTokens = this.oneInchService.getAutocompleteTokensList();
 
-  }
-
-  ngAfterViewInit() {
-    if (!this.serviceAvailable) {
-      this.container.nativeElement.addEventListener(
-          "click",
-          function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-          },
-          true
-      );
-    }
   }
 
   private checkQueryParams() {
