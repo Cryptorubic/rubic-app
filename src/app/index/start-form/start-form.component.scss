@@ -8,6 +8,20 @@
   .btn-blue {
     height: 52px;
   }
+
+  &_disabled {
+    cursor: not-allowed;
+    position: relative;
+
+    * {
+      pointer-events: none;
+    }
+
+    & > *:not(.start-form-warning) {
+      opacity: 0.4;
+    }
+  }
+
   &__all-input input {
     padding-top: 11px;
     padding-bottom: 11px;
@@ -362,6 +376,22 @@
   &_icon {
     display: block;
   }
+}
+
+.start-form-warning {
+  z-index: 3;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: red;
+  font-size: 26px;
+  font-weight: bold;
 }
 
 

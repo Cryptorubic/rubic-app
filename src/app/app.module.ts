@@ -190,11 +190,20 @@ export function appInitializerFactory(
                     token.platform === 'ethereum' && token.address
                   );
                 });
-                window['cmc_tokens'] = tokens;
+                //window['cmc_tokens'] = tokens;
+                window['cmc_tokens'] = [];
                 oneInchService.onLoadTokens().subscribe(() => {
                   resolve(null);
                 });
-              });
+              })
+                .catch(e => {
+                  console.error("Loading error");
+                  console.error(e);
+                  window['cmc_tokens'] = [];
+                  oneInchService.onLoadTokens().subscribe(() => {
+                    resolve(null);
+                  });
+                });
 
             subscriber.unsubscribe();
           });

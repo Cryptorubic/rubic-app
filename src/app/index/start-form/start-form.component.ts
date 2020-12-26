@@ -6,7 +6,7 @@ import {
   AfterContentInit,
   TemplateRef,
   ViewChild,
-  Output, Injectable,
+  Output, Injectable, ElementRef, AfterViewInit,
 } from '@angular/core';
 import { SWAPS_V2 } from '../../contracts-preview-v3/contracts-preview-v3.component';
 import { Web3Service } from '../../services/web3/web3.service';
@@ -96,9 +96,10 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
-export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
+export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit, AfterViewInit {
   @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
   @ViewChild('insufficientFundsError') insufficientFundsError: TemplateRef<any>;
+  @ViewChild('container') container: ElementRef;
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
   @Output() changedSocialState = new EventEmitter<string>();
@@ -126,6 +127,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
 
   public instanceTradesTokens: any[];
+
+  public serviceAvailable: boolean = !!(window['cmc_tokens'] && window['cmc_tokens'].length);
 
   constructor(
     private dialog: MatDialog,
@@ -174,6 +177,19 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.instanceTradesTokens = this.oneInchService.getAutocompleteTokensList();
 
+  }
+
+  ngAfterViewInit() {
+    if (!this.serviceAvailable) {
+      this.container.nativeElement.addEventListener(
+          "click",
+          function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+          },
+          true
+      );
+    }
   }
 
   private checkQueryParams() {
@@ -295,6 +311,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     if (identical) {
       this.requestData.tokens_info.quote.amount = '';
     }
+    debugger
     if (!identical || force) {
       this.tokensCache.base = baseCoin.address;
       this.tokensCache.quote = quoteCoin.address;
@@ -699,6 +716,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public createContract() {
     const accSubscriber = this.updateAddresses(true).subscribe((res) => {
       this.metamaskAccount = res['metamask'][0];
+
       if (this.instanceTrade && this.instantTradesAvailable) {
         this.createInstanceTrade();
       } else {

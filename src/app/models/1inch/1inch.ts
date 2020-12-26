@@ -120,6 +120,7 @@ export class OneInchService {
     }
 
     public checkTokensPair(quoteToken, baseToken): boolean {
+        debugger
         return this.checkToken(baseToken) && this.checkToken(quoteToken);
     }
 
