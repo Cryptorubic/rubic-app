@@ -92,6 +92,9 @@ export class TokensAllInputComponent implements OnInit {
     });
   }
   public searchToken(q) {
+    if (q === null || q === undefined) {
+      return;
+    }
     const resultsNumber = 10;
     this.listIsOpened = false;
     this.tokensList = [];
