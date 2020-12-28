@@ -298,7 +298,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     if (identical) {
       this.requestData.tokens_info.quote.amount = '';
     }
-    debugger
     if (!identical || force) {
       this.tokensCache.base = baseCoin.address;
       this.tokensCache.quote = quoteCoin.address;
@@ -322,7 +321,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public changedToken(force?: boolean) {
-
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
     if (this.instanceTrade) {
