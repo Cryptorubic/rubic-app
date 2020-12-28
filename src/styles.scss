@@ -2,6 +2,10 @@
   -webkit-appearance: none;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 @import 'scss/grid';
 @import 'scss/elements/dialog';
 @import 'scss/elements/form-elements';

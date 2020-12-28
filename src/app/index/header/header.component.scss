@@ -164,7 +164,14 @@ header {
   padding: 10px 6px;
   cursor: pointer;
   margin-top: -5px;
+
+  position: absolute;
+  top: 20px;
+  right: 5px;
+
   .icon-bar {
+    transition: transform 0.3s ease-in-out;
+
     display: block;
     width: 22px;
     height: 2px;
@@ -172,6 +179,27 @@ header {
     background-color: black;
     + .icon-bar {
       margin-top: 4px;
+    }
+
+    &:nth-child(2) {
+      transition: opacity 0.3s ease-in-out;
+      opacity: 1;
+    }
+  }
+
+  &_opened {
+    .icon-bar {
+      &:nth-child(2) {
+        opacity: 0;
+      }
+
+      &:first-child {
+        transform: translateY(6px) rotate(45deg);
+      }
+
+      &:last-child {
+        transform: translateY(-6px) rotate(-45deg);
+      }
     }
   }
 }
@@ -184,9 +212,15 @@ header {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     .app-content-block {
+      height: 65px;
       padding-top: 3vw;
       padding-bottom: 3vw;
       position: relative;
+
+      &_right {
+        width: unset;
+      }
+
       &:after {
         content: '';
         display: block;
@@ -195,13 +229,17 @@ header {
     }
   }
   .header-menu {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    display: block;
     // background: rgba(56, 67, 84, 0.9);
     background: rgba(255, 255, 255, 0.9);
     position: absolute;
     left: 0;
     right: 0;
     top: 100%;
+
+    transition: max-height 0.3s ease-in-out;
     &_sublist {
       left: 0;
       right: 0;
@@ -212,8 +250,24 @@ header {
       }
     }
     &_list {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+
+      background-color: white;
+      box-shadow: inset 0 7px 9px -7px rgba(0,0,0,0.1);
+
+      & > li {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+      }
+
       &_item {
-        display: block;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+
         .header-link {
           padding-top: 15px;
           padding-bottom: 15px;
@@ -228,16 +282,79 @@ header {
             background-color: rgba(255, 255, 255, 0.4);
           }
         }
+
+        &.with-sublist {
+          display: block !important;
+          height: auto;
+          max-height: 43px;
+          overflow: hidden;
+
+          transition: max-height 0.3s ease-in-out;
+
+          &.opened-list {
+            .account-code::after {
+              transform: rotate(-45deg);
+              top: 1px;
+            }
+
+            max-height: 130px;
+          }
+        }
+
+        .account-code {
+          font-size: 10px;
+          padding: 15px 30px 15px 0;
+          text-align: right;
+
+          &::after {
+            content: '';
+            display: inline-block;
+            position: relative;
+            width: 6px;
+            height: 6px;
+            right: -5px;
+            top: -2px;
+
+            transform: rotate(135deg);
+            border-width: 2px 2px 0 0;
+            border-style: solid;
+            border-color: #4AA956;
+
+            transition: transform 0.3s ease-in-out, top 0.3s ease-in-out;
+          }
+        }
       }
     }
     &.opened {
-      display: block;
+      max-height: 345px;
       float: left;
       width: 100%;
     }
   }
   .navbar-toggle {
     display: block;
+  }
+
+  .header-menu_sublist {
+    position: static;
+    display: block !important;
+    border: unset;
+    box-shadow: inset 0 7px 9px -7px rgba(0, 0, 0, 0.08);
+
+
+    &_item {
+      width: 100%;
+      text-align: right;
+
+      & span {
+        border-top: none !important;
+      }
+    }
+  }
+
+  .language-select-list {
+    align-self: flex-start;
+    z-index: 5;
   }
 }
 .header-warning {
@@ -285,6 +402,12 @@ header {
     position: relative;
     cursor: pointer;
     background-color: #fff;
+
+    max-height: 42px;
+    overflow: hidden;
+
+    transition: max-height 0.3s ease-in-out;
+
     &:after {
       content: '';
       display: block;
@@ -298,6 +421,8 @@ header {
       top: 14px;
       right: 11px;
       z-index: 2;
+
+      transition: transform 0.3s ease-in-out;
     }
     &:not(.opened) {
       &:hover {
@@ -306,12 +431,17 @@ header {
     }
 
     li {
-      padding: 0 10px 0 5px;
-      height: 0;
+      padding: 8px 10px 8px 5px;
+      height: auto;
       overflow: hidden;
       box-sizing: border-box;
       margin: 0;
       line-height: 24px;
+
+      + li {
+        border-top: 1px solid #ddd;
+      }
+
       &:after {
         content: '';
         display: block;
@@ -356,18 +486,11 @@ header {
     }
 
     &.opened {
+      max-height: 4 * 42px;
       &:after {
         transform: rotate(-45deg);
         top: 16px;
         z-index: 2;
-      }
-      li {
-        height: auto;
-        padding-top: 8px;
-        padding-bottom: 8px;
-        + li {
-          border-top: 1px solid #ddd;
-        }
       }
     }
     img {

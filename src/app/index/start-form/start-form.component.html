@@ -1,4 +1,5 @@
-<div class="index-start-form__wrapper">
+<div #container class="index-start-form__wrapper" [ngClass]="{'index-start-form_disabled': !serviceAvailable}">
+
   <div class="start-form-menus">
     <ul class="block-tabs block-tabs_blockchains">
       <li class="block-tabs_item"
@@ -78,6 +79,7 @@
             />
             <app-tokens-all-input
               [otherTokens]="instanceTrade ? instanceTradesTokens : false"
+              [disabled]="!serviceAvailable"
               (TokenChange)="changedToken()"
               [blockchain]="blockchainsOfNetworks[requestData.network]"
               [setToken]="BaseTokenCustom"
@@ -151,7 +153,7 @@
 
             <app-tokens-all-input
                     [otherTokens]="instanceTrade ? instanceTradesTokens : false"
-                    [disabled]="instanceTrade"
+                    [disabled]="instanceTrade || !serviceAvailable"
                     (TokenChange)="changedToken()"
                     [blockchain]="blockchainsOfNetworks[requestData.network]"
                     [setToken]="QuoteTokenCustom"

@@ -42,6 +42,8 @@ export class HeaderComponent implements OnInit {
   public logoutProgress: boolean;
   @Output() changedSocialState = new EventEmitter<string>();
 
+  public isMobile: boolean = window.innerWidth <= 800;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId,
     private userService: UserService,

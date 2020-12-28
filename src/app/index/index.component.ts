@@ -6,6 +6,9 @@ import { ChangePasswordComponent } from '../common/change-password/change-passwo
 import {DisclaimerComponent} from "../components/disclaimer/disclaimer.component";
 import {CookieService} from "ngx-cookie-service";
 
+// @ts-ignore
+import collaborations from "../../assets/content/collaborations/collaborations.json"
+
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
@@ -21,6 +24,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
   protected listingModal: MatDialogRef<any>;
 
   public selectedBlockchain: string;
+
+  collaborations = collaborations;
 
   constructor(
     private httpService: HttpService,
