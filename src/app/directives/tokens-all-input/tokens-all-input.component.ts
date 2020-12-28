@@ -33,6 +33,7 @@ export class TokensAllInputComponent implements OnInit {
   @Input() private blockchain: string;
   @Input() public amountPlaceholder: boolean = true;
   @Input() public resetForm: EventEmitter<any>;
+  @Input() private exclude;
 
   @ViewChild('tokenForm') tokenForm;
 
@@ -104,9 +105,11 @@ export class TokensAllInputComponent implements OnInit {
       this.searchSubscriber.unsubscribe();
     }
 
-    const tokensForSearch = !this._otherTokens ? this.blockchain ? window['cmc_tokens'].filter((t) => {
-      return t.platform === this.blockchain;
-    }) : window['cmc_tokens'] : this._otherTokens;
+    let tokensForSearch = !this._otherTokens ? this.blockchain ? window['cmc_tokens'].filter(t =>
+        t.platform === this.blockchain
+    ) : window['cmc_tokens'] : this._otherTokens;
+
+    tokensForSearch = tokensForSearch.filter(token => token.address !== this.exclude);
 
     const lowerCaseQuery = q.toLowerCase();
     const shortNameMatchTokens = tokensForSearch.filter(token =>
@@ -158,6 +161,10 @@ export class TokensAllInputComponent implements OnInit {
   }
 
   public showAutoInput() {
+    if (!this.visibleInput) {
+      this.searchToken("");
+    }
+
     this.visibleInput = !this.visibleInput;
     setTimeout(() => {
       if (this.visibleInput) {
@@ -183,7 +190,7 @@ export class TokensAllInputComponent implements OnInit {
     this.web3Service.getFullTokenInfo(this.tokenModel.token.address, false, this.blockchain).then((res: any) => {
       this.tokenModel.token.decimals = res.decimals;
       this.TokenChange.emit(this.tokenModel);
-    })
+    });
     this.showAutoInput();
   }
 

@@ -85,6 +85,7 @@
               [setToken]="BaseTokenCustom"
               [resetForm]="resetFormEmitter"
               [tokenModel]="requestData.tokens_info.base"
+              [exclude]="requestData.tokens_info.quote.token && requestData.tokens_info.quote.token.address"
             ></app-tokens-all-input>
           </div>
           <div
@@ -160,6 +161,7 @@
                     [resetForm]="resetFormEmitter"
                     [amountPlaceholder]="!instanceTrade"
                     [tokenModel]="requestData.tokens_info.quote"
+                    [exclude]="requestData.tokens_info.base.token && requestData.tokens_info.base.token.address"
             ></app-tokens-all-input>
 
             <label class="form-field_label form-field_label--rate"
