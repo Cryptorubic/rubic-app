@@ -194,6 +194,7 @@ export function appInitializerFactory(
                 window['cmc_tokens'] = tokens;
              //   window['cmc_tokens'] = [];
                 oneInchService.onLoadTokens().subscribe(() => {
+                  document.getElementById("spring-spinner").remove();
                   resolve(null);
                 });
               })
@@ -202,6 +203,7 @@ export function appInitializerFactory(
                   console.error(e);
                   window['cmc_tokens'] = [];
                   oneInchService.onLoadTokens().subscribe(() => {
+                    document.getElementById("spring-spinner").remove();
                     resolve(null);
                   });
                 });
