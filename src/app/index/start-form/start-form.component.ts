@@ -130,6 +130,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public serviceAvailable: boolean = !!(window['cmc_tokens'] && window['cmc_tokens'].length);
 
+  public instantTradeInProgress: boolean = false;
+
   constructor(
     private dialog: MatDialog,
     protected contractsService: ContractsService,
@@ -624,6 +626,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const params = this.getOrderParams();
     params.fromAddress = this.metamaskAccount;
     this.getInstanceQuoteProgress = true;
+    this.instantTradeInProgress = true;
 
 
     const remoteContractAddress = (await this.oneInchService.getApproveSpender() as any).address;
@@ -633,6 +636,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       await this.check1InchAllowance(remoteContractAddress, params).catch(e => {
         console.log(e);
         this.getInstanceQuoteProgress = false;
+        this.instantTradeInProgress = false;
         error = true;
       })
       if (error) {
@@ -647,6 +651,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         }, () => {
         }).finally(() => {
           this.getInstanceQuoteProgress = false;
+          this.instantTradeInProgress = false;
         });
       })
       .catch(() => {
@@ -655,6 +660,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           panelClass: 'custom-dialog-container',
         });
         this.getInstanceQuoteProgress = false;
+        this.instantTradeInProgress = false;
       });
   }
 

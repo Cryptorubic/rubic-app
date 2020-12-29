@@ -1,0 +1,6 @@
+<div class="modal" *ngIf="!closed">
+  <div class="modal__wrapper">
+    <img class="modal__close-icon" src="assets/images/icons/cross-gray.svg" alt="close" (click)="closed = true">
+    <ng-content></ng-content>
+  </div>
+</div>
