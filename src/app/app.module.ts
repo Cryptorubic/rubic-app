@@ -85,6 +85,7 @@ import { DisclaimerComponent } from './components/disclaimer/disclaimer.componen
 import { MessageBoxComponent } from './components/message-box/message-box.component';
 import { TeamComponent } from './team/team.component';
 import { TeamCardComponent } from './team/team-card/team-card.component';
+import { MaintenanceComponent } from './maintenance/maintenance.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -252,6 +253,7 @@ export function appInitializerFactory(
     MessageBoxComponent,
     TeamComponent,
     TeamCardComponent,
+    MaintenanceComponent,
   ],
   entryComponents: [
     AuthComponent,
