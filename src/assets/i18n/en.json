@@ -47,7 +47,7 @@
   "Enter Amount": "Enter Amount",
 
   "Error": "Error",
-  "Please choose main net network in Metamask.": "Please choose main net network in Metamask.",
+  "Please choose main net network in Metamask.": "Please choose the corresponding Network of the tokens you want to trade. Please see FAQ section if you still having problems.",
   "Close": "Close",
   "Cancel": "Cancel",
   "Order Book": "Order Book",
@@ -111,19 +111,19 @@
   "FAQ_QUESTIONS": [
     {
       "QUESTION": "What is Rubic p2p trades?",
-      "ANSWER": "Rubic is a multichain defi platform. Rubic organizes defi services to enable a project to create, manage and trade tokens decentralized in ONE PLACE. It helps users to make trades on their terms, share and generate revenue"
+      "ANSWER": "Rubic is a multichain defi platform. Rubic organizes defi services to enable a project to create, manage and trade tokens decentralized in ONE PLACE. It helps users to make trades on their own terms, share and generate revenue."
     }, {
       "QUESTION": "Who can use our service?",
-      "ANSWER": "Anyone who wants to create and manage tokens and anyone who has a cryptocurrency and would like to exchange it. KYC is not needed. "
+      "ANSWER": "Anyone who wants to create and manage their tokens, or either owns a cryptocurrency and wishes to exchange it. KYC is not required."
     }, {
       "QUESTION": "What are the minimum and maximum trade size?",
       "ANSWER": "There are no limits."
     }, {
       "QUESTION": "How does it work?",
-      "ANSWER": "There are two options for trading:\n First, you create trade on your own terms and wait till another part agrees with your terms and fills its part.\n Second, you choose the instant trade and you agree with the terms of another part. Coming soon.\n\nYou can create your own token without any coding skills and trade it without listing."
+      "ANSWER": "There are two options for trading:\n First, you create a trade on your own terms and wait till another part agrees with them and fills his share.\n Second, you choose the instant trade option and you agree with the terms of another part. Coming soon.\n\nYou can create your own token without any coding skills and trade it without having to be listed."
     }, {
       "QUESTION": "What cryptocurrencies are supported?",
-      "ANSWER": "Rubic works with Ethereum based tokens for trading at the moment. Tron, Binance Chain, BTC blockchains will be released soon.  However to create and manage tokens we already provide multichain service supported by Ethereum, Tron, EOS, NEO, Waves, Binance Smart Chain Blockchains."
+      "ANSWER": "At the moment, Rubic allows trading for Ethereum based tokens (ERC-20). Tron, Binance Chain, BTC blockchains will be released soon.  However to create and manage tokens we already provide multichain service supported by Ethereum, Tron, EOS, NEO, Waves, Binance Smart Chain Blockchains."
     }, {
       "QUESTION": "Should I list my token before using your service?",
       "ANSWER": "No, you can trade any tokens. However you can contact us and we will add your token in our list."
@@ -135,7 +135,7 @@
       "ANSWER": "Step 1. Fill out the form, enter amount what you have and enter amount what you want to get\n Step 2. Add advanced options, such as closing date and time, minimum and maximum contribution, privacy, brokerage fee, lock liquidity until the trade completion\n Step 3. Check details of the trade\n Step 4. Click Create Trade\n Step 5. Use Metamask to confirm your trade\n Step 6. Contribute your part of the deal."
     }, {
       "QUESTION": "How much does it cost?",
-      "ANSWER": "Service charges 0.3% from each trade that was created."
+      "ANSWER": "Our service charges 0.3% from each trade that was created."
     }, {
       "QUESTION": "How long does it take to complete a deal?",
       "ANSWER": "The deal will be completed as soon as the other side completes its side."
@@ -144,13 +144,16 @@
       "ANSWER": "The deal is secured by smart contracts verified by experienced developers and external audit."
     }, {
       "QUESTION": "How many people can participate in one deal?",
-      "ANSWER": "Up to 10 people can participate on each side"
+      "ANSWER": "Up to 10 people can participate on each side."
     }, {
       "QUESTION": "What will happen if the second part doesn’t complete a deal?",
-      "ANSWER": "The deal will expire and you will receive all your tokens back."
+      "ANSWER": "The deal will expire and you will receive all of your tokens back."
     }, {
-      "QUESTION": "If I created a deal, however, I have changed my mind, can I cancel a deal?",
-      "ANSWER": "Yes, you can cancel your deal any time before the second part will complete the deal. If you cancel a deal you can get your tokens back."
+      "QUESTION": "If I created a deal, however, I have changed my mind, can I cancel it?",
+      "ANSWER": "Yes, you can cancel your deal any time before the second part starts completing his side. If you cancel a deal you can get your tokens back."
+    }, {
+      "QUESTION": "How to add Binance Smart Chain and Matic networks to MetaMask?",
+      "ANSWER": "Read the book for more details"
     }
   ],
 
