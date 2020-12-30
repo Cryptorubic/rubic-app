@@ -85,6 +85,9 @@ import { DisclaimerComponent } from './components/disclaimer/disclaimer.componen
 import { MessageBoxComponent } from './components/message-box/message-box.component';
 import { TeamComponent } from './team/team.component';
 import { TeamCardComponent } from './team/team-card/team-card.component';
+import { MaintenanceComponent } from './maintenance/maintenance.component';
+import { ModalComponent } from './components/modal/modal.component';
+import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -193,6 +196,7 @@ export function appInitializerFactory(
                 window['cmc_tokens'] = tokens;
              //   window['cmc_tokens'] = [];
                 oneInchService.onLoadTokens().subscribe(() => {
+                  document.getElementById("spring-spinner").remove();
                   resolve(null);
                 });
               })
@@ -201,6 +205,7 @@ export function appInitializerFactory(
                   console.error(e);
                   window['cmc_tokens'] = [];
                   oneInchService.onLoadTokens().subscribe(() => {
+                    document.getElementById("spring-spinner").remove();
                     resolve(null);
                   });
                 });
@@ -252,6 +257,9 @@ export function appInitializerFactory(
     MessageBoxComponent,
     TeamComponent,
     TeamCardComponent,
+    MaintenanceComponent,
+    ModalComponent,
+    TradeInProgressModalComponent,
   ],
   entryComponents: [
     AuthComponent,

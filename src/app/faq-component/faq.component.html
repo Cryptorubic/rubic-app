@@ -17,7 +17,12 @@
           <div class="questions-container__arrow"></div>
         </div>
         <p *ngIf="question.isActive" class="questions-container__text">
-          {{ 'FAQ_QUESTIONS.' + $index + '.ANSWER' | translate }}
+          <a  *ngIf="question.href" [href]="question.href" (click)="$event.stopPropagation()" target="_blank" rel="noopener noreferrer">
+            {{ 'FAQ_QUESTIONS.' + $index + '.ANSWER' | translate }}
+          </a>
+          <ng-template [ngIf]="!question.href">
+            {{ 'FAQ_QUESTIONS.' + $index + '.ANSWER' | translate }}
+          </ng-template>
         </p>
       </div>
 

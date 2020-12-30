@@ -1,0 +1,37 @@
+.modal {
+  top: 0;
+  left: 0;
+  position: fixed;
+  width: 100vw;
+  height: 100vw;
+  padding-top: 162px;
+  z-index: 10;
+
+  background-color: rgba(#151F1A, 0.85);
+
+  &__wrapper {
+    width: 400px;
+    min-height: 200px;
+    margin: 0 auto;
+    position: relative;
+
+    background-color: white;
+  }
+
+  &__close-icon {
+    position: absolute;
+    cursor: pointer;
+    top: 10px;
+    right: 10px;
+
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: rotate(180deg) scale(1.2);
+    }
+
+    &:active {
+      transform: rotate(180deg) scale(0.9);
+    }
+  }
+}

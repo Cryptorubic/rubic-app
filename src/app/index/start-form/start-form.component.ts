@@ -130,6 +130,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public serviceAvailable: boolean = !!(window['cmc_tokens'] && window['cmc_tokens'].length);
 
+  public instantTradeInProgress: boolean = false;
+
   constructor(
     private dialog: MatDialog,
     protected contractsService: ContractsService,
@@ -626,6 +628,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.getInstanceQuoteProgress = true;
 
 
+
     const remoteContractAddress = (await this.oneInchService.getApproveSpender() as any).address;
     const baseToken = this.requestData.tokens_info.base.token;
     if (baseToken.token_short_name !== 'ETH') {
@@ -633,21 +636,24 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       await this.check1InchAllowance(remoteContractAddress, params).catch(e => {
         console.log(e);
         this.getInstanceQuoteProgress = false;
+        this.instantTradeInProgress = false;
         error = true;
-      })
+      });
       if (error) {
         return;
       }
     }
     this.oneInchService.getSwap(params, this.instanceTradeParams)
       .then((result: any) => {
-        this.web3Service.sendTransaction(result.tx, this.requestData.network).then((res: any) => {
-          this.resetStartForm();
-          const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
-        }, () => {
-        }).finally(() => {
-          this.getInstanceQuoteProgress = false;
-        });
+        this.web3Service.sendTransaction(result.tx, this.requestData.network, () => this.instantTradeInProgress = true)
+            .then((res: any) => {
+              this.resetStartForm();
+              const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
+            }, () => {})
+            .finally(() => {
+              this.getInstanceQuoteProgress = false;
+              this.instantTradeInProgress = false;
+            });
       })
       .catch(() => {
         this.metaMaskErrorModal = this.dialog.open(this.insufficientFundsError, {
@@ -655,6 +661,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           panelClass: 'custom-dialog-container',
         });
         this.getInstanceQuoteProgress = false;
+        this.instantTradeInProgress = false;
       });
   }
 
@@ -681,7 +688,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
             to: baseToken.address,
             data: approveSignature,
           },
-          this.requestData.network
+          this.requestData.network,
+          () => this.instantTradeInProgress = true
       );
     };
     return tokenContract.methods

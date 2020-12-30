@@ -3,7 +3,8 @@
 import { Component, OnInit } from '@angular/core';
 
 export interface IQuestion {
-  isActive: boolean;
+  isActive: boolean,
+  href? : string
 }
 
 @Component({
@@ -58,6 +59,10 @@ export class FaqComponent implements OnInit {
       },
       {
         isActive: false,
+      },
+      {
+        isActive: false,
+        href: "/assets/book.pdf"
       },
     ];
   }
