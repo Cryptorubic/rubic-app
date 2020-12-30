@@ -514,7 +514,7 @@ export class Web3Service {
     return this.Web3.eth.abi.encodeFunctionCall(abi, data);
   }
 
-  public sendTransaction(transactionConfig, network) {
+  public sendTransaction(transactionConfig, network, afterConfirm = undefined) {
     const currentProvider = new Web3.providers.HttpProvider(
         IS_PRODUCTION
             ? ETH_NETWORKS[CHAIN_OF_NETWORK[network]].INFURA_ADDRESS
@@ -529,6 +529,9 @@ export class Web3Service {
         this.Web3.eth
           .sendTransaction(transactionConfig, (err, response) => {
             if (!err) {
+              if (afterConfirm && typeof afterConfirm === "function") {
+                afterConfirm();
+              }
               const trxSubscription = setInterval(() => {
                 this.Web3.eth.getTransactionReceipt(
                     response,

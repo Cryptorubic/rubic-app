@@ -626,7 +626,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const params = this.getOrderParams();
     params.fromAddress = this.metamaskAccount;
     this.getInstanceQuoteProgress = true;
-    this.instantTradeInProgress = true;
+
 
 
     const remoteContractAddress = (await this.oneInchService.getApproveSpender() as any).address;
@@ -638,21 +638,22 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         this.getInstanceQuoteProgress = false;
         this.instantTradeInProgress = false;
         error = true;
-      })
+      });
       if (error) {
         return;
       }
     }
     this.oneInchService.getSwap(params, this.instanceTradeParams)
       .then((result: any) => {
-        this.web3Service.sendTransaction(result.tx, this.requestData.network).then((res: any) => {
-          this.resetStartForm();
-          const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
-        }, () => {
-        }).finally(() => {
-          this.getInstanceQuoteProgress = false;
-          this.instantTradeInProgress = false;
-        });
+        this.web3Service.sendTransaction(result.tx, this.requestData.network, () => this.instantTradeInProgress = true)
+            .then((res: any) => {
+              this.resetStartForm();
+              const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
+            }, () => {})
+            .finally(() => {
+              this.getInstanceQuoteProgress = false;
+              this.instantTradeInProgress = false;
+            });
       })
       .catch(() => {
         this.metaMaskErrorModal = this.dialog.open(this.insufficientFundsError, {
@@ -687,7 +688,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
             to: baseToken.address,
             data: approveSignature,
           },
-          this.requestData.network
+          this.requestData.network,
+          () => this.instantTradeInProgress = true
       );
     };
     return tokenContract.methods
