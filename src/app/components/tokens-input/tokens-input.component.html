@@ -1,0 +1,73 @@
+<form #tokenForm="ngForm" class="form-field_input">
+  <input
+          type="text"
+          name="amountField"
+          placeholder="{{amountPlaceholder | translate}}"
+          #amountField
+          [disabled]="inputDisabled"
+          [required]="true"
+          [appBigNumber]="{
+            decimals: 8,
+            min: 0.00000000000000000000001
+          }"
+          [tabindex]="inputDisabled ? '-1' : ''"
+          (ngModelChange)="onNumberChanges(amount)"
+          [(ngModel)]="amount"
+          class="all-input"
+  />
+
+  <button
+          class="form-field_input__btn"
+          type="button"
+          [ngClass]="{ active: visibleList }"
+          (click)="toggleListVisible(true)"
+          [disabled]="inputDisabled"
+  >
+    <span *ngIf="!selectedToken">{{'Choose Token' | translate}}</span>
+    <span *ngIf="selectedToken" class="ac_res_preview">
+      <span class="ac_res_preview_icon">
+        <img [src]="selectedToken.icon || './assets/images/icons/coins/empty.svg'" alt="Token symbol"/>
+      </span>
+      <span class="ac_res_preview_symbol">{{selectedToken.symbol}}</span>
+    </span>
+  </button>
+  <input
+          #tokenField
+          type="text"
+          placeholder="Search"
+          autocomplete="off"
+          name="token"
+          required
+          [tabindex]="!visibleList ? '-1' : ''"
+          (change)="searchToken($event)"
+          (blur)="toggleListVisible(false)"
+          class="form-field_input__ac_input"
+  />
+  <span class="form-field_input__ac_closer"
+        (mousedown)="resetTokenAndClose()">
+    <img src="./assets/images/icons/cross.svg" alt="Close"/>
+  </span>
+  <div class="form-field_input__ac_res">
+    <ul
+            *ngIf="tokensList.size && visibleList"
+            (mousedown)="$event.stopPropagation(); $event.preventDefault()"
+            class="ac_res_list"
+    >
+      <li
+              class="ac_res_list_item"
+              *ngFor="let item of tokensList"
+              [ngClass]="{ active: item.name === selectedToken?.name }"
+              (click)="selectToken(item);"
+      >
+        <span class="ac_res_list_item-content">
+          <span class="ac_res_list_item-content_ico">
+            <img [src]="item.icon" alt="Token"/>
+          </span>
+          <span class="ac_res_list_item-content_name">
+            {{ item.name }} ({{ item.symbol }})
+          </span>
+        </span>
+      </li>
+    </ul>
+  </div>
+</form>

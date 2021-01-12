@@ -1,0 +1,10 @@
+<button [class]="'primary-button' + className"
+        [disabled]="disabled"
+        (click)="onClick()">
+  <span class="lds-ellipsis" *ngIf="animate">
+    <span class="lds-ellipsis-container">
+      <span></span><span></span><span></span><span></span>
+    </span>
+  </span>
+  <span>{{ label | translate }}</span>
+</button>

@@ -6,13 +6,33 @@
       </div>
     </div>
     <div class="app-index__start-form">
-      <div class="title-section">{{'Create your Trade' | translate}}</div>
+      <div class="title-section toggle-menu-container">
+        <span>{{'Create your Trade' | translate}}</span>
+        <div class="mode-toggle-container">
+          <span>Cross chain</span>
+          <ng-toggle
+                  class="mode-toggle-container__toggle"
+                  [value]="crossChainMode"
+                  [color]="{
+                    unchecked: '#BFCBD9',
+                    checked: '#4aa956'
+                  }"
+                  (change)="changeMode()"
+          >
+          </ng-toggle>
+        </div>
+      </div>
       <app-start-form
+              *ngIf="!crossChainMode"
               (blockchainTradesSelect)="changeBlockchain($event)"
-              (instanceTradesSelect)="changeOrderType($event)"></app-start-form>
+              (instanceTradesSelect)="changeOrderType($event)">
+      </app-start-form>
+      <app-bridge-form
+              *ngIf="crossChainMode">
+      </app-bridge-form>
     </div>
 
-    <div class="app-index__contracts" [hidden]="isInstanceTrade" *ngIf="selectedBlockchain">
+    <div class="app-index__contracts" [hidden]="isInstanceTrade || crossChainMode" *ngIf="selectedBlockchain">
       <app-public-contracts [blockchain]="selectedBlockchain"></app-public-contracts>
     </div>
 

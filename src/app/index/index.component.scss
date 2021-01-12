@@ -508,3 +508,26 @@
     display: none;
   }
 }
+
+.toggle-menu-container {
+  position: relative;
+  min-height: 30px;
+}
+
+.mode-toggle-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  span {
+    padding-right: 10px;
+
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+
+  &__toggle {
+    cursor: pointer;
+  }
+}

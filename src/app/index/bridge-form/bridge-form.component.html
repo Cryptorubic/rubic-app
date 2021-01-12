@@ -1,0 +1,61 @@
+<div class="index-start-form__wrapper">
+
+  <!-- Form label -->
+  <div class="start-form-menus">
+    <ul class="block-tabs block-tabs_blockchains">
+      <li class="block-tabs_item active">
+        <div>
+          <img class="block-tabs_item_icon" src="./assets/images/icons/coins/eth.png" alt="Ethereum"/>
+          <img class="block-tabs_item_icon" src="./assets/images/icons/coins/bnb.svg" alt="Binance"/>
+          <span class="block-tabs_item_text">Ethereum and Binance</span>
+        </div>
+    </ul>
+  </div>
+
+  <!-- Panel -->
+  <form class="cross-chain-form">
+
+    <div class="choose-blockchains">
+      <div class="choose-blockchains__blockchain">
+        <div class="choose-blockchains__title">
+          From
+        </div>
+        <div class="choose-blockchains__body">
+          <img class="block-tabs_item_icon" [src]="'./assets/images/icons/coins/' + fromBlockchain.img" alt="Ethereum"/>
+          <span>{{fromBlockchain.label}}</span>
+        </div>
+      </div>
+      <button class="choose-blockchains__revert-button" type="button" (click)="revertBlockchains()">
+        <img src="./assets/images/icons/revert.svg"
+             class="choose-blockchains__revert-icon" alt="Revert">
+      </button>
+      <div class="choose-blockchains__blockchain">
+        <div class="choose-blockchains__title">
+          To
+        </div>
+        <div class="choose-blockchains__body">
+          <img class="block-tabs_item_icon" [src]="'./assets/images/icons/coins/' + toBlockchain.img" alt="Binance"/>
+          <span>{{toBlockchain.label}}</span>
+        </div>
+       </div>
+    </div>
+
+    <div class="choose-token">
+      <app-tokens-input
+        class="choose-token__wrapper"
+        [tokensList]="tokens"
+      >
+      </app-tokens-input>
+    </div>
+
+    <div class="cross-chain-form__confirm">
+      <app-primary-button
+        class="cross-chain-form__confirm-wrapper"
+        label="Create trade"
+        >
+      </app-primary-button>
+    </div>
+
+  </form>
+
+</div>
