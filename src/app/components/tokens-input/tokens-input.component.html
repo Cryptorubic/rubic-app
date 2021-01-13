@@ -1,9 +1,10 @@
-<form #tokenForm="ngForm" class="form-field_input">
+<form class="form-field_input">
   <input
+          #amountField
           type="text"
           name="amountField"
+          autocomplete="off"
           placeholder="{{amountPlaceholder | translate}}"
-          #amountField
           [disabled]="inputDisabled"
           [required]="true"
           [appBigNumber]="{
@@ -19,7 +20,7 @@
   <button
           class="form-field_input__btn"
           type="button"
-          [ngClass]="{ active: visibleList }"
+          [ngClass]="{ active: isOpenList }"
           (click)="toggleListVisible(true)"
           [disabled]="inputDisabled"
   >
@@ -38,9 +39,11 @@
           autocomplete="off"
           name="token"
           required
-          [tabindex]="!visibleList ? '-1' : ''"
-          (change)="searchToken($event)"
+          [tabindex]="!isOpenList ? '-1' : ''"
+          [ngModel]="query"
+          (ngModelChange)="searchToken($event)"
           (blur)="toggleListVisible(false)"
+          (focusout)="toggleListVisible(false)"
           class="form-field_input__ac_input"
   />
   <span class="form-field_input__ac_closer"
@@ -49,14 +52,14 @@
   </span>
   <div class="form-field_input__ac_res">
     <ul
-            *ngIf="tokensList.size && visibleList"
+            *ngIf="visibleTokensList.size && isOpenList"
             (mousedown)="$event.stopPropagation(); $event.preventDefault()"
             class="ac_res_list"
     >
       <li
               class="ac_res_list_item"
-              *ngFor="let item of tokensList"
-              [ngClass]="{ active: item.name === selectedToken?.name }"
+              *ngFor="let item of visibleTokensList"
+              [ngClass]="{ active: item.name === (selectedToken && selectedToken.name)}"
               (click)="selectToken(item);"
       >
         <span class="ac_res_list_item-content">

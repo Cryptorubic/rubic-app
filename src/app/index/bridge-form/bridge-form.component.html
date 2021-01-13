@@ -15,40 +15,69 @@
   <!-- Panel -->
   <form class="cross-chain-form">
 
-    <div class="choose-blockchains">
-      <div class="choose-blockchains__blockchain">
+    <div class="choose-blockchains cross-chain-form__selection-section">
+
+      <!-- From -->
+      <div class="choose-blockchains__box">
         <div class="choose-blockchains__title">
           From
         </div>
-        <div class="choose-blockchains__body">
+
+        <div class="choose-blockchains__blockchain">
           <img class="block-tabs_item_icon" [src]="'./assets/images/icons/coins/' + fromBlockchain.img" alt="Ethereum"/>
           <span>{{fromBlockchain.label}}</span>
         </div>
+
+        <div class="choose-blockchains__title">
+          You have
+        </div>
+        <div class="choose-blockchains__token form-field">
+          <app-tokens-input
+                  class="choose-token__wrapper"
+                  [tokensList]="tokens"
+                  (tokenChanges)="selectedToken = $event"
+          >
+          </app-tokens-input>
+        </div>
       </div>
+
+      <!-- Swap -->
       <button class="choose-blockchains__revert-button" type="button" (click)="revertBlockchains()">
         <img src="./assets/images/icons/revert.svg"
              class="choose-blockchains__revert-icon" alt="Revert">
       </button>
-      <div class="choose-blockchains__blockchain">
+
+      <!-- To -->
+      <div class="choose-blockchains__box">
         <div class="choose-blockchains__title">
           To
         </div>
-        <div class="choose-blockchains__body">
+
+        <div class="choose-blockchains__blockchain">
           <img class="block-tabs_item_icon" [src]="'./assets/images/icons/coins/' + toBlockchain.img" alt="Binance"/>
           <span>{{toBlockchain.label}}</span>
+        </div>
+
+        <div class="choose-blockchains__title">
+          You get
+        </div>
+        <div class="choose-blockchains__get">
+          <span>
+            4.3332
+          </span>
+          <div class="get-token-card">
+            <ng-template [ngIf]="selectedToken">
+                <img class="get-token-card__icon" [src]="selectedToken.icon" alt="Token"/>
+              <span class="get-token-card__name">
+                {{ selectedToken.symbol }}
+              </span>
+            </ng-template>
+          </div>
         </div>
        </div>
     </div>
 
-    <div class="choose-token">
-      <app-tokens-input
-        class="choose-token__wrapper"
-        [tokensList]="tokens"
-      >
-      </app-tokens-input>
-    </div>
-
-    <div class="cross-chain-form__confirm">
+    <div class="cross-chain-form__confirm-section">
       <app-primary-button
         class="cross-chain-form__confirm-wrapper"
         label="Create trade"

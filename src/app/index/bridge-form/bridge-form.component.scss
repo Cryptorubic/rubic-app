@@ -7,10 +7,13 @@
   display: flex;
   padding: 20px;
 
-  height: 155px;
   background-color: white;
 
-  &__confirm {
+  &__selection-section {
+    flex: 4;
+  }
+
+  &__confirm-section {
     flex: 1;
     display: flex;
     align-items: center;
@@ -26,15 +29,16 @@
 
 .choose-blockchains {
   display: flex;
-  flex: 2;
   align-items: center;
   position: relative;
-  top: -10px;
 
-
-  &__blockchain {
+  &__box {
     flex: 1;
-    padding: 15px;
+    padding: 20px;
+
+    &:first-child {
+      border-right: 1px solid #E5E5E5;
+    }
   }
 
   &__title {
@@ -46,11 +50,12 @@
     opacity: 0.85;
   }
 
-  &__body {
-    height: 54px;
+  &__blockchain {
+    height: 52px;
     display: flex;
     align-items: center;
     padding-left: 10px;
+    margin-bottom: 20px;
 
     background-color: #f4f4f4;
     font-size: 18px;
@@ -60,12 +65,45 @@
     }
   }
 
+  &__token {
+    & > * {
+      width: 100%;
+    }
+    height: 52px;
+    margin-bottom: 0;
+  }
+
+  &__get {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    width: 100%;
+    padding-left: 22px;
+    padding-right: 10px;
+
+    background-color: #f4f4f4;
+
+    & > span {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 52px;
+      opacity: 0.3;
+    }
+  }
+
   &__revert-button {
     border: none;
-    background-color: unset;
-    position: relative;
-    top: 10px;
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    top: calc(50% - 4px);
+    left: calc(50% - 14px);
 
+    border-radius: 50%;
+    background-color: white;
+    line-height: 35px;
+    box-shadow: 0 0 5px 1px #E2E2E2;
     cursor: pointer;
 
     transition: transform 0.2s ease-in-out;
@@ -90,8 +128,36 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  margin: 0;
 
   &__wrapper {
     width: 100%;
+  }
+}
+
+.get-token-card {
+  height: 42px;
+  width: 95px;
+  padding: 10px 11px;
+  display: flex;
+  align-items: center;
+
+  opacity: 0.8;
+  border: 2px solid rgb(229, 229, 229);
+  background-color: white;
+
+  &__icon {
+    margin-right: 10px;
+    max-width: 17px;
+  }
+
+  &__name {
+    position: relative;
+    top: 2px;
+
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 40px;
+    color: rgb(67, 71, 108);
   }
 }

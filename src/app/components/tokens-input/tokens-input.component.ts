@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import IBridgeToken from '../../services/bridge/IBridgeToken';
-import {List} from 'immutable';
+import {is, List} from 'immutable';
 
 @Component({
   selector: 'app-tokens-input',
@@ -8,17 +8,43 @@ import {List} from 'immutable';
   styleUrls: ['./tokens-input.component.scss']
 })
 export class TokensInputComponent implements OnInit {
+  private VISIBLE_TOKENS_NUMBER = 10;
+
   @Input() amountPlaceholder?: string = 'Enter Amount';
   @Input() listDisabled?: boolean = false;
   @Input() inputDisabled?: boolean = false;
-  @Input() tokensList: List<IBridgeToken>;
+  @Input() tokensList: List<IBridgeToken> = List();
 
   @Output() numberChanges = new EventEmitter<number>();
-  @Output() tokenChanges = new EventEmitter<string>();
+  @Output() tokenChanges = new EventEmitter<IBridgeToken>();
+
+  @ViewChild('tokenField') tokenField: ElementRef;
+  @ViewChild('amountField') amountField: ElementRef;
 
   public amount;
-  public visibleList: boolean = false;
-  public selectedToken: IBridgeToken = null;
+  public query: string = "";
+  public isOpenList: boolean = false;
+  private _selectedToken: IBridgeToken = null;
+  public visibleTokensList: List<IBridgeToken> = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
+
+  set selectedToken(token) {
+    this._selectedToken = token;
+    this.onTokenChanges(token);
+  }
+
+  get selectedToken() {
+    return this._selectedToken;
+  }
+
+  constructor() { }
+
+  ngOnInit() { }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.tokensList && changes.tokensList.currentValue.size) {
+      this.visibleTokensList = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
+    }
+  }
 
   onNumberChanges(number) {
     this.numberChanges.emit(number);
@@ -28,29 +54,54 @@ export class TokensInputComponent implements OnInit {
     this.tokenChanges.emit(token);
   }
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
   public toggleListVisible(isOpen?: boolean) {
     if (isOpen === undefined) {
-      this.visibleList = !this.visibleList;
+      this.isOpenList = !this.isOpenList;
     } else {
-      this.visibleList = isOpen;
+      this.isOpenList = isOpen;
+    }
+
+    if (this.isOpenList) {
+      this.tokenField.nativeElement.focus();
+    } else {
+      this.amountField.nativeElement.focus();
     }
   }
 
-  public searchToken(e) {
+  public searchToken(query) {
+    this.query = query;
 
+    if (!query) {
+      this.visibleTokensList = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
+    }
+
+    const upQuery = query.toUpperCase();
+    const tikerMatch = this.tokensList.filter(token => token.symbol.toUpperCase().includes(upQuery));
+    const nameMatch = this.tokensList.filter(token =>
+      !tikerMatch.includes(token) &&
+      token.name.toUpperCase().includes(upQuery)
+    );
+
+    this.visibleTokensList = tikerMatch.concat(nameMatch).slice(0, this.VISIBLE_TOKENS_NUMBER);
   }
 
   public resetTokenAndClose() {
-
+    this.isOpenList = false;
+    this.query = "";
+    this.selectedToken = null;
   }
 
-  public selectToken(e) {
-
+  public selectToken(token: IBridgeToken) {
+    this.selectedToken = token;
+    this.query = token.symbol;
+    this.unshiftTokenToVisibleList(token);
+    this.toggleListVisible(false);
   }
 
+  private unshiftTokenToVisibleList(token: IBridgeToken) {
+    this.visibleTokensList = this.tokensList
+        .filter(item => item.symbol !== token.symbol)
+        .slice(0, 9)
+        .unshift(token)
+  }
 }

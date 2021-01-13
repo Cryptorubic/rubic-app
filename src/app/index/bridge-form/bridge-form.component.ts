@@ -13,6 +13,7 @@ import IBridgeToken from '../../services/bridge/IBridgeToken';
 })
 export class BridgeFormComponent implements OnInit {
   public tokens: List<IBridgeToken> = List([]);
+  public selectedToken: IBridgeToken = null;
 
   public Blockchains = {
     Ethereum : {

@@ -30,10 +30,22 @@ export class BridgeService {
           if (res.code !== 20000) {
             console.log("Error retrieving Todos, code " + res.code)
           } else {
-            this._tokens.next(List(res.data.tokens));
+            const tokensWithUpdatedImages = this.getTokensImages(List(res.data.tokens));
+            this._tokens.next(tokensWithUpdatedImages);
           }
         },
         err => console.log("Error retrieving tokens " + err)
-    );
+    )
+  }
+
+  private getTokensImages(tokens: List<IBridgeToken>): List<IBridgeToken> {
+      // @ts-ignore
+      const allTokensList = window.cmc_tokens; // TODO: отрефакторить этот кошмар с cmc_tokens
+
+      return tokens.map(token => {
+          const tokenInfo = allTokensList.find(item => item.token_short_name === token.symbol);
+          token.icon = (tokenInfo && tokenInfo.image_link) ? tokenInfo.image_link : "";
+          return token;
+      })
   }
 }
