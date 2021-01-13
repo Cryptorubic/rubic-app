@@ -22,7 +22,7 @@
           type="button"
           [ngClass]="{ active: isOpenList }"
           (click)="toggleListVisible(true)"
-          [disabled]="inputDisabled"
+          [disabled]="listDisabled"
   >
     <span *ngIf="!selectedToken">{{'Choose Token' | translate}}</span>
     <span *ngIf="selectedToken" class="ac_res_preview">

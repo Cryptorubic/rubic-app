@@ -1,5 +1,5 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
-import IBridgeToken from '../../services/bridge/IBridgeToken';
+import {IBridgeToken} from '../../services/bridge/types';
 import {is, List} from 'immutable';
 
 @Component({

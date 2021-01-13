@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, throwError} from 'rxjs';
 import {List} from 'immutable';
 import {HttpClient} from '@angular/common/http';
-import IBridgeToken from './IBridgeToken';
+import {IBridgeToken, BridgeNetwork} from './types';
+import {map, catchError} from 'rxjs/operators';
 
 
 interface BinanceResponse {
@@ -15,7 +16,7 @@ interface BinanceResponse {
   providedIn: 'root'
 })
 export class BridgeService {
-  private apiUrl = "https://api.binance.org/bridge/"
+  private apiUrl = "https://api.binance.org/bridge/api/v2/"
   private _tokens: BehaviorSubject<List<IBridgeToken>> = new BehaviorSubject(List([]));
 
   public readonly tokens: Observable<List<IBridgeToken>> = this._tokens.asObservable();
@@ -24,8 +25,8 @@ export class BridgeService {
     this.getTokensList();
   }
 
-  private getTokensList() {
-    this.httpClient.get(this.apiUrl + 'api/v2/tokens').subscribe(
+  private getTokensList(): void {
+    this.httpClient.get(this.apiUrl + 'tokens').subscribe(
         (res: BinanceResponse) => {
           if (res.code !== 20000) {
             console.log("Error retrieving Todos, code " + res.code)
@@ -47,5 +48,24 @@ export class BridgeService {
           token.icon = (tokenInfo && tokenInfo.image_link) ? tokenInfo.image_link : "";
           return token;
       })
+  }
+
+  public getFee(tokenSymbol: string, networkName: string): Observable<number> {
+      return this.httpClient.get(this.apiUrl + `tokens/${tokenSymbol}/networks`).pipe(
+          map(
+          (res: BinanceResponse) => {
+              if (res.code !== 20000) {
+                  console.log("Error retrieving Todos, code " + res.code)
+              } else {
+                  return res.data.networks
+                      .find(network => network.name === networkName)
+                      .networkFee
+              }
+          }),
+          catchError(err => {
+              console.log("Error retrieving tokens " + err);
+              return throwError(err);
+          })
+      )
   }
 }

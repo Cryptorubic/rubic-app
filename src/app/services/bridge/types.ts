@@ -1,4 +1,4 @@
-export default interface IBridgeToken {
+interface IBridgeToken {
     name: string,
     symbol: string,
     bcSymbol: string,
@@ -14,3 +14,10 @@ export default interface IBridgeToken {
     ethContractAddress: string,
     ethContractDecimal: string
 }
+
+enum BridgeNetwork {
+    ETHEREUM = 'ETH',
+    BINANCE_SMART_CHAIN = 'BSC'
+}
+
+export {BridgeNetwork, IBridgeToken};

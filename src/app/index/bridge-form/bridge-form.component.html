@@ -5,9 +5,9 @@
     <ul class="block-tabs block-tabs_blockchains">
       <li class="block-tabs_item active">
         <div>
-          <img class="block-tabs_item_icon" src="./assets/images/icons/coins/eth.png" alt="Ethereum"/>
-          <img class="block-tabs_item_icon" src="./assets/images/icons/coins/bnb.svg" alt="Binance"/>
-          <span class="block-tabs_item_text">Ethereum and Binance</span>
+          <img class="block-tabs_item_icon" style="margin-right: 5px" src="./assets/images/icons/coins/eth.png" alt="Ethereum"/>
+          <img class="block-tabs_item_icon" style="margin-right: 5px" src="./assets/images/icons/coins/bnb.svg" alt="Binance"/>
+          <span class="block-tabs_item_text">Ethereum and Binance Smart Chain</span>
         </div>
     </ul>
   </div>
@@ -33,9 +33,11 @@
         </div>
         <div class="choose-blockchains__token form-field">
           <app-tokens-input
-                  class="choose-token__wrapper"
-                  [tokensList]="tokens"
-                  (tokenChanges)="selectedToken = $event"
+              class="choose-token__wrapper"
+              [tokensList]="tokens"
+
+              (tokenChanges)="onSelectedTokenChanges($event)"
+              (numberChanges)="onTokensNumberChanges($event)"
           >
           </app-tokens-input>
         </div>
@@ -63,7 +65,7 @@
         </div>
         <div class="choose-blockchains__get">
           <span>
-            4.3332
+            {{this.toNumber != undefined ? this.toNumber : ""}}
           </span>
           <div class="get-token-card">
             <ng-template [ngIf]="selectedToken">
@@ -81,6 +83,8 @@
       <app-primary-button
         class="cross-chain-form__confirm-wrapper"
         label="Create trade"
+        [animate]="feeCalculationProgress"
+        [disabled]="false"
         >
       </app-primary-button>
     </div>

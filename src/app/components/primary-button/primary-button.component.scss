@@ -2,6 +2,7 @@
   box-sizing: border-box;
   display: flex;
   justify-content: center;
+  align-items: center;
   line-height: 50px;
   height: 50px;
   width: 100%;
@@ -41,7 +42,7 @@
     right: 0;
   }
   ~ * {
-    visibility: hidden;
+    display: none;
   }
 }
 .lds-ellipsis-container {
