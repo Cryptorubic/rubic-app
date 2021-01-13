@@ -278,7 +278,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         this.instanceTradeParams = result;
         this.requestData.tokens_info.quote.amount =
         Number(result.toTokenAmount) ?
-            new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10) : '';
+            new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).multipliedBy(0.97).toString(10) : '';
         // this.QuoteTokenCustom.emit();
         this.getInstanceQuoteProgress = false;
       });
