@@ -1,5 +1,5 @@
 <button [class]="'primary-button' + className"
-        [disabled]="disabled"
+        [disabled]="disabled || animate"
         (click)="onClick()">
   <span class="lds-ellipsis" *ngIf="animate">
     <span class="lds-ellipsis-container">

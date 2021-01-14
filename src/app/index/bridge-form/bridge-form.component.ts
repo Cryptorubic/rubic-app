@@ -3,13 +3,14 @@ import {BridgeService} from '../../services/bridge/bridge.service';
 import {HttpClient} from '@angular/common/http';
 import {List} from 'immutable';
 import {IBridgeToken, BridgeNetwork} from '../../services/bridge/types';
+import {Web3ApiService} from '../../services/web3Api/web3-api.service';
 
 
 @Component({
   selector: 'app-bridge-form',
   templateUrl: './bridge-form.component.html',
   styleUrls: ['./bridge-form.component.scss'],
-  providers: [BridgeService, HttpClient]
+  providers: [BridgeService, HttpClient, Web3ApiService]
 })
 export class BridgeFormComponent implements OnInit {
 
@@ -69,13 +70,19 @@ export class BridgeFormComponent implements OnInit {
 
   public revertBlockchains() {
     [this.fromBlockchain, this.toBlockchain] = [this.toBlockchain, this.fromBlockchain];
-    this.onSelectedTokenChanges(this.selectedToken);
+    if (this.selectedToken) {
+      this.onSelectedTokenChanges(this.selectedToken);
+    }
   }
 
   public onSelectedTokenChanges(token) {
     this.fee = undefined;
-    this.feeCalculationProgress = true;
     this.selectedToken = token;
+    if (!token) {
+      return;
+    }
+
+    this.feeCalculationProgress = true;
     this.bridgeService.getFee(this.selectedToken.symbol, this.toBlockchain.name)
       .subscribe(
           fee => this.fee = fee
@@ -87,5 +94,14 @@ export class BridgeFormComponent implements OnInit {
     if (tokensNumber) {
       this.fromNumber = Number(tokensNumber);
     }
+  }
+
+  public onConfirm() {
+    this.feeCalculationProgress = true;
+    this.bridgeService
+        .createTrade(this.selectedToken, this.fromBlockchain.name, this.toBlockchain.name, this.fromNumber)
+        .subscribe(res => {
+          console.log(res);
+        }, () => {}, () => this.feeCalculationProgress = false)
   }
 }

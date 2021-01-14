@@ -40,6 +40,25 @@
               (numberChanges)="onTokensNumberChanges($event)"
           >
           </app-tokens-input>
+
+          <table class="choose-blockchains__info" *ngIf="selectedToken">
+            <tr [ngClass]="{'choose-blockchains__info_wrong': fromNumber!=undefined && fromNumber < selectedToken.minAmount}">
+              <td>
+                Minimum amount:
+              </td>
+              <td>
+                {{selectedToken.minAmount}}
+              </td>
+            </tr>
+            <tr [ngClass]="{'choose-blockchains__info_wrong': fromNumber!=undefined && fromNumber > selectedToken.maxAmount}">
+              <td>
+                Maximum amount:
+              </td>
+              <td>
+                {{selectedToken.maxAmount}}
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
 
@@ -84,7 +103,11 @@
         class="cross-chain-form__confirm-wrapper"
         label="Create trade"
         [animate]="feeCalculationProgress"
-        [disabled]="false"
+        [disabled]="
+            !selectedToken ||
+            !fromNumber || fromNumber < selectedToken.minAmount || fromNumber > selectedToken.maxAmount
+          "
+        (click)="onConfirm()"
         >
       </app-primary-button>
     </div>

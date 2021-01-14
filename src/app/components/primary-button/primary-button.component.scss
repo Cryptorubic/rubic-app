@@ -23,7 +23,16 @@
   transition: transform 0.1s ease-in-out;
 
   &:active {
-    transform: scale(0.8);
+    transform: scale(0.9);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+
+    &:active {
+      transform: none;
+    }
   }
 }
 
