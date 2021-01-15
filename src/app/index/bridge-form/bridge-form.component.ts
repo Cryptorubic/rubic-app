@@ -100,8 +100,11 @@ export class BridgeFormComponent implements OnInit {
     this.feeCalculationProgress = true;
     this.bridgeService
         .createTrade(this.selectedToken, this.fromBlockchain.name, this.toBlockchain.name, this.fromNumber)
-        .subscribe(res => {
-          console.log(res);
-        }, () => {}, () => this.feeCalculationProgress = false)
+        .subscribe(
+            res => {
+              console.log(res);
+            },
+            console.log,
+            () => this.feeCalculationProgress = false)
   }
 }

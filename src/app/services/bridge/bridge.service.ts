@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable, throwError} from 'rxjs';
+import {BehaviorSubject, from, observable, Observable, throwError} from 'rxjs';
 import {List} from 'immutable';
 import {HttpClient} from '@angular/common/http';
 import {IBridgeToken, BridgeNetwork} from './types';
-import {map, catchError} from 'rxjs/operators';
+import {map, catchError, flatMap} from 'rxjs/operators';
 import {Web3ApiService} from '../web3Api/web3-api.service';
+import {BridgeTransaction} from './BridgeTransaction';
 
 
 interface BinanceResponse {
@@ -90,13 +91,35 @@ export class BridgeService {
       }
 
       return this.httpClient.post(this.apiUrl + `swaps/`, body).pipe(
-          map(
+          flatMap(
               (res: BinanceResponse) => {
                   debugger;
-                  if (res.code !== 20000) {
-                      console.log("Error bridge post, code " + res.code)
+                  if (res.code !== 20) {
+                      console.log("Error bridge post, code " + res.code);
+                      const tx = new BridgeTransaction(
+                          "0x123456789",
+                          fromNetwork,
+                          token,
+                          "WaitingForDeposit",
+                          "0x3aEC01681910210dD33a3687AA4585fd4d200A1c",
+                          3,
+                          "0x8f4Bf8cA0Fc7Ed5FFe58504176736eF92A12CF94",
+                          this.web3Api
+                      );
+                      return from(this.sendDeposit(tx));
                   } else {
-                      return this.sendDeposit(token, res.data.depositAddress, amount)
+                      const data = res.data;
+                      const tx = new BridgeTransaction(
+                          data.id,
+                          fromNetwork,
+                          token,
+                          data.status,
+                          data.depositAddress,
+                          amount,
+                          data.toAddress,
+                          this.web3Api
+                      );
+                      return from(this.sendDeposit(tx));
                   }
               }),
           catchError(err => {
@@ -106,7 +129,7 @@ export class BridgeService {
       )
   }
 
-  private sendDeposit(token: IBridgeToken, depositAddress: string, amount: number)  {
-
+  private sendDeposit(tx: BridgeTransaction): Promise<void>  {
+      return tx.sendDeposit();
   }
 }

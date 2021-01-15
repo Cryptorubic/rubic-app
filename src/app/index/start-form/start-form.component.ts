@@ -655,7 +655,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
               this.instantTradeInProgress = false;
             });
       })
-      .catch(() => {
+      .catch(e => {
+        console.log(e);
         this.metaMaskErrorModal = this.dialog.open(this.insufficientFundsError, {
           width: '480px',
           panelClass: 'custom-dialog-container',

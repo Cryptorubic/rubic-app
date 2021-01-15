@@ -61,9 +61,12 @@ export class Web3ApiService {
     return this.metamaskAddress;
   }
 
-  public async transferTokens(contractAddress: string, toAddress: string, amount) {
+  public async transferTokens(contractAddress: string, toAddress: string, amount): Promise<string> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], contractAddress);
-    contract.methods.transfer(toAddress, amount).send().then(console.log).catch(console.error);
+
+    const res = await contract.methods.transfer(toAddress, amount).send({from: this.address});
+    console.log(res);
+    return res;
   }
 
 }

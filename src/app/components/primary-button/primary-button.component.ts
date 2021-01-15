@@ -11,10 +11,10 @@ export class PrimaryButtonComponent implements OnInit {
   @Input() className?: string = "";
   @Input() disabled?: boolean = false;
 
-  @Output() click = new EventEmitter<void>();
+  @Output() onClick = new EventEmitter<void>();
 
-  onClick() {
-    this.click.emit();
+  onClickHandler() {
+    this.onClick.emit();
   }
 
   constructor() { }
