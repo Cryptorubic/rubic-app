@@ -35,7 +35,7 @@
 
   &-roadmap-title {
     font-weight: bold;
-    font-size: 17px;
+    font-size: 20px;
     line-height: 27px;
     color: #4aa956;
     margin-bottom: 5px;
@@ -98,6 +98,34 @@
       font-size: 14px;
       line-height: 25px;
     }
+  }
+}
+
+.ul {
+  &-roadmap-text {
+    list-style: none;
+    padding-left: 1rem;
+
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 27px;
+    color: #000000;
+
+    li {
+      &:not(:last-child) {
+        margin-bottom: 15px;
+      }
+
+      &::before {
+        content: "\2022";
+        color: #4AA956;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+      }
+    }
+
   }
 }
 
