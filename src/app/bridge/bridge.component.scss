@@ -1,0 +1,21 @@
+.bridge-container {
+  height: 100%;
+  padding-top: 130px;
+
+  &__form-title {
+    margin-bottom: 30px;
+
+    font-weight: bold;
+    font-size: 28px;
+    line-height: 32px;
+    color: #110931;
+  }
+}
+
+.disclaimer-text {
+  font-size: 14px;
+  line-height: 40px;
+  color: #000000;
+  margin-top: 0;
+  margin-bottom: 92px;
+}

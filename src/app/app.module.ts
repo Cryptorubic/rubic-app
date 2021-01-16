@@ -89,9 +89,11 @@ import { MaintenanceComponent } from './maintenance/maintenance.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
 import { NgToggleModule } from 'ng-toggle-button';
-import { BridgeFormComponent } from './index/bridge-form/bridge-form.component';
+import { BridgeFormComponent} from './bridge/brifge-form/bridge-form.component';
 import { PrimaryButtonComponent } from './components/primary-button/primary-button.component';
 import { TokensInputComponent } from './components/tokens-input/tokens-input.component';
+import { BridgeComponent} from './bridge/bridge.component';
+import { CollaborationsComponent } from './components/collaborations/collaborations.component';
 
 
 export class TranslateBrowserLoader implements TranslateLoader {
@@ -267,7 +269,9 @@ export function appInitializerFactory(
     TradeInProgressModalComponent,
     BridgeFormComponent,
     PrimaryButtonComponent,
-    TokensInputComponent
+    TokensInputComponent,
+    BridgeComponent,
+    CollaborationsComponent
   ],
   entryComponents: [
     AuthComponent,
