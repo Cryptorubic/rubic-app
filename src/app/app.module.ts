@@ -95,6 +95,7 @@ import { TokensInputComponent } from './components/tokens-input/tokens-input.com
 import { BridgeComponent} from './bridge/bridge.component';
 import { CollaborationsComponent } from './components/collaborations/collaborations.component';
 
+import { ArrowComponent } from './components/arrow/arrow.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -200,6 +201,13 @@ export function appInitializerFactory(
                     token.platform === 'ethereum' && token.address
                   );
                 });
+
+                // TODO: переработать систему хранения токенов. Далее одна строчка -- хотфикс дублирующегося тикера RBC
+                tokens = tokens.filter(token =>
+                    (token.token_short_name !== 'RBC' || token.token_name === 'Rubic') &&
+                    (token.token_short_name !== 'ETH' || token.token_name === 'Ethereum')
+                );
+
                 window['cmc_tokens'] = tokens;
              //   window['cmc_tokens'] = [];
                 oneInchService.onLoadTokens().subscribe(() => {
@@ -271,7 +279,8 @@ export function appInitializerFactory(
     PrimaryButtonComponent,
     TokensInputComponent,
     BridgeComponent,
-    CollaborationsComponent
+    CollaborationsComponent,
+    ArrowComponent,
   ],
   entryComponents: [
     AuthComponent,

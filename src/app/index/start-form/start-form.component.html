@@ -31,7 +31,8 @@
           </svg>
         </span>
       </li>
-      <li class="block-tabs_item" [ngClass]="{active: !instanceTrade}"
+      <li class="block-tabs_item"
+          [ngClass]="{ active: !instanceTrade, 'block-tabs_item_highlight': instanceTrade && !instantTradesAvailable}"
           (click)="deActivateInstanceTrade()">
         <span class="block-tabs_item_text">
           {{'Order Book' | translate }}
@@ -60,6 +61,12 @@
     class="index-start-form"
     (submit)="createContract()"
   >
+    <div class="instant-trade-warning" *ngIf="instanceTrade && !instantTradesAvailable">
+      <img class="instant-trade-warning__icon" src="assets/images/icons/warning-empty.svg" alt="Warning"/>
+      <span class="instant-trade-warning__description">Instant Trades temporary out of service. Use Order book</span>
+      <app-arrow></app-arrow>
+    </div>
+
     <div class="grid-row start-form-row">
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
         <div class="form-field">
@@ -274,6 +281,7 @@
           <button
             class="btn btn-green width-100"
             [disabled]="
+              (instanceTrade && !instantTradesAvailable) ||
               getInstanceQuoteProgress ||
               !requestData.tokens_info.base.amount ||
               !requestData.tokens_info.quote.amount ||

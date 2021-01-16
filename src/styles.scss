@@ -1345,6 +1345,19 @@ ng-scrollbar-y {
       vertical-align: middle;
       font-size: 14px;
     }
+
+    &_highlight {
+      border: 1px solid #4AA956;
+      box-shadow: 0 2px 12px rgba(74, 169, 86, 0.6);
+
+      span {
+        color: #4AA956;
+      }
+
+      svg {
+        fill: #4AA956 !important;
+      }
+    }
   }
 
   &_order-type {

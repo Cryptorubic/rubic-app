@@ -121,7 +121,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     24: 'matic'
   };
 
-  public instantTradesAvailable: boolean;
+  public instantTradesAvailable: boolean = true;
   public instanceTrade: boolean = true;
   private instanceTradeParams: any = {};
 
@@ -713,7 +713,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
       if (this.instanceTrade && this.instantTradesAvailable) {
         this.createInstanceTrade();
-      } else {
+      } else if(!this.instanceTrade) {
         this.buildAndCreate();
       }
     }, (err) => {
