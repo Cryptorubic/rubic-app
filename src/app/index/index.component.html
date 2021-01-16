@@ -8,19 +8,12 @@
     <div class="app-index__start-form">
       <div class="title-section toggle-menu-container">
         <span>{{'Create your Trade' | translate}}</span>
-        <div class="mode-toggle-container">
-          <span>Cross chain</span>
-          <ng-toggle
-                  class="mode-toggle-container__toggle"
-                  [value]="crossChainMode"
-                  [color]="{
-                    unchecked: '#BFCBD9',
-                    checked: '#4aa956'
-                  }"
-                  (change)="changeMode()"
-          >
-          </ng-toggle>
-        </div>
+        <a routerLink="/bridge" class="toggle-menu-container__toggle">
+          <span class="toggle-menu-container__toggle-text">Try out owr new bridges</span>
+          <div class="toggle-menu-container__arrow-button">
+            <img src="assets/images/icons/arrow/arrow-right-green.svg" alt="Arrow"/>
+          </div>
+        </a>
       </div>
       <app-start-form
               *ngIf="!crossChainMode"

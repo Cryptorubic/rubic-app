@@ -1,23 +1,25 @@
 <div class="bridge-container">
   <div class="bridge-container__wrapper">
     <div class="bridge-container__form">
-      <div class="bridge-container__form-title">
+      <div class="bridge-form">
         <span>{{'Create your crosschain swap' | translate}}</span>
-        <div>
-          <span>Use our swaps</span>
-          <arro>
-        </div>
+        <a routerLink="/" class="bridge-form__toggle">
+          <span class="bridge-form__toggle-text">Use our swaps</span>
+          <div class="bridge-form__arrow-button">
+            <img src="assets/images/icons/arrow/arrow-right-green.svg" alt="Arrow"/>
+          </div>
+        </a>
       </div>
-      <app-bridge-form></app-bridge-form>
     </div>
-
-
-    <div class="disclaimer-text"
-         [innerHTML]="'By trading on our platform you agree with the following terms and conditions' | translate">
-    </div>
-
-    <app-collaborations></app-collaborations>
+    <app-bridge-form></app-bridge-form>
   </div>
+
+
+  <div class="disclaimer-text"
+       [innerHTML]="'By trading on our platform you agree with the following terms and conditions' | translate">
+  </div>
+
+  <app-collaborations></app-collaborations>
 </div>
 
 <app-footer></app-footer>

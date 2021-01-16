@@ -1,6 +1,6 @@
 <div class="index-start-form__wrapper">
 
-  <!-- Form label -->
+  <!-- Form label
   <div class="start-form-menus">
     <ul class="block-tabs block-tabs_blockchains">
       <li class="block-tabs_item active">
@@ -10,7 +10,7 @@
           <span class="block-tabs_item_text">Ethereum and Binance Smart Chain</span>
         </div>
     </ul>
-  </div>
+  </div> -->
 
   <!-- Panel -->
   <form class="cross-chain-form">
@@ -28,6 +28,10 @@
           <span>{{fromBlockchain.label}}</span>
         </div>
 
+        <div class="choose-blockchains__address">
+          {{bridgeService.walletAddress}}
+        </div>
+
         <div class="choose-blockchains__title">
           You have
         </div>
@@ -41,21 +45,21 @@
           >
           </app-tokens-input>
 
-          <table class="choose-blockchains__info" *ngIf="selectedToken">
+          <table class="choose-blockchains__info">
             <tr [ngClass]="{'choose-blockchains__info_wrong': fromNumber!=undefined && fromNumber < selectedToken.minAmount}">
               <td>
-                Minimum amount:
+                {{selectedToken ? 'Minimum amount' : ''}}
               </td>
               <td>
-                {{selectedToken.minAmount}}
+                {{selectedToken ? selectedToken.minAmount : ''}}
               </td>
             </tr>
             <tr [ngClass]="{'choose-blockchains__info_wrong': fromNumber!=undefined && fromNumber > selectedToken.maxAmount}">
               <td>
-                Maximum amount:
+                {{selectedToken ? 'Maximum amount' : ''}}
               </td>
               <td>
-                {{selectedToken.maxAmount}}
+                {{selectedToken ? selectedToken.maxAmount : ''}}
               </td>
             </tr>
           </table>
@@ -79,6 +83,10 @@
           <span>{{toBlockchain.label}}</span>
         </div>
 
+        <div class="choose-blockchains__address">
+          {{bridgeService.walletAddress}}
+        </div>
+
         <div class="choose-blockchains__title">
           You get
         </div>
@@ -95,13 +103,21 @@
             </ng-template>
           </div>
         </div>
+
+        <div class="choose-blockchains__address-info">
+          You will get Binance tokens to the same address
+        </div>
+        <a class="choose-blockchains__binance" href="https://www.binance.org/" target="_blank">
+          What is Binance?
+        </a>
+
        </div>
     </div>
 
     <div class="cross-chain-form__confirm-section">
       <app-primary-button
         class="cross-chain-form__confirm-wrapper"
-        label="Create trade"
+        label="Create Swap"
         [animate]="feeCalculationProgress"
         [disabled]="
             !selectedToken ||

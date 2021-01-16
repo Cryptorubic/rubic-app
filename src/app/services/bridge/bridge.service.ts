@@ -20,11 +20,13 @@ interface BinanceResponse {
 export class BridgeService {
   private apiUrl = "https://api.binance.org/bridge/api/v2/"
   private _tokens: BehaviorSubject<List<IBridgeToken>> = new BehaviorSubject(List([]));
+  public walletAddress: string;
 
   public readonly tokens: Observable<List<IBridgeToken>> = this._tokens.asObservable();
 
   constructor(private httpClient: HttpClient, private web3Api: Web3ApiService) {
     this.getTokensList();
+    this.walletAddress = web3Api.address;
   }
 
   private getTokensList(): void {

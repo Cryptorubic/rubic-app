@@ -1,14 +1,51 @@
+@import "src/scss/elements/vars";
+
 .bridge-container {
+  max-width: 1180px;
+  margin: 0 auto;
   height: 100%;
   padding-top: 130px;
+}
 
-  &__form-title {
-    margin-bottom: 30px;
+.bridge-form  {
+  margin-bottom: 30px;
 
-    font-weight: bold;
-    font-size: 28px;
-    line-height: 32px;
-    color: #110931;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 32px;
+  color: #110931;
+
+  &__arrow-button {
+    height: 17px;
+    width: 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: -2px;
+
+    background-color: white;
+    border-radius: 50%;
+
+    transition: transform 0.2s linear;
+  }
+
+  &__toggle {
+    float: right;
+
+    &:hover {
+      .bridge-form__arrow-button {
+        transform: scale(1.2);
+      }
+    }
+  }
+
+  &__toggle-text {
+    margin-right: 10px;
+
+    color: $main-green;
+    font-size: 14px;
+    line-height: 16px;
   }
 }
 

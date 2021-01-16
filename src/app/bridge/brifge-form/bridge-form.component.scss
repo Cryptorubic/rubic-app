@@ -59,7 +59,7 @@
     display: flex;
     align-items: center;
     padding-left: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 
     background-color: #f4f4f4;
     font-size: 18px;
@@ -67,6 +67,14 @@
     img {
       transform: scale(1.3);
     }
+  }
+
+  &__address {
+    margin-bottom: 26px;
+
+    font-size: 14px;
+    line-height: 16px;
+    opacity: 0.5;
   }
 
   &__token {
@@ -122,8 +130,10 @@
   }
 
   &__info {
+    height: 42px;
     margin-top: 13px;
     opacity: 0.5;
+    font-size: 14px;
 
     td:first-child {
       width: 150px;
@@ -132,6 +142,20 @@
     &_wrong {
       color: red;
     }
+  }
+
+  &__address-info {
+    margin-top: 16px;
+    margin-bottom: 7px;
+
+    font-size: 14px;
+    line-height: 14px;
+    opacity: 0.4;
+  }
+
+  &__binance {
+    cursor: pointer;
+    font-size: 14px;
   }
 }
 

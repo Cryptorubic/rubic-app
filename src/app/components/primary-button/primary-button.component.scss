@@ -34,6 +34,12 @@
       transform: none;
     }
   }
+
+  &__arrow {
+    position: relative;
+    top: -2px;
+    margin-right: 13px;
+  }
 }
 
 
