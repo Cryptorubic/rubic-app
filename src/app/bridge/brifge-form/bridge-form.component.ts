@@ -35,6 +35,7 @@ export class BridgeFormComponent implements OnInit {
   private _fee: number;
   public toNumber: number;
   public feeCalculationProgress: boolean = false;
+  public walletAddress: string = this.bridgeService.walletAddress;
 
   set fromNumber(fromNumber: number) {
     this._fromNumber = fromNumber;
