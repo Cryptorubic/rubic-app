@@ -430,3 +430,34 @@
     display: none;
   }
 }
+
+.instant-trade-warning {
+  box-sizing: border-box;
+  width: 480px;
+  height: 37px;
+  padding: 10px 13px;
+  float: right;
+  position: relative;
+  top: -15px;
+
+  display: flex;
+  align-items: center;
+
+  background-color: #FFDB43;
+  border-radius: 2px;
+
+  &__description {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    position: relative;
+    top: 2px;
+    margin-right: 12px;
+
+    color: #110931;
+  }
+
+  &__icon {
+    margin-right: 10px;
+  }
+}

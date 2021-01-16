@@ -88,6 +88,7 @@ import { TeamCardComponent } from './team/team-card/team-card.component';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
+import { ArrowComponent } from './components/arrow/arrow.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -193,6 +194,13 @@ export function appInitializerFactory(
                     token.platform === 'ethereum' && token.address
                   );
                 });
+
+                // TODO: переработать систему хранения токенов. Далее одна строчка -- хотфикс дублирующегося тикера RBC
+                tokens = tokens.filter(token =>
+                    (token.token_short_name !== 'RBC' || token.token_name === 'Rubic') &&
+                    (token.token_short_name !== 'ETH' || token.token_name === 'Ethereum')
+                );
+
                 window['cmc_tokens'] = tokens;
              //   window['cmc_tokens'] = [];
                 oneInchService.onLoadTokens().subscribe(() => {
@@ -260,6 +268,7 @@ export function appInitializerFactory(
     MaintenanceComponent,
     ModalComponent,
     TradeInProgressModalComponent,
+    ArrowComponent,
   ],
   entryComponents: [
     AuthComponent,
