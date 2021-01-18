@@ -18,12 +18,14 @@ export class BridgeFormComponent implements OnInit {
     Ethereum : {
       name : BridgeNetwork.ETHEREUM,
       label: "Ethereum",
-      img: "eth.png"
+      img: "eth.png",
+      symbolName: 'ethSymbol'
     },
     Binance: {
       name : BridgeNetwork.BINANCE_SMART_CHAIN,
       label: "Binance Smart Chain",
-      img: "bnb.svg"
+      img: "bnb.svg",
+      symbolName: 'bscSymbol'
     }
   }
 
@@ -35,6 +37,7 @@ export class BridgeFormComponent implements OnInit {
   private _fee: number;
   public toNumber: number;
   public feeCalculationProgress: boolean = false;
+  public tradeInProgress: boolean = false;
   public walletAddress: string = this.bridgeService.walletAddress;
 
   set fromNumber(fromNumber: number) {
@@ -98,14 +101,17 @@ export class BridgeFormComponent implements OnInit {
   }
 
   public onConfirm() {
-    this.feeCalculationProgress = true;
+    this.tradeInProgress = true;
     this.bridgeService
         .createTrade(this.selectedToken, this.fromBlockchain.name, this.toBlockchain.name, this.fromNumber)
         .subscribe(
             res => {
+              debugger
               console.log(res);
             },
-            console.log,
-            () => this.feeCalculationProgress = false)
+            err => {
+              debugger
+              console.error("ERRORRR")
+        }).add(() => this.tradeInProgress = false);
   }
 }

@@ -39,7 +39,7 @@
           <app-tokens-input
               class="choose-token__wrapper"
               [tokensList]="tokens"
-
+              [symbolNameProp]="fromBlockchain.symbolName"
               (tokenChanges)="onSelectedTokenChanges($event)"
               (numberChanges)="onTokensNumberChanges($event)"
           >
@@ -98,7 +98,7 @@
             <ng-template [ngIf]="selectedToken">
                 <img class="get-token-card__icon" [src]="selectedToken.icon" alt="Token"/>
               <span class="get-token-card__name">
-                {{ selectedToken.symbol }}
+                {{ selectedToken[toBlockchain.symbolName] }}
               </span>
             </ng-template>
           </div>
@@ -118,7 +118,7 @@
       <app-primary-button
         class="cross-chain-form__confirm-wrapper"
         label="Create Swap"
-        [animate]="feeCalculationProgress"
+        [animate]="feeCalculationProgress || tradeInProgress"
         [disabled]="
             !selectedToken ||
             !fromNumber || fromNumber < selectedToken.minAmount || fromNumber > selectedToken.maxAmount

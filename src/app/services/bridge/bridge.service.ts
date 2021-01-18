@@ -125,7 +125,7 @@ export class BridgeService {
                   }
               }),
           catchError(err => {
-              console.log("Error bridge post " + err);
+              console.error("Error bridge post " + err);
               return throwError(err);
           })
       )

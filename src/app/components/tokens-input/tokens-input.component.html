@@ -29,7 +29,7 @@
       <span class="ac_res_preview_icon">
         <img [src]="selectedToken.icon || './assets/images/icons/coins/empty.svg'" alt="Token symbol"/>
       </span>
-      <span class="ac_res_preview_symbol">{{selectedToken.symbol}}</span>
+      <span class="ac_res_preview_symbol">{{selectedToken[symbolNameProp]}}</span>
     </span>
   </button>
   <input
@@ -67,7 +67,7 @@
             <img [src]="item.icon" alt="Token"/>
           </span>
           <span class="ac_res_list_item-content_name">
-            {{ item.name }} ({{ item.symbol }})
+            {{ item.name }} ({{ item[symbolNameProp] }})
           </span>
         </span>
       </li>

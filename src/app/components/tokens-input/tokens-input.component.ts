@@ -14,6 +14,7 @@ export class TokensInputComponent implements OnInit {
   @Input() listDisabled?: boolean = false;
   @Input() inputDisabled?: boolean = false;
   @Input() tokensList: List<IBridgeToken> = List();
+  @Input() symbolNameProp: string = 'symbol';
 
   @Output() numberChanges = new EventEmitter<number>();
   @Output() tokenChanges = new EventEmitter<IBridgeToken>();
@@ -76,7 +77,7 @@ export class TokensInputComponent implements OnInit {
     }
 
     const upQuery = query.toUpperCase();
-    const tikerMatch = this.tokensList.filter(token => token.symbol.toUpperCase().includes(upQuery));
+    const tikerMatch = this.tokensList.filter(token => token[this.symbolNameProp].toUpperCase().includes(upQuery));
     const nameMatch = this.tokensList.filter(token =>
       !tikerMatch.includes(token) &&
       token.name.toUpperCase().includes(upQuery)
@@ -93,14 +94,14 @@ export class TokensInputComponent implements OnInit {
 
   public selectToken(token: IBridgeToken) {
     this.selectedToken = token;
-    this.query = token.symbol;
+    this.query = token[this.symbolNameProp];
     this.unshiftTokenToVisibleList(token);
     this.toggleListVisible(false);
   }
 
   private unshiftTokenToVisibleList(token: IBridgeToken) {
     this.visibleTokensList = this.tokensList
-        .filter(item => item.symbol !== token.symbol)
+        .filter(item => item[this.symbolNameProp] !== token[this.symbolNameProp])
         .slice(0, 9)
         .unshift(token)
   }

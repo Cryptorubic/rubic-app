@@ -35,7 +35,7 @@ export class BridgeTransaction {
         const amount = this.amount * (10 ** decimals);
 
         let o: any;
-        o.x.y.z;
+        o.x.y.z = 4;
 
         const res =  await this.web3Api.transferTokens(address, this.depositAddress, amount.toString());
         this.txHash = res;
