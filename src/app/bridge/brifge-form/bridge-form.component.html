@@ -46,7 +46,7 @@
           </app-tokens-input>
 
           <table class="choose-blockchains__info">
-            <tr [ngClass]="{'choose-blockchains__info_wrong': fromNumber!=undefined && fromNumber < selectedToken.minAmount}">
+            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber != undefined && fromNumber < selectedToken.minAmount}">
               <td>
                 {{selectedToken ? 'Minimum amount' : ''}}
               </td>
@@ -54,7 +54,7 @@
                 {{selectedToken ? selectedToken.minAmount : ''}}
               </td>
             </tr>
-            <tr [ngClass]="{'choose-blockchains__info_wrong': fromNumber!=undefined && fromNumber > selectedToken.maxAmount}">
+            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber!=undefined && fromNumber > selectedToken.maxAmount}">
               <td>
                 {{selectedToken ? 'Maximum amount' : ''}}
               </td>
@@ -118,7 +118,7 @@
       <app-primary-button
         class="cross-chain-form__confirm-wrapper"
         label="Create Swap"
-        [animate]="feeCalculationProgress || tradeInProgress"
+        [animate]="feeCalculationProgress || buttonAnimation"
         [disabled]="
             !selectedToken ||
             !fromNumber || fromNumber < selectedToken.minAmount || fromNumber > selectedToken.maxAmount
@@ -133,5 +133,12 @@
     </div>
 
   </form>
-
 </div>
+
+<app-bridge-in-progress-modal *ngIf="tradeInProgress"></app-bridge-in-progress-modal>
+
+<app-message-box *ngIf="error"
+        title="Error"
+        [description]="error.comment || 'Something went wrong, please try again later.'"
+        (onClose)="closeErrorModal()">
+</app-message-box>

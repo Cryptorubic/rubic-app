@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {List} from 'immutable';
 import {IBridgeToken, BridgeNetwork} from '../../services/bridge/types';
 import {Web3ApiService} from '../../services/web3Api/web3-api.service';
+import {RubicError} from '../../errors/RubicError';
 
 
 @Component({
@@ -37,7 +38,9 @@ export class BridgeFormComponent implements OnInit {
   private _fee: number;
   public toNumber: number;
   public feeCalculationProgress: boolean = false;
+  public buttonAnimation: boolean = false;
   public tradeInProgress: boolean = false;
+  public error: RubicError;
   public walletAddress: string = this.bridgeService.walletAddress;
 
   set fromNumber(fromNumber: number) {
@@ -101,17 +104,27 @@ export class BridgeFormComponent implements OnInit {
   }
 
   public onConfirm() {
-    this.tradeInProgress = true;
+    this.buttonAnimation = true;
     this.bridgeService
-        .createTrade(this.selectedToken, this.fromBlockchain.name, this.toBlockchain.name, this.fromNumber)
-        .subscribe(
-            res => {
-              debugger
-              console.log(res);
-            },
-            err => {
-              debugger
-              console.error("ERRORRR")
-        }).add(() => this.tradeInProgress = false);
+      .createTrade(this.selectedToken, this.fromBlockchain.name, this.toBlockchain.name, this.fromNumber, () => this.tradeInProgress = true)
+      .subscribe(
+        res => {
+          debugger
+          console.log(res);
+        },
+        err => {
+          if (err instanceof RubicError) {
+            this.error = err;
+          } else {
+            this.error = new RubicError();
+          }
+      }).add(() => {
+        this.tradeInProgress = false;
+        this.buttonAnimation = false;
+    });
+  }
+
+  public closeErrorModal() {
+    this.error = null;
   }
 }

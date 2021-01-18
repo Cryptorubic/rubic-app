@@ -17,7 +17,8 @@ interface IBridgeToken {
 
 enum BridgeNetwork {
     ETHEREUM = 'ETH',
-    BINANCE_SMART_CHAIN = 'BSC'
+    BINANCE_SMART_CHAIN = 'BSC',
+    ETHEREUM_TESTNET = 'KVN'
 }
 
 export {BridgeNetwork, IBridgeToken};

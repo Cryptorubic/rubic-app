@@ -161,6 +161,13 @@ html {
   white-space: nowrap;
 }
 
+.noscroll {
+  position:fixed;
+  left: 0;
+  right: 0;
+  overflow:hidden;
+}
+
 .pre {
   white-space: pre;
 }

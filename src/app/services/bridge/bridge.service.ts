@@ -6,6 +6,8 @@ import {IBridgeToken, BridgeNetwork} from './types';
 import {map, catchError, flatMap} from 'rxjs/operators';
 import {Web3ApiService} from '../web3Api/web3-api.service';
 import {BridgeTransaction} from './BridgeTransaction';
+import {NetworkError} from '../../errors/bridge/NetworkError';
+import {RubicError} from '../../errors/RubicError';
 
 
 interface BinanceResponse {
@@ -75,11 +77,13 @@ export class BridgeService {
       )
   }
 
-  public createTrade(token: IBridgeToken, fromNetwork: string, toNetwork: string, amount: number): Observable<void> {
-      if (!this.web3Api.unblocked) {
-          return throwError("web3 unavailable");
-      }
-
+  public createTrade(
+      token: IBridgeToken,
+      fromNetwork: string,
+      toNetwork: string,
+      amount: number,
+      onTransactionHash?: (hash:string) => void
+  ): Observable<void> {
       const body = {
           amount,
           fromNetwork,
@@ -96,8 +100,10 @@ export class BridgeService {
           flatMap(
               (res: BinanceResponse) => {
                   debugger;
-                  if (res.code !== 20) {
-                      console.log("Error bridge post, code " + res.code);
+                  if (res.code !== 20000) {
+                      console.log("Bridge POST error, code " + res.code);
+                     // return throwError(new RubicError("Bridge POST error, code " + res.code));
+
                       const tx = new BridgeTransaction(
                           "0x123456789",
                           fromNetwork,
@@ -108,7 +114,7 @@ export class BridgeService {
                           "0x8f4Bf8cA0Fc7Ed5FFe58504176736eF92A12CF94",
                           this.web3Api
                       );
-                      return from(this.sendDeposit(tx));
+                      return from(this.sendDeposit(tx, onTransactionHash));
                   } else {
                       const data = res.data;
                       const tx = new BridgeTransaction(
@@ -121,17 +127,23 @@ export class BridgeService {
                           data.toAddress,
                           this.web3Api
                       );
-                      return from(this.sendDeposit(tx));
+                      return from(this.sendDeposit(tx, onTransactionHash));
                   }
               }),
           catchError(err => {
               console.error("Error bridge post " + err);
-              return throwError(err);
+              return throwError(err instanceof  RubicError ? err : new RubicError());
           })
       )
   }
 
-  private sendDeposit(tx: BridgeTransaction): Promise<void>  {
-      return tx.sendDeposit();
+  private sendDeposit(tx: BridgeTransaction, onTransactionHash?: (hash:string) => void): Promise<void>  {
+     /* if (!this.web3Api.network || this.web3Api.network.name !== tx.network) {
+          throw new NetworkError(tx.network);
+      }*/
+      if (this.web3Api.error) {
+          throw this.web3Api.error
+      }
+      return tx.sendDeposit(onTransactionHash);
   }
 }

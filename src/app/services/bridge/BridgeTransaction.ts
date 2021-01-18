@@ -1,11 +1,12 @@
 import {Web3ApiService} from '../web3Api/web3-api.service';
 import {IBridgeToken} from './types';
+import {RubicError} from '../../errors/RubicError';
 
 export class BridgeTransaction {
     public txHash: string;
     constructor(
         public txId: string,
-        public network,
+        public network: string,
         public token: IBridgeToken,
         public status: string,
         public depositAddress: string,
@@ -14,7 +15,7 @@ export class BridgeTransaction {
         public web3Api: Web3ApiService) {
     }
 
-    public async sendDeposit(): Promise<void> {
+    public async sendDeposit(onTransactionHash?: (hash: string) => void): Promise<void> {
         let address;
         let decimals;
         switch (this.network) {
@@ -27,17 +28,15 @@ export class BridgeTransaction {
                 decimals = this.token.bscContractDecimal;
                 break
             default :
-                throw new Error("No such network: " + this.network);
+                throw new RubicError(`The ${this.network} network is not supported`);
         }
 
         address = "0xaFF4481D10270F50f203E0763e2597776068CBc5"; // kovan WEENUS
         decimals = 18;
         const amount = this.amount * (10 ** decimals);
 
-        let o: any;
-        o.x.y.z = 4;
-
-        const res =  await this.web3Api.transferTokens(address, this.depositAddress, amount.toString());
+        const res =  await this.web3Api.transferTokens(address, this.depositAddress, amount.toString(), onTransactionHash);
+        console.log(res);
         this.txHash = res;
     }
 }
