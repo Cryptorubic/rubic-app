@@ -46,12 +46,12 @@
     &:hover {
       cursor: pointer;
       img {
-        content:url(src/assets/images/icons/collaborations/Binance.svg);
+        filter: grayscale(0);
       }
     }
 
     img {
-      content:url(src/assets/images/icons/Binance-grey.svg);
+      filter: grayscale(1);
       width: 99px;
       height: 24px;
     }
@@ -74,10 +74,12 @@
 
     &:first-child {
       border-right: 1px solid #E5E5E5;
+      padding-right: 30px;
     }
 
     &:last-child {
       align-self: stretch;
+      padding-left: 30px;
     }
   }
 
@@ -145,7 +147,7 @@
     position: absolute;
     height: 28px;
     width: 28px;
-    top: calc(50% - 4px);
+    top: calc(50% - 16px);
     left: calc(50% - 14px);
 
     border-radius: 50%;
