@@ -5,6 +5,8 @@ import {List} from 'immutable';
 import {IBridgeToken, BridgeNetwork} from '../../services/bridge/types';
 import {Web3ApiService} from '../../services/web3Api/web3-api.service';
 import {RubicError} from '../../errors/RubicError';
+import BigNumber from 'bignumber.js';
+import {window} from 'rxjs/operators';
 
 
 @Component({
@@ -20,13 +22,15 @@ export class BridgeFormComponent implements OnInit {
       name : BridgeNetwork.ETHEREUM,
       label: "Ethereum",
       img: "eth.png",
-      symbolName: 'ethSymbol'
+      symbolName: 'ethSymbol',
+      decimalsName: 'ethContractDecimal'
     },
     Binance: {
       name : BridgeNetwork.BINANCE_SMART_CHAIN,
       label: "Binance Smart Chain",
       img: "bnb.svg",
-      symbolName: 'bscSymbol'
+      symbolName: 'bscSymbol',
+      decimalsName: 'bscContractDecimal'
     }
   }
 
@@ -34,36 +38,36 @@ export class BridgeFormComponent implements OnInit {
   public toBlockchain = this.Blockchains.Binance;
   public tokens: List<IBridgeToken> = List([]);
   public selectedToken: IBridgeToken = null;
-  public _fromNumber: number;
-  private _fee: number;
-  public toNumber: number;
+  public _fromNumber: BigNumber;
+  private _fee: BigNumber;
+  public toNumber: BigNumber;
   public feeCalculationProgress: boolean = false;
   public buttonAnimation: boolean = false;
   public tradeInProgress: boolean = false;
   public error: RubicError;
   public walletAddress: string = this.bridgeService.walletAddress;
 
-  set fromNumber(fromNumber: number) {
+  set fromNumber(fromNumber: BigNumber) {
     this._fromNumber = fromNumber;
     this.setToNumber();
   }
 
-  get fromNumber(): number {
+  get fromNumber(): BigNumber {
     return this._fromNumber;
   }
 
-  set fee(fee) {
+  set fee(fee: BigNumber) {
     this._fee = fee;
     this.setToNumber();
   }
 
-  get fee(): number {
+  get fee(): BigNumber {
     return this._fee;
   }
 
   private setToNumber(): void {
     if (this.fromNumber != undefined && this.fee != undefined) {
-      this.toNumber = this.fromNumber - this.fee;
+      this.toNumber = this.fromNumber.minus(this.fee);
     } else {
       this.toNumber = undefined;
     }
@@ -92,14 +96,14 @@ export class BridgeFormComponent implements OnInit {
     this.feeCalculationProgress = true;
     this.bridgeService.getFee(this.selectedToken.symbol, this.toBlockchain.name)
       .subscribe(
-          fee => this.fee = fee
-      , err => alert(err)
+          fee => this.fee = new BigNumber(fee)
+      , err => console.log(err)
       , () =>  this.feeCalculationProgress = false)
   }
 
   public onTokensNumberChanges(tokensNumber: number | string) {
     if (tokensNumber) {
-      this.fromNumber = Number(tokensNumber);
+      this.fromNumber = new BigNumber(tokensNumber);
     }
   }
 

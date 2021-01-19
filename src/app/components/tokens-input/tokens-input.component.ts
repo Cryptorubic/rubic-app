@@ -15,6 +15,7 @@ export class TokensInputComponent implements OnInit {
   @Input() inputDisabled?: boolean = false;
   @Input() tokensList: List<IBridgeToken> = List();
   @Input() symbolNameProp: string = 'symbol';
+  @Input() decimalNameProp: string = 'symbol';
 
   @Output() numberChanges = new EventEmitter<number>();
   @Output() tokenChanges = new EventEmitter<IBridgeToken>();
@@ -27,9 +28,22 @@ export class TokensInputComponent implements OnInit {
   public isOpenList: boolean = false;
   private _selectedToken: IBridgeToken = null;
   public visibleTokensList: List<IBridgeToken> = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
+  public bigNumberDirective: { decimals: number, min: number } = {decimals: 0, min: 0};
+
+  public pow;
 
   set selectedToken(token) {
     this._selectedToken = token;
+
+    if (!token) {
+      this.amount = null;
+    } else {
+      this.bigNumberDirective = {
+        decimals: token[this.decimalNameProp],
+        min: 10 ** (-token[this.decimalNameProp])
+      }
+    }
+
     this.onTokenChanges(token);
   }
 
@@ -37,7 +51,9 @@ export class TokensInputComponent implements OnInit {
     return this._selectedToken;
   }
 
-  constructor() { }
+  constructor() {
+    this.pow = Math.pow;
+  }
 
   ngOnInit() { }
 
@@ -45,9 +61,21 @@ export class TokensInputComponent implements OnInit {
     if (changes.tokensList && changes.tokensList.currentValue.size) {
       this.visibleTokensList = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
     }
+
+    if (changes.decimalNameProp) {
+      this.bigNumberDirective = {
+        decimals: this.selectedToken[changes.decimalNameProp.currentValue],
+        min: 10 ** (-this.selectedToken[this.decimalNameProp])
+      }
+
+      if (changes.decimalNameProp.currentValue !== changes.decimalNameProp.previousValue) {
+        this.amount = null;
+      }
+    }
   }
 
   onNumberChanges(number) {
+    debugger
     this.numberChanges.emit(number);
   }
 

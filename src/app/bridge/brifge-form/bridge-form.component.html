@@ -40,6 +40,7 @@
               class="choose-token__wrapper"
               [tokensList]="tokens"
               [symbolNameProp]="fromBlockchain.symbolName"
+              [decimalNameProp]="fromBlockchain.decimalsName"
               (tokenChanges)="onSelectedTokenChanges($event)"
               (numberChanges)="onTokensNumberChanges($event)"
           >

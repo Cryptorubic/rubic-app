@@ -5,12 +5,9 @@
           name="amountField"
           autocomplete="off"
           placeholder="{{amountPlaceholder | translate}}"
-          [disabled]="inputDisabled"
+          [disabled]="!selectedToken"
           [required]="true"
-          [appBigNumber]="{
-            decimals: 8,
-            min: 0.00000000000000000000001
-          }"
+          [appBigNumber]="bigNumberDirective"
           [tabindex]="inputDisabled ? '-1' : ''"
           (ngModelChange)="onNumberChanges(amount)"
           [(ngModel)]="amount"
