@@ -62,10 +62,10 @@ export class TokensInputComponent implements OnInit {
       this.visibleTokensList = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
     }
 
-    if (changes.decimalNameProp) {
+    if (changes.decimalNameProp && this.selectedToken) {
       this.bigNumberDirective = {
         decimals: this.selectedToken[changes.decimalNameProp.currentValue],
-        min: 10 ** (-this.selectedToken[this.decimalNameProp])
+        min: 10 ** (-this.selectedToken[changes.decimalNameProp.currentValue])
       }
 
       if (changes.decimalNameProp.currentValue !== changes.decimalNameProp.previousValue) {
@@ -75,7 +75,6 @@ export class TokensInputComponent implements OnInit {
   }
 
   onNumberChanges(number) {
-    debugger
     this.numberChanges.emit(number);
   }
 

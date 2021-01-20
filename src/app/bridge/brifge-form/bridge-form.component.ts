@@ -41,10 +41,12 @@ export class BridgeFormComponent implements OnInit {
   public _fromNumber: BigNumber;
   private _fee: BigNumber;
   public toNumber: BigNumber;
+
   public feeCalculationProgress: boolean = false;
   public buttonAnimation: boolean = false;
   public tradeInProgress: boolean = false;
   public error: RubicError;
+  public tradeSuccessId: string;
   public walletAddress: string = this.bridgeService.walletAddress;
 
   set fromNumber(fromNumber: BigNumber) {
@@ -112,9 +114,8 @@ export class BridgeFormComponent implements OnInit {
     this.bridgeService
       .createTrade(this.selectedToken, this.fromBlockchain.name, this.toBlockchain.name, this.fromNumber, () => this.tradeInProgress = true)
       .subscribe(
-        res => {
-          debugger
-          console.log(res);
+          (res: string) => {
+          this.tradeSuccessId = res;
         },
         err => {
           if (err instanceof RubicError) {

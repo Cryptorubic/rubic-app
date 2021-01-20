@@ -71,7 +71,7 @@ export class Web3ApiService {
   public async transferTokens(
       contractAddress: string,
       toAddress: string,
-      amount,
+      amount: string,
       onTransactionHash?: (hash: string) => void,
       onTransactionReceipt?: (receipt: string) => void
   ): Promise<string> {
@@ -96,6 +96,39 @@ export class Web3ApiService {
             reject(err);
           }
         });
+    });
+  }
+
+  public async sendTransaction(
+      toAddress: string,
+      value: string,
+      onTransactionHash?: (hash: string) => void,
+      onTransactionReceipt?: (receipt: string) => void
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const onReceipt = (receipt: string) => {
+        if (onTransactionReceipt) {
+          onTransactionReceipt(receipt);
+        }
+        resolve(receipt);
+      }
+
+      this.web3.eth.sendTransaction({
+        from: this.address,
+        to: toAddress,
+        value
+      })
+      .on('transactionHash', onTransactionHash || (hash => {}))
+      .on('receipt', onReceipt)
+      .on('error', err => {
+        console.log('Tokens transfer error. ' + err)
+        // @ts-ignore
+        if (err.code === 4001) {
+          reject (new UserRejectError());
+        } else {
+          reject(err);
+        }
+      });
     });
   }
 }

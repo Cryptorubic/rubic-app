@@ -16,16 +16,16 @@ export class BridgeTransaction {
         public web3Api: Web3ApiService) {
     }
 
-    public async sendDeposit(onTransactionHash?: (hash: string) => void): Promise<void> {
-        let address;
+    public async sendDeposit(onTransactionHash?: (hash: string) => void): Promise<string> {
+        let tokenAddress;
         let decimals;
         switch (this.network) {
             case "ETH":
-                address = this.token.ethContractAddress;
+                tokenAddress = this.token.ethContractAddress;
                 decimals = this.token.ethContractDecimal;
                 break
             case "BSC":
-                address = this.token.bscContractAddress;
+                tokenAddress = this.token.bscContractAddress;
                 decimals = this.token.bscContractDecimal;
                 break
             default :
@@ -33,9 +33,16 @@ export class BridgeTransaction {
         }
 
         const realAmount = this.amount.multipliedBy(10 ** decimals);
+        let receipt: string;
 
-        const res =  await this.web3Api.transferTokens(address, this.depositAddress, realAmount.toString(), onTransactionHash);
-        console.log(res);
-        this.txHash = res;
+        if (tokenAddress) {
+            receipt = await this.web3Api.transferTokens(tokenAddress, this.depositAddress, realAmount.toString(), onTransactionHash);
+        } else {
+            receipt = await this.web3Api.sendTransaction(this.depositAddress, realAmount.toString(), onTransactionHash);
+        }
+
+        console.log(receipt);
+        console.log(this.txId);
+        return this.txId;
     }
 }

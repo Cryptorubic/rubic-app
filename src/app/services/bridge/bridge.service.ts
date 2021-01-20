@@ -9,6 +9,7 @@ import {BridgeTransaction} from './BridgeTransaction';
 import {NetworkError} from '../../errors/bridge/NetworkError';
 import {RubicError} from '../../errors/RubicError';
 import BigNumber from 'bignumber.js';
+import {OverQueryLimitError} from '../../errors/bridge/OverQueryLimitError';
 
 
 interface BinanceResponse {
@@ -84,7 +85,8 @@ export class BridgeService {
       toNetwork: string,
       amount: BigNumber,
       onTransactionHash?: (hash:string) => void
-  ): Observable<void> {
+  ): Observable<string> {
+
       const body = {
           amount: amount.toString(),
           fromNetwork,
@@ -100,10 +102,9 @@ export class BridgeService {
       return this.httpClient.post(this.apiUrl + `swaps/`, body).pipe(
           flatMap(
               (res: BinanceResponse) => {
-                  debugger;
                   if (res.code !== 20000) {
                       console.log("Bridge POST error, code " + res.code);
-                      return throwError(new RubicError("Bridge POST error, code " + res.code));
+                      return throwError(new OverQueryLimitError());
                   } else {
                       const data = res.data;
                       const tx = new BridgeTransaction(
@@ -126,10 +127,10 @@ export class BridgeService {
       )
   }
 
-  private sendDeposit(tx: BridgeTransaction, onTransactionHash?: (hash:string) => void): Promise<void>  {
-      if (!this.web3Api.network || this.web3Api.network.name !== tx.network) {
+  private sendDeposit(tx: BridgeTransaction, onTransactionHash?: (hash:string) => void): Promise<string>  {
+      /*if (!this.web3Api.network || this.web3Api.network.name !== tx.network) {
           throw new NetworkError(tx.network);
-      }
+      }*/
       if (this.web3Api.error) {
           throw this.web3Api.error
       }

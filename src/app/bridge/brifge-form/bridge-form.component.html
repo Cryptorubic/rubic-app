@@ -138,6 +138,8 @@
 
 <app-bridge-in-progress-modal *ngIf="tradeInProgress"></app-bridge-in-progress-modal>
 
+<app-bridge-success *ngIf="tradeSuccessId" [txId]="tradeSuccessId" (onCloseEvent)="tradeSuccessId = undefined"></app-bridge-success>
+
 <app-message-box *ngIf="error"
         title="Error"
         [description]="error.comment || 'Something went wrong, please try again later.'"
