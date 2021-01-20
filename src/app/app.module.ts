@@ -98,6 +98,7 @@ import { CollaborationsComponent } from './components/collaborations/collaborati
 import { ArrowComponent } from './components/arrow/arrow.component';
 import { BridgeInProgressModalComponent } from './bridge/bridge-in-progress-modal/bridge-in-progress-modal.component';
 import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.component';
+import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -285,6 +286,7 @@ export function appInitializerFactory(
     ArrowComponent,
     BridgeInProgressModalComponent,
     BridgeSuccessComponent,
+    BridgeTableComponent,
   ],
   entryComponents: [
     AuthComponent,
