@@ -47,7 +47,7 @@
           </app-tokens-input>
 
           <table class="choose-blockchains__info">
-            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber != undefined && fromNumber < selectedToken.minAmount}">
+            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber != undefined && fromNumber.lt(selectedToken.minAmount)}">
               <td>
                 {{selectedToken ? 'Minimum amount' : ''}}
               </td>
@@ -55,7 +55,7 @@
                 {{selectedToken ? selectedToken.minAmount : ''}}
               </td>
             </tr>
-            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber!=undefined && fromNumber > selectedToken.maxAmount}">
+            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber!=undefined && fromNumber.gt(selectedToken.maxAmount)}">
               <td>
                 {{selectedToken ? 'Maximum amount' : ''}}
               </td>
@@ -122,7 +122,7 @@
         [animate]="feeCalculationProgress || buttonAnimation"
         [disabled]="
             !selectedToken ||
-            !fromNumber || fromNumber < selectedToken.minAmount || fromNumber > selectedToken.maxAmount
+            !fromNumber || fromNumber.lt(selectedToken.minAmount) || fromNumber.gt(selectedToken.maxAmount)
           "
         (onClick)="onConfirm()"
         >

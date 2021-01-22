@@ -5,8 +5,10 @@ import BigNumber from 'bignumber.js';
 
 export class BridgeTransaction {
     public txHash: string;
+    public receipt: string;
+
     constructor(
-        public txId: string,
+        public binanceId: string,
         public network: string,
         public token: IBridgeToken,
         public status: string,
@@ -16,7 +18,7 @@ export class BridgeTransaction {
         public web3Api: Web3ApiService) {
     }
 
-    public async sendDeposit(onTransactionHash?: (hash: string) => void): Promise<string> {
+    public async sendDeposit(onTransactionHash?: (hash: string) => void): Promise<void> {
         let tokenAddress;
         let decimals;
         switch (this.network) {
@@ -33,16 +35,15 @@ export class BridgeTransaction {
         }
 
         const realAmount = this.amount.multipliedBy(10 ** decimals);
-        let receipt: string;
 
         if (tokenAddress) {
-            receipt = await this.web3Api.transferTokens(tokenAddress, this.depositAddress, realAmount.toString(), onTransactionHash);
+            this.receipt = await this.web3Api.transferTokens(tokenAddress, this.depositAddress, realAmount.toString(), onTransactionHash);
         } else {
-            receipt = await this.web3Api.sendTransaction(this.depositAddress, realAmount.toString(), onTransactionHash);
+            this.receipt = await this.web3Api.sendTransaction(this.depositAddress, realAmount.toString(), onTransactionHash);
         }
 
-        console.log(receipt);
-        console.log(this.txId);
-        return this.txId;
+        console.log(this.receipt);
+        console.log(this.binanceId);
+        return;
     }
 }

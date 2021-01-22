@@ -15,10 +15,23 @@ interface IBridgeToken {
     ethContractDecimal: string
 }
 
+interface ITableTransaction {
+    binanceId: string,
+    fromNetwork: string,
+    toNetwork: string,
+    actualFromAmount: number,
+    actualToAmount: number,
+    img: string,
+    ethSymbol: string,
+    bscSymbol: string,
+    creationTime: string,
+    status: string
+}
+
 enum BridgeNetwork {
     ETHEREUM = 'ETH',
     BINANCE_SMART_CHAIN = 'BSC',
     ETHEREUM_TESTNET = 'KVN'
 }
 
-export {BridgeNetwork, IBridgeToken};
+export {BridgeNetwork, IBridgeToken, ITableTransaction};

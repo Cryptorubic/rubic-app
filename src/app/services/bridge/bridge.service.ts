@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, from, observable, Observable, throwError} from 'rxjs';
+import {BehaviorSubject, from, Observable, throwError} from 'rxjs';
 import {List} from 'immutable';
 import {HttpClient} from '@angular/common/http';
-import {IBridgeToken, BridgeNetwork} from './types';
+import {IBridgeToken, ITableTransaction} from './types';
 import {map, catchError, flatMap} from 'rxjs/operators';
 import {Web3ApiService} from '../web3Api/web3-api.service';
 import {BridgeTransaction} from './BridgeTransaction';
@@ -10,6 +10,7 @@ import {NetworkError} from '../../errors/bridge/NetworkError';
 import {RubicError} from '../../errors/RubicError';
 import BigNumber from 'bignumber.js';
 import {OverQueryLimitError} from '../../errors/bridge/OverQueryLimitError';
+import {BackendApiService} from '../backend-api/backend-api.service';
 
 
 interface BinanceResponse {
@@ -24,12 +25,15 @@ interface BinanceResponse {
 export class BridgeService {
   private apiUrl = "https://api.binance.org/bridge/api/v2/"
   private _tokens: BehaviorSubject<List<IBridgeToken>> = new BehaviorSubject(List([]));
+    private _transactions: BehaviorSubject<List<ITableTransaction>> = new BehaviorSubject(List([]));
   public walletAddress: string;
 
   public readonly tokens: Observable<List<IBridgeToken>> = this._tokens.asObservable();
+  public readonly transactions: Observable<List<ITableTransaction>> = this._transactions.asObservable();
 
-  constructor(private httpClient: HttpClient, private web3Api: Web3ApiService) {
+  constructor(private httpClient: HttpClient, private web3Api: Web3ApiService, private backendApiService: BackendApiService) {
     this.getTokensList();
+   // this.updateTransactionsList();
     this.walletAddress = web3Api.address;
   }
 
@@ -127,13 +131,26 @@ export class BridgeService {
       )
   }
 
-  private sendDeposit(tx: BridgeTransaction, onTransactionHash?: (hash:string) => void): Promise<string>  {
-      /*if (!this.web3Api.network || this.web3Api.network.name !== tx.network) {
+  private async sendDeposit(tx: BridgeTransaction, onTransactionHash?: (hash:string) => void): Promise<string>  {
+      if (!this.web3Api.network || this.web3Api.network.name !== tx.network) {
           throw new NetworkError(tx.network);
-      }*/
+      }
       if (this.web3Api.error) {
           throw this.web3Api.error
       }
-      return tx.sendDeposit(onTransactionHash);
+      await tx.sendDeposit(onTransactionHash);
+
+      await this.sendTransactionInfo(tx);
+
+      return tx.binanceId;
+  }
+
+  public async updateTransactionsList(): Promise<void> {
+    const txArray = await this.backendApiService.getTransactions(this.web3Api.address);
+    this._transactions.next(List(txArray));
+  }
+
+  private async sendTransactionInfo(tx: BridgeTransaction): Promise<void> {
+      return this.backendApiService.postTransaction(tx.binanceId, tx.token.ethSymbol, tx.token.bscSymbol);
   }
 }
