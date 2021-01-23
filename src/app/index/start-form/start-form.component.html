@@ -302,7 +302,7 @@
               (requestData.tokens_info.base.token.address.toLowerCase() === requestData.tokens_info.quote.token.address.toLowerCase())
             "
           >
-            <span class="lds-ellipsis" *ngIf="getInstanceQuoteProgress || isCreatingContract">
+            <span class="lds-ellipsis" *ngIf="(getInstanceQuoteProgress || isCreatingContract) && instantTradesAvailable">
               <span class="lds-ellipsis-container">
                 <span></span><span></span><span></span><span></span>
               </span>

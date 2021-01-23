@@ -424,7 +424,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const quoteCoin = this.requestData.tokens_info.quote.token;
     const isBase = this.oneInchService.checkToken(baseCoin);
     const isQuote = this.oneInchService.checkToken(quoteCoin);
-    if (!isBase) {
+    /*if (!isBase) {
       this.requestData.tokens_info.base = {
         token: {},
       };
@@ -433,7 +433,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.requestData.tokens_info.quote = {
         token: {},
       };
-    }
+    }*/
     if (isBase && isQuote) {
       this.changedToken(true);
     }
