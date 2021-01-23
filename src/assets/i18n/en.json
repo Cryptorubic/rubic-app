@@ -62,8 +62,8 @@
   "There is no matching pair, please": "There is no matching pair, please",
   "create your own": "create your own",
 
-  "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue.":
-  "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue.",
+  "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, and instant swaps across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform.":
+  "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, and instant swaps across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform.",
 
   "P2P trade": "P2P trade",
   "Create your trade and choose your rate.": "Create your trade and choose your rate.",
@@ -110,8 +110,8 @@
   "FAQ": "FAQ",
   "FAQ_QUESTIONS": [
     {
-      "QUESTION": "What is Rubic p2p trades?",
-      "ANSWER": "Rubic is a multichain defi platform. Rubic organizes defi services to enable a project to create, manage and trade tokens decentralized in ONE PLACE. It helps users to make trades on their own terms, share and generate revenue."
+      "QUESTION": "What is Rubic?",
+      "ANSWER": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, and instant swaps across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform."
     }, {
       "QUESTION": "Who can use our service?",
       "ANSWER": "Anyone who wants to create and manage their tokens, or either owns a cryptocurrency and wishes to exchange it. KYC is not required."
@@ -120,40 +120,40 @@
       "ANSWER": "There are no limits."
     }, {
       "QUESTION": "How does it work?",
-      "ANSWER": "There are two options for trading:\n First, you create a trade on your own terms and wait till another part agrees with them and fills his share.\n Second, you choose the instant trade option and you agree with the terms of another part. Coming soon.\n\nYou can create your own token without any coding skills and trade it without having to be listed."
+      "ANSWER": "There are two options for trading:\n First, you create a trade on your own terms and wait till another part agrees with them and fills his share.\n Second, you choose the instant trade option and you agree with the terms of another part.\n\nYou can create your own token without any coding skills and trade it without having to be listed."
     }, {
       "QUESTION": "What cryptocurrencies are supported?",
-      "ANSWER": "At the moment, Rubic allows trading for Ethereum based tokens (ERC-20). Tron, Binance Chain, BTC blockchains will be released soon.  However to create and manage tokens we already provide multichain service supported by Ethereum, Tron, EOS, NEO, Waves, Binance Smart Chain Blockchains."
+      "ANSWER": "At the moment, Rubic allows trading for Ethereum-based tokens (ERC-20) and Binance Smart Chain tokens (BEP-20). More blockchains will be implemented soon (see Roadmap). However, to create and manage tokens we already provide multichain services supported by Ethereum, Tron, EOS, NEO and Binance Smart Chain."
     }, {
       "QUESTION": "Should I list my token before using your service?",
-      "ANSWER": "No, you can trade any tokens. However you can contact us and we will add your token in our list."
+      "ANSWER": "No, you can trade any tokens, by manually add their contract addresses. However, you can contact us and we will add your token to our list."
     }, {
       "QUESTION": "How to start?",
-      "ANSWER": "It is easy and fast. You only need MetaMask to start.\n Fill out in the fields of desired terms and click to Create Trade."
+      "ANSWER": "It is easy and fast. You only need the MetaMask crypto wallet (more wallets will be supported). Choose the blockchain in which you want to swap tokens, and choose to trade either with Instant Trades or Order Book."
     }, {
       "QUESTION": "How to create a trade?",
-      "ANSWER": "Step 1. Fill out the form, enter amount what you have and enter amount what you want to get\n Step 2. Add advanced options, such as closing date and time, minimum and maximum contribution, privacy, brokerage fee, lock liquidity until the trade completion\n Step 3. Check details of the trade\n Step 4. Click Create Trade\n Step 5. Use Metamask to confirm your trade\n Step 6. Contribute your part of the deal."
+      "ANSWER": "Order Book:\nStep 1: Select your blockchain in which you want to swap tokens and choose Order Book. \nStep 2:  Choose the tokens you want to exchange, at your desired rate\nStep 3: Choose advanced options, such as closing date and time, minimum and maximum contribution, privacy, brokerage fee, lock liquidity until the trade completion. \nStep 4: Check details of the trade. \nStep 5: Click Create Trade.\nStep 6: Use MetaMask to confirm your trade. \nStep 7. Contribute to your part of the deal.\nVideo tutorial (this method works for any blockchain): https://www.youtube.com/watch?v=9FCHTOT9Z9k\n\nInstant Trades:\nStep 1: Select Instant Trades and fill out the form, by choosing the tokens you want to exchange.\nStep 2: Enter the desired amount you want to exchange.\nStep 3: Now, the DEX aggregator, will automatically show you the best rates across multiple protocols.\nStep 4: Press Create trade button.\nStep 5: Use MetaMask to confirm your trade, and now wait for the transaction to be confirmed into the blockchain.\n\nVideo tutorial: https://youtu.be/kxg9GQvBU2A\n"
     }, {
       "QUESTION": "How much does it cost?",
-      "ANSWER": "Our service charges 0.3% from each trade that was created."
+      "ANSWER": "Our service charges 3% from each trade executed with Instant Trades, and none with Order Book. Gradually we will lower the fee."
     }, {
       "QUESTION": "How long does it take to complete a deal?",
-      "ANSWER": "The deal will be completed as soon as the other side completes its side."
+      "ANSWER": "For the Order Book trades, the deal will be completed as soon as the other side completes its side.\nFor the Instant Trades, the deal will be completed as soon as it gets confirmed on the blockchain."
     }, {
       "QUESTION": "How the privacy and security of the transaction are ensured?",
       "ANSWER": "The deal is secured by smart contracts verified by experienced developers and external audit."
     }, {
-      "QUESTION": "How many people can participate in one deal?",
+      "QUESTION": "How many people can participate in one deal (Order Book)?",
       "ANSWER": "Up to 10 people can participate on each side."
     }, {
       "QUESTION": "What will happen if the second part doesn’t complete a deal?",
       "ANSWER": "The deal will expire and you will receive all of your tokens back."
     }, {
       "QUESTION": "If I created a deal, however, I have changed my mind, can I cancel it?",
-      "ANSWER": "Yes, you can cancel your deal any time before the second part starts completing his side. If you cancel a deal you can get your tokens back."
+      "ANSWER": "For Order Book trades: Yes, you can cancel your deal any time before the part starts completing their side. If you cancel a deal, you'll get your tokens back.\nFor Instant Trades: Most of the time, the answer is NO. This action is actually an attempt to overwrite a currently pending transaction with a new one. Please check official external services info: https://info.etherscan.com/how-to-cancel-ethereum-pending-transactions/"
     }, {
       "QUESTION": "How to add Binance Smart Chain and Matic networks to MetaMask?",
-      "ANSWER": "Read the book for more details"
+      "ANSWER": "Please click here for more details."
     }
   ],
 
