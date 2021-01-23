@@ -30,9 +30,11 @@ export class BridgeTableComponent implements OnInit {
   public sort: {columnIndex: number, downDirection: boolean} = {columnIndex: 5, downDirection: true};
 
   constructor(private bridgeService: BridgeService) {
-    bridgeService.transactions.subscribe(transactions => this.transactions = transactions.sort(
-        (a, b) => BridgeTableComponent.sortByDate(a.creationTime, b.creationTime)
-    ));
+    bridgeService.transactions.subscribe(transactions => {
+      this.transactions = transactions;
+      this.sort = { columnIndex: null, downDirection: null};
+      this.onSortClick(5);
+    });
   }
 
   ngOnInit() {
