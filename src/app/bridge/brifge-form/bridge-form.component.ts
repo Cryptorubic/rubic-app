@@ -22,6 +22,7 @@ export class BridgeFormComponent implements OnInit {
       name : BridgeNetwork.ETHEREUM,
       label: "Ethereum",
       img: "eth.png",
+      addressBaseUrl: 'https://etherscan.io/address/',
       symbolName: 'ethSymbol',
       decimalsName: 'ethContractDecimal'
     },
@@ -29,6 +30,7 @@ export class BridgeFormComponent implements OnInit {
       name : BridgeNetwork.BINANCE_SMART_CHAIN,
       label: "Binance Smart Chain",
       img: "bnb.svg",
+      addressBaseUrl: 'https://bscscan.com/address/',
       symbolName: 'bscSymbol',
       decimalsName: 'bscContractDecimal'
     }
@@ -40,7 +42,7 @@ export class BridgeFormComponent implements OnInit {
   public selectedToken: IBridgeToken = null;
   public _fromNumber: BigNumber;
   private _fee: BigNumber;
-  public toNumber: BigNumber;
+  public _toNumber: BigNumber;
 
   public feeCalculationProgress: boolean = false;
   public buttonAnimation: boolean = false;
@@ -67,11 +69,26 @@ export class BridgeFormComponent implements OnInit {
     return this._fee;
   }
 
+  get toNumber(): string {
+    if (this._toNumber == undefined) {
+      return ""
+    }
+
+    let amount = this._toNumber.toString();
+
+    if (amount.includes('.')) {
+      const startIndex = amount.indexOf('.') + 1;
+      amount = amount.slice(0, startIndex + this.selectedToken[this.toBlockchain.decimalsName]);
+    }
+
+    return amount;
+  }
+
   private setToNumber(): void {
     if (this.fromNumber != undefined && this.fee != undefined) {
-      this.toNumber = this.fromNumber.minus(this.fee);
+      this._toNumber = this.fromNumber.minus(this.fee);
     } else {
-      this.toNumber = undefined;
+      this._toNumber = undefined;
     }
   }
 
@@ -89,6 +106,7 @@ export class BridgeFormComponent implements OnInit {
   }
 
   public onSelectedTokenChanges(token) {
+    debugger
     this.fee = undefined;
     this.selectedToken = token;
     if (!token) {

@@ -28,16 +28,16 @@ export class TokensInputComponent implements OnInit {
   public isOpenList: boolean = false;
   private _selectedToken: IBridgeToken = null;
   public visibleTokensList: List<IBridgeToken> = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
-  public bigNumberDirective: { decimals: number, min: number } = {decimals: 0, min: 0};
+  public bigNumberDirective: { decimals: number, min: number } = {decimals: 18, min: 0};
 
   public pow;
 
   set selectedToken(token) {
     this._selectedToken = token;
 
-    if (!token) {
-      this.amount = null;
-    } else {
+    if (token) {
+      this.cutAmount();
+
       this.bigNumberDirective = {
         decimals: token[this.decimalNameProp],
         min: 10 ** (-token[this.decimalNameProp])
@@ -49,6 +49,13 @@ export class TokensInputComponent implements OnInit {
 
   get selectedToken() {
     return this._selectedToken;
+  }
+
+  private cutAmount() {
+    if (this.amount.includes('.')) {
+      const startIndex = this.amount.indexOf('.') + 1;
+      this.amount = this.amount.slice(0, startIndex + this._selectedToken[this.decimalNameProp]);
+    }
   }
 
   constructor() {
@@ -69,7 +76,7 @@ export class TokensInputComponent implements OnInit {
       }
 
       if (changes.decimalNameProp.currentValue !== changes.decimalNameProp.previousValue) {
-        this.amount = null;
+        this.cutAmount();
       }
     }
   }

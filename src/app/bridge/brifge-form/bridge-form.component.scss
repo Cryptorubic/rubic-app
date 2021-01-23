@@ -108,11 +108,13 @@
   }
 
   &__address {
+    display: block;
     margin-bottom: 26px;
 
+    color: rgba(black, .5) !important;
+    text-decoration: none !important;
     font-size: 14px;
     line-height: 16px;
-    opacity: 0.5;
   }
 
   &__token {
@@ -145,10 +147,14 @@
   &__revert-button {
     border: none;
     position: absolute;
-    height: 28px;
-    width: 28px;
-    top: calc(50% - 16px);
-    left: calc(50% - 14px);
+    height: 38px;
+    width: 38px;
+    top: calc(50% - 19px);
+    left: calc(50% - 19px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     border-radius: 50%;
     background-color: white;
@@ -212,7 +218,6 @@
 
 .get-token-card {
   height: 42px;
-  width: 115px;
   padding: 10px 11px;
   display: flex;
   align-items: center;

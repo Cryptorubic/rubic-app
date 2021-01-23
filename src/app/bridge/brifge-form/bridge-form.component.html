@@ -28,9 +28,9 @@
           <span>{{fromBlockchain.label}}</span>
         </div>
 
-        <div class="choose-blockchains__address">
+        <a class="choose-blockchains__address" [href]="fromBlockchain.addressBaseUrl + walletAddress" target="_blank">
           {{walletAddress}}
-        </div>
+        </a>
 
         <div class="choose-blockchains__title">
           You have
@@ -84,24 +84,22 @@
           <span>{{toBlockchain.label}}</span>
         </div>
 
-        <div class="choose-blockchains__address">
+        <a class="choose-blockchains__address" [href]="toBlockchain.addressBaseUrl + walletAddress" target="_blank">
           {{walletAddress}}
-        </div>
+        </a>
 
         <div class="choose-blockchains__title">
           You get
         </div>
         <div class="choose-blockchains__get">
           <span>
-            {{this.toNumber != undefined ? this.toNumber : ""}}
+            {{this.toNumber}}
           </span>
-          <div class="get-token-card">
-            <ng-template [ngIf]="selectedToken">
-                <img class="get-token-card__icon" [src]="selectedToken.icon" alt="Token"/>
-              <span class="get-token-card__name">
-                {{ selectedToken[toBlockchain.symbolName] }}
-              </span>
-            </ng-template>
+          <div class="get-token-card" *ngIf="selectedToken">
+            <img class="get-token-card__icon" [src]="selectedToken.icon" alt="Token"/>
+            <span class="get-token-card__name">
+              {{ selectedToken[toBlockchain.symbolName] }}
+            </span>
           </div>
         </div>
 
