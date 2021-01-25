@@ -22,17 +22,29 @@ export class BridgeFormComponent implements OnInit {
       name : BridgeNetwork.ETHEREUM,
       label: "Ethereum",
       img: "eth.png",
+      baseUrl: 'https://etherscan.io',
       addressBaseUrl: 'https://etherscan.io/address/',
+      scanner: {
+        label: 'Etherscan',
+        baseUrl: 'https://etherscan.io/token/'
+      },
       symbolName: 'ethSymbol',
-      decimalsName: 'ethContractDecimal'
+      decimalsName: 'ethContractDecimal',
+      addressName: 'ethContractAddress'
     },
     Binance: {
       name : BridgeNetwork.BINANCE_SMART_CHAIN,
       label: "Binance Smart Chain",
       img: "bnb.svg",
+      baseUrl: 'https://bscscan.com',
       addressBaseUrl: 'https://bscscan.com/address/',
+      scanner: {
+        label: 'BSCscan',
+        baseUrl: 'https://bscscan.com/token/'
+      },
       symbolName: 'bscSymbol',
-      decimalsName: 'bscContractDecimal'
+      decimalsName: 'bscContractDecimal',
+      addressName: 'bscContractAddress'
     }
   }
 
@@ -106,7 +118,6 @@ export class BridgeFormComponent implements OnInit {
   }
 
   public onSelectedTokenChanges(token) {
-    debugger
     this.fee = undefined;
     this.selectedToken = token;
     if (!token) {

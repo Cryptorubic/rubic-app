@@ -46,6 +46,18 @@
           >
           </app-tokens-input>
 
+          <div class="choose-blockchains__scanner-link-box" *ngIf="selectedToken">
+            <a
+              [href]="selectedToken.symbol === 'ETH' && fromBlockchain.name === 'ETH'?
+                fromBlockchain.baseUrl :
+                fromBlockchain.scanner.baseUrl + selectedToken[fromBlockchain.addressName] "
+              target="_blank"
+            >
+              Check on {{fromBlockchain.scanner.label}}
+              <img src="assets/images/icons/link.svg" alt="link"/>
+            </a>
+          </div>
+
           <table class="choose-blockchains__info">
             <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber != undefined && fromNumber.lt(selectedToken.minAmount)}">
               <td>
@@ -101,6 +113,18 @@
               {{ selectedToken[toBlockchain.symbolName] }}
             </span>
           </div>
+        </div>
+
+        <div class="choose-blockchains__scanner-link-box" *ngIf="selectedToken">
+          <a
+            [href]="selectedToken.symbol === 'ETH' && toBlockchain.name === 'ETH'?
+              toBlockchain.baseUrl :
+              toBlockchain.scanner.baseUrl + selectedToken[toBlockchain.addressName] "
+            target="_blank"
+          >
+            Check on {{toBlockchain.scanner.label}}
+            <img src="assets/images/icons/link.svg" alt="link"/>
+          </a>
         </div>
 
         <div class="choose-blockchains__address-info">
