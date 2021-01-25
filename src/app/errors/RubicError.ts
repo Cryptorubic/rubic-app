@@ -1,5 +1,5 @@
 export class RubicError extends Error {
-    public comment: string = 'The service is temporarily down. Try later.';
+    public comment: string = 'Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.';
 
     constructor(message?) {
         super(message);

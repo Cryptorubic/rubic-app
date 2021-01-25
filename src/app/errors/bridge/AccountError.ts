@@ -1,5 +1,5 @@
 import {RubicError} from '../RubicError';
 
 export class AccountError extends RubicError {
-    public comment: string = 'To carry out the operation, you must provide the Metamask extension with access to your account.';
+    public comment: string = 'You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.';
 }
