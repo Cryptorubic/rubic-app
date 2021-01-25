@@ -76,11 +76,11 @@
     border-radius: 5px;
 
     &:first-child {
-      margin-right: 5px;
+      margin-right: 7px;
     }
 
     &:last-child {
-      margin-left: 5px;
+      margin-left: 7px;
       align-self: stretch;
     }
   }
@@ -149,10 +149,10 @@
   &__revert-button {
     border: none;
     position: absolute;
-    height: 38px;
-    width: 38px;
-    top: calc(50% - 19px);
-    left: calc(50% - 19px);
+    height: 42px;
+    width: 42px;
+    top: calc(50% - 21px);
+    left: calc(50% - 21px);
 
     display: flex;
     align-items: center;
@@ -165,6 +165,10 @@
     cursor: pointer;
 
     transition: transform 0.2s ease-in-out;
+
+    img {
+      width: 21px;
+    }
 
     &:hover {
       transform: scale(1.1);
@@ -232,8 +236,10 @@
   &__scanner-link-box {
     margin-top: 10px;
     text-align: right;
+    font-size: 14px;
 
     img {
+      height: 14px;
       margin-left: 3px;
     }
 
