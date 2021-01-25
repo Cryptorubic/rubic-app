@@ -178,15 +178,40 @@
   &__info {
     height: 42px;
     margin-top: 8px;
-    opacity: 0.5;
     font-size: 14px;
+
+    border-collapse: collapse;
+
+    td {
+      opacity: 0.5;
+    }
 
     td:first-child {
       width: 150px;
     }
 
     &_wrong {
-      color: red;
+      background-color: #FF9F9F;
+      color: white;
+
+      td {
+        opacity: 1;
+      }
+
+      td:first-child {
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+      }
+
+      td:last-child {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+      }
+
+      img {
+        float: right;
+        margin-right: 7px;
+      }
     }
   }
 
@@ -210,6 +235,10 @@
 
     img {
       margin-left: 3px;
+    }
+
+    &_hidden {
+      visibility: hidden;
     }
   }
 }

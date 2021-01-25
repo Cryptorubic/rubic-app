@@ -46,11 +46,13 @@
           >
           </app-tokens-input>
 
-          <div class="choose-blockchains__scanner-link-box" *ngIf="selectedToken">
+          <div class="choose-blockchains__scanner-link-box"
+               [ngClass]="{ 'choose-blockchains__scanner-link-box_hidden':  !selectedToken}">
             <a
-              [href]="selectedToken.symbol === 'ETH' && fromBlockchain.name === 'ETH'?
-                fromBlockchain.baseUrl :
-                fromBlockchain.scanner.baseUrl + selectedToken[fromBlockchain.addressName] "
+              [href]="!selectedToken ? '' :
+                selectedToken.symbol === 'ETH' && fromBlockchain.name === 'ETH'?
+                  fromBlockchain.baseUrl :
+                  fromBlockchain.scanner.baseUrl + selectedToken[fromBlockchain.addressName] "
               target="_blank"
             >
               Check on {{fromBlockchain.scanner.label}}
@@ -65,14 +67,20 @@
               </td>
               <td>
                 {{selectedToken ? selectedToken.minAmount : ''}}
+                <img
+                  *ngIf="selectedToken && fromNumber != undefined && fromNumber.lt(selectedToken.minAmount)"
+                  src="assets/images/icons/warning-red.svg" alt=""/>
               </td>
             </tr>
-            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber!=undefined && fromNumber.gt(selectedToken.maxAmount)}">
+            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber != undefined && fromNumber.gt(selectedToken.maxAmount)}">
               <td>
                 {{selectedToken ? 'Maximum amount' : ''}}
               </td>
               <td>
                 {{selectedToken ? selectedToken.maxAmount : ''}}
+                <img
+                  *ngIf="selectedToken && fromNumber != undefined && fromNumber.gt(selectedToken.maxAmount)"
+                  src="assets/images/icons/warning-red.svg" alt=""/>
               </td>
             </tr>
           </table>
@@ -115,11 +123,13 @@
           </div>
         </div>
 
-        <div class="choose-blockchains__scanner-link-box" *ngIf="selectedToken">
+        <div class="choose-blockchains__scanner-link-box"
+             [ngClass]="{ 'choose-blockchains__scanner-link-box_hidden':  !selectedToken}">
           <a
-            [href]="selectedToken.symbol === 'ETH' && toBlockchain.name === 'ETH'?
-              toBlockchain.baseUrl :
-              toBlockchain.scanner.baseUrl + selectedToken[toBlockchain.addressName] "
+            [href]="!selectedToken ? '' :
+                selectedToken.symbol === 'ETH' && toBlockchain.name === 'ETH'?
+                  toBlockchain.baseUrl :
+                  toBlockchain.scanner.baseUrl + selectedToken[toBlockchain.addressName] "
             target="_blank"
           >
             Check on {{toBlockchain.scanner.label}}

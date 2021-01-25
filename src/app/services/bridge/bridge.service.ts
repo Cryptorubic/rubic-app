@@ -91,6 +91,10 @@ export class BridgeService {
       onTransactionHash?: (hash:string) => void
   ): Observable<string> {
 
+      if (this.web3Api.error) {
+          return throwError(this.web3Api.error);
+      }
+
       const body = {
           amount: amount.toString(),
           fromNetwork,

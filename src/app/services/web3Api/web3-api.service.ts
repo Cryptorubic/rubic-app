@@ -49,22 +49,23 @@ export class Web3ApiService {
 
   constructor() {
     if (!this.ethereum) {
-      console.log("No Metamask installed");
+      console.error("No Metamask installed");
       this.error = new MetamaskError();
+      return
     }
 
     this.web3 = new Web3(window.ethereum)
     // @ts-ignore
-    if (this.web3.currentProvider.isMetaMask) {
+    if (this.web3.currentProvider && this.web3.currentProvider.isMetaMask) {
       window.ethereum.enable();
       this.metamaskAddress = this.ethereum.selectedAddress;
       if (!this.metamaskAddress) {
         this.error = new AccountError();
-        console.log("Web3 init error.  Selected account: " + this.metamaskAddress + ". Network: " + this.network);
+        console.error("Web3 init error.  Selected account: " + this.metamaskAddress + ". Network: " + this.network);
       }
     } else {
       this.error = new MetamaskError();
-      console.log("Selected other provider")
+      console.error("Selected other provider")
     }
   }
 
