@@ -26,7 +26,7 @@ export class BridgeTableComponent implements OnInit {
   }
 
   public transactions: List<ITableTransaction> = List([]);
-  public updateProcess: boolean = false;
+  public updateProcess: string = "";
   public sort: {columnIndex: number, downDirection: boolean} = {columnIndex: 5, downDirection: true};
 
   constructor(private bridgeService: BridgeService) {
@@ -42,8 +42,11 @@ export class BridgeTableComponent implements OnInit {
 
   public onUpdate() {
     if (!this.updateProcess) {
-      this.updateProcess = true;
-      this.bridgeService.updateTransactionsList().finally(() => this.updateProcess = false);
+      this.updateProcess = "progress";
+      this.bridgeService.updateTransactionsList().finally(() => {
+        this.updateProcess = 'stop';
+        setTimeout(() => this.updateProcess = '', 1200);
+      });
     }
   }
 
@@ -78,7 +81,7 @@ export class BridgeTableComponent implements OnInit {
           break;
         case 5:
           this.transactions = this.transactions.sort((a, b) =>
-              BridgeTableComponent.sortByDate(a.creationTime, b.creationTime));
+              BridgeTableComponent.sortByDate(a.updateTime, b.updateTime));
           break;
       }
 

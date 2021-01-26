@@ -154,6 +154,9 @@
     }, {
       "QUESTION": "How to add Binance Smart Chain and Matic networks to MetaMask?",
       "ANSWER": "Please click here for more details."
+    }, {
+      "QUESTION": "How to use cross-chain bridge?",
+      "ANSWER": "Step 1. Install MetaMask wallet (www.metamask.io) and connect it to Rubic.exchange. \n\nStep 2. Choose your exchange destination (from Ethereum to Binance or vice-versa). You can switch your destination by clicking on the swap arrows button. \n\nStep 3. Select the token that you want to exchange. You will be able to swap ERC20 with their corresponding BEP20 version and vice-versa (for example, swap USDT-ERC20 with USDT-BEP20).\n\nStep 4. Enter the number of tokens you want to swap (check below the minimum and maximum amount of tokens that you’re able to exchange). Proceed next if you are satisfied with the returning amount of tokens (this includes the Binance fee).\n\nStep 5. You can view tokens' contracts by clicking on 'Check on Etherscan/BSCscan'.\n\nStep 6. Click Create Swap, followed by MetaMask's trade confirmation. \n\nStep 7. Please wait until the transaction will be recorded in the blockchain. Once your transaction is accepted you will be notified. You can find the transaction details in the table. Please wait until the Binance will process it as well.\n\n"
     }
   ],
 

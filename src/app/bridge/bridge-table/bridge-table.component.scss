@@ -15,12 +15,20 @@
   &__spinner {
     cursor: pointer;
 
+    animation-iteration-count: 1;
+
     &_rotating {
       animation-name: rotate;
       animation-delay: 0.1s;
       animation-duration: 1s;
       animation-timing-function: linear;
       animation-iteration-count: infinite;
+
+      transition: 1s;
+    }
+
+    &_stop {
+      animation-iteration-count: 1;
     }
   }
 

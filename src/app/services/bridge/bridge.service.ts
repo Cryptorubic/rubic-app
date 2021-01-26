@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, from, Observable, throwError} from 'rxjs';
 import {List} from 'immutable';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {IBridgeToken, ITableTransaction} from './types';
 import {map, catchError, flatMap} from 'rxjs/operators';
 import {Web3ApiService} from '../web3Api/web3-api.service';
@@ -33,7 +33,7 @@ export class BridgeService {
 
   constructor(private httpClient: HttpClient, private web3Api: Web3ApiService, private backendApiService: BackendApiService) {
     this.getTokensList();
-   // this.updateTransactionsList();
+    this.updateTransactionsList();
     this.walletAddress = web3Api.address;
   }
 
@@ -95,6 +95,10 @@ export class BridgeService {
           return throwError(this.web3Api.error);
       }
 
+      if (!this.web3Api.network || this.web3Api.network.name !== fromNetwork) {
+          return throwError(new NetworkError(fromNetwork));
+      }
+
       const body = {
           amount: amount.toString(),
           fromNetwork,
@@ -136,9 +140,6 @@ export class BridgeService {
   }
 
   private async sendDeposit(tx: BridgeTransaction, onTransactionHash?: (hash:string) => void): Promise<string>  {
-      if (!this.web3Api.network || this.web3Api.network.name !== tx.network) {
-          throw new NetworkError(tx.network);
-      }
       if (this.web3Api.error) {
           throw this.web3Api.error
       }
@@ -150,8 +151,14 @@ export class BridgeService {
   }
 
   public async updateTransactionsList(): Promise<void> {
-    const txArray = await this.backendApiService.getTransactions(this.web3Api.address);
-    this._transactions.next(List(txArray));
+    const txArray = await this.backendApiService.getTransactions(this.web3Api.address.toLowerCase());
+    const dateFormatted = txArray.map(tx =>
+        ( {...tx, updateTime: tx.updateTime
+                .split(' ')
+                .map((part, index) => index === 0 ? part.split('-').reverse().join('-') : part)
+                .join(' ')
+        } ));
+    this._transactions.next(List(dateFormatted));
   }
 
   private async sendTransactionInfo(tx: BridgeTransaction): Promise<void> {

@@ -2,7 +2,10 @@
 
   <div class="bridge-results__header">
     <span>Your swaps</span>
-    <img [ngClass]="{ 'bridge-results__spinner_rotating': updateProcess }"
+    <img [ngClass]="{
+      'bridge-results__spinner_rotating': updateProcess === 'process' || updateProcess === 'stop',
+      'bridge-results__spinner_stop': updateProcess === 'stop'
+      }"
          (click)="onUpdate()"
          class="bridge-results__spinner" src="assets/images/icons/refresh.svg" alt="Update"/>
   </div>
@@ -44,7 +47,7 @@
            [ngClass]="{
             'bridge-table__status_green': tx.status === 'Completed',
             'bridge-table__status_red': tx.status === 'Rejected',
-            'bridge-table__status_yellow': tx.status === 'Progress'
+            'bridge-table__status_yellow': tx.status !== 'Completed' && tx.status !== 'Rejected'
             }">
             {{tx.status}}
           </span>
@@ -61,19 +64,19 @@
         </td>
         <td class="bridge-table__amount">
           <div>{{tx.actualFromAmount}}</div>
-          <img [src]="tx.img" alt=""/>
+          <img [src]="tx.image_link" alt=""/>
           <span>{{tx[Blockchains[tx.fromNetwork].symbolPropName]}}</span>
         </td>
         <td class="bridge-table__amount">
           <div>{{tx.actualToAmount}}</div>
-          <img [src]="tx.img" alt=""/>
+          <img [src]="tx.image_link" alt=""/>
           <span>{{tx[Blockchains[tx.toNetwork].symbolPropName]}}</span>
         </td>
         <td class="bridge-table__date">
           <div>
-            {{tx.creationTime.split(' ')[0]}}
+            {{tx.updateTime.split(' ')[0]}}
             <br />
-            {{tx.creationTime.split(' ')[1]}}
+            {{tx.updateTime.split(' ')[1]}}
           </div>
         </td>
       </tr>

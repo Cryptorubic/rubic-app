@@ -21,10 +21,10 @@ interface ITableTransaction {
     toNetwork: string,
     actualFromAmount: number,
     actualToAmount: number,
-    img: string,
+    image_link: string,
     ethSymbol: string,
     bscSymbol: string,
-    creationTime: string,
+    updateTime: string,
     status: string
 }
 
