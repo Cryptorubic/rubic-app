@@ -226,7 +226,7 @@ export class OneInchService {
             disableEstimate: false,
             ethValue: ethValue,
             referrerAddress: '0x7367409E0c12b2B7cAa5c990E11A75E0D86580fc',
-            fee: 3,
+            fee: 0,
             walletAddress: params.fromAddress,
             slippage: slippageValue,
             parts: 20,
