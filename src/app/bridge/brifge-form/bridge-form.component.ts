@@ -12,8 +12,7 @@ import {window} from 'rxjs/operators';
 @Component({
   selector: 'app-bridge-form',
   templateUrl: './bridge-form.component.html',
-  styleUrls: ['./bridge-form.component.scss'],
-  providers: [BridgeService, HttpClient, Web3ApiService]
+  styleUrls: ['./bridge-form.component.scss']
 })
 export class BridgeFormComponent implements OnInit {
 

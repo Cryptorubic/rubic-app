@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://devswaps.mywish.io/api/v1/'
+  apiBaseUrl: 'https://devswaps.mywish.io/api/v1/',
+  botUrl: 'http://206.189.97.79/transaction'
 };
 
 /*

@@ -90,7 +90,6 @@ export class BridgeService {
       amount: BigNumber,
       onTransactionHash?: (hash:string) => void
   ): Observable<string> {
-
       if (this.web3Api.error) {
           return throwError(this.web3Api.error);
       }
@@ -143,6 +142,9 @@ export class BridgeService {
       if (this.web3Api.error) {
           throw this.web3Api.error
       }
+
+     // this.backendApiService.notifyBot(tx, this.web3Api.address);
+
       await tx.sendDeposit(onTransactionHash);
 
       await this.sendTransactionInfo(tx);

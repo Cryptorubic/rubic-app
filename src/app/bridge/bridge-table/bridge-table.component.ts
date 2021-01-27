@@ -7,8 +7,7 @@ import date from 'date-and-time';
 @Component({
   selector: 'app-bridge-table',
   templateUrl: './bridge-table.component.html',
-  styleUrls: ['./bridge-table.component.scss'],
-  providers: [BridgeService]
+  styleUrls: ['./bridge-table.component.scss']
 })
 export class BridgeTableComponent implements OnInit {
 
@@ -31,6 +30,7 @@ export class BridgeTableComponent implements OnInit {
 
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
+      console.log("update table");
       this.transactions = transactions;
       this.sort = { columnIndex: null, downDirection: null};
       this.onSortClick(5);

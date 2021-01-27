@@ -29,7 +29,7 @@ interface ITableTransaction {
     walletToAddress: string,
     walletDepositAddress: string,
     code: number,
-    "image_link": "https://devswaps.mywish.io/media/token_images/4943_LCAlHo2.png"
+    image_link: string
 }
 
 enum BridgeNetwork {
