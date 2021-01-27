@@ -54,7 +54,7 @@
 
     &-blocks {
       display: grid;
-      grid-template-columns: repeat(3, minmax(200px, 335px));
+      grid-template-columns: repeat(auto-fit, minmax(355px, 1fr));
       grid-gap: 15px;
 
       @include b(700) {
@@ -90,9 +90,9 @@
 
     &-blocks {
       display: grid;
-      grid-template-columns: repeat(3, minmax(200px, 335px));
-      grid-gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(355px, 1fr));
       margin-top: 20px;
+      grid-gap: 16px;
 
       @include b(700) {
         grid-template-columns: 1fr;
@@ -126,16 +126,10 @@
     }
 
     &-image {
-      background-image: url('src/assets/images/about/rubic-contract.svg');
-      background-position: center;
-      background-size: contain;
-      background-repeat: no-repeat;
       width: 100%;
-      padding-bottom: 36%;
       margin-top: 20px;
 
       @include b(500) {
-        background-image: url('src/assets/images/about/rubic-contract-mob.svg');
         padding-bottom: 0;
         min-height: 400px;
       }
@@ -165,9 +159,9 @@
         background-color: #4aa956;
         height: 2px;
         position: absolute;
-        width: 105%;
+        width: 100vw;
         bottom: -69.5px;
-        left: -30px;
+        left: calc((100% - 100vw) / 2);
 
         @include b(1100) {
           height: 100%;
@@ -183,8 +177,8 @@
         border-radius: 5px;
         padding: 25px 20px;
         position: relative;
-        width: 165px;
-        height: 165px;
+        width: 223px;
+        height: 326px;
 
         @include b(1100) {
           max-width: 100%;

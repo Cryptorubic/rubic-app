@@ -121,7 +121,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     24: 'matic'
   };
 
-  public instantTradesAvailable: boolean;
+  public instantTradesAvailable: boolean = true;
   public instanceTrade: boolean = true;
   private instanceTradeParams: any = {};
 
@@ -278,7 +278,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         this.instanceTradeParams = result;
         this.requestData.tokens_info.quote.amount =
         Number(result.toTokenAmount) ?
-            new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).multipliedBy(0.97).toString(10) : '';
+            new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10) : '';
         // this.QuoteTokenCustom.emit();
         this.getInstanceQuoteProgress = false;
       });
@@ -424,7 +424,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const quoteCoin = this.requestData.tokens_info.quote.token;
     const isBase = this.oneInchService.checkToken(baseCoin);
     const isQuote = this.oneInchService.checkToken(quoteCoin);
-    if (!isBase) {
+    /*if (!isBase) {
       this.requestData.tokens_info.base = {
         token: {},
       };
@@ -433,7 +433,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.requestData.tokens_info.quote = {
         token: {},
       };
-    }
+    }*/
     if (isBase && isQuote) {
       this.changedToken(true);
     }
@@ -712,7 +712,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
       if (this.instanceTrade && this.instantTradesAvailable) {
         this.createInstanceTrade();
-      } else {
+      } else if(!this.instanceTrade) {
         this.buildAndCreate();
       }
     }, (err) => {
