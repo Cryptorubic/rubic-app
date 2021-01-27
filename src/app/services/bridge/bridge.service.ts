@@ -147,18 +147,14 @@ export class BridgeService {
 
       await this.sendTransactionInfo(tx);
 
+      await this.updateTransactionsList();
+
       return tx.binanceId;
   }
 
   public async updateTransactionsList(): Promise<void> {
     const txArray = await this.backendApiService.getTransactions(this.web3Api.address.toLowerCase());
-    const dateFormatted = txArray.map(tx =>
-        ( {...tx, updateTime: tx.updateTime
-                .split(' ')
-                .map((part, index) => index === 0 ? part.split('-').reverse().join('-') : part)
-                .join(' ')
-        } ));
-    this._transactions.next(List(dateFormatted));
+    this._transactions.next(List(txArray));
   }
 
   private async sendTransactionInfo(tx: BridgeTransaction): Promise<void> {

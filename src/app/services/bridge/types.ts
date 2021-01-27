@@ -16,16 +16,20 @@ interface IBridgeToken {
 }
 
 interface ITableTransaction {
-    binanceId: string,
     fromNetwork: string,
     toNetwork: string,
     actualFromAmount: number,
     actualToAmount: number,
-    image_link: string,
     ethSymbol: string,
     bscSymbol: string,
     updateTime: string,
-    status: string
+    status: string,
+    transaction_id: string,
+    walletFromAddress: string,
+    walletToAddress: string,
+    walletDepositAddress: string,
+    code: number,
+    "image_link": "https://devswaps.mywish.io/media/token_images/4943_LCAlHo2.png"
 }
 
 enum BridgeNetwork {

@@ -45,9 +45,9 @@
         <td>
           <span class="bridge-table__status"
            [ngClass]="{
-            'bridge-table__status_green': tx.status === 'Completed',
-            'bridge-table__status_red': tx.status === 'Rejected',
-            'bridge-table__status_yellow': tx.status !== 'Completed' && tx.status !== 'Rejected'
+            'bridge-table__status_green': tx.code === 2,
+            'bridge-table__status_yellow': tx.code === 1,
+            'bridge-table__status_red': tx.code === 0
             }">
             {{tx.status}}
           </span>
