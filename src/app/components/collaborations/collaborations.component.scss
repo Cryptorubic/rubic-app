@@ -1,0 +1,51 @@
+@import '../../../scss/elements/vars';
+
+.collaborations {
+  &__title {
+    margin-bottom: 8px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 25px;
+    color: #110931;
+
+  }
+
+  &__description {
+    margin-bottom: 50px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    line-height: 40px;
+    color: #000000;
+  }
+
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__item {
+    width: 295px;
+    margin-bottom: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    transition: transform 0.1s linear;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}

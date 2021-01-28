@@ -88,7 +88,17 @@ import { TeamCardComponent } from './team/team-card/team-card.component';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
+import { NgToggleModule } from 'ng-toggle-button';
+import { BridgeFormComponent} from './bridge/brifge-form/bridge-form.component';
+import { PrimaryButtonComponent } from './components/primary-button/primary-button.component';
+import { TokensInputComponent } from './components/tokens-input/tokens-input.component';
+import { BridgeComponent} from './bridge/bridge.component';
+import { CollaborationsComponent } from './components/collaborations/collaborations.component';
+
 import { ArrowComponent } from './components/arrow/arrow.component';
+import { BridgeInProgressModalComponent } from './bridge/bridge-in-progress-modal/bridge-in-progress-modal.component';
+import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.component';
+import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -268,7 +278,15 @@ export function appInitializerFactory(
     MaintenanceComponent,
     ModalComponent,
     TradeInProgressModalComponent,
+    BridgeFormComponent,
+    PrimaryButtonComponent,
+    TokensInputComponent,
+    BridgeComponent,
+    CollaborationsComponent,
     ArrowComponent,
+    BridgeInProgressModalComponent,
+    BridgeSuccessComponent,
+    BridgeTableComponent,
   ],
   entryComponents: [
     AuthComponent,
@@ -302,6 +320,7 @@ export function appInitializerFactory(
     NgxMaterialTimepickerModule,
     ClipboardModule,
     OwlModule,
+    NgToggleModule
   ],
   providers: [
     CookieService,

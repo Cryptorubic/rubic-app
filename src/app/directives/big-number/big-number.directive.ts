@@ -1,11 +1,11 @@
-import {Directive, Injector, Input, OnInit, Pipe, PipeTransform} from '@angular/core';
+import {Directive, Injector, Input, OnChanges, OnInit, Pipe, PipeTransform, SimpleChanges} from '@angular/core';
 import {NgControl} from '@angular/forms';
 import BigNumber from 'bignumber.js';
 
 @Directive({
   selector: '[appBigNumber]'
 })
-export class BigNumberDirective implements OnInit {
+export class BigNumberDirective implements OnInit, OnChanges {
 
   private control: NgControl;
   private latestValue;
@@ -125,6 +125,13 @@ export class BigNumberDirective implements OnInit {
       }
 
     });
+  }
+
+  public ngOnChanges(changes: SimpleChanges) {
+    if (changes.appBigNumber) {
+      const decimals = changes.appBigNumber.currentValue.decimals;
+      this.currentDecimals = !isNaN(decimals) ? parseInt(decimals, 10) : 0;
+    }
   }
 
   private maskValue(value) {
