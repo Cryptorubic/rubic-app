@@ -65,9 +65,15 @@ export class FaqComponent implements OnInit {
         isActive: false,
         href: "/assets/book.pdf"
       },
-        {
-            isActive: false,
-        },
+      {
+          isActive: false,
+      },
+      {
+        isActive: false,
+      },
+      {
+        isActive: false,
+      }
     ];
   }
 }
