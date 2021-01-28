@@ -280,7 +280,7 @@
 
   &__icon {
     margin-right: 10px;
-    max-width: 17px;
+    max-width: 28px;
   }
 
   &__name {
@@ -297,12 +297,6 @@
 @include b(1150) {
   .cross-chain-form {
     flex-direction: column;
-    //justify-content: center;
-    //grid-gap: 20px;
-
-    &__selection-section {
-      //flex: initial;
-    }
 
     &__confirm-section {
       top: 0;
@@ -319,30 +313,12 @@
       padding: 0;
     }
   }
-
-  .choose-blockchains {
-    //flex-direction: column;
-
-    &__box {
-      //width: 100%;
-      //max-width: 449px;
-
-      &:first-child {
-        //margin-right: 0;
-        //margin-bottom: 7px;
-      }
-
-      &:last-child {
-        //align-self: initial;
-        //margin-left: 0;
-        //margin-top: 7px;
-      }
-    }
-  }
 }
 
 @include b(860) {
   .cross-chain-form {
+    padding: 20px 7px;
+
     flex-direction: column;
     align-items: center;
     grid-gap: 0;
@@ -360,6 +336,7 @@
     &__box {
       width: 100%;
       max-width: 449px;
+      padding: 20px 13px;
 
       &:first-child {
         margin-right: 0;
@@ -372,6 +349,18 @@
         margin-top: 7px;
       }
     }
+
+    &__address {
+      margin-bottom: 10px;
+    }
+
+    &__address-info {
+      margin-top: 7px;
+    }
+  }
+
+  &__scanner-link-box {
+    margin-top: 7px;
   }
 }
 
@@ -386,6 +375,12 @@
       order: 0;
       width: 100%;
       margin-bottom: 13px;
+    }
+  }
+
+  .choose-blockchains {
+    &__address {
+      font-size: 13px;
     }
   }
 }
