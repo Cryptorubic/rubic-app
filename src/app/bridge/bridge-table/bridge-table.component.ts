@@ -25,12 +25,14 @@ export class BridgeTableComponent implements OnInit {
   }
 
   public transactions: List<ITableTransaction> = List([]);
+  public tableInitLoading: boolean = true;
   public updateProcess: string = "";
   public sort: {columnIndex: number, downDirection: boolean} = {columnIndex: 5, downDirection: true};
 
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
-      console.log("update table");
+
+      this.tableInitLoading = false;
       this.transactions = transactions;
       this.sort = { columnIndex: null, downDirection: null};
       this.onSortClick(5);
