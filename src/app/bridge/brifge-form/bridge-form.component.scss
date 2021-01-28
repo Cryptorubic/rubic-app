@@ -1,3 +1,9 @@
+@import '../../../scss/_mixins';
+
+.index-start-form__wrapper {
+  clear: both;
+}
+
 .cross-chain-form {
 
   &, * {
@@ -285,5 +291,101 @@
     font-weight: 400;
     line-height: 40px;
     color: rgb(67, 71, 108);
+  }
+}
+
+@include b(1150) {
+  .cross-chain-form {
+    flex-direction: column;
+    //justify-content: center;
+    //grid-gap: 20px;
+
+    &__selection-section {
+      //flex: initial;
+    }
+
+    &__confirm-section {
+      top: 0;
+      align-self: flex-end;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 47.5%;
+      margin-top: 17px;
+    }
+
+    &__confirm-wrapper {
+      order: 2;
+      width: 50%;
+      padding: 0;
+    }
+  }
+
+  .choose-blockchains {
+    //flex-direction: column;
+
+    &__box {
+      //width: 100%;
+      //max-width: 449px;
+
+      &:first-child {
+        //margin-right: 0;
+        //margin-bottom: 7px;
+      }
+
+      &:last-child {
+        //align-self: initial;
+        //margin-left: 0;
+        //margin-top: 7px;
+      }
+    }
+  }
+}
+
+@include b(860) {
+  .cross-chain-form {
+    flex-direction: column;
+    align-items: center;
+    grid-gap: 0;
+
+    &__confirm-section {
+      align-self: initial;
+      width: 100%;
+      max-width: 391px;
+    }
+  }
+
+  .choose-blockchains {
+    flex-direction: column;
+
+    &__box {
+      width: 100%;
+      max-width: 449px;
+
+      &:first-child {
+        margin-right: 0;
+        margin-bottom: 7px;
+      }
+
+      &:last-child {
+        align-self: initial;
+        margin-left: 0;
+        margin-top: 7px;
+      }
+    }
+  }
+}
+
+@include b(550) {
+  .cross-chain-form {
+    &__confirm-section {
+      flex-direction: column;
+      width: 245px;
+    }
+
+    &__confirm-wrapper {
+      order: 0;
+      width: 100%;
+      margin-bottom: 13px;
+    }
   }
 }
