@@ -11,6 +11,7 @@ import {RubicError} from '../../errors/RubicError';
 import BigNumber from 'bignumber.js';
 import {OverQueryLimitError} from '../../errors/bridge/OverQueryLimitError';
 import {BackendApiService} from '../backend-api/backend-api.service';
+import {on} from 'cluster';
 
 
 interface BinanceResponse {
@@ -139,17 +140,17 @@ export class BridgeService {
   }
 
   private async sendDeposit(tx: BridgeTransaction, onTransactionHash?: (hash:string) => void): Promise<string>  {
-      if (this.web3Api.error) {
-          throw this.web3Api.error
+      const onTxHash = async (hash: string): Promise<void> => {
+          if (onTransactionHash && typeof onTransactionHash === 'function'){
+              onTransactionHash(hash);
+          }
+
+          await this.sendTransactionInfo(tx);
+          await this.updateTransactionsList();
+          // this.backendApiService.notifyBot(tx, this.web3Api.address);
       }
 
-     // this.backendApiService.notifyBot(tx, this.web3Api.address);
-
-      await tx.sendDeposit(onTransactionHash);
-
-      await this.sendTransactionInfo(tx);
-
-      await this.updateTransactionsList();
+      await tx.sendDeposit(onTxHash);
 
       return tx.binanceId;
   }
