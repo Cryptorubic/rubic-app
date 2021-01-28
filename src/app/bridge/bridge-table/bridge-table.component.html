@@ -1,0 +1,90 @@
+<div class="bridge-results">
+
+  <div class="bridge-results__header">
+    <span>Your cross-chain swaps</span>
+    <img [ngClass]="{
+      'bridge-results__spinner_rotating': updateProcess === 'process' || updateProcess === 'stop',
+      'bridge-results__spinner_stop': updateProcess === 'stop'
+      }"
+         (click)="onUpdate()"
+         class="bridge-results__spinner" src="assets/images/icons/refresh.svg" alt="Update"/>
+  </div>
+
+  <table class="bridge-table" *ngIf="transactions.size">
+    <thead>
+      <tr>
+        <th>
+          <span>Status</span>
+          <img [src]="'assets/images/bridge/' + getArrow(0)" alt="Sort" (click)="onSortClick(0)"/>
+        </th>
+        <th>
+          <span>From</span>
+          <img [src]="'assets/images/bridge/' + getArrow(1)" alt="Sort" (click)="onSortClick(1)"/>
+        </th>
+        <th>
+          <span>To</span>
+          <img [src]="'assets/images/bridge/' + getArrow(2)" alt="Sort" (click)="onSortClick(2)"/>
+        </th>
+        <th>
+          <span>Spent</span>
+          <img [src]="'assets/images/bridge/' + getArrow(3)" alt="Sort" (click)="onSortClick(3)"/>
+        </th>
+        <th>
+          <span>Expected</span>
+          <img [src]="'assets/images/bridge/' + getArrow(4)" alt="Sort" (click)="onSortClick(4)"/>
+        </th>
+        <th>
+          <span>Date</span>
+          <img [src]="'assets/images/bridge/' + getArrow(5)" alt="Sort" (click)="onSortClick(5)"/>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr *ngFor="let tx of transactions">
+        <td>
+          <span class="bridge-table__status"
+           [ngClass]="{
+            'bridge-table__status_green': tx.code === 2,
+            'bridge-table__status_yellow': tx.code === 1,
+            'bridge-table__status_red': tx.code === 0
+            }">
+            {{tx.status}}
+          </span>
+        </td>
+        <td class="bridge-table__network">
+          <img
+            [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img" alt=""/>
+          <span>{{Blockchains[tx.fromNetwork].label}}</span>
+        </td>
+        <td class="bridge-table__network">
+          <img
+                  [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img" alt=""/>
+          <span>{{Blockchains[tx.toNetwork].label}}</span>
+        </td>
+        <td class="bridge-table__amount">
+          <div>{{tx.actualFromAmount}}</div>
+          <img [src]="tx.image_link" alt=""/>
+          <span>{{tx[Blockchains[tx.fromNetwork].symbolPropName]}}</span>
+        </td>
+        <td class="bridge-table__amount">
+          <div>{{tx.actualToAmount}}</div>
+          <img [src]="tx.image_link" alt=""/>
+          <span>{{tx[Blockchains[tx.toNetwork].symbolPropName]}}</span>
+        </td>
+        <td class="bridge-table__date">
+          <div>
+            {{tx.updateTime.split(' ')[0]}}
+            <br />
+            {{tx.updateTime.split(' ')[1]}}
+          </div>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <div *ngIf="!transactions.size" class="bridge-results__no-swaps">
+    You have no cross-chain swaps yet
+  </div>
+</div>

@@ -17,6 +17,7 @@ export class FaqComponent implements OnInit {
   public questions: Array<IQuestion>;
 
   public ngOnInit(): void {
+      // TODO: убрать этот ужас, сделать нормальную инициализацию
     this.questions = [
       {
         isActive: false,
@@ -64,6 +65,15 @@ export class FaqComponent implements OnInit {
         isActive: false,
         href: "/assets/book.pdf"
       },
+      {
+          isActive: false,
+      },
+      {
+        isActive: false,
+      },
+      {
+        isActive: false,
+      }
     ];
   }
 }

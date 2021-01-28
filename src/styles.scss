@@ -6,6 +6,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+*:focus {
+  outline: none;
+}
+
 @import 'scss/grid';
 @import 'scss/elements/dialog';
 @import 'scss/elements/form-elements';
@@ -155,6 +159,13 @@ html {
 
 .nowrap {
   white-space: nowrap;
+}
+
+.noscroll {
+  position:fixed;
+  left: 0;
+  right: 0;
+  overflow:hidden;
 }
 
 .pre {
@@ -461,7 +472,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   border: none;
   border-left: 5px solid;
   outline: none;
-  // font-family: 'Poppins', sans-serif;
   font-family: inherit;
   font-size: 18px;
   color: #fff;

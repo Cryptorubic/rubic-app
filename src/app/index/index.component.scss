@@ -508,3 +508,59 @@
     display: none;
   }
 }
+
+.toggle-menu-container {
+  position: relative;
+  min-height: 30px;
+
+  &__arrow-button {
+    height: 17px;
+    width: 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: -2px;
+
+    background-color: white;
+    border-radius: 50%;
+
+    transition: transform 0.2s linear;
+  }
+
+  &__toggle {
+    float: right;
+
+    &:hover {
+      .toggle-menu-container__arrow-button {
+        transform: scale(1.2);
+      }
+    }
+  }
+
+  &__toggle-text {
+    margin-right: 10px;
+
+    color: $main-green;
+    font-size: 14px;
+    line-height: 16px;
+  }
+}
+
+.mode-toggle-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  span {
+    padding-right: 10px;
+
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+
+  &__toggle {
+    cursor: pointer;
+  }
+}

@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  apiBaseUrl: 'https://devswaps.mywish.io/api/v1/',
+  botUrl: 'http://206.189.97.79/transaction'
 };
 
 /*

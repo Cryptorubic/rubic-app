@@ -25,6 +25,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   public selectedBlockchain: string;
 
+  public crossChainMode = false;
+
   collaborations = collaborations;
 
   constructor(
@@ -80,6 +82,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   public changeBlockchain(blockchain) {
     this.selectedBlockchain = blockchain;
+  }
+
+  public changeMode() {
+    this.crossChainMode = !this.crossChainMode;
   }
 
   ngOnInit() {
