@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, from, Observable, throwError} from 'rxjs';
 import {List} from 'immutable';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {IBridgeToken, ITableTransaction} from './types';
 import {map, catchError, flatMap} from 'rxjs/operators';
 import {Web3ApiService} from '../web3Api/web3-api.service';
@@ -139,17 +139,17 @@ export class BridgeService {
   }
 
   private async sendDeposit(tx: BridgeTransaction, onTransactionHash?: (hash:string) => void): Promise<string>  {
-      if (this.web3Api.error) {
-          throw this.web3Api.error
+      const onTxHash = async (hash: string): Promise<void> => {
+          if (onTransactionHash && typeof onTransactionHash === 'function'){
+              onTransactionHash(hash);
+          }
+
+          await this.sendTransactionInfo(tx);
+          await this.updateTransactionsList();
+          this.backendApiService.notifyBot(tx, this.web3Api.address);
       }
 
-     // this.backendApiService.notifyBot(tx, this.web3Api.address);
-
-      await tx.sendDeposit(onTransactionHash);
-
-      await this.sendTransactionInfo(tx);
-
-      await this.updateTransactionsList();
+      await tx.sendDeposit(onTxHash);
 
       return tx.binanceId;
   }

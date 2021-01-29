@@ -7,6 +7,7 @@ import {Web3ApiService} from '../../services/web3Api/web3-api.service';
 import {RubicError} from '../../errors/RubicError';
 import BigNumber from 'bignumber.js';
 import {window} from 'rxjs/operators';
+import {InputToken} from '../../components/tokens-input/types';
 
 
 @Component({
@@ -47,10 +48,12 @@ export class BridgeFormComponent implements OnInit {
     }
   }
 
-  public fromBlockchain = this.Blockchains.Ethereum;
+  public _fromBlockchain = this.Blockchains.Ethereum;
   public toBlockchain = this.Blockchains.Binance;
-  public tokens: List<IBridgeToken> = List([]);
-  public selectedToken: IBridgeToken = null;
+  private _tokens: List<IBridgeToken> = List([]);
+  public dropDownTokens: List<InputToken> = List([]);
+  public _selectedToken: IBridgeToken = null;
+  public selectedTokenAsInputToken: InputToken = null;
   public _fromNumber: BigNumber;
   private _fee: BigNumber;
   public _toNumber: BigNumber;
@@ -61,6 +64,46 @@ export class BridgeFormComponent implements OnInit {
   public error: RubicError;
   public tradeSuccessId: string;
   public walletAddress: string = this.bridgeService.walletAddress;
+
+  get tokens(): List<IBridgeToken> {
+    return this._tokens;
+  }
+
+  set tokens(tokens: List<IBridgeToken>) {
+    this._tokens = tokens;
+    this.updateDropDownTokens();
+  }
+
+  private updateDropDownTokens(): void {
+    this.dropDownTokens = this._tokens.map(token =>
+      ({
+        address: token[this.fromBlockchain.addressName],
+        name: token.name,
+        symbol: token[this.fromBlockchain.symbolName],
+        image: token.icon,
+        decimals: token[this.fromBlockchain.decimalsName]
+      })
+    )
+  }
+
+  get selectedToken(): IBridgeToken {
+    return this._selectedToken;
+  }
+
+  set selectedToken(value: IBridgeToken) {
+    this._selectedToken = value;
+    this.selectedTokenAsInputToken = this.dropDownTokens.find(token =>
+        token.address === this.selectedToken[this.fromBlockchain.addressName]);
+  }
+
+  get fromBlockchain() {
+    return this._fromBlockchain;
+  }
+
+  set fromBlockchain(blockchain) {
+    this._fromBlockchain = blockchain;
+    this.updateDropDownTokens();
+  }
 
   set fromNumber(fromNumber: BigNumber) {
     this._fromNumber = fromNumber;
@@ -112,11 +155,11 @@ export class BridgeFormComponent implements OnInit {
   public revertBlockchains() {
     [this.fromBlockchain, this.toBlockchain] = [this.toBlockchain, this.fromBlockchain];
     if (this.selectedToken) {
-      this.onSelectedTokenChanges(this.selectedToken);
+      this.changeSelectedToken(this.selectedToken);
     }
   }
 
-  public onSelectedTokenChanges(token) {
+  private changeSelectedToken(token: IBridgeToken) {
     this.fee = undefined;
     this.selectedToken = token;
     if (!token) {
@@ -125,10 +168,20 @@ export class BridgeFormComponent implements OnInit {
 
     this.feeCalculationProgress = true;
     this.bridgeService.getFee(this.selectedToken.symbol, this.toBlockchain.name)
-      .subscribe(
-          fee => this.fee = new BigNumber(fee)
-      , err => console.log(err)
-      , () =>  this.feeCalculationProgress = false)
+        .subscribe(
+            fee => this.fee = new BigNumber(fee)
+            , err => console.log(err)
+            , () =>  this.feeCalculationProgress = false)
+  }
+
+  public onSelectedTokenChanges(inputToken: InputToken | null) {
+    if (inputToken) {
+      const bridgeToken: IBridgeToken = this.tokens.find(token =>
+          token[this.fromBlockchain.addressName] === inputToken.address)
+      this.changeSelectedToken(bridgeToken);
+    } else {
+      this.changeSelectedToken(null);
+    }
   }
 
   public onTokensNumberChanges(tokensNumber: number | string) {

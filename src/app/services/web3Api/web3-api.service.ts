@@ -87,7 +87,7 @@ export class Web3ApiService {
       }
 
       contract.methods.transfer(toAddress, amount).send({from: this.address})
-        .on('transactionHash', onTransactionHash || (hash => {}))
+        .on('transactionHash', onTransactionHash || (() => {}))
         .on('receipt', onReceipt)
         .on('error', err => {
           console.log('Tokens transfer error. ' + err)
@@ -97,6 +97,27 @@ export class Web3ApiService {
             reject(err);
           }
         });
+    });
+  }
+
+  public async transferTokensWithOnHashResolve(
+      contractAddress: string,
+      toAddress: string,
+      amount: string
+  ): Promise<string> {
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], contractAddress);
+
+    return new Promise((resolve, reject) => {
+      contract.methods.transfer(toAddress, amount).send({from: this.address})
+          .on('transactionHash', hash => resolve(hash))
+          .on('error', err => {
+            console.log('Tokens transfer error. ' + err)
+            if (err.code === 4001) {
+              reject (new UserRejectError());
+            } else {
+              reject(err);
+            }
+          });
     });
   }
 
@@ -119,7 +140,7 @@ export class Web3ApiService {
         to: toAddress,
         value
       })
-      .on('transactionHash', onTransactionHash || (hash => {}))
+      .on('transactionHash', onTransactionHash || (() => {}))
       .on('receipt', onReceipt)
       .on('error', err => {
         console.log('Tokens transfer error. ' + err)
@@ -130,6 +151,29 @@ export class Web3ApiService {
           reject(err);
         }
       });
+    });
+  }
+
+  public async sendTransactionWithOnHashResolve(
+      toAddress: string,
+      value: string
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.web3.eth.sendTransaction({
+        from: this.address,
+        to: toAddress,
+        value
+      })
+          .on('transactionHash', hash => resolve(hash))
+          .on('error', err => {
+            console.log('Tokens transfer error. ' + err)
+            // @ts-ignore
+            if (err.code === 4001) {
+              reject (new UserRejectError());
+            } else {
+              reject(err);
+            }
+          });
     });
   }
 }
