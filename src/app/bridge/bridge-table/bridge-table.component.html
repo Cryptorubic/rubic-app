@@ -105,7 +105,11 @@
 
         <div class="bridge-list-items">
           <div class="bridge-list-items-item" *ngFor="let tx of transactions">
-            <div class="bridge-list-items-item__header" (click)="tx.opened = !tx.opened">
+            <div
+              class="bridge-list-items-item__header"
+              [ngClass]="{ 'active': tx.opened }"
+              (click)="tx.opened = !tx.opened"
+            >
               <span class="data__status"
                     [ngClass]="{
                 'data__status_green': tx.code === 2,

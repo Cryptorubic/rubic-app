@@ -143,6 +143,11 @@
         height: 56px;
         border-radius: 5px;
         background: white;
+        transition: border-radius 0.7s ease;
+
+        &.active {
+          border-radius: 5px 5px 0 0;
+        }
 
         &-option {
           display: grid;
