@@ -27,8 +27,6 @@ export class BridgeTableComponent implements OnInit {
   public transactions: List<ITableTransaction> = List([]);
   public tableInitLoading = true;
   public updateProcess = '';
-  public sort: {columnIndex: number, downDirection: boolean} = {columnIndex: 5, downDirection: true};
-  public updateProcess = '';
   public sort = { fieldName: 'date', downDirection: true }; // Date is default to sort by
   public selectedOption = 'Date'; // Capitalized sort.fieldName
 
