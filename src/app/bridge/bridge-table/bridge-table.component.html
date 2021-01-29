@@ -236,6 +236,13 @@
           </div>
         </div>
       </div>
+
+      <app-white-button
+        class="bridge-results__show-more-button"
+        *ngIf="isShowMoreActive"
+        [text]="'Show more'"
+        (click)="addNextTransactionPage()"
+      ></app-white-button>
     </div>
 
     <div *ngIf="!transactions.size" class="bridge-results__no-swaps">

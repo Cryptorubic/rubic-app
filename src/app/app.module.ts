@@ -101,6 +101,7 @@ import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.c
 import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { DropdownSelectComponent } from './components/dropdown-select/dropdown-select.component';
+import { WhiteButtonComponent } from './components/white-button/white-button.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -291,6 +292,7 @@ export function appInitializerFactory(
     BridgeTableComponent,
     SpinnerComponent,
     DropdownSelectComponent,
+    WhiteButtonComponent,
   ],
   entryComponents: [
     AuthComponent,
