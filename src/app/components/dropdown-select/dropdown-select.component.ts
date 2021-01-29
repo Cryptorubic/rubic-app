@@ -10,7 +10,9 @@ export class DropdownSelectComponent implements OnInit {
   @Input() private defaultOption = 0;
   @Input() public isSortable = false;
   @Input() public downDirection: boolean;
-  /* To make selected option and options' list the same width */
+  /**
+   * To make selected option and options' list the same width
+   */
   @Input() public minOptionWidth: number; // in pixels
 
   @Output() public optionToSortBy: EventEmitter<any> = new EventEmitter<any>();
