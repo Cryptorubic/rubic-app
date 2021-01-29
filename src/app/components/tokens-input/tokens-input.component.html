@@ -23,9 +23,9 @@
     <span *ngIf="!selectedToken">{{'Choose Token' | translate}}</span>
     <span *ngIf="selectedToken" class="ac_res_preview">
       <span class="ac_res_preview_icon">
-        <img [src]="selectedToken.icon || './assets/images/icons/coins/empty.svg'" alt="Token symbol"/>
+        <img [src]="selectedToken.image || './assets/images/icons/coins/empty.svg'" alt="Token symbol"/>
       </span>
-      <span class="ac_res_preview_symbol">{{selectedToken[symbolNameProp]}}</span>
+      <span class="ac_res_preview_symbol">{{selectedToken.symbol}}</span>
     </span>
   </button>
   <input
@@ -60,10 +60,10 @@
       >
         <span class="ac_res_list_item-content">
           <span class="ac_res_list_item-content_ico">
-            <img [src]="item.icon" alt="Token"/>
+            <img [src]="item.image" alt="Token"/>
           </span>
           <span class="ac_res_list_item-content_name">
-            {{ item.name }} ({{ item[symbolNameProp] }})
+            {{ item.name }} ({{ item.symbol }})
           </span>
         </span>
       </li>
