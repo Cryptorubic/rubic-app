@@ -31,7 +31,7 @@ export class BridgeTableComponent implements OnInit {
    */
   public transactions: List<ITableTransaction>;
   /**
-   * All transactions are sort by date first.
+   * All transactions are sorted by date first.
    */
   private allTransactions: List<ITableTransaction> = List([]);
   private transactionPages = 1;
