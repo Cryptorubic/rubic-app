@@ -100,6 +100,7 @@ import { BridgeInProgressModalComponent } from './bridge/bridge-in-progress-moda
 import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.component';
 import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { DropdownSelectComponent } from './components/dropdown-select/dropdown-select.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -289,6 +290,7 @@ export function appInitializerFactory(
     BridgeSuccessComponent,
     BridgeTableComponent,
     SpinnerComponent,
+    DropdownSelectComponent,
   ],
   entryComponents: [
     AuthComponent,

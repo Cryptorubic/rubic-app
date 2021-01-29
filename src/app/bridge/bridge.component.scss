@@ -1,13 +1,17 @@
 @import "src/scss/elements/vars";
+@import '../../scss/_mixins';
 
 .bridge-container {
   max-width: 1180px;
   margin: 0 auto;
   height: 100%;
-  padding-top: 130px;
+  padding: 130px 30px 0;
 }
 
 .bridge-form  {
+  display: flex;
+  justify-content: space-between;
+
   margin-bottom: 30px;
 
   font-weight: bold;
@@ -31,8 +35,6 @@
   }
 
   &__toggle {
-    float: right;
-
     &:hover {
       .bridge-form__arrow-button {
         transform: scale(1.2);
@@ -55,4 +57,24 @@
   color: #000000;
   margin-top: 0;
   margin-bottom: 62px;
+}
+
+@include b(800) {
+  .bridge-container {
+    padding-top: 115px;
+  }
+}
+
+@include b(600) {
+  .bridge-container {
+    padding: 115px 10px 0;
+  }
+
+  .bridge-form {
+    flex-direction: column;
+  }
+
+  .disclaimer-text {
+    margin-bottom: 30px;
+  }
 }

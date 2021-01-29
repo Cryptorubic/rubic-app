@@ -1,3 +1,5 @@
+@import '../../../scss/_mixins';
+
 .form-field_input__ac_res {
   position: absolute;
   right: 0;
@@ -97,3 +99,8 @@
   }
 }
 
+@include b(550) {
+  .all-input {
+    padding-left: 10px !important;
+  }
+}
