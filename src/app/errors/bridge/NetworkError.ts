@@ -5,6 +5,6 @@ export class NetworkError extends RubicError {
         super(message);
     }
     public comment: string = `
-        Please select the network from which you plan to make the transfer in the metamask extension. 
-        For this exchange, you need to select a ${this.networkToChoose} Mainnet network.`;
+        Please select from MetaMask the Network from which you plan to make the transfer. 
+        For this swap, you need to select a ${this.networkToChoose} Mainnet network.`;
 }
