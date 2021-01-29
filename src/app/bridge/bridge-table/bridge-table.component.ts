@@ -38,8 +38,7 @@ export class BridgeTableComponent implements OnInit {
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
       this.tableInitLoading = false;
-      this.transactions = transactions;
-      this.transactions.map((tx) => tx.opened = false);
+      this.transactions = transactions.map(tx => ({...tx, open: false}));
       this.sort = { fieldName: null, downDirection: null};
       this.onSortClick('date');
     });
