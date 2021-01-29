@@ -368,7 +368,8 @@
   .cross-chain-form {
     &__confirm-section {
       flex-direction: column;
-      width: 245px;
+      width: 100%;
+      max-width: 409px;
     }
 
     &__confirm-wrapper {
