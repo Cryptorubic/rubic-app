@@ -103,11 +103,11 @@
           (optionToSortBy)="onSortClick($event)"
         ></app-dropdown-select>
 
-        <div class="bridge-list-items">
-          <div class="bridge-list-items-item" *ngFor="let tx of transactions">
+        <div class="bridge-list__items">
+          <div class="bridge-list__accordion accordion" *ngFor="let tx of transactions">
             <div
-              class="bridge-list-items-item__header"
-              [ngClass]="{ 'active': tx.opened }"
+              class="accordion__header header"
+              [ngClass]="{ 'accordion__header_active': tx.opened }"
               (click)="tx.opened = !tx.opened"
             >
               <span class="data__status"
@@ -120,11 +120,11 @@
               </span>
 
               <div
-                class="bridge-list-items-item__header-option"
-                [ngClass]="{ 'inactive': tx.opened }"
+                class="header__option option"
+                [ngClass]="{ 'header__option_inactive': tx.opened }"
               >
                 <span
-                  class="bridge-list-items-item__header-option-name"
+                  class="option__name"
                   *ngIf="selectedOption !== 'Status' && selectedOption !== 'Date'"
                 >
                   {{selectedOption}}
@@ -163,21 +163,21 @@
                 </div>
               </div>
 
-              <div class="bridge-list-items-item__header-plus" *ngIf="!tx.opened">
+              <div class="header__plus" *ngIf="!tx.opened">
                 +
               </div>
 
-              <div class="bridge-list-items-item__header-minus" *ngIf="tx.opened">
+              <div class="header__minus" *ngIf="tx.opened">
                 -
               </div>
             </div>
 
             <div
-              class="bridge-list-items-item__content"
-              [ngClass]="{ 'inactive': !tx.opened }"
+              class="accordion__content content"
+              [ngClass]="{ 'accordion__content_inactive': !tx.opened }"
             >
-              <div class="bridge-list-items-item__content-item">
-                <div class="bridge-list-items-item__content-item-name">
+              <div class="content__item">
+                <div class="content__item-name">
                   From
                 </div>
                 <div class="data__network">
@@ -187,8 +187,8 @@
                 </div>
               </div>
 
-              <div class="bridge-list-items-item__content-item">
-                <div class="bridge-list-items-item__content-item-name">
+              <div class="content__item">
+                <div class="content__item-name">
                   To
                 </div>
                 <div class="data__network">
@@ -198,8 +198,8 @@
                 </div>
               </div>
 
-              <div class="bridge-list-items-item__content-item">
-                <div class="bridge-list-items-item__content-item-name">
+              <div class="content__item">
+                <div class="content__item-name">
                   Spent
                 </div>
                 <div class="data__amount">
@@ -209,8 +209,8 @@
                 </div>
               </div>
 
-              <div class="bridge-list-items-item__content-item">
-                <div class="bridge-list-items-item__content-item-name">
+              <div class="content__item">
+                <div class="content__item-name">
                   Expected
                 </div>
                 <div class="data__amount">
@@ -220,8 +220,8 @@
                 </div>
               </div>
 
-              <div class="bridge-list-items-item__content-item">
-                <div class="bridge-list-items-item__content-item-name">
+              <div class="content__item">
+                <div class="content__item-name">
                   Date
                 </div>
                 <div class="data__date">
