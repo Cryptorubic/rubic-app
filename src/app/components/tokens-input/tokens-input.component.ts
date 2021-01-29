@@ -45,7 +45,7 @@ export class TokensInputComponent implements OnInit {
       this.visibleTokensList = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
     }
 
-    if (changes.selectedToken) {
+    if (changes.selectedToken && changes.selectedToken.currentValue) {
       this.cutAmount();
 
       this.bigNumberDirective = {
