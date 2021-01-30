@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit {
   public logoutProgress: boolean;
   @Output() changedSocialState = new EventEmitter<string>();
 
-  public isMobile: boolean = window.innerWidth <= 800;
+  public isMobile: boolean = window.innerWidth <= 1024;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId,
@@ -99,7 +99,7 @@ export class HeaderComponent implements OnInit {
 
     document
       .getElementsByTagName('body')[0]
-      ['addEventListener']('mousedown', (event) => {
+      ['addEventListener']('mousedown', () => {
         this.openedMenu = false;
         this.userMenuOpened = false;
       });
