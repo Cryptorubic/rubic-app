@@ -1,10 +1,7 @@
-// tslint:disable: max-line-length
-
 import { Component, OnInit } from '@angular/core';
 
 export interface IQuestion {
   isActive: boolean,
-  href? : string
 }
 
 @Component({
@@ -14,66 +11,12 @@ export interface IQuestion {
 })
 export class FaqComponent implements OnInit {
   constructor() {}
-  public questions: Array<IQuestion>;
+  public questions: Array<IQuestion> = [];
+  private questionsNumber = 18;
 
   public ngOnInit(): void {
-      // TODO: убрать этот ужас, сделать нормальную инициализацию
-    this.questions = [
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-        href: "/assets/book.pdf"
-      },
-      {
-          isActive: false,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: false,
-      }
-    ];
+    for (let i = 0; i < this.questionsNumber; i++) {
+      this.questions.push({ isActive: false })
+    }
   }
 }
