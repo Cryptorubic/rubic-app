@@ -30,7 +30,6 @@ interface ITableTransaction {
     walletDepositAddress: string;
     code: number;
     image_link: string;
-    opened?: boolean;
 }
 
 enum BridgeNetwork {

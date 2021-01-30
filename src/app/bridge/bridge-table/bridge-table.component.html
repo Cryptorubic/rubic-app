@@ -10,7 +10,7 @@
          class="bridge-results__spinner" src="assets/images/icons/refresh.svg" alt="Update"/>
   </div>
 
-  <ng-template [ngIf]="!tableInitLoading">
+  <ng-template [ngIf]="transactions">
     <div class="bridge-results__container" *ngIf="transactions.size">
       <!-- Table is for desktop's representation -->
       <table class="bridge-table" *ngIf="isDesktop">
@@ -243,5 +243,5 @@
     </div>
   </ng-template>
 
-  <app-spinner *ngIf="tableInitLoading" class="bridge-results__init-animation"></app-spinner>
+  <app-spinner *ngIf="!transactions" class="bridge-results__init-animation"></app-spinner>
 </div>

@@ -49,7 +49,8 @@ export class BackendApiService {
       walletAddress,
       amount: tx.amount,
       network: tx.network,
-      symbol: tx.token.symbol
+      symbol: tx.token.symbol,
+      ethSymbol: tx.token.ethSymbol
     }
 
     return new Promise<void>((resolve, reject) => {

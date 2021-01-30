@@ -4,6 +4,10 @@ import {BridgeNetwork, ITableTransaction} from '../../services/bridge/types';
 import {List} from 'immutable';
 import date from 'date-and-time';
 
+interface ITableTransactionWithState extends ITableTransaction {
+  opened: boolean;
+}
+
 @Component({
   selector: 'app-bridge-table',
   templateUrl: './bridge-table.component.html',
@@ -24,8 +28,7 @@ export class BridgeTableComponent implements OnInit {
     }
   };
 
-  public transactions: List<ITableTransaction> = List([]);
-  public tableInitLoading = true;
+  public transactions: List<ITableTransactionWithState>;
   public updateProcess = '';
   public sort = { fieldName: 'date', downDirection: true }; // Date is default to sort by
   public selectedOption = 'Date'; // Capitalized sort.fieldName
@@ -37,8 +40,7 @@ export class BridgeTableComponent implements OnInit {
 
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
-      this.tableInitLoading = false;
-      this.transactions = transactions.map(tx => ({...tx, open: false}));
+      this.transactions = transactions.map(tx => ({...tx, opened: false}));
       this.sort = { fieldName: null, downDirection: null};
       this.onSortClick('date');
     });
