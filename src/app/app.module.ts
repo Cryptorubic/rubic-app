@@ -15,7 +15,7 @@ import {
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './index/header/header.component';
+import { HeaderComponent } from './header/header.component';
 import {StartFormComponent, StartFormResolver} from './index/start-form/start-form.component';
 import { IndexComponent } from './index/index.component';
 import {
@@ -74,9 +74,6 @@ import { Observable } from 'rxjs';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { ChangePasswordComponent } from './common/change-password/change-password.component';
-import { MainPageComponent } from './main-page/main-page.component';
-import { HeaderMainPageComponent } from './main-page/header/header.component';
-import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { AboutageComponent } from './about/about.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import {TokenSaleComponent} from "./token-sale/token-sale.component";
@@ -101,6 +98,9 @@ import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.c
 import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { DropdownSelectComponent } from './components/dropdown-select/dropdown-select.component';
+import { MainPageComponent } from './pages/main-page/main-page.component';
+import { InstantTradesComponent } from './pages/main-page/instant-trades/instant-trades.component';
+import { TradesFormComponent } from './pages/main-page/trades-form/trades-form.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -243,9 +243,6 @@ export function appInitializerFactory(
     StartFormComponent,
     AboutageComponent,
     IndexComponent,
-    FooterMainPageComponent,
-    HeaderMainPageComponent,
-    MainPageComponent,
     EthAddressDirective,
     EthTokenValidatorDirective,
     RegistrationComponent,
@@ -291,6 +288,9 @@ export function appInitializerFactory(
     BridgeTableComponent,
     SpinnerComponent,
     DropdownSelectComponent,
+    MainPageComponent,
+    InstantTradesComponent,
+    TradesFormComponent,
   ],
   entryComponents: [
     AuthComponent,

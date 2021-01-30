@@ -2,7 +2,7 @@
   <div class="app-content-block">
     <a routerLink="/trades">
       <span class="logo">
-        <img src="assets/images/rubic-logo.svg?_=2" alt="Rubic" />
+        <img src="../../assets/images/rubic-logo.svg?_=2" alt="Rubic" />
       </span>
     </a>
 
@@ -64,7 +64,7 @@
             class="header-menu_list_item header-menu_list_item--login btn btn-green btn-min btn-normal-weight btn-auto"
             *ngIf="currentUser.is_ghost"
           >
-            <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
+            <img class="arrow" src="../../assets/images/buttons/arrow_w.svg" />
             <span (click)="MetamaskAuth()" class="header-link"
               >{{'Login by MetaMask' | translate}}</span
             >

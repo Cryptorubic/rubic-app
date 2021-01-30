@@ -9,9 +9,9 @@ import {
   EventEmitter,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { UserService } from '../../services/user/user.service';
-import { Web3Service } from '../../services/web3/web3.service';
-import { UserInterface } from '../../services/user/user.interface';
+import { UserService } from '../services/user/user.service';
+import { Web3Service } from '../services/web3/web3.service';
+import { UserInterface } from '../services/user/user.interface';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { NavigationStart, Router } from '@angular/router';
 import { CookieService } from "ngx-cookie-service";

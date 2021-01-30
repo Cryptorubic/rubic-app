@@ -15,6 +15,7 @@ import {Observable} from "rxjs";
 import {StartFormResolver} from "./index/start-form/start-form.component";
 import {TeamComponent} from './team/team.component';
 import {BridgeComponent} from './bridge/bridge.component';
+import {MainPageComponent} from './pages/main-page/main-page.component';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -57,6 +58,10 @@ const routes: Routes = [
     resolve: {
       checkedTokens: StartFormResolver
     }
+  },
+  {
+    path: 'main',
+    component: MainPageComponent,
   },
   {
     path: 'bridge',
