@@ -336,10 +336,11 @@
 
   .choose-blockchains {
     flex-direction: column;
+    width: 100%;
+    max-width: 419px;
 
     &__box {
       width: 100%;
-      max-width: 449px;
       padding: 20px 13px;
 
       &:first-child {
