@@ -99,6 +99,9 @@ import { ArrowComponent } from './components/arrow/arrow.component';
 import { BridgeInProgressModalComponent } from './bridge/bridge-in-progress-modal/bridge-in-progress-modal.component';
 import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.component';
 import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import { DropdownSelectComponent } from './components/dropdown-select/dropdown-select.component';
+import { WhiteButtonComponent } from './components/white-button/white-button.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -287,6 +290,9 @@ export function appInitializerFactory(
     BridgeInProgressModalComponent,
     BridgeSuccessComponent,
     BridgeTableComponent,
+    SpinnerComponent,
+    DropdownSelectComponent,
+    WhiteButtonComponent,
   ],
   entryComponents: [
     AuthComponent,

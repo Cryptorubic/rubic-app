@@ -1,3 +1,9 @@
+@import '../../../scss/_mixins';
+
+.index-start-form__wrapper {
+  clear: both;
+}
+
 .cross-chain-form {
 
   &, * {
@@ -278,7 +284,7 @@
 
   &__icon {
     margin-right: 10px;
-    max-width: 17px;
+    max-width: 28px;
   }
 
   &__name {
@@ -289,5 +295,98 @@
     font-weight: 400;
     line-height: 40px;
     color: rgb(67, 71, 108);
+  }
+}
+
+@include b(1150) {
+  .cross-chain-form {
+    flex-direction: column;
+
+    &__confirm-section {
+      top: 0;
+      align-self: flex-end;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 47.5%;
+      margin-top: 17px;
+    }
+
+    &__confirm-wrapper {
+      order: 2;
+      width: 50%;
+      padding: 0;
+    }
+  }
+}
+
+@include b(860) {
+  .cross-chain-form {
+    padding: 20px 7px;
+
+    flex-direction: column;
+    align-items: center;
+    grid-gap: 0;
+
+    &__confirm-section {
+      align-self: initial;
+      width: 100%;
+      max-width: 391px;
+    }
+  }
+
+  .choose-blockchains {
+    flex-direction: column;
+    width: 100%;
+    max-width: 419px;
+
+    &__box {
+      width: 100%;
+      padding: 20px 13px;
+
+      &:first-child {
+        margin-right: 0;
+        margin-bottom: 7px;
+      }
+
+      &:last-child {
+        align-self: initial;
+        margin-left: 0;
+        margin-top: 7px;
+      }
+    }
+
+    &__address {
+      margin-bottom: 10px;
+    }
+
+    &__address-info {
+      margin-top: 7px;
+    }
+  }
+
+  &__scanner-link-box {
+    margin-top: 7px;
+  }
+}
+
+@include b(550) {
+  .cross-chain-form {
+    &__confirm-section {
+      flex-direction: column;
+      width: 100%;
+      max-width: 409px;
+    }
+
+    &__confirm-wrapper {
+      order: 0;
+      width: 100%;
+      margin-bottom: 13px;
+    }
+  }
+
+  .choose-blockchains {
+    &__address {
+      font-size: 13px;
+    }
   }
 }

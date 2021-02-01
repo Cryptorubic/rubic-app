@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, from, Observable, throwError} from 'rxjs';
 import {List} from 'immutable';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {IBridgeToken, ITableTransaction} from './types';
 import {map, catchError, flatMap} from 'rxjs/operators';
 import {Web3ApiService} from '../web3Api/web3-api.service';
@@ -11,7 +11,6 @@ import {RubicError} from '../../errors/RubicError';
 import BigNumber from 'bignumber.js';
 import {OverQueryLimitError} from '../../errors/bridge/OverQueryLimitError';
 import {BackendApiService} from '../backend-api/backend-api.service';
-import {on} from 'cluster';
 
 
 interface BinanceResponse {
@@ -147,7 +146,7 @@ export class BridgeService {
 
           await this.sendTransactionInfo(tx);
           await this.updateTransactionsList();
-          // this.backendApiService.notifyBot(tx, this.web3Api.address);
+          this.backendApiService.notifyBot(tx, this.web3Api.address);
       }
 
       await tx.sendDeposit(onTxHash);

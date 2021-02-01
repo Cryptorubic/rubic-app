@@ -645,7 +645,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
     this.oneInchService.getSwap(params, this.instanceTradeParams)
       .then((result: any) => {
-        this.web3Service.sendTransaction(result.tx, this.requestData.network, () => this.instantTradeInProgress = true)
+        const gasIncreasedTx= { ...result.tx, gas: result.tx * 1.25}
+        this.web3Service.sendTransaction(gasIncreasedTx, this.requestData.network, () => this.instantTradeInProgress = true)
             .then((res: any) => {
               this.resetStartForm();
               const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');

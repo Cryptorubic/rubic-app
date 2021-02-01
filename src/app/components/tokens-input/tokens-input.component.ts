@@ -1,6 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
-import {IBridgeToken} from '../../services/bridge/types';
-import {is, List} from 'immutable';
+import {List} from 'immutable';
+import {InputToken} from './types';
 
 @Component({
   selector: 'app-tokens-input',
@@ -13,12 +13,11 @@ export class TokensInputComponent implements OnInit {
   @Input() amountPlaceholder?: string = 'Enter Amount';
   @Input() listDisabled?: boolean = false;
   @Input() inputDisabled?: boolean = false;
-  @Input() tokensList: List<IBridgeToken> = List();
-  @Input() symbolNameProp: string = 'symbol';
-  @Input() decimalNameProp: string = 'symbol';
+  @Input() tokensList: List<InputToken> = List();
+  @Input() selectedToken: InputToken;
 
   @Output() numberChanges = new EventEmitter<number>();
-  @Output() tokenChanges = new EventEmitter<IBridgeToken>();
+  @Output() tokenChanges = new EventEmitter<InputToken | null>();
 
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
@@ -26,40 +25,17 @@ export class TokensInputComponent implements OnInit {
   public amount;
   public query: string = "";
   public isOpenList: boolean = false;
-  private _selectedToken: IBridgeToken = null;
-  public visibleTokensList: List<IBridgeToken> = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
+  public visibleTokensList: List<InputToken> = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
   public bigNumberDirective: { decimals: number, min: number } = {decimals: 18, min: 0};
 
-  public pow;
-
-  set selectedToken(token) {
-    this._selectedToken = token;
-
-    if (token) {
-      this.cutAmount();
-
-      this.bigNumberDirective = {
-        decimals: token[this.decimalNameProp],
-        min: 10 ** (-token[this.decimalNameProp])
-      }
-    }
-
-    this.onTokenChanges(token);
-  }
-
-  get selectedToken() {
-    return this._selectedToken;
-  }
-
   private cutAmount() {
-    if (this.amount.includes('.')) {
+    if (this.amount && this.amount.includes('.')) {
       const startIndex = this.amount.indexOf('.') + 1;
-      this.amount = this.amount.slice(0, startIndex + this._selectedToken[this.decimalNameProp]);
+      this.amount = this.amount.slice(0, startIndex + this.selectedToken.decimals);
     }
   }
 
   constructor() {
-    this.pow = Math.pow;
   }
 
   ngOnInit() { }
@@ -69,14 +45,12 @@ export class TokensInputComponent implements OnInit {
       this.visibleTokensList = this.tokensList.slice(0, this.VISIBLE_TOKENS_NUMBER);
     }
 
-    if (changes.decimalNameProp && this.selectedToken) {
-      this.bigNumberDirective = {
-        decimals: this.selectedToken[changes.decimalNameProp.currentValue],
-        min: 10 ** (-this.selectedToken[changes.decimalNameProp.currentValue])
-      }
+    if (changes.selectedToken && changes.selectedToken.currentValue) {
+      this.cutAmount();
 
-      if (changes.decimalNameProp.currentValue !== changes.decimalNameProp.previousValue) {
-        this.cutAmount();
+      this.bigNumberDirective = {
+        decimals: changes.selectedToken.currentValue.decimals,
+        min: 10 ** (-changes.selectedToken.currentValue.decimals)
       }
     }
   }
@@ -111,7 +85,7 @@ export class TokensInputComponent implements OnInit {
     }
 
     const upQuery = query.toUpperCase();
-    const tikerMatch = this.tokensList.filter(token => token[this.symbolNameProp].toUpperCase().includes(upQuery));
+    const tikerMatch = this.tokensList.filter(token => token.symbol.toUpperCase().includes(upQuery));
     const nameMatch = this.tokensList.filter(token =>
       !tikerMatch.includes(token) &&
       token.name.toUpperCase().includes(upQuery)
@@ -123,19 +97,19 @@ export class TokensInputComponent implements OnInit {
   public resetTokenAndClose() {
     this.isOpenList = false;
     this.query = "";
-    this.selectedToken = null;
+    this.onTokenChanges(null);
   }
 
-  public selectToken(token: IBridgeToken) {
-    this.selectedToken = token;
-    this.query = token[this.symbolNameProp];
+  public selectToken(token: InputToken) {
+    this.onTokenChanges(token);
+    this.query = token.symbol;
     this.unshiftTokenToVisibleList(token);
     this.toggleListVisible(false);
   }
 
-  private unshiftTokenToVisibleList(token: IBridgeToken) {
+  private unshiftTokenToVisibleList(token: InputToken) {
     this.visibleTokensList = this.tokensList
-        .filter(item => item[this.symbolNameProp] !== token[this.symbolNameProp])
+        .filter(item => item.symbol !== token.symbol)
         .slice(0, 9)
         .unshift(token)
   }

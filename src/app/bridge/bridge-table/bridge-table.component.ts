@@ -1,8 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {BridgeService} from '../../services/bridge/bridge.service';
 import {BridgeNetwork, ITableTransaction} from '../../services/bridge/types';
 import {List} from 'immutable';
 import date from 'date-and-time';
+
+interface ITableTransactionWithState extends ITableTransaction {
+  opened: boolean;
+}
+
+const TRANSACTION_PAGE_SIZE = 5;
 
 @Component({
   selector: 'app-bridge-table',
@@ -13,28 +19,57 @@ export class BridgeTableComponent implements OnInit {
 
   public Blockchains = {
     [BridgeNetwork.ETHEREUM] : {
-      label: "Ethereum",
-      img: "eth.png",
+      label: 'Ethereum',
+      img: 'eth.png',
       symbolPropName: 'ethSymbol'
     },
     [BridgeNetwork.BINANCE_SMART_CHAIN]: {
-      label: "Binance Smart Chain",
-      img: "bnb.svg",
+      label: 'Binance Smart Chain',
+      img: 'bnb.svg',
       symbolPropName: 'bscSymbol'
     }
-  }
+  };
 
-  public transactions: List<ITableTransaction> = List([]);
-  public updateProcess: string = "";
-  public sort: {columnIndex: number, downDirection: boolean} = {columnIndex: 5, downDirection: true};
+  /**
+   * Transactions are sorted by date first.
+   */
+  public transactions: List<ITableTransactionWithState>;
+  /**
+   * Contains transactions, which are shown to user. Updated through 'show more' button.
+   */
+  public visibleTransactions: List<ITableTransactionWithState> = List([]);
+  private transactionPages = 1;
+  public tableInitLoading = true;
+  public updateProcess = '';
+  public sort = { fieldName: 'date', downDirection: true }; // Date is default to sort by
+  public selectedOption = 'Date'; // Capitalized sort.fieldName
+  public options = ['Status', 'From', 'To', 'Spent', 'Expected', 'Date'];
+  public isShowMoreActive = true;
+
+  private minDesktopWidth = 1024;
+  public isDesktop: boolean;
 
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
-      console.log("update table");
-      this.transactions = transactions;
-      this.sort = { columnIndex: null, downDirection: null};
-      this.onSortClick(5);
+      this.transactions = transactions.map(tx => ({...tx, opened: false}));
+      this.sort = { fieldName: null, downDirection: null};
+      this.onSortClick('date');
+
+      this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
+      this.checkIsShowMoreActive();
     });
+
+    this.checkIfDesktop();
+  }
+
+  private static sortByDate(a: string, b: string): number  {
+    const date1 = new Date(date.transform(a, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
+    const date2 = new Date(date.transform(b, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
+    return date.subtract(date2, date1).toMilliseconds();
+  }
+
+  private static sortByNumber(a: number, b: number): number {
+    return b - a;
   }
 
   ngOnInit() {
@@ -42,7 +77,7 @@ export class BridgeTableComponent implements OnInit {
 
   public onUpdate() {
     if (!this.updateProcess) {
-      this.updateProcess = "progress";
+      this.updateProcess = 'progress';
       this.bridgeService.updateTransactionsList().finally(() => {
         this.updateProcess = 'stop';
         setTimeout(() => this.updateProcess = '', 1200);
@@ -50,61 +85,71 @@ export class BridgeTableComponent implements OnInit {
     }
   }
 
-  public onSortClick(columnIndex: number) {
+  public onSortClick(fieldName: string) {
+    fieldName = fieldName.toLowerCase();
 
-    if (columnIndex === this.sort.columnIndex) {
+    if (fieldName === this.sort.fieldName) {
       this.sort.downDirection = !this.sort.downDirection;
       this.transactions = this.transactions.reverse();
-
     } else  {
-
-      switch (columnIndex) {
-        case 0:
+      switch (fieldName) {
+        case 'status':
           this.transactions = this.transactions.sort((a, b) =>
               a.status > b.status ? -1 : 1);
           break;
-        case 1:
+        case 'from':
           this.transactions = this.transactions.sort((a, b) =>
               a.fromNetwork > b.fromNetwork ? -1 : 1);
           break;
-        case 2:
+        case 'to':
           this.transactions = this.transactions.sort((a, b) =>
               a.toNetwork > b.toNetwork ? -1 : 1);
           break;
-        case 3:
+        case 'spent':
           this.transactions = this.transactions.sort((a, b) =>
               BridgeTableComponent.sortByNumber(a.actualFromAmount, b.actualFromAmount));
           break;
-        case 4:
+        case 'expected':
           this.transactions = this.transactions.sort((a, b) =>
               BridgeTableComponent.sortByNumber(a.actualToAmount, b.actualToAmount));
           break;
-        case 5:
+        case 'date':
           this.transactions = this.transactions.sort((a, b) =>
               BridgeTableComponent.sortByDate(a.updateTime, b.updateTime));
           break;
       }
 
-      this.sort.columnIndex = columnIndex;
+      this.sort.fieldName = fieldName;
       this.sort.downDirection = true;
+      this.selectedOption = this.capitalize(this.sort.fieldName);
     }
   }
 
-  private static sortByDate (a: string, b: string): number  {
-    const date1 = new Date(date.transform(a, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
-    const date2 = new Date(date.transform(b, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
-    return date.subtract(date2, date1).toMilliseconds();
-  }
-
-  private static sortByNumber (a: number, b: number): number {
-    return b - a;
-  }
-
-  public getArrow(index) {
-    if (index !== this.sort.columnIndex) {
+  public getArrow(fieldName: string) {
+    fieldName = fieldName.toLowerCase();
+    if (fieldName !== this.sort.fieldName) {
       return 'Arrows.svg';
     }
-
     return this.sort.downDirection ? 'Arrows-down.svg' : 'Arrows-up.svg';
+  }
+
+  @HostListener('window:resize', ['$event'])
+  private checkIfDesktop(): void {
+    this.isDesktop = window.innerWidth > this.minDesktopWidth;
+  }
+
+  public capitalize(value: string): string {
+    return value[0].toUpperCase() + value.slice(1);
+  }
+
+  private checkIsShowMoreActive(): void {
+    this.isShowMoreActive = this.visibleTransactions.size < this.transactions.size;
+  }
+
+  public addNextTransactionPage(): void {
+    this.transactionPages++;
+    const end = this.transactionPages * TRANSACTION_PAGE_SIZE;
+    this.visibleTransactions = this.transactions.slice(0, end);
+    this.checkIsShowMoreActive();
   }
 }

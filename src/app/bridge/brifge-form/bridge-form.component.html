@@ -38,9 +38,8 @@
         <div class="choose-blockchains__token form-field">
           <app-tokens-input
               class="choose-token__wrapper"
-              [tokensList]="tokens"
-              [symbolNameProp]="fromBlockchain.symbolName"
-              [decimalNameProp]="fromBlockchain.decimalsName"
+              [tokensList]="dropDownTokens"
+              [selectedToken]="selectedTokenAsInputToken"
               (tokenChanges)="onSelectedTokenChanges($event)"
               (numberChanges)="onTokensNumberChanges($event)"
           >
