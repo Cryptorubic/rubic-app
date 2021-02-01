@@ -8,6 +8,8 @@ interface ITableTransactionWithState extends ITableTransaction {
   opened: boolean;
 }
 
+const TRANSACTION_PAGE_SIZE = 5;
+
 @Component({
   selector: 'app-bridge-table',
   templateUrl: './bridge-table.component.html',
@@ -28,21 +30,33 @@ export class BridgeTableComponent implements OnInit {
     }
   };
 
+  /**
+   * Transactions are sorted by date first.
+   */
   public transactions: List<ITableTransactionWithState>;
+  /**
+   * Contains transactions, which are shown to user. Updated through 'show more' button.
+   */
+  public visibleTransactions: List<ITableTransactionWithState> = List([]);
+  private transactionPages = 1;
+  public tableInitLoading = true;
   public updateProcess = '';
   public sort = { fieldName: 'date', downDirection: true }; // Date is default to sort by
   public selectedOption = 'Date'; // Capitalized sort.fieldName
-
   public options = ['Status', 'From', 'To', 'Spent', 'Expected', 'Date'];
+  public isShowMoreActive = true;
 
   private minDesktopWidth = 1024;
-  public isDesktop = true;
+  public isDesktop: boolean;
 
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
       this.transactions = transactions.map(tx => ({...tx, opened: false}));
       this.sort = { fieldName: null, downDirection: null};
       this.onSortClick('date');
+
+      this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
+      this.checkIsShowMoreActive();
     });
 
     this.checkIfDesktop();
@@ -121,10 +135,21 @@ export class BridgeTableComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   private checkIfDesktop(): void {
-    this.isDesktop = window.innerWidth >= this.minDesktopWidth;
+    this.isDesktop = window.innerWidth > this.minDesktopWidth;
   }
 
   public capitalize(value: string): string {
     return value[0].toUpperCase() + value.slice(1);
+  }
+
+  private checkIsShowMoreActive(): void {
+    this.isShowMoreActive = this.visibleTransactions.size < this.transactions.size;
+  }
+
+  public addNextTransactionPage(): void {
+    this.transactionPages++;
+    const end = this.transactionPages * TRANSACTION_PAGE_SIZE;
+    this.visibleTransactions = this.transactions.slice(0, end);
+    this.checkIsShowMoreActive();
   }
 }
