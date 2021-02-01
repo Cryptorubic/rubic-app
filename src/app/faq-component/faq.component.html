@@ -6,23 +6,21 @@
 
       <div
         *ngFor="let question of questions; let $index = index;"
-        (click)="question.isActive = !question.isActive"
         [ngClass]="{'questions-container__question_active': question.isActive}"
+        (click)="question.isActive = !question.isActive"
         class="questions-container__question"
       >
         <div class="questions-container__question-head">
-          <span class="questions-container__title">
-            – {{ 'FAQ_QUESTIONS.' + $index + '.QUESTION' | translate }}
+          <span class="questions-container__title"
+          [innerHTML]="'FAQ_QUESTIONS.' + $index + '.QUESTION' | translate"
+          >
           </span>
           <div class="questions-container__arrow"></div>
         </div>
-        <p *ngIf="question.isActive" class="questions-container__text">
-          <a  *ngIf="question.href" [href]="question.href" (click)="$event.stopPropagation()" target="_blank" rel="noopener noreferrer">
-            {{ 'FAQ_QUESTIONS.' + $index + '.ANSWER' | translate }}
-          </a>
-          <ng-template [ngIf]="!question.href">
-            {{ 'FAQ_QUESTIONS.' + $index + '.ANSWER' | translate }}
-          </ng-template>
+        <p *ngIf="question.isActive" class="questions-container__text"
+        [innerHTML]="'FAQ_QUESTIONS.' + $index + '.ANSWER' | translate"
+           (click)="$event.stopPropagation()"
+        >
         </p>
       </div>
 
