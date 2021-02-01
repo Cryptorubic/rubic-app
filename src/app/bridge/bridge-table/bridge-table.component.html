@@ -44,7 +44,7 @@
         </thead>
         <tbody>
 
-          <tr *ngFor="let tx of transactions">
+          <tr *ngFor="let tx of visibleTransactions">
             <td>
               <span class="data__status"
                [ngClass]="{
@@ -104,7 +104,7 @@
         ></app-dropdown-select>
 
         <div class="bridge-list__items">
-          <div class="bridge-list__accordion accordion" *ngFor="let tx of transactions">
+          <div class="bridge-list__accordion accordion" *ngFor="let tx of visibleTransactions">
             <div
               class="accordion__header header"
               [ngClass]="{ 'accordion__header_active': tx.opened }"
@@ -240,7 +240,7 @@
       <app-white-button
         class="bridge-results__show-more-button"
         *ngIf="isShowMoreActive"
-        [text]="'Show more'"
+        text="Show more"
         (click)="addNextTransactionPage()"
       ></app-white-button>
     </div>

@@ -31,23 +31,23 @@ export class BridgeTableComponent implements OnInit {
   };
 
   /**
-   * Contains transactions, which are shown to user. Updated through 'show more' button.
+   * Transactions are sorted by date first.
    */
   public transactions: List<ITableTransactionWithState>;
   /**
-   * All transactions are sorted by date first.
+   * Contains transactions, which are shown to user. Updated through 'show more' button.
    */
-  private allTransactions: List<ITableTransaction> = List([]);
+  public visibleTransactions: List<ITableTransactionWithState> = List([]);
   private transactionPages = 1;
   public tableInitLoading = true;
   public updateProcess = '';
   public sort = { fieldName: 'date', downDirection: true }; // Date is default to sort by
   public selectedOption = 'Date'; // Capitalized sort.fieldName
-
   public options = ['Status', 'From', 'To', 'Spent', 'Expected', 'Date'];
+  public isShowMoreActive = true;
 
   private minDesktopWidth = 1024;
-  public isDesktop = true;
+  public isDesktop: boolean;
 
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
@@ -55,8 +55,7 @@ export class BridgeTableComponent implements OnInit {
       this.sort = { fieldName: null, downDirection: null};
       this.onSortClick('date');
 
-      this.allTransactions = this.transactions;
-      this.transactions = this.allTransactions.slice(0, TRANSACTION_PAGE_SIZE);
+      this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
       this.checkIsShowMoreActive();
     });
 
@@ -144,13 +143,13 @@ export class BridgeTableComponent implements OnInit {
   }
 
   private checkIsShowMoreActive(): void {
-    this.isShowMoreActive = this.transactions.size < this.allTransactions.size;
+    this.isShowMoreActive = this.visibleTransactions.size < this.transactions.size;
   }
 
   public addNextTransactionPage(): void {
     this.transactionPages++;
     const end = this.transactionPages * TRANSACTION_PAGE_SIZE;
-    this.transactions = this.allTransactions.slice(0, end);
+    this.visibleTransactions = this.transactions.slice(0, end);
     this.checkIsShowMoreActive();
   }
 }
