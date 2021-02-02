@@ -1,5 +1,9 @@
 @import '../../../scss/_mixins';
 
+.form-field_input {
+  height: 52px;
+}
+
 @include b(550) {
   .all-input {
     padding-left: 10px !important;
