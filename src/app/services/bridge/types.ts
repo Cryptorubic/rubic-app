@@ -34,6 +34,7 @@ interface ITableTransaction {
 
 interface IBlockchain {
     name: BridgeNetwork;
+    labelName: string;
     label: string;
     img: string;
     baseUrl: string;

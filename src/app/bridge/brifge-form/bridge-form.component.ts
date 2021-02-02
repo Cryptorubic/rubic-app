@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {BridgeService} from '../../services/bridge/bridge.service';
 import {List} from 'immutable';
 import {IBridgeToken, BridgeNetwork, IBlockchains} from '../../services/bridge/types';
@@ -17,6 +17,7 @@ export class BridgeFormComponent implements OnInit {
   public Blockchains: IBlockchains = {
     Ethereum : {
       name : BridgeNetwork.ETHEREUM,
+      labelName: 'Ethereum',
       label: 'Ethereum',
       img: 'eth.png',
       baseUrl: 'https://etherscan.io',
@@ -31,6 +32,7 @@ export class BridgeFormComponent implements OnInit {
     },
     Binance: {
       name : BridgeNetwork.BINANCE_SMART_CHAIN,
+      labelName: 'Binance Smart Chain',
       label: 'Binance Smart Chain',
       img: 'bnb.svg',
       baseUrl: 'https://bscscan.com',
@@ -61,6 +63,8 @@ export class BridgeFormComponent implements OnInit {
   public error: RubicError;
   public tradeSuccessId: string;
   public walletAddress: string = this.bridgeService.walletAddress;
+
+  private smallMobileWidth = 410;
 
   get tokens(): List<IBridgeToken> {
     return this._tokens;
@@ -164,7 +168,9 @@ export class BridgeFormComponent implements OnInit {
     bridgeService.tokens.subscribe(tokens => this.tokens = tokens);
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.setBlockchainLabelName();
+  }
 
   public revertBlockchains() {
     [this._fromBlockchain, this._toBlockchain] = [this._toBlockchain, this._fromBlockchain];
@@ -227,5 +233,14 @@ export class BridgeFormComponent implements OnInit {
 
   public closeErrorModal() {
     this.error = null;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  setBlockchainLabelName() {
+    if (window.innerWidth <= this.smallMobileWidth) {
+      this.Blockchains.Binance.labelName = this.Blockchains.Binance.name;
+    } else {
+      this.Blockchains.Binance.labelName = this.Blockchains.Binance.label;
+    }
   }
 }
