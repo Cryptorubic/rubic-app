@@ -1,0 +1,12 @@
+<div class="token-label" [ngClass]="{ 'token-label_selected': selected  }">
+  <img [src]="token.image" alt="Token"/>
+
+  <span class="token-label__text">
+    <span *ngIf="!selected">
+      {{ token.name }}<br />
+      ({{ token.symbol }})
+    </span>
+
+    <span *ngIf="selected">{{ token.symbol }}</span>
+  </span>
+</div>

@@ -34,6 +34,7 @@
     "jquery.cookie": "^1.4.1",
     "luxon": "^1.12.0",
     "moment": "^2.24.0",
+    "ng-dynamic-component": "^4.0.3",
     "ng-toggle-button": "^0.1.4",
     "ngx-clipboard": "^12.0.0",
     "ngx-cookie-service": "^2.2.0",

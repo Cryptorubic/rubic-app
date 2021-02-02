@@ -7,4 +7,10 @@ interface InputToken {
     min?: number
 }
 
-export {InputToken}
+interface InputTokenShort {
+    image: string;
+    name: string;
+    symbol: string;
+}
+
+export {InputToken, InputTokenShort}
