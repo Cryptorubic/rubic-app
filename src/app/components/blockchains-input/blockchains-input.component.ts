@@ -1,8 +1,9 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild} from '@angular/core';
 import {IBlockchain, IBlockchains} from "../../services/bridge/types";
 import {List} from "immutable";
 import {IBlockchainShort} from "./types";
 import {BlockchainLabelComponent} from "./blockchain-label/blockchain-label.component";
+import {InputDropdownComponent} from "../input-dropdown/input-dropdown.component";
 
 interface BlockchainLabelData {
   blockchain: IBlockchainShort;
@@ -27,6 +28,8 @@ export class BlockchainsInputComponent implements OnInit, OnChanges {
   @Input() blockchains: IBlockchains;
 
   @Output() blockchainChanges = new EventEmitter<IBlockchain>();
+
+  @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<BlockchainDropdownData>;
 
   public readonly blockchainLabelComponentClass = BlockchainLabelComponent;
   public blockchainsInputData = List<BlockchainDropdownData>();
