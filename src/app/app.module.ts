@@ -105,6 +105,8 @@ import { WhiteButtonComponent } from './components/white-button/white-button.com
 import { TokenLabelComponent } from './components/tokens-input/token-label/token-label.component';
 import { InputDropdownComponent } from './components/input-dropdown/input-dropdown.component';
 import { DynamicModule } from "ng-dynamic-component";
+import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
+import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -298,6 +300,8 @@ export function appInitializerFactory(
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
+    BlockchainsInputComponent,
+    BlockchainLabelComponent,
   ],
   entryComponents: [
     AuthComponent,
@@ -332,7 +336,7 @@ export function appInitializerFactory(
     ClipboardModule,
     OwlModule,
     NgToggleModule,
-    DynamicModule.withComponents([ TokenLabelComponent ])
+    DynamicModule.withComponents([ TokenLabelComponent, BlockchainLabelComponent ])
   ],
   providers: [
     CookieService,

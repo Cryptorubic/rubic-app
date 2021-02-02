@@ -5,7 +5,7 @@
     right: 8px;
     z-index: 2;
 
-    padding: 10px 11px;
+    padding: 0;
     margin-top: -21px;
     border: 2px solid #e5e5e5;
     border-radius: 0 4px 4px 0;
@@ -19,6 +19,10 @@
     line-height: 18px;
 
     cursor: pointer;
+
+    &_with-text {
+      padding: 10px 11px;
+    }
   }
 
   &__search-input {
@@ -34,20 +38,20 @@
 
     background: #f4f4f4;
     color: #110931;
+    opacity: 0;
 
     font-family: inherit;
     font-size: 18px;
     line-height: 30px;
 
-    opacity: 0;
     transition: all linear 0.2s;
   }
 
   &__choose-button_active + &__search-input {
-    z-index: 3;
+    z-index: 4;
 
     width: 52%;
-    border-left: 1px solid #d8d8d8;
+    border-left: 1px solid #d8d8d8 !important;
 
     opacity: 1;
   }
@@ -71,18 +75,20 @@
   }
 
   &__choose-button_active ~ &__close-button {
-    opacity: 1;
+    right: 10px;
+
     width: 30px;
     margin-top: -15px;
+
     background: #f4f4f4;
-    right: 10px;
+    opacity: 1;
   }
 
   &__dropdown-components {
     position: absolute;
     top: 100%;
     right: 0;
-    z-index: 4;
+    z-index: 3;
 
     width: 52%;
   }

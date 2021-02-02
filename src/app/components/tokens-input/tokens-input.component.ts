@@ -82,7 +82,7 @@ export class TokensInputComponent implements OnInit, OnChanges {
 
   /**
    * Takes the components selected in input-dropdown.
-   * Every component has `id`, which is actually the `address` of that token.
+   * Every token-component has `id`, which is actually the `address` of that token.
    */
   public onTokenChanges(tokenComponent) {
     this.tokenChanges.emit(this.tokensList.find(token => token.address === tokenComponent.id));

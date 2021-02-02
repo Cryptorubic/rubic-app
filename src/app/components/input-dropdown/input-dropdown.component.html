@@ -2,11 +2,17 @@
   <button
     class="input-dropdown__choose-button"
     type="button"
-    [ngClass]="{ 'input-dropdown__choose-button_active': isOpenList }"
+    [ngClass]="{
+      'input-dropdown__choose-button_active': isOpenList,
+      'input-dropdown__choose-button_with-text': !selectedComponentData
+    }"
     (click)="toggleListOpen(true)"
     [disabled]="disabled"
   >
-    <span *ngIf="!selectedComponentData">{{chooseComponentText | translate}}</span>
+    <span *ngIf="!selectedComponentData">
+      {{chooseComponentText | translate}}
+    </span>
+
     <ndc-dynamic
       *ngIf="selectedComponentData"
       [ndcDynamicComponent]="componentClass"

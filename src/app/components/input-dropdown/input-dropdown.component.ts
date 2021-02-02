@@ -22,7 +22,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   @Input() componentClass: Type<any>;
 
   @Input() private componentsData: List<T> = List();
-  @Input() selectedComponentData: T;
+  @Input() selectedComponentData: T = null;
   @Input() private readonly VISIBLE_COMPONENTS_NUMBER? = 10;
   /**
    * The list of the component class' fields, in order of which the components will be sorted.
