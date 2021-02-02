@@ -2,10 +2,17 @@
 
 .form-field_input {
   height: 52px;
+
+  .all-input {
+    width: calc(100% + 2px) !important;
+    margin-left: -1px;
+  }
 }
 
 @include b(550) {
-  .all-input {
-    padding-left: 10px !important;
+  .form-field_input {
+    .all-input {
+      padding-left: 10px;
+    }
   }
 }
