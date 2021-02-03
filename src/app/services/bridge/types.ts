@@ -32,10 +32,30 @@ interface ITableTransaction {
     image_link: string;
 }
 
+interface IBlockchain {
+    name: BridgeNetwork;
+    shortLabel: string; // for mobiles
+    label: string;
+    img: string;
+    baseUrl: string;
+    addressBaseUrl: string;
+    scanner: {
+        label: string,
+        baseUrl: string
+    };
+    symbolName: string;
+    decimalsName: string;
+    addressName: string;
+}
+
+interface IBlockchains {
+    [blockchain: string]: IBlockchain;
+}
+
 enum BridgeNetwork {
     ETHEREUM = 'ETH',
     BINANCE_SMART_CHAIN = 'BSC',
     ETHEREUM_TESTNET = 'KVN'
 }
 
-export {BridgeNetwork, IBridgeToken, ITableTransaction};
+export {BridgeNetwork, IBridgeToken, ITableTransaction, IBlockchain, IBlockchains};

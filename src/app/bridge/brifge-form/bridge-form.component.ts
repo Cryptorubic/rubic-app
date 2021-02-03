@@ -1,12 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {BridgeService} from '../../services/bridge/bridge.service';
-import {HttpClient} from '@angular/common/http';
 import {List} from 'immutable';
-import {IBridgeToken, BridgeNetwork} from '../../services/bridge/types';
-import {Web3ApiService} from '../../services/web3Api/web3-api.service';
+import {IBridgeToken, BridgeNetwork, IBlockchains, IBlockchain} from '../../services/bridge/types';
 import {RubicError} from '../../errors/RubicError';
 import BigNumber from 'bignumber.js';
-import {window} from 'rxjs/operators';
 import {InputToken} from '../../components/tokens-input/types';
 
 
@@ -17,11 +14,12 @@ import {InputToken} from '../../components/tokens-input/types';
 })
 export class BridgeFormComponent implements OnInit {
 
-  public Blockchains = {
+  public Blockchains: IBlockchains = {
     Ethereum : {
       name : BridgeNetwork.ETHEREUM,
-      label: "Ethereum",
-      img: "eth.png",
+      shortLabel: 'Ethereum',
+      label: 'Ethereum',
+      img: 'eth.png',
       baseUrl: 'https://etherscan.io',
       addressBaseUrl: 'https://etherscan.io/address/',
       scanner: {
@@ -34,8 +32,9 @@ export class BridgeFormComponent implements OnInit {
     },
     Binance: {
       name : BridgeNetwork.BINANCE_SMART_CHAIN,
-      label: "Binance Smart Chain",
-      img: "bnb.svg",
+      shortLabel: 'Binance Smart Chain',
+      label: 'Binance Smart Chain',
+      img: 'bnb.svg',
       baseUrl: 'https://bscscan.com',
       addressBaseUrl: 'https://bscscan.com/address/',
       scanner: {
@@ -46,10 +45,12 @@ export class BridgeFormComponent implements OnInit {
       decimalsName: 'bscContractDecimal',
       addressName: 'bscContractAddress'
     }
-  }
+  };
 
-  public _fromBlockchain = this.Blockchains.Ethereum;
-  public toBlockchain = this.Blockchains.Binance;
+  public blockchainsList: IBlockchain[] = Object.values(this.Blockchains);
+
+  private _fromBlockchain = this.Blockchains.Ethereum;
+  private _toBlockchain = this.Blockchains.Binance;
   private _tokens: List<IBridgeToken> = List([]);
   public dropDownTokens: List<InputToken> = List([]);
   public _selectedToken: IBridgeToken = null;
@@ -64,6 +65,8 @@ export class BridgeFormComponent implements OnInit {
   public error: RubicError;
   public tradeSuccessId: string;
   public walletAddress: string = this.bridgeService.walletAddress;
+
+  private smallMobileWidth = 410;
 
   get tokens(): List<IBridgeToken> {
     return this._tokens;
@@ -101,8 +104,25 @@ export class BridgeFormComponent implements OnInit {
   }
 
   set fromBlockchain(blockchain) {
-    this._fromBlockchain = blockchain;
+    if (blockchain === this._toBlockchain) {
+      this.revertBlockchains();
+    } else {
+      this._fromBlockchain = blockchain;
+    }
     this.updateDropDownTokens();
+  }
+
+  get toBlockchain() {
+    return this._toBlockchain;
+  }
+
+  set toBlockchain(blockchain) {
+    if (blockchain === this._fromBlockchain) {
+      this.revertBlockchains();
+    } else {
+      this._toBlockchain = blockchain;
+      this.updateDropDownTokens();
+    }
   }
 
   set fromNumber(fromNumber: BigNumber) {
@@ -150,10 +170,13 @@ export class BridgeFormComponent implements OnInit {
     bridgeService.tokens.subscribe(tokens => this.tokens = tokens);
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.setBlockchainLabelName();
+  }
 
   public revertBlockchains() {
-    [this.fromBlockchain, this.toBlockchain] = [this.toBlockchain, this.fromBlockchain];
+    [this._fromBlockchain, this._toBlockchain] = [this._toBlockchain, this._fromBlockchain];
+    this.updateDropDownTokens();
     if (this.selectedToken) {
       this.changeSelectedToken(this.selectedToken);
     }
@@ -212,5 +235,14 @@ export class BridgeFormComponent implements OnInit {
 
   public closeErrorModal() {
     this.error = null;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  setBlockchainLabelName() {
+    if (window.innerWidth <= this.smallMobileWidth) {
+      this.Blockchains.Binance.shortLabel = this.Blockchains.Binance.name;
+    } else {
+      this.Blockchains.Binance.shortLabel = this.Blockchains.Binance.label;
+    }
   }
 }
