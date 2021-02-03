@@ -14,164 +14,181 @@
 
   <!-- Panel -->
   <form class="cross-chain-form">
+    <div class="cross-chain-form__main-section">
+      <div class="choose-blockchains cross-chain-form__selection-section">
 
-    <div class="choose-blockchains cross-chain-form__selection-section">
+        <!-- From -->
+        <div class="choose-blockchains__box">
+          <div class="choose-blockchains__title">
+            From
+          </div>
 
-      <!-- From -->
-      <div class="choose-blockchains__box">
-        <div class="choose-blockchains__title">
-          From
+          <div class="choose-blockchains__blockchain form-field">
+            <app-blockchains-input
+              class=""
+              [selectedBlockchain]="fromBlockchain"
+              [blockchains]="Blockchains"
+              (blockchainChanges)="fromBlockchain = $event"
+            ></app-blockchains-input>
+          </div>
+
+          <a class="choose-blockchains__address" [href]="fromBlockchain.addressBaseUrl + walletAddress" target="_blank">
+            {{walletAddress}}
+          </a>
+
+          <div class="choose-blockchains__title">
+            You have
+          </div>
+          <div class="choose-blockchains__token form-field">
+            <app-tokens-input
+                class="choose-token__wrapper"
+                [tokensList]="dropDownTokens"
+                [selectedToken]="selectedTokenAsInputToken"
+                (tokenChanges)="onSelectedTokenChanges($event)"
+                (numberChanges)="onTokensNumberChanges($event)"
+            >
+            </app-tokens-input>
+
+            <div class="choose-blockchains__scanner-link-box"
+                 [ngClass]="{ 'choose-blockchains__scanner-link-box_hidden':  !selectedToken}">
+              <a
+                [href]="!selectedToken ? '' :
+                  selectedToken.symbol === 'ETH' && fromBlockchain.name === 'ETH'?
+                    fromBlockchain.baseUrl :
+                    fromBlockchain.scanner.baseUrl + selectedToken[fromBlockchain.addressName] "
+                target="_blank"
+              >
+                Check on {{fromBlockchain.scanner.label}}
+                <img src="assets/images/icons/link.svg" alt="link"/>
+              </a>
+            </div>
+
+            <table class="choose-blockchains__info">
+              <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber != undefined && fromNumber.lt(selectedToken.minAmount)}">
+                <td>
+                  {{selectedToken ? 'Minimum amount' : ''}}
+                </td>
+                <td>
+                  {{selectedToken ? selectedToken.minAmount : ''}}
+                  <img
+                    *ngIf="selectedToken && fromNumber != undefined && fromNumber.lt(selectedToken.minAmount)"
+                    src="assets/images/icons/warning-red.svg" alt=""/>
+                </td>
+              </tr>
+              <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber != undefined && fromNumber.gt(selectedToken.maxAmount)}">
+                <td>
+                  {{selectedToken ? 'Maximum amount' : ''}}
+                </td>
+                <td>
+                  {{selectedToken ? selectedToken.maxAmount : ''}}
+                  <img
+                    *ngIf="selectedToken && fromNumber != undefined && fromNumber.gt(selectedToken.maxAmount)"
+                    src="assets/images/icons/warning-red.svg" alt=""/>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
 
-        <div class="choose-blockchains__blockchain form-field">
-          <app-blockchains-input
-            class=""
-            [selectedBlockchain]="fromBlockchain"
-            [blockchains]="Blockchains"
-            (blockchainChanges)="fromBlockchain = $event"
-          ></app-blockchains-input>
-        </div>
+        <!-- Swap -->
+        <button class="choose-blockchains__revert-button" type="button" (click)="revertBlockchains()">
+          <img src="../../../assets/images/icons/revert.svg"
+               class="choose-blockchains__revert-icon" alt="Revert">
+        </button>
 
-        <a class="choose-blockchains__address" [href]="fromBlockchain.addressBaseUrl + walletAddress" target="_blank">
-          {{walletAddress}}
-        </a>
+        <!-- To -->
+        <div class="choose-blockchains__box">
+          <div class="choose-blockchains__title">
+            To
+          </div>
 
-        <div class="choose-blockchains__title">
-          You have
-        </div>
-        <div class="choose-blockchains__token form-field">
-          <app-tokens-input
-              class="choose-token__wrapper"
-              [tokensList]="dropDownTokens"
-              [selectedToken]="selectedTokenAsInputToken"
-              (tokenChanges)="onSelectedTokenChanges($event)"
-              (numberChanges)="onTokensNumberChanges($event)"
-          >
-          </app-tokens-input>
+          <div class="choose-blockchains__blockchain form-field">
+            <app-blockchains-input
+              class=""
+              [selectedBlockchain]="toBlockchain"
+              [blockchains]="Blockchains"
+              (blockchainChanges)="toBlockchain = $event"
+            ></app-blockchains-input>
+          </div>
+
+          <a class="choose-blockchains__address" [href]="toBlockchain.addressBaseUrl + walletAddress" target="_blank">
+            {{walletAddress}}
+          </a>
+
+          <div class="choose-blockchains__title">
+            You get
+          </div>
+          <div class="choose-blockchains__get">
+            <span>
+              {{this.toNumber}}
+            </span>
+            <div class="get-token-card" *ngIf="selectedToken">
+              <img class="get-token-card__icon" [src]="selectedToken.icon" alt="Token"/>
+              <span class="get-token-card__name">
+                {{ selectedToken[toBlockchain.symbolName] }}
+              </span>
+            </div>
+          </div>
 
           <div class="choose-blockchains__scanner-link-box"
                [ngClass]="{ 'choose-blockchains__scanner-link-box_hidden':  !selectedToken}">
             <a
               [href]="!selectedToken ? '' :
-                selectedToken.symbol === 'ETH' && fromBlockchain.name === 'ETH'?
-                  fromBlockchain.baseUrl :
-                  fromBlockchain.scanner.baseUrl + selectedToken[fromBlockchain.addressName] "
+                  selectedToken.symbol === 'ETH' && toBlockchain.name === 'ETH'?
+                    toBlockchain.baseUrl :
+                    toBlockchain.scanner.baseUrl + selectedToken[toBlockchain.addressName] "
               target="_blank"
             >
-              Check on {{fromBlockchain.scanner.label}}
+              Check on {{toBlockchain.scanner.label}}
               <img src="assets/images/icons/link.svg" alt="link"/>
             </a>
           </div>
 
-          <table class="choose-blockchains__info">
-            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber != undefined && fromNumber.lt(selectedToken.minAmount)}">
-              <td>
-                {{selectedToken ? 'Minimum amount' : ''}}
-              </td>
-              <td>
-                {{selectedToken ? selectedToken.minAmount : ''}}
-                <img
-                  *ngIf="selectedToken && fromNumber != undefined && fromNumber.lt(selectedToken.minAmount)"
-                  src="assets/images/icons/warning-red.svg" alt=""/>
-              </td>
-            </tr>
-            <tr [ngClass]="{'choose-blockchains__info_wrong': selectedToken && fromNumber != undefined && fromNumber.gt(selectedToken.maxAmount)}">
-              <td>
-                {{selectedToken ? 'Maximum amount' : ''}}
-              </td>
-              <td>
-                {{selectedToken ? selectedToken.maxAmount : ''}}
-                <img
-                  *ngIf="selectedToken && fromNumber != undefined && fromNumber.gt(selectedToken.maxAmount)"
-                  src="assets/images/icons/warning-red.svg" alt=""/>
-              </td>
-            </tr>
-          </table>
-        </div>
+          <div class="choose-blockchains__address-info">
+            You will get {{toBlockchain.label}} tokens to the same address
+          </div>
+          <a class="choose-blockchains__binance" href="https://www.binance.org/" target="_blank">
+            What is Binance Smart Chain?
+          </a>
+
+         </div>
       </div>
 
-      <!-- Swap -->
-      <button class="choose-blockchains__revert-button" type="button" (click)="revertBlockchains()">
-        <img src="../../../assets/images/icons/revert.svg"
-             class="choose-blockchains__revert-icon" alt="Revert">
-      </button>
+      <div class="cross-chain-form__last-section">
+        <div class="cross-chain-form__confirm-section">
+          <app-primary-button
+            class="cross-chain-form__confirm-wrapper"
+            label="Create Swap"
+            [animate]="feeCalculationProgress || buttonAnimation"
+            [disabled]="
+                !selectedToken ||
+                !fromNumber || fromNumber.lt(selectedToken.minAmount) || fromNumber.gt(selectedToken.maxAmount)
+              "
+            (onClick)="onConfirm()"
+            >
+          </app-primary-button>
 
-      <!-- To -->
-      <div class="choose-blockchains__box">
-        <div class="choose-blockchains__title">
-          To
-        </div>
-
-        <div class="choose-blockchains__blockchain form-field">
-          <app-blockchains-input
-            class=""
-            [selectedBlockchain]="toBlockchain"
-            [blockchains]="Blockchains"
-            (blockchainChanges)="toBlockchain = $event"
-          ></app-blockchains-input>
-        </div>
-
-        <a class="choose-blockchains__address" [href]="toBlockchain.addressBaseUrl + walletAddress" target="_blank">
-          {{walletAddress}}
-        </a>
-
-        <div class="choose-blockchains__title">
-          You get
-        </div>
-        <div class="choose-blockchains__get">
-          <span>
-            {{this.toNumber}}
-          </span>
-          <div class="get-token-card" *ngIf="selectedToken">
-            <img class="get-token-card__icon" [src]="selectedToken.icon" alt="Token"/>
-            <span class="get-token-card__name">
-              {{ selectedToken[toBlockchain.symbolName] }}
-            </span>
-          </div>
-        </div>
-
-        <div class="choose-blockchains__scanner-link-box"
-             [ngClass]="{ 'choose-blockchains__scanner-link-box_hidden':  !selectedToken}">
-          <a
-            [href]="!selectedToken ? '' :
-                selectedToken.symbol === 'ETH' && toBlockchain.name === 'ETH'?
-                  toBlockchain.baseUrl :
-                  toBlockchain.scanner.baseUrl + selectedToken[toBlockchain.addressName] "
-            target="_blank"
-          >
-            Check on {{toBlockchain.scanner.label}}
-            <img src="assets/images/icons/link.svg" alt="link"/>
+          <a href="https://www.binance.org/" target="_blank" class="cross-chain-form__confirm-info">
+            <div>With the assistance of</div>
+            <img src="assets/images/icons/collaborations/Binance.svg" alt="Binance" />
           </a>
         </div>
 
-        <div class="choose-blockchains__address-info">
-          You will get {{toBlockchain.label}} tokens to the same address
-        </div>
-        <a class="choose-blockchains__binance" href="https://www.binance.org/" target="_blank">
-          What is Binance Smart Chain?
-        </a>
-
-       </div>
-    </div>
-
-    <div class="cross-chain-form__confirm-section">
-      <app-primary-button
-        class="cross-chain-form__confirm-wrapper"
-        label="Create Swap"
-        [animate]="feeCalculationProgress || buttonAnimation"
-        [disabled]="
-            !selectedToken ||
-            !fromNumber || fromNumber.lt(selectedToken.minAmount) || fromNumber.gt(selectedToken.maxAmount)
-          "
-        (onClick)="onConfirm()"
+        <button
+          class="cross-chain-form__advanced-options"
+          [ngClass]="{ 'cross-chain-form__advanced-options_opened': isAdvancedSectionShown }"
+          (click)="isAdvancedSectionShown = !isAdvancedSectionShown"
         >
-      </app-primary-button>
-      <a href="https://www.binance.org/" target="_blank" class="cross-chain-form__confirm-info">
-        <div>With the assistance of</div>
-        <img src="assets/images/icons/collaborations/Binance.svg" alt="Binance" />
-      </a>
+          Advanced options
+        </button>
+      </div>
     </div>
 
+    <div
+      class="cross-chain-form__advanced-section advanced-section"
+      [ngClass]="{ 'cross-chain-form__advanced-section_opened': isAdvancedSectionShown }"
+    >
+    </div>
   </form>
 </div>
 

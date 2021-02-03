@@ -64,6 +64,8 @@ export class BridgeFormComponent implements OnInit {
   public tradeSuccessId: string;
   public walletAddress: string = this.bridgeService.walletAddress;
 
+  public isAdvancedSectionShown = false;
+
   private smallMobileWidth = 410;
 
   get tokens(): List<IBridgeToken> {
