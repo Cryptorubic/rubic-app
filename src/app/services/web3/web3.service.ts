@@ -527,14 +527,14 @@ export class Web3Service {
         this.Web3.eth.setProvider(this.providers['metamask']);
 
         this.Web3.eth
-          .sendTransaction(transactionConfig, (err, response) => {
+          .sendTransaction(transactionConfig, (err, hash) => {
             if (!err) {
               if (afterConfirm && typeof afterConfirm === "function") {
-                afterConfirm();
+                afterConfirm(hash);
               }
               const trxSubscription = setInterval(() => {
                 this.Web3.eth.getTransactionReceipt(
-                    response,
+                    hash,
                     (error, transaction) => {
                       if (transaction) {
                         if (transaction.status) {

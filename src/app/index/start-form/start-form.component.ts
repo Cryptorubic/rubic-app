@@ -31,6 +31,7 @@ import {
 import {OneInchService} from "../../models/1inch/1inch";
 import {HttpService} from "../../services/http/http.service";
 import {Observable} from "rxjs";
+import {BackendApiService} from '../../services/backend-api/backend-api.service';
 
 const defaultNetwork = 1;
 
@@ -139,7 +140,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     protected router: Router,
     private userService: UserService,
     private route: ActivatedRoute,
-    private oneInchService: OneInchService
+    private oneInchService: OneInchService,
+    private backendApiService: BackendApiService
   ) {
     this.CMCRates = {};
     this.currentUser = this.userService.getUserModel();
@@ -645,8 +647,24 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
     this.oneInchService.getSwap(params, this.instanceTradeParams)
       .then((result: any) => {
-        const gasIncreasedTx= { ...result.tx, gas: result.tx * 1.25}
-        this.web3Service.sendTransaction(gasIncreasedTx, this.requestData.network, () => this.instantTradeInProgress = true)
+        const gasIncreasedTx= { ...result.tx, gas: Math.round(Number(result.tx.gas) * 1.25)};
+
+        const afterConfirm = (hash: string) => {
+          this.instantTradeInProgress = true;
+
+          const amountFrom = Number(result.fromTokenAmount) / (10 ** Number(result.fromToken.decimals));
+          const amountTo = Number(result.toTokenAmount) / (10 ** Number(result.toToken.decimals));
+          this.backendApiService.notifyInstantTradesBot(
+              result.tx.from,
+              amountFrom,
+              amountTo,
+              result.fromToken.symbol,
+              result.toToken.symbol,
+              hash
+          )
+        }
+
+        this.web3Service.sendTransaction(gasIncreasedTx, this.requestData.network, afterConfirm)
             .then((res: any) => {
               this.resetStartForm();
               const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');

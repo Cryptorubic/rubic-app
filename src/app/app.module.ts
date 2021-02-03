@@ -16,7 +16,7 @@ import {
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './index/header/header.component';
-import {StartFormComponent, StartFormResolver} from './index/start-form/start-form.component';
+import { StartFormComponent, StartFormResolver } from './index/start-form/start-form.component';
 import { IndexComponent } from './index/index.component';
 import {
   HttpClient,
@@ -79,8 +79,8 @@ import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { AboutageComponent } from './about/about.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
-import {TokenSaleComponent} from "./token-sale/token-sale.component";
-import {OneInchService} from "./models/1inch/1inch";
+import { TokenSaleComponent } from "./token-sale/token-sale.component";
+import { OneInchService } from "./models/1inch/1inch";
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { MessageBoxComponent } from './components/message-box/message-box.component';
 import { TeamComponent } from './team/team.component';
@@ -102,6 +102,11 @@ import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.compone
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { DropdownSelectComponent } from './components/dropdown-select/dropdown-select.component';
 import { WhiteButtonComponent } from './components/white-button/white-button.component';
+import { TokenLabelComponent } from './components/tokens-input/token-label/token-label.component';
+import { InputDropdownComponent } from './components/input-dropdown/input-dropdown.component';
+import { DynamicModule } from "ng-dynamic-component";
+import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
+import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -293,6 +298,10 @@ export function appInitializerFactory(
     SpinnerComponent,
     DropdownSelectComponent,
     WhiteButtonComponent,
+    TokenLabelComponent,
+    InputDropdownComponent,
+    BlockchainsInputComponent,
+    BlockchainLabelComponent,
   ],
   entryComponents: [
     AuthComponent,
@@ -326,7 +335,8 @@ export function appInitializerFactory(
     NgxMaterialTimepickerModule,
     ClipboardModule,
     OwlModule,
-    NgToggleModule
+    NgToggleModule,
+    DynamicModule.withComponents([ TokenLabelComponent, BlockchainLabelComponent ])
   ],
   providers: [
     CookieService,
