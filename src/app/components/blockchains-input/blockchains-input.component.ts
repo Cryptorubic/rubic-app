@@ -4,17 +4,20 @@ import {List} from "immutable";
 import {IBlockchainShort} from "./types";
 import {BlockchainLabelComponent} from "./blockchain-label/blockchain-label.component";
 import {InputDropdownComponent} from "../input-dropdown/input-dropdown.component";
+import {DropdownComponentData} from "../input-dropdown/types";
 
 interface BlockchainLabelData {
   blockchain: IBlockchainShort;
   selected?: boolean;
 }
 
-interface BlockchainDropdownData {
+interface BlockchainDropdownData extends DropdownComponentData {
   inputs: BlockchainLabelData;
   id: string;
-  name: string;
-  label: string;
+  sortParameters: {
+    name: string;
+    label: string;
+  }
 }
 
 @Component({
@@ -61,15 +64,17 @@ export class BlockchainsInputComponent implements OnInit, OnChanges {
   private setBlockchainsInputData() {
     this.blockchainsInputData = List(
       this.blockchains.map(blockchain =>
-          ({ inputs: { blockchain }, id: blockchain.name, name: blockchain.name, label: blockchain.label })
+          ({ inputs: { blockchain }, id: blockchain.name, sortParameters: { name: blockchain.name, label: blockchain.label } })
     ));
 
     if (this.selectedBlockchain) {
       this.selectedBlockchainInputData = {
         inputs: { blockchain: this.selectedBlockchain, selected: true },
         id: this.selectedBlockchain.name,
-        name: this.selectedBlockchain.name,
-        label: this.selectedBlockchain.label
+        sortParameters: {
+          name: this.selectedBlockchain.name,
+          label: this.selectedBlockchain.label
+        }
       };
     } else {
       this.selectedBlockchainInputData = null;

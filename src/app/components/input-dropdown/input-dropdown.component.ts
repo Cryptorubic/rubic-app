@@ -1,10 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, Type, ViewChild} from '@angular/core';
 import {List} from "immutable";
-
-interface DropdownComponentData {
-  inputs: any;
-  id: any;
-}
+import {DropdownComponentData} from "./types";
 
 @Component({
   selector: 'app-input-dropdown',
@@ -13,7 +9,10 @@ interface DropdownComponentData {
 })
 /**
  * `T` is the type of the components' data.
- * It must include `inputs` to pass to the creator of the components and unique `id`.
+ * It must include:
+ * 1) `inputs` to pass to the creator of the components
+ * 2) unique `id`
+ * 3) `sort parameters` are the parameters, which will be used to sort components
  */
 export class InputDropdownComponent<T extends DropdownComponentData> implements OnInit {
   /**
@@ -55,6 +54,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   ngOnChanges() {
     this.setVisibleComponents();
     if (this.selectedComponentData) {
+      this.inputQuery = this.selectedComponentData.sortParameters[this.sortOrder[0]];
       this.unshiftComponentToVisibleList(
         this.componentsData.find(component => component.id === this.selectedComponentData.id)
       );
@@ -80,7 +80,8 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
       this.sortOrder.forEach(field =>
         queryMatch.push(
           ...this.componentsData
-            .filter(token => !queryMatch.includes(token) && token[field].toLowerCase().includes(query))
+            .filter(token =>
+              !queryMatch.includes(token) && token.sortParameters[field].toLowerCase().includes(query))
             .toArray()
         )
       );
@@ -94,7 +95,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   }
 
   public selectComponent(component: T) {
-    this.inputQuery = component[this.sortOrder[0]];
+    this.inputQuery = component.sortParameters[this.sortOrder[0]];
     this.unshiftComponentToVisibleList(component);
     this.toggleListOpen(false);
 

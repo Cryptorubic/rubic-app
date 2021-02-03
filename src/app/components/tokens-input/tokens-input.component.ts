@@ -12,17 +12,20 @@ import {List} from 'immutable';
 import {InputToken, InputTokenShort} from './types';
 import {TokenLabelComponent} from "./token-label/token-label.component";
 import {InputDropdownComponent} from "../input-dropdown/input-dropdown.component";
+import {DropdownComponentData} from "../input-dropdown/types";
 
 interface TokenLabelData {
   token: InputTokenShort;
   selected?: boolean;
 }
 
-interface TokenDropdownData {
+interface TokenDropdownData extends DropdownComponentData {
   inputs: TokenLabelData;
   id: string;
-  symbol: string;
-  name: string;
+  sortParameters: {
+    symbol: string;
+    name: string;
+  }
 }
 
 @Component({
@@ -93,15 +96,17 @@ export class TokensInputComponent implements OnInit, OnChanges {
    */
   private setTokensInputData() {
     this.tokensInputData = this.tokensList.map(token =>
-      ({ inputs: { token }, id: token.address, symbol: token.symbol, name: token.name })
+      ({ inputs: { token }, id: token.address, sortParameters: { symbol: token.symbol, name: token.name } })
     );
 
     if (this.selectedToken) {
       this.selectedTokenInputData = {
         inputs: { token: this.selectedToken, selected: true },
         id: this.selectedToken.address,
-        symbol: this.selectedToken.symbol,
-        name: this.selectedToken.name
+        sortParameters: {
+          symbol: this.selectedToken.symbol,
+          name: this.selectedToken.name
+        }
       }
     } else {
       this.selectedTokenInputData = null;
