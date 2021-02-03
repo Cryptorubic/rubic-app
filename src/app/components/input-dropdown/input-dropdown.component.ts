@@ -54,6 +54,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
 
   ngOnChanges() {
     this.setVisibleComponents();
+    if (this.selectedComponentData) {
+      this.unshiftComponentToVisibleList(
+        this.componentsData.find(component => component.id === this.selectedComponentData.id)
+      );
+    }
   }
 
   public toggleListOpen(isOpen: boolean) {

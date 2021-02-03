@@ -25,9 +25,8 @@
 
         <div class="choose-blockchains__blockchain form-field">
           <app-blockchains-input
-            class=""
             [selectedBlockchain]="fromBlockchain"
-            [blockchains]="Blockchains"
+            [blockchains]="blockchainsList"
             (blockchainChanges)="fromBlockchain = $event"
           ></app-blockchains-input>
         </div>
@@ -104,9 +103,8 @@
 
         <div class="choose-blockchains__blockchain form-field">
           <app-blockchains-input
-            class=""
             [selectedBlockchain]="toBlockchain"
-            [blockchains]="Blockchains"
+            [blockchains]="blockchainsList"
             (blockchainChanges)="toBlockchain = $event"
           ></app-blockchains-input>
         </div>
