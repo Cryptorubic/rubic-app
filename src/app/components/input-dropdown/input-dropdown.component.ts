@@ -16,7 +16,7 @@ import {DropdownComponentData} from "./types";
  */
 export class InputDropdownComponent<T extends DropdownComponentData> implements OnInit {
   /**
-   * The class of the component in the list.
+   * The class of the component in the dropdown list.
    */
   @Input() componentClass: Type<any>;
 

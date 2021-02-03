@@ -186,6 +186,11 @@
       class="cross-chain-form__advanced-section advanced-section"
       [ngClass]="{ 'cross-chain-form__advanced-section_opened': isAdvancedSectionShown }"
     >
+      <app-address-input
+        class="advanced-section__input-wrapper"
+        inputLabelText="Select custom destination address"
+        [addresses]="['0xfa392749d564f2d5f35d0b5ed7a38a46c2a2d4ea', '0xfa392749d564f2d5f35d0b5ed7a38a46c2a2d4ea']"
+      ></app-address-input>
     </div>
   </form>
 </div>

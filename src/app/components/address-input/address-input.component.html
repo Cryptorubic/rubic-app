@@ -1,0 +1,19 @@
+<div class="address-input">
+  <label for="address-input__input-id" class="address-input__label">{{ inputLabelText }}</label>
+
+  <div class="address-input__container">
+    <input
+      class="address-input__input"
+      id="address-input__input-id"
+      type="text"
+      placeholder="Enter Address"
+    />
+
+    <app-input-dropdown
+      [componentClass]="addressLabelComponentClass"
+      [componentsData]="addressesDropdownData"
+      [sortOrder]="addressSortOrder"
+      chooseComponentText="Choose Address"
+    ></app-input-dropdown>
+  </div>
+</div>

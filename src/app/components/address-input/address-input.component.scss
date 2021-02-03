@@ -1,0 +1,40 @@
+.address-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__label {
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 20px;
+  }
+
+  &__container {
+    position: relative;
+    width: 56%;
+    height: 54px;
+  }
+
+  &__input {
+    box-sizing: border-box;
+
+    height: 100%;
+    padding: 11px 10px 11px 22px;
+    border: 1px solid white;
+
+    color: #110931;
+    background: #f4f4f4;
+
+    line-height: 30px;
+    font-family: inherit;
+    font-size: 18px;
+
+    &::placeholder {
+      font-size: 20px;
+    }
+  }
+}
+
+.address-label {
+  padding: 10px;
+  color: #110931;
+}

@@ -102,22 +102,35 @@
 
   &__advanced-section {
     overflow: hidden;
-    display: flex;
 
     max-height: 0;
-    padding: 0 20px;
+    padding: 0 40px;
     border-top: 2px solid white;
 
     transition: all 0.7s ease;
 
     &_opened {
-      max-height: 79px;
-      padding: 20px;
+      max-height: 96px;
+      padding: 20px 40px;
       border-color: #E5E5E5;
+      animation: visibility 0.7s ease forwards;
+    }
+  }
+
+  .advanced-section {
+    display: flex;
+
+    &__input-wrapper {
+      width: 100%;
     }
   }
 }
 
+@keyframes visibility {
+  100% {
+    overflow: visible;
+  }
+}
 
 .choose-blockchains {
   display: flex;
