@@ -129,13 +129,3 @@
     }
   }
 }
-
-@include b(720) {
-  .input-dropdown {
-    &__search-input {
-      &_address {
-        font-size: 16px;
-      }
-    }
-  }
-}

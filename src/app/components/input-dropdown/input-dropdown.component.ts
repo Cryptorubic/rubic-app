@@ -39,10 +39,6 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    * if true, then dropdown width will take 100% of its parent, else - 50%.
    */
   @Input() fullWidth? = false;
-  /**
-   * Provides customization.
-   */
-  @Input() type?: string;
 
   /**
    * Emits the event after a component was chosen.
