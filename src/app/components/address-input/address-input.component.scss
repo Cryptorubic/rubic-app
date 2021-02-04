@@ -1,7 +1,10 @@
+@import '../../../scss/_mixins';
+
 .address-input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 1%;
 
   &__label {
     color: rgba(0, 0, 0, 0.5);
@@ -10,7 +13,9 @@
 
   &__container {
     position: relative;
-    width: 56%;
+    width: 100%;
+    min-width: 600px;
+    max-width: 630px;
     height: 54px;
   }
 
@@ -18,7 +23,7 @@
     box-sizing: border-box;
 
     height: 100%;
-    padding: 11px 10px 11px 22px;
+    padding: 11px 153px 11px 22px;
     border: 1px solid white;
 
     color: #110931;
@@ -35,6 +40,58 @@
 }
 
 .address-label {
-  padding: 10px;
+  padding: 14px 10px 14px 22px;
   color: #110931;
+  font-size: 18px;
+}
+
+@include b(1150) {
+  .address-input {
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+    grid-gap: 9px;
+
+    &__label {
+      padding-left: 9px;
+    }
+  }
+}
+
+@include b(970) {
+  .address-input {
+    padding: 0 calc(13px + 1%);
+  }
+}
+
+@include b(720) {
+  .address-input {
+    &__label {
+      font-size: 18px;
+    }
+
+    &__container {
+      min-width: initial;
+    }
+
+    &__input {
+      padding-left: 10px;
+      font-size: 16px;
+
+      &::placeholder {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .address-label {
+    padding-left: 8px;
+    font-size: 16px;
+  }
+}
+
+@include b(460) {
+  .address-input {
+    padding: 0;
+  }
 }

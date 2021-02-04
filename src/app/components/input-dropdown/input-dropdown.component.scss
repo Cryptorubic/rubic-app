@@ -1,3 +1,5 @@
+@import '../../../scss/_mixins';
+
 .input-dropdown {
   &__choose-button {
     position: absolute;
@@ -32,7 +34,6 @@
     z-index: 1;
 
     box-sizing: border-box;
-    width: 0;
     padding: 11px 10px 11px 22px;
     border: 1px solid white;
 
@@ -50,7 +51,6 @@
   &__choose-button_active + &__search-input {
     z-index: 4;
 
-    width: 52%;
     border-left: 1px solid #d8d8d8 !important;
 
     opacity: 1;
@@ -89,8 +89,6 @@
     top: 100%;
     right: 0;
     z-index: 3;
-
-    width: 52%;
   }
 
   .dropdown-components {
@@ -132,14 +130,12 @@
   }
 }
 
-@media screen and (max-width: 640px) {
+@include b(720) {
   .input-dropdown {
-    &__choose-button_active + &__search-input {
-      width: 100%;
-    }
-
-    &__dropdown-components {
-      width: 100%;
+    &__search-input {
+      &_address {
+        font-size: 16px;
+      }
     }
   }
 }

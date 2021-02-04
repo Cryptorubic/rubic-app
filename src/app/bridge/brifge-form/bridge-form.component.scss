@@ -104,14 +104,14 @@
     overflow: hidden;
 
     max-height: 0;
-    padding: 0 40px;
+    padding: 0 20px;
     border-top: 2px solid white;
 
     transition: all 0.7s ease;
 
     &_opened {
       max-height: 96px;
-      padding: 20px 40px;
+      padding: 20px;
       border-color: #E5E5E5;
       animation: visibility 0.7s ease forwards;
     }
@@ -174,7 +174,7 @@
 
     color: rgba(black, .5) !important;
     text-decoration: none !important;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 16px;
 
     &:hover {
@@ -386,19 +386,22 @@
       left: 22px;
       order: -1;
     }
+
+    &__advanced-section {
+      &_opened {
+        max-height: 125px;
+      }
+    }
   }
 }
 
-@include b(910) {
+@include b(970) {
   .cross-chain-form {
-    &__main-section {
-      padding: 20px 7px;
-    }
-
     &__main-section {
       flex-direction: column;
       align-items: center;
       grid-gap: 0;
+      padding: 20px 7px;
     }
 
     &__last-section {
@@ -430,6 +433,14 @@
       bottom: 11px;
       left: initial;
       order: 2;
+    }
+
+    &__advanced-section {
+      padding: 0 7px;
+
+      &_opened {
+        padding: 20px 7px;
+      }
     }
   }
 
@@ -468,7 +479,15 @@
   }
 }
 
-@include b(550) {
+@include b(440) {
+  .choose-blockchains {
+    &__address {
+      font-size: 14px;
+    }
+  }
+}
+
+@include b(390) {
   .choose-blockchains {
     &__address {
       font-size: 13px;

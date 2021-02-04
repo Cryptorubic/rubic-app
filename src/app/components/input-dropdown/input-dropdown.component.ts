@@ -36,6 +36,15 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   @Input() disabled? = false;
 
   /**
+   * if true, then dropdown width will take 100% of its parent, else - 50%.
+   */
+  @Input() fullWidth? = false;
+  /**
+   * Provides customization.
+   */
+  @Input() type?: string;
+
+  /**
    * Emits the event after a component was chosen.
    */
   @Output() componentChanges = new EventEmitter<DropdownComponentData>();
@@ -46,6 +55,8 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
 
   public isOpenList = false;
   public inputQuery = '';
+
+  public isMobile = window.innerWidth <= 640;
 
   constructor() {}
 

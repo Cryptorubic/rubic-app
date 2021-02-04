@@ -4,12 +4,12 @@
 >
   <img [src]="'./assets/images/icons/coins/' + blockchain.img" alt="Blockchain"/>
 
-  <span class="dropdown-label__text">
+  <div class="dropdown-label__text">
     <span *ngIf="!selected">
       {{ blockchain.label }}<br />
       ({{ blockchain.name }})
     </span>
 
     <span *ngIf="selected">{{ blockchain.name }}</span>
-  </span>
+  </div>
 </div>
