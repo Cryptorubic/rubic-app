@@ -1,53 +1,36 @@
-import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
-import {DropdownComponentData} from "../input-dropdown/types";
-import {InputDropdownComponent} from "../input-dropdown/input-dropdown.component";
-import {List} from "immutable";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
-interface AddressDropdownData extends DropdownComponentData {
-  inputs: {
-    address: string;
-  },
-  id: string,
-  sortParameters: {
-    address: string;
-  }
-}
+import { Web3ApiService } from '../../services/web3Api/web3-api.service';
 
 @Component({
   selector: 'app-address-input',
   templateUrl: './address-input.component.html',
   styleUrls: ['./address-input.component.scss']
 })
-export class AddressInputComponent implements OnInit, OnChanges {
+export class AddressInputComponent implements OnInit {
 
   @Input() inputLabelText: string;
-  @Input() addresses: string[];
 
-  @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<AddressDropdownData>;
+  @Output() addressEmitter = new EventEmitter<string>();
 
-  public addressLabelComponentClass = AddressLabelComponent;
-  public addressesDropdownData: List<AddressDropdownData>;
-  public readonly addressSortOrder = ['address'];
+  public isAddressCorrect: boolean;
+  public isAddressIncorrect: boolean;
 
-  constructor() { }
+  constructor(private web3Api: Web3ApiService) { }
 
   ngOnInit() {
   }
 
-  ngOnChanges() {
-    this.addressesDropdownData = List(this.addresses.map(address =>
-      ({ inputs: { address }, id: address, sortParameters: { address }})
-    ));
+  public checkAddressCorrectness(addressQuery: string) {
+    if (!addressQuery) {
+      this.isAddressIncorrect = this.isAddressCorrect = false;
+    } else {
+      this.isAddressCorrect = this.web3Api.isAddressCorrect(addressQuery);
+      this.isAddressIncorrect = !this.isAddressCorrect;
+
+      if (this.isAddressCorrect) {
+        this.addressEmitter.emit(addressQuery);
+      }
+    }
   }
-}
-
-@Component({
-  selector: 'address-label',
-  template: `<div class="address-label">{{address}}</div>`,
-  styleUrls: ['./address-input.component.scss']
-})
-export class AddressLabelComponent {
-
-  @Input() address: string;
-
 }

@@ -64,7 +64,8 @@ export class BridgeFormComponent implements OnInit {
   public tradeInProgress: boolean = false;
   public error: RubicError;
   public tradeSuccessId: string;
-  public walletAddress: string = this.bridgeService.walletAddress;
+  public walletAddressFrom: string = this.bridgeService.walletAddress;
+  public walletAddressTo: string = this.walletAddressFrom;
 
   public isAdvancedSectionShown = false;
 
@@ -218,7 +219,14 @@ export class BridgeFormComponent implements OnInit {
   public onConfirm() {
     this.buttonAnimation = true;
     this.bridgeService
-      .createTrade(this.selectedToken, this.fromBlockchain.name, this.toBlockchain.name, this.fromNumber, () => this.tradeInProgress = true)
+      .createTrade(
+        this.selectedToken,
+        this.fromBlockchain.name,
+        this.toBlockchain.name,
+        this.fromNumber,
+        this.walletAddressTo,
+        () => this.tradeInProgress = true
+      )
       .subscribe(
           (res: string) => {
           this.tradeSuccessId = res;
@@ -246,5 +254,9 @@ export class BridgeFormComponent implements OnInit {
     } else {
       this.Blockchains.Binance.shortLabel = this.Blockchains.Binance.label;
     }
+  }
+
+  public changeWalletAddressTo(newAddress: string) {
+    this.walletAddressTo = newAddress;
   }
 }

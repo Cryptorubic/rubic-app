@@ -107,7 +107,7 @@ import { InputDropdownComponent } from './components/input-dropdown/input-dropdo
 import { DynamicModule } from "ng-dynamic-component";
 import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
-import {AddressInputComponent, AddressLabelComponent} from './components/address-input/address-input.component';
+import { AddressInputComponent } from './components/address-input/address-input.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -303,8 +303,7 @@ export function appInitializerFactory(
     InputDropdownComponent,
     BlockchainsInputComponent,
     BlockchainLabelComponent,
-    AddressInputComponent,
-    AddressLabelComponent
+    AddressInputComponent
   ],
   entryComponents: [
     AuthComponent,
@@ -339,7 +338,7 @@ export function appInitializerFactory(
     ClipboardModule,
     OwlModule,
     NgToggleModule,
-    DynamicModule.withComponents([ TokenLabelComponent, BlockchainLabelComponent, AddressLabelComponent ])
+    DynamicModule.withComponents([ TokenLabelComponent, BlockchainLabelComponent ])
   ],
   providers: [
     CookieService,

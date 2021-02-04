@@ -88,6 +88,7 @@ export class BridgeService {
       fromNetwork: string,
       toNetwork: string,
       amount: BigNumber,
+      toAddress: string,
       onTransactionHash?: (hash:string) => void
   ): Observable<string> {
       if (this.web3Api.error) {
@@ -103,7 +104,7 @@ export class BridgeService {
           fromNetwork,
           source: 921,
           symbol: token.symbol,
-          toAddress: this.web3Api.address,
+          toAddress: toAddress,
           toAddressLabel: "",
           toNetwork,
           walletAddress: this.web3Api.address,

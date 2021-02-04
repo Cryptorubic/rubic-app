@@ -13,9 +13,8 @@
 
   &__container {
     position: relative;
-    width: 100%;
-    min-width: 600px;
-    max-width: 630px;
+    width: 60%;
+    min-width: 500px;
     height: 54px;
   }
 
@@ -23,26 +22,29 @@
     box-sizing: border-box;
 
     height: 100%;
-    padding: 11px 153px 11px 22px;
+    padding: 11px 11px 11px 22px;
     border: 1px solid white;
 
     color: #110931;
     background: #f4f4f4;
 
-    line-height: 30px;
     font-family: inherit;
     font-size: 18px;
 
     &::placeholder {
       font-size: 20px;
     }
-  }
-}
 
-.address-label {
-  padding: 14px 10px 14px 22px;
-  color: #110931;
-  font-size: 18px;
+    &_correct {
+      border-color: rgb(74, 169, 86);
+      box-shadow: 0 0 5px rgba(74, 169, 86, 0.4);
+    }
+
+    &_incorrect {
+      border-color: rgb(255, 41, 68);
+      box-shadow: 0 0 5px rgba(255, 41, 68, 0.4);
+    }
+  }
 }
 
 @include b(1150) {
@@ -54,6 +56,10 @@
 
     &__label {
       padding-left: 9px;
+    }
+
+    &__container {
+      width: 65%;
     }
   }
 }
@@ -71,11 +77,11 @@
     }
 
     &__container {
-      min-width: initial;
+      min-width: 420px;
     }
 
     &__input {
-      padding-left: 10px;
+      padding-left: 12px;
       font-size: 16px;
 
       &::placeholder {
@@ -83,10 +89,14 @@
       }
     }
   }
+}
 
-  .address-label {
-    padding-left: 8px;
-    font-size: 16px;
+@include b(500) {
+  .address-input {
+    &__container {
+      width: 100%;
+      min-width: initial;
+    }
   }
 }
 

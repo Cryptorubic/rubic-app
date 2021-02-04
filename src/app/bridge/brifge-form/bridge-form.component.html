@@ -31,8 +31,8 @@
           ></app-blockchains-input>
         </div>
 
-          <a class="choose-blockchains__address" [href]="fromBlockchain.addressBaseUrl + walletAddress" target="_blank">
-            {{walletAddress}}
+          <a class="choose-blockchains__address" [href]="fromBlockchain.addressBaseUrl + walletAddressFrom" target="_blank">
+            {{walletAddressFrom}}
           </a>
 
           <div class="choose-blockchains__title">
@@ -109,8 +109,8 @@
           ></app-blockchains-input>
         </div>
 
-          <a class="choose-blockchains__address" [href]="toBlockchain.addressBaseUrl + walletAddress" target="_blank">
-            {{walletAddress}}
+          <a class="choose-blockchains__address" [href]="toBlockchain.addressBaseUrl + walletAddressTo" target="_blank">
+            {{walletAddressTo}}
           </a>
 
           <div class="choose-blockchains__title">
@@ -143,7 +143,7 @@
           </div>
 
           <div class="choose-blockchains__address-info">
-            You will get {{toBlockchain.label}} tokens to the same address
+            You will get {{toBlockchain.label}} tokens to the provided address
           </div>
           <a class="choose-blockchains__binance" href="https://www.binance.org/" target="_blank">
             What is Binance Smart Chain?
@@ -189,7 +189,7 @@
       <app-address-input
         class="advanced-section__input-wrapper"
         inputLabelText="Select custom destination address"
-        [addresses]="['0xfa392749d564f2d5f35d0b5ed7a38a46c2a2d4ea', '0xfa392749d564f2d5f35d0b5ed7a38a46c2a2d4ea']"
+        (addressEmitter)="changeWalletAddressTo($event)"
       ></app-address-input>
     </div>
   </form>
