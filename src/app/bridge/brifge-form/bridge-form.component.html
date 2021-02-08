@@ -31,8 +31,8 @@
           ></app-blockchains-input>
         </div>
 
-          <a class="choose-blockchains__address" [href]="fromBlockchain.addressBaseUrl + walletAddressFrom" target="_blank">
-            {{walletAddressFrom}}
+          <a class="choose-blockchains__address" [href]="fromBlockchain.addressBaseUrl + fromWalletAddress" target="_blank">
+            {{fromWalletAddress}}
           </a>
 
           <div class="choose-blockchains__title">
@@ -109,8 +109,8 @@
           ></app-blockchains-input>
         </div>
 
-          <a class="choose-blockchains__address" [href]="toBlockchain.addressBaseUrl + walletAddressTo" target="_blank">
-            {{walletAddressTo}}
+          <a class="choose-blockchains__address" [href]="toBlockchain.addressBaseUrl + toWalletAddress" target="_blank">
+            {{toWalletAddress}}
           </a>
 
           <div class="choose-blockchains__title">
