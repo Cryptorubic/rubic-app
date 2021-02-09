@@ -303,6 +303,7 @@
   }
 }
 .etherscan-link {
+  margin-right: calc(25% + 10px);
   margin-top: 4px;
   font-size: 18px;
   line-height: 22px;
@@ -460,4 +461,29 @@
   &__icon {
     margin-right: 10px;
   }
+}
+
+.uniswap {
+  position: relative;
+  top: -15px;
+  margin: 0 -10px;
+  padding-bottom: 25px;
+}
+
+.uniswap-tokens-input {
+  width: 37.5%;
+  position: relative;
+  margin-left: 37%;
+  padding: 0 10px;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.uniswap-button {
+  box-sizing: border-box;
+  display: inline-block;
+  width: 25% !important;
+  padding: 0 10px;
+  position: relative;
+  left: 5px;
 }

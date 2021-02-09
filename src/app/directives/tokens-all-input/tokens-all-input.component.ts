@@ -34,6 +34,7 @@ export class TokensAllInputComponent implements OnInit {
   @Input() public amountPlaceholder: boolean = true;
   @Input() public resetForm: EventEmitter<any>;
   @Input() private exclude;
+  @Input() moveInput = false;
 
   @ViewChild('tokenForm') tokenForm;
 
