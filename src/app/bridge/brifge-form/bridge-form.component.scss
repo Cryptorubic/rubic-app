@@ -86,7 +86,7 @@
     border: none;
 
     color: #4AA956;
-    background: top 4px right 4px / 12px url(src/assets/images/icons/arrow/arrow-down-green.svg) no-repeat white;
+    background: white;
 
     font-size: inherit;
     font-family: inherit;
@@ -95,8 +95,20 @@
 
     cursor: pointer;
 
+    img {
+      position: relative;
+      top: -1px;
+      left: 3px;
+
+      width: 12px;
+
+      transition: transform 0.7s ease;
+    }
+
     &_opened {
-      background-image: url(src/assets/images/icons/arrow/arrow-up-green.svg);
+      img {
+        transform: rotateX(180deg);
+      }
     }
   }
 
@@ -107,13 +119,15 @@
     padding: 0 20px;
     border-top: 2px solid white;
 
+    opacity: 0;
+
     transition: all 0.7s ease;
 
     &_opened {
       max-height: 96px;
       padding: 20px;
       border-color: #E5E5E5;
-      animation: visibility 0.7s ease forwards;
+      opacity: 1;
     }
   }
 
@@ -123,12 +137,6 @@
     &__input-wrapper {
       width: 100%;
     }
-  }
-}
-
-@keyframes visibility {
-  100% {
-    overflow: visible;
   }
 }
 
