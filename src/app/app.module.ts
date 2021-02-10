@@ -304,8 +304,8 @@ export function appInitializerFactory(
     InputDropdownComponent,
     BlockchainsInputComponent,
     BlockchainLabelComponent,
-    AddressInputComponent
-    NetworkErrorComponent,
+    AddressInputComponent,
+    NetworkErrorComponent
   ],
   entryComponents: [
     AuthComponent,
