@@ -7,7 +7,7 @@
       <div
         *ngFor="let question of questions; let $index = index;"
         [ngClass]="{'questions-container__question_active': question.isActive}"
-        (click)="question.isActive = !question.isActive"
+        (click)="makeQuestionActive(question, $index)"
         class="questions-container__question"
       >
         <div class="questions-container__question-head">
@@ -17,7 +17,7 @@
           </span>
           <div class="questions-container__arrow"></div>
         </div>
-        <p *ngIf="question.isActive" class="questions-container__text"
+        <p class="questions-container__text"
         [innerHTML]="'FAQ_QUESTIONS.' + $index + '.ANSWER' | translate"
            (click)="$event.stopPropagation()"
         >
