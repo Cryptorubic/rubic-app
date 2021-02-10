@@ -11,4 +11,12 @@
   justify-content: center;
 
   background: rgba(black, .32);
+
+  .transaction-description {
+    text-align: left;
+
+    span {
+      white-space: pre-wrap;
+    }
+  }
 }

@@ -120,9 +120,9 @@
       "ANSWER": "There are no limits."
     }, {
       "QUESTION": "How does it work?",
-      "ANSWER": "There are two options for trading:\n First, you create a trade on your own terms and wait till another part agrees with them and fills his share.\n Second, you choose the instant trade option and you agree with the terms of another part.\n\nYou can create your own token without any coding skills and trade it without having to be listed."
+      "ANSWER": "There are two options for trading:\n First, you create a trade on your own terms and wait till another part agrees with them and fills his share.\n Second, you choose the instant trade option and you will automatically get the market rates.\n\nYou can create your own token without any coding skills and trade it without having to be listed."
     }, {
-      "QUESTION": "What cryptocurrencies are supported?",
+      "QUESTION": "Which cryptocurrencies are supported?",
       "ANSWER": "At the moment, Rubic allows trading for Ethereum-based tokens (ERC-20) and Binance Smart Chain tokens (BEP-20). More blockchains will be implemented soon (see Roadmap). However, to create and manage tokens we already provide multichain services supported by Ethereum, Tron, EOS, NEO and Binance Smart Chain."
     }, {
       "QUESTION": "Should I list my token before using your service?",
@@ -132,7 +132,7 @@
       "ANSWER": "It is easy and fast. You only need the MetaMask crypto wallet (more wallets will be supported). Choose the blockchain in which you want to swap tokens, and choose to trade either with Instant Trades or Order Book."
     }, {
       "QUESTION": "How to create a trade?",
-      "ANSWER": "Order Book:\nStep 1: Select your blockchain in which you want to swap tokens and choose Order Book. \nStep 2:  Choose the tokens you want to exchange, at your desired rate\nStep 3: Choose advanced options, such as closing date and time, minimum and maximum contribution, privacy, brokerage fee, lock liquidity until the trade completion. \nStep 4: Check details of the trade. \nStep 5: Click Create Trade.\nStep 6: Use MetaMask to confirm your trade. \nStep 7. Contribute to your part of the deal.\n<a href='https://www.youtube.com/watch?v=9FCHTOT9Z9k' target='_blank'>Video tutorial (this method works for any blockchain)</a>\n\nInstant Trades:\nStep 1: Select Instant Trades and fill out the form, by choosing the tokens you want to exchange.\nStep 2: Enter the desired amount you want to exchange.\nStep 3: Now, the DEX aggregator, will automatically show you the best rates across multiple protocols.\nStep 4: Press Create trade button.\nStep 5: Use MetaMask to confirm your trade, and now wait for the transaction to be confirmed into the blockchain.\n\n<a href='https://youtu.be/kxg9GQvBU2A' target='_blank'>Video tutorial</a>\n"
+      "ANSWER": "<span class='highlight'>Order Book:</span>\n<strong>Step 1:</strong> Select your blockchain in which you want to swap tokens and choose Order Book. \n<strong>Step 2:</strong> Choose the tokens you want to exchange, at your desired rate.\n<strong>Step 3:</strong> Choose advanced options, such as closing date and time, minimum and maximum contribution, privacy, brokerage fee, lock liquidity until the trade completion. \n<strong>Step 4:</strong> Check details of the trade. \n<strong>Step 5:</strong> Click Create Trade.\n<strong>Step 6:</strong> Use MetaMask to confirm your trade. \n<strong>Step 7:</strong> Contribute to your part of the deal.\n<a href='https://www.youtube.com/watch?v=9FCHTOT9Z9k' target='_blank'>Video tutorial (this method works for any blockchain)</a>\n\n<span class='highlight'>Instant Trades:</span>\n<strong>Step 1:</strong> Select Instant Trades and fill out the form, by choosing the tokens you want to exchange.\n<strong>Step 2:</strong> Enter the desired amount you want to exchange.\n<strong>Step 3:</strong> Now, the DEX aggregator, will automatically show you the best rates across multiple protocols.\n<strong>Step 4:</strong> Press Create trade button.\n<strong>Step 5:</strong> Use MetaMask to confirm your trade, and now wait for the transaction to be confirmed into the blockchain.\n<a href='https://youtu.be/kxg9GQvBU2A' target='_blank'>Video tutorial</a>\n"
     }, {
       "QUESTION": "How much does it cost?",
       "ANSWER": "Currently, our service doesn't charge any fee for Instant Trades, neither for the Order Book trades."
@@ -146,8 +146,8 @@
       "QUESTION": "How many people can participate in one deal (Order Book)?",
       "ANSWER": "Up to 10 people can participate on each side."
     }, {
-      "QUESTION": "What will happen if the second part doesn’t complete a deal?",
-      "ANSWER": "The deal will expire and you will receive all of your tokens back."
+      "QUESTION": "What will happen if the second part doesn’t complete a deal (P2P)?",
+      "ANSWER": "After its expiration date, you will need to go to your trades table and click on 'Withdraw', this way you will get your tokens back (network fee will apply)."
     }, {
       "QUESTION": "If I created a deal, however, I have changed my mind, can I cancel it?",
       "ANSWER": "For Order Book trades: Yes, you can cancel your deal any time before the part starts completing their side. If you cancel a deal, you'll get your tokens back.\nFor Instant Trades: Most of the time, the answer is NO. This action is actually an attempt to overwrite a currently pending transaction with a new one. Please check <a href='https://info.etherscan.com/how-to-cancel-ethereum-pending-transactions/' target='_blank'>official external services info</a>"
@@ -156,10 +156,10 @@
       "ANSWER": "<a href='/assets/book.pdf' target='_blank'>Please click here for more details.</a>"
     }, {
       "QUESTION": "How to use cross-chain bridge?",
-      "ANSWER": "Step 1. Install MetaMask wallet (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) and connect it to Rubic.exchange. \n\nStep 2. Choose your exchange destination (from Ethereum to Binance or vice-versa). You can switch your destination by clicking on the swap arrows button. \n\nStep 3. Currently, users are able to swap 25 ERC20 tokens with their corresponding BEP20 version, and vice-versa (and the list keeps getting updated). The list of tokens:\nUSDT to BUSDT-T (Tether)\nETH to ETH\nBBTC to BTCB\nBBCH to BCH\nBDOT to DOT\nBFIL to FIL\nSNX to SNX\nDAI to DAI\nBAND to BAND\nBAT to BAT\nLINK to LINK\nUNI to UNI\nYFII to YFII\nYFI to YFI\nBUSD to BUSD\nCOMP to COMP\nMKR to MKR\nTCT to TCT\nIOTX to IOTX\nBEL to BEL\nELF to ELF\nPAX to PAX\nUSDC to USDC\nINJ to INJ\nSXP to SX\n\n\nStep 4. Enter the number of tokens you want to swap (check below the minimum and maximum amount of tokens that you’re able to exchange). Proceed next if you are satisfied with the returning amount of tokens (this includes the Binance fee).\n\nStep 5. You can view tokens' contracts by clicking on 'Check on Etherscan/BSCscan'.\n\nStep 6.  Click Create Swap, followed by MetaMask's trade confirmation. \n\nStep 7. Please wait until the transaction will be recorded in the blockchain. Once your transaction is accepted you will be notified. You can find the transaction details in the table. Please wait until the Binance will process it as well."
+      "ANSWER": "<strong>Step 1.</strong> Install MetaMask wallet (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) and connect it to Rubic.exchange. \n\n<strong>Step 2.</strong> Choose your exchange destination (from Ethereum to Binance or vice-versa). You can switch your destination by clicking on the swap arrows button. \n\n<strong>Step 3.</strong> Currently, users are able to swap 25 ERC20 tokens with their corresponding BEP20 version, and vice-versa (and the list keeps getting updated). The list of tokens:\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>Step 4.</strong> Enter the number of tokens you want to swap (check below the minimum and maximum amount of tokens that you’re able to exchange). Proceed next if you are satisfied with the returning amount of tokens (this includes the Binance fee).\n\n<strong>Step 5.</strong> You can view tokens' contracts by clicking on 'Check on Etherscan/BSCscan'.\n\n<strong>Step 6.</strong>  Click Create Swap, followed by MetaMask's trade confirmation. \n\n<strong>Step 7.</strong> Please wait until the transaction will be recorded in the blockchain. Once your transaction is accepted you will be notified. You can find the transaction details in the table. Please wait until the Binance will process it as well."
     }, {
-      "QUESTION": "Why I am not able to use cross cahin and it shows that I have used it a lot. Whats the limit and cooldown?",
-      "ANSWER": "There is a limit for 3 swaps in 30 minutes, however we have already contacted Binance to expand it."
+      "QUESTION": "I'm not able to use cross-chain swaps, it appears I have exceeded the limit. What should I do?",
+      "ANSWER": "Please wait and try again later, as currently there is a limit of 3 cross-chain swaps in 30 minutes. This will soon improve."
     }, {
       "QUESTION": "How long does it take to complete a cross-chain swap?",
       "ANSWER": "It usually varies, and this does not depend on us, but on the two blockchains.\nAs estimations we have 2 minutes for initialization, then 4 minutes for feedback waiting, and another couple of  minutes for deposit. \n\nThe current average time is approximately 10 minutes.\n"
@@ -199,7 +199,7 @@
   "Min Contribution Limit:": "Min Contribution Limit:",
   "Only Owner can contribute": "Only Owner can contribute",
   "Brokers fee:": "Brokers fee:",
-  "Refund": "Refund",
+  "Withdraw": "Withdraw",
   "Left": "Left",
 
   "Link to deal": "Link to deal",
@@ -226,7 +226,25 @@
 
   "BUTTONS": {
     "ACCEPT": "Accept"
-  }
+  },
+
+  "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.":
+  "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
+  "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to www.metamask.io and follow the steps.":
+  "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> and follow the steps.",
+  "You have selected the wrong network. Please choose { networkToChoose } from MetaMask.":
+  "You have selected the wrong network. Please choose {{ networkToChoose }} from MetaMask.",
+  "You have attempted to execute too many trades in a short period of time. Please wait and try again later, if you still have problems please reach out to our Customer Support.":
+  "You have attempted to execute too many trades in a short period of time. Please wait and try again later, if you still have problems please reach out to our <a href='mailto:support@rubic.finance' target='_blank'>Customer Support</a>.",
+  "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.":
+  "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.",
+  "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
+  "Please try again later or try using another device. If you’re still having problems, please reach out to our <a href='mailto:support@rubic.finance' target='_blank'>Customer Support</a>.",
+
+  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
+  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
+  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
+  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains."
 }
 
 

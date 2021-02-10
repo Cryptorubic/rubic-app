@@ -147,7 +147,7 @@ export class BridgeService {
 
           await this.sendTransactionInfo(tx);
           await this.updateTransactionsList();
-          this.backendApiService.notifyBot(tx, this.web3Api.address);
+          this.backendApiService.notifyBridgeBot(tx, this.web3Api.address);
       }
 
       await tx.sendDeposit(onTxHash);

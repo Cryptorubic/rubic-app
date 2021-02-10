@@ -43,7 +43,7 @@ export class BackendApiService {
     })
   }
 
-  public notifyBot(tx: BridgeTransaction, walletAddress: string): Promise<void> {
+  public notifyBridgeBot(tx: BridgeTransaction, walletAddress: string): Promise<void> {
     const body = {
       binanceId: tx.binanceId,
       walletAddress,
@@ -54,7 +54,36 @@ export class BackendApiService {
     }
 
     return new Promise<void>((resolve, reject) => {
-      this.httpClient.post( environment.botUrl, body).subscribe(() => {
+      this.httpClient.post( environment.bridgeBotUrl, body).subscribe(() => {
+            resolve();
+          },
+          error => {
+            console.log(error);
+            reject(error);
+          })
+    })
+  }
+
+  public notifyInstantTradesBot(
+      walletAddress: string,
+      amountFrom: number,
+      amountTo: number,
+      symbolFrom: string,
+      symbolTo: string,
+      txHash: string
+      ): Promise<void> {
+
+    const body = {
+      walletAddress,
+      amountFrom,
+      amountTo,
+      symbolFrom,
+      symbolTo,
+      txHash
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      this.httpClient.post( environment.instantTradesBotUrl, body).subscribe(() => {
             resolve();
           },
           error => {

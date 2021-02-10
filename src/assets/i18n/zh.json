@@ -187,7 +187,7 @@
   "Min Contribution Limit:":"最低出资限额",
   "Only Owner can contribute":"只有业主可以出资",
   "Brokers fee：":"经纪人费用",
-  "Refund": "退款",
+  "Withdraw": "退款",
   "Left":"左",
 
   "Link to deal":"链接到交易",
@@ -200,5 +200,23 @@
   "Name": "姓名",
   "Creation date":"创建日期",
   "Do you want to remove it?":"你想删除它吗？",
-  "Do you really want to Log Out?": "你真的想注销吗？"
+  "Do you really want to Log Out?": "你真的想注销吗？",
+
+  "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.":
+  "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
+  "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to www.metamask.io and follow the steps.":
+  "出现这个错误是因为您没有在浏览器中安装Metamask插件。要解决这个问题，请在您的浏览器中安装并激活Metamask插件。\n请访问 <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> 并按照步骤操作。",
+  "You have selected the wrong network. Please choose { networkToChoose } from MetaMask.":
+  "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
+  "You have attempted to execute too many trades in a short period of time. Please wait and try again later, if you still have problems please reach out to our Customer Support.":
+  "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
+  "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.":
+  "您拒绝执行交易。请先确认，以便完成交易。",
+  "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
+  "请稍后再试，或尝试使用其他设备。如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
+
+  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
+  "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
+  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
+  "跨链交换的过程已经开始。请等待双方区块链完成交易。"
 }

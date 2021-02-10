@@ -26,7 +26,7 @@ header {
 .app-content-block {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   &_right {
     width: 100%;
   }
@@ -497,7 +497,7 @@ header {
   }
 
   .language-select-list {
-    margin: 0 33px 0 auto;
+    margin: 0 39px 0 auto;
     color: #4AA956;
     font-size: 12px;
     letter-spacing: 2px;
