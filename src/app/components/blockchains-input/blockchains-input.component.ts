@@ -35,8 +35,8 @@ export class BlockchainsInputComponent implements OnInit, OnChanges {
   @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<BlockchainDropdownData>;
 
   public readonly blockchainLabelComponentClass = BlockchainLabelComponent;
-  public blockchainsInputData = List<BlockchainDropdownData>();
-  public selectedBlockchainInputData: BlockchainDropdownData;
+  public blockchainsDropdownData = List<BlockchainDropdownData>();
+  public selectedBlockchainDropdownData: BlockchainDropdownData;
   public blockchainsSortOrder = ['name', 'label'];
 
   constructor() {}
@@ -62,13 +62,13 @@ export class BlockchainsInputComponent implements OnInit, OnChanges {
    * Sets blockchains' input data to pass to the input-dropdown and components' creator.
    */
   private setBlockchainsInputData() {
-    this.blockchainsInputData = List(
+    this.blockchainsDropdownData = List(
       this.blockchains.map(blockchain =>
           ({ inputs: { blockchain }, id: blockchain.name, sortParameters: { name: blockchain.name, label: blockchain.label } })
     ));
 
     if (this.selectedBlockchain) {
-      this.selectedBlockchainInputData = {
+      this.selectedBlockchainDropdownData = {
         inputs: { blockchain: this.selectedBlockchain, selected: true },
         id: this.selectedBlockchain.name,
         sortParameters: {
@@ -77,7 +77,7 @@ export class BlockchainsInputComponent implements OnInit, OnChanges {
         }
       };
     } else {
-      this.selectedBlockchainInputData = null;
+      this.selectedBlockchainDropdownData = null;
     }
   }
 }

@@ -176,4 +176,8 @@ export class Web3ApiService {
           });
     });
   }
+
+  public isAddressCorrect(address: string) {
+    return this.web3.utils.isAddress(address);
+  }
 }

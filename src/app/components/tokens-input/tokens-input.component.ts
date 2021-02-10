@@ -47,8 +47,8 @@ export class TokensInputComponent implements OnInit, OnChanges {
   @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<TokenDropdownData>;
 
   public readonly tokenLabelComponentClass = TokenLabelComponent;
-  public tokensInputData = List<TokenDropdownData>();
-  public selectedTokenInputData: TokenDropdownData;
+  public tokensDropdownData = List<TokenDropdownData>();
+  public selectedTokenDropdownData: TokenDropdownData;
   public tokensSortOrder = ['symbol', 'name'];
   public VISIBLE_TOKENS_NUMBER = 10;
 
@@ -95,12 +95,12 @@ export class TokensInputComponent implements OnInit, OnChanges {
    * Sets tokens' input data to pass to the input-dropdown and components' creator.
    */
   private setTokensInputData() {
-    this.tokensInputData = this.tokensList.map(token =>
+    this.tokensDropdownData = this.tokensList.map(token =>
       ({ inputs: { token }, id: token.address, sortParameters: { symbol: token.symbol, name: token.name } })
     );
 
     if (this.selectedToken) {
-      this.selectedTokenInputData = {
+      this.selectedTokenDropdownData = {
         inputs: { token: this.selectedToken, selected: true },
         id: this.selectedToken.address,
         sortParameters: {
@@ -109,7 +109,7 @@ export class TokensInputComponent implements OnInit, OnChanges {
         }
       }
     } else {
-      this.selectedTokenInputData = null;
+      this.selectedTokenDropdownData = null;
     }
   }
 }

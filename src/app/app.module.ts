@@ -107,6 +107,7 @@ import { InputDropdownComponent } from './components/input-dropdown/input-dropdo
 import { DynamicModule } from "ng-dynamic-component";
 import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
+import { AddressInputComponent } from './components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
@@ -303,6 +304,7 @@ export function appInitializerFactory(
     InputDropdownComponent,
     BlockchainsInputComponent,
     BlockchainLabelComponent,
+    AddressInputComponent
     NetworkErrorComponent,
   ],
   entryComponents: [
