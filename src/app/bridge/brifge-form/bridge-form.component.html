@@ -179,6 +179,13 @@
 
 <app-message-box *ngIf="error"
         title="Error"
-        [description]="error.comment || 'Something went wrong, please try again later.'"
+        [descriptionText]="error.comment || 'Something went wrong, please try again later.'"
+        (onClose)="closeErrorModal()">
+</app-message-box>
+
+<app-message-box *ngIf="errorComponent"
+        title="Error"
+        [descriptionComponentClass]="errorComponent.componentClass"
+        [descriptionComponentInputs]="errorComponent.inputs"
         (onClose)="closeErrorModal()">
 </app-message-box>
