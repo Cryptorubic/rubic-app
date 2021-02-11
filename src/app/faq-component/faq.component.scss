@@ -51,7 +51,7 @@
     white-space: pre-line;
     line-height: 28px;
     opacity: 0;
-    transition: all 0.4s ease;
+    transition: all 0.5s ease;
   }
   &__arrow {
     position: relative;
@@ -62,7 +62,7 @@
     border: solid #4aa956;
     border-width: 0 2px 2px 0;
     transform: rotate(315deg);
-    transition: transform 0.4s ease;
+    transition: transform 0.5s ease;
   }
 }
 
