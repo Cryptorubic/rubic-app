@@ -1,0 +1,19 @@
+<div class="address-input">
+  <label for="address-input__input-id" class="address-input__label">{{ inputLabelText }}</label>
+
+  <div class="address-input__container">
+    <input
+      class="address-input__input"
+      [ngClass]="{
+        'address-input__input_correct': isAddressCorrect,
+        'address-input__input_incorrect': isAddressIncorrect
+      }"
+      id="address-input__input-id"
+      type="text"
+      placeholder="Enter Address"
+      spellcheck="false"
+      ngModel=""
+      (ngModelChange)="checkAddressCorrectness($event)"
+    />
+  </div>
+</div>

@@ -617,7 +617,7 @@
 <ng-template #metaMaskError>
   <app-message-box
           title="Error"
-          description="Please choose main net network in Metamask."
+          descriptionText="Please choose main net network in Metamask."
           (onClose)="closeMetaMaskError()">
   </app-message-box>
 </ng-template>
@@ -625,7 +625,7 @@
 <ng-template #insufficientFundsError>
   <app-message-box
           title="Warning"
-          description="Insufficient funds to complete the trade."
+          descriptionText="Insufficient funds to complete the trade."
           additionalDescription="Please check the trade details."
           (onClose)="closeMetaMaskError()">
   </app-message-box>

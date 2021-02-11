@@ -200,5 +200,23 @@
   "Name": "Название",
   "Creation date": "Дата создания",
   "Do you want to remove it?": "Вы хотите удалить?",
-  "Do you really want to Log Out?": "Вы действительно хотите выйти?"
+  "Do you really want to Log Out?": "Вы действительно хотите выйти?",
+
+  "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.":
+  "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
+  "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to www.metamask.io and follow the steps.":
+  "Эта ошибка возникает из-за того, что вы не установили расширение Metamask в свой браузер. Чтобы решить эту проблему, пожалуйста, установите и активируйте расширение Metamask в вашем браузере.\nПожалуйста, перейдите по ссылке <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> и следуйте инструкциям.",
+  "You have selected the wrong network. Please choose { networkToChoose } from MetaMask.":
+  "Вы выбрали не ту сеть. Пожалуйста, выберите {{ networkToChoose }} в MetaMask.",
+  "You have attempted to execute too many trades in a short period of time. Please wait and try again later, if you still have problems please reach out to our Customer Support.":
+  "Вы пытались совершить слишком много сделок за короткий промежуток времени. Пожалуйста, подождите и повторите попытку позже, если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
+  "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.":
+  "Вы отказались от исполнения сделки. Пожалуйста, сначала подтвердите сделку, чтобы её завершить.",
+  "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
+  "Пожалуйста, повторите попытку позже или попробуйте использовать другое устройство. Если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
+
+  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
+  "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
+  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
+  "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами."
 }
