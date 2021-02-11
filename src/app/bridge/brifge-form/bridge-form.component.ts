@@ -1,11 +1,17 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit, Type} from '@angular/core';
 import {BridgeService} from '../../services/bridge/bridge.service';
 import {List} from 'immutable';
 import {IBridgeToken, BridgeNetwork, IBlockchains, IBlockchain} from '../../services/bridge/types';
 import {RubicError} from '../../errors/RubicError';
 import BigNumber from 'bignumber.js';
 import {InputToken} from '../../components/tokens-input/types';
+import {NetworkError} from "../../errors/bridge/NetworkError";
+import {NetworkErrorComponent} from "../bridge-errors/network-error/network-error.component";
 
+interface ErrorComponent {
+  componentClass: Type<any>,
+  inputs: any
+}
 
 @Component({
   selector: 'app-bridge-form',
@@ -63,8 +69,12 @@ export class BridgeFormComponent implements OnInit {
   public buttonAnimation: boolean = false;
   public tradeInProgress: boolean = false;
   public error: RubicError;
+  public errorComponent: ErrorComponent;
   public tradeSuccessId: string;
-  public walletAddress: string = this.bridgeService.walletAddress;
+  public fromWalletAddress: string = this.bridgeService.walletAddress;
+  public toWalletAddress: string = this.fromWalletAddress;
+
+  public isAdvancedSectionShown = false;
 
   private smallMobileWidth = 410;
 
@@ -216,13 +226,26 @@ export class BridgeFormComponent implements OnInit {
   public onConfirm() {
     this.buttonAnimation = true;
     this.bridgeService
-      .createTrade(this.selectedToken, this.fromBlockchain.name, this.toBlockchain.name, this.fromNumber, () => this.tradeInProgress = true)
+      .createTrade(
+        this.selectedToken,
+        this.fromBlockchain.name,
+        this.toBlockchain.name,
+        this.fromNumber,
+        this.toWalletAddress,
+        () => this.tradeInProgress = true
+      )
       .subscribe(
           (res: string) => {
           this.tradeSuccessId = res;
         },
         err => {
-          if (err instanceof RubicError) {
+            console.log("E", err, err instanceof NetworkError);
+          if (err instanceof NetworkError) {
+            this.errorComponent = {
+              componentClass: NetworkErrorComponent,
+              inputs: { networkError: err }
+            };
+          } else if (err instanceof RubicError) {
             this.error = err;
           } else {
             this.error = new RubicError();
@@ -234,7 +257,7 @@ export class BridgeFormComponent implements OnInit {
   }
 
   public closeErrorModal() {
-    this.error = null;
+    this.error = this.errorComponent = null;
   }
 
   @HostListener('window:resize', ['$event'])
@@ -244,5 +267,9 @@ export class BridgeFormComponent implements OnInit {
     } else {
       this.Blockchains.Binance.shortLabel = this.Blockchains.Binance.label;
     }
+  }
+
+  public changeWalletAddressTo(newAddress: string) {
+    this.toWalletAddress = newAddress;
   }
 }

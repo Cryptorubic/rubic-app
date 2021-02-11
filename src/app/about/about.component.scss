@@ -2,7 +2,7 @@
 @import '../../scss/elements/vars';
 
 .about-page {
-  font-family: var(--main-font) !important;
+  font-family: $ubuntu-font;
   font-weight: normal;
   background-color: #ffffff;
 
@@ -39,7 +39,7 @@
         padding-right: 100px;
 
         @include b(1100) {
-          padding-right: 0px;
+          padding-right: 0;
         }
       }
     }
@@ -75,7 +75,7 @@
         }
 
         @include b(700) {
-          min-height: 0px;
+          min-height: 0;
         }
       }
     }
@@ -112,7 +112,7 @@
         }
 
         @include b(700) {
-          min-height: 0px;
+          min-height: 0;
         }
       }
     }
@@ -138,7 +138,11 @@
 
   .rubic-roadmap {
     margin-top: 100px;
-    padding-bottom: 150px;
+    padding-bottom: 100px;
+
+    @include b(1100) {
+      padding-bottom: 0;
+    }
 
     .container {
       max-width: 1100px;
@@ -149,6 +153,7 @@
       justify-content: space-between;
       margin-top: 50px;
       position: relative;
+      font-family: $main-font;
 
       @include b(1100) {
         flex-direction: column;
@@ -161,7 +166,7 @@
         position: absolute;
         width: 100vw;
         bottom: -69.5px;
-        left: calc((100% - 100vw) / 2);
+        left: calc((100% - 100vw) / 2 - 8px);
 
         @include b(1100) {
           height: 100%;
@@ -198,7 +203,7 @@
             border: 1px dashed #4aa956;
             height: 50px;
             position: absolute;
-            top: 0px;
+            top: 0;
             left: -30px;
             transform: rotate(90deg);
           }

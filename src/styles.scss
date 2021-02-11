@@ -144,6 +144,30 @@
   font-weight: 700;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Ubuntu';
+  src: local('Ubuntu Regular'),
+  local('Ubuntu-Regular'),
+  url('./assets/fonts/Ubuntu-Regular.ttf') format('ttf');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Ubuntu';
+  src: local('Ubuntu Medium'),
+  local('Ubuntu-Medium'),
+  url('./assets/fonts/Ubuntu-Medium.ttf') format('ttf');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Ubuntu';
+  src: local('Ubuntu Bold'),
+  local('Ubuntu-Bold'),
+  url('./assets/fonts/Ubuntu-Bold.ttf') format('ttf');
+  font-weight: 700;
+  font-style: normal;
+}
 
 body {
   margin: 0;
@@ -1559,4 +1583,9 @@ ng-scrollbar-y {
   100% {
     border-width: calc(60px / 7);
   }
+}
+
+.questions-container__text .highlight {
+  font-size: 1.2em;
+  font-weight: bold;
 }

@@ -28,6 +28,7 @@
     autocomplete="off"
     name="token"
     required
+    [style.width]="isOpenList ? ((fullWidth || isMobile) ? '100%' : '50%') : 0"
     [tabindex]="!isOpenList ? '-1' : ''"
     [ngModel]="inputQuery"
     (ngModelChange)="searchComponent($event)"
@@ -38,7 +39,10 @@
     <img src="./assets/images/icons/cross.svg" alt="Close"/>
   </span>
 
-  <div class="input-dropdown__dropdown-components dropdown-components">
+  <div
+    class="input-dropdown__dropdown-components dropdown-components"
+    [style.width]="(fullWidth || isMobile) ? '100%' : '50%'"
+  >
     <ul
       *ngIf="visibleComponentsData.size && isOpenList"
       (mousedown)="$event.stopPropagation(); $event.preventDefault()"
