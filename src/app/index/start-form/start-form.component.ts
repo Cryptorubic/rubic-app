@@ -32,6 +32,8 @@ import {OneInchService} from "../../models/1inch/1inch";
 import {HttpService} from "../../services/http/http.service";
 import {Observable} from "rxjs";
 import {BackendApiService} from '../../services/backend-api/backend-api.service';
+import {UniSwapService} from '../../services/instant-trade/uni-swap-service/uni-swap.service';
+import {InstantTrade, InstantTradeToken} from '../../services/instant-trade/types';
 
 const defaultNetwork = 1;
 
@@ -63,6 +65,10 @@ export interface IContractDetails {
       token: any;
       amount?: string;
     };
+    uniswap: {
+      token: any;
+      amount?: string;
+    }
   };
 
   whitelist?: any;
@@ -71,6 +77,13 @@ export interface IContractDetails {
   memo_contract?: any;
   min_quote_wei?: any;
 }
+
+enum UNISWAP_TRADE_STATUS {
+  PARAMS_CALCULATION = 'PARAMS_CALCULATION',
+  APPROVE_IN_PROGRESS = 'APPROVE_IN_PROGRESS',
+  TRADE_IN_PROGRESS = 'TRADE_IN_PROGRESS'
+}
+
 export const MY_FORMATS = {
   useUtc: true,
   parse: {
@@ -133,6 +146,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public instantTradeInProgress: boolean = false;
 
+  public uniSwapTrade: InstantTrade;
+
+  public UNISWAP_TRADE_STATUS = UNISWAP_TRADE_STATUS;
+  public uniSwapTradeStatus: UNISWAP_TRADE_STATUS = undefined;
+
   constructor(
     private dialog: MatDialog,
     protected contractsService: ContractsService,
@@ -141,7 +159,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private oneInchService: OneInchService,
-    private backendApiService: BackendApiService
+    private backendApiService: BackendApiService,
+    private uniSwapService: UniSwapService
   ) {
     this.CMCRates = {};
     this.currentUser = this.userService.getUserModel();
@@ -324,7 +343,61 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
+  public async recalculateUniSwapParameters() {
+    if (
+        this.requestData.tokens_info.base.token.address &&
+        this.requestData.tokens_info.base.amount &&
+        this.requestData.tokens_info.quote.token.address
+    ) {
+      if  (this.uniSwapTrade &&
+          this.uniSwapTrade.from.token.address === this.requestData.tokens_info.base.token.address &&
+          this.uniSwapTrade.to.token.address === this.requestData.tokens_info.quote.token.address &&
+          this.uniSwapTrade.from.amount.toString() === this.requestData.tokens_info.base.amount
+      ) {
+        return;
+      }
+
+      this.uniSwapTrade = undefined;
+      this.uniSwapTradeStatus = UNISWAP_TRADE_STATUS.PARAMS_CALCULATION;
+      const fromToken: InstantTradeToken = {
+        network: 'ETH',
+        address: this.requestData.tokens_info.base.token.address,
+        decimals: this.requestData.tokens_info.base.token.decimals,
+        symbol: this.requestData.tokens_info.base.token.token_short_name
+      };
+
+      const toToken: InstantTradeToken = {
+        network: 'ETH',
+        address: this.requestData.tokens_info.quote.token.address,
+        decimals: this.requestData.tokens_info.quote.token.decimals,
+        symbol: this.requestData.tokens_info.quote.token.token_short_name
+      }
+
+      this.uniSwapTrade = await this.uniSwapService.getTrade(
+        new BigNumber(this.requestData.tokens_info.base.amount),
+        fromToken,
+        toToken
+      );
+      if (this.uniSwapTrade) {
+        this.requestData.tokens_info.uniswap.amount = this.uniSwapTrade.to.amount.toString();
+      } else {
+        this.requestData.tokens_info.uniswap.amount = '';
+      }
+      this.uniSwapTradeStatus = null;
+    } else {
+      this.uniSwapTrade = undefined;
+      this.requestData.tokens_info.uniswap.amount = '';
+    }
+  }
+
+  public changeUniSwapToken() {
+    this.requestData.tokens_info.quote.token = this.requestData.tokens_info.uniswap.token;
+    this.changedToken();
+  }
+
   public changedToken(force?: boolean) {
+    this.requestData.tokens_info.uniswap.token = this.requestData.tokens_info.quote.token;
+    this.recalculateUniSwapParameters();
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
     if (this.instanceTrade) {
@@ -375,14 +448,18 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public resetFormEmitter = new EventEmitter();
 
   private resetStartForm(network?) {
+    const targetToken = {};
     this.requestData = {
       tokens_info: {
         base: {
           token: {},
         },
         quote: {
-          token: {},
+          token: targetToken,
         },
+        uniswap: {
+          token: targetToken
+        }
       },
       network: network || defaultNetwork,
       public: true,
@@ -622,6 +699,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
     params.amount = new BigNumber(this.requestData.tokens_info.base.amount).times(baseDecimalsTimes).toString(10);
     return params;
+  }
+
+  public createUniSwapTrade() {
+
   }
 
   private async createInstanceTrade() {
@@ -898,7 +979,7 @@ export class StartFormResolver implements Resolve<any> {
   });
 
   constructor(
-      private web3Service: Web3Service,
+      private web3Service: Web3Service
   ) {
 
   }

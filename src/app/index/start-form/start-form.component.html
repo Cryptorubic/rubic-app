@@ -312,7 +312,7 @@
 
     <!-- Uniswap -->
     <div class="uniswap" *ngIf="instanceTrade">
-      <div class="form-field_input uniswap-tokens-input">
+      <div class="form-field_input uniswap-tokens-input" [ngClass]="{'uniswap_extended': uniSwapTrade === null}">
         <input
                 type="hidden"
                 required
@@ -331,14 +331,18 @@
                 [moveInput]="true"
                 [otherTokens]="instanceTrade ? instanceTradesTokens : false"
                 [disabled]="instanceTrade || !serviceAvailable"
-                (TokenChange)="changedToken()"
+                (TokenChange)="changeUniSwapToken()"
                 [blockchain]="blockchainsOfNetworks[requestData.network]"
                 [setToken]="QuoteTokenCustom"
                 [resetForm]="resetFormEmitter"
                 [amountPlaceholder]="!instanceTrade"
-                [tokenModel]="requestData.tokens_info.quote"
+                [tokenModel]="requestData.tokens_info.uniswap"
                 [exclude]="requestData.tokens_info.base.token && requestData.tokens_info.base.token.address"
         ></app-tokens-all-input>
+        <div *ngIf="uniSwapTrade === null" class="uniswap__warning">
+          <span>Trade in UniSwap is not available.</span>
+          <img alt="" src="assets/images/icons/warning-red.svg">
+        </div>
       </div>
 
       <div class="uniswap-button">
@@ -348,9 +352,9 @@
                 (instanceTrade && !instantTradesAvailable) ||
                 getInstanceQuoteProgress ||
                 !requestData.tokens_info.base.amount ||
-                !requestData.tokens_info.quote.amount ||
+                !requestData.tokens_info.uniswap.amount ||
                 !requestData.tokens_info.base.token.address ||
-                !requestData.tokens_info.quote.token.address ||
+                !requestData.tokens_info.uniswap.token.address ||
                 isCreatingContract ||
                 (requestData.broker_fee && !requestData.broker_fee_address) ||
                 (requestData.broker_fee &&
@@ -363,10 +367,13 @@
                     requestData.broker_fee_base <= 50 &&
                     requestData.broker_fee_base >= 0
                   )) ||
-                (requestData.tokens_info.base.token.address.toLowerCase() === requestData.tokens_info.quote.token.address.toLowerCase())
+                (requestData.tokens_info.base.token.address.toLowerCase() === requestData.tokens_info.quote.token.address.toLowerCase()) ||
+                !uniSwapTrade ||
+                uniSwapTradeStatus
               "
+                (click)="createUniSwapTrade()"
         >
-              <span class="lds-ellipsis" *ngIf="(getInstanceQuoteProgress || isCreatingContract) && instantTradesAvailable">
+              <span class="lds-ellipsis" *ngIf="uniSwapTradeStatus && instantTradesAvailable">
                 <span class="lds-ellipsis-container">
                   <span></span><span></span><span></span><span></span>
                 </span>

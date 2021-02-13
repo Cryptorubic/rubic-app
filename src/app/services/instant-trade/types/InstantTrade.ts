@@ -1,15 +1,17 @@
 import {InstantTradeToken} from './index';
+import BigNumber from 'bignumber.js';
 
 interface InstantTrade {
     from: {
         token: InstantTradeToken;
-        amount: BigInteger;
+        amount: BigNumber;
     }
     to: {
         token: InstantTradeToken;
-        amount: BigInteger;
+        amount: BigNumber;
     }
-    gasFee: BigInteger;
+    estimatedGas: BigNumber;
+    gasFee: BigNumber;
 }
 
 export default InstantTrade;
