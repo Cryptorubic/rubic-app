@@ -3,11 +3,10 @@ import Web3 from 'web3';
 import {BridgeNetwork} from '../bridge/types';
 import {ERC20_TOKEN_ABI} from '../web3/web3.constants';
 import {RubicError} from '../../errors/RubicError';
-import {MetamaskError} from '../../errors/bridge/MetamaskError';
-import {AccountError} from '../../errors/bridge/AccountError';
 import {UserRejectError} from '../../errors/bridge/UserRejectError';
 import BigNumber from 'bignumber.js';
 import {HttpClient} from '@angular/common/http';
+import {ProviderService} from '../provider/provider.service';
 
 interface web3ApiNetwork {
   id: number,
@@ -36,9 +35,10 @@ const NETWORKS: web3ApiNetwork[] = [
 export class Web3ApiService {
 
   private readonly metamaskAddress: string;
-  private ethereum = window.ethereum;
+  private ethereum;
   private web3: Web3;
   public error: RubicError;
+  public connection: any;
 
   public get network(): web3ApiNetwork {
     return NETWORKS.find(net => net.id === Number(this.ethereum.networkVersion));
@@ -49,26 +49,21 @@ export class Web3ApiService {
   }
 
 
-  constructor(private httpClient: HttpClient) {
-    if (!this.ethereum) {
-      console.error("No Metamask installed");
-      this.error = new MetamaskError();
-      return
+  constructor(private httpClient: HttpClient, provider: ProviderService) {
+    if (provider.error) {
+      this.error = provider.error;
+      return;
     }
 
-    this.web3 = new Web3(window.ethereum)
-    // @ts-ignore
-    if (this.web3.currentProvider && this.web3.currentProvider.isMetaMask) {
-      window.ethereum.enable();
-      this.metamaskAddress = this.ethereum.selectedAddress;
-      if (!this.metamaskAddress) {
-        this.error = new AccountError();
-        console.error("Web3 init error.  Selected account: " + this.metamaskAddress + ". Network: " + this.network);
-      }
-    } else {
-      this.error = new MetamaskError();
-      console.error("Selected other provider")
-    }
+    this.web3 = provider.web3;
+    this.connection = provider.connection;
+    this.ethereum = provider.ethereum;
+    this.metamaskAddress = provider.address;
+  }
+
+  public async getBalance(): Promise<BigNumber> {
+    const balance = await this.web3.eth.getBalance(this.address);
+    return new BigNumber(balance);
   }
 
   public async transferTokens(
@@ -246,4 +241,51 @@ export class Web3ApiService {
           });
     });
   }
+
+  public executeContractMethod(
+      contractAddress: string,
+      contractAbi: any[],
+      methodName: string,
+      methodArguments: any[],
+      onTransactionHash?: (hash: string) => void): Promise<any> {
+
+    const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+
+    return new Promise((resolve, reject) => {
+      contract.methods[methodName](...methodArguments).send({from: this.address})
+          .on('transactionHash', onTransactionHash || (() => {}))
+          .on('receipt', resolve)
+          .on('error', err => {
+            console.log('Tokens approve error. ' + err)
+            if (err.code === 4001) {
+              reject (new UserRejectError());
+            } else {
+              reject(err);
+            }
+          });
+    });
+  }
+
+  public executeContractMethodWithOnHashResolve(
+      contractAddress: string,
+      contractAbi: any[],
+      methodName: string,
+      methodArguments: any[] ): Promise<any> {
+
+    const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+
+    return new Promise((resolve, reject) => {
+      contract.methods[methodName](...methodArguments).send({from: this.address})
+          .on('transactionHash', resolve)
+          .on('error', err => {
+            console.log('Tokens approve error. ' + err)
+            if (err.code === 4001) {
+              reject (new UserRejectError());
+            } else {
+              reject(err);
+            }
+          });
+    });
+  }
+
 }

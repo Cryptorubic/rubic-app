@@ -15,10 +15,11 @@ import {ethers} from 'ethers';
 export class UniSwapService extends InstantTradeService{
 
   static slippageTolerance = new Percent('50', '10000'); // 0.50%
-  static provider = new ethers.providers.Web3Provider (window.ethereum);
+  private provider;
 
   constructor(private web3Api: Web3ApiService) {
     super();
+    this.provider = new ethers.providers.Web3Provider(web3Api.connection);
   }
 
   async getTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken: InstantTradeToken, chainId?): Promise<InstantTrade> {
@@ -70,22 +71,44 @@ export class UniSwapService extends InstantTradeService{
 
   }
 
-  async createTrade(trade: InstantTrade, onConfirm: Function): Promise<void> {
-    return Promise.resolve(undefined);
+  async createTrade(trade: InstantTrade, onConfirm?: (hash: string) => void, onApprove?: (hash: string) => void): Promise<void> {
+    await this.provideAllowance(trade.from.token.address, trade.from.amount, onApprove);
+
+    const amountIn = trade.from.amount
+        .multipliedBy(10 ** trade.from.token.decimals)
+        .toString();
+    const amountOutMin = trade.to.amount
+        .multipliedBy(10 ** trade.to.token.decimals)
+        .toString();
+    const path = [trade.from.token.address, trade.to.token.address];
+    const to = this.web3Api.address;
+    const deadline = Math.floor(Date.now() / 1000) + 60 * 20 // 20 minutes from the current Unix time
+
+    await this.web3Api.executeContractMethod(
+        UniSwapContractAddress,
+        UniSwapContractAbi,
+        'swapExactTokensForTokensSupportingFeeOnTransferTokens',
+        [amountIn, amountOutMin, path, to, deadline],
+        onConfirm
+    )
   }
 
   getToAmount(fromAmount: BigNumber) {
 
   }
 
-  private async provideAllowance(tokenAddress: string, value: BigNumber): Promise<void> {
-
+  private async provideAllowance(tokenAddress: string, value: BigNumber, onApprove?: (hash: string) => void): Promise<void> {
+    const allowance = await this.web3Api.getAllowance(tokenAddress);
+    if (value.gt(allowance)) {
+      const uintInfinity = new BigNumber(2).pow(256).minus(1);
+      await this.web3Api.approveTokens(tokenAddress, UniSwapContractAddress, uintInfinity, onApprove);
+    }
   }
 
   private async getUniSwapTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken: InstantTradeToken, chainId?): Promise<Trade> {
     const uniSwapFromToken = new Token(chainId || ChainId.MAINNET, fromToken.address, fromToken.decimals);
     const uniSwapToToken = new Token(chainId || ChainId.MAINNET, toToken.address, toToken.decimals);
-    const pair = await Fetcher.fetchPairData(uniSwapFromToken, uniSwapToToken, UniSwapService.provider);
+    const pair = await Fetcher.fetchPairData(uniSwapFromToken, uniSwapToToken, this.provider);
     const route = new Route([pair], uniSwapFromToken);
 
     const fullFromAmount = fromAmount.multipliedBy(10 ** fromToken.decimals);
