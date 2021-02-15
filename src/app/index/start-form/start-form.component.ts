@@ -613,6 +613,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.contractAddress,
       this.sendData.network
     );
+    this.sendData.contract_address = this.contractAddress;
 
     if (this.currentUser.is_ghost) {
       this.MetamaskAuth();
@@ -857,37 +858,32 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       interfaceMethod,
       trxRequest
     );
-    const sendActivateTrx = (wallet?) => {
-      return this.web3Contract.methods
-        .feeAmount()
-        .call()
-        .then(
-          (res) => {
-            return this.web3Service
-              .sendTransaction(
-                {
-                  from: wallet,
-                  to: this.contractAddress,
-                  data: activateSignature,
-                  value: res,
-                },
-                this.sendData.network
-              )
-              .then(() => {
-                this.sendData.id = details.id;
-                this.sendData.rubic_initialized = true;
-                this.sendContractData(this.sendData);
-              })
-              .catch((err) => {
-                console.log("sendTransaction", err);
-                this.isCreatingContract = false;
-              });
-          },
-          (err) => {
-            console.log("feeAmount", err);
+    const sendActivateTrx = async (wallet?) => {
+      try {
+        const fee = await this.web3Contract.methods.feeAmount().call();
+        return this.web3Service
+          .sendTransaction(
+            {
+              from: wallet,
+              to: this.contractAddress,
+              data: activateSignature,
+              value: fee,
+            },
+            this.sendData.network
+          )
+          .then(() => {
+            this.sendData.id = details.id;
+            this.sendData.rubic_initialized = true;
+            this.sendContractData(this.sendData);
+          })
+          .catch((err) => {
+            console.log("sendTransaction", err);
             this.isCreatingContract = false;
-          }
-        );
+          });
+      } catch(err) {
+        console.log("feeAmount", err);
+        this.isCreatingContract = false;
+      }
     };
     return sendActivateTrx();
   }
