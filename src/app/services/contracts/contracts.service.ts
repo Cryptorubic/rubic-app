@@ -76,26 +76,16 @@ export class ContractsService {
 
   public getContractsList() {
     const allList: {
-      contracts?: any[],
       trades?: any[]
     } = {};
     return new Promise((resolve, reject) => {
 
       const resolveList = () => {
-        if (allList.trades && allList.contracts) {
-          const allResolveList = allList.contracts.concat(allList.trades).sort((contract1, contract2) => {
-            return new Date(contract2.created_date) < new Date(contract1.created_date) ? -1 : 1;
-          });
-          resolve(allResolveList);
-        }
-      };
-
-      this.httpService.get('contracts/').toPromise().then((result) => {
-        allList.contracts = result.results.filter((contract) => {
-          return contract.contract_type === 20;
+        const allResolveList = allList.trades.sort((contract1, contract2) => {
+          return new Date(contract2.created_date) < new Date(contract1.created_date) ? -1 : 1;
         });
-        resolveList();
-      });
+        resolve(allResolveList);
+      }
 
       this.httpService.get('get_user_swap3/').toPromise().then((result) => {
         allList.trades = result;
