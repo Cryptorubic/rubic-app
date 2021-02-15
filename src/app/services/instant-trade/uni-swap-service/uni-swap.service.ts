@@ -8,6 +8,7 @@ import { Percent } from '@uniswap/sdk';
 import {Web3ApiService} from '../../web3Api/web3-api.service';
 import {UniSwapContractAbi, UniSwapContractAddress} from './uni-swap-contract';
 import {ethers} from 'ethers';
+import {InfuraProvider} from '@ethersproject/providers';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +16,11 @@ import {ethers} from 'ethers';
 export class UniSwapService extends InstantTradeService {
 
   static slippageTolerance = new Percent('50', '10000'); // 0.50%
-  private provider;
+  private readonly provider;
 
   constructor(private web3Api: Web3ApiService) {
     super();
-    this.provider = new ethers.providers.Web3Provider(web3Api.connection);
+    this.provider = web3Api.ethersProvider;
   }
 
   async getTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken: InstantTradeToken, chainId?): Promise<InstantTrade> {
@@ -89,7 +90,7 @@ export class UniSwapService extends InstantTradeService {
         UniSwapContractAbi,
         'swapExactTokensForTokensSupportingFeeOnTransferTokens',
         [amountIn, amountOutMin, path, to, deadline],
-        onConfirm
+        { onTransactionHash: onConfirm }
     );
   }
 

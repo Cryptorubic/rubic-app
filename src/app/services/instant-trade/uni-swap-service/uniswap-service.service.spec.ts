@@ -2,32 +2,46 @@ import { TestBed } from '@angular/core/testing';
 
 import { UniSwapService } from './uni-swap.service';
 import BigNumber from 'bignumber.js';
-import {InstantTradeToken} from '../types';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+
+import { HttpClientModule } from '@angular/common/http';
+import {ProviderService} from '../../provider/provider.service';
+import providerServiceStub from '../../provider/provider-service-stub';
+import { WEENUS, YEENUS} from '../../../../test/tokens/eth-tokens';
+import {Web3ApiService} from '../../web3Api/web3-api.service';
 
 describe('UniswapServiceService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [HttpClientTestingModule],
-  }));
+
+  let originalTimeout: number;
+  let service: UniSwapService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [ Web3ApiService, { provide: ProviderService, useValue: providerServiceStub() }],
+      imports: [ HttpClientModule ]
+    });
+    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+
+    service = TestBed.get(UniSwapService);
+  });
+
+  afterEach(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
 
   it('should be created', () => {
-    const service: UniSwapService = TestBed.get(UniSwapService);
-    const fromAmount = new BigNumber('100000000');
-    const fromToken: InstantTradeToken = {
-      network: 'ETH',
-      address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      decimals: 6,
-      symbol: 'USDT'
-    };
-    const toToken: InstantTradeToken = {
-      network: 'ETH',
-      address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-      decimals: 18,
-      symbol: 'DAI'
-    };
-    service.getTrade(fromAmount, fromToken, toToken).then(trade => {
-      console.log(JSON.stringify(trade));
-      expect(!!trade).toBeTruthy();
-    });
+    expect(service).toBeTruthy();
   });
+
+  it('calculate price', async (done) => {
+    const fromAmount = new BigNumber(2);
+
+    const trade = await service.getTrade(fromAmount, WEENUS, YEENUS);
+    console.log(JSON.stringify(trade));
+    expect(trade).toBeTruthy();
+    expect(trade.to.amount.gt(0)).toBeTruthy();
+    done();
+  });
+
 });

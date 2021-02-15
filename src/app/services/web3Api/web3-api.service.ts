@@ -41,6 +41,7 @@ export class Web3ApiService {
   public error: RubicError;
   public connection: any;
   private defaultMockGas: string;
+  public ethersProvider: any;
 
   public get network(): Web3ApiNetwork {
     return NETWORKS.find(net => net.id === Number(this.ethereum.networkVersion));
@@ -62,6 +63,7 @@ export class Web3ApiService {
     this.ethereum = provider.ethereum;
     this.metamaskAddress = provider.address;
     this.defaultMockGas = provider.defaultMockGas;
+    this.ethersProvider = provider.ethersProvider;
   }
 
   public async getBalance(
@@ -70,7 +72,7 @@ export class Web3ApiService {
     const balance = await this.web3.eth.getBalance(options.address || this.address);
     return new BigNumber(
         options.inWei ? balance :
-            this.web3.utils.fromWei(balance, 'ether')
+            this.weiToEth(balance)
     );
   }
 
@@ -271,13 +273,16 @@ export class Web3ApiService {
       contractAbi: any[],
       methodName: string,
       methodArguments: any[],
-      onTransactionHash?: (hash: string) => void): Promise<any> {
+      options: {
+        onTransactionHash?: (hash: string) => void
+       } = { }
+      ): Promise<any> {
 
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     return new Promise((resolve, reject) => {
       contract.methods[methodName](...methodArguments).send({from: this.address})
-          .on('transactionHash', onTransactionHash || (() => {}))
+          .on('transactionHash', options.onTransactionHash || (() => {}))
           .on('receipt', resolve)
           .on('error', err => {
             console.log('Tokens approve error. ' + err);
