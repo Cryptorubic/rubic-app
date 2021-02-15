@@ -40,6 +40,7 @@ export class Web3ApiService {
   private web3: Web3;
   public error: RubicError;
   public connection: any;
+  private defaultMockGas: string;
 
   public get network(): web3ApiNetwork {
     return NETWORKS.find(net => net.id === Number(this.ethereum.networkVersion));
@@ -60,6 +61,7 @@ export class Web3ApiService {
     this.connection = provider.connection;
     this.ethereum = provider.ethereum;
     this.metamaskAddress = provider.address;
+    this.defaultMockGas = provider.defaultMockGas;
   }
 
   public async getBalance(
@@ -122,8 +124,7 @@ export class Web3ApiService {
       value: BigNumber | string,
       options: {
         onTransactionHash?: (hash: string) => void,
-        inWei?: boolean,
-        gas?: string
+        inWei?: boolean
       } = { }
   ): Promise<TransactionReceipt> {
     return new Promise((resolve, reject) => {
@@ -131,7 +132,7 @@ export class Web3ApiService {
         from: this.address,
         to: toAddress,
         value: options.inWei ? value.toString() : this.ethToWei(value),
-        ...(options.gas && {gas: options.gas})
+        ...(this.defaultMockGas && {gas: this.defaultMockGas})
       })
       .on('transactionHash', options.onTransactionHash || (() => {}))
       .on('receipt', receipt => resolve(receipt))
@@ -155,7 +156,8 @@ export class Web3ApiService {
       this.web3.eth.sendTransaction({
         from: this.address,
         to: toAddress,
-        value: value.toString()
+        value: value.toString(),
+        ...(this.defaultMockGas && {gas: this.defaultMockGas})
       })
           .on('transactionHash', hash => resolve(hash))
           .on('error', err => {

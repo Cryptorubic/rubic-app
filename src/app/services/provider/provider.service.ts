@@ -13,6 +13,7 @@ export class ProviderService {
   public error: RubicError;
   public address: string;
   public connection: any;
+  public defaultMockGas: string;
 
   constructor() {
     if (!this.ethereum) {

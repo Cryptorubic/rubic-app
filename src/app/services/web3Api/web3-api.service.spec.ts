@@ -16,7 +16,6 @@ describe('Web3ApiService', () => {
   }
   const bobAddress = '0xecA0A3eFCf009519052Dc92306fE821b9c7A32A2';
   const providerLink = 'https://kovan.infura.io/v3/9e85c637c9204e6f9779354562fcde7d';
-  const defaultGasLimit = '400000';
 
   const providerServiceStub = () => {
     const web3 = new Web3(providerLink);
@@ -24,7 +23,8 @@ describe('Web3ApiService', () => {
     return ({
       web3,
       connection: providerLink,
-      address: alice.address
+      address: alice.address,
+      defaultMockGas: '400000'
     })
   }
 
@@ -59,12 +59,12 @@ describe('Web3ApiService', () => {
     const amount = new BigNumber(0.001);
     const bobStartBalance = await service.getBalance({address: bobAddress});
     const callbackObject = {
-      onTransactionHash: function (hash: string) { console.log(hash) }
+      onTransactionHash: function (hash: string) { }
     }
     spyOn(callbackObject, 'onTransactionHash');
 
     const receipt = await service.sendTransaction(bobAddress, amount,
-        { onTransactionHash: callbackObject.onTransactionHash.bind(callbackObject), gas: defaultGasLimit});
+        { onTransactionHash: callbackObject.onTransactionHash.bind(callbackObject)});
 
     expect(callbackObject.onTransactionHash).toHaveBeenCalledWith(jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/))
     expect(receipt).not.toBe(undefined);
