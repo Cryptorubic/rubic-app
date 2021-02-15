@@ -9,12 +9,12 @@ import {HttpClient} from '@angular/common/http';
 import {ProviderService} from '../provider/provider.service';
 import { TransactionReceipt } from 'web3-eth';
 
-interface web3ApiNetwork {
-  id: number,
-  name: string
+interface Web3ApiNetwork {
+  id: number;
+  name: string;
 }
 
-const NETWORKS: web3ApiNetwork[] = [
+const NETWORKS: Web3ApiNetwork[] = [
   {
     id: 1,
     name: BridgeNetwork.ETHEREUM
@@ -42,7 +42,7 @@ export class Web3ApiService {
   public connection: any;
   private defaultMockGas: string;
 
-  public get network(): web3ApiNetwork {
+  public get network(): Web3ApiNetwork {
     return NETWORKS.find(net => net.id === Number(this.ethereum.networkVersion));
   }
 
@@ -74,21 +74,32 @@ export class Web3ApiService {
     );
   }
 
+  public async getTokenBalance(tokenAddress: string, options: { address?: string } = { }) {
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
+
+    const balance = await contract.methods.balanceOf(options.address || this.address).call();
+    return new BigNumber(balance);
+  }
+
   public async transferTokens(
       contractAddress: string,
       toAddress: string,
       amount: string | BigNumber,
-      onTransactionHash?: (hash: string) => void,
+      options: {
+        onTransactionHash?: (hash: string) => void
+      } = { }
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], contractAddress);
 
     return new Promise((resolve, reject) => {
 
-      contract.methods.transfer(toAddress, amount.toString()).send({from: this.address})
-        .on('transactionHash', onTransactionHash || (() => {}))
+      contract.methods.transfer(toAddress, amount.toString()).send(
+          { from: this.address, ...(this.defaultMockGas && {gas: this.defaultMockGas })}
+        )
+        .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log('Tokens transfer error. ' + err)
+          console.log('Tokens transfer error. ' + err);
           if (err.code === 4001) {
             reject (new UserRejectError());
           } else {
@@ -106,10 +117,12 @@ export class Web3ApiService {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], contractAddress);
 
     return new Promise((resolve, reject) => {
-      contract.methods.transfer(toAddress, amount.toString()).send({from: this.address})
+      contract.methods.transfer(toAddress, amount.toString()).send(
+          { from: this.address, ...(this.defaultMockGas && {gas: this.defaultMockGas })}
+      )
           .on('transactionHash', hash => resolve(hash))
           .on('error', err => {
-            console.log('Tokens transfer error. ' + err)
+            console.log('Tokens transfer error. ' + err);
             if (err.code === 4001) {
               reject (new UserRejectError());
             } else {
@@ -137,7 +150,7 @@ export class Web3ApiService {
       .on('transactionHash', options.onTransactionHash || (() => {}))
       .on('receipt', receipt => resolve(receipt))
       .on('error', err => {
-        console.log('Tokens transfer error. ' + err)
+        console.log('Tokens transfer error. ' + err);
         // @ts-ignore
         if (err.code === 4001) {
           reject (new UserRejectError());
@@ -161,7 +174,7 @@ export class Web3ApiService {
       })
           .on('transactionHash', hash => resolve(hash))
           .on('error', err => {
-            console.log('Tokens transfer error. ' + err)
+            console.log('Tokens transfer error. ' + err);
             // @ts-ignore
             if (err.code === 4001) {
               reject (new UserRejectError());
@@ -174,12 +187,12 @@ export class Web3ApiService {
 
   /**
    *
-   * @param {any[]} contractAbi abi of smart-contract
-   * @param {string} contractAddress address of smart-contract
-   * @param {string} methodName method whose execution gas number is to be calculated
-   * @param {any[]} methodArguments arguments of the executed contract method
-   * @param {string} [value] The value transferred for the call “transaction” in wei.
-   * @return {Promise<BigNumber>} The gas amount estimated
+   * @param contractAbi abi of smart-contract
+   * @param contractAddress address of smart-contract
+   * @param methodName method whose execution gas number is to be calculated
+   * @param methodArguments arguments of the executed contract method
+   * @param [value] The value transferred for the call “transaction” in wei.
+   * @return The gas amount estimated
    */
   public async getEstimatedGas(
       contractAbi: any[],
@@ -187,7 +200,7 @@ export class Web3ApiService {
       methodName: string,
       methodArguments: any[],
       value?: string | BigNumber
-  ) : Promise<BigNumber> {
+  ): Promise<BigNumber> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
     const gasVolume = value ?
          await contract.methods[methodName](...methodArguments).estimateGas({value, gas: 40000000}) :
@@ -196,7 +209,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @return {Promise<BigNumber>} average gas price in ETH
+   * @return average gas price in ETH
    */
   public async getGasPriceInETH(): Promise<BigNumber> {
     const gasPrice = await this.web3.eth.getGasPrice();
@@ -204,16 +217,24 @@ export class Web3ApiService {
   }
 
   public async getGasFeeInUSD(gasVolume: BigNumber): Promise<BigNumber> {
-    const response: any = await this.httpClient.get('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd').toPromise();
+    const response: any = await this.httpClient
+        .get('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd').toPromise();
     const etherPrice = new BigNumber(response.ethereum.usd);
     const gasPrice = await this.getGasPriceInETH();
     return gasPrice.multipliedBy(gasVolume).multipliedBy(etherPrice);
   }
 
-  public async getAllowance(tokenAddress): Promise<BigNumber> {
+  public async getAllowance(
+    tokenAddress: string,
+    spenderAddress: string,
+    options: {
+      ownerAddress?: string
+    } = { }
+  ): Promise<BigNumber> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
 
-    const allowance = await contract.methods.allowance().call({from: this.address});
+    const allowance = await contract.methods.allowance(options.ownerAddress || this.address, spenderAddress)
+        .call({from: this.address});
     return new BigNumber(allowance);
   }
 
@@ -221,16 +242,21 @@ export class Web3ApiService {
       tokenAddress: string,
       spender: string,
       value: BigNumber,
-      onTransactionHash?: (hash: string) => void): Promise<void> {
+      options: {
+        onTransactionHash?: (hash: string) => void
+      } = { }): Promise<TransactionReceipt> {
 
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
 
     return new Promise((resolve, reject) => {
-      contract.methods.approve(spender, value.toString()).send({from: this.address})
-          .on('transactionHash', onTransactionHash || (() => {}))
+      contract.methods.approve(spender, value.toString()).send({
+        from: this.address,
+        ...(this.defaultMockGas && {gas: this.defaultMockGas})
+      })
+          .on('transactionHash', options.onTransactionHash || (() => {}))
           .on('receipt', resolve)
           .on('error', err => {
-            console.log('Tokens approve error. ' + err)
+            console.log('Tokens approve error. ' + err);
             if (err.code === 4001) {
               reject (new UserRejectError());
             } else {
@@ -254,7 +280,7 @@ export class Web3ApiService {
           .on('transactionHash', onTransactionHash || (() => {}))
           .on('receipt', resolve)
           .on('error', err => {
-            console.log('Tokens approve error. ' + err)
+            console.log('Tokens approve error. ' + err);
             if (err.code === 4001) {
               reject (new UserRejectError());
             } else {
@@ -276,7 +302,7 @@ export class Web3ApiService {
       contract.methods[methodName](...methodArguments).send({from: this.address})
           .on('transactionHash', resolve)
           .on('error', err => {
-            console.log('Tokens approve error. ' + err)
+            console.log('Tokens approve error. ' + err);
             if (err.code === 4001) {
               reject (new UserRejectError());
             } else {

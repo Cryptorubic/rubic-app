@@ -23,14 +23,14 @@ export class BridgeTransaction {
         let tokenAddress;
         let decimals;
         switch (this.network) {
-            case "ETH":
+            case 'ETH':
                 tokenAddress = this.token.ethContractAddress;
                 decimals = this.token.ethContractDecimal;
-                break
-            case "BSC":
+                break;
+            case 'BSC':
                 tokenAddress = this.token.bscContractAddress;
                 decimals = this.token.bscContractDecimal;
-                break
+                break;
             default :
                 throw new RubicError(`The ${this.network} network is not supported`);
         }
@@ -38,7 +38,8 @@ export class BridgeTransaction {
         const realAmount = this.amount.multipliedBy(10 ** decimals);
 
         if (tokenAddress) {
-            this.receipt = await this.web3Api.transferTokens(tokenAddress, this.depositAddress, realAmount.toString(), onTransactionHash);
+            this.receipt = await this.web3Api
+                .transferTokens(tokenAddress, this.depositAddress, realAmount.toString(), { onTransactionHash });
         } else {
             this.receipt = await this.web3Api.sendTransaction(this.depositAddress, realAmount.toString(),
                 { onTransactionHash, inWei: true });
