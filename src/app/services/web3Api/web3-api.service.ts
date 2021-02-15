@@ -7,6 +7,7 @@ import {UserRejectError} from '../../errors/bridge/UserRejectError';
 import BigNumber from 'bignumber.js';
 import {HttpClient} from '@angular/common/http';
 import {ProviderService} from '../provider/provider.service';
+import { TransactionReceipt } from 'web3-eth';
 
 interface web3ApiNetwork {
   id: number,
@@ -61,31 +62,29 @@ export class Web3ApiService {
     this.metamaskAddress = provider.address;
   }
 
-  public async getBalance(): Promise<BigNumber> {
-    const balance = await this.web3.eth.getBalance(this.address);
-    return new BigNumber(balance);
+  public async getBalance(
+      options: {address?: string, inWei?: boolean} = { }
+  ): Promise<BigNumber> {
+    const balance = await this.web3.eth.getBalance(options.address || this.address);
+    return new BigNumber(
+        options.inWei ? balance :
+            this.web3.utils.fromWei(balance, 'ether')
+    );
   }
 
   public async transferTokens(
       contractAddress: string,
       toAddress: string,
-      amount: string,
+      amount: string | BigNumber,
       onTransactionHash?: (hash: string) => void,
-      onTransactionReceipt?: (receipt: string) => void
-  ): Promise<string> {
+  ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], contractAddress);
 
     return new Promise((resolve, reject) => {
-      const onReceipt = (receipt: string) => {
-        if (onTransactionReceipt) {
-          onTransactionReceipt(receipt);
-        }
-        resolve(receipt);
-      }
 
-      contract.methods.transfer(toAddress, amount).send({from: this.address})
+      contract.methods.transfer(toAddress, amount.toString()).send({from: this.address})
         .on('transactionHash', onTransactionHash || (() => {}))
-        .on('receipt', onReceipt)
+        .on('receipt', resolve)
         .on('error', err => {
           console.log('Tokens transfer error. ' + err)
           if (err.code === 4001) {
@@ -100,12 +99,12 @@ export class Web3ApiService {
   public async transferTokensWithOnHashResolve(
       contractAddress: string,
       toAddress: string,
-      amount: string
+      amount: string | BigNumber
   ): Promise<string> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], contractAddress);
 
     return new Promise((resolve, reject) => {
-      contract.methods.transfer(toAddress, amount).send({from: this.address})
+      contract.methods.transfer(toAddress, amount.toString()).send({from: this.address})
           .on('transactionHash', hash => resolve(hash))
           .on('error', err => {
             console.log('Tokens transfer error. ' + err)
@@ -120,25 +119,22 @@ export class Web3ApiService {
 
   public async sendTransaction(
       toAddress: string,
-      value: string,
-      onTransactionHash?: (hash: string) => void,
-      onTransactionReceipt?: (receipt: string) => void
-  ): Promise<string> {
+      value: BigNumber | string,
+      options: {
+        onTransactionHash?: (hash: string) => void,
+        inWei?: boolean,
+        gas?: string
+      } = { }
+  ): Promise<TransactionReceipt> {
     return new Promise((resolve, reject) => {
-      const onReceipt = (receipt: string) => {
-        if (onTransactionReceipt) {
-          onTransactionReceipt(receipt);
-        }
-        resolve(receipt);
-      }
-
       this.web3.eth.sendTransaction({
         from: this.address,
         to: toAddress,
-        value
+        value: options.inWei ? value.toString() : this.ethToWei(value),
+        ...(options.gas && {gas: options.gas})
       })
-      .on('transactionHash', onTransactionHash || (() => {}))
-      .on('receipt', onReceipt)
+      .on('transactionHash', options.onTransactionHash || (() => {}))
+      .on('receipt', receipt => resolve(receipt))
       .on('error', err => {
         console.log('Tokens transfer error. ' + err)
         // @ts-ignore
@@ -153,13 +149,13 @@ export class Web3ApiService {
 
   public async sendTransactionWithOnHashResolve(
       toAddress: string,
-      value: string
+      value: string | BigNumber
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       this.web3.eth.sendTransaction({
         from: this.address,
         to: toAddress,
-        value
+        value: value.toString()
       })
           .on('transactionHash', hash => resolve(hash))
           .on('error', err => {
@@ -288,4 +284,11 @@ export class Web3ApiService {
     });
   }
 
+  private ethToWei(value: string | BigNumber) {
+    return this.web3.utils.toWei(value.toString(), 'ether');
+  }
+
+  private weiToEth(value: string | BigNumber) {
+   return this.web3.utils.fromWei(value.toString(), 'ether');
+  }
 }
