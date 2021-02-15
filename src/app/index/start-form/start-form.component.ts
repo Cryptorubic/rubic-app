@@ -861,7 +861,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const sendActivateTrx = async (wallet?) => {
       try {
         const fee = await this.web3Contract.methods.feeAmount().call();
-        return this.web3Service
+        await this.web3Service
           .sendTransaction(
             {
               from: wallet,
@@ -870,18 +870,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
               value: fee,
             },
             this.sendData.network
-          )
-          .then(() => {
-            this.sendData.id = details.id;
-            this.sendData.rubic_initialized = true;
-            this.sendContractData(this.sendData);
-          })
-          .catch((err) => {
-            console.log("sendTransaction", err);
-            this.isCreatingContract = false;
-          });
+          );
+        this.sendData.id = details.id;
+        this.sendData.rubic_initialized = true;
+        this.sendContractData(this.sendData);
       } catch(err) {
-        console.log("feeAmount", err);
+        console.log(err);
         this.isCreatingContract = false;
       }
     };
