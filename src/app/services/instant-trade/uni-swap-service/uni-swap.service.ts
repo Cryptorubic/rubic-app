@@ -7,8 +7,7 @@ import BigNumber from 'bignumber.js';
 import { Percent } from '@uniswap/sdk';
 import {Web3ApiService} from '../../web3Api/web3-api.service';
 import {UniSwapContractAbi, UniSwapContractAddress} from './uni-swap-contract';
-import {ethers} from 'ethers';
-import {InfuraProvider} from '@ethersproject/providers';
+
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +22,7 @@ export class UniSwapService extends InstantTradeService {
     this.provider = web3Api.ethersProvider;
   }
 
-  async getTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken: InstantTradeToken, chainId?): Promise<InstantTrade> {
+  public async getTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken: InstantTradeToken, chainId?): Promise<InstantTrade> {
     try {
       const uniSwapTrade = await this.getUniSwapTrade(fromAmount, fromToken, toToken, chainId);
 
@@ -72,15 +71,21 @@ export class UniSwapService extends InstantTradeService {
 
   }
 
-  async createTrade(trade: InstantTrade, onConfirm?: (hash: string) => void, onApprove?: (hash: string) => void): Promise<void> {
-    await this.provideAllowance(trade.from.token.address, trade.from.amount, onApprove);
+  public async createTrade(
+      trade: InstantTrade,
+      options: {
+        onConfirm?: (hash: string) => void,
+        onApprove?: (hash: string) => void
+      } = { }
+    ): Promise<void> {
 
     const amountIn = trade.from.amount
-        .multipliedBy(10 ** trade.from.token.decimals)
-        .toString();
+        .multipliedBy(10 ** trade.from.token.decimals);
     const amountOutMin = trade.to.amount
-        .multipliedBy(10 ** trade.to.token.decimals)
-        .toString();
+        .multipliedBy(10 ** trade.to.token.decimals);
+
+    await this.provideAllowance(trade.from.token.address, amountIn, options.onApprove);
+
     const path = [trade.from.token.address, trade.to.token.address];
     const to = this.web3Api.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
@@ -89,8 +94,8 @@ export class UniSwapService extends InstantTradeService {
         UniSwapContractAddress,
         UniSwapContractAbi,
         'swapExactTokensForTokensSupportingFeeOnTransferTokens',
-        [amountIn, amountOutMin, path, to, deadline],
-        { onTransactionHash: onConfirm }
+        [amountIn.toString(), amountOutMin.toString(), path, to, deadline],
+        { onTransactionHash: options.onConfirm }
     );
   }
 

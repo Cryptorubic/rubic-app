@@ -3,13 +3,19 @@ import BigNumber from 'bignumber.js';
 
 abstract class InstantTradeService {
 
-    public abstract async getTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken): Promise<InstantTrade>
+    public abstract async getTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken): Promise<InstantTrade>;
 
-    public abstract getGasFee(fromAmount: BigNumber)
+    public abstract getGasFee(fromAmount: BigNumber);
 
-    public abstract getToAmount(fromAmount: BigNumber)
+    public abstract getToAmount(fromAmount: BigNumber);
 
-    public abstract async createTrade(trade: InstantTrade, onConfirm: Function): Promise<void>
+    public abstract async createTrade(
+        trade: InstantTrade,
+        options: {
+            onConfirm?: (hash: string) => void,
+            onApprove?: (hash: string) => void
+        }
+    ): Promise<void>;
 
 }
 

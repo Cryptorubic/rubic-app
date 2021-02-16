@@ -251,7 +251,7 @@ export class Web3ApiService {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
 
     return new Promise((resolve, reject) => {
-      contract.methods.approve(spender, value.toString()).send({
+      contract.methods.approve(spender, value).send({
         from: this.address,
         ...(this.defaultMockGas && {gas: this.defaultMockGas})
       })
@@ -281,7 +281,10 @@ export class Web3ApiService {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     return new Promise((resolve, reject) => {
-      contract.methods[methodName](...methodArguments).send({from: this.address})
+      contract.methods[methodName](...methodArguments).send({
+        from: this.address,
+        ...(this.defaultMockGas && {gas: this.defaultMockGas})
+        })
           .on('transactionHash', options.onTransactionHash || (() => {}))
           .on('receipt', resolve)
           .on('error', err => {
@@ -299,12 +302,16 @@ export class Web3ApiService {
       contractAddress: string,
       contractAbi: any[],
       methodName: string,
-      methodArguments: any[] ): Promise<any> {
+      methodArguments: any[]
+  ): Promise<any> {
 
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     return new Promise((resolve, reject) => {
-      contract.methods[methodName](...methodArguments).send({from: this.address})
+      contract.methods[methodName](...methodArguments).send({
+            from: this.address,
+            ...(this.defaultMockGas && {gas: this.defaultMockGas})
+          })
           .on('transactionHash', resolve)
           .on('error', err => {
             console.log('Tokens approve error. ' + err);
