@@ -8,6 +8,7 @@ import {ProviderService} from '../../provider/provider.service';
 import providerServiceStub from '../../provider/provider-service-stub';
 import { WEENUS, YEENUS} from '../../../../test/tokens/eth-tokens';
 import {Web3ApiService} from '../../web3Api/web3-api.service';
+import {UniSwapContractAddress} from './uni-swap-contract';
 
 
 describe('UniswapServiceService', () => {
@@ -15,10 +16,6 @@ describe('UniswapServiceService', () => {
   let originalTimeout: number;
   let service: UniSwapService;
   let web3Api: Web3ApiService;
-
-  const clearAllowance = (tokenAddress, spenderAddress) => {
-    web3Api.approveTokens(tokenAddress, spenderAddress, new BigNumber(0));
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -44,12 +41,16 @@ describe('UniswapServiceService', () => {
     const fromAmount = new BigNumber(2);
 
     const trade = await service.getTrade(fromAmount, WEENUS, YEENUS);
+    console.log(trade.to.amount.toString());
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
     done();
   });
 
-  it('create trade with existing allowance', async (done) => {
+  it('create trade without allowance', async (done) => {
+
+    await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
+
     const fromAmount = new BigNumber(2);
     const trade = await service.getTrade(fromAmount, WEENUS, YEENUS);
     const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(100);
@@ -75,11 +76,16 @@ describe('UniswapServiceService', () => {
     const newBalance = await web3Api.getTokenBalance(YEENUS.address);
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount)).toBeTruthy();
+
+    await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
     done();
   });
 
-  it('create trade without allowance', async (done) => {
+  it('create trade with existing allowance', async (done) => {
     const fromAmount = new BigNumber(2);
+
+    await web3Api.approveTokens(WEENUS.address, UniSwapContractAddress, fromAmount.multipliedBy(10 ** WEENUS.decimals));
+
     const trade = await service.getTrade(fromAmount, WEENUS, YEENUS);
     const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(100);
 
@@ -99,11 +105,13 @@ describe('UniswapServiceService', () => {
       onApprove: callbackObject.onApprove.bind(callbackObject)
     });
 
-    expect(callbackObject.onApprove).toHaveBeenCalledWith(jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/));
+    expect(callbackObject.onApprove).not.toHaveBeenCalled();
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/));
     const newBalance = await web3Api.getTokenBalance(YEENUS.address);
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount)).toBeTruthy();
+
+    await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
     done();
   });
 

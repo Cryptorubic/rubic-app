@@ -88,14 +88,16 @@ describe('Web3ApiService', () => {
   it('allowance', async (done) => {
     const allowance = await service.getAllowance(WEENUS.address, bobAddress);
 
+    console.log(allowance);
     expect(allowance).not.toBe(undefined);
-    expect(allowance.gt(0)).toBeTruthy();
+    expect(allowance.gte(0)).toBeTruthy();
     done();
   });
 
   it('approve', async (done) => {
-    const amount = new BigNumber(3).multipliedBy(10 ** WEENUS.decimals);
+    const amount = new BigNumber(2.39).multipliedBy(10 ** WEENUS.decimals);
     const bobStartAllowance = await service.getAllowance(WEENUS.address, bobAddress);
+    console.log(bobStartAllowance.toString());
     const callbackObject = {
       onTransactionHash: (hash: string) => { }
     };
@@ -107,8 +109,17 @@ describe('Web3ApiService', () => {
     expect(callbackObject.onTransactionHash).toHaveBeenCalledWith(jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/));
     expect(receipt).not.toBe(undefined);
     expect(receipt.blockNumber > 0).toBeTruthy();
-    const bobNewAllowance = await service.getTokenBalance(WEENUS.address, { address: bobAddress});
+    const bobNewAllowance = await service.getAllowance(WEENUS.address, bobAddress);
     expect(bobNewAllowance.minus(bobStartAllowance).toString()).toBe(amount.toString());
+    done();
+  });
+
+  it('unApprove', async (done) => {
+    await service.unApprove(WEENUS.address, bobAddress);
+
+    const allowance = await service.getAllowance(WEENUS.address, bobAddress);
+
+    expect(allowance.eq(0)).toBeTruthy();
     done();
   });
 });

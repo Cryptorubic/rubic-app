@@ -324,6 +324,10 @@ export class Web3ApiService {
     });
   }
 
+  public async unApprove(tokenAddress, spenderAddress) {
+    return this.approveTokens(tokenAddress, spenderAddress, new BigNumber(0));
+  }
+
   private ethToWei(value: string | BigNumber) {
     return this.web3.utils.toWei(value.toString(), 'ether');
   }
