@@ -133,6 +133,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public instantTradeInProgress: boolean = false;
 
+  private web3Contract;
+  private contractAddress: string;
+
   constructor(
     private dialog: MatDialog,
     protected contractsService: ContractsService,
@@ -604,6 +607,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.sendData.broker_fee_quote = this.requestData.broker_fee_quote;
     }
 
+    this.contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.sendData.network]];
+    this.web3Contract = this.web3Service.getContract(
+      SWAPS_V2.ABI,
+      this.contractAddress,
+      this.sendData.network
+    );
+    this.sendData.contract_address = this.contractAddress;
+
     if (this.currentUser.is_ghost) {
       this.MetamaskAuth();
     } else {
@@ -847,25 +858,26 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       interfaceMethod,
       trxRequest
     );
-    const sendActivateTrx = (wallet?) => {
-      const contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.sendData.network]];
-      return this.web3Service
-        .sendTransaction(
-          {
-            from: wallet,
-            to: contractAddress,
-            data: activateSignature,
-          },
-          this.sendData.network
-        )
-        .then(() => {
-          this.sendData.id = details.id;
-          this.sendData.rubic_initialized = true;
-          this.sendContractData(this.sendData);
-        })
-        .catch((err) => {
-          this.isCreatingContract = false;
-        });
+    const sendActivateTrx = async (wallet?) => {
+      try {
+        const fee = await this.web3Contract.methods.feeAmount().call();
+        await this.web3Service
+          .sendTransaction(
+            {
+              from: wallet,
+              to: this.contractAddress,
+              data: activateSignature,
+              value: fee,
+            },
+            this.sendData.network
+          );
+        this.sendData.id = details.id;
+        this.sendData.rubic_initialized = true;
+        this.sendContractData(this.sendData);
+      } catch(err) {
+        console.log(err);
+        this.isCreatingContract = false;
+      }
     };
     return sendActivateTrx();
   }

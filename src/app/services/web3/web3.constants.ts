@@ -8,14 +8,17 @@ export const ETH_NETWORKS = {
   ethereum: {
     INFURA_ADDRESS: 'https://mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
     ROPSTEN_INFURA_ADDRESS: 'https://ropsten.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    KOVAN_INFURA_ADDRESS: 'https://kovan.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
   },
   binance: {
     INFURA_ADDRESS: 'https://bsc-dataseed1.binance.org',
     ROPSTEN_INFURA_ADDRESS: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+    KOVAN_INFURA_ADDRESS: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   },
   matic: {
     INFURA_ADDRESS: 'https://rpc-mainnet.matic.network',
     ROPSTEN_INFURA_ADDRESS: ' https://rpc-mumbai.maticvigil.com',
+    KOVAN_INFURA_ADDRESS: ' https://rpc-mumbai.maticvigil.com',
   }
 };
 //
