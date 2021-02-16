@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
   public visibleWatchButton;
   public notCookiesAccept: boolean;
   public withHeader: boolean;
-  public warning: boolean = !(window['cmc_tokens'] && window['cmc_tokens'].length);
+  public warning: boolean = !(window['coingecko_tokens'] && window['coingecko_tokens'].length);
 
   constructor(
     private userService: UserService,

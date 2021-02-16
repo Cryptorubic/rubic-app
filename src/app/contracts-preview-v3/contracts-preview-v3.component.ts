@@ -1347,7 +1347,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       '/trades/public-v3/' +
       this.originalContract.unique_link;
 
-    this.checkCMCRate();
+    // this.checkCMCRate();
     this.countChecked = 0;
     this.isAuth = false;
     this.allowanceObj = {
@@ -1383,12 +1383,12 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
   private updatePromise;
 
-  public cmcRate: {
-    absCmcRange?: number;
-    direct: number;
-    revert: number;
-    cmcRange?: number;
-  };
+  // public cmcRate: {
+  //   absCmcRange?: number;
+  //   direct: number;
+  //   revert: number;
+  //   cmcRange?: number;
+  // };
 
   private currentUser: any;
 
@@ -1417,29 +1417,29 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
   private oldCheckedState: string;
 
-  private checkCMCRate() {
-    const baseCoin = this.originalContract.tokens_info.base.token;
-    const quoteCoin = this.originalContract.tokens_info.quote.token;
-
-    if (
-      baseCoin.cmc_id &&
-      quoteCoin.cmc_id &&
-      baseCoin.cmc_id > 0 &&
-      quoteCoin.cmc_id > 0
-    ) {
-      this.cmcRate = {
-        direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber(),
-        revert: new BigNumber(baseCoin.rate).div(quoteCoin.rate).toNumber(),
-      };
-      this.cmcRate.cmcRange =
-        this.rates.normal.toNumber() - this.cmcRate.direct;
-      this.cmcRate.absCmcRange =
-        Math.abs(-(this.rates.normal.toNumber() / this.cmcRate.direct - 1)) *
-        100;
-    } else {
-      this.cmcRate = undefined;
-    }
-  }
+  // private checkCMCRate() {
+    // const baseCoin = this.originalContract.tokens_info.base.token;
+    // const quoteCoin = this.originalContract.tokens_info.quote.token;
+    //
+    // if (
+    //   baseCoin.cmc_id &&
+    //   quoteCoin.cmc_id &&
+    //   baseCoin.cmc_id > 0 &&
+    //   quoteCoin.cmc_id > 0
+    // ) {
+    //   this.cmcRate = {
+    //     direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber(),
+    //     revert: new BigNumber(baseCoin.rate).div(quoteCoin.rate).toNumber(),
+    //   };
+    //   this.cmcRate.cmcRange =
+    //     this.rates.normal.toNumber() - this.cmcRate.direct;
+    //   this.cmcRate.absCmcRange =
+    //     Math.abs(-(this.rates.normal.toNumber() / this.cmcRate.direct - 1)) *
+    //     100;
+    // } else {
+    //   this.cmcRate = undefined;
+    // }
+  // }
 
   private checkSwapState() {
     const memo = this.originalContract.memo_contract;
@@ -2167,7 +2167,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           'Make the transfer of ' +
           textAmount +
           ' ' +
-          contributeData.token.token_short_name +
+          contributeData.token.token_short_title +
           ' tokens to contract',
         to: this.contractAddress,
         data: contributeData.signature,
@@ -2188,7 +2188,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
                 transaction = {
                   title:
                     'Authorise the contract for getting ' +
-                    contributeData.token.token_short_name +
+                    contributeData.token.token_short_title +
                     ' tokens',
                   to: contributeData.token.address,
                   data: approveSignature,

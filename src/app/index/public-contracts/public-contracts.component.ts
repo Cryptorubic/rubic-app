@@ -256,13 +256,8 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
 
     baseToken.amount = baseToken.amount.toString();
     quoteToken.amount = quoteToken.amount.toString();
-    let cmcRate;
-    if (quoteToken.rate && baseToken.rate) {
-      cmcRate = quoteToken.rate / baseToken.rate;
-    }
     baseToken.rate = baseAmount.div(quoteAmount).dp(5).toNumber();
     quoteToken.rate = quoteAmount.div(baseAmount).dp(5).toNumber();
-    contractDetails.isProfit = cmcRate ? cmcRate <= baseToken.rate : undefined;
 
     this.checkDecentralized(contract);
   }
@@ -406,11 +401,11 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
       case 'ACTIVE':
         this.allFilteredOrdersCount = this.contractsList.filter((trade) => {
           const details = trade.contract_details;
-          return (!this.selectedCoins.base.token || (this.selectedCoins.base.token.mywish_id === details.base_token_info.mywish_id ||
-            (this.selectedCoins.base.token.platform === details.base_token_info.platform && this.selectedCoins.base.token.address === details.base_token_info.address))) &&
-            (!this.selectedCoins.quote.token || (this.selectedCoins.quote.token.mywish_id === details.quote_token_info.mywish_id ||
+          return (!this.selectedCoins.base.token ||
+            (this.selectedCoins.base.token.platform === details.base_token_info.platform && this.selectedCoins.base.token.address === details.base_token_info.address)) &&
+            (!this.selectedCoins.quote.token ||
               (this.selectedCoins.quote.token.platform === details.quote_token_info.platform && this.selectedCoins.quote.token.address === details.quote_token_info.address)
-              ));
+            );
         });
         this.showSelectedPages();
         break;

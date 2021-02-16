@@ -2,12 +2,12 @@
   <input type="text" placeholder="{{'Any' | translate}}"
          autocomplete="off"
          name="token"
-         [(ngModel)]="tokenName"
-         [value]="tokenModel.token ? tokenModel.token.token_short_name : null"
+         [(ngModel)]="tokenSymbol"
+         [value]="tokenModel.token ? tokenModel.token.token_short_title : null"
          #tokenField
          (focus)="showList()"
          (blur)="blurInput()"
-         (ngModelChange)="searchToken(tokenName)"
+         (ngModelChange)="searchToken(tokenSymbol)"
          (keydown)="keyDownResult($event)"
          [ngStyle]="{
           'background-image': tokenModel.token ? 'url(' + tokenModel.token.image_link + ')' : undefined
@@ -28,7 +28,7 @@
             <img [src]="item.image_link">
           </span>
           <span class="coins-list-control_list_item-content_name">
-            {{item.token_name}}&nbsp;({{item.token_short_name}})
+            {{item.token_title}}&nbsp;({{item.token_short_title}})
           </span>
         </span>
       </li>

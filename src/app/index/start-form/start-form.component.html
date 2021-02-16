@@ -85,7 +85,7 @@
               name="base_limit"
             />
             <app-tokens-all-input
-              [otherTokens]="instanceTrade ? instanceTradesTokens : false"
+              [otherTokens]="instanceTrade ? instanceTradesTokens : orderBookTokens[networkToPlatform(requestData.network)]"
               [disabled]="!serviceAvailable"
               (TokenChange)="changedToken()"
               [blockchain]="blockchainsOfNetworks[requestData.network]"
@@ -160,7 +160,7 @@
             />
 
             <app-tokens-all-input
-                    [otherTokens]="instanceTrade ? instanceTradesTokens : false"
+                    [otherTokens]="instanceTrade ? instanceTradesTokens : orderBookTokens[networkToPlatform(requestData.network)]"
                     [disabled]="instanceTrade || !serviceAvailable"
                     (TokenChange)="changedToken()"
                     [blockchain]="blockchainsOfNetworks[requestData.network]"
@@ -172,10 +172,10 @@
             ></app-tokens-all-input>
 
             <label class="form-field_label form-field_label--rate"
-                   *ngIf="!instanceTrade && cmcRate && cmcRate.isMessage && cmcRate.change">
+                   *ngIf="!instanceTrade && coingeckoRate && coingeckoRate.change">
               <div class="form-field_label--rate-short">
                 <span class="form-field_label--rate-short-txt">
-                  {{ cmcRate.change }}% {{ cmcRate.isLower ? 'lower' : 'higher' }}
+                  {{ coingeckoRate.change | number }}% {{ coingeckoRate.isLower ? 'lower' : 'higher' }}
                 </span>
                 <div class="form-field_label--rate-short-icon">
                   <img src="./assets/images/icons/info.svg">
@@ -185,14 +185,14 @@
                       <div class="form-notice_text form-field_label--rate_text">
                         {{'Your rate is' | translate}}
                         <b
-                        ><span class="green-text">{{ cmcRate.change }}%</span>
+                        ><span class="green-text">{{ coingeckoRate.change }}%</span>
                           <span class="green-text">
-                      {{ cmcRate.isLower ? 'lower' : 'higher' }}</span
+                      {{ coingeckoRate.isLower ? 'lower' : 'higher' }}</span
                           >
                         </b>
                         {{'than' | translate}}
-                        <a href="https://coinmarketcap.com/" target="_blank"
-                        >{{'coinmarketcap' | translate}}</a
+                        <a href="https://coingecko.com/" target="_blank"
+                        >{{'coingecko' | translate}}</a
                         >
                         {{'rate.' | translate}}
                       </div>
@@ -399,8 +399,8 @@
     <div
       class="index-start-form__settings-block"
       *ngIf="
-        requestData.tokens_info.base.token.token_name &&
-        requestData.tokens_info.quote.token.token_name
+        requestData.tokens_info.base.token.token_title &&
+        requestData.tokens_info.quote.token.token_title
       "
     >
       <div class="index-start-form__settings-item">
@@ -440,8 +440,8 @@
         <div class="form-field">
           <label class="index-start-form__settings-item-head"
             >{{'Minimum contribution in' | translate}}
-            {{ requestData.tokens_info.base.token.token_name }} ({{
-              requestData.tokens_info.base.token.token_short_name
+            {{ requestData.tokens_info.base.token.token_title }} ({{
+              requestData.tokens_info.base.token.token_short_title
             }})</label
           >
           <div class="form-field_input">
@@ -461,8 +461,8 @@
         <div class="form-field">
           <label class="index-start-form__settings-item-head"
             >{{'Minimum contribution in' | translate}}
-            {{ requestData.tokens_info.quote.token.token_name }} ({{
-              requestData.tokens_info.quote.token.token_short_name
+            {{ requestData.tokens_info.quote.token.token_title }} ({{
+              requestData.tokens_info.quote.token.token_short_title
             }})</label
           >
           <div class="form-field_input">
@@ -484,8 +484,8 @@
     <div
       class="index-start-form__settings-block"
       *ngIf="
-        requestData.tokens_info.base.token.token_name &&
-        requestData.tokens_info.quote.token.token_name
+        requestData.tokens_info.base.token.token_title &&
+        requestData.tokens_info.quote.token.token_title
       "
     >
       <div
@@ -542,8 +542,8 @@
           <div class="form-field">
             <label class="index-start-form__settings-item-head"
               >{{'Specify % for' | translate}}
-              {{ requestData.tokens_info.base.token.token_name }} ({{
-                requestData.tokens_info.base.token.token_short_name
+              {{ requestData.tokens_info.base.token.token_title }} ({{
+                requestData.tokens_info.base.token.token_short_title
               }})</label
             >
             <div class="form-field_input">
@@ -569,14 +569,14 @@
               "
             >
               {{ baseBrokerFee | number: '1.0-8' }}
-              {{ requestData.tokens_info.base.token.token_short_name }}</span
+              {{ requestData.tokens_info.base.token.token_short_title }}</span
             >
           </div>
           <div class="form-field">
             <label class="index-start-form__settings-item-head"
               >{{'Specify % for' | translate}}
-              {{ requestData.tokens_info.quote.token.token_name }} ({{
-                requestData.tokens_info.quote.token.token_short_name
+              {{ requestData.tokens_info.quote.token.token_title }} ({{
+                requestData.tokens_info.quote.token.token_short_title
               }})</label
             >
             <div class="form-field_input">
@@ -602,7 +602,7 @@
               "
             >
               {{ quoteBrokerFee | number: '1.0-8' }}
-              {{ requestData.tokens_info.quote.token.token_short_name }}</span
+              {{ requestData.tokens_info.quote.token.token_short_title }}</span
             >
           </div>
         </div>
