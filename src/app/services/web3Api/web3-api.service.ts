@@ -66,6 +66,13 @@ export class Web3ApiService {
     this.ethersProvider = provider.ethersProvider;
   }
 
+  /**
+   * @description get account balance in Eth units
+   * @param [options] additional options
+   * @param [options.address] wallet address whose balance you want to find out
+   * @param [options.inWei = false] boolean flag to get integer result in Wei
+   * @return account balance in Eth (or in Wei if options.inWei === true)
+   */
   public async getBalance(
       options: {address?: string, inWei?: boolean} = { }
   ): Promise<BigNumber> {
@@ -76,13 +83,29 @@ export class Web3ApiService {
     );
   }
 
-  public async getTokenBalance(tokenAddress: string, options: { address?: string } = { }) {
+  /**
+   * @description get ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   * @param [options] additional options
+   * @param [options.address = this.address] wallet address whose balance you want to find out
+   * @return account tokens balance as integer (multiplied to 10 ** decimals)
+   */
+  public async getTokenBalance(tokenAddress: string, options: { address?: string } = { }): Promise<BigNumber> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
 
     const balance = await contract.methods.balanceOf(options.address || this.address).call();
     return new BigNumber(balance);
   }
 
+  /**
+   * @description send ERC-20 tokens and resolve the promise when the transaction is included in the block
+   * @param contractAddress address of the smart-contract corresponding to the token
+   * @param toAddress token receiver address
+   * @param amount integer tokens amount to send (pre-multiplied by 10 ** decimals)
+   * @param [options] additional options
+   * @param [options.onTransactionHash] callback to execute when transaction enters the mempool
+   * @return transaction receipt
+   */
   public async transferTokens(
       contractAddress: string,
       toAddress: string,
@@ -111,6 +134,13 @@ export class Web3ApiService {
     });
   }
 
+  /**
+   * @description send ERC-20 tokens and resolve the promise without waiting for the transaction to be included in the block
+   * @param contractAddress address of the smart-contract corresponding to the token
+   * @param toAddress token receiver address
+   * @param amount integer tokens amount to send (pre-multiplied by 10 ** decimals)
+   * @return transaction hash
+   */
   public async transferTokensWithOnHashResolve(
       contractAddress: string,
       toAddress: string,
@@ -134,6 +164,15 @@ export class Web3ApiService {
     });
   }
 
+  /**
+   * @description send Eth in transaction and resolve the promise when the transaction is included in the block
+   * @param toAddress Eth receiver address
+   * @param value amount in Eth units
+   * @param [options] additional options
+   * @param [options.onTransactionHash] callback to execute when transaction enters the mempool
+   * @param [options.inWei = false] boolean flag for determining the input parameter "value" in Wei
+   * @return transaction receipt
+   */
   public async sendTransaction(
       toAddress: string,
       value: BigNumber | string,
@@ -163,15 +202,26 @@ export class Web3ApiService {
     });
   }
 
+  /**
+   * @description send Eth in transaction and resolve the promise without waiting for the transaction to be included in the block
+   * @param toAddress Eth receiver address
+   * @param value amount in Eth units
+   * @param [options] additional options
+   * @param [options.inWei = false] boolean flag for determining the input parameter "value" in Wei
+   * @return transaction hash
+   */
   public async sendTransactionWithOnHashResolve(
       toAddress: string,
-      value: string | BigNumber
+      value: string | BigNumber,
+      options: {
+        inWei?: boolean
+      } = { }
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       this.web3.eth.sendTransaction({
         from: this.address,
         to: toAddress,
-        value: value.toString(),
+        value: options.inWei ? value.toString() : this.ethToWei(value),
         ...(this.defaultMockGas && {gas: this.defaultMockGas})
       })
           .on('transactionHash', hash => resolve(hash))
@@ -188,7 +238,7 @@ export class Web3ApiService {
   }
 
   /**
-   *
+   * @description predict the volume of gas required to execute the contract method
    * @param contractAbi abi of smart-contract
    * @param contractAddress address of smart-contract
    * @param methodName method whose execution gas number is to be calculated
@@ -211,6 +261,7 @@ export class Web3ApiService {
   }
 
   /**
+   * @description calculate the average price per unit of gas according to web3
    * @return average gas price in ETH
    */
   public async getGasPriceInETH(): Promise<BigNumber> {
@@ -218,6 +269,11 @@ export class Web3ApiService {
     return new BigNumber(gasPrice).div(10 ** 18);
   }
 
+  /**
+   * @description calculate the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko
+   * @param gasVolume gas limit
+   * @return gas fee in usd$
+   */
   public async getGasFeeInUSD(gasVolume: BigNumber): Promise<BigNumber> {
     const response: any = await this.httpClient
         .get('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd').toPromise();
@@ -240,6 +296,15 @@ export class Web3ApiService {
     return new BigNumber(allowance);
   }
 
+  /**
+   * @description execute approve method in ERC-20 token contract
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   * @param spender wallet or contract address to approve
+   * @param value integer value to approve (pre-multiplied by 10 ** decimals)
+   * @param [options] additional options
+   * @param [options.onTransactionHash] callback to execute when transaction enters the mempool
+   * @return approval transaction receipt
+   */
   public async approveTokens(
       tokenAddress: string,
       spender: string,
@@ -268,6 +333,16 @@ export class Web3ApiService {
     });
   }
 
+  /**
+   * @description execute method of smart-contract and resolve the promise when the transaction is included in the block
+   * @param contractAddress address of smart-contract which method is to be executed
+   * @param contractAbi abi of smart-contract which method is to be executed
+   * @param methodName executing method name
+   * @param methodArguments executing method arguments
+   * @param [options] additional options
+   * @param [options.onTransactionHash] callback to execute when transaction enters the mempool
+   * @return smart-contract method return value
+   */
   public executeContractMethod(
       contractAddress: string,
       contractAbi: any[],
@@ -298,6 +373,14 @@ export class Web3ApiService {
     });
   }
 
+  /**
+   * @description execute method of smart-contract and resolve the promise without waiting for the transaction to be included in the block
+   * @param contractAddress address of smart-contract which method is to be executed
+   * @param contractAbi abi of smart-contract which method is to be executed
+   * @param methodName executing method name
+   * @param methodArguments executing method arguments
+   * @return smart-contract method return value
+   */
   public executeContractMethodWithOnHashResolve(
       contractAddress: string,
       contractAbi: any[],
@@ -328,11 +411,19 @@ export class Web3ApiService {
     return this.approveTokens(tokenAddress, spenderAddress, new BigNumber(0));
   }
 
-  private ethToWei(value: string | BigNumber) {
+  /**
+   * @description convert Eth amount into Wei
+   * @param value to convert in Eth
+   */
+  private ethToWei(value: string | BigNumber): string {
     return this.web3.utils.toWei(value.toString(), 'ether');
   }
 
-  private weiToEth(value: string | BigNumber) {
+  /**
+   * @description convert Wei amount into Eth
+   * @param value to convert in Wei
+   */
+  private weiToEth(value: string | BigNumber): string {
    return this.web3.utils.fromWei(value.toString(), 'ether');
   }
 }
