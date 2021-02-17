@@ -10,8 +10,8 @@ import {UniSwapContractAbi, UniSwapContractAddress} from './uni-swap-contract';
 import {TransactionReceipt} from 'web3-eth';
 
 interface UniSwapTrade {
-  amountIn: BigNumber;
-  amountOutMin: BigNumber;
+  amountIn: string;
+  amountOutMin: string;
   path: string[];
   to: string;
   deadline: number;
@@ -41,20 +41,23 @@ export class UniSwapService extends InstantTradeService {
   ): Promise<InstantTrade> {
     try {
       const fromTokenClone = {... fromToken};
+      const toTokenClone = {... toToken};
 
       if (this.web3Api.isEtherAddress(fromTokenClone.address)) {
         fromTokenClone.address = this.WETH.address;
       }
 
-      const uniSwapTrade = await this.getUniSwapTrade(fromAmount, fromTokenClone, toToken, chainId);
+      if (this.web3Api.isEtherAddress(toTokenClone.address)) {
+        toTokenClone.address = this.WETH.address;
+      }
 
-      const amountIn = new BigNumber(uniSwapTrade.inputAmount.toSignificant(fromTokenClone.decimals))
-          .multipliedBy(10 ** fromTokenClone.decimals)
-          .toString();
-      const amountOutMin = new BigNumber(uniSwapTrade.minimumAmountOut(UniSwapService.slippageTolerance).toSignificant(toToken.decimals))
-          .multipliedBy(10 ** toToken.decimals)
-          .toString();
-      const path = [fromTokenClone.address, toToken.address];
+      const uniSwapTrade = await this.getUniSwapTrade(fromAmount, fromTokenClone, toTokenClone, chainId);
+
+      const amountIn = new BigNumber(uniSwapTrade.inputAmount
+          .toSignificant(fromTokenClone.decimals)).multipliedBy(10 ** fromTokenClone.decimals);
+      const amountOutMin = new BigNumber(uniSwapTrade.minimumAmountOut(UniSwapService.slippageTolerance)
+          .toSignificant(toTokenClone.decimals)).multipliedBy(10 ** toTokenClone.decimals);
+      const path = [fromTokenClone.address, toTokenClone.address];
       const to = this.web3Api.address;
       const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
 
@@ -67,7 +70,7 @@ export class UniSwapService extends InstantTradeService {
   */
       const estimatedGas = new BigNumber(0);
       const gasFee = await this.web3Api.getGasFeeInUSD(estimatedGas);
-      const amountOut = uniSwapTrade.minimumAmountOut(new Percent('0', '1')).toSignificant(toToken.decimals);
+      const amountOut = uniSwapTrade.minimumAmountOut(new Percent('0', '1')).toSignificant(toTokenClone.decimals);
 
       const trade: InstantTrade = {
         from: {
@@ -97,8 +100,12 @@ export class UniSwapService extends InstantTradeService {
       } = { }
     ): Promise<TransactionReceipt> {
 
-    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals);
-    const amountOutMin = trade.to.amount.multipliedBy(10 ** trade.to.token.decimals);
+    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
+    const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(100);
+    const amountOutMin = trade.to.amount
+        .multipliedBy(new BigNumber(1).minus(percentSlippage))
+        .multipliedBy(10 ** trade.from.token.decimals)
+        .toFixed(0);
     const path = [trade.from.token.address, trade.to.token.address];
     const to = this.web3Api.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
@@ -148,6 +155,8 @@ export class UniSwapService extends InstantTradeService {
 
     trade.path[1] = this.WETH.address;
 
+    await this.provideAllowance(trade.path[0], new BigNumber(trade.amountIn), options.onApprove);
+
     return this.web3Api.executeContractMethod(
         UniSwapContractAddress,
         UniSwapContractAbi,
@@ -167,7 +176,7 @@ export class UniSwapService extends InstantTradeService {
       } = { }
   ): Promise<TransactionReceipt> {
 
-    await this.provideAllowance(trade.path[0], trade.amountIn, options.onApprove);
+    await this.provideAllowance(trade.path[0], new BigNumber(trade.amountIn), options.onApprove);
 
     return this.web3Api.executeContractMethod(
         UniSwapContractAddress,

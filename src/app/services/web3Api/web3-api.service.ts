@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js';
 import {HttpClient} from '@angular/common/http';
 import {ProviderService} from '../provider/provider.service';
 import { TransactionReceipt } from 'web3-eth';
+import {Transaction} from 'web3-core';
 
 interface Web3ApiNetwork {
   id: number;
@@ -355,7 +356,7 @@ export class Web3ApiService {
       methodArguments: any[],
       options: {
         onTransactionHash?: (hash: string) => void,
-        value?: BigNumber
+        value?: BigNumber | string
        } = { }
       ): Promise<TransactionReceipt> {
 
@@ -445,5 +446,45 @@ export class Web3ApiService {
    */
   public isEtherAddress(address: string): boolean {
     return address === '0x0000000000000000000000000000000000000000';
+  }
+
+  /**
+   * get mined transaction gas fee in Ether
+   * @param hash transaction hash
+   * @param [options] additional options
+   * @param [options.inWei = false] if true, then the return value will be in Wei
+   * @return transaction gas fee in Ether (or in Wei if options.inWei = true) or null if transaction is not mined
+   */
+  public async getTransactionGasFee(hash: string, options: { inWei?: boolean } = { }): Promise<BigNumber> {
+    const transaction = await this.getTransactionByHash(hash);
+    const receipt = await this.web3.eth.getTransactionReceipt(hash);
+
+    if (!transaction || !receipt) {
+      return null;
+    }
+
+    const gasPrice = new BigNumber(transaction.gasPrice);
+    const gasLimit = new BigNumber(receipt.gasUsed);
+
+    return gasPrice.multipliedBy(gasLimit);
+  }
+
+  private async getTransactionByHash(hash: string, attempt?: number): Promise<Transaction> {
+    attempt = attempt || 0;
+    const limit = 10;
+    const timeout = 500;
+
+    if (attempt >= limit) {
+      return null;
+    }
+
+    const transaction = await this.web3.eth.getTransaction(hash);
+    if (transaction === null) {
+      return new Promise(resolve => setTimeout(
+          () => resolve(this.getTransactionByHash(hash, attempt + 1)), timeout
+      ));
+    } else {
+      return transaction;
+    }
   }
 }

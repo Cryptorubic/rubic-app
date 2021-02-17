@@ -126,16 +126,57 @@ describe('UniswapServiceService', () => {
 
     const startBalance = await web3Api.getTokenBalance(YEENUS.address);
 
-    const receipt = await service.createTrade(trade, {
+    await service.createTrade(trade, {
       onConfirm: callbackObject.onConfirm.bind(callbackObject)
     });
-
-    console.log(receipt.transactionHash);
 
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/));
     const newBalance = await web3Api.getTokenBalance(YEENUS.address);
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount)).toBeTruthy();
+    done();
+  });
+
+  it('create tokens-eth trade without existing allowance', async (done) => {
+    await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
+
+    const fromAmount = new BigNumber(30);
+    const trade = await service.calculateTrade(fromAmount, WEENUS, ETH);
+    const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(100);
+    const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
+
+    let gasFee = new BigNumber(0);
+
+    const callbackObject = {
+      onConfirm: (hash: string) => { },
+      onApprove: async (hash: string) => {
+        const approveTxGasFee = await web3Api.getTransactionGasFee(hash);
+        gasFee = gasFee.plus(approveTxGasFee);
+      }
+    };
+    spyOn(callbackObject, 'onConfirm');
+    spyOn(callbackObject, 'onApprove').and.callThrough();
+
+    const startBalance = await web3Api.getBalance();
+
+    const receipt = await service.createTrade(trade, {
+      onConfirm: callbackObject.onConfirm.bind(callbackObject),
+      onApprove: callbackObject.onApprove.bind(callbackObject)
+    });
+
+    const txGasFee = await web3Api.getTransactionGasFee(receipt.transactionHash);
+    gasFee = gasFee.plus(txGasFee);
+
+    expect(callbackObject.onConfirm).toHaveBeenCalledWith(jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/));
+    const newBalance = await web3Api.getBalance();
+
+    expect(
+        newBalance.minus(startBalance)
+            .gte(outputMinAmount.minus(gasFee))
+    ).toBeTruthy();
+
+    await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
+
     done();
   });
 });
