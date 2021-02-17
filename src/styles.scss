@@ -703,9 +703,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       }
       .form-notice {
         position: absolute;
-        left: 50%;
+        left: -90px;
         bottom: 100%;
-        margin-bottom: 16px;
+        padding-bottom: 16px;
         display: none;
         &_content {
           background: #FFFFFF;
@@ -715,7 +715,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
           font-size: 14px;
           line-height: 1.25em;
           width: 190px;
-          transform: translateX(-50%);
           text-transform: initial;
           color: #000000;
           position: relative;
@@ -851,7 +850,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       font-family: inherit;
       font-size: 18px !important;
       background: #f4f4f4;
-      border: 1px solid #ffffff;
       padding: 11px 10px 11px 22px;
       margin-top: -1px;
 
