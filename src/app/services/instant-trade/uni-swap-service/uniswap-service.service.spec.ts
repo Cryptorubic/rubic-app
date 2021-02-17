@@ -40,7 +40,7 @@ describe('UniswapServiceService', () => {
   it('calculate price', async (done) => {
     const fromAmount = new BigNumber(2);
 
-    const trade = await service.getTrade(fromAmount, WEENUS, YEENUS);
+    const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
     console.log(trade.to.amount.toString());
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
@@ -52,7 +52,7 @@ describe('UniswapServiceService', () => {
     await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
 
     const fromAmount = new BigNumber(2);
-    const trade = await service.getTrade(fromAmount, WEENUS, YEENUS);
+    const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
     const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(100);
 
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
@@ -86,7 +86,7 @@ describe('UniswapServiceService', () => {
 
     await web3Api.approveTokens(WEENUS.address, UniSwapContractAddress, fromAmount.multipliedBy(10 ** WEENUS.decimals));
 
-    const trade = await service.getTrade(fromAmount, WEENUS, YEENUS);
+    const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
     const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(100);
 
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));

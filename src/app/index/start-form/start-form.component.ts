@@ -373,7 +373,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         symbol: this.requestData.tokens_info.quote.token.token_short_name
       }
 
-      this.uniSwapTrade = await this.uniSwapService.getTrade(
+      this.uniSwapTrade = await this.uniSwapService.calculateTrade(
         new BigNumber(this.requestData.tokens_info.base.amount),
         fromToken,
         toToken

@@ -22,7 +22,7 @@ export class UniSwapService extends InstantTradeService {
     this.provider = web3Api.ethersProvider;
   }
 
-  public async getTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken: InstantTradeToken, chainId?): Promise<InstantTrade> {
+  public async calculateTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken: InstantTradeToken, chainId?): Promise<InstantTrade> {
     try {
       const uniSwapTrade = await this.getUniSwapTrade(fromAmount, fromToken, toToken, chainId);
 
