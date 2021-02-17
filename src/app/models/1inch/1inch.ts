@@ -78,25 +78,25 @@ export class OneInchService {
                     });
                 }
 
-                const allETHTokens = window['coingecko_tokens'].filter((token) => {
-                    return token.platform === 'ethereum';
-                });
-
-                allETHTokens.forEach((token) => {
-                    const tokenAddress = token.address.toLowerCase();
-                    const tokenIsExists = this.tokensAutocompleteList.find((exToken: TokenInterface) => {
-                        return exToken.address.toLowerCase() === tokenAddress;
-                    });
-                    if (!tokenIsExists) {
-                        const coingeckoToken = window['coingecko_tokens'].find((exToken: TokenInterface) => {
-                            return exToken.address.toLowerCase() === tokenAddress;
-                        });
-                        if (coingeckoToken) {
-                            this.tokensAutocompleteList.push(coingeckoToken);
-                            this.availableTokens[coingeckoToken.token_short_title] = coingeckoToken;
-                        }
-                    }
-                });
+                // const allETHTokens = window['coingecko_tokens'].filter((token) => {
+                //     return token.platform === 'ethereum';
+                // });
+                //
+                // allETHTokens.forEach((token) => {
+                //     const tokenAddress = token.address.toLowerCase();
+                //     const tokenIsExists = this.tokensAutocompleteList.find((exToken: TokenInterface) => {
+                //         return exToken.address.toLowerCase() === tokenAddress;
+                //     });
+                //     if (!tokenIsExists) {
+                //         const coingeckoToken = window['coingecko_tokens'].find((exToken: TokenInterface) => {
+                //             return exToken.address.toLowerCase() === tokenAddress;
+                //         });
+                //         if (coingeckoToken) {
+                //             this.tokensAutocompleteList.push(coingeckoToken);
+                //             this.availableTokens[coingeckoToken.token_short_title] = coingeckoToken;
+                //         }
+                //     }
+                // });
 
 
                 this.tokensAutocompleteList.sort((a, b) => {
