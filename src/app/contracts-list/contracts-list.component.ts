@@ -97,11 +97,11 @@ export class ContractsListComponent implements OnInit {
             this.router.navigate([`/view-v3${contract.id}`]);
             break;
           default:
-            this.router.navigate([`/contract-v3/${contract.id}`]);
+            this.router.navigate([`/public-v3/${contract.unique_link}`]);
             break;
         }
       } else {
-        this.router.navigate([`/contract-v3/${contract.id}`]);
+        this.router.navigate([`/public-v3/${contract.unique_link}`]);
       }
     } else {
       switch (contract.state) {

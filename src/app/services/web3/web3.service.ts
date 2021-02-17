@@ -74,10 +74,13 @@ const IS_PRODUCTION = true; // location.protocol === 'https:';
 const ETHERSCAN_URLS = {
   ETHERSCAN_ADDRESS: 'https://etherscan.io/',
   ROPSTEN_ETHERSCAN_ADDRESS: 'https://ropsten.etherscan.io/',
+  KOVAN_ETHERSCAN_ADDRESS: 'https://kovan.etherscan.io/',
   BNB_ETHERSCAN_ADDRESS: 'https://bscscan.com/',
   ROPSTEN_BNB_ETHERSCAN_ADDRESS: 'https://testnet.bscscan.com/',
+  KOVAN_BNB_ETHERSCAN_ADDRESS: 'https://testnet.bscscan.com/',
   MATIC_ETHERSCAN_ADDRESS: 'https://bscscan.com/',
   ROPSTEN_MATIC_ETHERSCAN_ADDRESS: 'https://testnet.bscscan.com/',
+  KOVAN_MATIC_ETHERSCAN_ADDRESS: 'https://testnet.bscscan.com/',
 };
 
 @Pipe({ name: 'etherscanUrl' })
@@ -88,17 +91,17 @@ export class EtherscanUrlPipe implements PipeTransform {
       case 1:
         url = IS_PRODUCTION
             ? ETHERSCAN_URLS.ETHERSCAN_ADDRESS
-            : ETHERSCAN_URLS.ROPSTEN_ETHERSCAN_ADDRESS;
+            : ETHERSCAN_URLS.KOVAN_ETHERSCAN_ADDRESS;
         break;
       case 22:
         url = IS_PRODUCTION
             ? ETHERSCAN_URLS.BNB_ETHERSCAN_ADDRESS
-            : ETHERSCAN_URLS.ROPSTEN_BNB_ETHERSCAN_ADDRESS;
+            : ETHERSCAN_URLS.KOVAN_BNB_ETHERSCAN_ADDRESS;
         break;
       case 24:
         url = IS_PRODUCTION
             ? ETHERSCAN_URLS.MATIC_ETHERSCAN_ADDRESS
-            : ETHERSCAN_URLS.ROPSTEN_MATIC_ETHERSCAN_ADDRESS;
+            : ETHERSCAN_URLS.KOVAN_MATIC_ETHERSCAN_ADDRESS;
         break;
     }
     return url + type + '/' + address;
@@ -205,7 +208,7 @@ export class Web3Service {
     const currentProvider = new Web3.providers.HttpProvider(
         IS_PRODUCTION
             ? ETH_NETWORKS[CHAIN_OF_NETWORK[network]].INFURA_ADDRESS
-            : ETH_NETWORKS[CHAIN_OF_NETWORK[network]].ROPSTEN_INFURA_ADDRESS,
+            : ETH_NETWORKS[CHAIN_OF_NETWORK[network]].KOVAN_INFURA_ADDRESS,
     );
     if (!this.Web3) {
       this.Web3 = new Web3(currentProvider);
@@ -287,7 +290,7 @@ export class Web3Service {
     const currentProvider = new Web3.providers.HttpProvider(
         IS_PRODUCTION
             ? ETH_NETWORKS[blockchain].INFURA_ADDRESS
-            : ETH_NETWORKS[blockchain].ROPSTEN_INFURA_ADDRESS,
+            : ETH_NETWORKS[blockchain].KOVAN_INFURA_ADDRESS,
     );
     if (!this.Web3) {
       this.Web3 = new Web3(currentProvider);
@@ -346,7 +349,7 @@ export class Web3Service {
       const currentProvider = new Web3.providers.HttpProvider(
           IS_PRODUCTION
               ? ETH_NETWORKS[blockchain].INFURA_ADDRESS
-              : ETH_NETWORKS[blockchain].ROPSTEN_INFURA_ADDRESS,
+              : ETH_NETWORKS[blockchain].KOVAN_INFURA_ADDRESS,
       );
 
       const contract = new (new Web3(currentProvider).eth.Contract)(ERC20_TOKEN_ABI as any[], address);
@@ -518,7 +521,7 @@ export class Web3Service {
     const currentProvider = new Web3.providers.HttpProvider(
         IS_PRODUCTION
             ? ETH_NETWORKS[CHAIN_OF_NETWORK[network]].INFURA_ADDRESS
-            : ETH_NETWORKS[CHAIN_OF_NETWORK[network]].ROPSTEN_INFURA_ADDRESS,
+            : ETH_NETWORKS[CHAIN_OF_NETWORK[network]].KOVAN_INFURA_ADDRESS,
     );
     return new Promise((resolve, reject) => {
       return this.getAccounts(false, false, network).toPromise().then((res: any) => {
@@ -608,7 +611,7 @@ export class Web3Service {
         const currentProvider = new Web3.providers.HttpProvider(
             IS_PRODUCTION
                 ? ETH_NETWORKS[CHAIN_OF_NETWORK[data.network]].INFURA_ADDRESS
-                : ETH_NETWORKS[CHAIN_OF_NETWORK[data.network]].ROPSTEN_INFURA_ADDRESS,
+                : ETH_NETWORKS[CHAIN_OF_NETWORK[data.network]].KOVAN_INFURA_ADDRESS,
         );
         if (!this.Web3) {
           this.Web3 = new Web3(currentProvider);

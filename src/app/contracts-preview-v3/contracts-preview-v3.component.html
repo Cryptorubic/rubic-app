@@ -113,9 +113,8 @@
             >
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
-                  <div
-                    class="tokens-info-block_filled__count tokens-info-block_filled__count--right"
-                  >
+                  <div class="tokens-info-block_filled__count">
+                    <span>{{ baseAmountShorted }}</span>
                     <div class="tokens-info-block_filled-wrapper">
                       <div class="tokens-info-block_filled_item send">
                         <div class="tokens-info-block_filled__text">{{'Sent' | translate}}</div>
@@ -143,7 +142,6 @@
                         </div>
                       </div>
                     </div>
-                    <span>{{ tokens.base.amount | number: '1.0-8' }}</span>
                   </div>
                 </div>
                 <div
@@ -414,7 +412,7 @@
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    <span>{{ (tokens.quote.amount || 0) | number: '1.0-8' }}</span>
+                    <span>{{ quoteAmountShorted }}</span>
                     <div class="tokens-info-block_filled-wrapper">
                       <div class="tokens-info-block_filled_item send">
                         <div class="tokens-info-block_filled__text">{{'Sent' | translate}}</div>
