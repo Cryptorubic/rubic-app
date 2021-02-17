@@ -299,7 +299,7 @@ export class Web3ApiService {
   /**
    * @description execute approve method in ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param spender wallet or contract address to approve
+   * @param spenderAddress wallet or contract address to approve
    * @param value integer value to approve (pre-multiplied by 10 ** decimals)
    * @param [options] additional options
    * @param [options.onTransactionHash] callback to execute when transaction enters the mempool
@@ -307,7 +307,7 @@ export class Web3ApiService {
    */
   public async approveTokens(
       tokenAddress: string,
-      spender: string,
+      spenderAddress: string,
       value: BigNumber,
       options: {
         onTransactionHash?: (hash: string) => void
@@ -316,7 +316,7 @@ export class Web3ApiService {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
 
     return new Promise((resolve, reject) => {
-      contract.methods.approve(spender, value).send({
+      contract.methods.approve(spenderAddress, value).send({
         from: this.address,
         ...(this.defaultMockGas && {gas: this.defaultMockGas})
       })
@@ -341,6 +341,7 @@ export class Web3ApiService {
    * @param methodArguments executing method arguments
    * @param [options] additional options
    * @param [options.onTransactionHash] callback to execute when transaction enters the mempool
+   * @param [options.value] amount in Wei amount to be attached to the transaction
    * @return smart-contract method return value
    */
   public executeContractMethod(
@@ -349,7 +350,8 @@ export class Web3ApiService {
       methodName: string,
       methodArguments: any[],
       options: {
-        onTransactionHash?: (hash: string) => void
+        onTransactionHash?: (hash: string) => void,
+        value?: BigNumber
        } = { }
       ): Promise<any> {
 
@@ -358,6 +360,7 @@ export class Web3ApiService {
     return new Promise((resolve, reject) => {
       contract.methods[methodName](...methodArguments).send({
         from: this.address,
+        ...(options.value && {value: options.value}),
         ...(this.defaultMockGas && {gas: this.defaultMockGas})
         })
           .on('transactionHash', options.onTransactionHash || (() => {}))
@@ -407,7 +410,12 @@ export class Web3ApiService {
     });
   }
 
-  public async unApprove(tokenAddress, spenderAddress) {
+  /**
+   * @description remove approval for token use
+   * @param tokenAddress tokenAddress address of the smart-contract corresponding to the token
+   * @param spenderAddress wallet or contract address to approve
+   */
+  public async unApprove(tokenAddress, spenderAddress): Promise<TransactionReceipt> {
     return this.approveTokens(tokenAddress, spenderAddress, new BigNumber(0));
   }
 
@@ -425,5 +433,13 @@ export class Web3ApiService {
    */
   private weiToEth(value: string | BigNumber): string {
    return this.web3.utils.fromWei(value.toString(), 'ether');
+  }
+
+  /**
+   * @description check if address is Ether native address
+   * @param address address to check
+   */
+  public isEtherAddress(address: string): boolean {
+    return address === '0x0000000000000000000000000000000000000000';
   }
 }

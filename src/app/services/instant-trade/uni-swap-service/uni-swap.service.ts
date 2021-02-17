@@ -8,6 +8,13 @@ import { Percent } from '@uniswap/sdk';
 import {Web3ApiService} from '../../web3Api/web3-api.service';
 import {UniSwapContractAbi, UniSwapContractAddress} from './uni-swap-contract';
 
+interface UniSwapTrade {
+  amountIn: BigNumber;
+  amountOutMin: BigNumber;
+  path: string[];
+  to: string;
+  deadline: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +29,12 @@ export class UniSwapService extends InstantTradeService {
     this.provider = web3Api.ethersProvider;
   }
 
-  public async calculateTrade(fromAmount: BigNumber, fromToken: InstantTradeToken, toToken: InstantTradeToken, chainId?): Promise<InstantTrade> {
+  public async calculateTrade(
+      fromAmount: BigNumber,
+      fromToken: InstantTradeToken,
+      toToken: InstantTradeToken,
+      chainId?
+  ): Promise<InstantTrade> {
     try {
       const uniSwapTrade = await this.getUniSwapTrade(fromAmount, fromToken, toToken, chainId);
 
@@ -67,10 +79,6 @@ export class UniSwapService extends InstantTradeService {
     }
   }
 
-  getGasFee(fromAmount: BigNumber) {
-
-  }
-
   public async createTrade(
       trade: InstantTrade,
       options: {
@@ -79,28 +87,81 @@ export class UniSwapService extends InstantTradeService {
       } = { }
     ): Promise<void> {
 
-    const amountIn = trade.from.amount
-        .multipliedBy(10 ** trade.from.token.decimals);
-    const amountOutMin = trade.to.amount
-        .multipliedBy(10 ** trade.to.token.decimals);
-
-    await this.provideAllowance(trade.from.token.address, amountIn, options.onApprove);
-
+    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals);
+    const amountOutMin = trade.to.amount.multipliedBy(10 ** trade.to.token.decimals);
     const path = [trade.from.token.address, trade.to.token.address];
     const to = this.web3Api.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
 
-    await this.web3Api.executeContractMethod(
+    const uniSwapTrade: UniSwapTrade = {amountIn, amountOutMin, path, to, deadline};
+
+    if (this.web3Api.isEtherAddress(trade.from.token.address)) {
+      return this.createEthToTokensTrade(uniSwapTrade, options);
+    }
+
+    if (this.web3Api.isEtherAddress(trade.to.token.address)) {
+      return this.createTokensToEthTrade(uniSwapTrade, options);
+    }
+
+    return this.createTokensToTokensTrade(uniSwapTrade, options);
+  }
+
+  private async createEthToTokensTrade(
+      trade: UniSwapTrade,
+      options: {
+        onConfirm?: (hash: string) => void,
+        onApprove?: (hash: string) => void
+      } = { }
+  ): Promise<void> {
+
+    return this.web3Api.executeContractMethod(
         UniSwapContractAddress,
         UniSwapContractAbi,
-        'swapExactTokensForTokensSupportingFeeOnTransferTokens',
-        [amountIn.toString(), amountOutMin.toString(), path, to, deadline],
-        { onTransactionHash: options.onConfirm }
+        'swapExactETHForTokens',
+        [trade.amountOutMin, trade.path, trade.to, trade.deadline],
+        {
+          onTransactionHash: options.onConfirm,
+          value: trade.amountIn
+        }
     );
   }
 
-  getToAmount(fromAmount: BigNumber) {
+  private async createTokensToEthTrade(
+      trade: UniSwapTrade,
+      options: {
+        onConfirm?: (hash: string) => void,
+        onApprove?: (hash: string) => void
+      } = { }
+  ): Promise<void> {
 
+    return this.web3Api.executeContractMethod(
+        UniSwapContractAddress,
+        UniSwapContractAbi,
+        'swapExactTokensForETH',
+        [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
+        {
+          onTransactionHash: options.onConfirm
+        }
+    );
+  }
+
+  private async createTokensToTokensTrade(
+      trade: UniSwapTrade,
+      options: {
+        onConfirm?: (hash: string) => void,
+        onApprove?: (hash: string) => void
+      } = { }
+  ): Promise<void> {
+
+    await this.provideAllowance(trade.path[0], trade.amountIn, options.onApprove);
+
+    return this.web3Api.executeContractMethod(
+        UniSwapContractAddress,
+        UniSwapContractAbi,
+        'swapExactTokensForTokensSupportingFeeOnTransferTokens',
+        [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
+        { onTransactionHash: options.onConfirm }
+    );
   }
 
   private async provideAllowance(tokenAddress: string, value: BigNumber, onApprove?: (hash: string) => void): Promise<void> {

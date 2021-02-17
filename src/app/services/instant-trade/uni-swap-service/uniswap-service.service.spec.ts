@@ -41,13 +41,12 @@ describe('UniswapServiceService', () => {
     const fromAmount = new BigNumber(2);
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
-    console.log(trade.to.amount.toString());
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
     done();
   });
 
-  it('create trade without allowance', async (done) => {
+  it('create tokens-tokens trade without allowance', async (done) => {
 
     await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
 
@@ -58,8 +57,8 @@ describe('UniswapServiceService', () => {
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {
-      onConfirm: (hash: string) => { console.log('onConfirm'); },
-      onApprove: (hash: string) => { console.log('onConfirm'); }
+      onConfirm: (hash: string) => { },
+      onApprove: (hash: string) => { }
     };
     spyOn(callbackObject, 'onConfirm');
     spyOn(callbackObject, 'onApprove');
@@ -81,7 +80,7 @@ describe('UniswapServiceService', () => {
     done();
   });
 
-  it('create trade with existing allowance', async (done) => {
+  it('create tokens-tokens trade with existing allowance', async (done) => {
     const fromAmount = new BigNumber(2);
 
     await web3Api.approveTokens(WEENUS.address, UniSwapContractAddress, fromAmount.multipliedBy(10 ** WEENUS.decimals));
@@ -92,8 +91,8 @@ describe('UniswapServiceService', () => {
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {
-      onConfirm: (hash: string) => { console.log('onConfirm'); },
-      onApprove: (hash: string) => { console.log('onConfirm'); }
+      onConfirm: (hash: string) => { },
+      onApprove: (hash: string) => { }
     };
     spyOn(callbackObject, 'onConfirm');
     spyOn(callbackObject, 'onApprove');
