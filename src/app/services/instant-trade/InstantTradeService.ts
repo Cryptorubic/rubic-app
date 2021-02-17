@@ -1,5 +1,6 @@
 import {InstantTradeToken, InstantTrade} from './types';
 import BigNumber from 'bignumber.js';
+import {TransactionReceipt} from 'web3-eth';
 
 abstract class InstantTradeService {
 
@@ -26,7 +27,7 @@ abstract class InstantTradeService {
             onConfirm?: (hash: string) => void,
             onApprove?: (hash: string | null) => void
         }
-    ): Promise<void>;
+    ): Promise<TransactionReceipt>;
 
 }
 

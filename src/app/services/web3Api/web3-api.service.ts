@@ -44,6 +44,10 @@ export class Web3ApiService {
   public ethersProvider: any;
 
   public get network(): Web3ApiNetwork {
+    if (!this.ethereum) {
+      return NETWORKS[2];
+    }
+
     return NETWORKS.find(net => net.id === Number(this.ethereum.networkVersion));
   }
 
@@ -353,7 +357,7 @@ export class Web3ApiService {
         onTransactionHash?: (hash: string) => void,
         value?: BigNumber
        } = { }
-      ): Promise<any> {
+      ): Promise<TransactionReceipt> {
 
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 

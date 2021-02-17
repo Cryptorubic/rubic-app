@@ -1,4 +1,5 @@
 import {InstantTradeToken} from '../../app/services/instant-trade/types';
+import {WETH as UniSwapWETH} from '@uniswap/sdk';
 
 const WEENUS: InstantTradeToken = {
     network: 'KOVAN',
@@ -14,4 +15,18 @@ const YEENUS: InstantTradeToken = {
     symbol: 'YEENUS'
 };
 
-export {WEENUS, YEENUS};
+const ETH: InstantTradeToken = {
+    network: 'KOVAN',
+    address: '0x0000000000000000000000000000000000000000',
+    decimals: 18,
+    symbol: 'ETH'
+};
+
+const WETH: InstantTradeToken = {
+    network: 'KOVAN',
+    address: UniSwapWETH['42'].address,
+    decimals: 18,
+    symbol: 'WETH'
+};
+
+export {WEENUS, YEENUS, ETH, WETH};

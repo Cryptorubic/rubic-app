@@ -33,6 +33,12 @@ describe('Web3ApiService', () => {
     expect(service.address).toBeTruthy();
   });
 
+  it('should use Kovan network id', () => {
+    const network = service.network;
+    expect(network).toBeTruthy();
+    expect(network.id).toBe(42);
+  });
+
   it('get balance works', async (done) => {
     const balance = await service.getBalance();
     expect(balance).not.toBe(undefined);

@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import InstantTradeService from '../InstantTradeService';
 import InstantTrade from '../types/InstantTrade';
 import {InstantTradeToken} from '../types';
-import {ChainId, Fetcher, Route, Token, TokenAmount, Trade, TradeType} from '@uniswap/sdk';
+import {ChainId, Fetcher, Route, Token, TokenAmount, Trade, TradeType, WETH} from '@uniswap/sdk';
 import BigNumber from 'bignumber.js';
 import { Percent } from '@uniswap/sdk';
 import {Web3ApiService} from '../../web3Api/web3-api.service';
 import {UniSwapContractAbi, UniSwapContractAddress} from './uni-swap-contract';
+import {TransactionReceipt} from 'web3-eth';
 
 interface UniSwapTrade {
   amountIn: BigNumber;
@@ -23,10 +24,13 @@ export class UniSwapService extends InstantTradeService {
 
   static slippageTolerance = new Percent('50', '10000'); // 0.50%
   private readonly provider;
+  private readonly WETH;
 
   constructor(private web3Api: Web3ApiService) {
     super();
     this.provider = web3Api.ethersProvider;
+
+    this.WETH = WETH[this.web3Api.network.id.toString()];
   }
 
   public async calculateTrade(
@@ -36,15 +40,21 @@ export class UniSwapService extends InstantTradeService {
       chainId?
   ): Promise<InstantTrade> {
     try {
-      const uniSwapTrade = await this.getUniSwapTrade(fromAmount, fromToken, toToken, chainId);
+      const fromTokenClone = {... fromToken};
 
-      const amountIn = new BigNumber(uniSwapTrade.inputAmount.toSignificant(fromToken.decimals))
-          .multipliedBy(10 ** fromToken.decimals)
+      if (this.web3Api.isEtherAddress(fromTokenClone.address)) {
+        fromTokenClone.address = this.WETH.address;
+      }
+
+      const uniSwapTrade = await this.getUniSwapTrade(fromAmount, fromTokenClone, toToken, chainId);
+
+      const amountIn = new BigNumber(uniSwapTrade.inputAmount.toSignificant(fromTokenClone.decimals))
+          .multipliedBy(10 ** fromTokenClone.decimals)
           .toString();
       const amountOutMin = new BigNumber(uniSwapTrade.minimumAmountOut(UniSwapService.slippageTolerance).toSignificant(toToken.decimals))
           .multipliedBy(10 ** toToken.decimals)
           .toString();
-      const path = [fromToken.address, toToken.address];
+      const path = [fromTokenClone.address, toToken.address];
       const to = this.web3Api.address;
       const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
 
@@ -85,7 +95,7 @@ export class UniSwapService extends InstantTradeService {
         onConfirm?: (hash: string) => void,
         onApprove?: (hash: string) => void
       } = { }
-    ): Promise<void> {
+    ): Promise<TransactionReceipt> {
 
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals);
     const amountOutMin = trade.to.amount.multipliedBy(10 ** trade.to.token.decimals);
@@ -112,7 +122,9 @@ export class UniSwapService extends InstantTradeService {
         onConfirm?: (hash: string) => void,
         onApprove?: (hash: string) => void
       } = { }
-  ): Promise<void> {
+  ): Promise<TransactionReceipt> {
+
+    trade.path[0] = this.WETH.address;
 
     return this.web3Api.executeContractMethod(
         UniSwapContractAddress,
@@ -132,7 +144,9 @@ export class UniSwapService extends InstantTradeService {
         onConfirm?: (hash: string) => void,
         onApprove?: (hash: string) => void
       } = { }
-  ): Promise<void> {
+  ): Promise<TransactionReceipt> {
+
+    trade.path[1] = this.WETH.address;
 
     return this.web3Api.executeContractMethod(
         UniSwapContractAddress,
@@ -151,7 +165,7 @@ export class UniSwapService extends InstantTradeService {
         onConfirm?: (hash: string) => void,
         onApprove?: (hash: string) => void
       } = { }
-  ): Promise<void> {
+  ): Promise<TransactionReceipt> {
 
     await this.provideAllowance(trade.path[0], trade.amountIn, options.onApprove);
 

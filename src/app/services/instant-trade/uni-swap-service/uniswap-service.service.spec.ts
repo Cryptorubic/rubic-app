@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import { HttpClientModule } from '@angular/common/http';
 import {ProviderService} from '../../provider/provider.service';
 import providerServiceStub from '../../provider/provider-service-stub';
-import { WEENUS, YEENUS} from '../../../../test/tokens/eth-tokens';
+import {ETH, WEENUS, YEENUS} from '../../../../test/tokens/eth-tokens';
 import {Web3ApiService} from '../../web3Api/web3-api.service';
 import {UniSwapContractAddress} from './uni-swap-contract';
 
@@ -87,7 +87,6 @@ describe('UniswapServiceService', () => {
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
     const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(100);
-
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {
@@ -114,4 +113,29 @@ describe('UniswapServiceService', () => {
     done();
   });
 
+  it('create eth-tokens trade', async (done) => {
+    const fromAmount = new BigNumber(0.05);
+    const trade = await service.calculateTrade(fromAmount, ETH, YEENUS);
+    const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(100);
+    const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
+
+    const callbackObject = {
+      onConfirm: (hash: string) => { },
+    };
+    spyOn(callbackObject, 'onConfirm');
+
+    const startBalance = await web3Api.getTokenBalance(YEENUS.address);
+
+    const receipt = await service.createTrade(trade, {
+      onConfirm: callbackObject.onConfirm.bind(callbackObject)
+    });
+
+    console.log(receipt.transactionHash);
+
+    expect(callbackObject.onConfirm).toHaveBeenCalledWith(jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/));
+    const newBalance = await web3Api.getTokenBalance(YEENUS.address);
+
+    expect(newBalance.minus(startBalance).gte(outputMinAmount)).toBeTruthy();
+    done();
+  });
 });
