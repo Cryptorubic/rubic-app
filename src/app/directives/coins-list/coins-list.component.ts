@@ -7,10 +7,9 @@ export interface ITokenInfo {
   active?: boolean;
   address: string;
   image_link: string;
-  token_short_name: string;
-  token_name: string;
+  token_short_title: string;
+  token_title: string;
   decimals: number;
-  isEther?: boolean;
 }
 
 @Component({
@@ -33,7 +32,7 @@ export class CoinsListComponent implements OnInit {
 
   public tokensList: ITokenInfo[];
   public listIsOpened: boolean;
-  public tokenName;
+  public tokenSymbol;
   private activeTokenIndex;
 
 
@@ -80,13 +79,13 @@ export class CoinsListComponent implements OnInit {
 
     let indexToken = 0;
 
-    while ((indexToken < (window['cmc_tokens'].length - 1)) && (result.length < 10)) {
-      const token = window['cmc_tokens'][indexToken];
-      const tokenName = token.token_name.toLowerCase();
-      const tokenSymbol = token.token_short_name.toLowerCase();
+    while ((indexToken < (window['coingecko_tokens'].length - 1)) && (result.length < 10)) {
+      const token = window['coingecko_tokens'][indexToken];
+      const tokenTitle = token.token_title.toLowerCase();
+      const tokenSymbol = token.token_short_title.toLowerCase();
       const seqrchQ = q.toLowerCase();
 
-      const nameIndexMatch = tokenName.indexOf(seqrchQ) + 1;
+      const nameIndexMatch = tokenTitle.indexOf(seqrchQ) + 1;
       const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
 
       if (nameIndexMatch || symbolIndexMatch) {
@@ -127,7 +126,7 @@ export class CoinsListComponent implements OnInit {
     this.activeTokenIndex = undefined;
     this.tokenModel.token = token;
     this.listIsOpened = false;
-    this.tokenName = token.token_short_name;
+    this.tokenSymbol = token.token_short_title;
 
     this.TokenChange.emit(token);
 

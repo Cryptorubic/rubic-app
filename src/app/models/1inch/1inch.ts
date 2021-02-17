@@ -61,52 +61,47 @@ export class OneInchService {
             setTimeout(() => {
                 for (let k in this.availableTokens) {
                     const t = this.availableTokens[k];
-                    const cmcToken = window['cmc_tokens'].find((cmcT) => {
-                        return k === cmcT.token_short_name && t.address.toLowerCase() === cmcT.address.toLowerCase();
-                    });
+                    const coingeckoToken = window['coingecko_tokens'].find((coingeckoT) =>
+                      t.address.toLowerCase() === coingeckoT.address.toLowerCase()
+                    );
                     this.tokensAutocompleteList.push({
                         address: t.address,
-                        cmc_id: cmcToken ? cmcToken.cmc_id : null,
                         decimals: t.decimals,
-                        image_link: cmcToken ?
-                            cmcToken.image_link :
-                            './assets/images/icons/coins/empty.svg',
+                        image_link: coingeckoToken ?
+                          coingeckoToken.image_link :
+                          './assets/images/icons/coins/empty.svg',
                         platform: "ethereum",
-                        rank: cmcToken ? cmcToken.rank : null,
-                        rate: cmcToken ? cmcToken.rate : null,
-                        token_name: t.name,
-                        isEthereum: cmcToken ? cmcToken.isEthereum : null,
-                        token_short_name: k
+                        coingecko_rank: coingeckoToken ? coingeckoToken.coingecko_rank : null,
+                        usd_price: coingeckoToken ? coingeckoToken.usd_price : null,
+                        token_title: t.name,
+                        token_short_title: k
                     });
                 }
 
-                const allETHTokens = window['cmc_tokens'].filter((token) => {
-                    return token.platform === 'ethereum';
-                });
-
-                allETHTokens.forEach((token) => {
-                    const tokenAddress = token.address.toLowerCase();
-                    const tokenIsExists = this.tokensAutocompleteList.find((exToken: TokenInterface) => {
-                        return exToken.address.toLowerCase() === tokenAddress;
-                    });
-                    if (!tokenIsExists) {
-                        const cmcToken = window['cmc_tokens'].find((exToken: TokenInterface) => {
-                            return exToken.address.toLowerCase() === tokenAddress;
-                        });
-                        if (cmcToken) {
-                            if (cmcToken.token_short_name === "ETH" && cmcToken.address !== '0x0000000000000000000000000000000000000000') {
-                                return;
-                            }
-                            this.tokensAutocompleteList.push(cmcToken);
-                            this.availableTokens[cmcToken.token_short_name] = cmcToken;
-                        }
-                    }
-                });
+                // const allETHTokens = window['coingecko_tokens'].filter((token) => {
+                //     return token.platform === 'ethereum';
+                // });
+                //
+                // allETHTokens.forEach((token) => {
+                //     const tokenAddress = token.address.toLowerCase();
+                //     const tokenIsExists = this.tokensAutocompleteList.find((exToken: TokenInterface) => {
+                //         return exToken.address.toLowerCase() === tokenAddress;
+                //     });
+                //     if (!tokenIsExists) {
+                //         const coingeckoToken = window['coingecko_tokens'].find((exToken: TokenInterface) => {
+                //             return exToken.address.toLowerCase() === tokenAddress;
+                //         });
+                //         if (coingeckoToken) {
+                //             this.tokensAutocompleteList.push(coingeckoToken);
+                //             this.availableTokens[coingeckoToken.token_short_title] = coingeckoToken;
+                //         }
+                //     }
+                // });
 
 
                 this.tokensAutocompleteList.sort((a, b) => {
-                    const aRank = a.rank || 100000;
-                    const bRank = b.rank || 100000;
+                    const aRank = a.coingecko_rank || 100000;
+                    const bRank = b.coingecko_rank || 100000;
                     return aRank > bRank ? 1 : aRank < bRank ? -1 : 0;
                 });
 
@@ -118,7 +113,7 @@ export class OneInchService {
     }
 
     public checkToken(token): boolean {
-        const availableToken = this.availableTokens[token.token_short_name];
+        const availableToken = this.availableTokens[token.token_short_title];
         return availableToken && (availableToken.address.toLowerCase() === token.address.toLowerCase());
     }
 

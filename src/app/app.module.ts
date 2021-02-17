@@ -180,49 +180,19 @@ export function appInitializerFactory(
       translate.use(langToSet).subscribe(() => {
         const subscriber = userService
           .getCurrentUser(true)
-          .subscribe((user: UserInterface) => {
+          .subscribe(() => {
             httpService
-              .get('get_coinmarketcap_tokens/')
+              .get('coingecko_tokens/')
               .toPromise()
-              .then((tokens) => {
+              .then((result) => {
+                let tokens = result.tokens;
                 tokens = tokens.sort((a, b) => {
-                  const aRank = a.rank || 100000;
-                  const bRank = b.rank || 100000;
-                  return aRank > bRank ? 1 : aRank < bRank ? -1 : 0;
+                  const aRank = a.coingecko_rank || 100000;
+                  const bRank = b.coingecko_rank || 100000;
+                  return aRank > bRank ? 1 : (aRank < bRank ? -1 : 0);
                 });
 
-                tokens.forEach((token) => {
-                  token.platform =
-                    token.platform !== 'False' ? token.platform : false;
-                  if (
-                    !token.platform &&
-                    token.token_short_name === 'ETH' &&
-                    token.token_name === 'Ethereum'
-                  ) {
-                    token.platform = 'ethereum';
-                    token.isEther = true;
-                    token.decimals = 18;
-                  } else if (token.platform !== 'fiat') {
-                    token.decimals = 8;
-                  } else {
-                    token.decimals = 2;
-                    token.address = token.token_short_name;
-                  }
-                  token.platform =
-                    token.platform || token.token_name.toLowerCase();
-                  token.isEthereum = !!(
-                    token.platform === 'ethereum' && token.address
-                  );
-                });
-
-                // TODO: переработать систему хранения токенов. Далее одна строчка -- хотфикс дублирующегося тикера RBC
-                tokens = tokens.filter(token =>
-                    (token.token_short_name !== 'RBC' || token.token_name === 'Rubic') &&
-                    (token.token_short_name !== 'ETH' || token.token_name === 'Ethereum')
-                );
-
-                window['cmc_tokens'] = tokens;
-             //   window['cmc_tokens'] = [];
+                window['coingecko_tokens'] = tokens;
                 oneInchService.onLoadTokens().subscribe(() => {
                   document.getElementById("spring-spinner").remove();
                   resolve(null);
@@ -231,7 +201,7 @@ export function appInitializerFactory(
                 .catch(e => {
                   console.error("Loading error");
                   console.error(e);
-                  window['cmc_tokens'] = [];
+                  window['coingecko_tokens'] = [];
                   oneInchService.onLoadTokens().subscribe(() => {
                     document.getElementById("spring-spinner").remove();
                     resolve(null);

@@ -53,15 +53,15 @@ export class BridgeService {
 
   private getTokensImages(tokens: List<IBridgeToken>): List<IBridgeToken> {
       // @ts-ignore
-      const allTokensList = window.cmc_tokens; // TODO: отрефакторить этот кошмар с cmc_tokens
+      const allTokensList = window.coingecko_tokens;
 
       return tokens
           .filter(token => token.ethContractAddress || token.symbol === 'ETH')
           .map(token => {
-              const tokenInfo = allTokensList.find(item => item.token_short_name === token.symbol);
+              const tokenInfo = allTokensList.find(item => item.token_short_title === token.symbol);
               token.icon = (tokenInfo && tokenInfo.image_link) ? tokenInfo.image_link : "";
               return token;
-         })
+          });
   }
 
   public getFee(tokenSymbol: string, networkName: string): Observable<number> {

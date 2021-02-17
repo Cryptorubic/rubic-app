@@ -80,12 +80,6 @@
         background-repeat: no-repeat;
         background-position: calc(100% - 15px) center;
       }
-      &.is-profit {
-        background-image: url('/assets/images/icons/positive-rate.svg');
-      }
-      &.no-profit {
-        background-image: url('/assets/images/icons/negative-rate.svg');
-      }
     }
     &:last-child {
       margin-right: 0;

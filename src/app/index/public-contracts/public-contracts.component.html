@@ -155,7 +155,7 @@
                   />
                   <span class="swap-info__token-name_symbol">
                     {{
-                      contract.contract_details.base_token_info.token_short_name
+                      contract.contract_details.base_token_info.token_short_title
                     }}
                   </span>
                 </div>
@@ -174,8 +174,7 @@
                   />
                   <span class="swap-info__token-name_symbol">
                     {{
-                      contract.contract_details.quote_token_info
-                        .token_short_name
+                      contract.contract_details.quote_token_info.token_short_title
                     }}
                   </span>
                 </div>
@@ -190,18 +189,17 @@
                         | number: '1.0-8'
                     }}
                     {{
-                      contract.contract_details.base_token_info.token_short_name
+                      contract.contract_details.base_token_info.token_short_title
                     }}
                   </div>
                   <div class="swap-info__token-volume_rate">
                     {{ contract.contract_details.base_token_info.rate }}
                     {{
-                      contract.contract_details.base_token_info.token_short_name
+                      contract.contract_details.base_token_info.token_short_title
                     }}
                     / 1
                     {{
-                      contract.contract_details.quote_token_info
-                        ?.token_short_name
+                      contract.contract_details.quote_token_info?.token_short_title
                     }}
                   </div>
                 </div>
@@ -224,13 +222,7 @@
               </div>
             </div>
             <div class="grid-cell grid-cell-1-4 public-swaps_cell">
-              <div
-                class="public-swaps_cell_content"
-                [ngClass]="{
-                  'is-profit': contract.contract_details.isProfit,
-                  'no-profit': contract.contract_details.isProfit === false
-                }"
-              >
+              <div class="public-swaps_cell_content">
                 <div
                   class="swap-info swap-info__token-volume swap-info__token-volume__with-icon text-left"
                 >
@@ -240,20 +232,17 @@
                         | number: '1.0-8'
                     }}
                     {{
-                      contract.contract_details.quote_token_info
-                        .token_short_name
+                      contract.contract_details.quote_token_info.token_short_title
                     }}
                   </div>
                   <div class="swap-info__token-volume_rate">
                     {{ contract.contract_details.quote_token_info.rate }}
                     {{
-                      contract.contract_details.quote_token_info
-                        .token_short_name
+                      contract.contract_details.quote_token_info.token_short_title
                     }}
                     / 1
                     {{
-                      contract.contract_details.base_token_info
-                        ?.token_short_name
+                      contract.contract_details.base_token_info?.token_short_title
                     }}
                   </div>
                 </div>

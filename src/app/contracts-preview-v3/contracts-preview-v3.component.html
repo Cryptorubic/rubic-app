@@ -55,33 +55,33 @@
                   Rate:
                   <span *ngIf="!revertedRate">
                     {{ rates.normal.dp(8).toFormat(rateFormat) }}
-                    {{ tokens.base.token.token_short_name }} / 1
-                    {{ tokens.quote.token.token_short_name }}
+                    {{ tokens.base.token.token_short_title }} / 1
+                    {{ tokens.quote.token.token_short_title }}
                   </span>
                   <span *ngIf="revertedRate">
                     {{ rates.reverted.dp(8).toFormat(rateFormat) }}
-                    {{ tokens.quote.token.token_short_name }} / 1
-                    {{ tokens.base.token.token_short_name }} </span
+                    {{ tokens.quote.token.token_short_title }} / 1
+                    {{ tokens.base.token.token_short_title }} </span
                   >&nbsp;&nbsp;&nbsp;&nbsp;
 
-                  <span *ngIf="cmcRate" class="cmc-rate">
-                    <img
-                      src="./assets/images/icons/cmc.svg"
-                      class="cmc-rate-icon"
-                    />
-                    {{
-                      (!revertedRate ? cmcRate.direct : cmcRate.revert)
-                        | number: '1.0-8'
-                    }}
-                    {{
-                      tokens[revertedRate ? 'quote' : 'base'].token.token_short_name
-                    }}
-                    / 1
-                    {{
-                      tokens[!revertedRate ? 'quote' : 'base'].token
-                        .token_short_name
-                    }}
-                  </span>
+<!--                  <span *ngIf="cmcRate" class="cmc-rate">-->
+<!--                    <img-->
+<!--                      src="./assets/images/icons/cmc.svg"-->
+<!--                      class="cmc-rate-icon"-->
+<!--                    />-->
+<!--                    {{-->
+<!--                      (!revertedRate ? cmcRate.direct : cmcRate.revert)-->
+<!--                        | number: '1.0-8'-->
+<!--                    }}-->
+<!--                    {{-->
+<!--                      tokens[revertedRate ? 'quote' : 'base'].token.token_short_name-->
+<!--                    }}-->
+<!--                    / 1-->
+<!--                    {{-->
+<!--                      tokens[!revertedRate ? 'quote' : 'base'].token-->
+<!--                        .token_short_name-->
+<!--                    }}-->
+<!--                  </span>-->
 
                   <button class="revert-btn" (click)="revertedRate = !revertedRate">
                     <img src="./assets/images/icons/revert.svg" />
@@ -90,21 +90,21 @@
               </div>
             </div>
 
-            <div
-              class="cmc-rate-notice"
-              [ngClass]="{
-                'cmc-rate-notice__positive': cmcRate.cmcRange > 0,
-                'cmc-rate-notice__negative': cmcRate.cmcRange < 0
-              }"
-              *ngIf="cmcRate"
-            >
-              <span *ngIf="cmcRate.cmcRange > 0">
-                {{"The trade's rate is {rate}% more profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}
-              </span>
-              <span *ngIf="cmcRate.cmcRange < 0">
-                {{"The trade's rate is {rate}% less profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}
-              </span>
-            </div>
+<!--            <div-->
+<!--              class="cmc-rate-notice"-->
+<!--              [ngClass]="{-->
+<!--                'cmc-rate-notice__positive': cmcRate.cmcRange > 0,-->
+<!--                'cmc-rate-notice__negative': cmcRate.cmcRange < 0-->
+<!--              }"-->
+<!--              *ngIf="cmcRate"-->
+<!--            >-->
+<!--              <span *ngIf="cmcRate.cmcRange > 0">-->
+<!--                {{"The trade's rate is {rate}% more profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}-->
+<!--              </span>-->
+<!--              <span *ngIf="cmcRate.cmcRange < 0">-->
+<!--                {{"The trade's rate is {rate}% less profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}-->
+<!--              </span>-->
+<!--            </div>-->
           </div>
           <div class="grid-row all-tokens-info-row">
             <div
@@ -171,8 +171,8 @@
                     ></div>
                     <div class="token-info_texts">
                       <div class="token-info_texts__name">
-                        {{ tokens.base.token.token_name }}
-                        ({{ tokens.base.token.token_short_name }})
+                        {{ tokens.base.token.token_title }}
+                        ({{ tokens.base.token.token_short_title }})
                       </div>
                       <div class="token-info_texts__address">
                         <a
@@ -314,7 +314,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             {{'You will get {amount} {token} after Trade' | translate :
-                            '{amount: "' + (quoteWillGetValue(baseContributeForm.value.amount) | number : '1.0-8') + '", token: "'+ tokens.quote.token.token_short_name +'"}'}}
+                            '{amount: "' + (quoteWillGetValue(baseContributeForm.value.amount) | number : '1.0-8') + '", token: "'+ tokens.quote.token.token_short_title +'"}'}}
                           </span>
                         </div>
                       </div>
@@ -351,7 +351,7 @@
                       {{'Min Contribution Limit:' | translate}}
                       <b>
                         {{ originalContract.min_base_wei | number: '1.0-8' }}
-                        {{ tokens.base.token.token_short_name }}
+                        {{ tokens.base.token.token_short_title }}
                       </b>
                     </span>
                   </span>
@@ -378,7 +378,7 @@
                         {{ contractInfo.baseBrokerPercent }}% ({{
                           contractInfo.baseBrokerAmount | number: '1.0-8'
                         }}
-                        {{ tokens.base.token.token_short_name }})
+                        {{ tokens.base.token.token_short_title }})
                       </b>
                     </span>
                   </span>
@@ -473,8 +473,8 @@
                     ></div>
                     <div class="token-info_texts">
                       <div class="token-info_texts__name">
-                        {{ tokens.quote.token.token_name }}
-                        ({{ tokens.quote.token.token_short_name }})
+                        {{ tokens.quote.token.token_title }}
+                        ({{ tokens.quote.token.token_short_title }})
                       </div>
                       <div class="token-info_texts__address">
                         <a
@@ -592,7 +592,7 @@
                         <div class="form-field">
                           <span class="normal-text">
                             {{'You will get {amount} {token} after Trade' | translate :
-                          '{amount: "' + (baseWillGetValue(quoteContributeForm.value.amount) | number: '1.0-8') + '", token: "'+ tokens.base.token.token_short_name +'"}'}}
+                          '{amount: "' + (baseWillGetValue(quoteContributeForm.value.amount) | number: '1.0-8') + '", token: "'+ tokens.base.token.token_short_title +'"}'}}
                           </span>
                         </div>
                       </div>
@@ -629,7 +629,7 @@
                       {{'Min Contribution Limit:' | translate}}
                       <b>
                         {{ originalContract.min_quote_wei | number: '1.0-8' }}
-                        {{ tokens.quote.token.token_short_name }}
+                        {{ tokens.quote.token.token_short_title }}
                       </b>
                     </span>
                     <!--<span *ngIf="originalContract.min_quote_wei == 0">-->
@@ -652,7 +652,7 @@
                         {{ contractInfo.quoteBrokerPercent }}% ({{
                           contractInfo.quoteBrokerAmount | number: '1.0-8'
                         }}
-                        {{ tokens.quote.token.token_short_name }})
+                        {{ tokens.quote.token.token_short_title }})
                       </b>
                     </span>
                   </span>

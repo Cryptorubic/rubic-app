@@ -29,8 +29,8 @@ const chainIdOfNetwork = {
 const nativeCoins = {
   ethereum: {
     address: '0x0000000000000000000000000000000000000000',
-    token_name: 'Ethereum',
-    token_short_name: 'ETH',
+    token_title: 'Ethereum',
+    token_short_title: 'ETH',
     decimals: 18,
     image_link: 'https://contracts.mywish.io/media/token_images/1027_YdV4BM9.png',
     platform: 'ethereum',
@@ -38,8 +38,8 @@ const nativeCoins = {
   },
   binance: {
     address: '0x0000000000000000000000000000000000000000',
-    token_name: 'Binance',
-    token_short_name: 'BNB',
+    token_title: 'Binance',
+    token_short_title: 'BNB',
     decimals: 18,
     image_link: 'https://contracts.mywish.io/media/token_images/1839_X2YWdhl.png',
     platform: 'binance',
@@ -47,8 +47,8 @@ const nativeCoins = {
   },
   matic: {
     address: '0x0000000000000000000000000000000000000000',
-    token_name: 'Matic',
-    token_short_name: 'MATIC',
+    token_title: 'Matic',
+    token_short_title: 'MATIC',
     decimals: 18,
     image_link: './assets/images/icons/coins/matic.svg',
     platform: 'binance',
@@ -228,8 +228,8 @@ export class Web3Service {
   private convertTokenInfo(tokenInfo) {
     return tokenInfo && tokenInfo.name
       ? {
-          token_short_name: tokenInfo.symbol,
-          token_name: tokenInfo.name,
+          token_short_title: tokenInfo.symbol,
+          token_title: tokenInfo.name,
           address: tokenInfo.address,
           decimals: parseInt(tokenInfo.decimals, 10) || 8,
         }
@@ -257,7 +257,7 @@ export class Web3Service {
       } else {
         let tokenObject;
 
-        tokenObject = window['cmc_tokens'].filter((tk) => {
+        tokenObject = window['coingecko_tokens'].filter((tk) => {
           return (
             tk.address &&
             tk.address.toLowerCase() === tokenAddress.toLowerCase()
@@ -304,8 +304,8 @@ export class Web3Service {
     let fieldsCount = tokenInfoFields.length;
     const tokenInfo: any = tokenObject
       ? {
-          symbol: tokenObject.token_short_name,
-          name: tokenObject.token_name,
+          symbol: tokenObject.token_short_title,
+          name: tokenObject.token_title,
         }
       : {};
 
@@ -599,10 +599,10 @@ export class Web3Service {
           resolve(data);
         }
       } else {
-        quoteTokenObject = window['cmc_tokens'].filter((tk) => {
+        quoteTokenObject = window['coingecko_tokens'].filter((tk) => {
           return (
               (CHAIN_OF_NETWORK[data.network] === tk.platform) &&
-              (tk.address === data.quote_address || tk.mywish_id === data.quote_coin_id)
+              (tk.address === data.quote_address)
           );
         })[0];
         if (quoteTokenObject && !data.quote_address) {
@@ -619,51 +619,33 @@ export class Web3Service {
           this.Web3.eth.setProvider(currentProvider)
         }
 
-        if (data.quote_address) {
-          quoteToken = quoteTokenObject ? { ...quoteTokenObject } : false;
-          this.getFullTokenInfo(data.quote_address, true, data.network)
-              .then(
-                  (tokenInfo: TokenInfoInterface) => {
-                    if (quoteToken) {
-                      data.tokens_info.quote = {
-                        token: { ...quoteToken },
-                      };
-                      data.tokens_info.quote.token.decimals = tokenInfo.decimals;
-                    } else {
-                      data.tokens_info.quote = {
-                        token: { ...tokenInfo },
-                      };
-                    }
-                  },
-                  () => {
+        quoteToken = quoteTokenObject ? { ...quoteTokenObject } : false;
+        this.getFullTokenInfo(data.quote_address, true, data.network)
+            .then(
+                (tokenInfo: TokenInfoInterface) => {
+                  if (quoteToken) {
                     data.tokens_info.quote = {
                       token: { ...quoteToken },
                     };
-                  },
-              )
-              .finally(() => {
-                data.tokens_info.quote.amount = data.quote_limit;
-                if (data.tokens_info.base) {
-                  resolve(data);
-                }
-              });
-        } else {
-          data.tokens_info.quote = {
-            token: {
-              ...window['cmc_tokens'].filter((tk) => {
-                return tk.mywish_id === data.quote_coin_id;
-              })[0],
-            },
-          };
-          data.tokens_info.quote.amount = data.quote_limit;
-          if (data.tokens_info.base) {
-            setTimeout(() => {
-              resolve(data);
+                    data.tokens_info.quote.token.decimals = tokenInfo.decimals;
+                  } else {
+                    data.tokens_info.quote = {
+                      token: { ...tokenInfo },
+                    };
+                  }
+                },
+                () => {
+                  data.tokens_info.quote = {
+                    token: { ...quoteToken },
+                  };
+                },
+            )
+            .finally(() => {
+              data.tokens_info.quote.amount = data.quote_limit;
+              if (data.tokens_info.base) {
+                resolve(data);
+              }
             });
-          }
-        }
-
-
       }
 
 
@@ -680,10 +662,10 @@ export class Web3Service {
           resolve(data);
         }
       } else {
-        baseTokenObject = window['cmc_tokens'].filter((tk) => {
+        baseTokenObject = window['coingecko_tokens'].filter((tk) => {
           return (
               (CHAIN_OF_NETWORK[data.network] === tk.platform) &&
-              (tk.address === data.base_address || tk.mywish_id === data.base_coin_id)
+              (tk.address === data.base_address)
           );
         })[0];
 
@@ -691,51 +673,34 @@ export class Web3Service {
           data.base_address = baseTokenObject.address;
         }
 
-        if (data.base_address) {
-          baseToken = baseTokenObject ? { ...baseTokenObject } : false;
-          this.getFullTokenInfo(data.base_address, true, data.network)
-              .then(
-                  (tokenInfo: TokenInfoInterface) => {
-                    if (baseToken) {
-                      data.tokens_info.base = {
-                        token: { ...baseToken },
-                      };
-                      data.tokens_info.base.token.decimals = tokenInfo.decimals;
-                    } else {
-                      data.tokens_info.base = {
-                        token: { ...tokenInfo },
-                      };
-                    }
-                  },
-                  () => {
+        baseToken = baseTokenObject ? { ...baseTokenObject } : false;
+        this.getFullTokenInfo(data.base_address, true, data.network)
+            .then(
+                (tokenInfo: TokenInfoInterface) => {
+                  if (baseToken) {
                     data.tokens_info.base = {
                       token: { ...baseToken },
                     };
-                  },
-              )
-              .finally(() => {
-                data.tokens_info.base.amount = data.base_limit;
-                if (data.tokens_info.quote) {
-                  resolve(data);
-                }
-              });
-        } else {
-          data.tokens_info.base = {
-            token: {
-              ...window['cmc_tokens'].filter((tk) => {
-                return tk.mywish_id === data.base_coin_id;
-              })[0],
-            },
-          };
-          data.tokens_info.base.amount = data.base_limit;
-          if (data.tokens_info.quote) {
-            setTimeout(() => {
-              resolve(data);
+                    data.tokens_info.base.token.decimals = tokenInfo.decimals;
+                  } else {
+                    data.tokens_info.base = {
+                      token: { ...tokenInfo },
+                    };
+                  }
+                },
+                () => {
+                  data.tokens_info.base = {
+                    token: { ...baseToken },
+                  };
+                },
+            )
+            .finally(() => {
+              data.tokens_info.base.amount = data.base_limit;
+              if (data.tokens_info.quote) {
+                resolve(data);
+              }
             });
-          }
-        }
       }
-
     });
   }
 }
@@ -761,7 +726,7 @@ export class EthTokenValidatorDirective implements AsyncValidator {
     ctrl: AbstractControl,
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
     return this.web3Service.getFullTokenInfo(ctrl.value, false, this.network).then((result: any) => {
-      if (result && result.token_short_name) {
+      if (result && result.token_short_title) {
         this.TokenResolve.emit(result);
         return null;
       } else {

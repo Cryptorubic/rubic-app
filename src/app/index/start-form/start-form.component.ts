@@ -84,6 +84,12 @@ export const MY_FORMATS = {
   },
 };
 
+interface IOrderBookTokens {
+  ethereum: any[];
+  'binance-smart-chain': any[];
+  matic: any[];
+}
+
 @Component({
   selector: 'app-start-form',
   templateUrl: './start-form.component.html',
@@ -107,14 +113,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @Output() instanceTradesSelect = new EventEmitter<any>();
   @Output() blockchainTradesSelect = new EventEmitter<any>();
   public currentUser;
-  public cmcRate: {
+  public coingeckoRate: {
     change?: number;
-    isMessage?: boolean;
     isLower?: boolean;
     direct: number;
     revert: number;
   };
-  private CMCRates;
   private metaMaskErrorModal: MatDialogRef<any>;
   public blockchainsOfNetworks = {
     1: 'ethereum',
@@ -128,13 +132,16 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
 
   public instanceTradesTokens: any[];
+  public orderBookTokens: IOrderBookTokens;
 
-  public serviceAvailable: boolean = !!(window['cmc_tokens'] && window['cmc_tokens'].length);
+  public serviceAvailable: boolean = !!(window['coingecko_tokens'] && window['coingecko_tokens'].length);
 
   public instantTradeInProgress: boolean = false;
 
   private web3Contract;
   private contractAddress: string;
+
+  private platforms = ['ethereum', 'binance-smart-chain', 'matic'];
 
   constructor(
     private dialog: MatDialog,
@@ -146,7 +153,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private oneInchService: OneInchService,
     private backendApiService: BackendApiService
   ) {
-    this.CMCRates = {};
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: any) => {
       this.currentUser = userProfile;
@@ -183,7 +189,23 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.isCreatingContract = false;
 
     this.instanceTradesTokens = this.oneInchService.getAutocompleteTokensList();
+    this.getOrderBookTokens();
+  }
 
+  private getOrderBookTokens() {
+    this.orderBookTokens = {} as IOrderBookTokens;
+    for (let platform of this.platforms) {
+      this.orderBookTokens[platform] = window['coingecko_tokens'].filter(token => token.platform === platform);
+    }
+  }
+
+  public networkToPlatform(network: number) {
+    const blockchain = this.blockchainsOfNetworks[network];
+    if (blockchain === 'binance') {
+      return 'binance-smart-chain';
+    } else {
+      return blockchain;
+    }
   }
 
   private checkQueryParams() {
@@ -308,11 +330,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     if (!identical || force) {
       this.tokensCache.base = baseCoin.address;
       this.tokensCache.quote = quoteCoin.address;
-      if (baseCoin.address && quoteCoin.address && baseCoin.address !== quoteCoin.address && this.requestData.network === 1) {
-        this.instantTradesAvailable = this.oneInchService.checkTokensPair(baseCoin, quoteCoin);
-      } else {
-        this.instantTradesAvailable = false;
-      }
     }
 
     if (!identical || force || (this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount)) {
@@ -342,24 +359,19 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     if (
       this.requestData.tokens_info.base.amount &&
       this.requestData.tokens_info.quote.amount &&
-      baseCoin.cmc_id &&
-      quoteCoin.cmc_id &&
-      baseCoin.cmc_id > 0 &&
-      quoteCoin.cmc_id > 0
+      baseCoin.usd_price &&
+      quoteCoin.usd_price
     ) {
-      this.cmcRate = {
-        revert: new BigNumber(baseCoin.rate).div(quoteCoin.rate).toNumber(),
-        direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber(),
+      this.coingeckoRate = {
+        revert: new BigNumber(baseCoin.usd_price).div(quoteCoin.usd_price).toNumber(),
+        direct: new BigNumber(quoteCoin.usd_price).div(baseCoin.usd_price).toNumber(),
       };
       const rate = parseFloat(this.getRate(true));
-      const rateChanges = parseFloat(this.getRate()) - this.cmcRate.direct;
-      this.cmcRate.isMessage = true;
-      this.cmcRate.isLower = rateChanges > 0;
-      this.cmcRate.change = Math.round(
-        Math.abs(-(rate / this.cmcRate.revert - 1)) * 100
-      );
+      const rateChanges = parseFloat(this.getRate()) - this.coingeckoRate.direct;
+      this.coingeckoRate.isLower = rateChanges > 0;
+      this.coingeckoRate.change = parseFloat((Math.abs(-(rate / this.coingeckoRate.revert - 1)) * 100).toFixed(2));
     } else {
-      this.cmcRate = undefined;
+      this.coingeckoRate = undefined;
     }
   }
 
@@ -454,21 +466,21 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
 
-    const cmcBaseToken = window['cmc_tokens'].find((t) => {
-      return t.token_short_name === baseCoin.token_short_name &&
+    const coingeckoBaseToken = window['coingecko_tokens'].find((t) => {
+      return t.token_short_title === baseCoin.token_short_title &&
           t.address.toLowerCase() === baseCoin.address.toLowerCase();
     });
-    const cmcQuoteToken = window['cmc_tokens'].find((t) => {
-      return t.token_short_name === quoteCoin.token_short_name &&
+    const coingeckoQuoteToken = window['coingecko_tokens'].find((t) => {
+      return t.token_short_title === quoteCoin.token_short_title &&
           t.address.toLowerCase() === quoteCoin.address.toLowerCase();
     });
 
-    if (!cmcBaseToken) {
+    if (!coingeckoBaseToken) {
       this.requestData.tokens_info.base = {
         token: {},
       };
     }
-    if (!cmcQuoteToken) {
+    if (!coingeckoQuoteToken) {
       this.requestData.tokens_info.quote = {
         token: {},
       };
@@ -500,8 +512,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public changePD() {
     if (
-      this.requestData.tokens_info.base.token.token_name &&
-      this.requestData.tokens_info.quote.token.token_name
+      this.requestData.tokens_info.base.token.token_title &&
+      this.requestData.tokens_info.quote.token.token_title
     ) {
       this.requestData.public = this.requestData.public;
 
@@ -577,15 +589,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.sendData.quote_limit = this.requestData.tokens_info.quote.amount;
 
     this.sendData.name =
-        this.requestData.tokens_info.base.token.token_short_name +
+        this.requestData.tokens_info.base.token.token_short_title +
         ' <> ' +
-        this.requestData.tokens_info.quote.token.token_short_name;
+        this.requestData.tokens_info.quote.token.token_short_title;
 
     this.sendData.base_address = this.requestData.tokens_info.base.token.address;
     this.sendData.quote_address = this.requestData.tokens_info.quote.token.address;
-
-    this.sendData.base_coin_id = this.requestData.tokens_info.base.token.mywish_id;
-    this.sendData.quote_coin_id = this.requestData.tokens_info.quote.token.mywish_id;
 
     this.sendData.public = this.requestData.public;
     this.sendData.permanent = this.requestData.permanent;
@@ -628,8 +637,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
     const params = {} as any;
-    params.fromTokenSymbol = baseCoin.token_short_name;
-    params.toTokenSymbol = quoteCoin.token_short_name;
+    params.fromTokenSymbol = baseCoin.token_short_title;
+    params.toTokenSymbol = quoteCoin.token_short_title;
     const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
     params.amount = new BigNumber(this.requestData.tokens_info.base.amount).times(baseDecimalsTimes).toString(10);
     return params;
@@ -644,7 +653,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     const remoteContractAddress = (await this.oneInchService.getApproveSpender() as any).address;
     const baseToken = this.requestData.tokens_info.base.token;
-    if (baseToken.token_short_name !== 'ETH') {
+    if (baseToken.token_short_title !== 'ETH') {
       let error;
       await this.check1InchAllowance(remoteContractAddress, params).catch(e => {
         console.log(e);
@@ -905,7 +914,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 @Injectable()
 export class StartFormResolver implements Resolve<any> {
 
-  private ethTokens: any[] = window['cmc_tokens'].filter((t) => {
+  private ethTokens: any[] = window['coingecko_tokens'].filter((t) => {
     return t.platform === 'ethereum';
   });
 
@@ -917,7 +926,7 @@ export class StartFormResolver implements Resolve<any> {
 
   private getTokenPromise(token_symbol) {
     const token = token_symbol ? this.ethTokens.find((exToken) => {
-      return token_symbol === exToken.token_short_name.toLowerCase();
+      return token_symbol.toUpperCase() === exToken.token_short_title;
     }) : false;
     if (token) {
       return this.web3Service.getFullTokenInfo(token.address, false, 1).then((res: any) => {
