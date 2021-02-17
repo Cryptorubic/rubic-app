@@ -220,7 +220,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         isContributing: false,
       },
     };
+
+    this.baseAmountShorted = this.getAmountShorted(this.tokens.base.amount);
+    this.quoteAmountShorted = this.getAmountShorted(this.tokens.quote.amount);
   }
+
   public allowanceObj;
   private token;
   private amount;
@@ -275,6 +279,17 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
   private oldCheckedState: string;
 
+  public baseAmountShorted: string;
+  public quoteAmountShorted: string;
+  private readonly shortedFormat = {
+    decimalSeparator: '.',
+    groupSeparator: ',',
+    groupSize: 3,
+    secondaryGroupSize: 0,
+  }
+  private readonly BILLION = 1e9;
+  private readonly MILLION = 1e6;
+
   private checkCMCRate() {
     const baseCoin = this.originalContract.tokens_info.base.token;
     const quoteCoin = this.originalContract.tokens_info.quote.token;
@@ -296,6 +311,17 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         100;
     } else {
       this.cmcRate = undefined;
+    }
+  }
+
+  private getAmountShorted(value: string): string {
+    const amount = new BigNumber(value);
+    if (amount.isGreaterThanOrEqualTo(this.BILLION * 100)) {
+      return amount.div(this.BILLION).toFormat(0, this.shortedFormat) + 'B';
+    } else if (amount.isGreaterThanOrEqualTo(this.MILLION * 100)) {
+      return amount.div(this.MILLION).dp(0).toFormat(0, this.shortedFormat) + 'M';
+    } else {
+      return amount.toFormat(this.shortedFormat);
     }
   }
 
