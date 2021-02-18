@@ -1,4 +1,4 @@
-import {UserInterface} from './user.interface';
+import { UserInterface } from './user.interface';
 
 export const DEFAULT_USER = <UserInterface>{
   username: '',
@@ -18,6 +18,6 @@ export const DEFAULT_USER = <UserInterface>{
 };
 
 export const SOCIAL_KEYS = {
-  'GOOGLE': '145060606284-c6ep1vk9rbrni42u4pnvqls551qsfjfi.apps.googleusercontent.com',
-  'FACEBOOK': '608463682954705'
+  GOOGLE: '145060606284-c6ep1vk9rbrni42u4pnvqls551qsfjfi.apps.googleusercontent.com',
+  FACEBOOK: '608463682954705'
 };

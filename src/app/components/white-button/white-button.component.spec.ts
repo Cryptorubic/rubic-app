@@ -8,9 +8,8 @@ describe('WhiteButtonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WhiteButtonComponent ]
-    })
-    .compileComponents();
+      declarations: [WhiteButtonComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

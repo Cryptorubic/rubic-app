@@ -8,9 +8,8 @@ describe('CoinsListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CoinsListComponent ]
-    })
-    .compileComponents();
+      declarations: [CoinsListComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

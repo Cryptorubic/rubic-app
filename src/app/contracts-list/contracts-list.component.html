@@ -1,11 +1,8 @@
 <div class="base-block-content">
   <div class="app-content-block">
-    <div class="my-contracts-title">{{'My trades' | translate}}</div>
-    <div
-      class="my-contracts-empty"
-      *ngIf="contractsList && !contractsList.length"
-    >
-      {{'No trades' | translate}}
+    <div class="my-contracts-title">{{ 'My trades' | translate }}</div>
+    <div class="my-contracts-empty" *ngIf="contractsList && !contractsList.length">
+      {{ 'No trades' | translate }}
     </div>
 
     <div class="public-swaps_table-container" *ngIf="contractsList.length">
@@ -13,14 +10,13 @@
         <div class="grid-row public-swaps_head-row">
           <div class="grid-cell grid-cell-3-13 public-swaps_head-cell">
             <div class="public-swaps_head_content bold">
-              <b>{{'Name' | translate}}</b>
+              <b>{{ 'Name' | translate }}</b>
             </div>
           </div>
           <div
             class="grid-cell grid-cell-3-13 public-swaps_head-cell"
             [ngClass]="{
-              'public-swaps_head-cell__sortable':
-                selectedFilter.name === 'creation',
+              'public-swaps_head-cell__sortable': selectedFilter.name === 'creation',
               asc: selectedFilter.asc
             }"
           >
@@ -28,14 +24,13 @@
               <button class="sort-btn" (click)="applySort('creation')">
                 <span></span>
               </button>
-              {{'Creation date' | translate}}
+              {{ 'Creation date' | translate }}
             </div>
           </div>
           <div
             class="grid-cell grid-cell-3-13 public-swaps_head-cell"
             [ngClass]="{
-              'public-swaps_head-cell__sortable':
-                selectedFilter.name === 'expire',
+              'public-swaps_head-cell__sortable': selectedFilter.name === 'expire',
               asc: selectedFilter.asc
             }"
           >
@@ -43,14 +38,13 @@
               <button class="sort-btn" (click)="applySort('expire')">
                 <span></span>
               </button>
-              {{'Expires in' | translate}}
+              {{ 'Expires in' | translate }}
             </div>
           </div>
           <div
             class="grid-cell grid-cell-3-13 public-swaps_head-cell"
             [ngClass]="{
-              'public-swaps_head-cell__sortable':
-                selectedFilter.name === 'status',
+              'public-swaps_head-cell__sortable': selectedFilter.name === 'status',
               asc: selectedFilter.asc
             }"
           >
@@ -58,7 +52,7 @@
               <button class="sort-btn" (click)="applySort('status')">
                 <span></span>
               </button>
-              {{'Status' | translate}}
+              {{ 'Status' | translate }}
             </div>
           </div>
           <div class="grid-cell grid-cell-1-13 public-swaps_head-cell">
@@ -92,8 +86,7 @@
             <div class="public-swaps_cell_content">
               <div class="swap-info">
                 {{ contract.left_times.times_parts[0] }}d:
-                {{ contract.left_times.times_parts[1] }}h:
-                {{ contract.left_times.times_parts[2] }}m
+                {{ contract.left_times.times_parts[1] }}h: {{ contract.left_times.times_parts[2] }}m
               </div>
             </div>
           </div>
@@ -124,15 +117,10 @@
                         states[contract.state].NUMBER === 2 ||
                         states[contract.state].NUMBER === 6
                       )) ||
-                    !(
-                      !contract.contract_state ||
-                      states[contract.contract_state].NUMBER === 0
-                    )
+                    !(!contract.contract_state || states[contract.contract_state].NUMBER === 0)
                 }"
                 (click)="
-                  $event.stopPropagation();
-                  $event.preventDefault();
-                  deleteContract(contract)
+                  $event.stopPropagation(); $event.preventDefault(); deleteContract(contract)
                 "
               >
                 <img src="./assets/images/icons/trash.svg" />
@@ -147,7 +135,7 @@
   <ng-template #deleteConfirmation>
     <div class="dialog-block">
       <div class="dialog-block__content">
-        <div class="alert-window-title">{{'Do you want to remove it?' | translate}}</div>
+        <div class="alert-window-title">{{ 'Do you want to remove it?' | translate }}</div>
         <br /><br />
         <div class="alert-window-buttons text-center">
           <div class="grid-row">
@@ -161,11 +149,7 @@
               ><br />
             </div>
             <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-              <button
-                class="btn btn-green btn-min right-padding"
-                mat-dialog-close
-                type="button"
-              >
+              <button class="btn btn-green btn-min right-padding" mat-dialog-close type="button">
                 {{ 'NO' | translate }}
               </button>
             </div>

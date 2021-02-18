@@ -8,9 +8,8 @@ describe('BlockchainLabelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BlockchainLabelComponent ]
-    })
-    .compileComponents();
+      declarations: [BlockchainLabelComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

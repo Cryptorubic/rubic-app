@@ -1,5 +1,15 @@
-import {Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, Renderer2, Type} from '@angular/core';
-import {DOCUMENT} from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  Renderer2,
+  Type
+} from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-message-box',
@@ -20,11 +30,7 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     this.onClose.emit();
   }
 
-  constructor(
-      @Inject(DOCUMENT) private document: Document,
-      private renderer: Renderer2,
-  ) {
-  }
+  constructor(@Inject(DOCUMENT) private document: Document, private renderer: Renderer2) {}
 
   ngOnInit() {
     this.renderer.addClass(this.document.body, 'noscroll');

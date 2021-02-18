@@ -1,6 +1,15 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, Type, ViewChild} from '@angular/core';
-import {List} from "immutable";
-import {DropdownComponentData} from "./types";
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Type,
+  ViewChild
+} from '@angular/core';
+import { List } from 'immutable';
+import { DropdownComponentData } from './types';
 
 @Component({
   selector: 'app-input-dropdown',
@@ -87,8 +96,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
       this.sortOrder.forEach(field =>
         queryMatch.push(
           ...this.componentsData
-            .filter(token =>
-              !queryMatch.includes(token) && token.sortParameters[field].toLowerCase().includes(query))
+            .filter(
+              token =>
+                !queryMatch.includes(token) &&
+                token.sortParameters[field].toLowerCase().includes(query)
+            )
             .toArray()
         )
       );

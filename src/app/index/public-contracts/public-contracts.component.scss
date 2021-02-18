@@ -80,12 +80,6 @@
         background-repeat: no-repeat;
         background-position: calc(100% - 15px) center;
       }
-      &.is-profit {
-        background-image: url('/assets/images/icons/positive-rate.svg');
-      }
-      &.no-profit {
-        background-image: url('/assets/images/icons/negative-rate.svg');
-      }
     }
     &:last-child {
       margin-right: 0;
@@ -229,8 +223,7 @@
           height: 50px;
           position: absolute;
           left: -41px;
-          background: url(/assets/images/icons/ch_03.svg) center center/24px
-            no-repeat;
+          background: url(/assets/images/icons/ch_03.svg) center center/24px no-repeat;
           top: 50%;
           margin-top: -25px;
         }
@@ -280,8 +273,7 @@
       transform: rotate(90deg);
       width: 18px;
       height: 18px;
-      background: url(/assets/images/icons/table/sort-1.svg) center center
-        no-repeat;
+      background: url(/assets/images/icons/table/sort-1.svg) center center no-repeat;
     }
   }
 }

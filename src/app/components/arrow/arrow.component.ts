@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-arrow',
@@ -23,8 +23,7 @@ export class ArrowComponent implements OnInit {
 
   public degree: string;
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
     switch (this.direction) {
