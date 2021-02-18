@@ -636,8 +636,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
     const params = {} as any;
-    params.fromTokenSymbol = baseCoin.token_short_title;
-    params.toTokenSymbol = quoteCoin.token_short_title;
+    params.fromTokenAddress = baseCoin.address;
+    params.toTokenAddress = quoteCoin.address;
     const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
     params.amount = new BigNumber(this.requestData.tokens_info.base.amount)
       .times(baseDecimalsTimes)

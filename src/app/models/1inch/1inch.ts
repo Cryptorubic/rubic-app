@@ -7,11 +7,12 @@ interface TokenInterface {
   name: string;
   symbol: string;
   decimals: number;
+  logoURI: string;
 }
 export type TokensMap<T> = { [key in any]: T };
 const api = {
   host: 'https://api.1inch.exchange',
-  version: 'v1.1'
+  version: 'v2.0'
 };
 
 const slippageValue = 1;
@@ -20,21 +21,22 @@ const slippageValue = 1;
   providedIn: 'root'
 })
 export class OneInchService {
+  private static readonly ETH_ADDRESS_1_INCH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+  private static readonly ETH_ADDRESS = '0x0000000000000000000000000000000000000000';
+
   private availableTokens: TokensMap<TokenInterface>;
   private tokenOnLoadEmitter = new EventEmitter<any>();
   private tokensAutocompleteList: any[] = [];
+
   constructor(private httpClient: HttpClient) {
     this.loadTokens().then(result => {
-      result.ETH.address = '0x0000000000000000000000000000000000000000';
+      const tokens = result.tokens;
 
-      result.RBC = {
-        symbol: 'RBC',
-        name: 'Rubic',
-        decimals: 18,
-        address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3'
-      };
+      tokens[OneInchService.ETH_ADDRESS] = tokens[OneInchService.ETH_ADDRESS_1_INCH];
+      tokens[OneInchService.ETH_ADDRESS].address = OneInchService.ETH_ADDRESS;
+      delete tokens[OneInchService.ETH_ADDRESS_1_INCH];
 
-      this.availableTokens = result;
+      this.availableTokens = tokens;
       this.tokenOnLoadEmitter.emit();
     });
   }
@@ -73,14 +75,12 @@ export class OneInchService {
           this.tokensAutocompleteList.push({
             address: t.address,
             decimals: t.decimals,
-            image_link: coingeckoToken
-              ? coingeckoToken.image_link
-              : './assets/images/icons/coins/empty.svg',
+            image_link: coingeckoToken ? coingeckoToken.image_link : t.logoURI,
             platform: 'ethereum',
             coingecko_rank: coingeckoToken ? coingeckoToken.coingecko_rank : null,
             usd_price: coingeckoToken ? coingeckoToken.usd_price : null,
-            token_title: t.name,
-            token_short_title: k
+            token_title: coingeckoToken ? coingeckoToken.token_title : t.name,
+            token_short_title: t.symbol
           });
         }
 
@@ -118,8 +118,7 @@ export class OneInchService {
   }
 
   public checkToken(token): boolean {
-    const availableToken = this.availableTokens[token.token_short_title];
-    return availableToken && availableToken.address.toLowerCase() === token.address.toLowerCase();
+    return this.availableTokens.hasOwnProperty(token.address.toLowerCase());
   }
 
   public checkTokensPair(quoteToken, baseToken): boolean {
@@ -163,7 +162,7 @@ export class OneInchService {
         deepLevel++;
         const query = getQuery(requestParams);
         this.httpClient
-          .get(`https://api.1inch.exchange/v2.0/quote?${query}`)
+          .get(`${api.host}/${api.version}/quote?${query}`)
           .toPromise()
           .then((result: any) => {
             if (deepLevel < 2) {
@@ -187,19 +186,17 @@ export class OneInchService {
   }
 
   private static checkETHAddress(address) {
-    if (address === '0x0000000000000000000000000000000000000000') {
-      return '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+    if (address === this.ETH_ADDRESS) {
+      return this.ETH_ADDRESS_1_INCH;
     }
     return address;
   }
 
   public getQuote(params, tokenAddress?: string) {
     params = params || {};
-    const fromAddress = this.availableTokens[params.fromTokenSymbol].address;
-    const toAddress = tokenAddress || this.availableTokens[params.toTokenSymbol].address;
     return this.checkSwap({
-      fromTokenAddress: OneInchService.checkETHAddress(fromAddress),
-      toTokenAddress: OneInchService.checkETHAddress(toAddress),
+      fromTokenAddress: OneInchService.checkETHAddress(params.fromTokenAddress),
+      toTokenAddress: OneInchService.checkETHAddress(params.toTokenAddress),
       amount: params.amount
     });
   }
@@ -214,17 +211,15 @@ export class OneInchService {
   }
 
   public async getApproveSpender() {
-    return this.httpClient.get('https://api.1inch.exchange/v2.0/approve/spender').toPromise();
+    return this.httpClient.get(`${api.host}/${api.version}/approve/spender`).toPromise();
   }
 
   public async getSwap(params, queryData) {
-    const fromAddress = this.availableTokens[params.fromTokenSymbol].address;
-    const toAddress = this.availableTokens[params.toTokenSymbol].address;
-    const ethValue = params.fromTokenSymbol === 'ETH' ? params.amount : 0;
+    const ethValue = params.fromTokenAddress === OneInchService.ETH_ADDRESS ? params.amount : 0;
     const requestParams = {
       fromAddress: params.fromAddress,
-      fromTokenAddress: OneInchService.checkETHAddress(fromAddress),
-      toTokenAddress: OneInchService.checkETHAddress(toAddress),
+      fromTokenAddress: OneInchService.checkETHAddress(params.fromTokenAddress),
+      toTokenAddress: OneInchService.checkETHAddress(params.toTokenAddress),
       amount: params.amount,
       guaranteedAmount: queryData.toTokenAmount,
       minTokensAmount: new BigNumber(queryData.toTokenAmount)
@@ -252,7 +247,7 @@ export class OneInchService {
     };
 
     return this.httpClient
-      .get('https://api.1inch.exchange/v2.0/swap?' + getQuery(requestParams))
+      .get(`${api.host}/${api.version}/swap?` + getQuery(requestParams))
       .toPromise();
   }
 }
