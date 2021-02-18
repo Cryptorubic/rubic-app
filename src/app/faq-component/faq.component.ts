@@ -1,22 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 export interface IQuestion {
-  isActive: boolean,
+  isActive: boolean;
 }
 
 @Component({
   selector: 'app-faq',
   templateUrl: './faq.component.html',
-  styleUrls: ['./faq.component.scss'],
+  styleUrls: ['./faq.component.scss']
 })
-export class FaqComponent implements OnInit {
+export class FaqComponent implements OnInit, AfterViewInit {
   constructor() {}
   public questions: Array<IQuestion> = [];
   private questionsNumber = 18;
+  private questionsHTMLTexts;
 
   public ngOnInit(): void {
     for (let i = 0; i < this.questionsNumber; i++) {
-      this.questions.push({ isActive: false })
+      this.questions.push({ isActive: false });
+    }
+  }
+
+  ngAfterViewInit() {
+    this.questionsHTMLTexts = document.querySelectorAll('.questions-container__text');
+  }
+
+  public makeQuestionActive(question, index) {
+    question.isActive = !question.isActive;
+    if (question.isActive) {
+      this.questionsHTMLTexts[index].style.height =
+        this.questionsHTMLTexts[index].scrollHeight + 'px';
+    } else {
+      this.questionsHTMLTexts[index].style.height = 0;
     }
   }
 }

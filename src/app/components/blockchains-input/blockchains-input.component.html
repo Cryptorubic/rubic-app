@@ -1,13 +1,13 @@
 <div class="blockchain-input">
   <div class="blockchain-input__selected">
-    <img [src]="'./assets/images/icons/coins/' + selectedBlockchain.img" alt="Blockchain"/>
-    <span>{{selectedBlockchain.shortLabel}}</span>
+    <img [src]="'./assets/images/icons/coins/' + selectedBlockchain.img" alt="Blockchain" />
+    <span>{{ selectedBlockchain.shortLabel }}</span>
   </div>
 
   <app-input-dropdown
     [componentClass]="blockchainLabelComponentClass"
-    [componentsData]="blockchainsInputData"
-    [selectedComponentData]="selectedBlockchainInputData"
+    [componentsData]="blockchainsDropdownData"
+    [selectedComponentData]="selectedBlockchainDropdownData"
     [sortOrder]="blockchainsSortOrder"
     chooseComponentText="Choose Blockchain"
     (componentChanges)="onBlockchainChanges($event)"

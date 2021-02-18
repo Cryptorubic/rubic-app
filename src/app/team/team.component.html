@@ -1,19 +1,16 @@
 <div class="team-page">
   <div class="team-page__container">
-    <div class="team-page__title">
-      Team
-    </div>
+    <div class="team-page__title">Team</div>
 
     <main class="team-page__content-wrapper">
       <div class="team-page__card" *ngFor="let card of cards">
-        <app-team-card  [content]="card">
-        </app-team-card>
+        <app-team-card [content]="card"> </app-team-card>
       </div>
-      <img class="team-page__triangles" src="assets/images/icons/Triangles.svg" alt=""/>
+      <img class="team-page__triangles" src="assets/images/icons/Triangles.svg" alt="" />
     </main>
   </div>
 
-  <img class="team-page__triangles-rotated" src="assets/images/icons/TrianglesRotated.svg" alt=""/>
+  <img class="team-page__triangles-rotated" src="assets/images/icons/TrianglesRotated.svg" alt="" />
 
   <app-footer></app-footer>
 

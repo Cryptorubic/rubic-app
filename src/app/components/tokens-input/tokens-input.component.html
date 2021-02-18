@@ -4,7 +4,7 @@
     type="text"
     name="amountField"
     autocomplete="off"
-    placeholder="{{amountPlaceholder | translate}}"
+    placeholder="{{ amountPlaceholder | translate }}"
     [required]="true"
     [appBigNumber]="bigNumberDirective"
     [tabindex]="inputDisabled ? '-1' : ''"
@@ -14,8 +14,8 @@
 
   <app-input-dropdown
     [componentClass]="tokenLabelComponentClass"
-    [componentsData]="tokensInputData"
-    [selectedComponentData]="selectedTokenInputData"
+    [componentsData]="tokensDropdownData"
+    [selectedComponentData]="selectedTokenDropdownData"
     [VISIBLE_COMPONENTS_NUMBER]="VISIBLE_TOKENS_NUMBER"
     [sortOrder]="tokensSortOrder"
     chooseComponentText="Choose Token"

@@ -144,6 +144,30 @@
   font-weight: 700;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Ubuntu';
+  src: local('Ubuntu Regular'),
+  local('Ubuntu-Regular'),
+  url('./assets/fonts/Ubuntu-Regular.ttf') format('ttf');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Ubuntu';
+  src: local('Ubuntu Medium'),
+  local('Ubuntu-Medium'),
+  url('./assets/fonts/Ubuntu-Medium.ttf') format('ttf');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Ubuntu';
+  src: local('Ubuntu Bold'),
+  local('Ubuntu-Bold'),
+  url('./assets/fonts/Ubuntu-Bold.ttf') format('ttf');
+  font-weight: 700;
+  font-style: normal;
+}
 
 body {
   margin: 0;
@@ -679,9 +703,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       }
       .form-notice {
         position: absolute;
-        left: 50%;
+        left: -90px;
         bottom: 100%;
-        margin-bottom: 16px;
+        padding-bottom: 16px;
         display: none;
         &_content {
           background: #FFFFFF;
@@ -691,7 +715,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
           font-size: 14px;
           line-height: 1.25em;
           width: 190px;
-          transform: translateX(-50%);
           text-transform: initial;
           color: #000000;
           position: relative;
@@ -827,7 +850,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       font-family: inherit;
       font-size: 18px !important;
       background: #f4f4f4;
-      border: 1px solid #ffffff;
       padding: 11px 10px 11px 22px;
       margin-top: -1px;
 
@@ -953,7 +975,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     &__btn.active + &__ac_input {
       width: 50%;
       opacity: 1;
-      padding: 11px 10px 11px 22px !important;
+      padding: 11px 43px 11px 22px !important;
       top: 0;
       border-left: 1px solid #d8d8d8 !important;
       z-index: 3;
@@ -1559,4 +1581,9 @@ ng-scrollbar-y {
   100% {
     border-width: calc(60px / 7);
   }
+}
+
+.questions-container__text .highlight {
+  font-size: 1.2em;
+  font-weight: bold;
 }

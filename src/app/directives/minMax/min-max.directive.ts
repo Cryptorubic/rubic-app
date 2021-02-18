@@ -1,13 +1,18 @@
-import {Directive, ElementRef, Injector, Input, OnInit} from '@angular/core';
-import {NG_VALIDATORS, Validator, AbstractControl, ValidationErrors, NgControl} from '@angular/forms';
-import {Observable} from 'rxjs';
+import { Directive, ElementRef, Injector, Input, OnInit } from '@angular/core';
+import {
+  NG_VALIDATORS,
+  Validator,
+  AbstractControl,
+  ValidationErrors,
+  NgControl
+} from '@angular/forms';
+import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 
 @Directive({
   selector: '[appMinValue]'
 })
 export class MinMaxDirective implements OnInit {
-
   @Input('minValue') min: number;
   @Input('maxValue') max: number;
 
@@ -17,13 +22,9 @@ export class MinMaxDirective implements OnInit {
   private oldValidValue;
   private control: any;
 
-  constructor(
-    private injector: Injector,
-    private el: ElementRef
-  ) {
+  constructor(private injector: Injector, private el: ElementRef) {
     this.control = this.injector.get(NgControl).control;
   }
-
 
   ngOnInit() {
     setTimeout(() => {
@@ -39,10 +40,7 @@ export class MinMaxDirective implements OnInit {
     });
   }
 
-
-
   private validateControl() {
-
     const control = this.control;
     const val = control.value * 1;
     const errors = control.errors || {};
@@ -62,14 +60,16 @@ export class MinMaxDirective implements OnInit {
       this.oldValidValue = val;
     }
 
-
     const splittedStepValue = this.step.toString().split('.');
     const sizeDecimals = splittedStepValue[1] ? splittedStepValue[1].length : 0;
     const powValue = Math.pow(10, sizeDecimals);
 
-    const stepValid = !new BigNumber(control.value).times(powValue).modulo(new BigNumber(this.step).times(powValue)).toNumber();
+    const stepValid = !new BigNumber(control.value)
+      .times(powValue)
+      .modulo(new BigNumber(this.step).times(powValue))
+      .toNumber();
     const minValid = val >= this.min;
-    const maxValid = (this.max === undefined) ? true : (val <= this.max);
+    const maxValid = this.max === undefined ? true : val <= this.max;
 
     if (!minValid) {
       errors.min = true;
@@ -109,7 +109,4 @@ export class MinMaxDirective implements OnInit {
     }
     control.setErrors(errors);
   }
-
-
 }
-

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import {BridgeNetwork} from '../bridge/types';
 import {ERC20_TOKEN_ABI} from '../web3/web3.constants';
@@ -30,12 +30,10 @@ const NETWORKS: Web3ApiNetwork[] = [
   }
 ];
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class Web3ApiService {
-
   private readonly metamaskAddress: string;
   private ethereum;
   private web3: Web3;
@@ -131,7 +129,7 @@ export class Web3ApiService {
         .on('error', err => {
           console.log('Tokens transfer error. ' + err);
           if (err.code === 4001) {
-            reject (new UserRejectError());
+            reject(new UserRejectError());
           } else {
             reject(err);
           }
@@ -486,5 +484,9 @@ export class Web3ApiService {
     } else {
       return transaction;
     }
+  }
+
+  public isAddressCorrect(address: string) {
+    return this.web3.utils.isAddress(address);
   }
 }

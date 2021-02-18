@@ -8,9 +8,8 @@ describe('PublicContractsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PublicContractsComponent ]
-    })
-    .compileComponents();
+      declarations: [PublicContractsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

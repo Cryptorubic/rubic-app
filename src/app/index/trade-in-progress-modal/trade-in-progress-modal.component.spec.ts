@@ -8,9 +8,8 @@ describe('TradeInProgressModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TradeInProgressModalComponent ]
-    })
-    .compileComponents();
+      declarations: [TradeInProgressModalComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

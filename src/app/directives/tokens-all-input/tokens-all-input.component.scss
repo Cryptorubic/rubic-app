@@ -58,8 +58,8 @@
   background-color: #fff;
   max-height: 200px;
   overflow: auto;
-  border-top: 1px solid #DEDEDE;
-  border-bottom: 1px solid #DEDEDE;
+  border-top: 1px solid #dedede;
+  border-bottom: 1px solid #dedede;
   &_item {
     color: #000;
     cursor: pointer;
@@ -68,7 +68,6 @@
       background-color: #fffbcd;
     }
     &.active {
-      cursor: default;
       background-color: #fffbcd;
       border-color: #dddab2;
     }

@@ -1,6 +1,6 @@
 @import '../../scss/elements/vars';
 
-$font-family: "Ubuntu", Arial, sans-serif;;
+$font-family: 'Ubuntu', Arial, sans-serif;
 
 .team-page {
   position: relative;
@@ -28,7 +28,6 @@ $font-family: "Ubuntu", Arial, sans-serif;;
     width: 100%;
     grid-template-columns: repeat(auto-fit, 330px);
     justify-content: center;
-
   }
 
   &__card {

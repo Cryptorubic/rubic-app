@@ -12,7 +12,7 @@ export interface IMessage {
 @Component({
   selector: 'app-countdown',
   templateUrl: './countdown.component.html',
-  styleUrls: ['./countdown.component.scss'],
+  styleUrls: ['./countdown.component.scss']
 })
 export class CountdownComponent implements OnInit {
   @Input() timeStart: number;
@@ -27,7 +27,7 @@ export class CountdownComponent implements OnInit {
     days: '-',
     hours: '-',
     minutes: '-',
-    seconds: '-',
+    seconds: '-'
   } as IMessage;
 
   constructor() {}
@@ -50,7 +50,7 @@ export class CountdownComponent implements OnInit {
       days,
       hours,
       minutes,
-      seconds,
+      seconds
     };
 
     return message;
@@ -71,7 +71,7 @@ export class CountdownComponent implements OnInit {
       map(() => Math.floor((future.getTime() - new Date().getTime()) / 1000))
     );
 
-    this.subscription = this.counter$.subscribe((x) => {
+    this.subscription = this.counter$.subscribe(x => {
       if (new Date(future).getTime() < new Date().getTime()) {
         this.subscription.unsubscribe();
         this.countdownEvent.emit(true);

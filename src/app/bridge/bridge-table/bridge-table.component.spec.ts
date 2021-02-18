@@ -8,9 +8,8 @@ describe('BridgeTableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BridgeTableComponent ]
-    })
-    .compileComponents();
+      declarations: [BridgeTableComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

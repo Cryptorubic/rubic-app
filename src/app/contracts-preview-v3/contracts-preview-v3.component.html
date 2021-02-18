@@ -6,9 +6,12 @@
           class="preview-container preview-container_reminder"
           *ngIf="originalContract.contract_state === 'DONE'"
         >
-          <div class="preview-container_reminder__title">{{'Done' | translate}}</div>
+          <div class="preview-container_reminder__title">{{ 'Done' | translate }}</div>
           <div class="preview-container_reminder__description">
-            {{'The trade was completed. If you participated in this trade, please check your wallet.' | translate}}
+            {{
+              'The trade was completed. If you participated in this trade, please check your wallet.'
+                | translate
+            }}
           </div>
         </div>
 
@@ -16,9 +19,9 @@
           class="preview-container preview-container_reminder"
           *ngIf="originalContract.contract_state === 'EXPIRED'"
         >
-          <div class="preview-container_reminder__title">{{'Expired' | translate}}</div>
+          <div class="preview-container_reminder__title">{{ 'Expired' | translate }}</div>
           <div class="preview-container_reminder__description">
-            {{'The trade is no longer available.' | translate}}
+            {{ 'The trade is no longer available.' | translate }}
           </div>
         </div>
 
@@ -26,18 +29,16 @@
           class="preview-container preview-container_reminder"
           *ngIf="originalContract.contract_state === 'CANCELLED'"
         >
-          <div class="preview-container_reminder__title">{{'Cancelled' | translate}}</div>
+          <div class="preview-container_reminder__title">{{ 'Cancelled' | translate }}</div>
           <div class="preview-container_reminder__description">
-            {{'The trade was cancelled.' | translate}}
+            {{ 'The trade was cancelled.' | translate }}
           </div>
         </div>
 
         <div class="preview-container">
           <div
             class="contract-state"
-            [ngClass]="
-              'contract-state__' + states[originalContract.state].NUMBER
-            "
+            [ngClass]="'contract-state__' + states[originalContract.state].NUMBER"
           >
             {{ states[originalContract.state].TEXT | translate }}
           </div>
@@ -47,41 +48,46 @@
             <div class="grid-cell grid-cell-1 one-token-info-cell">
               <div class="c-preview__rate-wrapper">
                 <div class="block-tabs_item active">
-                  <img class="block-tabs_item_icon" [src]="displayingBlockchains[originalContract.network].image"/>
-                  <span class="block-tabs_item_text">{{displayingBlockchains[originalContract.network].name}}</span>
+                  <img
+                    class="block-tabs_item_icon"
+                    [src]="displayingBlockchains[originalContract.network].image"
+                  />
+                  <span class="block-tabs_item_text">{{
+                    displayingBlockchains[originalContract.network].name
+                  }}</span>
                 </div>
 
                 <span class="form-field_description rate-info">
                   Rate:
                   <span *ngIf="!revertedRate">
                     {{ rates.normal.dp(8).toFormat(rateFormat) }}
-                    {{ tokens.base.token.token_short_name }} / 1
-                    {{ tokens.quote.token.token_short_name }}
+                    {{ tokens.base.token.token_short_title }} / 1
+                    {{ tokens.quote.token.token_short_title }}
                   </span>
                   <span *ngIf="revertedRate">
                     {{ rates.reverted.dp(8).toFormat(rateFormat) }}
-                    {{ tokens.quote.token.token_short_name }} / 1
-                    {{ tokens.base.token.token_short_name }} </span
+                    {{ tokens.quote.token.token_short_title }} / 1
+                    {{ tokens.base.token.token_short_title }} </span
                   >&nbsp;&nbsp;&nbsp;&nbsp;
 
-                  <span *ngIf="cmcRate" class="cmc-rate">
-                    <img
-                      src="./assets/images/icons/cmc.svg"
-                      class="cmc-rate-icon"
-                    />
-                    {{
-                      (!revertedRate ? cmcRate.direct : cmcRate.revert)
-                        | number: '1.0-8'
-                    }}
-                    {{
-                      tokens[revertedRate ? 'quote' : 'base'].token.token_short_name
-                    }}
-                    / 1
-                    {{
-                      tokens[!revertedRate ? 'quote' : 'base'].token
-                        .token_short_name
-                    }}
-                  </span>
+                  <!--                  <span *ngIf="cmcRate" class="cmc-rate">-->
+                  <!--                    <img-->
+                  <!--                      src="./assets/images/icons/cmc.svg"-->
+                  <!--                      class="cmc-rate-icon"-->
+                  <!--                    />-->
+                  <!--                    {{-->
+                  <!--                      (!revertedRate ? cmcRate.direct : cmcRate.revert)-->
+                  <!--                        | number: '1.0-8'-->
+                  <!--                    }}-->
+                  <!--                    {{-->
+                  <!--                      tokens[revertedRate ? 'quote' : 'base'].token.token_short_name-->
+                  <!--                    }}-->
+                  <!--                    / 1-->
+                  <!--                    {{-->
+                  <!--                      tokens[!revertedRate ? 'quote' : 'base'].token-->
+                  <!--                        .token_short_name-->
+                  <!--                    }}-->
+                  <!--                  </span>-->
 
                   <button class="revert-btn" (click)="revertedRate = !revertedRate">
                     <img src="./assets/images/icons/revert.svg" />
@@ -90,21 +96,21 @@
               </div>
             </div>
 
-            <div
-              class="cmc-rate-notice"
-              [ngClass]="{
-                'cmc-rate-notice__positive': cmcRate.cmcRange > 0,
-                'cmc-rate-notice__negative': cmcRate.cmcRange < 0
-              }"
-              *ngIf="cmcRate"
-            >
-              <span *ngIf="cmcRate.cmcRange > 0">
-                {{"The trade's rate is {rate}% more profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}
-              </span>
-              <span *ngIf="cmcRate.cmcRange < 0">
-                {{"The trade's rate is {rate}% less profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}
-              </span>
-            </div>
+            <!--            <div-->
+            <!--              class="cmc-rate-notice"-->
+            <!--              [ngClass]="{-->
+            <!--                'cmc-rate-notice__positive': cmcRate.cmcRange > 0,-->
+            <!--                'cmc-rate-notice__negative': cmcRate.cmcRange < 0-->
+            <!--              }"-->
+            <!--              *ngIf="cmcRate"-->
+            <!--            >-->
+            <!--              <span *ngIf="cmcRate.cmcRange > 0">-->
+            <!--                {{"The trade's rate is {rate}% more profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}-->
+            <!--              </span>-->
+            <!--              <span *ngIf="cmcRate.cmcRange < 0">-->
+            <!--                {{"The trade's rate is {rate}% less profitable than coinmarketcap rate" | translate : '{rate: "' + (cmcRate.absCmcRange | number: '1.0-1') + '"}'}}-->
+            <!--              </span>-->
+            <!--            </div>-->
           </div>
           <div class="grid-row all-tokens-info-row">
             <div
@@ -113,12 +119,11 @@
             >
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
-                  <div
-                    class="tokens-info-block_filled__count tokens-info-block_filled__count--right"
-                  >
+                  <div class="tokens-info-block_filled__count">
+                    <span>{{ baseAmountShorted }}</span>
                     <div class="tokens-info-block_filled-wrapper">
                       <div class="tokens-info-block_filled_item send">
-                        <div class="tokens-info-block_filled__text">{{'Sent' | translate}}</div>
+                        <div class="tokens-info-block_filled__text">{{ 'Sent' | translate }}</div>
                         <div
                           class="tokens-info-block_filled__complete"
                           *ngIf="contractInfo.baseRaised"
@@ -128,33 +133,25 @@
                         </div>
                       </div>
                       <div class="tokens-info-block_filled_item left">
-                        <div class="tokens-info-block_filled__text">{{'Left' | translate}}</div>
+                        <div class="tokens-info-block_filled__text">{{ 'Left' | translate }}</div>
                         <div
                           class="tokens-info-block_filled__complete"
                           [title]="
-                            contractInfo.baseLeft
-                              | bigNumberFormat: tokens.base.token.decimals:true
+                            contractInfo.baseLeft | bigNumberFormat: tokens.base.token.decimals:true
                           "
                         >
                           {{
-                            contractInfo.baseLeft
-                              | bigNumberFormat: tokens.base.token.decimals:true
+                            contractInfo.baseLeft | bigNumberFormat: tokens.base.token.decimals:true
                           }}
                         </div>
                       </div>
                     </div>
-                    <span>{{ tokens.base.amount | number: '1.0-8' }}</span>
                   </div>
                 </div>
-                <div
-                  class="tokens-info-block_progress"
-                  *ngIf="originalContract.state === 'ACTIVE'"
-                >
+                <div class="tokens-info-block_progress" *ngIf="originalContract.state === 'ACTIVE'">
                   <span
                     [ngStyle]="{
-                      width:
-                        (contractInfo.baseRaised / tokens.base.amount) * 100 +
-                        '%'
+                      width: (contractInfo.baseRaised / tokens.base.amount) * 100 + '%'
                     }"
                   ></span>
                 </div>
@@ -173,19 +170,21 @@
                     ></div>
                     <div class="token-info_texts">
                       <div class="token-info_texts__name">
-                        {{ tokens.base.token.token_name }}
-                        ({{ tokens.base.token.token_short_name }})
+                        {{ tokens.base.token.token_title }}
+                        ({{ tokens.base.token.token_short_title }})
                       </div>
                       <div class="token-info_texts__address">
                         <a
                           [href]="
                             !tokens.base.token.isNative
-                              ? (tokens.base.token.address | etherscanUrl : originalContract.network : 'token')
+                              ? (tokens.base.token.address
+                                | etherscanUrl: originalContract.network:'token')
                               : (originalContract.network | nativeCoinUrl)
                           "
                           target="_blank"
                         >
-                          <small>{{'Check on Explorer' | translate}}</small>&nbsp;
+                          <small>{{ 'Check on Explorer' | translate }}</small
+                          >&nbsp;
                           <img src="./assets/images/icons/link.svg" />
                         </a>
                       </div>
@@ -220,7 +219,7 @@
                       {{ contractInfo.baseInvestors }}/{{ maximumInvestors }}
                     </div>
                     <div class="token-info_investments__desc">
-                      {{'Number of investors' | translate}}
+                      {{ 'Number of investors' | translate }}
                     </div>
                   </div>
                 </div>
@@ -235,9 +234,7 @@
                 >
                   <form
                     #baseContributeForm="ngForm"
-                    (submit)="
-                      sendContribute(baseContributeForm.value.amount, 'base')
-                    "
+                    (submit)="sendContribute(baseContributeForm.value.amount, 'base')"
                   >
                     <div class="grid-row">
                       <div class="grid-cell grid-cell-3-5 grid-cell-vs-1">
@@ -252,22 +249,18 @@
                               [appBigNumber]="{
                                 decimals: tokens.base.token.decimals,
                                 min:
-                                  [
-                                    contractInfo.baseLeft,
-                                    originalContract.min_base_wei
-                                  ] | bigNumberMin,
+                                  [contractInfo.baseLeft, originalContract.min_base_wei]
+                                  | bigNumberMin,
                                 max:
                                   contractInfo.baseLeft
-                                  | bigNumberFormat
-                                    : tokens.base.token.decimals
-                                    : true
+                                  | bigNumberFormat: tokens.base.token.decimals:true
                               }"
                               [ngClass]="{
                                 'without-error-lightning': activeSide !== 'base'
                               }"
                               name="amount"
                               [ngModel]="baseValueContribution"
-                              placeholder="{{'Enter Amount' | translate}}"
+                              placeholder="{{ 'Enter Amount' | translate }}"
                               class="min-text minimal-input"
                             />
                           </div>
@@ -296,27 +289,30 @@
                               *ngIf="allowanceObj.base.isAllowancing"
                             />
                             <span *ngIf="!allowanceObj.base.isAllowancing">{{
-                              allowanceObj.base.isAllowance
-                                ? 'Contribute'
-                                : 'Approve'
+                              allowanceObj.base.isAllowance ? 'Contribute' : 'Approve'
                             }}</span>
-                            <span *ngIf="allowanceObj.base.isAllowancing"
-                              >{{'Waiting' | translate}}</span
-                            >
+                            <span *ngIf="allowanceObj.base.isAllowancing">{{
+                              'Waiting' | translate
+                            }}</span>
                           </button>
                         </div>
                       </div>
                       <div
                         class="grid-cell grid-cell-1"
-                        *ngIf="
-                          baseContributeForm.value.amount &&
-                          baseContributeForm.valid
-                        "
+                        *ngIf="baseContributeForm.value.amount && baseContributeForm.valid"
                       >
                         <div class="form-field">
                           <span class="normal-text">
-                            {{'You will get {amount} {token} after Trade' | translate :
-                            '{amount: "' + (quoteWillGetValue(baseContributeForm.value.amount) | number : '1.0-8') + '", token: "'+ tokens.quote.token.token_short_name +'"}'}}
+                            {{
+                              'You will get {amount} {token} after Trade'
+                                | translate
+                                  : '{amount: "' +
+                                      (quoteWillGetValue(baseContributeForm.value.amount)
+                                        | number: '1.0-8') +
+                                      '", token: "' +
+                                      tokens.quote.token.token_short_title +
+                                      '"}'
+                            }}
                           </span>
                         </div>
                       </div>
@@ -333,7 +329,7 @@
                               )
                             "
                           >
-                            {{'Fill all' | translate}}
+                            {{ 'Fill all' | translate }}
                           </span>
                         </div>
                       </div>
@@ -343,44 +339,35 @@
 
                 <div
                   class="contract-buttons contract-buttons--wei"
-                  *ngIf="
-                    originalContract.min_base_wei &&
-                    originalContract.min_base_wei != 0
-                  "
+                  *ngIf="originalContract.min_base_wei && originalContract.min_base_wei != 0"
                 >
                   <span class="normal-text">
                     <span>
-                      {{'Min Contribution Limit:' | translate}}
+                      {{ 'Min Contribution Limit:' | translate }}
                       <b>
                         {{ originalContract.min_base_wei | number: '1.0-8' }}
-                        {{ tokens.base.token.token_short_name }}
+                        {{ tokens.base.token.token_short_title }}
                       </b>
                     </span>
                   </span>
                 </div>
-                <div
-                  class="contract-buttons no-bottom-margin"
-                  *ngIf="originalContract.whitelist"
-                >
+                <div class="contract-buttons no-bottom-margin" *ngIf="originalContract.whitelist">
                   <span class="normal-text opacity-color">
-                    {{'Only Owner can contribute' | translate}}
+                    {{ 'Only Owner can contribute' | translate }}
                   </span>
                 </div>
                 <div
                   class="contract-buttons contract-buttons--wei"
-                  *ngIf="
-                    originalContract.broker_fee &&
-                    contractInfo.baseBrokerPercent
-                  "
+                  *ngIf="originalContract.broker_fee && contractInfo.baseBrokerPercent"
                 >
                   <span class="normal-text">
                     <span>
-                      {{'Brokers fee:' | translate}}
+                      {{ 'Brokers fee:' | translate }}
                       <b>
                         {{ contractInfo.baseBrokerPercent }}% ({{
                           contractInfo.baseBrokerAmount | number: '1.0-8'
                         }}
-                        {{ tokens.base.token.token_short_name }})
+                        {{ tokens.base.token.token_short_title }})
                       </b>
                     </span>
                   </span>
@@ -399,11 +386,8 @@
                   (click)="sendRefund(tokens.base.token)"
                   type="button"
                 >
-                  <img
-                    class="arrow"
-                    src="./assets/images/buttons/arrow_blue.svg"
-                  />
-                  {{'Withdraw' | translate}}
+                  <img class="arrow" src="./assets/images/buttons/arrow_blue.svg" />
+                  {{ 'Withdraw' | translate }}
                 </button>
               </div>
             </div>
@@ -414,10 +398,10 @@
               <div class="tokens-info-block">
                 <div class="tokens-info-block_filled">
                   <div class="tokens-info-block_filled__count">
-                    <span>{{ (tokens.quote.amount || 0) | number: '1.0-8' }}</span>
+                    <span>{{ quoteAmountShorted }}</span>
                     <div class="tokens-info-block_filled-wrapper">
                       <div class="tokens-info-block_filled_item send">
-                        <div class="tokens-info-block_filled__text">{{'Sent' | translate}}</div>
+                        <div class="tokens-info-block_filled__text">{{ 'Sent' | translate }}</div>
                         <div
                           class="tokens-info-block_filled__complete"
                           *ngIf="contractInfo.quoteRaised"
@@ -427,36 +411,27 @@
                         </div>
                       </div>
                       <div class="tokens-info-block_filled_item left">
-                        <div class="tokens-info-block_filled__text">{{'Left' | translate}}</div>
+                        <div class="tokens-info-block_filled__text">{{ 'Left' | translate }}</div>
                         <div
                           class="tokens-info-block_filled__complete"
                           [title]="
                             contractInfo.quoteLeft
-                              | bigNumberFormat
-                                : tokens.quote.token.decimals
-                                : true
+                              | bigNumberFormat: tokens.quote.token.decimals:true
                           "
                         >
                           {{
                             contractInfo.quoteLeft
-                              | bigNumberFormat
-                                : tokens.quote.token.decimals
-                                : true
+                              | bigNumberFormat: tokens.quote.token.decimals:true
                           }}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div
-                  class="tokens-info-block_progress"
-                  *ngIf="originalContract.state === 'ACTIVE'"
-                >
+                <div class="tokens-info-block_progress" *ngIf="originalContract.state === 'ACTIVE'">
                   <span
                     [ngStyle]="{
-                      width:
-                        (contractInfo.quoteRaised / tokens.quote.amount) * 100 +
-                        '%'
+                      width: (contractInfo.quoteRaised / tokens.quote.amount) * 100 + '%'
                     }"
                   ></span>
                 </div>
@@ -475,19 +450,21 @@
                     ></div>
                     <div class="token-info_texts">
                       <div class="token-info_texts__name">
-                        {{ tokens.quote.token.token_name }}
-                        ({{ tokens.quote.token.token_short_name }})
+                        {{ tokens.quote.token.token_title }}
+                        ({{ tokens.quote.token.token_short_title }})
                       </div>
                       <div class="token-info_texts__address">
                         <a
                           [href]="
                             !tokens.quote.token.isNative
-                              ? (tokens.quote.token.address | etherscanUrl : originalContract.network : 'token')
+                              ? (tokens.quote.token.address
+                                | etherscanUrl: originalContract.network:'token')
                               : (originalContract.network | nativeCoinUrl)
                           "
                           target="_blank"
                         >
-                          <small>{{'Check on Explorer' | translate}}</small>&nbsp;
+                          <small>{{ 'Check on Explorer' | translate }}</small
+                          >&nbsp;
                           <img src="./assets/images/icons/link.svg" />
                         </a>
                       </div>
@@ -499,7 +476,7 @@
                       {{ contractInfo.quoteInvestors }}/{{ maximumInvestors }}
                     </div>
                     <div class="token-info_investments__desc">
-                      {{'Number of investors' | translate}}
+                      {{ 'Number of investors' | translate }}
                     </div>
                   </div>
                 </div>
@@ -514,9 +491,7 @@
                 >
                   <form
                     #quoteContributeForm="ngForm"
-                    (submit)="
-                      sendContribute(quoteContributeForm.value.amount, 'quote')
-                    "
+                    (submit)="sendContribute(quoteContributeForm.value.amount, 'quote')"
                   >
                     <div class="grid-row">
                       <div class="grid-cell grid-cell-3-5 grid-cell-vs-1">
@@ -531,23 +506,18 @@
                               [appBigNumber]="{
                                 decimals: tokens.quote.token.decimals,
                                 min:
-                                  [
-                                    contractInfo.quoteLeft,
-                                    originalContract.min_quote_wei
-                                  ] | bigNumberMin,
+                                  [contractInfo.quoteLeft, originalContract.min_quote_wei]
+                                  | bigNumberMin,
                                 max:
                                   contractInfo.quoteLeft
-                                  | bigNumberFormat
-                                    : tokens.quote.token.decimals
-                                    : true
+                                  | bigNumberFormat: tokens.quote.token.decimals:true
                               }"
                               [ngClass]="{
-                                'without-error-lightning':
-                                  activeSide !== 'quote'
+                                'without-error-lightning': activeSide !== 'quote'
                               }"
                               name="amount"
                               [ngModel]="quoteValueContribution"
-                              placeholder="{{'Enter Amount' | translate}}"
+                              placeholder="{{ 'Enter Amount' | translate }}"
                               class="min-text minimal-input"
                             />
                           </div>
@@ -558,8 +528,7 @@
                           <button
                             class="btn btn-green width-100 btn-normal-weight"
                             [disabled]="
-                              !quoteContributeForm.valid ||
-                              allowanceObj.quote.isAllowancing
+                              !quoteContributeForm.valid || allowanceObj.quote.isAllowancing
                             "
                             type="submit"
                           >
@@ -574,27 +543,30 @@
                               *ngIf="allowanceObj.quote.isAllowancing"
                             />
                             <span *ngIf="!allowanceObj.quote.isAllowancing">{{
-                              allowanceObj.quote.isAllowance
-                                ? 'Contribute'
-                                : 'Approve'
+                              allowanceObj.quote.isAllowance ? 'Contribute' : 'Approve'
                             }}</span>
-                            <span *ngIf="allowanceObj.quote.isAllowancing"
-                              >{{'Waiting' | translate}}</span
-                            >
+                            <span *ngIf="allowanceObj.quote.isAllowancing">{{
+                              'Waiting' | translate
+                            }}</span>
                           </button>
                         </div>
                       </div>
                       <div
                         class="grid-cell grid-cell-1"
-                        *ngIf="
-                          quoteContributeForm.value.amount &&
-                          quoteContributeForm.valid
-                        "
+                        *ngIf="quoteContributeForm.value.amount && quoteContributeForm.valid"
                       >
                         <div class="form-field">
                           <span class="normal-text">
-                            {{'You will get {amount} {token} after Trade' | translate :
-                          '{amount: "' + (baseWillGetValue(quoteContributeForm.value.amount) | number: '1.0-8') + '", token: "'+ tokens.base.token.token_short_name +'"}'}}
+                            {{
+                              'You will get {amount} {token} after Trade'
+                                | translate
+                                  : '{amount: "' +
+                                      (baseWillGetValue(quoteContributeForm.value.amount)
+                                        | number: '1.0-8') +
+                                      '", token: "' +
+                                      tokens.base.token.token_short_title +
+                                      '"}'
+                            }}
                           </span>
                         </div>
                       </div>
@@ -611,7 +583,7 @@
                               )
                             "
                           >
-                            {{'Fill all' | translate}}
+                            {{ 'Fill all' | translate }}
                           </span>
                         </div>
                       </div>
@@ -621,17 +593,14 @@
 
                 <div
                   class="contract-buttons contract-buttons--wei"
-                  *ngIf="
-                    originalContract.min_quote_wei &&
-                    originalContract.min_quote_wei != 0
-                  "
+                  *ngIf="originalContract.min_quote_wei && originalContract.min_quote_wei != 0"
                 >
                   <span class="normal-text">
                     <span>
-                      {{'Min Contribution Limit:' | translate}}
+                      {{ 'Min Contribution Limit:' | translate }}
                       <b>
                         {{ originalContract.min_quote_wei | number: '1.0-8' }}
-                        {{ tokens.quote.token.token_short_name }}
+                        {{ tokens.quote.token.token_short_title }}
                       </b>
                     </span>
                     <!--<span *ngIf="originalContract.min_quote_wei == 0">-->
@@ -642,19 +611,16 @@
 
                 <div
                   class="contract-buttons contract-buttons--wei"
-                  *ngIf="
-                    originalContract.broker_fee &&
-                    contractInfo.quoteBrokerPercent
-                  "
+                  *ngIf="originalContract.broker_fee && contractInfo.quoteBrokerPercent"
                 >
                   <span class="normal-text">
                     <span>
-                      {{'Brokers fee:' | translate}}
+                      {{ 'Brokers fee:' | translate }}
                       <b>
                         {{ contractInfo.quoteBrokerPercent }}% ({{
                           contractInfo.quoteBrokerAmount | number: '1.0-8'
                         }}
-                        {{ tokens.quote.token.token_short_name }})
+                        {{ tokens.quote.token.token_short_title }})
                       </b>
                     </span>
                   </span>
@@ -674,11 +640,8 @@
                   (click)="sendRefund(tokens.quote.token)"
                   type="button"
                 >
-                  <img
-                    class="arrow"
-                    src="./assets/images/buttons/arrow_blue.svg"
-                  />
-                  <span>{{'Refund' | translate}}</span>
+                  <img class="arrow" src="./assets/images/buttons/arrow_blue.svg" />
+                  <span>{{ 'Withdraw' | translate }}</span>
                 </button>
               </div>
             </div>
@@ -688,7 +651,7 @@
             <div class="grid-row">
               <div class="grid-cell grid-cell-1-8 grid-cell-ps-1-2">
                 <div class="form-field">
-                  <label class="form-field_label">{{"Closing date" | translate}}</label>
+                  <label class="form-field_label">{{ 'Closing date' | translate }}</label>
                   <div class="form-field_value">
                     {{ originalContract.stop_date | date: 'dd.MM.yyyy' }}
                   </div>
@@ -696,7 +659,7 @@
               </div>
               <div class="grid-cell grid-cell-1-8 grid-cell-ps-1-2">
                 <div class="form-field">
-                  <label class="form-field_label">{{'Closing time' | translate}}</label>
+                  <label class="form-field_label">{{ 'Closing time' | translate }}</label>
                   <div class="form-field_value">
                     {{ originalContract.stop_date | date: 'HH:mm' }}
                   </div>
@@ -704,7 +667,7 @@
               </div>
               <div class="grid-cell grid-cell-4-8 grid-cell-ps-1-2">
                 <div class="form-field">
-                  <label class="form-field_label">{{'Link to deal' | translate}}</label>
+                  <label class="form-field_label">{{ 'Link to deal' | translate }}</label>
                   <div class="form-field_value">
                     <a [href]="contractAdditional.link" target="_blank">
                       {{ contractAdditional.link }}
@@ -723,18 +686,16 @@
                   </div>
                 </div>
               </div>
-              <div
-                class="grid-cell grid-cell-2-8 text-right grid-cell-ps-1 float-right"
-              >
+              <div class="grid-cell grid-cell-2-8 text-right grid-cell-ps-1 float-right">
                 <div class="form-field ps-float-left">
                   <div class="form-field_checkbox-val float-right">
-                    <div class="form-field_checkbox-val_label">{{'Public deal' | translate}}</div>
+                    <div class="form-field_checkbox-val_label">{{ 'Public deal' | translate }}</div>
                     <div class="form-field_checkbox-val_stat">
                       <div *ngIf="originalContract.public">
-                        {{'Yes' | translate}}<img src="./assets/images/icons/yes.svg" />
+                        {{ 'Yes' | translate }}<img src="./assets/images/icons/yes.svg" />
                       </div>
                       <div *ngIf="!originalContract.public">
-                        {{'No' | translate}}<img src="./assets/images/icons/pd_icon.svg" />
+                        {{ 'No' | translate }}<img src="./assets/images/icons/pd_icon.svg" />
                       </div>
                     </div>
                   </div>
@@ -744,16 +705,18 @@
 
             <div
               class="one-separated-block"
-              *ngIf="
-                originalContract.isAuthor && originalContract.owner_address
-              "
+              *ngIf="originalContract.isAuthor && originalContract.owner_address"
             >
               <div class="grid-row">
                 <div class="grid-cell grid-cell-1">
                   <div class="form-field">
-                    <label class="form-field_label">{{'Management address' | translate}}</label>
+                    <label class="form-field_label">{{ 'Management address' | translate }}</label>
                     <div class="form-field_value">
-                      <a [href]="originalContract.owner_address | etherscanUrl : originalContract.network : 'address'"
+                      <a
+                        [href]="
+                          originalContract.owner_address
+                            | etherscanUrl: originalContract.network:'address'
+                        "
                         target="_blank"
                       >
                         {{ originalContract.owner_address }}
@@ -776,10 +739,13 @@
               <div class="grid-row" *ngIf="originalContract.broker_fee">
                 <div class="grid-cell grid-cell-1">
                   <div class="form-field">
-                    <label class="form-field_label">{{'Broker address' | translate}}</label>
+                    <label class="form-field_label">{{ 'Broker address' | translate }}</label>
                     <div class="form-field_value">
                       <a
-                        [href]="originalContract.broker_fee_address | etherscanUrl : originalContract.network: 'address'"
+                        [href]="
+                          originalContract.broker_fee_address
+                            | etherscanUrl: originalContract.network:'address'
+                        "
                         target="_blank"
                       >
                         {{ originalContract.broker_fee_address.toLowerCase() }}
@@ -804,7 +770,7 @@
             </div>
 
             <div class="one-separated-block" *ngIf="originalContract.comment">
-              <label class="form-field_label">{{'Additional comment' | translate}}</label>
+              <label class="form-field_label">{{ 'Additional comment' | translate }}</label>
               <div class="form-field_value pre">
                 {{ originalContract.comment }}
               </div>
@@ -824,7 +790,7 @@
                 (click)="sendCancel()"
               >
                 <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
-                <span>{{'Cancel trade' | translate}}</span>
+                <span>{{ 'Cancel trade' | translate }}</span>
               </button>
             </div>
           </div>
@@ -834,25 +800,16 @@
   </div>
 </div>
 
-
-
 <ng-template #metaMaskError>
   <div class="dialog-block">
     <div class="dialog-block__content">
-      <button
-        class="dialog-closer"
-        (click)="closeMetaMaskError()"
-        type="button"
-      >
+      <button class="dialog-closer" (click)="closeMetaMaskError()" type="button">
         <img src="./assets/images/icons/cross-w.svg" />
       </button>
 
-      <div class="transaction-title">{{'Error' | translate}}</div>
+      <div class="transaction-title">{{ 'Error' | translate }}</div>
 
-      <div
-        class="transaction-description"
-        [innerHTML]="this.metamaskError.msg"
-      ></div>
+      <div class="transaction-description" [innerHTML]="this.metamaskError.msg"></div>
 
       <div class="alert-window-buttons text-center">
         <button
@@ -860,7 +817,7 @@
           (click)="closeMetaMaskError()"
           type="button"
         >
-          <span>&nbsp;&nbsp;&nbsp;{{'Close' | translate}}&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;{{ 'Close' | translate }}&nbsp;&nbsp;&nbsp;</span>
         </button>
       </div>
     </div>

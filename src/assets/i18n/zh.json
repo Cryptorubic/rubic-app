@@ -135,13 +135,13 @@
       "ANSWER": "步骤一： 填写表格，输入您拥有的金额，并输入您想获得的金额 步骤2. 添加高级选项，如关闭日期和时间，最低和最高出资额，隐私，经纪费，锁定流动性，直到交易完成 第3步. Check details of the trade Step 4. 点击创建交易 步骤5. 使用Metamask确认你的交易步骤 6. 贡献你的部分交易。"
     }, {
       "QUESTION": "多少钱？",
-      "答案": "服务费从每笔交易中收取0. 3%的费用"
+      "ANSWER": "目前，我們的服務不為即時交易收取任何費用。但是創建訂單簿交易需要支付0.015 ETH的費用"
     }, {
       "QUESTION": "完成一笔交易需要多长时间？",
       "ANSWER": "只要对方完成了自己这边的交易，交易就会完成。"
     }, {
       "QUESTION":"如何确保交易的隐私和安全？",
-      "答案": "交易是通过智能合约来保障的，由经验丰富的开发人员和外部审计来验证。"
+      "ANSWER": "交易是通过智能合约来保障的，由经验丰富的开发人员和外部审计来验证。"
     }, {
       "QUESTION": "有多少人可以参加一次交易？",
       "ANSWER": "每一方最多可以有10个人参加"
@@ -200,5 +200,23 @@
   "Name": "姓名",
   "Creation date":"创建日期",
   "Do you want to remove it?":"你想删除它吗？",
-  "Do you really want to Log Out?": "你真的想注销吗？"
+  "Do you really want to Log Out?": "你真的想注销吗？",
+
+  "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.":
+  "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
+  "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to www.metamask.io and follow the steps.":
+  "出现这个错误是因为您没有在浏览器中安装Metamask插件。要解决这个问题，请在您的浏览器中安装并激活Metamask插件。\n请访问 <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> 并按照步骤操作。",
+  "You have selected the wrong network. Please choose { networkToChoose } from MetaMask.":
+  "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
+  "You have attempted to execute too many trades in a short period of time. Please wait and try again later, if you still have problems please reach out to our Customer Support.":
+  "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
+  "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.":
+  "您拒绝执行交易。请先确认，以便完成交易。",
+  "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
+  "请稍后再试，或尝试使用其他设备。如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
+
+  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
+  "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
+  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
+  "跨链交换的过程已经开始。请等待双方区块链完成交易。"
 }

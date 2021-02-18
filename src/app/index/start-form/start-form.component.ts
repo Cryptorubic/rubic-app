@@ -6,14 +6,17 @@ import {
   AfterContentInit,
   TemplateRef,
   ViewChild,
-  Output, Injectable, ElementRef, AfterViewInit,
+  Output,
+  Injectable,
+  ElementRef,
+  AfterViewInit
 } from '@angular/core';
 import { SWAPS_V2 } from '../../contracts-preview-v3/contracts-preview-v3.component';
 import { Web3Service } from '../../services/web3/web3.service';
 import { UserService } from '../../services/user/user.service';
 import BigNumber from 'bignumber.js';
-import {Router, ActivatedRoute, Resolve, ActivatedRouteSnapshot} from '@angular/router';
-import {CHAIN_OF_NETWORK, ERC20_TOKEN_ABI} from '../../services/web3/web3.constants';
+import { Router, ActivatedRoute, Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../../services/web3/web3.constants';
 import { ContractsService } from '../../services/contracts/contracts.service';
 import * as moment from 'moment';
 import {
@@ -21,11 +24,11 @@ import {
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
   MatDialog,
-  MatDialogRef,
+  MatDialogRef
 } from '@angular/material';
 import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
-  MomentDateAdapter,
+  MomentDateAdapter
 } from '@angular/material-moment-adapter';
 
 import {OneInchService} from "../../models/1inch/1inch";
@@ -87,15 +90,21 @@ enum UNISWAP_TRADE_STATUS {
 export const MY_FORMATS = {
   useUtc: true,
   parse: {
-    dateInput: 'LL',
+    dateInput: 'LL'
   },
   display: {
     dateInput: 'DD.MM.YYYY',
     monthYearLabel: 'MMM YYYY',
     dateA11yLabel: 'X',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
+    monthYearA11yLabel: 'MMMM YYYY'
+  }
 };
+
+interface IOrderBookTokens {
+  ethereum: any[];
+  'binance-smart-chain': any[];
+  matic: any[];
+}
 
 @Component({
   selector: 'app-start-form',
@@ -105,10 +114,10 @@ export const MY_FORMATS = {
     {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }
+  ]
 })
 export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
@@ -120,14 +129,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @Output() instanceTradesSelect = new EventEmitter<any>();
   @Output() blockchainTradesSelect = new EventEmitter<any>();
   public currentUser;
-  public cmcRate: {
+  public coingeckoRate: {
     change?: number;
-    isMessage?: boolean;
     isLower?: boolean;
     direct: number;
     revert: number;
   };
-  private CMCRates;
   private metaMaskErrorModal: MatDialogRef<any>;
   public blockchainsOfNetworks = {
     1: 'ethereum',
@@ -139,10 +146,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public instanceTrade: boolean = true;
   private instanceTradeParams: any = {};
 
-
   public instanceTradesTokens: any[];
+  public orderBookTokens: IOrderBookTokens;
 
-  public serviceAvailable: boolean = !!(window['cmc_tokens'] && window['cmc_tokens'].length);
+  public serviceAvailable: boolean = !!(
+    window['coingecko_tokens'] && window['coingecko_tokens'].length
+  );
 
   public instantTradeInProgress: boolean = false;
 
@@ -150,6 +159,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public UNISWAP_TRADE_STATUS = UNISWAP_TRADE_STATUS;
   public uniSwapTradeStatus: UNISWAP_TRADE_STATUS = undefined;
+
+  private web3Contract;
+  private contractAddress: string;
+
+  private platforms = ['ethereum', 'binance-smart-chain', 'matic'];
 
   constructor(
     private dialog: MatDialog,
@@ -162,7 +176,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private backendApiService: BackendApiService,
     private uniSwapService: UniSwapService
   ) {
-    this.CMCRates = {};
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: any) => {
       this.currentUser = userProfile;
@@ -173,22 +186,22 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.tokensData = {
       base: {
         token: {},
-        customToken: false,
+        customToken: false
       },
       quote: {
         token: {},
-        customToken: false,
-      },
+        customToken: false
+      }
     };
     this.isAdvSettingsOpen = false;
     this.openedCustomTokens = {
       base: false,
-      quote: false,
+      quote: false
     };
 
     this.customTokens = {
       base: {},
-      quote: {},
+      quote: {}
     };
 
     this.minDate = moment().add(1, 'hour');
@@ -199,7 +212,25 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.isCreatingContract = false;
 
     this.instanceTradesTokens = this.oneInchService.getAutocompleteTokensList();
+    this.getOrderBookTokens();
+  }
 
+  private getOrderBookTokens() {
+    this.orderBookTokens = {} as IOrderBookTokens;
+    for (let platform of this.platforms) {
+      this.orderBookTokens[platform] = window['coingecko_tokens'].filter(
+        token => token.platform === platform
+      );
+    }
+  }
+
+  public networkToPlatform(network: number) {
+    const blockchain = this.blockchainsOfNetworks[network];
+    if (blockchain === 'binance') {
+      return 'binance-smart-chain';
+    } else {
+      return blockchain;
+    }
   }
 
   private checkQueryParams() {
@@ -214,7 +245,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
     this.changedToken(true);
   }
-
 
   private socialFormData: {
     network: string;
@@ -248,29 +278,16 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('advSettings') public advSettings;
 
   public isChangedToken(...args) {
-    localStorage.setItem(
-      'form_new_values',
-      JSON.stringify({ tokens_info: this.tokensData })
-    );
+    localStorage.setItem('form_new_values', JSON.stringify({ tokens_info: this.tokensData }));
   }
 
-
   public getRate(revert?): string {
-    if (
-      !(
-        this.requestData.tokens_info.base.amount &&
-        this.requestData.tokens_info.quote.amount
-      )
-    ) {
+    if (!(this.requestData.tokens_info.base.amount && this.requestData.tokens_info.quote.amount)) {
       return '0';
     }
 
-    const baseCoinAmount = new BigNumber(
-      this.requestData.tokens_info.base.amount
-    );
-    const quoteCoinAmount = new BigNumber(
-      this.requestData.tokens_info.quote.amount
-    );
+    const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount);
+    const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount);
     return (!revert
       ? baseCoinAmount.div(quoteCoinAmount)
       : quoteCoinAmount.div(baseCoinAmount)
@@ -292,20 +309,21 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     this.getInstanceQuoteTimeout = setTimeout(() => {
-      this.oneInchService.getQuote(
+      this.oneInchService
+        .getQuote(
           params,
           !this.instantTradesAvailable ? this.requestData.tokens_info.quote.token.address : false
-      ).then((result: any) => {
-        this.instanceTradeParams = result;
-        this.requestData.tokens_info.quote.amount =
-        Number(result.toTokenAmount) ?
-            new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10) : '';
-        // this.QuoteTokenCustom.emit();
-        this.getInstanceQuoteProgress = false;
-      });
+        )
+        .then((result: any) => {
+          this.instanceTradeParams = result;
+          this.requestData.tokens_info.quote.amount = Number(result.toTokenAmount)
+            ? new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10)
+            : '';
+          // this.QuoteTokenCustom.emit();
+          this.getInstanceQuoteProgress = false;
+        });
     }, 1000);
   }
-
 
   private tokensCache = {
     quote: '',
@@ -317,7 +335,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
 
-    const identical = this.tokensCache.base === baseCoin.address && this.tokensCache.quote === quoteCoin.address;
+    const identical =
+      this.tokensCache.base === baseCoin.address && this.tokensCache.quote === quoteCoin.address;
     if (identical) {
       this.requestData.tokens_info.quote.amount = '';
     }
@@ -326,19 +345,23 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.tokensCache.quote = quoteCoin.address;
       if (baseCoin.address && quoteCoin.address && baseCoin.address !== quoteCoin.address && this.requestData.network === 1) {
         this.instantTradesAvailable = this.oneInchService.checkTokensPair(baseCoin, quoteCoin);
-      } else {
-        this.instantTradesAvailable = false;
       }
     }
 
-    if (!identical || force || (this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount)) {
+    if (
+      !identical ||
+      force ||
+      this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount
+    ) {
       this.checkInstancePrice();
       this.tokensCache.baseAmount = this.requestData.tokens_info.base.amount;
     } else {
       const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
       this.requestData.tokens_info.quote.amount = new BigNumber(
-          this.instanceTradeParams.toTokenAmount
-      ).div(quoteDecimalsTimes).toString(10);
+        this.instanceTradeParams.toTokenAmount
+      )
+        .div(quoteDecimalsTimes)
+        .toString(10);
       // this.QuoteTokenCustom.emit();
     }
   }
@@ -408,28 +431,24 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       }
     }
 
-
     if (
       this.requestData.tokens_info.base.amount &&
       this.requestData.tokens_info.quote.amount &&
-      baseCoin.cmc_id &&
-      quoteCoin.cmc_id &&
-      baseCoin.cmc_id > 0 &&
-      quoteCoin.cmc_id > 0
+      baseCoin.usd_price &&
+      quoteCoin.usd_price
     ) {
-      this.cmcRate = {
-        revert: new BigNumber(baseCoin.rate).div(quoteCoin.rate).toNumber(),
-        direct: new BigNumber(quoteCoin.rate).div(baseCoin.rate).toNumber(),
+      this.coingeckoRate = {
+        revert: new BigNumber(baseCoin.usd_price).div(quoteCoin.usd_price).toNumber(),
+        direct: new BigNumber(quoteCoin.usd_price).div(baseCoin.usd_price).toNumber()
       };
       const rate = parseFloat(this.getRate(true));
-      const rateChanges = parseFloat(this.getRate()) - this.cmcRate.direct;
-      this.cmcRate.isMessage = true;
-      this.cmcRate.isLower = rateChanges > 0;
-      this.cmcRate.change = Math.round(
-        Math.abs(-(rate / this.cmcRate.revert - 1)) * 100
+      const rateChanges = parseFloat(this.getRate()) - this.coingeckoRate.direct;
+      this.coingeckoRate.isLower = rateChanges > 0;
+      this.coingeckoRate.change = parseFloat(
+        (Math.abs(-(rate / this.coingeckoRate.revert - 1)) * 100).toFixed(2)
       );
     } else {
-      this.cmcRate = undefined;
+      this.coingeckoRate = undefined;
     }
   }
 
@@ -452,10 +471,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.requestData = {
       tokens_info: {
         base: {
-          token: {},
+          token: {}
         },
         quote: {
-          token: targetToken,
+          token: {}
         },
         uniswap: {
           token: targetToken
@@ -465,11 +484,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       public: true,
       permanent: false,
       broker_fee_base: 0.1,
-      broker_fee_quote: 0.1,
+      broker_fee_quote: 0.1
     };
     this.customTokens = {
       base: {},
-      quote: {},
+      quote: {}
     };
 
     if (this.onInit) {
@@ -485,7 +504,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public setNetwork(network) {
     this.resetStartForm(network);
-    this.selectedNetwork = network
+    this.selectedNetwork = network;
     if (network !== 1) {
       this.instanceTrade = false;
     }
@@ -528,23 +547,27 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
 
-    const cmcBaseToken = window['cmc_tokens'].find((t) => {
-      return t.token_short_name === baseCoin.token_short_name &&
-          t.address.toLowerCase() === baseCoin.address.toLowerCase();
+    const coingeckoBaseToken = window['coingecko_tokens'].find(t => {
+      return (
+        t.token_short_title === baseCoin.token_short_title &&
+        t.address.toLowerCase() === baseCoin.address.toLowerCase()
+      );
     });
-    const cmcQuoteToken = window['cmc_tokens'].find((t) => {
-      return t.token_short_name === quoteCoin.token_short_name &&
-          t.address.toLowerCase() === quoteCoin.address.toLowerCase();
+    const coingeckoQuoteToken = window['coingecko_tokens'].find(t => {
+      return (
+        t.token_short_title === quoteCoin.token_short_title &&
+        t.address.toLowerCase() === quoteCoin.address.toLowerCase()
+      );
     });
 
-    if (!cmcBaseToken) {
+    if (!coingeckoBaseToken) {
       this.requestData.tokens_info.base = {
-        token: {},
+        token: {}
       };
     }
-    if (!cmcQuoteToken) {
+    if (!coingeckoQuoteToken) {
       this.requestData.tokens_info.quote = {
-        token: {},
+        token: {}
       };
     }
   }
@@ -574,8 +597,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public changePD() {
     if (
-      this.requestData.tokens_info.base.token.token_name &&
-      this.requestData.tokens_info.quote.token.token_name
+      this.requestData.tokens_info.base.token.token_title &&
+      this.requestData.tokens_info.quote.token.token_title
     ) {
       this.requestData.public = this.requestData.public;
 
@@ -603,12 +626,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   get baseBrokerFee() {
-    if (
-      !(
-        this.requestData.tokens_info.base.amount &&
-        this.requestData.broker_fee_base
-      )
-    ) {
+    if (!(this.requestData.tokens_info.base.amount && this.requestData.broker_fee_base)) {
       return 0;
     }
     return new BigNumber(this.requestData.tokens_info.base.amount)
@@ -643,23 +661,20 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private buildAndCreate() {
     this.sendData.network = this.requestData.network;
     this.sendData.stop_date = this.advSettings.value.active_to
-        .clone()
-        .utc()
-        .format('YYYY-MM-DD HH:mm');
+      .clone()
+      .utc()
+      .format('YYYY-MM-DD HH:mm');
 
     this.sendData.base_limit = this.requestData.tokens_info.base.amount;
     this.sendData.quote_limit = this.requestData.tokens_info.quote.amount;
 
     this.sendData.name =
-        this.requestData.tokens_info.base.token.token_short_name +
-        ' <> ' +
-        this.requestData.tokens_info.quote.token.token_short_name;
+      this.requestData.tokens_info.base.token.token_short_title +
+      ' <> ' +
+      this.requestData.tokens_info.quote.token.token_short_title;
 
     this.sendData.base_address = this.requestData.tokens_info.base.token.address;
     this.sendData.quote_address = this.requestData.tokens_info.quote.token.address;
-
-    this.sendData.base_coin_id = this.requestData.tokens_info.base.token.mywish_id;
-    this.sendData.quote_coin_id = this.requestData.tokens_info.quote.token.mywish_id;
 
     this.sendData.public = this.requestData.public;
     this.sendData.permanent = this.requestData.permanent;
@@ -681,6 +696,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.sendData.broker_fee_quote = this.requestData.broker_fee_quote;
     }
 
+    this.contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.sendData.network]];
+    this.web3Contract = this.web3Service.getContract(
+      SWAPS_V2.ABI,
+      this.contractAddress,
+      this.sendData.network
+    );
+    this.sendData.contract_address = this.contractAddress;
+
     if (this.currentUser.is_ghost) {
       this.MetamaskAuth();
     } else {
@@ -690,14 +713,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   private getOrderParams() {
-
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
     const params = {} as any;
-    params.fromTokenSymbol = baseCoin.token_short_name;
-    params.toTokenSymbol = quoteCoin.token_short_name;
+    params.fromTokenSymbol = baseCoin.token_short_title;
+    params.toTokenSymbol = quoteCoin.token_short_title;
     const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
-    params.amount = new BigNumber(this.requestData.tokens_info.base.amount).times(baseDecimalsTimes).toString(10);
+    params.amount = new BigNumber(this.requestData.tokens_info.base.amount)
+      .times(baseDecimalsTimes)
+      .toString(10);
     return params;
   }
 
@@ -710,11 +734,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     params.fromAddress = this.metamaskAccount;
     this.getInstanceQuoteProgress = true;
 
-
-
-    const remoteContractAddress = (await this.oneInchService.getApproveSpender() as any).address;
+    const remoteContractAddress = ((await this.oneInchService.getApproveSpender()) as any).address;
     const baseToken = this.requestData.tokens_info.base.token;
-    if (baseToken.token_short_name !== 'ETH') {
+    if (baseToken.token_short_title !== 'ETH') {
       let error;
       await this.check1InchAllowance(remoteContractAddress, params).catch(e => {
         console.log(e);
@@ -726,40 +748,49 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         return;
       }
     }
-    this.oneInchService.getSwap(params, this.instanceTradeParams)
+    this.oneInchService
+      .getSwap(params, this.instanceTradeParams)
       .then((result: any) => {
-        const gasIncreasedTx= { ...result.tx, gas: Math.round(Number(result.tx.gas) * 1.25)};
+        const gasIncreasedTx = { ...result.tx, gas: Math.round(Number(result.tx.gas) * 1.25) };
 
         const afterConfirm = (hash: string) => {
           this.instantTradeInProgress = true;
 
-          const amountFrom = Number(result.fromTokenAmount) / (10 ** Number(result.fromToken.decimals));
-          const amountTo = Number(result.toTokenAmount) / (10 ** Number(result.toToken.decimals));
+          const amountFrom =
+            Number(result.fromTokenAmount) / 10 ** Number(result.fromToken.decimals);
+          const amountTo = Number(result.toTokenAmount) / 10 ** Number(result.toToken.decimals);
           this.backendApiService.notifyInstantTradesBot(
-              result.tx.from,
-              amountFrom,
-              amountTo,
-              result.fromToken.symbol,
-              result.toToken.symbol,
-              hash
-          )
-        }
+            result.tx.from,
+            amountFrom,
+            amountTo,
+            result.fromToken.symbol,
+            result.toToken.symbol,
+            hash
+          );
+        };
 
-        this.web3Service.sendTransaction(gasIncreasedTx, this.requestData.network, afterConfirm)
-            .then((res: any) => {
+        this.web3Service
+          .sendTransaction(gasIncreasedTx, this.requestData.network, afterConfirm)
+          .then(
+            (res: any) => {
               this.resetStartForm();
-              const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
-            }, () => {})
-            .finally(() => {
-              this.getInstanceQuoteProgress = false;
-              this.instantTradeInProgress = false;
-            });
+              const win = window.open(
+                'https://etherscan.io/tx/' + res.transactionHash,
+                'target=_blank'
+              );
+            },
+            () => {}
+          )
+          .finally(() => {
+            this.getInstanceQuoteProgress = false;
+            this.instantTradeInProgress = false;
+          });
       })
       .catch(e => {
         console.log(e);
         this.metaMaskErrorModal = this.dialog.open(this.insufficientFundsError, {
           width: '480px',
-          panelClass: 'custom-dialog-container',
+          panelClass: 'custom-dialog-container'
         });
         this.getInstanceQuoteProgress = false;
         this.instantTradeInProgress = false;
@@ -769,73 +800,74 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private async check1InchAllowance(remoteContractAddress, params) {
     const baseToken = this.requestData.tokens_info.base.token;
     let tokenContract = this.web3Service.getContract(
-        ERC20_TOKEN_ABI,
-        baseToken.address,
-        this.requestData.network
+      ERC20_TOKEN_ABI,
+      baseToken.address,
+      this.requestData.network
     );
     const sendApproveTx = () => {
       const approveMethod = this.web3Service.getMethodInterface('approve');
-      const approveSignature = this.web3Service.encodeFunctionCall(
-          approveMethod,
-          [
-            remoteContractAddress,
-            params.amount.toString(10),
-          ],
-      );
+      const approveSignature = this.web3Service.encodeFunctionCall(approveMethod, [
+        remoteContractAddress,
+        params.amount.toString(10)
+      ]);
 
       return this.web3Service.sendTransaction(
-          {
-            from: this.metamaskAccount,
-            to: baseToken.address,
-            data: approveSignature,
-          },
-          this.requestData.network,
-          () => this.instantTradeInProgress = true
+        {
+          from: this.metamaskAccount,
+          to: baseToken.address,
+          data: approveSignature
+        },
+        this.requestData.network,
+        () => (this.instantTradeInProgress = true)
       );
     };
     return tokenContract.methods
-        .allowance(this.metamaskAccount, remoteContractAddress)
-        .call()
-        .then((result) => {
-          result = new BigNumber(result);
-          const noAllowance = result.minus(params.amount).isNegative();
-          if (noAllowance) {
-            return sendApproveTx();
-          }
-        })
+      .allowance(this.metamaskAccount, remoteContractAddress)
+      .call()
+      .then(result => {
+        result = new BigNumber(result);
+        const noAllowance = result.minus(params.amount).isNegative();
+        if (noAllowance) {
+          return sendApproveTx();
+        }
+      });
   }
 
   private metamaskAccount: string;
 
   public createContract() {
-    const accSubscriber = this.updateAddresses(true).subscribe((res) => {
-      this.metamaskAccount = res['metamask'][0];
+    const accSubscriber = this.updateAddresses(true).subscribe(
+      res => {
+        this.metamaskAccount = res['metamask'][0];
 
-      if (this.instanceTrade && this.instantTradesAvailable) {
-        this.createInstanceTrade();
-      } else if(!this.instanceTrade) {
-        this.buildAndCreate();
+        if (this.instanceTrade && this.instantTradesAvailable) {
+          this.createInstanceTrade();
+        } else if (!this.instanceTrade) {
+          this.buildAndCreate();
+        }
+      },
+      err => {
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container'
+        });
+      },
+      () => {
+        accSubscriber.unsubscribe();
       }
-    }, (err) => {
-      this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
-        width: '480px',
-        panelClass: 'custom-dialog-container',
-      });
-    }, () => {
-      accSubscriber.unsubscribe();
-    });
+    );
   }
 
   private sendMetaMaskRequest(data) {
     this.socialFormData = {
       network: 'mm',
-      data,
+      data
     };
     this.userService.metaMaskAuth(data).then(
-      (result) => {
+      result => {
         this.sendContractData(this.sendData);
       },
-      (error) => {
+      error => {
         this.onTotpError(error);
       }
     );
@@ -857,14 +889,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public MetamaskAuth() {
     if (window['ethereum'] && window['ethereum'].isMetaMask) {
-      window['ethereum'].enable().then((accounts) => {
+      window['ethereum'].enable().then(accounts => {
         const address = accounts[0];
-        this.userService.getMetaMaskAuthMsg().then((msg) => {
-          this.web3Service.getSignedMetaMaskMsg(msg, address).then((signed) => {
+        this.userService.getMetaMaskAuthMsg().then(msg => {
+          this.web3Service.getSignedMetaMaskMsg(msg, address).then(signed => {
             this.sendMetaMaskRequest({
               address,
               msg,
-              signed_msg: signed,
+              signed_msg: signed
             });
           });
         });
@@ -884,12 +916,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.contractsService[data.id ? 'updateSWAP3' : 'createSWAP3'](data)
       .then(
-        (result) => {
-          !data.id
-            ? this.initialisationTrade(result)
-            : this.contractIsCreated(result);
+        result => {
+          !data.id ? this.initialisationTrade(result) : this.contractIsCreated(result);
         },
-        (err) => {
+        err => {
           console.log(err);
         }
       )
@@ -919,34 +949,33 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
       new BigNumber(details.min_base_wei || '0').times(baseDecimalsTimes).toString(10),
       new BigNumber(details.min_quote_wei || '0').times(quoteDecimalsTimes).toString(10),
-      details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
+      details.broker_fee
+        ? details.broker_fee_address
+        : '0x0000000000000000000000000000000000000000',
       details.broker_fee ? new BigNumber(details.broker_fee_base).times(100).toString(10) : '0',
-      details.broker_fee ? new BigNumber(details.broker_fee_quote).times(100).toString(10) : '0',
+      details.broker_fee ? new BigNumber(details.broker_fee_quote).times(100).toString(10) : '0'
     ];
 
-    const activateSignature = this.web3Service.encodeFunctionCall(
-      interfaceMethod,
-      trxRequest
-    );
-    const sendActivateTrx = (wallet?) => {
-      const contractAddress = SWAPS_V2.ADDRESSES[CHAIN_OF_NETWORK[this.sendData.network]];
-      return this.web3Service
-        .sendTransaction(
+    const activateSignature = this.web3Service.encodeFunctionCall(interfaceMethod, trxRequest);
+    const sendActivateTrx = async (wallet?) => {
+      try {
+        const fee = await this.web3Contract.methods.feeAmount().call();
+        await this.web3Service.sendTransaction(
           {
             from: wallet,
-            to: contractAddress,
+            to: this.contractAddress,
             data: activateSignature,
+            value: fee
           },
           this.sendData.network
-        )
-        .then(() => {
-          this.sendData.id = details.id;
-          this.sendData.rubic_initialized = true;
-          this.sendContractData(this.sendData);
-        })
-        .catch((err) => {
-          this.isCreatingContract = false;
-        });
+        );
+        this.sendData.id = details.id;
+        this.sendData.rubic_initialized = true;
+        this.sendContractData(this.sendData);
+      } catch (err) {
+        console.log(err);
+        this.isCreatingContract = false;
+      }
     };
     return sendActivateTrx();
   }
@@ -959,40 +988,34 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     return this.web3Service.getAccounts(false, ifEnabled, this.requestData.network);
   }
 
-  public revertCoins():void {
+  public revertCoins(): void {
     const baseToken = this.requestData.tokens_info.base;
     this.requestData.tokens_info.base = this.requestData.tokens_info.quote;
     this.requestData.tokens_info.quote = baseToken;
     this.BaseTokenCustom.emit(this.requestData.tokens_info[name]);
     this.QuoteTokenCustom.emit(this.requestData.tokens_info[name]);
   }
-
 }
-
-
 
 @Injectable()
 export class StartFormResolver implements Resolve<any> {
-
-  private ethTokens: any[] = window['cmc_tokens'].filter((t) => {
+  private ethTokens: any[] = window['coingecko_tokens'].filter(t => {
     return t.platform === 'ethereum';
   });
 
-  constructor(
-      private web3Service: Web3Service
-  ) {
-
-  }
+  constructor(private web3Service: Web3Service) {}
 
   private getTokenPromise(token_symbol) {
-    const token = token_symbol ? this.ethTokens.find((exToken) => {
-      return token_symbol === exToken.token_short_name.toLowerCase();
-    }) : false;
+    const token = token_symbol
+      ? this.ethTokens.find(exToken => {
+          return token_symbol.toUpperCase() === exToken.token_short_title;
+        })
+      : false;
     if (token) {
       return this.web3Service.getFullTokenInfo(token.address, false, 1).then((res: any) => {
         token.decimals = res.decimals;
         return token;
-      })
+      });
     } else {
       return Promise.resolve(false);
     }
@@ -1000,25 +1023,22 @@ export class StartFormResolver implements Resolve<any> {
 
   resolve(route: ActivatedRouteSnapshot) {
     const routeParams = route.params;
-    return new Observable((observer) => {
-      const params = {...route.queryParams};
+    return new Observable(observer => {
+      const params = { ...route.queryParams };
       params.to = routeParams.token || params.to;
       const queryParams = {
-        from: (
-            params.from || (!!params.to ? 'ETH' : '')
-        ).toLowerCase(),
+        from: (params.from || (!!params.to ? 'ETH' : '')).toLowerCase(),
         to: params.to ? params.to.toLowerCase() : false
       };
 
       const promises = [
         this.getTokenPromise(queryParams.from),
-        this.getTokenPromise(queryParams.to),
+        this.getTokenPromise(queryParams.to)
       ];
-      Promise.all(promises).then((res) => {
+      Promise.all(promises).then(res => {
         observer.next(res);
         observer.complete();
       });
     });
   }
 }
-

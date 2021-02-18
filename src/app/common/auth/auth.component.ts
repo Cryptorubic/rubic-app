@@ -1,5 +1,5 @@
-import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-auth',
@@ -7,15 +7,11 @@ import {MAT_DIALOG_DATA} from '@angular/material';
   styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent {
-
   public currentEmail = 'kovalyov1987@gmail.com';
   public socialAuthError;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data
-  ) {
-
-    this.onRegister = (email) => {
+  constructor(@Inject(MAT_DIALOG_DATA) public data) {
+    this.onRegister = email => {
       this.currentEmail = email;
       this.data.chapter = 'email-confirm';
     };

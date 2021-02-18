@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-primary-button',
@@ -8,7 +8,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 export class PrimaryButtonComponent implements OnInit {
   @Input() animate?: boolean = false;
   @Input() label: string;
-  @Input() className?: string = "";
+  @Input() className?: string = '';
   @Input() disabled?: boolean = false;
 
   @Output() onClick = new EventEmitter<void>();
@@ -17,9 +17,7 @@ export class PrimaryButtonComponent implements OnInit {
     this.onClick.emit();
   }
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

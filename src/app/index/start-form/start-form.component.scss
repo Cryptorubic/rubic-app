@@ -395,11 +395,8 @@
   font-weight: bold;
 }
 
-
-
 @media screen and (max-width: 980px) {
 }
-
 
 .one-inch {
   display: flex;
@@ -408,7 +405,7 @@
   white-space: nowrap;
   align-items: center;
   &_text {
-    color: #A8A8A8;
+    color: #a8a8a8;
     margin-right: 10px;
     font-size: 12px;
   }
@@ -444,7 +441,7 @@
   display: flex;
   align-items: center;
 
-  background-color: #FFDB43;
+  background-color: #ffdb43;
   border-radius: 2px;
 
   &__description {
