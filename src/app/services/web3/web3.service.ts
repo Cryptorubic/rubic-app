@@ -695,9 +695,8 @@ export class EthTokenValidatorDirective implements AsyncValidator {
   validate(
     ctrl: AbstractControl
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    return this.web3Service
-      .getFullTokenInfo(ctrl.value, false, this.network)
-      .then((result: any) => {
+    return this.web3Service.getFullTokenInfo(ctrl.value, false, this.network).then(
+      (result: any) => {
         if (result && result.token_short_title) {
           this.TokenResolve.emit(result);
           return null;
@@ -706,11 +705,12 @@ export class EthTokenValidatorDirective implements AsyncValidator {
             token: true
           };
         }
-      })
-      .catch(err => {
+      },
+      err => {
         return {
           token: true
         };
-      });
+      }
+    );
   }
 }
