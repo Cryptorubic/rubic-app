@@ -1,4 +1,4 @@
-import {BridgeNetwork} from "../../services/bridge/types";
+import { BridgeNetwork } from '../../services/bridge/types';
 
 interface IBlockchainShort {
   name: BridgeNetwork;
@@ -6,4 +6,4 @@ interface IBlockchainShort {
   img: string;
 }
 
-export {IBlockchainShort}
+export { IBlockchainShort };

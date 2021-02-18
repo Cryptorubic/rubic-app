@@ -525,13 +525,11 @@
     top: 2px;
   }
   &__positive {
-    background: url('/assets/images/icons/positive-rate.svg') 5px 63px
-    no-repeat;
+    background: url('/assets/images/icons/positive-rate.svg') 5px 63px no-repeat;
     color: #2bcf78;
   }
   &__negative {
-    background: url('/assets/images/icons/negative-rate.svg') 5px 63px
-    no-repeat;
+    background: url('/assets/images/icons/negative-rate.svg') 5px 63px no-repeat;
     color: #da7b83;
   }
 }
@@ -561,4 +559,3 @@
     }
   }
 }
-

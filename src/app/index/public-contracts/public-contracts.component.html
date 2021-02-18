@@ -1,18 +1,14 @@
 <div class="active-swaps_container">
   <div>
     <div class="title-section">
-      {{'Order Book' | translate}}&nbsp;&nbsp;&nbsp;
+      {{ 'Order Book' | translate }}&nbsp;&nbsp;&nbsp;
 
       <button
         class="refresh-btn"
         (click)="refreshList()"
         [ngClass]="{ progress: refreshProgress }"
         [disabled]="
-          !(
-            contractsList &&
-            contractsList.length &&
-            contractsCount === contractsList.length
-          )
+          !(contractsList && contractsList.length && contractsCount === contractsList.length)
         "
       >
         <img class="arrow" src="./assets/images/icons/refresh.svg" />
@@ -30,12 +26,7 @@
       <!--<div class="public-progress-loading">-->
       <span
         [ngStyle]="{
-          width:
-            (contractsList.length
-              ? contractsCount / contractsList.length
-              : 0.05) *
-              100 +
-            '%'
+          width: (contractsList.length ? contractsCount / contractsList.length : 0.05) * 100 + '%'
         }"
       ></span>
     </div>
@@ -44,18 +35,14 @@
       class="public-swaps_table-container"
       [hidden]="
         !allLoaded &&
-        !(
-          contractsList &&
-          contractsList.length &&
-          contractsCount === contractsList.length
-        )
+        !(contractsList && contractsList.length && contractsCount === contractsList.length)
       "
     >
       <div class="public-swaps">
         <div class="grid-row public-swaps_row">
           <div class="grid-cell grid-cell-1-4 public-swaps_head-cell">
-            <div class="titles-coins">{{'SEND' | translate}}</div>
-            <div class="titles-coins">{{'GET' | translate}}</div>
+            <div class="titles-coins">{{ 'SEND' | translate }}</div>
+            <div class="titles-coins">{{ 'GET' | translate }}</div>
           </div>
         </div>
 
@@ -84,8 +71,7 @@
           <div
             class="grid-cell grid-cell-1-2 public-swaps_head-cell"
             [ngClass]="{
-              'public-swaps_head-cell__sortable':
-                selectedFilter.name === 'volume',
+              'public-swaps_head-cell__sortable': selectedFilter.name === 'volume',
               asc: selectedFilter.asc
             }"
           >
@@ -97,19 +83,18 @@
               >
                 <span></span>
               </button>
-              {{'Volume' | translate}}
+              {{ 'Volume' | translate }}
             </div>
           </div>
           <div class="grid-cell grid-cell-1-8 public-swaps_head-cell">
             <div class="public-swaps_head_content bold text-center">
-              {{'Chain' | translate}}
+              {{ 'Chain' | translate }}
             </div>
           </div>
           <div
             class="grid-cell grid-cell-1-8 public-swaps_head-cell"
             [ngClass]="{
-              'public-swaps_head-cell__sortable':
-                selectedFilter.name === 'expired',
+              'public-swaps_head-cell__sortable': selectedFilter.name === 'expired',
               asc: selectedFilter.asc
             }"
           >
@@ -130,9 +115,7 @@
           class="public-swaps_body"
           *ngIf="
             allLoaded ||
-            (contractsList &&
-              contractsList.length &&
-              contractsCount === contractsList.length)
+            (contractsList && contractsList.length && contractsCount === contractsList.length)
           "
         >
           <div
@@ -154,9 +137,7 @@
                     "
                   />
                   <span class="swap-info__token-name_symbol">
-                    {{
-                      contract.contract_details.base_token_info.token_short_title
-                    }}
+                    {{ contract.contract_details.base_token_info.token_short_title }}
                   </span>
                 </div>
               </div>
@@ -173,9 +154,7 @@
                     "
                   />
                   <span class="swap-info__token-name_symbol">
-                    {{
-                      contract.contract_details.quote_token_info.token_short_title
-                    }}
+                    {{ contract.contract_details.quote_token_info.token_short_title }}
                   </span>
                 </div>
               </div>
@@ -184,23 +163,14 @@
               <div class="public-swaps_cell_content">
                 <div class="swap-info swap-info__token-volume text-right">
                   <div class="swap-info__token-volume_value">
-                    {{
-                      contract.contract_details.base_token_info.amount
-                        | number: '1.0-8'
-                    }}
-                    {{
-                      contract.contract_details.base_token_info.token_short_title
-                    }}
+                    {{ contract.contract_details.base_token_info.amount | number: '1.0-8' }}
+                    {{ contract.contract_details.base_token_info.token_short_title }}
                   </div>
                   <div class="swap-info__token-volume_rate">
                     {{ contract.contract_details.base_token_info.rate }}
-                    {{
-                      contract.contract_details.base_token_info.token_short_title
-                    }}
+                    {{ contract.contract_details.base_token_info.token_short_title }}
                     / 1
-                    {{
-                      contract.contract_details.quote_token_info?.token_short_title
-                    }}
+                    {{ contract.contract_details.quote_token_info?.token_short_title }}
                   </div>
                 </div>
 
@@ -208,8 +178,7 @@
                   class="swap-info__token-filled text-left"
                   *ngIf="contract.contract_details.base_filled !== '0'"
                   [ngClass]="{
-                    'partiality-filled':
-                      contract.contract_details.base_filled !== '0'
+                    'partiality-filled': contract.contract_details.base_filled !== '0'
                   }"
                 >
                   {{ contract.contract_details.base_filled + '%' }}
@@ -227,31 +196,21 @@
                   class="swap-info swap-info__token-volume swap-info__token-volume__with-icon text-left"
                 >
                   <div class="swap-info__token-volume_value">
-                    {{
-                      contract.contract_details.quote_token_info.amount
-                        | number: '1.0-8'
-                    }}
-                    {{
-                      contract.contract_details.quote_token_info.token_short_title
-                    }}
+                    {{ contract.contract_details.quote_token_info.amount | number: '1.0-8' }}
+                    {{ contract.contract_details.quote_token_info.token_short_title }}
                   </div>
                   <div class="swap-info__token-volume_rate">
                     {{ contract.contract_details.quote_token_info.rate }}
-                    {{
-                      contract.contract_details.quote_token_info.token_short_title
-                    }}
+                    {{ contract.contract_details.quote_token_info.token_short_title }}
                     / 1
-                    {{
-                      contract.contract_details.base_token_info?.token_short_title
-                    }}
+                    {{ contract.contract_details.base_token_info?.token_short_title }}
                   </div>
                 </div>
                 <div
                   class="swap-info__token-filled text-right"
                   *ngIf="contract.contract_details.quote_filled !== '0'"
                   [ngClass]="{
-                    'partiality-filled':
-                      contract.contract_details.quote_filled !== '0'
+                    'partiality-filled': contract.contract_details.quote_filled !== '0'
                   }"
                 >
                   {{ contract.contract_details.quote_filled + '%' }}
@@ -266,8 +225,11 @@
             <div class="grid-cell grid-cell-1-8 public-swaps_cell">
               <div class="public-swaps_cell_content text-center">
                 <div class="swap-info swap-info__blockchain">
-                  <img [src]="displayingBlockchains[contract.network].image" class="swap-info__blockchain_icon"/>
-<!--                  <span class="swap-info__blockchain_name">{{ displayingBlockchains[contract.network].name }}</span>-->
+                  <img
+                    [src]="displayingBlockchains[contract.network].image"
+                    class="swap-info__blockchain_icon"
+                  />
+                  <!--                  <span class="swap-info__blockchain_name">{{ displayingBlockchains[contract.network].name }}</span>-->
                 </div>
               </div>
             </div>
@@ -275,13 +237,18 @@
               <div class="public-swaps_cell_content text-center">
                 <div
                   class="swap-info"
-                  *ngIf="
-                    contract.contract_details.left_times &&
-                    openedTradesTab === 'ACTIVE'
-                  "
+                  *ngIf="contract.contract_details.left_times && openedTradesTab === 'ACTIVE'"
                 >
-                  {{'d:h:m' | translate :
-                '{days:' + contract.contract_details.left_times.times_parts[0] + ', hours:' + contract.contract_details.left_times.times_parts[1] + ', minutes:' + contract.contract_details.left_times.times_parts[2] + '}'
+                  {{
+                    'd:h:m'
+                      | translate
+                        : '{days:' +
+                            contract.contract_details.left_times.times_parts[0] +
+                            ', hours:' +
+                            contract.contract_details.left_times.times_parts[1] +
+                            ', minutes:' +
+                            contract.contract_details.left_times.times_parts[2] +
+                            '}'
                   }}
                 </div>
 
@@ -309,10 +276,7 @@
             class="btn btn-white-opacity width-100 white-border relative"
             (click)="showPostSelectedPages()"
             [disabled]="pastTradesInfo.inProgress"
-            *ngIf="
-              openedTradesTab === 'PAST' &&
-              pastTradesInfo?.page < pastTradesInfo?.pages
-            "
+            *ngIf="openedTradesTab === 'PAST' && pastTradesInfo?.page < pastTradesInfo?.pages"
           >
             <span class="lds-ellipsis" *ngIf="pastTradesInfo.inProgress">
               <span class="lds-ellipsis-container">
@@ -320,7 +284,7 @@
               </span>
             </span>
 
-            <span> {{'Show more' | translate}} </span>
+            <span> {{ 'Show more' | translate }} </span>
           </button>
           <button
             class="btn btn-white-opacity width-100 white-border"
@@ -330,7 +294,7 @@
               displayingContractsList?.length < allFilteredOrdersCount?.length
             "
           >
-            <span> {{'Show more' | translate}} </span>
+            <span> {{ 'Show more' | translate }} </span>
           </button>
         </div>
         <div
@@ -338,8 +302,8 @@
           *ngIf="contractsList?.length && !displayingContractsList?.length"
           style="color: black"
         >
-          {{'There is no matching pair, please' | translate}}
-          <span (click)="scrollTop()">{{'create your own' | translate}}</span>
+          {{ 'There is no matching pair, please' | translate }}
+          <span (click)="scrollTop()">{{ 'create your own' | translate }}</span>
         </div>
       </div>
     </div>
@@ -359,22 +323,12 @@
               type="button"
               (click)="confirmDeleteTrade()"
             >
-              <span class="just-title"
-                >&nbsp;&nbsp;&nbsp;О, даа!&nbsp;&nbsp;&nbsp;</span
-              ></button
+              <span class="just-title">&nbsp;&nbsp;&nbsp;О, даа!&nbsp;&nbsp;&nbsp;</span></button
             ><br />
           </div>
           <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <button
-              class="btn btn-yellow btn-min"
-              mat-dialog-close
-              type="button"
-            >
-              <span
-                >&nbsp;&nbsp;&nbsp;{{
-                  'NO' | translate
-                }}&nbsp;&nbsp;&nbsp;</span
-              >
+            <button class="btn btn-yellow btn-min" mat-dialog-close type="button">
+              <span>&nbsp;&nbsp;&nbsp;{{ 'NO' | translate }}&nbsp;&nbsp;&nbsp;</span>
             </button>
           </div>
         </div>

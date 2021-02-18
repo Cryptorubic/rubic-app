@@ -1,7 +1,7 @@
-import {Component, HostListener, OnInit} from '@angular/core';
-import {BridgeService} from '../../services/bridge/bridge.service';
-import {BridgeNetwork, ITableTransaction} from '../../services/bridge/types';
-import {List} from 'immutable';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { BridgeService } from '../../services/bridge/bridge.service';
+import { BridgeNetwork, ITableTransaction } from '../../services/bridge/types';
+import { List } from 'immutable';
 import date from 'date-and-time';
 
 interface ITableTransactionWithState extends ITableTransaction {
@@ -16,9 +16,8 @@ const TRANSACTION_PAGE_SIZE = 5;
   styleUrls: ['./bridge-table.component.scss']
 })
 export class BridgeTableComponent implements OnInit {
-
   public Blockchains = {
-    [BridgeNetwork.ETHEREUM] : {
+    [BridgeNetwork.ETHEREUM]: {
       label: 'Ethereum',
       img: 'eth.png',
       symbolPropName: 'ethSymbol'
@@ -51,8 +50,8 @@ export class BridgeTableComponent implements OnInit {
 
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
-      this.transactions = transactions.map(tx => ({...tx, opened: false}));
-      this.sort = { fieldName: null, downDirection: null};
+      this.transactions = transactions.map(tx => ({ ...tx, opened: false }));
+      this.sort = { fieldName: null, downDirection: null };
       this.onSortClick('date');
 
       this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
@@ -62,7 +61,7 @@ export class BridgeTableComponent implements OnInit {
     this.checkIfDesktop();
   }
 
-  private static sortByDate(a: string, b: string): number  {
+  private static sortByDate(a: string, b: string): number {
     const date1 = new Date(date.transform(a, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
     const date2 = new Date(date.transform(b, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
     return date.subtract(date2, date1).toMilliseconds();
@@ -72,15 +71,14 @@ export class BridgeTableComponent implements OnInit {
     return b - a;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   public onUpdate() {
     if (!this.updateProcess) {
       this.updateProcess = 'progress';
       this.bridgeService.updateTransactionsList().finally(() => {
         this.updateProcess = 'stop';
-        setTimeout(() => this.updateProcess = '', 1200);
+        setTimeout(() => (this.updateProcess = ''), 1200);
       });
     }
   }
@@ -91,31 +89,35 @@ export class BridgeTableComponent implements OnInit {
     if (fieldName === this.sort.fieldName) {
       this.sort.downDirection = !this.sort.downDirection;
       this.transactions = this.transactions.reverse();
-    } else  {
+    } else {
       switch (fieldName) {
         case 'status':
-          this.transactions = this.transactions.sort((a, b) =>
-              a.status > b.status ? -1 : 1);
+          this.transactions = this.transactions.sort((a, b) => (a.status > b.status ? -1 : 1));
           break;
         case 'from':
           this.transactions = this.transactions.sort((a, b) =>
-              a.fromNetwork > b.fromNetwork ? -1 : 1);
+            a.fromNetwork > b.fromNetwork ? -1 : 1
+          );
           break;
         case 'to':
           this.transactions = this.transactions.sort((a, b) =>
-              a.toNetwork > b.toNetwork ? -1 : 1);
+            a.toNetwork > b.toNetwork ? -1 : 1
+          );
           break;
         case 'spent':
           this.transactions = this.transactions.sort((a, b) =>
-              BridgeTableComponent.sortByNumber(a.actualFromAmount, b.actualFromAmount));
+            BridgeTableComponent.sortByNumber(a.actualFromAmount, b.actualFromAmount)
+          );
           break;
         case 'expected':
           this.transactions = this.transactions.sort((a, b) =>
-              BridgeTableComponent.sortByNumber(a.actualToAmount, b.actualToAmount));
+            BridgeTableComponent.sortByNumber(a.actualToAmount, b.actualToAmount)
+          );
           break;
         case 'date':
           this.transactions = this.transactions.sort((a, b) =>
-              BridgeTableComponent.sortByDate(a.updateTime, b.updateTime));
+            BridgeTableComponent.sortByDate(a.updateTime, b.updateTime)
+          );
           break;
       }
 

@@ -5,8 +5,8 @@
 }
 
 .cross-chain-form {
-
-  &, * {
+  &,
+  * {
     box-sizing: border-box;
   }
 
@@ -54,7 +54,7 @@
     margin-top: 20px;
 
     font-size: 12px !important;
-    color: #A8A8A8 !important;
+    color: #a8a8a8 !important;
     text-decoration: none !important;
 
     &:hover {
@@ -85,7 +85,7 @@
     margin-top: auto;
     border: none;
 
-    color: #4AA956;
+    color: #4aa956;
     background: white;
 
     font-size: inherit;
@@ -126,7 +126,7 @@
     &_opened {
       max-height: 96px;
       padding: 20px;
-      border-color: #E5E5E5;
+      border-color: #e5e5e5;
       opacity: 1;
     }
   }
@@ -180,13 +180,13 @@
     display: block;
     margin-bottom: 26px;
 
-    color: rgba(black, .5) !important;
+    color: rgba(black, 0.5) !important;
     text-decoration: none !important;
     font-size: 16px;
     line-height: 16px;
 
     &:hover {
-      color: rgba(#2856FB, .7) !important;
+      color: rgba(#2856fb, 0.7) !important;
     }
   }
 
@@ -232,7 +232,7 @@
     border-radius: 50%;
     background-color: white;
     line-height: 35px;
-    box-shadow: 0 0 5px 1px #E2E2E2;
+    box-shadow: 0 0 5px 1px #e2e2e2;
     cursor: pointer;
 
     transition: transform 0.2s ease-in-out;
@@ -266,7 +266,7 @@
     }
 
     &_wrong {
-      background-color: #FF9F9F;
+      background-color: #ff9f9f;
       color: white;
 
       td {

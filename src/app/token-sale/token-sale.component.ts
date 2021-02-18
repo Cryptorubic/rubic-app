@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-token-sale-page',
   templateUrl: './token-sale.component.html',
-  styleUrls: ['./token-sale.component.scss'],
+  styleUrls: ['./token-sale.component.scss']
 })
 export class TokenSaleComponent implements OnInit {
   @ViewChild('tokenSaleModal') tokenSale: TemplateRef<any>;
@@ -21,17 +21,16 @@ export class TokenSaleComponent implements OnInit {
   public tokenSaleTime = 1600783200000;
 
   constructor(private dialog: MatDialog, protected route: ActivatedRoute) {
-    const routeSub = this.route.queryParams.subscribe((params) => {
+    const routeSub = this.route.queryParams.subscribe(params => {
       this.tokenSaleTime = +params.tsEndDate || this.tokenSaleTime;
     });
 
     routeSub.unsubscribe();
 
-    this.tokenSaleEnd =
-      new Date(this.tokenSaleTime).getTime() < new Date().getTime();
+    this.tokenSaleEnd = new Date(this.tokenSaleTime).getTime() < new Date().getTime();
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   public openModal() {
     if (this.tokenSaleEnd) {
@@ -40,7 +39,7 @@ export class TokenSaleComponent implements OnInit {
 
       this.tokenSaleModal = this.dialog.open(this.tokenSale, {
         width: '650px',
-        panelClass: 'dialog-ts-container',
+        panelClass: 'dialog-ts-container'
       });
     }
   }

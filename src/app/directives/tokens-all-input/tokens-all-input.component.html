@@ -1,7 +1,7 @@
 <form #tokenForm="ngForm">
   <input
     type="text"
-    placeholder="{{amountPlaceholder ? ('Enter Amount' | translate) : ''}}"
+    placeholder="{{ amountPlaceholder ? ('Enter Amount' | translate) : '' }}"
     [disabled]="disabled"
     #amountField
     [required]="true"
@@ -22,14 +22,12 @@
     [ngClass]="{ active: visibleInput }"
     (click)="showAutoInput()"
   >
-    <span *ngIf="!tokenModel.token.address">{{'Choose Token' | translate}}</span>
+    <span *ngIf="!tokenModel.token.address">{{ 'Choose Token' | translate }}</span>
     <span *ngIf="tokenModel.token.address" class="ac_res_preview">
       <span class="ac_res_preview_icon">
-        <img [src]="tokenModel.token.image_link || './assets/images/icons/coins/empty.svg'"/>
+        <img [src]="tokenModel.token.image_link || './assets/images/icons/coins/empty.svg'" />
       </span>
-      <span class="ac_res_preview_symbol">{{
-        tokenModel.token.token_short_title
-      }}</span>
+      <span class="ac_res_preview_symbol">{{ tokenModel.token.token_short_title }}</span>
     </span>
   </button>
   <input
@@ -60,7 +58,7 @@
         class="ac_res_list_item"
         *ngFor="let item of tokensList; let ind = index"
         [ngClass]="{ active: item.active }"
-        (click)="selectToken(item, ind);"
+        (click)="selectToken(item, ind)"
       >
         <span class="ac_res_list_item-content">
           <span class="ac_res_list_item-content_ico">

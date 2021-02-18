@@ -1,6 +1,6 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {UserService} from '../../../services/user/user.service';
-import {Web3Service} from '../../../services/web3/web3.service';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { UserService } from '../../../services/user/user.service';
+import { Web3Service } from '../../../services/web3/web3.service';
 
 @Component({
   selector: 'app-social',
@@ -8,11 +8,10 @@ import {Web3Service} from '../../../services/web3/web3.service';
   styleUrls: ['./social.component.scss']
 })
 export class SocialComponent implements OnInit {
-
   @Output() changedSocialState = new EventEmitter<string>();
 
   public socialAuthError;
-  public social: {FB: boolean; GA: boolean; MM: boolean, eoslynx?: boolean} = {
+  public social: { FB: boolean; GA: boolean; MM: boolean; eoslynx?: boolean } = {
     FB: false,
     GA: false,
     MM: false
@@ -20,16 +19,13 @@ export class SocialComponent implements OnInit {
 
   public change2FAProgress: boolean;
 
-  constructor(
-    private userService: UserService,
-    private web3Service: Web3Service
-  ) {
+  constructor(private userService: UserService, private web3Service: Web3Service) {
     this.social = userService.checkSocialNetworks();
   }
 
   private socialFormData: {
     network: string;
-    data: any
+    data: any;
   };
 
   public reset2FACode() {
@@ -37,7 +33,6 @@ export class SocialComponent implements OnInit {
   }
 
   private onTotpError(error) {
-
     switch (error.status) {
       case 403:
         this.socialAuthError = error.error.detail;
@@ -52,21 +47,20 @@ export class SocialComponent implements OnInit {
   }
 
   public RequestSocialAuth() {
-
     this.change2FAProgress = true;
 
-    this.userService.socialAuthRequest(
-      this.socialFormData.network,
-      this.socialFormData.data
-    ).then((response) => {
-
-    }, (error) => {
-      this.onTotpError(error);
-    }).finally(() => {
-      this.change2FAProgress = false;
-    });
+    this.userService
+      .socialAuthRequest(this.socialFormData.network, this.socialFormData.data)
+      .then(
+        response => {},
+        error => {
+          this.onTotpError(error);
+        }
+      )
+      .finally(() => {
+        this.change2FAProgress = false;
+      });
   }
-
 
   public continueSocialAuth(totp) {
     this.socialFormData.data.totp = totp;
@@ -78,39 +72,44 @@ export class SocialComponent implements OnInit {
   }
 
   public GoogleAuth() {
-    this.userService.GoogleAuth().then((response: {totp: string; access_token: string}) => {
-      this.socialFormData = {
-        network: 'ga',
-        data: {
-          access_token: response.access_token,
-          totp: response.totp
-        }
-      };
-      this.RequestSocialAuth();
-    }, (error) => {
-      // console.log(error);
-    });
+    this.userService.GoogleAuth().then(
+      (response: { totp: string; access_token: string }) => {
+        this.socialFormData = {
+          network: 'ga',
+          data: {
+            access_token: response.access_token,
+            totp: response.totp
+          }
+        };
+        this.RequestSocialAuth();
+      },
+      error => {
+        // console.log(error);
+      }
+    );
   }
-
 
   private sendMetaMaskRequest(data) {
     this.socialFormData = {
       network: 'mm',
       data
     };
-    this.userService.metaMaskAuth(data).then((result) => {
-      console.log(result);
-    }, (error) => {
-      this.onTotpError(error);
-    });
+    this.userService.metaMaskAuth(data).then(
+      result => {
+        console.log(result);
+      },
+      error => {
+        this.onTotpError(error);
+      }
+    );
   }
 
   public MetamaskAuth() {
     if (window['ethereum'] && window['ethereum'].isMetaMask) {
-      window['ethereum'].enable().then((accounts) => {
+      window['ethereum'].enable().then(accounts => {
         const address = accounts[0];
-        this.userService.getMetaMaskAuthMsg().then((msg) => {
-          this.web3Service.getSignedMetaMaskMsg(msg, address).then((signed) => {
+        this.userService.getMetaMaskAuthMsg().then(msg => {
+          this.web3Service.getSignedMetaMaskMsg(msg, address).then(signed => {
             this.sendMetaMaskRequest({
               address,
               msg,
@@ -123,20 +122,22 @@ export class SocialComponent implements OnInit {
   }
 
   public FBAuth() {
-    this.userService.FBAuth().then((response: {totp: string; accessToken: string}) => {
-      this.socialFormData = {
-        network: 'fb',
-        data: {
-          access_token: response.accessToken,
-          totp: response.totp
-        }
-      };
-      this.RequestSocialAuth();
-    }, (error) => {
-      console.log(error);
-    });
+    this.userService.FBAuth().then(
+      (response: { totp: string; accessToken: string }) => {
+        this.socialFormData = {
+          network: 'fb',
+          data: {
+            access_token: response.accessToken,
+            totp: response.totp
+          }
+        };
+        this.RequestSocialAuth();
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

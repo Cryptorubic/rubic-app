@@ -5,23 +5,23 @@ const SWAPS_ABI = {
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'raised',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -30,88 +30,88 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'isSwapped',
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'quoteAddresses',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'expirationTimestamps',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseOnlyInvestor',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -120,35 +120,35 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'limits',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -157,12 +157,12 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
@@ -171,7 +171,7 @@ const SWAPS_ABI = {
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -180,85 +180,85 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'brokers',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'investors',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'minInvestments',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -267,12 +267,12 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -281,137 +281,137 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'isCancelled',
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'brokerPercents',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'investments',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseAddresses',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: 'newOwner',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'transferOwnership',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'owners',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -420,12 +420,12 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       anonymous: false,
@@ -433,71 +433,71 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'owner',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'baseAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'quoteAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'baseLimit',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'quoteLimit',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'expirationTimestamp',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'baseOnlyInvestor',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'minBaseInvestment',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'minQuoteInvestment',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'broker',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'brokerBasePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'brokerQuotePercent',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'OrderCreated',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -505,11 +505,11 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'OrderCancelled',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -517,31 +517,31 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'token',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'user',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'amount',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'balance',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'Deposit',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -549,26 +549,26 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'token',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'user',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'amount',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'Refund',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -576,16 +576,16 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'byUser',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'OrderSwapped',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -593,26 +593,26 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'token',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'user',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'amount',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'SwapSend',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -620,26 +620,26 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'token',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'broker',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'amount',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'BrokerSend',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -647,16 +647,16 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'oldMyWishAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'newMyWishAddress',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'MyWishAddressChange',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -664,26 +664,26 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'oldBasePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'oldQuotePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'newBasePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'newQuotePercent',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'MyWishPercentsChange',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -691,471 +691,471 @@ const SWAPS_ABI = {
         {
           indexed: true,
           name: 'previousOwner',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: true,
           name: 'newOwner',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'OwnershipTransferred',
-      type: 'event',
+      type: 'event'
     },
     {
       constant: false,
       inputs: [
         {
           name: '',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '',
-          type: 'bytes',
-        },
+          type: 'bytes'
+        }
       ],
       name: 'tokenFallback',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_baseAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_quoteAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_baseLimit',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_quoteLimit',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_expirationTimestamp',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_baseOnlyInvestor',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_minBaseInvestment',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_minQuoteInvestment',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_brokerAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_brokerBasePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_brokerQuotePercent',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'createOrder',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_token',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_amount',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'deposit',
       outputs: [],
       payable: true,
       stateMutability: 'payable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'cancel',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_token',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'refund',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_vault',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'setVault',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_basePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_quotePercent',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'setMyWishPercents',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_myWishAddress',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'setMyWishAddress',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_owner',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'createKey',
       outputs: [
         {
           name: 'result',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'allBrokersBasePercent',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'allBrokersQuotePercent',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseLimit',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'quoteLimit',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseRaised',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'quoteRaised',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'isBaseFilled',
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'isQuoteFilled',
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseInvestors',
       outputs: [
         {
           name: '',
-          type: 'address[]',
-        },
+          type: 'address[]'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'quoteInvestors',
       outputs: [
         {
           name: '',
-          type: 'address[]',
-        },
+          type: 'address[]'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_user',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'baseUserInvestment',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_user',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'quoteUserInvestment',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'orderBrokers',
       outputs: [
         {
           name: '',
-          type: 'address[]',
-        },
+          type: 'address[]'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
-    },
+      type: 'function'
+    }
   ],
 
   ABI: [
@@ -1164,23 +1164,23 @@ const SWAPS_ABI = {
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'raised',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -1189,88 +1189,88 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'isSwapped',
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'quoteAddresses',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'expirationTimestamps',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseOnlyInvestor',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -1279,35 +1279,35 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'limits',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -1316,12 +1316,12 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
@@ -1330,7 +1330,7 @@ const SWAPS_ABI = {
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -1339,85 +1339,85 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'brokers',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'investors',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'minInvestments',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -1426,12 +1426,12 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -1440,137 +1440,137 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'isCancelled',
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'brokerPercents',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'investments',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseAddresses',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: 'newOwner',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'transferOwnership',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'owners',
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -1579,12 +1579,12 @@ const SWAPS_ABI = {
       outputs: [
         {
           name: '',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       anonymous: false,
@@ -1592,71 +1592,71 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'owner',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'baseAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'quoteAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'baseLimit',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'quoteLimit',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'expirationTimestamp',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'baseOnlyInvestor',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'minBaseInvestment',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'minQuoteInvestment',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'broker',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'brokerBasePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'brokerQuotePercent',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'OrderCreated',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -1664,11 +1664,11 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'OrderCancelled',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -1676,31 +1676,31 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'token',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'user',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'amount',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'balance',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'Deposit',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -1708,26 +1708,26 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'token',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'user',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'amount',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'Refund',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -1735,16 +1735,16 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'byUser',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'OrderSwapped',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -1752,26 +1752,26 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'token',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'user',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'amount',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'SwapSend',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -1779,26 +1779,26 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           indexed: false,
           name: 'token',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'broker',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'amount',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'BrokerSend',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -1806,16 +1806,16 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'oldMyWishAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: false,
           name: 'newMyWishAddress',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'MyWishAddressChange',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -1823,26 +1823,26 @@ const SWAPS_ABI = {
         {
           indexed: false,
           name: 'oldBasePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'oldQuotePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'newBasePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           indexed: false,
           name: 'newQuotePercent',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'MyWishPercentsChange',
-      type: 'event',
+      type: 'event'
     },
     {
       anonymous: false,
@@ -1850,470 +1850,470 @@ const SWAPS_ABI = {
         {
           indexed: true,
           name: 'previousOwner',
-          type: 'address',
+          type: 'address'
         },
         {
           indexed: true,
           name: 'newOwner',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'OwnershipTransferred',
-      type: 'event',
+      type: 'event'
     },
     {
       constant: false,
       inputs: [
         {
           name: '',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '',
-          type: 'bytes',
-        },
+          type: 'bytes'
+        }
       ],
       name: 'tokenFallback',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_baseAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_quoteAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_baseLimit',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_quoteLimit',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_expirationTimestamp',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_baseOnlyInvestor',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_minBaseInvestment',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_minQuoteInvestment',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_brokerAddress',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_brokerBasePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_brokerQuotePercent',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'createOrder',
       outputs: [],
       payable: true,
       stateMutability: 'payable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_token',
-          type: 'address',
+          type: 'address'
         },
         {
           name: '_amount',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'deposit',
       outputs: [],
       payable: true,
       stateMutability: 'payable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'cancel',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_token',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'refund',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_vault',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'setVault',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_basePercent',
-          type: 'uint256',
+          type: 'uint256'
         },
         {
           name: '_quotePercent',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       name: 'setMyWishPercents',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: false,
       inputs: [
         {
           name: '_myWishAddress',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'setMyWishAddress',
       outputs: [],
       payable: false,
       stateMutability: 'nonpayable',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_owner',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'createKey',
       outputs: [
         {
           name: 'result',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'allBrokersBasePercent',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'allBrokersQuotePercent',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseLimit',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'quoteLimit',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseRaised',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'quoteRaised',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'isBaseFilled',
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'isQuoteFilled',
       outputs: [
         {
           name: '',
-          type: 'bool',
-        },
+          type: 'bool'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'baseInvestors',
       outputs: [
         {
           name: '',
-          type: 'address[]',
-        },
+          type: 'address[]'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'quoteInvestors',
       outputs: [
         {
           name: '',
-          type: 'address[]',
-        },
+          type: 'address[]'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_user',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'baseUserInvestment',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
+          type: 'bytes32'
         },
         {
           name: '_user',
-          type: 'address',
-        },
+          type: 'address'
+        }
       ],
       name: 'quoteUserInvestment',
       outputs: [
         {
           name: '',
-          type: 'uint256',
-        },
+          type: 'uint256'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
       inputs: [
         {
           name: '_id',
-          type: 'bytes32',
-        },
+          type: 'bytes32'
+        }
       ],
       name: 'orderBrokers',
       outputs: [
         {
           name: '',
-          type: 'address[]',
-        },
+          type: 'address[]'
+        }
       ],
       payable: false,
       stateMutability: 'view',
-      type: 'function',
+      type: 'function'
     },
     {
       constant: true,
@@ -2323,13 +2323,13 @@ const SWAPS_ABI = {
         {
           name: '',
           type: 'uint256'
-        },
+        }
       ],
       payable: false,
       stateMutability: 'view',
       type: 'function'
-    },
+    }
   ]
-}
+};
 
 export default SWAPS_ABI;

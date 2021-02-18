@@ -2,19 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from './services/user/user.service';
 import { Web3Service } from './services/web3/web3.service';
 import { CookieService } from 'ngx-cookie-service';
-import {
-  ActivationEnd,
-  NavigationStart,
-  Router,
-} from '@angular/router';
+import { ActivationEnd, NavigationStart, Router } from '@angular/router';
 
 import { MODE, PROJECT_PARTS } from './app-routing.module';
-import {MatDialog} from "@angular/material/dialog";
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   title = 'mywish-swaps';
@@ -29,10 +25,10 @@ export class AppComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private cookieService: CookieService,
-    private Web3Service: Web3Service,
+    private Web3Service: Web3Service
   ) {
     const body = document.getElementsByTagName('body')[0];
-    this.router.events.subscribe((event) => {
+    this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         if (event.url === '/about') {
           body.classList.add('white-bg');
@@ -66,9 +62,7 @@ export class AppComponent implements OnInit {
             body.classList.add('with-support');
             body.classList.remove('without-support');
             event.snapshot.data.supportHide
-              ? body.classList.add(
-                  'support-hide-' + event.snapshot.data.supportHide
-                )
+              ? body.classList.add('support-hide-' + event.snapshot.data.supportHide)
               : '';
           } else {
             body.classList.remove('with-support');
@@ -84,18 +78,11 @@ export class AppComponent implements OnInit {
       }
       this.notCookiesAccept = !this.cookieService.get('cookies-accept');
     });
-
-
   }
 
-
   private checkLiveChat() {
-    const liveChatButtonFrame = document.getElementById(
-      'livechat-compact-view'
-    );
-    const liveChatContainer = document.getElementById(
-      'livechat-compact-container'
-    );
+    const liveChatButtonFrame = document.getElementById('livechat-compact-view');
+    const liveChatContainer = document.getElementById('livechat-compact-container');
 
     if (!liveChatButtonFrame) {
       setTimeout(() => {
@@ -104,26 +91,22 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    const mutationObserver = new window['MutationObserver']((res) => {
+    const mutationObserver = new window['MutationObserver'](res => {
       liveChatContainer.removeAttribute('style');
     });
     mutationObserver.observe(liveChatContainer, {
       attributes: true,
-      attributeFilter: ['style'],
+      attributeFilter: ['style']
     });
     liveChatContainer.removeAttribute('style');
 
     const frameContent =
-      liveChatButtonFrame['contentWindow'] ||
-      liveChatButtonFrame['contentDocument'];
-    const frameContentContainer = frameContent.document.getElementById(
-      'content-container'
-    );
+      liveChatButtonFrame['contentWindow'] || liveChatButtonFrame['contentDocument'];
+    const frameContentContainer = frameContent.document.getElementById('content-container');
 
     frameContentContainer.setAttribute('style', 'padding: 0 !important');
 
-    frameContent.document.getElementById('full-view-button').style.height =
-      '100%';
+    frameContent.document.getElementById('full-view-button').style.height = '100%';
   }
 
   ngOnInit(): void {
@@ -141,10 +124,7 @@ export class AppComponent implements OnInit {
       visibilityEvent = 'webkitvisibilitychange';
     }
 
-    if (
-      typeof document.addEventListener === 'undefined' ||
-      visibilityAttr === undefined
-    ) {
+    if (typeof document.addEventListener === 'undefined' || visibilityAttr === undefined) {
       console.log(
         'This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.'
       );

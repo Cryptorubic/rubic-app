@@ -8,11 +8,11 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {List} from 'immutable';
-import {InputToken, InputTokenShort} from './types';
-import {TokenLabelComponent} from "./token-label/token-label.component";
-import {InputDropdownComponent} from "../input-dropdown/input-dropdown.component";
-import {DropdownComponentData} from "../input-dropdown/types";
+import { List } from 'immutable';
+import { InputToken, InputTokenShort } from './types';
+import { TokenLabelComponent } from './token-label/token-label.component';
+import { InputDropdownComponent } from '../input-dropdown/input-dropdown.component';
+import { DropdownComponentData } from '../input-dropdown/types';
 
 interface TokenLabelData {
   token: InputTokenShort;
@@ -25,7 +25,7 @@ interface TokenDropdownData extends DropdownComponentData {
   sortParameters: {
     symbol: string;
     name: string;
-  }
+  };
 }
 
 @Component({
@@ -34,7 +34,6 @@ interface TokenDropdownData extends DropdownComponentData {
   styleUrls: ['./tokens-input.component.scss']
 })
 export class TokensInputComponent implements OnInit, OnChanges {
-
   @Input() amountPlaceholder?: string = 'Enter Amount';
   @Input() listDisabled?: boolean = false;
   @Input() inputDisabled?: boolean = false;
@@ -53,7 +52,7 @@ export class TokensInputComponent implements OnInit, OnChanges {
   public VISIBLE_TOKENS_NUMBER = 10;
 
   public amount;
-  public bigNumberDirective: { decimals: number, min: number } = {decimals: 18, min: 0};
+  public bigNumberDirective: { decimals: number; min: number } = { decimals: 18, min: 0 };
 
   private cutAmount() {
     if (this.amount && this.amount.includes('.')) {
@@ -74,8 +73,8 @@ export class TokensInputComponent implements OnInit, OnChanges {
 
       this.bigNumberDirective = {
         decimals: changes.selectedToken.currentValue.decimals,
-        min: 10 ** (-changes.selectedToken.currentValue.decimals)
-      }
+        min: 10 ** -changes.selectedToken.currentValue.decimals
+      };
     }
   }
 
@@ -95,9 +94,11 @@ export class TokensInputComponent implements OnInit, OnChanges {
    * Sets tokens' input data to pass to the input-dropdown and components' creator.
    */
   private setTokensInputData() {
-    this.tokensDropdownData = this.tokensList.map(token =>
-      ({ inputs: { token }, id: token.address, sortParameters: { symbol: token.symbol, name: token.name } })
-    );
+    this.tokensDropdownData = this.tokensList.map(token => ({
+      inputs: { token },
+      id: token.address,
+      sortParameters: { symbol: token.symbol, name: token.name }
+    }));
 
     if (this.selectedToken) {
       this.selectedTokenDropdownData = {
@@ -107,7 +108,7 @@ export class TokensInputComponent implements OnInit, OnChanges {
           symbol: this.selectedToken.symbol,
           name: this.selectedToken.name
         }
-      }
+      };
     } else {
       this.selectedTokenDropdownData = null;
     }

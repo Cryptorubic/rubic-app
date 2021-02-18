@@ -18,7 +18,7 @@ export class ContactsComponent implements OnInit {
   public contactForm: FormGroup;
   public isSuccess: boolean;
 
-  constructor(private http: HttpService) { }
+  constructor(private http: HttpService) {}
 
   public ngOnInit(): void {
     this.contactForm = new FormGroup({
@@ -28,9 +28,6 @@ export class ContactsComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    this.http
-      .post(FEEDBACK_URL, this.contactForm.value)
-      .subscribe(() => this.isSuccess = true);
+    this.http.post(FEEDBACK_URL, this.contactForm.value).subscribe(() => (this.isSuccess = true));
   }
-
 }

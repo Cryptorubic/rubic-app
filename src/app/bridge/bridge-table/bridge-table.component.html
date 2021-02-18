@@ -1,13 +1,16 @@
 <div class="bridge-results">
-
   <div class="bridge-results__header">
     <span>Your cross-chain swaps</span>
-    <img [ngClass]="{
-      'bridge-results__spinner_rotating': updateProcess === 'process' || updateProcess === 'stop',
-      'bridge-results__spinner_stop': updateProcess === 'stop'
+    <img
+      [ngClass]="{
+        'bridge-results__spinner_rotating': updateProcess === 'process' || updateProcess === 'stop',
+        'bridge-results__spinner_stop': updateProcess === 'stop'
       }"
-         (click)="onUpdate()"
-         class="bridge-results__spinner" src="assets/images/icons/refresh.svg" alt="Update"/>
+      (click)="onUpdate()"
+      class="bridge-results__spinner"
+      src="assets/images/icons/refresh.svg"
+      alt="Update"
+    />
   </div>
 
   <ng-template [ngIf]="transactions">
@@ -18,77 +21,99 @@
           <tr>
             <th>
               <span>Status</span>
-              <img [src]="'assets/images/bridge/' + getArrow('Status')" alt="Sort" (click)="onSortClick('Status')"/>
+              <img
+                [src]="'assets/images/bridge/' + getArrow('Status')"
+                alt="Sort"
+                (click)="onSortClick('Status')"
+              />
             </th>
             <th>
               <span>From</span>
-              <img [src]="'assets/images/bridge/' + getArrow('From')" alt="Sort" (click)="onSortClick('From')"/>
+              <img
+                [src]="'assets/images/bridge/' + getArrow('From')"
+                alt="Sort"
+                (click)="onSortClick('From')"
+              />
             </th>
             <th>
               <span>To</span>
-              <img [src]="'assets/images/bridge/' + getArrow('To')" alt="Sort" (click)="onSortClick('To')"/>
+              <img
+                [src]="'assets/images/bridge/' + getArrow('To')"
+                alt="Sort"
+                (click)="onSortClick('To')"
+              />
             </th>
             <th>
               <span>Spent</span>
-              <img [src]="'assets/images/bridge/' + getArrow('Spent')" alt="Sort" (click)="onSortClick('Spent')"/>
+              <img
+                [src]="'assets/images/bridge/' + getArrow('Spent')"
+                alt="Sort"
+                (click)="onSortClick('Spent')"
+              />
             </th>
             <th>
               <span>Expected</span>
-              <img [src]="'assets/images/bridge/' + getArrow('Expected')" alt="Sort" (click)="onSortClick('Expected')"/>
+              <img
+                [src]="'assets/images/bridge/' + getArrow('Expected')"
+                alt="Sort"
+                (click)="onSortClick('Expected')"
+              />
             </th>
             <th>
               <span>Date</span>
-              <img [src]="'assets/images/bridge/' + getArrow('Date')" alt="Sort" (click)="onSortClick('Date')"/>
+              <img
+                [src]="'assets/images/bridge/' + getArrow('Date')"
+                alt="Sort"
+                (click)="onSortClick('Date')"
+              />
             </th>
           </tr>
         </thead>
         <tbody>
-
           <tr *ngFor="let tx of visibleTransactions">
             <td>
-              <span class="data__status"
-               [ngClass]="{
-                'data__status_green': tx.code === 2,
-                'data__status_yellow': tx.code === 1,
-                'data__status_red': tx.code === 0
-                }">
-                {{tx.status}}
+              <span
+                class="data__status"
+                [ngClass]="{
+                  data__status_green: tx.code === 2,
+                  data__status_yellow: tx.code === 1,
+                  data__status_red: tx.code === 0
+                }"
+              >
+                {{ tx.status }}
               </span>
             </td>
 
             <td class="data__network">
-              <img
-                [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img" alt=""/>
-              <span>{{Blockchains[tx.fromNetwork].label}}</span>
+              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img" alt="" />
+              <span>{{ Blockchains[tx.fromNetwork].label }}</span>
             </td>
 
             <td class="data__network">
-              <img
-                [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img" alt=""/>
-              <span>{{Blockchains[tx.toNetwork].label}}</span>
+              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img" alt="" />
+              <span>{{ Blockchains[tx.toNetwork].label }}</span>
             </td>
 
             <td class="data__amount">
-              <div>{{tx.actualFromAmount}}</div>
-              <img [src]="tx.image_link" alt=""/>
-              <span>{{tx[Blockchains[tx.fromNetwork].symbolPropName]}}</span>
+              <div>{{ tx.actualFromAmount }}</div>
+              <img [src]="tx.image_link" alt="" />
+              <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
             </td>
 
             <td class="data__amount">
-              <div>{{tx.actualToAmount}}</div>
-              <img [src]="tx.image_link" alt=""/>
-              <span>{{tx[Blockchains[tx.toNetwork].symbolPropName]}}</span>
+              <div>{{ tx.actualToAmount }}</div>
+              <img [src]="tx.image_link" alt="" />
+              <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
             </td>
 
             <td class="data__date">
               <div>
-                {{tx.updateTime.split(' ')[0]}}
+                {{ tx.updateTime.split(' ')[0] }}
                 <br />
-                {{tx.updateTime.split(' ')[1]}}
+                {{ tx.updateTime.split(' ')[1] }}
               </div>
             </td>
           </tr>
-
         </tbody>
       </table>
 
@@ -107,128 +132,121 @@
           <div class="bridge-list__accordion accordion" *ngFor="let tx of visibleTransactions">
             <div
               class="accordion__header header"
-              [ngClass]="{ 'accordion__header_active': tx.opened }"
+              [ngClass]="{ accordion__header_active: tx.opened }"
               (click)="tx.opened = !tx.opened"
             >
-              <span class="data__status"
-                    [ngClass]="{
-                'data__status_green': tx.code === 2,
-                'data__status_yellow': tx.code === 1,
-                'data__status_red': tx.code === 0
-                }">
-                {{tx.status}}
+              <span
+                class="data__status"
+                [ngClass]="{
+                  data__status_green: tx.code === 2,
+                  data__status_yellow: tx.code === 1,
+                  data__status_red: tx.code === 0
+                }"
+              >
+                {{ tx.status }}
               </span>
 
-              <div
-                class="header__option option"
-                [ngClass]="{ 'header__option_inactive': tx.opened }"
-              >
+              <div class="header__option option" [ngClass]="{ header__option_inactive: tx.opened }">
                 <span
                   class="option__name"
                   *ngIf="selectedOption !== 'Status' && selectedOption !== 'Date'"
                 >
-                  {{selectedOption}}
+                  {{ selectedOption }}
                 </span>
 
                 <div class="data__network" *ngIf="selectedOption === 'From'">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img" alt=""/>
-                  <span>{{Blockchains[tx.fromNetwork].label}}</span>
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img"
+                    alt=""
+                  />
+                  <span>{{ Blockchains[tx.fromNetwork].label }}</span>
                 </div>
 
                 <div class="data__network" *ngIf="selectedOption === 'To'">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img" alt=""/>
-                  <span>{{Blockchains[tx.toNetwork].label}}</span>
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img"
+                    alt=""
+                  />
+                  <span>{{ Blockchains[tx.toNetwork].label }}</span>
                 </div>
 
                 <div class="data__amount" *ngIf="selectedOption === 'Spent'">
-                  <div>{{tx.actualFromAmount}}</div>
-                  <img [src]="tx.image_link" alt=""/>
-                  <span>{{tx[Blockchains[tx.fromNetwork].symbolPropName]}}</span>
+                  <div>{{ tx.actualFromAmount }}</div>
+                  <img [src]="tx.image_link" alt="" />
+                  <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
                 </div>
 
                 <div class="data__amount" *ngIf="selectedOption === 'Expected'">
-                  <div>{{tx.actualToAmount}}</div>
-                  <img [src]="tx.image_link" alt=""/>
-                  <span>{{tx[Blockchains[tx.toNetwork].symbolPropName]}}</span>
+                  <div>{{ tx.actualToAmount }}</div>
+                  <img [src]="tx.image_link" alt="" />
+                  <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
                 </div>
 
                 <div class="data__date" *ngIf="selectedOption === 'Date'">
                   <div>
-                    <span>{{tx.updateTime.split(' ')[0]}}</span>
+                    <span>{{ tx.updateTime.split(' ')[0] }}</span>
                     <br />
-                    <span>{{tx.updateTime.split(' ')[1]}}</span>
+                    <span>{{ tx.updateTime.split(' ')[1] }}</span>
                   </div>
                 </div>
               </div>
 
-              <div class="header__plus" *ngIf="!tx.opened">
-                +
-              </div>
+              <div class="header__plus" *ngIf="!tx.opened">+</div>
 
-              <div class="header__minus" *ngIf="tx.opened">
-                -
-              </div>
+              <div class="header__minus" *ngIf="tx.opened">-</div>
             </div>
 
             <div
               class="accordion__content content"
-              [ngClass]="{ 'accordion__content_inactive': !tx.opened }"
+              [ngClass]="{ accordion__content_inactive: !tx.opened }"
             >
               <div class="content__item">
-                <div class="content__item-name">
-                  From
-                </div>
+                <div class="content__item-name">From</div>
                 <div class="data__network">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img" alt=""/>
-                  <span>{{Blockchains[tx.fromNetwork].label}}</span>
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img"
+                    alt=""
+                  />
+                  <span>{{ Blockchains[tx.fromNetwork].label }}</span>
                 </div>
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">
-                  To
-                </div>
+                <div class="content__item-name">To</div>
                 <div class="data__network">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img" alt=""/>
-                  <span>{{Blockchains[tx.toNetwork].label}}</span>
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img"
+                    alt=""
+                  />
+                  <span>{{ Blockchains[tx.toNetwork].label }}</span>
                 </div>
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">
-                  Spent
-                </div>
+                <div class="content__item-name">Spent</div>
                 <div class="data__amount">
-                  <div>{{tx.actualFromAmount}}</div>
-                  <img [src]="tx.image_link" alt=""/>
-                  <span>{{tx[Blockchains[tx.fromNetwork].symbolPropName]}}</span>
+                  <div>{{ tx.actualFromAmount }}</div>
+                  <img [src]="tx.image_link" alt="" />
+                  <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
                 </div>
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">
-                  Expected
-                </div>
+                <div class="content__item-name">Expected</div>
                 <div class="data__amount">
-                  <div>{{tx.actualToAmount}}</div>
-                  <img [src]="tx.image_link" alt=""/>
-                  <span>{{tx[Blockchains[tx.toNetwork].symbolPropName]}}</span>
+                  <div>{{ tx.actualToAmount }}</div>
+                  <img [src]="tx.image_link" alt="" />
+                  <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
                 </div>
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">
-                  Date
-                </div>
+                <div class="content__item-name">Date</div>
                 <div class="data__date">
                   <div>
-                    <span>{{tx.updateTime.split(' ')[0]}}</span>
+                    <span>{{ tx.updateTime.split(' ')[0] }}</span>
                     <br />
-                    <span>{{tx.updateTime.split(' ')[1]}}</span>
+                    <span>{{ tx.updateTime.split(' ')[1] }}</span>
                   </div>
                 </div>
               </div>

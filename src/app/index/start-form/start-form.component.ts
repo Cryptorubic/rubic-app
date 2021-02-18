@@ -6,14 +6,17 @@ import {
   AfterContentInit,
   TemplateRef,
   ViewChild,
-  Output, Injectable, ElementRef, AfterViewInit,
+  Output,
+  Injectable,
+  ElementRef,
+  AfterViewInit
 } from '@angular/core';
 import { SWAPS_V2 } from '../../contracts-preview-v3/contracts-preview-v3.component';
 import { Web3Service } from '../../services/web3/web3.service';
 import { UserService } from '../../services/user/user.service';
 import BigNumber from 'bignumber.js';
-import {Router, ActivatedRoute, Resolve, ActivatedRouteSnapshot} from '@angular/router';
-import {CHAIN_OF_NETWORK, ERC20_TOKEN_ABI} from '../../services/web3/web3.constants';
+import { Router, ActivatedRoute, Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../../services/web3/web3.constants';
 import { ContractsService } from '../../services/contracts/contracts.service';
 import * as moment from 'moment';
 import {
@@ -21,17 +24,17 @@ import {
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
   MatDialog,
-  MatDialogRef,
+  MatDialogRef
 } from '@angular/material';
 import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
-  MomentDateAdapter,
+  MomentDateAdapter
 } from '@angular/material-moment-adapter';
 
-import {OneInchService} from "../../models/1inch/1inch";
-import {HttpService} from "../../services/http/http.service";
-import {Observable} from "rxjs";
-import {BackendApiService} from '../../services/backend-api/backend-api.service';
+import { OneInchService } from '../../models/1inch/1inch';
+import { HttpService } from '../../services/http/http.service';
+import { Observable } from 'rxjs';
+import { BackendApiService } from '../../services/backend-api/backend-api.service';
 
 const defaultNetwork = 1;
 
@@ -74,14 +77,14 @@ export interface IContractDetails {
 export const MY_FORMATS = {
   useUtc: true,
   parse: {
-    dateInput: 'LL',
+    dateInput: 'LL'
   },
   display: {
     dateInput: 'DD.MM.YYYY',
     monthYearLabel: 'MMM YYYY',
     dateA11yLabel: 'X',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
+    monthYearA11yLabel: 'MMMM YYYY'
+  }
 };
 
 interface IOrderBookTokens {
@@ -98,10 +101,10 @@ interface IOrderBookTokens {
     {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }
+  ]
 })
 export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
@@ -130,11 +133,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public instanceTrade: boolean = true;
   private instanceTradeParams: any = {};
 
-
   public instanceTradesTokens: any[];
   public orderBookTokens: IOrderBookTokens;
 
-  public serviceAvailable: boolean = !!(window['coingecko_tokens'] && window['coingecko_tokens'].length);
+  public serviceAvailable: boolean = !!(
+    window['coingecko_tokens'] && window['coingecko_tokens'].length
+  );
 
   public instantTradeInProgress: boolean = false;
 
@@ -163,22 +167,22 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.tokensData = {
       base: {
         token: {},
-        customToken: false,
+        customToken: false
       },
       quote: {
         token: {},
-        customToken: false,
-      },
+        customToken: false
+      }
     };
     this.isAdvSettingsOpen = false;
     this.openedCustomTokens = {
       base: false,
-      quote: false,
+      quote: false
     };
 
     this.customTokens = {
       base: {},
-      quote: {},
+      quote: {}
     };
 
     this.minDate = moment().add(1, 'hour');
@@ -195,7 +199,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private getOrderBookTokens() {
     this.orderBookTokens = {} as IOrderBookTokens;
     for (let platform of this.platforms) {
-      this.orderBookTokens[platform] = window['coingecko_tokens'].filter(token => token.platform === platform);
+      this.orderBookTokens[platform] = window['coingecko_tokens'].filter(
+        token => token.platform === platform
+      );
     }
   }
 
@@ -220,7 +226,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
     this.changedToken(true);
   }
-
 
   private socialFormData: {
     network: string;
@@ -254,29 +259,16 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('advSettings') public advSettings;
 
   public isChangedToken(...args) {
-    localStorage.setItem(
-      'form_new_values',
-      JSON.stringify({ tokens_info: this.tokensData })
-    );
+    localStorage.setItem('form_new_values', JSON.stringify({ tokens_info: this.tokensData }));
   }
 
-
   public getRate(revert?): string {
-    if (
-      !(
-        this.requestData.tokens_info.base.amount &&
-        this.requestData.tokens_info.quote.amount
-      )
-    ) {
+    if (!(this.requestData.tokens_info.base.amount && this.requestData.tokens_info.quote.amount)) {
       return '0';
     }
 
-    const baseCoinAmount = new BigNumber(
-      this.requestData.tokens_info.base.amount
-    );
-    const quoteCoinAmount = new BigNumber(
-      this.requestData.tokens_info.quote.amount
-    );
+    const baseCoinAmount = new BigNumber(this.requestData.tokens_info.base.amount);
+    const quoteCoinAmount = new BigNumber(this.requestData.tokens_info.quote.amount);
     return (!revert
       ? baseCoinAmount.div(quoteCoinAmount)
       : quoteCoinAmount.div(baseCoinAmount)
@@ -298,20 +290,21 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     this.getInstanceQuoteTimeout = setTimeout(() => {
-      this.oneInchService.getQuote(
+      this.oneInchService
+        .getQuote(
           params,
           !this.instantTradesAvailable ? this.requestData.tokens_info.quote.token.address : false
-      ).then((result: any) => {
-        this.instanceTradeParams = result;
-        this.requestData.tokens_info.quote.amount =
-        Number(result.toTokenAmount) ?
-            new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10) : '';
-        // this.QuoteTokenCustom.emit();
-        this.getInstanceQuoteProgress = false;
-      });
+        )
+        .then((result: any) => {
+          this.instanceTradeParams = result;
+          this.requestData.tokens_info.quote.amount = Number(result.toTokenAmount)
+            ? new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10)
+            : '';
+          // this.QuoteTokenCustom.emit();
+          this.getInstanceQuoteProgress = false;
+        });
     }, 1000);
   }
-
 
   private tokensCache = {
     quote: '',
@@ -323,7 +316,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
 
-    const identical = this.tokensCache.base === baseCoin.address && this.tokensCache.quote === quoteCoin.address;
+    const identical =
+      this.tokensCache.base === baseCoin.address && this.tokensCache.quote === quoteCoin.address;
     if (identical) {
       this.requestData.tokens_info.quote.amount = '';
     }
@@ -332,14 +326,20 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.tokensCache.quote = quoteCoin.address;
     }
 
-    if (!identical || force || (this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount)) {
+    if (
+      !identical ||
+      force ||
+      this.tokensCache.baseAmount !== this.requestData.tokens_info.base.amount
+    ) {
       this.checkInstancePrice();
       this.tokensCache.baseAmount = this.requestData.tokens_info.base.amount;
     } else {
       const quoteDecimalsTimes = Math.pow(10, this.requestData.tokens_info.quote.token.decimals);
       this.requestData.tokens_info.quote.amount = new BigNumber(
-          this.instanceTradeParams.toTokenAmount
-      ).div(quoteDecimalsTimes).toString(10);
+        this.instanceTradeParams.toTokenAmount
+      )
+        .div(quoteDecimalsTimes)
+        .toString(10);
       // this.QuoteTokenCustom.emit();
     }
   }
@@ -355,7 +355,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       }
     }
 
-
     if (
       (new BigNumber(this.requestData.tokens_info.base.amount)).gt(0) &&
       (new BigNumber(this.requestData.tokens_info.quote.amount)).gt(0) &&
@@ -364,12 +363,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     ) {
       this.coingeckoRate = {
         revert: new BigNumber(baseCoin.usd_price).div(quoteCoin.usd_price).toNumber(),
-        direct: new BigNumber(quoteCoin.usd_price).div(baseCoin.usd_price).toNumber(),
+        direct: new BigNumber(quoteCoin.usd_price).div(baseCoin.usd_price).toNumber()
       };
       const rate = parseFloat(this.getRate(true));
       const rateChanges = parseFloat(this.getRate()) - this.coingeckoRate.direct;
       this.coingeckoRate.isLower = rateChanges > 0;
-      this.coingeckoRate.change = parseFloat((Math.abs(-(rate / this.coingeckoRate.revert - 1)) * 100).toFixed(2));
+      this.coingeckoRate.change = parseFloat(
+        (Math.abs(-(rate / this.coingeckoRate.revert - 1)) * 100).toFixed(2)
+      );
     } else {
       this.coingeckoRate = undefined;
     }
@@ -393,21 +394,21 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.requestData = {
       tokens_info: {
         base: {
-          token: {},
+          token: {}
         },
         quote: {
-          token: {},
-        },
+          token: {}
+        }
       },
       network: network || defaultNetwork,
       public: true,
       permanent: false,
       broker_fee_base: 0.1,
-      broker_fee_quote: 0.1,
+      broker_fee_quote: 0.1
     };
     this.customTokens = {
       base: {},
-      quote: {},
+      quote: {}
     };
 
     if (this.onInit) {
@@ -423,7 +424,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public setNetwork(network) {
     this.resetStartForm(network);
-    this.selectedNetwork = network
+    this.selectedNetwork = network;
     if (network !== 1) {
       this.instanceTrade = false;
     }
@@ -466,23 +467,27 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
 
-    const coingeckoBaseToken = window['coingecko_tokens'].find((t) => {
-      return t.token_short_title === baseCoin.token_short_title &&
-          t.address.toLowerCase() === baseCoin.address.toLowerCase();
+    const coingeckoBaseToken = window['coingecko_tokens'].find(t => {
+      return (
+        t.token_short_title === baseCoin.token_short_title &&
+        t.address.toLowerCase() === baseCoin.address.toLowerCase()
+      );
     });
-    const coingeckoQuoteToken = window['coingecko_tokens'].find((t) => {
-      return t.token_short_title === quoteCoin.token_short_title &&
-          t.address.toLowerCase() === quoteCoin.address.toLowerCase();
+    const coingeckoQuoteToken = window['coingecko_tokens'].find(t => {
+      return (
+        t.token_short_title === quoteCoin.token_short_title &&
+        t.address.toLowerCase() === quoteCoin.address.toLowerCase()
+      );
     });
 
     if (!coingeckoBaseToken) {
       this.requestData.tokens_info.base = {
-        token: {},
+        token: {}
       };
     }
     if (!coingeckoQuoteToken) {
       this.requestData.tokens_info.quote = {
-        token: {},
+        token: {}
       };
     }
   }
@@ -541,12 +546,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   get baseBrokerFee() {
-    if (
-      !(
-        this.requestData.tokens_info.base.amount &&
-        this.requestData.broker_fee_base
-      )
-    ) {
+    if (!(this.requestData.tokens_info.base.amount && this.requestData.broker_fee_base)) {
       return 0;
     }
     return new BigNumber(this.requestData.tokens_info.base.amount)
@@ -581,17 +581,17 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private buildAndCreate() {
     this.sendData.network = this.requestData.network;
     this.sendData.stop_date = this.advSettings.value.active_to
-        .clone()
-        .utc()
-        .format('YYYY-MM-DD HH:mm');
+      .clone()
+      .utc()
+      .format('YYYY-MM-DD HH:mm');
 
     this.sendData.base_limit = this.requestData.tokens_info.base.amount;
     this.sendData.quote_limit = this.requestData.tokens_info.quote.amount;
 
     this.sendData.name =
-        this.requestData.tokens_info.base.token.token_short_title +
-        ' <> ' +
-        this.requestData.tokens_info.quote.token.token_short_title;
+      this.requestData.tokens_info.base.token.token_short_title +
+      ' <> ' +
+      this.requestData.tokens_info.quote.token.token_short_title;
 
     this.sendData.base_address = this.requestData.tokens_info.base.token.address;
     this.sendData.quote_address = this.requestData.tokens_info.quote.token.address;
@@ -633,14 +633,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   private getOrderParams() {
-
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
     const params = {} as any;
     params.fromTokenSymbol = baseCoin.token_short_title;
     params.toTokenSymbol = quoteCoin.token_short_title;
     const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
-    params.amount = new BigNumber(this.requestData.tokens_info.base.amount).times(baseDecimalsTimes).toString(10);
+    params.amount = new BigNumber(this.requestData.tokens_info.base.amount)
+      .times(baseDecimalsTimes)
+      .toString(10);
     return params;
   }
 
@@ -649,9 +650,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     params.fromAddress = this.metamaskAccount;
     this.getInstanceQuoteProgress = true;
 
-
-
-    const remoteContractAddress = (await this.oneInchService.getApproveSpender() as any).address;
+    const remoteContractAddress = ((await this.oneInchService.getApproveSpender()) as any).address;
     const baseToken = this.requestData.tokens_info.base.token;
     if (baseToken.token_short_title !== 'ETH') {
       let error;
@@ -665,40 +664,49 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         return;
       }
     }
-    this.oneInchService.getSwap(params, this.instanceTradeParams)
+    this.oneInchService
+      .getSwap(params, this.instanceTradeParams)
       .then((result: any) => {
-        const gasIncreasedTx= { ...result.tx, gas: Math.round(Number(result.tx.gas) * 1.25)};
+        const gasIncreasedTx = { ...result.tx, gas: Math.round(Number(result.tx.gas) * 1.25) };
 
         const afterConfirm = (hash: string) => {
           this.instantTradeInProgress = true;
 
-          const amountFrom = Number(result.fromTokenAmount) / (10 ** Number(result.fromToken.decimals));
-          const amountTo = Number(result.toTokenAmount) / (10 ** Number(result.toToken.decimals));
+          const amountFrom =
+            Number(result.fromTokenAmount) / 10 ** Number(result.fromToken.decimals);
+          const amountTo = Number(result.toTokenAmount) / 10 ** Number(result.toToken.decimals);
           this.backendApiService.notifyInstantTradesBot(
-              result.tx.from,
-              amountFrom,
-              amountTo,
-              result.fromToken.symbol,
-              result.toToken.symbol,
-              hash
-          )
-        }
+            result.tx.from,
+            amountFrom,
+            amountTo,
+            result.fromToken.symbol,
+            result.toToken.symbol,
+            hash
+          );
+        };
 
-        this.web3Service.sendTransaction(gasIncreasedTx, this.requestData.network, afterConfirm)
-            .then((res: any) => {
+        this.web3Service
+          .sendTransaction(gasIncreasedTx, this.requestData.network, afterConfirm)
+          .then(
+            (res: any) => {
               this.resetStartForm();
-              const win = window.open('https://etherscan.io/tx/' + res.transactionHash, 'target=_blank');
-            }, () => {})
-            .finally(() => {
-              this.getInstanceQuoteProgress = false;
-              this.instantTradeInProgress = false;
-            });
+              const win = window.open(
+                'https://etherscan.io/tx/' + res.transactionHash,
+                'target=_blank'
+              );
+            },
+            () => {}
+          )
+          .finally(() => {
+            this.getInstanceQuoteProgress = false;
+            this.instantTradeInProgress = false;
+          });
       })
       .catch(e => {
         console.log(e);
         this.metaMaskErrorModal = this.dialog.open(this.insufficientFundsError, {
           width: '480px',
-          panelClass: 'custom-dialog-container',
+          panelClass: 'custom-dialog-container'
         });
         this.getInstanceQuoteProgress = false;
         this.instantTradeInProgress = false;
@@ -708,73 +716,74 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private async check1InchAllowance(remoteContractAddress, params) {
     const baseToken = this.requestData.tokens_info.base.token;
     let tokenContract = this.web3Service.getContract(
-        ERC20_TOKEN_ABI,
-        baseToken.address,
-        this.requestData.network
+      ERC20_TOKEN_ABI,
+      baseToken.address,
+      this.requestData.network
     );
     const sendApproveTx = () => {
       const approveMethod = this.web3Service.getMethodInterface('approve');
-      const approveSignature = this.web3Service.encodeFunctionCall(
-          approveMethod,
-          [
-            remoteContractAddress,
-            params.amount.toString(10),
-          ],
-      );
+      const approveSignature = this.web3Service.encodeFunctionCall(approveMethod, [
+        remoteContractAddress,
+        params.amount.toString(10)
+      ]);
 
       return this.web3Service.sendTransaction(
-          {
-            from: this.metamaskAccount,
-            to: baseToken.address,
-            data: approveSignature,
-          },
-          this.requestData.network,
-          () => this.instantTradeInProgress = true
+        {
+          from: this.metamaskAccount,
+          to: baseToken.address,
+          data: approveSignature
+        },
+        this.requestData.network,
+        () => (this.instantTradeInProgress = true)
       );
     };
     return tokenContract.methods
-        .allowance(this.metamaskAccount, remoteContractAddress)
-        .call()
-        .then((result) => {
-          result = new BigNumber(result);
-          const noAllowance = result.minus(params.amount).isNegative();
-          if (noAllowance) {
-            return sendApproveTx();
-          }
-        })
+      .allowance(this.metamaskAccount, remoteContractAddress)
+      .call()
+      .then(result => {
+        result = new BigNumber(result);
+        const noAllowance = result.minus(params.amount).isNegative();
+        if (noAllowance) {
+          return sendApproveTx();
+        }
+      });
   }
 
   private metamaskAccount: string;
 
   public createContract() {
-    const accSubscriber = this.updateAddresses(true).subscribe((res) => {
-      this.metamaskAccount = res['metamask'][0];
+    const accSubscriber = this.updateAddresses(true).subscribe(
+      res => {
+        this.metamaskAccount = res['metamask'][0];
 
-      if (this.instanceTrade && this.instantTradesAvailable) {
-        this.createInstanceTrade();
-      } else if(!this.instanceTrade) {
-        this.buildAndCreate();
+        if (this.instanceTrade && this.instantTradesAvailable) {
+          this.createInstanceTrade();
+        } else if (!this.instanceTrade) {
+          this.buildAndCreate();
+        }
+      },
+      err => {
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container'
+        });
+      },
+      () => {
+        accSubscriber.unsubscribe();
       }
-    }, (err) => {
-      this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
-        width: '480px',
-        panelClass: 'custom-dialog-container',
-      });
-    }, () => {
-      accSubscriber.unsubscribe();
-    });
+    );
   }
 
   private sendMetaMaskRequest(data) {
     this.socialFormData = {
       network: 'mm',
-      data,
+      data
     };
     this.userService.metaMaskAuth(data).then(
-      (result) => {
+      result => {
         this.sendContractData(this.sendData);
       },
-      (error) => {
+      error => {
         this.onTotpError(error);
       }
     );
@@ -796,14 +805,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public MetamaskAuth() {
     if (window['ethereum'] && window['ethereum'].isMetaMask) {
-      window['ethereum'].enable().then((accounts) => {
+      window['ethereum'].enable().then(accounts => {
         const address = accounts[0];
-        this.userService.getMetaMaskAuthMsg().then((msg) => {
-          this.web3Service.getSignedMetaMaskMsg(msg, address).then((signed) => {
+        this.userService.getMetaMaskAuthMsg().then(msg => {
+          this.web3Service.getSignedMetaMaskMsg(msg, address).then(signed => {
             this.sendMetaMaskRequest({
               address,
               msg,
-              signed_msg: signed,
+              signed_msg: signed
             });
           });
         });
@@ -823,12 +832,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.contractsService[data.id ? 'updateSWAP3' : 'createSWAP3'](data)
       .then(
-        (result) => {
-          !data.id
-            ? this.initialisationTrade(result)
-            : this.contractIsCreated(result);
+        result => {
+          !data.id ? this.initialisationTrade(result) : this.contractIsCreated(result);
         },
-        (err) => {
+        err => {
           console.log(err);
         }
       )
@@ -858,32 +865,30 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       details.whitelist ? details.whitelist_address : '0x0000000000000000000000000000000000000000',
       new BigNumber(details.min_base_wei || '0').times(baseDecimalsTimes).toString(10),
       new BigNumber(details.min_quote_wei || '0').times(quoteDecimalsTimes).toString(10),
-      details.broker_fee ? details.broker_fee_address : '0x0000000000000000000000000000000000000000',
+      details.broker_fee
+        ? details.broker_fee_address
+        : '0x0000000000000000000000000000000000000000',
       details.broker_fee ? new BigNumber(details.broker_fee_base).times(100).toString(10) : '0',
-      details.broker_fee ? new BigNumber(details.broker_fee_quote).times(100).toString(10) : '0',
+      details.broker_fee ? new BigNumber(details.broker_fee_quote).times(100).toString(10) : '0'
     ];
 
-    const activateSignature = this.web3Service.encodeFunctionCall(
-      interfaceMethod,
-      trxRequest
-    );
+    const activateSignature = this.web3Service.encodeFunctionCall(interfaceMethod, trxRequest);
     const sendActivateTrx = async (wallet?) => {
       try {
         const fee = await this.web3Contract.methods.feeAmount().call();
-        await this.web3Service
-          .sendTransaction(
-            {
-              from: wallet,
-              to: this.contractAddress,
-              data: activateSignature,
-              value: fee,
-            },
-            this.sendData.network
-          );
+        await this.web3Service.sendTransaction(
+          {
+            from: wallet,
+            to: this.contractAddress,
+            data: activateSignature,
+            value: fee
+          },
+          this.sendData.network
+        );
         this.sendData.id = details.id;
         this.sendData.rubic_initialized = true;
         this.sendContractData(this.sendData);
-      } catch(err) {
+      } catch (err) {
         console.log(err);
         this.isCreatingContract = false;
       }
@@ -899,40 +904,34 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     return this.web3Service.getAccounts(false, ifEnabled, this.requestData.network);
   }
 
-  public revertCoins():void {
+  public revertCoins(): void {
     const baseToken = this.requestData.tokens_info.base;
     this.requestData.tokens_info.base = this.requestData.tokens_info.quote;
     this.requestData.tokens_info.quote = baseToken;
     this.BaseTokenCustom.emit(this.requestData.tokens_info[name]);
     this.QuoteTokenCustom.emit(this.requestData.tokens_info[name]);
   }
-
 }
-
-
 
 @Injectable()
 export class StartFormResolver implements Resolve<any> {
-
-  private ethTokens: any[] = window['coingecko_tokens'].filter((t) => {
+  private ethTokens: any[] = window['coingecko_tokens'].filter(t => {
     return t.platform === 'ethereum';
   });
 
-  constructor(
-      private web3Service: Web3Service,
-  ) {
-
-  }
+  constructor(private web3Service: Web3Service) {}
 
   private getTokenPromise(token_symbol) {
-    const token = token_symbol ? this.ethTokens.find((exToken) => {
-      return token_symbol.toUpperCase() === exToken.token_short_title;
-    }) : false;
+    const token = token_symbol
+      ? this.ethTokens.find(exToken => {
+          return token_symbol.toUpperCase() === exToken.token_short_title;
+        })
+      : false;
     if (token) {
       return this.web3Service.getFullTokenInfo(token.address, false, 1).then((res: any) => {
         token.decimals = res.decimals;
         return token;
-      })
+      });
     } else {
       return Promise.resolve(false);
     }
@@ -940,25 +939,22 @@ export class StartFormResolver implements Resolve<any> {
 
   resolve(route: ActivatedRouteSnapshot) {
     const routeParams = route.params;
-    return new Observable((observer) => {
-      const params = {...route.queryParams};
+    return new Observable(observer => {
+      const params = { ...route.queryParams };
       params.to = routeParams.token || params.to;
       const queryParams = {
-        from: (
-            params.from || (!!params.to ? 'ETH' : '')
-        ).toLowerCase(),
+        from: (params.from || (!!params.to ? 'ETH' : '')).toLowerCase(),
         to: params.to ? params.to.toLowerCase() : false
       };
 
       const promises = [
         this.getTokenPromise(queryParams.from),
-        this.getTokenPromise(queryParams.to),
+        this.getTokenPromise(queryParams.to)
       ];
-      Promise.all(promises).then((res) => {
+      Promise.all(promises).then(res => {
         observer.next(res);
         observer.complete();
       });
     });
   }
 }
-
