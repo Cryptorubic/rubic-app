@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { Web3ApiService } from '../../services/web3Api/web3-api.service';
 
@@ -8,7 +8,6 @@ import { Web3ApiService } from '../../services/web3Api/web3-api.service';
   styleUrls: ['./address-input.component.scss']
 })
 export class AddressInputComponent implements OnInit {
-
   @Input() inputLabelText: string;
 
   @Output() addressEmitter = new EventEmitter<string>();
@@ -16,10 +15,9 @@ export class AddressInputComponent implements OnInit {
   public isAddressCorrect: boolean;
   public isAddressIncorrect: boolean;
 
-  constructor(private web3Api: Web3ApiService) { }
+  constructor(private web3Api: Web3ApiService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   public checkAddressCorrectness(addressQuery: string) {
     if (!addressQuery) {

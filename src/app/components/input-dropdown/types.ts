@@ -4,4 +4,4 @@ interface DropdownComponentData {
   sortParameters: any;
 }
 
-export {DropdownComponentData}
+export { DropdownComponentData };

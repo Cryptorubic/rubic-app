@@ -8,9 +8,8 @@ describe('AddressInputComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddressInputComponent ]
-    })
-    .compileComponents();
+      declarations: [AddressInputComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

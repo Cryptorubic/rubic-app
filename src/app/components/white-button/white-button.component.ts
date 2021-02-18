@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-white-button',
@@ -6,12 +6,9 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./white-button.component.scss']
 })
 export class WhiteButtonComponent implements OnInit {
-
   @Input() public text: string;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

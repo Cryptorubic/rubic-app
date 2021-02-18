@@ -5,9 +5,9 @@ import {
   Input,
   OnInit,
   Output,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
-import {Web3Service} from "../../services/web3/web3.service";
+import { Web3Service } from '../../services/web3/web3.service';
 
 export interface ITokenInfo {
   active?: boolean;
@@ -22,7 +22,7 @@ export interface ITokenInfo {
 @Component({
   selector: 'app-tokens-all-input',
   templateUrl: './tokens-all-input.component.html',
-  styleUrls: ['./tokens-all-input.component.scss'],
+  styleUrls: ['./tokens-all-input.component.scss']
 })
 export class TokensAllInputComponent implements OnInit {
   @Input('tokenModel') public tokenModel: any;
@@ -40,8 +40,10 @@ export class TokensAllInputComponent implements OnInit {
   private _otherTokens: any;
 
   @Input() set otherTokens(newTokens: any[]) {
-    const foundToken = newTokens.find(token =>
-      this.tokenModel.token.address && token.address.toLowerCase() === this.tokenModel.token.address.toLowerCase()
+    const foundToken = newTokens.find(
+      token =>
+        this.tokenModel.token.address &&
+        token.address.toLowerCase() === this.tokenModel.token.address.toLowerCase()
     );
     if (foundToken) {
       this.searchToken(foundToken.token_short_title);
@@ -61,12 +63,9 @@ export class TokensAllInputComponent implements OnInit {
   @ViewChild('tokenField') tokenField: ElementRef;
   @ViewChild('amountField') amountField: ElementRef;
 
-  constructor(
-      private web3Service: Web3Service
-  ) {
+  constructor(private web3Service: Web3Service) {
     this.tokensList = [];
   }
-
 
   public visibleInput: boolean;
   public tokensList: ITokenInfo[];
@@ -74,13 +73,13 @@ export class TokensAllInputComponent implements OnInit {
   public tokenName;
   private activeTokenIndex;
 
-  @Output() public TokenChange = new EventEmitter<string|false>();
+  @Output() public TokenChange = new EventEmitter<string | false>();
 
   private searchSubscriber;
 
   ngOnInit() {
     if (this.setToken) {
-      this.setToken.subscribe((result) => {
+      this.setToken.subscribe(result => {
         if (result) {
           this.visibleInput = false;
           this.TokenChange.emit(result);
@@ -113,46 +112,40 @@ export class TokensAllInputComponent implements OnInit {
       this.searchSubscriber.unsubscribe();
     }
 
-    let tokensForSearch = !this._otherTokens ?
-      (this.blockchain ?
-        window['coingecko_tokens'].filter(t => t.platform === this.blockchain) :
-        window['coingecko_tokens']
-      ) :
-      this._otherTokens;
+    let tokensForSearch = !this._otherTokens
+      ? this.blockchain
+        ? window['coingecko_tokens'].filter(t => t.platform === this.blockchain)
+        : window['coingecko_tokens']
+      : this._otherTokens;
 
     tokensForSearch = tokensForSearch.filter(token => token.address !== this.exclude);
 
     const lowerCaseQuery = q.toLowerCase();
-    const shortNameMatchTokens = tokensForSearch.filter(token =>
-        token
-        && token.token_short_title
-            .toLowerCase()
-            .includes(lowerCaseQuery)
-        && (this.blockchain || this.blockchain === token.platform)
+    const shortNameMatchTokens = tokensForSearch.filter(
+      token =>
+        token &&
+        token.token_short_title.toLowerCase().includes(lowerCaseQuery) &&
+        (this.blockchain || this.blockchain === token.platform)
     );
 
     if (lowerCaseQuery) {
-      shortNameMatchTokens.sort((token1, token2) =>
-          token1.token_short_title.length - token2.token_short_title.length
+      shortNameMatchTokens.sort(
+        (token1, token2) => token1.token_short_title.length - token2.token_short_title.length
       );
     }
 
-    const nameMatchTokens = tokensForSearch.filter(token =>
-        token
-        && token.token_title
-            .toLowerCase()
-            .includes(lowerCaseQuery)
-        && !token.token_short_title
-            .toLowerCase()
-            .includes(lowerCaseQuery)
-        && (this.blockchain || this.blockchain === token.platform)
+    const nameMatchTokens = tokensForSearch.filter(
+      token =>
+        token &&
+        token.token_title.toLowerCase().includes(lowerCaseQuery) &&
+        !token.token_short_title.toLowerCase().includes(lowerCaseQuery) &&
+        (this.blockchain || this.blockchain === token.platform)
     );
 
     this.tokensList = shortNameMatchTokens
-        .concat(nameMatchTokens)
-        .slice(0, resultsNumber)
-        .map(obj => ({...obj}));
-
+      .concat(nameMatchTokens)
+      .slice(0, resultsNumber)
+      .map(obj => ({ ...obj }));
 
     if (this.tokensList.length) {
       this.listIsOpened = true;
@@ -198,10 +191,12 @@ export class TokensAllInputComponent implements OnInit {
     this.tokenModel.token = token;
     this.listIsOpened = false;
     this.tokenName = token.token_short_title;
-    this.web3Service.getFullTokenInfo(this.tokenModel.token.address, false, this.blockchain).then((res: any) => {
-      this.tokenModel.token.decimals = res.decimals;
-      this.TokenChange.emit(this.tokenModel);
-    });
+    this.web3Service
+      .getFullTokenInfo(this.tokenModel.token.address, false, this.blockchain)
+      .then((res: any) => {
+        this.tokenModel.token.decimals = res.decimals;
+        this.TokenChange.emit(this.tokenModel);
+      });
     this.showAutoInput();
   }
 
@@ -235,10 +230,7 @@ export class TokensAllInputComponent implements OnInit {
         this.selectToken(this.tokensList[newNextIndex], newNextIndex, true);
         break;
       case 'Enter':
-        this.selectToken(
-          this.tokensList[this.activeTokenIndex],
-          this.activeTokenIndex,
-        );
+        this.selectToken(this.tokensList[this.activeTokenIndex], this.activeTokenIndex);
         event.preventDefault();
         break;
     }
@@ -249,8 +241,7 @@ export class TokensAllInputComponent implements OnInit {
       }
       const activeItem = listTokensNode.querySelector('.active');
       const bottomPosition = activeItem.offsetTop + activeItem.offsetHeight;
-      const maxBottomPosition =
-        listTokensNode.scrollTop + listTokensNode.offsetHeight;
+      const maxBottomPosition = listTokensNode.scrollTop + listTokensNode.offsetHeight;
       const heightRange = maxBottomPosition - bottomPosition;
       if (heightRange < 0) {
         listTokensNode.scroll(0, listTokensNode.scrollTop - heightRange);

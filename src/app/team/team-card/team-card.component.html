@@ -1,13 +1,18 @@
 <div class="team-card" (click)="onClick()">
-    <img class="team-card__image" [src]="'assets/images/team/' + content.img" alt="" />
+  <img class="team-card__image" [src]="'assets/images/team/' + content.img" alt="" />
 
-    <div class="team-card__description">
-        <div class="team-card__name">{{content.name}}</div>
-        <div class="team-card__role">{{content.role}}</div>
-        <div class="team-card__links-container">
-            <a class="team-card__link" target="_blank" *ngFor="let link of content.links" [href]="link.url">
-                <img [src]="'assets/images/icons/social/' + link.icon" alt="">
-            </a>
-        </div>
+  <div class="team-card__description">
+    <div class="team-card__name">{{ content.name }}</div>
+    <div class="team-card__role">{{ content.role }}</div>
+    <div class="team-card__links-container">
+      <a
+        class="team-card__link"
+        target="_blank"
+        *ngFor="let link of content.links"
+        [href]="link.url"
+      >
+        <img [src]="'assets/images/icons/social/' + link.icon" alt="" />
+      </a>
     </div>
+  </div>
 </div>

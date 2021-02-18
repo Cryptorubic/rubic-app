@@ -1,16 +1,21 @@
-import {Component, HostListener, OnInit, Type} from '@angular/core';
-import {BridgeService} from '../../services/bridge/bridge.service';
-import {List} from 'immutable';
-import {IBridgeToken, BridgeNetwork, IBlockchains, IBlockchain} from '../../services/bridge/types';
-import {RubicError} from '../../errors/RubicError';
+import { Component, HostListener, OnInit, Type } from '@angular/core';
+import { BridgeService } from '../../services/bridge/bridge.service';
+import { List } from 'immutable';
+import {
+  IBridgeToken,
+  BridgeNetwork,
+  IBlockchains,
+  IBlockchain
+} from '../../services/bridge/types';
+import { RubicError } from '../../errors/RubicError';
 import BigNumber from 'bignumber.js';
-import {InputToken} from '../../components/tokens-input/types';
-import {NetworkError} from "../../errors/bridge/NetworkError";
-import {NetworkErrorComponent} from "../bridge-errors/network-error/network-error.component";
+import { InputToken } from '../../components/tokens-input/types';
+import { NetworkError } from '../../errors/bridge/NetworkError';
+import { NetworkErrorComponent } from '../bridge-errors/network-error/network-error.component';
 
 interface ErrorComponent {
-  componentClass: Type<any>,
-  inputs: any
+  componentClass: Type<any>;
+  inputs: any;
 }
 
 @Component({
@@ -19,10 +24,9 @@ interface ErrorComponent {
   styleUrls: ['./bridge-form.component.scss']
 })
 export class BridgeFormComponent implements OnInit {
-
   public Blockchains: IBlockchains = {
-    Ethereum : {
-      name : BridgeNetwork.ETHEREUM,
+    Ethereum: {
+      name: BridgeNetwork.ETHEREUM,
       shortLabel: 'Ethereum',
       label: 'Ethereum',
       img: 'eth.png',
@@ -37,7 +41,7 @@ export class BridgeFormComponent implements OnInit {
       addressName: 'ethContractAddress'
     },
     Binance: {
-      name : BridgeNetwork.BINANCE_SMART_CHAIN,
+      name: BridgeNetwork.BINANCE_SMART_CHAIN,
       shortLabel: 'Binance Smart Chain',
       label: 'Binance Smart Chain',
       img: 'bnb.svg',
@@ -88,15 +92,13 @@ export class BridgeFormComponent implements OnInit {
   }
 
   private updateDropDownTokens(): void {
-    this.dropDownTokens = this._tokens.map(token =>
-      ({
-        address: token[this.fromBlockchain.addressName],
-        name: token.name,
-        symbol: token[this.fromBlockchain.symbolName],
-        image: token.icon,
-        decimals: token[this.fromBlockchain.decimalsName]
-      })
-    )
+    this.dropDownTokens = this._tokens.map(token => ({
+      address: token[this.fromBlockchain.addressName],
+      name: token.name,
+      symbol: token[this.fromBlockchain.symbolName],
+      image: token.icon,
+      decimals: token[this.fromBlockchain.decimalsName]
+    }));
   }
 
   get selectedToken(): IBridgeToken {
@@ -105,8 +107,9 @@ export class BridgeFormComponent implements OnInit {
 
   set selectedToken(value: IBridgeToken) {
     this._selectedToken = value;
-    this.selectedTokenAsInputToken = this.dropDownTokens.find(token =>
-        token.address === this.selectedToken[this.fromBlockchain.addressName]);
+    this.selectedTokenAsInputToken = this.dropDownTokens.find(
+      token => token.address === this.selectedToken[this.fromBlockchain.addressName]
+    );
   }
 
   get fromBlockchain() {
@@ -155,7 +158,7 @@ export class BridgeFormComponent implements OnInit {
 
   get toNumber(): string {
     if (this._toNumber == undefined) {
-      return ""
+      return '';
     }
 
     let amount = this._toNumber.toString();
@@ -177,7 +180,7 @@ export class BridgeFormComponent implements OnInit {
   }
 
   constructor(private bridgeService: BridgeService) {
-    bridgeService.tokens.subscribe(tokens => this.tokens = tokens);
+    bridgeService.tokens.subscribe(tokens => (this.tokens = tokens));
   }
 
   ngOnInit() {
@@ -200,17 +203,18 @@ export class BridgeFormComponent implements OnInit {
     }
 
     this.feeCalculationProgress = true;
-    this.bridgeService.getFee(this.selectedToken.symbol, this.toBlockchain.name)
-        .subscribe(
-            fee => this.fee = new BigNumber(fee)
-            , err => console.log(err)
-            , () =>  this.feeCalculationProgress = false)
+    this.bridgeService.getFee(this.selectedToken.symbol, this.toBlockchain.name).subscribe(
+      fee => (this.fee = new BigNumber(fee)),
+      err => console.log(err),
+      () => (this.feeCalculationProgress = false)
+    );
   }
 
   public onSelectedTokenChanges(inputToken: InputToken | null) {
     if (inputToken) {
-      const bridgeToken: IBridgeToken = this.tokens.find(token =>
-          token[this.fromBlockchain.addressName] === inputToken.address)
+      const bridgeToken: IBridgeToken = this.tokens.find(
+        token => token[this.fromBlockchain.addressName] === inputToken.address
+      );
       this.changeSelectedToken(bridgeToken);
     } else {
       this.changeSelectedToken(null);
@@ -232,14 +236,14 @@ export class BridgeFormComponent implements OnInit {
         this.toBlockchain.name,
         this.fromNumber,
         this.toWalletAddress,
-        () => this.tradeInProgress = true
+        () => (this.tradeInProgress = true)
       )
       .subscribe(
-          (res: string) => {
+        (res: string) => {
           this.tradeSuccessId = res;
         },
         err => {
-            console.log("E", err, err instanceof NetworkError);
+          console.log('E', err, err instanceof NetworkError);
           if (err instanceof NetworkError) {
             this.errorComponent = {
               componentClass: NetworkErrorComponent,
@@ -250,10 +254,12 @@ export class BridgeFormComponent implements OnInit {
           } else {
             this.error = new RubicError();
           }
-      }).add(() => {
+        }
+      )
+      .add(() => {
         this.tradeInProgress = false;
         this.buttonAnimation = false;
-    });
+      });
   }
 
   public closeErrorModal() {

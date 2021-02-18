@@ -8,9 +8,8 @@ describe('NetworkErrorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NetworkErrorComponent ]
-    })
-    .compileComponents();
+      declarations: [NetworkErrorComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

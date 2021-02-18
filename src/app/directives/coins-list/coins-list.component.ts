@@ -1,7 +1,14 @@
-
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {HttpService} from '../../services/http/http.service';
-import {TokenInfoInterface, Web3Service} from '../../services/web3/web3.service';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
+import { HttpService } from '../../services/http/http.service';
+import { TokenInfoInterface, Web3Service } from '../../services/web3/web3.service';
 
 export interface ITokenInfo {
   active?: boolean;
@@ -18,15 +25,13 @@ export interface ITokenInfo {
   styleUrls: ['./coins-list.component.scss']
 })
 export class CoinsListComponent implements OnInit {
-
   @Input('tokenModel') public tokenModel: any;
   @Input() public tokenGroup: any;
   @Input() private setToken: any;
 
   @ViewChild('tokenField') tokenField: ElementRef;
 
-  constructor(
-  ) {
+  constructor() {
     this.tokensList = [];
   }
 
@@ -35,10 +40,8 @@ export class CoinsListComponent implements OnInit {
   public tokenSymbol;
   private activeTokenIndex;
 
-
   @Output() TokenChange = new EventEmitter<string>();
   private searchSubscriber;
-
 
   ngOnInit() {
     this.tokenField.nativeElement.addEventListener('blur', () => {
@@ -74,12 +77,11 @@ export class CoinsListComponent implements OnInit {
       return;
     }
 
-
     const result = [];
 
     let indexToken = 0;
 
-    while ((indexToken < (window['coingecko_tokens'].length - 1)) && (result.length < 10)) {
+    while (indexToken < window['coingecko_tokens'].length - 1 && result.length < 10) {
       const token = window['coingecko_tokens'][indexToken];
       const tokenTitle = token.token_title.toLowerCase();
       const tokenSymbol = token.token_short_title.toLowerCase();
@@ -89,7 +91,7 @@ export class CoinsListComponent implements OnInit {
       const symbolIndexMatch = tokenSymbol.indexOf(seqrchQ) + 1;
 
       if (nameIndexMatch || symbolIndexMatch) {
-        result.push({...token});
+        result.push({ ...token });
       }
       indexToken++;
     }
@@ -99,7 +101,6 @@ export class CoinsListComponent implements OnInit {
       this.listIsOpened = true;
       this.selectToken(this.tokensList[0], 0, true);
     }
-
   }
 
   public showList() {
@@ -111,7 +112,6 @@ export class CoinsListComponent implements OnInit {
   public showAutoInput() {
     this.tokenField.nativeElement.focus();
   }
-
 
   public selectToken(token, tokenIndex, withoutHide?: boolean) {
     if (!isNaN(this.activeTokenIndex)) {
@@ -134,14 +134,12 @@ export class CoinsListComponent implements OnInit {
   }
 
   public keyDownResult(event) {
-
     if (event.code === 'Escape') {
       this.showAutoInput();
       return;
     }
 
     const listTokensNode = event.target.parentNode.querySelector('ul.coins-list-control_list');
-
 
     if (!this.tokensList.length) {
       return;
@@ -196,6 +194,4 @@ export class CoinsListComponent implements OnInit {
       }
     });
   }
-
 }
-

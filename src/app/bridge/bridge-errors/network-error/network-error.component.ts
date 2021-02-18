@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NetworkError} from "../../../errors/bridge/NetworkError";
+import { Component, Input, OnInit } from '@angular/core';
+import { NetworkError } from '../../../errors/bridge/NetworkError';
 
 @Component({
   selector: 'app-network-error',
@@ -7,12 +7,9 @@ import {NetworkError} from "../../../errors/bridge/NetworkError";
   styleUrls: ['./network-error.component.scss']
 })
 export class NetworkErrorComponent implements OnInit {
-
   @Input() networkError: NetworkError;
 
   constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

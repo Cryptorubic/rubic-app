@@ -1,28 +1,31 @@
-<form class="login-form" (submit)="sendLoginForm()"
-      [ngClass]="{'ng-submitted': formIsSubmitted}"
-      [formGroup]="loginForm" name="loginForm" novalidate>
-
+<form
+  class="login-form"
+  (submit)="sendLoginForm()"
+  [ngClass]="{ 'ng-submitted': formIsSubmitted }"
+  [formGroup]="loginForm"
+  name="loginForm"
+  novalidate
+>
   <div class="form-field">
-    <div class="form-field_label"
-         translate="AUTH_POPUP.FIELDS.EMAIL"></div>
+    <div class="form-field_label" translate="AUTH_POPUP.FIELDS.EMAIL"></div>
     <div class="form-field_input">
-      <input type="email"
-             autofocus
-             formControlName="username"
-             [ngClass]="{
-                'ng-invalid-server': ServerErrors.username,
-                'ng-invalid-email': f.username.errors?.email,
-                'ng-invalid-required': f.username.errors?.required,
-                'ng-invalid': f.username.errors || ServerErrors.username
-             }"
-             (ngModelChange)="resetUsername()"
-             class="min-text">
-      <span class="field-error form-field_error-required"
-            translate="FIELDS_ERRORS.REQUIRED"></span>
-      <span class="field-error form-field_error-email"
-            translate="FIELDS_ERRORS.YOUR_EMAIL"></span>
+      <input
+        type="email"
+        autofocus
+        formControlName="username"
+        [ngClass]="{
+          'ng-invalid-server': ServerErrors.username,
+          'ng-invalid-email': f.username.errors?.email,
+          'ng-invalid-required': f.username.errors?.required,
+          'ng-invalid': f.username.errors || ServerErrors.username
+        }"
+        (ngModelChange)="resetUsername()"
+        class="min-text"
+      />
+      <span class="field-error form-field_error-required" translate="FIELDS_ERRORS.REQUIRED"></span>
+      <span class="field-error form-field_error-email" translate="FIELDS_ERRORS.YOUR_EMAIL"></span>
       <span class="field-error form-field_error-server">
-            {{ServerErrors.username?.join(' ')}}
+        {{ ServerErrors.username?.join(' ') }}
       </span>
     </div>
   </div>
@@ -30,19 +33,20 @@
   <div class="form-field">
     <div class="form-field_label" translate="AUTH_POPUP.FIELDS.PASSWORD"></div>
     <div class="form-field_input">
-      <input type="password"
-             required
-             formControlName="password"
-             [ngClass]="{
-                'ng-invalid-server': ServerErrors.password,
-                'ng-invalid-required': f.password.errors?.required,
-                'ng-invalid': f.password.errors || ServerErrors.password
-             }"
-             class="min-text">
-      <span class="field-error form-field_error-required"
-            translate="FIELDS_ERRORS.REQUIRED"></span>
+      <input
+        type="password"
+        required
+        formControlName="password"
+        [ngClass]="{
+          'ng-invalid-server': ServerErrors.password,
+          'ng-invalid-required': f.password.errors?.required,
+          'ng-invalid': f.password.errors || ServerErrors.password
+        }"
+        class="min-text"
+      />
+      <span class="field-error form-field_error-required" translate="FIELDS_ERRORS.REQUIRED"></span>
       <span class="field-error form-field_error-server">
-        {{ServerErrors.password?.join(' ')}}
+        {{ ServerErrors.password?.join(' ') }}
       </span>
     </div>
   </div>
@@ -50,39 +54,41 @@
   <div class="form-field" *ngIf="f.totp">
     <div class="form-field_label" translate="AUTH_POPUP.FIELDS.2FA"></div>
     <div class="form-field_input">
-      <input type="text"
-             required
-             formControlName="totp"
-             [ngClass]="{
-                'ng-invalid-server': ServerErrors.totp,
-                'ng-invalid-required': f.totp.errors?.required,
-                'ng-invalid': f.totp.errors || ServerErrors.totp
-             }"
-             class="min-text">
-      <span class="field-error form-field_error-required"
-            translate="FIELDS_ERRORS.REQUIRED"></span>
+      <input
+        type="text"
+        required
+        formControlName="totp"
+        [ngClass]="{
+          'ng-invalid-server': ServerErrors.totp,
+          'ng-invalid-required': f.totp.errors?.required,
+          'ng-invalid': f.totp.errors || ServerErrors.totp
+        }"
+        class="min-text"
+      />
+      <span class="field-error form-field_error-required" translate="FIELDS_ERRORS.REQUIRED"></span>
       <span class="field-error form-field_error-server">
-        {{ServerErrors.totp?.join(' ')}}
+        {{ ServerErrors.totp?.join(' ') }}
       </span>
     </div>
   </div>
 
-  <span class="field-error" style="display: block"
-        *ngIf="ServerErrors.non_field_errors">
-        {{ServerErrors.non_field_errors?.join(' ')}}
+  <span class="field-error" style="display: block" *ngIf="ServerErrors.non_field_errors">
+    {{ ServerErrors.non_field_errors?.join(' ') }}
   </span>
 
   <div class="form-field">
-    <span class="restore-link float-right"
-          translate="AUTH_POPUP.BUTTONS.FORGOT_PASSWORD"
-          (click)="data.chapter = 'forgot-password'"></span>
+    <span
+      class="restore-link float-right"
+      translate="AUTH_POPUP.BUTTONS.FORGOT_PASSWORD"
+      (click)="data.chapter = 'forgot-password'"
+    ></span>
     <button type="submit" class="btn btn-yellow width-100" [disabled]="formIsProgress">
       <span class="lds-ellipsis" *ngIf="formIsProgress">
         <span class="lds-ellipsis-container">
           <span></span><span></span><span></span><span></span>
         </span>
       </span>
-      <img class="arrow" src="./assets/images/buttons/arrow_b.svg">
+      <img class="arrow" src="./assets/images/buttons/arrow_b.svg" />
       <span translate="AUTH_POPUP.BUTTONS.LOG_IN"></span>
     </button>
   </div>

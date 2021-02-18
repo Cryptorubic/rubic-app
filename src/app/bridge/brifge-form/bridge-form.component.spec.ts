@@ -8,9 +8,8 @@ describe('BridgeFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BridgeFormComponent ]
-    })
-    .compileComponents();
+      declarations: [BridgeFormComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

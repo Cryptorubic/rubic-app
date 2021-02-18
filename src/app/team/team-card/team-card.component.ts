@@ -1,17 +1,16 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 interface ICardLink {
-  icon: string,
-  url: string
+  icon: string;
+  url: string;
 }
 
 export interface ICardContent {
-  img: string,
-  name: string,
-  role: string,
-  links: Array<ICardLink>
+  img: string;
+  name: string;
+  role: string;
+  links: Array<ICardLink>;
 }
-
 
 @Component({
   selector: 'app-team-card',
@@ -19,16 +18,13 @@ export interface ICardContent {
   styleUrls: ['./team-card.component.scss']
 })
 export class TeamCardComponent implements OnInit {
-
   @Input() content: ICardContent;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  onClick() {
+    window.open(this.content.links[0].url, '_blank');
   }
-
-  onClick(){
-    window.open(this.content.links[0].url, "_blank");
-  }
-
 }

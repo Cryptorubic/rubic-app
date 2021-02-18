@@ -6,11 +6,12 @@
   &-selected {
     padding: 16px 27px 14px 12px;
     border: 2px solid #e8e8e8;
-    color: #4AA956;
+    color: #4aa956;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    background: center right 10px / 10% url(src/assets/images/icons/arrow/arrow-down-green.svg) no-repeat white;
+    background: center right 10px / 10% url(src/assets/images/icons/arrow/arrow-down-green.svg)
+      no-repeat white;
 
     &.options-shown {
       background-image: url(src/assets/images/icons/arrow/arrow-up-green.svg);
@@ -33,7 +34,7 @@
       cursor: pointer;
 
       &.active {
-        color: #4AA956;
+        color: #4aa956;
         font-weight: bold;
       }
 

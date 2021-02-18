@@ -8,9 +8,8 @@ describe('BridgeInProgressModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BridgeInProgressModalComponent ]
-    })
-    .compileComponents();
+      declarations: [BridgeInProgressModalComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,9 +8,8 @@ describe('BlockchainsInputComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BlockchainsInputComponent ]
-    })
-    .compileComponents();
+      declarations: [BlockchainsInputComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

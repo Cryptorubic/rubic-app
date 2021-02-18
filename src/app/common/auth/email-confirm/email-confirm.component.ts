@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {UserService} from '../../../services/user/user.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { UserService } from '../../../services/user/user.service';
 
 const REQUEST_TIME_LENGTH = 60;
 
@@ -8,27 +8,23 @@ const REQUEST_TIME_LENGTH = 60;
   templateUrl: './email-confirm.component.html',
   styleUrls: ['./email-confirm.component.scss']
 })
-
 export class EmailConfirmComponent implements OnInit {
-
   @Input() currentEmail: string;
 
-  public resendError: number|false;
+  public resendError: number | false;
   public emailConfirmProgress: boolean;
 
   public allTimerSeconds: number;
-  public timerMinutes: number|string;
-  public timerSeconds: number|string;
+  public timerMinutes: number | string;
+  public timerSeconds: number | string;
 
   private startTimerTime;
 
-  constructor(
-    private userService: UserService
-  ) { }
-
+  constructor(private userService: UserService) {}
 
   private checkTimer() {
-    this.allTimerSeconds = REQUEST_TIME_LENGTH - Math.round(((new Date()).getTime() - this.startTimerTime) / 1000);
+    this.allTimerSeconds =
+      REQUEST_TIME_LENGTH - Math.round((new Date().getTime() - this.startTimerTime) / 1000);
     this.timerSeconds = this.allTimerSeconds % 60;
     this.timerMinutes = Math.floor(this.allTimerSeconds / 60);
     this.timerSeconds = (this.timerSeconds < 10 ? '0' : '') + this.timerSeconds;
@@ -44,7 +40,6 @@ export class EmailConfirmComponent implements OnInit {
     }
   }
 
-
   public getConfirmEmail() {
     if (this.emailConfirmProgress) {
       return;
@@ -52,23 +47,23 @@ export class EmailConfirmComponent implements OnInit {
     this.startTimerTime = new Date().getTime();
     this.resendError = false;
 
-    this.userService.resendConfirmEmail(this.currentEmail).then((response) => {
-      this.checkTimer();
-      this.emailConfirmProgress = true;
-    }, (error) => {
-      this.emailConfirmProgress = false;
-      switch (error.status) {
-        case 403:
-          this.resendError = error.data.detail;
-          break;
+    this.userService.resendConfirmEmail(this.currentEmail).then(
+      response => {
+        this.checkTimer();
+        this.emailConfirmProgress = true;
+      },
+      error => {
+        this.emailConfirmProgress = false;
+        switch (error.status) {
+          case 403:
+            this.resendError = error.data.detail;
+            break;
+        }
       }
-    });
+    );
   }
-
 
   ngOnInit() {
     // this.currentEmail = '';
   }
-
 }
-
