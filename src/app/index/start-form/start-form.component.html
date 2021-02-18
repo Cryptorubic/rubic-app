@@ -387,31 +387,17 @@
         <button
                 class="btn btn-green width-100"
                 [disabled]="
-                (instanceTrade && !instantTradesAvailable) ||
-                getInstanceQuoteProgress ||
                 !requestData.tokens_info.base.amount ||
                 !requestData.tokens_info.uniswap.amount ||
                 !requestData.tokens_info.base.token.address ||
                 !requestData.tokens_info.uniswap.token.address ||
-                isCreatingContract ||
-                (requestData.broker_fee && !requestData.broker_fee_address) ||
-                (requestData.broker_fee &&
-                  !(
-                    requestData.broker_fee_quote <= 50 &&
-                    requestData.broker_fee_quote >= 0
-                  )) ||
-                (requestData.broker_fee &&
-                  !(
-                    requestData.broker_fee_base <= 50 &&
-                    requestData.broker_fee_base >= 0
-                  )) ||
                 (requestData.tokens_info.base.token.address.toLowerCase() === requestData.tokens_info.quote.token.address.toLowerCase()) ||
                 !uniSwapTrade ||
                 uniSwapTradeStatus
               "
                 (click)="createUniSwapTrade()"
         >
-              <span class="lds-ellipsis" *ngIf="uniSwapTradeStatus && instantTradesAvailable">
+              <span class="lds-ellipsis" *ngIf="uniSwapTradeStatus">
                 <span class="lds-ellipsis-container">
                   <span></span><span></span><span></span><span></span>
                 </span>

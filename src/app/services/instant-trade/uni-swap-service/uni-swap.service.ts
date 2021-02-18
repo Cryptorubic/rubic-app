@@ -75,7 +75,7 @@ export class UniSwapService extends InstantTradeService {
           'swapExactTokensForTokensSupportingFeeOnTransferTokens',
           [amountIn, amountOutMin, path, to, deadline]
           );
-  */
+       */
       const estimatedGas = new BigNumber(0);
       const gasFee = await this.web3Api.getGasFeeInUSD(estimatedGas);
       const amountOut = uniSwapTrade

@@ -31,12 +31,14 @@ import {
   MomentDateAdapter
 } from '@angular/material-moment-adapter';
 
-import {OneInchService} from "../../models/1inch/1inch";
-import {HttpService} from "../../services/http/http.service";
-import {Observable} from "rxjs";
-import {BackendApiService} from '../../services/backend-api/backend-api.service';
-import {UniSwapService} from '../../services/instant-trade/uni-swap-service/uni-swap.service';
-import {InstantTrade, InstantTradeToken} from '../../services/instant-trade/types';
+import { OneInchService } from '../../models/1inch/1inch';
+import { HttpService } from '../../services/http/http.service';
+import { Observable } from 'rxjs';
+import { BackendApiService } from '../../services/backend-api/backend-api.service';
+import { UniSwapService } from '../../services/instant-trade/uni-swap-service/uni-swap.service';
+import { InstantTrade, InstantTradeToken } from '../../services/instant-trade/types';
+import { ETH, WEENUS, YEENUS } from '../../../test/tokens/eth-tokens';
+import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
 
 const defaultNetwork = 1;
 
@@ -71,7 +73,7 @@ export interface IContractDetails {
     uniswap: {
       token: any;
       amount?: string;
-    }
+    };
   };
 
   whitelist?: any;
@@ -213,6 +215,13 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.instanceTradesTokens = this.oneInchService.getAutocompleteTokensList();
     this.getOrderBookTokens();
+
+    // @ts-ignore
+    window.useTestingMode = () => {
+      // @ts-ignore
+      window.coingecko_tokens = coingeckoTestTokens;
+      this.instanceTradesTokens = coingeckoTestTokens;
+    };
   }
 
   private getOrderBookTokens() {
@@ -343,7 +352,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     if (!identical || force) {
       this.tokensCache.base = baseCoin.address;
       this.tokensCache.quote = quoteCoin.address;
-      if (baseCoin.address && quoteCoin.address && baseCoin.address !== quoteCoin.address && this.requestData.network === 1) {
+      if (
+        baseCoin.address &&
+        quoteCoin.address &&
+        baseCoin.address !== quoteCoin.address &&
+        this.requestData.network === 1
+      ) {
         this.instantTradesAvailable = this.oneInchService.checkTokensPair(baseCoin, quoteCoin);
       }
     }
@@ -368,14 +382,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public async recalculateUniSwapParameters() {
     if (
-        this.requestData.tokens_info.base.token.address &&
-        this.requestData.tokens_info.base.amount &&
-        this.requestData.tokens_info.quote.token.address
+      this.requestData.tokens_info.base.token.address &&
+      this.requestData.tokens_info.base.amount &&
+      this.requestData.tokens_info.quote.token.address
     ) {
-      if  (this.uniSwapTrade &&
-          this.uniSwapTrade.from.token.address === this.requestData.tokens_info.base.token.address &&
-          this.uniSwapTrade.to.token.address === this.requestData.tokens_info.quote.token.address &&
-          this.uniSwapTrade.from.amount.toString() === this.requestData.tokens_info.base.amount
+      if (
+        this.uniSwapTrade &&
+        this.uniSwapTrade.from.token.address === this.requestData.tokens_info.base.token.address &&
+        this.uniSwapTrade.to.token.address === this.requestData.tokens_info.quote.token.address &&
+        this.uniSwapTrade.from.amount.toString() === this.requestData.tokens_info.base.amount
       ) {
         return;
       }
@@ -394,7 +409,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         address: this.requestData.tokens_info.quote.token.address,
         decimals: this.requestData.tokens_info.quote.token.decimals,
         symbol: this.requestData.tokens_info.quote.token.token_short_name
-      }
+      };
 
       this.uniSwapTrade = await this.uniSwapService.calculateTrade(
         new BigNumber(this.requestData.tokens_info.base.amount),
@@ -419,6 +434,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public changedToken(force?: boolean) {
+    debugger;
     this.requestData.tokens_info.uniswap.token = this.requestData.tokens_info.quote.token;
     this.recalculateUniSwapParameters();
     const baseCoin = this.requestData.tokens_info.base.token;
@@ -725,9 +741,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     return params;
   }
 
-  public createUniSwapTrade() {
-
-  }
+  public createUniSwapTrade() {}
 
   private async createInstanceTrade() {
     const params = this.getOrderParams();

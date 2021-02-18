@@ -6,11 +6,12 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 import providerServiceStub from '../provider/provider-service-stub';
 import { WEENUS } from '../../../test/tokens/eth-tokens';
+import { UniSwapContractAddress } from '../instant-trade/uni-swap-service/uni-swap-contract';
 
 describe('Web3ApiService', () => {
   let originalTimeout;
 
-  const bobAddress = '0xecA0A3eFCf009519052Dc92306fE821b9c7A32A2';
+  const bobAddress = UniSwapContractAddress;
   let service: Web3ApiService;
 
   beforeEach(() => {
