@@ -72,23 +72,15 @@ export class BackendApiService {
     });
   }
 
-  public notifyInstantTradesBot(
-    walletAddress: string,
-    amountFrom: number,
-    amountTo: number,
-    symbolFrom: string,
-    symbolTo: string,
-    txHash: string
-  ): Promise<void> {
-    const body = {
-      walletAddress,
-      amountFrom,
-      amountTo,
-      symbolFrom,
-      symbolTo,
-      txHash
-    };
-
+  public notifyInstantTradesBot(body: {
+    provider: string;
+    walletAddress: string;
+    amountFrom: number;
+    amountTo: number;
+    symbolFrom: string;
+    symbolTo: string;
+    txHash: string;
+  }): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.httpClient.post(environment.instantTradesBotUrl, body).subscribe(
         () => {
