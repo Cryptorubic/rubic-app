@@ -470,8 +470,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     if (
-      this.requestData.tokens_info.base.amount &&
-      this.requestData.tokens_info.quote.amount &&
+      (new BigNumber(this.requestData.tokens_info.base.amount)).gt(0) &&
+      (new BigNumber(this.requestData.tokens_info.quote.amount)).gt(0) &&
       baseCoin.usd_price &&
       quoteCoin.usd_price
     ) {

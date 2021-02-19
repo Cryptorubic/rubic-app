@@ -26,6 +26,14 @@ export class OneInchService {
   constructor(private httpClient: HttpClient) {
     this.loadTokens().then(result => {
       result.ETH.address = '0x0000000000000000000000000000000000000000';
+
+      result.RBC = {
+        symbol: 'RBC',
+        name: 'Rubic',
+        decimals: 18,
+        address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3'
+      };
+
       this.availableTokens = result;
       this.tokenOnLoadEmitter.emit();
     });

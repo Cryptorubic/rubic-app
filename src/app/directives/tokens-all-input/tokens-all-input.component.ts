@@ -74,7 +74,7 @@ export class TokensAllInputComponent implements OnInit {
   public tokenName;
   private activeTokenIndex;
 
-  @Output() public TokenChange = new EventEmitter<string | false>();
+  @Output() public TokenChange = new EventEmitter<void>();
 
   private searchSubscriber;
 
@@ -83,7 +83,7 @@ export class TokensAllInputComponent implements OnInit {
       this.setToken.subscribe(result => {
         if (result) {
           this.visibleInput = false;
-          this.TokenChange.emit(result);
+          this.TokenChange.emit();
           this.tokenName = result.token.token_short_title;
         } else {
           setTimeout(() => {
@@ -200,7 +200,7 @@ export class TokensAllInputComponent implements OnInit {
         .getFullTokenInfo(this.tokenModel.token.address, false, this.blockchain)
         .then((res: any) => {
           this.tokenModel.token.decimals = res.decimals;
-          this.TokenChange.emit(this.tokenModel);
+          this.TokenChange.emit();
         });
     }
 
@@ -256,5 +256,11 @@ export class TokensAllInputComponent implements OnInit {
         listTokensNode.scroll(0, activeItem.offsetTop);
       }
     });
+  }
+
+  public resetToken(): void {
+    this.tokenName = '';
+    this.tokenModel.token = {};
+    this.TokenChange.emit();
   }
 }

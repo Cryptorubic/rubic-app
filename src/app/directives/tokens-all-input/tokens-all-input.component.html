@@ -12,7 +12,7 @@
     }"
     name="amountField"
     [tabindex]="visibleInput ? '-1' : ''"
-    (ngModelChange)="TokenChange.emit(tokenModel)"
+    (ngModelChange)="TokenChange.emit()"
     [(ngModel)]="tokenModel.amount"
     class="all-input"
   />
@@ -46,7 +46,7 @@
     (blur)="hideAutoInput()"
     class="form-field_input__ac_input"
   />
-  <span class="form-field_input__ac_closer">
+  <span class="form-field_input__ac_closer" (click)="resetToken()">
     <img src="./assets/images/icons/cross.svg" />
   </span>
   <div class="form-field_input__ac_res">
