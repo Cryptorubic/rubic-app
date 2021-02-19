@@ -1,7 +1,8 @@
 @import '../../../scss/elements/vars';
 
 .main-page {
-  &, & * {
+  &,
+  & * {
     box-sizing: border-box;
   }
 
@@ -15,7 +16,7 @@
     font-weight: normal;
     font-size: 22px;
     line-height: 40px;
-    color: rgba(black, .4);
+    color: rgba(black, 0.4);
   }
 
   &__title {

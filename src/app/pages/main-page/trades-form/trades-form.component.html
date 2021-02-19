@@ -1,35 +1,36 @@
 <div class="trades-form">
-    <div class="trades-form__tabs">
-        <ul class="trades-form__tabs-blockchains">
-            <li class="tab tab_blockchain tab_active"
-                *ngFor="let blockchain of BLOCKCHAINS"
-                [ngClass]="{'tab_active': selectedBlockchain === blockchain.name}"
-                (click)="selectedBlockchain = blockchain.name"
-            >
-                <img [src]="blockchain.image" alt=""/>
-                <span>{{blockchain.label}}</span>
-            </li>
-        </ul>
-        <ul class="trades-form__tabs-modes">
-            <li class="tab tab_mode"
-                *ngFor="let mode of MODES"
-                [ngClass]="{'tab_active': selectedMode === mode.name}"
-                (click)="selectedMode = mode.name">
-                <span>{{mode.label}}</span>
-                <img
-                    [src]="selectedMode === mode.name ? mode.imageActive : mode.imageNotActive"
-                    alt=""/>
-            </li>
-        </ul>
-    </div>
+  <div class="trades-form__tabs">
+    <ul class="trades-form__tabs-blockchains">
+      <li
+        class="tab tab_blockchain tab_active"
+        *ngFor="let blockchain of BLOCKCHAINS"
+        [ngClass]="{ tab_active: selectedBlockchain === blockchain.name }"
+        (click)="selectedBlockchain = blockchain.name"
+      >
+        <img [src]="blockchain.image" alt="" />
+        <span>{{ blockchain.label }}</span>
+      </li>
+    </ul>
+    <ul class="trades-form__tabs-modes">
+      <li
+        class="tab tab_mode"
+        *ngFor="let mode of MODES"
+        [ngClass]="{ tab_active: selectedMode === mode.name }"
+        (click)="selectedMode = mode.name"
+      >
+        <span>{{ mode.label }}</span>
+        <img [src]="selectedMode === mode.name ? mode.imageActive : mode.imageNotActive" alt="" />
+      </li>
+    </ul>
+  </div>
 
-    <div class="trades-form__body" [ngSwitch]="selectedMode">
-        <ng-template *ngFor="let mode of MODES" [ngSwitchCase]="mode.name">
-            <ndc-dynamic
-                    [ndcDynamicComponent]="mode.component(selectedBlockchain).html"
-                    [ndcDynamicInputs]="mode.component(selectedBlockchain).inputs"
-            >
-            </ndc-dynamic>
-        </ng-template>
-    </div>
+  <div class="trades-form__body" [ngSwitch]="selectedMode">
+    <ng-template *ngFor="let mode of MODES" [ngSwitchCase]="mode.name">
+      <ndc-dynamic
+        [ndcDynamicComponent]="mode.component(selectedBlockchain).html"
+        [ndcDynamicInputs]="mode.component(selectedBlockchain).inputs"
+      >
+      </ndc-dynamic>
+    </ng-template>
+  </div>
 </div>

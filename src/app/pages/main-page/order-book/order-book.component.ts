@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {BLOCKCHAIN_NAMES} from '../trades-form/trades-form.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { BLOCKCHAIN_NAMES } from '../trades-form/trades-form.component';
 
 @Component({
   selector: 'app-order-book',
@@ -7,12 +7,9 @@ import {BLOCKCHAIN_NAMES} from '../trades-form/trades-form.component';
   styleUrls: ['./order-book.component.scss']
 })
 export class OrderBookComponent implements OnInit {
-
   @Input() blockchain: BLOCKCHAIN_NAMES;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

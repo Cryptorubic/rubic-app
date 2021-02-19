@@ -2,7 +2,6 @@
   width: 100%;
   margin-bottom: 10px;
 
-
   &__tabs {
     height: 52px;
     display: flex;
@@ -52,12 +51,12 @@
   }
 
   &:hover {
-    box-shadow: 0 2px 6px rgba(black, .1);
+    box-shadow: 0 2px 6px rgba(black, 0.1);
   }
 
   &_active {
     height: 52px;
-    
+
     opacity: unset;
     cursor: default;
 
@@ -84,5 +83,4 @@
       margin-left: 10px;
     }
   }
-
 }
