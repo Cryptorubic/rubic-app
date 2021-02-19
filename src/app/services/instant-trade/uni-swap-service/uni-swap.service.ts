@@ -191,7 +191,7 @@ export class UniSwapService extends InstantTradeService {
     return this.web3Api.executeContractMethod(
       UniSwapContractAddress,
       UniSwapContractAbi,
-      'swapExactTokensForTokensSupportingFeeOnTransferTokens',
+      'swapExactTokensForTokens',
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       { onTransactionHash: options.onConfirm }
     );

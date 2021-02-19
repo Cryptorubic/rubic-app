@@ -311,7 +311,8 @@
               (requestData.broker_fee &&
                 !(requestData.broker_fee_base <= 50 && requestData.broker_fee_base >= 0)) ||
               requestData.tokens_info.base.token.address.toLowerCase() ===
-                requestData.tokens_info.quote.token.address.toLowerCase()
+                requestData.tokens_info.quote.token.address.toLowerCase() ||
+                uniSwapTradeStatus
             "
           >
             <span

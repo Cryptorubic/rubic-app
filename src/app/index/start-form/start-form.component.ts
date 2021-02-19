@@ -784,6 +784,16 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         .then(receipt => {
           this.successModel.open = true;
           this.successModel.transactionHash = receipt.transactionHash;
+
+          this.backendApiService.notifyInstantTradesBot({
+            provider: 'UniSwap',
+            walletAddress: receipt.from,
+            amountFrom: Number(this.uniSwapTrade.from.amount.toFixed(10)),
+            amountTo: Number(this.uniSwapTrade.to.amount.toFixed(10)),
+            symbolFrom: this.uniSwapTrade.from.token.symbol,
+            symbolTo: this.uniSwapTrade.to.token.symbol,
+            txHash: receipt.transactionHash
+          });
         })
         .catch(err => {
           if (err instanceof RubicError) {
@@ -825,14 +835,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           const amountFrom =
             Number(result.fromTokenAmount) / 10 ** Number(result.fromToken.decimals);
           const amountTo = Number(result.toTokenAmount) / 10 ** Number(result.toToken.decimals);
-          this.backendApiService.notifyInstantTradesBot(
-            result.tx.from,
+          this.backendApiService.notifyInstantTradesBot({
+            provider: 'OneInch',
+            walletAddress: result.tx.from,
             amountFrom,
             amountTo,
-            result.fromToken.symbol,
-            result.toToken.symbol,
-            hash
-          );
+            symbolFrom: result.fromToken.symbol,
+            symbolTo: result.toToken.symbol,
+            txHash: hash
+          });
         };
 
         this.web3Service
