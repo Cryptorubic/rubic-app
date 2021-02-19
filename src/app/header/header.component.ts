@@ -6,7 +6,7 @@ import {
   TemplateRef,
   ViewChild,
   Output,
-  EventEmitter,
+  EventEmitter
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../services/user/user.service';
@@ -14,13 +14,13 @@ import { Web3Service } from '../services/web3/web3.service';
 import { UserInterface } from '../services/user/user.interface';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { NavigationStart, Router } from '@angular/router';
-import { CookieService } from "ngx-cookie-service";
-import {LangChangeEvent, TranslateService} from "@ngx-translate/core";
+import { CookieService } from 'ngx-cookie-service';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
   private isBrowser: any;
@@ -56,55 +56,50 @@ export class HeaderComponent implements OnInit {
     this.translator = translate;
     this.languagesList = [
       {
-        lng: "en",
-        title: "English",
+        lng: 'en',
+        title: 'English'
       },
       {
-        lng: "ko",
-        title: "한국어",
+        lng: 'ko',
+        title: '한국어'
       },
       {
-        lng: "zh",
-        title: "中国",
+        lng: 'zh',
+        title: '中国'
       },
       {
-        lng: "ru",
-        title: "Русский",
-      },
+        lng: 'ru',
+        title: 'Русский'
+      }
     ];
 
     translate.onLangChange.subscribe((event: LangChangeEvent) => {
       this.setActiveLanguage(event);
     });
     this.setActiveLanguage({
-      lang: translate.currentLang,
+      lang: translate.currentLang
     });
 
     this.currentUser = this.userService.getUserModel();
-    this.userService
-      .getCurrentUser()
-      .subscribe((userProfile: UserInterface) => {
-        this.currentUser = userProfile;
-      });
+    this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
+      this.currentUser = userProfile;
+    });
 
     this.isBrowser = isPlatformBrowser(platformId);
 
     if (this.isBrowser) {
       window.onscroll = () => {
-        const scrolled =
-          window.pageYOffset || document.documentElement.scrollTop;
+        const scrolled = window.pageYOffset || document.documentElement.scrollTop;
         this.pageScrolled = scrolled > 50;
       };
     }
 
-    document
-      .getElementsByTagName('body')[0]
-      ['addEventListener']('mousedown', () => {
-        this.openedMenu = false;
-        this.userMenuOpened = false;
-      });
+    document.getElementsByTagName('body')[0]['addEventListener']('mousedown', () => {
+      this.openedMenu = false;
+      this.userMenuOpened = false;
+    });
 
-    this.router.events.subscribe((event) => {
+    this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.openedMenu = false;
         this.userMenuOpened = false;
@@ -127,13 +122,13 @@ export class HeaderComponent implements OnInit {
   private sendMetaMaskRequest(data) {
     this.socialFormData = {
       network: 'mm',
-      data,
+      data
     };
     this.userService.metaMaskAuth(data).then(
-      (result) => {
+      result => {
         console.log(result);
       },
-      (error) => {
+      error => {
         this.onTotpError(error);
       }
     );
@@ -154,14 +149,14 @@ export class HeaderComponent implements OnInit {
 
   public MetamaskAuth() {
     if (window['ethereum'] && window['ethereum'].isMetaMask) {
-      window['ethereum'].enable().then((accounts) => {
+      window['ethereum'].enable().then(accounts => {
         const address = accounts[0];
-        this.userService.getMetaMaskAuthMsg().then((msg) => {
-          this.web3Service.getSignedMetaMaskMsg(msg, address).then((signed) => {
+        this.userService.getMetaMaskAuthMsg().then(msg => {
+          this.web3Service.getSignedMetaMaskMsg(msg, address).then(signed => {
             this.sendMetaMaskRequest({
               address,
               msg,
-              signed_msg: signed,
+              signed_msg: signed
             });
           });
         });
@@ -174,7 +169,7 @@ export class HeaderComponent implements OnInit {
   public openLogoutConfirmation() {
     this.logoutConfirmationModal = this.dialog.open(this.logoutConfirmation, {
       width: '480px',
-      panelClass: 'custom-dialog-container',
+      panelClass: 'custom-dialog-container'
     });
   }
 
@@ -190,18 +185,17 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-
   private setActiveLanguage(event) {
     if (this.currLanguage) {
-      this.languagesList.filter((lang) => {
-        return lang["lng"] === this.currLanguage;
+      this.languagesList.filter(lang => {
+        return lang['lng'] === this.currLanguage;
       })[0].active = false;
     }
     this.currLanguage = event.lang;
-    this.cookieService.set("lng", this.currLanguage, null, null, null, null, null);
+    this.cookieService.set('lng', this.currLanguage, null, null, null, null, null);
 
-    this.languagesList.filter((lang) => {
-      return lang["lng"] === this.currLanguage;
+    this.languagesList.filter(lang => {
+      return lang['lng'] === this.currLanguage;
     })[0].active = true;
     this.languagesList.sort((a, b) => {
       return b.active ? 1 : -1;
@@ -215,5 +209,4 @@ export class HeaderComponent implements OnInit {
   public setLanguage(lng) {
     this.translator.use(lng);
   }
-
 }

@@ -8,9 +8,8 @@ describe('TokensAllInputComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TokensAllInputComponent ]
-    })
-    .compileComponents();
+      declarations: [TokensAllInputComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

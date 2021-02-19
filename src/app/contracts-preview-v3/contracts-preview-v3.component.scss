@@ -174,8 +174,7 @@
       clear: both;
     }
     &-wrapper {
-      // display: flex;
-      // justify-content: space-between;
+      margin-top: 3px;
     }
     &__count {
       font-size: 40px;
@@ -183,12 +182,6 @@
       color: #000;
       padding: 2px 30px 10px 30px;
       border-bottom: 1px solid #f4f4f4;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      &--right {
-        text-align: right;
-      }
     }
     &_item {
       // width: 48%;
@@ -237,7 +230,6 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
-      width: 100%;
     }
   }
 
@@ -533,13 +525,11 @@
     top: 2px;
   }
   &__positive {
-    background: url('/assets/images/icons/positive-rate.svg') 5px 63px
-    no-repeat;
+    background: url('/assets/images/icons/positive-rate.svg') 5px 63px no-repeat;
     color: #2bcf78;
   }
   &__negative {
-    background: url('/assets/images/icons/negative-rate.svg') 5px 63px
-    no-repeat;
+    background: url('/assets/images/icons/negative-rate.svg') 5px 63px no-repeat;
     color: #da7b83;
   }
 }
@@ -569,4 +559,3 @@
     }
   }
 }
-

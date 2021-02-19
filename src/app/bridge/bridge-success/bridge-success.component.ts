@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {on} from 'cluster';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { on } from 'cluster';
 
 @Component({
   selector: 'app-bridge-success',
@@ -9,13 +9,11 @@ import {on} from 'cluster';
 export class BridgeSuccessComponent implements OnInit {
   @Input() txId: string;
   @Output() onCloseEvent: EventEmitter<void> = new EventEmitter<void>();
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   public onCloseHandler() {
     this.onCloseEvent.emit();
   }
-
 }

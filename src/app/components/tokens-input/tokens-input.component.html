@@ -1,72 +1,25 @@
 <form class="form-field_input">
   <input
-          #amountField
-          type="text"
-          name="amountField"
-          autocomplete="off"
-          placeholder="{{amountPlaceholder | translate}}"
-          [required]="true"
-          [appBigNumber]="bigNumberDirective"
-          [tabindex]="inputDisabled ? '-1' : ''"
-          (ngModelChange)="onNumberChanges(amount)"
-          [(ngModel)]="amount"
-          class="all-input"
+    class="all-input"
+    type="text"
+    name="amountField"
+    autocomplete="off"
+    placeholder="{{ amountPlaceholder | translate }}"
+    [required]="true"
+    [appBigNumber]="bigNumberDirective"
+    [tabindex]="inputDisabled ? '-1' : ''"
+    (ngModelChange)="onNumberChanges(amount)"
+    [(ngModel)]="amount"
   />
 
-  <button
-          class="form-field_input__btn"
-          type="button"
-          [ngClass]="{ active: isOpenList }"
-          (click)="toggleListVisible(true)"
-          [disabled]="listDisabled"
-  >
-    <span *ngIf="!selectedToken">{{'Choose Token' | translate}}</span>
-    <span *ngIf="selectedToken" class="ac_res_preview">
-      <span class="ac_res_preview_icon">
-        <img [src]="selectedToken.image || './assets/images/icons/coins/empty.svg'" alt="Token symbol"/>
-      </span>
-      <span class="ac_res_preview_symbol">{{selectedToken.symbol}}</span>
-    </span>
-  </button>
-  <input
-          #tokenField
-          type="text"
-          placeholder="Search"
-          autocomplete="off"
-          name="token"
-          required
-          [tabindex]="!isOpenList ? '-1' : ''"
-          [ngModel]="query"
-          (ngModelChange)="searchToken($event)"
-          (blur)="toggleListVisible(false)"
-          (focusout)="toggleListVisible(false)"
-          class="form-field_input__ac_input"
-  />
-  <span class="form-field_input__ac_closer"
-        (mousedown)="resetTokenAndClose()">
-    <img src="./assets/images/icons/cross.svg" alt="Close"/>
-  </span>
-  <div class="form-field_input__ac_res">
-    <ul
-            *ngIf="visibleTokensList.size && isOpenList"
-            (mousedown)="$event.stopPropagation(); $event.preventDefault()"
-            class="ac_res_list"
-    >
-      <li
-              class="ac_res_list_item"
-              *ngFor="let item of visibleTokensList"
-              [ngClass]="{ active: item.name === (selectedToken && selectedToken.name)}"
-              (click)="selectToken(item);"
-      >
-        <span class="ac_res_list_item-content">
-          <span class="ac_res_list_item-content_ico">
-            <img [src]="item.image" alt="Token"/>
-          </span>
-          <span class="ac_res_list_item-content_name">
-            {{ item.name }} ({{ item.symbol }})
-          </span>
-        </span>
-      </li>
-    </ul>
-  </div>
+  <app-input-dropdown
+    [componentClass]="tokenLabelComponentClass"
+    [componentsData]="tokensDropdownData"
+    [selectedComponentData]="selectedTokenDropdownData"
+    [VISIBLE_COMPONENTS_NUMBER]="VISIBLE_TOKENS_NUMBER"
+    [sortOrder]="tokensSortOrder"
+    chooseComponentText="Choose Token"
+    [disabled]="listDisabled"
+    (componentChanges)="onTokenChanges($event)"
+  ></app-input-dropdown>
 </form>

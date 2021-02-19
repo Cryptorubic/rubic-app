@@ -2,33 +2,29 @@ import { Injectable } from '@angular/core';
 import { HttpService } from '../http/http.service';
 import { Observable } from 'rxjs';
 import { URLS } from './user.service.api';
-import {AuthUserInterface, NewUserInterface, SocialUserInterface, UserInterface} from './user.interface';
-import {DEFAULT_USER, SOCIAL_KEYS} from './user.constant';
+import {
+  AuthUserInterface,
+  NewUserInterface,
+  SocialUserInterface,
+  UserInterface
+} from './user.interface';
+import { DEFAULT_USER, SOCIAL_KEYS } from './user.constant';
 // import { environment } from '../../../environments/environment';
 
-
 import BigNumber from 'bignumber.js';
-import {AuthComponent} from '../../common/auth/auth.component';
-import {MatDialog} from '@angular/material';
-
-
+import { AuthComponent } from '../../common/auth/auth.component';
+import { MatDialog } from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
 })
-
-
 export class UserService {
   private FBInit: boolean;
   private GAInit: boolean;
   private MMInit: boolean;
 
-  constructor(
-    private dialog: MatDialog,
-    private httpService: HttpService
-  ) {
+  constructor(private dialog: MatDialog, private httpService: HttpService) {
     this.userObserves = [];
-
 
     if (window['FB']) {
       this.FBInit = true;
@@ -48,7 +44,6 @@ export class UserService {
     if (window['ethereum'] && window['ethereum'].isMetaMask) {
       this.MMInit = true;
     }
-
   }
   public userObserves;
   private _userModel: UserInterface;
@@ -58,11 +53,13 @@ export class UserService {
 
   private checkUserProfile() {
     const decimalsBalance = 18;
-    this._userModel.visibleBalance = new BigNumber(this._userModel.balance).div(Math.pow(10, decimalsBalance)).toString();
+    this._userModel.visibleBalance = new BigNumber(this._userModel.balance)
+      .div(Math.pow(10, decimalsBalance))
+      .toString();
   }
 
   private callSubscribers() {
-    this.userObserves.forEach((userObserve) => {
+    this.userObserves.forEach(userObserve => {
       this.checkUserProfile();
       userObserve.next(this._userModel);
       this._userModel.isLogout = undefined;
@@ -74,19 +71,24 @@ export class UserService {
       return;
     }
     this._updateProgress = true;
-    return this.getProfile().then((result) => {
-      this._userModel = result;
-      this._updateProgress  = false;
-    }, (error) => {
-      this._userModel = DEFAULT_USER;
-      this._userModel.isLogout = afterLogout;
-      this._updateProgress  = false;
-    }).finally(() => {
-      this.callSubscribers();
-    });
+    return this.getProfile()
+      .then(
+        result => {
+          this._userModel = result;
+          this._updateProgress = false;
+        },
+        error => {
+          this._userModel = DEFAULT_USER;
+          this._userModel.isLogout = afterLogout;
+          this._updateProgress = false;
+        }
+      )
+      .finally(() => {
+        this.callSubscribers();
+      });
   }
 
-  public checkSocialNetworks(): {FB: boolean, GA: boolean, MM: boolean} {
+  public checkSocialNetworks(): { FB: boolean; GA: boolean; MM: boolean } {
     return {
       GA: this.GAInit,
       FB: this.FBInit,
@@ -95,7 +97,7 @@ export class UserService {
   }
 
   public getCurrentUser(withRequest?: boolean, checkNow?: boolean): Observable<any> {
-    return new Observable((observer) => {
+    return new Observable(observer => {
       this.userObserves.push(observer);
 
       if (withRequest) {
@@ -112,7 +114,7 @@ export class UserService {
 
       return {
         unsubscribe() {
-          _th.userObserves = _th.userObserves.filter((subscriber) => {
+          _th.userObserves = _th.userObserves.filter(subscriber => {
             return subscriber !== observer;
           });
         }
@@ -128,13 +130,19 @@ export class UserService {
     return this.httpService.get(URLS.PROFILE).toPromise();
   }
 
-  public authenticate(data: AuthUserInterface|SocialUserInterface, socialAuthPath?: string): Promise<any> {
+  public authenticate(
+    data: AuthUserInterface | SocialUserInterface,
+    socialAuthPath?: string
+  ): Promise<any> {
     data.username = data.username ? data.username.toLowerCase() : data.username;
     return new Promise((resolve, reject) => {
-      this.httpService.post(socialAuthPath || URLS.LOGIN, data, URLS.HOSTS.AUTH_PATH).toPromise().then((response) => {
-        this.updateUser();
-        resolve(response);
-      }, reject);
+      this.httpService
+        .post(socialAuthPath || URLS.LOGIN, data, URLS.HOSTS.AUTH_PATH)
+        .toPromise()
+        .then(response => {
+          this.updateUser();
+          resolve(response);
+        }, reject);
     });
   }
 
@@ -159,7 +167,7 @@ export class UserService {
 
   public openAuthForm(chapter?: string) {
     return new Promise((resolve, reject) => {
-      const updateUserObserver = this.getCurrentUser(false, true).subscribe((userModel) => {
+      const updateUserObserver = this.getCurrentUser(false, true).subscribe(userModel => {
         if (!userModel.is_ghost) {
           this.closeAuthForm();
           resolve(userModel);
@@ -172,12 +180,15 @@ export class UserService {
           chapter: chapter || 'sign_in'
         }
       });
-      this.authDialog.beforeClosed().toPromise().then(() => {
-        updateUserObserver.unsubscribe();
-        reject({
-          state: 'CLOSED'
+      this.authDialog
+        .beforeClosed()
+        .toPromise()
+        .then(() => {
+          updateUserObserver.unsubscribe();
+          reject({
+            state: 'CLOSED'
+          });
         });
-      });
     });
   }
 
@@ -188,38 +199,44 @@ export class UserService {
   }
 
   public logout() {
-    return this.httpService.get(URLS.LOGOUT, {}, URLS.HOSTS.AUTH_PATH).toPromise().then(() => {
-      this._userModel = undefined;
-      this.updateUser(true);
-    });
+    return this.httpService
+      .get(URLS.LOGOUT, {}, URLS.HOSTS.AUTH_PATH)
+      .toPromise()
+      .then(() => {
+        this._userModel = undefined;
+        this.updateUser(true);
+      });
   }
 
   public enable2fa(code) {
-    return this.httpService.post(URLS.ENABLE_2FA, {
-      totp: code
-    }).toPromise();
+    return this.httpService
+      .post(URLS.ENABLE_2FA, {
+        totp: code
+      })
+      .toPromise();
   }
 
   public disable2fa(code) {
-    return this.httpService.post(URLS.DISABLE_2FA, {
-      totp: code
-    }).toPromise();
+    return this.httpService
+      .post(URLS.DISABLE_2FA, {
+        totp: code
+      })
+      .toPromise();
   }
 
   public generate2fa() {
     return this.httpService.post(URLS.GENERATE_KEY).toPromise();
   }
 
-
   public setNewPassword(data) {
     return this.httpService.post(URLS.PASSWORD_CHANGE, data, URLS.HOSTS.AUTH_PATH).toPromise();
   }
 
-
   public passwordChange(data) {
-    return this.httpService.post(URLS.PASSWORD_RESET_CONFIRM, data, URLS.HOSTS.AUTH_PATH).toPromise();
+    return this.httpService
+      .post(URLS.PASSWORD_RESET_CONFIRM, data, URLS.HOSTS.AUTH_PATH)
+      .toPromise();
   }
-
 
   public socialAuthRequest(network, data) {
     switch (network) {
@@ -236,18 +253,20 @@ export class UserService {
 
   public metaMaskAuth(data) {
     return new Promise((resolve, reject) => {
-      this.httpService.post('metamask/', data, URLS.HOSTS.AUTH_PATH).toPromise().then((response) => {
-        this.updateUser();
-        resolve(response);
-      }, reject);
+      this.httpService
+        .post('metamask/', data, URLS.HOSTS.AUTH_PATH)
+        .toPromise()
+        .then(response => {
+          this.updateUser();
+          resolve(response);
+        }, reject);
     });
   }
-
 
   public FBAuth() {
     return new Promise((resolve, reject) => {
       const getStatus = () => {
-        window['FB'].getLoginStatus((response) => {
+        window['FB'].getLoginStatus(response => {
           if (response.status === 'connected') {
             resolve(response.authResponse);
           } else {
@@ -263,42 +282,39 @@ export class UserService {
 
   public GoogleAuth() {
     return new Promise((resolve, reject) => {
-      window['gapi'].auth2.authorize({
-        client_id: SOCIAL_KEYS.GOOGLE,
-        scope: 'email profile',
-        response_type: 'id_token permission',
-        prompt: 'select_account'
-      }, function(response) {
-        if (response.error) {
-          reject(response);
-          return;
+      window['gapi'].auth2.authorize(
+        {
+          client_id: SOCIAL_KEYS.GOOGLE,
+          scope: 'email profile',
+          response_type: 'id_token permission',
+          prompt: 'select_account'
+        },
+        function (response) {
+          if (response.error) {
+            reject(response);
+            return;
+          }
+          resolve(response);
         }
-        resolve(response);
-      });
+      );
     });
-
   }
-
 
   // var promise = requestService.get(params);
   // promise.then(function(responseSocialUserInterface) {
-    //   if (response.data.id) {
-        // !WebSocketService.status() ? WebSocketService.connect() : false;
-        // $cookies.put('UserID', response.data.id);
-      // } else {
-        // WebSocketService.status() ? WebSocketService.disconnect() : false;
-        // $cookies.put('UserID', undefined);
-      // }
-    // }, function() {
-      // WebSocketService.status() ? WebSocketService.disconnect() : false;
-      // $cookies.put('UserID', undefined);
-    // });
-    // return promise;
+  //   if (response.data.id) {
+  // !WebSocketService.status() ? WebSocketService.connect() : false;
+  // $cookies.put('UserID', response.data.id);
+  // } else {
+  // WebSocketService.status() ? WebSocketService.disconnect() : false;
+  // $cookies.put('UserID', undefined);
+  // }
+  // }, function() {
+  // WebSocketService.status() ? WebSocketService.disconnect() : false;
+  // $cookies.put('UserID', undefined);
+  // });
+  // return promise;
   // },
-
-
-
-
 
   // setLanguage: function(lng) {
   //   var params = {
@@ -309,7 +325,4 @@ export class UserService {
   //   };
   //   return requestService.post(params);
   // }
-
-
 }
-

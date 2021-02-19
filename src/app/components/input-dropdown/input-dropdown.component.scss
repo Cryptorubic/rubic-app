@@ -1,0 +1,131 @@
+@import '../../../scss/_mixins';
+
+.input-dropdown {
+  &__choose-button {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    z-index: 2;
+
+    padding: 0;
+    margin-top: -21px;
+    border: 2px solid #e5e5e5;
+    border-radius: 0 4px 4px 0;
+
+    background: #fff;
+    color: #43476c;
+
+    font-family: inherit;
+    font-size: 16px;
+    letter-spacing: -0.43px;
+    line-height: 18px;
+
+    cursor: pointer;
+
+    &_with-text {
+      padding: 10px 11px;
+    }
+  }
+
+  &__search-input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+
+    box-sizing: border-box;
+    padding: 11px 10px 11px 22px;
+    border: 1px solid white;
+
+    background: #f4f4f4;
+    color: #110931;
+    opacity: 0;
+
+    font-family: inherit;
+    font-size: 18px;
+    line-height: 30px;
+
+    transition: all linear 0.2s;
+  }
+
+  &__choose-button_active + &__search-input {
+    z-index: 4;
+
+    border-left: 1px solid #d8d8d8 !important;
+
+    opacity: 1;
+  }
+
+  &__close-button {
+    position: absolute;
+    top: 50%;
+    right: 25px;
+    z-index: 4;
+
+    width: 0;
+    height: 30px;
+
+    opacity: 0;
+    cursor: pointer;
+    transition: all linear 0.2s;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  &__choose-button_active ~ &__close-button {
+    right: 10px;
+
+    width: 30px;
+    margin-top: -15px;
+
+    background: #f4f4f4;
+    opacity: 1;
+  }
+
+  &__dropdown-components {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 3;
+  }
+
+  .dropdown-components {
+    &__list {
+      max-height: 200px;
+    }
+
+    .components-list {
+      overflow: auto;
+
+      padding: 0;
+      margin: 0;
+      border-top: 1px solid #dedede;
+      border-bottom: 1px solid #dedede;
+
+      background-color: white;
+
+      list-style-type: none;
+
+      &__item {
+        border: 1px solid #fff;
+
+        color: #000;
+
+        cursor: pointer;
+
+        &:hover {
+          background-color: #fffbcd;
+        }
+
+        &_active {
+          background-color: #fffbcd;
+          border-color: #dddab2;
+
+          cursor: default;
+        }
+      }
+    }
+  }
+}

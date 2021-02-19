@@ -1,9 +1,9 @@
 <ng-template [ngIf]="!warning">
-    <app-header *ngIf="withHeader"></app-header>
-    <router-outlet></router-outlet>
+  <app-header *ngIf="withHeader"></app-header>
+  <router-outlet></router-outlet>
 </ng-template>
 <ng-template [ngIf]="warning">
-    <app-maintenance></app-maintenance>
+  <app-maintenance></app-maintenance>
 </ng-template>
 
 <!-- div class="watch-instruction-btn hide-sm"
@@ -34,5 +34,3 @@
 
   <span class="cookies-info_content_close" (click)="closeCookiesInfo(true)"></span>
 </div -->
-
-

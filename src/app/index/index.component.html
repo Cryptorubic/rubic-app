@@ -2,45 +2,50 @@
   <div class="app-content-block">
     <div class="app-index__intro">
       <div class="app-index__intro_text">
-        {{'Make trades on your terms, share and generate revenue' | translate}}
+        {{ 'Make trades on your terms, share and generate revenue' | translate }}
       </div>
     </div>
     <div class="app-index__start-form">
       <div class="title-section toggle-menu-container">
-        <span>{{'Create your Trade' | translate}}</span>
+        <span>{{ 'Create your Trade' | translate }}</span>
         <a routerLink="/bridge" class="toggle-menu-container__toggle">
           <span class="toggle-menu-container__toggle-text">Cross-chain swaps beta</span>
           <div class="toggle-menu-container__arrow-button">
-            <img src="assets/images/icons/arrow/arrow-right-green.svg" alt="Arrow"/>
+            <img src="assets/images/icons/arrow/arrow-right-green.svg" alt="Arrow" />
           </div>
         </a>
       </div>
       <app-start-form
-              *ngIf="!crossChainMode"
-              (blockchainTradesSelect)="changeBlockchain($event)"
-              (instanceTradesSelect)="changeOrderType($event)">
+        *ngIf="!crossChainMode"
+        (blockchainTradesSelect)="changeBlockchain($event)"
+        (instanceTradesSelect)="changeOrderType($event)"
+      >
       </app-start-form>
-      <app-bridge-form
-              *ngIf="crossChainMode">
-      </app-bridge-form>
+      <app-bridge-form *ngIf="crossChainMode"> </app-bridge-form>
     </div>
 
-    <div class="app-index__contracts" [hidden]="isInstanceTrade || crossChainMode" *ngIf="selectedBlockchain">
+    <div
+      class="app-index__contracts"
+      [hidden]="isInstanceTrade || crossChainMode"
+      *ngIf="selectedBlockchain"
+    >
       <app-public-contracts [blockchain]="selectedBlockchain"></app-public-contracts>
     </div>
-
 
     <div class="one-inch" *ngIf="isInstanceTrade">
       <div class="one-inch_text">With the assistance of</div>
       <div class="one-inch_logo">
-        <img src="./assets/images/one-inch.svg">
+        <img src="./assets/images/one-inch.svg" />
       </div>
     </div>
 
-
-    <div class="disclaimer-text" #disclaimerText
-         [innerHTML]="'By trading on our platform you agree with the following terms and conditions' | translate">
-    </div>
+    <div
+      class="disclaimer-text"
+      #disclaimerText
+      [innerHTML]="
+        'By trading on our platform you agree with the following terms and conditions' | translate
+      "
+    ></div>
 
     <app-collaborations></app-collaborations>
   </div>
@@ -49,4 +54,3 @@
 <app-footer></app-footer>
 
 <div class="scroll-top-btn" id="scroll-btn"></div>
-

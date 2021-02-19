@@ -9,12 +9,9 @@ import collaborations from '../../../assets/content/collaborations/collaboration
   styleUrls: ['./collaborations.component.scss']
 })
 export class CollaborationsComponent implements OnInit {
-
   public collaborations = collaborations;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

@@ -40,7 +40,6 @@
   }
 }
 
-
 .lds-ellipsis {
   display: block;
   &.inline {
@@ -99,7 +98,6 @@
       animation-timing-function: cubic-bezier(1, 1, 0, 0) !important;
     }
   }
-
 }
 
 .lds-ellipsis-container span:nth-child(1) {
@@ -142,4 +140,3 @@
     transform: translate(19px, 0);
   }
 }
-

@@ -1,7 +1,7 @@
 <form #tokenForm="ngForm">
   <input
     type="text"
-    placeholder="{{amountPlaceholder ? ('Enter Amount' | translate) : ''}}"
+    placeholder="{{ amountPlaceholder ? ('Enter Amount' | translate) : '' }}"
     [disabled]="disabled"
     #amountField
     [required]="true"
@@ -11,7 +11,7 @@
     }"
     name="amountField"
     [tabindex]="visibleInput ? '-1' : ''"
-    (ngModelChange)="TokenChange.emit(tokenModel)"
+    (ngModelChange)="TokenChange.emit()"
     [(ngModel)]="tokenModel.amount"
     class="all-input"
   />
@@ -22,14 +22,12 @@
     [ngClass]="{ active: visibleInput }"
     (click)="showAutoInput()"
   >
-    <span *ngIf="!tokenModel.token.address">{{'Choose Token' | translate}}</span>
+    <span *ngIf="!tokenModel.token.address">{{ 'Choose Token' | translate }}</span>
     <span *ngIf="tokenModel.token.address" class="ac_res_preview">
       <span class="ac_res_preview_icon">
-        <img [src]="tokenModel.token.image_link || './assets/images/icons/coins/empty.svg'"/>
+        <img [src]="tokenModel.token.image_link || './assets/images/icons/coins/empty.svg'" />
       </span>
-      <span class="ac_res_preview_symbol">{{
-        tokenModel.token.token_short_name
-      }}</span>
+      <span class="ac_res_preview_symbol">{{ tokenModel.token.token_short_title }}</span>
     </span>
   </button>
   <input
@@ -47,8 +45,7 @@
     (blur)="hideAutoInput()"
     class="form-field_input__ac_input"
   />
-  <span class="form-field_input__ac_closer"
-        (mousedown)="resetToken()">
+  <span class="form-field_input__ac_closer" (click)="resetToken()">
     <img src="./assets/images/icons/cross.svg" />
   </span>
   <div class="form-field_input__ac_res">
@@ -61,14 +58,14 @@
         class="ac_res_list_item"
         *ngFor="let item of tokensList; let ind = index"
         [ngClass]="{ active: item.active }"
-        (click)="selectToken(item, ind);"
+        (click)="selectToken(item, ind)"
       >
         <span class="ac_res_list_item-content">
           <span class="ac_res_list_item-content_ico">
             <img [src]="item.image_link" />
           </span>
           <span class="ac_res_list_item-content_name">
-            {{ item.token_name }} ({{ item.token_short_name }})
+            {{ item.token_title }} ({{ item.token_short_title }})
           </span>
         </span>
       </li>
