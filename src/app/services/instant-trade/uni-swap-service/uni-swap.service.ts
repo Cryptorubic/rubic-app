@@ -114,7 +114,7 @@ export class UniSwapService extends InstantTradeService {
     );
     const amountOutMin = trade.to.amount
       .multipliedBy(new BigNumber(1).minus(percentSlippage))
-      .multipliedBy(10 ** trade.from.token.decimals)
+      .multipliedBy(10 ** trade.to.token.decimals)
       .toFixed(0);
     const path = [trade.from.token.address, trade.to.token.address];
     const to = this.web3Api.address;

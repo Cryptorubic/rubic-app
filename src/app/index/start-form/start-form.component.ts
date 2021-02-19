@@ -167,6 +167,13 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   private platforms = ['ethereum', 'binance-smart-chain', 'matic'];
 
+  public isTestMode = false;
+
+  public successModel = {
+    open: false,
+    transactionHash: ''
+  };
+
   constructor(
     private dialog: MatDialog,
     protected contractsService: ContractsService,
@@ -217,10 +224,11 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     this.getOrderBookTokens();
 
     // @ts-ignore
-    window.useTestingMode = () => {
+    window.useTestMode = () => {
       // @ts-ignore
       window.coingecko_tokens = coingeckoTestTokens;
       this.instanceTradesTokens = coingeckoTestTokens;
+      this.isTestMode = true;
     };
   }
 
@@ -434,7 +442,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public changedToken(force?: boolean) {
-    debugger;
     this.requestData.tokens_info.uniswap.token = this.requestData.tokens_info.quote.token;
     this.recalculateUniSwapParameters();
     const baseCoin = this.requestData.tokens_info.base.token;
@@ -741,7 +748,31 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     return params;
   }
 
-  public createUniSwapTrade() {}
+  public createUniSwapTrade() {
+    this.uniSwapTradeStatus = UNISWAP_TRADE_STATUS.TRADE_IN_PROGRESS;
+    if (this.uniSwapTrade) {
+      this.uniSwapService
+        .createTrade(this.uniSwapTrade, {
+          onApprove: hash => {
+            this.instantTradeInProgress = true;
+            this.uniSwapTradeStatus = UNISWAP_TRADE_STATUS.APPROVE_IN_PROGRESS;
+          },
+          onConfirm: hash => {
+            this.instantTradeInProgress = true;
+            this.uniSwapTradeStatus = UNISWAP_TRADE_STATUS.TRADE_IN_PROGRESS;
+          }
+        })
+        .finally(() => {
+          this.instantTradeInProgress = false;
+          this.uniSwapTradeStatus = undefined;
+        })
+        .then(receipt => {
+          debugger;
+          this.successModel.open = true;
+          this.successModel.transactionHash = receipt.transactionHash;
+        });
+    }
+  }
 
   private async createInstanceTrade() {
     const params = this.getOrderParams();
@@ -850,6 +881,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private metamaskAccount: string;
 
   public createContract() {
+    debugger;
     const accSubscriber = this.updateAddresses(true).subscribe(
       res => {
         this.metamaskAccount = res['metamask'][0];
