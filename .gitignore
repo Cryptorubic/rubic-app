@@ -48,3 +48,4 @@ Thumbs.db
 /rub/
 /ssl/
 /deploy/
+/src/test/enviroment.test.json
