@@ -8,6 +8,8 @@ import { Percent } from '@uniswap/sdk';
 import { Web3ApiService } from '../../web3Api/web3-api.service';
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
 import { TransactionReceipt } from 'web3-eth';
+import { RubicError } from '../../../errors/RubicError';
+import InsufficientFundsError from '../../../errors/instant-trade/InsufficientFundsError';
 
 interface UniSwapTrade {
   amountIn: string;
@@ -108,6 +110,7 @@ export class UniSwapService extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
+    await this.checkBalance(trade);
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
     const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(
       100
@@ -205,6 +208,34 @@ export class UniSwapService extends InstantTradeService {
       await this.web3Api.approveTokens(tokenAddress, UniSwapContractAddress, uintInfinity, {
         onTransactionHash: onApprove
       });
+    }
+  }
+
+  private async checkBalance(trade: InstantTrade): Promise<void> {
+    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
+
+    if (this.web3Api.isEtherAddress(trade.from.token.address)) {
+      const balance = await this.web3Api.getBalance({ inWei: true });
+      if (balance.lt(amountIn)) {
+        const formattedBalance = this.web3Api.weiToEth(balance);
+        throw new InsufficientFundsError(
+          trade.from.token.symbol,
+          formattedBalance,
+          trade.from.amount.toString()
+        );
+      }
+    } else {
+      const tokensBalance = await this.web3Api.getTokenBalance(trade.from.token.address);
+      if (tokensBalance.lt(amountIn)) {
+        const formattedTokensBalance = tokensBalance
+          .div(10 ** trade.from.token.decimals)
+          .toString();
+        throw new InsufficientFundsError(
+          trade.from.token.symbol,
+          formattedTokensBalance,
+          trade.from.amount.toString()
+        );
+      }
     }
   }
 

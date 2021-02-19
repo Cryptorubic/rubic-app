@@ -39,6 +39,7 @@ import { UniSwapService } from '../../services/instant-trade/uni-swap-service/un
 import { InstantTrade, InstantTradeToken } from '../../services/instant-trade/types';
 import { ETH, WEENUS, YEENUS } from '../../../test/tokens/eth-tokens';
 import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
+import { RubicError } from '../../errors/RubicError';
 
 const defaultNetwork = 1;
 
@@ -173,6 +174,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     open: false,
     transactionHash: ''
   };
+
+  public instantTradeError: RubicError;
 
   constructor(
     private dialog: MatDialog,
@@ -395,6 +398,18 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.requestData.tokens_info.quote.token.address
     ) {
       if (
+        Number(this.web3Service.ethereum.networkVersion) !== 1 &&
+        !this.isTestMode &&
+        !this.metaMaskErrorModal
+      ) {
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container'
+        });
+        return;
+      }
+
+      if (
         this.uniSwapTrade &&
         this.uniSwapTrade.from.token.address === this.requestData.tokens_info.base.token.address &&
         this.uniSwapTrade.to.token.address === this.requestData.tokens_info.quote.token.address &&
@@ -409,14 +424,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         network: 'ETH',
         address: this.requestData.tokens_info.base.token.address,
         decimals: this.requestData.tokens_info.base.token.decimals,
-        symbol: this.requestData.tokens_info.base.token.token_short_name
+        symbol: this.requestData.tokens_info.base.token.token_short_title
       };
 
       const toToken: InstantTradeToken = {
         network: 'ETH',
         address: this.requestData.tokens_info.quote.token.address,
         decimals: this.requestData.tokens_info.quote.token.decimals,
-        symbol: this.requestData.tokens_info.quote.token.token_short_name
+        symbol: this.requestData.tokens_info.quote.token.token_short_title
       };
 
       this.uniSwapTrade = await this.uniSwapService.calculateTrade(
@@ -767,9 +782,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           this.uniSwapTradeStatus = undefined;
         })
         .then(receipt => {
-          debugger;
           this.successModel.open = true;
           this.successModel.transactionHash = receipt.transactionHash;
+        })
+        .catch(err => {
+          if (err instanceof RubicError) {
+            this.instantTradeError = err;
+          } else {
+            console.error(err);
+          }
         });
     }
   }

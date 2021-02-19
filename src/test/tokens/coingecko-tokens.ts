@@ -1,4 +1,4 @@
-import { ETH, WEENUS, YEENUS } from './eth-tokens';
+import { ETH, WEENUS, XEENUS, YEENUS, ZEENUS } from './eth-tokens';
 
 const eth = {
   address: ETH.address,
@@ -35,4 +35,28 @@ const yeenus = {
   usd_price: 48005
 };
 
-export const coingeckoTestTokens = [eth, weenus, yeenus];
+const xeenus = {
+  address: XEENUS.address,
+  coingecko_rank: 4,
+  decimals: XEENUS.decimals,
+  image_link:
+    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  platform: 'ethereum',
+  token_short_title: 'XEENUS',
+  token_title: 'XEENUS',
+  usd_price: 48005
+};
+
+const zeenus = {
+  address: ZEENUS.address,
+  coingecko_rank: 3,
+  decimals: ZEENUS.decimals,
+  image_link:
+    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  platform: 'ethereum',
+  token_short_title: 'ZEENUS',
+  token_title: 'ZEENUS',
+  usd_price: 48005
+};
+
+export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus];
