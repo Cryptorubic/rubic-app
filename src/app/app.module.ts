@@ -86,10 +86,6 @@ import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.c
 import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { DropdownSelectComponent } from './components/dropdown-select/dropdown-select.component';
-import { MainPageComponent } from './pages/main-page/main-page.component';
-import { InstantTradesComponent } from './pages/main-page/instant-trades/instant-trades.component';
-import { TradesFormComponent } from './pages/main-page/trades-form/trades-form.component';
-import { OrderBookComponent } from './pages/main-page/order-book/order-book.component';
 import { WhiteButtonComponent } from './components/white-button/white-button.component';
 import { TokenLabelComponent } from './components/tokens-input/token-label/token-label.component';
 import { InputDropdownComponent } from './components/input-dropdown/input-dropdown.component';
@@ -98,6 +94,7 @@ import { BlockchainLabelComponent } from './components/blockchains-input/blockch
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
 import { DynamicModule } from 'ng-dynamic-component';
+import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -247,7 +244,8 @@ export function appInitializerFactory(
     BlockchainsInputComponent,
     BlockchainLabelComponent,
     AddressInputComponent,
-    NetworkErrorComponent
+    NetworkErrorComponent,
+    TradeSuccessModalComponent
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [
