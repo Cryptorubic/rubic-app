@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BLOCKCHAIN_NAMES } from '../trades-form/trades-form.component';
+import { BLOCKCHAIN_NAMES } from '../trades-form/types';
 
 @Component({
   selector: 'app-instant-trades',

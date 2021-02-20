@@ -1,0 +1,28 @@
+.instant-trade {
+  padding: 43px 19px;
+  &, * {
+    box-sizing: border-box;
+  }
+
+  display: flex;
+  align-items: flex-start;
+
+  &__block {
+    position: relative;
+    margin-right: 30px;
+    flex: 2;
+
+    &_short {
+      flex: 1;
+      margin-right: 0;
+    }
+  }
+
+  &__label {
+    position: absolute;
+  }
+
+  &__row {
+    padding-bottom: 46px;
+  }
+}

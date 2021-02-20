@@ -2,17 +2,7 @@ import { Component, OnInit, Type } from '@angular/core';
 import { InstantTradesComponent } from '../instant-trades/instant-trades.component';
 
 import { OrderBookComponent } from '../order-book/order-book.component';
-
-export enum BLOCKCHAIN_NAMES {
-  ETHEREUM = 'ETH',
-  BINANCE_SMART_CHAIN = 'BSC',
-  MATIC = 'MAT'
-}
-
-export enum MODE_NAMES {
-  INSTANT_TRADE = 'INSTANT_TRADE',
-  ORDER_BOOK = 'ORDER_BOOK'
-}
+import { BLOCKCHAIN_NAMES, MODE_NAMES } from './types';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAMES;

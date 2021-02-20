@@ -1,4 +1,36 @@
-<span>
-  instant-trades works!
-  {{ blockchain }}
-</span>
+<form class="instant-trade">
+  <div class="instant-trade__block">
+    <div class="instant-trade__label">
+      you have
+    </div>
+    <app-tokens-input>
+    </app-tokens-input>
+  </div>
+  <div class="instant-trade__block">
+    <div class="instant-trade__label">
+      you get
+    </div>
+    <div class="instant-trade__row">
+      <app-tokens-input class="instant-trade__tokens-input">
+      </app-tokens-input>
+    </div>
+
+    <div>
+      <app-tokens-input>
+      </app-tokens-input>
+    </div>
+  </div>
+  <div class="instant-trade__block instant-trade__block_short">
+    <div class="instant-trade__row">
+      <app-primary-button
+        label="Via OneInch"
+      >
+      </app-primary-button>
+    </div>
+
+    <app-primary-button
+      label="Via UniSwap"
+    >
+    </app-primary-button>
+  </div>
+</form>
