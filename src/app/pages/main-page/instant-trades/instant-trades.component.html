@@ -3,7 +3,9 @@
     <div class="instant-trade__label">
       you have
     </div>
-    <app-tokens-input>
+    <app-tokens-input
+      [tokensList]="tokens"
+    >
     </app-tokens-input>
   </div>
   <div class="instant-trade__block">
@@ -11,12 +13,16 @@
       you get
     </div>
     <div class="instant-trade__row">
-      <app-tokens-input class="instant-trade__tokens-input">
+      <app-tokens-input class="instant-trade__tokens-input"
+        [tokensList]="tokens"
+      >
       </app-tokens-input>
     </div>
 
     <div>
-      <app-tokens-input>
+      <app-tokens-input
+        [tokensList]="tokens"
+      >
       </app-tokens-input>
     </div>
   </div>

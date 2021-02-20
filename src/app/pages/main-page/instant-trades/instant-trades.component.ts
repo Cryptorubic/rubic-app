@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BLOCKCHAIN_NAMES } from '../trades-form/types';
+import { List } from 'immutable';
+import { TokensService } from '../../../services/backend/tokens-service/tokens.service';
+import { SwapToken } from '../../../services/backend/tokens-service/types';
 
 @Component({
   selector: 'app-instant-trades',
@@ -8,8 +11,11 @@ import { BLOCKCHAIN_NAMES } from '../trades-form/types';
 })
 export class InstantTradesComponent implements OnInit {
   @Input() blockchain: BLOCKCHAIN_NAMES;
+  public tokens = List<SwapToken>([]);
 
-  constructor() {}
+  constructor(private tokenService: TokensService) {
+    tokenService.tokens.subscribe(tokens => (this.tokens = tokens));
+  }
 
   ngOnInit() {}
 }
