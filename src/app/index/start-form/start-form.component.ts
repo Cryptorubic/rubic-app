@@ -421,14 +421,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.uniSwapTrade = undefined;
       this.uniSwapTradeStatus = UNISWAP_TRADE_STATUS.PARAMS_CALCULATION;
       const fromToken: InstantTradeToken = {
-        network: 'ETH',
+        platform: 'ETH',
         address: this.requestData.tokens_info.base.token.address,
         decimals: this.requestData.tokens_info.base.token.decimals,
         symbol: this.requestData.tokens_info.base.token.token_short_title
       };
 
       const toToken: InstantTradeToken = {
-        network: 'ETH',
+        platform: 'ETH',
         address: this.requestData.tokens_info.quote.token.address,
         decimals: this.requestData.tokens_info.quote.token.decimals,
         symbol: this.requestData.tokens_info.quote.token.token_short_title

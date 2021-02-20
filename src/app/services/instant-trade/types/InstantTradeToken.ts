@@ -1,8 +1,8 @@
 interface InstantTradeToken {
-    network: string;
-    address: string;
-    decimals: number;
-    symbol: string;
+  platform: string;
+  address: string;
+  decimals: number;
+  symbol: string;
 }
 
 export default InstantTradeToken;
