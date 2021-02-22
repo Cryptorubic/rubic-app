@@ -49,7 +49,7 @@ header {
     padding: 0;
     margin: 0;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     height: 42px;
 
     @include b(500) {
@@ -65,7 +65,6 @@ header {
         align-items: center;
         color: #fff !important;
         text-transform: none;
-        margin-top: -4px;
         img {
           margin-left: 16px;
         }
@@ -226,6 +225,7 @@ header {
 }
 
 .language-select {
+  align-self: flex-start;
   //padding: 8px 0;
   margin-left: 10px;
   margin-right: 10px;
@@ -235,7 +235,6 @@ header {
   box-sizing: border-box;
   color: #4aa956;
   text-transform: initial;
-  top: -3px;
   &-list {
     display: block;
     list-style-type: none;
@@ -263,8 +262,8 @@ header {
       border-color: #4aa956;
       transform: rotate(135deg);
       position: absolute;
-      top: 16px;
-      right: 11px;
+      top: 15px;
+      right: 10px;
       z-index: 2;
 
       transition: transform 0.3s ease-in-out;
@@ -295,10 +294,6 @@ header {
       img {
         margin-right: 6px;
         float: left;
-      }
-      span {
-        position: relative;
-        top: 2px;
       }
       &.active {
         //padding-right: 30px;
@@ -368,9 +363,9 @@ header {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     .app-content-block {
-      height: 65px;
+      height: auto;
       padding-top: 12px;
-      padding-bottom: 11px;
+      padding-bottom: 12px;
       position: relative;
 
       &_right {

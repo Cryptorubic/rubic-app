@@ -17,6 +17,8 @@
   }
 
   &__body {
+    padding: 27px 30px 28px;
+
     background-color: white;
   }
 }
@@ -33,10 +35,11 @@
   background-color: white;
   cursor: pointer;
 
-  span {
-    position: relative;
-    top: 2px;
+  &:last-child {
+    margin-right: 0;
+  }
 
+  span {
     font-weight: normal;
     font-size: 14px;
     color: #000000;

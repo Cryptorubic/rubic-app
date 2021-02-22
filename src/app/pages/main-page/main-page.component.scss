@@ -11,7 +11,7 @@
 
   &__intro {
     padding-top: 40px;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
 
     font-weight: normal;
     font-size: 22px;
@@ -68,4 +68,10 @@
   color: #000000;
   margin-top: 0;
   margin-bottom: 52px;
+}
+
+@media (max-width: 1240px) {
+  .main-page {
+    padding: 0 2vw;
+  }
 }

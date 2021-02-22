@@ -25,154 +25,17 @@
 @import 'scss/elements/dropdown-labels';
 
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');
 
 .white-bg {
   background-color: #fff !important;
 }
 
 /* You can add global styles to this file, and also import other style files */
-@font-face {
-  font-family: 'TT Norms';
-  src: url('./assets/fonts/ttnorms-bold-webfont.woff2') format('woff2'),
-    url('./assets/fonts/ttnorms-bold-webfont.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'TT Norms';
-  src: url('./assets/fonts/ttnorms-regular-webfont.woff2') format('woff2'),
-    url('./assets/fonts/ttnorms-regular-webfont.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'TT Norms';
-  src: url('./assets/fonts/ttnorms-light-webfont.woff2') format('woff2'),
-    url('./assets/fonts/ttnorms-light-webfont.woff') format('woff');
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'TT Norms';
-  src: url('./assets/fonts/ttnorms-black-webfont.woff2') format('woff2'),
-    url('./assets/fonts/ttnorms-black-webfont.woff') format('woff');
-  font-weight: 800;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Sofia Pro';
-  src: local('Sofia Pro Regular'), local('Sofia-Pro-Bold'),
-    url('./assets/fonts/SofiaProRegular.woff2') format('woff2'),
-    url('./assets/fonts/SofiaProRegular.woff') format('woff'),
-    url('./assets/fonts/SofiaProRegular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Sofia Pro';
-  src: local('Sofia Pro Bold'), local('Sofia-Pro-Bold'),
-    url('./assets/fonts/SofiaProBold.woff2') format('woff2'),
-    url('./assets/fonts/SofiaProBold.woff') format('woff'),
-    url('./assets/fonts/SofiaProBold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Poppins';
-  src: local('Poppins-Regular'),
-    url('./assets/fonts/Poppins-Regular.ttf') format('ttf');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Poppins';
-  src: local('Poppins-Bold'),
-    url('./assets/fonts/Poppins-Bold.ttf') format('ttf');
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Josefin Sans';
-  src: local('Josefin Sans Extra Light'), local('Josefin-Sans-Extra-Light'),
-    url('./assets/fonts/JosefinSans-ExtraLight.ttf') format('ttf');
-  font-weight: 100;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Josefin Sans';
-  src: local('Josefin Sans Extra Thin'), local('Josefin-Sans-Extra-Thin'),
-    url('./assets/fonts/JosefinSans-Thin.ttf') format('ttf');
-  font-weight: 200;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Josefin Sans';
-  src: local('Josefin Sans Extra Light'), local('Josefin-Sans-Extra-Light'),
-    url('./assets/fonts/JosefinSans-Light.ttf') format('ttf');
-  font-weight: lighter;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Josefin Sans';
-  src: local('Josefin Sans Extra Regular'), local('Josefin-Sans-Extra-Regular'),
-    url('./assets/fonts/JosefinSans-Regular.ttf') format('ttf');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Josefin Sans';
-  src: local('Josefin Sans Extra Medium'), local('Josefin-Sans-Extra-Medium'),
-    url('./assets/fonts/JosefinSans-Medium.ttf') format('ttf');
-  font-weight: 600;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Josefin Sans';
-  src: local('Josefin Sans Extra Bold'), local('Josefin-Sans-Extra-Bold'),
-    url('./assets/fonts/JosefinSans-Bold.ttf') format('ttf');
-  font-weight: bold;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Josefin Sans';
-  src: local('Josefin Sans Extra SemiBold'),
-    local('Josefin-Sans-Extra-SemiBold'),
-    url('./assets/fonts/JosefinSans-SemiBold.ttf') format('ttf');
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Ubuntu';
-  src: local('Ubuntu Regular'),
-  local('Ubuntu-Regular'),
-  url('./assets/fonts/Ubuntu-Regular.ttf') format('ttf');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Ubuntu';
-  src: local('Ubuntu Medium'),
-  local('Ubuntu-Medium'),
-  url('./assets/fonts/Ubuntu-Medium.ttf') format('ttf');
-  font-weight: 500;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Ubuntu';
-  src: local('Ubuntu Bold'),
-  local('Ubuntu-Bold'),
-  url('./assets/fonts/Ubuntu-Bold.ttf') format('ttf');
-  font-weight: 700;
-  font-style: normal;
-}
-
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Sofia Pro', 'Josefin Sans', Arial, sans-serif;
+  font-family: 'Ubuntu', 'Josefin Sans', Arial, sans-serif;
   min-width: 320px;
   background: #f4f4f4;
   background-size: cover;
@@ -187,10 +50,10 @@ html {
 }
 
 .noscroll {
-  position:fixed;
+  position: fixed;
   left: 0;
   right: 0;
-  overflow:hidden;
+  overflow: hidden;
 }
 
 .pre {
@@ -333,8 +196,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   border-left: 5px solid #fcd600 !important;
   line-height: 62px;
   padding: 0 !important;
-  background: url(/assets/images/icons/support.svg) 15px 17px no-repeat
-    rgba(255, 255, 255, 0.1) !important;
+  background: url(/assets/images/icons/support.svg) 15px 17px no-repeat rgba(255, 255, 255, 0.1) !important;
 
   transform: translateY(0%) !important;
   opacity: 1 !important;
@@ -708,7 +570,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         padding-bottom: 16px;
         display: none;
         &_content {
-          background: #FFFFFF;
+          background: #ffffff;
           box-shadow: 0 12px 12px rgba(0, 0, 0, 0.25);
           padding: 9px 5px;
           text-align: center;
@@ -737,7 +599,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         font-weight: 700;
         text-transform: uppercase;
         color: #4aa956;
-        &-txt, &-icon {
+        &-txt,
+        &-icon {
           vertical-align: middle;
           display: inline-block;
         }
@@ -809,8 +672,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         top: 8px;
         display: block;
         transition: 0.1s linear;
-        background: url(./assets/images/icons/no.svg) center center no-repeat
-          #d8d8d8;
+        background: url(./assets/images/icons/no.svg) center center no-repeat #d8d8d8;
       }
       .checkbox-text {
         float: left;
@@ -828,8 +690,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       input:checked ~ .checkbox-rect {
         left: 100%;
         margin-left: -32px;
-        background: url(./assets/images/icons/yes.svg) center center no-repeat
-          #fcd600;
+        background: url(./assets/images/icons/yes.svg) center center no-repeat #fcd600;
       }
       input:checked ~ .checkbox-text {
         &_on {
@@ -1377,15 +1238,15 @@ ng-scrollbar-y {
     }
 
     &_highlight {
-      border: 1px solid #4AA956;
+      border: 1px solid #4aa956;
       box-shadow: 0 2px 12px rgba(74, 169, 86, 0.6);
 
       span {
-        color: #4AA956;
+        color: #4aa956;
       }
 
       svg {
-        fill: #4AA956 !important;
+        fill: #4aa956 !important;
       }
     }
   }
@@ -1397,7 +1258,7 @@ ng-scrollbar-y {
     padding-left: 42px;
     padding-right: 42px;
     svg {
-      fill: #CACACA;
+      fill: #cacaca;
     }
     &.active {
       position: relative;
@@ -1411,10 +1272,9 @@ ng-scrollbar-y {
     }
     &.active {
       svg {
-        fill: #4AA956;
+        fill: #4aa956;
       }
     }
-
   }
   &_item + &_item {
     margin-left: 5px;
@@ -1441,7 +1301,6 @@ ng-scrollbar-y {
       }
     }
 
-
     &_blockchains {
       display: flex;
       justify-content: space-around;
@@ -1466,7 +1325,7 @@ ng-scrollbar-y {
         display: block;
       }
       &.active {
-        border-bottom: 2px solid #4AA956;
+        border-bottom: 2px solid #4aa956;
         &:after {
           content: '';
           position: absolute;
@@ -1476,7 +1335,7 @@ ng-scrollbar-y {
           height: 0;
           border-width: 8px;
           border-style: solid;
-          border-color: transparent transparent #4AA956 #4AA956;
+          border-color: transparent transparent #4aa956 #4aa956;
           transform: rotate(-45deg);
           display: block;
           margin-top: -8px;
@@ -1489,12 +1348,12 @@ ng-scrollbar-y {
 
 @media screen and (max-width: 860px) {
   .index-start-form {
-    padding: 4vw 2vw!important;
+    padding: 4vw 2vw !important;
     &__settings-block {
-      padding: 4vw 2vw!important;
+      padding: 4vw 2vw !important;
     }
     .form-field_input input:not([type='checkbox']):not([type='radio']) {
-      padding: 29px 10px 10px 10px!important;
+      padding: 29px 10px 10px 10px !important;
     }
     .form-field_input__btn {
       padding: 14px 11px;
@@ -1504,7 +1363,7 @@ ng-scrollbar-y {
       position: relative;
       .form-field_label {
         position: absolute;
-        top:  12px;
+        top: 12px;
         left: 0;
         padding-left: 10px;
         color: rgba(36, 36, 36, 0.5);
@@ -1537,7 +1396,8 @@ ng-scrollbar-y {
     width: 60px;
   }
 
-  &, * {
+  &,
+  * {
     box-sizing: border-box;
   }
 
@@ -1547,7 +1407,7 @@ ng-scrollbar-y {
     width: 60px;
 
     &_bottom {
-        transform: rotate(180deg) scale(-1, 1);
+      transform: rotate(180deg) scale(-1, 1);
     }
   }
 
