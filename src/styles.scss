@@ -775,7 +775,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       word-break: break-all;
     }
 
-    input:not(&__ac_input):not(.input-dropdown__search-input):not([type='checkbox']):not([type='radio']),
+    input:not(&__ac_input):not(.input-dropdown__search-input):not(.timepicker-dial__control):not(.advanced-section-block__input):not([type='checkbox']):not([type='radio']),
     textarea,
     .textarea {
       width: 100%;

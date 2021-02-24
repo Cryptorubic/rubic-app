@@ -16,7 +16,8 @@ import {
   MatNativeDateModule,
   MatDatepickerModule,
   MatDialogModule,
-  MatButtonModule
+  MatButtonModule,
+  MatInputModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
@@ -274,6 +275,7 @@ export function appInitializerFactory(
     MatNativeDateModule,
     MatDatepickerModule,
     MatButtonModule,
+    MatInputModule,
     BrowserAnimationsModule,
     NgxMaterialTimepickerModule,
     ClipboardModule,
