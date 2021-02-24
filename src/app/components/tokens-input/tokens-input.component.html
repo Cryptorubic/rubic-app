@@ -8,8 +8,8 @@
     [required]="true"
     [appBigNumber]="bigNumberDirective"
     [tabindex]="inputDisabled ? '-1' : ''"
-    (ngModelChange)="onNumberChanges(amount)"
-    [(ngModel)]="amount"
+    (ngModelChange)="onNumberChanges(selectedAmount)"
+    [(ngModel)]="selectedAmount"
   />
 
   <app-input-dropdown

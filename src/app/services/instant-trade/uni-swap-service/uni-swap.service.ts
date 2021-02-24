@@ -254,6 +254,7 @@ export class UniSwapService extends InstantTradeService {
     const pair = await Fetcher.fetchPairData(uniSwapFromToken, uniSwapToToken, this.provider);
     const route = new Route([pair], uniSwapFromToken);
 
+    debugger;
     const fullFromAmount = fromAmount.multipliedBy(10 ** fromToken.decimals);
 
     return new Trade(

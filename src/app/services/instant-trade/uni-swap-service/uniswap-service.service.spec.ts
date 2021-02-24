@@ -41,6 +41,7 @@ describe('UniswapServiceService', () => {
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    console.log(trade.to.amount.toString());
     done();
   });
 

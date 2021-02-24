@@ -39,8 +39,9 @@ export class TokensInputComponent implements OnInit, OnChanges {
   @Input() inputDisabled?: boolean = false;
   @Input() tokensList: List<InputToken> = List();
   @Input() selectedToken: InputToken;
+  @Input() selectedAmount: string;
 
-  @Output() numberChanges = new EventEmitter<number>();
+  @Output() numberChanges = new EventEmitter<string>();
   @Output() tokenChanges = new EventEmitter<InputToken | null>();
 
   @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<TokenDropdownData>;
@@ -51,13 +52,12 @@ export class TokensInputComponent implements OnInit, OnChanges {
   public tokensSortOrder = ['symbol', 'name'];
   public VISIBLE_TOKENS_NUMBER = 10;
 
-  public amount;
   public bigNumberDirective: { decimals: number; min: number } = { decimals: 18, min: 0 };
 
   private cutAmount() {
-    if (this.amount && this.amount.includes('.')) {
-      const startIndex = this.amount.indexOf('.') + 1;
-      this.amount = this.amount.slice(0, startIndex + this.selectedToken.decimals);
+    if (this.selectedAmount && this.selectedAmount.includes('.')) {
+      const startIndex = this.selectedAmount.indexOf('.') + 1;
+      this.selectedAmount = this.selectedAmount.slice(0, startIndex + this.selectedToken.decimals);
     }
   }
 

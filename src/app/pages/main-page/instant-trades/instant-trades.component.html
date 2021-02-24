@@ -7,6 +7,7 @@
       [tokensList]="tokens"
       [selectedToken]="fromToken"
       (tokenChanges)="fromToken = $any($event)"
+      (numberChanges)="fromAmount = $event"
     >
     </app-tokens-input>
   </div>
@@ -16,8 +17,10 @@
     </div>
     <div class="instant-trade__row">
       <app-tokens-input class="instant-trade__tokens-input"
+        [inputDisabled]="true"
         [tokensList]="tokens"
         [selectedToken]="toToken"
+        [selectedAmount]=""
         (tokenChanges)="toToken = $any($event)"
       >
       </app-tokens-input>
@@ -25,10 +28,11 @@
 
     <div>
       <app-tokens-input
+        [inputDisabled]="true"
         [tokensList]="tokens"
         [selectedToken]="toToken"
+        [selectedAmount]="toAmountUniSwap"
         (tokenChanges)="toToken = $any($event)"
-        [inputDisabled]="true"
       >
       </app-tokens-input>
     </div>
