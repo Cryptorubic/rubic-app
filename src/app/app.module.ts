@@ -71,7 +71,7 @@ import { TeamComponent } from './team/team.component';
 import { TeamCardComponent } from './team/team-card/team-card.component';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
 import { ModalComponent } from './components/modal/modal.component';
-import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
+import { TradeInProgressModalComponent } from './pages/main-page/components/trade-in-progress-modal/trade-in-progress-modal.component';
 import { NgToggleModule } from 'ng-toggle-button';
 import { BridgeFormComponent } from './bridge/brifge-form/bridge-form.component';
 import { PrimaryButtonComponent } from './components/primary-button/primary-button.component';
@@ -93,11 +93,12 @@ import { BlockchainLabelComponent } from './components/blockchains-input/blockch
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
 import { DynamicModule } from 'ng-dynamic-component';
-import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
+import { TradeSuccessModalComponent } from './pages/main-page/components/trade-success-modal/trade-success-modal.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { InstantTradesComponent } from './pages/main-page/instant-trades/instant-trades.component';
 import { TradesFormComponent } from './pages/main-page/trades-form/trades-form.component';
 import { OrderBookComponent } from './pages/main-page/order-book/order-book.component';
+import { WarningLabelComponent } from './components/warning-label/warning-label.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -248,7 +249,8 @@ export function appInitializerFactory(
     BlockchainLabelComponent,
     AddressInputComponent,
     NetworkErrorComponent,
-    TradeSuccessModalComponent
+    TradeSuccessModalComponent,
+    WarningLabelComponent
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [

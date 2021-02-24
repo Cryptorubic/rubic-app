@@ -6,11 +6,25 @@ import { SwapToken } from '../../../services/backend/tokens-service/types';
 import { InstantTrade } from '../../../services/instant-trade/types';
 import { UniSwapService } from '../../../services/instant-trade/uni-swap-service/uni-swap.service';
 import BigNumber from 'bignumber.js';
+import { error } from 'util';
 
 interface InstantTradeParameters {
   fromAmount: BigNumber;
   fromToken: SwapToken;
   toToken: SwapToken;
+}
+
+enum TRADE_STATE {
+  CALCULATION,
+  APPROVAL,
+  TX_IN_PROGRESS,
+  COMPLETED,
+  ERROR
+}
+
+enum TRADE_PROVIDER {
+  UNISWAP,
+  ONEINCH
 }
 
 @Component({
@@ -23,9 +37,14 @@ export class InstantTradesComponent implements OnInit {
 
   private _tradeParameters: InstantTradeParameters;
 
+  public TRADE_STATE = TRADE_STATE;
+  public TRADE_PROVIDER = TRADE_PROVIDER;
+
   public tokens = List<SwapToken>([]);
   public uniSwapTrade: InstantTrade;
   public oneInchTrade: InstantTrade;
+  public uniSwapTradeState: TRADE_STATE;
+  public oneInchTradeState: TRADE_STATE;
 
   get tradeParameters(): InstantTradeParameters {
     return this._tradeParameters;
@@ -97,6 +116,19 @@ export class InstantTradesComponent implements OnInit {
 
   ngOnInit() {}
 
+  public shouldAnimateButton(provider: TRADE_PROVIDER) {
+    let tradeState: TRADE_STATE;
+    switch (provider) {
+      case TRADE_PROVIDER.ONEINCH:
+        tradeState = this.oneInchTradeState;
+        break;
+      case TRADE_PROVIDER.UNISWAP:
+        tradeState = this.uniSwapTradeState;
+        break;
+    }
+    return tradeState && tradeState !== TRADE_STATE.ERROR && tradeState !== TRADE_STATE.COMPLETED;
+  }
+
   private calculateTradeParameters() {
     if (this.blockchain === BLOCKCHAIN_NAMES.ETHEREUM) {
       this.calculateEthereumParameters();
@@ -104,11 +136,20 @@ export class InstantTradesComponent implements OnInit {
   }
 
   private calculateEthereumParameters() {
-    debugger;
+    this.calculateUniSwapTrade();
+  }
+
+  private calculateUniSwapTrade() {
+    this.uniSwapTradeState = TRADE_STATE.CALCULATION;
     this.uniSwapService
       .calculateTrade(this.tradeParameters.fromAmount, this.fromToken, this.toToken)
       .then(calculatedTrade => {
         this.uniSwapTrade = calculatedTrade;
+        this.uniSwapTradeState = null;
+      })
+      .catch(error => {
+        console.log(error);
+        this.uniSwapTradeState = TRADE_STATE.ERROR;
       });
   }
 }
