@@ -125,9 +125,9 @@
 
 .dialog-block-listing {
   background: white;
-  background-image: url(assets/images/props/modal-listing-left-top.svg),
-    url(assets/images/props/modal-listing-right-top.svg),
-    url(assets/images/props/modal-listing-right-bottom.svg);
+  background-image: url('/assets/images/props/modal-listing-left-top.svg'),
+    url('//assets/images/props/modal-listing-right-top.svg'),
+    url('/assets/images/props/modal-listing-right-bottom.svg');
   background-repeat: no-repeat;
   background-position: left top, right top, right bottom;
   background-size: 160px, 90px, 200px;
