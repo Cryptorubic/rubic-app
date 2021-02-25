@@ -39,7 +39,7 @@ export class BlockchainsInputComponent implements OnInit, OnChanges {
 
   @Output() blockchainChanges = new EventEmitter<IBlockchain>();
 
-  @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<BlockchainDropdownData>;
+  @ViewChild('app-input-dropdown', { static: false }) inputDropdown: InputDropdownComponent<BlockchainDropdownData>;
 
   public readonly blockchainLabelComponentClass = BlockchainLabelComponent;
   public blockchainsDropdownData = List<BlockchainDropdownData>();

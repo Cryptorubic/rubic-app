@@ -15,10 +15,10 @@ import collaborations from '../../assets/content/collaborations/collaborations.j
   styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit, AfterViewInit {
-  @ViewChild('disclaimerText') disclaimerText;
+  @ViewChild('disclaimerText', { static: true }) disclaimerText;
   public isInstanceTrade: boolean = false;
 
-  @ViewChild('listingModal') listing: TemplateRef<any>;
+  @ViewChild('listingModal', { static: false }) listing: TemplateRef<any>;
 
   protected listingModal: MatDialogRef<any>;
 

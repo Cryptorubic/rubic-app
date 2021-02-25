@@ -35,8 +35,8 @@ export class HeaderComponent implements OnInit {
   public languagesList: { lng: string; title: string; active?: boolean }[];
   public currLanguage: string;
 
-  @ViewChild('logoutConfirmation') logoutConfirmation: TemplateRef<any>;
-  @ViewChild('headerPage') headerPage;
+  @ViewChild('logoutConfirmation', { static: true }) logoutConfirmation: TemplateRef<any>;
+  @ViewChild('headerPage', { static: false }) headerPage;
 
   private logoutConfirmationModal: MatDialogRef<any>;
   public logoutProgress: boolean;

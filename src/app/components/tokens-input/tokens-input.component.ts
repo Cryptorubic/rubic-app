@@ -43,7 +43,7 @@ export class TokensInputComponent implements OnInit, OnChanges {
   @Output() numberChanges = new EventEmitter<number>();
   @Output() tokenChanges = new EventEmitter<InputToken | null>();
 
-  @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<TokenDropdownData>;
+  @ViewChild('app-input-dropdown', { static: false }) inputDropdown: InputDropdownComponent<TokenDropdownData>;
 
   public readonly tokenLabelComponentClass = TokenLabelComponent;
   public tokensDropdownData = List<TokenDropdownData>();

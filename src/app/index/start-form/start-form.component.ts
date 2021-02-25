@@ -107,9 +107,9 @@ interface IOrderBookTokens {
   ]
 })
 export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
-  @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
-  @ViewChild('insufficientFundsError') insufficientFundsError: TemplateRef<any>;
-  @ViewChild('container') container: ElementRef;
+  @ViewChild('metaMaskError', { static: true }) metaMaskError: TemplateRef<any>;
+  @ViewChild('insufficientFundsError', { static: true }) insufficientFundsError: TemplateRef<any>;
+  @ViewChild('container', { static: true }) container: ElementRef;
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
   @Output() changedSocialState = new EventEmitter<string>();
@@ -255,8 +255,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public formIsSending: boolean;
 
-  @ViewChild('startForm') public startForm;
-  @ViewChild('advSettings') public advSettings;
+  @ViewChild('startForm', { static: true }) public startForm;
+  @ViewChild('advSettings', { static: true }) public advSettings;
 
   public isChangedToken(...args) {
     localStorage.setItem('form_new_values', JSON.stringify({ tokens_info: this.tokensData }));
