@@ -6,6 +6,7 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 import providerServiceStub from '../provider/provider-service-stub';
 import { WEENUS } from '../../../test/tokens/eth-tokens';
+import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
 // @ts-ignore
 import config from '../../../test/enviroment.test.json';
 
@@ -139,6 +140,17 @@ describe('Web3ApiService', () => {
     const allowance = await service.getAllowance(WEENUS.address, bobAddress);
 
     expect(allowance.eq(0)).toBeTruthy();
+    done();
+  });
+
+  it('tokenInfo', async done => {
+    const weenusBody = coingeckoTestTokens.find(t => t.address === WEENUS.address);
+    let tokenBody = await service.getTokenInfo(WEENUS.address);
+
+    expect(tokenBody.name === weenusBody.token_title);
+    expect(tokenBody.symbol === weenusBody.token_short_title);
+    expect(tokenBody.decimals === weenusBody.decimals);
+
     done();
   });
 });

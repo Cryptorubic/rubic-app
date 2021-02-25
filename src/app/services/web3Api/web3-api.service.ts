@@ -9,11 +9,8 @@ import { HttpClient } from '@angular/common/http';
 import { ProviderService } from '../provider/provider.service';
 import { TransactionReceipt } from 'web3-eth';
 import { Transaction } from 'web3-core';
-
-interface Web3ApiNetwork {
-  id: number;
-  name: string;
-}
+import { TokenInfoBody, Web3ApiNetwork } from './types';
+import { nativeTokens } from './native-tokens';
 
 const NETWORKS: Web3ApiNetwork[] = [
   {
@@ -42,6 +39,8 @@ export class Web3ApiService {
   private defaultMockGas: string;
   public ethersProvider: any;
 
+  private tokensInfoBodies: { [address: string]: TokenInfoBody } = {};
+
   public get network(): Web3ApiNetwork {
     if (!this.ethereum) {
       return NETWORKS[2];
@@ -69,7 +68,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description get account balance in Eth units
+   * @description gets account balance in Eth units
    * @param [options] additional options
    * @param [options.address] wallet address whose balance you want to find out
    * @param [options.inWei = false] boolean flag to get integer result in Wei
@@ -81,7 +80,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description get ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
+   * @description gets ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
    * @param tokenAddress address of the smart-contract corresponding to the token
    * @param [options] additional options
    * @param [options.address = this.address] wallet address whose balance you want to find out
@@ -98,7 +97,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description send ERC-20 tokens and resolve the promise when the transaction is included in the block
+   * @description sends ERC-20 tokens and resolve the promise when the transaction is included in the block
    * @param contractAddress address of the smart-contract corresponding to the token
    * @param toAddress token receiver address
    * @param amount integer tokens amount to send (pre-multiplied by 10 ** decimals)
@@ -134,7 +133,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description send ERC-20 tokens and resolve the promise without waiting for the transaction to be included in the block
+   * @description sends ERC-20 tokens and resolve the promise without waiting for the transaction to be included in the block
    * @param contractAddress address of the smart-contract corresponding to the token
    * @param toAddress token receiver address
    * @param amount integer tokens amount to send (pre-multiplied by 10 ** decimals)
@@ -164,7 +163,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description send Eth in transaction and resolve the promise when the transaction is included in the block
+   * @description sends Eth in transaction and resolve the promise when the transaction is included in the block
    * @param toAddress Eth receiver address
    * @param value amount in Eth units
    * @param [options] additional options
@@ -203,7 +202,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description send Eth in transaction and resolve the promise without waiting for the transaction to be included in the block
+   * @description sends Eth in transaction and resolve the promise without waiting for the transaction to be included in the block
    * @param toAddress Eth receiver address
    * @param value amount in Eth units
    * @param [options] additional options
@@ -239,7 +238,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description predict the volume of gas required to execute the contract method
+   * @description predicts the volume of gas required to execute the contract method
    * @param contractAbi abi of smart-contract
    * @param contractAddress address of smart-contract
    * @param methodName method whose execution gas number is to be calculated
@@ -262,7 +261,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description calculate the average price per unit of gas according to web3
+   * @description calculates the average price per unit of gas according to web3
    * @return average gas price in ETH
    */
   public async getGasPriceInETH(): Promise<BigNumber> {
@@ -271,7 +270,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description calculate the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko
+   * @description calculates the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko
    * @param gasVolume gas limit
    * @return gas fee in usd$
    */
@@ -284,6 +283,14 @@ export class Web3ApiService {
     return gasPrice.multipliedBy(gasVolume).multipliedBy(etherPrice);
   }
 
+  /**
+   * @description executes allowance method in ERC-20 token contract
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   * @param spenderAddress wallet or contract address, allowed to spend
+   * @param [options] additional options
+   * @param [options.ownerAddress] wallet address to spend from
+   * @return tokens amount, allowed to be spent
+   */
   public async getAllowance(
     tokenAddress: string,
     spenderAddress: string,
@@ -300,7 +307,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description execute approve method in ERC-20 token contract
+   * @description executes approve method in ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
    * @param spenderAddress wallet or contract address to approve
    * @param value integer value to approve (pre-multiplied by 10 ** decimals)
@@ -339,7 +346,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description execute method of smart-contract and resolve the promise when the transaction is included in the block
+   * @description executes method of smart-contract and resolve the promise when the transaction is included in the block
    * @param contractAddress address of smart-contract which method is to be executed
    * @param contractAbi abi of smart-contract which method is to be executed
    * @param methodName executing method name
@@ -347,7 +354,7 @@ export class Web3ApiService {
    * @param [options] additional options
    * @param [options.onTransactionHash] callback to execute when transaction enters the mempool
    * @param [options.value] amount in Wei amount to be attached to the transaction
-   * @return smart-contract method return value
+   * @return smart-contract method returned value
    */
   public executeContractMethod(
     contractAddress: string,
@@ -382,12 +389,12 @@ export class Web3ApiService {
   }
 
   /**
-   * @description execute method of smart-contract and resolve the promise without waiting for the transaction to be included in the block
+   * @description executes method of smart-contract and resolve the promise without waiting for the transaction to be included in the block
    * @param contractAddress address of smart-contract which method is to be executed
    * @param contractAbi abi of smart-contract which method is to be executed
    * @param methodName executing method name
    * @param methodArguments executing method arguments
-   * @return smart-contract method return value
+   * @return smart-contract method returned value
    */
   public executeContractMethodWithOnHashResolve(
     contractAddress: string,
@@ -416,7 +423,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description remove approval for token use
+   * @description removes approval for token use
    * @param tokenAddress tokenAddress address of the smart-contract corresponding to the token
    * @param spenderAddress wallet or contract address to approve
    */
@@ -425,7 +432,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description convert Eth amount into Wei
+   * @description converts Eth amount into Wei
    * @param value to convert in Eth
    */
   public ethToWei(value: string | BigNumber): string {
@@ -433,7 +440,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description convert Wei amount into Eth
+   * @description converts Wei amount into Eth
    * @param value to convert in Wei
    */
   public weiToEth(value: string | BigNumber): string {
@@ -441,7 +448,7 @@ export class Web3ApiService {
   }
 
   /**
-   * @description check if address is Ether native address
+   * @description checks if address is Ether native address
    * @param address address to check
    */
   public isEtherAddress(address: string): boolean {
@@ -449,7 +456,7 @@ export class Web3ApiService {
   }
 
   /**
-   * get mined transaction gas fee in Ether
+   * @description gets mined transaction gas fee in Ether
    * @param hash transaction hash
    * @param [options] additional options
    * @param [options.inWei = false] if true, then the return value will be in Wei
@@ -491,7 +498,68 @@ export class Web3ApiService {
     }
   }
 
+  /**
+   * @description checks if a given address is a valid Ethereum address
+   * @param address the address to check validity
+   */
   public isAddressCorrect(address: string) {
     return this.web3.utils.isAddress(address);
+  }
+
+  /**
+   * @description gets information about token through ERC-20 token contract
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   * @param blockchain platform of the token; needed in case the token is native
+   * @return object, with written token fields, or a error, if there's no such token
+   */
+  public getTokenInfo(tokenAddress: string, blockchain?: string): Promise<TokenInfoBody> {
+    return new Promise((resolve, reject) => {
+      if (this.isEtherAddress(tokenAddress)) {
+        const tokenBody = nativeTokens.find(t => t.platform === blockchain);
+        if (tokenBody) {
+          resolve(tokenBody);
+        } else {
+          reject(`No token for ${blockchain} blockchain`);
+        }
+        return;
+      }
+
+      if (this.tokensInfoBodies.hasOwnProperty(tokenAddress)) {
+        resolve(this.tokensInfoBodies[tokenAddress]);
+        return;
+      }
+
+      try {
+        const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
+        const tokenFields = ['decimals', 'symbol', 'name'];
+
+        const tokenBody = {} as TokenInfoBody;
+        const getTokenField = (tokenField: string) => {
+          try {
+            return contract.methods[tokenField]()
+              .call()
+              .then(value => {
+                tokenBody[tokenField] = value;
+              });
+          } catch (err) {
+            reject(err);
+          }
+        };
+
+        const tokenFieldsPromises = [];
+        tokenFields.forEach(tokenField => {
+          tokenFieldsPromises.push(getTokenField(tokenField));
+        });
+
+        return Promise.all(tokenFieldsPromises)
+          .then(() => {
+            this.tokensInfoBodies[tokenAddress] = tokenBody;
+            resolve(tokenBody);
+          })
+          .catch(reject);
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 }
