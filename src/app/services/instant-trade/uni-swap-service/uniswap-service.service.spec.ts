@@ -47,6 +47,20 @@ describe('UniswapServiceService', () => {
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).not.toBeTruthy();
+    console.log(trade.estimatedGas);
+    done();
+  });
+
+  it('calculate token-token without allowance price', async done => {
+    const fromAmount = new BigNumber(2);
+
+    await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
+
+    const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
+    expect(trade).toBeTruthy();
+    expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).toBeTruthy();
     console.log(trade.estimatedGas);
     done();
   });
@@ -73,6 +87,20 @@ describe('UniswapServiceService', () => {
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH);
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.estimatedGas.eq(UniSwapService.tokensToEthEstimatedGas)).not.toBeTruthy();
+    console.log(trade.estimatedGas);
+    done();
+  });
+
+  it('calculate token-eth price without allowance', async done => {
+    const fromAmount = new BigNumber(2);
+
+    await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
+
+    const trade = await service.calculateTrade(fromAmount, WEENUS, ETH);
+    expect(trade).toBeTruthy();
+    expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.estimatedGas.eq(UniSwapService.tokensToEthEstimatedGas)).toBeTruthy();
     console.log(trade.estimatedGas);
     done();
   });
