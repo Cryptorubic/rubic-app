@@ -255,10 +255,13 @@ export class Web3ApiService {
     value?: string | BigNumber
   ): Promise<BigNumber> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
-    const gasVolume = value
-      ? await contract.methods[methodName](...methodArguments).estimateGas({ value, gas: 40000000 })
-      : await contract.methods[methodName](...methodArguments).estimateGas({ gas: 40000000 });
-    return new BigNumber(gasVolume);
+
+    const gasLimit = await contract.methods[methodName](...methodArguments).estimateGas({
+      from: this.address,
+      gas: 40000000,
+      ...(value && { value })
+    });
+    return new BigNumber(gasLimit);
   }
 
   /**
@@ -349,7 +352,7 @@ export class Web3ApiService {
    * @param [options.value] amount in Wei amount to be attached to the transaction
    * @return smart-contract method return value
    */
-  public executeContractMethod(
+  public async executeContractMethod(
     contractAddress: string,
     contractAbi: any[],
     methodName: string,
@@ -371,7 +374,7 @@ export class Web3ApiService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log('Tokens approve error. ' + err);
+          console.log('Method execution error. ' + err);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
