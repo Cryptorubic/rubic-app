@@ -18,7 +18,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
   @ViewChild('disclaimerText', { static: true }) disclaimerText;
   public isInstanceTrade: boolean = false;
 
-  @ViewChild('listingModal', { static: false }) listing: TemplateRef<any>;
+  @ViewChild('listingModal') listing: TemplateRef<any>;
 
   protected listingModal: MatDialogRef<any>;
 

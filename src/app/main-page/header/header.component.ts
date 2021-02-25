@@ -30,8 +30,8 @@ export class HeaderMainPageComponent implements OnInit {
   public devMenuOpened;
   public productMenuOpened;
 
-  @ViewChild('logoutConfirmation', { static: false }) logoutConfirmation: TemplateRef<any>;
-  @ViewChild('headerPage', { static: false }) headerPage;
+  @ViewChild('logoutConfirmation') logoutConfirmation: TemplateRef<any>;
+  @ViewChild('headerPage') headerPage;
 
   private logoutConfirmationModal: MatDialogRef<any>;
   private logoutProgress: boolean;
