@@ -547,3 +547,27 @@
   left: 39%;
   transform: scale(1.2);
 }
+
+.best-rate-wrapper {
+  position: relative;
+}
+
+.best-rate {
+  position: absolute;
+  top: -38px;
+  right: -15px;
+
+  img {
+    position: relative;
+    top: 20px;
+  }
+
+  span {
+    color: black;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 16px;
+    opacity: 0.5;
+  }
+}

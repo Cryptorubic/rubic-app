@@ -330,7 +330,7 @@
         <label class="form-field_label">&nbsp;</label>
         <div class="form-field form-field_btn form-field_btn--rate">
           <button
-            class="btn btn-green width-100"
+            class="btn btn-green width-100 best-rate-wrapper"
             [disabled]="
               (instanceTrade && !instantTradesAvailable) ||
               getInstanceQuoteProgress ||
@@ -349,6 +349,10 @@
                 uniSwapTradeStatus
             "
           >
+            <span *ngIf="instanceTrade && bestRate === 'oneInch'" class="best-rate">
+              <span>Best rate</span>
+              <img src="assets/images/icons/BestRate.svg" alt="Best"/>
+            </span>
             <span
               class="lds-ellipsis"
               *ngIf="(getInstanceQuoteProgress || isCreatingContract) && instantTradesAvailable"
@@ -440,6 +444,10 @@
           type="button"
           (click)="createUniSwapTrade()"
         >
+          <span *ngIf="instanceTrade && bestRate === 'uniSwap'" class="best-rate">
+              <span>Best rate</span>
+              <img src="assets/images/icons/BestRate.svg" alt="Best"/>
+            </span>
           <span class="lds-ellipsis" *ngIf="uniSwapTradeStatus">
             <span class="lds-ellipsis-container">
               <span></span><span></span><span></span><span></span>

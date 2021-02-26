@@ -11,16 +11,15 @@ export class CoingeckoApiService {
   constructor(private httpClient: HttpClient) {}
 
   public async getEtherPriceInUsd(): Promise<BigNumber> {
-    const response: any = await this.httpClient
-      .get(this.baseUrl + 'simple/price?ids=ethereum&vs_currencies=usd')
-      .toPromise();
-    return new BigNumber(response.ethereum.usd);
+    return this.getTokenUsdPriceById('ethereum');
   }
 
-  /* private async getTokenUsdPriceById(tokenCoingeckoId: string): Promise<BigNumber> {
+  public async getTokenUsdPriceById(tokenCoingeckoId: string): Promise<BigNumber> {
     const response: any = await this.httpClient
-      .get(this.baseUrl + 'simple/price?ids=ethereum&vs_currencies=usd')
+      .get(this.baseUrl + 'simple/price', {
+        params: { ids: tokenCoingeckoId, vs_currencies: 'usd' }
+      })
       .toPromise();
-    return  new BigNumber(response.ethereum.usd);
-  }*/
+    return new BigNumber(response[tokenCoingeckoId].usd);
+  }
 }
