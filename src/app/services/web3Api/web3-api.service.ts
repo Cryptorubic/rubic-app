@@ -275,16 +275,13 @@ export class Web3ApiService {
 
   /**
    * @description calculate the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko
-   * @param gasVolume gas limit
+   * @param gasLimit gas limit
+   * @param etherPrice price of Eth unit
    * @return gas fee in usd$
    */
-  public async getGasFeeInUSD(gasVolume: BigNumber): Promise<BigNumber> {
-    const response: any = await this.httpClient
-      .get('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd')
-      .toPromise();
-    const etherPrice = new BigNumber(response.ethereum.usd);
+  public async getGasFee(gasLimit: BigNumber, etherPrice: BigNumber): Promise<BigNumber> {
     const gasPrice = await this.getGasPriceInETH();
-    return gasPrice.multipliedBy(gasVolume).multipliedBy(etherPrice);
+    return gasPrice.multipliedBy(gasLimit).multipliedBy(etherPrice);
   }
 
   public async getAllowance(

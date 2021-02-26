@@ -98,6 +98,7 @@ import { BlockchainLabelComponent } from './components/blockchains-input/blockch
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
 import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
+import { TooltipComponent } from './components/tooltip/tooltip.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -247,7 +248,8 @@ export function appInitializerFactory(
     BlockchainLabelComponent,
     AddressInputComponent,
     NetworkErrorComponent,
-    TradeSuccessModalComponent
+    TradeSuccessModalComponent,
+    TooltipComponent
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [

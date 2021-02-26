@@ -303,8 +303,8 @@
   }
 }
 .etherscan-link {
-  margin-right: calc(25% + 10px);
-  margin-top: 4px;
+  margin-right: calc(25% + 13px);
+  margin-top: 22px;
   font-size: 18px;
   line-height: 22px;
   overflow: hidden;
@@ -462,9 +462,8 @@
 
 .uniswap {
   position: relative;
-  top: -15px;
   margin: 0 -10px;
-  padding-bottom: 25px;
+  padding-bottom: 55px;
 
   &_extended {
     margin-bottom: 30px;
@@ -506,4 +505,24 @@
   padding: 0 10px;
   position: relative;
   left: 5px;
+}
+
+.gas-fee-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: absolute;
+  margin-top: 5px;
+
+  span {
+    opacity: 0.5;
+  }
+
+  img {
+    margin-left: 10px;
+  }
+
+  .ml {
+    margin-left: 12px;
+  }
 }

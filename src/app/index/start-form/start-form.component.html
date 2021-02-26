@@ -214,6 +214,13 @@
               "
             ></app-tokens-all-input>
 
+            <div class="gas-fee-container" *ngIf="instanceTrade && oneInchGasInfo">
+              <span>Estimated gas fee: {{oneInchGasInfo.gasFeeInEth.toFixed(6)}}ETH ≈ {{oneInchGasInfo.gasFeeInUsd.toFixed(1)}}$</span>
+                <img src="assets/images/icons/info.svg" />
+
+
+            </div>
+
             <label
               class="form-field_label form-field_label--rate"
               *ngIf="!instanceTrade && coingeckoRate && coingeckoRate.change"
@@ -372,6 +379,13 @@
             requestData.tokens_info.base.token && requestData.tokens_info.base.token.address
           "
         ></app-tokens-all-input>
+
+        <div class="gas-fee-container" *ngIf="uniSwapTrade">
+          <span class="ml">
+            Estimated gas fee: {{uniSwapTrade.gasFeeInEth.toFixed(6)}}ETH ≈ {{uniSwapTrade.gasFeeInUsd.toFixed(1)}}$</span>
+          <img src="assets/images/icons/info.svg" />
+        </div>
+
         <div *ngIf="uniSwapTrade === null" class="uniswap__warning">
           <span>Trade in UniSwap is not available.</span>
           <img alt="" src="assets/images/icons/warning-red.svg" />
