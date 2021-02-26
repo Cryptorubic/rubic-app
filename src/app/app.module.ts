@@ -99,6 +99,7 @@ import { AddressInputComponent } from './components/address-input/address-input.
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
 import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
+import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -249,7 +250,8 @@ export function appInitializerFactory(
     AddressInputComponent,
     NetworkErrorComponent,
     TradeSuccessModalComponent,
-    TooltipComponent
+    TooltipComponent,
+    InfoTooltipComponent
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [

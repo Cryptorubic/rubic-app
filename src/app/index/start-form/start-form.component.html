@@ -216,9 +216,7 @@
 
             <div class="gas-fee-container" *ngIf="instanceTrade && oneInchGasInfo">
               <span>Estimated gas fee: {{oneInchGasInfo.gasFeeInEth.toFixed(6)}}ETH ≈ {{oneInchGasInfo.gasFeeInUsd.toFixed(1)}}$</span>
-                <img src="assets/images/icons/info.svg" />
-
-
+              <app-info-tooltip>text</app-info-tooltip>
             </div>
 
             <label

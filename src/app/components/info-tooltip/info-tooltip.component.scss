@@ -1,0 +1,24 @@
+.tooltip-group {
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    .tooltip-group__container {
+      opacity: 1;
+    }
+  }
+
+  &__container {
+    opacity: 0;
+    z-index: 20;
+    position: absolute;
+    top: -45px;
+    left: -91px;
+
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  &_align-center {
+    text-align: center;
+  }
+}

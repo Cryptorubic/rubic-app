@@ -516,13 +516,14 @@
 
   span {
     opacity: 0.5;
-  }
-
-  img {
-    margin-left: 10px;
+    margin-right: 8px;
   }
 
   .ml {
     margin-left: 12px;
   }
+}
+
+.gas-fee-tooltip {
+  position: absolute;
 }
