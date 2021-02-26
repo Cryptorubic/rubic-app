@@ -7,6 +7,7 @@
       [tokensList]="tokens"
       [selectedToken]="fromToken"
       (tokenChanges)="fromToken = $any($event)"
+      (numberChanges)="fromAmount = $event"
     >
     </app-tokens-input>
   </div>
@@ -16,8 +17,10 @@
     </div>
     <div class="instant-trade__row">
       <app-tokens-input class="instant-trade__tokens-input"
+        [inputDisabled]="true"
         [tokensList]="tokens"
         [selectedToken]="toToken"
+        [selectedAmount]=""
         (tokenChanges)="toToken = $any($event)"
       >
       </app-tokens-input>
@@ -25,24 +28,43 @@
 
     <div>
       <app-tokens-input
+        [inputDisabled]="true"
         [tokensList]="tokens"
         [selectedToken]="toToken"
+        [selectedAmount]="toAmountUniSwap"
         (tokenChanges)="toToken = $any($event)"
-        [inputDisabled]="true"
       >
       </app-tokens-input>
+      <div class="instant-trade__warning">
+        <app-warning-label
+          *ngIf="uniSwapTradeState === TRADE_STATE.ERROR"
+          warningText="Trade in UniSwap is not available.">
+        </app-warning-label>
+      </div>
     </div>
   </div>
   <div class="instant-trade__block instant-trade__block_short">
     <div class="instant-trade__row">
       <app-primary-button
         label="Via OneInch"
+        [disabled]="
+        !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
+        !oneInchTrade ||
+        shouldAnimateButton(TRADE_PROVIDER.ONEINCH)
+      "
+        [animate]="shouldAnimateButton(TRADE_PROVIDER.ONEINCH)"
       >
       </app-primary-button>
     </div>
 
     <app-primary-button
       label="Via UniSwap"
+      [disabled]="
+        !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
+        !uniSwapTrade ||
+        shouldAnimateButton(TRADE_PROVIDER.UNISWAP)
+      "
+      [animate]="shouldAnimateButton(TRADE_PROVIDER.UNISWAP)"
     >
     </app-primary-button>
   </div>
