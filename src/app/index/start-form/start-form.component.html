@@ -99,7 +99,7 @@
       <app-arrow></app-arrow>
     </div>
 
-    <div class="grid-row start-form-row">
+    <div class="grid-row start-form-row" style="position: relative">
       <!-- From -->
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
         <div class="form-field" [ngClass]="{ 'from-block_moved-bottom': instanceTrade}">
@@ -173,6 +173,10 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div *ngIf="instanceTrade" class="arrows-icon-container">
+        <img src="assets/images/icons/RoundArrows.svg" alt="">
       </div>
 
       <!-- To -->
@@ -290,7 +294,7 @@
             </div>
           </div>
 
-          <button class="revert-btn" type="button" (click)="revertCoins()">
+          <button class="revert-btn" type="button" (click)="revertCoins()" *ngIf="!instanceTrade">
             <img src="./assets/images/icons/revert.svg" class="revert-btn_icon" />
           </button>
         </div>
