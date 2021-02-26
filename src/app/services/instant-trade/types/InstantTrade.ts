@@ -1,31 +1,36 @@
-import {InstantTradeToken} from './index';
+import { InstantTradeToken } from './index';
 import BigNumber from 'bignumber.js';
 
 interface InstantTrade {
-    from: {
-        token: InstantTradeToken;
-        /**
-         * Amount of input in absolute token units (WITHOUT decimals)
-         */
-        amount: BigNumber;
-    };
-    to: {
-        token: InstantTradeToken;
-        /**
-         * Amount of output without slippage in absolute token units (WITHOUT decimals)
-         */
-        amount: BigNumber;
-    };
-
+  from: {
+    token: InstantTradeToken;
     /**
-     * Amount of predicted gas limit in absolute gas units
+     * Amount of input in absolute token units (WITHOUT decimals)
      */
-    estimatedGas: BigNumber;
-
+    amount: BigNumber;
+  };
+  to: {
+    token: InstantTradeToken;
     /**
-     * Amount of predicted gas fee in usd$
+     * Amount of output without slippage in absolute token units (WITHOUT decimals)
      */
-    gasFee: BigNumber;
+    amount: BigNumber;
+  };
+
+  /**
+   * Amount of predicted gas limit in absolute gas units
+   */
+  estimatedGas: BigNumber;
+
+  /**
+   * Amount of predicted gas fee in usd$
+   */
+  gasFeeInUsd: BigNumber;
+
+  /**
+   * Amount of predicted gas fee in Ether
+   */
+  gasFeeInEth: BigNumber;
 }
 
 export default InstantTrade;

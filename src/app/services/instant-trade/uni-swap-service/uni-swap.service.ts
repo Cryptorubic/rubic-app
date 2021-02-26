@@ -10,6 +10,7 @@ import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract'
 import { TransactionReceipt } from 'web3-eth';
 import { RubicError } from '../../../errors/RubicError';
 import InsufficientFundsError from '../../../errors/instant-trade/InsufficientFundsError';
+import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
 
 interface UniSwapTrade {
   amountIn: string;
@@ -19,15 +20,24 @@ interface UniSwapTrade {
   deadline: number;
 }
 
+enum SWAP_METHOD {
+  TOKENS_TO_TOKENS = 'swapExactTokensForTokens',
+  ETH_TO_TOKENS = 'swapExactETHForTokens',
+  TOKENS_TO_ETH = 'swapExactTokensForETH'
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class UniSwapService extends InstantTradeService {
   static slippageTolerance = new Percent('50', '10000'); // 0.50%
+  static tokensToTokensEstimatedGas = new BigNumber(120_000);
+  static tokensToEthEstimatedGas = new BigNumber(150_000);
+  static ethToTokensEstimatedGas = new BigNumber(150_000);
   private readonly provider;
   private readonly WETH;
 
-  constructor(private web3Api: Web3ApiService) {
+  constructor(private web3Api: Web3ApiService, private coingeckoApiService: CoingeckoApiService) {
     super();
     this.provider = web3Api.ethersProvider;
 
@@ -43,13 +53,16 @@ export class UniSwapService extends InstantTradeService {
     try {
       const fromTokenClone = { ...fromToken };
       const toTokenClone = { ...toToken };
+      let estimatedGasPredictionMethod = 'calculateTokensToTokensGasLimit';
 
       if (this.web3Api.isEtherAddress(fromTokenClone.address)) {
         fromTokenClone.address = this.WETH.address;
+        estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
       }
 
       if (this.web3Api.isEtherAddress(toTokenClone.address)) {
         toTokenClone.address = this.WETH.address;
+        estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
       }
 
       const uniSwapTrade = await this.getUniSwapTrade(
@@ -61,30 +74,38 @@ export class UniSwapService extends InstantTradeService {
 
       const amountIn = new BigNumber(
         uniSwapTrade.inputAmount.toSignificant(fromTokenClone.decimals)
-      ).multipliedBy(10 ** fromTokenClone.decimals);
+      )
+        .multipliedBy(10 ** fromTokenClone.decimals)
+        .toFixed(0);
       const amountOutMin = new BigNumber(
         uniSwapTrade
           .minimumAmountOut(UniSwapService.slippageTolerance)
           .toSignificant(toTokenClone.decimals)
-      ).multipliedBy(10 ** toTokenClone.decimals);
+      )
+        .multipliedBy(10 ** toTokenClone.decimals)
+        .toFixed(0);
+
       const path = [fromTokenClone.address, toTokenClone.address];
       const to = this.web3Api.address;
       const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
 
-      /*const estimatedGas = await this.web3Api.getEstimatedGas(
-          UniSwapContractAbi,
-          UniSwapContractAddress,
-          'swapExactTokensForTokensSupportingFeeOnTransferTokens',
-          [amountIn, amountOutMin, path, to, deadline]
-          );
-       */
-      const estimatedGas = new BigNumber(0);
-      const gasFee = await this.web3Api.getGasFeeInUSD(estimatedGas);
+      const estimatedGas = await this[estimatedGasPredictionMethod](
+        amountIn,
+        amountOutMin,
+        path,
+        to,
+        deadline
+      );
+
+      const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+
+      const gasFeeInUsd = await this.web3Api.getGasFee(estimatedGas, ethPrice);
+      const gasFeeInEth = await this.web3Api.getGasFee(estimatedGas, new BigNumber(1));
       const amountOut = uniSwapTrade
         .minimumAmountOut(new Percent('0', '1'))
         .toSignificant(toTokenClone.decimals);
 
-      const trade: InstantTrade = {
+      return {
         from: {
           token: fromToken,
           amount: fromAmount
@@ -94,13 +115,74 @@ export class UniSwapService extends InstantTradeService {
           amount: new BigNumber(amountOut)
         },
         estimatedGas,
-        gasFee
+        gasFeeInUsd,
+        gasFeeInEth
       };
-      return trade;
     } catch (e) {
       console.error(e);
       return null;
     }
+  }
+
+  private async calculateTokensToTokensGasLimit(
+    amountIn: string,
+    amountOutMin: string,
+    path: string[],
+    to: string,
+    deadline: number
+  ): Promise<BigNumber> {
+    let estimatedGas = UniSwapService.tokensToTokensEstimatedGas;
+    const allowance = await this.web3Api.getAllowance(path[0], UniSwapContractAddress);
+    const balance = await this.web3Api.getTokenBalance(path[0]);
+    if (allowance.gte(amountIn) && balance.gte(amountIn)) {
+      estimatedGas = await this.web3Api.getEstimatedGas(
+        UniSwapContractAbi,
+        UniSwapContractAddress,
+        SWAP_METHOD.TOKENS_TO_TOKENS,
+        [amountIn, amountOutMin, path, to, deadline]
+      );
+    }
+    return estimatedGas;
+  }
+
+  private async calculateEthToTokensGasLimit(
+    amountIn: string,
+    amountOutMin: string,
+    path: string[],
+    to: string,
+    deadline: number
+  ): Promise<BigNumber> {
+    const balance = await this.web3Api.getBalance();
+    return balance.gte(amountIn)
+      ? this.web3Api.getEstimatedGas(
+          UniSwapContractAbi,
+          UniSwapContractAddress,
+          SWAP_METHOD.ETH_TO_TOKENS,
+          [amountOutMin, path, to, deadline],
+          amountIn
+        )
+      : UniSwapService.ethToTokensEstimatedGas;
+  }
+
+  private async calculateTokensToEthGasLimit(
+    amountIn: string,
+    amountOutMin: string,
+    path: string[],
+    to: string,
+    deadline: number
+  ): Promise<BigNumber> {
+    let estimatedGas = UniSwapService.tokensToEthEstimatedGas;
+    const allowance = await this.web3Api.getAllowance(path[0], UniSwapContractAddress);
+    const balance = await this.web3Api.getTokenBalance(path[0]);
+    if (allowance.gte(amountIn) && balance.gte(amountIn)) {
+      estimatedGas = await this.web3Api.getEstimatedGas(
+        UniSwapContractAbi,
+        UniSwapContractAddress,
+        SWAP_METHOD.TOKENS_TO_ETH,
+        [amountIn, amountOutMin, path, to, deadline]
+      );
+    }
+    return estimatedGas;
   }
 
   public async createTrade(
@@ -148,7 +230,7 @@ export class UniSwapService extends InstantTradeService {
     return this.web3Api.executeContractMethod(
       UniSwapContractAddress,
       UniSwapContractAbi,
-      'swapExactETHForTokens',
+      SWAP_METHOD.ETH_TO_TOKENS,
       [trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,
@@ -171,7 +253,7 @@ export class UniSwapService extends InstantTradeService {
     return this.web3Api.executeContractMethod(
       UniSwapContractAddress,
       UniSwapContractAbi,
-      'swapExactTokensForETH',
+      SWAP_METHOD.TOKENS_TO_ETH,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm
@@ -191,7 +273,7 @@ export class UniSwapService extends InstantTradeService {
     return this.web3Api.executeContractMethod(
       UniSwapContractAddress,
       UniSwapContractAbi,
-      'swapExactTokensForTokens',
+      SWAP_METHOD.TOKENS_TO_TOKENS,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       { onTransactionHash: options.onConfirm }
     );
@@ -258,7 +340,7 @@ export class UniSwapService extends InstantTradeService {
 
     return new Trade(
       route,
-      new TokenAmount(uniSwapFromToken, fullFromAmount.toString()),
+      new TokenAmount(uniSwapFromToken, fullFromAmount.toFixed(0)),
       TradeType.EXACT_INPUT
     );
   }

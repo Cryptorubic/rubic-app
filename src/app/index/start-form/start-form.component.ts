@@ -40,6 +40,8 @@ import { InstantTrade, InstantTradeToken } from '../../services/instant-trade/ty
 import { ETH, WEENUS, YEENUS } from '../../../test/tokens/eth-tokens';
 import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
 import { RubicError } from '../../errors/RubicError';
+import { Web3ApiService } from '../../services/web3Api/web3-api.service';
+import { CoingeckoApiService } from '../../services/coingecko-api/coingecko-api.service';
 
 const defaultNetwork = 1;
 
@@ -175,6 +177,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     transactionHash: ''
   };
 
+  public oneInchGasInfo = null;
   public instantTradeError: RubicError;
 
   constructor(
@@ -186,7 +189,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private route: ActivatedRoute,
     private oneInchService: OneInchService,
     private backendApiService: BackendApiService,
-    private uniSwapService: UniSwapService
+    private uniSwapService: UniSwapService,
+    private web3ApiService: Web3ApiService,
+    private coinGeckoApiService: CoingeckoApiService
   ) {
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: any) => {
@@ -335,6 +340,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           !this.instantTradesAvailable ? this.requestData.tokens_info.quote.token.address : false
         )
         .then((result: any) => {
+          this.setOneInchGasInfo(result.estimatedGas);
           this.instanceTradeParams = result;
           this.requestData.tokens_info.quote.amount = Number(result.toTokenAmount)
             ? new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10)
@@ -343,6 +349,20 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           this.getInstanceQuoteProgress = false;
         });
     }, 1000);
+  }
+
+  private async setOneInchGasInfo(gasLimit) {
+    const etherPrice = await this.coinGeckoApiService.getEtherPriceInUsd();
+    const gasFeeInUsd = await this.web3ApiService.getGasFee(new BigNumber(gasLimit), etherPrice);
+    const gasFeeInEth = await this.web3ApiService.getGasFee(
+      new BigNumber(gasLimit),
+      new BigNumber(1)
+    );
+
+    this.oneInchGasInfo = {
+      gasFeeInUsd,
+      gasFeeInEth
+    };
   }
 
   private tokensCache = {
@@ -913,7 +933,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private metamaskAccount: string;
 
   public createContract() {
-    debugger;
     const accSubscriber = this.updateAddresses(true).subscribe(
       res => {
         this.metamaskAccount = res['metamask'][0];

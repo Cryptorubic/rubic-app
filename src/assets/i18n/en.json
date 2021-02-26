@@ -244,7 +244,10 @@
   "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
   "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
-  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains."
+  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
+
+  "Estimated gas fee amount. It will be required to provide more gas in the Metamask to complete the trade, extra gas will be returned after transaction is completed.":
+  "Estimated gas fee amount. It will be required to provide more gas in the Metamask to complete the trade, extra gas will be returned after transaction is completed."
 }
 
 
