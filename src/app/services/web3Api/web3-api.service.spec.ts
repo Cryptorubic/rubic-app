@@ -9,6 +9,7 @@ import { WEENUS } from '../../../test/tokens/eth-tokens';
 import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
 // @ts-ignore
 import config from '../../../test/enviroment.test.json';
+import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
 
 describe('Web3ApiService', () => {
   let originalTimeout;
@@ -145,7 +146,7 @@ describe('Web3ApiService', () => {
 
   it('tokenInfo', async done => {
     const weenusBody = coingeckoTestTokens.find(t => t.address === WEENUS.address);
-    let tokenBody = await service.getTokenInfo(WEENUS.address);
+    let tokenBody = await service.getTokenInfo(WEENUS.address, BLOCKCHAIN_NAMES.ETHEREUM);
 
     expect(tokenBody.name === weenusBody.token_title);
     expect(tokenBody.symbol === weenusBody.token_short_title);

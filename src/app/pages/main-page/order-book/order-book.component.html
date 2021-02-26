@@ -26,7 +26,11 @@
               class="custom-section-form__input"
               id="base-custom-input"
               placeholder="Token Contract Address"
-              [ngModel]="baseToken.address"
+              pattern="0x[A-Fa-f0-9]{40}"
+              appTokenAddress
+              [blockchain]="blockchain"
+              (tokenValidated)="addCustomToken('base', $event)"
+              [ngModel]="customTokens.base.address"
               #baseCustomToken="ngModel"
               [ngClass]="{
                 'custom-section-form__input_invalid':
@@ -35,7 +39,9 @@
             />
             <app-primary-button
               label="Add"
-              [disabled]="baseCustomToken.invalid"
+              [animate]="baseCustomToken.pending"
+              [disabled]="!baseCustomToken.valid"
+              (click)="setCustomToken('base')"
             ></app-primary-button>
           </div>
         </div>
@@ -68,7 +74,11 @@
               class="custom-section-form__input"
               id="quote-custom-input"
               placeholder="Token Contract Address"
-              [ngModel]="quoteToken.address"
+              pattern="0x[A-Fa-f0-9]{40}"
+              appTokenAddress
+              [blockchain]="blockchain"
+              (tokenValidated)="addCustomToken('quote', $event)"
+              [ngModel]="customTokens.quote.address"
               #quoteCustomToken="ngModel"
               [ngClass]="{
                 'custom-section-form__input_invalid':
@@ -77,7 +87,9 @@
             />
             <app-primary-button
               label="Add"
-              [disabled]="quoteCustomToken.invalid"
+              [animate]="quoteCustomToken.pending"
+              [disabled]="!quoteCustomToken.valid"
+              (click)="setCustomToken('quote')"
             ></app-primary-button>
           </div>
         </div>

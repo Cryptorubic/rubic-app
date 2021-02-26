@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {MetamaskError} from '../../errors/bridge/MetamaskError';
+import { MetamaskError } from '../../errors/bridge/MetamaskError';
 import Web3 from 'web3';
-import {AccountError} from '../../errors/bridge/AccountError';
-import {RubicError} from '../../errors/RubicError';
-import {ethers} from 'ethers';
+import { AccountError } from '../../errors/bridge/AccountError';
+import { RubicError } from '../../errors/RubicError';
+import { ethers } from 'ethers';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,7 @@ export class ProviderService {
   public connection: any;
   public defaultMockGas: string;
   public ethersProvider: any;
+  public readonly isProduction: boolean = true;
 
   constructor() {
     if (!this.ethereum) {

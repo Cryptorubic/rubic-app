@@ -14,6 +14,7 @@ export default () => {
     connection: config.providerLink,
     address: config.testWallet.address,
     defaultMockGas: '400000',
-    ethersProvider: new InfuraProvider('kovan')
+    ethersProvider: new InfuraProvider('kovan'),
+    isProduction: false
   };
 };

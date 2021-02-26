@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
+import { HttpProvider, Transaction } from 'web3-core';
 import { BridgeNetwork } from '../bridge/types';
 import { ERC20_TOKEN_ABI } from '../web3/web3.constants';
 import { RubicError } from '../../errors/RubicError';
@@ -8,9 +9,10 @@ import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { ProviderService } from '../provider/provider.service';
 import { TransactionReceipt } from 'web3-eth';
-import { Transaction } from 'web3-core';
-import { TokenInfoBody, Web3ApiNetwork } from './types';
+import { TokenInfoBody, TokensInfoBodies, Web3ApiNetwork } from './types';
 import { nativeTokens } from './native-tokens';
+import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
+import { Contract } from 'web3-eth-contract';
 
 const NETWORKS: Web3ApiNetwork[] = [
   {
@@ -27,19 +29,41 @@ const NETWORKS: Web3ApiNetwork[] = [
   }
 ];
 
+export const INFURA_NETWORKS = {
+  ETH: {
+    INFURA_ADDRESS: 'https://mainnet.infura.io/v3/2e15c999e7854a6d9d95d7eb68b11ad6',
+    KOVAN_INFURA_ADDRESS: 'https://kovan.infura.io/v3/2e15c999e7854a6d9d95d7eb68b11ad6'
+  },
+  BSC: {
+    INFURA_ADDRESS: 'https://bsc-dataseed1.binance.org',
+    KOVAN_INFURA_ADDRESS: 'https://data-seed-prebsc-1-s1.binance.org:8545'
+  },
+  MAT: {
+    INFURA_ADDRESS: 'https://rpc-mainnet.matic.network',
+    KOVAN_INFURA_ADDRESS: ' https://rpc-mumbai.maticvigil.com'
+  }
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class Web3ApiService {
+  private readonly isProduction: boolean;
+
   private readonly metamaskAddress: string;
   private ethereum;
   private web3: Web3;
+  private web3Infura: Web3;
   public error: RubicError;
   public connection: any;
   private defaultMockGas: string;
   public ethersProvider: any;
 
-  private tokensInfoBodies: { [address: string]: TokenInfoBody } = {};
+  private tokensInfoBodies: TokensInfoBodies = {
+    ETH: {},
+    BSC: {},
+    MAT: {}
+  };
 
   public get network(): Web3ApiNetwork {
     if (!this.ethereum) {
@@ -65,6 +89,20 @@ export class Web3ApiService {
     this.metamaskAddress = provider.address;
     this.defaultMockGas = provider.defaultMockGas;
     this.ethersProvider = provider.ethersProvider;
+    this.isProduction = provider.isProduction;
+
+    this.setInfuraProvider(BLOCKCHAIN_NAMES.ETHEREUM);
+  }
+
+  private setInfuraProvider(blockchain: BLOCKCHAIN_NAMES): void {
+    const provider =
+      INFURA_NETWORKS[blockchain][this.isProduction ? 'INFURA_ADDRESS' : 'KOVAN_INFURA_ADDRESS'];
+
+    if (!this.web3Infura) {
+      this.web3Infura = new Web3(provider);
+    } else if ((this.web3Infura.eth.currentProvider as HttpProvider).host !== provider) {
+      this.web3Infura.eth.setProvider(provider);
+    }
   }
 
   /**
@@ -509,10 +547,10 @@ export class Web3ApiService {
   /**
    * @description gets information about token through ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param blockchain platform of the token; needed in case the token is native
+   * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
    */
-  public getTokenInfo(tokenAddress: string, blockchain?: string): Promise<TokenInfoBody> {
+  public getTokenInfo(tokenAddress: string, blockchain: BLOCKCHAIN_NAMES): Promise<TokenInfoBody> {
     return new Promise((resolve, reject) => {
       if (this.isEtherAddress(tokenAddress)) {
         const tokenBody = nativeTokens.find(t => t.platform === blockchain);
@@ -524,36 +562,26 @@ export class Web3ApiService {
         return;
       }
 
-      if (this.tokensInfoBodies.hasOwnProperty(tokenAddress)) {
-        resolve(this.tokensInfoBodies[tokenAddress]);
+      if (this.tokensInfoBodies[blockchain].hasOwnProperty(tokenAddress)) {
+        resolve(this.tokensInfoBodies[blockchain][tokenAddress]);
         return;
       }
 
       try {
-        const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
+        this.setInfuraProvider(blockchain);
+
+        const contract = new this.web3Infura.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
         const tokenFields = ['decimals', 'symbol', 'name'];
 
         const tokenBody = {} as TokenInfoBody;
-        const getTokenField = (tokenField: string) => {
-          try {
-            return contract.methods[tokenField]()
-              .call()
-              .then(value => {
-                tokenBody[tokenField] = value;
-              });
-          } catch (err) {
-            reject(err);
-          }
-        };
-
         const tokenFieldsPromises = [];
         tokenFields.forEach(tokenField => {
-          tokenFieldsPromises.push(getTokenField(tokenField));
+          tokenFieldsPromises.push(this.setTokenField(contract, tokenField, tokenBody));
         });
 
         return Promise.all(tokenFieldsPromises)
           .then(() => {
-            this.tokensInfoBodies[tokenAddress] = tokenBody;
+            this.tokensInfoBodies[blockchain][tokenAddress] = tokenBody;
             resolve(tokenBody);
           })
           .catch(reject);
@@ -561,5 +589,17 @@ export class Web3ApiService {
         reject(err);
       }
     });
+  }
+
+  private setTokenField(
+    contract: Contract,
+    tokenField: string,
+    tokenBody: TokenInfoBody
+  ): Promise<any> {
+    return contract.methods[tokenField]()
+      .call()
+      .then(value => {
+        tokenBody[tokenField] = value;
+      });
   }
 }

@@ -99,6 +99,8 @@ import { MainPageComponent } from './pages/main-page/main-page.component';
 import { InstantTradesComponent } from './pages/main-page/instant-trades/instant-trades.component';
 import { TradesFormComponent } from './pages/main-page/trades-form/trades-form.component';
 import { OrderBookComponent } from './pages/main-page/order-book/order-book.component';
+import { TokenAddressDirective } from './directives/token-address/token-address.directive';
+import { CommonModule } from '@angular/common';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -249,7 +251,8 @@ export function appInitializerFactory(
     BlockchainLabelComponent,
     AddressInputComponent,
     NetworkErrorComponent,
-    TradeSuccessModalComponent
+    TradeSuccessModalComponent,
+    TokenAddressDirective
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [
@@ -287,7 +290,8 @@ export function appInitializerFactory(
       TokenLabelComponent,
       BlockchainLabelComponent,
       NetworkErrorComponent
-    ])
+    ]),
+    CommonModule
   ],
   providers: [
     CookieService,

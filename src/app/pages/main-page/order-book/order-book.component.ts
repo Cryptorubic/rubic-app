@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
 import {
@@ -7,6 +7,8 @@ import {
 } from '@angular/material-moment-adapter';
 import { BLOCKCHAIN_NAMES, IToken } from '../trades-form/types';
 import { MY_FORMATS } from '../../../index/start-form/start-form.component';
+import { TokenInfoBody } from '../../../services/web3Api/types';
+import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-order-book',
@@ -25,11 +27,34 @@ import { MY_FORMATS } from '../../../index/start-form/start-form.component';
   ]
 })
 export class OrderBookComponent implements OnInit {
-  @Input() blockchain: BLOCKCHAIN_NAMES;
-  @Input() baseToken?: IToken = {} as IToken;
-  @Input() quoteToken?: IToken = {} as IToken;
+  @Input() set blockchain(value: BLOCKCHAIN_NAMES) {
+    this._blockchain = value;
 
-  public isCustomTokenSectionOpened = { base: false, quote: false };
+    setTimeout(() => this.updateCustomTokenAddresses());
+  }
+
+  get blockchain() {
+    return this._blockchain;
+  }
+
+  @Input() tokens = {
+    base: {} as IToken,
+    quote: {} as IToken
+  };
+
+  @ViewChild('baseCustomToken') baseCustomToken: NgModel;
+  @ViewChild('quoteCustomToken') quoteCustomToken: NgModel;
+
+  private _blockchain;
+
+  public isCustomTokenSectionOpened = {
+    base: false,
+    quote: false
+  };
+  public customTokens = {
+    base: {} as IToken,
+    quote: {} as IToken
+  };
 
   public isAdvancedSectionOpened: boolean = false;
 
@@ -90,6 +115,25 @@ export class OrderBookComponent implements OnInit {
       }
     } else {
       this.minClosingTime = null;
+    }
+  }
+
+  public addCustomToken(tokenPart: string, tokenBody: TokenInfoBody): void {
+    this.customTokens[tokenPart].token_title = tokenBody.name;
+    this.customTokens[tokenPart].token_short_title = tokenBody.symbol;
+    this.customTokens[tokenPart].decimals = tokenBody.decimals;
+  }
+
+  public setCustomToken(tokenPart: string) {
+    this.tokens[tokenPart] = this.customTokens[tokenPart];
+  }
+
+  private updateCustomTokenAddresses(): void {
+    if (this.baseCustomToken) {
+      this.baseCustomToken.control.updateValueAndValidity();
+    }
+    if (this.quoteCustomToken) {
+      this.quoteCustomToken.control.updateValueAndValidity();
     }
   }
 }
