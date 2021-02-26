@@ -181,11 +181,35 @@
 
       <!-- To -->
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1" [ngClass]="{ 'to-block_moved-right': instanceTrade }">
+
+        <div
+          class="etherscan-link"
+          *ngIf="instanceTrade"
+          [ngStyle]="{
+          visibility: !requestData.tokens_info.quote.token.address ? 'hidden' : 'visible'
+        }"
+        >
+          <a
+            [href]="
+            !requestData.tokens_info.quote.token.isNative
+              ? (requestData.tokens_info.quote.token.address
+                | etherscanUrl: selectedNetwork:'token')
+              : (selectedNetwork | nativeCoinUrl)
+          "
+            target="_blank"
+          >
+            <small>Check on Explorer</small>
+            <img src="./assets/images/icons/link.svg" />
+          </a>
+        </div>
+
         <div class="form-field">
           <label class="form-field_label" *ngIf="!instanceTrade">{{
             'You want to get' | translate
           }}</label>
-          <label class="form-field_label" *ngIf="instanceTrade">{{ 'You get' | translate }}</label>
+          <label class="form-field_label" *ngIf="instanceTrade" style="width: 200px">
+            {{ 'You get' | translate }}
+          </label>
           <div class="form-field_input">
             <input
               type="hidden"
@@ -219,8 +243,8 @@
             ></app-tokens-all-input>
 
             <div class="gas-fee-container" *ngIf="instanceTrade && oneInchGasInfo">
-              <span>Estimated gas fee: {{oneInchGasInfo.gasFeeInEth.toFixed(6)}}ETH ≈ {{oneInchGasInfo.gasFeeInUsd.toFixed(1)}}$</span>
-              <app-info-tooltip>
+              <span>Estimated gas fee: {{oneInchGasInfo.gasFeeInEth.toFixed(3)}}ETH ≈ {{oneInchGasInfo.gasFeeInUsd.toFixed(1)}}$</span>
+              <app-info-tooltip [emptyIcon]="true">
                 {{'Estimated gas fee amount. It will be required to provide more gas in the Metamask to complete the trade, extra gas will be returned after transaction is completed.' | translate}}
               </app-info-tooltip>
             </div>
@@ -388,8 +412,8 @@
 
         <div class="gas-fee-container" *ngIf="uniSwapTrade">
           <span class="ml">
-            Estimated gas fee: {{uniSwapTrade.gasFeeInEth.toFixed(6)}}ETH ≈ {{uniSwapTrade.gasFeeInUsd.toFixed(1)}}$</span>
-            <app-info-tooltip>
+            Estimated gas fee: {{uniSwapTrade.gasFeeInEth.toFixed(3)}}ETH ≈ {{uniSwapTrade.gasFeeInUsd.toFixed(1)}}$</span>
+            <app-info-tooltip [emptyIcon]="true">
               {{'Estimated gas fee amount. It will be required to provide more gas in the Metamask to complete the trade, extra gas will be returned after transaction is completed.' | translate}}
             </app-info-tooltip>
         </div>
@@ -425,27 +449,6 @@
             {{ (isCreatingContract ? 'Creating Trade' : 'Via UniSwap') | translate }}
           </span>
         </button>
-      </div>
-
-      <div
-        class="etherscan-link"
-        *ngIf="instanceTrade"
-        [ngStyle]="{
-          visibility: !requestData.tokens_info.quote.token.address ? 'hidden' : 'visible'
-        }"
-      >
-        <a
-          [href]="
-            !requestData.tokens_info.quote.token.isNative
-              ? (requestData.tokens_info.quote.token.address
-                | etherscanUrl: selectedNetwork:'token')
-              : (selectedNetwork | nativeCoinUrl)
-          "
-          target="_blank"
-        >
-          <small>Check on Explorer</small>&nbsp;
-          <img src="./assets/images/icons/link.svg" />
-        </a>
       </div>
     </div>
   </form>

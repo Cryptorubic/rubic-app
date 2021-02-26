@@ -303,20 +303,18 @@
   }
 }
 .etherscan-link {
-  margin-right: calc(25% + 13px);
-  margin-top: 25px;
+  position: absolute;
+  top: -10px;
+  right: -22px;
+
   font-size: 18px;
-  line-height: 22px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  float: right;
-  padding-top: 4px;
+  line-height: 32px;
   a {
     display: flex;
     align-items: center;
   }
   img {
+    margin-left: 5px;
     margin-top: -4px;
   }
 }
@@ -490,7 +488,8 @@
 }
 
 .uniswap-tokens-input {
-  width: 37.5%;
+  margin-right: 0.7%;
+  width: 37.3%;
   position: relative;
   margin-left: 45%;
   padding: 0 10px;
@@ -545,6 +544,6 @@
 .arrows-icon-container {
   position: absolute;
   bottom: 6px;
-  left: 40%;
+  left: 39%;
   transform: scale(1.2);
 }
