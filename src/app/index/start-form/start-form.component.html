@@ -102,7 +102,7 @@
     <div class="grid-row start-form-row">
       <!-- From -->
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
-        <div class="form-field">
+        <div class="form-field" [ngClass]="{ 'from-block_moved-bottom': instanceTrade}">
           <label class="form-field_label">{{ 'You have' | translate }}</label>
           <div class="form-field_input">
             <input
@@ -176,7 +176,7 @@
       </div>
 
       <!-- To -->
-      <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
+      <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1" [ngClass]="{ 'to-block_moved-right': instanceTrade }">
         <div class="form-field">
           <label class="form-field_label" *ngIf="!instanceTrade">{{
             'You want to get' | translate
@@ -297,7 +297,8 @@
       </div>
 
       <!-- Submit button -->
-      <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1" style="float: right">
+      <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1" style="float: right"
+           [ngClass]="{ 'instant-trade-button': instanceTrade }">
         <label class="form-field_label">&nbsp;</label>
         <div class="form-field form-field_btn form-field_btn--rate">
           <button
@@ -330,7 +331,7 @@
             </span>
             <span>
               {{ (isCreatingContract ? 'Creating Trade' :
-                    instanceTrade ? 'Trade in 1Inch' : 'Create Trade') | translate }}
+                    instanceTrade ? 'Via 1Inch' : 'Create Trade') | translate }}
             </span>
           </button>
         </div>
@@ -395,7 +396,7 @@
         </div>
       </div>
 
-      <div class="uniswap-button">
+      <div class="uniswap-button" [ngClass]="{ 'instant-trade-button': instanceTrade }">
         <button
           class="btn btn-green width-100"
           [disabled]="
@@ -417,7 +418,7 @@
             </span>
           </span>
           <span>
-            {{ (isCreatingContract ? 'Creating Trade' : 'Trade in UniSwap') | translate }}
+            {{ (isCreatingContract ? 'Creating Trade' : 'Via UniSwap') | translate }}
           </span>
         </button>
       </div>

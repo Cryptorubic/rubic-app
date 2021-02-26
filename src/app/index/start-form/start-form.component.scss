@@ -492,7 +492,7 @@
 .uniswap-tokens-input {
   width: 37.5%;
   position: relative;
-  margin-left: 37%;
+  margin-left: 45%;
   padding: 0 10px;
   box-sizing: border-box;
   display: inline-block;
@@ -526,4 +526,18 @@
 
 .gas-fee-tooltip {
   position: absolute;
+}
+
+.from-block_moved-bottom {
+  position: relative;
+  top: 54px;
+}
+
+.instant-trade-button {
+  width: 17% !important;
+}
+
+.to-block_moved-right {
+  position: relative;
+  left: 8%;
 }
