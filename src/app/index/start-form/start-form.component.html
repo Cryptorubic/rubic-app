@@ -329,7 +329,8 @@
               </span>
             </span>
             <span>
-              {{ (isCreatingContract ? 'Creating Trade' : 'Trade in 1Inch') | translate }}
+              {{ (isCreatingContract ? 'Creating Trade' :
+                    instanceTrade ? 'Trade in 1Inch' : 'Create Trade') | translate }}
             </span>
           </button>
         </div>
