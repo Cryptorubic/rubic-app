@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BridgeSuccessComponent } from './bridge-success.component';
 
@@ -6,7 +6,7 @@ describe('BridgeSuccessComponent', () => {
   let component: BridgeSuccessComponent;
   let fixture: ComponentFixture<BridgeSuccessComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BridgeSuccessComponent]
     }).compileComponents();
