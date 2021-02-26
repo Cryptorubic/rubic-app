@@ -2,18 +2,23 @@
   position: relative;
   cursor: pointer;
 
+  font-size: 12px;
+
   &:hover {
     .tooltip-group__container {
+      visibility: visible;
       opacity: 1;
     }
   }
 
   &__container {
-    opacity: 0;
-    z-index: 20;
+    visibility: hidden;
     position: absolute;
-    top: -45px;
-    left: -91px;
+    bottom: 20px;
+    left: -95px;
+    z-index: 20;
+
+    opacity: 0;
 
     transition: opacity 0.3s ease-in-out;
   }
