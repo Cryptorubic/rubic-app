@@ -148,9 +148,9 @@ describe('Web3ApiService', () => {
     const weenusBody = coingeckoTestTokens.find(t => t.address === WEENUS.address);
     let tokenBody = await service.getTokenInfo(WEENUS.address, BLOCKCHAIN_NAMES.ETHEREUM);
 
-    expect(tokenBody.name === weenusBody.token_title);
-    expect(tokenBody.symbol === weenusBody.token_short_title);
-    expect(tokenBody.decimals === weenusBody.decimals);
+    expect(tokenBody.name === weenusBody.token_title).toBeTruthy();
+    expect(tokenBody.symbol === weenusBody.token_short_title).toBeTruthy();
+    expect(tokenBody.decimals === weenusBody.decimals).toBeTruthy();
 
     done();
   });

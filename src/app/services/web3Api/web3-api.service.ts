@@ -599,7 +599,11 @@ export class Web3ApiService {
     return contract.methods[tokenField]()
       .call()
       .then(value => {
-        tokenBody[tokenField] = value;
+        if (tokenField === 'decimals') {
+          tokenBody[tokenField] = parseInt(value);
+        } else {
+          tokenBody[tokenField] = value;
+        }
       });
   }
 }
