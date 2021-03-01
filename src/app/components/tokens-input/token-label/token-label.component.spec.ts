@@ -6,11 +6,13 @@ describe('TokenLabelComponent', () => {
   let component: TokenLabelComponent;
   let fixture: ComponentFixture<TokenLabelComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TokenLabelComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TokenLabelComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TokenLabelComponent);

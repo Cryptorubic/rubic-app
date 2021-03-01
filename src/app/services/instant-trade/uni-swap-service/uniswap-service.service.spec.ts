@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { UniSwapService } from './uni-swap.service';
 import BigNumber from 'bignumber.js';
 
 import { HttpClientModule } from '@angular/common/http';
+import { UniSwapService } from './uni-swap.service';
 import { ProviderService } from '../../provider/provider.service';
 import providerServiceStub from '../../provider/provider-service-stub';
 import { ETH, WEENUS, YEENUS } from '../../../../test/tokens/eth-tokens';
@@ -45,6 +45,7 @@ describe('UniswapServiceService', () => {
     );
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
+
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
     expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).not.toBeTruthy();
@@ -58,6 +59,7 @@ describe('UniswapServiceService', () => {
     await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
+
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
     expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).toBeTruthy();
@@ -75,6 +77,7 @@ describe('UniswapServiceService', () => {
     );
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
+
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
     expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).toBeTruthy();
@@ -86,6 +89,7 @@ describe('UniswapServiceService', () => {
     const fromAmount = new BigNumber(0.2);
 
     const trade = await service.calculateTrade(fromAmount, ETH, YEENUS);
+
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
     console.log(trade.estimatedGas);
@@ -96,6 +100,7 @@ describe('UniswapServiceService', () => {
     const fromAmount = new BigNumber(200_000);
 
     const trade = await service.calculateTrade(fromAmount, ETH, YEENUS);
+
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
     expect(trade.estimatedGas.eq(UniSwapService.ethToTokensEstimatedGas)).toBeTruthy();
@@ -113,6 +118,7 @@ describe('UniswapServiceService', () => {
     );
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH);
+
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
     expect(trade.estimatedGas.eq(UniSwapService.tokensToEthEstimatedGas)).not.toBeTruthy();
@@ -126,6 +132,7 @@ describe('UniswapServiceService', () => {
     await web3Api.unApprove(WEENUS.address, UniSwapContractAddress);
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH);
+
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
     expect(trade.estimatedGas.eq(UniSwapService.tokensToEthEstimatedGas)).toBeTruthy();
@@ -161,6 +168,7 @@ describe('UniswapServiceService', () => {
     expect(callbackObject.onApprove).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
+
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
@@ -276,6 +284,7 @@ describe('UniswapServiceService', () => {
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
+
     expect(callbackObject.onApprove).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
@@ -325,6 +334,7 @@ describe('UniswapServiceService', () => {
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
+
     expect(callbackObject.onApprove).not.toHaveBeenCalled();
 
     const newBalance = await web3Api.getBalance();

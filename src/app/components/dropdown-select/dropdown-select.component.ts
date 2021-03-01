@@ -7,9 +7,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class DropdownSelectComponent implements OnInit {
   @Input() public options: any[];
+
   @Input() private defaultOption = 0;
+
   @Input() public isSortable = false;
+
   @Input() public downDirection: boolean;
+
   /**
    * To make selected option and options' list the same width
    */
@@ -18,6 +22,7 @@ export class DropdownSelectComponent implements OnInit {
   @Output() public optionToSortBy: EventEmitter<any> = new EventEmitter<any>();
 
   public isOptionsShown = false;
+
   public selectedOption: any;
 
   constructor() {}

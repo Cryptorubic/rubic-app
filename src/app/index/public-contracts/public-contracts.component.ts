@@ -1,3 +1,17 @@
+import { Component, Input, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
+import BigNumber from 'bignumber.js';
+import { HttpClient } from '@angular/common/http';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { ContractsService, InterfacePastSwaps } from '../../services/contracts/contracts.service';
+import { Web3Service } from '../../services/web3/web3.service';
+
+import { UserInterface } from '../../services/user/user.interface';
+import { UserService } from '../../services/user/user.service';
+import {
+  CHAINS_OF_NETWORKS,
+  FIX_TIME
+} from '../../contracts-preview-v3/contracts-preview-v3.component';
+
 export interface IContractDetails {
   network?: number;
   base_address?: string;
@@ -47,20 +61,6 @@ export interface IContract {
   user?: number;
 }
 
-import { Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { ContractsService, InterfacePastSwaps } from '../../services/contracts/contracts.service';
-import { Web3Service } from '../../services/web3/web3.service';
-
-import BigNumber from 'bignumber.js';
-import { HttpClient } from '@angular/common/http';
-import { UserInterface } from '../../services/user/user.interface';
-import { UserService } from '../../services/user/user.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import {
-  CHAINS_OF_NETWORKS,
-  FIX_TIME
-} from '../../contracts-preview-v3/contracts-preview-v3.component';
-
 const PAGE_SIZE = 5;
 
 export interface InterfacePastSwapsRequest {
@@ -75,18 +75,57 @@ export interface InterfacePastSwapsRequest {
   templateUrl: './public-contracts.component.html',
   styleUrls: ['./public-contracts.component.scss']
 })
-export class PublicContractsComponent implements OnInit, OnDestroy {
+export class PublicContractsComponent implements OnDestroy {
+  @ViewChild('deleteTradeConfirmation', { static: true }) deleteTradeConfirmation: TemplateRef<any>;
+
+  private deleteTradeConfirmationModal: MatDialogRef<any>;
+
+  private tradeForDeleting: any;
+
+  public contractsCount: number;
+
+  private serverDateTimeRange: number;
+
+  public contractsList;
+
+  public displayingContractsList;
+
+  public allLoaded: boolean;
+
+  public refreshProgress: boolean;
+
+  private showedPages: number;
+
+  public allFilteredOrdersCount: any;
+
+  public currentUser: UserInterface;
+
+  public openedTradesTab: string;
+
+  public selectedCoins: {
+    base?: any;
+    quote?: any;
+  };
+
+  public selectedFilter: { name: string; asc: boolean };
+
+  private activeTradesList: any;
+
+  public pastTradesInfo: InterfacePastSwaps;
+
+  private checkExpireInterval;
+
   private _blockChain: string;
+
   private allOrdersList: any[];
+
   @Input() set blockchain(value: string) {
     this._blockChain = value;
     this.setTradesList();
   }
-  get() {
-    return this._blockChain;
-  }
 
   public displayingBlockchains = CHAINS_OF_NETWORKS;
+
   constructor(
     private contractsService: ContractsService,
     private web3Service: Web3Service,
@@ -112,7 +151,7 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
     // Список активных контрактов
     this.serverDateTimeRange = 0;
     this.http
-      .get('/assets/images/1x1.png?_t=' + new Date().getTime(), {
+      .get(`/assets/images/1x1.png?_t=${new Date().getTime()}`, {
         responseType: 'text',
         observe: 'response'
       })
@@ -130,42 +169,24 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
     this.openedTradesTab = 'ACTIVE';
   }
 
-  private filterOrdersByNetwork() {}
+  public static scrollTop() {
+    const scrollStep = -window.scrollY / (500 / 15);
 
-  @ViewChild('deleteTradeConfirmation', { static: true }) deleteTradeConfirmation: TemplateRef<any>;
-  private deleteTradeConfirmationModal: MatDialogRef<any>;
+    const scrollInterval = setInterval(() => {
+      if (window.scrollY !== 0) {
+        window.scrollBy(0, scrollStep);
+      } else {
+        clearInterval(scrollInterval);
+      }
+    }, 15);
+  }
 
-  private tradeForDeleting: any;
+  get() {
+    return this._blockChain;
+  }
 
-  public contractsCount: number;
-  private serverDateTimeRange: number;
+  // private filterOrdersByNetwork() {}
 
-  public contractsList;
-  public displayingContractsList;
-
-  public allLoaded: boolean;
-  public refreshProgress: boolean;
-
-  private showedPages: number;
-
-  public allFilteredOrdersCount: any;
-
-  public currentUser: UserInterface;
-
-  public openedTradesTab: string;
-
-  public selectedCoins: {
-    base?: any;
-    quote?: any;
-  };
-
-  public selectedFilter: { name: string; asc: boolean };
-
-  private activeTradesList: any;
-
-  public pastTradesInfo: InterfacePastSwaps;
-
-  private checkExpireInterval;
   ngOnDestroy(): void {
     clearInterval(this.checkExpireInterval);
   }
@@ -195,7 +216,7 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
       contract.contract_details.quote_filled = '0';
       contract.contract_details.network = contract.network;
 
-      this.web3Service.getSWAPSCoinInfo(contract.contract_details).then((trade: any) => {
+      this.web3Service.getSWAPSCoinInfo(contract.contract_details).then(() => {
         const baseToken = contract.contract_details.tokens_info.base.token;
         const quoteToken = contract.contract_details.tokens_info.quote.token;
 
@@ -205,10 +226,10 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
         ) {
           contract.contract_details.quote_limit = new BigNumber(
             contract.contract_details.quote_limit
-          ).times(Math.pow(10, quoteToken.decimals));
+          ).times(quoteToken.decimals ** 10);
           contract.contract_details.base_limit = new BigNumber(
             contract.contract_details.base_limit
-          ).times(Math.pow(10, baseToken.decimals));
+          ).times(baseToken.decimals ** 10);
         }
 
         contract.contract_details.base_filled = contract.contract_details.base_amount_contributed
@@ -233,12 +254,12 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
         contract.contract_details.base_token_info.amount = new BigNumber(
           contract.contract_details.base_limit
         )
-          .div(Math.pow(10, baseToken.decimals))
+          .div(baseToken.decimals ** 10)
           .dp(8);
         contract.contract_details.quote_token_info.amount = new BigNumber(
           contract.contract_details.quote_limit
         )
-          .div(Math.pow(10, quoteToken.decimals))
+          .div(quoteToken.decimals ** 10)
           .dp(8);
 
         this.getRates(contract);
@@ -309,17 +330,20 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
           }
         }
         break;
-
       case 'PAST':
         if (this.pastTradesInfo.page > 1) {
           if (this.contractsCount === this.pastTradesInfo.list.length) {
             this.pastTradesInfo.inProgress = false;
-            this.displayingContractsList = this.allFilteredOrdersCount = this.contractsList = this.pastTradesInfo.list;
+            this.displayingContractsList = this.pastTradesInfo.list;
+            this.allFilteredOrdersCount = this.pastTradesInfo.list;
+            this.contractsList = this.pastTradesInfo.list;
           }
         } else if (this.contractsCount === this.contractsList.length) {
           this.pastTradesInfo.inProgress = false;
           this.allLoaded = true;
         }
+        break;
+      default:
         break;
     }
   }
@@ -359,7 +383,7 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
     }
 
     switch (this.selectedFilter.name) {
-      case 'volume':
+      case 'volume': {
         let sortBy = 'base_token_info';
 
         if (this.selectedCoins.quote.token && !this.selectedCoins.base.token) {
@@ -373,16 +397,15 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
               .isPositive()
               ? 1
               : -1;
-          } else {
-            return new BigNumber(contract2.contract_details[sortBy].amount)
-              .minus(new BigNumber(contract1.contract_details[sortBy].amount))
-              .isPositive()
-              ? 1
-              : -1;
           }
+          return new BigNumber(contract2.contract_details[sortBy].amount)
+            .minus(new BigNumber(contract1.contract_details[sortBy].amount))
+            .isPositive()
+            ? 1
+            : -1;
         });
         break;
-
+      }
       case 'expired':
         this.contractsList = this.contractsList.sort((contract1, contract2) => {
           if (this.selectedFilter.asc) {
@@ -390,12 +413,10 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
               contract2.contract_details.left_times.ts
               ? 1
               : -1;
-          } else {
-            return contract2.contract_details.left_times.ts >
-              contract1.contract_details.left_times.ts
-              ? 1
-              : -1;
           }
+          return contract2.contract_details.left_times.ts > contract1.contract_details.left_times.ts
+            ? 1
+            : -1;
         });
         break;
 
@@ -405,18 +426,6 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
         });
     }
     this.selectCoin();
-  }
-
-  public scrollTop() {
-    const scrollStep = -window.scrollY / (500 / 15);
-
-    const scrollInterval = setInterval(() => {
-      if (window.scrollY !== 0) {
-        window.scrollBy(0, scrollStep);
-      } else {
-        clearInterval(scrollInterval);
-      }
-    }, 15);
   }
 
   public selectCoin() {
@@ -438,6 +447,8 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
       case 'PAST':
         // this.loadPastTrades();
         break;
+      default:
+        break;
     }
   }
 
@@ -458,11 +469,9 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnInit() {}
-
-  public showPostSelectedPages() {
-    // this.loadPastTrades(true);
-  }
+  // public showPostSelectedPages() {
+  // this.loadPastTrades(true);
+  // }
 
   // private loadPastTrades(nextPage?) {
   //   if (this.pastTradesInfo) {
@@ -520,6 +529,7 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
       panelClass: 'custom-dialog-container'
     });
   }
+
   public confirmDeleteTrade() {
     this.contractsService.deleteTradeFromManager(this.tradeForDeleting).then(() => {
       this.refreshList();

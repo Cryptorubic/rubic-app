@@ -13,8 +13,11 @@ export class ForgotPasswordComponent implements OnInit {
     email?: [any];
     non_field_errors?: [any];
   } = {};
+
   public SuccessText: string | undefined;
+
   public forgotForm: FormGroup;
+
   public formIsProgress: boolean;
 
   constructor(private _formBuilder: FormBuilder, private _userService: UserService) {}
@@ -39,6 +42,8 @@ export class ForgotPasswordComponent implements OnInit {
           switch (error.status) {
             case 400:
               this.ServerErrors = error.data;
+              break;
+            default:
               break;
           }
         }

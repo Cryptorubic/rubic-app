@@ -1,18 +1,16 @@
-import { AfterContentInit, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { DisclaimerComponent } from '../components/disclaimer/disclaimer.component';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { DisclaimerComponent } from '../components/disclaimer/disclaimer.component';
 
 @Component({
   selector: 'app-bridge',
   templateUrl: './bridge.component.html',
   styleUrls: ['./bridge.component.scss']
 })
-export class BridgeComponent implements OnInit, AfterViewInit {
+export class BridgeComponent implements AfterViewInit {
   @ViewChild('disclaimerText', { static: true }) disclaimerText;
 
   constructor(private dialog: MatDialog) {}
-
-  ngOnInit() {}
 
   private openDisclaimer(): void {
     this.dialog.open(DisclaimerComponent, {

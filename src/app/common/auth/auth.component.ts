@@ -8,6 +8,7 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 })
 export class AuthComponent {
   public currentEmail = 'kovalyov1987@gmail.com';
+
   public socialAuthError;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data) {

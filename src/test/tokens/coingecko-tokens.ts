@@ -47,16 +47,16 @@ const xeenus = {
   usd_price: 48005
 };
 
-const zeenus = {
-  address: ZEENUS.address,
-  coingecko_rank: 3,
-  decimals: ZEENUS.decimals,
-  image_link:
-    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  platform: 'ethereum',
-  token_short_title: 'ZEENUS',
-  token_title: 'ZEENUS',
-  usd_price: 48005
-};
+// const zeenus = {
+//   address: ZEENUS.address,
+//   coingecko_rank: 3,
+//   decimals: ZEENUS.decimals,
+//   image_link:
+//     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+//   platform: 'ethereum',
+//   token_short_title: 'ZEENUS',
+//   token_title: 'ZEENUS',
+//   usd_price: 48005
+// };
 
 export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus];

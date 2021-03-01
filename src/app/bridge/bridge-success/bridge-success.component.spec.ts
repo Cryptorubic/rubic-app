@@ -6,11 +6,13 @@ describe('BridgeSuccessComponent', () => {
   let component: BridgeSuccessComponent;
   let fixture: ComponentFixture<BridgeSuccessComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [BridgeSuccessComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [BridgeSuccessComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BridgeSuccessComponent);

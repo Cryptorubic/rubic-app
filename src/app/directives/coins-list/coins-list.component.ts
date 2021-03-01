@@ -7,8 +7,6 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { HttpService } from '../../services/http/http.service';
-import { TokenInfoInterface, Web3Service } from '../../services/web3/web3.service';
 
 export interface ITokenInfo {
   active?: boolean;
@@ -25,8 +23,10 @@ export interface ITokenInfo {
   styleUrls: ['./coins-list.component.scss']
 })
 export class CoinsListComponent implements OnInit {
-  @Input('tokenModel') public tokenModel: any;
+  @Input() public tokenModel: any;
+
   @Input() public tokenGroup: any;
+
   @Input() private setToken: any;
 
   @ViewChild('tokenField', { static: true }) tokenField: ElementRef;
@@ -36,11 +36,15 @@ export class CoinsListComponent implements OnInit {
   }
 
   public tokensList: ITokenInfo[];
+
   public listIsOpened: boolean;
+
   public tokenSymbol;
+
   private activeTokenIndex;
 
   @Output() TokenChange = new EventEmitter<string>();
+
   private searchSubscriber;
 
   ngOnInit() {
@@ -58,7 +62,7 @@ export class CoinsListComponent implements OnInit {
   public searchToken(q) {
     this.listIsOpened = false;
 
-    if (!isNaN(this.activeTokenIndex) && this.tokensList[this.activeTokenIndex]) {
+    if (!Number.isNaN(Number(this.activeTokenIndex)) && this.tokensList[this.activeTokenIndex]) {
       this.tokensList[this.activeTokenIndex].active = false;
     }
 
@@ -114,7 +118,7 @@ export class CoinsListComponent implements OnInit {
   }
 
   public selectToken(token, tokenIndex, withoutHide?: boolean) {
-    if (!isNaN(this.activeTokenIndex)) {
+    if (!Number.isNaN(Number(this.activeTokenIndex))) {
       this.tokensList[this.activeTokenIndex].active = false;
     }
     token.active = true;
@@ -145,30 +149,27 @@ export class CoinsListComponent implements OnInit {
       return;
     }
     switch (event.code) {
-      case 'ArrowUp':
+      case 'ArrowUp': {
         let newPrevIndex = this.activeTokenIndex - 1;
         if (newPrevIndex < 0) {
           newPrevIndex = this.tokensList.length - 1;
-        } else {
-          if (this.activeTokenIndex === undefined) {
-            return;
-          }
+        } else if (this.activeTokenIndex === undefined) {
+          return;
         }
 
         this.selectToken(this.tokensList[newPrevIndex], newPrevIndex, true);
         break;
-
-      case 'ArrowDown':
+      }
+      case 'ArrowDown': {
         let newNextIndex = this.activeTokenIndex + 1;
         if (newNextIndex > this.tokensList.length - 1) {
           newNextIndex = 0;
-        } else {
-          if (this.activeTokenIndex === undefined) {
-            return;
-          }
+        } else if (this.activeTokenIndex === undefined) {
+          return;
         }
         this.selectToken(this.tokensList[newNextIndex], newNextIndex, true);
         break;
+      }
       case 'Enter':
         if (this.activeTokenIndex === undefined) {
           return;
@@ -176,6 +177,8 @@ export class CoinsListComponent implements OnInit {
 
         this.selectToken(this.tokensList[this.activeTokenIndex], this.activeTokenIndex);
         event.preventDefault();
+        break;
+      default:
         break;
     }
 

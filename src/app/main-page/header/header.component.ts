@@ -1,7 +1,6 @@
 import {
   Component,
   Inject,
-  OnInit,
   PLATFORM_ID,
   TemplateRef,
   ViewChild,
@@ -9,32 +8,40 @@ import {
   EventEmitter
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { NavigationStart, Router } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { Web3Service } from '../../services/web3/web3.service';
 import { UserInterface } from '../../services/user/user.interface';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-header-main-page',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderMainPageComponent implements OnInit {
+export class HeaderMainPageComponent {
   private isBrowser: any;
+
   public pageScrolled: boolean;
+
   public currentUser: UserInterface;
 
   public openedMenu;
+
   public infoMenuOpened;
+
   public devMenuOpened;
+
   public productMenuOpened;
 
   @ViewChild('logoutConfirmation') logoutConfirmation: TemplateRef<any>;
+
   @ViewChild('headerPage') headerPage;
 
   private logoutConfirmationModal: MatDialogRef<any>;
+
   private logoutProgress: boolean;
+
   @Output() changedSocialState = new EventEmitter<string>();
 
   constructor(
@@ -58,7 +65,7 @@ export class HeaderMainPageComponent implements OnInit {
       };
     }
 
-    document.getElementsByTagName('body')[0]['addEventListener']('mousedown', event => {
+    document.getElementsByTagName('body')[0].addEventListener('mousedown', () => {
       this.openedMenu = false;
       this.infoMenuOpened = false;
       this.productMenuOpened = false;
@@ -74,19 +81,22 @@ export class HeaderMainPageComponent implements OnInit {
       }
     });
   }
+
   private socialFormData: {
     network: string;
     data: any;
   };
+
   public socialAuthError;
 
-  public openAuth() {
-    // this.userService.openAuthForm().then(
-    //   () => {},
-    //   () => {},
-    // );
-    // this.socialComponent.MetamaskAuth();
-  }
+  // public openAuth() {
+  // this.userService.openAuthForm().then(
+  //   () => {},
+  //   () => {},
+  // );
+  // this.socialComponent.MetamaskAuth();
+  // }
+
   private sendMetaMaskRequest(data) {
     this.socialFormData = {
       network: 'mm',
@@ -101,6 +111,7 @@ export class HeaderMainPageComponent implements OnInit {
       }
     );
   }
+
   private onTotpError(error) {
     switch (error.status) {
       case 403:
@@ -110,7 +121,11 @@ export class HeaderMainPageComponent implements OnInit {
           case '1033':
             this.changedSocialState.emit(error.error.detail);
             break;
+          default:
+            break;
         }
+        break;
+      default:
         break;
     }
   }
@@ -131,8 +146,6 @@ export class HeaderMainPageComponent implements OnInit {
       });
     }
   }
-
-  ngOnInit() {}
 
   public openLogoutConfirmation() {
     this.logoutConfirmationModal = this.dialog.open(this.logoutConfirmation, {

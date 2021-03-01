@@ -6,11 +6,13 @@ describe('WhiteButtonComponent', () => {
   let component: WhiteButtonComponent;
   let fixture: ComponentFixture<WhiteButtonComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [WhiteButtonComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [WhiteButtonComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(WhiteButtonComponent);

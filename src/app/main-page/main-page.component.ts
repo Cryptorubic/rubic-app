@@ -30,6 +30,7 @@ export class MainPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    // eslint-disable-next-line no-new
     new window['ScrollTopButton'](500);
   }
 }

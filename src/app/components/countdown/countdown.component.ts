@@ -16,13 +16,17 @@ export interface IMessage {
 })
 export class CountdownComponent implements OnInit {
   @Input() timeStart: number;
+
   @Input() correctTimeStart: number;
+
   @Input() timeEndDayPlus: number;
 
   @Output() countdownEvent = new EventEmitter<any>();
 
   private counter$: Observable<number>;
+
   private subscription: Subscription;
+
   public message = {
     days: '-',
     hours: '-',
@@ -32,7 +36,7 @@ export class CountdownComponent implements OnInit {
 
   constructor() {}
 
-  dhms(t) {
+  public static dhms(t: number) {
     let days = Math.floor(t / 86400);
     t -= days * 86400;
     let hours = Math.floor(t / 3600) % 24;
@@ -58,7 +62,7 @@ export class CountdownComponent implements OnInit {
 
   ngOnInit() {
     if (this.correctTimeStart) {
-      this.timeStart = this.timeStart * this.correctTimeStart;
+      this.timeStart *= this.correctTimeStart;
     }
 
     const future = new Date(this.timeStart);
@@ -77,7 +81,7 @@ export class CountdownComponent implements OnInit {
         this.countdownEvent.emit(true);
       }
 
-      this.message = this.dhms(x);
+      this.message = CountdownComponent.dhms(x);
     });
   }
 

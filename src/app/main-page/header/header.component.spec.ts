@@ -1,21 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { HeaderComponent } from 'src/app/index/header/header.component';
 
-import { BridgeTableComponent } from './bridge-table.component';
-
-describe('BridgeTableComponent', () => {
-  let component: BridgeTableComponent;
-  let fixture: ComponentFixture<BridgeTableComponent>;
+describe('HeaderComponent', () => {
+  let component: HeaderComponent;
+  let fixture: ComponentFixture<HeaderComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [BridgeTableComponent]
+        declarations: [HeaderComponent]
       }).compileComponents();
     })
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BridgeTableComponent);
+    fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

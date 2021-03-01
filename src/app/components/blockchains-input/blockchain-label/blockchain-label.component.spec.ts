@@ -6,11 +6,13 @@ describe('BlockchainLabelComponent', () => {
   let component: BlockchainLabelComponent;
   let fixture: ComponentFixture<BlockchainLabelComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [BlockchainLabelComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [BlockchainLabelComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BlockchainLabelComponent);

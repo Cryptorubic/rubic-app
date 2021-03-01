@@ -1,11 +1,5 @@
 import { Directive, ElementRef, Injector, Input, OnInit } from '@angular/core';
-import {
-  NG_VALIDATORS,
-  Validator,
-  AbstractControl,
-  ValidationErrors,
-  NgControl
-} from '@angular/forms';
+import { NgControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 
@@ -14,12 +8,15 @@ import BigNumber from 'bignumber.js';
 })
 export class MinMaxDirective implements OnInit {
   @Input('minValue') min: number;
+
   @Input('maxValue') max: number;
 
   @Input('checkMinValue') checkMinValue: Observable<any>;
+
   @Input('step') step: number;
 
   private oldValidValue;
+
   private control: any;
 
   constructor(private injector: Injector, private el: ElementRef) {
@@ -41,12 +38,12 @@ export class MinMaxDirective implements OnInit {
   }
 
   private validateControl() {
-    const control = this.control;
+    const { control } = this;
     const val = control.value * 1;
     const errors = control.errors || {};
 
     const olderVal = this.oldValidValue;
-    if (control.value && isNaN(val)) {
+    if (control.value && Number.isNaN(Number(val))) {
       if (this.oldValidValue) {
         this.el.nativeElement.value = this.oldValidValue;
         setTimeout(() => {
@@ -62,7 +59,7 @@ export class MinMaxDirective implements OnInit {
 
     const splittedStepValue = this.step.toString().split('.');
     const sizeDecimals = splittedStepValue[1] ? splittedStepValue[1].length : 0;
-    const powValue = Math.pow(10, sizeDecimals);
+    const powValue = sizeDecimals ** 10;
 
     const stepValid = !new BigNumber(control.value)
       .times(powValue)
@@ -96,15 +93,14 @@ export class MinMaxDirective implements OnInit {
         });
       });
       return;
-    } else {
-      delete errors.step;
     }
+    delete errors.step;
 
     if (JSON.stringify(errors) === '{}') {
       control.setErrors(null);
       return;
     }
-    if (!isNaN(val)) {
+    if (!Number.isNaN(Number(val))) {
       this.control.markAsTouched();
     }
     control.setErrors(errors);
