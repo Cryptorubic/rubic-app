@@ -13,8 +13,4 @@ interface TokenInfoBody {
   platform?: string;
 }
 
-type TokensInfoBodies = {
-  [blockchain in BLOCKCHAIN_NAMES]: { [address: string]: TokenInfoBody };
-};
-
-export { Web3ApiNetwork, TokenInfoBody, TokensInfoBodies };
+export { Web3ApiNetwork, TokenInfoBody };

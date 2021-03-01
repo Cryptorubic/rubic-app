@@ -9,7 +9,7 @@ import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { ProviderService } from '../provider/provider.service';
 import { TransactionReceipt } from 'web3-eth';
-import { TokenInfoBody, TokensInfoBodies, Web3ApiNetwork } from './types';
+import { TokenInfoBody, Web3ApiNetwork } from './types';
 import { nativeTokens } from './native-tokens';
 import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
 import { Contract } from 'web3-eth-contract';
@@ -44,12 +44,6 @@ export class Web3ApiService {
     [BLOCKCHAIN_NAMES.ETHEREUM]: Web3;
     [BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN]: Web3;
     [BLOCKCHAIN_NAMES.MATIC]: Web3;
-  };
-
-  private tokensInfoBodies: TokensInfoBodies = {
-    ETH: {},
-    BSC: {},
-    MAT: {}
   };
 
   public get network(): Web3ApiNetwork {
@@ -524,46 +518,56 @@ export class Web3ApiService {
    * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
    */
-  public getTokenInfo(tokenAddress: string, blockchain: BLOCKCHAIN_NAMES): Promise<TokenInfoBody> {
-    return new Promise((resolve, reject) => {
-      if (this.isEtherAddress(tokenAddress)) {
-        const tokenBody = nativeTokens.find(t => t.platform === blockchain);
-        if (tokenBody) {
-          resolve(tokenBody);
-        } else {
-          reject(`No token for ${blockchain} blockchain`);
-        }
-        return;
+  public getTokenInfo: (
+    tokenAddress: string,
+    blockchain: BLOCKCHAIN_NAMES
+  ) => Promise<TokenInfoBody> = this.getTokenInfoCachingDecorator();
+
+  private getTokenInfoCachingDecorator() {
+    const tokensBodyCache = new Map<
+      { tokenAddress: string; blockchain: BLOCKCHAIN_NAMES },
+      TokenInfoBody
+    >();
+
+    return async (tokenAddress: string, blockchain: BLOCKCHAIN_NAMES): Promise<TokenInfoBody> => {
+      if (tokensBodyCache.has({ tokenAddress, blockchain })) {
+        return tokensBodyCache.get({ tokenAddress, blockchain });
       }
 
-      if (this.tokensInfoBodies[blockchain].hasOwnProperty(tokenAddress)) {
-        resolve(this.tokensInfoBodies[blockchain][tokenAddress]);
-        return;
+      const tokenBody = await this.getTokenBody(tokenAddress, blockchain);
+      tokensBodyCache.set({ tokenAddress, blockchain }, tokenBody);
+
+      return tokenBody;
+    };
+  }
+
+  private async getTokenBody(
+    tokenAddress: string,
+    blockchain: BLOCKCHAIN_NAMES
+  ): Promise<TokenInfoBody> {
+    if (this.isEtherAddress(tokenAddress)) {
+      const tokenBody = nativeTokens.find(t => t.platform === blockchain);
+      if (tokenBody) {
+        return tokenBody;
+      } else {
+        throw new Error(`No token for ${blockchain} blockchain`);
       }
+    }
 
-      try {
-        const contract = new this.web3Infura[blockchain].eth.Contract(
-          ERC20_TOKEN_ABI as any[],
-          tokenAddress
-        );
-        const tokenFields = ['decimals', 'symbol', 'name'];
+    const contract = new this.web3Infura[blockchain].eth.Contract(
+      ERC20_TOKEN_ABI as any[],
+      tokenAddress
+    );
+    const tokenFields = ['decimals', 'symbol', 'name'];
 
-        const tokenBody = {} as TokenInfoBody;
-        const tokenFieldsPromises = [];
-        tokenFields.forEach(tokenField => {
-          tokenFieldsPromises.push(this.setTokenField(contract, tokenField, tokenBody));
-        });
-
-        return Promise.all(tokenFieldsPromises)
-          .then(() => {
-            this.tokensInfoBodies[blockchain][tokenAddress] = tokenBody;
-            resolve(tokenBody);
-          })
-          .catch(reject);
-      } catch (err) {
-        reject(err);
-      }
+    const tokenBody = {} as TokenInfoBody;
+    const tokenFieldsPromises = [];
+    tokenFields.forEach(tokenField => {
+      tokenFieldsPromises.push(this.setTokenField(contract, tokenField, tokenBody));
     });
+
+    await Promise.all(tokenFieldsPromises);
+    return tokenBody;
   }
 
   private setTokenField(
