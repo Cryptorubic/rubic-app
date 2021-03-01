@@ -245,7 +245,7 @@
             <div class="gas-fee-container" *ngIf="instanceTrade && oneInchGasInfo">
               <span>Estimated gas fee: {{oneInchGasInfo.gasFeeInEth.toFixed(3)}}ETH ≈ {{oneInchGasInfo.gasFeeInUsd.toFixed(1)}}$</span>
               <app-info-tooltip [emptyIcon]="true">
-                {{'Estimated gas fee amount. It will be required to provide more gas in the Metamask to complete the trade, extra gas will be returned after transaction is completed.' | translate}}
+                {{'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete.' | translate}}
               </app-info-tooltip>
             </div>
 
@@ -418,7 +418,7 @@
           <span class="ml">
             Estimated gas fee: {{uniSwapTrade.gasFeeInEth.toFixed(3)}}ETH ≈ {{uniSwapTrade.gasFeeInUsd.toFixed(1)}}$</span>
             <app-info-tooltip [emptyIcon]="true">
-              {{'Estimated gas fee amount. It will be required to provide more gas in the Metamask to complete the trade, extra gas will be returned after transaction is completed.' | translate}}
+              {{'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete.' | translate}}
             </app-info-tooltip>
         </div>
 
