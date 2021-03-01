@@ -1,4 +1,18 @@
-1. add `127.0.0.1 local.devswaps.mywish.io` into /etc/hosts
-2. [create and add into ssl folder ssl sert](https://medium.com/@rubenvermeulen/running-angular-cli-over-https-with-a-trusted-certificate-4a0d5f92747a)
-3. `npm install` (npm 6.14)
-4. `npm run start` (node 10.20)
+![alt text](https://github.com/Cryptorubic/rubic-frontend/blob/master/src/assets/images/rubic-logo.svg "Rubic — Multichain DeFi platform")
+
+# Multichain DeFi platform
+
+[Try our platform](https://rubic.exchange/)
+
+[Read more about us](https://rubic.finance/)
+
+![alt text](https://github.com/Cryptorubic/rubic-frontend/blob/master/docs/Banner.jpg "")
+
+## Rubic organizes defi services to enable a project to create, manage and trade tokens decentralized in ONE PLACE.
+We already provide multichain services for creating and managing tokens (airdrop, crowdsale, pools) powered by MyWish.
+
+Rubic's goal is to add multichain p2p trades to existing services and develop other products such as liquidity pools. And make it simple and user friendly.
+
+[Read White Paper](https://rubic.finance/assets/WhitePaper.pdf)
+
+[Read One Pager](https://rubic.finance/assets/pdf/OnePager.pdf)
