@@ -47,3 +47,5 @@ Thumbs.db
 /backup/
 /rub/
 /ssl/
+/deploy/
+/src/test/enviroment.test.json
