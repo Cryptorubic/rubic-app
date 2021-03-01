@@ -177,6 +177,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     transactionHash: ''
   };
 
+  public bestRate: string;
+
   public oneInchGasInfo = null;
   public instantTradeError: RubicError;
 
@@ -238,6 +240,43 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.instanceTradesTokens = coingeckoTestTokens;
       this.isTestMode = true;
     };
+  }
+
+  private async setBestRate() {
+    if (
+      this.uniSwapTradeStatus === UNISWAP_TRADE_STATUS.PARAMS_CALCULATION ||
+      this.getInstanceQuoteProgress
+    ) {
+      return;
+    }
+
+    if (!this.uniSwapTrade) {
+      this.bestRate = 'oneInch';
+      return;
+    }
+
+    if (!this.requestData.tokens_info.quote || !this.requestData.tokens_info.quote.amount) {
+      this.bestRate = 'uniSwap';
+      return;
+    }
+
+    const tokenUsdPrice = this.requestData.tokens_info.quote.token.usd_price;
+
+    const oneInchUsdAmount = new BigNumber(this.requestData.tokens_info.quote.amount).multipliedBy(
+      tokenUsdPrice
+    );
+    const uniSwapUsdAmount = this.uniSwapTrade.to.amount.multipliedBy(tokenUsdPrice);
+
+    const oneInchGasUsdCost = this.oneInchGasInfo.gasFeeInUsd;
+    const uniSwapGasUsdCost = this.uniSwapTrade.gasFeeInUsd;
+
+    const oneInchProfit = oneInchUsdAmount.minus(oneInchGasUsdCost);
+    const uniSwapProfit = uniSwapUsdAmount.minus(uniSwapGasUsdCost);
+    if (oneInchProfit.gt(uniSwapProfit)) {
+      this.bestRate = 'oneInch';
+      return;
+    }
+    this.bestRate = 'uniSwap';
   }
 
   private getOrderBookTokens() {
@@ -340,13 +379,13 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           !this.instantTradesAvailable ? this.requestData.tokens_info.quote.token.address : false
         )
         .then((result: any) => {
-          this.setOneInchGasInfo(result.estimatedGas);
           this.instanceTradeParams = result;
           this.requestData.tokens_info.quote.amount = Number(result.toTokenAmount)
             ? new BigNumber(result.toTokenAmount).div(quoteDecimalsTimes).toString(10)
             : '';
           // this.QuoteTokenCustom.emit();
           this.getInstanceQuoteProgress = false;
+          this.setOneInchGasInfo(result.estimatedGas).then(() => this.setBestRate());
         });
     }, 1000);
   }
@@ -465,6 +504,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         this.requestData.tokens_info.uniswap.amount = '';
       }
       this.uniSwapTradeStatus = null;
+      this.setBestRate();
     } else {
       this.uniSwapTrade = undefined;
       this.requestData.tokens_info.uniswap.amount = '';
@@ -477,6 +517,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public changedToken(force?: boolean) {
+    this.bestRate = undefined;
     this.requestData.tokens_info.uniswap.token = this.requestData.tokens_info.quote.token;
     this.recalculateUniSwapParameters();
     const baseCoin = this.requestData.tokens_info.base.token;

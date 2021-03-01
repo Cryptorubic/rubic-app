@@ -7,6 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class InfoTooltipComponent implements OnInit {
   @Input() alignCenter = true;
+  @Input() emptyIcon = false;
+
   constructor() {}
 
   ngOnInit() {}
