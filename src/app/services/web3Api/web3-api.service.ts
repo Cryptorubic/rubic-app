@@ -29,35 +29,22 @@ const NETWORKS: Web3ApiNetwork[] = [
   }
 ];
 
-export const INFURA_NETWORKS = {
-  ETH: {
-    INFURA_ADDRESS: 'https://mainnet.infura.io/v3/2e15c999e7854a6d9d95d7eb68b11ad6',
-    KOVAN_INFURA_ADDRESS: 'https://kovan.infura.io/v3/2e15c999e7854a6d9d95d7eb68b11ad6'
-  },
-  BSC: {
-    INFURA_ADDRESS: 'https://bsc-dataseed1.binance.org',
-    KOVAN_INFURA_ADDRESS: 'https://data-seed-prebsc-1-s1.binance.org:8545'
-  },
-  MAT: {
-    INFURA_ADDRESS: 'https://rpc-mainnet.matic.network',
-    KOVAN_INFURA_ADDRESS: ' https://rpc-mumbai.maticvigil.com'
-  }
-};
-
 @Injectable({
   providedIn: 'root'
 })
 export class Web3ApiService {
-  private readonly isProduction: boolean;
-
   private readonly metamaskAddress: string;
   private ethereum;
   private web3: Web3;
-  private web3Infura: Web3;
   public error: RubicError;
   public connection: any;
   private defaultMockGas: string;
   public ethersProvider: any;
+  public web3Infura: {
+    [BLOCKCHAIN_NAMES.ETHEREUM]: Web3;
+    [BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN]: Web3;
+    [BLOCKCHAIN_NAMES.MATIC]: Web3;
+  };
 
   private tokensInfoBodies: TokensInfoBodies = {
     ETH: {},
@@ -89,20 +76,7 @@ export class Web3ApiService {
     this.metamaskAddress = provider.address;
     this.defaultMockGas = provider.defaultMockGas;
     this.ethersProvider = provider.ethersProvider;
-    this.isProduction = provider.isProduction;
-
-    this.setInfuraProvider(BLOCKCHAIN_NAMES.ETHEREUM);
-  }
-
-  private setInfuraProvider(blockchain: BLOCKCHAIN_NAMES): void {
-    const provider =
-      INFURA_NETWORKS[blockchain][this.isProduction ? 'INFURA_ADDRESS' : 'KOVAN_INFURA_ADDRESS'];
-
-    if (!this.web3Infura) {
-      this.web3Infura = new Web3(provider);
-    } else if ((this.web3Infura.eth.currentProvider as HttpProvider).host !== provider) {
-      this.web3Infura.eth.setProvider(provider);
-    }
+    this.web3Infura = provider.web3Infura;
   }
 
   /**
@@ -568,9 +542,10 @@ export class Web3ApiService {
       }
 
       try {
-        this.setInfuraProvider(blockchain);
-
-        const contract = new this.web3Infura.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
+        const contract = new this.web3Infura[blockchain].eth.Contract(
+          ERC20_TOKEN_ABI as any[],
+          tokenAddress
+        );
         const tokenFields = ['decimals', 'symbol', 'name'];
 
         const tokenBody = {} as TokenInfoBody;
