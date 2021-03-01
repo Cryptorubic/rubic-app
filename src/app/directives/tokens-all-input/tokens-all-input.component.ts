@@ -36,7 +36,7 @@ export class TokensAllInputComponent implements OnInit {
   @Input() private exclude;
   @Input() moveInput = false;
 
-  @ViewChild('tokenForm') tokenForm;
+  @ViewChild('tokenForm', { static: true }) tokenForm;
 
   private _otherTokens: any;
 
@@ -61,8 +61,8 @@ export class TokensAllInputComponent implements OnInit {
     return this._otherTokens;
   }
 
-  @ViewChild('tokenField') tokenField: ElementRef;
-  @ViewChild('amountField') amountField: ElementRef;
+  @ViewChild('tokenField', { static: true }) tokenField: ElementRef;
+  @ViewChild('amountField', { static: true }) amountField: ElementRef;
 
   constructor(private web3Service: Web3Service) {
     this.tokensList = [];

@@ -20,7 +20,7 @@ export class ContractsListComponent implements OnInit {
   private contractForDeleting;
   public selectedFilter: any;
 
-  @ViewChild('deleteConfirmation') deleteConfirmation;
+  @ViewChild('deleteConfirmation', { static: true }) deleteConfirmation;
   private deleteConfirmationModal: MatDialogRef<any>;
 
   constructor(
