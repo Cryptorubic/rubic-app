@@ -29,7 +29,7 @@ export class CoinsListComponent implements OnInit {
   @Input() public tokenGroup: any;
   @Input() private setToken: any;
 
-  @ViewChild('tokenField') tokenField: ElementRef;
+  @ViewChild('tokenField', { static: true }) tokenField: ElementRef;
 
   constructor() {
     this.tokensList = [];

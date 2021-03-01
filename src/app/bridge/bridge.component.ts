@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material';
   styleUrls: ['./bridge.component.scss']
 })
 export class BridgeComponent implements OnInit, AfterViewInit {
-  @ViewChild('disclaimerText') disclaimerText;
+  @ViewChild('disclaimerText', { static: true }) disclaimerText;
 
   constructor(private dialog: MatDialog) {}
 
