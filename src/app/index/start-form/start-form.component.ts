@@ -35,6 +35,13 @@ import { OneInchService } from '../../models/1inch/1inch';
 import { HttpService } from '../../services/http/http.service';
 import { Observable } from 'rxjs';
 import { BackendApiService } from '../../services/backend-api/backend-api.service';
+import { UniSwapService } from '../../services/instant-trade/uni-swap-service/uni-swap.service';
+import { InstantTrade, InstantTradeToken } from '../../services/instant-trade/types';
+import { ETH, WEENUS, YEENUS } from '../../../test/tokens/eth-tokens';
+import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
+import { RubicError } from '../../errors/RubicError';
+import { Web3ApiService } from '../../services/web3Api/web3-api.service';
+import { CoingeckoApiService } from '../../services/coingecko-api/coingecko-api.service';
 
 const defaultNetwork = 1;
 
@@ -66,6 +73,10 @@ export interface IContractDetails {
       token: any;
       amount?: string;
     };
+    uniswap: {
+      token: any;
+      amount?: string;
+    };
   };
 
   whitelist?: any;
@@ -74,6 +85,13 @@ export interface IContractDetails {
   memo_contract?: any;
   min_quote_wei?: any;
 }
+
+enum UNISWAP_TRADE_STATUS {
+  PARAMS_CALCULATION = 'PARAMS_CALCULATION',
+  APPROVE_IN_PROGRESS = 'APPROVE_IN_PROGRESS',
+  TRADE_IN_PROGRESS = 'TRADE_IN_PROGRESS'
+}
+
 export const MY_FORMATS = {
   useUtc: true,
   parse: {
@@ -142,10 +160,27 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public instantTradeInProgress: boolean = false;
 
+  public uniSwapTrade: InstantTrade;
+
+  public UNISWAP_TRADE_STATUS = UNISWAP_TRADE_STATUS;
+  public uniSwapTradeStatus: UNISWAP_TRADE_STATUS = undefined;
+
   private web3Contract;
   private contractAddress: string;
 
   private platforms = ['ethereum', 'binance-smart-chain', 'matic'];
+
+  public isTestMode = false;
+
+  public successModel = {
+    open: false,
+    transactionHash: ''
+  };
+
+  public bestRate: string;
+
+  public oneInchGasInfo = null;
+  public instantTradeError: RubicError;
 
   constructor(
     private dialog: MatDialog,
@@ -155,7 +190,10 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private oneInchService: OneInchService,
-    private backendApiService: BackendApiService
+    private backendApiService: BackendApiService,
+    private uniSwapService: UniSwapService,
+    private web3ApiService: Web3ApiService,
+    private coinGeckoApiService: CoingeckoApiService
   ) {
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: any) => {
@@ -194,6 +232,51 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.instanceTradesTokens = this.oneInchService.getAutocompleteTokensList();
     this.getOrderBookTokens();
+
+    // @ts-ignore
+    window.useTestMode = () => {
+      // @ts-ignore
+      window.coingecko_tokens = coingeckoTestTokens;
+      this.instanceTradesTokens = coingeckoTestTokens;
+      this.isTestMode = true;
+    };
+  }
+
+  private async setBestRate() {
+    if (
+      this.uniSwapTradeStatus === UNISWAP_TRADE_STATUS.PARAMS_CALCULATION ||
+      this.getInstanceQuoteProgress
+    ) {
+      return;
+    }
+
+    if (!this.uniSwapTrade) {
+      this.bestRate = 'oneInch';
+      return;
+    }
+
+    if (!this.requestData.tokens_info.quote || !this.requestData.tokens_info.quote.amount) {
+      this.bestRate = 'uniSwap';
+      return;
+    }
+
+    const tokenUsdPrice = this.requestData.tokens_info.quote.token.usd_price;
+
+    const oneInchUsdAmount = new BigNumber(this.requestData.tokens_info.quote.amount).multipliedBy(
+      tokenUsdPrice
+    );
+    const uniSwapUsdAmount = this.uniSwapTrade.to.amount.multipliedBy(tokenUsdPrice);
+
+    const oneInchGasUsdCost = this.oneInchGasInfo.gasFeeInUsd;
+    const uniSwapGasUsdCost = this.uniSwapTrade.gasFeeInUsd;
+
+    const oneInchProfit = oneInchUsdAmount.minus(oneInchGasUsdCost);
+    const uniSwapProfit = uniSwapUsdAmount.minus(uniSwapGasUsdCost);
+    if (oneInchProfit.gt(uniSwapProfit)) {
+      this.bestRate = 'oneInch';
+      return;
+    }
+    this.bestRate = 'uniSwap';
   }
 
   private getOrderBookTokens() {
@@ -302,8 +385,23 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
             : '';
           // this.QuoteTokenCustom.emit();
           this.getInstanceQuoteProgress = false;
+          this.setOneInchGasInfo(result.estimatedGas).then(() => this.setBestRate());
         });
     }, 1000);
+  }
+
+  private async setOneInchGasInfo(gasLimit) {
+    const etherPrice = await this.coinGeckoApiService.getEtherPriceInUsd();
+    const gasFeeInUsd = await this.web3ApiService.getGasFee(new BigNumber(gasLimit), etherPrice);
+    const gasFeeInEth = await this.web3ApiService.getGasFee(
+      new BigNumber(gasLimit),
+      new BigNumber(1)
+    );
+
+    this.oneInchGasInfo = {
+      gasFeeInUsd,
+      gasFeeInEth
+    };
   }
 
   private tokensCache = {
@@ -324,6 +422,14 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     if (!identical || force) {
       this.tokensCache.base = baseCoin.address;
       this.tokensCache.quote = quoteCoin.address;
+      if (
+        baseCoin.address &&
+        quoteCoin.address &&
+        baseCoin.address !== quoteCoin.address &&
+        this.requestData.network === 1
+      ) {
+        this.instantTradesAvailable = this.oneInchService.checkTokensPair(baseCoin, quoteCoin);
+      }
     }
 
     if (
@@ -344,7 +450,76 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
+  public async recalculateUniSwapParameters() {
+    if (
+      this.requestData.tokens_info.base.token.address &&
+      this.requestData.tokens_info.base.amount &&
+      this.requestData.tokens_info.quote.token.address
+    ) {
+      if (
+        Number(this.web3Service.ethereum.networkVersion) !== 1 &&
+        !this.isTestMode &&
+        !this.metaMaskErrorModal
+      ) {
+        this.metaMaskErrorModal = this.dialog.open(this.metaMaskError, {
+          width: '480px',
+          panelClass: 'custom-dialog-container'
+        });
+        return;
+      }
+
+      if (
+        this.uniSwapTrade &&
+        this.uniSwapTrade.from.token.address === this.requestData.tokens_info.base.token.address &&
+        this.uniSwapTrade.to.token.address === this.requestData.tokens_info.quote.token.address &&
+        this.uniSwapTrade.from.amount.toString() === this.requestData.tokens_info.base.amount
+      ) {
+        return;
+      }
+
+      this.uniSwapTrade = undefined;
+      this.uniSwapTradeStatus = UNISWAP_TRADE_STATUS.PARAMS_CALCULATION;
+      const fromToken: InstantTradeToken = {
+        network: 'ETH',
+        address: this.requestData.tokens_info.base.token.address,
+        decimals: this.requestData.tokens_info.base.token.decimals,
+        symbol: this.requestData.tokens_info.base.token.token_short_title
+      };
+
+      const toToken: InstantTradeToken = {
+        network: 'ETH',
+        address: this.requestData.tokens_info.quote.token.address,
+        decimals: this.requestData.tokens_info.quote.token.decimals,
+        symbol: this.requestData.tokens_info.quote.token.token_short_title
+      };
+
+      this.uniSwapTrade = await this.uniSwapService.calculateTrade(
+        new BigNumber(this.requestData.tokens_info.base.amount),
+        fromToken,
+        toToken
+      );
+      if (this.uniSwapTrade) {
+        this.requestData.tokens_info.uniswap.amount = this.uniSwapTrade.to.amount.toString();
+      } else {
+        this.requestData.tokens_info.uniswap.amount = '';
+      }
+      this.uniSwapTradeStatus = null;
+      this.setBestRate();
+    } else {
+      this.uniSwapTrade = undefined;
+      this.requestData.tokens_info.uniswap.amount = '';
+    }
+  }
+
+  public changeUniSwapToken() {
+    this.requestData.tokens_info.quote.token = this.requestData.tokens_info.uniswap.token;
+    this.changedToken();
+  }
+
   public changedToken(force?: boolean) {
+    this.bestRate = undefined;
+    this.requestData.tokens_info.uniswap.token = this.requestData.tokens_info.quote.token;
+    this.recalculateUniSwapParameters();
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
     if (this.instanceTrade) {
@@ -356,8 +531,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     if (
-      (new BigNumber(this.requestData.tokens_info.base.amount)).gt(0) &&
-      (new BigNumber(this.requestData.tokens_info.quote.amount)).gt(0) &&
+      new BigNumber(this.requestData.tokens_info.base.amount).gt(0) &&
+      new BigNumber(this.requestData.tokens_info.quote.amount).gt(0) &&
       baseCoin.usd_price &&
       quoteCoin.usd_price
     ) {
@@ -391,6 +566,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public resetFormEmitter = new EventEmitter();
 
   private resetStartForm(network?) {
+    const targetToken = {};
     this.requestData = {
       tokens_info: {
         base: {
@@ -398,6 +574,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         },
         quote: {
           token: {}
+        },
+        uniswap: {
+          token: targetToken
         }
       },
       network: network || defaultNetwork,
@@ -636,13 +815,55 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     const baseCoin = this.requestData.tokens_info.base.token;
     const quoteCoin = this.requestData.tokens_info.quote.token;
     const params = {} as any;
-    params.fromTokenSymbol = baseCoin.token_short_title;
-    params.toTokenSymbol = quoteCoin.token_short_title;
+    params.fromTokenAddress = baseCoin.address;
+    params.toTokenAddress = quoteCoin.address;
     const baseDecimalsTimes = Math.pow(10, this.requestData.tokens_info.base.token.decimals);
     params.amount = new BigNumber(this.requestData.tokens_info.base.amount)
       .times(baseDecimalsTimes)
       .toString(10);
     return params;
+  }
+
+  public createUniSwapTrade() {
+    this.uniSwapTradeStatus = UNISWAP_TRADE_STATUS.TRADE_IN_PROGRESS;
+    if (this.uniSwapTrade) {
+      this.uniSwapService
+        .createTrade(this.uniSwapTrade, {
+          onApprove: hash => {
+            this.instantTradeInProgress = true;
+            this.uniSwapTradeStatus = UNISWAP_TRADE_STATUS.APPROVE_IN_PROGRESS;
+          },
+          onConfirm: hash => {
+            this.instantTradeInProgress = true;
+            this.uniSwapTradeStatus = UNISWAP_TRADE_STATUS.TRADE_IN_PROGRESS;
+          }
+        })
+        .finally(() => {
+          this.instantTradeInProgress = false;
+          this.uniSwapTradeStatus = undefined;
+        })
+        .then(receipt => {
+          this.successModel.open = true;
+          this.successModel.transactionHash = receipt.transactionHash;
+
+          this.backendApiService.notifyInstantTradesBot({
+            provider: 'UniSwap',
+            walletAddress: receipt.from,
+            amountFrom: Number(this.uniSwapTrade.from.amount.toFixed(10)),
+            amountTo: Number(this.uniSwapTrade.to.amount.toFixed(10)),
+            symbolFrom: this.uniSwapTrade.from.token.symbol,
+            symbolTo: this.uniSwapTrade.to.token.symbol,
+            txHash: receipt.transactionHash
+          });
+        })
+        .catch(err => {
+          if (err instanceof RubicError) {
+            this.instantTradeError = err;
+          } else {
+            console.error(err);
+          }
+        });
+    }
   }
 
   private async createInstanceTrade() {
@@ -675,14 +896,15 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
           const amountFrom =
             Number(result.fromTokenAmount) / 10 ** Number(result.fromToken.decimals);
           const amountTo = Number(result.toTokenAmount) / 10 ** Number(result.toToken.decimals);
-          this.backendApiService.notifyInstantTradesBot(
-            result.tx.from,
+          this.backendApiService.notifyInstantTradesBot({
+            provider: 'OneInch',
+            walletAddress: result.tx.from,
             amountFrom,
             amountTo,
-            result.fromToken.symbol,
-            result.toToken.symbol,
-            hash
-          );
+            symbolFrom: result.fromToken.symbol,
+            symbolTo: result.toToken.symbol,
+            txHash: hash
+          });
         };
 
         this.web3Service

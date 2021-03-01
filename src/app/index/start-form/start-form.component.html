@@ -52,7 +52,7 @@
         class="block-tabs_item"
         [ngClass]="{
           active: !instanceTrade,
-          'block-tabs_item_highlight': instanceTrade && !instantTradesAvailable
+          'block-tabs_item_highlight': instanceTrade && !instantTradesAvailable && !isTestMode
         }"
         (click)="deActivateInstanceTrade()"
       >
@@ -82,7 +82,11 @@
   </div>
 
   <form #startForm="ngForm" class="index-start-form" (submit)="createContract()">
-    <div class="instant-trade-warning" *ngIf="instanceTrade && !instantTradesAvailable">
+    <!-- Warning -->
+    <div
+      class="instant-trade-warning"
+      *ngIf="instanceTrade && !instantTradesAvailable && !isTestMode"
+    >
       <img
         class="instant-trade-warning__icon"
         src="assets/images/icons/warning-empty.svg"
@@ -95,9 +99,10 @@
       <app-arrow></app-arrow>
     </div>
 
-    <div class="grid-row start-form-row">
+    <div class="grid-row start-form-row" style="position: relative">
+      <!-- From -->
       <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
-        <div class="form-field">
+        <div class="form-field" [ngClass]="{ 'from-block_moved-bottom': instanceTrade}">
           <label class="form-field_label">{{ 'You have' | translate }}</label>
           <div class="form-field_input">
             <input
@@ -169,12 +174,42 @@
           </div>
         </div>
       </div>
-      <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1">
+
+      <div *ngIf="instanceTrade" class="arrows-icon-container">
+        <img src="assets/images/icons/RoundArrows.svg" alt="">
+      </div>
+
+      <!-- To -->
+      <div class="grid-cell grid-cell-3-8 grid-cell-sma-1-2 grid-cell-ps-1" [ngClass]="{ 'to-block_moved-right': instanceTrade }">
+
+        <div
+          class="etherscan-link"
+          *ngIf="instanceTrade"
+          [ngStyle]="{
+          visibility: !requestData.tokens_info.quote.token.address ? 'hidden' : 'visible'
+        }"
+        >
+          <a
+            [href]="
+            !requestData.tokens_info.quote.token.isNative
+              ? (requestData.tokens_info.quote.token.address
+                | etherscanUrl: selectedNetwork:'token')
+              : (selectedNetwork | nativeCoinUrl)
+          "
+            target="_blank"
+          >
+            <small>Check on Explorer</small>
+            <img src="./assets/images/icons/link.svg" />
+          </a>
+        </div>
+
         <div class="form-field">
           <label class="form-field_label" *ngIf="!instanceTrade">{{
             'You want to get' | translate
           }}</label>
-          <label class="form-field_label" *ngIf="instanceTrade">{{ 'You get' | translate }}</label>
+          <label class="form-field_label" *ngIf="instanceTrade" style="width: 200px">
+            {{ 'You get' | translate }}
+          </label>
           <div class="form-field_input">
             <input
               type="hidden"
@@ -207,6 +242,13 @@
               "
             ></app-tokens-all-input>
 
+            <div class="gas-fee-container" *ngIf="instanceTrade && oneInchGasInfo">
+              <span>Estimated gas fee: {{oneInchGasInfo.gasFeeInEth.toFixed(3)}}ETH ≈ {{oneInchGasInfo.gasFeeInUsd.toFixed(1)}}$</span>
+              <app-info-tooltip [emptyIcon]="true">
+                {{'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete.' | translate}}
+              </app-info-tooltip>
+            </div>
+
             <label
               class="form-field_label form-field_label--rate"
               *ngIf="!instanceTrade && coingeckoRate && coingeckoRate.change"
@@ -238,27 +280,6 @@
                 </div>
               </div>
             </label>
-          </div>
-
-          <div
-            class="etherscan-link"
-            *ngIf="instanceTrade"
-            [ngStyle]="{
-              visibility: !requestData.tokens_info.quote.token.address ? 'hidden' : 'visible'
-            }"
-          >
-            <a
-              [href]="
-                !requestData.tokens_info.quote.token.isNative
-                  ? (requestData.tokens_info.quote.token.address
-                    | etherscanUrl: selectedNetwork:'token')
-                  : (selectedNetwork | nativeCoinUrl)
-              "
-              target="_blank"
-            >
-              <small>Check on Explorer</small>&nbsp;
-              <img src="./assets/images/icons/link.svg" />
-            </a>
           </div>
 
           <div
@@ -297,16 +318,19 @@
             </div>
           </div>
 
-          <button class="revert-btn" type="button" (click)="revertCoins()">
+          <button class="revert-btn" type="button" (click)="revertCoins()" *ngIf="!instanceTrade">
             <img src="./assets/images/icons/revert.svg" class="revert-btn_icon" />
           </button>
         </div>
       </div>
-      <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1" style="float: right">
+
+      <!-- Submit button -->
+      <div class="grid-cell grid-cell-1-4 grid-cell-sma-1-2 grid-cell-ps-1" style="float: right"
+           [ngClass]="{ 'instant-trade-button': instanceTrade }">
         <label class="form-field_label">&nbsp;</label>
         <div class="form-field form-field_btn form-field_btn--rate">
           <button
-            class="btn btn-green width-100"
+            class="btn btn-green width-100 best-rate-wrapper"
             [disabled]="
               (instanceTrade && !instantTradesAvailable) ||
               getInstanceQuoteProgress ||
@@ -321,9 +345,14 @@
               (requestData.broker_fee &&
                 !(requestData.broker_fee_base <= 50 && requestData.broker_fee_base >= 0)) ||
               requestData.tokens_info.base.token.address.toLowerCase() ===
-                requestData.tokens_info.quote.token.address.toLowerCase()
+                requestData.tokens_info.quote.token.address.toLowerCase() ||
+                uniSwapTradeStatus
             "
           >
+            <span *ngIf="instanceTrade && bestRate === 'oneInch'" class="best-rate">
+              <span>Best rate</span>
+              <img src="assets/images/icons/BestRate.svg" alt="Best"/>
+            </span>
             <span
               class="lds-ellipsis"
               *ngIf="(getInstanceQuoteProgress || isCreatingContract) && instantTradesAvailable"
@@ -333,15 +362,10 @@
               </span>
             </span>
             <span>
-              {{ (isCreatingContract ? 'Creating Trade' : 'Create Trade') | translate }}
+              {{ (isCreatingContract ? 'Creating Trade' :
+                    instanceTrade ? 'Via 1inch' : 'Create Trade') | translate }}
             </span>
           </button>
-          <div class="one-inch" *ngIf="instanceTrade">
-            <div class="one-inch_text">With the assistance of</div>
-            <div class="one-inch_logo">
-              <img src="./assets/images/one-inch.svg" />
-            </div>
-          </div>
         </div>
         <div class="form-field_description normal-font normal-font--visible text-right">
           <span
@@ -354,7 +378,89 @@
         </div>
       </div>
     </div>
+
+    <!-- Uniswap -->
+    <div class="uniswap" *ngIf="instanceTrade">
+      <div
+        class="form-field_input uniswap-tokens-input"
+        [ngClass]="{ uniswap_extended: uniSwapTrade === null }"
+      >
+        <input
+          type="hidden"
+          required
+          [ngModel]="requestData.tokens_info.quote.token.address"
+          name="quote_address"
+        />
+        <input
+          type="hidden"
+          required
+          [ngModel]="requestData.tokens_info.quote.amount"
+          name="quote_limit"
+        />
+
+        <app-tokens-all-input
+          class="uniswap-tokens-input__input-component"
+          [moveInput]="true"
+          [otherTokens]="instanceTrade ? instanceTradesTokens : false"
+          [disabled]="instanceTrade || !serviceAvailable"
+          (TokenChange)="changeUniSwapToken()"
+          [blockchain]="blockchainsOfNetworks[requestData.network]"
+          [setToken]="QuoteTokenCustom"
+          [resetForm]="resetFormEmitter"
+          [amountPlaceholder]="!instanceTrade"
+          [tokenModel]="requestData.tokens_info.uniswap"
+          [exclude]="
+            requestData.tokens_info.base.token && requestData.tokens_info.base.token.address
+          "
+        ></app-tokens-all-input>
+
+        <div class="gas-fee-container" *ngIf="uniSwapTrade">
+          <span class="ml">
+            Estimated gas fee: {{uniSwapTrade.gasFeeInEth.toFixed(3)}}ETH ≈ {{uniSwapTrade.gasFeeInUsd.toFixed(1)}}$</span>
+            <app-info-tooltip [emptyIcon]="true">
+              {{'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete.' | translate}}
+            </app-info-tooltip>
+        </div>
+
+        <div *ngIf="uniSwapTrade === null" class="uniswap__warning">
+          <span>Trade in UniSwap is not available.</span>
+          <img alt="" src="assets/images/icons/warning-red.svg" />
+        </div>
+      </div>
+
+      <div class="uniswap-button" [ngClass]="{ 'instant-trade-button': instanceTrade }">
+        <button
+          class="btn btn-green width-100"
+          [disabled]="
+            !requestData.tokens_info.base.amount ||
+            !requestData.tokens_info.uniswap.amount ||
+            !requestData.tokens_info.base.token.address ||
+            !requestData.tokens_info.uniswap.token.address ||
+            requestData.tokens_info.base.token.address.toLowerCase() ===
+              requestData.tokens_info.quote.token.address.toLowerCase() ||
+            !uniSwapTrade ||
+            uniSwapTradeStatus
+          "
+          type="button"
+          (click)="createUniSwapTrade()"
+        >
+          <span *ngIf="instanceTrade && bestRate === 'uniSwap'" class="best-rate">
+              <span>Best rate</span>
+              <img src="assets/images/icons/BestRate.svg" alt="Best"/>
+            </span>
+          <span class="lds-ellipsis" *ngIf="uniSwapTradeStatus">
+            <span class="lds-ellipsis-container">
+              <span></span><span></span><span></span><span></span>
+            </span>
+          </span>
+          <span>
+            {{ (isCreatingContract ? 'Creating Trade' : 'Via Uniswap') | translate }}
+          </span>
+        </button>
+      </div>
+    </div>
   </form>
+
   <form
     class="index-start-form__settings"
     [ngClass]="{ hidden: !isAdvSettingsOpen || instanceTrade }"
@@ -604,6 +710,12 @@
   </form>
 
   <app-trade-in-progress-modal *ngIf="instantTradeInProgress"></app-trade-in-progress-modal>
+  <app-trade-success-modal
+    *ngIf="successModel.open"
+    [transactionId]="successModel.transactionHash"
+    [network]="isTestMode ? 'kovan' : 'mainnet'"
+    (onClose)="successModel.open = false; successModel.transactionHash = ''"
+  ></app-trade-success-modal>
 </div>
 
 <ng-template #metaMaskError>
@@ -624,3 +736,12 @@
   >
   </app-message-box>
 </ng-template>
+
+<app-message-box
+  *ngIf="instantTradeError"
+  title="Warning"
+  descriptionText="Insufficient funds to complete the trade."
+  [additionalDescription]="instantTradeError.comment"
+  (onClose)="instantTradeError = null"
+>
+</app-message-box>

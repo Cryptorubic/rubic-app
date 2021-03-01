@@ -1,0 +1,10 @@
+<div class="tooltip-group">
+  <img [src]="emptyIcon ? 'assets/images/icons/info-empty.svg' : 'assets/images/icons/info.svg'" alt=""/>
+  <div class="tooltip-group__container">
+    <app-tooltip>
+      <div [ngClass]="{ 'tooltip-group_align-center': alignCenter }">
+        <ng-content></ng-content>
+      </div>
+    </app-tooltip>
+  </div>
+</div>

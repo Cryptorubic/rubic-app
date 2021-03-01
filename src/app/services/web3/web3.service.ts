@@ -165,8 +165,6 @@ export class Web3Service {
     [address: string]: any;
   };
 
-  private currentCall;
-
   public getSignedMetaMaskMsg(msg, addr) {
     return new Promise((resolve, reject) => {
       if (this.Web3) {
@@ -240,7 +238,7 @@ export class Web3Service {
 
     return new Promise((resolve, reject) => {
       if (!tokenAddress) {
-        resolve();
+        resolve(null);
         return;
       }
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
@@ -379,21 +377,15 @@ export class Web3Service {
             }
           }
         );
-        this.currentCall = false;
         return promise;
       };
 
+      const tokenInfoPromises = [];
       tokenInfoFields.map(method => {
         const methodCall = contract.methods[method]();
-
-        if (!this.currentCall) {
-          this.currentCall = callMethod(methodCall, method);
-        } else {
-          this.currentCall.then(result => {
-            this.currentCall = callMethod(methodCall, method);
-          });
-        }
+        tokenInfoPromises.push(callMethod(methodCall, method));
       });
+      Promise.all(tokenInfoPromises).catch(err => reject(err));
     }).then(res => {
       return res;
     });
@@ -703,9 +695,8 @@ export class EthTokenValidatorDirective implements AsyncValidator {
   validate(
     ctrl: AbstractControl
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    return this.web3Service
-      .getFullTokenInfo(ctrl.value, false, this.network)
-      .then((result: any) => {
+    return this.web3Service.getFullTokenInfo(ctrl.value, false, this.network).then(
+      (result: any) => {
         if (result && result.token_short_title) {
           this.TokenResolve.emit(result);
           return null;
@@ -714,6 +705,12 @@ export class EthTokenValidatorDirective implements AsyncValidator {
             token: true
           };
         }
-      });
+      },
+      err => {
+        return {
+          token: true
+        };
+      }
+    );
   }
 }
