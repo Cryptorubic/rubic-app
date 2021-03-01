@@ -93,6 +93,8 @@ import { BlockchainsInputComponent } from './components/blockchains-input/blockc
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
+import { TooltipComponent } from './components/tooltip/tooltip.component';
+import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { DynamicModule } from 'ng-dynamic-component';
 import { TradeSuccessModalComponent } from './pages/main-page/components/trade-success-modal/trade-success-modal.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
@@ -252,6 +254,8 @@ export function appInitializerFactory(
     BlockchainLabelComponent,
     AddressInputComponent,
     NetworkErrorComponent,
+    TooltipComponent,
+    InfoTooltipComponent,
     TradeSuccessModalComponent,
     WarningLabelComponent,
     TokenAddressDirective

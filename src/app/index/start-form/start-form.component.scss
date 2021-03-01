@@ -303,20 +303,18 @@
   }
 }
 .etherscan-link {
-  margin-right: calc(25% + 10px);
-  margin-top: 4px;
+  position: absolute;
+  top: -10px;
+  right: -22px;
+
   font-size: 18px;
-  line-height: 22px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  float: right;
-  padding-top: 4px;
+  line-height: 32px;
   a {
     display: flex;
     align-items: center;
   }
   img {
+    margin-left: 5px;
     margin-top: -4px;
   }
 }
@@ -462,9 +460,8 @@
 
 .uniswap {
   position: relative;
-  top: -15px;
   margin: 0 -10px;
-  padding-bottom: 25px;
+  padding-bottom: 55px;
 
   &_extended {
     margin-bottom: 30px;
@@ -491,9 +488,10 @@
 }
 
 .uniswap-tokens-input {
-  width: 37.5%;
+  margin-right: 0.7%;
+  width: 37.3%;
   position: relative;
-  margin-left: 37%;
+  margin-left: 45%;
   padding: 0 10px;
   box-sizing: border-box;
   display: inline-block;
@@ -506,4 +504,70 @@
   padding: 0 10px;
   position: relative;
   left: 5px;
+}
+
+.gas-fee-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: absolute;
+  margin-top: 5px;
+
+  span {
+    opacity: 0.5;
+    margin-right: 8px;
+  }
+
+  .ml {
+    margin-left: 12px;
+  }
+}
+
+.gas-fee-tooltip {
+  position: absolute;
+}
+
+.from-block_moved-bottom {
+  position: relative;
+  top: 54px;
+}
+
+.instant-trade-button {
+  width: 17% !important;
+}
+
+.to-block_moved-right {
+  position: relative;
+  left: 8%;
+}
+
+.arrows-icon-container {
+  position: absolute;
+  bottom: 6px;
+  left: 39%;
+  transform: scale(1.2);
+}
+
+.best-rate-wrapper {
+  position: relative;
+}
+
+.best-rate {
+  position: absolute;
+  top: -38px;
+  right: -15px;
+
+  img {
+    position: relative;
+    top: 20px;
+  }
+
+  span {
+    color: black;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 16px;
+    opacity: 0.5;
+  }
 }
