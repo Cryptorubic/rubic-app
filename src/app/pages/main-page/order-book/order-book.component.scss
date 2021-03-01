@@ -218,13 +218,13 @@
       width: 26px;
       height: 28px;
 
-      background-image: url(src/assets/images/icons/main-page/PublicDealTick.svg);
+      background-image: url(/src/assets/images/icons/main-page/PublicDealTick.svg);
       background-repeat: no-repeat;
 
       transition: background-image 0.3s linear;
 
       &_not-checked {
-        background-image: url(src/assets/images/icons/main-page/PublicDealCross.svg);
+        background-image: url(/src/assets/images/icons/main-page/PublicDealCross.svg);
       }
     }
   }

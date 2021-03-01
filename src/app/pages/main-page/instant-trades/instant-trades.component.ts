@@ -6,7 +6,6 @@ import { SwapToken } from '../../../services/backend/tokens-service/types';
 import { InstantTrade } from '../../../services/instant-trade/types';
 import { UniSwapService } from '../../../services/instant-trade/uni-swap-service/uni-swap.service';
 import BigNumber from 'bignumber.js';
-import { error } from 'util';
 
 interface InstantTradeParameters {
   fromAmount: BigNumber;
