@@ -320,7 +320,7 @@ export class Web3ApiService {
 
     return new Promise((resolve, reject) => {
       contract.methods
-        .approve(spenderAddress, value)
+        .approve(spenderAddress, value.toFixed(0))
         .send({
           from: this.address,
           ...(this.defaultMockGas && { gas: this.defaultMockGas })

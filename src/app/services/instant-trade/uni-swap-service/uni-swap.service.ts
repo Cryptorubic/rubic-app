@@ -30,7 +30,7 @@ enum SWAP_METHOD {
   providedIn: 'root'
 })
 export class UniSwapService extends InstantTradeService {
-  static slippageTolerance = new Percent('50', '10000'); // 0.50%
+  static slippageTolerance = new Percent('150', '10000'); // 1.5%
   static tokensToTokensEstimatedGas = new BigNumber(120_000);
   static tokensToEthEstimatedGas = new BigNumber(150_000);
   static ethToTokensEstimatedGas = new BigNumber(150_000);
