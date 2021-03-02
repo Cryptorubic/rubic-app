@@ -6,6 +6,13 @@ import { SwapToken } from '../../../services/backend/tokens-service/types';
 import { InstantTrade } from '../../../services/instant-trade/types';
 import { UniSwapService } from '../../../services/instant-trade/uni-swap-service/uni-swap.service';
 import BigNumber from 'bignumber.js';
+import InstantTradeService from '../../../services/instant-trade/InstantTradeService';
+import { OneInchService } from '../../../services/instant-trade/one-inch-service/one-inch.service';
+import { BurgerSwapService } from '../../../services/instant-trade/burger-swap-service/burger-swap-service';
+
+interface TradeProviderInfo {
+  label: string;
+}
 
 interface InstantTradeParameters {
   fromAmount: BigNumber;
@@ -13,17 +20,18 @@ interface InstantTradeParameters {
   toToken: SwapToken;
 }
 
-enum TRADE_STATE {
-  CALCULATION,
-  APPROVAL,
-  TX_IN_PROGRESS,
-  COMPLETED,
-  ERROR
+interface InstantTradeProviderController {
+  trade: InstantTrade;
+  tradeState: TRADE_STATE;
+  tradeProviderInfo: TradeProviderInfo;
 }
 
-enum TRADE_PROVIDER {
-  UNISWAP,
-  ONEINCH
+enum TRADE_STATE {
+  CALCULATION = 'CALCULATION',
+  APPROVAL = 'APPROVAL',
+  TX_IN_PROGRESS = 'TX_IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  ERROR = 'ERROR'
 }
 
 @Component({
@@ -34,16 +42,11 @@ enum TRADE_PROVIDER {
 export class InstantTradesComponent implements OnInit {
   @Input() blockchain: BLOCKCHAIN_NAMES;
 
+  private instantTradeServices: InstantTradeService[];
   private _tradeParameters: InstantTradeParameters;
 
-  public TRADE_STATE = TRADE_STATE;
-  public TRADE_PROVIDER = TRADE_PROVIDER;
-
   public tokens = List<SwapToken>([]);
-  public uniSwapTrade: InstantTrade;
-  public oneInchTrade: InstantTrade;
-  public uniSwapTradeState: TRADE_STATE;
-  public oneInchTradeState: TRADE_STATE;
+  public trades: InstantTradeProviderController[];
 
   get tradeParameters(): InstantTradeParameters {
     return this._tradeParameters;
@@ -52,7 +55,7 @@ export class InstantTradesComponent implements OnInit {
   set tradeParameters(value) {
     this._tradeParameters = value;
 
-    if (value.fromAmount && value.fromToken && value.toToken) {
+    if (value.fromAmount && !value.fromAmount.isNaN() && value.fromToken && value.toToken) {
       this.calculateTradeParameters();
     }
   }
@@ -97,14 +100,53 @@ export class InstantTradesComponent implements OnInit {
     };
   }
 
-  get toAmountUniSwap() {
-    return this.uniSwapTrade
-      ? this.uniSwapTrade.to.amount.toFixed(this.uniSwapTrade.to.token.decimals)
-      : '';
+  constructor(
+    private tokenService: TokensService,
+    private uniSwapService: UniSwapService,
+    private oneInchService: OneInchService,
+    private burgerSwapService: BurgerSwapService
+  ) {
+    tokenService.tokens.subscribe(tokens => (this.tokens = tokens));
   }
 
-  constructor(private tokenService: TokensService, private uniSwapService: UniSwapService) {
-    tokenService.tokens.subscribe(tokens => (this.tokens = tokens));
+  private initInstantTradeProviders() {
+    switch (this.blockchain) {
+      case BLOCKCHAIN_NAMES.ETHEREUM:
+        this.instantTradeServices = [this.oneInchService, this.uniSwapService];
+        this.trades = [
+          {
+            trade: null,
+            tradeState: null,
+            tradeProviderInfo: {
+              label: 'Oneinch'
+            }
+          },
+          {
+            trade: null,
+            tradeState: null,
+            tradeProviderInfo: {
+              label: 'Uniswap'
+            }
+          }
+        ];
+        break;
+      case BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN:
+        this.instantTradeServices = [this.burgerSwapService];
+        this.trades = [
+          {
+            trade: null,
+            tradeState: null,
+            tradeProviderInfo: {
+              label: 'Burgerswap'
+            }
+          }
+        ];
+        break;
+    }
+  }
+
+  ngOnInit() {
+    this.initInstantTradeProviders();
 
     this.tradeParameters = {
       fromToken: null,
@@ -113,42 +155,41 @@ export class InstantTradesComponent implements OnInit {
     };
   }
 
-  ngOnInit() {}
+  public getToAmount(providerIndex: number): string {
+    const to = this.trades[providerIndex]?.trade?.to;
+    return to ? to.amount.toFixed(to.token.decimals) : '';
+  }
 
-  public shouldAnimateButton(provider: TRADE_PROVIDER) {
-    let tradeState: TRADE_STATE;
-    switch (provider) {
-      case TRADE_PROVIDER.ONEINCH:
-        tradeState = this.oneInchTradeState;
-        break;
-      case TRADE_PROVIDER.UNISWAP:
-        tradeState = this.uniSwapTradeState;
-        break;
-    }
+  public checkIfError(providerIndex: number): boolean {
+    return this.trades[providerIndex].tradeState === TRADE_STATE.ERROR;
+  }
+
+  public shouldAnimateButton(providerIndex: number) {
+    const tradeState = this.trades[providerIndex].tradeState;
     return tradeState && tradeState !== TRADE_STATE.ERROR && tradeState !== TRADE_STATE.COMPLETED;
   }
 
   private calculateTradeParameters() {
-    if (this.blockchain === BLOCKCHAIN_NAMES.ETHEREUM) {
-      this.calculateEthereumParameters();
-    }
+    this.instantTradeServices.forEach((service, index) =>
+      this.calculateProviderTrade(service, this.trades[index])
+    );
   }
 
-  private calculateEthereumParameters() {
-    this.calculateUniSwapTrade();
-  }
-
-  private calculateUniSwapTrade() {
-    this.uniSwapTradeState = TRADE_STATE.CALCULATION;
-    this.uniSwapService
+  private calculateProviderTrade(
+    service: InstantTradeService,
+    tradeController: InstantTradeProviderController
+  ) {
+    debugger;
+    tradeController.tradeState = TRADE_STATE.CALCULATION;
+    service
       .calculateTrade(this.tradeParameters.fromAmount, this.fromToken, this.toToken)
       .then(calculatedTrade => {
-        this.uniSwapTrade = calculatedTrade;
-        this.uniSwapTradeState = null;
+        tradeController.trade = calculatedTrade;
+        tradeController.tradeState = null;
       })
       .catch(error => {
         console.log(error);
-        this.uniSwapTradeState = TRADE_STATE.ERROR;
+        tradeController.tradeState = TRADE_STATE.ERROR;
       });
   }
 }

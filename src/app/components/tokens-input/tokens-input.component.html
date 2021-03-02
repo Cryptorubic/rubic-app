@@ -5,6 +5,7 @@
     name="amountField"
     autocomplete="off"
     placeholder="{{ amountPlaceholder | translate }}"
+    [disabled]="inputDisabled"
     [required]="true"
     [appBigNumber]="bigNumberDirective"
     [tabindex]="inputDisabled ? '-1' : ''"
