@@ -62,9 +62,6 @@ import { Observable } from 'rxjs';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { ChangePasswordComponent } from './common/change-password/change-password.component';
-import { MainPageComponent } from './main-page/main-page.component';
-import { HeaderMainPageComponent } from './main-page/header/header.component';
-import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { AboutageComponent } from './about/about.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import { TokenSaleComponent } from './token-sale/token-sale.component';
@@ -92,21 +89,19 @@ import { DropdownSelectComponent } from './components/dropdown-select/dropdown-s
 import { WhiteButtonComponent } from './components/white-button/white-button.component';
 import { TokenLabelComponent } from './components/tokens-input/token-label/token-label.component';
 import { InputDropdownComponent } from './components/input-dropdown/input-dropdown.component';
-import { DynamicModule } from 'ng-dynamic-component';
 import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
 import { DynamicModule } from 'ng-dynamic-component';
 import { TradeSuccessModalComponent } from './pages/main-page/components/trade-success-modal/trade-success-modal.component';
-import { MainPageComponent } from './pages/main-page/main-page.component';
 import { InstantTradesComponent } from './pages/main-page/instant-trades/instant-trades.component';
 import { TradesFormComponent } from './pages/main-page/trades-form/trades-form.component';
 import { OrderBookComponent } from './pages/main-page/order-book/order-book.component';
 import { WarningLabelComponent } from './components/warning-label/warning-label.component';
-import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
+import { MainPageComponent } from './pages/main-page/main-page.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -286,7 +281,6 @@ export function appInitializerFactory(
     MatNativeDateModule,
     MatDatepickerModule,
     MatButtonModule,
-    BrowserAnimationsModule,
     NgxMaterialTimepickerModule,
     ClipboardModule,
     OwlModule,
