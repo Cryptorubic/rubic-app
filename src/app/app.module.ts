@@ -27,6 +27,7 @@ import {
   NativeUrlPipe
 } from './services/web3/web3.service';
 import { UserService } from './services/user/user.service';
+import { UserInterface } from './services/user/user.interface';
 import { AuthComponent } from './common/auth/auth.component';
 import { AuthenticationComponent } from './common/auth/authentication/authentication.component';
 import { RegistrationComponent } from './common/auth/registration/registration.component';
@@ -61,6 +62,9 @@ import { Observable } from 'rxjs';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { ChangePasswordComponent } from './common/change-password/change-password.component';
+import { MainPageComponent } from './main-page/main-page.component';
+import { HeaderMainPageComponent } from './main-page/header/header.component';
+import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { AboutageComponent } from './about/about.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import { TokenSaleComponent } from './token-sale/token-sale.component';
@@ -88,6 +92,7 @@ import { DropdownSelectComponent } from './components/dropdown-select/dropdown-s
 import { WhiteButtonComponent } from './components/white-button/white-button.component';
 import { TokenLabelComponent } from './components/tokens-input/token-label/token-label.component';
 import { InputDropdownComponent } from './components/input-dropdown/input-dropdown.component';
+import { DynamicModule } from 'ng-dynamic-component';
 import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
 import { AddressInputComponent } from './components/address-input/address-input.component';
@@ -99,6 +104,9 @@ import { InstantTradesComponent } from './pages/main-page/instant-trades/instant
 import { TradesFormComponent } from './pages/main-page/trades-form/trades-form.component';
 import { OrderBookComponent } from './pages/main-page/order-book/order-book.component';
 import { WarningLabelComponent } from './components/warning-label/warning-label.component';
+import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
+import { TooltipComponent } from './components/tooltip/tooltip.component';
+import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -250,7 +258,9 @@ export function appInitializerFactory(
     AddressInputComponent,
     NetworkErrorComponent,
     TradeSuccessModalComponent,
-    WarningLabelComponent
+    WarningLabelComponent,
+    TooltipComponent,
+    InfoTooltipComponent
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [

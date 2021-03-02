@@ -132,7 +132,7 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
 
   private filterOrdersByNetwork() {}
 
-  @ViewChild('deleteTradeConfirmation') deleteTradeConfirmation: TemplateRef<any>;
+  @ViewChild('deleteTradeConfirmation', { static: true }) deleteTradeConfirmation: TemplateRef<any>;
   private deleteTradeConfirmationModal: MatDialogRef<any>;
 
   private tradeForDeleting: any;

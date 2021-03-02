@@ -113,7 +113,7 @@ export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }]
 })
 export class ContractsPreviewV3Component implements OnDestroy, OnInit {
-  @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
+  @ViewChild('metaMaskError', { static: true }) metaMaskError: TemplateRef<any>;
 
   private metaMaskErrorModal: MatDialogRef<any>;
   private contractAddress: string;

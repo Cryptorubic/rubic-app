@@ -10,11 +10,11 @@
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    background: center right 10px / 10% url(src/assets/images/icons/arrow/arrow-down-green.svg)
+    background: center right 10px / 10% url('/src/assets/images/icons/arrow/arrow-down-green.svg')
       no-repeat white;
 
     &.options-shown {
-      background-image: url(src/assets/images/icons/arrow/arrow-up-green.svg);
+      background-image: url('/src/assets/images/icons/arrow/arrow-up-green.svg');
     }
   }
 

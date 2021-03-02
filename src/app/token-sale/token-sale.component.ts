@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./token-sale.component.scss']
 })
 export class TokenSaleComponent implements OnInit {
-  @ViewChild('tokenSaleModal') tokenSale: TemplateRef<any>;
+  @ViewChild('tokenSaleModal', { static: true }) tokenSale: TemplateRef<any>;
 
   protected tokenSaleModal: MatDialogRef<any>;
 

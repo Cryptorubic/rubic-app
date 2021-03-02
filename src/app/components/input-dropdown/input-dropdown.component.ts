@@ -54,7 +54,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    */
   @Output() componentChanges = new EventEmitter<DropdownComponentData>();
 
-  @ViewChild('searchInput') searchInput: ElementRef;
+  @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
 
   public visibleComponentsData = this.componentsData.slice(0, this.VISIBLE_COMPONENTS_NUMBER);
 

@@ -255,10 +255,13 @@ export class Web3ApiService {
     value?: string | BigNumber
   ): Promise<BigNumber> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
-    const gasVolume = value
-      ? await contract.methods[methodName](...methodArguments).estimateGas({ value, gas: 40000000 })
-      : await contract.methods[methodName](...methodArguments).estimateGas({ gas: 40000000 });
-    return new BigNumber(gasVolume);
+
+    const gasLimit = await contract.methods[methodName](...methodArguments).estimateGas({
+      from: this.address,
+      gas: 40000000,
+      ...(value && { value })
+    });
+    return new BigNumber(gasLimit);
   }
 
   /**
@@ -272,16 +275,13 @@ export class Web3ApiService {
 
   /**
    * @description calculate the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko
-   * @param gasVolume gas limit
+   * @param gasLimit gas limit
+   * @param etherPrice price of Eth unit
    * @return gas fee in usd$
    */
-  public async getGasFeeInUSD(gasVolume: BigNumber): Promise<BigNumber> {
-    const response: any = await this.httpClient
-      .get('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd')
-      .toPromise();
-    const etherPrice = new BigNumber(response.ethereum.usd);
+  public async getGasFee(gasLimit: BigNumber, etherPrice: BigNumber): Promise<BigNumber> {
     const gasPrice = await this.getGasPriceInETH();
-    return gasPrice.multipliedBy(gasVolume).multipliedBy(etherPrice);
+    return gasPrice.multipliedBy(gasLimit).multipliedBy(etherPrice);
   }
 
   public async getAllowance(
@@ -320,7 +320,7 @@ export class Web3ApiService {
 
     return new Promise((resolve, reject) => {
       contract.methods
-        .approve(spenderAddress, value)
+        .approve(spenderAddress, value.toFixed(0))
         .send({
           from: this.address,
           ...(this.defaultMockGas && { gas: this.defaultMockGas })
@@ -349,7 +349,7 @@ export class Web3ApiService {
    * @param [options.value] amount in Wei amount to be attached to the transaction
    * @return smart-contract method return value
    */
-  public executeContractMethod(
+  public async executeContractMethod(
     contractAddress: string,
     contractAbi: any[],
     methodName: string,
@@ -371,7 +371,7 @@ export class Web3ApiService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log('Tokens approve error. ' + err);
+          console.log('Method execution error. ' + err);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {

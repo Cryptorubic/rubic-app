@@ -40,6 +40,8 @@ import { InstantTrade, InstantTradeToken } from '../../services/instant-trade/ty
 import { ETH, WEENUS, YEENUS } from '../../../test/tokens/eth-tokens';
 import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
 import { RubicError } from '../../errors/RubicError';
+import { Web3ApiService } from '../../services/web3Api/web3-api.service';
+import { CoingeckoApiService } from '../../services/coingecko-api/coingecko-api.service';
 
 const defaultNetwork = 1;
 
@@ -123,9 +125,9 @@ interface IOrderBookTokens {
   ]
 })
 export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
-  @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
-  @ViewChild('insufficientFundsError') insufficientFundsError: TemplateRef<any>;
-  @ViewChild('container') container: ElementRef;
+  @ViewChild('metaMaskError', { static: true }) metaMaskError: TemplateRef<any>;
+  @ViewChild('insufficientFundsError', { static: true }) insufficientFundsError: TemplateRef<any>;
+  @ViewChild('container', { static: true }) container: ElementRef;
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
   @Output() changedSocialState = new EventEmitter<string>();
@@ -175,6 +177,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     transactionHash: ''
   };
 
+  public bestRate: string;
+
+  public oneInchGasInfo = null;
   public instantTradeError: RubicError;
 
   constructor(
@@ -186,7 +191,9 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private route: ActivatedRoute,
     private oneInchService: OneInchService,
     private backendApiService: BackendApiService,
-    private uniSwapService: UniSwapService
+    private uniSwapService: UniSwapService,
+    private web3ApiService: Web3ApiService,
+    private coinGeckoApiService: CoingeckoApiService
   ) {
     this.currentUser = this.userService.getUserModel();
     this.userService.getCurrentUser().subscribe((userProfile: any) => {
@@ -233,6 +240,43 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
       this.instanceTradesTokens = coingeckoTestTokens;
       this.isTestMode = true;
     };
+  }
+
+  private async setBestRate() {
+    if (
+      this.uniSwapTradeStatus === UNISWAP_TRADE_STATUS.PARAMS_CALCULATION ||
+      this.getInstanceQuoteProgress
+    ) {
+      return;
+    }
+
+    if (!this.uniSwapTrade) {
+      this.bestRate = 'oneInch';
+      return;
+    }
+
+    if (!this.requestData.tokens_info.quote || !this.requestData.tokens_info.quote.amount) {
+      this.bestRate = 'uniSwap';
+      return;
+    }
+
+    const tokenUsdPrice = this.requestData.tokens_info.quote.token.usd_price;
+
+    const oneInchUsdAmount = new BigNumber(this.requestData.tokens_info.quote.amount).multipliedBy(
+      tokenUsdPrice
+    );
+    const uniSwapUsdAmount = this.uniSwapTrade.to.amount.multipliedBy(tokenUsdPrice);
+
+    const oneInchGasUsdCost = this.oneInchGasInfo.gasFeeInUsd;
+    const uniSwapGasUsdCost = this.uniSwapTrade.gasFeeInUsd;
+
+    const oneInchProfit = oneInchUsdAmount.minus(oneInchGasUsdCost);
+    const uniSwapProfit = uniSwapUsdAmount.minus(uniSwapGasUsdCost);
+    if (oneInchProfit.gt(uniSwapProfit)) {
+      this.bestRate = 'oneInch';
+      return;
+    }
+    this.bestRate = 'uniSwap';
   }
 
   private getOrderBookTokens() {
@@ -294,8 +338,8 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public formIsSending: boolean;
 
-  @ViewChild('startForm') public startForm;
-  @ViewChild('advSettings') public advSettings;
+  @ViewChild('startForm', { static: true }) public startForm;
+  @ViewChild('advSettings', { static: true }) public advSettings;
 
   public isChangedToken(...args) {
     localStorage.setItem('form_new_values', JSON.stringify({ tokens_info: this.tokensData }));
@@ -341,8 +385,23 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
             : '';
           // this.QuoteTokenCustom.emit();
           this.getInstanceQuoteProgress = false;
+          this.setOneInchGasInfo(result.estimatedGas).then(() => this.setBestRate());
         });
     }, 1000);
+  }
+
+  private async setOneInchGasInfo(gasLimit) {
+    const etherPrice = await this.coinGeckoApiService.getEtherPriceInUsd();
+    const gasFeeInUsd = await this.web3ApiService.getGasFee(new BigNumber(gasLimit), etherPrice);
+    const gasFeeInEth = await this.web3ApiService.getGasFee(
+      new BigNumber(gasLimit),
+      new BigNumber(1)
+    );
+
+    this.oneInchGasInfo = {
+      gasFeeInUsd,
+      gasFeeInEth
+    };
   }
 
   private tokensCache = {
@@ -445,6 +504,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         this.requestData.tokens_info.uniswap.amount = '';
       }
       this.uniSwapTradeStatus = null;
+      this.setBestRate();
     } else {
       this.uniSwapTrade = undefined;
       this.requestData.tokens_info.uniswap.amount = '';
@@ -457,6 +517,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public changedToken(force?: boolean) {
+    this.bestRate = undefined;
     this.requestData.tokens_info.uniswap.token = this.requestData.tokens_info.quote.token;
     this.recalculateUniSwapParameters();
     const baseCoin = this.requestData.tokens_info.base.token;
@@ -913,7 +974,6 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   private metamaskAccount: string;
 
   public createContract() {
-    debugger;
     const accSubscriber = this.updateAddresses(true).subscribe(
       res => {
         this.metamaskAccount = res['metamask'][0];
