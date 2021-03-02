@@ -14,7 +14,10 @@
   </div>
 
   <div class="instant-trade__arrow-section">
-    <img src="assets/images/icons/RoundArrows.svg" alt="">
+    <button class="arrow-button" [ngClass]="{'arrow-button_big': trades.length === 2}">
+      <img *ngIf="trades.length === 2" src="assets/images/icons/RoundArrows.svg" alt="">
+      <img *ngIf="trades.length === 1" src="assets/images/icons/revert.svg" alt="">
+    </button>
   </div>
 
 
@@ -55,35 +58,37 @@
       </app-primary-button>
     </div>
 
-    <div class="selection-block">
-      <app-tokens-input
-        [inputDisabled]="true"
-        [tokensList]="tokens"
-        [selectedToken]="toToken"
-        [selectedAmount]="getToAmount(1)"
-        (tokenChanges)="toToken = $any($event)"
-      >
-      </app-tokens-input>
-      <div class="selection-block__warning">
-        <app-warning-label
-          *ngIf="checkIfError(1)"
-          warningText="Trade in UniSwap is not available.">
-        </app-warning-label>
+    <ng-template [ngIf]="trades.length === 2">
+      <div class="selection-block">
+        <app-tokens-input
+          [inputDisabled]="true"
+          [tokensList]="tokens"
+          [selectedToken]="toToken"
+          [selectedAmount]="getToAmount(1)"
+          (tokenChanges)="toToken = $any($event)"
+        >
+        </app-tokens-input>
+        <div class="selection-block__warning">
+          <app-warning-label
+            *ngIf="checkIfError(1)"
+            warningText="Trade in UniSwap is not available.">
+          </app-warning-label>
+        </div>
       </div>
-    </div>
 
-    <div>
-      <app-primary-button
-        [label]="'Via ' + trades[1].tradeProviderInfo.label"
-        [disabled]="
-            !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
-            !trades[1].trade ||
-            shouldAnimateButton(1)
-          "
-        [animate]="shouldAnimateButton(1)"
-      >
-      </app-primary-button>
-    </div>
+      <div>
+        <app-primary-button
+          [label]="'Via ' + trades[1].tradeProviderInfo.label"
+          [disabled]="
+              !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
+              !trades[1].trade ||
+              shouldAnimateButton(1)
+            "
+          [animate]="shouldAnimateButton(1)"
+        >
+        </app-primary-button>
+      </div>
+    </ng-template>
 
   </div>
 </form>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { BLOCKCHAIN_NAMES } from '../trades-form/types';
 import { List } from 'immutable';
 import { TokensService } from '../../../services/backend/tokens-service/tokens.service';
@@ -39,7 +39,7 @@ enum TRADE_STATE {
   templateUrl: './instant-trades.component.html',
   styleUrls: ['./instant-trades.component.scss']
 })
-export class InstantTradesComponent implements OnInit {
+export class InstantTradesComponent implements OnChanges {
   @Input() blockchain: BLOCKCHAIN_NAMES;
 
   private instantTradeServices: InstantTradeService[];
@@ -153,6 +153,19 @@ export class InstantTradesComponent implements OnInit {
       toToken: null,
       fromAmount: null
     };
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    debugger;
+    if (changes.blockchain.currentValue !== changes.blockchain.previousValue) {
+      this.initInstantTradeProviders();
+
+      this.tradeParameters = {
+        fromToken: null,
+        toToken: null,
+        fromAmount: null
+      };
+    }
   }
 
   public getToAmount(providerIndex: number): string {

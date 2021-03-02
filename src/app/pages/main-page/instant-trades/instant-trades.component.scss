@@ -1,6 +1,5 @@
 .instant-trade {
-  padding: 20px 10px;
-
+  padding: 25px 0;
   display: flex;
   align-items: center;
 
@@ -12,7 +11,6 @@
     flex: 1;
 
     & > * {
-      display: block;
       margin: 0 auto;
     }
   }
@@ -22,11 +20,45 @@
   }
 }
 
+.arrow-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+
+  cursor: pointer;
+  border: none;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
+
+  transition: transform 0.15s ease-in-out;
+
+  &_big {
+    width: 50px;
+    height: 50px;
+
+    img {
+      transform: scale(0.8);
+    }
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
 .grid {
   display: grid;
   grid-template: 1fr / 2fr 1fr;
   grid-auto-flow: row;
   row-gap: 20px;
+  column-gap: 20px;
 }
 
 .selection-block {
@@ -41,34 +73,3 @@
     text-transform: uppercase;
   }
 }
-
-/*  display: grid;
-
-
-  &, * {
-    box-sizing: border-box;
-  }
-
-
-  &__block {
-    position: relative;
-    margin-right: 30px;
-    flex: 2;
-
-    &_short {
-      flex: 1;
-      margin-right: 0;
-    }
-  }
-
-  &__label {
-    position: absolute;
-  }
-
-  &__row {
-    padding-bottom: 46px;
-  }
-
-  &__warning {
-    margin-top: 10px;
-  }*/
