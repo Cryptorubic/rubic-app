@@ -12,7 +12,7 @@ export interface IQuestion {
 export class FaqComponent implements OnInit, AfterViewInit {
   constructor() {}
   public questions: Array<IQuestion> = [];
-  private questionsNumber = 18;
+  private questionsNumber = 23;
   private questionsHTMLTexts;
 
   public ngOnInit(): void {
