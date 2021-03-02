@@ -1,11 +1,49 @@
 .instant-trade {
-  padding: 43px 19px;
+  padding: 20px 10px;
+
+  display: flex;
+  align-items: center;
+
+  &__from-section {
+    flex: 4;
+  }
+
+  &__arrow-section {
+    flex: 1;
+  }
+
+  &__to-section {
+    flex: 6;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template: 1fr / 2fr 1fr;
+  grid-auto-flow: row;
+  row-gap: 20px;
+}
+
+.selection-block {
+  position: relative;
+
+  &__label {
+    position: absolute;
+    top: -20px;
+
+    font-size: 13px;
+    color: rgba(black, 0.85);
+    text-transform: uppercase;
+  }
+}
+
+/*  display: grid;
+
+
   &, * {
     box-sizing: border-box;
   }
 
-  display: flex;
-  align-items: flex-start;
 
   &__block {
     position: relative;
@@ -28,5 +66,4 @@
 
   &__warning {
     margin-top: 10px;
-  }
-}
+  }*/

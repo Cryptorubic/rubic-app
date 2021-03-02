@@ -1,6 +1,7 @@
 <form class="instant-trade">
-  <div class="instant-trade__block">
-    <div class="instant-trade__label">
+
+  <div class="instant-trade__from-section selection-block">
+    <div class="selection-block__label">
       you have
     </div>
     <app-tokens-input
@@ -11,28 +12,49 @@
     >
     </app-tokens-input>
   </div>
-  <div class="instant-trade__block">
-    <div class="instant-trade__label">
-      you get
-    </div>
-    <div class="instant-trade__row">
-      <app-tokens-input class="instant-trade__tokens-input"
-        [inputDisabled]="true"
-        [tokensList]="tokens"
-        [selectedToken]="toToken"
-        [selectedAmount]="getToAmount(0)"
-        (tokenChanges)="toToken = $any($event)"
-      >
-      </app-tokens-input>
-      <div class="instant-trade__warning">
-        <app-warning-label
-          *ngIf="checkIfError(0)"
-          warningText="Trade in UniSwap is not available.">
-        </app-warning-label>
+
+  <div class="instant-trade__arrow-section">
+  </div>
+
+
+  <div class="instant-trade__to-section grid">
+
+    <div class="selection-block">
+      <div class="selection-block__label">
+        you get
+      </div>
+      <div class="selection-block__input-container">
+        <app-tokens-input class="instant-trade__tokens-input"
+          [inputDisabled]="true"
+          [tokensList]="tokens"
+          [selectedToken]="toToken"
+          [selectedAmount]="getToAmount(0)"
+          (tokenChanges)="toToken = $any($event)"
+        >
+        </app-tokens-input>
+        <div class="selection-block__warning">
+          <app-warning-label
+            *ngIf="checkIfError(0)"
+            warningText="Trade in UniSwap is not available.">
+          </app-warning-label>
+        </div>
       </div>
     </div>
 
-    <div>
+    <div class="">
+      <app-primary-button
+        [label]="'Via ' + trades[0].tradeProviderInfo.label"
+        [disabled]="
+          !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
+          !trades[0].trade ||
+          shouldAnimateButton(0)
+        "
+        [animate]="shouldAnimateButton(0)"
+      >
+      </app-primary-button>
+    </div>
+
+    <div class="selection-block">
       <app-tokens-input
         [inputDisabled]="true"
         [tokensList]="tokens"
@@ -41,37 +63,26 @@
         (tokenChanges)="toToken = $any($event)"
       >
       </app-tokens-input>
-      <div class="instant-trade__warning">
+      <div class="selection-block__warning">
         <app-warning-label
           *ngIf="checkIfError(1)"
           warningText="Trade in UniSwap is not available.">
         </app-warning-label>
       </div>
     </div>
-  </div>
-  <div class="instant-trade__block instant-trade__block_short">
-    <div class="instant-trade__row">
+
+    <div>
       <app-primary-button
-        [label]="'Via ' + trades[0].tradeProviderInfo.label"
+        [label]="'Via ' + trades[1].tradeProviderInfo.label"
         [disabled]="
-        !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
-        !trades[0].trade ||
-        shouldAnimateButton(0)
-      "
-        [animate]="shouldAnimateButton(0)"
+            !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
+            !trades[1].trade ||
+            shouldAnimateButton(1)
+          "
+        [animate]="shouldAnimateButton(1)"
       >
       </app-primary-button>
     </div>
 
-    <app-primary-button
-      [label]="'Via ' + trades[1].tradeProviderInfo.label"
-      [disabled]="
-        !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
-        !trades[1].trade ||
-        shouldAnimateButton(1)
-      "
-      [animate]="shouldAnimateButton(1)"
-    >
-    </app-primary-button>
   </div>
 </form>
