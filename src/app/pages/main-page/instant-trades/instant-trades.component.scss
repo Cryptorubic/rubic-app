@@ -10,6 +10,11 @@
 
   &__arrow-section {
     flex: 1;
+
+    & > * {
+      display: block;
+      margin: 0 auto;
+    }
   }
 
   &__to-section {

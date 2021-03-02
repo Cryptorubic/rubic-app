@@ -4,7 +4,7 @@
     type="text"
     name="amountField"
     autocomplete="off"
-    placeholder="{{ amountPlaceholder | translate }}"
+    placeholder="{{ inputDisabled ? '' : amountPlaceholder | translate }}"
     [disabled]="inputDisabled"
     [required]="true"
     [appBigNumber]="bigNumberDirective"
