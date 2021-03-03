@@ -713,17 +713,17 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   public timeChange() {
     this.setFullDateTime();
   }
-  // Do nothing.
-  // public changePD() {
-  //   if (
-  //     this.requestData.tokens_info.base.token.token_title &&
-  //     this.requestData.tokens_info.quote.token.token_title
-  //   ) {
-  //     this.requestData.public = this.requestData.public;
 
-  //     console.log('requestData.public', this.requestData.public);
-  //   }
-  // }
+  // Do nothing.
+  public changePD() {
+    //   if (
+    //     this.requestData.tokens_info.base.token.token_title &&
+    //     this.requestData.tokens_info.quote.token.token_title
+    //   ) {
+    //     this.requestData.public = this.requestData.public;
+    //     console.log('requestData.public', this.requestData.public);
+    //   }
+  }
 
   private setFullDateTime() {
     const times = this.advSettings.value.time.split(':');

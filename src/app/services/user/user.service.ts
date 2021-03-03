@@ -40,7 +40,7 @@ export class UserService {
     }
     if (window['gapi']) {
       this.GAInit = true;
-      window['api'].load('auth2');
+      window['gapi'].load('auth2');
     }
 
     if (window['ethereum'] && window['ethereum'].isMetaMask) {
