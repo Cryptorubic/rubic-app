@@ -18,9 +18,13 @@ import { DOCUMENT } from '@angular/common';
 })
 export class MessageBoxComponent implements OnInit, OnDestroy {
   @Input() title: string;
+
   @Input() descriptionComponentClass: Type<any>;
+
   @Input() descriptionComponentInputs;
+
   @Input() descriptionText: string;
+
   @Input() additionalDescription?: string;
 
   @Output() onClose = new EventEmitter<void>();

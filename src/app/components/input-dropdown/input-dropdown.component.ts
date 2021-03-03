@@ -1,13 +1,14 @@
 import {
+  OnChanges,
   Component,
   ElementRef,
   EventEmitter,
   Input,
-  OnInit,
   Output,
   Type,
   ViewChild
 } from '@angular/core';
+
 import { List } from 'immutable';
 import { DropdownComponentData } from './types';
 
@@ -23,15 +24,18 @@ import { DropdownComponentData } from './types';
  * 2) unique `id`
  * 3) `sort parameters` are the parameters, which will be used to sort components
  */
-export class InputDropdownComponent<T extends DropdownComponentData> implements OnInit {
+export class InputDropdownComponent<T extends DropdownComponentData> implements OnChanges {
   /**
    * The class of the component in the dropdown list.
    */
   @Input() componentClass: Type<any>;
 
   @Input() private componentsData: List<T> = List();
+
   @Input() selectedComponentData: T = null;
+
   @Input() private readonly VISIBLE_COMPONENTS_NUMBER? = 10;
+
   /**
    * The list of the component class' fields, in order of which the components will be sorted.
    * The first field has the biggest priority.
@@ -42,6 +46,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    * What must be printed, if there's no selected component.
    */
   @Input() chooseComponentText: string;
+
   @Input() disabled? = false;
 
   /**
@@ -59,13 +64,12 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   public visibleComponentsData = this.componentsData.slice(0, this.VISIBLE_COMPONENTS_NUMBER);
 
   public isOpenList = false;
+
   public inputQuery = '';
 
   public isMobile = window.innerWidth <= 640;
 
   constructor() {}
-
-  ngOnInit() {}
 
   ngOnChanges() {
     this.setVisibleComponents();

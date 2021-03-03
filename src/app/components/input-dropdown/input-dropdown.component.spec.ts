@@ -6,11 +6,13 @@ describe('InputDropdownComponent', () => {
   let component: InputDropdownComponent<any>;
   let fixture: ComponentFixture<InputDropdownComponent<any>>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [InputDropdownComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [InputDropdownComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InputDropdownComponent);

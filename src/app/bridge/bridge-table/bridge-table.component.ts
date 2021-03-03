@@ -1,8 +1,8 @@
-import { Component, HostListener, OnInit } from '@angular/core';
-import { BridgeService } from '../../services/bridge/bridge.service';
-import { BridgeNetwork, ITableTransaction } from '../../services/bridge/types';
+import { Component, HostListener } from '@angular/core';
 import { List } from 'immutable';
 import date from 'date-and-time';
+import { BridgeService } from '../../services/bridge/bridge.service';
+import { BridgeNetwork, ITableTransaction } from '../../services/bridge/types';
 
 interface ITableTransactionWithState extends ITableTransaction {
   opened: boolean;
@@ -15,7 +15,7 @@ const TRANSACTION_PAGE_SIZE = 5;
   templateUrl: './bridge-table.component.html',
   styleUrls: ['./bridge-table.component.scss']
 })
-export class BridgeTableComponent implements OnInit {
+export class BridgeTableComponent {
   public Blockchains = {
     [BridgeNetwork.ETHEREUM]: {
       label: 'Ethereum',
@@ -33,19 +33,28 @@ export class BridgeTableComponent implements OnInit {
    * Transactions are sorted by date first.
    */
   public transactions: List<ITableTransactionWithState>;
+
   /**
    * Contains transactions, which are shown to user. Updated through 'show more' button.
    */
   public visibleTransactions: List<ITableTransactionWithState> = List([]);
+
   private transactionPages = 1;
+
   public tableInitLoading = true;
+
   public updateProcess = '';
+
   public sort = { fieldName: 'date', downDirection: true }; // Date is default to sort by
+
   public selectedOption = 'Date'; // Capitalized sort.fieldName
+
   public options = ['Status', 'From', 'To', 'Spent', 'Expected', 'Date'];
+
   public isShowMoreActive = true;
 
   private minDesktopWidth = 1024;
+
   public isDesktop: boolean;
 
   constructor(private bridgeService: BridgeService) {
@@ -71,14 +80,18 @@ export class BridgeTableComponent implements OnInit {
     return b - a;
   }
 
-  ngOnInit() {}
+  public static capitalize(value: string): string {
+    return value[0].toUpperCase() + value.slice(1);
+  }
 
   public onUpdate() {
     if (!this.updateProcess) {
       this.updateProcess = 'progress';
       this.bridgeService.updateTransactionsList().finally(() => {
         this.updateProcess = 'stop';
-        setTimeout(() => (this.updateProcess = ''), 1200);
+        setTimeout(() => {
+          this.updateProcess = '';
+        }, 1200);
       });
     }
   }
@@ -119,11 +132,13 @@ export class BridgeTableComponent implements OnInit {
             BridgeTableComponent.sortByDate(a.updateTime, b.updateTime)
           );
           break;
+        default:
+          break;
       }
 
       this.sort.fieldName = fieldName;
       this.sort.downDirection = true;
-      this.selectedOption = this.capitalize(this.sort.fieldName);
+      this.selectedOption = BridgeTableComponent.capitalize(this.sort.fieldName);
     }
   }
 
@@ -138,10 +153,6 @@ export class BridgeTableComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   private checkIfDesktop(): void {
     this.isDesktop = window.innerWidth > this.minDesktopWidth;
-  }
-
-  public capitalize(value: string): string {
-    return value[0].toUpperCase() + value.slice(1);
   }
 
   private checkIsShowMoreActive(): void {

@@ -6,11 +6,13 @@ describe('TokensAllInputComponent', () => {
   let component: TokensAllInputComponent;
   let fixture: ComponentFixture<TokensAllInputComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TokensAllInputComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TokensAllInputComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TokensAllInputComponent);

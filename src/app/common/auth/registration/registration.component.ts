@@ -28,6 +28,7 @@ export class RegistrationComponent implements OnInit {
   @Input() registered: any;
 
   public registrationForm: FormGroup;
+
   public formIsProgress: boolean;
 
   public ServerErrors: {
@@ -41,6 +42,7 @@ export class RegistrationComponent implements OnInit {
   public formIsSubmitted: boolean;
 
   constructor(private _formBuilder: FormBuilder, private _userService: UserService) {}
+
   ngOnInit() {
     this.registrationForm = this._formBuilder.group(
       {
@@ -68,7 +70,7 @@ export class RegistrationComponent implements OnInit {
     this._userService
       .registration(this.registrationForm.value)
       .then(
-        response => {
+        () => {
           this.registered(this.registrationForm.value.username);
         },
         error => {
@@ -77,6 +79,8 @@ export class RegistrationComponent implements OnInit {
               break;
             case 400:
               this.ServerErrors = error.error;
+              break;
+            default:
               break;
           }
         }

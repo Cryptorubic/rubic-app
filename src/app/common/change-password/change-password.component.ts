@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MustMatch } from '../auth/registration/registration.component';
@@ -11,8 +11,11 @@ import { UserService } from '../../services/user/user.service';
 })
 export class ChangePasswordComponent implements OnInit {
   public changePassForm: FormGroup;
+
   public ServerErrors;
+
   public formIsSubmitted: boolean;
+
   public formIsProgress: boolean;
 
   private requestData: any;
@@ -26,6 +29,7 @@ export class ChangePasswordComponent implements OnInit {
     this.ServerErrors = {};
     this.requestData = this.data.params;
   }
+
   ngOnInit() {
     this.changePassForm = this.formBuilder.group(
       {
@@ -51,13 +55,15 @@ export class ChangePasswordComponent implements OnInit {
     this.userService
       .passwordChange(requestData)
       .then(
-        response => {
+        () => {
           this.dialogRef.close();
         },
         error => {
           switch (error.status) {
             case 400:
               this.ServerErrors = error.error;
+              break;
+            default:
               break;
           }
         }

@@ -6,11 +6,13 @@ describe('AddressInputComponent', () => {
   let component: AddressInputComponent;
   let fixture: ComponentFixture<AddressInputComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [AddressInputComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [AddressInputComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AddressInputComponent);

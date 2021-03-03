@@ -25,15 +25,28 @@ export interface ITokenInfo {
   styleUrls: ['./tokens-all-input.component.scss']
 })
 export class TokensAllInputComponent implements OnInit {
+  @ViewChild('tokenField', { static: true }) tokenField: ElementRef;
+
+  @ViewChild('amountField', { static: true }) amountField: ElementRef;
+
   @Input('tokenModel') public tokenModel: any;
+
   @Input('disabled') public disabled: boolean;
+
   @Input() public tokenGroup: any;
+
   @Input() private setToken: any;
+
   @Input() private isCustomAddress: boolean;
+
   @Input() private blockchain: string;
-  @Input() public amountPlaceholder: boolean = true;
+
+  @Input() public amountPlaceholder = true;
+
   @Input() public resetForm: EventEmitter<any>;
+
   @Input() private exclude;
+
   @Input() moveInput = false;
 
   @ViewChild('tokenForm', { static: true }) tokenForm;
@@ -57,26 +70,26 @@ export class TokensAllInputComponent implements OnInit {
     this._otherTokens = newTokens;
     this.visibleInput = false;
   }
-  get() {
-    return this._otherTokens;
-  }
-
-  @ViewChild('tokenField', { static: true }) tokenField: ElementRef;
-  @ViewChild('amountField', { static: true }) amountField: ElementRef;
-
-  constructor(private web3Service: Web3Service) {
-    this.tokensList = [];
-  }
 
   public visibleInput: boolean;
-  public tokensList: ITokenInfo[];
+
+  public tokensList: ITokenInfo[] = [];
+
   public listIsOpened: boolean;
+
   public tokenName;
+
   private activeTokenIndex;
 
   @Output() public TokenChange = new EventEmitter<void>();
 
   private searchSubscriber;
+
+  constructor(private web3Service: Web3Service) {}
+
+  get() {
+    return this._otherTokens;
+  }
 
   ngOnInit() {
     if (this.setToken) {
@@ -100,6 +113,7 @@ export class TokensAllInputComponent implements OnInit {
       this.tokenForm.form.reset();
     });
   }
+
   public searchToken(q) {
     if (q === null || q === undefined) {
       return;
@@ -113,6 +127,7 @@ export class TokensAllInputComponent implements OnInit {
       this.searchSubscriber.unsubscribe();
     }
 
+    // eslint-disable-next-line no-nested-ternary
     let tokensForSearch = !this._otherTokens
       ? this.blockchain
         ? window['coingecko_tokens'].filter(t => t.platform === this.blockchain)
@@ -181,7 +196,7 @@ export class TokensAllInputComponent implements OnInit {
   }
 
   public selectToken(token, tokenIndex, withoutHide?: boolean) {
-    if (!isNaN(this.activeTokenIndex)) {
+    if (!Number.isNaN(Number(this.activeTokenIndex))) {
       this.tokensList[this.activeTokenIndex].active = false;
     }
     token.active = true;
@@ -197,7 +212,7 @@ export class TokensAllInputComponent implements OnInit {
       this.TokenChange.emit(this.tokenModel);
     } else {
       this.web3Service
-        .getFullTokenInfo(this.tokenModel.token.address, false, this.blockchain)
+        .getFullTokenInfo(this.tokenModel.token.address, this.blockchain)
         .then((res: any) => {
           this.tokenModel.token.decimals = res.decimals;
           this.TokenChange.emit();
@@ -221,24 +236,27 @@ export class TokensAllInputComponent implements OnInit {
       return;
     }
     switch (event.code) {
-      case 'ArrowUp':
+      case 'ArrowUp': {
         let newPrevIndex = this.activeTokenIndex - 1;
         if (newPrevIndex < 0) {
           newPrevIndex = this.tokensList.length - 1;
         }
         this.selectToken(this.tokensList[newPrevIndex], newPrevIndex, true);
         break;
-
-      case 'ArrowDown':
+      }
+      case 'ArrowDown': {
         let newNextIndex = this.activeTokenIndex + 1;
         if (newNextIndex > this.tokensList.length - 1) {
           newNextIndex = 0;
         }
         this.selectToken(this.tokensList[newNextIndex], newNextIndex, true);
         break;
+      }
       case 'Enter':
         this.selectToken(this.tokensList[this.activeTokenIndex], this.activeTokenIndex);
         event.preventDefault();
+        break;
+      default:
         break;
     }
 

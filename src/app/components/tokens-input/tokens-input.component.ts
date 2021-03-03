@@ -3,7 +3,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild
@@ -33,25 +32,35 @@ interface TokenDropdownData extends DropdownComponentData {
   templateUrl: './tokens-input.component.html',
   styleUrls: ['./tokens-input.component.scss']
 })
-export class TokensInputComponent implements OnInit, OnChanges {
+export class TokensInputComponent implements OnChanges {
   @Input() amountPlaceholder?: string = 'Enter Amount';
+
   @Input() listDisabled?: boolean = false;
+
   @Input() inputDisabled?: boolean = false;
+
   @Input() tokensList: List<InputToken> = List();
+
   @Input() selectedToken: InputToken;
 
   @Output() numberChanges = new EventEmitter<number>();
+
   @Output() tokenChanges = new EventEmitter<InputToken | null>();
 
   @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<TokenDropdownData>;
 
   public readonly tokenLabelComponentClass = TokenLabelComponent;
+
   public tokensDropdownData = List<TokenDropdownData>();
+
   public selectedTokenDropdownData: TokenDropdownData;
+
   public tokensSortOrder = ['symbol', 'name'];
+
   public VISIBLE_TOKENS_NUMBER = 10;
 
   public amount;
+
   public bigNumberDirective: { decimals: number; min: number } = { decimals: 18, min: 0 };
 
   private cutAmount() {
@@ -62,8 +71,6 @@ export class TokensInputComponent implements OnInit, OnChanges {
   }
 
   constructor() {}
-
-  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges) {
     this.setTokensInputData();

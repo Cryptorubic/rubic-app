@@ -6,11 +6,13 @@ describe('BlockchainsInputComponent', () => {
   let component: BlockchainsInputComponent;
   let fixture: ComponentFixture<BlockchainsInputComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [BlockchainsInputComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [BlockchainsInputComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BlockchainsInputComponent);

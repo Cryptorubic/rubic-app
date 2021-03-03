@@ -6,11 +6,13 @@ describe('TradeInProgressModalComponent', () => {
   let component: TradeInProgressModalComponent;
   let fixture: ComponentFixture<TradeInProgressModalComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TradeInProgressModalComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TradeInProgressModalComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TradeInProgressModalComponent);

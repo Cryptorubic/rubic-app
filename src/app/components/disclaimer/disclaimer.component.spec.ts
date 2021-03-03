@@ -6,11 +6,13 @@ describe('DisclaimerComponent', () => {
   let component: DisclaimerComponent;
   let fixture: ComponentFixture<DisclaimerComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [DisclaimerComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DisclaimerComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DisclaimerComponent);

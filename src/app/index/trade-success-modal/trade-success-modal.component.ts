@@ -7,7 +7,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class TradeSuccessModalComponent implements OnInit {
   @Input() transactionId: string;
+
   @Input() network: string;
+
   @Output() onClose = new EventEmitter<void>();
 
   public scannerLink: string;

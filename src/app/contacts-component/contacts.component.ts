@@ -16,6 +16,7 @@ export const FEEDBACK_URL = 'send_unblocking_feedback/';
 })
 export class ContactsComponent implements OnInit {
   public contactForm: FormGroup;
+
   public isSuccess: boolean;
 
   constructor(private http: HttpService) {}
@@ -28,6 +29,8 @@ export class ContactsComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    this.http.post(FEEDBACK_URL, this.contactForm.value).subscribe(() => (this.isSuccess = true));
+    this.http.post(FEEDBACK_URL, this.contactForm.value).subscribe(() => {
+      this.isSuccess = true;
+    });
   }
 }

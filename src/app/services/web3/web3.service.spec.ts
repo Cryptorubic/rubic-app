@@ -7,6 +7,7 @@ describe('Web3Service', () => {
 
   it('should be created', () => {
     const service: Web3Service = TestBed.get(Web3Service);
+
     expect(service).toBeTruthy();
   });
 });
