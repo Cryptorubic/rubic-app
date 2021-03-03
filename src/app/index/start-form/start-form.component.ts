@@ -13,13 +13,8 @@ import {
 import BigNumber from 'bignumber.js';
 import { Router, ActivatedRoute, Resolve, ActivatedRouteSnapshot } from '@angular/router';
 import * as moment from 'moment';
-import {
-  DateAdapter,
-  MAT_DATE_FORMATS,
-  MAT_DATE_LOCALE,
-  MatDialog,
-  MatDialogRef
-} from '@angular/material';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
   MomentDateAdapter

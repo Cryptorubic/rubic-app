@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import BigNumber from 'bignumber.js';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Web3Service } from '../services/web3/web3.service';
 
 import { CONTRACT_STATES } from '../contract-preview/contract-states';

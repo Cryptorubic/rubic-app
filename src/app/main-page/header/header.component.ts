@@ -8,7 +8,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NavigationStart, Router } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { Web3Service } from '../../services/web3/web3.service';
