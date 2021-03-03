@@ -82,18 +82,11 @@ export class InstantTradesComponent implements OnChanges {
     };
   }
 
-  get fromAmount(): string {
-    if (this.tradeParameters.fromAmount) {
-      if (this.tradeParameters.fromToken) {
-        return this.tradeParameters.fromAmount.toFixed(this.tradeParameters.fromToken.decimals);
-      } else {
-        return this.tradeParameters.fromAmount.toString();
-      }
-    }
-    return '';
+  get fromAmountAsString(): string {
+    return this.tradeParameters.fromAmount?.toFixed() || '';
   }
 
-  set fromAmount(value) {
+  set fromAmountAsString(value) {
     this.tradeParameters = {
       ...this.tradeParameters,
       fromAmount: new BigNumber(value)
@@ -145,18 +138,7 @@ export class InstantTradesComponent implements OnChanges {
     }
   }
 
-  ngOnInit() {
-    this.initInstantTradeProviders();
-
-    this.tradeParameters = {
-      fromToken: null,
-      toToken: null,
-      fromAmount: null
-    };
-  }
-
   ngOnChanges(changes: SimpleChanges) {
-    debugger;
     if (changes.blockchain.currentValue !== changes.blockchain.previousValue) {
       this.initInstantTradeProviders();
 
@@ -166,6 +148,16 @@ export class InstantTradesComponent implements OnChanges {
         fromAmount: null
       };
     }
+  }
+
+  public revertTokens() {
+    const { fromToken, toToken } = this.tradeParameters;
+    const toAmount = this.trades[1].trade?.to?.amount;
+    this.tradeParameters = {
+      fromToken: toToken,
+      toToken: fromToken,
+      fromAmount: toAmount
+    };
   }
 
   public getToAmount(providerIndex: number): string {
@@ -192,7 +184,7 @@ export class InstantTradesComponent implements OnChanges {
     service: InstantTradeService,
     tradeController: InstantTradeProviderController
   ) {
-    debugger;
+    tradeController.trade = null;
     tradeController.tradeState = TRADE_STATE.CALCULATION;
     service
       .calculateTrade(this.tradeParameters.fromAmount, this.fromToken, this.toToken)
