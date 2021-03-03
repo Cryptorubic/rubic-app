@@ -82,6 +82,8 @@ export class TradesFormComponent implements OnInit {
     }
   ];
 
+  public MODE_NAMES = MODE_NAMES;
+
   private _selectedBlockchain = BLOCKCHAIN_NAMES.ETHEREUM;
   private _selectedMode: MODE_NAMES = MODE_NAMES.INSTANT_TRADE;
 

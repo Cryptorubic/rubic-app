@@ -25,12 +25,7 @@
   </div>
 
   <div class="trades-form__body" [ngSwitch]="selectedMode">
-    <ng-template *ngFor="let mode of MODES" [ngSwitchCase]="mode.name">
-      <ndc-dynamic
-        [ndcDynamicComponent]="mode.component(selectedBlockchain).html"
-        [ndcDynamicInputs]="mode.component(selectedBlockchain).inputs"
-      >
-      </ndc-dynamic>
-    </ng-template>
+    <app-instant-trades *ngSwitchCase="MODE_NAMES.INSTANT_TRADE" [blockchain]="selectedBlockchain"></app-instant-trades>
+    <app-order-book *ngSwitchCase="MODE_NAMES.ORDER_BOOK" [blockchain]="selectedBlockchain"></app-order-book>
   </div>
 </div>
