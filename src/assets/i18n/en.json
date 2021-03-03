@@ -132,7 +132,7 @@
       "ANSWER": "It is easy and fast. You only need the MetaMask crypto wallet (more wallets will be supported). Choose the blockchain in which you want to swap tokens, and choose to trade either with Instant Trades or Order Book."
     }, {
       "QUESTION": "How to create a trade?",
-      "ANSWER": "<span class='highlight'>Order Book:</span>\n<strong>Step 1:</strong> Select your blockchain in which you want to swap tokens and choose Order Book. \n<strong>Step 2:</strong> Choose the tokens you want to exchange, at your desired rate.\n<strong>Step 3:</strong> Choose advanced options, such as closing date and time, minimum and maximum contribution, privacy, brokerage fee, lock liquidity until the trade completion. \n<strong>Step 4:</strong> Check details of the trade. \n<strong>Step 5:</strong> Click Create Trade.\n<strong>Step 6:</strong> Use MetaMask to confirm your trade. \n<strong>Step 7:</strong> Contribute to your part of the deal.\n<a href='https://www.youtube.com/watch?v=9FCHTOT9Z9k' target='_blank'>Video tutorial (this method works for any blockchain)</a>\n\n<span class='highlight'>Instant Trades:</span>\n<strong>Step 1:</strong> Select Instant Trades and fill out the form, by choosing the tokens you want to exchange.\n<strong>Step 2:</strong> Enter the desired amount you want to exchange.\n<strong>Step 3:</strong> Now, the DEX aggregator, will automatically show you the best rates across multiple protocols.\n<strong>Step 4:</strong> Press Create trade button.\n<strong>Step 5:</strong> Use MetaMask to confirm your trade, and now wait for the transaction to be confirmed into the blockchain.\n<a href='https://youtu.be/kxg9GQvBU2A' target='_blank'>Video tutorial</a>\n"
+      "ANSWER": "<span class='faq__highlight'>Order Book:</span>\n<strong>Step 1:</strong> Select your blockchain in which you want to swap tokens and choose Order Book. \n<strong>Step 2:</strong> Choose the tokens you want to exchange, at your desired rate.\n<strong>Step 3:</strong> Choose advanced options, such as closing date and time, minimum and maximum contribution, privacy, brokerage fee, lock liquidity until the trade completion. \n<strong>Step 4:</strong> Check details of the trade. \n<strong>Step 5:</strong> Click Create Trade.\n<strong>Step 6:</strong> Use MetaMask to confirm your trade. \n<strong>Step 7:</strong> Contribute to your part of the deal.\n<a href='https://www.youtube.com/watch?v=9FCHTOT9Z9k' target='_blank'>Video tutorial (this method works for any blockchain)</a>\n\n<span class='faq__highlight'>Instant Trades:</span>\n<strong>Step 1:</strong> Select Instant Trades and fill out the form, by choosing the tokens you want to exchange.\n<strong>Step 2:</strong> Enter the desired amount you want to exchange.\n<strong>Step 3:</strong> Now, the DEX aggregator, will automatically show you the best rates across multiple protocols.\n<strong>Step 4:</strong> Press Create trade button.\n<strong>Step 5:</strong> Use MetaMask to confirm your trade, and now wait for the transaction to be confirmed into the blockchain.\n<a href='https://youtu.be/kxg9GQvBU2A' target='_blank'>Video tutorial</a>\n"
     }, {
       "QUESTION": "How much does it cost?",
       "ANSWER": "Currently, our service doesn't charge any fee for Instant Trades. But we have a fee of 0.015 ETH for the creating Order Book trade."
@@ -162,7 +162,22 @@
       "ANSWER": "Please wait and try again later, as currently there is a limit of 3 cross-chain swaps in 30 minutes. This will soon improve."
     }, {
       "QUESTION": "How long does it take to complete a cross-chain swap?",
-      "ANSWER": "It usually varies, and this does not depend on us, but on the two blockchains.\nAs estimations we have 2 minutes for initialization, then 4 minutes for feedback waiting, and another couple of  minutes for deposit. \n\nThe current average time is approximately 10 minutes.\n"
+      "ANSWER": "It usually varies, and this does not depend on us, but on the two blockchains.\nAs estimations we have 2 minutes for initialization, then 4 minutes for feedback waiting, and another couple of  minutes for deposit. \n\nThe current average time is approximately 10 minutes."
+    }, {
+      "QUESTION": "What are the benefits of Uniswap integration?",
+      "ANSWER": "Users will be able to choose the suitable DEX protocol in order to get the best tokens rates with the lowest gas prices."
+    }, {
+      "QUESTION": "Why do we need to make a choice between 1inch and Uniswap?",
+      "ANSWER": "The gas fees and price rates of these protocols are different, therefore the opportunity of having more options empowers the users to better trading decisions."
+    }, {
+      "QUESTION": "Is the token approval included in the gas fee?",
+      "ANSWER": "Token approval is not included in the gas fee. Please note that it is required to approve a token just once, while the first use. Here is how it can look like:\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
+    }, {
+      "QUESTION": "What should I do when I see the message:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trade in Uniswap is not available</span></div>?",
+      "ANSWER": "If you get this message please try the next methods:\n1. Reload the page\n2. Clear website cache\n3. Log out and then log in into MetaMask\nIf it still not working please contact our support team."
+    }, {
+      "QUESTION": "What should I do if Uniswap doesn’t display the rates?",
+      "ANSWER": "In order to see the Uniswap rates you will need to login with your MetaMask account, once logged in refresh the page as well."
     }
   ],
 
