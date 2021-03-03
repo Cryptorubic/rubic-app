@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { HttpService } from '../http/http.service';
 import { URLS } from './user.service.api';
 import {

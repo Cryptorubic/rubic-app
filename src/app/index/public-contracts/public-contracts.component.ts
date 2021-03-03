@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ContractsService, InterfacePastSwaps } from '../../services/contracts/contracts.service';
 import { Web3Service } from '../../services/web3/web3.service';
 
