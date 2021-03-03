@@ -16,7 +16,7 @@ export class CoingeckoApiService {
 
   public async getTokenUsdPriceById(tokenCoingeckoId: string): Promise<BigNumber> {
     const response: any = await this.httpClient
-      .get(this.baseUrl + 'simple/price', {
+      .get(`${this.baseUrl}simple/price`, {
         params: { ids: tokenCoingeckoId, vs_currencies: 'usd' }
       })
       .toPromise();

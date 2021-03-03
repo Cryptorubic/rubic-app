@@ -1,23 +1,21 @@
-import { Component, Injectable, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 
-import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Web3Service } from '../services/web3/web3.service';
 import BigNumber from 'bignumber.js';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { Web3Service } from '../services/web3/web3.service';
 
 import { CONTRACT_STATES } from '../contract-preview/contract-states';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { ContractsService } from '../services/contracts/contracts.service';
 import { UserInterface } from '../services/user/user.interface';
 import { UserService } from '../services/user/user.service';
 
 import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../services/web3/web3.constants';
-import { HttpService } from '../services/http/http.service';
 import SWAPS_ABI from './SWAPS_ABI';
 
-interface IContractV3 {
+export interface IContractV3 {
   id?: number;
   name: string;
   network?: number;
@@ -113,11 +111,14 @@ export const FIX_TIME = new Date(2019, 9, 11, 12, 11).getTime();
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }]
 })
 export class ContractsPreviewV3Component implements OnDestroy, OnInit {
-  @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
+  @ViewChild('metaMaskError', { static: true }) metaMaskError: TemplateRef<any>;
 
   private metaMaskErrorModal: MatDialogRef<any>;
+
   private contractAddress: string;
+
   public displayingBlockchains = CHAINS_OF_NETWORKS;
+
   constructor(
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
@@ -174,10 +175,10 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     if (new Date(this.originalContract.created_date).getTime() < FIX_TIME) {
       tokenInfo.base.amount = new BigNumber(tokenInfo.base.amount)
-        .div(Math.pow(10, tokenInfo.base.token.decimals))
+        .div(tokenInfo.base.token.decimals ** 10)
         .toString();
       tokenInfo.quote.amount = new BigNumber(tokenInfo.quote.amount)
-        .div(Math.pow(10, tokenInfo.quote.token.decimals))
+        .div(tokenInfo.quote.token.decimals ** 10)
         .toString();
     }
 
@@ -194,9 +195,9 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       normal: baseAmount.div(quoteAmount),
       reverted: quoteAmount.div(baseAmount)
     };
-
-    this.originalContract.unique_link_url = this.contractAdditional.link =
-      location.origin + '/trades/public-v3/' + this.originalContract.unique_link;
+    const linkUrl = `${location.origin}/trades/public-v3/${this.originalContract.unique_link}`;
+    this.originalContract.unique_link_url = linkUrl;
+    this.contractAdditional.link = linkUrl;
 
     // this.checkCMCRate();
     this.countChecked = 0;
@@ -219,8 +220,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   }
 
   public allowanceObj;
+
   private token;
+
   private amount;
+
   private countChecked: number;
 
   public metamaskError: any;
@@ -228,12 +232,15 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   public providedAddresses: any = {};
 
   private getAccountsSubscriber;
+
   get tokens() {
     return this.originalContract.tokens_info;
   }
 
   private web3Contract;
+
   public isRemindered: boolean;
+
   private tokenContract: any;
 
   private updatePromise;
@@ -248,15 +255,21 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private currentUser: any;
 
   public isAuth;
+
   public maximumInvestors;
+
   public rates;
+
   private formatNumberParams;
 
   public rateFormat;
 
   public originalContract: IContractV3;
+
   public copiedAddresses: any;
+
   public states = CONTRACT_STATES;
+
   public revertedRate: boolean;
 
   public activeSide: string;
@@ -273,14 +286,18 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private oldCheckedState: string;
 
   public baseAmountShorted: string;
+
   public quoteAmountShorted: string;
+
   private readonly shortedFormat = {
     decimalSeparator: '.',
     groupSeparator: ',',
     groupSize: 3,
     secondaryGroupSize: 0
   };
+
   private readonly BILLION = 1e9;
+
   private readonly MILLION = 1e6;
 
   // private checkCMCRate() {
@@ -310,17 +327,17 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private getAmountShorted(value: string): string {
     const amount = new BigNumber(value);
     if (amount.isGreaterThanOrEqualTo(this.BILLION * 100)) {
-      return amount.div(this.BILLION).toFormat(0, this.shortedFormat) + 'B';
-    } else if (amount.isGreaterThanOrEqualTo(this.MILLION * 100)) {
-      return amount.div(this.MILLION).dp(0).toFormat(0, this.shortedFormat) + 'M';
-    } else {
-      return amount.toFormat(this.shortedFormat);
+      return `${amount.div(this.BILLION).toFormat(0, this.shortedFormat)}B`;
     }
+    if (amount.isGreaterThanOrEqualTo(this.MILLION * 100)) {
+      return `${amount.div(this.MILLION).dp(0).toFormat(0, this.shortedFormat)}M`;
+    }
+    return amount.toFormat(this.shortedFormat);
   }
 
   private checkSwapState() {
     const memo = this.originalContract.memo_contract;
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const checkAfterActive = () => {
         this.web3Contract.methods
           .isSwapped(memo)
@@ -329,7 +346,8 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
             isSwapped => {
               this.originalContract.isSwapped = isSwapped;
               if (isSwapped) {
-                this.originalContract.state = this.originalContract.contract_state = 'DONE';
+                this.originalContract.contract_state = 'DONE';
+                this.originalContract.state = 'DONE';
                 resolve('DONE');
               } else {
                 this.web3Contract.methods
@@ -337,11 +355,12 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
                   .call()
                   .then(isCancelled => {
                     if (isCancelled) {
-                      this.originalContract.state = this.originalContract.contract_state =
-                        'CANCELLED';
+                      this.originalContract.contract_state = 'CANCELLED';
+                      this.originalContract.state = 'CANCELLED';
                       resolve('CANCELLED');
                     } else {
-                      this.originalContract.state = this.originalContract.contract_state = 'ACTIVE';
+                      this.originalContract.contract_state = 'ACTIVE';
+                      this.originalContract.state = 'ACTIVE';
                       resolve('ACTIVE');
                     }
                   });
@@ -381,7 +400,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private getBaseRaised() {
     const details = this.originalContract;
     const decimalsAmount = new BigNumber(details.tokens_info.base.amount).times(
-      Math.pow(10, details.tokens_info.base.token.decimals)
+      details.tokens_info.base.token.decimals ** 10
     );
 
     this.web3Contract.methods
@@ -392,11 +411,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           result = result === null ? 0 : result;
           result = new BigNumber(result);
           this.contractInfo.baseRaised = result
-            .div(Math.pow(10, details.tokens_info.base.token.decimals))
+            .div(details.tokens_info.base.token.decimals ** 10)
             .toString();
           this.contractInfo.baseLeft = decimalsAmount.minus(result);
           this.contractInfo.baseLeftString = this.contractInfo.baseLeft
-            .div(Math.pow(10, details.tokens_info.base.token.decimals))
+            .div(details.tokens_info.base.token.decimals ** 10)
             .toString(10);
         },
         err => {
@@ -404,10 +423,11 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         }
       );
   }
+
   private getQuoteRaised() {
     const details = this.originalContract;
     const decimalsAmount = new BigNumber(details.tokens_info.quote.amount).times(
-      Math.pow(10, details.tokens_info.quote.token.decimals)
+      details.tokens_info.quote.token.decimals ** 10
     );
 
     this.web3Contract.methods
@@ -418,12 +438,12 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
           result = result === null ? 0 : result;
           result = new BigNumber(result);
           this.contractInfo.quoteRaised = result
-            .div(Math.pow(10, details.tokens_info.quote.token.decimals))
+            .div(10, details.tokens_info.quote.token.decimals ** 10)
             .toString();
           console.log(this.contractInfo.quoteRaised);
           this.contractInfo.quoteLeft = decimalsAmount.minus(result);
           this.contractInfo.quoteLeftString = this.contractInfo.quoteLeft
-            .div(Math.pow(10, details.tokens_info.quote.token.decimals))
+            .div(details.tokens_info.quote.token.decimals ** 10)
             .toString(10);
         },
         err => {
@@ -431,6 +451,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         }
       );
   }
+
   private getBaseInvestors() {
     const details = this.originalContract;
 
@@ -441,12 +462,13 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         result => {
           this.contractInfo.baseInvestors = result ? result.length : 0;
         },
-        err => {
+        () => {
           this.contractInfo.baseInvestors = 0;
           // console.log(err);
         }
       );
   }
+
   private getQuoteInvestors() {
     const details = this.originalContract;
     this.web3Contract.methods
@@ -456,11 +478,12 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         result => {
           this.contractInfo.quoteInvestors = result ? result.length : 0;
         },
-        err => {
+        () => {
           this.contractInfo.quoteInvestors = 0;
         }
       );
   }
+
   private getBaseBrokersPercent() {
     const details = this.originalContract;
 
@@ -480,6 +503,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         }
       );
   }
+
   private getQuoteBrokersPercent() {
     const details = this.originalContract;
 
@@ -556,6 +580,8 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         case 'CANCELLED':
           this.getContractInfo();
           break;
+        default:
+          break;
       }
 
       if (this.originalContract.state === 'ACTIVE') {
@@ -566,7 +592,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     };
 
     if (this.originalContract.state === 'ACTIVE' || this.originalContract.state === 'CREATED') {
-      this.updatePromise = this.checkSwapState().then(state => {
+      this.updatePromise = this.checkSwapState().then(() => {
         getContractInfo();
       });
     } else {
@@ -584,15 +610,15 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     this.updatePromise = this.contractService
       .getSwapByPublic(this.originalContract.unique_link)
       .then(result => {
-        const tokens_info = this.originalContract.tokens_info;
+        const { tokens_info: tokensInfo } = this.originalContract;
         const swapped = this.originalContract.isSwapped;
-        const state = this.originalContract.state;
+        const { state } = this.originalContract;
         const contractState = this.originalContract.contract_state;
         const ownerAddress = this.originalContract.owner_address;
-        const isAuthor = this.originalContract.isAuthor;
+        const { isAuthor } = this.originalContract;
 
         this.originalContract = result;
-        this.originalContract.tokens_info = tokens_info;
+        this.originalContract.tokens_info = tokensInfo;
         this.originalContract.isSwapped = swapped;
         this.originalContract.state = state;
         this.originalContract.contract_state = contractState;
@@ -700,8 +726,8 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
     let quoteDecimalsTimes = 1;
 
     if (new Date(this.originalContract.created_date).getTime() > FIX_TIME) {
-      baseDecimalsTimes = Math.pow(10, details.tokens_info.base.token.decimals);
-      quoteDecimalsTimes = Math.pow(10, details.tokens_info.quote.token.decimals);
+      baseDecimalsTimes = details.tokens_info.base.token.decimals ** 10;
+      quoteDecimalsTimes = details.tokens_info.quote.token.decimals ** 10;
     }
 
     const trxRequest = [
@@ -757,10 +783,12 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       case 'quote':
         tokenModel = details.tokens_info.quote;
         break;
+      default:
+        break;
     }
 
     const stringAmountValue = new BigNumber(amount)
-      .times(Math.pow(10, tokenModel.token.decimals))
+      .times(tokenModel.token.decimals ** 10)
       .toString(10);
 
     const value = stringAmountValue;
@@ -847,7 +875,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     transaction
       .action(wallet)
-      .then(result => {
+      .then(() => {
         transaction.confirmed = true;
         this.isAuth = true;
       })
@@ -882,9 +910,8 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     if (!quoteFeeValue.isNaN()) {
       return quoteWillValue.minus(quoteFeeValue).toString(10);
-    } else {
-      return quoteWillValue.toString(10);
     }
+    return quoteWillValue.toString(10);
   }
 
   public baseWillGetValue(amount) {
@@ -899,16 +926,15 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     if (!baseFeeValue.isNaN()) {
       return baseWillValue.minus(baseFeeValue).toString(10);
-    } else {
-      return baseWillValue.toString(10);
     }
+    return baseWillValue.toString(10);
   }
 
   public sendContribute(amount, token) {
     try {
       this.amount = amount;
       this.token = token;
-      const details = this.originalContract;
+      // const details = this.originalContract;
 
       // if (details.contract_state === 'CREATED') {
       //   this.initialisationTrade();
@@ -924,7 +950,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   private checkAllowance = (wallet, token, amount) => {
     return new Promise((resolve, reject) => {
       const tokenModel = this.originalContract.tokens_info[token].token;
-      amount = new BigNumber(amount).times(Math.pow(10, tokenModel.decimals));
+      amount = new BigNumber(amount).times(tokenModel.decimals ** 10);
 
       this.tokenContract = this.web3Service.getContract(
         ERC20_TOKEN_ABI,
@@ -936,26 +962,27 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         .call()
         .then(
           result => {
-            console.log('ALLOWANCE: ' + result);
-            console.log('NEED AMOUNT: ' + amount);
+            console.log(`ALLOWANCE: ${result}`);
+            console.log(`NEED AMOUNT: ${amount}`);
 
             result = result ? result.toString(10) : result;
             result = result === '0' ? null : result;
             if (result && new BigNumber(result).minus(amount).isPositive()) {
               resolve(true);
             } else {
-              reject(false);
+              reject();
             }
           },
           () => {
-            reject(false);
+            reject();
           }
         );
     });
   };
+
   private createTransactions(amount, token) {
     try {
-      if (isNaN(amount)) {
+      if (Number.isNaN(Number(amount))) {
         return;
       }
 
@@ -966,7 +993,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       const approveSignature = this.web3Service.encodeFunctionCall(approveMethod, [
         this.contractAddress,
         new BigNumber(90071992.5474099)
-          .times(Math.pow(10, Math.max(contributeData.token.decimals, 7)))
+          .times(Math.max(contributeData.token.decimals, 7) ** 10)
           .toString(10)
       ]);
 
@@ -991,12 +1018,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
       this.updateAddresses(true);
 
       let transaction: any = {
-        title:
-          'Make the transfer of ' +
-          textAmount +
-          ' ' +
-          contributeData.token.token_short_title +
-          ' tokens to contract',
+        title: `Make the transfer of ${textAmount} ${contributeData.token.token_short_title} tokens to contract`,
         to: this.contractAddress,
         data: contributeData.signature,
         action: contributeData.action,
@@ -1006,18 +1028,15 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
       if (!contributeData.token.isNative) {
         window['ethereum'].enable().then(accounts => {
-          return new Promise((resolve, _) => {
+          return new Promise(() => {
             const address = accounts[0];
             this.checkAllowance(address, token, amount)
-              .then(status => {
+              .then(() => {
                 this.createTransactionObj(transaction);
               })
               .catch(() => {
                 transaction = {
-                  title:
-                    'Authorise the contract for getting ' +
-                    contributeData.token.token_short_title +
-                    ' tokens',
+                  title: `Authorise the contract for getting ${contributeData.token.token_short_title} tokens`,
                   to: contributeData.token.address,
                   data: approveSignature,
                   checkComplete: this.checkAllowance,
@@ -1070,9 +1089,8 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
                   transaction.confirmed = true;
                 }
               },
-              err => {}
+              () => {}
             );
-          } else {
           }
         },
         error => {
@@ -1082,6 +1100,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
 
     return this.getAccountsSubscriber;
   }
+
   ngOnInit() {
     const tokens = ['base', 'quote'];
     tokens.forEach(token => {
@@ -1096,74 +1115,5 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
         }
       });
     });
-  }
-}
-
-@Injectable()
-export class ContractEditV3Resolver implements Resolve<any> {
-  private currentUser;
-  private route;
-
-  constructor(
-    private contractsService: ContractsService,
-    private userService: UserService,
-    private httpService: HttpService,
-    private web3Service: Web3Service,
-    private router: Router
-  ) {}
-
-  private contractId: number;
-  private publicLink: string;
-
-  private getContractInformation(observer, isPublic?) {
-    const promise = (!isPublic
-      ? this.contractsService.getContractV3Information(this.contractId)
-      : this.contractsService.getSwapByPublic(this.publicLink)) as Promise<any>;
-
-    promise.then(
-      (trade: IContractV3) => {
-        this.web3Service.getSWAPSCoinInfo(trade).then((result: any) => {
-          observer.next(result);
-          observer.complete();
-        });
-      },
-      () => {
-        this.router.navigate(['/trades']);
-      }
-    );
-  }
-
-  resolve(route: ActivatedRouteSnapshot) {
-    this.route = route;
-    if (route.params.id) {
-      this.contractId = route.params.id;
-      return new Observable(observer => {
-        const subscription = this.userService.getCurrentUser(false, true).subscribe(user => {
-          this.currentUser = user;
-          if (!user.is_ghost) {
-            this.getContractInformation(observer);
-          } else {
-            this.userService.openAuthForm().then(
-              () => {
-                this.getContractInformation(observer);
-              },
-              () => {
-                this.router.navigate(['/trades']);
-                //
-              }
-            );
-          }
-          subscription.unsubscribe();
-        });
-        return {
-          unsubscribe() {}
-        };
-      });
-    } else if (route.params.public_link) {
-      this.publicLink = route.params.public_link;
-      return new Observable(observer => {
-        this.getContractInformation(observer, true);
-      });
-    }
   }
 }

@@ -10,10 +10,12 @@ export interface IQuestion {
   styleUrls: ['./faq.component.scss']
 })
 export class FaqComponent implements OnInit, AfterViewInit {
-  constructor() {}
   public questions: Array<IQuestion> = [];
   private questionsNumber = 23;
+
   private questionsHTMLTexts;
+
+  constructor() {}
 
   public ngOnInit(): void {
     for (let i = 0; i < this.questionsNumber; i++) {
@@ -28,8 +30,9 @@ export class FaqComponent implements OnInit, AfterViewInit {
   public makeQuestionActive(question, index) {
     question.isActive = !question.isActive;
     if (question.isActive) {
-      this.questionsHTMLTexts[index].style.height =
-        this.questionsHTMLTexts[index].scrollHeight + 'px';
+      this.questionsHTMLTexts[
+        index
+      ].style.height = `${this.questionsHTMLTexts[index].scrollHeight}px`;
     } else {
       this.questionsHTMLTexts[index].style.height = 0;
     }

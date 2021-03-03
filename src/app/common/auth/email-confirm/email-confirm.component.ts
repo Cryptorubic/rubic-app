@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UserService } from '../../../services/user/user.service';
 
 const REQUEST_TIME_LENGTH = 60;
@@ -8,14 +8,17 @@ const REQUEST_TIME_LENGTH = 60;
   templateUrl: './email-confirm.component.html',
   styleUrls: ['./email-confirm.component.scss']
 })
-export class EmailConfirmComponent implements OnInit {
+export class EmailConfirmComponent {
   @Input() currentEmail: string;
 
   public resendError: number | false;
+
   public emailConfirmProgress: boolean;
 
   public allTimerSeconds: number;
+
   public timerMinutes: number | string;
+
   public timerSeconds: number | string;
 
   private startTimerTime;
@@ -48,7 +51,7 @@ export class EmailConfirmComponent implements OnInit {
     this.resendError = false;
 
     this.userService.resendConfirmEmail(this.currentEmail).then(
-      response => {
+      () => {
         this.checkTimer();
         this.emailConfirmProgress = true;
       },
@@ -58,12 +61,10 @@ export class EmailConfirmComponent implements OnInit {
           case 403:
             this.resendError = error.data.detail;
             break;
+          default:
+            break;
         }
       }
     );
-  }
-
-  ngOnInit() {
-    // this.currentEmail = '';
   }
 }

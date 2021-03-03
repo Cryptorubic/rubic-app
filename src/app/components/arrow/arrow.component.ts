@@ -39,6 +39,8 @@ export class ArrowComponent implements OnInit {
       case 'left':
         this.degree = '315deg';
         break;
+      default:
+        break;
     }
   }
 }

@@ -1,14 +1,23 @@
 import { Injectable } from '@angular/core';
+import {
+  ChainId,
+  Fetcher,
+  Route,
+  Token,
+  TokenAmount,
+  Trade,
+  TradeType,
+  WETH,
+  Percent
+} from '@uniswap/sdk';
+import BigNumber from 'bignumber.js';
+import { TransactionReceipt } from 'web3-eth';
 import InstantTradeService from '../InstantTradeService';
 import InstantTrade from '../types/InstantTrade';
 import { InstantTradeToken } from '../types';
-import { ChainId, Fetcher, Route, Token, TokenAmount, Trade, TradeType, WETH } from '@uniswap/sdk';
-import BigNumber from 'bignumber.js';
-import { Percent } from '@uniswap/sdk';
+
 import { Web3ApiService } from '../../web3Api/web3-api.service';
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
-import { TransactionReceipt } from 'web3-eth';
-import { RubicError } from '../../../errors/RubicError';
 import InsufficientFundsError from '../../../errors/instant-trade/InsufficientFundsError';
 import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
 
@@ -20,6 +29,7 @@ interface UniSwapTrade {
   deadline: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 enum SWAP_METHOD {
   TOKENS_TO_TOKENS = 'swapExactTokensForTokens',
   ETH_TO_TOKENS = 'swapExactETHForTokens',
@@ -31,10 +41,15 @@ enum SWAP_METHOD {
 })
 export class UniSwapService extends InstantTradeService {
   static slippageTolerance = new Percent('150', '10000'); // 1.5%
+
   static tokensToTokensEstimatedGas = new BigNumber(120_000);
+
   static tokensToEthEstimatedGas = new BigNumber(150_000);
+
   static ethToTokensEstimatedGas = new BigNumber(150_000);
+
   private readonly provider;
+
   private readonly WETH;
 
   constructor(private web3Api: Web3ApiService, private coingeckoApiService: CoingeckoApiService) {

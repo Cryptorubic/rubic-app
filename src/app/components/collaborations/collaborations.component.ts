@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 // @ts-ignore
 import collaborations from '../../../assets/content/collaborations/collaborations.json';
@@ -8,10 +8,8 @@ import collaborations from '../../../assets/content/collaborations/collaboration
   templateUrl: './collaborations.component.html',
   styleUrls: ['./collaborations.component.scss']
 })
-export class CollaborationsComponent implements OnInit {
+export class CollaborationsComponent {
   public collaborations = collaborations;
 
   constructor() {}
-
-  ngOnInit() {}
 }

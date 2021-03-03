@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, throwError } from 'rxjs';
 import { List } from 'immutable';
 import { HttpClient } from '@angular/common/http';
-import { IBridgeToken, ITableTransaction } from './types';
 import { map, catchError, flatMap } from 'rxjs/operators';
+import BigNumber from 'bignumber.js';
+import { IBridgeToken, ITableTransaction } from './types';
 import { Web3ApiService } from '../web3Api/web3-api.service';
 import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../errors/bridge/NetworkError';
 import { RubicError } from '../../errors/RubicError';
-import BigNumber from 'bignumber.js';
 import { OverQueryLimitError } from '../../errors/bridge/OverQueryLimitError';
 import { BackendApiService } from '../backend-api/backend-api.service';
 
@@ -22,11 +22,15 @@ interface BinanceResponse {
 })
 export class BridgeService {
   private apiUrl = 'https://api.binance.org/bridge/api/v2/';
+
   private _tokens: BehaviorSubject<List<IBridgeToken>> = new BehaviorSubject(List([]));
+
   private _transactions: BehaviorSubject<List<ITableTransaction>> = new BehaviorSubject(List([]));
+
   public walletAddress: string;
 
   public readonly tokens: Observable<List<IBridgeToken>> = this._tokens.asObservable();
+
   public readonly transactions: Observable<
     List<ITableTransaction>
   > = this._transactions.asObservable();
@@ -42,16 +46,16 @@ export class BridgeService {
   }
 
   private getTokensList(): void {
-    this.httpClient.get(this.apiUrl + 'tokens').subscribe(
+    this.httpClient.get(`${this.apiUrl}tokens`).subscribe(
       (res: BinanceResponse) => {
         if (res.code !== 20000) {
-          console.log('Error retrieving Todos, code ' + res.code);
+          console.log(`Error retrieving Todos, code ${res.code}`);
         } else {
           const tokensWithUpdatedImages = this.getTokensImages(List(res.data.tokens));
           this._tokens.next(tokensWithUpdatedImages);
         }
       },
-      err => console.log('Error retrieving tokens ' + err)
+      err => console.log(`Error retrieving tokens ${err}`)
     );
   }
 
@@ -69,16 +73,17 @@ export class BridgeService {
   }
 
   public getFee(tokenSymbol: string, networkName: string): Observable<number> {
-    return this.httpClient.get(this.apiUrl + `tokens/${tokenSymbol}/networks`).pipe(
+    return this.httpClient.get(`${this.apiUrl}tokens/${tokenSymbol}/networks`).pipe(
+      // eslint-disable-next-line consistent-return
       map((res: BinanceResponse) => {
         if (res.code !== 20000) {
-          console.log('Error retrieving tokens, code ' + res.code);
+          console.log(`Error retrieving tokens, code ${res.code}`);
         } else {
           return res.data.networks.find(network => network.name === networkName).networkFee;
         }
       }),
       catchError(err => {
-        console.log('Error retrieving tokens ' + err);
+        console.log(`Error retrieving tokens ${err}`);
         return throwError(err);
       })
     );
@@ -105,35 +110,34 @@ export class BridgeService {
       fromNetwork,
       source: 921,
       symbol: token.symbol,
-      toAddress: toAddress,
+      toAddress,
       toAddressLabel: '',
       toNetwork,
       walletAddress: this.web3Api.address,
       walletNetwork: toNetwork
     };
 
-    return this.httpClient.post(this.apiUrl + `swaps/`, body).pipe(
+    return this.httpClient.post(`${this.apiUrl}swaps/`, body).pipe(
       flatMap((res: BinanceResponse) => {
         if (res.code !== 20000) {
-          console.log('Bridge POST error, code ' + res.code);
+          console.log(`Bridge POST error, code ${res.code}`);
           return throwError(new OverQueryLimitError());
-        } else {
-          const data = res.data;
-          const tx = new BridgeTransaction(
-            data.id,
-            fromNetwork,
-            token,
-            data.status,
-            data.depositAddress,
-            amount,
-            data.toAddress,
-            this.web3Api
-          );
-          return from(this.sendDeposit(tx, onTransactionHash));
         }
+        const { data } = res;
+        const tx = new BridgeTransaction(
+          data.id,
+          fromNetwork,
+          token,
+          data.status,
+          data.depositAddress,
+          amount,
+          data.toAddress,
+          this.web3Api
+        );
+        return from(this.sendDeposit(tx, onTransactionHash));
       }),
       catchError(err => {
-        console.error('Error bridge post ' + err);
+        console.error(`Error bridge post ${err}`);
         return throwError(err instanceof RubicError ? err : new RubicError());
       })
     );

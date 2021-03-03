@@ -1,6 +1,6 @@
-import { InstantTradeToken, InstantTrade } from './types';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
+import { InstantTradeToken, InstantTrade } from './types';
 
 abstract class InstantTradeService {
   /**
@@ -10,7 +10,7 @@ abstract class InstantTradeService {
    * @param toToken output token or blockchain native coin
    * @return parameters of possible trade
    */
-  public abstract async calculateTrade(
+  public abstract calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
     toToken
@@ -24,7 +24,7 @@ abstract class InstantTradeService {
    * @param [options.onApprove] callback to execute when approve transaction enters the mempool. i
    *  If the account already has the required allowance, then this callback will be called with a hash equal to null
    */
-  public abstract async createTrade(
+  public abstract createTrade(
     trade: InstantTrade,
     options: {
       onConfirm?: (hash: string) => void;
