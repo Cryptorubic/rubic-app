@@ -193,7 +193,7 @@ export class InstantTradesComponent implements OnChanges {
         tradeController.tradeState = null;
       })
       .catch(error => {
-        console.log(error);
+        console.error(error);
         tradeController.tradeState = TRADE_STATE.ERROR;
       });
   }

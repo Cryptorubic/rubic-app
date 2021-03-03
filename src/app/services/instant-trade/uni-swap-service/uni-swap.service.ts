@@ -50,78 +50,71 @@ export class UniSwapService extends InstantTradeService {
     toToken: InstantTradeToken,
     chainId?
   ): Promise<InstantTrade> {
-    try {
-      const fromTokenClone = { ...fromToken };
-      const toTokenClone = { ...toToken };
-      let estimatedGasPredictionMethod = 'calculateTokensToTokensGasLimit';
+    const fromTokenClone = { ...fromToken };
+    const toTokenClone = { ...toToken };
+    let estimatedGasPredictionMethod = 'calculateTokensToTokensGasLimit';
 
-      if (this.web3Api.isEtherAddress(fromTokenClone.address)) {
-        fromTokenClone.address = this.WETH.address;
-        estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
-      }
-
-      if (this.web3Api.isEtherAddress(toTokenClone.address)) {
-        toTokenClone.address = this.WETH.address;
-        estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
-      }
-
-      const uniSwapTrade = await this.getUniSwapTrade(
-        fromAmount,
-        fromTokenClone,
-        toTokenClone,
-        chainId
-      );
-
-      const amountIn = new BigNumber(
-        uniSwapTrade.inputAmount.toSignificant(fromTokenClone.decimals)
-      )
-        .multipliedBy(10 ** fromTokenClone.decimals)
-        .toFixed(0);
-      const amountOutMin = new BigNumber(
-        uniSwapTrade
-          .minimumAmountOut(UniSwapService.slippageTolerance)
-          .toSignificant(toTokenClone.decimals)
-      )
-        .multipliedBy(10 ** toTokenClone.decimals)
-        .toFixed(0);
-
-      const path = [fromTokenClone.address, toTokenClone.address];
-      const to = this.web3Api.address;
-      const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
-
-      const estimatedGas = await this[estimatedGasPredictionMethod](
-        amountIn,
-        amountOutMin,
-        path,
-        to,
-        deadline
-      );
-
-      const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-
-      const gasFeeInUsd = await this.web3Api.getGasFee(estimatedGas, ethPrice);
-      const gasFeeInEth = await this.web3Api.getGasFee(estimatedGas, new BigNumber(1));
-      const amountOut = uniSwapTrade
-        .minimumAmountOut(new Percent('0', '1'))
-        .toSignificant(toTokenClone.decimals);
-
-      return {
-        from: {
-          token: fromToken,
-          amount: fromAmount
-        },
-        to: {
-          token: toToken,
-          amount: new BigNumber(amountOut)
-        },
-        estimatedGas,
-        gasFeeInUsd,
-        gasFeeInEth
-      };
-    } catch (e) {
-      console.error(e);
-      return null;
+    if (this.web3Api.isEtherAddress(fromTokenClone.address)) {
+      fromTokenClone.address = this.WETH.address;
+      estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
     }
+
+    if (this.web3Api.isEtherAddress(toTokenClone.address)) {
+      toTokenClone.address = this.WETH.address;
+      estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
+    }
+
+    const uniSwapTrade = await this.getUniSwapTrade(
+      fromAmount,
+      fromTokenClone,
+      toTokenClone,
+      chainId
+    );
+
+    const amountIn = new BigNumber(uniSwapTrade.inputAmount.toSignificant(fromTokenClone.decimals))
+      .multipliedBy(10 ** fromTokenClone.decimals)
+      .toFixed(0);
+    const amountOutMin = new BigNumber(
+      uniSwapTrade
+        .minimumAmountOut(UniSwapService.slippageTolerance)
+        .toSignificant(toTokenClone.decimals)
+    )
+      .multipliedBy(10 ** toTokenClone.decimals)
+      .toFixed(0);
+
+    const path = [fromTokenClone.address, toTokenClone.address];
+    const to = this.web3Api.address;
+    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
+
+    const estimatedGas = await this[estimatedGasPredictionMethod](
+      amountIn,
+      amountOutMin,
+      path,
+      to,
+      deadline
+    );
+
+    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+
+    const gasFeeInUsd = await this.web3Api.getGasFee(estimatedGas, ethPrice);
+    const gasFeeInEth = await this.web3Api.getGasFee(estimatedGas, new BigNumber(1));
+    const amountOut = uniSwapTrade
+      .minimumAmountOut(new Percent('0', '1'))
+      .toSignificant(toTokenClone.decimals);
+
+    return {
+      from: {
+        token: fromToken,
+        amount: fromAmount
+      },
+      to: {
+        token: toToken,
+        amount: new BigNumber(amountOut)
+      },
+      estimatedGas,
+      gasFeeInUsd,
+      gasFeeInEth
+    };
   }
 
   private async calculateTokensToTokensGasLimit(
