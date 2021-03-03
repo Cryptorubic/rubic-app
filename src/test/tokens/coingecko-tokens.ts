@@ -1,4 +1,4 @@
-import { ETH, WEENUS, XEENUS, YEENUS, ZEENUS } from './eth-tokens';
+import { ETH, WEENUS, XEENUS, YEENUS } from './eth-tokens';
 
 const eth = {
   address: ETH.address,

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TradeSuccessModalComponent } from './trade-success-modal.component';
 
@@ -6,12 +6,13 @@ describe('TradeSuccessModalComponent', () => {
   let component: TradeSuccessModalComponent;
   let fixture: ComponentFixture<TradeSuccessModalComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TradeSuccessModalComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TradeSuccessModalComponent]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TradeSuccessModalComponent);

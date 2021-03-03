@@ -929,12 +929,12 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         this.web3Service
           .sendTransaction(gasIncreasedTx, this.requestData.network, afterConfirm)
           .then(
-            (res: any) => {
+            () => {
               this.resetStartForm();
-              const win = window.open(
-                `https://etherscan.io/tx/${res.transactionHash}`,
-                'target=_blank'
-              );
+              // const win = window.open(
+              //   `https://etherscan.io/tx/${res.transactionHash}`,
+              //   'target=_blank'
+              // );
             },
             () => {}
           )
@@ -980,16 +980,19 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
         }
       );
     };
-    return tokenContract.methods
-      .allowance(this.metamaskAccount, remoteContractAddress)
-      .call()
-      .then(result => {
-        result = new BigNumber(result);
-        const noAllowance = result.minus(params.amount).isNegative();
-        if (noAllowance) {
-          return sendApproveTx();
-        }
-      });
+    return (
+      tokenContract.methods
+        .allowance(this.metamaskAccount, remoteContractAddress)
+        .call()
+        // eslint-disable-next-line consistent-return
+        .then(result => {
+          result = new BigNumber(result);
+          const noAllowance = result.minus(params.amount).isNegative();
+          if (noAllowance) {
+            return sendApproveTx();
+          }
+        })
+    );
   }
 
   public createContract() {

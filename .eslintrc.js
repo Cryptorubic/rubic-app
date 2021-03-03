@@ -41,6 +41,7 @@ module.exports = {
             "array-bracket-spacing": ["error", 'never'],
             "object-curly-spacing": ["error", 'always'],
             // Temporary rules. Remove after full refactoring.
+            "import/no-extraneous-dependencies": "off",
             "@typescript-eslint/dot-notation": "off",
             "no-restricted-globals": "off",
             "@typescript-eslint/no-empty-function": "off",
