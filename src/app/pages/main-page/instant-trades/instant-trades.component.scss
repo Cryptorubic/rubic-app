@@ -73,3 +73,13 @@
     text-transform: uppercase;
   }
 }
+
+.gas-fee {
+  display: flex;
+  margin-top: 5px;
+
+  &__text {
+    opacity: 0.5;
+    margin-right: 8px;
+  }
+}
