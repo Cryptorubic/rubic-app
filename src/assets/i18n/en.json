@@ -173,7 +173,7 @@
       "QUESTION": "Is the token approval included in the gas fee?",
       "ANSWER": "Token approval is not included in the gas fee. Please note that it is required to approve a token just once, while the first use. Here is how it can look like:\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
     }, {
-      "QUESTION": "What should I do when I see the message:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trade in Uniswap is not available</span></div>?",
+      "QUESTION": "What should I do when I see the message:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trading on Uniswap is not available</span></div>?",
       "ANSWER": "If you get this message please try the next methods:\n1. Reload the page\n2. Clear website cache\n3. Log out and then log in into MetaMask\nIf it still not working please contact our support team."
     }, {
       "QUESTION": "What should I do if Uniswap doesn’t display the rates?",
