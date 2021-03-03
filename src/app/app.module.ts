@@ -41,7 +41,6 @@ import { SocialComponent } from './common/auth/social/social.component';
 import { EmailConfirmComponent } from './common/auth/email-confirm/email-confirm.component';
 import { ForgotPasswordComponent } from './common/auth/forgot-password/forgot-password.component';
 import { ContractsListComponent } from './contracts-list/contracts-list.component';
-import { FooterComponent } from './footer/footer.component';
 import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
 import {
   BigNumberDirective,
@@ -49,7 +48,6 @@ import {
   BigNumberMax,
   BigNumberMin
 } from './directives/big-number/big-number.directive';
-import { FaqComponent } from './faq-component/faq.component';
 import { MinMaxDirective } from './directives/minMax/min-max.directive';
 import { ContactsComponent } from './contacts-component/contacts.component';
 import { TokensAllInputComponent } from './directives/tokens-all-input/tokens-all-input.component';
@@ -60,14 +58,10 @@ import { ChangePasswordComponent } from './common/change-password/change-passwor
 import { MainPageComponent } from './main-page/main-page.component';
 import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
-import { AboutageComponent } from './about/about.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import { TokenSaleComponent } from './token-sale/token-sale.component';
 import { OneInchService } from './models/1inch/1inch';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
-import { MessageBoxComponent } from './components/message-box/message-box.component';
-import { TeamComponent } from './team/team.component';
-import { TeamCardComponent } from './team/team-card/team-card.component';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
@@ -76,11 +70,9 @@ import { PrimaryButtonComponent } from './components/primary-button/primary-butt
 import { TokensInputComponent } from './components/tokens-input/tokens-input.component';
 import { BridgeComponent } from './bridge/bridge.component';
 import { CollaborationsComponent } from './components/collaborations/collaborations.component';
-import { ArrowComponent } from './components/arrow/arrow.component';
 import { BridgeInProgressModalComponent } from './bridge/bridge-in-progress-modal/bridge-in-progress-modal.component';
 import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.component';
 import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
-import { SpinnerComponent } from './components/spinner/spinner.component';
 import { DropdownSelectComponent } from './components/dropdown-select/dropdown-select.component';
 import { WhiteButtonComponent } from './components/white-button/white-button.component';
 import { TokenLabelComponent } from './components/tokens-input/token-label/token-label.component';
@@ -94,6 +86,8 @@ import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
 import { ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.resolver';
+import { CoreModule } from './core/core.module';
+import { SharedModule } from './shared/shared.module';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -182,14 +176,13 @@ export function appInitializerFactory(
 
 @NgModule({
   declarations: [
-    AppComponent,
-    HeaderComponent,
+    AppComponent, // Here
+    HeaderComponent, // Core
     StartFormComponent,
-    AboutageComponent,
     IndexComponent,
-    FooterMainPageComponent,
-    HeaderMainPageComponent,
-    MainPageComponent,
+    FooterMainPageComponent, // main page module
+    HeaderMainPageComponent, // main page module
+    MainPageComponent, // main page module
     EthAddressDirective,
     EthTokenValidatorDirective,
     RegistrationComponent,
@@ -201,7 +194,6 @@ export function appInitializerFactory(
     ContractsListComponent,
     EtherscanUrlPipe,
     NativeUrlPipe,
-    FooterComponent,
     BigNumberFormat,
     BigNumberMin,
     BigNumberMax,
@@ -209,8 +201,7 @@ export function appInitializerFactory(
     BigNumberDirective,
 
     MinMaxDirective,
-    FaqComponent,
-    ContactsComponent,
+    ContactsComponent, // Doesn't used
     TokensAllInputComponent,
     ContractsPreviewV3Component,
     CoinsListComponent,
@@ -218,9 +209,6 @@ export function appInitializerFactory(
     TokenSaleComponent,
     CountdownComponent,
     DisclaimerComponent,
-    MessageBoxComponent,
-    TeamComponent,
-    TeamCardComponent,
     MaintenanceComponent,
     ModalComponent,
     TradeInProgressModalComponent,
@@ -229,11 +217,9 @@ export function appInitializerFactory(
     TokensInputComponent,
     BridgeComponent,
     CollaborationsComponent,
-    ArrowComponent,
     BridgeInProgressModalComponent,
     BridgeSuccessComponent,
     BridgeTableComponent,
-    SpinnerComponent,
     DropdownSelectComponent,
     WhiteButtonComponent,
     TokenLabelComponent,
@@ -248,6 +234,7 @@ export function appInitializerFactory(
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [
+    SharedModule,
     TransferHttpCacheModule,
     TranslateModule.forRoot({
       loader: {
@@ -279,7 +266,8 @@ export function appInitializerFactory(
       TokenLabelComponent,
       BlockchainLabelComponent,
       NetworkErrorComponent
-    ])
+    ]),
+    CoreModule
   ],
   providers: [
     CookieService,

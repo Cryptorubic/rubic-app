@@ -12,7 +12,7 @@ export class BridgeComponent implements AfterViewInit {
 
   constructor(private dialog: MatDialog) {}
 
-  private openDisclaimer(): void {
+  public openDisclaimer(): void {
     this.dialog.open(DisclaimerComponent, {
       width: '650px',
       disableClose: true,
@@ -22,6 +22,10 @@ export class BridgeComponent implements AfterViewInit {
         actions: {}
       }
     });
+  }
+
+  public test(): void {
+    console.log('test');
   }
 
   ngAfterViewInit() {
