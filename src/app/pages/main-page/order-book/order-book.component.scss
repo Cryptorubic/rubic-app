@@ -1,7 +1,14 @@
 @import '../../../../scss/elements/vars';
 
 .order-book-form {
-  display: flex;
+  &__main-section {
+    padding: 27px 30px 29px;
+  }
+
+  &__advanced-section {
+    padding: 20px 30px 22px;
+    border-top: 2px solid $grey-background;
+  }
 
   &__tokens-forms {
     flex: 3.5;
@@ -16,6 +23,10 @@
     top: 23px;
     margin-left: auto;
   }
+}
+
+.main-section {
+  display: flex;
 }
 
 .tokens-forms {
@@ -35,7 +46,6 @@
     border: none;
 
     background: white;
-
     cursor: pointer;
   }
 }
@@ -71,8 +81,9 @@
     margin-left: auto;
 
     color: $grey-text;
-
     cursor: pointer;
+
+    transition: font-weight 0.1s linear;
 
     &:hover {
       font-weight: 500;
@@ -110,15 +121,14 @@
 }
 
 .confirm-section {
-  &__advanced-option {
-    margin-top: 14px;
+  &__advanced-options-button {
+    margin-top: 21px;
 
     color: $main-green;
+    cursor: pointer;
 
     text-align: center;
     font-weight: bold;
-
-    cursor: pointer;
 
     img {
       position: relative;
@@ -126,6 +136,112 @@
       left: 3px;
 
       width: 12px;
+
+      transition: transform 0.4s ease;
+    }
+
+    &_opened {
+      img {
+        transform: rotateX(180deg);
+      }
+    }
+  }
+}
+
+.advanced-section {
+  display: flex;
+  grid-gap: 32px;
+}
+
+.advanced-section-block {
+  display: flex;
+  align-items: center;
+
+  &__header {
+    margin-bottom: 6px;
+
+    color: $dark;
+
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  &__input-container {
+    display: flex;
+    flex-direction: column;
+
+    text-align: center;
+  }
+
+  &__input {
+    padding: 12px 14px;
+    margin: 0 auto;
+    border: none;
+
+    color: $dark;
+    background: $grey-background;
+    cursor: pointer;
+
+    font-size: 16px;
+
+    &_date {
+      width: 81px;
+    }
+
+    &_time {
+      width: 41px;
+    }
+
+    &_public-deal {
+      width: 63px;
+      padding: 7px 14px;
+    }
+  }
+
+  &__public-deal-checkbox {
+    display: none;
+  }
+
+  .input-public-deal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    grid-gap: 9px;
+
+    text-transform: uppercase;
+
+    &_not-checked {
+      flex-direction: row-reverse;
+    }
+
+    &__image {
+      width: 26px;
+      height: 28px;
+
+      background-image: url(/src/assets/images/icons/main-page/PublicDealTick.svg);
+      background-repeat: no-repeat;
+
+      transition: background-image 0.3s linear;
+
+      &_not-checked {
+        background-image: url(/src/assets/images/icons/main-page/PublicDealCross.svg);
+      }
+    }
+  }
+
+  .description-container {
+    position: relative;
+    top: 10px;
+
+    display: flex;
+    align-items: center;
+
+    margin-left: 3px;
+
+    color: $grey-text;
+
+    &__dash {
+      margin: 0 5px;
     }
   }
 }

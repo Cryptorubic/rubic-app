@@ -16,7 +16,8 @@ import {
   MatNativeDateModule,
   MatDatepickerModule,
   MatDialogModule,
-  MatButtonModule
+  MatButtonModule,
+  MatInputModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
@@ -102,6 +103,8 @@ import { WarningLabelComponent } from './components/warning-label/warning-label.
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
+import { TokenAddressDirective } from './directives/token-address/token-address.directive';
+import { CommonModule } from '@angular/common';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -255,7 +258,8 @@ export function appInitializerFactory(
     TradeSuccessModalComponent,
     WarningLabelComponent,
     TooltipComponent,
-    InfoTooltipComponent
+    InfoTooltipComponent,
+    TokenAddressDirective
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [
@@ -281,6 +285,7 @@ export function appInitializerFactory(
     MatNativeDateModule,
     MatDatepickerModule,
     MatButtonModule,
+    MatInputModule,
     NgxMaterialTimepickerModule,
     ClipboardModule,
     OwlModule,
@@ -291,7 +296,8 @@ export function appInitializerFactory(
       TokenLabelComponent,
       BlockchainLabelComponent,
       NetworkErrorComponent
-    ])
+    ]),
+    CommonModule
   ],
   providers: [
     CookieService,

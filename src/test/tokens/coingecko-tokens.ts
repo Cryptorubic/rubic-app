@@ -19,7 +19,7 @@ const weenus = {
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
   platform: 'ethereum',
   token_short_title: 'WEENUS',
-  token_title: 'WEENUS',
+  token_title: 'Weenus 💪',
   usd_price: 48005
 };
 
