@@ -5,7 +5,7 @@ import { InstantTradeToken } from '../types';
 import { ChainId, Fetcher, Route, Token, TokenAmount, Trade, TradeType, WETH } from '@uniswap/sdk';
 import BigNumber from 'bignumber.js';
 import { Percent } from '@uniswap/sdk';
-import { Web3ApiService } from '../../web3Api/web3-api.service';
+import { Web3ApiService } from '../../blockchain/web3PrivateService/web3-api.service';
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
 import { TransactionReceipt } from 'web3-eth';
 import { RubicError } from '../../../errors/RubicError';

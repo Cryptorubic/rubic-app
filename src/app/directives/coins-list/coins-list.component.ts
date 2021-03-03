@@ -8,7 +8,10 @@ import {
   ViewChild
 } from '@angular/core';
 import { HttpService } from '../../services/http/http.service';
-import { TokenInfoInterface, Web3Service } from '../../services/web3/web3.service';
+import {
+  TokenInfoInterface,
+  Web3ServiceLEGACY
+} from '../../services/web3LEGACY/web3LEGACY.service';
 
 export interface ITokenInfo {
   active?: boolean;

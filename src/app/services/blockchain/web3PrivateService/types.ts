@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
+import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
 
 interface Web3ApiNetwork {
   id: number;

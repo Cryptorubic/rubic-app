@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { UserService } from '../../../services/user/user.service';
-import { Web3Service } from '../../../services/web3/web3.service';
+import { Web3ServiceLEGACY } from '../../../services/web3LEGACY/web3LEGACY.service';
 
 @Component({
   selector: 'app-social',
@@ -19,7 +19,7 @@ export class SocialComponent implements OnInit {
 
   public change2FAProgress: boolean;
 
-  constructor(private userService: UserService, private web3Service: Web3Service) {
+  constructor(private userService: UserService, private web3Service: Web3ServiceLEGACY) {
     this.social = userService.checkSocialNetworks();
   }
 

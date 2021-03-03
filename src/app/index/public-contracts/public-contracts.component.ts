@@ -49,7 +49,7 @@ export interface IContract {
 
 import { Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ContractsService, InterfacePastSwaps } from '../../services/contracts/contracts.service';
-import { Web3Service } from '../../services/web3/web3.service';
+import { Web3ServiceLEGACY } from '../../services/web3LEGACY/web3LEGACY.service';
 
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
@@ -89,7 +89,7 @@ export class PublicContractsComponent implements OnInit, OnDestroy {
   public displayingBlockchains = CHAINS_OF_NETWORKS;
   constructor(
     private contractsService: ContractsService,
-    private web3Service: Web3Service,
+    private web3Service: Web3ServiceLEGACY,
     private http: HttpClient,
     private userService: UserService,
     private dialog: MatDialog

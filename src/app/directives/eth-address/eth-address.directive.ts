@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input } from '@angular/core';
-import { Web3Service } from '../../services/web3/web3.service';
+import { Web3ServiceLEGACY } from '../../services/web3LEGACY/web3LEGACY.service';
 
 @Directive({
   selector: '[appEthAddress]'

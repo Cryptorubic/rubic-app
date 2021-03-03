@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { HttpProvider, Transaction } from 'web3-core';
-import { BridgeNetwork } from '../bridge/types';
-import { ERC20_TOKEN_ABI } from '../web3/web3.constants';
-import { RubicError } from '../../errors/RubicError';
-import { UserRejectError } from '../../errors/bridge/UserRejectError';
+import { BridgeNetwork } from '../../bridge/types';
+import { ERC20_TOKEN_ABI } from '../../web3LEGACY/web3.constants';
+import { RubicError } from '../../../errors/RubicError';
+import { UserRejectError } from '../../../errors/bridge/UserRejectError';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { ProviderService } from '../provider/provider.service';
 import { TransactionReceipt } from 'web3-eth';
 import { TokenInfoBody, Web3ApiNetwork } from './types';
 import { nativeTokens } from './native-tokens';
-import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
+import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
 import { Contract } from 'web3-eth-contract';
 
 const NETWORKS: Web3ApiNetwork[] = [

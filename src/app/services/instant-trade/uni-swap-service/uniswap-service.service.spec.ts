@@ -4,10 +4,10 @@ import { UniSwapService } from './uni-swap.service';
 import BigNumber from 'bignumber.js';
 
 import { HttpClientModule } from '@angular/common/http';
-import { ProviderService } from '../../provider/provider.service';
-import providerServiceStub from '../../provider/provider-service-stub';
+import { ProviderService } from '../../blockchain/provider/provider.service';
+import providerServiceStub from '../../blockchain/provider/provider-service-stub';
 import { ETH, WEENUS, YEENUS } from '../../../../test/tokens/eth-tokens';
-import { Web3ApiService } from '../../web3Api/web3-api.service';
+import { Web3ApiService } from '../../blockchain/web3PrivateService/web3-api.service';
 import { UniSwapContractAddress } from './uni-swap-contract';
 
 describe('UniswapServiceService', () => {

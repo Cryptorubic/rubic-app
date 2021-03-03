@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../services/user/user.service';
-import { Web3Service } from '../services/web3/web3.service';
+import { Web3ServiceLEGACY } from '../services/web3LEGACY/web3LEGACY.service';
 import { UserInterface } from '../services/user/user.interface';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { NavigationStart, Router } from '@angular/router';
@@ -49,7 +49,7 @@ export class HeaderComponent implements OnInit {
     private userService: UserService,
     private dialog: MatDialog,
     private router: Router,
-    private web3Service: Web3Service,
+    private web3Service: Web3ServiceLEGACY,
     private translate: TranslateService,
     private cookieService: CookieService
   ) {

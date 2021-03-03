@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { MetamaskError } from '../../errors/bridge/MetamaskError';
+import { MetamaskError } from '../../../errors/bridge/MetamaskError';
 import Web3 from 'web3';
-import { AccountError } from '../../errors/bridge/AccountError';
-import { RubicError } from '../../errors/RubicError';
+import { AccountError } from '../../../errors/bridge/AccountError';
+import { RubicError } from '../../../errors/RubicError';
 import { ethers } from 'ethers';
-import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
+import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
 
 @Injectable({
   providedIn: 'root'

@@ -123,10 +123,13 @@ export class NativeUrlPipe implements PipeTransform {
   }
 }
 
+/**
+ * @deprecated will be removed in a 2.0.0 release
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class Web3Service {
+export class Web3ServiceLEGACY {
   constructor() {
     this.cacheTokens = {
       binance: {},
@@ -690,7 +693,7 @@ export class EthTokenValidatorDirective implements AsyncValidator {
   @Output() TokenResolve = new EventEmitter<any>();
   @Input() network;
 
-  constructor(private web3Service: Web3Service) {}
+  constructor(private web3Service: Web3ServiceLEGACY) {}
 
   validate(
     ctrl: AbstractControl

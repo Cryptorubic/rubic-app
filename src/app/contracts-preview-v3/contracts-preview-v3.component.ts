@@ -4,7 +4,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angula
 import { Observable } from 'rxjs';
 
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Web3Service } from '../services/web3/web3.service';
+import { Web3ServiceLEGACY } from '../services/web3LEGACY/web3LEGACY.service';
 import BigNumber from 'bignumber.js';
 
 import { CONTRACT_STATES } from '../contract-preview/contract-states';
@@ -13,7 +13,7 @@ import { ContractsService } from '../services/contracts/contracts.service';
 import { UserInterface } from '../services/user/user.interface';
 import { UserService } from '../services/user/user.service';
 
-import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../services/web3/web3.constants';
+import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../services/web3LEGACY/web3.constants';
 import { HttpService } from '../services/http/http.service';
 import SWAPS_ABI from './SWAPS_ABI';
 
@@ -121,7 +121,7 @@ export class ContractsPreviewV3Component implements OnDestroy, OnInit {
   constructor(
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
-    private web3Service: Web3Service,
+    private web3Service: Web3ServiceLEGACY,
     private dialog: MatDialog,
     private contractService: ContractsService,
     private userService: UserService
@@ -1108,7 +1108,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
     private contractsService: ContractsService,
     private userService: UserService,
     private httpService: HttpService,
-    private web3Service: Web3Service,
+    private web3Service: Web3ServiceLEGACY,
     private router: Router
   ) {}
 

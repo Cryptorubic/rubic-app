@@ -12,11 +12,11 @@ import {
   AfterViewInit
 } from '@angular/core';
 import { SWAPS_V2 } from '../../contracts-preview-v3/contracts-preview-v3.component';
-import { Web3Service } from '../../services/web3/web3.service';
+import { Web3ServiceLEGACY } from '../../services/web3LEGACY/web3LEGACY.service';
 import { UserService } from '../../services/user/user.service';
 import BigNumber from 'bignumber.js';
 import { Router, ActivatedRoute, Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../../services/web3/web3.constants';
+import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../../services/web3LEGACY/web3.constants';
 import { ContractsService } from '../../services/contracts/contracts.service';
 import * as moment from 'moment';
 import {
@@ -40,7 +40,7 @@ import { InstantTrade, InstantTradeToken } from '../../services/instant-trade/ty
 import { ETH, WEENUS, YEENUS } from '../../../test/tokens/eth-tokens';
 import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
 import { RubicError } from '../../errors/RubicError';
-import { Web3ApiService } from '../../services/web3Api/web3-api.service';
+import { Web3ApiService } from '../../services/blockchain/web3PrivateService/web3-api.service';
 import { CoingeckoApiService } from '../../services/coingecko-api/coingecko-api.service';
 
 const defaultNetwork = 1;
@@ -185,7 +185,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   constructor(
     private dialog: MatDialog,
     protected contractsService: ContractsService,
-    private web3Service: Web3Service,
+    private web3Service: Web3ServiceLEGACY,
     protected router: Router,
     private userService: UserService,
     private route: ActivatedRoute,
@@ -1141,7 +1141,7 @@ export class StartFormResolver implements Resolve<any> {
     return t.platform === 'ethereum';
   });
 
-  constructor(private web3Service: Web3Service) {}
+  constructor(private web3Service: Web3ServiceLEGACY) {}
 
   private getTokenPromise(token_symbol) {
     const token = token_symbol

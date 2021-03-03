@@ -1,7 +1,7 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
 import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
-import { TokenInfoBody } from '../../services/web3Api/types';
-import { Web3ApiService } from '../../services/web3Api/web3-api.service';
+import { TokenInfoBody } from '../../services/blockchain/web3PrivateService/types';
+import { Web3ApiService } from '../../services/blockchain/web3PrivateService/web3-api.service';
 import { AbstractControl, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
 
 @Directive({

@@ -4,7 +4,7 @@ import { List } from 'immutable';
 import { HttpClient } from '@angular/common/http';
 import { IBridgeToken, ITableTransaction } from './types';
 import { map, catchError, flatMap } from 'rxjs/operators';
-import { Web3ApiService } from '../web3Api/web3-api.service';
+import { Web3ApiService } from '../blockchain/web3PrivateService/web3-api.service';
 import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../errors/bridge/NetworkError';
 import { RubicError } from '../../errors/RubicError';

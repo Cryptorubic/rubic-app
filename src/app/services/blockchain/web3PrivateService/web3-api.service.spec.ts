@@ -5,11 +5,11 @@ import { ProviderService } from '../provider/provider.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 import providerServiceStub from '../provider/provider-service-stub';
-import { WEENUS } from '../../../test/tokens/eth-tokens';
-import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
+import { WEENUS } from '../../../../test/tokens/eth-tokens';
+import { coingeckoTestTokens } from '../../../../test/tokens/coingecko-tokens';
 // @ts-ignore
-import config from '../../../test/enviroment.test.json';
-import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
+import config from '../../../../test/enviroment.test.json';
+import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
 
 describe('Web3ApiService', () => {
   let originalTimeout;

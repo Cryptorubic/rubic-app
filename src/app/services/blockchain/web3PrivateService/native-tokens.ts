@@ -1,5 +1,5 @@
 import { TokenInfoBody } from './types';
-import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
+import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
 
 const ETH: TokenInfoBody = {
   name: 'Ethereum',

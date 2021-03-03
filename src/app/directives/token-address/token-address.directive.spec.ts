@@ -1,9 +1,9 @@
 import { TokenAddressDirective } from './token-address.directive';
-import { Web3ApiService } from '../../services/web3Api/web3-api.service';
+import { Web3ApiService } from '../../services/blockchain/web3PrivateService/web3-api.service';
 import { TestBed } from '@angular/core/testing';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { ProviderService } from '../../services/provider/provider.service';
-import providerServiceStub from '../../services/provider/provider-service-stub';
+import { ProviderService } from '../../services/blockchain/provider/provider.service';
+import providerServiceStub from '../../services/blockchain/provider/provider-service-stub';
 
 describe('TokenAddressDirective', () => {
   let service: Web3ApiService;

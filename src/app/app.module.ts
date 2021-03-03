@@ -26,7 +26,7 @@ import {
   EtherscanUrlPipe,
   EthTokenValidatorDirective,
   NativeUrlPipe
-} from './services/web3/web3.service';
+} from './services/web3LEGACY/web3LEGACY.service';
 import { UserService } from './services/user/user.service';
 import { UserInterface } from './services/user/user.interface';
 import { AuthComponent } from './common/auth/auth.component';

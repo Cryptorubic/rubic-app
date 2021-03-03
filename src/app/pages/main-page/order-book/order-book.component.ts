@@ -7,7 +7,7 @@ import {
 } from '@angular/material-moment-adapter';
 import { BLOCKCHAIN_NAMES, IToken } from '../trades-form/types';
 import { MY_FORMATS } from '../../../index/start-form/start-form.component';
-import { TokenInfoBody } from '../../../services/web3Api/types';
+import { TokenInfoBody } from '../../../services/blockchain/web3PrivateService/types';
 import { NgModel } from '@angular/forms';
 
 @Component({
