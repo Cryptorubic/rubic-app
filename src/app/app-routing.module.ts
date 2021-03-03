@@ -2,14 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { IndexComponent } from './index/index.component';
 import { ContractsListComponent } from './contracts-list/contracts-list.component';
-
-import { FaqComponent } from './faq-component/faq.component';
 import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
-// import { MainPageComponent } from './main-page/main-page.component';
-import { AboutageComponent } from './about/about.component';
 import { TokenSaleComponent } from './token-sale/token-sale.component';
 import { StartFormResolver } from './index/start-form/start-form.component';
-import { TeamComponent } from './team/team.component';
 import { BridgeComponent } from './bridge/bridge.component';
 import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
 import { ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.resolver';
@@ -61,11 +56,12 @@ const routes: Routes = [
   },
   {
     path: 'about',
-    component: AboutageComponent
+    loadChildren: () =>
+      import('./features/features-page/features-page.module').then(m => m.FeaturesPageModule)
   },
   {
     path: 'team',
-    component: TeamComponent
+    loadChildren: () => import('./features/team-page/team-page.module').then(m => m.TeamPageModule)
   },
   {
     path: 'create-v3',
@@ -145,7 +141,7 @@ const routes: Routes = [
   },
   {
     path: 'faq',
-    component: FaqComponent
+    loadChildren: () => import('./features/faq-page/faq-page.module').then(m => m.FaqPageModule)
   },
   {
     path: 'token-sale',
