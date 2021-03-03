@@ -26,12 +26,12 @@
 
   <div class="trades-form__body" [ngSwitch]="selectedMode">
     <app-instant-trades
-      *ngSwitchCase="modeNamesType.INSTANT_TRADE"
+      *ngSwitchCase="MODE_NAMES.INSTANT_TRADE"
       [blockchain]="selectedBlockchain"
     ></app-instant-trades>
 
     <app-order-book
-      *ngSwitchCase="modeNamesType.ORDER_BOOK"
+      *ngSwitchCase="MODE_NAMES.ORDER_BOOK"
       [blockchain]="selectedBlockchain"
     ></app-order-book>
   </div>

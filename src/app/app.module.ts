@@ -28,6 +28,7 @@ import {
   NativeUrlPipe
 } from './services/web3/web3.service';
 import { UserService } from './services/user/user.service';
+import { UserInterface } from './services/user/user.interface';
 import { AuthComponent } from './common/auth/auth.component';
 import { AuthenticationComponent } from './common/auth/authentication/authentication.component';
 import { RegistrationComponent } from './common/auth/registration/registration.component';
@@ -93,15 +94,15 @@ import { BlockchainsInputComponent } from './components/blockchains-input/blockc
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
-import { TooltipComponent } from './components/tooltip/tooltip.component';
-import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { DynamicModule } from 'ng-dynamic-component';
 import { TradeSuccessModalComponent } from './pages/main-page/components/trade-success-modal/trade-success-modal.component';
-import { MainPageComponent } from './pages/main-page/main-page.component';
 import { InstantTradesComponent } from './pages/main-page/instant-trades/instant-trades.component';
 import { TradesFormComponent } from './pages/main-page/trades-form/trades-form.component';
 import { OrderBookComponent } from './pages/main-page/order-book/order-book.component';
 import { WarningLabelComponent } from './components/warning-label/warning-label.component';
+import { TooltipComponent } from './components/tooltip/tooltip.component';
+import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
+import { MainPageComponent } from './pages/main-page/main-page.component';
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
 import { CommonModule } from '@angular/common';
 
@@ -254,10 +255,10 @@ export function appInitializerFactory(
     BlockchainLabelComponent,
     AddressInputComponent,
     NetworkErrorComponent,
-    TooltipComponent,
-    InfoTooltipComponent,
     TradeSuccessModalComponent,
     WarningLabelComponent,
+    TooltipComponent,
+    InfoTooltipComponent,
     TokenAddressDirective
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
@@ -285,7 +286,6 @@ export function appInitializerFactory(
     MatDatepickerModule,
     MatButtonModule,
     MatInputModule,
-    BrowserAnimationsModule,
     NgxMaterialTimepickerModule,
     ClipboardModule,
     OwlModule,
