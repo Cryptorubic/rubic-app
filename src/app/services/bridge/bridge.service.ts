@@ -67,7 +67,7 @@ export class BridgeService {
       .filter(token => token.ethContractAddress || token.symbol === 'ETH')
       .map(token => {
         const tokenInfo = allTokensList.find(item => item.token_short_title === token.symbol);
-        token.icon = tokenInfo && tokenInfo.image_link ? tokenInfo.image_link : '';
+        token.icon = tokenInfo?.image_link || '/assets/images/icons/coins/empty.svg';
         return token;
       });
   }
