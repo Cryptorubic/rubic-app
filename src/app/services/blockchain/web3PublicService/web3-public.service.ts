@@ -14,9 +14,13 @@ export class Web3PublicService {
   private readonly connectionLinks: ConnectionLink[];
   constructor(publicProvider: PublicProviderService) {
     this.connectionLinks = publicProvider.connectionLinks;
-    const web3Connections = this.connectionLinks.map(connection => ({
-      [connection.blockchainName as BLOCKCHAIN_NAME]: new Web3Public(new Web3(connection.rpcLink))
-    }));
+    const web3Connections = this.connectionLinks.reduce(
+      (acc, connection) => ({
+        ...acc,
+        [connection.blockchainName as BLOCKCHAIN_NAME]: new Web3Public(new Web3(connection.rpcLink))
+      }),
+      {} as any
+    );
     Object.assign(this, web3Connections);
   }
 }

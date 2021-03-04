@@ -11,6 +11,10 @@ import { TransactionReceipt } from 'web3-eth';
 import { RubicError } from '../../../errors/RubicError';
 import InsufficientFundsError from '../../../errors/instant-trade/InsufficientFundsError';
 import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
+import { ethers } from 'ethers';
+import { Web3PublicService } from '../../blockchain/web3PublicService/web3-public.service';
+import { Web3Public } from '../../blockchain/web3PublicService/Web3Public';
+import { BLOCKCHAIN_NAME } from '../../blockchain/types/Blockchain';
 
 interface UniSwapTrade {
   amountIn: string;
@@ -36,12 +40,23 @@ export class UniSwapService extends InstantTradeService {
   static ethToTokensEstimatedGas = new BigNumber(150_000);
   private readonly provider;
   private readonly WETH;
+  private readonly web3PublicEth: Web3Public;
 
-  constructor(private web3Api: Web3ApiService, private coingeckoApiService: CoingeckoApiService) {
+  constructor(
+    private web3Api: Web3ApiService,
+    private coingeckoApiService: CoingeckoApiService,
+    web3Public: Web3PublicService
+  ) {
     super();
-    this.provider = web3Api.ethersProvider;
 
-    this.WETH = WETH[this.web3Api.network.id.toString()];
+    this.web3PublicEth = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
+    this.provider = new ethers.providers.JsonRpcProvider(
+      'https://mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf'
+    );
+    /*ethers.getDefaultProvider('homestead', {
+      infura: 'ecf1e6d0427b458b89760012a8500abf'
+    });*/
+    this.WETH = WETH['1'];
   }
 
   public async calculateTrade(
@@ -54,12 +69,12 @@ export class UniSwapService extends InstantTradeService {
     const toTokenClone = { ...toToken };
     let estimatedGasPredictionMethod = 'calculateTokensToTokensGasLimit';
 
-    if (this.web3Api.isEtherAddress(fromTokenClone.address)) {
+    if (this.web3PublicEth.isNativeAddress(fromTokenClone.address)) {
       fromTokenClone.address = this.WETH.address;
       estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
     }
 
-    if (this.web3Api.isEtherAddress(toTokenClone.address)) {
+    if (this.web3PublicEth.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.WETH.address;
       estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
     }
@@ -320,6 +335,7 @@ export class UniSwapService extends InstantTradeService {
     toToken: InstantTradeToken,
     chainId?
   ): Promise<Trade> {
+    debugger;
     const uniSwapFromToken = new Token(
       chainId || ChainId.MAINNET,
       fromToken.address,
