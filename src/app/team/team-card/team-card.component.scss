@@ -4,7 +4,7 @@
   box-sizing: border-box;
   margin: 0 auto;
   width: 320px;
-  height: 376px;
+  height: 475px;
   padding: 10px;
   background-color: #fafafa;
   cursor: pointer;
@@ -21,7 +21,11 @@
 
   &__image {
     display: block;
+    width: 300px;
+    height: 305px;
     margin-bottom: 25px;
+    object-fit: cover;
+    object-position: 50% 2%;
   }
 
   &__description {

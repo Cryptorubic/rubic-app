@@ -57,7 +57,7 @@
   {
     "img": "DaniilSvetlov.png",
     "name": "Daniil Svetlov",
-    "role": "Python Back-End Developer",
+    "role": "Backend Developer",
     "links": [
       {
         "icon": "Github.svg",
@@ -73,6 +73,50 @@
       {
         "icon": "Telegram.svg",
         "url": "https://teleg.run/GeorgeDLT"
+      }
+    ]
+  },
+  {
+    "img": "AndreyAksenov.png",
+    "name": "Andrey Aksenov",
+    "role": "Marketing",
+    "links": [
+      {
+        "icon": "Telegram.svg",
+        "url": "https://t.me/renedsaa"
+      }
+    ]
+  },
+  {
+    "img": "SletaDmitry.png",
+    "name": "Sleta Dmitry",
+    "role": "Frontend developer",
+    "links": [
+      {
+        "icon": "Github.svg",
+        "url": "https://github.com/axtezy"
+      }
+    ]
+  },
+  {
+    "img": "AndreyOtt.png",
+    "name": "Andrey Ott",
+    "role": "Frontend developer",
+    "links": [
+      {
+        "icon": "Github.svg",
+        "url": "https://github.com/ottebrut"
+      }
+    ]
+  },
+  {
+    "img": "DmitriyYershov.png",
+    "name": "Dmitriy Yershov",
+    "role": "Blockchain developer",
+    "links": [
+      {
+        "icon": "Telegram.svg",
+        "url": "https://t.me/dmitriy_yershov"
       }
     ]
   }
