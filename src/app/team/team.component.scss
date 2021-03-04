@@ -28,6 +28,7 @@ $font-family: 'Ubuntu', Arial, sans-serif;
     width: 100%;
     grid-template-columns: repeat(auto-fit, 330px);
     justify-content: center;
+    grid-column-gap: 40px;
   }
 
   &__card {
