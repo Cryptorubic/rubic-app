@@ -25,11 +25,7 @@ import { HeaderComponent } from './index/header/header.component';
 import { StartFormComponent, StartFormResolver } from './index/start-form/start-form.component';
 import { IndexComponent } from './index/index.component';
 
-import {
-  EtherscanUrlPipe,
-  EthTokenValidatorDirective,
-  NativeUrlPipe
-} from './services/web3/web3.service';
+import { EtherscanUrlPipe, NativeUrlPipe } from './services/web3/web3.service';
 import { UserService } from './services/user/user.service';
 import { AuthComponent } from './common/auth/auth.component';
 import { AuthenticationComponent } from './common/auth/authentication/authentication.component';
@@ -156,18 +152,17 @@ export function appInitializerFactory(
   declarations: [
     AppComponent, // Here
     HeaderComponent, // Core
-    StartFormComponent,
-    IndexComponent,
+    StartFormComponent, // Startform Module ??
+    IndexComponent, // Index module ??
     FooterMainPageComponent, // main page module
     HeaderMainPageComponent, // main page module
     MainPageComponent, // main page module
-    EthTokenValidatorDirective,
-    RegistrationComponent,
-    AuthComponent,
-    AuthenticationComponent,
-    SocialComponent,
-    EmailConfirmComponent,
-    ForgotPasswordComponent,
+    RegistrationComponent, // Auth module
+    AuthComponent, // Auth module
+    AuthenticationComponent, // Auth module
+    SocialComponent, // Auth module??
+    EmailConfirmComponent, // Auth module
+    ForgotPasswordComponent, // Auth module
     ContractsListComponent,
     EtherscanUrlPipe,
     NativeUrlPipe,
