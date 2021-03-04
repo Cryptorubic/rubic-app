@@ -25,7 +25,6 @@ import { HeaderComponent } from './index/header/header.component';
 import { StartFormComponent, StartFormResolver } from './index/start-form/start-form.component';
 import { IndexComponent } from './index/index.component';
 
-import { EtherscanUrlPipe, NativeUrlPipe } from './services/web3/web3.service';
 import { UserService } from './services/user/user.service';
 import { AuthComponent } from './common/auth/auth.component';
 import { AuthenticationComponent } from './common/auth/authentication/authentication.component';
@@ -52,7 +51,6 @@ import { BridgeComponent } from './bridge/bridge.component';
 import { BridgeInProgressModalComponent } from './bridge/bridge-in-progress-modal/bridge-in-progress-modal.component';
 import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.component';
 import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
-import { AddressInputComponent } from './shared/components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
 import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
 import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
@@ -163,24 +161,21 @@ export function appInitializerFactory(
     SocialComponent, // Auth module??
     EmailConfirmComponent, // Auth module
     ForgotPasswordComponent, // Auth module
-    ContractsListComponent,
-    EtherscanUrlPipe,
-    NativeUrlPipe,
-    PublicContractsComponent,
+    ContractsListComponent, // trades module
+    PublicContractsComponent, // Index module ??
     ContactsComponent, // Doesn't used
-    ContractsPreviewV3Component,
-    ChangePasswordComponent,
-    TokenSaleComponent,
-    MaintenanceComponent,
-    TradeInProgressModalComponent,
-    BridgeFormComponent,
-    BridgeComponent,
-    BridgeInProgressModalComponent,
-    BridgeSuccessComponent,
-    BridgeTableComponent,
-    AddressInputComponent,
-    NetworkErrorComponent,
-    TradeSuccessModalComponent
+    ContractsPreviewV3Component, // Trades module
+    ChangePasswordComponent, // Auth module
+    TokenSaleComponent, // Token-sale module ??
+    MaintenanceComponent, // Core module ??
+    TradeInProgressModalComponent, // start-form module ??
+    BridgeFormComponent, // Bridge module
+    BridgeComponent, // Bridge module
+    BridgeInProgressModalComponent, // Bridge module
+    BridgeSuccessComponent, // Bridge module
+    BridgeTableComponent, // Bridge module
+    NetworkErrorComponent, // Bridge module ??
+    TradeSuccessModalComponent // startfoorm module ??
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [

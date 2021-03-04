@@ -1,4 +1,4 @@
-import { Injectable, Pipe, PipeTransform } from '@angular/core';
+import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 
 import { Observable } from 'rxjs';
@@ -56,9 +56,9 @@ export interface TokenInfoInterface {
   symbol: string;
 }
 
-const IS_PRODUCTION = true; // location.protocol === 'https:';
+export const IS_PRODUCTION = true; // location.protocol === 'https:';
 
-const ETHERSCAN_URLS = {
+export const ETHERSCAN_URLS = {
   ETHERSCAN_ADDRESS: 'https://etherscan.io/',
   ROPSTEN_ETHERSCAN_ADDRESS: 'https://ropsten.etherscan.io/',
   KOVAN_ETHERSCAN_ADDRESS: 'https://kovan.etherscan.io/',
@@ -69,50 +69,6 @@ const ETHERSCAN_URLS = {
   ROPSTEN_MATIC_ETHERSCAN_ADDRESS: 'https://testnet.bscscan.com/',
   KOVAN_MATIC_ETHERSCAN_ADDRESS: 'https://testnet.bscscan.com/'
 };
-
-@Pipe({ name: 'etherscanUrl' })
-export class EtherscanUrlPipe implements PipeTransform {
-  transform(address, network, type) {
-    let url;
-    switch (network) {
-      case 1:
-        url = IS_PRODUCTION
-          ? ETHERSCAN_URLS.ETHERSCAN_ADDRESS
-          : ETHERSCAN_URLS.KOVAN_ETHERSCAN_ADDRESS;
-        break;
-      default:
-        break;
-      case 22:
-        url = IS_PRODUCTION
-          ? ETHERSCAN_URLS.BNB_ETHERSCAN_ADDRESS
-          : ETHERSCAN_URLS.KOVAN_BNB_ETHERSCAN_ADDRESS;
-        break;
-      case 24:
-        url = IS_PRODUCTION
-          ? ETHERSCAN_URLS.MATIC_ETHERSCAN_ADDRESS
-          : ETHERSCAN_URLS.KOVAN_MATIC_ETHERSCAN_ADDRESS;
-        break;
-    }
-    return `${url + type}/${address}`;
-  }
-}
-
-@Pipe({ name: 'nativeCoinUrl' })
-export class NativeUrlPipe implements PipeTransform {
-  // eslint-disable-next-line consistent-return
-  transform(network) {
-    switch (network) {
-      case 1:
-        return 'https://etherscan.io/stat/supply';
-      case 22:
-        return 'https://bscscan.com/stat/supply';
-      case 24:
-        return '';
-      default:
-        break;
-    }
-  }
-}
 
 @Injectable({
   providedIn: 'root'
