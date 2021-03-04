@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 interface ICardLink {
   icon: string;
@@ -17,12 +17,10 @@ export interface ICardContent {
   templateUrl: './team-card.component.html',
   styleUrls: ['./team-card.component.scss']
 })
-export class TeamCardComponent implements OnInit {
+export class TeamCardComponent {
   @Input() content: ICardContent;
 
   constructor() {}
-
-  ngOnInit() {}
 
   onClick() {
     window.open(this.content.links[0].url, '_blank');

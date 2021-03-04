@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ContractsPreviewV3Component } from './contracts-preview-v3.component';
 
@@ -6,11 +6,13 @@ describe('ContractsPreviewV3Component', () => {
   let component: ContractsPreviewV3Component;
   let fixture: ComponentFixture<ContractsPreviewV3Component>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ContractsPreviewV3Component]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ContractsPreviewV3Component]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ContractsPreviewV3Component);

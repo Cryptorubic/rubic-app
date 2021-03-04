@@ -46,7 +46,7 @@
     background-color: #4aa956;
     min-height: 820px;
     display: flex;
-    background-image: url('src/assets/images/token-sale/lines.svg');
+    background-image: url('/src/assets/images/token-sale/lines.svg');
     background-repeat: no-repeat;
     background-position: right 0;
     background-size: 220px;
@@ -152,8 +152,8 @@
     background-color: #4aa956;
     min-height: 400px;
     display: flex;
-    background-image: url('src/assets/images/token-sale/lines-left.svg'),
-      url('src/assets/images/token-sale/lines-right.svg');
+    background-image: url('/src/assets/images/token-sale/lines-left.svg'),
+      url('/src/assets/images/token-sale/lines-right.svg');
     background-repeat: no-repeat, no-repeat;
     background-position: left 300px, right 0;
     background-size: 200px;
@@ -397,7 +397,7 @@
 
     &-boxes {
       position: absolute;
-      background-image: url('src/assets/images/token-sale/cubes.png');
+      background-image: url('/src/assets/images/token-sale/cubes.png');
       background-position: center;
       background-size: contain;
       background-repeat: no-repeat;
@@ -480,7 +480,7 @@
 
     &-boxes {
       position: absolute;
-      background-image: url('src/assets/images/token-sale/cubes.png');
+      background-image: url('/src/assets/images/token-sale/cubes.png');
       background-position: center;
       background-size: contain;
       background-repeat: no-repeat;

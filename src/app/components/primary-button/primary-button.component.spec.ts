@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PrimaryButtonComponent } from './primary-button.component';
 
@@ -6,11 +6,13 @@ describe('PrimaryButtonComponent', () => {
   let component: PrimaryButtonComponent;
   let fixture: ComponentFixture<PrimaryButtonComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [PrimaryButtonComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [PrimaryButtonComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PrimaryButtonComponent);

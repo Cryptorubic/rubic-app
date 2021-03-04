@@ -35,6 +35,7 @@
   font-family: 'TT Norms';
   src: url('./assets/fonts/ttnorms-bold-webfont.woff2') format('woff2'),
   url('./assets/fonts/ttnorms-bold-webfont.woff') format('woff');
+
   font-weight: 700;
   font-style: normal;
 }
@@ -43,14 +44,17 @@
   font-family: 'TT Norms';
   src: url('./assets/fonts/ttnorms-regular-webfont.woff2') format('woff2'),
   url('./assets/fonts/ttnorms-regular-webfont.woff') format('woff');
+
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'TT Norms';
+
   src: url('./assets/fonts/ttnorms-light-webfont.woff2') format('woff2'),
   url('./assets/fonts/ttnorms-light-webfont.woff') format('woff');
+
   font-weight: 300;
   font-style: normal;
 }
@@ -59,6 +63,7 @@
   font-family: 'TT Norms';
   src: url('./assets/fonts/ttnorms-black-webfont.woff2') format('woff2'),
   url('./assets/fonts/ttnorms-black-webfont.woff') format('woff');
+
   font-weight: 800;
   font-style: normal;
 }
@@ -66,9 +71,10 @@
 @font-face {
   font-family: 'Sofia Pro';
   src: local('Sofia Pro Regular'), local('Sofia-Pro-Bold'),
-  url('./assets/fonts/SofiaProRegular.woff2') format('woff2'),
-  url('./assets/fonts/SofiaProRegular.woff') format('woff'),
-  url('./assets/fonts/SofiaProRegular.ttf') format('truetype');
+
+  url('assets/fonts/SofiaProRegular.woff2') format('woff2'),
+  url('assets/fonts/SofiaProRegular.woff') format('woff'),
+  url('assets/fonts/SofiaProRegular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
 }
@@ -76,9 +82,11 @@
 @font-face {
   font-family: 'Sofia Pro';
   src: local('Sofia Pro Bold'), local('Sofia-Pro-Bold'),
-  url('./assets/fonts/SofiaProBold.woff2') format('woff2'),
-  url('./assets/fonts/SofiaProBold.woff') format('woff'),
-  url('./assets/fonts/SofiaProBold.ttf') format('truetype');
+
+  url('assets/fonts/SofiaProBold.woff2') format('woff2'),
+  url('assets/fonts/SofiaProBold.woff') format('woff'),
+  url('assets/fonts/SofiaProBold.ttf') format('truetype');
+
   font-weight: 700;
   font-style: normal;
 }
@@ -86,7 +94,8 @@
 @font-face {
   font-family: 'Poppins';
   src: local('Poppins-Regular'),
-  url('./assets/fonts/Poppins-Regular.ttf') format('ttf');
+  url('assets/fonts/Poppins-Regular.ttf') format('ttf');
+
   font-weight: 400;
   font-style: normal;
 }
@@ -94,7 +103,8 @@
 @font-face {
   font-family: 'Poppins';
   src: local('Poppins-Bold'),
-  url('./assets/fonts/Poppins-Bold.ttf') format('ttf');
+  url('assets/fonts/Poppins-Bold.ttf') format('ttf');
+
   font-weight: 700;
   font-style: normal;
 }
@@ -110,7 +120,7 @@
 @font-face {
   font-family: 'Josefin Sans';
   src: local('Josefin Sans Extra Thin'), local('Josefin-Sans-Extra-Thin'),
-  url('./assets/fonts/JosefinSans-Thin.ttf') format('ttf');
+  url('assets/fonts/JosefinSans-Thin.ttf') format('ttf');
   font-weight: 200;
   font-style: normal;
 }
@@ -118,7 +128,7 @@
 @font-face {
   font-family: 'Josefin Sans';
   src: local('Josefin Sans Extra Light'), local('Josefin-Sans-Extra-Light'),
-  url('./assets/fonts/JosefinSans-Light.ttf') format('ttf');
+  url('assets/fonts/JosefinSans-Light.ttf') format('ttf');
   font-weight: lighter;
   font-style: normal;
 }
@@ -126,7 +136,7 @@
 @font-face {
   font-family: 'Josefin Sans';
   src: local('Josefin Sans Extra Regular'), local('Josefin-Sans-Extra-Regular'),
-  url('./assets/fonts/JosefinSans-Regular.ttf') format('ttf');
+  url('assets/fonts/JosefinSans-Regular.ttf') format('ttf');
   font-weight: normal;
   font-style: normal;
 }
@@ -134,7 +144,7 @@
 @font-face {
   font-family: 'Josefin Sans';
   src: local('Josefin Sans Extra Medium'), local('Josefin-Sans-Extra-Medium'),
-  url('./assets/fonts/JosefinSans-Medium.ttf') format('ttf');
+  url('assets/fonts/JosefinSans-Medium.ttf') format('ttf');
   font-weight: 600;
   font-style: normal;
 }
@@ -142,7 +152,8 @@
 @font-face {
   font-family: 'Josefin Sans';
   src: local('Josefin Sans Extra Bold'), local('Josefin-Sans-Extra-Bold'),
-  url('./assets/fonts/JosefinSans-Bold.ttf') format('ttf');
+  url('assets/fonts/JosefinSans-Bold.ttf') format('ttf');
+
   font-weight: bold;
   font-style: normal;
 }
@@ -150,8 +161,9 @@
 @font-face {
   font-family: 'Josefin Sans';
   src: local('Josefin Sans Extra SemiBold'),
+
   local('Josefin-Sans-Extra-SemiBold'),
-  url('./assets/fonts/JosefinSans-SemiBold.ttf') format('ttf');
+  url('assets/fonts/JosefinSans-SemiBold.ttf') format('ttf');
   font-weight: 700;
   font-style: normal;
 }
@@ -160,7 +172,7 @@
   font-family: 'Ubuntu';
   src: local('Ubuntu Regular'),
   local('Ubuntu-Regular'),
-  url('./assets/fonts/Ubuntu-Regular.ttf') format('ttf');
+  url('assets/fonts/Ubuntu-Regular.ttf') format('ttf');
   font-weight: 400;
   font-style: normal;
 }
@@ -169,7 +181,7 @@
   font-family: 'Ubuntu';
   src: local('Ubuntu Medium'),
   local('Ubuntu-Medium'),
-  url('./assets/fonts/Ubuntu-Medium.ttf') format('ttf');
+  url('assets/fonts/Ubuntu-Medium.ttf') format('ttf');
   font-weight: 500;
   font-style: normal;
 }
@@ -178,7 +190,7 @@
   font-family: 'Ubuntu';
   src: local('Ubuntu Bold'),
   local('Ubuntu-Bold'),
-  url('./assets/fonts/Ubuntu-Bold.ttf') format('ttf');
+  url('assets/fonts/Ubuntu-Bold.ttf') format('ttf');
   font-weight: 700;
   font-style: normal;
 }

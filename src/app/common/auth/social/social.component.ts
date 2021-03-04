@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { UserService } from '../../../services/user/user.service';
 import { Web3Service } from '../../../services/web3/web3.service';
 
@@ -7,10 +7,11 @@ import { Web3Service } from '../../../services/web3/web3.service';
   templateUrl: './social.component.html',
   styleUrls: ['./social.component.scss']
 })
-export class SocialComponent implements OnInit {
+export class SocialComponent {
   @Output() changedSocialState = new EventEmitter<string>();
 
   public socialAuthError;
+
   public social: { FB: boolean; GA: boolean; MM: boolean; eoslynx?: boolean } = {
     FB: false,
     GA: false,
@@ -41,7 +42,11 @@ export class SocialComponent implements OnInit {
           case '1033':
             this.changedSocialState.emit(error.error.detail);
             break;
+          default:
+            break;
         }
+        break;
+      default:
         break;
     }
   }
@@ -52,7 +57,7 @@ export class SocialComponent implements OnInit {
     this.userService
       .socialAuthRequest(this.socialFormData.network, this.socialFormData.data)
       .then(
-        response => {},
+        () => {},
         error => {
           this.onTotpError(error);
         }
@@ -83,7 +88,7 @@ export class SocialComponent implements OnInit {
         };
         this.RequestSocialAuth();
       },
-      error => {
+      () => {
         // console.log(error);
       }
     );
@@ -138,6 +143,4 @@ export class SocialComponent implements OnInit {
       }
     );
   }
-
-  ngOnInit() {}
 }

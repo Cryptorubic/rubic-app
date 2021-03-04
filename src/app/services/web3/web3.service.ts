@@ -19,7 +19,7 @@ import { Observable } from 'rxjs';
 
 import { ERC20_TOKEN_ABI, ETH_NETWORKS, CHAIN_OF_NETWORK } from './web3.constants';
 
-const BigNumber = require('bignumber.js');
+// const BigNumber = require('bignumber.js');
 
 const chainIdOfNetwork = {
   1: [1, 3],
@@ -94,6 +94,8 @@ export class EtherscanUrlPipe implements PipeTransform {
           ? ETHERSCAN_URLS.ETHERSCAN_ADDRESS
           : ETHERSCAN_URLS.KOVAN_ETHERSCAN_ADDRESS;
         break;
+      default:
+        break;
       case 22:
         url = IS_PRODUCTION
           ? ETHERSCAN_URLS.BNB_ETHERSCAN_ADDRESS
@@ -105,12 +107,13 @@ export class EtherscanUrlPipe implements PipeTransform {
           : ETHERSCAN_URLS.KOVAN_MATIC_ETHERSCAN_ADDRESS;
         break;
     }
-    return url + type + '/' + address;
+    return `${url + type}/${address}`;
   }
 }
 
 @Pipe({ name: 'nativeCoinUrl' })
 export class NativeUrlPipe implements PipeTransform {
+  // eslint-disable-next-line consistent-return
   transform(network) {
     switch (network) {
       case 1:
@@ -119,6 +122,8 @@ export class NativeUrlPipe implements PipeTransform {
         return 'https://bscscan.com/stat/supply';
       case 24:
         return '';
+      default:
+        break;
     }
   }
 }
@@ -157,8 +162,11 @@ export class Web3Service {
   }
 
   private providers;
+
   private Web3;
+
   private userAddr;
+
   public ethereum = window.ethereum;
 
   private cacheTokens: {
@@ -181,6 +189,7 @@ export class Web3Service {
       });
     });
   }
+
   public async authMetamask() {
     this.ethereum.request({
       method: 'eth_requestAccounts'
@@ -190,6 +199,7 @@ export class Web3Service {
   public setUserAddress() {
     this.userAddr = window.ethereum.selectedAddress;
   }
+
   public getUserAddress() {
     return this.userAddr;
   }
@@ -226,7 +236,7 @@ export class Web3Service {
       : false;
   }
 
-  public getFullTokenInfo(tokenAddress, withoutSearch?: boolean, network?: string | number) {
+  public getFullTokenInfo(tokenAddress, network?: string | number) {
     let blockchain;
     if (network) {
       if (typeof network === 'string') {
@@ -244,9 +254,8 @@ export class Web3Service {
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
         resolve({ ...nativeCoins[blockchain] });
       } else {
-        let tokenObject;
-
-        tokenObject = window['coingecko_tokens'].filter(tk => {
+        // eslint-disable-next-line prefer-destructuring
+        const tokenObject = window['coingecko_tokens'].filter(tk => {
           return tk.address && tk.address.toLowerCase() === tokenAddress.toLowerCase();
         })[0];
         this.getTokenInfo(tokenAddress, tokenObject, blockchain).then(
@@ -294,8 +303,10 @@ export class Web3Service {
     const tokensCache = this.cacheTokens[blockchain];
     if (tokensCache[address]) {
       if (tokensCache[address].token || tokensCache[address].failed) {
+        // eslint-disable-next-line consistent-return
         return new Promise((resolve, reject) => {
           if (tokensCache[address].failed) {
+            // eslint-disable-next-line prefer-promise-reject-errors
             return reject({
               tokenAddress: true
             });
@@ -320,6 +331,7 @@ export class Web3Service {
       }
     }
 
+    // eslint-disable-next-line consistent-return
     const tokenPromise = new Promise((resolve, reject) => {
       if (!this.Web3.utils.isAddress(address)) {
         return resolve({
@@ -327,6 +339,7 @@ export class Web3Service {
         });
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       const currentProvider = new Web3.providers.HttpProvider(
         IS_PRODUCTION
           ? ETH_NETWORKS[blockchain].INFURA_ADDRESS
@@ -342,6 +355,7 @@ export class Web3Service {
         promise.then(
           result => {
             if (method !== 'symbol' && result === null) {
+              // eslint-disable-next-line prefer-promise-reject-errors
               reject({
                 tokenAddress: true
               });
@@ -359,8 +373,9 @@ export class Web3Service {
             }
           },
           err => {
-            console.log(method + ': ' + err);
+            console.log(`${method}: ${err}`);
             if (method !== 'symbol') {
+              // eslint-disable-next-line prefer-promise-reject-errors
               reject({
                 tokenAddress: true
               });
@@ -381,6 +396,7 @@ export class Web3Service {
       };
 
       const tokenInfoPromises = [];
+      // eslint-disable-next-line array-callback-return
       tokenInfoFields.map(method => {
         const methodCall = contract.methods[method]();
         tokenInfoPromises.push(callMethod(methodCall, method));
@@ -451,6 +467,7 @@ export class Web3Service {
             'Metamask extension is not found. You can install it from <a href="https://metamask.io" target="_blank">metamask.io</a>'
         });
       }
+      // eslint-disable-next-line consistent-return
       return {
         unsubscribe() {}
       };
@@ -467,6 +484,7 @@ export class Web3Service {
       ).subscribe(
         (addresses: any) => {
           addressesDictionary[addresses.type] =
+            // eslint-disable-next-line no-nested-ternary
             addresses.addresses === null
               ? undefined
               : owner
@@ -505,6 +523,7 @@ export class Web3Service {
         .toPromise()
         .then(
           (res: any) => {
+            // eslint-disable-next-line prefer-destructuring
             transactionConfig.from = res.metamask[0];
 
             this.Web3.eth.setProvider(this.providers['metamask']);
@@ -547,6 +566,7 @@ export class Web3Service {
               });
           },
           () => {
+            // eslint-disable-next-line prefer-promise-reject-errors
             reject({
               code: 2,
               msg: 'Please choose main net network in Metamask.'
@@ -559,7 +579,7 @@ export class Web3Service {
   public getSWAPSCoinInfo(data) {
     data.tokens_info = {};
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let quoteToken;
       let baseToken;
 
@@ -575,6 +595,7 @@ export class Web3Service {
           resolve(data);
         }
       } else {
+        // eslint-disable-next-line prefer-destructuring
         quoteTokenObject = window['coingecko_tokens'].filter(tk => {
           return (
             CHAIN_OF_NETWORK[data.network] === tk.platform && tk.address === data.quote_address
@@ -595,7 +616,7 @@ export class Web3Service {
         }
 
         quoteToken = quoteTokenObject ? { ...quoteTokenObject } : false;
-        this.getFullTokenInfo(data.quote_address, true, data.network)
+        this.getFullTokenInfo(data.quote_address, data.network)
           .then(
             (tokenInfo: TokenInfoInterface) => {
               if (quoteToken) {
@@ -635,6 +656,7 @@ export class Web3Service {
           resolve(data);
         }
       } else {
+        // eslint-disable-next-line prefer-destructuring
         baseTokenObject = window['coingecko_tokens'].filter(tk => {
           return CHAIN_OF_NETWORK[data.network] === tk.platform && tk.address === data.base_address;
         })[0];
@@ -644,7 +666,7 @@ export class Web3Service {
         }
 
         baseToken = baseTokenObject ? { ...baseTokenObject } : false;
-        this.getFullTokenInfo(data.base_address, true, data.network)
+        this.getFullTokenInfo(data.base_address, data.network)
           .then(
             (tokenInfo: TokenInfoInterface) => {
               if (baseToken) {
@@ -681,6 +703,7 @@ export class Web3Service {
   providers: [
     {
       provide: NG_ASYNC_VALIDATORS,
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       useExisting: EthTokenValidatorDirective,
       multi: true
     }
@@ -688,6 +711,7 @@ export class Web3Service {
 })
 export class EthTokenValidatorDirective implements AsyncValidator {
   @Output() TokenResolve = new EventEmitter<any>();
+
   @Input() network;
 
   constructor(private web3Service: Web3Service) {}
@@ -695,18 +719,17 @@ export class EthTokenValidatorDirective implements AsyncValidator {
   validate(
     ctrl: AbstractControl
   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    return this.web3Service.getFullTokenInfo(ctrl.value, false, this.network).then(
+    return this.web3Service.getFullTokenInfo(ctrl.value, this.network).then(
       (result: any) => {
         if (result && result.token_short_title) {
           this.TokenResolve.emit(result);
           return null;
-        } else {
-          return {
-            token: true
-          };
         }
+        return {
+          token: true
+        };
       },
-      err => {
+      () => {
         return {
           token: true
         };

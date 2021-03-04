@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ICardContent } from './team-card/team-card.component';
 // @ts-ignore
 import team from '../../assets/content/team/team.json';
@@ -8,10 +8,8 @@ import team from '../../assets/content/team/team.json';
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.scss']
 })
-export class TeamComponent implements OnInit {
+export class TeamComponent {
   cards: Array<ICardContent> = team;
 
   constructor() {}
-
-  ngOnInit() {}
 }

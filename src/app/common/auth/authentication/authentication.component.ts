@@ -11,6 +11,7 @@ export class AuthenticationComponent implements OnInit {
   @Input() public data;
 
   public loginForm: FormGroup;
+
   public formIsProgress: boolean;
 
   public ServerErrors: {
@@ -55,7 +56,7 @@ export class AuthenticationComponent implements OnInit {
     this._userService
       .authenticate(this.loginForm.value)
       .then(
-        response => {},
+        () => {},
         error => {
           switch (error.status) {
             case 403:
@@ -68,10 +69,14 @@ export class AuthenticationComponent implements OnInit {
                     totp: ['Invalid code']
                   };
                   break;
+                default:
+                  break;
               }
               break;
             case 400:
               this.ServerErrors = error.error;
+              break;
+            default:
               break;
           }
         }

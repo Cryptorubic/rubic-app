@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit, Type } from '@angular/core';
-import { BridgeService } from '../../services/bridge/bridge.service';
 import { List } from 'immutable';
+import BigNumber from 'bignumber.js';
+import { BridgeService } from '../../services/bridge/bridge.service';
 import {
   IBridgeToken,
   BridgeNetwork,
@@ -8,7 +9,6 @@ import {
   IBlockchain
 } from '../../services/bridge/types';
 import { RubicError } from '../../errors/RubicError';
-import BigNumber from 'bignumber.js';
 import { InputToken } from '../../components/tokens-input/types';
 import { NetworkError } from '../../errors/bridge/NetworkError';
 import { NetworkErrorComponent } from '../bridge-errors/network-error/network-error.component';
@@ -60,22 +60,37 @@ export class BridgeFormComponent implements OnInit {
   public blockchainsList: IBlockchain[] = Object.values(this.Blockchains);
 
   private _fromBlockchain = this.Blockchains.Ethereum;
+
   private _toBlockchain = this.Blockchains.Binance;
+
   private _tokens: List<IBridgeToken> = List([]);
+
   public dropDownTokens: List<InputToken> = List([]);
+
   public _selectedToken: IBridgeToken = null;
+
   public selectedTokenAsInputToken: InputToken = null;
+
   public _fromNumber: BigNumber;
+
   private _fee: BigNumber;
+
   public _toNumber: BigNumber;
 
   public feeCalculationProgress: boolean = false;
+
   public buttonAnimation: boolean = false;
+
   public tradeInProgress: boolean = false;
+
   public error: RubicError;
+
   public errorComponent: ErrorComponent;
+
   public tradeSuccessId: string;
+
   public fromWalletAddress: string = this.bridgeService.walletAddress;
+
   public toWalletAddress: string = this.fromWalletAddress;
 
   public isAdvancedSectionShown = false;
@@ -157,7 +172,7 @@ export class BridgeFormComponent implements OnInit {
   }
 
   get toNumber(): string {
-    if (this._toNumber == undefined) {
+    if (this._toNumber === undefined || null) {
       return '';
     }
 
@@ -172,7 +187,7 @@ export class BridgeFormComponent implements OnInit {
   }
 
   private setToNumber(): void {
-    if (this.fromNumber != undefined && this.fee != undefined) {
+    if (this.fromNumber !== undefined && this.fee !== undefined) {
       this._toNumber = this.fromNumber.minus(this.fee);
     } else {
       this._toNumber = undefined;
@@ -180,7 +195,9 @@ export class BridgeFormComponent implements OnInit {
   }
 
   constructor(private bridgeService: BridgeService) {
-    bridgeService.tokens.subscribe(tokens => (this.tokens = tokens));
+    bridgeService.tokens.subscribe(tokens => {
+      this.tokens = tokens;
+    });
   }
 
   ngOnInit() {
@@ -204,9 +221,13 @@ export class BridgeFormComponent implements OnInit {
 
     this.feeCalculationProgress = true;
     this.bridgeService.getFee(this.selectedToken.symbol, this.toBlockchain.name).subscribe(
-      fee => (this.fee = new BigNumber(fee)),
+      fee => {
+        this.fee = new BigNumber(fee);
+      },
       err => console.log(err),
-      () => (this.feeCalculationProgress = false)
+      () => {
+        this.feeCalculationProgress = false;
+      }
     );
   }
 
@@ -236,7 +257,9 @@ export class BridgeFormComponent implements OnInit {
         this.toBlockchain.name,
         this.fromNumber,
         this.toWalletAddress,
-        () => (this.tradeInProgress = true)
+        () => {
+          this.tradeInProgress = true;
+        }
       )
       .subscribe(
         (res: string) => {
@@ -263,7 +286,8 @@ export class BridgeFormComponent implements OnInit {
   }
 
   public closeErrorModal() {
-    this.error = this.errorComponent = null;
+    this.errorComponent = null;
+    this.error = null;
   }
 
   @HostListener('window:resize', ['$event'])

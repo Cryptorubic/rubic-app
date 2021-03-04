@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from './services/user/user.service';
-import { Web3Service } from './services/web3/web3.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivationEnd, NavigationStart, Router } from '@angular/router';
-
-import { MODE, PROJECT_PARTS } from './app-routing.module';
-import { MatDialog } from '@angular/material/dialog';
+import { UserService } from './services/user/user.service';
+import { Web3Service } from './services/web3/web3.service';
 
 @Component({
   selector: 'app-root',
@@ -16,16 +13,20 @@ export class AppComponent implements OnInit {
   title = 'mywish-swaps';
 
   public hideInstructionLink;
+
   public visibleWatchButton;
+
   public notCookiesAccept: boolean;
+
   public withHeader: boolean;
+
   public warning: boolean = !(window['coingecko_tokens'] && window['coingecko_tokens'].length);
 
   constructor(
     private userService: UserService,
     private router: Router,
     private cookieService: CookieService,
-    private Web3Service: Web3Service
+    private web3Service: Web3Service
   ) {
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe(event => {
@@ -37,19 +38,20 @@ export class AppComponent implements OnInit {
           body.classList.remove('white-bg');
         }
 
-        if (MODE === 'PROD') {
-          for (const url in PROJECT_PARTS[MODE]) {
-            if (new RegExp(url).test(event.url)) {
-              if (
-                PROJECT_PARTS[MODE][url] !== location.hostname &&
-                location.hostname === PROJECT_PARTS[MODE].from
-              ) {
-                // location.hostname = PROJECT_PARTS[MODE][url];
-                return;
-              }
-            }
-          }
-        }
+        // Code do nothing.
+        // if (MODE === 'PROD') {
+        //   for (const url in PROJECT_PARTS[MODE]) {
+        //     if (new RegExp(url).test(event.url)) {
+        //       if (
+        //         PROJECT_PARTS[MODE][url] !== location.hostname &&
+        //         location.hostname === PROJECT_PARTS[MODE].from
+        //       ) {
+        //         // location.hostname = PROJECT_PARTS[MODE][url];
+        //         return;
+        //       }
+        //     }
+        //   }
+        // }
       }
 
       if (event instanceof ActivationEnd) {
@@ -61,19 +63,14 @@ export class AppComponent implements OnInit {
             this.visibleWatchButton = !event.snapshot.data.hideInstruction;
             body.classList.add('with-support');
             body.classList.remove('without-support');
-            event.snapshot.data.supportHide
-              ? body.classList.add('support-hide-' + event.snapshot.data.supportHide)
-              : '';
+            if (event.snapshot.data.supportHide) {
+              body.classList.add(`support-hide-${event.snapshot.data.supportHide}`);
+            }
           } else {
             body.classList.remove('with-support');
             body.classList.add('without-support');
             this.visibleWatchButton = false;
           }
-        }
-      }
-
-      if (event instanceof NavigationStart) {
-        if (event.id === 2) {
         }
       }
       this.notCookiesAccept = !this.cookieService.get('cookies-accept');
@@ -91,7 +88,7 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    const mutationObserver = new window['MutationObserver'](res => {
+    const mutationObserver = new window['MutationObserver'](() => {
       liveChatContainer.removeAttribute('style');
     });
     mutationObserver.observe(liveChatContainer, {
@@ -142,8 +139,8 @@ export class AppComponent implements OnInit {
 
     this.checkLiveChat();
 
-    if (this.Web3Service.ethereum && this.Web3Service.ethereum.isConnected()) {
-      this.Web3Service.setUserAddress();
+    if (this.web3Service.ethereum && this.web3Service.ethereum.isConnected()) {
+      this.web3Service.setUserAddress();
     }
   }
 }

@@ -1,4 +1,5 @@
-import { EventEmitter, Injectable, Output } from '@angular/core';
+/* eslint-disable no-restricted-syntax */
+import { EventEmitter, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 
@@ -22,15 +23,18 @@ const slippageValue = 1;
 })
 export class OneInchService {
   private static readonly ETH_ADDRESS_1_INCH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+
   private static readonly ETH_ADDRESS = '0x0000000000000000000000000000000000000000';
 
   private availableTokens: TokensMap<TokenInterface>;
+
   private tokenOnLoadEmitter = new EventEmitter<any>();
+
   private tokensAutocompleteList: any[] = [];
 
   constructor(private httpClient: HttpClient) {
     this.loadTokens().then(result => {
-      const tokens = result.tokens;
+      const { tokens } = result;
 
       tokens[OneInchService.ETH_ADDRESS] = tokens[OneInchService.ETH_ADDRESS_1_INCH];
       tokens[OneInchService.ETH_ADDRESS].address = OneInchService.ETH_ADDRESS;
@@ -45,12 +49,14 @@ export class OneInchService {
     let url = `${api.host}/${api.version}/${path}`;
     params = params || {};
     switch (method) {
-      case 'get':
-        const pairsParams = [];
-        for (let k in params) {
-          pairsParams.push(`${k}=${params[k]}`);
-        }
-        url += pairsParams.length ? '?' + pairsParams.join('&') : '';
+      case 'get': {
+        const pairsParams = Object.entries(params).map(([key, value]: [string, string]) => {
+          return `${key}=${value}`;
+        });
+        url += pairsParams.length ? `?${pairsParams.join('&')}` : '';
+        break;
+      }
+      default:
         break;
     }
     return this.httpClient[method](url).toPromise();
@@ -67,7 +73,9 @@ export class OneInchService {
   public onLoadTokens(): EventEmitter<any> {
     if (this.availableTokens) {
       setTimeout(() => {
-        for (let k in this.availableTokens) {
+        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line guard-for-in
+        for (const k in this.availableTokens) {
           const t = this.availableTokens[k];
           const coingeckoToken = window['coingecko_tokens'].find(
             coingeckoT => t.address.toLowerCase() === coingeckoT.address.toLowerCase()
@@ -107,6 +115,7 @@ export class OneInchService {
         this.tokensAutocompleteList.sort((a, b) => {
           const aRank = a.coingecko_rank || 100000;
           const bRank = b.coingecko_rank || 100000;
+          // eslint-disable-next-line no-nested-ternary
           return aRank > bRank ? 1 : aRank < bRank ? -1 : 0;
         });
 
@@ -118,7 +127,7 @@ export class OneInchService {
   }
 
   public checkToken(token): boolean {
-    return this.availableTokens.hasOwnProperty(token.address.toLowerCase());
+    return token.address.toLowerCase() in this.availableTokens;
   }
 
   public checkTokensPair(quoteToken, baseToken): boolean {
@@ -144,14 +153,17 @@ export class OneInchService {
       virtualPartsList: '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1'
     };
 
-    for (let k in params) {
+    // eslint-disable-next-line guard-for-in
+    for (const k in params) {
       requestParams[k] = params[k];
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     const getQuery = params => {
       params.deepLevel = deepLevel;
       const pairsParams = [];
-      for (let k in params) {
+      // eslint-disable-next-line guard-for-in
+      for (const k in params) {
         pairsParams.push(`${k}=${params[k]}`);
       }
       return pairsParams.join('&');
@@ -185,6 +197,7 @@ export class OneInchService {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   private static checkETHAddress(address) {
     if (address === this.ETH_ADDRESS) {
       return this.ETH_ADDRESS_1_INCH;
@@ -192,7 +205,7 @@ export class OneInchService {
     return address;
   }
 
-  public getQuote(params, tokenAddress?: string) {
+  public getQuote(params) {
     params = params || {};
     return this.checkSwap({
       fromTokenAddress: OneInchService.checkETHAddress(params.fromTokenAddress),
@@ -229,7 +242,7 @@ export class OneInchService {
         .toString(10),
       burnChi: false,
       disableEstimate: false,
-      ethValue: ethValue,
+      ethValue,
       referrerAddress: '0x7367409E0c12b2B7cAa5c990E11A75E0D86580fc',
       fee: 0,
       walletAddress: params.fromAddress,
@@ -238,16 +251,18 @@ export class OneInchService {
       mainRouteParts: 20
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     const getQuery = params => {
       const pairsParams = [];
-      for (let k in params) {
+      // eslint-disable-next-line guard-for-in
+      for (const k in params) {
         pairsParams.push(`${k}=${params[k]}`);
       }
       return pairsParams.join('&');
     };
 
     return this.httpClient
-      .get(`${api.host}/${api.version}/swap?` + getQuery(requestParams))
+      .get(`${api.host}/${api.version}/swap?${getQuery(requestParams)}`)
       .toPromise();
   }
 }

@@ -1,5 +1,5 @@
-import { InstantTradeToken } from './index';
 import BigNumber from 'bignumber.js';
+import { InstantTradeToken } from './index';
 
 interface InstantTrade {
   from: {

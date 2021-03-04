@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IBlockchainShort } from '../types';
 
 @Component({
@@ -6,11 +6,10 @@ import { IBlockchainShort } from '../types';
   templateUrl: './blockchain-label.component.html',
   styleUrls: ['./blockchain-label.component.scss']
 })
-export class BlockchainLabelComponent implements OnInit {
+export class BlockchainLabelComponent {
   @Input() blockchain: IBlockchainShort;
+
   @Input() selected = false;
 
   constructor() {}
-
-  ngOnInit() {}
 }
