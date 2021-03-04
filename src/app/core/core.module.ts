@@ -1,6 +1,6 @@
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ContractsListResolver } from '../contracts-list/contracts-list.reslover';
 import { ContractEditV3Resolver } from '../contracts-preview-v3/contracts-preview-v3.resolver';
@@ -8,6 +8,9 @@ import { StartFormResolver } from '../index/start-form/start-form.component';
 import { HttpService } from '../services/http/http.service';
 import { UserService } from '../services/user/user.service';
 import { OneInchService } from '../models/1inch/1inch';
+import { HeaderComponent } from '../index/header/header.component';
+import { MaintenanceComponent } from '../maintenance/maintenance.component';
+import { SharedModule } from '../shared/shared.module';
 
 export function appInitializerFactory(
   translate: TranslateService,
@@ -63,7 +66,7 @@ export function appInitializerFactory(
 }
 
 @NgModule({
-  declarations: [],
+  declarations: [MaintenanceComponent, HeaderComponent],
   providers: [
     CookieService,
     ContractsListResolver,
@@ -76,7 +79,7 @@ export function appInitializerFactory(
       multi: true
     }
   ],
-  imports: [CommonModule],
-  exports: []
+  imports: [CommonModule, SharedModule, TranslateModule],
+  exports: [MaintenanceComponent, HeaderComponent]
 })
 export class CoreModule {}
