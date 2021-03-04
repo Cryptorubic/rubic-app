@@ -1,20 +1,6 @@
-import {
-  Directive,
-  EventEmitter,
-  Injectable,
-  Input,
-  Output,
-  Pipe,
-  PipeTransform
-} from '@angular/core';
+import { Injectable, Pipe, PipeTransform } from '@angular/core';
 import Web3 from 'web3';
 
-import {
-  AbstractControl,
-  AsyncValidator,
-  NG_ASYNC_VALIDATORS,
-  ValidationErrors
-} from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { ERC20_TOKEN_ABI, ETH_NETWORKS, CHAIN_OF_NETWORK } from './web3.constants';
@@ -694,46 +680,5 @@ export class Web3Service {
           });
       }
     });
-  }
-}
-
-// noinspection JSAnnotator
-@Directive({
-  selector: '[appEthTokenValidator]',
-  providers: [
-    {
-      provide: NG_ASYNC_VALIDATORS,
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      useExisting: EthTokenValidatorDirective,
-      multi: true
-    }
-  ]
-})
-export class EthTokenValidatorDirective implements AsyncValidator {
-  @Output() TokenResolve = new EventEmitter<any>();
-
-  @Input() network;
-
-  constructor(private web3Service: Web3Service) {}
-
-  validate(
-    ctrl: AbstractControl
-  ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-    return this.web3Service.getFullTokenInfo(ctrl.value, this.network).then(
-      (result: any) => {
-        if (result && result.token_short_title) {
-          this.TokenResolve.emit(result);
-          return null;
-        }
-        return {
-          token: true
-        };
-      },
-      () => {
-        return {
-          token: true
-        };
-      }
-    );
   }
 }

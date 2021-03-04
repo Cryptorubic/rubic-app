@@ -29,7 +29,8 @@ import { TokensAllInputComponent } from './components/tokens-all-input/tokens-al
 import { BigNumberMin } from './pipes/big-number-min.pipe';
 import { BigNumberMax } from './pipes/big-number-max.pipe';
 import { BigNumberFormat } from './pipes/big-number-format.pipe';
-import { CoinsListComponent } from './components/coins-list/coins-list.component';
+import { EthTokenValidatorDirective } from './directives/eth-token/eth-token-validator.directive';
+import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { CoinsListComponent } from './components/coins-list/coins-list.component
     BigNumberFormat,
     BigNumberMin,
     BigNumberMax,
-    CoinsListComponent
+    CoinsListComponent,
+    EthTokenValidatorDirective
   ],
   imports: [CommonModule, TranslateModule, DynamicModule, MatDialogModule, FormsModule],
   exports: [
@@ -87,7 +89,8 @@ import { CoinsListComponent } from './components/coins-list/coins-list.component
     BigNumberMin,
     BigNumberMax,
     TokensAllInputComponent,
-    CoinsListComponent
+    CoinsListComponent,
+    EthTokenValidatorDirective
   ]
 })
 export class SharedModule {}
