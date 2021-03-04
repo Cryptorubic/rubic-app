@@ -1,13 +1,5 @@
-import {
-  Directive,
-  Injector,
-  Input,
-  OnChanges,
-  OnInit,
-  Pipe,
-  PipeTransform,
-  SimpleChanges
-} from '@angular/core';
+import { Self, Directive, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+
 import { NgControl } from '@angular/forms';
 import BigNumber from 'bignumber.js';
 
@@ -38,8 +30,8 @@ export class BigNumberDirective implements OnInit, OnChanges {
   // eslint-disable-next-line
   @Input('required') required;
 
-  constructor(private injector: Injector) {
-    this.control = this.injector.get(NgControl);
+  constructor(@Self() ngControl: NgControl) {
+    this.control = ngControl;
   }
 
   ngOnInit() {
@@ -152,44 +144,5 @@ export class BigNumberDirective implements OnInit, OnChanges {
           { groupSeparator: ',', groupSize: 3, decimalSeparator: '.' }
         ) + (this.withEndPoint ? '.' : '')
       : '';
-  }
-}
-
-@Pipe({ name: 'bigNumberFormat' })
-export class BigNumberFormat implements PipeTransform {
-  // eslint-disable-next-line class-methods-use-this
-  transform(value, decimals, format, asBN, round) {
-    const formatNumberParams = { groupSeparator: ',', groupSize: 3, decimalSeparator: '.' };
-
-    const bigNumberValue = new BigNumber(value).div(decimals ** 10);
-
-    if (bigNumberValue.isNaN()) {
-      return value;
-    }
-
-    if (format) {
-      return round || decimals || decimals === 0
-        ? bigNumberValue.dp(round || decimals).toFormat(formatNumberParams)
-        : '';
-    }
-    if (!asBN) {
-      return bigNumberValue.toString(10);
-    }
-    return bigNumberValue;
-  }
-}
-
-@Pipe({ name: 'bigNumberMin' })
-export class BigNumberMin implements PipeTransform {
-  // eslint-disable-next-line class-methods-use-this
-  transform(values) {
-    return BigNumber.min.apply(null, values);
-  }
-}
-@Pipe({ name: 'bigNumberMax' })
-export class BigNumberMax implements PipeTransform {
-  // eslint-disable-next-line class-methods-use-this
-  transform(values) {
-    return BigNumber.max.apply(null, values);
   }
 }

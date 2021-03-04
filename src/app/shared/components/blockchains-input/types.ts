@@ -1,4 +1,4 @@
-import { BridgeNetwork } from '../../services/bridge/types';
+import { BridgeNetwork } from 'src/app/services/bridge/types';
 
 interface IBlockchainShort {
   name: BridgeNetwork;

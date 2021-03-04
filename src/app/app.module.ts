@@ -25,7 +25,6 @@ import { HeaderComponent } from './index/header/header.component';
 import { StartFormComponent, StartFormResolver } from './index/start-form/start-form.component';
 import { IndexComponent } from './index/index.component';
 
-import { EthAddressDirective } from './directives/eth-address/eth-address.directive';
 import {
   EtherscanUrlPipe,
   EthTokenValidatorDirective,
@@ -40,52 +39,33 @@ import { EmailConfirmComponent } from './common/auth/email-confirm/email-confirm
 import { ForgotPasswordComponent } from './common/auth/forgot-password/forgot-password.component';
 import { ContractsListComponent } from './contracts-list/contracts-list.component';
 import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
-import {
-  BigNumberDirective,
-  BigNumberFormat,
-  BigNumberMax,
-  BigNumberMin
-} from './directives/big-number/big-number.directive';
-import { MinMaxDirective } from './directives/minMax/min-max.directive';
+
 import { ContactsComponent } from './contacts-component/contacts.component';
-import { TokensAllInputComponent } from './directives/tokens-all-input/tokens-all-input.component';
 import { HttpService } from './services/http/http.service';
 import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
-import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { ChangePasswordComponent } from './common/change-password/change-password.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
-import { CountdownComponent } from './components/countdown/countdown.component';
 import { TokenSaleComponent } from './token-sale/token-sale.component';
 import { OneInchService } from './models/1inch/1inch';
-import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
-import { ModalComponent } from './components/modal/modal.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
 import { BridgeFormComponent } from './bridge/brifge-form/bridge-form.component';
-import { PrimaryButtonComponent } from './components/primary-button/primary-button.component';
-import { TokensInputComponent } from './components/tokens-input/tokens-input.component';
 import { BridgeComponent } from './bridge/bridge.component';
-import { CollaborationsComponent } from './components/collaborations/collaborations.component';
 import { BridgeInProgressModalComponent } from './bridge/bridge-in-progress-modal/bridge-in-progress-modal.component';
 import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.component';
 import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
-import { DropdownSelectComponent } from './components/dropdown-select/dropdown-select.component';
-import { WhiteButtonComponent } from './components/white-button/white-button.component';
-import { TokenLabelComponent } from './components/tokens-input/token-label/token-label.component';
-import { InputDropdownComponent } from './components/input-dropdown/input-dropdown.component';
-import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
-import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
-import { AddressInputComponent } from './components/address-input/address-input.component';
+import { AddressInputComponent } from './shared/components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
 import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
-import { TooltipComponent } from './components/tooltip/tooltip.component';
-import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
 import { ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.resolver';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
+import { DisclaimerComponent } from './shared/components/disclaimer/disclaimer.component';
+import { TokenLabelComponent } from './shared/components/tokens-input/token-label/token-label.component';
+import { BlockchainLabelComponent } from './shared/components/blockchains-input/blockchain-label/blockchain-label.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -181,7 +161,6 @@ export function appInitializerFactory(
     FooterMainPageComponent, // main page module
     HeaderMainPageComponent, // main page module
     MainPageComponent, // main page module
-    EthAddressDirective,
     EthTokenValidatorDirective,
     RegistrationComponent,
     AuthComponent,
@@ -192,43 +171,21 @@ export function appInitializerFactory(
     ContractsListComponent,
     EtherscanUrlPipe,
     NativeUrlPipe,
-    BigNumberFormat,
-    BigNumberMin,
-    BigNumberMax,
     PublicContractsComponent,
-    BigNumberDirective,
-
-    MinMaxDirective,
     ContactsComponent, // Doesn't used
-    TokensAllInputComponent,
     ContractsPreviewV3Component,
-    CoinsListComponent,
     ChangePasswordComponent,
     TokenSaleComponent,
-    CountdownComponent,
-    DisclaimerComponent,
     MaintenanceComponent,
-    ModalComponent,
     TradeInProgressModalComponent,
     BridgeFormComponent,
-    PrimaryButtonComponent,
-    TokensInputComponent,
     BridgeComponent,
-    CollaborationsComponent,
     BridgeInProgressModalComponent,
     BridgeSuccessComponent,
     BridgeTableComponent,
-    DropdownSelectComponent,
-    WhiteButtonComponent,
-    TokenLabelComponent,
-    InputDropdownComponent,
-    BlockchainsInputComponent,
-    BlockchainLabelComponent,
     AddressInputComponent,
     NetworkErrorComponent,
-    TradeSuccessModalComponent,
-    TooltipComponent,
-    InfoTooltipComponent
+    TradeSuccessModalComponent
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [

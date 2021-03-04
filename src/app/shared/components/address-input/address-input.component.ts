@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { Web3ApiService } from '../../services/web3Api/web3-api.service';
+import { Web3ApiService } from '../../../services/web3Api/web3-api.service';
 
 @Component({
   selector: 'app-address-input',

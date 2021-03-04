@@ -75,21 +75,6 @@ export class Web3ApiService {
     this.metamaskAddress = provider.address;
     this.defaultMockGas = provider.defaultMockGas;
     this.ethersProvider = provider.ethersProvider;
-    this.web3 = new Web3(window.ethereum);
-    // @ts-ignore
-    if (this.web3.currentProvider && this.web3.currentProvider.isMetaMask) {
-      window.ethereum.enable();
-      this.metamaskAddress = this.ethereum.selectedAddress;
-      if (!this.metamaskAddress) {
-        this.error = new AccountError();
-        console.error(
-          `Web3 init error.  Selected account: ${this.metamaskAddress}. Network: ${this.network}`
-        );
-      }
-    } else {
-      this.error = new MetamaskError();
-      console.error('Selected other provider');
-    }
   }
 
   /**
