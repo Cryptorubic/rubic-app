@@ -20,7 +20,6 @@ import { NgToggleModule } from 'ng-toggle-button';
 import { DynamicModule } from 'ng-dynamic-component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './index/header/header.component';
 import { StartFormComponent } from './index/start-form/start-form.component';
 import { IndexComponent } from './index/index.component';
 
@@ -40,7 +39,6 @@ import { MainPageComponent } from './main-page/main-page.component';
 import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { TokenSaleComponent } from './token-sale/token-sale.component';
-import { MaintenanceComponent } from './maintenance/maintenance.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
 import { BridgeFormComponent } from './bridge/brifge-form/bridge-form.component';
 import { BridgeComponent } from './bridge/bridge.component';
@@ -88,34 +86,32 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
 }
 @NgModule({
   declarations: [
-    AppComponent, // Here
-    HeaderComponent, // Core
-    StartFormComponent, // Startform Module ??
-    IndexComponent, // Index module ??
-    FooterMainPageComponent, // main page module
-    HeaderMainPageComponent, // main page module
-    MainPageComponent, // main page module
+    AppComponent, // Ok
+    StartFormComponent, // Startform Mmdule
+    IndexComponent, // Index module
+    FooterMainPageComponent, // Main page module
+    HeaderMainPageComponent, // Main page module
+    MainPageComponent, // Main page module
     RegistrationComponent, // Auth module
     AuthComponent, // Auth module
     AuthenticationComponent, // Auth module
-    SocialComponent, // Auth module??
+    SocialComponent, // Auth module
     EmailConfirmComponent, // Auth module
     ForgotPasswordComponent, // Auth module
-    ContractsListComponent, // trades module
-    PublicContractsComponent, // Index module ??
+    ContractsListComponent, // Trades module
+    PublicContractsComponent, // Index module
     ContactsComponent, // Doesn't used
     ContractsPreviewV3Component, // Trades module
     ChangePasswordComponent, // Auth module
-    TokenSaleComponent, // Token-sale module ??
-    MaintenanceComponent, // Core module ??
-    TradeInProgressModalComponent, // start-form module ??
+    TokenSaleComponent, // Token-sale module
+    TradeInProgressModalComponent, // Startform module
     BridgeFormComponent, // Bridge module
     BridgeComponent, // Bridge module
     BridgeInProgressModalComponent, // Bridge module
     BridgeSuccessComponent, // Bridge module
     BridgeTableComponent, // Bridge module
-    NetworkErrorComponent, // Bridge module ??
-    TradeSuccessModalComponent // startfoorm module ??
+    NetworkErrorComponent, // Bridge module
+    TradeSuccessModalComponent // Startform module
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [
