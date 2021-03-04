@@ -7,6 +7,11 @@ import { Web3Public } from './Web3Public';
 //@ts-ignore
 import config from '../../../../test/enviroment.test.json';
 import publicProviderServiceStub from '../publicProvider/public-provider-service-stub';
+import { WEENUS } from '../../../../test/tokens/eth-tokens';
+import {
+  UniSwapContractAbi,
+  UniSwapContractAddress
+} from '../../instant-trade/uni-swap-service/uni-swap-contract';
 
 describe('Web3PublicService', () => {
   let service: Web3PublicService;
@@ -28,12 +33,32 @@ describe('Web3PublicService', () => {
     describe('Web3Public', function () {
       const aliceAddress = config.testWallet.address;
       const bobAddress = config.testReceiverAddress;
-      let getWeb3Public = () => service[blockchainName];
+      let getWeb3Public: () => Web3Public = () => service[blockchainName];
 
       it('get balance works', async done => {
         const balance = await getWeb3Public().getBalance(aliceAddress);
         expect(balance).not.toBe(undefined);
         expect(balance.gt(0)).toBeTruthy();
+        done();
+      });
+
+      it('balance of works (tokens)', async done => {
+        const balance = await getWeb3Public().getTokenBalance(WEENUS.address, aliceAddress);
+        expect(balance).not.toBe(undefined);
+        expect(balance.gt(0)).toBeTruthy();
+        done();
+      });
+
+      it('allowance', async done => {
+        const allowance = await getWeb3Public().getAllowance(
+          WEENUS.address,
+          bobAddress,
+          aliceAddress
+        );
+
+        console.log(allowance);
+        expect(allowance).not.toBe(undefined);
+        expect(allowance.gte(0)).toBeTruthy();
         done();
       });
     });
