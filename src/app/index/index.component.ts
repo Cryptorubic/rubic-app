@@ -3,10 +3,10 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpService } from '../services/http/http.service';
 import { ChangePasswordComponent } from '../common/change-password/change-password.component';
-import { DisclaimerComponent } from '../components/disclaimer/disclaimer.component';
 
 // @ts-ignore
 import collaborations from '../../assets/content/collaborations/collaborations.json';
+import { DisclaimerComponent } from '../shared/components/disclaimer/disclaimer.component';
 
 @Component({
   selector: 'app-index',

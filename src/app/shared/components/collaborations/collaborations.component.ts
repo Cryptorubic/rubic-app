@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 // @ts-ignore
-import collaborations from '../../../assets/content/collaborations/collaborations.json';
+import collaborations from '../../../../assets/content/collaborations/collaborations.json';
 
 @Component({
   selector: 'app-collaborations',

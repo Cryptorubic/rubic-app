@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit, Type } from '@angular/core';
 import { List } from 'immutable';
 import BigNumber from 'bignumber.js';
+import { InputToken } from 'src/app/shared/components/tokens-input/types';
 import { BridgeService } from '../../services/bridge/bridge.service';
 import {
   IBridgeToken,
@@ -9,7 +10,6 @@ import {
   IBlockchain
 } from '../../services/bridge/types';
 import { RubicError } from '../../errors/RubicError';
-import { InputToken } from '../../components/tokens-input/types';
 import { NetworkError } from '../../errors/bridge/NetworkError';
 import { NetworkErrorComponent } from '../bridge-errors/network-error/network-error.component';
 
