@@ -38,7 +38,6 @@ import { ChangePasswordComponent } from './common/change-password/change-passwor
 import { MainPageComponent } from './main-page/main-page.component';
 import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
-import { TokenSaleComponent } from './token-sale/token-sale.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
 import { BridgeFormComponent } from './bridge/brifge-form/bridge-form.component';
 import { BridgeComponent } from './bridge/bridge.component';
@@ -103,7 +102,6 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
     ContactsComponent, // Doesn't used
     ContractsPreviewV3Component, // Trades module
     ChangePasswordComponent, // Auth module
-    TokenSaleComponent, // Token-sale module
     TradeInProgressModalComponent, // Startform module
     BridgeFormComponent, // Bridge module
     BridgeComponent, // Bridge module

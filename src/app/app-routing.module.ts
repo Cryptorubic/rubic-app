@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IndexComponent } from './index/index.component';
 import { ContractsListComponent } from './contracts-list/contracts-list.component';
 import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
-import { TokenSaleComponent } from './token-sale/token-sale.component';
+import { TokenSaleComponent } from './features/token-sale-page/components/token-sale/token-sale.component';
 import { StartFormResolver } from './index/start-form/start-form.component';
 import { BridgeComponent } from './bridge/bridge.component';
 import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
@@ -145,7 +145,10 @@ const routes: Routes = [
   },
   {
     path: 'token-sale',
-    component: TokenSaleComponent
+    loadChildren: () =>
+      import('./features/token-sale-page/token-sale-page/token-sale-page.module').then(
+        m => m.TokenSalePageModule
+      )
   },
   {
     path: ':token',

@@ -11,6 +11,7 @@ import { OneInchService } from '../models/1inch/1inch';
 import { HeaderComponent } from '../index/header/header.component';
 import { MaintenanceComponent } from '../maintenance/maintenance.component';
 import { SharedModule } from '../shared/shared.module';
+import { RouterModule } from '@angular/router';
 
 export function appInitializerFactory(
   translate: TranslateService,
@@ -79,7 +80,7 @@ export function appInitializerFactory(
       multi: true
     }
   ],
-  imports: [CommonModule, SharedModule, TranslateModule],
-  exports: [MaintenanceComponent, HeaderComponent]
+  imports: [CommonModule, SharedModule, TranslateModule, RouterModule],
+  exports: [MaintenanceComponent, HeaderComponent, RouterModule]
 })
 export class CoreModule {}
