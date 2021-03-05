@@ -3,9 +3,8 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { TransactionReceipt } from 'web3-eth';
-import { Transaction, HttpProvider } from 'web3-core';
-import { AccountError } from 'src/app/errors/bridge/AccountError';
-import { MetamaskError } from 'src/app/errors/bridge/MetamaskError';
+import { Transaction } from 'web3-core';
+import { Contract } from 'web3-eth-contract';
 import { ProviderService } from '../provider/provider.service';
 import { UserRejectError } from '../../errors/bridge/UserRejectError';
 import { RubicError } from '../../errors/RubicError';
@@ -14,13 +13,6 @@ import { BridgeNetwork } from '../bridge/types';
 import { TokenInfoBody, Web3ApiNetwork } from './types';
 import { nativeTokens } from './native-tokens';
 import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
-import { Contract } from 'web3-eth-contract';
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-interface Web3ApiNetwork {
-  id: number;
-  name: string;
-}
 
 const NETWORKS: Web3ApiNetwork[] = [
   {
@@ -529,6 +521,7 @@ export class Web3ApiService {
    * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
    */
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   public getTokenInfo: (
     tokenAddress: string,
     blockchain: BLOCKCHAIN_NAMES
@@ -560,9 +553,8 @@ export class Web3ApiService {
       const tokenBody = nativeTokens.find(t => t.platform === blockchain);
       if (tokenBody) {
         return tokenBody;
-      } else {
-        throw new Error(`No token for ${blockchain} blockchain`);
       }
+      throw new Error(`No token for ${blockchain} blockchain`);
     }
 
     const contract = new this.web3Infura[blockchain].eth.Contract(
@@ -590,7 +582,7 @@ export class Web3ApiService {
       .call()
       .then(value => {
         if (tokenField === 'decimals') {
-          tokenBody[tokenField] = parseInt(value);
+          tokenBody[tokenField] = parseInt(value, 10);
         } else {
           tokenBody[tokenField] = value;
         }

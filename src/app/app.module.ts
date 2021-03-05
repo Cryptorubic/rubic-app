@@ -13,7 +13,6 @@ import {
   MatButtonModule,
   MatInputModule
 } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { ClipboardModule } from 'ngx-clipboard';
 import { CookieService } from 'ngx-cookie-service';
@@ -22,9 +21,10 @@ import { Observable } from 'rxjs';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { NgToggleModule } from 'ng-toggle-button';
 import { DynamicModule } from 'ng-dynamic-component';
+import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './index/header/header.component';
+import { HeaderComponent } from './header/header.component';
 import { StartFormComponent, StartFormResolver } from './index/start-form/start-form.component';
 import { IndexComponent } from './index/index.component';
 
@@ -68,7 +68,7 @@ import { TeamComponent } from './team/team.component';
 import { TeamCardComponent } from './team/team-card/team-card.component';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
 import { ModalComponent } from './components/modal/modal.component';
-import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
+import { TradeInProgressModalComponent } from './pages/main-page/components/trade-in-progress-modal/trade-in-progress-modal.component';
 import { BridgeFormComponent } from './bridge/brifge-form/bridge-form.component';
 import { PrimaryButtonComponent } from './components/primary-button/primary-button.component';
 import { TokensInputComponent } from './components/tokens-input/tokens-input.component';
@@ -87,7 +87,6 @@ import { BlockchainsInputComponent } from './components/blockchains-input/blockc
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
-import { DynamicModule } from 'ng-dynamic-component';
 import { TradeSuccessModalComponent } from './pages/main-page/components/trade-success-modal/trade-success-modal.component';
 import { InstantTradesComponent } from './pages/main-page/instant-trades/instant-trades.component';
 import { TradesFormComponent } from './pages/main-page/trades-form/trades-form.component';
@@ -97,7 +96,6 @@ import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
-import { CommonModule } from '@angular/common';
 import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
 import { ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.resolver';
 
