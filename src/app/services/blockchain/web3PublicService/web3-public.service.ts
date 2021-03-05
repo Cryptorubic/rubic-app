@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import ConnectionLink from '../types/ConnectionLink';
 import { BLOCKCHAIN_NAME } from '../types/Blockchain';
 import Web3 from 'web3';
-import BigNumber from 'bignumber.js';
-import { ERC20_TOKEN_ABI } from '../../web3LEGACY/web3.constants';
 import { Web3Public } from './Web3Public';
 import { PublicProviderService } from '../publicProvider/public-provider.service';
 

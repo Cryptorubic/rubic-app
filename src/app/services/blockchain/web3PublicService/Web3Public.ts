@@ -23,7 +23,7 @@ export class Web3Public {
    * @param address wallet address whose balance you want to find out
    * @return account tokens balance as integer (multiplied to 10 ** decimals)
    */
-  public async getTokenBalance(tokenAddress: string, address: string): Promise<BigNumber> {
+  public async getTokenBalance(address: string, tokenAddress: string): Promise<BigNumber> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
 
     const balance = await contract.methods.balanceOf(address).call();
@@ -36,11 +36,11 @@ export class Web3Public {
    * @param contractAddress address of smart-contract
    * @param methodName method whose execution gas number is to be calculated
    * @param methodArguments arguments of the executed contract method
+   * @param fromAddress the address for which the gas calculation will be called
    * @param [value] The value transferred for the call “transaction” in wei.
    * @return The gas amount estimated
    */
   public async getEstimatedGas(
-    // TODO: далеко не факт, что оно будет работать без приватного ключа
     contractAbi: any[],
     contractAddress: string,
     methodName: string,
@@ -87,8 +87,8 @@ export class Web3Public {
    */
   public async getAllowance(
     tokenAddress: string,
-    spenderAddress: string,
-    ownerAddress: string
+    ownerAddress: string,
+    spenderAddress: string
   ): Promise<BigNumber> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
 
@@ -119,7 +119,9 @@ export class Web3Public {
     const gasPrice = new BigNumber(transaction.gasPrice);
     const gasLimit = new BigNumber(receipt.gasUsed);
 
-    return gasPrice.multipliedBy(gasLimit);
+    return options.inWei
+      ? gasPrice.multipliedBy(gasLimit)
+      : gasPrice.multipliedBy(gasLimit).div(10 ** 18);
   }
 
   private async getTransactionByHash(hash: string, attempt?: number): Promise<Transaction> {

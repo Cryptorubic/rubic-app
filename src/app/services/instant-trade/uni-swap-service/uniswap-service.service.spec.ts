@@ -14,6 +14,7 @@ import publicProviderServiceStub from '../../blockchain/publicProvider/public-pr
 import { Web3PublicService } from '../../blockchain/web3PublicService/web3-public.service';
 import { Web3Public } from '../../blockchain/web3PublicService/Web3Public';
 import { BLOCKCHAIN_NAME } from '../../blockchain/types/Blockchain';
+import { ChainId } from '@uniswap/sdk';
 
 describe('UniswapServiceService', () => {
   let originalTimeout: number;

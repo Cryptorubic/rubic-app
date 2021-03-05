@@ -20,6 +20,10 @@ export default () => {
         blockchainName: BLOCKCHAIN_NAME.MATIC,
         rpcLink: 'https://rpc-mumbai.maticvigil.com'
       }
-    ]
+    ],
+    getBlockchainRpcLink(blockchainName: BLOCKCHAIN_NAME) {
+      return this.connectionLinks.find(connection => connection.blockchainName === blockchainName)
+        ?.rpcLink;
+    }
   };
 };
