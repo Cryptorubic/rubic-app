@@ -66,17 +66,6 @@
     ]
   },
   {
-    "img": "GeorgeStefan.png",
-    "name": "George Stefan",
-    "role": "SMM",
-    "links": [
-      {
-        "icon": "Telegram.svg",
-        "url": "https://teleg.run/GeorgeDLT"
-      }
-    ]
-  },
-  {
     "img": "AndreyAksenov.png",
     "name": "Andrey Aksenov",
     "role": "Marketing",
@@ -88,8 +77,8 @@
     ]
   },
   {
-    "img": "SletaDmitry.png",
-    "name": "Sleta Dmitry",
+    "img": "DmitrySleta.png",
+    "name": "Dmitry Sleta",
     "role": "Frontend developer",
     "links": [
       {
@@ -117,6 +106,17 @@
       {
         "icon": "Telegram.svg",
         "url": "https://t.me/dmitriy_yershov"
+      }
+    ]
+  },
+  {
+    "img": "GeorgeStefan.png",
+    "name": "George Stefan",
+    "role": "SMM",
+    "links": [
+      {
+        "icon": "Telegram.svg",
+        "url": "https://teleg.run/GeorgeDLT"
       }
     ]
   }
