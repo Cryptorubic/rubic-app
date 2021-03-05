@@ -1,9 +1,7 @@
 import { BrowserModule, makeStateKey, StateKey, TransferState } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-
 import { HttpClient, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,17 +20,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StartFormComponent } from './index/start-form/start-form.component';
 import { IndexComponent } from './index/index.component';
-
-import { AuthComponent } from './common/auth/auth.component';
-import { AuthenticationComponent } from './common/auth/authentication/authentication.component';
-import { RegistrationComponent } from './common/auth/registration/registration.component';
-import { SocialComponent } from './common/auth/social/social.component';
-import { EmailConfirmComponent } from './common/auth/email-confirm/email-confirm.component';
-import { ForgotPasswordComponent } from './common/auth/forgot-password/forgot-password.component';
 import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
-
-import { ContactsComponent } from './contacts-component/contacts.component';
-import { ChangePasswordComponent } from './common/change-password/change-password.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
 import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
 import { CoreModule } from './core/core.module';
@@ -78,20 +66,11 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
     AppComponent, // Ok
     StartFormComponent, // Startform Mmdule
     IndexComponent, // Index module
-    RegistrationComponent, // Auth module
-    AuthComponent, // Auth module
-    AuthenticationComponent, // Auth module
-    SocialComponent, // Auth module
-    EmailConfirmComponent, // Auth module
-    ForgotPasswordComponent, // Auth module
     PublicContractsComponent, // Index module
-    ContactsComponent, // Doesn't used
-
-    ChangePasswordComponent, // Auth module
     TradeInProgressModalComponent, // Startform module
     TradeSuccessModalComponent // Startform module
   ],
-  entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
+  entryComponents: [DisclaimerComponent],
   imports: [
     CoreModule,
     SharedModule,
