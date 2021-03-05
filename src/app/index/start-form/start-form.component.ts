@@ -20,7 +20,10 @@ import {
   MomentDateAdapter
 } from '@angular/material-moment-adapter';
 import { Observable } from 'rxjs';
-import { SWAPS_V2 } from '../../contracts-preview-v3/contracts-preview-v3.component';
+import { CoingeckoApiService } from 'src/app/core/services/coingecko-api/coingecko-api.service';
+import { Web3ApiService } from 'src/app/core/services/web3Api/web3-api.service';
+import { SWAPS_V2 } from 'src/app/features/trades/components/contracts-preview-v3/contracts-preview-v3.component';
+import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { Web3Service } from '../../core/services/web3/web3.service';
 import { UserService } from '../../core/services/user/user.service';
 import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../../core/services/web3/web3.constants';
@@ -31,9 +34,6 @@ import { BackendApiService } from '../../core/services/backend-api/backend-api.s
 import { UniSwapService } from '../../core/services/instant-trade/uni-swap-service/uni-swap.service';
 import { InstantTrade, InstantTradeToken } from '../../core/services/instant-trade/types';
 import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
-import { RubicError } from '../../shared/models/errors/RubicError';
-import { Web3ApiService } from '../../core/services/web3Api/web3-api.service';
-import { CoingeckoApiService } from '../../core/services/coingecko-api/coingecko-api.service';
 
 const defaultNetwork = 1;
 

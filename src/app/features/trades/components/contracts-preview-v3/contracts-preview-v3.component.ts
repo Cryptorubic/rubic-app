@@ -5,15 +5,14 @@ import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import BigNumber from 'bignumber.js';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Web3Service } from '../core/services/web3/web3.service';
 
-import { CONTRACT_STATES } from '../contract-preview/contract-states';
-import { ContractsService } from '../core/services/contracts/contracts.service';
-import { UserInterface } from '../core/services/user/user.interface';
-import { UserService } from '../core/services/user/user.service';
-
-import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../core/services/web3/web3.constants';
+import { ContractsService } from 'src/app/core/services/contracts/contracts.service';
+import { UserInterface } from 'src/app/core/services/user/user.interface';
+import { UserService } from 'src/app/core/services/user/user.service';
+import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from 'src/app/core/services/web3/web3.constants';
+import { Web3Service } from 'src/app/core/services/web3/web3.service';
 import SWAPS_ABI from './SWAPS_ABI';
+import { CONTRACT_STATES } from '../contracts-list/contract-states';
 
 export interface IContractV3 {
   id?: number;

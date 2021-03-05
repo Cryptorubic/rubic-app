@@ -2,15 +2,18 @@ import { Component, Input, OnDestroy, TemplateRef, ViewChild } from '@angular/co
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ContractsService, InterfacePastSwaps } from '../../core/services/contracts/contracts.service';
+import {
+  InterfacePastSwaps,
+  ContractsService
+} from 'src/app/core/services/contracts/contracts.service';
+import {
+  CHAINS_OF_NETWORKS,
+  FIX_TIME
+} from 'src/app/features/trades/components/contracts-preview-v3/contracts-preview-v3.component';
 import { Web3Service } from '../../core/services/web3/web3.service';
 
 import { UserInterface } from '../../core/services/user/user.interface';
 import { UserService } from '../../core/services/user/user.service';
-import {
-  CHAINS_OF_NETWORKS,
-  FIX_TIME
-} from '../../contracts-preview-v3/contracts-preview-v3.component';
 
 export interface IContractDetails {
   network?: number;

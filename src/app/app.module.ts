@@ -29,11 +29,9 @@ import { RegistrationComponent } from './common/auth/registration/registration.c
 import { SocialComponent } from './common/auth/social/social.component';
 import { EmailConfirmComponent } from './common/auth/email-confirm/email-confirm.component';
 import { ForgotPasswordComponent } from './common/auth/forgot-password/forgot-password.component';
-import { ContractsListComponent } from './contracts-list/contracts-list.component';
 import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
 
 import { ContactsComponent } from './contacts-component/contacts.component';
-import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
 import { ChangePasswordComponent } from './common/change-password/change-password.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
 import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
@@ -86,10 +84,9 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
     SocialComponent, // Auth module
     EmailConfirmComponent, // Auth module
     ForgotPasswordComponent, // Auth module
-    ContractsListComponent, // Trades module
     PublicContractsComponent, // Index module
     ContactsComponent, // Doesn't used
-    ContractsPreviewV3Component, // Trades module
+
     ChangePasswordComponent, // Auth module
     TradeInProgressModalComponent, // Startform module
     TradeSuccessModalComponent // Startform module

@@ -1,11 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { IndexComponent } from './index/index.component';
-import { ContractsListComponent } from './contracts-list/contracts-list.component';
-import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
 import { StartFormResolver } from './index/start-form/start-form.component';
-import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
-import { ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.resolver';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -64,31 +60,7 @@ const routes: Routes = [
   },
   {
     path: 'trades',
-    children: [
-      {
-        path: '',
-        redirectTo: '/',
-        pathMatch: 'full'
-      },
-      {
-        path: 'public-v3/:public_link',
-        component: ContractsPreviewV3Component,
-        resolve: {
-          contract: ContractEditV3Resolver
-        },
-        data: {
-          createButton: true,
-          hideInstruction: true
-        }
-      },
-      {
-        path: 'contracts',
-        component: ContractsListComponent,
-        resolve: {
-          contracts: ContractsListResolver
-        }
-      }
-    ]
+    loadChildren: () => import('./features/trades/trades.module').then(m => m.TradesModule)
   },
   {
     path: 'reset/:uid/:token',

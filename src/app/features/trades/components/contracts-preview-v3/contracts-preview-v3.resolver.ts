@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Resolve, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContractsService } from '../core/services/contracts/contracts.service';
-import { HttpService } from '../core/services/http/http.service';
-import { UserService } from '../core/services/user/user.service';
-import { Web3Service } from '../core/services/web3/web3.service';
+import { ContractsService } from 'src/app/core/services/contracts/contracts.service';
+import { HttpService } from 'src/app/core/services/http/http.service';
+import { UserService } from 'src/app/core/services/user/user.service';
+import { Web3Service } from 'src/app/core/services/web3/web3.service';
 import { IContractV3 } from './contracts-preview-v3.component';
 
 @Injectable()
