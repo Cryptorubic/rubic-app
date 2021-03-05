@@ -31,7 +31,7 @@ import { BackendApiService } from '../../services/backend-api/backend-api.servic
 import { UniSwapService } from '../../services/instant-trade/uni-swap-service/uni-swap.service';
 import { InstantTrade, InstantTradeToken } from '../../services/instant-trade/types';
 import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
-import { RubicError } from '../../errors/RubicError';
+import { RubicError } from '../../shared/models/errors/RubicError';
 import { Web3ApiService } from '../../services/web3Api/web3-api.service';
 import { CoingeckoApiService } from '../../services/coingecko-api/coingecko-api.service';
 

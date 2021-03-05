@@ -9,8 +9,8 @@ import {
   IBlockchains,
   IBlockchain
 } from '../../services/bridge/types';
-import { RubicError } from '../../errors/RubicError';
-import { NetworkError } from '../../errors/bridge/NetworkError';
+import { RubicError } from '../../shared/models/errors/RubicError';
+import { NetworkError } from '../../shared/models/errors/bridge/NetworkError';
 import { NetworkErrorComponent } from '../bridge-errors/network-error/network-error.component';
 
 interface ErrorComponent {

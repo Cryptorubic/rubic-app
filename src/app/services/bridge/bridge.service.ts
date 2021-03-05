@@ -7,9 +7,9 @@ import BigNumber from 'bignumber.js';
 import { IBridgeToken, ITableTransaction } from './types';
 import { Web3ApiService } from '../web3Api/web3-api.service';
 import { BridgeTransaction } from './BridgeTransaction';
-import { NetworkError } from '../../errors/bridge/NetworkError';
-import { RubicError } from '../../errors/RubicError';
-import { OverQueryLimitError } from '../../errors/bridge/OverQueryLimitError';
+import { NetworkError } from '../../shared/models/errors/bridge/NetworkError';
+import { RubicError } from '../../shared/models/errors/RubicError';
+import { OverQueryLimitError } from '../../shared/models/errors/bridge/OverQueryLimitError';
 import { BackendApiService } from '../backend-api/backend-api.service';
 
 interface BinanceResponse {

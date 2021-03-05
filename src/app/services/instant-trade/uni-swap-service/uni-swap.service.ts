@@ -18,7 +18,7 @@ import { InstantTradeToken } from '../types';
 
 import { Web3ApiService } from '../../web3Api/web3-api.service';
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
-import InsufficientFundsError from '../../../errors/instant-trade/InsufficientFundsError';
+import InsufficientFundsError from '../../../shared/models/errors/instant-trade/InsufficientFundsError';
 import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
 
 interface UniSwapTrade {
