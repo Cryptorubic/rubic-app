@@ -39,18 +39,13 @@ import { MainPageComponent } from './main-page/main-page.component';
 import { HeaderMainPageComponent } from './main-page/header/header.component';
 import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
-import { BridgeFormComponent } from './bridge/brifge-form/bridge-form.component';
-import { BridgeComponent } from './bridge/bridge.component';
-import { BridgeInProgressModalComponent } from './bridge/bridge-in-progress-modal/bridge-in-progress-modal.component';
-import { BridgeSuccessComponent } from './bridge/bridge-success/bridge-success.component';
-import { BridgeTableComponent } from './bridge/bridge-table/bridge-table.component';
-import { NetworkErrorComponent } from './bridge/bridge-errors/network-error/network-error.component';
 import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { DisclaimerComponent } from './shared/components/disclaimer/disclaimer.component';
 import { TokenLabelComponent } from './shared/components/tokens-input/token-label/token-label.component';
 import { BlockchainLabelComponent } from './shared/components/blockchains-input/blockchain-label/blockchain-label.component';
+import { NetworkErrorComponent } from './features/bridge-page/components/network-error/network-error.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -103,12 +98,6 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
     ContractsPreviewV3Component, // Trades module
     ChangePasswordComponent, // Auth module
     TradeInProgressModalComponent, // Startform module
-    BridgeFormComponent, // Bridge module
-    BridgeComponent, // Bridge module
-    BridgeInProgressModalComponent, // Bridge module
-    BridgeSuccessComponent, // Bridge module
-    BridgeTableComponent, // Bridge module
-    NetworkErrorComponent, // Bridge module
     TradeSuccessModalComponent // Startform module
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],

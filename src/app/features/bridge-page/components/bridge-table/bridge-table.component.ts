@@ -1,8 +1,8 @@
 import { Component, HostListener } from '@angular/core';
 import { List } from 'immutable';
 import date from 'date-and-time';
-import { BridgeService } from '../../services/bridge/bridge.service';
-import { BridgeNetwork, ITableTransaction } from '../../services/bridge/types';
+import { BridgeService } from 'src/app/services/bridge/bridge.service';
+import { ITableTransaction, BridgeNetwork } from 'src/app/services/bridge/types';
 
 interface ITableTransactionWithState extends ITableTransaction {
   opened: boolean;

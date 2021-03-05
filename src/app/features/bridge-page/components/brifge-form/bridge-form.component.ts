@@ -2,16 +2,16 @@ import { Component, HostListener, OnInit, Type } from '@angular/core';
 import { List } from 'immutable';
 import BigNumber from 'bignumber.js';
 import { InputToken } from 'src/app/shared/components/tokens-input/types';
-import { BridgeService } from '../../services/bridge/bridge.service';
+import { BridgeService } from 'src/app/services/bridge/bridge.service';
 import {
-  IBridgeToken,
-  BridgeNetwork,
   IBlockchains,
-  IBlockchain
-} from '../../services/bridge/types';
-import { RubicError } from '../../shared/models/errors/RubicError';
-import { NetworkError } from '../../shared/models/errors/bridge/NetworkError';
-import { NetworkErrorComponent } from '../bridge-errors/network-error/network-error.component';
+  BridgeNetwork,
+  IBlockchain,
+  IBridgeToken
+} from 'src/app/services/bridge/types';
+import { NetworkError } from 'src/app/shared/models/errors/bridge/NetworkError';
+import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { NetworkErrorComponent } from '../network-error/network-error.component';
 
 interface ErrorComponent {
   componentClass: Type<any>;

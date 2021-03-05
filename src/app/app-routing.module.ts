@@ -4,7 +4,6 @@ import { IndexComponent } from './index/index.component';
 import { ContractsListComponent } from './contracts-list/contracts-list.component';
 import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
 import { StartFormResolver } from './index/start-form/start-form.component';
-import { BridgeComponent } from './bridge/bridge.component';
 import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
 import { ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.resolver';
 
@@ -43,7 +42,8 @@ const routes: Routes = [
   },
   {
     path: 'bridge',
-    component: BridgeComponent
+    loadChildren: () =>
+      import('./features/bridge-page/bridge-page.module').then(m => m.BridgePageModule)
   },
   {
     path: 'about',
