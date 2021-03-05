@@ -2,11 +2,11 @@ import { Component, Input, OnDestroy, TemplateRef, ViewChild } from '@angular/co
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ContractsService, InterfacePastSwaps } from '../../services/contracts/contracts.service';
-import { Web3Service } from '../../services/web3/web3.service';
+import { ContractsService, InterfacePastSwaps } from '../../core/services/contracts/contracts.service';
+import { Web3Service } from '../../core/services/web3/web3.service';
 
-import { UserInterface } from '../../services/user/user.interface';
-import { UserService } from '../../services/user/user.service';
+import { UserInterface } from '../../core/services/user/user.interface';
+import { UserService } from '../../core/services/user/user.service';
 import {
   CHAINS_OF_NETWORKS,
   FIX_TIME

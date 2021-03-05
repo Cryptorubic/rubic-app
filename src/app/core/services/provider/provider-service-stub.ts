@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import { InfuraProvider } from '@ethersproject/providers';
 // @ts-ignore
-import config from '../../../test/enviroment.test.json';
+import config from '../../../../test/enviroment.test.json';
 
 /**
  * Stub for unit tests.

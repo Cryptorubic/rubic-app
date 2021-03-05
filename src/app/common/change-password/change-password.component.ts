@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MustMatch } from '../auth/registration/registration.component';
-import { UserService } from '../../services/user/user.service';
+import { UserService } from '../../core/services/user/user.service';
 
 @Component({
   selector: 'app-change-password',

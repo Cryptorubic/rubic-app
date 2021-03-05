@@ -7,8 +7,8 @@ import { Transaction } from 'web3-core';
 import { AccountError } from 'src/app/shared/models/errors/bridge/AccountError';
 import { MetamaskError } from 'src/app/shared/models/errors/bridge/MetamaskError';
 import { ProviderService } from '../provider/provider.service';
-import { UserRejectError } from '../../shared/models/errors/bridge/UserRejectError';
-import { RubicError } from '../../shared/models/errors/RubicError';
+import { UserRejectError } from '../../../shared/models/errors/bridge/UserRejectError';
+import { RubicError } from '../../../shared/models/errors/RubicError';
 import { ERC20_TOKEN_ABI } from '../web3/web3.constants';
 import { BridgeNetwork } from '../bridge/types';
 

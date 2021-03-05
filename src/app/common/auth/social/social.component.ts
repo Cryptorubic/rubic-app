@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { UserService } from '../../../services/user/user.service';
-import { Web3Service } from '../../../services/web3/web3.service';
+import { UserService } from '../../../core/services/user/user.service';
+import { Web3Service } from '../../../core/services/web3/web3.service';
 
 @Component({
   selector: 'app-social',

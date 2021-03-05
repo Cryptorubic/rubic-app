@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { ethers } from 'ethers';
-import { MetamaskError } from '../../shared/models/errors/bridge/MetamaskError';
-import { AccountError } from '../../shared/models/errors/bridge/AccountError';
-import { RubicError } from '../../shared/models/errors/RubicError';
+import { MetamaskError } from '../../../shared/models/errors/bridge/MetamaskError';
+import { AccountError } from '../../../shared/models/errors/bridge/AccountError';
+import { RubicError } from '../../../shared/models/errors/RubicError';
 
 @Injectable({
   providedIn: 'root'

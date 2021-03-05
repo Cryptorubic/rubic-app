@@ -2,11 +2,11 @@ import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-import { ContractsService } from '../services/contracts/contracts.service';
-import { UserService } from '../services/user/user.service';
+import { ContractsService } from '../core/services/contracts/contracts.service';
+import { UserService } from '../core/services/user/user.service';
 
 import { CONTRACT_STATES } from '../contract-preview/contract-states';
-import { UserInterface } from '../services/user/user.interface';
+import { UserInterface } from '../core/services/user/user.interface';
 
 @Component({
   selector: 'app-contracts-list',

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContractsService } from '../services/contracts/contracts.service';
-import { UserService } from '../services/user/user.service';
+import { ContractsService } from '../core/services/contracts/contracts.service';
+import { UserService } from '../core/services/user/user.service';
 
 @Injectable()
 export class ContractsListResolver implements Resolve<any> {

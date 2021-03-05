@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ITableTransaction } from '../bridge/types';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import { HttpService } from '../http/http.service';
 import { BridgeTransaction } from '../bridge/BridgeTransaction';
 

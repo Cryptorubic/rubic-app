@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import * as EventEmitter from 'events';
 import { Observable } from 'rxjs';
-import { Web3Service } from 'src/app/services/web3/web3.service';
+import { Web3Service } from 'src/app/core/services/web3/web3.service';
 
 @Directive({
   selector: '[appEthTokenValidator]',

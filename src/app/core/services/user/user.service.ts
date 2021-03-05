@@ -13,7 +13,7 @@ import {
 import { DEFAULT_USER, SOCIAL_KEYS } from './user.constant';
 // import { environment } from '../../../environments/environment';
 
-import { AuthComponent } from '../../common/auth/auth.component';
+import { AuthComponent } from '../../../common/auth/auth.component';
 
 @Injectable({
   providedIn: 'root'

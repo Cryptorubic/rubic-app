@@ -5,9 +5,9 @@ import BigNumber from 'bignumber.js';
 import { Web3ApiService } from './web3-api.service';
 import { ProviderService } from '../provider/provider.service';
 import providerServiceStub from '../provider/provider-service-stub';
-import { WEENUS } from '../../../test/tokens/eth-tokens';
+import { WEENUS } from '../../../../test/tokens/eth-tokens';
 // @ts-ignore
-import config from '../../../test/enviroment.test.json';
+import config from '../../../../test/enviroment.test.json';
 
 describe('Web3ApiService', () => {
   let originalTimeout;

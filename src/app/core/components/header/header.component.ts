@@ -12,9 +12,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NavigationStart, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
-import { UserInterface } from 'src/app/services/user/user.interface';
-import { UserService } from 'src/app/services/user/user.service';
-import { Web3Service } from 'src/app/services/web3/web3.service';
+import { UserInterface } from 'src/app/core/services/user/user.interface';
+import { UserService } from 'src/app/core/services/user/user.service';
+import { Web3Service } from 'src/app/core/services/web3/web3.service';
 
 @Component({
   selector: 'app-header',

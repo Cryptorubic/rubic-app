@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../../../services/user/user.service';
+import { UserService } from '../../../core/services/user/user.service';
 
 @Component({
   selector: 'app-authentication',

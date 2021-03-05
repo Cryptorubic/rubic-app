@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UserService } from '../../../services/user/user.service';
+import { UserService } from '../../../core/services/user/user.service';
 
 const REQUEST_TIME_LENGTH = 60;
 

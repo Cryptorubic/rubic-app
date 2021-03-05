@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import { List } from 'immutable';
-import { IBlockchain } from 'src/app/services/bridge/types';
+import { IBlockchain } from 'src/app/core/services/bridge/types';
 import { IBlockchainShort } from './types';
 import { BlockchainLabelComponent } from './blockchain-label/blockchain-label.component';
 import { InputDropdownComponent } from '../input-dropdown/input-dropdown.component';

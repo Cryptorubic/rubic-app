@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { Web3Service } from 'src/app/services/web3/web3.service';
+import { Web3Service } from 'src/app/core/services/web3/web3.service';
 
 export interface ITokenInfo {
   active?: boolean;

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivationEnd, NavigationStart, Router } from '@angular/router';
-import { UserService } from './services/user/user.service';
-import { Web3Service } from './services/web3/web3.service';
+import { UserService } from './core/services/user/user.service';
+import { Web3Service } from './core/services/web3/web3.service';
 
 @Component({
   selector: 'app-root',

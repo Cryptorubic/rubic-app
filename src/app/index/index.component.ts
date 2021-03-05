@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { HttpService } from '../services/http/http.service';
+import { HttpService } from '../core/services/http/http.service';
 import { ChangePasswordComponent } from '../common/change-password/change-password.component';
 
 // @ts-ignore

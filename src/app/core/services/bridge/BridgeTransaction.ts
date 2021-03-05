@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3ApiService } from '../web3Api/web3-api.service';
 import { IBridgeToken } from './types';
-import { RubicError } from '../../shared/models/errors/RubicError';
+import { RubicError } from '../../../shared/models/errors/RubicError';
 
 export class BridgeTransaction {
   public txHash: string;

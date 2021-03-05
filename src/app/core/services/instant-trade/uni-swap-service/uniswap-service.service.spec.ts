@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { UniSwapService } from './uni-swap.service';
 import { ProviderService } from '../../provider/provider.service';
 import providerServiceStub from '../../provider/provider-service-stub';
-import { ETH, WEENUS, YEENUS } from '../../../../test/tokens/eth-tokens';
+import { ETH, WEENUS, YEENUS } from '../../../../../test/tokens/eth-tokens';
 import { Web3ApiService } from '../../web3Api/web3-api.service';
 import { UniSwapContractAddress } from './uni-swap-contract';
 

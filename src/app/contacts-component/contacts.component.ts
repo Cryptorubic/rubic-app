@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { HttpService } from '../services/http/http.service';
+import { HttpService } from '../core/services/http/http.service';
 
 export interface IForm {
   email: string;

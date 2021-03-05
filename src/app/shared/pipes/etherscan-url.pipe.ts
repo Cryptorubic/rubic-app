@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ETHERSCAN_URLS, IS_PRODUCTION } from 'src/app/services/web3/web3.service';
+import { ETHERSCAN_URLS, IS_PRODUCTION } from 'src/app/core/services/web3/web3.service';
 
 @Pipe({ name: 'etherscanUrl' })
 export class EtherscanUrlPipe implements PipeTransform {
