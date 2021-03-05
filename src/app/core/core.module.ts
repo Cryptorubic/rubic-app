@@ -2,16 +2,16 @@ import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
+import { RouterModule } from '@angular/router';
 import { ContractsListResolver } from '../contracts-list/contracts-list.reslover';
 import { ContractEditV3Resolver } from '../contracts-preview-v3/contracts-preview-v3.resolver';
 import { StartFormResolver } from '../index/start-form/start-form.component';
 import { HttpService } from '../services/http/http.service';
 import { UserService } from '../services/user/user.service';
 import { OneInchService } from '../models/1inch/1inch';
-import { HeaderComponent } from '../index/header/header.component';
-import { MaintenanceComponent } from '../maintenance/maintenance.component';
+import { MaintenanceComponent } from './components/maintenance/maintenance.component';
 import { SharedModule } from '../shared/shared.module';
-import { RouterModule } from '@angular/router';
+import { HeaderComponent } from './components/header/header.component';
 
 export function appInitializerFactory(
   translate: TranslateService,
