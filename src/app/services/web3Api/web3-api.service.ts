@@ -402,6 +402,29 @@ export class Web3ApiService {
   }
 
   /**
+   * @description executes method of smart-contract and resolve the promise
+   * @param contractAddress address of smart-contract which method is to be executed
+   * @param contractAbi abi of smart-contract which method is to be executed
+   * @param methodName executing method name
+   * @param methodArguments executing method arguments
+   * @param blockchain platform of the contract address
+   * @return smart-contract method returned value
+   */
+  public async callContractMethod(
+    contractAddress: string,
+    contractAbi: any[],
+    methodName: string,
+    methodArguments: any[],
+    blockchain: BLOCKCHAIN_NAMES = BLOCKCHAIN_NAMES.ETHEREUM
+  ): Promise<any> {
+    const contract = new this.web3Infura[blockchain].eth.Contract(contractAbi, contractAddress);
+
+    return contract.methods[methodName](...methodArguments)
+      .call({ from: this.address })
+      .toPromise();
+  }
+
+  /**
    * @description executes method of smart-contract and resolve the promise without waiting for the transaction to be included in the block
    * @param contractAddress address of smart-contract which method is to be executed
    * @param contractAbi abi of smart-contract which method is to be executed
@@ -550,7 +573,7 @@ export class Web3ApiService {
     blockchain: BLOCKCHAIN_NAMES
   ): Promise<TokenInfoBody> {
     if (this.isEtherAddress(tokenAddress)) {
-      const tokenBody = nativeTokens.find(t => t.platform === blockchain);
+      const tokenBody = nativeTokens.find(t => t.blockchain === blockchain);
       if (tokenBody) {
         return tokenBody;
       }

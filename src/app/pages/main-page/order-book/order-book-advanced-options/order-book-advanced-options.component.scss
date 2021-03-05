@@ -1,0 +1,186 @@
+@import '../../../../../scss/elements/vars';
+
+.advanced-section {
+  display: flex;
+  flex-direction: column;
+
+  color: $dark;
+
+  &__row {
+    padding: 20px 30px 22px;
+    border-top: 2px solid $grey-background;
+  }
+}
+
+.advanced-section-row {
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 32px;
+
+  &_second {
+    grid-column-gap: 66px;
+  }
+
+  &__broker-data {
+    display: flex;
+    flex-wrap: wrap;
+    grid-row-gap: 32px;
+  }
+}
+
+.advanced-section-block {
+  display: flex;
+  align-items: center;
+
+  &_full {
+    flex-basis: 100%;
+  }
+
+  &__description-container {
+    position: relative;
+    top: 10px;
+    left: 3px;
+  }
+}
+
+.input-container {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  &_broker-address {
+    width: 100%;
+    max-width: 495px;
+  }
+
+  &_broker-percent {
+    width: 257px;
+  }
+
+  &__label {
+    margin-bottom: 7px;
+
+    font-size: 14px;
+    text-transform: uppercase;
+
+    &_broker-address {
+      position: relative;
+      left: 4px;
+
+      text-align: left;
+    }
+  }
+
+  &__input {
+    height: 21px;
+    padding: 12px 14px;
+    margin: 0 auto;
+    border: none;
+
+    color: $dark;
+    background: $grey-background;
+
+    font-size: 16px;
+
+    &_date {
+      width: 81px;
+
+      cursor: pointer;
+    }
+
+    &_time {
+      width: 41px;
+
+      cursor: pointer;
+    }
+
+    &_checkbox {
+      width: 63px;
+      height: 31px;
+      padding: 7px 14px;
+
+      cursor: pointer;
+    }
+
+    &_min-contribute {
+      width: 259px;
+    }
+
+    &_broker-address {
+      width: 100%;
+    }
+
+    &_broker-percent {
+      width: 41px;
+      padding: 12px 18px;
+    }
+
+    &_invalid {
+      border: 1px solid $error-red;
+
+      &:focus {
+        box-shadow: 0 0 2px $error-red;
+      }
+    }
+  }
+
+  &__checkbox {
+    &_hidden {
+      display: none;
+    }
+  }
+
+  &__percent-sign {
+    position: absolute;
+    top: 30.5%;
+    right: 28%;
+  }
+
+  &__calculation {
+    margin-top: 6px;
+
+    color: $grey-text;
+
+    white-space: nowrap;
+  }
+}
+
+.input-checkbox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  grid-gap: 9px;
+
+  text-transform: uppercase;
+
+  &_not-checked {
+    flex-direction: row-reverse;
+  }
+
+  &__image {
+    width: 26px;
+    height: 28px;
+
+    background-image: url(/assets/images/icons/main-page/PublicDealTick.svg);
+    background-repeat: no-repeat;
+
+    transition: background-image 0.3s linear;
+
+    &_not-checked {
+      background-image: url(/assets/images/icons/main-page/PublicDealCross.svg);
+    }
+  }
+}
+
+.description-container {
+  display: flex;
+  align-items: center;
+
+  color: $grey-text;
+
+  &__dash {
+    margin: 0 5px;
+  }
+}

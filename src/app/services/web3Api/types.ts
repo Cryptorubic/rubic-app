@@ -7,8 +7,7 @@ interface TokenInfoBody {
   decimals: number;
   name: string;
   symbol: string;
-
-  platform?: string;
+  blockchain: string;
 }
 
 export { Web3ApiNetwork, TokenInfoBody };

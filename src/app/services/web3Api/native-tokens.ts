@@ -5,7 +5,7 @@ const ETH: TokenInfoBody = {
   name: 'Ethereum',
   symbol: 'ETH',
   decimals: 18,
-  platform: BLOCKCHAIN_NAMES.ETHEREUM
+  blockchain: BLOCKCHAIN_NAMES.ETHEREUM
 };
 
 // not added to coingecko_tokens
@@ -13,7 +13,7 @@ const BNB: TokenInfoBody = {
   name: 'Binance',
   symbol: 'BNB',
   decimals: 18,
-  platform: BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN
+  blockchain: BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN
 };
 
 // not added to coingecko_tokens
@@ -21,7 +21,7 @@ const MATIC: TokenInfoBody = {
   name: 'Matic',
   symbol: 'MATIC',
   decimals: 18,
-  platform: BLOCKCHAIN_NAMES.MATIC
+  blockchain: BLOCKCHAIN_NAMES.MATIC
 };
 
 const nativeTokens = [ETH];

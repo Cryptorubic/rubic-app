@@ -36,7 +36,7 @@ module.exports = {
             "class-methods-use-this": "off",
             "complexity": ["error", 20],
             "eqeqeq": ["error", "always"],
-            "no-magic-numbers": "warn",
+            "no-magic-numbers": ["warn", { "ignore": [0, 1] }],
             // Styling.
             "array-bracket-spacing": ["error", 'never'],
             "object-curly-spacing": ["error", 'always'],

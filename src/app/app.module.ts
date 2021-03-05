@@ -98,6 +98,8 @@ import { MainPageComponent } from './pages/main-page/main-page.component';
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
 import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
 import { ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.resolver';
+import { OrderBookAdvancedOptionsComponent } from './pages/main-page/order-book/order-book-advanced-options/order-book-advanced-options.component';
+import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -240,6 +242,7 @@ export function appInitializerFactory(
     InstantTradesComponent,
     TradesFormComponent,
     OrderBookComponent,
+    OrderBookAdvancedOptionsComponent,
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
@@ -251,7 +254,8 @@ export function appInitializerFactory(
     WarningLabelComponent,
     TooltipComponent,
     InfoTooltipComponent,
-    TokenAddressDirective
+    TokenAddressDirective,
+    NumberPrecisionDirective
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [

@@ -1,139 +1,159 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import * as moment from 'moment';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
-import {
-  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
-  MomentDateAdapter
-} from '@angular/material-moment-adapter';
-import { BLOCKCHAIN_NAMES, IToken } from '../trades-form/types';
-import { MY_FORMATS } from '../../../index/start-form/start-form.component';
-import { TokenInfoBody } from '../../../services/web3Api/types';
+import { Component, Input, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
+import { BLOCKCHAIN_NAMES } from '../trades-form/types';
+import { TokenInfoBody } from '../../../services/web3Api/types';
+import { OrderBookToken, OrderBookTokens, TradeInfo } from '../../../services/order-book/types';
+import { OrderBookService } from '../../../services/order-book/order-book.service';
 
 @Component({
   selector: 'app-order-book',
   templateUrl: './order-book.component.html',
-  styleUrls: ['./order-book.component.scss'],
-  providers: [
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
-    },
-    {
-      provide: MAT_DATE_FORMATS,
-      useValue: MY_FORMATS
-    }
-  ]
+  styleUrls: ['./order-book.component.scss']
 })
-export class OrderBookComponent implements OnInit {
-  @Input() set blockchain(value: BLOCKCHAIN_NAMES) {
+export class OrderBookComponent {
+  @Input()
+  set blockchain(value) {
+    if (this._blockchain && this._blockchain !== value) {
+      this.resetTokens();
+    }
     this._blockchain = value;
+    this.tradeInfo = { ...this.tradeInfo, blockchain: this._blockchain };
 
-    setTimeout(() => this.updateCustomTokenAddresses());
+    setTimeout(() => {
+      this.updateCustomTokenAddresses();
+    });
   }
 
-  get blockchain() {
+  get blockchain(): BLOCKCHAIN_NAMES {
     return this._blockchain;
   }
 
-  @Input() tokens = {
-    base: {} as IToken,
-    quote: {} as IToken
-  };
+  @Input() set tokens(value: OrderBookTokens) {
+    this.tradeInfo.tokens = value;
+  }
 
   @ViewChild('baseCustomToken') baseCustomToken: NgModel;
+
   @ViewChild('quoteCustomToken') quoteCustomToken: NgModel;
 
   private _blockchain;
+
+  get tradeInfo(): TradeInfo {
+    return this._tradeInfo;
+  }
+
+  set tradeInfo(value) {
+    this._tradeInfo = value;
+
+    this.checkIfCreateTradeIsAvailable();
+  }
+
+  private _tradeInfo: TradeInfo;
+
+  public isCreateTradeAvailable: boolean;
 
   public isCustomTokenSectionOpened = {
     base: false,
     quote: false
   };
+
   public customTokens = {
-    base: {} as IToken,
-    quote: {} as IToken
+    base: {} as OrderBookToken,
+    quote: {} as OrderBookToken
   };
 
   public isAdvancedSectionOpened: boolean = false;
 
-  public closingDate: moment.Moment;
-  public minClosingDate: moment.Moment;
-  public closingTime: string;
-  public minClosingTime: string;
-
-  public isPublicDeal: boolean;
-
-  constructor() {
-    this.setAdvancedOptions();
+  get areAdvancedOptionsValid(): boolean {
+    return this._areAdvancedOptionsValid;
   }
 
-  ngOnInit() {}
+  set areAdvancedOptionsValid(value) {
+    this._areAdvancedOptionsValid = value;
 
-  private static timeToString(time: moment.Moment): string {
-    return time.hour() + ':' + time.minute();
+    this.checkIfCreateTradeIsAvailable();
   }
 
-  private setAdvancedOptions(): void {
-    this.setClosingDate();
-    this.isPublicDeal = true;
+  public _areAdvancedOptionsValid: boolean;
+
+  constructor(private orderBookService: OrderBookService) {
+    this.isCreateTradeAvailable = false;
+
+    this.tradeInfo = {
+      tokens: { base: {} as OrderBookToken, quote: {} as OrderBookToken }
+    } as TradeInfo;
   }
 
-  private setClosingDate(): void {
-    const currentTime = moment();
-
-    this.minClosingDate = moment(currentTime).add(1, 'hour');
-    this.closingDate = moment(currentTime).add(1, 'week');
-
-    this.closingTime = OrderBookComponent.timeToString(currentTime);
-    this.minClosingTime = null;
-
-    // updates once in 10 minutes
-    setInterval(() => {
-      this.minClosingDate = moment().add(1, 'hour');
-      this.onDateChanges();
-    }, 600_000);
-  }
-
-  /**
-   * @description Checks that mininum closing time is correct. It must be one hour later, than current time.
-   */
-  public onDateChanges(): void {
-    if (this.closingDate.isSame(this.minClosingDate, 'day')) {
-      this.minClosingTime = OrderBookComponent.timeToString(this.minClosingDate);
-
-      const [closingTimeHour, closingTimeMinute] = this.closingTime
-        .split(':')
-        .map(t => parseInt(t));
-      if (
-        this.minClosingDate.hour() > closingTimeHour ||
-        (this.minClosingDate.hour() === closingTimeHour &&
-          this.minClosingDate.minute() > closingTimeMinute)
-      ) {
-        this.closingTime = OrderBookComponent.timeToString(this.minClosingDate);
+  private resetTokens(): void {
+    this.tradeInfo.tokens = {
+      base: {
+        ...this.tradeInfo.tokens.base,
+        address: '',
+        name: '',
+        symbol: '',
+        decimals: 8
+      },
+      quote: {
+        ...this.tradeInfo.tokens.quote,
+        address: '',
+        name: '',
+        symbol: '',
+        decimals: 8
       }
-    } else {
-      this.minClosingTime = null;
-    }
+    };
   }
 
   public addCustomToken(tokenPart: string, tokenBody: TokenInfoBody): void {
-    this.customTokens[tokenPart].token_title = tokenBody.name;
-    this.customTokens[tokenPart].token_short_title = tokenBody.symbol;
-    this.customTokens[tokenPart].decimals = tokenBody.decimals;
-  }
-
-  public setCustomToken(tokenPart: string) {
-    this.tokens[tokenPart] = this.customTokens[tokenPart];
+    this.customTokens[tokenPart] = { ...this.customTokens[tokenPart], ...tokenBody };
   }
 
   private updateCustomTokenAddresses(): void {
-    if (this.baseCustomToken) {
-      this.baseCustomToken.control.updateValueAndValidity();
-    }
-    if (this.quoteCustomToken) {
-      this.quoteCustomToken.control.updateValueAndValidity();
+    this.baseCustomToken?.control.updateValueAndValidity();
+    this.quoteCustomToken?.control.updateValueAndValidity();
+  }
+
+  public setCustomToken(tokenPart: string): void {
+    this.tradeInfo = {
+      ...this.tradeInfo,
+      tokens: {
+        ...this.tradeInfo.tokens,
+        [tokenPart]: {
+          ...this.tradeInfo.tokens[tokenPart],
+          ...this.customTokens[tokenPart]
+        }
+      }
+    };
+  }
+
+  public onAmountChanges(tokenPart: string, amount: string): void {
+    this.tradeInfo = {
+      ...this.tradeInfo,
+      tokens: {
+        ...this.tradeInfo.tokens,
+        [tokenPart]: {
+          ...this.tradeInfo.tokens[tokenPart],
+          amount
+        }
+      }
+    };
+  }
+
+  private checkIfCreateTradeIsAvailable(): void {
+    this.isCreateTradeAvailable = !!(
+      this._areAdvancedOptionsValid &&
+      this.tradeInfo.tokens &&
+      this.tradeInfo.tokens.base.address &&
+      this.tradeInfo.tokens.base.amount &&
+      this.tradeInfo.tokens.quote.address &&
+      this.tradeInfo.tokens.quote.amount
+    );
+  }
+
+  public async createTrade(): Promise<void> {
+    try {
+      await this.orderBookService.createOrder(this.tradeInfo);
+    } catch (err) {
+      console.log('err', err);
     }
   }
 }
