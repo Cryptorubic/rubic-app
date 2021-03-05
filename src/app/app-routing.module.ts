@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { IndexComponent } from './index/index.component';
-import { StartFormResolver } from './index/start-form/start-form.component';
+import { IndexComponent } from './features/index-page/components/index/index.component';
+import { StartFormResolver } from './features/index-page/components/start-form/start-form.component';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -31,7 +31,8 @@ export const MODE = currMode;
 const routes: Routes = [
   {
     path: '',
-    component: IndexComponent,
+    loadChildren: () =>
+      import('./features/index-page/index-page.module').then(m => m.IndexPageModule),
     resolve: {
       checkedTokens: StartFormResolver
     }
@@ -79,7 +80,8 @@ const routes: Routes = [
   },
   {
     path: ':token',
-    component: IndexComponent,
+    loadChildren: () =>
+      import('./features/index-page/index-page.module').then(m => m.IndexPageModule),
     resolve: {
       checkedTokens: StartFormResolver
     }

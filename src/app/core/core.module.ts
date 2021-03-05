@@ -4,7 +4,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { RouterModule } from '@angular/router';
 import { ContractsListResolver } from '../features/trades/components/contracts-list/contracts-list.reslover';
-import { StartFormResolver } from '../index/start-form/start-form.component';
 import { HttpService } from './services/http/http.service';
 import { UserService } from './services/user/user.service';
 import { OneInchService } from './services/1inch/1inch';
@@ -12,6 +11,7 @@ import { MaintenanceComponent } from './components/maintenance/maintenance.compo
 import { SharedModule } from '../shared/shared.module';
 import { HeaderComponent } from './components/header/header.component';
 import { ContractEditV3Resolver } from '../features/trades/components/contracts-preview-v3/contracts-preview-v3.resolver';
+import { StartFormResolver } from '../features/index-page/components/start-form/start-form.component';
 
 export function appInitializerFactory(
   translate: TranslateService,

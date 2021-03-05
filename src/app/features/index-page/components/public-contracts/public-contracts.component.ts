@@ -10,10 +10,10 @@ import {
   CHAINS_OF_NETWORKS,
   FIX_TIME
 } from 'src/app/features/trades/components/contracts-preview-v3/contracts-preview-v3.component';
-import { Web3Service } from '../../core/services/web3/web3.service';
+import { Web3Service } from '../../../../core/services/web3/web3.service';
 
-import { UserInterface } from '../../core/services/user/user.interface';
-import { UserService } from '../../core/services/user/user.service';
+import { UserInterface } from '../../../../core/services/user/user.interface';
+import { UserService } from '../../../../core/services/user/user.service';
 
 export interface IContractDetails {
   network?: number;

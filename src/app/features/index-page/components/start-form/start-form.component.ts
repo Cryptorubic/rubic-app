@@ -24,16 +24,15 @@ import { CoingeckoApiService } from 'src/app/core/services/coingecko-api/coingec
 import { Web3ApiService } from 'src/app/core/services/web3Api/web3-api.service';
 import { SWAPS_V2 } from 'src/app/features/trades/components/contracts-preview-v3/contracts-preview-v3.component';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
-import { Web3Service } from '../../core/services/web3/web3.service';
-import { UserService } from '../../core/services/user/user.service';
-import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../../core/services/web3/web3.constants';
-import { ContractsService } from '../../core/services/contracts/contracts.service';
-
-import { OneInchService } from '../../core/services/1inch/1inch';
-import { BackendApiService } from '../../core/services/backend-api/backend-api.service';
-import { UniSwapService } from '../../core/services/instant-trade/uni-swap-service/uni-swap.service';
-import { InstantTrade, InstantTradeToken } from '../../core/services/instant-trade/types';
-import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
+import { OneInchService } from 'src/app/core/services/1inch/1inch';
+import { BackendApiService } from 'src/app/core/services/backend-api/backend-api.service';
+import { ContractsService } from 'src/app/core/services/contracts/contracts.service';
+import { InstantTrade, InstantTradeToken } from 'src/app/core/services/instant-trade/types';
+import { UniSwapService } from 'src/app/core/services/instant-trade/uni-swap-service/uni-swap.service';
+import { UserService } from 'src/app/core/services/user/user.service';
+import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from 'src/app/core/services/web3/web3.constants';
+import { Web3Service } from 'src/app/core/services/web3/web3.service';
+import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
 
 const defaultNetwork = 1;
 

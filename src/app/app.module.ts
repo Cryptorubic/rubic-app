@@ -3,26 +3,11 @@ import { NgModule } from '@angular/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClient, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { ClipboardModule } from 'ngx-clipboard';
-import { OwlModule } from 'ngx-owl-carousel';
 import { Observable } from 'rxjs';
 import { TransferHttpCacheModule } from '@nguniversal/common';
-import { NgToggleModule } from 'ng-toggle-button';
 import { DynamicModule } from 'ng-dynamic-component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { StartFormComponent } from './index/start-form/start-form.component';
-import { IndexComponent } from './index/index.component';
-import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
-import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
-import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { DisclaimerComponent } from './shared/components/disclaimer/disclaimer.component';
@@ -62,14 +47,7 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
   );
 }
 @NgModule({
-  declarations: [
-    AppComponent, // Ok
-    StartFormComponent, // Startform Mmdule
-    IndexComponent, // Index module
-    PublicContractsComponent, // Index module
-    TradeInProgressModalComponent, // Startform module
-    TradeSuccessModalComponent // Startform module
-  ],
+  declarations: [AppComponent],
   entryComponents: [DisclaimerComponent],
   imports: [
     CoreModule,
@@ -87,20 +65,9 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
       cookieName: 'csrftoken',
       headerName: 'X-CSRFToken'
     }),
-    MatDialogModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
-    MatButtonModule,
-    BrowserAnimationsModule,
-    NgxMaterialTimepickerModule,
-    ClipboardModule,
-    OwlModule,
-    NgToggleModule,
     DynamicModule.withComponents([
       TokenLabelComponent,
       BlockchainLabelComponent,

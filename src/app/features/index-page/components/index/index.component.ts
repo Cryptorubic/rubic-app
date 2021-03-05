@@ -1,12 +1,10 @@
 import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { HttpService } from '../core/services/http/http.service';
-import { ChangePasswordComponent } from '../common/change-password/change-password.component';
-
+import { HttpService } from '../../../../core/services/http/http.service';
 // @ts-ignore
-import collaborations from '../../assets/content/collaborations/collaborations.json';
-import { DisclaimerComponent } from '../shared/components/disclaimer/disclaimer.component';
+import collaborations from '../../../../../assets/content/collaborations/collaborations.json';
+import { DisclaimerComponent } from '../../../../shared/components/disclaimer/disclaimer.component';
 
 @Component({
   selector: 'app-index',
@@ -32,19 +30,19 @@ export class IndexComponent implements OnInit, AfterViewInit {
     private httpService: HttpService,
     private router: Router,
     private dialog: MatDialog,
-    route: ActivatedRoute
+    private route: ActivatedRoute
   ) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        if (route.snapshot.params.uid && route.snapshot.params.token) {
-          this.dialog.open(ChangePasswordComponent, {
-            width: '480px',
-            panelClass: 'custom-dialog-container',
-            data: {
-              params: route.snapshot.params
-            }
-          });
-        }
+        // if (route.snapshot.params.uid && route.snapshot.params.token) {
+        //   this.dialog.open(ChangePasswordComponent, {
+        //     width: '480px',
+        //     panelClass: 'custom-dialog-container',
+        //     data: {
+        //       params: route.snapshot.params
+        //     }
+        //   });
+        // }
         if (event.url === '/dashboard/first_entry' && window['dataLayer']) {
           window['dataLayer'].push({ event: 'sign-up' });
         }

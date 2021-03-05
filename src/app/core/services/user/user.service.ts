@@ -12,9 +12,6 @@ import {
 } from './user.interface';
 import { DEFAULT_USER, SOCIAL_KEYS } from './user.constant';
 // import { environment } from '../../../environments/environment';
-
-import { AuthComponent } from '../../../common/auth/auth.component';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -171,7 +168,7 @@ export class UserService {
     return this.httpService.post(URLS.RESEND_EMAIL, data).toPromise();
   }
 
-  public openAuthForm(chapter?: string) {
+  public openAuthForm() {
     return new Promise((resolve, reject) => {
       const updateUserObserver = this.getCurrentUser(false, true).subscribe(userModel => {
         if (!userModel.is_ghost) {
@@ -179,13 +176,13 @@ export class UserService {
           resolve(userModel);
         }
       });
-      this.authDialog = this.dialog.open(AuthComponent, {
-        width: '460px',
-        panelClass: 'custom-dialog-container',
-        data: {
-          chapter: chapter || 'sign_in'
-        }
-      });
+      // this.authDialog = this.dialog.open(AuthComponent, {
+      //   width: '460px',
+      //   panelClass: 'custom-dialog-container',
+      //   data: {
+      //     chapter: chapter || 'sign_in'
+      //   }
+      // });
       this.authDialog
         .beforeClosed()
         .toPromise()
