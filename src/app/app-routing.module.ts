@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IndexComponent } from './index/index.component';
 import { ContractsListComponent } from './contracts-list/contracts-list.component';
 import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
-import { TokenSaleComponent } from './features/token-sale-page/components/token-sale/token-sale.component';
 import { StartFormResolver } from './index/start-form/start-form.component';
 import { BridgeComponent } from './bridge/bridge.component';
 import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
@@ -35,14 +34,6 @@ Object.entries(PROJECT_PARTS).forEach(([projectPartName, projectPartValue]: [str
 export const MODE = currMode;
 
 const routes: Routes = [
-  // landing
-  // {
-  //   path: '',
-  //   component: MainPageComponent,
-  //   data: {
-  //     noheader: true,
-  //   },
-  // },
   {
     path: '',
     component: IndexComponent,
@@ -62,34 +53,6 @@ const routes: Routes = [
   {
     path: 'team',
     loadChildren: () => import('./features/team-page/team-page.module').then(m => m.TeamPageModule)
-  },
-  {
-    path: 'create-v3',
-    redirectTo: '/trades/create-v3'
-  },
-  {
-    path: 'create',
-    redirectTo: '/trades/create'
-  },
-  {
-    path: 'view/:id',
-    redirectTo: '/trades/view/:id'
-  },
-  {
-    path: 'view-v3/:id',
-    redirectTo: '/trades/view-v3/:id'
-  },
-  {
-    path: 'contract/:id',
-    redirectTo: '/trades/contract/:id'
-  },
-  {
-    path: 'contract-v3/:id',
-    redirectTo: '/trades/contract-v3/:id'
-  },
-  {
-    path: 'public/:public_link',
-    redirectTo: '/trades/public/:public_link'
   },
   {
     path: 'public-v3/:public_link',
@@ -126,14 +89,6 @@ const routes: Routes = [
         }
       }
     ]
-  },
-  {
-    path: 'dashboard/first_entry',
-    redirectTo: '/trades'
-  },
-  {
-    path: 'accounts/login',
-    redirectTo: '/trades'
   },
   {
     path: 'reset/:uid/:token',
