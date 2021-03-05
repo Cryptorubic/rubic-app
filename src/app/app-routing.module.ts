@@ -1,16 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { IndexComponent } from './index/index.component';
-import {
-  ContractsListComponent,
-  ContractsListResolver
-} from './contracts-list/contracts-list.component';
+import { ContractsListComponent } from './contracts-list/contracts-list.component';
 
 import { FaqComponent } from './faq-component/faq.component';
-import {
-  ContractsPreviewV3Component,
-  ContractEditV3Resolver
-} from './contracts-preview-v3/contracts-preview-v3.component';
+import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
 // import { MainPageComponent } from './main-page/main-page.component';
 import { AboutageComponent } from './about/about.component';
 import { TokenSaleComponent } from './token-sale/token-sale.component';
@@ -18,6 +12,8 @@ import { StartFormResolver } from './index/start-form/start-form.component';
 import { TeamComponent } from './team/team.component';
 import { BridgeComponent } from './bridge/bridge.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
+import { ContractsListResolver } from './contracts-list/contracts-list.reslover';
+import { ContractEditV3Resolver } from './contracts-preview-v3/contracts-preview-v3.resolver';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -34,14 +30,13 @@ export const PROJECT_PARTS = {
 };
 
 let currMode = 'PROD';
-// tslint:disable-next-line: forin
-for (const m in PROJECT_PARTS) {
-  for (const hostname in PROJECT_PARTS[m]) {
-    if (location.hostname === PROJECT_PARTS[m][hostname]) {
-      currMode = m;
+Object.entries(PROJECT_PARTS).forEach(([projectPartName, projectPartValue]: [string, any]) => {
+  Object.entries(projectPartValue).forEach(([, hostName]: [string, string]) => {
+    if (location.hostname === hostName) {
+      currMode = projectPartName;
     }
-  }
-}
+  });
+});
 
 export const MODE = currMode;
 
@@ -173,11 +168,11 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-    anchorScrolling: 'enabled',
-    onSameUrlNavigation: 'reload',
-    scrollPositionRestoration: 'enabled',
-    relativeLinkResolution: 'legacy'
-})
+      anchorScrolling: 'enabled',
+      onSameUrlNavigation: 'reload',
+      scrollPositionRestoration: 'enabled',
+      relativeLinkResolution: 'legacy'
+    })
   ],
   exports: [RouterModule]
 })

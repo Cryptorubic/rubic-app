@@ -6,11 +6,13 @@ describe('MessageBoxComponent', () => {
   let component: MessageBoxComponent;
   let fixture: ComponentFixture<MessageBoxComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [MessageBoxComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MessageBoxComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MessageBoxComponent);

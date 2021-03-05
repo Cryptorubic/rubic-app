@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
@@ -7,17 +7,21 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './token-sale.component.html',
   styleUrls: ['./token-sale.component.scss']
 })
-export class TokenSaleComponent implements OnInit {
+export class TokenSaleComponent {
   @ViewChild('tokenSaleModal', { static: true }) tokenSale: TemplateRef<any>;
 
   protected tokenSaleModal: MatDialogRef<any>;
 
   public tsmodalStep = false;
+
   public confirmCheckbox = false;
+
   public addressCopy = false;
 
   public tokenSaleEnd = false;
+
   public tokenSaleFullEnd = true;
+
   public tokenSaleTime = 1600783200000;
 
   constructor(private dialog: MatDialog, protected route: ActivatedRoute) {
@@ -29,8 +33,6 @@ export class TokenSaleComponent implements OnInit {
 
     this.tokenSaleEnd = new Date(this.tokenSaleTime).getTime() < new Date().getTime();
   }
-
-  ngOnInit() {}
 
   public openModal() {
     if (this.tokenSaleEnd) {

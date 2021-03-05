@@ -1,7 +1,6 @@
 import {
   Component,
   Inject,
-  OnInit,
   PLATFORM_ID,
   TemplateRef,
   ViewChild,
@@ -9,37 +8,46 @@ import {
   EventEmitter
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { UserService } from '../services/user/user.service';
-import { Web3Service } from '../services/web3/web3.service';
-import { UserInterface } from '../services/user/user.interface';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { NavigationStart, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { UserInterface } from '../../services/user/user.interface';
+import { Web3Service } from '../../services/web3/web3.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   private isBrowser: any;
+
   public pageScrolled: boolean;
+
   public currentUser: UserInterface;
 
   public openedMenu;
+
   public userMenuOpened;
 
   public openedLngList: boolean;
+
   private translator: TranslateService;
+
   public languagesList: { lng: string; title: string; active?: boolean }[];
+
   public currLanguage: string;
 
   @ViewChild('logoutConfirmation', { static: true }) logoutConfirmation: TemplateRef<any>;
+
   @ViewChild('headerPage') headerPage;
 
   private logoutConfirmationModal: MatDialogRef<any>;
+
   public logoutProgress: boolean;
+
   @Output() changedSocialState = new EventEmitter<string>();
 
   public isMobile: boolean = window.innerWidth <= 1024;
@@ -94,7 +102,7 @@ export class HeaderComponent implements OnInit {
       };
     }
 
-    document.getElementsByTagName('body')[0]['addEventListener']('mousedown', () => {
+    document.getElementsByTagName('body')[0].addEventListener('mousedown', () => {
       this.openedMenu = false;
       this.userMenuOpened = false;
     });
@@ -106,19 +114,22 @@ export class HeaderComponent implements OnInit {
       }
     });
   }
+
   private socialFormData: {
     network: string;
     data: any;
   };
+
   public socialAuthError;
 
-  public openAuth() {
-    // this.userService.openAuthForm().then(
-    //   () => {},
-    //   () => {},
-    // );
-    // this.socialComponent.MetamaskAuth();
-  }
+  // public openAuth() {
+  // this.userService.openAuthForm().then(
+  //   () => {},
+  //   () => {},
+  // );
+  // this.socialComponent.MetamaskAuth();
+  // }
+
   private sendMetaMaskRequest(data) {
     this.socialFormData = {
       network: 'mm',
@@ -133,6 +144,7 @@ export class HeaderComponent implements OnInit {
       }
     );
   }
+
   private onTotpError(error) {
     switch (error.status) {
       case 403:
@@ -142,7 +154,11 @@ export class HeaderComponent implements OnInit {
           case '1033':
             this.changedSocialState.emit(error.error.detail);
             break;
+          default:
+            break;
         }
+        break;
+      default:
         break;
     }
   }
@@ -163,8 +179,6 @@ export class HeaderComponent implements OnInit {
       });
     }
   }
-
-  ngOnInit() {}
 
   public openLogoutConfirmation() {
     this.logoutConfirmationModal = this.dialog.open(this.logoutConfirmation, {
@@ -197,6 +211,7 @@ export class HeaderComponent implements OnInit {
     this.languagesList.filter(lang => {
       return lang['lng'] === this.currLanguage;
     })[0].active = true;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.languagesList.sort((a, b) => {
       return b.active ? 1 : -1;
     });

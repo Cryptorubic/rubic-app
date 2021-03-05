@@ -78,7 +78,7 @@ export class ContractsService {
     const allList: {
       trades?: any[];
     } = {};
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const resolveList = () => {
         const allResolveList = allList.trades.sort((contract1, contract2) => {
           return new Date(contract2.created_date) < new Date(contract1.created_date) ? -1 : 1;
@@ -101,7 +101,11 @@ export class ContractsService {
       contracts?: any[];
       trades?: any[];
     } = {};
-    return new Promise((resolve, reject) => {
+    const expiredTrades = {
+      contracts: [],
+      trades: []
+    };
+    return new Promise(resolve => {
       const resolveList = () => {
         if (allList.trades && allList.contracts) {
           const allResolveList = allList.contracts
@@ -121,11 +125,6 @@ export class ContractsService {
               });
           }
         }
-      };
-
-      const expiredTrades = {
-        contracts: [],
-        trades: []
       };
 
       this.httpService

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { InputTokenShort } from '../types';
 
 @Component({
@@ -6,11 +6,10 @@ import { InputTokenShort } from '../types';
   templateUrl: './token-label.component.html',
   styleUrls: ['./token-label.component.scss']
 })
-export class TokenLabelComponent implements OnInit {
+export class TokenLabelComponent {
   @Input() token: InputTokenShort;
+
   @Input() selected = false;
 
   constructor() {}
-
-  ngOnInit() {}
 }

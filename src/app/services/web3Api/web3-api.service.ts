@@ -1,18 +1,26 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { HttpProvider, Transaction } from 'web3-core';
-import { BridgeNetwork } from '../bridge/types';
-import { ERC20_TOKEN_ABI } from '../web3/web3.constants';
-import { RubicError } from '../../errors/RubicError';
-import { UserRejectError } from '../../errors/bridge/UserRejectError';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
-import { ProviderService } from '../provider/provider.service';
 import { TransactionReceipt } from 'web3-eth';
+import { Transaction, HttpProvider } from 'web3-core';
+import { AccountError } from 'src/app/errors/bridge/AccountError';
+import { MetamaskError } from 'src/app/errors/bridge/MetamaskError';
+import { ProviderService } from '../provider/provider.service';
+import { UserRejectError } from '../../errors/bridge/UserRejectError';
+import { RubicError } from '../../errors/RubicError';
+import { ERC20_TOKEN_ABI } from '../web3/web3.constants';
+import { BridgeNetwork } from '../bridge/types';
 import { TokenInfoBody, Web3ApiNetwork } from './types';
 import { nativeTokens } from './native-tokens';
 import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
 import { Contract } from 'web3-eth-contract';
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+interface Web3ApiNetwork {
+  id: number;
+  name: string;
+}
 
 const NETWORKS: Web3ApiNetwork[] = [
   {
@@ -34,12 +42,19 @@ const NETWORKS: Web3ApiNetwork[] = [
 })
 export class Web3ApiService {
   private readonly metamaskAddress: string;
-  private ethereum;
+
+  private ethereum = window.ethereum;
+
   private web3: Web3;
+
   public error: RubicError;
+
   public connection: any;
+
   private defaultMockGas: string;
+
   public ethersProvider: any;
+
   public web3Infura: {
     [BLOCKCHAIN_NAMES.ETHEREUM]: Web3;
     [BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN]: Web3;
@@ -128,7 +143,7 @@ export class Web3ApiService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log('Tokens transfer error. ' + err);
+          console.log(`Tokens transfer error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -158,7 +173,7 @@ export class Web3ApiService {
         .send({ from: this.address, ...(this.defaultMockGas && { gas: this.defaultMockGas }) })
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
-          console.log('Tokens transfer error. ' + err);
+          console.log(`Tokens transfer error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -196,7 +211,7 @@ export class Web3ApiService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))
         .on('error', err => {
-          console.log('Tokens transfer error. ' + err);
+          console.log(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
             reject(new UserRejectError());
@@ -232,7 +247,7 @@ export class Web3ApiService {
         })
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
-          console.log('Tokens transfer error. ' + err);
+          console.log(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
             reject(new UserRejectError());
@@ -341,7 +356,7 @@ export class Web3ApiService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log('Tokens approve error. ' + err);
+          console.log(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -384,7 +399,7 @@ export class Web3ApiService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log('Method execution error. ' + err);
+          console.log(`Method execution error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -418,7 +433,7 @@ export class Web3ApiService {
         })
         .on('transactionHash', resolve)
         .on('error', err => {
-          console.log('Tokens approve error. ' + err);
+          console.log(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -468,10 +483,7 @@ export class Web3ApiService {
    * @param [options.inWei = false] if true, then the return value will be in Wei
    * @return transaction gas fee in Ether (or in Wei if options.inWei = true) or null if transaction is not mined
    */
-  public async getTransactionGasFee(
-    hash: string,
-    options: { inWei?: boolean } = {}
-  ): Promise<BigNumber> {
+  public async getTransactionGasFee(hash: string): Promise<BigNumber> {
     const transaction = await this.getTransactionByHash(hash);
     const receipt = await this.web3.eth.getTransactionReceipt(hash);
 
@@ -499,9 +511,8 @@ export class Web3ApiService {
       return new Promise(resolve =>
         setTimeout(() => resolve(this.getTransactionByHash(hash, attempt + 1)), timeout)
       );
-    } else {
-      return transaction;
     }
+    return transaction;
   }
 
   /**

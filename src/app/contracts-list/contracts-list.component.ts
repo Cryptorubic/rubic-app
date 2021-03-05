@@ -1,26 +1,29 @@
-import { Component, Injectable, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { Component, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { HttpClient } from '@angular/common/http';
 import { ContractsService } from '../services/contracts/contracts.service';
 import { UserService } from '../services/user/user.service';
 
-import { Observable } from 'rxjs';
 import { CONTRACT_STATES } from '../contract-preview/contract-states';
 import { UserInterface } from '../services/user/user.interface';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-contracts-list',
   templateUrl: './contracts-list.component.html',
   styleUrls: ['./contracts-list.component.scss']
 })
-export class ContractsListComponent implements OnInit {
+export class ContractsListComponent {
   public contractsList: any[] = [];
+
   public states = CONTRACT_STATES;
+
   private contractForDeleting;
+
   public selectedFilter: any;
 
   @ViewChild('deleteConfirmation', { static: true }) deleteConfirmation;
+
   private deleteConfirmationModal: MatDialogRef<any>;
 
   constructor(
@@ -41,7 +44,7 @@ export class ContractsListComponent implements OnInit {
 
     let serverDateTimeRange = 0;
     this.http
-      .get('/assets/images/1x1.png?_t=' + new Date().getTime(), {
+      .get(`/assets/images/1x1.png?_t=${new Date().getTime()}`, {
         responseType: 'text',
         observe: 'response'
       })
@@ -50,7 +53,7 @@ export class ContractsListComponent implements OnInit {
         serverDateTimeRange = new Date().getTime() - new Date(res.headers.get('Date')).getTime();
       });
 
-    contractListData.map(item => {
+    contractListData.forEach(item => {
       const leftTime =
         (new Date(item.stop_date).getTime() - (new Date().getTime() - serverDateTimeRange)) / 1000;
 
@@ -75,8 +78,6 @@ export class ContractsListComponent implements OnInit {
     console.log('this.contractsList', this.contractsList);
     this.selectedFilter = {};
   }
-
-  ngOnInit() {}
 
   public toContract(contract) {
     if (!contract.contract_type) {
@@ -149,12 +150,11 @@ export class ContractsListComponent implements OnInit {
               new Date(contract2.created_date).getTime()
               ? 1
               : -1;
-          } else {
-            return new Date(contract2.created_date).getTime() >
-              new Date(contract1.created_date).getTime()
-              ? 1
-              : -1;
           }
+          return new Date(contract2.created_date).getTime() >
+            new Date(contract1.created_date).getTime()
+            ? 1
+            : -1;
         });
         break;
       case 'expire':
@@ -164,9 +164,8 @@ export class ContractsListComponent implements OnInit {
 
           if (this.selectedFilter.asc) {
             return new Date(date1).getTime() > new Date(date2).getTime() ? 1 : -1;
-          } else {
-            return new Date(date2).getTime() > new Date(date1).getTime() ? 1 : -1;
           }
+          return new Date(date2).getTime() > new Date(date1).getTime() ? 1 : -1;
         });
         break;
 
@@ -176,11 +175,8 @@ export class ContractsListComponent implements OnInit {
             return this.states[contract1.state].NUMBER > this.states[contract2.state].NUMBER
               ? 1
               : -1;
-          } else {
-            return this.states[contract2.state].NUMBER > this.states[contract1.state].NUMBER
-              ? 1
-              : -1;
           }
+          return this.states[contract2.state].NUMBER > this.states[contract1.state].NUMBER ? 1 : -1;
         });
 
         break;
@@ -190,33 +186,5 @@ export class ContractsListComponent implements OnInit {
           return new Date(contract2.created_date) < new Date(contract1.created_date) ? -1 : 1;
         });
     }
-  }
-}
-
-@Injectable()
-export class ContractsListResolver implements Resolve<any> {
-  constructor(
-    private contractsService: ContractsService,
-    private userService: UserService,
-    private router: Router
-  ) {}
-
-  resolve(route: ActivatedRouteSnapshot) {
-    return new Observable(observer => {
-      const subscription = this.userService.getCurrentUser(false, true).subscribe(user => {
-        if (!user.is_ghost) {
-          this.contractsService.getContractsList().then(contracts => {
-            observer.next(contracts);
-            observer.complete();
-          });
-        } else {
-          this.router.navigate(['/trades']);
-        }
-        subscription.unsubscribe();
-      });
-      return {
-        unsubscribe() {}
-      };
-    });
   }
 }

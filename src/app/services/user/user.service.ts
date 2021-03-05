@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpService } from '../http/http.service';
 import { Observable } from 'rxjs';
+import BigNumber from 'bignumber.js';
+import { MatDialog } from '@angular/material';
+import { HttpService } from '../http/http.service';
 import { URLS } from './user.service.api';
 import {
   AuthUserInterface,
@@ -11,16 +13,16 @@ import {
 import { DEFAULT_USER, SOCIAL_KEYS } from './user.constant';
 // import { environment } from '../../../environments/environment';
 
-import BigNumber from 'bignumber.js';
 import { AuthComponent } from '../../common/auth/auth.component';
-import { MatDialog } from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private FBInit: boolean;
+
   private GAInit: boolean;
+
   private MMInit: boolean;
 
   constructor(private dialog: MatDialog, private httpService: HttpService) {
@@ -45,8 +47,11 @@ export class UserService {
       this.MMInit = true;
     }
   }
+
   public userObserves;
+
   private _userModel: UserInterface;
+
   private _updateProgress: boolean;
 
   private authDialog;
@@ -54,7 +59,7 @@ export class UserService {
   private checkUserProfile() {
     const decimalsBalance = 18;
     this._userModel.visibleBalance = new BigNumber(this._userModel.balance)
-      .div(Math.pow(10, decimalsBalance))
+      .div(decimalsBalance ** 10)
       .toString();
   }
 
@@ -66,18 +71,18 @@ export class UserService {
     });
   }
 
-  public updateUser(afterLogout?: boolean) {
+  public updateUser(afterLogout?: boolean): void {
     if (this._updateProgress) {
       return;
     }
     this._updateProgress = true;
-    return this.getProfile()
+    this.getProfile()
       .then(
         result => {
           this._userModel = result;
           this._updateProgress = false;
         },
-        error => {
+        () => {
           this._userModel = DEFAULT_USER;
           this._userModel.isLogout = afterLogout;
           this._updateProgress = false;
@@ -110,11 +115,11 @@ export class UserService {
         });
       }
 
-      const _th = this;
+      const serviceThis = this;
 
       return {
         unsubscribe() {
-          _th.userObserves = _th.userObserves.filter(subscriber => {
+          serviceThis.userObserves = serviceThis.userObserves.filter(subscriber => {
             return subscriber !== observer;
           });
         }
@@ -147,7 +152,8 @@ export class UserService {
   }
 
   public registration(data: NewUserInterface): Promise<any> {
-    data.email = data.username = data.username.toLowerCase();
+    data.username = data.username.toLowerCase();
+    data.email = data.username.toLowerCase();
     return this.httpService.post(URLS.REGISTRATION, data, URLS.HOSTS.AUTH_PATH).toPromise();
   }
 
@@ -185,6 +191,7 @@ export class UserService {
         .toPromise()
         .then(() => {
           updateUserObserver.unsubscribe();
+          // eslint-disable-next-line prefer-promise-reject-errors
           reject({
             state: 'CLOSED'
           });
@@ -244,7 +251,10 @@ export class UserService {
         return this.authenticate(data, URLS.SOCIAL.FACEBOOK);
       case 'ga':
         return this.authenticate(data, URLS.SOCIAL.GOOGLE);
+      default:
+        break;
     }
+    return null;
   }
 
   public getMetaMaskAuthMsg() {
@@ -263,8 +273,8 @@ export class UserService {
     });
   }
 
-  public FBAuth() {
-    return new Promise((resolve, reject) => {
+  public FBAuth(): Promise<any> {
+    return new Promise(resolve => {
       const getStatus = () => {
         window['FB'].getLoginStatus(response => {
           if (response.status === 'connected') {

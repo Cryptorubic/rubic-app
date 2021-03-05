@@ -6,11 +6,13 @@ describe('NetworkErrorComponent', () => {
   let component: NetworkErrorComponent;
   let fixture: ComponentFixture<NetworkErrorComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [NetworkErrorComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [NetworkErrorComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkErrorComponent);

@@ -6,11 +6,13 @@ describe('BridgeFormComponent', () => {
   let component: BridgeFormComponent;
   let fixture: ComponentFixture<BridgeFormComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [BridgeFormComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [BridgeFormComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BridgeFormComponent);

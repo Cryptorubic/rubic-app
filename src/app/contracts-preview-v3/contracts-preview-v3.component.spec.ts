@@ -6,11 +6,13 @@ describe('ContractsPreviewV3Component', () => {
   let component: ContractsPreviewV3Component;
   let fixture: ComponentFixture<ContractsPreviewV3Component>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ContractsPreviewV3Component]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ContractsPreviewV3Component]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ContractsPreviewV3Component);

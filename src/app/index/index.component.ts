@@ -1,10 +1,9 @@
 import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { HttpService } from '../services/http/http.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { HttpService } from '../services/http/http.service';
 import { ChangePasswordComponent } from '../common/change-password/change-password.component';
 import { DisclaimerComponent } from '../components/disclaimer/disclaimer.component';
-import { CookieService } from 'ngx-cookie-service';
 
 // @ts-ignore
 import collaborations from '../../assets/content/collaborations/collaborations.json';
@@ -16,6 +15,7 @@ import collaborations from '../../assets/content/collaborations/collaborations.j
 })
 export class IndexComponent implements OnInit, AfterViewInit {
   @ViewChild('disclaimerText', { static: true }) disclaimerText;
+
   public isInstanceTrade: boolean = false;
 
   @ViewChild('listingModal') listing: TemplateRef<any>;
@@ -87,8 +87,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
     this.crossChainMode = !this.crossChainMode;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   ngOnInit() {
     // this.httpService.get(STAT_URL).subscribe(res => this.stat = res);
+    // eslint-disable-next-line no-new
     new window['ScrollTopButton'](500);
     // this.openModal();
   }

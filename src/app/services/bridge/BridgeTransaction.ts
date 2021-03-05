@@ -1,12 +1,13 @@
+import BigNumber from 'bignumber.js';
+import { TransactionReceipt } from 'web3-eth';
 import { Web3ApiService } from '../web3Api/web3-api.service';
 import { IBridgeToken } from './types';
 import { RubicError } from '../../errors/RubicError';
-import BigNumber from 'bignumber.js';
-import {TransactionReceipt} from 'web3-eth';
 
 export class BridgeTransaction {
-    public txHash: string;
-    public receipt: TransactionReceipt;
+  public txHash: string;
+
+  public receipt: TransactionReceipt;
 
   constructor(
     public binanceId: string,
@@ -54,6 +55,5 @@ export class BridgeTransaction {
 
     console.log(this.receipt);
     console.log(this.binanceId);
-    return;
   }
 }

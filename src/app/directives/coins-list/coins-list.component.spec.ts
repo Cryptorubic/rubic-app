@@ -6,11 +6,13 @@ describe('CoinsListComponent', () => {
   let component: CoinsListComponent;
   let fixture: ComponentFixture<CoinsListComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [CoinsListComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [CoinsListComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CoinsListComponent);

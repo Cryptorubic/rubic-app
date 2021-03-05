@@ -6,11 +6,13 @@ describe('EmailConfirmComponent', () => {
   let component: EmailConfirmComponent;
   let fixture: ComponentFixture<EmailConfirmComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [EmailConfirmComponent]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [EmailConfirmComponent]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EmailConfirmComponent);

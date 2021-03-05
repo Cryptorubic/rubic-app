@@ -11,12 +11,19 @@ import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
 })
 export class ProviderService {
   public ethereum = window.ethereum;
+
   public web3: Web3;
+
   public error: RubicError;
+
   public address: string;
+
   public connection: any;
+
   public defaultMockGas: string;
+
   public ethersProvider: any;
+
   public web3Infura: {
     [BLOCKCHAIN_NAMES.ETHEREUM]: Web3;
     [BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN]: Web3;
