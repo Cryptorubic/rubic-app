@@ -35,9 +35,6 @@ import { PublicContractsComponent } from './index/public-contracts/public-contra
 import { ContactsComponent } from './contacts-component/contacts.component';
 import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-preview-v3.component';
 import { ChangePasswordComponent } from './common/change-password/change-password.component';
-import { MainPageComponent } from './main-page/main-page.component';
-import { HeaderMainPageComponent } from './main-page/header/header.component';
-import { FooterMainPageComponent } from './main-page/footer/footer.component';
 import { TradeInProgressModalComponent } from './index/trade-in-progress-modal/trade-in-progress-modal.component';
 import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-success-modal.component';
 import { CoreModule } from './core/core.module';
@@ -83,9 +80,6 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
     AppComponent, // Ok
     StartFormComponent, // Startform Mmdule
     IndexComponent, // Index module
-    FooterMainPageComponent, // Main page module
-    HeaderMainPageComponent, // Main page module
-    MainPageComponent, // Main page module
     RegistrationComponent, // Auth module
     AuthComponent, // Auth module
     AuthenticationComponent, // Auth module
