@@ -4,6 +4,7 @@ import { BLOCKCHAIN_NAME } from '../types/Blockchain';
 import Web3 from 'web3';
 import { Web3Public } from './Web3Public';
 import { PublicProviderService } from '../public-provider/public-provider.service';
+import { BlockchainsInfo } from '../blockchain-info';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,10 @@ export class Web3PublicService {
     const web3Connections = this.connectionLinks.reduce(
       (acc, connection) => ({
         ...acc,
-        [connection.blockchainName as BLOCKCHAIN_NAME]: new Web3Public(new Web3(connection.rpcLink))
+        [connection.blockchainName as BLOCKCHAIN_NAME]: new Web3Public(
+          new Web3(connection.rpcLink),
+          BlockchainsInfo.getBlockchainByName(connection.blockchainName)
+        )
       }),
       {} as any
     );

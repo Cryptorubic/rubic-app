@@ -4,11 +4,10 @@ import { ERC20_TOKEN_ABI } from '../../web3LEGACY/web3.constants';
 import { Transaction } from 'web3-core';
 import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
 import { TokenInfoBody } from '../web3-private-service/types';
-import { nativeTokens } from '../web3-private-service/native-tokens';
-import { Contract } from 'web3-eth-contract';
+import { IBlockchain, Token } from '../types/Blockchain';
 
 export class Web3Public {
-  constructor(private web3: Web3) {}
+  constructor(private web3: Web3, private blockchain: IBlockchain) {}
   /**
    * @description gets account balance in Eth units
    * @param address wallet address whose balance you want to find out
@@ -180,6 +179,32 @@ export class Web3Public {
   }
 
   /**
+   * @description call smart-contract pure method of smart-contract and returns its output value
+   * @param contractAddress address of smart-contract which method is to be executed
+   * @param contractAbi abi of smart-contract which method is to be executed
+   * @param methodName calling method name
+   * @param [options] additional options
+   * @param [options.from] the address the call “transaction” should be made from
+   * @param [options.methodArguments] executing method arguments
+   * @return smart-contract pure method returned value
+   */
+  public async callContractMethod(
+    contractAddress: string,
+    contractAbi: any[],
+    methodName: string,
+    options: {
+      methodArguments?: any[];
+      from?: string;
+    } = {}
+  ): Promise<unknown> {
+    const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+
+    return contract.methods[methodName](...options.methodArguments).call({
+      ...(options.from && { from: options.from })
+    });
+  }
+
+  /**
    * @description gets information about token through ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
    * @param blockchain platform of the token
@@ -190,92 +215,41 @@ export class Web3Public {
     blockchain: BLOCKCHAIN_NAMES
   ) => Promise<TokenInfoBody> = this.getTokenInfoCachingDecorator();
 
-  /**
-   * @description call smart-contract pure method of smart-contract and returns its output value
-   * @param contractAddress address of smart-contract which method is to be executed
-   * @param contractAbi abi of smart-contract which method is to be executed
-   * @param methodName calling method name
-   * @param methodArguments executing method arguments
-   * @param [options] additional options
-   * @param [options.from] the address the call “transaction” should be made from
-   * @return smart-contract pure method returned value
-   */
-  public async callContractMethod(
-    contractAddress: string,
-    contractAbi: any[],
-    methodName: string,
-    methodArguments: any[],
-    options: {
-      from?: string;
-    } = {}
-  ): Promise<unknown> {
-    const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+  private getTokenInfoCachingDecorator(): (tokenAddress: string) => Promise<Token> {
+    const tokensCache: { [address: string]: Token } = {};
 
-    return contract.methods[methodName](...methodArguments).call({
-      ...(options.from && { from: options.from })
-    });
-  }
-
-  private getTokenInfoCachingDecorator() {
-    const tokensBodyCache = new Map<
-      { tokenAddress: string; blockchain: BLOCKCHAIN_NAMES },
-      TokenInfoBody
-    >();
-
-    return async (tokenAddress: string, blockchain: BLOCKCHAIN_NAMES): Promise<TokenInfoBody> => {
-      if (tokensBodyCache.has({ tokenAddress, blockchain })) {
-        return tokensBodyCache.get({ tokenAddress, blockchain });
+    return async (tokenAddress: string): Promise<Token> => {
+      if (!tokensCache[tokenAddress]) {
+        tokensCache[tokenAddress] = await this.callForTokenInfo(tokenAddress);
       }
 
-      const tokenBody = await this.getTokenBody(tokenAddress, blockchain);
-      tokensBodyCache.set({ tokenAddress, blockchain }, tokenBody);
-
-      return tokenBody;
+      return tokensCache[tokenAddress];
     };
   }
 
-  private async getTokenBody(
-    tokenAddress: string,
-    blockchain: BLOCKCHAIN_NAMES
-  ): Promise<TokenInfoBody> {
-    if (this.isEtherAddress(tokenAddress)) {
-      const tokenBody = nativeTokens.find(t => t.platform === blockchain);
-      if (tokenBody) {
-        return tokenBody;
-      } else {
-        throw new Error(`No token for ${blockchain} blockchain`);
-      }
+  private async callForTokenInfo(tokenAddress: string): Promise<Token> {
+    if (this.isNativeAddress(tokenAddress)) {
+      return this.blockchain.nativeCoin;
     }
 
-    const contract = new this.web3Infura[blockchain].eth.Contract(
-      ERC20_TOKEN_ABI as any[],
-      tokenAddress
-    );
-    const tokenFields = ['decimals', 'symbol', 'name'];
-
-    const tokenBody = {} as TokenInfoBody;
+    const tokenMethods = ['decimals', 'symbol', 'name'];
     const tokenFieldsPromises = [];
-    tokenFields.forEach(tokenField => {
-      tokenFieldsPromises.push(this.setTokenField(contract, tokenField, tokenBody));
-    });
 
-    await Promise.all(tokenFieldsPromises);
-    return tokenBody;
-  }
+    for (let methodName of tokenMethods) {
+      tokenFieldsPromises.push(this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, methodName));
+    }
 
-  private setTokenField(
-    contract: Contract,
-    tokenField: string,
-    tokenBody: TokenInfoBody
-  ): Promise<any> {
-    return contract.methods[tokenField]()
-      .call()
-      .then(value => {
-        if (tokenField === 'decimals') {
-          tokenBody[tokenField] = parseInt(value);
-        } else {
-          tokenBody[tokenField] = value;
-        }
-      });
+    const results = (await Promise.all(tokenFieldsPromises)).reduce((acc, { name, value }) => {
+      acc[name] = value;
+      return acc;
+    }, {});
+
+    return {
+      blockchainName: this.blockchain.name,
+      address: tokenAddress,
+      name: results.name,
+      symbol: results.symbol,
+      decimals: parseInt(results.decimals)
+    };
   }
 }
