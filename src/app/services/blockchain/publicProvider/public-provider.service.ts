@@ -15,11 +15,11 @@ export class PublicProviderService {
       },
       {
         blockchainName: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        rpcLink: 'innfura_url'
+        rpcLink: 'https://bsc-dataseed1.binance.org'
       },
       {
         blockchainName: BLOCKCHAIN_NAME.MATIC,
-        rpcLink: 'innfura_url'
+        rpcLink: 'https://rpc-mainnet.matic.network'
       }
     ];
   }
