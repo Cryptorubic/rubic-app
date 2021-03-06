@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
-import { MetamaskError } from '../../../../errors/bridge/MetamaskError';
 import Web3 from 'web3';
-import { AccountError } from '../../../../errors/bridge/AccountError';
-import { RubicError } from '../../../../errors/RubicError';
-import { ethers } from 'ethers';
-import { BLOCKCHAIN_NAMES } from '../../../../pages/main-page/trades-form/types';
 import { PrivateProvider } from '../private-provider';
-import { BLOCKCHAIN_NAME, BLOCKCHAINS, IBlockchain } from '../../types/Blockchain';
-import { Observable, Subject } from 'rxjs';
+import { IBlockchain } from '../../types/Blockchain';
+import { Subject } from 'rxjs';
+import { BlockchainsInfo } from '../../blockchain-info';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +40,7 @@ export class MetamaskProviderService extends PrivateProvider {
 
       this._metaMask.on('chainChanged', (chain: string) => {
         const chainId = parseInt(chain);
-        this.onNetworkChanges.next(BLOCKCHAINS.getBlockchainById(chain));
+        this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
         console.info('Chain changed', chain);
         window.location.reload();
       });
@@ -64,7 +60,7 @@ export class MetamaskProviderService extends PrivateProvider {
 
   protected getNetwork(): IBlockchain {
     const networkId = this._metaMask?.networkVersion;
-    return networkId ? BLOCKCHAINS.getBlockchainById(networkId) : undefined;
+    return networkId ? BlockchainsInfo.getBlockchainById(networkId) : undefined;
   }
 
   public async activate(): Promise<void> {

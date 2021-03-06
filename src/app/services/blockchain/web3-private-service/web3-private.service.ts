@@ -1,17 +1,13 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { Transaction } from 'web3-core';
 import { ERC20_TOKEN_ABI } from '../../web3LEGACY/web3.constants';
 import { UserRejectError } from '../../../errors/bridge/UserRejectError';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import { TransactionReceipt } from 'web3-eth';
-import { TokenInfoBody, Web3ApiNetwork } from './types';
-import { nativeTokens } from './native-tokens';
-import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
-import { Contract } from 'web3-eth-contract';
-import { PrivateProvider } from '../private-provider/private-provider';
+import { BLOCKCHAIN_NAME, IBlockchain } from '../types/Blockchain';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,45 +15,43 @@ import { PrivateProvider } from '../private-provider/private-provider';
 export class Web3PrivateService {
   private web3: Web3;
   private defaultMockGas: string;
-  public readonly provider: PrivateProvider;
 
-  private get address(): string {
+  public readonly onAddressChanges: Subject<string>;
+  public readonly onNetworkChanges: Subject<IBlockchain>;
+
+  public get address(): string {
     return this.provider.address;
   }
 
-  constructor(private httpClient: HttpClient, provider: MetamaskProviderService) {
+  public get network(): IBlockchain {
+    return this.provider.network;
+  }
+
+  public get networkName(): BLOCKCHAIN_NAME {
+    return this.provider.networkName;
+  }
+
+  public get isProviderActive(): boolean {
+    return this.provider.isActive;
+  }
+
+  public get isProviderInstalled(): boolean {
+    return this.provider.isInstalled;
+  }
+
+  public async activate(): Promise<void> {
+    return this.provider.activate();
+  }
+
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly provider: MetamaskProviderService
+  ) {
     this.provider = provider;
+    this.onAddressChanges = provider.onAddressChanges;
+    this.onNetworkChanges = provider.onNetworkChanges;
     this.web3 = provider.web3;
     this.defaultMockGas = provider.defaultGasLimit;
-  }
-
-  /**
-   * @description gets account balance in Eth units
-   * @param [options] additional options
-   * @param [options.address] wallet address whose balance you want to find out
-   * @param [options.inWei = false] boolean flag to get integer result in Wei
-   * @return account balance in Eth (or in Wei if options.inWei === true)
-   */
-  public async getBalance(options: { address?: string; inWei?: boolean } = {}): Promise<BigNumber> {
-    const balance = await this.web3.eth.getBalance(options.address || this.address);
-    return new BigNumber(options.inWei ? balance : this.weiToEth(balance));
-  }
-
-  /**
-   * @description gets ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param [options] additional options
-   * @param [options.address = this.address] wallet address whose balance you want to find out
-   * @return account tokens balance as integer (multiplied to 10 ** decimals)
-   */
-  public async getTokenBalance(
-    tokenAddress: string,
-    options: { address?: string } = {}
-  ): Promise<BigNumber> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
-
-    const balance = await contract.methods.balanceOf(options.address || this.address).call();
-    return new BigNumber(balance);
   }
 
   /**
@@ -202,75 +196,6 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description predicts the volume of gas required to execute the contract method
-   * @param contractAbi abi of smart-contract
-   * @param contractAddress address of smart-contract
-   * @param methodName method whose execution gas number is to be calculated
-   * @param methodArguments arguments of the executed contract method
-   * @param [value] The value transferred for the call “transaction” in wei.
-   * @return The gas amount estimated
-   */
-  public async getEstimatedGas(
-    contractAbi: any[],
-    contractAddress: string,
-    methodName: string,
-    methodArguments: any[],
-    value?: string | BigNumber
-  ): Promise<BigNumber> {
-    const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
-
-    const gasLimit = await contract.methods[methodName](...methodArguments).estimateGas({
-      from: this.address,
-      gas: 40000000,
-      ...(value && { value })
-    });
-    return new BigNumber(gasLimit);
-  }
-
-  /**
-   * @description calculates the average price per unit of gas according to web3
-   * @return average gas price in ETH
-   */
-  public async getGasPriceInETH(): Promise<BigNumber> {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    return new BigNumber(gasPrice).div(10 ** 18);
-  }
-
-  /**
-   * @description calculates the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko
-   * @param gasLimit gas limit
-   * @param etherPrice price of Eth unit
-   * @return gas fee in usd$
-   */
-  public async getGasFee(gasLimit: BigNumber, etherPrice: BigNumber): Promise<BigNumber> {
-    const gasPrice = await this.getGasPriceInETH();
-    return gasPrice.multipliedBy(gasLimit).multipliedBy(etherPrice);
-  }
-
-  /**
-   * @description executes allowance method in ERC-20 token contract
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param spenderAddress wallet or contract address, allowed to spend
-   * @param [options] additional options
-   * @param [options.ownerAddress] wallet address to spend from
-   * @return tokens amount, allowed to be spent
-   */
-  public async getAllowance(
-    tokenAddress: string,
-    spenderAddress: string,
-    options: {
-      ownerAddress?: string;
-    } = {}
-  ): Promise<BigNumber> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
-
-    const allowance = await contract.methods
-      .allowance(options.ownerAddress || this.address, spenderAddress)
-      .call({ from: this.address });
-    return new BigNumber(allowance);
-  }
-
-  /**
    * @description executes approve method in ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
    * @param spenderAddress wallet or contract address to approve
@@ -399,7 +324,7 @@ export class Web3PrivateService {
    * @description converts Eth amount into Wei
    * @param value to convert in Eth
    */
-  public ethToWei(value: string | BigNumber): string {
+  private ethToWei(value: string | BigNumber): string {
     return this.web3.utils.toWei(value.toString(), 'ether');
   }
 
@@ -407,140 +332,7 @@ export class Web3PrivateService {
    * @description converts Wei amount into Eth
    * @param value to convert in Wei
    */
-  public weiToEth(value: string | BigNumber): string {
+  private weiToEth(value: string | BigNumber): string {
     return this.web3.utils.fromWei(value.toString(), 'ether');
-  }
-
-  /**
-   * @description checks if address is Ether native address
-   * @param address address to check
-   */
-  public isEtherAddress(address: string): boolean {
-    return address === '0x0000000000000000000000000000000000000000';
-  }
-
-  /**
-   * @description gets mined transaction gas fee in Ether
-   * @param hash transaction hash
-   * @param [options] additional options
-   * @param [options.inWei = false] if true, then the return value will be in Wei
-   * @return transaction gas fee in Ether (or in Wei if options.inWei = true) or null if transaction is not mined
-   */
-  public async getTransactionGasFee(
-    hash: string,
-    options: { inWei?: boolean } = {}
-  ): Promise<BigNumber> {
-    const transaction = await this.getTransactionByHash(hash);
-    const receipt = await this.web3.eth.getTransactionReceipt(hash);
-
-    if (!transaction || !receipt) {
-      return null;
-    }
-
-    const gasPrice = new BigNumber(transaction.gasPrice);
-    const gasLimit = new BigNumber(receipt.gasUsed);
-
-    return gasPrice.multipliedBy(gasLimit);
-  }
-
-  private async getTransactionByHash(hash: string, attempt?: number): Promise<Transaction> {
-    attempt = attempt || 0;
-    const limit = 10;
-    const timeout = 500;
-
-    if (attempt >= limit) {
-      return null;
-    }
-
-    const transaction = await this.web3.eth.getTransaction(hash);
-    if (transaction === null) {
-      return new Promise(resolve =>
-        setTimeout(() => resolve(this.getTransactionByHash(hash, attempt + 1)), timeout)
-      );
-    } else {
-      return transaction;
-    }
-  }
-
-  /**
-   * @description checks if a given address is a valid Ethereum address
-   * @param address the address to check validity
-   */
-  public isAddressCorrect(address: string) {
-    return this.web3.utils.isAddress(address);
-  }
-
-  /**
-   * @description gets information about token through ERC-20 token contract
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param blockchain platform of the token
-   * @return object, with written token fields, or a error, if there's no such token
-   */
-  public getTokenInfo: (
-    tokenAddress: string,
-    blockchain: BLOCKCHAIN_NAMES
-  ) => Promise<TokenInfoBody> = this.getTokenInfoCachingDecorator();
-
-  private getTokenInfoCachingDecorator() {
-    const tokensBodyCache = new Map<
-      { tokenAddress: string; blockchain: BLOCKCHAIN_NAMES },
-      TokenInfoBody
-    >();
-
-    return async (tokenAddress: string, blockchain: BLOCKCHAIN_NAMES): Promise<TokenInfoBody> => {
-      if (tokensBodyCache.has({ tokenAddress, blockchain })) {
-        return tokensBodyCache.get({ tokenAddress, blockchain });
-      }
-
-      const tokenBody = await this.getTokenBody(tokenAddress, blockchain);
-      tokensBodyCache.set({ tokenAddress, blockchain }, tokenBody);
-
-      return tokenBody;
-    };
-  }
-
-  private async getTokenBody(
-    tokenAddress: string,
-    blockchain: BLOCKCHAIN_NAMES
-  ): Promise<TokenInfoBody> {
-    if (this.isEtherAddress(tokenAddress)) {
-      const tokenBody = nativeTokens.find(t => t.platform === blockchain);
-      if (tokenBody) {
-        return tokenBody;
-      } else {
-        throw new Error(`No token for ${blockchain} blockchain`);
-      }
-    }
-
-    const contract = new this.web3Infura[blockchain].eth.Contract(
-      ERC20_TOKEN_ABI as any[],
-      tokenAddress
-    );
-    const tokenFields = ['decimals', 'symbol', 'name'];
-
-    const tokenBody = {} as TokenInfoBody;
-    const tokenFieldsPromises = [];
-    tokenFields.forEach(tokenField => {
-      tokenFieldsPromises.push(this.setTokenField(contract, tokenField, tokenBody));
-    });
-
-    await Promise.all(tokenFieldsPromises);
-    return tokenBody;
-  }
-
-  private setTokenField(
-    contract: Contract,
-    tokenField: string,
-    tokenBody: TokenInfoBody
-  ): Promise<any> {
-    return contract.methods[tokenField]()
-      .call()
-      .then(value => {
-        if (tokenField === 'decimals') {
-          tokenBody[tokenField] = parseInt(value);
-        } else {
-          tokenBody[tokenField] = value;
-        }
-      });
   }
 }
