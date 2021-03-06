@@ -92,9 +92,9 @@ export class BridgeService {
     toAddress: string,
     onTransactionHash?: (hash: string) => void
   ): Observable<string> {
-    if (this.web3Api.error) {
+    /*if (this.web3Api.error) {
       return throwError(this.web3Api.error);
-    }
+    }*/
 
     if (!this.web3Api.network || this.web3Api.network.name !== fromNetwork) {
       return throwError(new NetworkError(fromNetwork));

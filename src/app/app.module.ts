@@ -7,8 +7,6 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { StartFormComponent, StartFormResolver } from './index/start-form/start-form.component';
-import { IndexComponent } from './index/index.component';
 import { HttpClient, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -40,7 +38,6 @@ import {
   ContractsListResolver
 } from './contracts-list/contracts-list.component';
 import { FooterComponent } from './footer/footer.component';
-import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import {
   BigNumberDirective,
@@ -196,9 +193,7 @@ export function appInitializerFactory(
   declarations: [
     AppComponent,
     HeaderComponent,
-    StartFormComponent,
     AboutageComponent,
-    IndexComponent,
     EthAddressDirective,
     EthTokenValidatorDirective,
     RegistrationComponent,
@@ -214,7 +209,6 @@ export function appInitializerFactory(
     BigNumberFormat,
     BigNumberMin,
     BigNumberMax,
-    PublicContractsComponent,
     BigNumberDirective,
 
     MinMaxDirective,
@@ -303,7 +297,6 @@ export function appInitializerFactory(
     CookieService,
     ContractsListResolver,
     ContractEditV3Resolver,
-    StartFormResolver,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,

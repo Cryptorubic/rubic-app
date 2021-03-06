@@ -2,7 +2,6 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { ERC20_TOKEN_ABI } from '../../web3LEGACY/web3.constants';
 import { Transaction } from 'web3-core';
-import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
 import { TokenInfoBody } from '../web3-private-service/types';
 import { IBlockchain, Token } from '../types/Blockchain';
 
@@ -211,8 +210,7 @@ export class Web3Public {
    * @return object, with written token fields, or a error, if there's no such token
    */
   public getTokenInfo: (
-    tokenAddress: string,
-    blockchain: BLOCKCHAIN_NAMES
+    tokenAddress: string
   ) => Promise<TokenInfoBody> = this.getTokenInfoCachingDecorator();
 
   private getTokenInfoCachingDecorator(): (tokenAddress: string) => Promise<Token> {

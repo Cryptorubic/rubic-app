@@ -2,10 +2,11 @@ import { Component, OnInit, Type } from '@angular/core';
 import { InstantTradesComponent } from '../instant-trades/instant-trades.component';
 
 import { OrderBookComponent } from '../order-book/order-book.component';
-import { BLOCKCHAIN_NAMES, MODE_NAMES } from './types';
+import { MODE_NAMES } from './types';
+import { BLOCKCHAIN_NAME } from '../../../services/blockchain/types/Blockchain';
 
 interface Blockchain {
-  name: BLOCKCHAIN_NAMES;
+  name: BLOCKCHAIN_NAME;
   code: number;
   label: string;
   image: string;
@@ -17,7 +18,7 @@ interface Mode {
   imageActive: string;
   imageNotActive: string;
   component(
-    BLOCKCHAIN_NAMES
+    BLOCKCHAIN_NAME
   ): {
     html: Type<any>;
     inputs?: any;
@@ -32,19 +33,19 @@ interface Mode {
 export class TradesFormComponent implements OnInit {
   public BLOCKCHAINS: Array<Blockchain> = [
     {
-      name: BLOCKCHAIN_NAMES.ETHEREUM,
+      name: BLOCKCHAIN_NAME.ETHEREUM,
       code: 22,
       label: 'Ethereum',
       image: 'assets/images/icons/coins/eth.png'
     },
     {
-      name: BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN,
+      name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       code: 22,
       label: 'Binance Smart Chain',
       image: 'assets/images/icons/coins/bnb.svg'
     },
     {
-      name: BLOCKCHAIN_NAMES.MATIC,
+      name: BLOCKCHAIN_NAME.MATIC,
       code: 22,
       label: 'Matic',
       image: 'assets/images/icons/coins/matic.svg'
@@ -57,7 +58,7 @@ export class TradesFormComponent implements OnInit {
       label: 'Instant trade',
       imageActive: 'assets/images/icons/main-page/InstantTrade.svg',
       imageNotActive: 'assets/images/icons/main-page/InstantTrade_deactive.svg',
-      component(blockchain: BLOCKCHAIN_NAMES) {
+      component(blockchain: BLOCKCHAIN_NAME) {
         return {
           html: InstantTradesComponent,
           inputs: {
@@ -71,7 +72,7 @@ export class TradesFormComponent implements OnInit {
       label: 'Order book',
       imageActive: 'assets/images/icons/main-page/OrderBook.svg',
       imageNotActive: 'assets/images/icons/main-page/OrderBook_deactive.svg',
-      component(blockchain: BLOCKCHAIN_NAMES) {
+      component(blockchain: BLOCKCHAIN_NAME) {
         return {
           html: OrderBookComponent,
           inputs: {
@@ -84,7 +85,7 @@ export class TradesFormComponent implements OnInit {
 
   public MODE_NAMES = MODE_NAMES;
 
-  private _selectedBlockchain = BLOCKCHAIN_NAMES.ETHEREUM;
+  private _selectedBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
   private _selectedMode: MODE_NAMES = MODE_NAMES.INSTANT_TRADE;
 
   set selectedMode(mode: MODE_NAMES) {
@@ -95,11 +96,11 @@ export class TradesFormComponent implements OnInit {
     return this._selectedMode;
   }
 
-  set selectedBlockchain(blockchain: BLOCKCHAIN_NAMES) {
+  set selectedBlockchain(blockchain: BLOCKCHAIN_NAME) {
     this._selectedBlockchain = blockchain;
   }
 
-  get selectedBlockchain(): BLOCKCHAIN_NAMES {
+  get selectedBlockchain(): BLOCKCHAIN_NAME {
     return this._selectedBlockchain;
   }
 
@@ -107,7 +108,7 @@ export class TradesFormComponent implements OnInit {
 
   ngOnInit() {}
 
-  public selectBlockchain(blockchainName: BLOCKCHAIN_NAMES) {
+  public selectBlockchain(blockchainName: BLOCKCHAIN_NAME) {
     this.selectedBlockchain = blockchainName;
   }
 

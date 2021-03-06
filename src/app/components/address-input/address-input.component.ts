@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { Web3PrivateService } from '../../services/blockchain/web3-private-service/web3-private.service';
+import { Web3PublicService } from '../../services/blockchain/web3-public-service/web3-public.service';
+import { BLOCKCHAIN_NAME } from '../../services/blockchain/types/Blockchain';
 
 @Component({
   selector: 'app-address-input',
@@ -15,7 +17,7 @@ export class AddressInputComponent implements OnInit {
   public isAddressCorrect: boolean;
   public isAddressIncorrect: boolean;
 
-  constructor(private web3Api: Web3PrivateService) {}
+  constructor(private web3: Web3PublicService) {}
 
   ngOnInit() {}
 
@@ -23,7 +25,7 @@ export class AddressInputComponent implements OnInit {
     if (!addressQuery) {
       this.isAddressIncorrect = this.isAddressCorrect = false;
     } else {
-      this.isAddressCorrect = this.web3Api.isAddressCorrect(addressQuery);
+      this.isAddressCorrect = this.web3[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(addressQuery);
       this.isAddressIncorrect = !this.isAddressCorrect;
 
       if (this.isAddressCorrect) {

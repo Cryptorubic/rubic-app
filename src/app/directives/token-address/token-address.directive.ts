@@ -1,8 +1,8 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
-import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
 import { TokenInfoBody } from '../../services/blockchain/web3-private-service/types';
-import { Web3PrivateService } from '../../services/blockchain/web3-private-service/web3-private.service';
 import { AbstractControl, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
+import { Web3PublicService } from '../../services/blockchain/web3-public-service/web3-public.service';
+import { BLOCKCHAIN_NAME } from '../../services/blockchain/types/Blockchain';
 
 @Directive({
   selector: '[appTokenAddress]',
@@ -15,13 +15,13 @@ import { AbstractControl, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular
   ]
 })
 export class TokenAddressDirective {
-  @Input() blockchain: BLOCKCHAIN_NAMES;
+  @Input() blockchain: BLOCKCHAIN_NAME;
 
   @Output() tokenValidated = new EventEmitter<TokenInfoBody>();
 
   private tokenAddressRegex = /^0x[A-Fa-f0-9]{40}/;
 
-  constructor(private web3Service: Web3PrivateService) {}
+  constructor(private web3: Web3PublicService) {}
 
   validate(ctrl: AbstractControl): Promise<ValidationErrors | null> {
     return new Promise(resolve => {
@@ -30,7 +30,7 @@ export class TokenAddressDirective {
         return;
       }
 
-      this.web3Service
+      this.web3[this.blockchain]
         .getTokenInfo(ctrl.value, this.blockchain)
         .then((token: TokenInfoBody) => {
           this.tokenValidated.emit(token);

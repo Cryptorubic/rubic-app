@@ -5,10 +5,23 @@ import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
   MomentDateAdapter
 } from '@angular/material-moment-adapter';
-import { BLOCKCHAIN_NAMES, IToken } from '../trades-form/types';
-import { MY_FORMATS } from '../../../index/start-form/start-form.component';
+import { IToken } from '../trades-form/types';
 import { TokenInfoBody } from '../../../services/blockchain/web3-private-service/types';
 import { NgModel } from '@angular/forms';
+import { BLOCKCHAIN_NAME } from '../../../services/blockchain/types/Blockchain';
+
+const MY_FORMATS = {
+  useUtc: true,
+  parse: {
+    dateInput: 'LL'
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'X',
+    monthYearA11yLabel: 'MMMM YYYY'
+  }
+};
 
 @Component({
   selector: 'app-order-book',
@@ -27,7 +40,7 @@ import { NgModel } from '@angular/forms';
   ]
 })
 export class OrderBookComponent implements OnInit {
-  @Input() set blockchain(value: BLOCKCHAIN_NAMES) {
+  @Input() set blockchain(value: BLOCKCHAIN_NAME) {
     this._blockchain = value;
 
     setTimeout(() => this.updateCustomTokenAddresses());
