@@ -14,7 +14,6 @@ import publicProviderServiceStub from '../../blockchain/public-provider/public-p
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { BLOCKCHAIN_NAME } from '../../blockchain/types/Blockchain';
-import { ChainId } from '@uniswap/sdk';
 
 describe('UniswapServiceService', () => {
   let originalTimeout: number;
@@ -163,7 +162,7 @@ describe('UniswapServiceService', () => {
     spyOn(callbackObject, 'onConfirm');
     spyOn(callbackObject, 'onApprove');
 
-    const startBalance = await web3Private.getTokenBalance(YEENUS.address);
+    const startBalance = await web3PublicEth.getTokenBalance(web3Private.address, YEENUS.address);
 
     await service.createTrade(trade, {
       onConfirm: callbackObject.onConfirm.bind(callbackObject),
@@ -176,7 +175,7 @@ describe('UniswapServiceService', () => {
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
-    const newBalance = await web3Private.getTokenBalance(YEENUS.address);
+    const newBalance = await web3PublicEth.getTokenBalance(web3Private.address, YEENUS.address);
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount)).toBeTruthy();
 
@@ -206,7 +205,7 @@ describe('UniswapServiceService', () => {
     spyOn(callbackObject, 'onConfirm');
     spyOn(callbackObject, 'onApprove');
 
-    const startBalance = await web3Private.getTokenBalance(YEENUS.address);
+    const startBalance = await web3PublicEth.getTokenBalance(web3Private.address, YEENUS.address);
 
     await service.createTrade(trade, {
       onConfirm: callbackObject.onConfirm.bind(callbackObject),
@@ -217,7 +216,7 @@ describe('UniswapServiceService', () => {
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
-    const newBalance = await web3Private.getTokenBalance(YEENUS.address);
+    const newBalance = await web3PublicEth.getTokenBalance(web3Private.address, YEENUS.address);
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount)).toBeTruthy();
 
@@ -238,7 +237,7 @@ describe('UniswapServiceService', () => {
     };
     spyOn(callbackObject, 'onConfirm');
 
-    const startBalance = await web3Private.getTokenBalance(YEENUS.address);
+    const startBalance = await web3PublicEth.getTokenBalance(web3Private.address, YEENUS.address);
 
     await service.createTrade(trade, {
       onConfirm: callbackObject.onConfirm.bind(callbackObject)
@@ -247,7 +246,7 @@ describe('UniswapServiceService', () => {
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
-    const newBalance = await web3Private.getTokenBalance(YEENUS.address);
+    const newBalance = await web3PublicEth.getTokenBalance(web3Private.address, YEENUS.address);
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount)).toBeTruthy();
     done();
@@ -268,21 +267,21 @@ describe('UniswapServiceService', () => {
     const callbackObject = {
       onConfirm: (hash: string) => {},
       onApprove: async (hash: string) => {
-        const approveTxGasFee = await web3Private.getTransactionGasFee(hash);
+        const approveTxGasFee = await web3PublicEth.getTransactionGasFee(hash);
         gasFee = gasFee.plus(approveTxGasFee);
       }
     };
     spyOn(callbackObject, 'onConfirm');
     spyOn(callbackObject, 'onApprove').and.callThrough();
 
-    const startBalance = await web3Private.getBalance();
+    const startBalance = await web3PublicEth.getBalance(web3Private.address);
 
     const receipt = await service.createTrade(trade, {
       onConfirm: callbackObject.onConfirm.bind(callbackObject),
       onApprove: callbackObject.onApprove.bind(callbackObject)
     });
 
-    const txGasFee = await web3Private.getTransactionGasFee(receipt.transactionHash);
+    const txGasFee = await web3PublicEth.getTransactionGasFee(receipt.transactionHash);
     gasFee = gasFee.plus(txGasFee);
 
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(
@@ -291,7 +290,7 @@ describe('UniswapServiceService', () => {
     expect(callbackObject.onApprove).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
-    const newBalance = await web3Private.getBalance();
+    const newBalance = await web3PublicEth.getBalance(web3Private.address);
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount.minus(gasFee))).toBeTruthy();
 
@@ -324,14 +323,14 @@ describe('UniswapServiceService', () => {
     spyOn(callbackObject, 'onConfirm');
     spyOn(callbackObject, 'onApprove');
 
-    const startBalance = await web3Private.getBalance();
+    const startBalance = await web3PublicEth.getBalance(web3Private.address);
 
     const receipt = await service.createTrade(trade, {
       onConfirm: callbackObject.onConfirm.bind(callbackObject),
       onApprove: callbackObject.onApprove.bind(callbackObject)
     });
 
-    const txGasFee = await web3Private.getTransactionGasFee(receipt.transactionHash);
+    const txGasFee = await web3PublicEth.getTransactionGasFee(receipt.transactionHash);
     const gasFee = new BigNumber(txGasFee);
 
     expect(callbackObject.onConfirm).toHaveBeenCalledWith(
@@ -339,7 +338,7 @@ describe('UniswapServiceService', () => {
     );
     expect(callbackObject.onApprove).not.toHaveBeenCalled();
 
-    const newBalance = await web3Private.getBalance();
+    const newBalance = await web3PublicEth.getBalance(web3Private.address);
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount.minus(gasFee))).toBeTruthy();
 

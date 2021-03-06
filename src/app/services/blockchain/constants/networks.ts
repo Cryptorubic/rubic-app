@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from './types/Blockchain';
+import { BLOCKCHAIN_NAME } from '../types/Blockchain';
 
 export default [
   {

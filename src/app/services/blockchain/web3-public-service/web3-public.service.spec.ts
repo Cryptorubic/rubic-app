@@ -8,11 +8,9 @@ import { Web3Public } from './Web3Public';
 import config from '../../../../test/enviroment.test.json';
 import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
 import { ETH, WEENUS } from '../../../../test/tokens/eth-tokens';
-import {
-  UniSwapContractAbi,
-  UniSwapContractAddress
-} from '../../instant-trade/uni-swap-service/uni-swap-contract';
 import { WEENUS_ABI } from '../../../../test/tokens/tokens-abi';
+import { coingeckoTestTokens } from '../../../../test/tokens/coingecko-tokens';
+import ERC20_TOKEN_ABI from '../constants/erc-20-api';
 
 describe('Web3PublicService', () => {
   let service: Web3PublicService;
@@ -103,9 +101,31 @@ describe('Web3PublicService', () => {
         done();
       });
 
+      it('call contract method works', async done => {
+        const weenusSymbol = await getWeb3Public().callContractMethod(
+          WEENUS.address,
+          ERC20_TOKEN_ABI,
+          'symbol'
+        );
+
+        expect(weenusSymbol === WEENUS.symbol).toBeTruthy();
+        done();
+      });
+
       it('is native address check works', () => {
         const isNativeAddress = getWeb3Public().isNativeAddress(ETH.address);
         expect(isNativeAddress).toBeTruthy();
+      });
+
+      it('get token info works correct', async done => {
+        const weenus = coingeckoTestTokens.find(t => t.address === WEENUS.address);
+        let tokenInfo = await getWeb3Public().getTokenInfo(WEENUS.address);
+
+        expect(tokenInfo.name === weenus.token_title).toBeTruthy();
+        expect(tokenInfo.symbol === weenus.token_short_title).toBeTruthy();
+        expect(tokenInfo.decimals === weenus.decimals).toBeTruthy();
+
+        done();
       });
     });
   }

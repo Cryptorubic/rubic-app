@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
-import { TokenInfoBody } from '../../services/blockchain/web3-private-service/types';
+import { TokenInfoBody } from '../../pages/main-page/order-book/types';
 import { AbstractControl, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
 import { Web3PublicService } from '../../services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from '../../services/blockchain/types/Blockchain';

@@ -13,7 +13,8 @@ import { ContractsService } from '../services/contracts/contracts.service';
 import { UserInterface } from '../services/user/user.interface';
 import { UserService } from '../services/user/user.service';
 
-import { CHAIN_OF_NETWORK, ERC20_TOKEN_ABI } from '../services/web3LEGACY/web3.constants';
+import { CHAIN_OF_NETWORK } from '../services/web3LEGACY/web3.constants';
+import ERC20_TOKEN_ABI from '../services/blockchain/constants/erc-20-api';
 import { HttpService } from '../services/http/http.service';
 import SWAPS_ABI from './SWAPS_ABI';
 

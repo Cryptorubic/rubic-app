@@ -17,7 +17,8 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-import { ERC20_TOKEN_ABI, ETH_NETWORKS, CHAIN_OF_NETWORK } from './web3.constants';
+import { ETH_NETWORKS, CHAIN_OF_NETWORK } from './web3.constants';
+import ERC20_TOKEN_ABI from '../blockchain/constants/erc-20-api';
 
 const BigNumber = require('bignumber.js');
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { ERC20_TOKEN_ABI } from '../../web3LEGACY/web3.constants';
+import ERC20_TOKEN_ABI from '../constants/erc-20-api';
 import { UserRejectError } from '../../../errors/bridge/UserRejectError';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';

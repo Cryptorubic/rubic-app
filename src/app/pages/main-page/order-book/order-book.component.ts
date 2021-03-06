@@ -6,7 +6,7 @@ import {
   MomentDateAdapter
 } from '@angular/material-moment-adapter';
 import { IToken } from '../trades-form/types';
-import { TokenInfoBody } from '../../../services/blockchain/web3-private-service/types';
+import { TokenInfoBody } from './types';
 import { NgModel } from '@angular/forms';
 import { BLOCKCHAIN_NAME } from '../../../services/blockchain/types/Blockchain';
 

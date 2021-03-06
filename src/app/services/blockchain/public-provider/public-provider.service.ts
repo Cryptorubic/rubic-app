@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import ConnectionLink from '../types/ConnectionLink';
 import { BLOCKCHAIN_NAME } from '../types/Blockchain';
-import networks from '../networks';
+import networks from '../constants/networks';
 
 @Injectable({
   providedIn: 'root'

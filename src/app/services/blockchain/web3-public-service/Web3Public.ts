@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import { ERC20_TOKEN_ABI } from '../../web3LEGACY/web3.constants';
+import ERC20_TOKEN_ABI from '../constants/erc-20-api';
 import { Transaction } from 'web3-core';
-import { TokenInfoBody } from '../web3-private-service/types';
+import { TokenInfoBody } from '../../../pages/main-page/order-book/types';
 import { IBlockchain, Token } from '../types/Blockchain';
 
 export class Web3Public {
@@ -194,7 +194,7 @@ export class Web3Public {
     options: {
       methodArguments?: any[];
       from?: string;
-    } = {}
+    } = { methodArguments: [] }
   ): Promise<unknown> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
@@ -211,7 +211,7 @@ export class Web3Public {
    */
   public getTokenInfo: (
     tokenAddress: string
-  ) => Promise<TokenInfoBody> = this.getTokenInfoCachingDecorator();
+  ) => Promise<Token> = this.getTokenInfoCachingDecorator();
 
   private getTokenInfoCachingDecorator(): (tokenAddress: string) => Promise<Token> {
     const tokensCache: { [address: string]: Token } = {};
@@ -232,22 +232,21 @@ export class Web3Public {
 
     const tokenMethods = ['decimals', 'symbol', 'name'];
     const tokenFieldsPromises = [];
+    const token: Token = {
+      blockchainName: this.blockchain.name,
+      address: tokenAddress
+    } as Token;
 
     for (let methodName of tokenMethods) {
       tokenFieldsPromises.push(this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, methodName));
     }
 
-    const results = (await Promise.all(tokenFieldsPromises)).reduce((acc, { name, value }) => {
-      acc[name] = value;
-      return acc;
-    }, {});
+    (await Promise.all(tokenFieldsPromises)).forEach(
+      (elem, index) => (token[tokenMethods[index]] = elem)
+    );
 
-    return {
-      blockchainName: this.blockchain.name,
-      address: tokenAddress,
-      name: results.name,
-      symbol: results.symbol,
-      decimals: parseInt(results.decimals)
-    };
+    token.decimals = Number(token.decimals);
+
+    return token;
   }
 }

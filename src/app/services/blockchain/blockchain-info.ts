@@ -1,5 +1,5 @@
 import { BLOCKCHAIN_NAME, IBlockchain } from './types/Blockchain';
-import networks from './networks';
+import networks from './constants/networks';
 
 export class BlockchainsInfo {
   static blockchainsList: IBlockchain[] = networks.map(network => ({

@@ -1,6 +1,6 @@
 {
   "name": "rubic",
-  "version": "1.4.3",
+  "version": "1.0.3",
   "scripts": {
     "start": "ng serve --proxy-config proxy.conf.json --host local.devswaps.mywish.io --port 4224 --disable-host-check  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key",
     "start-with-no-reload": "ng serve --proxy-config proxy.conf.json --host local.devswaps.mywish.io --port 4224 --disable-host-check  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --no-live-reload",

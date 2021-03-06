@@ -4,9 +4,10 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { MetamaskProviderService } from '../../services/blockchain/private-provider/metamask-provider/metamask-provider.service';
 import providerServiceStub from '../../services/blockchain/private-provider/metamask-provider/metamask-provider.service.stub';
+import { Web3PublicService } from '../../services/blockchain/web3-public-service/web3-public.service';
 
 describe('TokenAddressDirective', () => {
-  let service: Web3PrivateService;
+  let service: Web3PublicService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -16,7 +17,7 @@ describe('TokenAddressDirective', () => {
         { provide: MetamaskProviderService, useValue: providerServiceStub() }
       ]
     });
-    service = TestBed.get(Web3PrivateService);
+    service = TestBed.get(Web3PublicService);
   });
 
   it('should create an instance', () => {
