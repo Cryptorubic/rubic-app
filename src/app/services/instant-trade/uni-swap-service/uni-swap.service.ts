@@ -14,16 +14,16 @@ import {
   WETH
 } from '@uniswap/sdk';
 import BigNumber from 'bignumber.js';
-import { Web3ApiService } from '../../blockchain/web3PrivateService/web3-api.service';
+import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
 import { TransactionReceipt } from 'web3-eth';
 import InsufficientFundsError from '../../../errors/instant-trade/InsufficientFundsError';
 import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
 import { ethers } from 'ethers';
-import { Web3PublicService } from '../../blockchain/web3PublicService/web3-public.service';
-import { Web3Public } from '../../blockchain/web3PublicService/Web3Public';
+import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { BLOCKCHAIN_NAME } from '../../blockchain/types/Blockchain';
-import { PublicProviderService } from '../../blockchain/publicProvider/public-provider.service';
+import { PublicProviderService } from '../../blockchain/public-provider/public-provider.service';
 
 interface UniSwapTrade {
   amountIn: string;
@@ -52,7 +52,7 @@ export class UniSwapService extends InstantTradeService {
   private readonly web3PublicEth: Web3Public;
 
   constructor(
-    private web3Api: Web3ApiService,
+    private web3Api: Web3PrivateService,
     private coingeckoApiService: CoingeckoApiService,
     web3Public: Web3PublicService,
     publicProvider: PublicProviderService

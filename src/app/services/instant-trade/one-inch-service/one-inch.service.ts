@@ -5,7 +5,7 @@ import { InstantTrade, InstantTradeToken } from '../types';
 import { TransactionReceipt } from 'web3-eth';
 import { HttpClient } from '@angular/common/http';
 import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
-import { Web3ApiService } from '../../blockchain/web3PrivateService/web3-api.service';
+import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 
 interface OneInchQuoteResponse {
   fromToken: Object;
@@ -25,7 +25,7 @@ export class OneInchService extends InstantTradeService {
   constructor(
     private httpClient: HttpClient,
     private coingeckoApiService: CoingeckoApiService,
-    private web3Api: Web3ApiService
+    private web3Api: Web3PrivateService
   ) {
     super();
   }

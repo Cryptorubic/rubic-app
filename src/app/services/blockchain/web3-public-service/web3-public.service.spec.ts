@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
 import { Web3PublicService } from './web3-public.service';
-import { PublicProviderService } from '../publicProvider/public-provider.service';
+import { PublicProviderService } from '../public-provider/public-provider.service';
 import { BLOCKCHAIN_NAME } from '../types/Blockchain';
 import { Web3Public } from './Web3Public';
 //@ts-ignore
 import config from '../../../../test/enviroment.test.json';
-import publicProviderServiceStub from '../publicProvider/public-provider-service-stub';
+import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
 import { ETH, WEENUS } from '../../../../test/tokens/eth-tokens';
 import {
   UniSwapContractAbi,

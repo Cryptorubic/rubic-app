@@ -4,29 +4,29 @@ import { UniSwapService } from './uni-swap.service';
 import BigNumber from 'bignumber.js';
 
 import { HttpClientModule } from '@angular/common/http';
-import { ProviderService } from '../../blockchain/provider/provider.service';
-import providerServiceStub from '../../blockchain/provider/provider-service-stub';
+import { MetamaskProviderService } from '../../blockchain/private-provider/metamask-provider/metamask-provider.service';
+import providerServiceStub from '../../blockchain/private-provider/metamask-provider/metamask-provider.service.stub';
 import { ETH, WEENUS, YEENUS } from '../../../../test/tokens/eth-tokens';
-import { Web3ApiService } from '../../blockchain/web3PrivateService/web3-api.service';
+import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 import { UniSwapContractAddress } from './uni-swap-contract';
-import { PublicProviderService } from '../../blockchain/publicProvider/public-provider.service';
-import publicProviderServiceStub from '../../blockchain/publicProvider/public-provider-service-stub';
-import { Web3PublicService } from '../../blockchain/web3PublicService/web3-public.service';
-import { Web3Public } from '../../blockchain/web3PublicService/Web3Public';
+import { PublicProviderService } from '../../blockchain/public-provider/public-provider.service';
+import publicProviderServiceStub from '../../blockchain/public-provider/public-provider-service-stub';
+import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { BLOCKCHAIN_NAME } from '../../blockchain/types/Blockchain';
 import { ChainId } from '@uniswap/sdk';
 
 describe('UniswapServiceService', () => {
   let originalTimeout: number;
   let service: UniSwapService;
-  let web3Private: Web3ApiService;
+  let web3Private: Web3PrivateService;
   let web3PublicEth: Web3Public;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        Web3ApiService,
-        { provide: ProviderService, useValue: providerServiceStub() },
+        Web3PrivateService,
+        { provide: MetamaskProviderService, useValue: providerServiceStub() },
         { provide: PublicProviderService, useValue: publicProviderServiceStub() }
       ],
       imports: [HttpClientModule]
@@ -36,7 +36,7 @@ describe('UniswapServiceService', () => {
 
     web3PublicEth = TestBed.get(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
     service = TestBed.get(UniSwapService);
-    web3Private = TestBed.get(Web3ApiService);
+    web3Private = TestBed.get(Web3PrivateService);
   });
 
   afterEach(() => {

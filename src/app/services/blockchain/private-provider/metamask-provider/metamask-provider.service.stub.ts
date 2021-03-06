@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import { InfuraProvider } from '@ethersproject/providers';
 // @ts-ignore
-import config from '../../../../test/enviroment.test.json';
-import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
+import config from '../../../../../test/enviroment.test.json';
+import { BLOCKCHAIN_NAMES } from '../../../../pages/main-page/trades-form/types';
 
 /**
  * Stub for unit tests.

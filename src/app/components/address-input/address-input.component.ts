@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { Web3ApiService } from '../../services/blockchain/web3PrivateService/web3-api.service';
+import { Web3PrivateService } from '../../services/blockchain/web3-private-service/web3-private.service';
 
 @Component({
   selector: 'app-address-input',
@@ -15,7 +15,7 @@ export class AddressInputComponent implements OnInit {
   public isAddressCorrect: boolean;
   public isAddressIncorrect: boolean;
 
-  constructor(private web3Api: Web3ApiService) {}
+  constructor(private web3Api: Web3PrivateService) {}
 
   ngOnInit() {}
 

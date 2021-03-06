@@ -1,4 +1,4 @@
-import { Web3ApiService } from '../blockchain/web3PrivateService/web3-api.service';
+import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { IBridgeToken } from './types';
 import { RubicError } from '../../errors/RubicError';
 import BigNumber from 'bignumber.js';
@@ -16,7 +16,7 @@ export class BridgeTransaction {
     public depositAddress: string,
     public amount: BigNumber,
     public toAddress: string,
-    public web3Api: Web3ApiService
+    public web3Api: Web3PrivateService
   ) {}
 
   public async sendDeposit(onTransactionHash?: (hash: string) => void): Promise<void> {

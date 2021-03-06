@@ -1,76 +1,34 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { HttpProvider, Transaction } from 'web3-core';
-import { BridgeNetwork } from '../../bridge/types';
+import { Transaction } from 'web3-core';
 import { ERC20_TOKEN_ABI } from '../../web3LEGACY/web3.constants';
-import { RubicError } from '../../../errors/RubicError';
 import { UserRejectError } from '../../../errors/bridge/UserRejectError';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
-import { ProviderService } from '../provider/provider.service';
+import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import { TransactionReceipt } from 'web3-eth';
 import { TokenInfoBody, Web3ApiNetwork } from './types';
 import { nativeTokens } from './native-tokens';
 import { BLOCKCHAIN_NAMES } from '../../../pages/main-page/trades-form/types';
 import { Contract } from 'web3-eth-contract';
-
-const NETWORKS: Web3ApiNetwork[] = [
-  {
-    id: 1,
-    name: BridgeNetwork.ETHEREUM
-  },
-  {
-    id: 56,
-    name: BridgeNetwork.BINANCE_SMART_CHAIN
-  },
-  {
-    id: 42, // kovan testnet
-    name: BridgeNetwork.ETHEREUM_TESTNET
-  }
-];
+import { PrivateProvider } from '../private-provider/private-provider';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Web3ApiService {
-  private readonly metamaskAddress: string;
-  private ethereum;
+export class Web3PrivateService {
   private web3: Web3;
-  public error: RubicError;
-  public connection: any;
   private defaultMockGas: string;
-  public ethersProvider: any;
-  public web3Infura: {
-    [BLOCKCHAIN_NAMES.ETHEREUM]: Web3;
-    [BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN]: Web3;
-    [BLOCKCHAIN_NAMES.MATIC]: Web3;
-  };
+  public readonly provider: PrivateProvider;
 
-  public get network(): Web3ApiNetwork {
-    if (!this.ethereum) {
-      return NETWORKS[2];
-    }
-
-    return NETWORKS.find(net => net.id === Number(this.ethereum.networkVersion));
+  private get address(): string {
+    return this.provider.address;
   }
 
-  public get address(): string {
-    return this.metamaskAddress;
-  }
-
-  constructor(private httpClient: HttpClient, provider: ProviderService) {
-    if (provider.error) {
-      this.error = provider.error;
-      return;
-    }
-
+  constructor(private httpClient: HttpClient, provider: MetamaskProviderService) {
+    this.provider = provider;
     this.web3 = provider.web3;
-    this.connection = provider.connection;
-    this.ethereum = provider.ethereum;
-    this.metamaskAddress = provider.address;
-    this.defaultMockGas = provider.defaultMockGas;
-    this.ethersProvider = provider.ethersProvider;
-    this.web3Infura = provider.web3Infura;
+    this.defaultMockGas = provider.defaultGasLimit;
   }
 
   /**

@@ -3,7 +3,7 @@ import ConnectionLink from '../types/ConnectionLink';
 import { BLOCKCHAIN_NAME } from '../types/Blockchain';
 import Web3 from 'web3';
 import { Web3Public } from './Web3Public';
-import { PublicProviderService } from '../publicProvider/public-provider.service';
+import { PublicProviderService } from '../public-provider/public-provider.service';
 
 @Injectable({
   providedIn: 'root'

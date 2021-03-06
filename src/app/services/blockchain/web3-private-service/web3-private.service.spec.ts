@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Web3ApiService } from './web3-api.service';
-import { ProviderService } from '../provider/provider.service';
+import { Web3PrivateService } from './web3-private.service';
+import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
-import providerServiceStub from '../provider/provider-service-stub';
+import providerServiceStub from '../private-provider/metamask-provider/metamask-provider.service.stub';
 import { WEENUS } from '../../../../test/tokens/eth-tokens';
 import { coingeckoTestTokens } from '../../../../test/tokens/coingecko-tokens';
 // @ts-ignore
@@ -15,19 +15,19 @@ describe('Web3ApiService', () => {
   let originalTimeout;
 
   const bobAddress = config.testReceiverAddress;
-  let service: Web3ApiService;
+  let service: Web3PrivateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         HttpClient,
         HttpHandler,
-        { provide: ProviderService, useValue: providerServiceStub() }
+        { provide: MetamaskProviderService, useValue: providerServiceStub() }
       ]
     });
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
-    service = TestBed.get(Web3ApiService);
+    service = TestBed.get(Web3PrivateService);
   });
 
   afterEach(() => {

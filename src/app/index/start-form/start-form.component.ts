@@ -40,7 +40,7 @@ import { InstantTrade, InstantTradeToken } from '../../services/instant-trade/ty
 import { ETH, WEENUS, YEENUS } from '../../../test/tokens/eth-tokens';
 import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
 import { RubicError } from '../../errors/RubicError';
-import { Web3ApiService } from '../../services/blockchain/web3PrivateService/web3-api.service';
+import { Web3PrivateService } from '../../services/blockchain/web3-private-service/web3-private.service';
 import { CoingeckoApiService } from '../../services/coingecko-api/coingecko-api.service';
 
 const defaultNetwork = 1;
@@ -192,7 +192,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
     private oneInchService: OneInchService,
     private backendApiService: BackendApiService,
     private uniSwapService: UniSwapService,
-    private web3ApiService: Web3ApiService,
+    private web3ApiService: Web3PrivateService,
     private coinGeckoApiService: CoingeckoApiService
   ) {
     this.currentUser = this.userService.getUserModel();

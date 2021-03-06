@@ -4,7 +4,7 @@ import { List } from 'immutable';
 import { HttpClient } from '@angular/common/http';
 import { IBridgeToken, ITableTransaction } from './types';
 import { map, catchError, flatMap } from 'rxjs/operators';
-import { Web3ApiService } from '../blockchain/web3PrivateService/web3-api.service';
+import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../errors/bridge/NetworkError';
 import { RubicError } from '../../errors/RubicError';
@@ -33,7 +33,7 @@ export class BridgeService {
 
   constructor(
     private httpClient: HttpClient,
-    private web3Api: Web3ApiService,
+    private web3Api: Web3PrivateService,
     private backendApiService: BackendApiService
   ) {
     this.getTokensList();
