@@ -1,5 +1,5 @@
-import { InstantTradeToken } from '../../app/services/instant-trade/types';
 import { WETH as UniSwapWETH } from '@uniswap/sdk';
+import { InstantTradeToken } from '../../app/core/services/instant-trade/types';
 
 const WEENUS: InstantTradeToken = {
   platform: 'KOVAN',

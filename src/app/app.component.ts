@@ -16,9 +16,13 @@ export class AppComponent implements OnInit {
   title = 'mywish-swaps';
 
   public hideInstructionLink;
+
   public visibleWatchButton;
+
   public notCookiesAccept: boolean;
+
   public withHeader: boolean;
+
   public warning: boolean = !(window['coingecko_tokens'] && window['coingecko_tokens'].length);
 
   constructor(
@@ -37,19 +41,20 @@ export class AppComponent implements OnInit {
           body.classList.remove('white-bg');
         }
 
-        if (MODE === 'PROD') {
-          for (const url in PROJECT_PARTS[MODE]) {
-            if (new RegExp(url).test(event.url)) {
-              if (
-                PROJECT_PARTS[MODE][url] !== location.hostname &&
-                location.hostname === PROJECT_PARTS[MODE].from
-              ) {
-                // location.hostname = PROJECT_PARTS[MODE][url];
-                return;
-              }
-            }
-          }
-        }
+        // Code do nothing.
+        // if (MODE === 'PROD') {
+        //   for (const url in PROJECT_PARTS[MODE]) {
+        //     if (new RegExp(url).test(event.url)) {
+        //       if (
+        //         PROJECT_PARTS[MODE][url] !== location.hostname &&
+        //         location.hostname === PROJECT_PARTS[MODE].from
+        //       ) {
+        //         // location.hostname = PROJECT_PARTS[MODE][url];
+        //         return;
+        //       }
+        //     }
+        //   }
+        // }
       }
 
       if (event instanceof ActivationEnd) {
@@ -61,19 +66,14 @@ export class AppComponent implements OnInit {
             this.visibleWatchButton = !event.snapshot.data.hideInstruction;
             body.classList.add('with-support');
             body.classList.remove('without-support');
-            event.snapshot.data.supportHide
-              ? body.classList.add('support-hide-' + event.snapshot.data.supportHide)
-              : '';
+            if (event.snapshot.data.supportHide) {
+              body.classList.add(`support-hide-${event.snapshot.data.supportHide}`);
+            }
           } else {
             body.classList.remove('with-support');
             body.classList.add('without-support');
             this.visibleWatchButton = false;
           }
-        }
-      }
-
-      if (event instanceof NavigationStart) {
-        if (event.id === 2) {
         }
       }
       this.notCookiesAccept = !this.cookieService.get('cookies-accept');
@@ -91,7 +91,7 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    const mutationObserver = new window['MutationObserver'](res => {
+    const mutationObserver = new window['MutationObserver'](() => {
       liveChatContainer.removeAttribute('style');
     });
     mutationObserver.observe(liveChatContainer, {
@@ -142,8 +142,8 @@ export class AppComponent implements OnInit {
 
     this.checkLiveChat();
 
-    if (this.Web3Service.ethereum && this.Web3Service.ethereum.isConnected()) {
-      this.Web3Service.setUserAddress();
+    if (this.web3Service.ethereum && this.web3Service.ethereum.isConnected()) {
+      this.web3Service.setUserAddress();
     }
   }
 }

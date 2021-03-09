@@ -1,21 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {
-  ContractsListComponent,
-  ContractsListResolver
-} from './contracts-list/contracts-list.component';
-
-import { FaqComponent } from './faq-component/faq.component';
-import {
-  ContractsPreviewV3Component,
-  ContractEditV3Resolver
-} from './contracts-preview-v3/contracts-preview-v3.component';
-// import { MainPageComponent } from './main-page/main-page.component';
-import { AboutageComponent } from './about/about.component';
-import { TokenSaleComponent } from './token-sale/token-sale.component';
-import { TeamComponent } from './team/team.component';
-import { BridgeComponent } from './bridge/bridge.component';
-import { MainPageComponent } from './pages/main-page/main-page.component';
+import { IndexComponent } from './features/index-page/components/index/index.component';
+import { StartFormResolver } from './features/index-page/components/start-form/start-form.component';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -32,61 +18,38 @@ export const PROJECT_PARTS = {
 };
 
 let currMode = 'PROD';
-// tslint:disable-next-line: forin
-for (const m in PROJECT_PARTS) {
-  for (const hostname in PROJECT_PARTS[m]) {
-    if (location.hostname === PROJECT_PARTS[m][hostname]) {
-      currMode = m;
+Object.entries(PROJECT_PARTS).forEach(([projectPartName, projectPartValue]: [string, any]) => {
+  Object.entries(projectPartValue).forEach(([, hostName]: [string, string]) => {
+    if (location.hostname === hostName) {
+      currMode = projectPartName;
     }
-  }
-}
+  });
+});
 
 export const MODE = currMode;
 
 const routes: Routes = [
   {
     path: '',
-    component: MainPageComponent
+    loadChildren: () =>
+      import('./features/index-page/index-page.module').then(m => m.IndexPageModule),
+    resolve: {
+      checkedTokens: StartFormResolver
+    }
   },
   {
     path: 'bridge',
-    component: BridgeComponent
+    loadChildren: () =>
+      import('./features/bridge-page/bridge-page.module').then(m => m.BridgePageModule)
   },
   {
     path: 'about',
-    component: AboutageComponent
+    loadChildren: () =>
+      import('./features/features-page/features-page.module').then(m => m.FeaturesPageModule)
   },
   {
     path: 'team',
-    component: TeamComponent
-  },
-  {
-    path: 'create-v3',
-    redirectTo: '/trades/create-v3'
-  },
-  {
-    path: 'create',
-    redirectTo: '/trades/create'
-  },
-  {
-    path: 'view/:id',
-    redirectTo: '/trades/view/:id'
-  },
-  {
-    path: 'view-v3/:id',
-    redirectTo: '/trades/view-v3/:id'
-  },
-  {
-    path: 'contract/:id',
-    redirectTo: '/trades/contract/:id'
-  },
-  {
-    path: 'contract-v3/:id',
-    redirectTo: '/trades/contract-v3/:id'
-  },
-  {
-    path: 'public/:public_link',
-    redirectTo: '/trades/public/:public_link'
+    loadChildren: () => import('./features/team-page/team-page.module').then(m => m.TeamPageModule)
   },
   {
     path: 'public-v3/:public_link',
@@ -98,47 +61,30 @@ const routes: Routes = [
   },
   {
     path: 'trades',
-    children: [
-      {
-        path: '',
-        redirectTo: '/',
-        pathMatch: 'full'
-      },
-      {
-        path: 'public-v3/:public_link',
-        component: ContractsPreviewV3Component,
-        resolve: {
-          contract: ContractEditV3Resolver
-        },
-        data: {
-          createButton: true,
-          hideInstruction: true
-        }
-      },
-      {
-        path: 'contracts',
-        component: ContractsListComponent,
-        resolve: {
-          contracts: ContractsListResolver
-        }
-      }
-    ]
+    loadChildren: () => import('./features/trades/trades.module').then(m => m.TradesModule)
   },
   {
-    path: 'dashboard/first_entry',
-    redirectTo: '/trades'
-  },
-  {
-    path: 'accounts/login',
-    redirectTo: '/trades'
+    path: 'reset/:uid/:token',
+    component: IndexComponent
   },
   {
     path: 'faq',
-    component: FaqComponent
+    loadChildren: () => import('./features/faq-page/faq-page.module').then(m => m.FaqPageModule)
   },
   {
     path: 'token-sale',
-    component: TokenSaleComponent
+    loadChildren: () =>
+      import('./features/token-sale-page/token-sale-page/token-sale-page.module').then(
+        m => m.TokenSalePageModule
+      )
+  },
+  {
+    path: ':token',
+    loadChildren: () =>
+      import('./features/index-page/index-page.module').then(m => m.IndexPageModule),
+    resolve: {
+      checkedTokens: StartFormResolver
+    }
   }
 ];
 
