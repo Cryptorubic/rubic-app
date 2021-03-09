@@ -41,7 +41,6 @@ import { EmailConfirmComponent } from './common/auth/email-confirm/email-confirm
 import { ForgotPasswordComponent } from './common/auth/forgot-password/forgot-password.component';
 import { ContractsListComponent } from './contracts-list/contracts-list.component';
 import { FooterComponent } from './footer/footer.component';
-import { PublicContractsComponent } from './index/public-contracts/public-contracts.component';
 import {
   BigNumberDirective,
   BigNumberFormat,

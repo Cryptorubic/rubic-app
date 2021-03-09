@@ -18,7 +18,7 @@ import {
 import { Observable } from 'rxjs';
 
 import { ETH_NETWORKS, CHAIN_OF_NETWORK } from './web3.constants';
-import ERC20_TOKEN_ABI from '../blockchain/constants/erc-20-api';
+import ERC20_TOKEN_ABI from '../blockchain/constants/erc-20-abi';
 
 // const BigNumber = require('bignumber.js');
 

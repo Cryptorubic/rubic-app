@@ -1,7 +1,6 @@
-import { TokenAddressDirective } from './token-address.directive';
-import { Web3PrivateService } from '../../services/blockchain/web3-private-service/web3-private.service';
 import { TestBed } from '@angular/core/testing';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { TokenAddressDirective } from './token-address.directive';
 import { MetamaskProviderService } from '../../services/blockchain/private-provider/metamask-provider/metamask-provider.service';
 import providerServiceStub from '../../services/blockchain/private-provider/metamask-provider/metamask-provider.service.stub';
 import { Web3PublicService } from '../../services/blockchain/web3-public-service/web3-public.service';
@@ -22,6 +21,7 @@ describe('TokenAddressDirective', () => {
 
   it('should create an instance', () => {
     const directive = new TokenAddressDirective(service);
+
     expect(directive).toBeTruthy();
   });
 });

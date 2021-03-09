@@ -4,13 +4,13 @@ import { Web3PublicService } from './web3-public.service';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 import { BLOCKCHAIN_NAME } from '../types/Blockchain';
 import { Web3Public } from './Web3Public';
-//@ts-ignore
+// @ts-ignore
 import config from '../../../../test/enviroment.test.json';
 import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
 import { ETH, WEENUS } from '../../../../test/tokens/eth-tokens';
 import { WEENUS_ABI } from '../../../../test/tokens/tokens-abi';
 import { coingeckoTestTokens } from '../../../../test/tokens/coingecko-tokens';
-import ERC20_TOKEN_ABI from '../constants/erc-20-api';
+import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 
 describe('Web3PublicService', () => {
   let service: Web3PublicService;
@@ -32,10 +32,11 @@ describe('Web3PublicService', () => {
     describe('Web3Public', function () {
       const aliceAddress = config.testWallet.address;
       const bobAddress = config.testReceiverAddress;
-      let getWeb3Public: () => Web3Public = () => service[blockchainName];
+      const getWeb3Public: () => Web3Public = () => service[blockchainName];
 
       it('get balance works', async done => {
         const balance = await getWeb3Public().getBalance(aliceAddress);
+
         expect(balance).not.toBe(undefined);
         expect(balance.gt(0)).toBeTruthy();
         done();
@@ -43,6 +44,7 @@ describe('Web3PublicService', () => {
 
       it('balance of works (tokens)', async done => {
         const balance = await getWeb3Public().getTokenBalance(aliceAddress, WEENUS.address);
+
         expect(balance).not.toBe(undefined);
         expect(balance.gt(0)).toBeTruthy();
         done();
@@ -56,6 +58,7 @@ describe('Web3PublicService', () => {
         );
 
         console.log(allowance);
+
         expect(allowance).not.toBe(undefined);
         expect(allowance.gte(0)).toBeTruthy();
         done();
@@ -83,6 +86,7 @@ describe('Web3PublicService', () => {
 
       it('gas price calculation works', async done => {
         const gasPrice = await getWeb3Public().getGasPriceInETH();
+
         expect(gasPrice?.gt(0)).toBeTruthy();
         done();
       });
@@ -97,6 +101,7 @@ describe('Web3PublicService', () => {
             break;
         }
         const gasFee = await getWeb3Public().getTransactionGasFee(txHash);
+
         expect(gasFee.eq(txRealFee)).toBeTruthy();
         done();
       });
@@ -114,12 +119,13 @@ describe('Web3PublicService', () => {
 
       it('is native address check works', () => {
         const isNativeAddress = getWeb3Public().isNativeAddress(ETH.address);
+
         expect(isNativeAddress).toBeTruthy();
       });
 
       it('get token info works correct', async done => {
         const weenus = coingeckoTestTokens.find(t => t.address === WEENUS.address);
-        let tokenInfo = await getWeb3Public().getTokenInfo(WEENUS.address);
+        const tokenInfo = await getWeb3Public().getTokenInfo(WEENUS.address);
 
         expect(tokenInfo.name === weenus.token_title).toBeTruthy();
         expect(tokenInfo.symbol === weenus.token_short_title).toBeTruthy();

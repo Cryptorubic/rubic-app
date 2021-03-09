@@ -12,6 +12,7 @@ import {
 } from '@uniswap/sdk';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
+import { ethers } from 'ethers';
 import InstantTradeService from '../InstantTradeService';
 import InstantTrade from '../types/InstantTrade';
 import { InstantTradeToken } from '../types';
@@ -19,11 +20,11 @@ import { InstantTradeToken } from '../types';
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
 import InsufficientFundsError from '../../../errors/instant-trade/InsufficientFundsError';
 import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
-import { ethers } from 'ethers';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { BLOCKCHAIN_NAME } from '../../blockchain/types/Blockchain';
 import { PublicProviderService } from '../../blockchain/public-provider/public-provider.service';
+import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 
 interface UniSwapTrade {
   amountIn: string;

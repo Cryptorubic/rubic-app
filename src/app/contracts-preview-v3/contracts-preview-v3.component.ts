@@ -3,10 +3,9 @@ import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/c
 import { ActivatedRoute } from '@angular/router';
 
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Web3ServiceLEGACY } from '../services/web3LEGACY/web3LEGACY.service';
 import BigNumber from 'bignumber.js';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
-import { Web3Service } from '../services/web3/web3.service';
+import { Web3ServiceLEGACY } from '../services/web3LEGACY/web3LEGACY.service';
 
 import { CONTRACT_STATES } from '../contract-preview/contract-states';
 import { ContractsService } from '../services/contracts/contracts.service';
@@ -14,8 +13,7 @@ import { UserInterface } from '../services/user/user.interface';
 import { UserService } from '../services/user/user.service';
 
 import { CHAIN_OF_NETWORK } from '../services/web3LEGACY/web3.constants';
-import ERC20_TOKEN_ABI from '../services/blockchain/constants/erc-20-api';
-import { HttpService } from '../services/http/http.service';
+import ERC20_TOKEN_ABI from '../services/blockchain/constants/erc-20-abi';
 import SWAPS_ABI from './SWAPS_ABI';
 
 export interface IContractV3 {

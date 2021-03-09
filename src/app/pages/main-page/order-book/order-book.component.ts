@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { BLOCKCHAIN_NAME } from '../../../services/blockchain/types/Blockchain';
-import { TokenInfoBody } from './types';
+import { BLOCKCHAIN_NAME, Token } from '../../../services/blockchain/types/Blockchain';
 import { OrderBookToken, OrderBookTokens, TradeInfo } from '../../../services/order-book/types';
 import { OrderBookService } from '../../../services/order-book/order-book.service';
 
@@ -104,7 +103,7 @@ export class OrderBookComponent {
     };
   }
 
-  public addCustomToken(tokenPart: string, tokenBody: TokenInfoBody): void {
+  public addCustomToken(tokenPart: string, tokenBody: Token): void {
     this.customTokens[tokenPart] = { ...this.customTokens[tokenPart], ...tokenBody };
   }
 

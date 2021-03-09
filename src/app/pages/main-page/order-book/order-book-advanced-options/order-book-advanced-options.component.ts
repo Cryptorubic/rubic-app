@@ -7,8 +7,20 @@ import {
 import * as moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { NgModel } from '@angular/forms';
-import { MY_FORMATS } from '../../../../index/start-form/start-form.component';
 import { OrderBookToken, TokenPart, TradeInfo } from '../../../../services/order-book/types';
+
+const MY_FORMATS = {
+  useUtc: true,
+  parse: {
+    dateInput: 'LL'
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'X',
+    monthYearA11yLabel: 'MMMM YYYY'
+  }
+};
 
 @Component({
   selector: 'app-order-book-advanced-options',

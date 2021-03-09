@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import InstantTradeService from '../InstantTradeService';
 import BigNumber from 'bignumber.js';
-import { InstantTrade, InstantTradeToken } from '../types';
 import { TransactionReceipt } from 'web3-eth';
 import { HttpClient } from '@angular/common/http';
+import { InstantTrade, InstantTradeToken } from '../types';
+import InstantTradeService from '../InstantTradeService';
 import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
 import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
@@ -24,7 +24,9 @@ interface OneInchQuoteResponse {
 })
 export class OneInchService extends InstantTradeService {
   private readonly apiBaseUrl = 'https://api.1inch.exchange/v2.0/';
+
   private readonly oneInchEtherAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+
   private web3PublicEth: Web3Public;
 
   constructor(
@@ -47,7 +49,7 @@ export class OneInchService extends InstantTradeService {
       toToken
     );
     const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
-      .get(this.apiBaseUrl + 'quote', {
+      .get(`${this.apiBaseUrl}quote`, {
         params: {
           fromTokenAddress,
           toTokenAddress,

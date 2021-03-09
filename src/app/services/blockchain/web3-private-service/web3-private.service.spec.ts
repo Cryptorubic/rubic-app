@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Web3PrivateService } from './web3-private.service';
-import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
+import { Web3PrivateService } from './web3-private.service';
+import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import providerServiceStub from '../private-provider/metamask-provider/metamask-provider.service.stub';
 import { WEENUS } from '../../../../test/tokens/eth-tokens';
-import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
 // @ts-ignore
 import config from '../../../../test/enviroment.test.json';
 import { PublicProviderService } from '../public-provider/public-provider.service';

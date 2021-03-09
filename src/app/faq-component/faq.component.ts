@@ -11,7 +11,9 @@ export interface IQuestion {
 })
 export class FaqComponent implements OnInit, AfterViewInit {
   public questions: Array<IQuestion> = [];
+
   private questionsNumber = 26;
+
   private questionsHTMLTexts;
 
   constructor() {}

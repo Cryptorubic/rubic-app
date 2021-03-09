@@ -1,8 +1,7 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
-import { TokenInfoBody } from '../../pages/main-page/order-book/types';
 import { AbstractControl, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
 import { Web3PublicService } from '../../services/blockchain/web3-public-service/web3-public.service';
-import { BLOCKCHAIN_NAME } from '../../services/blockchain/types/Blockchain';
+import { BLOCKCHAIN_NAME, Token } from '../../services/blockchain/types/Blockchain';
 
 @Directive({
   selector: '[appTokenAddress]',
@@ -18,7 +17,7 @@ import { BLOCKCHAIN_NAME } from '../../services/blockchain/types/Blockchain';
 export class TokenAddressDirective {
   @Input() blockchain: BLOCKCHAIN_NAME;
 
-  @Output() tokenValidated = new EventEmitter<TokenInfoBody>();
+  @Output() tokenValidated = new EventEmitter<Token>();
 
   private readonly tokenAddressRegex = /^0x[A-Fa-f0-9]{40}$/;
 
@@ -33,7 +32,7 @@ export class TokenAddressDirective {
 
       this.web3[this.blockchain]
         .getTokenInfo(control.value, this.blockchain)
-        .then((token: TokenInfoBody) => {
+        .then((token: Token) => {
           this.tokenValidated.emit(token);
           resolve(null);
         })

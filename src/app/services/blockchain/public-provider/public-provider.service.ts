@@ -8,6 +8,7 @@ import networks from '../constants/networks';
 })
 export class PublicProviderService {
   public readonly connectionLinks: ConnectionLink[];
+
   constructor() {
     this.connectionLinks = networks.map(network => ({
       blockchainName: network.name,

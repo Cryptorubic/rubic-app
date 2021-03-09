@@ -3,8 +3,10 @@ import BigNumber from 'bignumber.js';
 import { OrderBookToken, TradeInfo, TradeInfoApi } from './types';
 import { CONTRACT } from './smart-contract';
 import { OrderBookApiService } from '../backend/order-book-api/order-book-api.service';
-import { Web3ApiService } from '../web3Api/web3-api.service';
-import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
+import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
+import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
+import { BLOCKCHAIN_NAME } from '../blockchain/types/Blockchain';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,8 @@ export class OrderBookService {
 
   constructor(
     private orderBookApiService: OrderBookApiService,
-    private web3Service: Web3ApiService
+    private web3PublicService: Web3PublicService,
+    private web3PrivateService: Web3PrivateService
   ) {}
 
   private static tokenAmountToWei(token: OrderBookToken, amount: string): string {
@@ -26,26 +29,22 @@ export class OrderBookService {
    * @param tradeInfo information about the trade
    */
   public async createOrder(tradeInfo: TradeInfo): Promise<void> {
+    const web3Public: Web3Public = this.web3PublicService[tradeInfo.blockchain];
+
     const contractAddress = CONTRACT.ADDRESSES[2][tradeInfo.blockchain];
     const contractAbi = CONTRACT.ABI[2] as any[];
 
-    const fee = await this.web3Service.callContractMethod(
-      contractAddress,
-      contractAbi,
-      'feeAmount',
-      [],
-      tradeInfo.blockchain
-    );
+    const fee = await web3Public.callContractMethod(contractAddress, contractAbi, 'feeAmount');
 
     const tradeInfoApi = this.generateCreateSwapApiObject(tradeInfo);
     const args = await this.generateCreateOrderArguments(tradeInfoApi);
-    const receipt = await this.web3Service.executeContractMethod(
+    const receipt = await this.web3PrivateService.executeContractMethod(
       contractAddress,
       contractAbi,
       'createOrder',
       args,
       {
-        value: fee
+        value: fee.toString()
       }
     );
     tradeInfoApi.memo_contract = receipt.events.OrderCreated.returnValues.id;
@@ -56,13 +55,13 @@ export class OrderBookService {
   private generateCreateSwapApiObject(tradeInfo: TradeInfo): TradeInfoApi {
     let network;
     switch (tradeInfo.blockchain) {
-      case BLOCKCHAIN_NAMES.ETHEREUM:
+      case BLOCKCHAIN_NAME.ETHEREUM:
         network = 1;
         break;
-      case BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN:
+      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
         network = 22;
         break;
-      case BLOCKCHAIN_NAMES.MATIC:
+      case BLOCKCHAIN_NAME.MATIC:
         network = 24;
 
       // no default

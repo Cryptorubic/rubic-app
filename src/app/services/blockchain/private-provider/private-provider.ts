@@ -1,6 +1,6 @@
 import Web3 from 'web3';
-import { BLOCKCHAIN_NAME, IBlockchain } from '../types/Blockchain';
 import { Subject } from 'rxjs';
+import { BLOCKCHAIN_NAME, IBlockchain } from '../types/Blockchain';
 
 export abstract class PrivateProvider {
   /**

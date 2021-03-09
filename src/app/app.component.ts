@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from './services/user/user.service';
-import { Web3ServiceLEGACY } from './services/web3LEGACY/web3LEGACY.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivationEnd, NavigationStart, Router } from '@angular/router';
-
-import { MODE, PROJECT_PARTS } from './app-routing.module';
-import { MatDialog } from '@angular/material/dialog';
+import { UserService } from './services/user/user.service';
+import { Web3ServiceLEGACY } from './services/web3LEGACY/web3LEGACY.service';
 
 @Component({
   selector: 'app-root',

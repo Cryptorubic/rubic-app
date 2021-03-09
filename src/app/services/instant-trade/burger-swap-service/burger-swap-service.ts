@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import InstantTradeService from '../InstantTradeService';
 import BigNumber from 'bignumber.js';
-import { InstantTrade, InstantTradeToken } from '../types';
 import { TransactionReceipt } from 'web3-eth';
+import InstantTradeService from '../InstantTradeService';
+import { InstantTrade, InstantTradeToken } from '../types';
 
 @Injectable({
   providedIn: 'root'

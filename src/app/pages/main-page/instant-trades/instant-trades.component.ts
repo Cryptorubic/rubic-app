@@ -1,10 +1,10 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { List } from 'immutable';
+import BigNumber from 'bignumber.js';
 import { TokensService } from '../../../services/backend/tokens-service/tokens.service';
 import { SwapToken } from '../../../services/backend/tokens-service/types';
 import { InstantTrade } from '../../../services/instant-trade/types';
 import { UniSwapService } from '../../../services/instant-trade/uni-swap-service/uni-swap.service';
-import BigNumber from 'bignumber.js';
 import InstantTradeService from '../../../services/instant-trade/InstantTradeService';
 import { OneInchService } from '../../../services/instant-trade/one-inch-service/one-inch.service';
 import { BurgerSwapService } from '../../../services/instant-trade/burger-swap-service/burger-swap-service';
@@ -43,9 +43,11 @@ export class InstantTradesComponent implements OnChanges {
   @Input() blockchain: BLOCKCHAIN_NAME;
 
   private instantTradeServices: InstantTradeService[];
+
   private _tradeParameters: InstantTradeParameters;
 
   public tokens = List<SwapToken>([]);
+
   public trades: InstantTradeProviderController[];
 
   get tradeParameters(): InstantTradeParameters {
@@ -170,7 +172,7 @@ export class InstantTradesComponent implements OnChanges {
   }
 
   public shouldAnimateButton(providerIndex: number) {
-    const tradeState = this.trades[providerIndex].tradeState;
+    const { tradeState } = this.trades[providerIndex];
     return tradeState && tradeState !== TRADE_STATE.ERROR && tradeState !== TRADE_STATE.COMPLETED;
   }
 

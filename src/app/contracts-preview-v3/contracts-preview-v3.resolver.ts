@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { ContractsService } from '../services/contracts/contracts.service';
 import { HttpService } from '../services/http/http.service';
 import { UserService } from '../services/user/user.service';
-import { Web3Service } from '../services/web3/web3.service';
 import { IContractV3 } from './contracts-preview-v3.component';
+import { Web3ServiceLEGACY } from '../services/web3LEGACY/web3LEGACY.service';
 
 @Injectable()
 export class ContractEditV3Resolver implements Resolve<any> {
@@ -17,7 +17,7 @@ export class ContractEditV3Resolver implements Resolve<any> {
     private contractsService: ContractsService,
     private userService: UserService,
     private httpService: HttpService,
-    private web3Service: Web3Service,
+    private web3Service: Web3ServiceLEGACY,
     private router: Router
   ) {}
 

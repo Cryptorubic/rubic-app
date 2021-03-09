@@ -25,6 +25,7 @@ interface BackendToken {
 })
 export class TokensService {
   private getTokensUrl = 'coingecko_tokens/';
+
   private _tokens: BehaviorSubject<List<SwapToken>> = new BehaviorSubject(List([]));
 
   public readonly tokens: Observable<List<SwapToken>> = this._tokens.asObservable();
@@ -37,7 +38,7 @@ export class TokensService {
     this.httpService.get(this.getTokensUrl).subscribe(
       (response: TokensListResponse) =>
         this._tokens.next(List(response.tokens.map(TokensService.parseToken))),
-      err => console.log('Error retrieving tokens ' + err)
+      err => console.log(`Error retrieving tokens ${err}`)
     );
   }
 

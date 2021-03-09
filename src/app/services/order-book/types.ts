@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
+import { BLOCKCHAIN_NAME } from '../blockchain/types/Blockchain';
 
 export interface OrderBookToken {
   address: string;
@@ -19,7 +19,7 @@ export type OrderBookTokens = {
 
 export interface TradeInfo {
   tokens: OrderBookTokens;
-  blockchain: BLOCKCHAIN_NAMES;
+  blockchain: BLOCKCHAIN_NAME;
   stopDate: string;
   isPublic: boolean;
   isWithBrokerFee: boolean;

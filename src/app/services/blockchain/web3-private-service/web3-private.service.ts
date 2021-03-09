@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import ERC20_TOKEN_ABI from '../constants/erc-20-api';
-import { UserRejectError } from '../../../errors/bridge/UserRejectError';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
-import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import { TransactionReceipt } from 'web3-eth';
-import { BLOCKCHAIN_NAME, IBlockchain } from '../types/Blockchain';
 import { Subject } from 'rxjs';
+import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
+import { UserRejectError } from '../../../errors/bridge/UserRejectError';
+import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
+import { BLOCKCHAIN_NAME, IBlockchain } from '../types/Blockchain';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +17,8 @@ export class Web3PrivateService {
 
   private defaultMockGas: string;
 
-
   public readonly onAddressChanges: Subject<string>;
+
   public readonly onNetworkChanges: Subject<IBlockchain>;
 
   public get address(): string {
@@ -277,29 +277,6 @@ export class Web3PrivateService {
           }
         });
     });
-  }
-
-  /**
-   * @description executes method of smart-contract and resolve the promise
-   * @param contractAddress address of smart-contract which method is to be executed
-   * @param contractAbi abi of smart-contract which method is to be executed
-   * @param methodName executing method name
-   * @param methodArguments executing method arguments
-   * @param blockchain platform of the contract address
-   * @return smart-contract method returned value
-   */
-  public async callContractMethod(
-    contractAddress: string,
-    contractAbi: any[],
-    methodName: string,
-    methodArguments: any[],
-    blockchain: BLOCKCHAIN_NAMES = BLOCKCHAIN_NAMES.ETHEREUM
-  ): Promise<any> {
-    const contract = new this.web3Infura[blockchain].eth.Contract(contractAbi, contractAddress);
-
-    return contract.methods[methodName](...methodArguments)
-      .call({ from: this.address })
-      .toPromise();
   }
 
   /**
