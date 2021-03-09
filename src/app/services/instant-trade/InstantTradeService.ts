@@ -13,7 +13,7 @@ abstract class InstantTradeService {
   public abstract calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
-    toToken
+    toToken: InstantTradeToken
   ): Promise<InstantTrade>;
 
   /**

@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from './services/user/user.service';
+import { Web3ServiceLEGACY } from './services/web3LEGACY/web3LEGACY.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivationEnd, NavigationStart, Router } from '@angular/router';
-import { UserService } from './services/user/user.service';
-import { Web3Service } from './services/web3/web3.service';
+
+import { MODE, PROJECT_PARTS } from './app-routing.module';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +29,7 @@ export class AppComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private cookieService: CookieService,
-    private web3Service: Web3Service
+    private web3Service: Web3ServiceLEGACY
   ) {
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe(event => {

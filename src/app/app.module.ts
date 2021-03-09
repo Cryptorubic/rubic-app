@@ -25,15 +25,13 @@ import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { StartFormComponent, StartFormResolver } from './index/start-form/start-form.component';
-import { IndexComponent } from './index/index.component';
 
 import { EthAddressDirective } from './directives/eth-address/eth-address.directive';
 import {
   EtherscanUrlPipe,
   EthTokenValidatorDirective,
   NativeUrlPipe
-} from './services/web3/web3.service';
+} from './services/web3LEGACY/web3LEGACY.service';
 import { UserService } from './services/user/user.service';
 import { AuthComponent } from './common/auth/auth.component';
 import { AuthenticationComponent } from './common/auth/authentication/authentication.component';
@@ -190,9 +188,7 @@ export function appInitializerFactory(
   declarations: [
     AppComponent,
     HeaderComponent,
-    StartFormComponent,
     AboutageComponent,
-    IndexComponent,
     EthAddressDirective,
     EthTokenValidatorDirective,
     RegistrationComponent,
@@ -208,7 +204,6 @@ export function appInitializerFactory(
     BigNumberFormat,
     BigNumberMin,
     BigNumberMax,
-    PublicContractsComponent,
     BigNumberDirective,
 
     MinMaxDirective,
@@ -299,7 +294,6 @@ export function appInitializerFactory(
     CookieService,
     ContractsListResolver,
     ContractEditV3Resolver,
-    StartFormResolver,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,

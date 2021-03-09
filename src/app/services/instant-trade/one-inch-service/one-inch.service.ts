@@ -5,7 +5,10 @@ import { InstantTrade, InstantTradeToken } from '../types';
 import { TransactionReceipt } from 'web3-eth';
 import { HttpClient } from '@angular/common/http';
 import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
-import { Web3ApiService } from '../../web3Api/web3-api.service';
+import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
+import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
+import { BLOCKCHAIN_NAME } from '../../blockchain/types/Blockchain';
 
 interface OneInchQuoteResponse {
   fromToken: Object;
@@ -22,12 +25,16 @@ interface OneInchQuoteResponse {
 export class OneInchService extends InstantTradeService {
   private readonly apiBaseUrl = 'https://api.1inch.exchange/v2.0/';
   private readonly oneInchEtherAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+  private web3PublicEth: Web3Public;
+
   constructor(
     private httpClient: HttpClient,
     private coingeckoApiService: CoingeckoApiService,
-    private web3Api: Web3ApiService
+    private web3Private: Web3PrivateService,
+    web3Public: Web3PublicService
   ) {
     super();
+    this.web3PublicEth = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
   }
 
   public async calculateTrade(
@@ -57,8 +64,8 @@ export class OneInchService extends InstantTradeService {
     const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
 
-    const gasFeeInUsd = await this.web3Api.getGasFee(estimatedGas, ethPrice);
-    const gasFeeInEth = await this.web3Api.getGasFee(estimatedGas, new BigNumber(1));
+    const gasFeeInUsd = await this.web3PublicEth.getGasFee(estimatedGas, ethPrice);
+    const gasFeeInEth = await this.web3PublicEth.getGasFee(estimatedGas, new BigNumber(1));
 
     return {
       from: {
@@ -86,10 +93,10 @@ export class OneInchService extends InstantTradeService {
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
   ): { fromTokenAddress: string; toTokenAddress: string } {
-    const fromTokenAddress = this.web3Api.isEtherAddress(fromToken.address)
+    const fromTokenAddress = this.web3PublicEth.isNativeAddress(fromToken.address)
       ? this.oneInchEtherAddress
       : fromToken.address;
-    const toTokenAddress = this.web3Api.isEtherAddress(toToken.address)
+    const toTokenAddress = this.web3PublicEth.isNativeAddress(toToken.address)
       ? this.oneInchEtherAddress
       : toToken.address;
     return { fromTokenAddress, toTokenAddress };

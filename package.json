@@ -1,9 +1,9 @@
 {
   "name": "rubic",
-  "version": "1.4.3",
+  "version": "1.0.3",
   "scripts": {
-    "start": "ng serve --proxy-config proxy.conf.json --host local.devswaps.mywish.io --port 4224 --disableHostCheck  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key",
-    "start-with-no-reload": "ng serve --proxy-config proxy.conf.json --host local.devswaps.mywish.io --port 4224 --disableHostCheck  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --no-live-reload",
+    "start": "ng serve --proxy-config proxy.conf.json --host local.devswaps.mywish.io --port 4224 --disable-host-check  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key",
+    "start-with-no-reload": "ng serve --proxy-config proxy.conf.json --host local.devswaps.mywish.io --port 4224 --disable-host-check  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --no-live-reload",
     "ng": "ng",
     "postinstall": "node patch-webpack.js",
     "build": "ng build --prod",
@@ -83,7 +83,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~6.1.1",
+    "karma": "~5.2.3",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",

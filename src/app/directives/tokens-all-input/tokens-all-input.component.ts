@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { Web3Service } from '../../services/web3/web3.service';
+import { Web3ServiceLEGACY } from '../../services/web3LEGACY/web3LEGACY.service';
 
 export interface ITokenInfo {
   active?: boolean;
@@ -85,7 +85,7 @@ export class TokensAllInputComponent implements OnInit {
 
   private searchSubscriber;
 
-  constructor(private web3Service: Web3Service) {}
+  constructor(private web3Service: Web3ServiceLEGACY) {}
 
   get() {
     return this._otherTokens;

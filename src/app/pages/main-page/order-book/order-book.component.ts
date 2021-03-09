@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { BLOCKCHAIN_NAMES } from '../trades-form/types';
-import { TokenInfoBody } from '../../../services/web3Api/types';
+import { BLOCKCHAIN_NAME } from '../../../services/blockchain/types/Blockchain';
+import { TokenInfoBody } from './types';
 import { OrderBookToken, OrderBookTokens, TradeInfo } from '../../../services/order-book/types';
 import { OrderBookService } from '../../../services/order-book/order-book.service';
 
@@ -12,7 +12,7 @@ import { OrderBookService } from '../../../services/order-book/order-book.servic
 })
 export class OrderBookComponent {
   @Input()
-  set blockchain(value) {
+  set blockchain(value: BLOCKCHAIN_NAME) {
     if (this._blockchain && this._blockchain !== value) {
       this.resetTokens();
     }
@@ -24,19 +24,20 @@ export class OrderBookComponent {
     });
   }
 
-  get blockchain(): BLOCKCHAIN_NAMES {
+  get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
   }
 
-  @Input() set tokens(value: OrderBookTokens) {
+  private _blockchain: BLOCKCHAIN_NAME;
+
+  @Input()
+  set tokens(value: OrderBookTokens) {
     this.tradeInfo.tokens = value;
   }
 
   @ViewChild('baseCustomToken') baseCustomToken: NgModel;
 
   @ViewChild('quoteCustomToken') quoteCustomToken: NgModel;
-
-  private _blockchain;
 
   get tradeInfo(): TradeInfo {
     return this._tradeInfo;

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { IndexComponent } from './index/index.component';
 import { ContractsListComponent } from './contracts-list/contracts-list.component';
 
 import { FaqComponent } from './faq-component/faq.component';
@@ -8,7 +7,6 @@ import { ContractsPreviewV3Component } from './contracts-preview-v3/contracts-pr
 // import { MainPageComponent } from './main-page/main-page.component';
 import { AboutageComponent } from './about/about.component';
 import { TokenSaleComponent } from './token-sale/token-sale.component';
-import { StartFormResolver } from './index/start-form/start-form.component';
 import { TeamComponent } from './team/team.component';
 import { BridgeComponent } from './bridge/bridge.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
@@ -41,23 +39,8 @@ Object.entries(PROJECT_PARTS).forEach(([projectPartName, projectPartValue]: [str
 export const MODE = currMode;
 
 const routes: Routes = [
-  // landing
-  // {
-  //   path: '',
-  //   component: MainPageComponent,
-  //   data: {
-  //     noheader: true,
-  //   },
-  // },
   {
     path: '',
-    component: IndexComponent,
-    resolve: {
-      checkedTokens: StartFormResolver
-    }
-  },
-  {
-    path: 'main',
     component: MainPageComponent
   },
   {
@@ -145,23 +128,12 @@ const routes: Routes = [
     redirectTo: '/trades'
   },
   {
-    path: 'reset/:uid/:token',
-    component: IndexComponent
-  },
-  {
     path: 'faq',
     component: FaqComponent
   },
   {
     path: 'token-sale',
     component: TokenSaleComponent
-  },
-  {
-    path: ':token',
-    component: IndexComponent,
-    resolve: {
-      checkedTokens: StartFormResolver
-    }
   }
 ];
 

@@ -17,7 +17,8 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-import { ERC20_TOKEN_ABI, ETH_NETWORKS, CHAIN_OF_NETWORK } from './web3.constants';
+import { ETH_NETWORKS, CHAIN_OF_NETWORK } from './web3.constants';
+import ERC20_TOKEN_ABI from '../blockchain/constants/erc-20-api';
 
 // const BigNumber = require('bignumber.js');
 
@@ -128,10 +129,13 @@ export class NativeUrlPipe implements PipeTransform {
   }
 }
 
+/**
+ * @deprecated will be removed in a 2.0.0 release
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class Web3Service {
+export class Web3ServiceLEGACY {
   constructor() {
     this.cacheTokens = {
       binance: {},
@@ -714,7 +718,7 @@ export class EthTokenValidatorDirective implements AsyncValidator {
 
   @Input() network;
 
-  constructor(private web3Service: Web3Service) {}
+  constructor(private web3Service: Web3ServiceLEGACY) {}
 
   validate(
     ctrl: AbstractControl

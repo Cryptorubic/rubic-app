@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, catchError, flatMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { IBridgeToken, ITableTransaction } from './types';
-import { Web3ApiService } from '../web3Api/web3-api.service';
+import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../errors/bridge/NetworkError';
 import { RubicError } from '../../errors/RubicError';
@@ -37,7 +37,7 @@ export class BridgeService {
 
   constructor(
     private httpClient: HttpClient,
-    private web3Api: Web3ApiService,
+    private web3Api: Web3PrivateService,
     private backendApiService: BackendApiService
   ) {
     this.getTokensList();
@@ -97,9 +97,9 @@ export class BridgeService {
     toAddress: string,
     onTransactionHash?: (hash: string) => void
   ): Observable<string> {
-    if (this.web3Api.error) {
+    /*if (this.web3Api.error) {
       return throwError(this.web3Api.error);
-    }
+    }*/
 
     if (!this.web3Api.network || this.web3Api.network.name !== fromNetwork) {
       return throwError(new NetworkError(fromNetwork));

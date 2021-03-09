@@ -1,33 +1,41 @@
 import { TestBed } from '@angular/core/testing';
 
+import { Web3PrivateService } from './web3-private.service';
+import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
-import { Web3ApiService } from './web3-api.service';
-import { ProviderService } from '../provider/provider.service';
-import providerServiceStub from '../provider/provider-service-stub';
-import { WEENUS } from '../../../test/tokens/eth-tokens';
+import providerServiceStub from '../private-provider/metamask-provider/metamask-provider.service.stub';
+import { WEENUS } from '../../../../test/tokens/eth-tokens';
 import { coingeckoTestTokens } from '../../../test/tokens/coingecko-tokens';
 // @ts-ignore
-import config from '../../../test/enviroment.test.json';
-import { BLOCKCHAIN_NAMES } from '../../pages/main-page/trades-form/types';
+import config from '../../../../test/enviroment.test.json';
+import { PublicProviderService } from '../public-provider/public-provider.service';
+import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
+import { Web3PublicService } from '../web3-public-service/web3-public.service';
+import { Web3Public } from '../web3-public-service/Web3Public';
+import { BLOCKCHAIN_NAME } from '../types/Blockchain';
 
 describe('Web3ApiService', () => {
   let originalTimeout;
 
   const bobAddress = config.testReceiverAddress;
-  let service: Web3ApiService;
+  let service: Web3PrivateService;
+  let web3PublicEth: Web3Public;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         HttpClient,
         HttpHandler,
-        { provide: ProviderService, useValue: providerServiceStub() }
+        { provide: MetamaskProviderService, useValue: providerServiceStub() },
+        { provide: PublicProviderService, useValue: publicProviderServiceStub() },
+        Web3PublicService
       ]
     });
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
-    service = TestBed.get(Web3ApiService);
+    service = TestBed.get(Web3PrivateService);
+    web3PublicEth = TestBed.get(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
   });
 
   afterEach(() => {
@@ -46,25 +54,9 @@ describe('Web3ApiService', () => {
     expect(network.id).toBe(42);
   });
 
-  it('get balance works', async done => {
-    const balance = await service.getBalance();
-
-    expect(balance).not.toBe(undefined);
-    expect(balance.gt(0)).toBeTruthy();
-    done();
-  });
-
-  it('balance of works (tokens)', async done => {
-    const balance = await service.getTokenBalance(WEENUS.address);
-
-    expect(balance).not.toBe(undefined);
-    expect(balance.gt(0)).toBeTruthy();
-    done();
-  });
-
   it('send transaction', async done => {
     const amount = new BigNumber(0.001);
-    const bobStartBalance = await service.getBalance({ address: bobAddress });
+    const bobStartBalance = await web3PublicEth.getBalance(bobAddress);
     const callbackObject = {
       onTransactionHash: (hash: string) => {}
     };
@@ -80,7 +72,7 @@ describe('Web3ApiService', () => {
 
     expect(receipt).not.toBe(undefined);
     expect(receipt.blockNumber > 0).toBeTruthy();
-    const bobNewBalance = await service.getBalance({ address: bobAddress });
+    const bobNewBalance = await web3PublicEth.getBalance(bobAddress);
 
     expect(bobNewBalance.minus(bobStartBalance).toString()).toBe(amount.toString());
     done();
@@ -88,7 +80,7 @@ describe('Web3ApiService', () => {
 
   it('send tokens', async done => {
     const amount = new BigNumber(3).multipliedBy(10 ** WEENUS.decimals);
-    const bobStartBalance = await service.getTokenBalance(WEENUS.address, { address: bobAddress });
+    const bobStartBalance = await web3PublicEth.getTokenBalance(bobAddress, WEENUS.address);
     const callbackObject = {
       onTransactionHash: (hash: string) => {}
     };
@@ -104,25 +96,19 @@ describe('Web3ApiService', () => {
 
     expect(receipt).not.toBe(undefined);
     expect(receipt.blockNumber > 0).toBeTruthy();
-    const bobNewBalance = await service.getTokenBalance(WEENUS.address, { address: bobAddress });
+    const bobNewBalance = await web3PublicEth.getTokenBalance(bobAddress, WEENUS.address);
 
     expect(bobNewBalance.minus(bobStartBalance).toString()).toBe(amount.toString());
     done();
   });
 
-  it('allowance', async done => {
-    const allowance = await service.getAllowance(WEENUS.address, bobAddress);
-
-    console.log(allowance);
-
-    expect(allowance).not.toBe(undefined);
-    expect(allowance.gte(0)).toBeTruthy();
-    done();
-  });
-
   it('approve', async done => {
     const amount = new BigNumber(2.39).multipliedBy(10 ** WEENUS.decimals);
-    const bobStartAllowance = await service.getAllowance(WEENUS.address, bobAddress);
+    const bobStartAllowance = await web3PublicEth.getAllowance(
+      WEENUS.address,
+      service.address,
+      bobAddress
+    );
     console.log(bobStartAllowance.toString());
     const callbackObject = {
       onTransactionHash: (hash: string) => {}
@@ -139,7 +125,11 @@ describe('Web3ApiService', () => {
 
     expect(receipt).not.toBe(undefined);
     expect(receipt.blockNumber > 0).toBeTruthy();
-    const bobNewAllowance = await service.getAllowance(WEENUS.address, bobAddress);
+    const bobNewAllowance = await web3PublicEth.getAllowance(
+      WEENUS.address,
+      service.address,
+      bobAddress
+    );
 
     expect(bobNewAllowance.minus(bobStartAllowance).toString()).toBe(amount.toString());
     done();
@@ -148,20 +138,9 @@ describe('Web3ApiService', () => {
   it('unApprove', async done => {
     await service.unApprove(WEENUS.address, bobAddress);
 
-    const allowance = await service.getAllowance(WEENUS.address, bobAddress);
+    const allowance = await web3PublicEth.getAllowance(WEENUS.address, service.address, bobAddress);
 
     expect(allowance.eq(0)).toBeTruthy();
-    done();
-  });
-
-  it('tokenInfo', async done => {
-    const weenusBody = coingeckoTestTokens.find(t => t.address === WEENUS.address);
-    let tokenBody = await service.getTokenInfo(WEENUS.address, BLOCKCHAIN_NAMES.ETHEREUM);
-
-    expect(tokenBody.name === weenusBody.token_title).toBeTruthy();
-    expect(tokenBody.symbol === weenusBody.token_short_title).toBeTruthy();
-    expect(tokenBody.decimals === weenusBody.decimals).toBeTruthy();
-
     done();
   });
 });

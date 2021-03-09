@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { BLOCKCHAIN_NAMES } from '../trades-form/types';
 import { List } from 'immutable';
 import { TokensService } from '../../../services/backend/tokens-service/tokens.service';
 import { SwapToken } from '../../../services/backend/tokens-service/types';
@@ -9,6 +8,7 @@ import BigNumber from 'bignumber.js';
 import InstantTradeService from '../../../services/instant-trade/InstantTradeService';
 import { OneInchService } from '../../../services/instant-trade/one-inch-service/one-inch.service';
 import { BurgerSwapService } from '../../../services/instant-trade/burger-swap-service/burger-swap-service';
+import { BLOCKCHAIN_NAME } from '../../../services/blockchain/types/Blockchain';
 
 interface TradeProviderInfo {
   label: string;
@@ -40,7 +40,7 @@ enum TRADE_STATE {
   styleUrls: ['./instant-trades.component.scss']
 })
 export class InstantTradesComponent implements OnChanges {
-  @Input() blockchain: BLOCKCHAIN_NAMES;
+  @Input() blockchain: BLOCKCHAIN_NAME;
 
   private instantTradeServices: InstantTradeService[];
   private _tradeParameters: InstantTradeParameters;
@@ -104,7 +104,7 @@ export class InstantTradesComponent implements OnChanges {
 
   private initInstantTradeProviders() {
     switch (this.blockchain) {
-      case BLOCKCHAIN_NAMES.ETHEREUM:
+      case BLOCKCHAIN_NAME.ETHEREUM:
         this.instantTradeServices = [this.oneInchService, this.uniSwapService];
         this.trades = [
           {
@@ -123,7 +123,7 @@ export class InstantTradesComponent implements OnChanges {
           }
         ];
         break;
-      case BLOCKCHAIN_NAMES.BINANCE_SMART_CHAIN:
+      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
         this.instantTradeServices = [this.burgerSwapService];
         this.trades = [
           {
@@ -193,7 +193,7 @@ export class InstantTradesComponent implements OnChanges {
         tradeController.tradeState = null;
       })
       .catch(error => {
-        console.log(error);
+        console.error(error);
         tradeController.tradeState = TRADE_STATE.ERROR;
       });
   }
