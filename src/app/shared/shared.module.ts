@@ -25,15 +25,15 @@ import { WhiteButtonComponent } from './components/white-button/white-button.com
 import { BigNumberDirective } from './directives/big-number/big-number.directive';
 import { EthAddressDirective } from './directives/eth-address/eth-address.directive';
 import { MinMaxDirective } from './directives/minMax/min-max.directive';
-import { TokensAllInputComponent } from './components/tokens-all-input/tokens-all-input.component';
 import { BigNumberMin } from './pipes/big-number-min.pipe';
 import { BigNumberMax } from './pipes/big-number-max.pipe';
 import { BigNumberFormat } from './pipes/big-number-format.pipe';
-import { EthTokenValidatorDirective } from './directives/eth-token/eth-token-validator.directive';
 import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { NativeUrlPipe } from './pipes/native-url.pipe';
 import { EtherscanUrlPipe } from './pipes/etherscan-url.pipe';
 import { AddressInputComponent } from './components/address-input/address-input.component';
+import { WarningLabelComponent } from './components/warning-label/warning-label.component';
+import { TokenAddressDirective } from './directives/token-address/token-address.directive';
 
 @NgModule({
   declarations: [
@@ -56,17 +56,17 @@ import { AddressInputComponent } from './components/address-input/address-input.
     BlockchainsInputComponent,
     BlockchainLabelComponent,
     EthAddressDirective,
-    TokensAllInputComponent,
     MinMaxDirective,
     BigNumberDirective,
     BigNumberFormat,
     BigNumberMin,
     BigNumberMax,
     CoinsListComponent,
-    EthTokenValidatorDirective,
     EtherscanUrlPipe,
     NativeUrlPipe,
-    AddressInputComponent
+    AddressInputComponent,
+    WarningLabelComponent,
+    TokenAddressDirective
   ],
   imports: [CommonModule, TranslateModule, DynamicModule, MatDialogModule, FormsModule],
   exports: [
@@ -94,12 +94,13 @@ import { AddressInputComponent } from './components/address-input/address-input.
     BigNumberFormat,
     BigNumberMin,
     BigNumberMax,
-    TokensAllInputComponent,
     CoinsListComponent,
-    EthTokenValidatorDirective,
     EtherscanUrlPipe,
     NativeUrlPipe,
-    AddressInputComponent
+    AddressInputComponent,
+    WarningLabelComponent,
+    TokenAddressDirective,
+    TranslateModule
   ]
 })
 export class SharedModule {}

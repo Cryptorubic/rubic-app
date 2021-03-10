@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from './services/user/user.service';
-import { Web3ServiceLEGACY } from './services/web3LEGACY/web3LEGACY.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivationEnd, NavigationStart, Router } from '@angular/router';
 
 import { MODE, PROJECT_PARTS } from './app-routing.module';
 import { MatDialog } from '@angular/material/dialog';
 
+// TODO: удлить весь этот кошмар
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -23,14 +22,9 @@ export class AppComponent implements OnInit {
 
   public withHeader: boolean;
 
-  public warning: boolean = !(window['coingecko_tokens'] && window['coingecko_tokens'].length);
+  public warning: boolean = false; // TODO: добавить индикатор поломки бэка (возиожно, проверка пары эндпоинтов)
 
-  constructor(
-    private userService: UserService,
-    private router: Router,
-    private cookieService: CookieService,
-    private Web3Service: Web3ServiceLEGACY
-  ) {
+  constructor(private router: Router, private cookieService: CookieService) {
     const body = document.getElementsByTagName('body')[0];
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
@@ -133,7 +127,7 @@ export class AppComponent implements OnInit {
         visibilityEvent,
         () => {
           if (!document[visibilityAttr]) {
-            this.userService.updateUser();
+            //  this.userService.updateUser();
           }
         },
         false
@@ -142,8 +136,8 @@ export class AppComponent implements OnInit {
 
     this.checkLiveChat();
 
-    if (this.web3Service.ethereum && this.web3Service.ethereum.isConnected()) {
+    /* if (this.web3Service.ethereum && this.web3Service.ethereum.isConnected()) {
       this.web3Service.setUserAddress();
-    }
+    }*/
   }
 }

@@ -10,7 +10,7 @@ import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../../shared/models/errors/bridge/NetworkError';
 import { RubicError } from '../../../shared/models/errors/RubicError';
 import { OverQueryLimitError } from '../../../shared/models/errors/bridge/OverQueryLimitError';
-import { BackendApiService } from '../backend-api/backend-api.service';
+import { BackendApiService } from '../backend/backend-api/backend-api.service';
 
 interface BinanceResponse {
   code: number;

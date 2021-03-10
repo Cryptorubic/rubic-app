@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { IndexComponent } from './features/index-page/components/index/index.component';
-import { StartFormResolver } from './features/index-page/components/start-form/start-form.component';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -31,11 +29,7 @@ export const MODE = currMode;
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./features/index-page/index-page.module').then(m => m.IndexPageModule),
-    resolve: {
-      checkedTokens: StartFormResolver
-    }
+    loadChildren: () => import('./features/main-page/main-page.module').then(m => m.MainPageModule)
   },
   {
     path: 'bridge',
@@ -64,10 +58,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/trades/trades.module').then(m => m.TradesModule)
   },
   {
-    path: 'reset/:uid/:token',
-    component: IndexComponent
-  },
-  {
     path: 'faq',
     loadChildren: () => import('./features/faq-page/faq-page.module').then(m => m.FaqPageModule)
   },
@@ -77,14 +67,6 @@ const routes: Routes = [
       import('./features/token-sale-page/token-sale-page/token-sale-page.module').then(
         m => m.TokenSalePageModule
       )
-  },
-  {
-    path: ':token',
-    loadChildren: () =>
-      import('./features/index-page/index-page.module').then(m => m.IndexPageModule),
-    resolve: {
-      checkedTokens: StartFormResolver
-    }
   }
 ];
 

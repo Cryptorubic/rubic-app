@@ -73,7 +73,7 @@
           </li>
           <li
             class="header-menu_list_item header-menu_list_item--login btn btn-green btn-min btn-normal-weight btn-auto"
-            *ngIf="currentUser.is_ghost"
+            *ngIf="currentUser?.is_ghost"
           >
             <img class="arrow" src="./assets/images/buttons/arrow_w.svg" />
             <span (click)="MetamaskAuth()" class="header-link">{{
@@ -82,14 +82,14 @@
           </li>
           <li
             class="header-menu_list_item with-sublist"
-            *ngIf="!currentUser.is_ghost"
+            *ngIf="!currentUser?.is_ghost"
             [ngClass]="{ 'opened-list': userMenuOpened }"
           >
             <span
               class="header-link account-code"
-              [ngClass]="{ 'is-social': currentUser.is_social }"
+              [ngClass]="{ 'is-social': currentUser?.is_social }"
               (click)="userMenuOpened = !userMenuOpened"
-              >{{ currentUser.username }}</span
+              >{{ currentUser?.username }}</span
             >
             <ul class="header-menu_sublist">
               <li class="header-menu_sublist_item">

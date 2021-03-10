@@ -16,15 +16,14 @@ import {
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
-import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
 import { TransactionReceipt } from 'web3-eth';
-import InsufficientFundsError from '../../../errors/instant-trade/InsufficientFundsError';
-import { CoingeckoApiService } from '../../coingecko-api/coingecko-api.service';
+import { CoingeckoApiService } from '../../external-api/coingecko-api/coingecko-api.service';
 import { ethers } from 'ethers';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
-import { BLOCKCHAIN_NAME } from '../../blockchain/types/Blockchain';
 import { PublicProviderService } from '../../blockchain/public-provider/public-provider.service';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchain';
+import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
 
 interface UniSwapTrade {
   amountIn: string;

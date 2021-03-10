@@ -14,7 +14,6 @@ import { CookieService } from 'ngx-cookie-service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { UserInterface } from 'src/app/core/services/user/user.interface';
 import { UserService } from 'src/app/core/services/user/user.service';
-import { Web3Service } from 'src/app/core/services/web3/web3.service';
 
 @Component({
   selector: 'app-header',
@@ -57,7 +56,6 @@ export class HeaderComponent {
     private userService: UserService,
     private dialog: MatDialog,
     private router: Router,
-    private web3Service: Web3Service,
     private translate: TranslateService,
     private cookieService: CookieService
   ) {
@@ -168,13 +166,13 @@ export class HeaderComponent {
       window['ethereum'].enable().then(accounts => {
         const address = accounts[0];
         this.userService.getMetaMaskAuthMsg().then(msg => {
-          this.web3Service.getSignedMetaMaskMsg(msg, address).then(signed => {
+          /*this.web3Service.getSignedMetaMaskMsg(msg, address).then(signed => {
             this.sendMetaMaskRequest({
               address,
               msg,
               signed_msg: signed
             });
-          });
+          });*/
         });
       });
     }

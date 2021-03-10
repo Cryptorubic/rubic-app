@@ -6,14 +6,15 @@ import BigNumber from 'bignumber.js';
 import { HttpClientModule } from '@angular/common/http';
 import { MetamaskProviderService } from '../../blockchain/private-provider/metamask-provider/metamask-provider.service';
 import providerServiceStub from '../../blockchain/private-provider/metamask-provider/metamask-provider.service.stub';
-import { ETH, WEENUS, YEENUS } from '../../../../test/tokens/eth-tokens';
+
 import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 import { UniSwapContractAddress } from './uni-swap-contract';
 import { PublicProviderService } from '../../blockchain/public-provider/public-provider.service';
 import publicProviderServiceStub from '../../blockchain/public-provider/public-provider-service-stub';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
-import { BLOCKCHAIN_NAME } from '../../blockchain/types/Blockchain';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchain';
+import { ETH, WEENUS, YEENUS } from '../../../../../test/tokens/eth-tokens';
 
 describe('UniswapServiceService', () => {
   let originalTimeout: number;

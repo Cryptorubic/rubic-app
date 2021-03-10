@@ -1,9 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ContractsListComponent } from 'src/app/features/trades/components/contracts-list/contracts-list.component';
-import { ContractsListResolver } from 'src/app/features/trades/components/contracts-list/contracts-list.reslover';
-import { ContractsPreviewV3Component } from './components/contracts-preview-v3/contracts-preview-v3.component';
-import { ContractEditV3Resolver } from './components/contracts-preview-v3/contracts-preview-v3.resolver';
 
 const routes: Routes = [
   {
@@ -13,9 +9,9 @@ const routes: Routes = [
   },
   {
     path: 'public-v3/:public_link',
-    component: ContractsPreviewV3Component,
+    component: null,
     resolve: {
-      contract: ContractEditV3Resolver
+      contract: null
     },
     data: {
       createButton: true,
@@ -24,9 +20,9 @@ const routes: Routes = [
   },
   {
     path: 'contracts',
-    component: ContractsListComponent,
+    component: null,
     resolve: {
-      contracts: ContractsListResolver
+      contracts: null
     }
   }
 ];

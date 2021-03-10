@@ -1,5 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ETHERSCAN_URLS, IS_PRODUCTION } from 'src/app/core/services/web3/web3.service';
+
+const ETHERSCAN_URLS = {
+  ETHERSCAN_ADDRESS: '',
+  KOVAN_ETHERSCAN_ADDRESS: '',
+  BNB_ETHERSCAN_ADDRESS: '',
+  KOVAN_BNB_ETHERSCAN_ADDRESS: '',
+  MATIC_ETHERSCAN_ADDRESS: '',
+  KOVAN_MATIC_ETHERSCAN_ADDRESS: ''
+}; // TODO: сделать нормальный пайп
+const IS_PRODUCTION = false;
 
 @Pipe({ name: 'etherscanUrl' })
 export class EtherscanUrlPipe implements PipeTransform {

@@ -8,10 +8,11 @@ import {
   ViewChild
 } from '@angular/core';
 import { List } from 'immutable';
-import { InputToken, InputTokenShort } from './types';
+import { InputTokenShort } from './types';
 import { TokenLabelComponent } from './token-label/token-label.component';
 import { InputDropdownComponent } from '../input-dropdown/input-dropdown.component';
 import { DropdownComponentData } from '../input-dropdown/types';
+import InputToken from '../../models/tokens/InputToken';
 
 interface TokenLabelData {
   token: InputTokenShort;
@@ -43,6 +44,8 @@ export class TokensInputComponent implements OnChanges {
 
   @Input() selectedToken: InputToken;
 
+  @Input() selectedAmount: string;
+
   @Output() numberChanges = new EventEmitter<number>();
 
   @Output() tokenChanges = new EventEmitter<InputToken | null>();
@@ -59,14 +62,12 @@ export class TokensInputComponent implements OnChanges {
 
   public VISIBLE_TOKENS_NUMBER = 10;
 
-  public amount;
-
   public bigNumberDirective: { decimals: number; min: number } = { decimals: 18, min: 0 };
 
   private cutAmount() {
-    if (this.amount && this.amount.includes('.')) {
-      const startIndex = this.amount.indexOf('.') + 1;
-      this.amount = this.amount.slice(0, startIndex + this.selectedToken.decimals);
+    if (this.selectedAmount && this.selectedAmount.includes('.')) {
+      const startIndex = this.selectedAmount.indexOf('.') + 1;
+      this.selectedAmount = this.selectedAmount.slice(0, startIndex + this.selectedToken.decimals);
     }
   }
 
