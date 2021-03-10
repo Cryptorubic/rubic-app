@@ -76,6 +76,11 @@ export class OrderBookAdvancedOptionsComponent implements OnInit {
 
   public minClosingTime: string;
 
+  private readonly defaultTokenOptions = {
+    minContribution: '',
+    brokerPercent: '0.1'
+  } as OrderBookToken;
+
   public areAmountAndAddressesSet: boolean;
 
   constructor() {}
@@ -90,11 +95,6 @@ export class OrderBookAdvancedOptionsComponent implements OnInit {
 
   private setAdvancedOptions(): void {
     this.setClosingDate();
-
-    const defaultTokenOptions = {
-      minContribution: '',
-      brokerPercent: '0.1'
-    } as OrderBookToken;
     this.tradeInfo = {
       ...this.tradeInfo,
       isPublic: true,
@@ -102,11 +102,11 @@ export class OrderBookAdvancedOptionsComponent implements OnInit {
       tokens: {
         base: {
           ...this.tradeInfo.tokens.base,
-          ...defaultTokenOptions
+          ...this.defaultTokenOptions
         },
         quote: {
           ...this.tradeInfo.tokens.quote,
-          ...defaultTokenOptions
+          ...this.defaultTokenOptions
         }
       }
     };
