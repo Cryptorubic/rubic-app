@@ -637,7 +637,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         display: none;
 
         &_content {
-          background: #ffffff;
+          background: #FFFFFF;
           box-shadow: 0 12px 12px rgba(0, 0, 0, 0.25);
           padding: 9px 5px;
           text-align: center;
@@ -1389,15 +1389,15 @@ ng-scrollbar-y {
     }
 
     &_highlight {
-      border: 1px solid #4aa956;
+      border: 1px solid #4AA956;
       box-shadow: 0 2px 12px rgba(74, 169, 86, 0.6);
 
       span {
-        color: #4aa956;
+        color: #4AA956;
       }
 
       svg {
-        fill: #4aa956 !important;
+        fill: #4AA956 !important;
       }
     }
   }
@@ -1411,7 +1411,7 @@ ng-scrollbar-y {
     padding-right: 42px;
 
     svg {
-      fill: #cacaca;
+      fill: #CACACA;
     }
 
     &.active {
@@ -1428,9 +1428,10 @@ ng-scrollbar-y {
 
     &.active {
       svg {
-        fill: #4aa956;
+        fill: #4AA956;
       }
     }
+
   }
 
   &_item + &_item {
@@ -1459,6 +1460,7 @@ ng-scrollbar-y {
         background-color: #ffffff;
       }
     }
+
 
     &_blockchains {
       display: flex;
@@ -1499,7 +1501,7 @@ ng-scrollbar-y {
           height: 0;
           border-width: 8px;
           border-style: solid;
-          border-color: transparent transparent #4aa956 #4aa956;
+          border-color: transparent transparent #4AA956 #4AA956;
           transform: rotate(-45deg);
           display: block;
           margin-top: -8px;
@@ -1568,8 +1570,7 @@ ng-scrollbar-y {
     width: 60px;
   }
 
-  &,
-  * {
+  &, * {
     box-sizing: border-box;
   }
 

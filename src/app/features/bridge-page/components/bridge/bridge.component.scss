@@ -1,0 +1,79 @@
+@import 'src/scss/elements/vars';
+@import 'src/scss/mixins';
+
+.bridge-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 130px 30px 0;
+}
+
+.bridge-form {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 30px;
+
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 32px;
+  color: #110931;
+
+  &__arrow-button {
+    height: 17px;
+    width: 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: -2px;
+
+    background-color: white;
+    border-radius: 50%;
+
+    transition: transform 0.2s linear;
+  }
+
+  &__toggle {
+    &:hover {
+      .bridge-form__arrow-button {
+        transform: scale(1.2);
+      }
+    }
+  }
+
+  &__toggle-text {
+    margin-right: 10px;
+
+    color: $main-green;
+    font-size: 14px;
+    line-height: 16px;
+  }
+}
+
+.disclaimer-text {
+  font-size: 14px;
+  color: #000000;
+  margin-top: 20px;
+  margin-bottom: 62px;
+}
+
+@include b(800) {
+  .bridge-container {
+    padding-top: 115px;
+  }
+}
+
+@include b(600) {
+  .bridge-container {
+    padding: 115px 10px 0;
+  }
+
+  .bridge-form {
+    flex-direction: column;
+  }
+
+  .disclaimer-text {
+    margin-bottom: 30px;
+  }
+}
