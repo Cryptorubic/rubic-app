@@ -762,8 +762,7 @@
 <app-message-box
   *ngIf="instantTradeError"
   title="Warning"
-  descriptionText="Insufficient funds to complete the trade."
-  [additionalDescription]="instantTradeError.comment"
+  [descriptionText]="instantTradeError.comment"
   (onClose)="instantTradeError = null"
 >
 </app-message-box>
