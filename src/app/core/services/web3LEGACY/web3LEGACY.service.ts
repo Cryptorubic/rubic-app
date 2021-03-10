@@ -106,7 +106,7 @@ export class EtherscanUrlPipe implements PipeTransform {
           : ETHERSCAN_URLS.KOVAN_MATIC_ETHERSCAN_ADDRESS;
         break;
     }
-    return url + type + '/' + address;
+    return `${url + type}/${address}`;
   }
 }
 
@@ -161,8 +161,11 @@ export class Web3ServiceLEGACY {
   }
 
   private providers;
+
   private Web3;
+
   private userAddr;
+
   public ethereum = window.ethereum;
 
   private cacheTokens: {
@@ -185,6 +188,7 @@ export class Web3ServiceLEGACY {
       });
     });
   }
+
   public async authMetamask() {
     this.ethereum.request({
       method: 'eth_requestAccounts'
@@ -194,6 +198,7 @@ export class Web3ServiceLEGACY {
   public setUserAddress() {
     this.userAddr = window.ethereum.selectedAddress;
   }
+
   public getUserAddress() {
     return this.userAddr;
   }
@@ -363,7 +368,7 @@ export class Web3ServiceLEGACY {
             }
           },
           err => {
-            console.log(method + ': ' + err);
+            console.log(`${method}: ${err}`);
             if (method !== 'symbol') {
               reject({
                 tokenAddress: true
@@ -692,6 +697,7 @@ export class Web3ServiceLEGACY {
 })
 export class EthTokenValidatorDirective implements AsyncValidator {
   @Output() TokenResolve = new EventEmitter<any>();
+
   @Input() network;
 
   constructor(private web3Service: Web3ServiceLEGACY) {}
@@ -704,11 +710,10 @@ export class EthTokenValidatorDirective implements AsyncValidator {
         if (result && result.token_short_title) {
           this.TokenResolve.emit(result);
           return null;
-        } else {
-          return {
-            token: true
-          };
         }
+        return {
+          token: true
+        };
       },
       err => {
         return {

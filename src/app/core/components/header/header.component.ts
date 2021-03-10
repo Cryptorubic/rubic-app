@@ -166,13 +166,13 @@ export class HeaderComponent {
       window['ethereum'].enable().then(accounts => {
         const address = accounts[0];
         this.userService.getMetaMaskAuthMsg().then(msg => {
-          /*this.web3Service.getSignedMetaMaskMsg(msg, address).then(signed => {
+          /* this.web3Service.getSignedMetaMaskMsg(msg, address).then(signed => {
             this.sendMetaMaskRequest({
               address,
               msg,
               signed_msg: signed
             });
-          });*/
+          }); */
         });
       });
     }

@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { UniSwapService } from './uni-swap.service';
 import BigNumber from 'bignumber.js';
 
 import { HttpClientModule } from '@angular/common/http';
+import { UniSwapService } from './uni-swap.service';
 import { MetamaskProviderService } from '../../blockchain/private-provider/metamask-provider/metamask-provider.service';
 import providerServiceStub from '../../blockchain/private-provider/metamask-provider/metamask-provider.service.stub';
 

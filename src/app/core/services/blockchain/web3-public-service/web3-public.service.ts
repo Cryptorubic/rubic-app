@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import Web3 from 'web3';
 import ConnectionLink from '../types/ConnectionLink';
 
-import Web3 from 'web3';
 import { Web3Public } from './Web3Public';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 import { BlockchainsInfo } from '../blockchain-info';

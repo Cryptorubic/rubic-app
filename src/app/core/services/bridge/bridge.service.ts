@@ -3,8 +3,8 @@ import { BehaviorSubject, from, Observable, throwError } from 'rxjs';
 import { List } from 'immutable';
 import { HttpClient } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
-import { IBridgeToken, ITableTransaction } from './types';
 import { map, catchError, flatMap } from 'rxjs/operators';
+import { IBridgeToken, ITableTransaction } from './types';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../../shared/models/errors/bridge/NetworkError';
@@ -97,9 +97,9 @@ export class BridgeService {
     toAddress: string,
     onTransactionHash?: (hash: string) => void
   ): Observable<string> {
-    /*if (this.web3Api.error) {
+    /* if (this.web3Api.error) {
       return throwError(this.web3Api.error);
-    }*/
+    } */
 
     if (!this.web3Api.network || this.web3Api.network.name !== fromNetwork) {
       return throwError(new NetworkError(fromNetwork));
