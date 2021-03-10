@@ -8,9 +8,8 @@ describe('TradeSuccessModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TradeSuccessModalComponent ]
-    })
-    .compileComponents();
+      declarations: [TradeSuccessModalComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
