@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import ERC20_TOKEN_ABI from '../constants/erc-20-api';
 import { Transaction } from 'web3-core';
+import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { Token } from '../../../../shared/models/tokens/Token';
 
