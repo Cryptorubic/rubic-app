@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractControl, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
-import { BLOCKCHAIN_NAME } from '../../models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from '../../models/tokens/Token';
 import { Web3PublicService } from '../../../core/services/blockchain/web3-public-service/web3-public.service';
 

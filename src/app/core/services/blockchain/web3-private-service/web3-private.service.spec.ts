@@ -14,7 +14,7 @@ import { Web3PublicService } from '../web3-public-service/web3-public.service';
 import { Web3Public } from '../web3-public-service/Web3Public';
 
 import { WEENUS } from '../../../../../test/tokens/eth-tokens';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 describe('Web3ApiService', () => {
   let originalTimeout;

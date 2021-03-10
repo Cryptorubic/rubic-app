@@ -22,7 +22,7 @@ import { CoingeckoApiService } from '../../external-api/coingecko-api/coingecko-
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { PublicProviderService } from '../../blockchain/public-provider/public-provider.service';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
 
 interface UniSwapTrade {
@@ -33,7 +33,6 @@ interface UniSwapTrade {
   deadline: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 enum SWAP_METHOD {
   TOKENS_TO_TOKENS = 'swapExactTokensForTokens',
   ETH_TO_TOKENS = 'swapExactETHForTokens',

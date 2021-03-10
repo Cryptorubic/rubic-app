@@ -3,7 +3,7 @@ import { InstantTradesComponent } from './components/instant-trades/instant-trad
 
 import { OrderBookComponent } from './components/order-book/order-book.component';
 import { MODE_NAMES } from './types';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;

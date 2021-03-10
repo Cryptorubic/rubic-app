@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { List } from 'immutable';
 import { HttpService } from '../../http/http.service';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface TokensListResponse {
   total: number;

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Web3PublicService } from '../../../core/services/blockchain/web3-public-service/web3-public.service';
-import { BLOCKCHAIN_NAME } from '../../models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-address-input',

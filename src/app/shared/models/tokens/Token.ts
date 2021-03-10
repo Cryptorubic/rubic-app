@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '../blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../blockchain/BLOCKCHAIN_NAME';
 
 export interface Token {
   blockchainName: BLOCKCHAIN_NAME;

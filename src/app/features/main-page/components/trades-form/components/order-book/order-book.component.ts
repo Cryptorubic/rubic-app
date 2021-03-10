@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { OrderBookToken, OrderBookTokens, TradeInfo } from 'src/app/core/services/order-book/types';
 import { OrderBookService } from 'src/app/core/services/order-book/order-book.service';

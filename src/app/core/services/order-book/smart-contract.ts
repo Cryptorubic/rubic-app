@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export const CONTRACT = {
   ADDRESSES: [

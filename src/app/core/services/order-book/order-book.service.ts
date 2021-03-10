@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { OrderBookToken, TradeInfo, TradeInfoApi } from './types';
 import { CONTRACT } from './smart-contract';
 import { OrderBookApiService } from '../backend/order-book-api/order-book-api.service';

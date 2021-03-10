@@ -2,7 +2,7 @@ import Web3 from 'web3';
 // @ts-ignore
 import config from '../../../../../test/enviroment.test.json';
 import { BlockchainsInfo } from '../../blockchain-info';
-import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 /**
  * Stub for unit tests.

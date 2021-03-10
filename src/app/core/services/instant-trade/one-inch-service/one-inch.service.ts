@@ -8,7 +8,7 @@ import { CoingeckoApiService } from '../../external-api/coingecko-api/coingecko-
 import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface OneInchQuoteResponse {
   fromToken: Object;

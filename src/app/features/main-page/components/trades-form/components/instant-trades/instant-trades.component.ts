@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js';
 import InstantTradeService from 'src/app/core/services/instant-trade/InstantTradeService';
 import { OneInchService } from 'src/app/core/services/instant-trade/one-inch-service/one-inch.service';
 import { BurgerSwapService } from 'src/app/core/services/instant-trade/burger-swap-service/burger-swap-service';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface TradeProviderInfo {
   label: string;

@@ -1,5 +1,6 @@
 import networks from './constants/networks';
-import { BLOCKCHAIN_NAME, IBlockchain } from '../../../shared/models/blockchain/IBlockchain';
+import { IBlockchain } from '../../../shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export class BlockchainsInfo {
   static blockchainsList: IBlockchain[] = networks.map(network => ({

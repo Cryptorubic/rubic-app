@@ -13,7 +13,7 @@ import { PublicProviderService } from '../../blockchain/public-provider/public-p
 import publicProviderServiceStub from '../../blockchain/public-provider/public-provider-service-stub';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ETH, WEENUS, YEENUS } from '../../../../../test/tokens/eth-tokens';
 
 describe('UniswapServiceService', () => {

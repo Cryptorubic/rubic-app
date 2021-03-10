@@ -41,6 +41,13 @@ module.exports = {
             detectObjects: true
           }
         ],
+        '@typescript-eslint/naming-convention': [
+          'error',
+          {
+            'selector': 'enumMember',
+            'format': ["UPPER_CASE"]
+          }
+        ],
         // Styling.
         'array-bracket-spacing': ['error', 'never'],
         'object-curly-spacing': ['error', 'always'],
