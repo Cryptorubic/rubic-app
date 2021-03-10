@@ -86,20 +86,19 @@ export class OrderBookComponent {
   }
 
   private resetTokens(): void {
+    const defaultTokenInfo = {
+      address: '',
+      name: '',
+      symbol: ''
+    };
     this.tradeInfo.tokens = {
       base: {
         ...this.tradeInfo.tokens.base,
-        address: '',
-        name: '',
-        symbol: '',
-        decimals: 8
+        ...defaultTokenInfo
       },
       quote: {
         ...this.tradeInfo.tokens.quote,
-        address: '',
-        name: '',
-        symbol: '',
-        decimals: 8
+        ...defaultTokenInfo
       }
     };
   }

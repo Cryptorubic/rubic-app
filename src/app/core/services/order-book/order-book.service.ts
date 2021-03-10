@@ -21,7 +21,7 @@ export class OrderBookService {
   ) {}
 
   private static tokenAmountToWei(token: OrderBookToken, amount: string): string {
-    return new BigNumber(amount || '0').times(new BigNumber(10).pow(token.decimals)).toString();
+    return new BigNumber(amount || '0').times(new BigNumber(10).pow(token.decimals)).toFixed(0);
   }
 
   /**
@@ -34,7 +34,9 @@ export class OrderBookService {
     const contractAddress = CONTRACT.ADDRESSES[2][tradeInfo.blockchain];
     const contractAbi = CONTRACT.ABI[2] as any[];
 
-    const fee = await web3Public.callContractMethod(contractAddress, contractAbi, 'feeAmount');
+    const fee = new BigNumber(
+      await web3Public.callContractMethod(contractAddress, contractAbi, 'feeAmount').toString()
+    );
 
     const tradeInfoApi = this.generateCreateSwapApiObject(tradeInfo);
     const args = await this.generateCreateOrderArguments(tradeInfoApi);
@@ -44,7 +46,7 @@ export class OrderBookService {
       'createOrder',
       args,
       {
-        value: fee.toString()
+        value: fee.toFixed(0)
       }
     );
     tradeInfoApi.memo_contract = receipt.events.OrderCreated.returnValues.id;

@@ -1,11 +1,7 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/IBlockchain';
+import { Token } from '../../../shared/models/tokens/Token';
 
-export interface OrderBookToken {
-  address: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-
+export interface OrderBookToken extends Token {
   amount: string;
   minContribution: string;
   brokerPercent: string;

@@ -17,7 +17,8 @@ export class NumberPrecisionDirective implements Validator {
   // eslint-disable-next-line no-magic-numbers
   @Input() integerLength? = 32; // 32 is default length of integer part of token's amount
 
-  @Input() decimalLength: number;
+  // eslint-disable-next-line no-magic-numbers
+  @Input() decimalLength = 8; // 8 is default lentgh of decimal part of token's amount
 
   @Input() maxValue: string;
 

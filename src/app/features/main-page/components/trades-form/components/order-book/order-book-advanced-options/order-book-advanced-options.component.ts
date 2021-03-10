@@ -1,5 +1,4 @@
 import { Component, OnInit, Output, EventEmitter, Input, ViewChild } from '@angular/core';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
 import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
   MomentDateAdapter
@@ -8,6 +7,7 @@ import * as moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { NgModel } from '@angular/forms';
 import { OrderBookToken, TokenPart, TradeInfo } from 'src/app/core/services/order-book/types';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 
 const MY_FORMATS = {
   useUtc: true,
@@ -91,20 +91,23 @@ export class OrderBookAdvancedOptionsComponent implements OnInit {
   private setAdvancedOptions(): void {
     this.setClosingDate();
 
+    const defaultTokenOptions = {
+      minContribution: '',
+      brokerPercent: '0.1'
+    } as OrderBookToken;
     this.tradeInfo = {
       ...this.tradeInfo,
       isPublic: true,
       isWithBrokerFee: false,
       tokens: {
-        ...this.tradeInfo.tokens,
         base: {
-          minContribution: '',
-          brokerPercent: '0.1'
-        } as OrderBookToken,
+          ...this.tradeInfo.tokens.base,
+          ...defaultTokenOptions
+        },
         quote: {
-          minContribution: '',
-          brokerPercent: '0.1'
-        } as OrderBookToken
+          ...this.tradeInfo.tokens.quote,
+          ...defaultTokenOptions
+        }
       }
     };
   }
@@ -137,7 +140,7 @@ export class OrderBookAdvancedOptionsComponent implements OnInit {
 
       const [closingTimeHour, closingTimeMinute] = this.closingTime
         .split(':')
-        .map(t => parseInt(t, 10));
+        .map(t => parseInt(t));
       if (
         this.minClosingDate.hour() > closingTimeHour ||
         (this.minClosingDate.hour() === closingTimeHour &&
@@ -158,7 +161,7 @@ export class OrderBookAdvancedOptionsComponent implements OnInit {
 
   private onStopDateChange(): void {
     const stopDate = this.closingDate.clone();
-    const [hour, minute] = this.closingTime.split(':').map(t => parseInt(t, 10));
+    const [hour, minute] = this.closingTime.split(':').map(t => parseInt(t));
     stopDate.hour(hour);
     stopDate.minute(minute);
 
