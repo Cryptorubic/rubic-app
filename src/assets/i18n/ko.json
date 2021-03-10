@@ -182,7 +182,7 @@
   "Check on Explorer": "Explorer에서 확인",
   "Number of investors": "투자자 수",
 
-  "You will get {amount} {token} after Trade": "거래 후 {{amount}} {{token}}을 받게됩니다.",
+  "You will get {amount} {token} after the trade is complete": "거래 후 {{amount}} {{token}}을 받게됩니다.",
   "Fill all": "모두 채우기",
   "Min Contribution Limit:": "최소 기부 한도 :",
   "Only Owner can contribute": "소유자 만 기여할 수 있습니다.",

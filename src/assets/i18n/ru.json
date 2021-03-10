@@ -218,7 +218,7 @@
   "Check on Explorer": "Проверить в эксплорере",
   "Number of investors": "Количество инвесторов",
 
-  "You will get {amount} {token} after Trade": "Вы получите {{ amount }} {{ token }} после сделки",
+  "You will get {amount} {token} after the trade is complete": "Вы получите {{ amount }} {{ token }} после сделки",
   "Fill all": "Заполните все поля",
   "Min Contribution Limit:": "Минимальный лимит взноса:",
   "Only Owner can contribute": "Только владелец может сделать взнос",

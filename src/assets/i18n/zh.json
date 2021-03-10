@@ -182,7 +182,7 @@
   "Check on Explorer":"检查资源管理器",
   "Number of investors":"投资者人数",
 
-  "You will get {amount} {token} after Trade":"你会得到{金额}{令牌} 交易后的{{代币}}",
+  "You will get {amount} {token} after the trade is complete":"你会得到{金额}{令牌} 交易后的{{代币}}",
   "Fill all":"全部填满",
   "Min Contribution Limit:":"最低出资限额",
   "Only Owner can contribute":"只有业主可以出资",

@@ -218,7 +218,7 @@
   "Check on Explorer": "Check on Explorer",
   "Number of investors": "Number of investors",
 
-  "You will get {amount} {token} after Trade": "You will get {{ amount }} {{ token }} after Trade",
+  "You will get {amount} {token} after the trade is complete": "You will get {{ amount }} {{ token }} after the trade is complete",
   "Fill all": "Fill all",
   "Min Contribution Limit:": "Min Contribution Limit:",
   "Only Owner can contribute": "Only Owner can contribute",
