@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivationEnd, NavigationStart, Router } from '@angular/router';
 
-import { MODE, PROJECT_PARTS } from './app-routing.module';
-import { MatDialog } from '@angular/material/dialog';
-
 // TODO: удлить весь этот кошмар
 @Component({
   selector: 'app-root',
@@ -138,6 +135,6 @@ export class AppComponent implements OnInit {
 
     /* if (this.web3Service.ethereum && this.web3Service.ethereum.isConnected()) {
       this.web3Service.setUserAddress();
-    }*/
+    } */
   }
 }

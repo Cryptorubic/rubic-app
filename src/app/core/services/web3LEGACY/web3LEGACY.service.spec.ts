@@ -7,6 +7,7 @@ describe('Web3Service', () => {
 
   it('should be created', () => {
     const service: Web3ServiceLEGACY = TestBed.get(Web3ServiceLEGACY);
+
     expect(service).toBeTruthy();
   });
 });

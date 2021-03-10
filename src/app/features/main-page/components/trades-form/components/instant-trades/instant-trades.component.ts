@@ -43,9 +43,11 @@ export class InstantTradesComponent implements OnChanges {
   @Input() blockchain: BLOCKCHAIN_NAME;
 
   private instantTradeServices: InstantTradeService[];
+
   private _tradeParameters: InstantTradeParameters;
 
   public tokens = List<SwapToken>([]);
+
   public trades: InstantTradeProviderController[];
 
   get tradeParameters(): InstantTradeParameters {
@@ -170,7 +172,7 @@ export class InstantTradesComponent implements OnChanges {
   }
 
   public shouldAnimateButton(providerIndex: number) {
-    const tradeState = this.trades[providerIndex].tradeState;
+    const { tradeState } = this.trades[providerIndex];
     return tradeState && tradeState !== TRADE_STATE.ERROR && tradeState !== TRADE_STATE.COMPLETED;
   }
 

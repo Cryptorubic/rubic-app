@@ -7,6 +7,7 @@ describe('ProviderService', () => {
 
   it('should be created', () => {
     const service: MetamaskProviderService = TestBed.get(MetamaskProviderService);
+
     expect(service).toBeTruthy();
   });
 });

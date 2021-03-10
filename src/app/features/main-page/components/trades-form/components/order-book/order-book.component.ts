@@ -1,13 +1,14 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import * as moment from 'moment';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material';
+
 import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
   MomentDateAdapter
 } from '@angular/material-moment-adapter';
+import { NgModel } from '@angular/forms';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { IToken } from '../../types';
 import { TokenInfoBody } from './types';
-import { NgModel } from '@angular/forms';
 import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/IBlockchain';
 
 const MY_FORMATS = {
@@ -39,7 +40,7 @@ const MY_FORMATS = {
     }
   ]
 })
-export class OrderBookComponent implements OnInit {
+export class OrderBookComponent {
   @Input() set blockchain(value: BLOCKCHAIN_NAME) {
     this._blockchain = value;
 
@@ -56,6 +57,7 @@ export class OrderBookComponent implements OnInit {
   };
 
   @ViewChild('baseCustomToken') baseCustomToken: NgModel;
+
   @ViewChild('quoteCustomToken') quoteCustomToken: NgModel;
 
   private _blockchain;
@@ -64,6 +66,7 @@ export class OrderBookComponent implements OnInit {
     base: false,
     quote: false
   };
+
   public customTokens = {
     base: {} as IToken,
     quote: {} as IToken
@@ -72,8 +75,11 @@ export class OrderBookComponent implements OnInit {
   public isAdvancedSectionOpened: boolean = false;
 
   public closingDate: moment.Moment;
+
   public minClosingDate: moment.Moment;
+
   public closingTime: string;
+
   public minClosingTime: string;
 
   public isPublicDeal: boolean;
@@ -82,10 +88,8 @@ export class OrderBookComponent implements OnInit {
     this.setAdvancedOptions();
   }
 
-  ngOnInit() {}
-
   private static timeToString(time: moment.Moment): string {
-    return time.hour() + ':' + time.minute();
+    return `${time.hour()}:${time.minute()}`;
   }
 
   private setAdvancedOptions(): void {

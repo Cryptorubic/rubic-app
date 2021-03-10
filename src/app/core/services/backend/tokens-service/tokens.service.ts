@@ -43,8 +43,8 @@ export class TokensService {
   private getTokensList(): void {
     this.httpService.get(this.getTokensUrl).subscribe(
       (response: TokensListResponse) =>
-        this._tokens.next(List(response.tokens.map(this.parseToken))),
-      err => console.log('Error retrieving tokens ' + err)
+        this._tokens.next(List(response.tokens.map(this.parseToken.bind(this)))),
+      err => console.log(`Error retrieving tokens ${err}`)
     );
   }
 

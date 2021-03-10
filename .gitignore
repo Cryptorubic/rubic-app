@@ -49,3 +49,4 @@ Thumbs.db
 /ssl/
 /deploy/
 /src/test/enviroment.test.json
+/src/.env

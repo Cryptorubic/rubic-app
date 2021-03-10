@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import InstantTradeService from '../InstantTradeService';
-import InstantTrade from '../types/InstantTrade';
-import { InstantTradeToken } from '../types';
 import {
   ChainId,
   Fetcher,
@@ -14,11 +11,14 @@ import {
   WETH
 } from '@uniswap/sdk';
 import BigNumber from 'bignumber.js';
+import { TransactionReceipt } from 'web3-eth';
+import { ethers } from 'ethers';
+import InstantTradeService from '../InstantTradeService';
+import InstantTrade from '../types/InstantTrade';
+import { InstantTradeToken } from '../types';
 import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
-import { TransactionReceipt } from 'web3-eth';
 import { CoingeckoApiService } from '../../external-api/coingecko-api/coingecko-api.service';
-import { ethers } from 'ethers';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { PublicProviderService } from '../../blockchain/public-provider/public-provider.service';
@@ -55,6 +55,7 @@ export class UniSwapService extends InstantTradeService {
   private readonly provider;
 
   private readonly WETH;
+
   private readonly web3PublicEth: Web3Public;
 
   constructor(

@@ -9,6 +9,7 @@ import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchai
 })
 export class PublicProviderService {
   public readonly connectionLinks: ConnectionLink[];
+
   constructor() {
     this.connectionLinks = networks.map(network => ({
       blockchainName: network.name,

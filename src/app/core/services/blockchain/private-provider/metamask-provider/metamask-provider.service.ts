@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
+import { Subject } from 'rxjs';
 import { PrivateProvider } from '../private-provider';
 
-import { Subject } from 'rxjs';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 
@@ -11,6 +11,7 @@ import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain
 })
 export class MetamaskProviderService extends PrivateProvider {
   private readonly _metaMask: any;
+
   public readonly web3: Web3;
 
   public readonly onAddressChanges = new Subject<string>();
@@ -29,7 +30,7 @@ export class MetamaskProviderService extends PrivateProvider {
     super();
 
     // @ts-ignore
-    const ethereum = window.ethereum;
+    const { ethereum } = window;
     if (!ethereum) {
       console.error('No Metamask installed.');
       return;

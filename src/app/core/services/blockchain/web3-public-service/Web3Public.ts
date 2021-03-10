@@ -1,12 +1,13 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import ERC20_TOKEN_ABI from '../constants/erc-20-api';
 import { Transaction } from 'web3-core';
+import ERC20_TOKEN_ABI from '../constants/erc-20-api';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { Token } from '../../../../shared/models/tokens/Token';
 
 export class Web3Public {
   constructor(private web3: Web3, private blockchain: IBlockchain) {}
+
   /**
    * @description gets account balance in Eth units
    * @param address wallet address whose balance you want to find out
@@ -140,9 +141,8 @@ export class Web3Public {
       return new Promise(resolve =>
         setTimeout(() => resolve(this.getTransactionByHash(hash, attempt + 1)), timeout)
       );
-    } else {
-      return transaction;
     }
+    return transaction;
   }
 
   /**
@@ -237,7 +237,7 @@ export class Web3Public {
       address: tokenAddress
     } as Token;
 
-    for (let methodName of tokenMethods) {
+    for (const methodName of tokenMethods) {
       tokenFieldsPromises.push(this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, methodName));
     }
 

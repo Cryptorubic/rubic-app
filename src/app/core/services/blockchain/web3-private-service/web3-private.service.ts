@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import ERC20_TOKEN_ABI from '../constants/erc-20-api';
 
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
-import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import { TransactionReceipt } from 'web3-eth';
 
 import { Subject } from 'rxjs';
+import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
+import ERC20_TOKEN_ABI from '../constants/erc-20-api';
 import { BLOCKCHAIN_NAME, IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { UserRejectError } from '../../../../shared/models/errors/bridge/UserRejectError';
 
@@ -16,9 +16,11 @@ import { UserRejectError } from '../../../../shared/models/errors/bridge/UserRej
 })
 export class Web3PrivateService {
   private web3: Web3;
+
   private defaultMockGas: string;
 
   public readonly onAddressChanges: Subject<string>;
+
   public readonly onNetworkChanges: Subject<IBlockchain>;
 
   public get address(): string {
@@ -82,7 +84,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log('Tokens transfer error. ' + err);
+          console.log(`Tokens transfer error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -112,7 +114,7 @@ export class Web3PrivateService {
         .send({ from: this.address, ...(this.defaultMockGas && { gas: this.defaultMockGas }) })
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
-          console.log('Tokens transfer error. ' + err);
+          console.log(`Tokens transfer error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -150,7 +152,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))
         .on('error', err => {
-          console.log('Tokens transfer error. ' + err);
+          console.log(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
             reject(new UserRejectError());
@@ -186,7 +188,7 @@ export class Web3PrivateService {
         })
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
-          console.log('Tokens transfer error. ' + err);
+          console.log(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
             reject(new UserRejectError());
@@ -226,7 +228,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log('Tokens approve error. ' + err);
+          console.log(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -269,7 +271,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log('Method execution error. ' + err);
+          console.log(`Method execution error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -303,7 +305,7 @@ export class Web3PrivateService {
         })
         .on('transactionHash', resolve)
         .on('error', err => {
-          console.log('Tokens approve error. ' + err);
+          console.log(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {

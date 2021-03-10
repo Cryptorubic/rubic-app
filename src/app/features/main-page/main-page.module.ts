@@ -1,5 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
 import { MainPageComponent } from './components/main-page-component/main-page.component';
 import { TradesFormComponent } from './components/trades-form/trades-form.component';
 import { TradeInProgressModalComponent } from './components/trades-form/components/trade-in-progress-modal/trade-in-progress-modal.component';
@@ -8,9 +13,6 @@ import { InstantTradesComponent } from './components/trades-form/components/inst
 import { OrderBookComponent } from './components/trades-form/components/order-book/order-book.component';
 import { MainPageRoutingModule } from './main-page-routing.module';
 import { SharedModule } from '../../shared/shared.module';
-import { FormsModule } from '@angular/forms';
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { MatDatepickerModule, MatInputModule } from '@angular/material';
 
 @NgModule({
   declarations: [

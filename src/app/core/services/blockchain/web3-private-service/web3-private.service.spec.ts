@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Web3PrivateService } from './web3-private.service';
-import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
+import { Web3PrivateService } from './web3-private.service';
+import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import providerServiceStub from '../private-provider/metamask-provider/metamask-provider.service.stub';
 
 // @ts-ignore
@@ -49,7 +49,8 @@ describe('Web3ApiService', () => {
   });
 
   it('should use Kovan network id', () => {
-    const network = service.network;
+    const { network } = service;
+
     expect(network).toBeTruthy();
     expect(network.id).toBe(42);
   });
@@ -69,9 +70,11 @@ describe('Web3ApiService', () => {
     expect(callbackObject.onTransactionHash).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
+
     expect(receipt).not.toBe(undefined);
     expect(receipt.blockNumber > 0).toBeTruthy();
     const bobNewBalance = await web3PublicEth.getBalance(bobAddress);
+
     expect(bobNewBalance.minus(bobStartBalance).toString()).toBe(amount.toString());
     done();
   });
@@ -91,9 +94,11 @@ describe('Web3ApiService', () => {
     expect(callbackObject.onTransactionHash).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
+
     expect(receipt).not.toBe(undefined);
     expect(receipt.blockNumber > 0).toBeTruthy();
     const bobNewBalance = await web3PublicEth.getTokenBalance(bobAddress, WEENUS.address);
+
     expect(bobNewBalance.minus(bobStartBalance).toString()).toBe(amount.toString());
     done();
   });
@@ -118,6 +123,7 @@ describe('Web3ApiService', () => {
     expect(callbackObject.onTransactionHash).toHaveBeenCalledWith(
       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
     );
+
     expect(receipt).not.toBe(undefined);
     expect(receipt.blockNumber > 0).toBeTruthy();
     const bobNewAllowance = await web3PublicEth.getAllowance(
@@ -125,6 +131,7 @@ describe('Web3ApiService', () => {
       service.address,
       bobAddress
     );
+
     expect(bobNewAllowance.minus(bobStartAllowance).toString()).toBe(amount.toString());
     done();
   });

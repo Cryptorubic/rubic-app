@@ -7,6 +7,7 @@ describe('CoingeckoApiService', () => {
 
   it('should be created', () => {
     const service: CoingeckoApiService = TestBed.get(CoingeckoApiService);
+
     expect(service).toBeTruthy();
   });
 });

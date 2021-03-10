@@ -8,9 +8,8 @@ describe('WarningLabelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WarningLabelComponent ]
-    })
-    .compileComponents();
+      declarations: [WarningLabelComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
