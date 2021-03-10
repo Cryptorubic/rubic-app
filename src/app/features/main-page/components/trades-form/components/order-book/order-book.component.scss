@@ -1,4 +1,4 @@
-@import '../../../../../../../scss/elements/vars';
+@import 'src/scss/elements/vars';
 
 .order-book-form {
   &__main-section {
@@ -6,9 +6,14 @@
   }
 
   &__advanced-section {
-    padding: 20px 30px 22px;
-    border-top: 2px solid $grey-background;
+    &_hidden {
+      display: none;
+    }
   }
+}
+
+.main-section {
+  display: flex;
 
   &__tokens-forms {
     flex: 3.5;
@@ -23,10 +28,6 @@
     top: 23px;
     margin-left: auto;
   }
-}
-
-.main-section {
-  display: flex;
 }
 
 .tokens-forms {
@@ -66,7 +67,7 @@
   }
 
   &__custom-section {
-    margin-top: 11px;
+    margin-top: 8px;
   }
 }
 
@@ -91,7 +92,7 @@
   }
 
   &__form {
-    margin: 13px 0 5px;
+    margin: 9px 0 5px;
   }
 }
 
@@ -101,6 +102,7 @@
 
   &__input {
     box-sizing: border-box;
+    width: 100%;
     padding: 11px 10px 11px 18px;
     border: 1px solid white;
 
@@ -122,7 +124,10 @@
 
 .confirm-section {
   &__advanced-options-button {
-    margin-top: 21px;
+    position: relative;
+    right: -0.4vw;
+
+    margin-top: 19px;
 
     color: $main-green;
     cursor: pointer;
@@ -137,111 +142,13 @@
 
       width: 12px;
 
-      transition: transform 0.4s ease;
+      transition: transform 0.3s ease;
     }
 
     &_opened {
       img {
         transform: rotateX(180deg);
       }
-    }
-  }
-}
-
-.advanced-section {
-  display: flex;
-  grid-gap: 32px;
-}
-
-.advanced-section-block {
-  display: flex;
-  align-items: center;
-
-  &__header {
-    margin-bottom: 6px;
-
-    color: $dark;
-
-    font-size: 14px;
-    text-transform: uppercase;
-  }
-
-  &__input-container {
-    display: flex;
-    flex-direction: column;
-
-    text-align: center;
-  }
-
-  &__input {
-    padding: 12px 14px;
-    margin: 0 auto;
-    border: none;
-
-    color: $dark;
-    background: $grey-background;
-    cursor: pointer;
-
-    font-size: 16px;
-
-    &_date {
-      width: 81px;
-    }
-
-    &_time {
-      width: 41px;
-    }
-
-    &_public-deal {
-      width: 63px;
-      padding: 7px 14px;
-    }
-  }
-
-  &__public-deal-checkbox {
-    display: none;
-  }
-
-  .input-public-deal {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    grid-gap: 9px;
-
-    text-transform: uppercase;
-
-    &_not-checked {
-      flex-direction: row-reverse;
-    }
-
-    &__image {
-      width: 26px;
-      height: 28px;
-
-      background-image: url(/images/icons/main-page/PublicDealTick.svg);
-      background-repeat: no-repeat;
-
-      transition: background-image 0.3s linear;
-
-      &_not-checked {
-        background-image: url(/images/icons/main-page/PublicDealCross.svg);
-      }
-    }
-  }
-
-  .description-container {
-    position: relative;
-    top: 10px;
-
-    display: flex;
-    align-items: center;
-
-    margin-left: 3px;
-
-    color: $grey-text;
-
-    &__dash {
-      margin: 0 5px;
     }
   }
 }

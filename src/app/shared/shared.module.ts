@@ -34,6 +34,7 @@ import { EtherscanUrlPipe } from './pipes/etherscan-url.pipe';
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { WarningLabelComponent } from './components/warning-label/warning-label.component';
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
+import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { TokenAddressDirective } from './directives/token-address/token-address.
     NativeUrlPipe,
     AddressInputComponent,
     WarningLabelComponent,
-    TokenAddressDirective
+    TokenAddressDirective,
+    NumberPrecisionDirective
   ],
   imports: [CommonModule, TranslateModule, DynamicModule, MatDialogModule, FormsModule],
   exports: [
@@ -100,7 +102,8 @@ import { TokenAddressDirective } from './directives/token-address/token-address.
     AddressInputComponent,
     WarningLabelComponent,
     TokenAddressDirective,
-    TranslateModule
+    TranslateModule,
+    NumberPrecisionDirective
   ]
 })
 export class SharedModule {}

@@ -46,7 +46,7 @@ export class TokensInputComponent implements OnChanges {
 
   @Input() selectedAmount: string;
 
-  @Output() numberChanges = new EventEmitter<number>();
+  @Output() numberChanges = new EventEmitter<string>();
 
   @Output() tokenChanges = new EventEmitter<InputToken | null>();
 

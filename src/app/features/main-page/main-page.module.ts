@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MainPageComponent } from './components/main-page-component/main-page.component';
@@ -13,6 +12,7 @@ import { InstantTradesComponent } from './components/trades-form/components/inst
 import { OrderBookComponent } from './components/trades-form/components/order-book/order-book.component';
 import { MainPageRoutingModule } from './main-page-routing.module';
 import { SharedModule } from '../../shared/shared.module';
+import { OrderBookAdvancedOptionsComponent } from './components/trades-form/components/order-book/order-book-advanced-options/order-book-advanced-options.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,8 @@ import { SharedModule } from '../../shared/shared.module';
     TradeInProgressModalComponent,
     TradeSuccessModalComponent,
     InstantTradesComponent,
-    OrderBookComponent
+    OrderBookComponent,
+    OrderBookAdvancedOptionsComponent
   ],
   imports: [
     CommonModule,

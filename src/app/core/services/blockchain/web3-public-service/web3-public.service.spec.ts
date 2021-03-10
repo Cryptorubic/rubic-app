@@ -8,7 +8,7 @@ import { Web3Public } from './Web3Public';
 import config from '../../../../test/enviroment.test.json';
 import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
 
-import ERC20_TOKEN_ABI from '../constants/erc-20-api';
+import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/IBlockchain';
 import { ETH, WEENUS } from '../../../../../test/tokens/eth-tokens';
 import { WEENUS_ABI } from '../../../../../test/tokens/tokens-abi';
