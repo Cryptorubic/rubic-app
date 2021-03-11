@@ -24,6 +24,7 @@ interface InstantTradeProviderController {
   trade: InstantTrade;
   tradeState: TRADE_STATE;
   tradeProviderInfo: TradeProviderInfo;
+  isBestRate: boolean;
 }
 
 enum TRADE_STATE {
@@ -132,14 +133,16 @@ export class InstantTradesComponent implements OnChanges {
             tradeState: null,
             tradeProviderInfo: {
               label: 'Oneinch'
-            }
+            },
+            isBestRate: false
           },
           {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
               label: 'Uniswap'
-            }
+            },
+            isBestRate: false
           }
         ];
         break;
@@ -151,7 +154,8 @@ export class InstantTradesComponent implements OnChanges {
             tradeState: null,
             tradeProviderInfo: {
               label: 'Burgerswap'
-            }
+            },
+            isBestRate: false
           }
         ];
         break;
@@ -202,26 +206,54 @@ export class InstantTradesComponent implements OnChanges {
   }
 
   private calculateTradeParameters() {
+    const calculationPromises: Promise<void>[] = [];
     this.instantTradeServices.forEach((service, index) =>
-      this.calculateProviderTrade(service, this.trades[index])
+      calculationPromises.push(this.calculateProviderTrade(service, this.trades[index]))
     );
+    Promise.allSettled(calculationPromises).then(() => this.calculateBestRate());
   }
 
-  private calculateProviderTrade(
+  private async calculateProviderTrade(
     service: InstantTradeService,
     tradeController: InstantTradeProviderController
-  ) {
+  ): Promise<void> {
     tradeController.trade = null;
     tradeController.tradeState = TRADE_STATE.CALCULATION;
-    service
-      .calculateTrade(this.tradeParameters.fromAmount, this.fromToken, this.toToken)
-      .then(calculatedTrade => {
-        tradeController.trade = calculatedTrade;
-        tradeController.tradeState = null;
-      })
-      .catch(error => {
-        console.error(error);
-        tradeController.tradeState = TRADE_STATE.ERROR;
-      });
+    try {
+      tradeController.trade = await service.calculateTrade(
+        this.tradeParameters.fromAmount,
+        this.fromToken,
+        this.toToken
+      );
+      tradeController.tradeState = null;
+    } catch (error) {
+      console.error(error);
+      tradeController.tradeState = TRADE_STATE.ERROR;
+    }
+  }
+
+  private calculateBestRate(): void {
+    let bestRateProviderIndex;
+    let bestRateProviderProfit = new BigNumber(0);
+    this.trades.forEach((tradeController, index) => {
+      const { gasFeeInUsd, to } = tradeController.trade;
+      const toToken = this.tokens.find(token => token.address === to.token.address);
+      const amountInUsd = to.amount?.multipliedBy(toToken.price);
+
+      if (amountInUsd && gasFeeInUsd) {
+        const profit = amountInUsd.minus(gasFeeInUsd);
+        if (profit.gt(bestRateProviderProfit)) {
+          bestRateProviderProfit = profit;
+          bestRateProviderIndex = index;
+        }
+      }
+    });
+
+    if (bestRateProviderIndex !== undefined) {
+      this.trades[bestRateProviderIndex] = {
+        ...this.trades[bestRateProviderIndex],
+        isBestRate: true
+      };
+    }
   }
 }
