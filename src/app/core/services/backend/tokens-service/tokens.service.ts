@@ -27,6 +27,8 @@ interface BackendToken {
 export class TokensService {
   private getTokensUrl = 'coingecko_tokens/';
 
+  private readonly maxRankValue = 999999999;
+
   private backendBlockchains = {
     ethereum: BLOCKCHAIN_NAME.ETHEREUM,
     'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
@@ -55,7 +57,7 @@ export class TokensService {
       symbol: token.token_short_title,
       blockchain: this.backendBlockchains[token.platform],
       image: token.image_link,
-      rank: token.coingecko_rank,
+      rank: token.coingecko_rank || this.maxRankValue,
       price: token.usd_price
     };
   }

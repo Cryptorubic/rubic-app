@@ -14,7 +14,7 @@ interface BlockchainLabelData {
 interface BlockchainDropdownData extends DropdownComponentData {
   inputs: BlockchainLabelData;
   id: string;
-  sortParameters: {
+  filterParameters: {
     name: string;
     label: string;
   };
@@ -77,7 +77,7 @@ export class BlockchainsInputComponent implements OnChanges {
       this.selectedBlockchainDropdownData = {
         inputs: { blockchain: this.selectedBlockchain, selected: true },
         id: this.selectedBlockchain.name,
-        sortParameters: {
+        filterParameters: {
           name: this.selectedBlockchain.name,
           label: this.selectedBlockchain.label
         }

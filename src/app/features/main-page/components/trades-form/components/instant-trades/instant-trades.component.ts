@@ -101,7 +101,9 @@ export class InstantTradesComponent implements OnChanges {
     private oneInchService: OneInchService,
     private burgerSwapService: BurgerSwapService
   ) {
-    tokenService.tokens.subscribe(tokens => (this.tokens = tokens));
+    tokenService.tokens.subscribe(tokens => {
+      this.tokens = tokens;
+    });
   }
 
   private initInstantTradeProviders() {

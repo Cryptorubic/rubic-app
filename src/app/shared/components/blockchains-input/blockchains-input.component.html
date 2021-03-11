@@ -8,7 +8,7 @@
     [componentClass]="blockchainLabelComponentClass"
     [componentsData]="blockchainsDropdownData"
     [selectedComponentData]="selectedBlockchainDropdownData"
-    [sortOrder]="blockchainsSortOrder"
+    [filterBy]='blockchainsSortOrder'
     chooseComponentText="Choose Blockchain"
     (componentChanges)="onBlockchainChanges($event)"
   ></app-input-dropdown>
