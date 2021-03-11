@@ -9,8 +9,6 @@ import InstantTradeService from 'src/app/core/services/instant-trade/InstantTrad
 import { OneInchService } from 'src/app/core/services/instant-trade/one-inch-service/one-inch.service';
 import { BurgerSwapService } from 'src/app/core/services/instant-trade/burger-swap-service/burger-swap-service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { coingeckoTestTokens } from '../../../../../../../test/tokens/coingecko-tokens';
 
 interface TradeProviderInfo {
   label: string;
@@ -48,9 +46,23 @@ export class InstantTradesComponent implements OnChanges {
 
   private _tradeParameters: InstantTradeParameters;
 
-  public tokens = List<SwapToken>([]);
+  private _tokens = List<SwapToken>([]);
+
+  public availableFromTokens = List<SwapToken>([]);
+
+  public availableToTokens = List<SwapToken>([]);
 
   public trades: InstantTradeProviderController[];
+
+  get tokens(): List<SwapToken> {
+    return this._tokens;
+  }
+
+  set tokens(value: List<SwapToken>) {
+    this._tokens = value.filter(token => token.blockchain === this.blockchain);
+    this.availableToTokens = this._tokens.concat();
+    this.availableFromTokens = this._tokens.concat();
+  }
 
   get tradeParameters(): InstantTradeParameters {
     return this._tradeParameters;
@@ -73,6 +85,7 @@ export class InstantTradesComponent implements OnChanges {
       ...this.tradeParameters,
       fromToken: value
     };
+    this.availableToTokens = this.tokens.filter(token => token.address !== value.address);
   }
 
   get toToken(): SwapToken {
@@ -84,6 +97,7 @@ export class InstantTradesComponent implements OnChanges {
       ...this.tradeParameters,
       toToken: value
     };
+    this.availableFromTokens = this.tokens.filter(token => token.address !== value.address);
   }
 
   get fromAmountAsString(): string {
@@ -98,7 +112,6 @@ export class InstantTradesComponent implements OnChanges {
   }
 
   constructor(
-    private useTestingModule: UseTestingModeService,
     private tokenService: TokensService,
     private uniSwapService: UniSwapService,
     private oneInchService: OneInchService,
@@ -106,12 +119,6 @@ export class InstantTradesComponent implements OnChanges {
   ) {
     tokenService.tokens.subscribe(tokens => {
       this.tokens = tokens;
-    });
-
-    useTestingModule.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.tokens = List(coingeckoTestTokens);
-      }
     });
   }
 
@@ -157,6 +164,8 @@ export class InstantTradesComponent implements OnChanges {
     if (changes.blockchain.currentValue !== changes.blockchain.previousValue) {
       this.initInstantTradeProviders();
 
+      this.tokens = this.tokenService.tokens.getValue();
+
       this.tradeParameters = {
         fromToken: null,
         toToken: null,
@@ -168,6 +177,9 @@ export class InstantTradesComponent implements OnChanges {
   public revertTokens() {
     const { fromToken, toToken } = this.tradeParameters;
     const toAmount = this.trades[1].trade?.to?.amount;
+    this.fromToken = toToken;
+    this.toToken = fromToken;
+
     this.tradeParameters = {
       fromToken: toToken,
       toToken: fromToken,

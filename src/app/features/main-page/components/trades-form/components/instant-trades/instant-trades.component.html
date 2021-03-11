@@ -5,7 +5,7 @@
       you have
     </div>
     <app-tokens-input
-      [tokensList]="tokens"
+      [tokensList]="availableFromTokens"
       [selectedToken]="fromToken"
       [selectedAmount]="fromAmountAsString"
       (tokenChanges)="fromToken = $any($event)"
@@ -32,7 +32,7 @@
         <div class="selection-block__input-container">
           <app-tokens-input class="instant-trade__tokens-input"
             [inputDisabled]="true"
-            [tokensList]="tokens"
+            [tokensList]="availableToTokens"
             [selectedToken]="toToken"
             [selectedAmount]="getToAmount(index)"
             (tokenChanges)="toToken = $any($event)"
