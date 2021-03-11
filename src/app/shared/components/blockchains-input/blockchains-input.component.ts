@@ -69,7 +69,7 @@ export class BlockchainsInputComponent implements OnChanges {
       this.blockchains.map(blockchain => ({
         inputs: { blockchain },
         id: blockchain.name,
-        sortParameters: { name: blockchain.name, label: blockchain.label }
+        filterParameters: { name: blockchain.name, label: blockchain.label }
       }))
     );
 

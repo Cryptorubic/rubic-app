@@ -50,7 +50,7 @@
           <div class="selection-block__warning">
             <app-warning-label
               *ngIf="checkIfError(index)"
-              warningText="Trade in UniSwap is not available.">
+              [warningText]="'Trade in' + tradeController.tradeProviderInfo.label + 'is not available.'">
             </app-warning-label>
           </div>
         </div>

@@ -9,6 +9,8 @@ import InstantTradeService from 'src/app/core/services/instant-trade/InstantTrad
 import { OneInchService } from 'src/app/core/services/instant-trade/one-inch-service/one-inch.service';
 import { BurgerSwapService } from 'src/app/core/services/instant-trade/burger-swap-service/burger-swap-service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
+import { coingeckoTestTokens } from '../../../../../../../test/tokens/coingecko-tokens';
 
 interface TradeProviderInfo {
   label: string;
@@ -96,6 +98,7 @@ export class InstantTradesComponent implements OnChanges {
   }
 
   constructor(
+    private useTestingModule: UseTestingModeService,
     private tokenService: TokensService,
     private uniSwapService: UniSwapService,
     private oneInchService: OneInchService,
@@ -103,6 +106,12 @@ export class InstantTradesComponent implements OnChanges {
   ) {
     tokenService.tokens.subscribe(tokens => {
       this.tokens = tokens;
+    });
+
+    useTestingModule.isTestingMode.subscribe(isTestingMode => {
+      if (isTestingMode) {
+        this.tokens = List(coingeckoTestTokens);
+      }
     });
   }
 
@@ -139,6 +148,8 @@ export class InstantTradesComponent implements OnChanges {
           }
         ];
         break;
+      default:
+        console.log(`Blockchain ${this.blockchain} was not found.`);
     }
   }
 

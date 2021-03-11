@@ -46,7 +46,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    * The list of the component class' fields, in order of which the filtered components will be sorted.
    * The first field has the biggest priority.
    */
-  @Input() readonly sortBy: number[];
+  @Input() readonly sortBy: string[];
 
   /**
    * What must be printed, if there's no selected component.
