@@ -46,5 +46,9 @@
     &:active {
       transform: scale(0.9);
     }
+
+    img {
+      max-width: 60%;
+    }
   }
 }
