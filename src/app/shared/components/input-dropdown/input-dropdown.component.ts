@@ -143,7 +143,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    * Puts the given component to the start of the visible list.
    */
   private unshiftComponentToVisibleList(component: T) {
-    this.visibleComponentsData = this.componentsData
+    this.visibleComponentsData = this.visibleComponentsData
       .filter(item => item.id !== component.id)
       .slice(0, this.VISIBLE_COMPONENTS_NUMBER - 1)
       .unshift(component);
