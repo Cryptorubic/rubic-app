@@ -47,7 +47,10 @@ const routes: Routes = [
   },
   {
     path: 'public-v3/:public_link',
-    redirectTo: '/trades/public-v3/:public_link'
+    loadChildren: () =>
+      import('./features/order-book-trade-page/order-book-trade-page.module').then(
+        m => m.OrderBookTradePageModule
+      )
   },
   {
     path: 'contracts',
