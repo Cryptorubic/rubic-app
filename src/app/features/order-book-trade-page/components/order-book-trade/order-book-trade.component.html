@@ -1,17 +1,23 @@
 <section class="trade-container">
   <div class="trade-container__header header">
     <div class="header__row header-row">
-      <span class="header-row__tokens-names">ETH <> RBC</span>
+      <span class="header-row__tokens-names">{{
+        tradeData.token.base.symbol + ' <> ' + tradeData.token.quote.symbol
+      }}</span>
     </div>
 
     <div class="header__row header-row">
       <span class="header-row__blockchain">
-        <img src="/assets/images/icons/coins/eth.png" alt="blockchain" /> Ethereum
+        <img [src]="blockchain.imagePath" alt="blockchain" /> {{ blockchain.label }}
       </span>
 
-      <span class="header-row__tokens-rate">
-        <span class="header-row__tokens-rate-title">Rate:</span> 0.00028571 ETH / 1 RBC
-        <img src="./assets/images/icons/revert.svg" alt="reverse rate" />
+      <span class="header-row__tokens-rate tokens-rate">
+        <span class="tokens-rate__title">Rate:</span>
+        {{ getRate() }}
+
+        <button class="tokens-rate__button" (click)="isRevertedRate = !isRevertedRate">
+          <img src="./assets/images/icons/revert.svg" alt="reverse rate" />
+        </button>
       </span>
 
       <span class="header-row__state header-row__state_active">Active</span>
@@ -22,28 +28,34 @@
     <!--base-->
     <div class="tokens-swap__block token-block">
       <div class="token-block__area area-first">
-        <div class="area-first__amount-total">0.4</div>
+        <div class="area-first__amount-total">{{ shortedAmountTotal.base }}</div>
 
         <div class="area-first__amount-sent">
           <span class="area-first__amount-description">Sent</span>
-          <span class="area-first__amount-number">0</span>
+          <span class="area-first__amount-number">{{
+            tradeData.token.base.amountContributed.toFormat(shortedFormat)
+          }}</span>
         </div>
 
         <div class="area-first__amount-left">
           <span class="area-first__amount-description">Left</span>
-          <span class="area-first__amount-number">0.4</span>
+          <span class="area-first__amount-number">{{
+            tradeData.token.base.amountLeft.toFormat(shortedFormat)
+          }}</span>
         </div>
       </div>
 
       <div class="token-block__area area-second">
         <div class="area-second__investors investors">
-          <span class="investors__amount">0 / 10</span>
+          <span class="investors__amount">{{ tradeData.token.base.investorsNumber }} / 10</span>
           <span class="investors__text">Number of investors</span>
         </div>
 
         <div class="area-second__token-info token-info">
           <div class="token-info__text">
-            <span class="token-info__title">Ethereum (ETH)</span>
+            <span class="token-info__title">{{
+              tradeData.token.base.name + ' (' + tradeData.token.base.symbol + ')'
+            }}</span>
 
             <a href="https://etherscan.io/stat/supply" class="token-info__link" target="_blank">
               Check on Explorer <img src="/assets/images/icons/link.svg" alt="link" />
@@ -68,28 +80,34 @@
     <!--quoute-->
     <div class="tokens-swap__block token-block">
       <div class="token-block__area area-first">
-        <div class="area-first__amount-total">1400</div>
+        <div class="area-first__amount-total">{{ shortedAmountTotal.quote }}</div>
 
         <div class="area-first__amount-sent">
           <span class="area-first__amount-description">Sent</span>
-          <span class="area-first__amount-number">0</span>
+          <span class="area-first__amount-number">{{
+            tradeData.token.quote.amountContributed.toFixed()
+          }}</span>
         </div>
 
         <div class="area-first__amount-left">
           <span class="area-first__amount-description">Left</span>
-          <span class="area-first__amount-number">1400</span>
+          <span class="area-first__amount-number">{{
+            tradeData.token.quote.amountLeft.toFixed()
+          }}</span>
         </div>
       </div>
 
-      <div class="token-block__area area-second area-second_quote">
-        <div class="area-second__investors investors investors_quote">
-          <span class="investors__amount">0 / 10</span>
+      <div class="token-block__area area-second">
+        <div class="area-second__investors investors">
+          <span class="investors__amount">{{ tradeData.token.quote.investorsNumber }} / 10</span>
           <span class="investors__text">Number of investors</span>
         </div>
 
-        <div class="area-second__token-info token-info token-info_quote">
-          <div class="token-info__text token-info__text_quote">
-            <span class="token-info__title">Rubic (RBC)</span>
+        <div class="area-second__token-info token-info">
+          <div class="token-info__text">
+            <span class="token-info__title">{{
+              tradeData.token.quote.name + ' (' + tradeData.token.quote.symbol + ')'
+            }}</span>
 
             <a href="https://etherscan.io/stat/supply" class="token-info__link" target="_blank">
               Check on Explorer <img src="/assets/images/icons/link.svg" alt="link" />
@@ -116,33 +134,45 @@
     <div class="trade-options__option trade-option">
       <div class="trade-option__title">Closing Date</div>
 
-      <div class="trade-option__body">15.03.2021</div>
+      <div class="trade-option__body">{{ tradeData.expirationDay }}</div>
     </div>
 
     <div class="trade-options__option trade-option">
       <div class="trade-option__title">Closing Time</div>
 
-      <div class="trade-option__body">04:23</div>
+      <div class="trade-option__body">{{ tradeData.expirationTime }}</div>
     </div>
 
-    <div class="trade-options__option trade-option">
+    <div class="trade-options__option trade-option copy-link">
       <div class="trade-option__title">Link To Deal</div>
 
-      <a
-        href="https://rubic.exchange/trades/public-v3/rpnkw4"
-        class="trade-option__body trade-option__body_link"
+      <button
+        class="trade-option__body trade-option__body_copy-link"
+        [cdkCopyToClipboard]="currentUrl"
+        (cdkCopyToClipboardCopied)="onCopiedLink()"
       >
-        https://rubic.exchange/trades/public-v3/rpnkw4
+        {{ currentUrl }}
         <img src="/assets/images/icons/copy.svg" alt="copy" />
-      </a>
+      </button>
+
+      <div class="copy-link__copied-notification" *ngIf="isCopied">
+        Copied
+        <div class="triangle"></div>
+      </div>
     </div>
 
     <div class="trade-options__option trade-option trade-option_public">
       <div class="trade-option__title">Public Deal</div>
 
-      <div class="trade-option__body trade-option__body_public">
-        <span>Yes</span>
-        <img src="/assets/images/icons/yes.svg" alt="" />
+      <div
+        class="trade-option__body trade-option__body_public"
+        [ngClass]="{ 'trade-option__body_reverted': !tradeData.isPublic }"
+      >
+        <span>{{ tradeData.isPublic ? 'Yes' : 'No' }}</span>
+        <img
+          [src]="'/assets/images/icons/' + (tradeData.isPublic ? 'yes' : 'no') + '.svg'"
+          alt=""
+        />
       </div>
     </div>
   </div>

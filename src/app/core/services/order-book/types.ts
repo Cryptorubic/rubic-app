@@ -14,7 +14,8 @@ export interface OrderBookDataToken extends Token {
   amountTotal: BigNumber;
   amountContributed: BigNumber;
   amountLeft: BigNumber;
-  minContribution: string;
+  investorsNumber: number;
+  minContribution: BigNumber;
   brokerPercent: number;
 }
 

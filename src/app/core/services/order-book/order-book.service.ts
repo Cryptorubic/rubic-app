@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { OrderBookDataToken, OrderBookToken, TradeData, TradeInfo, TradeInfoApi } from './types';
+import {
+  OrderBookDataToken,
+  OrderBookToken,
+  TokenPart,
+  TradeData,
+  TradeInfo,
+  TradeInfoApi
+} from './types';
 import { CONTRACT } from './smart-contract';
 import { OrderBookApiService } from '../backend/order-book-api/order-book-api.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
@@ -24,6 +31,10 @@ export class OrderBookService {
     return new BigNumber(amount || '0').times(new BigNumber(10).pow(token.decimals)).toFixed(0);
   }
 
+  private static tokenWeiToAmount(token: OrderBookDataToken, amount: string): BigNumber {
+    return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
+  }
+
   /**
    * @description creates order book through smart contract and then makes post request to backend
    * @param tradeInfo information about the trade
@@ -35,7 +46,7 @@ export class OrderBookService {
     const contractAbi = CONTRACT.ABI[2] as any[];
 
     const fee = new BigNumber(
-      await web3Public.callContractMethod(contractAddress, contractAbi, 'feeAmount').toString()
+      (await web3Public.callContractMethod(contractAddress, contractAbi, 'feeAmount')).toString()
     );
 
     const tradeInfoApi = this.generateCreateSwapApiObject(tradeInfo);
@@ -111,6 +122,7 @@ export class OrderBookService {
   }
 
   private generateCreateOrderArguments(tradeInfoApi: TradeInfoApi): any[] {
+    // eslint-disable-next-line no-magic-numbers
     const stopDate = Math.round(new Date(tradeInfoApi.stop_date).getTime() / 1000).toString();
 
     return [
@@ -146,28 +158,52 @@ export class OrderBookService {
 
     const stopDate = new Date(tradeInfoApi.stop_date);
 
-    return {
+    const tradeData = {
       token: {
-        base: {
-          address: tradeInfoApi.base_address,
-          amountTotal: new BigNumber(tradeInfoApi.base_limit),
-          amountContributed: new BigNumber(tradeInfoApi.base_amount_contributed),
-          minContribution: tradeInfoApi.min_base_wei,
-          brokerPercent: tradeInfoApi.broker_fee_base
-        } as OrderBookDataToken,
-        quote: {
-          address: tradeInfoApi.quote_address,
-          amountTotal: new BigNumber(tradeInfoApi.quote_limit),
-          amountContributed: new BigNumber(tradeInfoApi.quote_amount_contributed),
-          minContribution: tradeInfoApi.min_quote_wei,
-          brokerPercent: tradeInfoApi.broker_fee_quote
-        } as OrderBookDataToken
+        base: {} as OrderBookDataToken,
+        quote: {} as OrderBookDataToken
       },
       blockchain,
       state: tradeInfoApi.state,
       expirationDay: stopDate.toLocaleDateString('ru'),
       expirationTime: `${stopDate.getUTCHours()}:${stopDate.getUTCMinutes()}`,
       isPublic: tradeInfoApi.public
+    };
+    await this.setTokensData('base', tradeData, tradeInfoApi);
+    await this.setTokensData('quote', tradeData, tradeInfoApi);
+
+    return tradeData;
+  }
+
+  private async setTokensData(
+    tokenPart: TokenPart,
+    tradeData: TradeData,
+    tradeInfoApi: TradeInfoApi
+  ): Promise<void> {
+    tradeData.token[tokenPart].address = tradeInfoApi[`${tokenPart}_address`];
+
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+
+    tradeData.token[tokenPart] = {
+      ...tradeData.token[tokenPart],
+      ...(await web3Public.getTokenInfo(tradeData.token[tokenPart].address))
+    };
+
+    tradeData.token[tokenPart] = {
+      ...tradeData.token[tokenPart],
+      amountTotal: OrderBookService.tokenWeiToAmount(
+        tradeData.token[tokenPart],
+        tradeInfoApi[`${tokenPart}_limit`]
+      ),
+      amountContributed: OrderBookService.tokenWeiToAmount(
+        tradeData.token[tokenPart],
+        tradeInfoApi[`${tokenPart}_amount_contributed`]
+      ),
+      minContribution: OrderBookService.tokenWeiToAmount(
+        tradeData.token[tokenPart],
+        tradeInfoApi[`min_${tokenPart}_wei`]
+      ),
+      brokerPercent: tradeInfoApi[`broker_fee_${tokenPart}`]
     };
   }
 }

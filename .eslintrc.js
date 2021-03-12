@@ -37,7 +37,7 @@ module.exports = {
         'no-magic-numbers': [
           'warn',
           {
-            ignore: [-1, 0, 1, 2, 10],
+            ignore: [-1, 0, 1, 2, 10, 100],
             detectObjects: true
           }
         ],
