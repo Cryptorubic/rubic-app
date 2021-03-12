@@ -1,0 +1,17 @@
+<div class="language-dropdown">
+  <ul
+    class="language-dropdown__list"
+    [ngClass]="{ 'language-dropdown__list--opened': isLanguageslistOpened }"
+    (click)="toggleLanguageDropdown()"
+  >
+    <li
+      *ngFor="let lng of languagesList"
+      class="language-dropdown__element"
+      (click)="setLanguage(lng.lng)"
+      [ngClass]="{ 'language-dropdown__element--active': lng.active }"
+    >
+      <img class="language-dropdown__element-image" src="/assets/images/lng/{{ lng.lng }}.svg" />
+      <span class="language-dropdown__element-text">{{ lng.title }}</span>
+    </li>
+  </ul>
+</div>

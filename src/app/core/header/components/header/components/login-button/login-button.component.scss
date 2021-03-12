@@ -1,0 +1,18 @@
+$text-size: 14px;
+$letter-spacing: 2px;
+
+.login-button {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding: 0 16px;
+
+  &__text {
+    padding: 9px;
+    font-size: $text-size;
+    line-height: $text-size;
+    padding-left: 0;
+    font-weight: 700;
+    letter-spacing: $letter-spacing;
+  }
+}

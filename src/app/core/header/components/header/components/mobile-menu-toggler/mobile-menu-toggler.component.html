@@ -1,0 +1,10 @@
+<button
+  class="navbar-toggler"
+  type="button"
+  (click)="toggleMenu()"
+  [ngClass]="{ 'navbar-toggler--opened': $isMobileMenuOpened | async }"
+>
+  <span class="navbar-toggler__icon-bar"></span>
+  <span class="navbar-toggler__icon-bar"></span>
+  <span class="navbar-toggler__icon-bar"></span>
+</button>

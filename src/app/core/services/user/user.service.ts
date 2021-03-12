@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { MatDialog } from '@angular/material/dialog';
+import { finalize } from 'rxjs/operators';
 import { HttpService } from '../http/http.service';
 import { URLS } from './user.service.api';
 import {
@@ -202,14 +203,13 @@ export class UserService {
     }
   }
 
-  public logout() {
-    return this.httpService
-      .get(URLS.LOGOUT, {}, URLS.HOSTS.AUTH_PATH)
-      .toPromise()
-      .then(() => {
+  public logout(): Observable<any> {
+    return this.httpService.get(URLS.LOGOUT, {}, URLS.HOSTS.AUTH_PATH).pipe(
+      finalize(() => {
         this._userModel = undefined;
         this.updateUser(true);
-      });
+      })
+    );
   }
 
   public enable2fa(code) {
@@ -270,42 +270,42 @@ export class UserService {
     });
   }
 
-  public FBAuth(): Promise<any> {
-    return new Promise(resolve => {
-      const getStatus = () => {
-        window['FB'].getLoginStatus(response => {
-          if (response.status === 'connected') {
-            resolve(response.authResponse);
-          } else {
-            window['FB'].login(() => {
-              getStatus();
-            });
-          }
-        });
-      };
-      getStatus();
-    });
-  }
+  // public FBAuth(): Promise<any> {
+  //   return new Promise(resolve => {
+  //     const getStatus = () => {
+  //       window['FB'].getLoginStatus(response => {
+  //         if (response.status === 'connected') {
+  //           resolve(response.authResponse);
+  //         } else {
+  //           window['FB'].login(() => {
+  //             getStatus();
+  //           });
+  //         }
+  //       });
+  //     };
+  //     getStatus();
+  //   });
+  // }
 
-  public GoogleAuth() {
-    return new Promise((resolve, reject) => {
-      window['gapi'].auth2.authorize(
-        {
-          client_id: SOCIAL_KEYS.GOOGLE,
-          scope: 'email profile',
-          response_type: 'id_token permission',
-          prompt: 'select_account'
-        },
-        function (response) {
-          if (response.error) {
-            reject(response);
-            return;
-          }
-          resolve(response);
-        }
-      );
-    });
-  }
+  // public GoogleAuth() {
+  //   return new Promise((resolve, reject) => {
+  //     window['gapi'].auth2.authorize(
+  //       {
+  //         client_id: SOCIAL_KEYS.GOOGLE,
+  //         scope: 'email profile',
+  //         response_type: 'id_token permission',
+  //         prompt: 'select_account'
+  //       },
+  //       function (response) {
+  //         if (response.error) {
+  //           reject(response);
+  //           return;
+  //         }
+  //         resolve(response);
+  //       }
+  //     );
+  //   });
+  // }
 
   // var promise = requestService.get(params);
   // promise.then(function(responseSocialUserInterface) {

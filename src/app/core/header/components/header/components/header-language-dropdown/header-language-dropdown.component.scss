@@ -1,0 +1,119 @@
+$language-block-height: 42px;
+$languages-amount: 4;
+$main-color: #4aa956;
+
+.language-dropdown {
+  margin: 0 10px;
+  color: $main-color;
+  height: $language-block-height;
+  margin-top: -3px;
+
+  &__list {
+    padding: 0;
+    margin: 0;
+    border: 1px solid $main-color;
+    box-sizing: border-box;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+    background-color: #fff;
+    max-height: $language-block-height;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+
+    &:after {
+      content: '';
+      transform-origin: center;
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-width: 2px 2px 0 0;
+      border-style: solid;
+      border-color: $main-color;
+      transform: rotate(135deg);
+      position: absolute;
+      top: 16px;
+      right: 11px;
+      z-index: 2;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    &--opened {
+      max-height: $languages-amount * $language-block-height;
+
+      &:after {
+        transform: rotate(-45deg);
+        top: 16px;
+        z-index: 2;
+      }
+    }
+  }
+
+  &__element-text {
+    position: relative;
+    top: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  &__element-image {
+    width: 24px;
+    height: 24px;
+    margin-right: 6px;
+  }
+
+  &__element {
+      padding: 8px 10px 8px 5px;
+      line-height: 24px;
+      box-sizing: border-box;
+      height: $language-block-height;
+      display: flex;
+
+      &:not(:first-child) {
+        border-top: 1px solid #ddd;
+      }
+
+      &:after {
+        content: '';
+        display: block;
+        clear: both;
+      }
+
+      &--active {
+        position: relative;
+        cursor: pointer;
+
+        &:after {
+          content: '';
+          display: block;
+          position: absolute;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          width: 40px;
+          z-index: 1;
+          background: -moz-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.8) 15%,
+            rgba(255, 255, 255, 1) 100%
+          );
+          background: -webkit-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.8) 15%,
+            rgba(255, 255, 255, 1) 100%
+          );
+          background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.8) 15%,
+            rgba(255, 255, 255, 1) 100%
+          );
+          filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );
+          border-radius: 5px;
+        }
+      }
+    }
+}

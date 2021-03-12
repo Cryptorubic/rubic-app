@@ -1,11 +1,12 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { RouterModule } from '@angular/router';
-import { MaintenanceComponent } from './components/maintenance/maintenance.component';
+import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
+import { HeaderComponent } from './header/components/header/header.component';
+import { HeaderModule } from './header/header.module';
 import { SharedModule } from '../shared/shared.module';
-import { HeaderComponent } from './components/header/header.component';
 
 export function appInitializerFactory(translate: TranslateService) {
   const defaultLng = (navigator.language || navigator['browserLanguage']).split('-')[0];
@@ -21,7 +22,7 @@ export function appInitializerFactory(translate: TranslateService) {
 }
 
 @NgModule({
-  declarations: [MaintenanceComponent, HeaderComponent],
+  declarations: [MaintenanceComponent],
   providers: [
     CookieService,
     {
@@ -31,7 +32,7 @@ export function appInitializerFactory(translate: TranslateService) {
       multi: true
     }
   ],
-  imports: [CommonModule, SharedModule, TranslateModule, RouterModule],
-  exports: [MaintenanceComponent, HeaderComponent, RouterModule]
+  imports: [CommonModule, HeaderModule, SharedModule],
+  exports: [MaintenanceComponent, RouterModule, HeaderComponent]
 })
 export class CoreModule {}
