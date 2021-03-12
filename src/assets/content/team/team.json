@@ -119,5 +119,16 @@
         "url": "https://teleg.run/GeorgeDLT"
       }
     ]
+  },
+  {
+    "img": "GuilhemDeRooyesteyn.png",
+    "name": "Guilhem de Rooyesteyn",
+    "role": "Marketing",
+    "links": [
+      {
+        "icon": "Telegram.svg",
+        "url": "https://t.me/Guilhemw"
+      }
+    ]
   }
 ]
