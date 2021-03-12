@@ -1,0 +1,9 @@
+<app-modal (onCloseEvent)="onCloseHandler()">
+  <div class="trade-modal">
+    <img class="trade-modal__icon" src='../../../../../../assets/images/icons/success.svg' alt="success" />
+    <div class="trade-modal__description">
+      Successful swap! <br />
+      <a target='_blank' [href]="scannerLink + transactionId">See transaction on etherscan</a>
+    </div>
+  </div>
+</app-modal>

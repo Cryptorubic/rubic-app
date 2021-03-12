@@ -30,7 +30,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./features/swaps-page/swaps-page.module').then(m => m.SwapsPageModule)
+      import('./features/swaps-page/page-module/swaps-page.module').then(m => m.SwapsPageModule)
   },
   {
     path: 'bridge',
