@@ -13,7 +13,10 @@
     </a>
   </div>
 
-  <app-trades-form> </app-trades-form>
+  <ng-template [ngSwitch]="selectedMode">
+    <app-instant-trades *ngSwitchCase="TRADE_MODE.INSTANT_TRADE"></app-instant-trades>
+    <app-order-books *ngSwitchCase="TRADE_MODE.ORDER_BOOK"></app-order-books>
+  </ng-template>
 
   <div
     class="disclaimer-text"

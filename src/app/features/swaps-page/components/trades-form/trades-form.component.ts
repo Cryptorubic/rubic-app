@@ -1,9 +1,11 @@
-import { Component, OnInit, Type } from '@angular/core';
+import { Component, OnDestroy, OnInit, Type } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { InstantTradesComponent } from './components/instant-trades/instant-trades.component';
 
 import { OrderBookComponent } from './components/order-book/order-book.component';
-import { MODE_NAMES } from './types';
+import { TRADE_MODE } from '../../models';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TradeTypeService } from '../../services/trade-type-service/trade-type.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -13,7 +15,7 @@ interface Blockchain {
 }
 
 interface Mode {
-  name: MODE_NAMES;
+  name: TRADE_MODE;
   label: string;
   imageActive: string;
   imageNotActive: string;
@@ -30,7 +32,7 @@ interface Mode {
   templateUrl: './trades-form.component.html',
   styleUrls: ['./trades-form.component.scss']
 })
-export class TradesFormComponent implements OnInit {
+export class TradesFormComponent implements OnInit, OnDestroy {
   public BLOCKCHAINS: Array<Blockchain> = [
     {
       name: BLOCKCHAIN_NAME.ETHEREUM,
@@ -54,7 +56,7 @@ export class TradesFormComponent implements OnInit {
 
   public MODES: Array<Mode> = [
     {
-      name: MODE_NAMES.INSTANT_TRADE,
+      name: TRADE_MODE.INSTANT_TRADE,
       label: 'Instant trade',
       imageActive: 'assets/images/icons/main-page/InstantTrade.svg',
       imageNotActive: 'assets/images/icons/main-page/InstantTrade_deactive.svg',
@@ -68,7 +70,7 @@ export class TradesFormComponent implements OnInit {
       }
     },
     {
-      name: MODE_NAMES.ORDER_BOOK,
+      name: TRADE_MODE.ORDER_BOOK,
       label: 'Order book',
       imageActive: 'assets/images/icons/main-page/OrderBook.svg',
       imageNotActive: 'assets/images/icons/main-page/OrderBook_deactive.svg',
@@ -83,37 +85,55 @@ export class TradesFormComponent implements OnInit {
     }
   ];
 
-  public MODE_NAMES = MODE_NAMES;
+  public TRADE_MODE = TRADE_MODE;
+
+  private _modeSubscription$: Subscription;
+
+  private _blockchainSubscription$: Subscription;
 
   private _selectedBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
-  private _selectedMode: MODE_NAMES = MODE_NAMES.INSTANT_TRADE;
+  private _selectedMode: TRADE_MODE = TRADE_MODE.INSTANT_TRADE;
 
-  set selectedMode(mode: MODE_NAMES) {
+  set selectedMode(mode: TRADE_MODE) {
     this._selectedMode = mode;
+    this.tradeTypeService.setMode(mode);
   }
 
-  get selectedMode(): MODE_NAMES {
+  get selectedMode(): TRADE_MODE {
     return this._selectedMode;
   }
 
   set selectedBlockchain(blockchain: BLOCKCHAIN_NAME) {
     this._selectedBlockchain = blockchain;
+    this.tradeTypeService.setBlockchain(blockchain);
   }
 
   get selectedBlockchain(): BLOCKCHAIN_NAME {
     return this._selectedBlockchain;
   }
 
-  constructor() {}
+  constructor(private tradeTypeService: TradeTypeService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this._modeSubscription$ = this.tradeTypeService.getMode().subscribe(mode => {
+      this.selectedMode = mode;
+    });
+    this._blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
+      this.selectedBlockchain = blockchain;
+    });
+  }
+
+  ngOnDestroy() {
+    this._modeSubscription$.unsubscribe();
+    this._blockchainSubscription$.unsubscribe();
+  }
 
   public selectBlockchain(blockchainName: BLOCKCHAIN_NAME) {
     this.selectedBlockchain = blockchainName;
   }
 
-  public selectMode(mode: MODE_NAMES) {
+  public selectMode(mode: TRADE_MODE) {
     this.selectedMode = mode;
   }
 }
