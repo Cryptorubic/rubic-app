@@ -71,9 +71,19 @@ export class InstantTradesComponent implements OnChanges {
 
   set tradeParameters(value) {
     this._tradeParameters = value;
+    this.trades = this.trades.map(tradeController => ({
+      ...tradeController,
+      isBestRate: false
+    }));
 
     if (value.fromAmount && !value.fromAmount.isNaN() && value.fromToken && value.toToken) {
       this.calculateTradeParameters();
+    } else {
+      this.trades = this.trades.map(tradeController => ({
+        ...tradeController,
+        trade: null,
+        tradeState: null
+      }));
     }
   }
 
@@ -220,12 +230,15 @@ export class InstantTradesComponent implements OnChanges {
     tradeController.trade = null;
     tradeController.tradeState = TRADE_STATE.CALCULATION;
     try {
-      tradeController.trade = await service.calculateTrade(
+      const calculatedTrade = await service.calculateTrade(
         this.tradeParameters.fromAmount,
         this.fromToken,
         this.toToken
       );
-      tradeController.tradeState = null;
+      if (tradeController.tradeState === TRADE_STATE.CALCULATION) {
+        tradeController.trade = calculatedTrade;
+        tradeController.tradeState = null;
+      }
     } catch (error) {
       console.error(error);
       tradeController.tradeState = TRADE_STATE.ERROR;
@@ -234,7 +247,7 @@ export class InstantTradesComponent implements OnChanges {
 
   private calculateBestRate(): void {
     let bestRateProviderIndex;
-    let bestRateProviderProfit = new BigNumber(0);
+    let bestRateProviderProfit = new BigNumber(-Infinity);
     this.trades.forEach((tradeController, index) => {
       const { gasFeeInUsd, to } = tradeController.trade;
       const toToken = this.tokens.find(token => token.address === to.token.address);

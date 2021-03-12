@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <div class="">
+      <div class="instant-trade-button">
         <app-primary-button
           [label]="'Via ' + tradeController.tradeProviderInfo.label"
           [disabled]="
@@ -67,6 +67,10 @@
           [animate]="shouldAnimateButton(index)"
         >
         </app-primary-button>
+        <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate">
+          <span>Best Rate</span>
+          <img src="assets/images/icons/BestRate.svg" alt="">
+        </div>
       </div>
     </ng-container>
   </div>

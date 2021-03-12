@@ -87,3 +87,22 @@
     margin-right: 8px;
   }
 }
+
+.instant-trade-button {
+  position: relative;
+  &__best-rate {
+    position: absolute;
+    top: -40px;
+    right: -10px;
+
+    img {
+      position: relative;
+      top: 20px;
+    }
+
+    span {
+      font-size: 14px;
+      color: rgba(black, 0.5);
+    }
+  }
+}
