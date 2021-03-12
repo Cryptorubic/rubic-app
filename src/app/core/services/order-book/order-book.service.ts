@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { OrderBookToken, TradeInfo, TradeInfoApi } from './types';
+import { OrderBookDataToken, OrderBookToken, TradeData, TradeInfo, TradeInfoApi } from './types';
 import { CONTRACT } from './smart-contract';
 import { OrderBookApiService } from '../backend/order-book-api/order-book-api.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
@@ -65,7 +65,6 @@ export class OrderBookService {
         break;
       case BLOCKCHAIN_NAME.MATIC:
         network = 24;
-
       // no default
     }
 
@@ -92,10 +91,12 @@ export class OrderBookService {
         tradeInfo.tokens.quote,
         tradeInfo.tokens.quote.minContribution
       ),
+      base_amount_contributed: '0',
+      quote_amount_contributed: '0',
       broker_fee: tradeInfo.isWithBrokerFee,
       broker_fee_address: tradeInfo.brokerAddress,
-      broker_fee_base: parseInt(tradeInfo.tokens.base.brokerPercent, 10),
-      broker_fee_quote: parseInt(tradeInfo.tokens.quote.brokerPercent, 10),
+      broker_fee_base: parseInt(tradeInfo.tokens.base.brokerPercent),
+      broker_fee_quote: parseInt(tradeInfo.tokens.quote.brokerPercent),
 
       name: `${tradeInfo.tokens.base.symbol} <> ${tradeInfo.tokens.quote.symbol}`,
       network,
@@ -125,5 +126,48 @@ export class OrderBookService {
       tradeInfoApi.broker_fee_base * 100,
       tradeInfoApi.broker_fee_base * 100
     ];
+  }
+
+  public async getTradeData(uniqueLink: string): Promise<TradeData> {
+    const tradeInfoApi = await this.orderBookApiService.getTradeData(uniqueLink);
+
+    let blockchain;
+    switch (tradeInfoApi.network) {
+      case 1:
+        blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+        break;
+      case 22:
+        blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+        break;
+      case 24:
+        blockchain = BLOCKCHAIN_NAME.MATIC;
+      // no default
+    }
+
+    const stopDate = new Date(tradeInfoApi.stop_date);
+
+    return {
+      token: {
+        base: {
+          address: tradeInfoApi.base_address,
+          amountTotal: new BigNumber(tradeInfoApi.base_limit),
+          amountContributed: new BigNumber(tradeInfoApi.base_amount_contributed),
+          minContribution: tradeInfoApi.min_base_wei,
+          brokerPercent: tradeInfoApi.broker_fee_base
+        } as OrderBookDataToken,
+        quote: {
+          address: tradeInfoApi.quote_address,
+          amountTotal: new BigNumber(tradeInfoApi.quote_limit),
+          amountContributed: new BigNumber(tradeInfoApi.quote_amount_contributed),
+          minContribution: tradeInfoApi.min_quote_wei,
+          brokerPercent: tradeInfoApi.broker_fee_quote
+        } as OrderBookDataToken
+      },
+      blockchain,
+      state: tradeInfoApi.state,
+      expirationDay: stopDate.toLocaleDateString('ru'),
+      expirationTime: `${stopDate.getUTCHours()}:${stopDate.getUTCMinutes()}`,
+      isPublic: tradeInfoApi.public
+    };
   }
 }

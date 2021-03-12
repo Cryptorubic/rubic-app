@@ -11,4 +11,12 @@ export class OrderBookApiService {
   public createTrade(tradeInfo: TradeInfoApi): Promise<TradeInfoApi> {
     return this.httpService.post('create_swap3/', tradeInfo).toPromise();
   }
+
+  public getTradeData(uniqueLink: string): Promise<TradeInfoApi> {
+    return this.httpService
+      .get('get_swap3_for_unique_link/', {
+        unique_link: uniqueLink
+      })
+      .toPromise();
+  }
 }
