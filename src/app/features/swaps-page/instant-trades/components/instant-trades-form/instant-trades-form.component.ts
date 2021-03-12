@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { InstantTrade } from 'src/app/core/services/instant-trade/types';
+import { InstantTrade, InstantTradeToken } from 'src/app/core/services/instant-trade/types';
 import { UniSwapService } from 'src/app/core/services/instant-trade/uni-swap-service/uni-swap.service';
 import BigNumber from 'bignumber.js';
 import InstantTradeService from 'src/app/core/services/instant-trade/InstantTradeService';
@@ -75,6 +75,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   set tradeParameters(value) {
+    if (
+      this._tradeParameters.toToken?.address === value.toToken?.address &&
+      this._tradeParameters.fromAmount?.isEqualTo(value.fromAmount) &&
+      this._tradeParameters.toToken?.address === value.toToken?.address
+    ) {
+      return;
+    }
     this._tradeParameters = value;
 
     this.tradesParametersService.setTradeParameters(this._blockchain, {
@@ -123,7 +130,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   get fromAmountAsString(): string {
-    return this.tradeParameters.fromAmount?.toFixed(this.fromToken?.decimals) || '';
+    return !this.tradeParameters.fromAmount || this.tradeParameters.fromAmount?.isNaN()
+      ? ''
+      : this.tradeParameters.fromAmount.toFixed();
   }
 
   set fromAmountAsString(value) {
@@ -214,6 +223,18 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this._blockchainSubscription$.unsubscribe();
   }
 
+  private isCalculatedTradeActual(
+    fromAmount: BigNumber,
+    fromToken: InstantTradeToken,
+    toToken: InstantTradeToken
+  ) {
+    return (
+      this._tradeParameters.fromToken?.address === fromToken?.address &&
+      this._tradeParameters.fromAmount?.isEqualTo(fromAmount) &&
+      this._tradeParameters.toToken?.address === toToken?.address
+    );
+  }
+
   public revertTokens() {
     const { fromToken, toToken } = this.tradeParameters;
     const toAmount = this.trades[1].trade?.to?.amount;
@@ -242,18 +263,29 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   private async calculateTradeParameters() {
+    const tradeParams = {
+      ...this.tradeParameters
+    };
     const calculationPromises: Promise<void>[] = [];
     this._instantTradeServices.forEach((service, index) =>
       calculationPromises.push(this.calculateProviderTrade(service, this.trades[index]))
     );
     await Promise.allSettled(calculationPromises);
-    this.calculateBestRate();
-    const toAmount = this.trades.find(tradeController => tradeController.isBestRate)?.trade?.to
-      ?.amount;
-    this.tradesParametersService.setTradeParameters(this._blockchain, {
-      ...this.tradeParameters,
-      toAmount
-    });
+    if (
+      this.isCalculatedTradeActual(
+        tradeParams.fromAmount,
+        tradeParams.fromToken,
+        tradeParams.toToken
+      )
+    ) {
+      this.calculateBestRate();
+      const toAmount = this.trades.find(tradeController => tradeController.isBestRate)?.trade?.to
+        ?.amount;
+      this.tradesParametersService.setTradeParameters(this._blockchain, {
+        ...this.tradeParameters,
+        toAmount
+      });
+    }
   }
 
   private async calculateProviderTrade(
@@ -268,7 +300,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.fromToken,
         this.toToken
       );
-      if (tradeController.tradeState === TRADE_STATE.CALCULATION) {
+      if (
+        this.isCalculatedTradeActual(
+          calculatedTrade.from.amount,
+          calculatedTrade.from.token,
+          calculatedTrade.to.token
+        )
+      ) {
         tradeController.trade = calculatedTrade;
         tradeController.tradeState = null;
       }
@@ -280,6 +318,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   private calculateBestRate(): void {
+    this.trades = this.trades.map(tradeController => ({
+      ...tradeController,
+      isBestRate: false
+    }));
+
     let bestRateProviderIndex;
     let bestRateProviderProfit = new BigNumber(-Infinity);
     this.trades.forEach((tradeController, index) => {
