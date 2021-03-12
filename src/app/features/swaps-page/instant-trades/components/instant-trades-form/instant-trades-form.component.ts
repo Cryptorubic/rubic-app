@@ -11,6 +11,7 @@ import { BurgerSwapService } from 'src/app/core/services/instant-trade/burger-sw
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
 import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
+import { TradeParametersService } from '../../../../../core/services/swaps/trade-parameters-service/trade-parameters.service';
 
 interface TradeProviderInfo {
   label: string;
@@ -75,6 +76,12 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   set tradeParameters(value) {
     this._tradeParameters = value;
+
+    this.tradesParametersService.setTradeParameters(this._blockchain, {
+      ...this._tradeParameters,
+      toAmount: null
+    });
+
     this.trades = this.trades.map(tradeController => ({
       ...tradeController,
       isBestRate: false
@@ -100,7 +107,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       ...this.tradeParameters,
       fromToken: value
     };
-    this.availableToTokens = this.tokens.filter(token => token.address !== value.address);
+    this.availableToTokens = this.tokens.filter(token => token.address !== value?.address);
   }
 
   get toToken(): SwapToken {
@@ -112,11 +119,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       ...this.tradeParameters,
       toToken: value
     };
-    this.availableFromTokens = this.tokens.filter(token => token.address !== value.address);
+    this.availableFromTokens = this.tokens.filter(token => token.address !== value?.address);
   }
 
   get fromAmountAsString(): string {
-    return this.tradeParameters.fromAmount?.toFixed() || '';
+    return this.tradeParameters.fromAmount?.toFixed(this.fromToken?.decimals) || '';
   }
 
   set fromAmountAsString(value) {
@@ -128,6 +135,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private tradeTypeService: TradeTypeService,
+    private tradesParametersService: TradeParametersService,
     private tokenService: TokensService,
     private uniSwapService: UniSwapService,
     private oneInchService: OneInchService,
@@ -186,11 +194,19 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
       this.tokens = this.tokenService.tokens.getValue();
 
-      this.tradeParameters = {
+      const tradeParameters = this.tradesParametersService.getTradeParameters(this._blockchain);
+
+      this._tradeParameters = {
         fromToken: null,
         toToken: null,
         fromAmount: null
       };
+
+      this.fromToken = tradeParameters?.fromToken;
+      this.toToken = tradeParameters?.toToken;
+      this.fromAmountAsString = tradeParameters?.fromAmount?.toFixed(
+        tradeParameters?.fromToken?.decimals
+      );
     });
   }
 
@@ -225,12 +241,19 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     return tradeState && tradeState !== TRADE_STATE.ERROR && tradeState !== TRADE_STATE.COMPLETED;
   }
 
-  private calculateTradeParameters() {
+  private async calculateTradeParameters() {
     const calculationPromises: Promise<void>[] = [];
     this._instantTradeServices.forEach((service, index) =>
       calculationPromises.push(this.calculateProviderTrade(service, this.trades[index]))
     );
-    Promise.allSettled(calculationPromises).then(() => this.calculateBestRate());
+    await Promise.allSettled(calculationPromises);
+    this.calculateBestRate();
+    const toAmount = this.trades.find(tradeController => tradeController.isBestRate)?.trade?.to
+      ?.amount;
+    this.tradesParametersService.setTradeParameters(this._blockchain, {
+      ...this.tradeParameters,
+      toAmount
+    });
   }
 
   private async calculateProviderTrade(
@@ -251,6 +274,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error(error);
+      tradeController.trade = null;
       tradeController.tradeState = TRADE_STATE.ERROR;
     }
   }
@@ -259,15 +283,17 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     let bestRateProviderIndex;
     let bestRateProviderProfit = new BigNumber(-Infinity);
     this.trades.forEach((tradeController, index) => {
-      const { gasFeeInUsd, to } = tradeController.trade;
-      const toToken = this.tokens.find(token => token.address === to.token.address);
-      const amountInUsd = to.amount?.multipliedBy(toToken.price);
+      if (tradeController.trade) {
+        const { gasFeeInUsd, to } = tradeController.trade;
+        const toToken = this.tokens.find(token => token.address === to.token.address);
+        const amountInUsd = to.amount?.multipliedBy(toToken.price);
 
-      if (amountInUsd && gasFeeInUsd) {
-        const profit = amountInUsd.minus(gasFeeInUsd);
-        if (profit.gt(bestRateProviderProfit)) {
-          bestRateProviderProfit = profit;
-          bestRateProviderIndex = index;
+        if (amountInUsd && gasFeeInUsd) {
+          const profit = amountInUsd.minus(gasFeeInUsd);
+          if (profit.gt(bestRateProviderProfit)) {
+            bestRateProviderProfit = profit;
+            bestRateProviderIndex = index;
+          }
         }
       }
     });
