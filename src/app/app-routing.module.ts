@@ -29,7 +29,8 @@ export const MODE = currMode;
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./features/main-page/main-page.module').then(m => m.MainPageModule)
+    loadChildren: () =>
+      import('./features/swaps-page/page-module/swaps-page.module').then(m => m.SwapsPageModule)
   },
   {
     path: 'bridge',
