@@ -6,8 +6,12 @@ import {
 import * as moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { NgModel } from '@angular/forms';
-import { OrderBookToken, TokenPart, TradeInfo } from 'src/app/core/services/order-book/types';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import {
+  OrderBookFormToken,
+  TokenPart
+} from '../../../../../../core/services/order-book/types/tokens';
+import { OrderBookTradeForm } from '../../../../../../core/services/order-book/types/trade-form';
 
 const MY_FORMATS = {
   useUtc: true,
@@ -40,13 +44,13 @@ const MY_FORMATS = {
 })
 export class OrderBooksFormOptionsComponent implements OnInit {
   @Input()
-  get tradeInfo(): TradeInfo {
+  get tradeInfo(): OrderBookTradeForm {
     return this._tradeInfo;
   }
 
-  @Output() tradeInfoChange = new EventEmitter<TradeInfo>();
+  @Output() tradeInfoChange = new EventEmitter<OrderBookTradeForm>();
 
-  set tradeInfo(value: TradeInfo) {
+  set tradeInfo(value: OrderBookTradeForm) {
     this._tradeInfo = value;
     this.tradeInfoChange.emit(this._tradeInfo);
 
@@ -66,7 +70,7 @@ export class OrderBooksFormOptionsComponent implements OnInit {
 
   @ViewChild('quoteBrokerPercent') quoteBrokerPercent: NgModel;
 
-  private _tradeInfo: TradeInfo;
+  private _tradeInfo: OrderBookTradeForm;
 
   public closingDate: moment.Moment;
 
@@ -79,7 +83,7 @@ export class OrderBooksFormOptionsComponent implements OnInit {
   private readonly defaultTokenOptions = {
     minContribution: '',
     brokerPercent: '0.1'
-  } as OrderBookToken;
+  } as OrderBookFormToken;
 
   public areAmountAndAddressesSet: boolean;
 

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
-import { OrderBookToken, TradeInfo } from 'src/app/core/services/order-book/types';
 import { OrderBookService } from 'src/app/core/services/order-book/order-book.service';
 import { List } from 'immutable';
 import { Subscription } from 'rxjs';
@@ -11,6 +10,8 @@ import SwapToken from '../../../../../shared/models/tokens/SwapToken';
 import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
 import { TokensService } from '../../../../../core/services/backend/tokens-service/tokens.service';
 import { TradeParametersService } from '../../../../../core/services/swaps/trade-parameters-service/trade-parameters.service';
+import { OrderBookFormToken } from '../../../../../core/services/order-book/types/tokens';
+import { OrderBookTradeForm } from '../../../../../core/services/order-book/types/trade-form';
 
 interface OrderBooksParameters {
   fromAmount: BigNumber;
@@ -37,7 +38,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   public availableQuoteTokens = List<SwapToken>([]);
 
-  private _tradeInfo: TradeInfo;
+  private _tradeInfo: OrderBookTradeForm;
 
   public isCreateTradeAvailable: boolean;
 
@@ -47,8 +48,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   };
 
   public customTokens = {
-    base: {} as OrderBookToken,
-    quote: {} as OrderBookToken
+    base: {} as OrderBookFormToken,
+    quote: {} as OrderBookFormToken
   };
 
   public isAdvancedSectionOpened: boolean = false;
@@ -133,7 +134,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  get tradeInfo(): TradeInfo {
+  get tradeInfo(): OrderBookTradeForm {
     return this._tradeInfo;
   }
 
@@ -168,8 +169,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this.isCreateTradeAvailable = false;
 
     this.tradeInfo = {
-      tokens: { base: {} as OrderBookToken, quote: {} as OrderBookToken }
-    } as TradeInfo;
+      tokens: { base: {} as OrderBookFormToken, quote: {} as OrderBookFormToken }
+    } as OrderBookTradeForm;
   }
 
   ngOnInit(): void {

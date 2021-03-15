@@ -1,20 +1,16 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import {
-  OrderBookDataToken,
-  OrderBookToken,
-  TokenPart,
-  TRADE_STATUS,
-  TradeData,
-  TradeInfo,
-  TradeInfoApi
-} from './types';
 import { CONTRACT } from './smart-contract';
 import { OrderBookApiService } from '../backend/order-book-api/order-book-api.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
+import { OrderBookDataToken, TokenPart } from './types/tokens';
+import { Token } from '../../../shared/models/tokens/Token';
+import { OrderBookTradeForm } from './types/trade-form';
+import { OrderBookTradeApi } from './types/trade-api';
+import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from './types/trade-page';
 
 interface Web3PublicParameters {
   web3Public: Web3Public;
@@ -34,11 +30,11 @@ export class OrderBookService {
     private web3PrivateService: Web3PrivateService
   ) {}
 
-  private static tokenAmountToWei(token: OrderBookToken, amount: string): string {
+  private static tokenAmountToWei(token: Token, amount: string): string {
     return new BigNumber(amount || '0').times(new BigNumber(10).pow(token.decimals)).toFixed(0);
   }
 
-  private static tokenWeiToAmount(token: OrderBookDataToken, amount: string): BigNumber {
+  private static tokenWeiToAmount(token: Token, amount: string): BigNumber {
     return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
   }
 
@@ -46,7 +42,7 @@ export class OrderBookService {
    * @description creates order book through smart contract and then makes post request to backend
    * @param tradeInfo information about the trade
    */
-  public async createOrder(tradeInfo: TradeInfo): Promise<void> {
+  public async createOrder(tradeInfo: OrderBookTradeForm): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[tradeInfo.blockchain];
 
     const contractAddress = CONTRACT.ADDRESSES[2][tradeInfo.blockchain];
@@ -74,7 +70,7 @@ export class OrderBookService {
     await this.orderBookApiService.createTrade(tradeInfoApi);
   }
 
-  private generateCreateSwapApiObject(tradeInfo: TradeInfo): TradeInfoApi {
+  private generateCreateSwapApiObject(tradeInfo: OrderBookTradeForm): OrderBookTradeApi {
     let network;
     switch (tradeInfo.blockchain) {
       case BLOCKCHAIN_NAME.ETHEREUM:
@@ -130,7 +126,7 @@ export class OrderBookService {
     };
   }
 
-  private generateCreateOrderArguments(tradeInfoApi: TradeInfoApi): any[] {
+  private generateCreateOrderArguments(tradeInfoApi: OrderBookTradeApi): any[] {
     // eslint-disable-next-line no-magic-numbers
     const stopDate = Math.round(new Date(tradeInfoApi.stop_date).getTime() / 1000).toString();
 
@@ -149,7 +145,7 @@ export class OrderBookService {
     ];
   }
 
-  public async getTradeData(uniqueLink: string): Promise<TradeData> {
+  public async getTradeData(uniqueLink: string): Promise<OrderBookTradeData> {
     const tradeInfoApi = await this.orderBookApiService.getTradeData(uniqueLink);
 
     let blockchain;
@@ -178,7 +174,7 @@ export class OrderBookService {
       blockchain,
       expirationDate,
       isPublic: tradeInfoApi.public
-    } as TradeData;
+    } as OrderBookTradeData;
     await this.setTokensData('base', tradeData, tradeInfoApi);
     await this.setTokensData('quote', tradeData, tradeInfoApi);
 
@@ -187,8 +183,8 @@ export class OrderBookService {
 
   private async setTokensData(
     tokenPart: TokenPart,
-    tradeData: TradeData,
-    tradeInfoApi: TradeInfoApi
+    tradeData: OrderBookTradeData,
+    tradeInfoApi: OrderBookTradeApi
   ): Promise<void> {
     tradeData.token[tokenPart].address = tradeInfoApi[`${tokenPart}_address`];
 
@@ -213,7 +209,7 @@ export class OrderBookService {
     };
   }
 
-  private getWeb3PublicParameters(tradeData: TradeData): Web3PublicParameters {
+  private getWeb3PublicParameters(tradeData: OrderBookTradeData): Web3PublicParameters {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
 
     const { contractAddress } = tradeData;
@@ -231,12 +227,12 @@ export class OrderBookService {
     };
   }
 
-  public async setStatus(tradeData: TradeData): Promise<void> {
+  public async setStatus(tradeData: OrderBookTradeData): Promise<void> {
     const { web3Public, contractAddress, contractAbi } = this.getWeb3PublicParameters(tradeData);
 
     const { expirationDate } = tradeData;
     if (expirationDate <= new Date()) {
-      tradeData.status = TRADE_STATUS.EXPIRED;
+      tradeData.status = ORDER_BOOK_TRADE_STATUS.EXPIRED;
     } else {
       const isDone: boolean = await web3Public.callContractMethod(
         contractAddress,
@@ -248,7 +244,7 @@ export class OrderBookService {
       );
 
       if (isDone) {
-        tradeData.status = TRADE_STATUS.DONE;
+        tradeData.status = ORDER_BOOK_TRADE_STATUS.DONE;
       } else {
         const isCancelled: boolean = await web3Public.callContractMethod(
           contractAddress,
@@ -260,15 +256,15 @@ export class OrderBookService {
         );
 
         if (isCancelled) {
-          tradeData.status = TRADE_STATUS.CANCELLED;
+          tradeData.status = ORDER_BOOK_TRADE_STATUS.CANCELLED;
         } else {
-          tradeData.status = TRADE_STATUS.ACTIVE;
+          tradeData.status = ORDER_BOOK_TRADE_STATUS.ACTIVE;
         }
       }
     }
   }
 
-  public async setAmountContributed(tradeData: TradeData): Promise<void> {
+  public async setAmountContributed(tradeData: OrderBookTradeData): Promise<void> {
     const { web3Public, contractAddress, contractAbi } = this.getWeb3PublicParameters(tradeData);
 
     const baseContributed: string = await web3Public.callContractMethod(
@@ -298,7 +294,7 @@ export class OrderBookService {
     );
   }
 
-  public async setInvestorsNumber(tradeData: TradeData): Promise<void> {
+  public async setInvestorsNumber(tradeData: OrderBookTradeData): Promise<void> {
     const { web3Public, contractAddress, contractAbi } = this.getWeb3PublicParameters(tradeData);
 
     const baseInvestors: string[] = await web3Public.callContractMethod(

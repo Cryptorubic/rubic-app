@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TokenPart, TRADE_STATUS, TradeData } from '../../../../core/services/order-book/types';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { OrderBookService } from '../../../../core/services/order-book/order-book.service';
+import {
+  ORDER_BOOK_TRADE_STATUS,
+  OrderBookTradeData
+} from '../../../../core/services/order-book/types/trade-page';
+import { TokenPart } from '../../../../core/services/order-book/types/tokens';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -48,9 +52,9 @@ export class OrderBookTradeComponent implements OnInit {
     secondaryGroupSize: 0
   };
 
-  public readonly TRADE_STATUS = TRADE_STATUS;
+  public readonly TRADE_STATUS = ORDER_BOOK_TRADE_STATUS;
 
-  public tradeData: TradeData;
+  public tradeData: OrderBookTradeData;
 
   public blockchain: Blockchain;
 
