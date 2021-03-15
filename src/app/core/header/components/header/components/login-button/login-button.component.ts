@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { UserInterface } from 'src/app/core/services/user/user.interface';
+import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 
 @Component({
   selector: 'app-login-button',

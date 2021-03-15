@@ -4,8 +4,8 @@ import { finalize, mergeMap } from 'rxjs/operators';
 import { HeaderStore } from '../../header/services/header.store';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { HttpService } from '../http/http.service';
-import { UserInterface } from '../user/user.interface';
-import { URLS } from '../user/user.service.api';
+import { UserInterface } from './models/user.interface';
+import { URLS } from './models/user.service.api';
 
 /**
  * Service that provides methods for working with authentication and user interaction.

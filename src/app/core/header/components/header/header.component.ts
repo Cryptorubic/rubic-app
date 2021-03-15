@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { UserInterface } from 'src/app/core/services/user/user.interface';
+import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../services/header.store';
