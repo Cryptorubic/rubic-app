@@ -195,7 +195,7 @@ export class Web3Public {
       methodArguments?: any[];
       from?: string;
     } = { methodArguments: [] }
-  ): Promise<unknown> {
+  ): Promise<any> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     return contract.methods[methodName](...options.methodArguments).call({

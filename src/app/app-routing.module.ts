@@ -29,7 +29,8 @@ export const MODE = currMode;
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./features/main-page/main-page.module').then(m => m.MainPageModule)
+    loadChildren: () =>
+      import('./features/swaps-page/page-module/swaps-page.module').then(m => m.SwapsPageModule)
   },
   {
     path: 'bridge',
@@ -46,8 +47,11 @@ const routes: Routes = [
     loadChildren: () => import('./features/team-page/team-page.module').then(m => m.TeamPageModule)
   },
   {
-    path: 'public-v3/:public_link',
-    redirectTo: '/trades/public-v3/:public_link'
+    path: 'public-v3/:unique_link',
+    loadChildren: () =>
+      import('./features/order-book-trade-page/order-book-trade-page.module').then(
+        m => m.OrderBookTradePageModule
+      )
   },
   {
     path: 'contracts',

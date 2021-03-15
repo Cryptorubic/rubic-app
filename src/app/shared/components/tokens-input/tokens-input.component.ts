@@ -22,9 +22,12 @@ interface TokenLabelData {
 interface TokenDropdownData extends DropdownComponentData {
   inputs: TokenLabelData;
   id: string;
-  sortParameters: {
+  filterParameters: {
     symbol: string;
     name: string;
+  };
+  sortParameters: {
+    rank: number;
   };
 }
 
@@ -58,7 +61,9 @@ export class TokensInputComponent implements OnChanges {
 
   public selectedTokenDropdownData: TokenDropdownData;
 
-  public tokensSortOrder = ['symbol', 'name'];
+  public tokensFilterOrder = ['symbol', 'name'];
+
+  public tokensSortOrder = ['rank'];
 
   public VISIBLE_TOKENS_NUMBER = 10;
 
@@ -105,17 +110,19 @@ export class TokensInputComponent implements OnChanges {
     this.tokensDropdownData = this.tokensList.map(token => ({
       inputs: { token },
       id: token.address,
-      sortParameters: { symbol: token.symbol, name: token.name }
+      filterParameters: { symbol: token.symbol, name: token.name },
+      sortParameters: { rank: token.rank }
     }));
 
     if (this.selectedToken) {
       this.selectedTokenDropdownData = {
         inputs: { token: this.selectedToken, selected: true },
         id: this.selectedToken.address,
-        sortParameters: {
+        filterParameters: {
           symbol: this.selectedToken.symbol,
           name: this.selectedToken.name
-        }
+        },
+        sortParameters: { rank: this.selectedToken.rank }
       };
     } else {
       this.selectedTokenDropdownData = null;
