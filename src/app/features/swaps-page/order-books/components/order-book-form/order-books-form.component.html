@@ -114,22 +114,8 @@
         [disabled]="!(tradeForm.areAmountsAndTokensSet && tradeForm.areOptionsValid)"
         (click)="createTrade()"
       ></app-primary-button>
-
-      <div
-        class="confirm-section__advanced-options-button"
-        [ngClass]="{ 'confirm-section__advanced-options-button_opened': isAdvancedSectionOpened }"
-        (click)="isAdvancedSectionOpened = !isAdvancedSectionOpened"
-      >
-        Advanced Options <img src="/assets/images/icons/arrow/arrow-down-green.svg" alt="" />
-      </div>
     </div>
   </div>
 
-  <!--advanced options are necessary for order book, so you must not use *ngIf-->
-  <app-order-books-form-options
-    class="order-book-form__advanced-section"
-    [ngClass]="{
-      'order-book-form__advanced-section_hidden': !isAdvancedSectionOpened
-    }"
-  ></app-order-books-form-options>
+  <app-order-books-form-options></app-order-books-form-options>
 </div>

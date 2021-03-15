@@ -184,14 +184,15 @@
       <div class="trade-option__title">Public Deal</div>
 
       <div
-        class="trade-option__body trade-option__body_public"
-        [ngClass]="{ 'trade-option__body_reverted': !tradeData.isPublic }"
+        class="trade-option__body trade-option-body-public"
+        [ngClass]="{ 'trade-option-body-public_not-checked': !tradeData.isPublic }"
       >
         <span>{{ tradeData.isPublic ? 'Yes' : 'No' }}</span>
-        <img
-          [src]="'/assets/images/icons/' + (tradeData.isPublic ? 'yes' : 'no') + '.svg'"
-          alt=""
-        />
+
+        <span
+          class="trade-option-body-public__image"
+          [ngClass]="{ 'trade-option-body-public__image_not-checked': !tradeData.isPublic }"
+        ></span>
       </div>
     </div>
   </div>

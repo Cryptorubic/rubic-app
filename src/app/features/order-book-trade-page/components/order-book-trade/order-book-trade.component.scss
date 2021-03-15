@@ -356,25 +356,40 @@
         margin-left: 10px;
       }
     }
+  }
+}
 
-    &_public {
-      display: flex;
-      grid-gap: 10px;
-      align-items: center;
+.trade-option-body-public {
+  display: flex;
+  grid-gap: 10px;
+  align-items: center;
+  justify-content: space-between;
 
-      padding: 8px 12px;
+  padding: 8px 14px;
 
-      background: $grey-background;
+  background: $grey-background;
 
-      font-size: 17px;
-      font-weight: normal;
-      text-transform: uppercase;
+  font-size: 17px;
+  font-weight: normal;
+  text-transform: uppercase;
 
-      cursor: pointer;
-    }
+  cursor: pointer;
 
-    &_reverted {
-      flex-direction: row-reverse;
+  &_not-checked {
+    flex-direction: row-reverse;
+  }
+
+  &__image {
+    width: 26px;
+    height: 28px;
+
+    background-image: url(/assets/images/icons/PublicDealTick.svg);
+    background-repeat: no-repeat;
+
+    transition: background-image 0.2s linear;
+
+    &_not-checked {
+      background-image: url(/assets/images/icons/PublicDealCross.svg);
     }
   }
 }

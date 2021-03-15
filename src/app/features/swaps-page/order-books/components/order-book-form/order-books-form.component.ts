@@ -47,8 +47,6 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     quote: {} as OrderBookFormToken
   };
 
-  public isAdvancedSectionOpened: boolean = false;
-
   get tradeParameters(): TradeParameters {
     return this._tradeParameters;
   }

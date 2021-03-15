@@ -68,15 +68,27 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
     brokerPercent: '0.1'
   } as OrderBookFormToken;
 
+  public _areAdvancedOptionsOpened = false;
+
+  get areAdvancedOptionsOpened(): boolean {
+    return this._areAdvancedOptionsOpened;
+  }
+
+  set areAdvancedOptionsOpened(value) {
+    this._areAdvancedOptionsOpened = value;
+
+    this.tradeForm = {
+      ...this.tradeForm,
+      areOptionsValid: this.areOptionsValid()
+    };
+  }
+
   get tradeForm(): OrderBookTradeForm {
     return this._tradeForm;
   }
 
   set tradeForm(value: OrderBookTradeForm) {
-    this._tradeForm = {
-      ...value
-      // areOptionsValid: this.areOptionsValid()
-    };
+    this._tradeForm = value;
     this._tradeForm.areOptionsValid = this.areOptionsValid();
     this.orderBookFormService.setTradeForm(this._tradeForm);
   }
@@ -117,13 +129,14 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
 
   private areOptionsValid(): boolean {
     return (
-      (!this.baseMinContribute || this.baseMinContribute.valid) &&
-      (!this.quoteMinContribute || this.quoteMinContribute.valid) &&
-      (!this.tradeForm.isWithBrokerFee ||
-        (this.brokerAddress?.value &&
-          this.brokerAddress?.valid &&
-          this.baseBrokerPercent?.valid &&
-          this.quoteBrokerPercent?.valid))
+      !this.areAdvancedOptionsOpened ||
+      ((!this.baseMinContribute || this.baseMinContribute.valid) &&
+        (!this.quoteMinContribute || this.quoteMinContribute.valid) &&
+        (!this.tradeForm.isWithBrokerFee ||
+          (this.brokerAddress?.value &&
+            this.brokerAddress?.valid &&
+            this.baseBrokerPercent?.valid &&
+            this.quoteBrokerPercent?.valid)))
     );
   }
 
