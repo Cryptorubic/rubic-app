@@ -20,11 +20,19 @@ interface OneInchQuoteResponse {
   estimatedGas: string;
 }
 
+interface OneInchTokensResponse {
+  tokens: {
+    [key in string]: any;
+  };
+}
+
 @Injectable()
 export class OneInchService extends InstantTradeService {
   private readonly apiBaseUrl = 'https://api.1inch.exchange/v2.0/';
 
   private readonly oneInchEtherAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+
+  private supportedTokensAddresses: string[] = [];
 
   private web3PublicEth: Web3Public;
 
@@ -36,6 +44,13 @@ export class OneInchService extends InstantTradeService {
   ) {
     super();
     this.web3PublicEth = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
+    this.loadSupportedTokens();
+  }
+
+  private loadSupportedTokens() {
+    this.httpClient.get(`${this.apiBaseUrl}tokens`).subscribe((response: OneInchTokensResponse) => {
+      this.supportedTokensAddresses = Object.keys(response.tokens);
+    });
   }
 
   public async calculateTrade(
@@ -47,6 +62,15 @@ export class OneInchService extends InstantTradeService {
       fromToken,
       toToken
     );
+
+    if (
+      !this.supportedTokensAddresses.includes(fromTokenAddress) ||
+      !this.supportedTokensAddresses.includes(toTokenAddress)
+    ) {
+      console.error(`One inch not support ${fromToken.address} or ${toToken.address}`);
+      return null;
+    }
+
     const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
       .get(`${this.apiBaseUrl}quote`, {
         params: {
