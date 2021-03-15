@@ -1,17 +1,15 @@
-import { Component, OnInit, Output, EventEmitter, Input, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
   MomentDateAdapter
 } from '@angular/material-moment-adapter';
 import * as moment from 'moment';
-import BigNumber from 'bignumber.js';
 import { NgModel } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import {
-  OrderBookFormToken,
-  TokenPart
-} from '../../../../../../core/services/order-book/types/tokens';
-import { OrderBookTradeForm } from '../../../../../../core/services/order-book/types/trade-form';
+import { Subscription } from 'rxjs';
+import { OrderBookFormToken, TokenPart } from 'src/app/core/services/order-book/types/tokens';
+import { OrderBookTradeForm } from 'src/app/core/services/order-book/types/trade-form';
+import { OrderBooksFormService } from '../services/order-books-form.service';
 
 const MY_FORMATS = {
   useUtc: true,
@@ -42,24 +40,7 @@ const MY_FORMATS = {
     }
   ]
 })
-export class OrderBooksFormOptionsComponent implements OnInit {
-  @Input()
-  get tradeInfo(): OrderBookTradeForm {
-    return this._tradeInfo;
-  }
-
-  @Output() tradeInfoChange = new EventEmitter<OrderBookTradeForm>();
-
-  set tradeInfo(value: OrderBookTradeForm) {
-    this._tradeInfo = value;
-    this.tradeInfoChange.emit(this._tradeInfo);
-
-    this.checkIfAmountAndAddressesAreSet();
-    this.checkIfOptionsAreValid();
-  }
-
-  @Output() validChange = new EventEmitter<boolean>();
-
+export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
   @ViewChild('baseMinContribute') baseMinContribute: NgModel;
 
   @ViewChild('quoteMinContribute') quoteMinContribute: NgModel;
@@ -70,7 +51,9 @@ export class OrderBooksFormOptionsComponent implements OnInit {
 
   @ViewChild('quoteBrokerPercent') quoteBrokerPercent: NgModel;
 
-  private _tradeInfo: OrderBookTradeForm;
+  private _tradeForm: OrderBookTradeForm;
+
+  private tradeFormSubscription$: Subscription;
 
   public closingDate: moment.Moment;
 
@@ -85,31 +68,79 @@ export class OrderBooksFormOptionsComponent implements OnInit {
     brokerPercent: '0.1'
   } as OrderBookFormToken;
 
-  public areAmountAndAddressesSet: boolean;
+  get tradeForm(): OrderBookTradeForm {
+    return this._tradeForm;
+  }
 
-  constructor() {}
+  set tradeForm(value: OrderBookTradeForm) {
+    this._tradeForm = {
+      ...value
+      // areOptionsValid: this.areOptionsValid()
+    };
+    this._tradeForm.areOptionsValid = this.areOptionsValid();
+    this.orderBookFormService.setTradeForm(this._tradeForm);
+  }
+
+  constructor(private orderBookFormService: OrderBooksFormService) {}
 
   private static timeToString(time: moment.Moment): string {
     return `${time.hour()}:${time.minute()}`;
   }
 
   ngOnInit(): void {
+    this.tradeFormSubscription$ = this.orderBookFormService.getTradeForm().subscribe(tradeForm => {
+      this._tradeForm = tradeForm;
+
+      setTimeout(() => {
+        this.updateMinContributionsValidity();
+
+        if (this._tradeForm.areOptionsValid !== this.areOptionsValid()) {
+          this.tradeForm = {
+            ...this._tradeForm,
+            areOptionsValid: this.areOptionsValid()
+          };
+        }
+      });
+    });
+
     this.setAdvancedOptions();
+  }
+
+  ngOnDestroy(): void {
+    this.tradeFormSubscription$.unsubscribe();
+  }
+
+  private updateMinContributionsValidity(): void {
+    this.baseMinContribute?.control.updateValueAndValidity();
+    this.quoteMinContribute?.control.updateValueAndValidity();
+  }
+
+  private areOptionsValid(): boolean {
+    return (
+      (!this.baseMinContribute || this.baseMinContribute.valid) &&
+      (!this.quoteMinContribute || this.quoteMinContribute.valid) &&
+      (!this.tradeForm.isWithBrokerFee ||
+        (this.brokerAddress?.value &&
+          this.brokerAddress?.valid &&
+          this.baseBrokerPercent?.valid &&
+          this.quoteBrokerPercent?.valid))
+    );
   }
 
   private setAdvancedOptions(): void {
     this.setClosingDate();
-    this.tradeInfo = {
-      ...this.tradeInfo,
+
+    this.tradeForm = {
+      ...this.tradeForm,
       isPublic: true,
       isWithBrokerFee: false,
-      tokens: {
+      token: {
         base: {
-          ...this.tradeInfo.tokens.base,
+          ...this.tradeForm.token.base,
           ...this.defaultTokenOptions
         },
         quote: {
-          ...this.tradeInfo.tokens.quote,
+          ...this.tradeForm.token.quote,
           ...this.defaultTokenOptions
         }
       }
@@ -169,35 +200,26 @@ export class OrderBooksFormOptionsComponent implements OnInit {
     stopDate.hour(hour);
     stopDate.minute(minute);
 
-    this.tradeInfo = {
-      ...this.tradeInfo,
+    this.tradeForm = {
+      ...this.tradeForm,
       stopDate: stopDate.utc().format('YYYY-MM-DD HH:mm')
     };
   }
 
   public onIsPublicChange(isPublic: boolean): void {
-    this.tradeInfo = {
-      ...this.tradeInfo,
+    this.tradeForm = {
+      ...this.tradeForm,
       isPublic
     };
   }
 
-  public checkIfAmountAndAddressesAreSet(): void {
-    this.areAmountAndAddressesSet = !!(
-      this.tradeInfo.tokens.base.address &&
-      this.tradeInfo.tokens.base.amount &&
-      this.tradeInfo.tokens.quote.address &&
-      this.tradeInfo.tokens.quote.amount
-    );
-  }
-
   public onMinContributeChange(tokenPart: TokenPart, minContribution: string): void {
-    this.tradeInfo = {
-      ...this.tradeInfo,
-      tokens: {
-        ...this.tradeInfo.tokens,
+    this.tradeForm = {
+      ...this.tradeForm,
+      token: {
+        ...this.tradeForm.token,
         [tokenPart]: {
-          ...this.tradeInfo.tokens[tokenPart],
+          ...this.tradeForm.token[tokenPart],
           minContribution
         }
       }
@@ -205,26 +227,26 @@ export class OrderBooksFormOptionsComponent implements OnInit {
   }
 
   public onIsWithBrokerFeeChange(isWithBrokerFee: boolean): void {
-    this.tradeInfo = {
-      ...this.tradeInfo,
+    this.tradeForm = {
+      ...this.tradeForm,
       isWithBrokerFee
     };
   }
 
   public onBrokerAddressChange(brokerAddress: string): void {
-    this.tradeInfo = {
-      ...this.tradeInfo,
+    this.tradeForm = {
+      ...this.tradeForm,
       brokerAddress
     };
   }
 
   public onBrokerPercentChange(tokenPart: TokenPart, brokerPercent): void {
-    this.tradeInfo = {
-      ...this.tradeInfo,
-      tokens: {
-        ...this.tradeInfo.tokens,
+    this.tradeForm = {
+      ...this.tradeForm,
+      token: {
+        ...this.tradeForm.token,
         [tokenPart]: {
-          ...this.tradeInfo.tokens[tokenPart],
+          ...this.tradeForm.token[tokenPart],
           brokerPercent
         }
       }
@@ -232,24 +254,12 @@ export class OrderBooksFormOptionsComponent implements OnInit {
   }
 
   public getBrokerPercent(tokenPart: TokenPart): string {
-    const { brokerPercent } = this.tradeInfo.tokens[tokenPart];
+    const { brokerPercent } = this.tradeForm.token[tokenPart];
     return brokerPercent
-      ? new BigNumber(this.tradeInfo.tokens[tokenPart].brokerPercent)
-          .times(this.tradeInfo.tokens[tokenPart].amount)
+      ? this.tradeForm.token[tokenPart].amount
+          .times(this.tradeForm.token[tokenPart].brokerPercent)
           .div(100)
           .toString()
       : '0';
-  }
-
-  public checkIfOptionsAreValid(): void {
-    const areValid =
-      (!this.baseMinContribute || this.baseMinContribute.valid) &&
-      (!this.quoteMinContribute || this.quoteMinContribute.valid) &&
-      (!this.tradeInfo.isWithBrokerFee ||
-        (this.brokerAddress?.value &&
-          this.brokerAddress?.valid &&
-          this.baseBrokerPercent?.valid &&
-          this.quoteBrokerPercent?.valid));
-    this.validChange.emit(areValid);
   }
 }

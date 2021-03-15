@@ -6,19 +6,14 @@ import { OrderBookService } from 'src/app/core/services/order-book/order-book.se
 import { List } from 'immutable';
 import { Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import SwapToken from '../../../../../shared/models/tokens/SwapToken';
-import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
-import { TokensService } from '../../../../../core/services/backend/tokens-service/tokens.service';
-import { TradeParametersService } from '../../../../../core/services/swaps/trade-parameters-service/trade-parameters.service';
-import { OrderBookFormToken } from '../../../../../core/services/order-book/types/tokens';
-import { OrderBookTradeForm } from '../../../../../core/services/order-book/types/trade-form';
-
-interface OrderBooksParameters {
-  fromAmount: BigNumber;
-  fromToken: SwapToken;
-  toAmount: BigNumber;
-  toToken: SwapToken;
-}
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
+import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
+import { OrderBookFormToken } from 'src/app/core/services/order-book/types/tokens';
+import { OrderBookTradeForm } from 'src/app/core/services/order-book/types/trade-form';
+import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
+import { OrderBooksFormService } from './services/order-books-form.service';
 
 @Component({
   selector: 'app-order-books-form',
@@ -30,7 +25,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   private blockchainSubscription$: Subscription;
 
-  private _tradeParameters: OrderBooksParameters;
+  private _tradeParameters: TradeParameters;
 
   private _tokens = List<SwapToken>([]);
 
@@ -38,9 +33,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   public availableQuoteTokens = List<SwapToken>([]);
 
-  private _tradeInfo: OrderBookTradeForm;
+  private _tradeForm: OrderBookTradeForm;
 
-  public isCreateTradeAvailable: boolean;
+  private tradeFormSubscription$: Subscription;
 
   public isCustomTokenSectionOpened = {
     base: false,
@@ -54,7 +49,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   public isAdvancedSectionOpened: boolean = false;
 
-  get tradeParameters(): OrderBooksParameters {
+  get tradeParameters(): TradeParameters {
     return this._tradeParameters;
   }
 
@@ -72,6 +67,22 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this.tradeParametersService.setTradeParameters(this.blockchain, {
       ...this._tradeParameters
     });
+
+    this.tradeForm = {
+      ...this.tradeForm,
+      token: {
+        base: {
+          ...this.tradeForm.token.base,
+          ...this._tradeParameters.fromToken,
+          amount: this._tradeParameters.fromAmount
+        },
+        quote: {
+          ...this.tradeForm.token.quote,
+          ...this._tradeParameters.toToken,
+          amount: this._tradeParameters.toAmount
+        }
+      }
+    };
   }
 
   get tokens(): List<SwapToken> {
@@ -134,27 +145,23 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  get tradeInfo(): OrderBookTradeForm {
-    return this._tradeInfo;
+  get tradeForm(): OrderBookTradeForm {
+    return this._tradeForm;
   }
 
-  set tradeInfo(value) {
-    this._tradeInfo = value;
-
-    this.checkIfCreateTradeIsAvailable();
+  set tradeForm(value) {
+    this._tradeForm = {
+      ...value,
+      areAmountsAndTokensSet: !!(
+        value.token.base?.address &&
+        value.token.base?.amount.isGreaterThan(0) &&
+        value.token.quote?.address &&
+        value.token.quote?.amount.isGreaterThan(0)
+      ),
+      areOptionsValid: false
+    };
+    this.orderBookFormService.setTradeForm(this._tradeForm);
   }
-
-  get areAdvancedOptionsValid(): boolean {
-    return this._areAdvancedOptionsValid;
-  }
-
-  set areAdvancedOptionsValid(value) {
-    this._areAdvancedOptionsValid = value;
-
-    this.checkIfCreateTradeIsAvailable();
-  }
-
-  public _areAdvancedOptionsValid: boolean;
 
   @ViewChild('baseCustomToken') baseCustomToken: NgModel;
 
@@ -164,27 +171,28 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     private tradeTypeService: TradeTypeService,
     private tokensService: TokensService,
     private tradeParametersService: TradeParametersService,
-    private orderBookService: OrderBookService
-  ) {
-    this.isCreateTradeAvailable = false;
-
-    this.tradeInfo = {
-      tokens: { base: {} as OrderBookFormToken, quote: {} as OrderBookFormToken }
-    } as OrderBookTradeForm;
-  }
+    private orderBookService: OrderBookService,
+    private orderBookFormService: OrderBooksFormService
+  ) {}
 
   ngOnInit(): void {
     this.tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
     });
 
+    this.tradeFormSubscription$ = this.orderBookFormService.getTradeForm().subscribe(tradeForm => {
+      this._tradeForm = tradeForm;
+
+      this.updateCustomTokensAddressesValidity();
+    });
+
     this.blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
       this.blockchain = blockchain;
-      this.tradeInfo = { ...this.tradeInfo, blockchain: this.blockchain };
+
+      this.tradeForm = { ...this.tradeForm, blockchain: this.blockchain };
+      this.updateCustomTokensAddressesValidity();
 
       this.tokens = this.tokensService.tokens.getValue();
-
-      this.updateCustomTokenAddresses();
 
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
 
@@ -200,11 +208,15 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       this.baseAmountAsString = tradeParameters?.fromAmount?.toFixed(
         tradeParameters?.fromToken?.decimals
       );
+      this.quoteAmountAsString = tradeParameters?.toAmount?.toFixed(
+        tradeParameters?.toToken?.decimals
+      );
     });
   }
 
   ngOnDestroy() {
     this.blockchainSubscription$.unsubscribe();
+    this.tradeFormSubscription$.unsubscribe();
   }
 
   public revertTokens() {
@@ -224,51 +236,27 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this.customTokens[tokenPart] = { ...this.customTokens[tokenPart], ...tokenBody };
   }
 
-  private updateCustomTokenAddresses(): void {
+  private updateCustomTokensAddressesValidity(): void {
     this.baseCustomToken?.control.updateValueAndValidity();
     this.quoteCustomToken?.control.updateValueAndValidity();
   }
 
   public setCustomToken(tokenPart: string): void {
-    this.tradeInfo = {
-      ...this.tradeInfo,
-      tokens: {
-        ...this.tradeInfo.tokens,
+    this.tradeForm = {
+      ...this.tradeForm,
+      token: {
+        ...this.tradeForm.token,
         [tokenPart]: {
-          ...this.tradeInfo.tokens[tokenPart],
+          ...this.tradeForm.token[tokenPart],
           ...this.customTokens[tokenPart]
         }
       }
     };
   }
 
-  public onAmountChanges(tokenPart: string, amount: string): void {
-    this.tradeInfo = {
-      ...this.tradeInfo,
-      tokens: {
-        ...this.tradeInfo.tokens,
-        [tokenPart]: {
-          ...this.tradeInfo.tokens[tokenPart],
-          amount
-        }
-      }
-    };
-  }
-
-  private checkIfCreateTradeIsAvailable(): void {
-    this.isCreateTradeAvailable = !!(
-      this._areAdvancedOptionsValid &&
-      this.tradeInfo.tokens &&
-      this.tradeInfo.tokens.base.address &&
-      this.tradeInfo.tokens.base.amount &&
-      this.tradeInfo.tokens.quote.address &&
-      this.tradeInfo.tokens.quote.amount
-    );
-  }
-
   public async createTrade(): Promise<void> {
     try {
-      await this.orderBookService.createOrder(this.tradeInfo);
+      await this.orderBookService.createOrder(this.tradeForm);
     } catch (err) {
       console.log('err', err);
     }

@@ -47,20 +47,20 @@
           type="checkbox"
           class="input-container__checkbox input-container__checkbox_hidden"
           id="is-public-ckeckbox-id"
-          [ngModel]="tradeInfo.isPublic"
+          [ngModel]="tradeForm.isPublic"
           (ngModelChange)="onIsPublicChange($event)"
         />
 
         <label
           class="input-container__input input-container__input_checkbox input-checkbox"
-          [ngClass]="{ 'input-checkbox_not-checked': !tradeInfo.isPublic }"
+          [ngClass]="{ 'input-checkbox_not-checked': !tradeForm.isPublic }"
           for="is-public-ckeckbox-id"
         >
-          <span>{{ tradeInfo.isPublic ? 'Yes' : 'No' }}</span>
+          <span>{{ tradeForm.isPublic ? 'Yes' : 'No' }}</span>
 
           <span
             class="input-checkbox__image"
-            [ngClass]="{ 'input-checkbox__image_not-checked': !tradeInfo.isPublic }"
+            [ngClass]="{ 'input-checkbox__image_not-checked': !tradeForm.isPublic }"
           ></span>
         </label>
       </div>
@@ -73,29 +73,29 @@
   </div>
 
   <!--second-->
-  <div class="advanced-section__row" *ngIf="!areAmountAndAddressesSet">
-    Set tokens and amount to see options
+  <div class="advanced-section__row" *ngIf="!tradeForm.areAmountsAndTokensSet">
+    Set tokens and amounts to see options
   </div>
 
   <!--second-->
   <div
     class="advanced-section__row advanced-section-row advanced-section-row_second"
-    *ngIf="areAmountAndAddressesSet"
+    *ngIf="tradeForm.areAmountsAndTokensSet"
   >
     <div class="advanced-section__block advanced-section-block">
       <div class="advanced-section-block__input-container input-container">
         <label class="input-container__label" for="min-base-contribute-input-id">
-          Minimum contribution in {{ tradeInfo.tokens.base.symbol }}
+          Minimum contribution in {{ tradeForm.token.base.symbol }}
         </label>
 
         <input
           class="input-container__input input-container__input_min-contribute"
           id="min-base-contribute-input-id"
-          placeholder="0"
+          placeholder="Enter amount"
           appNumberPrecision
-          [decimalLength]="tradeInfo.tokens.base.decimals"
-          [maxValue]="tradeInfo.tokens.base.amount"
-          [ngModel]="tradeInfo.tokens.base.minContribution"
+          [decimalLength]="tradeForm.token.base.decimals"
+          [maxValue]="tradeForm.token.base.amount.toFixed()"
+          [ngModel]="tradeForm.token.base.minContribution"
           (ngModelChange)="onMinContributeChange('base', $event)"
           #baseMinContribute="ngModel"
           [ngClass]="{
@@ -108,17 +108,17 @@
     <div class="advanced-section__block advanced-section-block">
       <div class="advanced-section-block__input-container input-container">
         <label class="input-container__label" for="min-quote-contribute-input-id">
-          Minimum contribution in {{ tradeInfo.tokens.quote.symbol }}
+          Minimum contribution in {{ tradeForm.token.quote.symbol }}
         </label>
 
         <input
           class="input-container__input input-container__input_min-contribute"
           id="min-quote-contribute-input-id"
-          placeholder="0"
+          placeholder="Enter amount"
           appNumberPrecision
-          [decimalLength]="tradeInfo.tokens.quote.decimals"
-          [maxValue]="tradeInfo.tokens.quote.amount"
-          [ngModel]="tradeInfo.tokens.quote.minContribution"
+          [decimalLength]="tradeForm.token.quote.decimals"
+          [maxValue]="tradeForm.token.quote.amount.toFixed()"
+          [ngModel]="tradeForm.token.quote.minContribution"
           (ngModelChange)="onMinContributeChange('quote', $event)"
           #quoteMinContribute="ngModel"
           [ngClass]="{
@@ -132,7 +132,7 @@
   <!--third-->
   <div
     class="advanced-section__row advanced-section-row advanced-section-row_third"
-    *ngIf="areAmountAndAddressesSet"
+    *ngIf="tradeForm.areAmountsAndTokensSet"
   >
     <div class="advanced-section__block advanced-section-block advanced-section-block_full">
       <div class="advanced-section-block__input-container input-container">
@@ -144,20 +144,20 @@
           type="checkbox"
           class="input-container__checkbox input-container__checkbox_hidden"
           id="is-with-broker-fee-checkbox-id"
-          [ngModel]="tradeInfo.isWithBrokerFee"
+          [ngModel]="tradeForm.isWithBrokerFee"
           (ngModelChange)="onIsWithBrokerFeeChange($event)"
         />
 
         <label
           class="input-container__input input-container__input_checkbox input-checkbox"
-          [ngClass]="{ 'input-checkbox_not-checked': !tradeInfo.isWithBrokerFee }"
+          [ngClass]="{ 'input-checkbox_not-checked': !tradeForm.isWithBrokerFee }"
           for="is-with-broker-fee-checkbox-id"
         >
-          <span>{{ tradeInfo.isWithBrokerFee ? 'Yes' : 'No' }}</span>
+          <span>{{ tradeForm.isWithBrokerFee ? 'Yes' : 'No' }}</span>
 
           <span
             class="input-checkbox__image"
-            [ngClass]="{ 'input-checkbox__image_not-checked': !tradeInfo.isWithBrokerFee }"
+            [ngClass]="{ 'input-checkbox__image_not-checked': !tradeForm.isWithBrokerFee }"
           ></span>
         </label>
       </div>
@@ -168,7 +168,7 @@
       </div>
     </div>
 
-    <div class="advanced-section-row__broker-data" *ngIf="tradeInfo.isWithBrokerFee">
+    <div class="advanced-section-row__broker-data" *ngIf="tradeForm.isWithBrokerFee">
       <div class="advanced-section__block advanced-section-block advanced-section-block_full">
         <div
           class="advanced-section-block__input-container input-container input-container_broker-address"
@@ -185,7 +185,7 @@
             id="broker-fee-address-input-id"
             placeholder="0xD0593B233Be4411A236F22b42087345E1137170b"
             pattern="0x[0-9a-fA-F]{40}"
-            [ngModel]="tradeInfo.brokerAddress"
+            [ngModel]="tradeForm.brokerAddress"
             (ngModelChange)="onBrokerAddressChange($event)"
             #brokerAddress="ngModel"
             [ngClass]="{
@@ -200,7 +200,7 @@
           class="advanced-section-block__input-container input-container input-container_broker-percent"
         >
           <label class="input-container__label" for="broker-percent-base-input-id">
-            Specify % for {{ tradeInfo.tokens.base.symbol }}
+            Specify % for {{ tradeForm.token.base.symbol }}
           </label>
 
           <input
@@ -210,7 +210,7 @@
             integerLength="2"
             decimalLength="2"
             maxValue="50"
-            [ngModel]="tradeInfo.tokens.base.brokerPercent"
+            [ngModel]="tradeForm.token.base.brokerPercent"
             (ngModelChange)="onBrokerPercentChange('base', $event)"
             #baseBrokerPercent="ngModel"
           />
@@ -219,7 +219,7 @@
 
           <span class="input-container__calculation">
             You will get: <br />
-            {{ getBrokerPercent('base') }} {{ tradeInfo.tokens.base.name }}
+            {{ getBrokerPercent('base') }} {{ tradeForm.token.base.name }}
           </span>
         </div>
       </div>
@@ -229,7 +229,7 @@
           class="advanced-section-block__input-container input-container input-container_broker-percent"
         >
           <label class="input-container__label" for="broker-percent-quote-input-id">
-            Specify % for {{ tradeInfo.tokens.quote.symbol }}
+            Specify % for {{ tradeForm.token.quote.symbol }}
           </label>
 
           <input
@@ -239,7 +239,7 @@
             integerLength="2"
             decimalLength="2"
             maxValue="50"
-            [ngModel]="tradeInfo.tokens.quote.brokerPercent"
+            [ngModel]="tradeForm.token.quote.brokerPercent"
             (ngModelChange)="onBrokerPercentChange('quote', $event)"
             #quoteBrokerPercent="ngModel"
           />
@@ -248,7 +248,7 @@
 
           <span class="input-container__calculation">
             You will get: <br />
-            {{ getBrokerPercent('quote') }} {{ tradeInfo.tokens.quote.name }}
+            {{ getBrokerPercent('quote') }} {{ tradeForm.token.quote.name }}
           </span>
         </div>
       </div>

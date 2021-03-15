@@ -111,7 +111,7 @@
     <div class="main-section__confirm-section confirm-section">
       <app-primary-button
         label="Create Trade"
-        [disabled]="!isCreateTradeAvailable"
+        [disabled]="!(tradeForm.areAmountsAndTokensSet && tradeForm.areOptionsValid)"
         (click)="createTrade()"
       ></app-primary-button>
 
@@ -128,8 +128,6 @@
   <!--advanced options are necessary for order book, so you must not use *ngIf-->
   <app-order-books-form-options
     class="order-book-form__advanced-section"
-    [(tradeInfo)]="tradeInfo"
-    (validChange)="areAdvancedOptionsValid = $event"
     [ngClass]="{
       'order-book-form__advanced-section_hidden': !isAdvancedSectionOpened
     }"

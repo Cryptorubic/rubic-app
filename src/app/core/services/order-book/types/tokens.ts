@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js';
-import { Token } from '../../../../shared/models/tokens/Token';
+import SwapToken from '../../../../shared/models/tokens/SwapToken';
 
-export interface OrderBookFormToken extends Token {
-  amount: string;
+export interface OrderBookFormToken extends SwapToken {
+  amount: BigNumber;
   minContribution: string;
   brokerPercent: string;
 }
 
-export interface OrderBookDataToken extends Token {
+export interface OrderBookDataToken extends SwapToken {
   imageLink: string;
 
   amountTotal: BigNumber;

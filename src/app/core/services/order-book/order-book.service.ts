@@ -7,10 +7,10 @@ import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { OrderBookDataToken, TokenPart } from './types/tokens';
-import { Token } from '../../../shared/models/tokens/Token';
 import { OrderBookTradeForm } from './types/trade-form';
 import { OrderBookTradeApi } from './types/trade-api';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from './types/trade-page';
+import SwapToken from '../../../shared/models/tokens/SwapToken';
 
 interface Web3PublicParameters {
   web3Public: Web3Public;
@@ -30,11 +30,11 @@ export class OrderBookService {
     private web3PrivateService: Web3PrivateService
   ) {}
 
-  private static tokenAmountToWei(token: Token, amount: string): string {
+  private static tokenAmountToWei(token: SwapToken, amount: string | BigNumber): string {
     return new BigNumber(amount || '0').times(new BigNumber(10).pow(token.decimals)).toFixed(0);
   }
 
-  private static tokenWeiToAmount(token: Token, amount: string): BigNumber {
+  private static tokenWeiToAmount(token: SwapToken, amount: string): BigNumber {
     return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
   }
 
@@ -87,34 +87,34 @@ export class OrderBookService {
     return {
       memo_contract: '',
       contract_address: CONTRACT.ADDRESSES[2][tradeInfo.blockchain],
-      base_address: tradeInfo.tokens.base.address,
-      quote_address: tradeInfo.tokens.quote.address,
+      base_address: tradeInfo.token.base.address,
+      quote_address: tradeInfo.token.quote.address,
       base_limit: OrderBookService.tokenAmountToWei(
-        tradeInfo.tokens.base,
-        tradeInfo.tokens.base.amount
+        tradeInfo.token.base,
+        tradeInfo.token.base.amount
       ),
       quote_limit: OrderBookService.tokenAmountToWei(
-        tradeInfo.tokens.quote,
-        tradeInfo.tokens.quote.amount
+        tradeInfo.token.quote,
+        tradeInfo.token.quote.amount
       ),
       stop_date: tradeInfo.stopDate,
       public: tradeInfo.isPublic,
       min_base_wei: OrderBookService.tokenAmountToWei(
-        tradeInfo.tokens.base,
-        tradeInfo.tokens.base.minContribution
+        tradeInfo.token.base,
+        tradeInfo.token.base.minContribution
       ),
       min_quote_wei: OrderBookService.tokenAmountToWei(
-        tradeInfo.tokens.quote,
-        tradeInfo.tokens.quote.minContribution
+        tradeInfo.token.quote,
+        tradeInfo.token.quote.minContribution
       ),
       base_amount_contributed: '0',
       quote_amount_contributed: '0',
       broker_fee: tradeInfo.isWithBrokerFee,
       broker_fee_address: tradeInfo.isWithBrokerFee ? tradeInfo.brokerAddress : this.EMPTY_ADDRESS,
-      broker_fee_base: parseInt(tradeInfo.tokens.base.brokerPercent),
-      broker_fee_quote: parseInt(tradeInfo.tokens.quote.brokerPercent),
+      broker_fee_base: parseInt(tradeInfo.token.base.brokerPercent),
+      broker_fee_quote: parseInt(tradeInfo.token.quote.brokerPercent),
 
-      name: `${tradeInfo.tokens.base.symbol} <> ${tradeInfo.tokens.quote.symbol}`,
+      name: `${tradeInfo.token.base.symbol} <> ${tradeInfo.token.quote.symbol}`,
       network,
       state: 'ACTIVE',
       contract_state: 'ACTIVE',
