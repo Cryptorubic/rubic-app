@@ -52,11 +52,38 @@
     }
 
     &_active {
-      color: $active-green-text;
+      color: $active-green;
 
       &:before {
-        background: $active-green-circle;
-        box-shadow: 0 0 11px $active-green-circle;
+        background: $active-green;
+        box-shadow: 0 0 11px $active-green;
+      }
+    }
+
+    &_expired {
+      color: $expired-yellow;
+
+      &:before {
+        background: $expired-yellow;
+        box-shadow: 0 0 11px $expired-yellow;
+      }
+    }
+
+    &_cancelled {
+      color: $cancelled-red;
+
+      &:before {
+        background: $cancelled-red;
+        box-shadow: 0 0 11px $cancelled-red;
+      }
+    }
+
+    &_done {
+      color: $done-grey;
+
+      &:before {
+        background: $done-grey;
+        box-shadow: 0 0 11px $done-grey;
       }
     }
   }
@@ -127,6 +154,11 @@
   }
 
   &__amount-sent, &__amount-left {
+    display: flex;
+    align-items: center;
+
+    height: 23px;
+
     color: $grey-text;
   }
 
@@ -306,16 +338,20 @@
     font-weight: 500;
 
     &_copy-link {
+      color: $main-green;
+    }
+
+    &_button {
       padding: 0;
       border: none;
 
       background: white;
       cursor: pointer;
 
-      color: $main-green;
-      font-family: inherit;
-
       img {
+        position: relative;
+        top: 2px;
+
         width: 17px;
         margin-left: 10px;
       }

@@ -5,6 +5,7 @@ import {
   OrderBookDataToken,
   OrderBookToken,
   TokenPart,
+  TRADE_STATUS,
   TradeData,
   TradeInfo,
   TradeInfoApi
@@ -14,6 +15,12 @@ import { OrderBookApiService } from '../backend/order-book-api/order-book-api.se
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
+
+interface Web3PublicParameters {
+  web3Public: Web3Public;
+  contractAddress: string;
+  contractAbi: any[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -45,8 +52,10 @@ export class OrderBookService {
     const contractAddress = CONTRACT.ADDRESSES[2][tradeInfo.blockchain];
     const contractAbi = CONTRACT.ABI[2] as any[];
 
-    const fee = new BigNumber(
-      (await web3Public.callContractMethod(contractAddress, contractAbi, 'feeAmount')).toString()
+    const fee: string = await web3Public.callContractMethod(
+      contractAddress,
+      contractAbi,
+      'feeAmount'
     );
 
     const tradeInfoApi = this.generateCreateSwapApiObject(tradeInfo);
@@ -57,7 +66,7 @@ export class OrderBookService {
       'createOrder',
       args,
       {
-        value: fee.toFixed(0)
+        value: fee
       }
     );
     tradeInfoApi.memo_contract = receipt.events.OrderCreated.returnValues.id;
@@ -105,7 +114,7 @@ export class OrderBookService {
       base_amount_contributed: '0',
       quote_amount_contributed: '0',
       broker_fee: tradeInfo.isWithBrokerFee,
-      broker_fee_address: tradeInfo.brokerAddress,
+      broker_fee_address: tradeInfo.isWithBrokerFee ? tradeInfo.brokerAddress : this.EMPTY_ADDRESS,
       broker_fee_base: parseInt(tradeInfo.tokens.base.brokerPercent),
       broker_fee_quote: parseInt(tradeInfo.tokens.quote.brokerPercent),
 
@@ -134,7 +143,7 @@ export class OrderBookService {
       this.EMPTY_ADDRESS, // whitelist_address
       tradeInfoApi.min_base_wei,
       tradeInfoApi.min_quote_wei,
-      tradeInfoApi.broker_fee_address || this.EMPTY_ADDRESS,
+      tradeInfoApi.broker_fee_address,
       tradeInfoApi.broker_fee_base * 100,
       tradeInfoApi.broker_fee_base * 100
     ];
@@ -156,19 +165,20 @@ export class OrderBookService {
       // no default
     }
 
-    const stopDate = new Date(tradeInfoApi.stop_date);
+    const expirationDate = new Date(tradeInfoApi.stop_date);
 
     const tradeData = {
+      memo: tradeInfoApi.memo_contract,
+      contractAddress: tradeInfoApi.contract_address,
+
       token: {
         base: {} as OrderBookDataToken,
         quote: {} as OrderBookDataToken
       },
       blockchain,
-      state: tradeInfoApi.state,
-      expirationDay: stopDate.toLocaleDateString('ru'),
-      expirationTime: `${stopDate.getUTCHours()}:${stopDate.getUTCMinutes()}`,
+      expirationDate,
       isPublic: tradeInfoApi.public
-    };
+    } as TradeData;
     await this.setTokensData('base', tradeData, tradeInfoApi);
     await this.setTokensData('quote', tradeData, tradeInfoApi);
 
@@ -195,15 +205,120 @@ export class OrderBookService {
         tradeData.token[tokenPart],
         tradeInfoApi[`${tokenPart}_limit`]
       ),
-      amountContributed: OrderBookService.tokenWeiToAmount(
-        tradeData.token[tokenPart],
-        tradeInfoApi[`${tokenPart}_amount_contributed`]
-      ),
       minContribution: OrderBookService.tokenWeiToAmount(
         tradeData.token[tokenPart],
         tradeInfoApi[`min_${tokenPart}_wei`]
       ),
       brokerPercent: tradeInfoApi[`broker_fee_${tokenPart}`]
     };
+  }
+
+  private getWeb3PublicParameters(tradeData: TradeData): Web3PublicParameters {
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+
+    const { contractAddress } = tradeData;
+    const contractVersion = CONTRACT.ADDRESSES.findIndex(addresses =>
+      Object.values(addresses)
+        .map(a => a.toLowerCase())
+        .includes(contractAddress.toLowerCase())
+    );
+    const contractAbi = CONTRACT.ABI[contractVersion];
+
+    return {
+      web3Public,
+      contractAddress,
+      contractAbi
+    };
+  }
+
+  public async setStatus(tradeData: TradeData): Promise<void> {
+    const { web3Public, contractAddress, contractAbi } = this.getWeb3PublicParameters(tradeData);
+
+    const { expirationDate } = tradeData;
+    if (expirationDate <= new Date()) {
+      tradeData.status = TRADE_STATUS.EXPIRED;
+    } else {
+      const isDone: boolean = await web3Public.callContractMethod(
+        contractAddress,
+        contractAbi,
+        'isSwapped',
+        {
+          methodArguments: [tradeData.memo]
+        }
+      );
+
+      if (isDone) {
+        tradeData.status = TRADE_STATUS.DONE;
+      } else {
+        const isCancelled: boolean = await web3Public.callContractMethod(
+          contractAddress,
+          contractAbi,
+          'isCancelled',
+          {
+            methodArguments: [tradeData.memo]
+          }
+        );
+
+        if (isCancelled) {
+          tradeData.status = TRADE_STATUS.CANCELLED;
+        } else {
+          tradeData.status = TRADE_STATUS.ACTIVE;
+        }
+      }
+    }
+  }
+
+  public async setAmountContributed(tradeData: TradeData): Promise<void> {
+    const { web3Public, contractAddress, contractAbi } = this.getWeb3PublicParameters(tradeData);
+
+    const baseContributed: string = await web3Public.callContractMethod(
+      contractAddress,
+      contractAbi,
+      'baseRaised',
+      {
+        methodArguments: [tradeData.memo]
+      }
+    );
+    tradeData.token.base.amountContributed = OrderBookService.tokenWeiToAmount(
+      tradeData.token.base,
+      baseContributed
+    );
+
+    const quoteContributed: string = await web3Public.callContractMethod(
+      contractAddress,
+      contractAbi,
+      'quoteRaised',
+      {
+        methodArguments: [tradeData.memo]
+      }
+    );
+    tradeData.token.quote.amountContributed = OrderBookService.tokenWeiToAmount(
+      tradeData.token.quote,
+      quoteContributed
+    );
+  }
+
+  public async setInvestorsNumber(tradeData: TradeData): Promise<void> {
+    const { web3Public, contractAddress, contractAbi } = this.getWeb3PublicParameters(tradeData);
+
+    const baseInvestors: string[] = await web3Public.callContractMethod(
+      contractAddress,
+      contractAbi,
+      'baseInvestors',
+      {
+        methodArguments: [tradeData.memo]
+      }
+    );
+    tradeData.token.base.investorsNumber = baseInvestors.length;
+
+    const quoteInvestors: string[] = await web3Public.callContractMethod(
+      contractAddress,
+      contractAbi,
+      'quoteInvestors',
+      {
+        methodArguments: [tradeData.memo]
+      }
+    );
+    tradeData.token.quote.investorsNumber = quoteInvestors.length;
   }
 }

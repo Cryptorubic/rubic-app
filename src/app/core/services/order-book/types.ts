@@ -38,12 +38,21 @@ export interface TradeInfo {
   brokerAddress?: string;
 }
 
+export enum TRADE_STATUS {
+  ACTIVE = 'Active',
+  EXPIRED = 'Expired',
+  CANCELLED = 'Cancelled',
+  DONE = 'Done'
+}
+
 export interface TradeData {
+  memo: string;
+  contractAddress: string;
+
   token: OrderBookDataTokens;
   blockchain: BLOCKCHAIN_NAME;
-  state: string;
-  expirationDay: string;
-  expirationTime: string;
+  status: TRADE_STATUS;
+  expirationDate: Date;
   isPublic: boolean;
 }
 

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TokenPart, TradeData } from '../../../../core/services/order-book/types';
+import { TokenPart, TRADE_STATUS, TradeData } from '../../../../core/services/order-book/types';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { OrderBookService } from '../../../../core/services/order-book/order-book.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -47,6 +48,8 @@ export class OrderBookTradeComponent implements OnInit {
     secondaryGroupSize: 0
   };
 
+  public readonly TRADE_STATUS = TRADE_STATUS;
+
   public tradeData: TradeData;
 
   public blockchain: Blockchain;
@@ -58,11 +61,19 @@ export class OrderBookTradeComponent implements OnInit {
     quote: {}
   };
 
+  public expirationDay: string;
+
+  public expirationTime: string;
+
   public currentUrl: string;
 
   public isCopied = false;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private orderBookService: OrderBookService
+  ) {}
 
   ngOnInit(): void {
     this.currentUrl = `https://rubic.exchange${this.router.url}`;
@@ -74,11 +85,19 @@ export class OrderBookTradeComponent implements OnInit {
 
     this.blockchain = this.BLOCKCHAINS.find(b => b.name === this.tradeData.blockchain);
 
-    this.setAmountLeft('base');
-    this.setAmountLeft('quote');
+    this.setExpirationDate();
+
+    this.orderBookService.setStatus(this.tradeData);
 
     this.setShortedAmountTotal('base');
     this.setShortedAmountTotal('quote');
+
+    this.orderBookService.setAmountContributed(this.tradeData).then(() => {
+      this.setAmountLeft('base');
+      this.setAmountLeft('quote');
+    });
+
+    this.orderBookService.setInvestorsNumber(this.tradeData);
   }
 
   private setAmountLeft(tokenPart: TokenPart): void {
@@ -99,6 +118,12 @@ export class OrderBookTradeComponent implements OnInit {
       shortedAmount = amount.toFormat(this.shortedFormat);
     }
     this.shortedAmountTotal[tokenPart] = shortedAmount;
+  }
+
+  private setExpirationDate(): void {
+    const { expirationDate } = this.tradeData;
+    this.expirationDay = expirationDate.toLocaleDateString('ru');
+    this.expirationTime = `${expirationDate.getUTCHours()}:${expirationDate.getUTCMinutes()}`;
   }
 
   public getRate(): string {

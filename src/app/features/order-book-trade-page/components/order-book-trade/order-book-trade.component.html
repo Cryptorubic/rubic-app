@@ -20,7 +20,18 @@
         </button>
       </span>
 
-      <span class="header-row__state header-row__state_active">Active</span>
+      <span
+        class="header-row__state"
+        *ngIf="tradeData.status"
+        [ngClass]="{
+          'header-row__state_active': tradeData.status === TRADE_STATUS.ACTIVE,
+          'header-row__state_expired': tradeData.status === TRADE_STATUS.EXPIRED,
+          'header-row__state_cancelled': tradeData.status === TRADE_STATUS.CANCELLED,
+          'header-row__state_done': tradeData.status === TRADE_STATUS.DONE
+        }"
+      >
+        {{ tradeData.status }}
+      </span>
     </div>
   </div>
 
@@ -32,14 +43,14 @@
 
         <div class="area-first__amount-sent">
           <span class="area-first__amount-description">Sent</span>
-          <span class="area-first__amount-number">{{
+          <span class="area-first__amount-number" *ngIf="tradeData.token.base.amountContributed">{{
             tradeData.token.base.amountContributed.toFormat(shortedFormat)
           }}</span>
         </div>
 
         <div class="area-first__amount-left">
           <span class="area-first__amount-description">Left</span>
-          <span class="area-first__amount-number">{{
+          <span class="area-first__amount-number" *ngIf="tradeData.token.base.amountLeft">{{
             tradeData.token.base.amountLeft.toFormat(shortedFormat)
           }}</span>
         </div>
@@ -66,7 +77,10 @@
         </div>
       </div>
 
-      <div class="token-block__area area-third">
+      <div
+        class="token-block__area area-third"
+        *ngIf="tradeData.status && tradeData.status === TRADE_STATUS.ACTIVE"
+      >
         <input class="area-third__amount-input" placeholder="Enter amount" />
 
         <div class="area-third__confirm-button">
@@ -84,14 +98,14 @@
 
         <div class="area-first__amount-sent">
           <span class="area-first__amount-description">Sent</span>
-          <span class="area-first__amount-number">{{
+          <span class="area-first__amount-number" *ngIf="tradeData.token.quote.amountContributed">{{
             tradeData.token.quote.amountContributed.toFixed()
           }}</span>
         </div>
 
         <div class="area-first__amount-left">
           <span class="area-first__amount-description">Left</span>
-          <span class="area-first__amount-number">{{
+          <span class="area-first__amount-number" *ngIf="tradeData.token.quote.amountLeft">{{
             tradeData.token.quote.amountLeft.toFixed()
           }}</span>
         </div>
@@ -118,7 +132,10 @@
         </div>
       </div>
 
-      <div class="token-block__area area-third">
+      <div
+        class="token-block__area area-third"
+        *ngIf="tradeData.status && tradeData.status === TRADE_STATUS.ACTIVE"
+      >
         <input class="area-third__amount-input" placeholder="Enter amount" />
 
         <div class="area-third__confirm-button">
@@ -134,26 +151,28 @@
     <div class="trade-options__option trade-option">
       <div class="trade-option__title">Closing Date</div>
 
-      <div class="trade-option__body">{{ tradeData.expirationDay }}</div>
+      <div class="trade-option__body">{{ expirationDay }}</div>
     </div>
 
     <div class="trade-options__option trade-option">
       <div class="trade-option__title">Closing Time</div>
 
-      <div class="trade-option__body">{{ tradeData.expirationTime }}</div>
+      <div class="trade-option__body">{{ expirationTime }}</div>
     </div>
 
     <div class="trade-options__option trade-option copy-link">
       <div class="trade-option__title">Link To Deal</div>
 
-      <button
-        class="trade-option__body trade-option__body_copy-link"
-        [cdkCopyToClipboard]="currentUrl"
-        (cdkCopyToClipboardCopied)="onCopiedLink()"
-      >
+      <div class="trade-option__body trade-option__body_copy-link">
         {{ currentUrl }}
-        <img src="/assets/images/icons/copy.svg" alt="copy" />
-      </button>
+        <button
+          class="trade-option__body_button"
+          [cdkCopyToClipboard]="currentUrl"
+          (cdkCopyToClipboardCopied)="onCopiedLink()"
+        >
+          <img src="/assets/images/icons/copy.svg" alt="copy" />
+        </button>
+      </div>
 
       <div class="copy-link__copied-notification" *ngIf="isCopied">
         Copied
