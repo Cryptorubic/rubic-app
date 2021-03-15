@@ -29,7 +29,7 @@ export class MetamaskProviderService extends PrivateProvider {
   constructor() {
     super();
 
-    const { ethereum } = window;
+    const { ethereum } = window as any;
     if (!ethereum) {
       console.error('No Metamask installed.');
       return;

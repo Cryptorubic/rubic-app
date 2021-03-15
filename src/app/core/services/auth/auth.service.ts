@@ -73,13 +73,13 @@ export class AuthService {
    * Initiate authentication via metamask.
    */
   public metamaskAuth(): void {
-    if (window.ethereum) {
+    if ((window as any).ethereum) {
       const authData = {
         address: <string>undefined,
         message: <string>undefined,
         signed_msg: <string>undefined
       };
-      from(window.ethereum.request({ method: 'eth_requestAccounts' }))
+      from((window as any).ethereum.request({ method: 'eth_requestAccounts' }))
         .pipe(
           mergeMap((accounts: any[]) => {
             [authData.address] = accounts;
