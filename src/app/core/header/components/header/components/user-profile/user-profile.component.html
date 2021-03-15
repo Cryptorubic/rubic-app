@@ -1,6 +1,6 @@
 <div class="user-profile" [ngClass]="{ 'user-profile--mobile': $isMobile | async }">
-  <span (click)="toggleMenu()" class="user-profile__text" [ngClass]="{ 'user-profile__text--social': currentUser?.is_social }">
-    {{ currentUser?.username }}
+  <span (click)="toggleMenu()" class="user-profile__text" [ngClass]="{ 'user-profile__text--social': ($currentUser | async)?.is_social }">
+    {{ ($currentUser | async)?.username }}
   </span>
   <ul
     *ngIf="!($isMobile | async)"

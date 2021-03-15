@@ -1,47 +1,47 @@
 <nav class="header-menu">
   <ul class="header-menu__list">
       <li class="header-menu__list-item">
-        <a target="_blank" class="header-menu__link">{{ 'Instant Trades' | translate }}</a>
+        <a class="header-menu__link">{{ 'Instant Trades' | translate }}</a>
       </li>
       <li class="header-menu__list-item">
-        <a target="_blank" class="header-menu__link">{{ 'Order Book' | translate }}</a>
+        <a class="header-menu__link">{{ 'Order Book' | translate }}</a>
       </li>
       <li class="header-menu__list-item">
-        <a target="_blank" class="header-menu__link">{{ 'Bridge' | translate }}</a>
+        <a routerLink="/bridge" class="header-menu__link">{{ 'Bridge' | translate }}</a>
       </li>
       <ng-container #desktopPart *ngIf="!($isMobile | async)">
         <li class="header-menu__list-item" mat-button [matMenuTriggerFor]="about">
-          <a target="_blank" class="header-menu__link">{{ 'About' | translate }}</a>
+          <a class="header-menu__link">{{ 'About' | translate }}</a>
         </li>
         <mat-menu class="header-menu__sublist-container" #about="matMenu">
           <ul class="header-menu__sublist">
             <li class="header-menu__sublist-item">
-              <a routerLink="faq" target="_blank" class="header-menu__sublink">{{ 'Faq' | translate }}</a>
+              <a routerLink="/faq" class="header-menu__sublink">{{ 'Faq' | translate }}</a>
             </li>
             <li class="header-menu__sublist-item">
-              <a routerLink="about" target="_blank" class="header-menu__sublink">{{ 'Features' | translate }}</a>
+              <a routerLink="/about" class="header-menu__sublink">{{ 'Features' | translate }}</a>
             </li>
             <li class="header-menu__sublist-item">
-              <a routerLink="team" target="_blank" class="header-menu__sublink">{{ 'Team' | translate }}</a>
+              <a routerLink="/team" class="header-menu__sublink">{{ 'Team' | translate }}</a>
             </li>
             <li class="header-menu__sublist-item">
-              <a href="https://rubic.finance/" target="_blank" class="header-menu__sublink">{{ 'Project' | translate }}</a>
+              <a href="https://rubic.finance/" class="header-menu__sublink">{{ 'Project' | translate }}</a>
             </li>
           </ul>
         </mat-menu>
       </ng-container>
       <ng-container #mobilePart *ngIf="$isMobile | async">
         <li class="header-menu__list-item">
-          <a routerLink="faq" target="_blank" class="header-menu__link">{{ 'Faq' | translate }}</a>
+          <a routerLink="/faq" class="header-menu__link">{{ 'Faq' | translate }}</a>
         </li>
         <li class="header-menu__list-item">
-          <a routerLink="about" target="_blank" class="header-menu__link">{{ 'Features' | translate }}</a>
+          <a routerLink="/about" class="header-menu__link">{{ 'Features' | translate }}</a>
         </li>
         <li class="header-menu__list-item">
-          <a routerLink="team" target="_blank" class="header-menu__link">{{ 'Team' | translate }}</a>
+          <a routerLink="/team" class="header-menu__link">{{ 'Team' | translate }}</a>
         </li>
         <li class="header-menu__list-item">
-          <a href="https://rubic.finance/" target="_blank" class="header-menu__link">{{ 'Project' | translate }}</a>
+          <a href="https://rubic.finance/" class="header-menu__link">{{ 'Project' | translate }}</a>
         </li>
       </ng-container>
   </ul>

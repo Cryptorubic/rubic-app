@@ -1,11 +1,17 @@
 $text-size: 14px;
 $letter-spacing: 2px;
+$mobile-size: 1024px;
 
 .login-button {
   display: flex;
   align-items: center;
   color: #fff;
   padding: 0 16px;
+
+  @media screen and (max-width: $mobile-size) {
+    margin-left: auto;
+    margin-right: 15px;
+  }
 
   &__text {
     padding: 9px;

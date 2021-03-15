@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 
 import BigNumber from 'bignumber.js';
-import { HttpClient } from '@angular/common/http';
 import { TransactionReceipt } from 'web3-eth';
 
 import { Subject } from 'rxjs';
@@ -48,15 +47,21 @@ export class Web3PrivateService {
     return this.provider.activate();
   }
 
-  constructor(
-    private readonly httpClient: HttpClient,
-    private readonly provider: MetamaskProviderService
-  ) {
-    this.provider = provider;
+  constructor(private readonly provider: MetamaskProviderService) {
     this.onAddressChanges = provider.onAddressChanges;
     this.onNetworkChanges = provider.onNetworkChanges;
     this.web3 = provider.web3;
     this.defaultMockGas = provider.defaultGasLimit;
+  }
+
+  /**
+   * @description Calculates an Ethereum specific signature.
+   * @param message Data to sign.
+   * @param address Address to sign data with.
+   * @return The signature.
+   */
+  public async signPersonal(message, address) {
+    return this.web3.eth.sign(message, address);
   }
 
   /**

@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, TemplateRef, ViewChild } from '@ang
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
-import { UserService } from 'src/app/core/services/user/user.service';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 
 @Component({
   selector: 'app-logout-confirm-modal',
@@ -20,7 +20,7 @@ export class LogoutConfirmModalComponent {
   @ViewChild('logoutConfirmation') logoutConfirmation: TemplateRef<any>;
 
   constructor(
-    private readonly userService: UserService,
+    private readonly authService: AuthService,
     private readonly dialog: MatDialog,
     private readonly headerStore: HeaderStore
   ) {
@@ -51,7 +51,7 @@ export class LogoutConfirmModalComponent {
 
   public confirmLogout(): void {
     this.logoutProgress = true;
-    this.userService.logout().subscribe(
+    this.authService.logoutRequest().subscribe(
       () => {
         this.headerStore.setConfirmModalOpeningStatus(false);
         this.logoutConfirmationModal.close();

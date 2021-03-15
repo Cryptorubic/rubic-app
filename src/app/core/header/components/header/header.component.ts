@@ -3,20 +3,21 @@ import {
   Inject,
   PLATFORM_ID,
   ViewChild,
-  ChangeDetectorRef,
   HostListener,
-  TemplateRef
+  TemplateRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/user/user.interface';
-import { UserService } from 'src/app/core/services/user/user.service';
 import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
   public readonly $isMobileMenuOpened: Observable<boolean>;
@@ -27,23 +28,19 @@ export class HeaderComponent {
 
   public pageScrolled: boolean;
 
-  public currentUser: UserInterface;
+  public $currentUser: Observable<UserInterface>;
 
   constructor(
     @Inject(PLATFORM_ID) platformId,
-    private readonly userService: UserService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly authService: AuthService
   ) {
+    this.authService.fetchUser();
+    this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.headerStore.setMobileDisplayStatus(window.innerWidth <= this.headerStore.mobileWidth);
-    this.currentUser = this.userService.getUserModel();
-    this.userService.getCurrentUser().subscribe((userProfile: UserInterface) => {
-      this.currentUser = userProfile;
-      this.cdr.detectChanges();
-    });
     if (isPlatformBrowser(platformId)) {
       const scrolledHeight = 50;
       window.onscroll = () => {

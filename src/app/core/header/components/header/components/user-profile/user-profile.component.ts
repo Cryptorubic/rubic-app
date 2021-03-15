@@ -2,13 +2,13 @@ import { AsyncPipe } from '@angular/common';
 import {
   Component,
   ChangeDetectionStrategy,
-  Input,
   HostListener,
   ElementRef,
   ChangeDetectorRef
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserInterface } from 'src/app/core/services/user/user.interface';
 import { HeaderStore } from '../../../../services/header.store';
 
@@ -25,14 +25,16 @@ export class UserProfileComponent {
 
   public readonly $isMobile: Observable<boolean>;
 
-  @Input() public currentUser: UserInterface;
+  public readonly $currentUser: Observable<UserInterface>;
 
   constructor(
     private readonly elementRef: ElementRef,
     private readonly headerStore: HeaderStore,
     public readonly router: Router,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly authService: AuthService
   ) {
+    this.$currentUser = this.authService.getCurrentUser();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.$isUserMenuOpened = this.headerStore.getUserMenuOpeningStatus();
     this.$isConfirmModalOpened = this.headerStore.getConfirmModalOpeningStatus();

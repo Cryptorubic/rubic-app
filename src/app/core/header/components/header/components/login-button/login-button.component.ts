@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { UserInterface } from 'src/app/core/services/user/user.interface';
 
 @Component({
   selector: 'app-login-button',
@@ -8,7 +10,11 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginButtonComponent {
-  constructor(private readonly authService: AuthService) {}
+  public $currentUser: Observable<UserInterface>;
+
+  constructor(private readonly authService: AuthService) {
+    this.$currentUser = this.authService.getCurrentUser();
+  }
 
   public authUser(): void {
     this.authService.metamaskAuth();
