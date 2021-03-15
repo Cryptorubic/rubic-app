@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { InstantTradeToken, InstantTrade } from './types';
+import InstantTradeToken from '../models/InstantTradeToken';
+import InstantTrade from '../models/InstantTrade';
 
 abstract class InstantTradeService {
   /**

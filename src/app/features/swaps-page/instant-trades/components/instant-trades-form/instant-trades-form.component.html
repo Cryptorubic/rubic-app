@@ -15,7 +15,7 @@
   </div>
 
   <div class="instant-trade__arrow-section" (click)="revertTokens()">
-    <button class="arrow-button" [ngClass]="{'arrow-button_big': trades.length === 2}">
+    <button type="button" class="arrow-button" [ngClass]="{'arrow-button_big': trades.length === 2}">
       <img *ngIf="trades.length === 2" src="assets/images/icons/RoundArrows.svg" alt="">
       <img *ngIf="trades.length === 1" src="assets/images/icons/revert.svg" alt="">
     </button>
@@ -58,6 +58,7 @@
 
       <div class="instant-trade-button">
         <app-primary-button
+          type="button"
           [label]="'Via ' + tradeController.tradeProviderInfo.label"
           [disabled]="
             !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||

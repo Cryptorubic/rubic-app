@@ -14,16 +14,16 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { ethers } from 'ethers';
 import InstantTradeService from '../InstantTradeService';
-import InstantTrade from '../types/InstantTrade';
-import { InstantTradeToken } from '../types';
-import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
+import InstantTrade from '../../models/InstantTrade';
+import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
-import { CoingeckoApiService } from '../../external-api/coingecko-api/coingecko-api.service';
-import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
-import { PublicProviderService } from '../../blockchain/public-provider/public-provider.service';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
+import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
+import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
+import { PublicProviderService } from '../../../../../core/services/blockchain/public-provider/public-provider.service';
+import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import InsufficientFundsError from '../../../../../shared/models/errors/instant-trade/InsufficientFundsError';
+import InstantTradeToken from '../../models/InstantTradeToken';
 
 interface UniSwapTrade {
   amountIn: string;
@@ -39,9 +39,7 @@ enum SWAP_METHOD {
   TOKENS_TO_ETH = 'swapExactTokensForETH'
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UniSwapService extends InstantTradeService {
   static slippageTolerance = new Percent('150', '10000'); // 1.5%
 

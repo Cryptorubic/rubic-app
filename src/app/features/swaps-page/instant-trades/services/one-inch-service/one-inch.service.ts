@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { HttpClient } from '@angular/common/http';
-import { InstantTrade, InstantTradeToken } from '../types';
 import InstantTradeService from '../InstantTradeService';
-import { CoingeckoApiService } from '../../external-api/coingecko-api/coingecko-api.service';
-import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
-import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
+import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
+import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
+import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import InstantTradeToken from '../../models/InstantTradeToken';
+import InstantTrade from '../../models/InstantTrade';
 
 interface OneInchQuoteResponse {
   fromToken: Object;
@@ -19,9 +20,7 @@ interface OneInchQuoteResponse {
   estimatedGas: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OneInchService extends InstantTradeService {
   private readonly apiBaseUrl = 'https://api.1inch.exchange/v2.0/';
 

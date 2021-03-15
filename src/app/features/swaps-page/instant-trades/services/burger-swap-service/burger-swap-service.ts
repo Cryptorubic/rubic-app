@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import InstantTradeService from '../InstantTradeService';
-import { InstantTrade, InstantTradeToken } from '../types';
+import InstantTradeToken from '../../models/InstantTradeToken';
+import InstantTrade from '../../models/InstantTrade';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class BurgerSwapService extends InstantTradeService {
   constructor() {
     super();

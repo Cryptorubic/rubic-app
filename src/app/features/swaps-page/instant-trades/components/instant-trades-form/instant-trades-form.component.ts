@@ -2,16 +2,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { InstantTrade, InstantTradeToken } from 'src/app/core/services/instant-trade/types';
-import { UniSwapService } from 'src/app/core/services/instant-trade/uni-swap-service/uni-swap.service';
+import { UniSwapService } from 'src/app/features/swaps-page/instant-trades/services/uni-swap-service/uni-swap.service';
 import BigNumber from 'bignumber.js';
-import InstantTradeService from 'src/app/core/services/instant-trade/InstantTradeService';
-import { OneInchService } from 'src/app/core/services/instant-trade/one-inch-service/one-inch.service';
-import { BurgerSwapService } from 'src/app/core/services/instant-trade/burger-swap-service/burger-swap-service';
+import InstantTradeService from 'src/app/features/swaps-page/instant-trades/services/InstantTradeService';
+import { OneInchService } from 'src/app/features/swaps-page/instant-trades/services/one-inch-service/one-inch.service';
+import { BurgerSwapService } from 'src/app/features/swaps-page/instant-trades/services/burger-swap-service/burger-swap-service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
 import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from '../../../../../core/services/swaps/trade-parameters-service/trade-parameters.service';
+import InstantTrade from '../../models/InstantTrade';
+import InstantTradeToken from '../../models/InstantTradeToken';
 
 interface TradeProviderInfo {
   label: string;
