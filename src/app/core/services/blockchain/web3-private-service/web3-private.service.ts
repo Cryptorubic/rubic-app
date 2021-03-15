@@ -10,7 +10,7 @@ import { MetamaskProviderService } from '../private-provider/metamask-provider/m
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { UserRejectError } from '../../../../shared/models/errors/bridge/UserRejectError';
+import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
 
 @Injectable({
   providedIn: 'root'
@@ -132,6 +132,9 @@ export class Web3PrivateService {
    * @param [options] additional options
    * @param [options.onTransactionHash] callback to execute when transaction enters the mempool
    * @param [options.inWei = false] boolean flag for determining the input parameter "value" in Wei
+   * @param [options.data] data for calling smart contract methods.
+   *    Use this field only if you are receiving data from a third-party api.
+   *    When manually calling contract methods, use executeContractMethod()
    * @return transaction receipt
    */
   public async sendTransaction(
@@ -140,6 +143,7 @@ export class Web3PrivateService {
     options: {
       onTransactionHash?: (hash: string) => void;
       inWei?: boolean;
+      data?: string;
     } = {}
   ): Promise<TransactionReceipt> {
     return new Promise((resolve, reject) => {
@@ -148,7 +152,8 @@ export class Web3PrivateService {
           from: this.address,
           to: toAddress,
           value: options.inWei ? value.toString() : this.ethToWei(value),
-          ...(this.defaultMockGas && { gas: this.defaultMockGas })
+          ...(this.defaultMockGas && { gas: this.defaultMockGas }),
+          ...(options.data && { data: options.data })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))

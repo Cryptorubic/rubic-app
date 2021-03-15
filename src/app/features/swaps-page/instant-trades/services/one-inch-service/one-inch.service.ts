@@ -6,7 +6,6 @@ import InstantTradeService from '../InstantTradeService';
 import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
@@ -26,30 +25,51 @@ interface OneInchTokensResponse {
   };
 }
 
+interface OneInchSwapResponse {
+  tx: {
+    from: string;
+    to: string;
+    data: string;
+    value: string;
+    gasPrice: string;
+    gas: number;
+  };
+}
+
 @Injectable()
 export class OneInchService extends InstantTradeService {
-  private readonly apiBaseUrl = 'https://api.1inch.exchange/v2.0/';
+  static SLIPPAGE_PERCENT = '1'; // 1%
 
   private readonly oneInchEtherAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
   private supportedTokensAddresses: string[] = [];
 
-  private web3PublicEth: Web3Public;
+  private tokensLoadingProcess: Promise<void>;
+
+  protected readonly apiBaseUrl = 'https://api.1inch.exchange/v2.0/';
+
+  protected readonly blockchain: BLOCKCHAIN_NAME;
 
   constructor(
     private httpClient: HttpClient,
     private coingeckoApiService: CoingeckoApiService,
-    private web3Private: Web3PrivateService,
+    web3Private: Web3PrivateService,
     web3Public: Web3PublicService
   ) {
     super();
-    this.web3PublicEth = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
+    this.web3Private = web3Private;
+    this.web3Public = web3Public[this.blockchain];
     this.loadSupportedTokens();
   }
 
   private loadSupportedTokens() {
-    this.httpClient.get(`${this.apiBaseUrl}tokens`).subscribe((response: OneInchTokensResponse) => {
-      this.supportedTokensAddresses = Object.keys(response.tokens);
+    this.tokensLoadingProcess = new Promise<void>(resolve => {
+      this.httpClient
+        .get(`${this.apiBaseUrl}tokens`)
+        .subscribe((response: OneInchTokensResponse) => {
+          resolve();
+          this.supportedTokensAddresses = Object.keys(response.tokens);
+        });
     });
   }
 
@@ -62,6 +82,10 @@ export class OneInchService extends InstantTradeService {
       fromToken,
       toToken
     );
+
+    if (!this.supportedTokensAddresses.length) {
+      await this.tokensLoadingProcess;
+    }
 
     if (
       !this.supportedTokensAddresses.includes(fromTokenAddress) ||
@@ -89,8 +113,8 @@ export class OneInchService extends InstantTradeService {
     const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
 
-    const gasFeeInUsd = await this.web3PublicEth.getGasFee(estimatedGas, ethPrice);
-    const gasFeeInEth = await this.web3PublicEth.getGasFee(estimatedGas, new BigNumber(1));
+    const gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
+    const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
 
     return {
       from: {
@@ -111,17 +135,56 @@ export class OneInchService extends InstantTradeService {
     trade: InstantTrade,
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
-    return new Promise(resolve => resolve(undefined));
+    await this.checkSettings(this.blockchain);
+    await this.checkBalance(trade);
+
+    const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
+      trade.from.token,
+      trade.to.token
+    );
+
+    const fromAmount = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
+
+    const oneInchTrade: OneInchSwapResponse = (await this.httpClient
+      .get(`${this.apiBaseUrl}swap`, {
+        params: {
+          fromTokenAddress,
+          toTokenAddress,
+          amount: fromAmount,
+          slippage: OneInchService.SLIPPAGE_PERCENT,
+          fromAddress: this.web3Private.address
+        }
+      })
+      .toPromise()) as OneInchSwapResponse;
+
+    if (fromTokenAddress !== this.oneInchEtherAddress) {
+      await this.provideAllowance(
+        trade.from.token,
+        new BigNumber(fromAmount),
+        oneInchTrade.tx.to,
+        options.onApprove
+      );
+
+      return this.web3Private.sendTransaction(oneInchTrade.tx.to, '0', {
+        onTransactionHash: options.onConfirm,
+        data: oneInchTrade.tx.data
+      });
+    }
+
+    return this.web3Private.sendTransaction(oneInchTrade.tx.to, fromAmount, {
+      onTransactionHash: options.onConfirm,
+      inWei: true
+    });
   }
 
   private getOneInchTokenSpecificAddresses(
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
   ): { fromTokenAddress: string; toTokenAddress: string } {
-    const fromTokenAddress = this.web3PublicEth.isNativeAddress(fromToken.address)
+    const fromTokenAddress = this.web3Public.isNativeAddress(fromToken.address)
       ? this.oneInchEtherAddress
       : fromToken.address;
-    const toTokenAddress = this.web3PublicEth.isNativeAddress(toToken.address)
+    const toTokenAddress = this.web3Public.isNativeAddress(toToken.address)
       ? this.oneInchEtherAddress
       : toToken.address;
     return { fromTokenAddress, toTokenAddress };

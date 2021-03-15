@@ -9,7 +9,7 @@ import {
   IBlockchain,
   IBridgeToken
 } from 'src/app/core/services/bridge/types';
-import { NetworkError } from 'src/app/shared/models/errors/bridge/NetworkError';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { NetworkErrorComponent } from '../network-error/network-error.component';
 import InputToken from '../../../../shared/models/tokens/InputToken';

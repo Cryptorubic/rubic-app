@@ -59,7 +59,8 @@ module.exports = {
         'no-param-reassign': 'off',
         // Temporary rules. Remove as fast as it can be.
         'max-classes-per-file': 'off',
-        radix: ['warn', 'as-needed']
+        radix: ['warn', 'as-needed'],
+        'no-prototype-builtins': 'off'
       }
     },
     {
