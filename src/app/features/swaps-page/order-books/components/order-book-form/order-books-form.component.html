@@ -5,8 +5,11 @@
         <span class="tokens-form__header">{{ 'You have' | translate }}</span>
 
         <app-tokens-input
-          [tokensList]="[]"
-          (numberChanges)="onAmountChanges('base', $event)"
+          [tokensList]="availableBaseTokens"
+          [selectedToken]="baseToken"
+          [selectedAmount]="baseAmountAsString"
+          (tokenChanges)="baseToken = $any($event)"
+          (numberChanges)="baseAmountAsString = $event"
         ></app-tokens-input>
 
         <div class="tokens-form__custom-section custom-section">
@@ -58,8 +61,11 @@
         <span class="tokens-form__header">{{ 'You want to get' | translate }}</span>
 
         <app-tokens-input
-          [tokensList]="[]"
-          (numberChanges)="onAmountChanges('quote', $event)"
+          [tokensList]="availableQuoteTokens"
+          [selectedToken]="quoteToken"
+          [selectedAmount]="quoteAmountAsString"
+          (tokenChanges)="quoteToken = $any($event)"
+          (numberChanges)="quoteAmountAsString = $event"
         ></app-tokens-input>
 
         <div class="tokens-form__custom-section custom-section">

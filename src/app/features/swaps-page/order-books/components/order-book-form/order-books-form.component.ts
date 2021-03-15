@@ -1,53 +1,41 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
-import { OrderBookToken, OrderBookTokens, TradeInfo } from 'src/app/core/services/order-book/types';
+import { OrderBookToken, TradeInfo } from 'src/app/core/services/order-book/types';
 import { OrderBookService } from 'src/app/core/services/order-book/order-book.service';
+import { List } from 'immutable';
+import { Subscription } from 'rxjs';
+import BigNumber from 'bignumber.js';
+import SwapToken from '../../../../../shared/models/tokens/SwapToken';
+import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
+import { TokensService } from '../../../../../core/services/backend/tokens-service/tokens.service';
+import { TradeParametersService } from '../../../../../core/services/swaps/trade-parameters-service/trade-parameters.service';
+
+interface OrderBooksParameters {
+  fromAmount: BigNumber;
+  fromToken: SwapToken;
+  toAmount: BigNumber;
+  toToken: SwapToken;
+}
 
 @Component({
   selector: 'app-order-books-form',
   templateUrl: './order-books-form.component.html',
   styleUrls: ['./order-books-form.component.scss']
 })
-export class OrderBooksFormComponent {
-  @Input()
-  set blockchain(value: BLOCKCHAIN_NAME) {
-    if (this._blockchain && this._blockchain !== value) {
-      this.resetTokens();
-    }
-    this._blockchain = value;
-    this.tradeInfo = { ...this.tradeInfo, blockchain: this._blockchain };
+export class OrderBooksFormComponent implements OnInit, OnDestroy {
+  public blockchain: BLOCKCHAIN_NAME;
 
-    setTimeout(() => {
-      this.updateCustomTokenAddresses();
-    });
-  }
+  private blockchainSubscription$: Subscription;
 
-  get blockchain(): BLOCKCHAIN_NAME {
-    return this._blockchain;
-  }
+  private _tradeParameters: OrderBooksParameters;
 
-  private _blockchain: BLOCKCHAIN_NAME;
+  private _tokens = List<SwapToken>([]);
 
-  @Input()
-  set tokens(value: OrderBookTokens) {
-    this.tradeInfo.tokens = value;
-  }
+  public availableBaseTokens = List<SwapToken>([]);
 
-  @ViewChild('baseCustomToken') baseCustomToken: NgModel;
-
-  @ViewChild('quoteCustomToken') quoteCustomToken: NgModel;
-
-  get tradeInfo(): TradeInfo {
-    return this._tradeInfo;
-  }
-
-  set tradeInfo(value) {
-    this._tradeInfo = value;
-
-    this.checkIfCreateTradeIsAvailable();
-  }
+  public availableQuoteTokens = List<SwapToken>([]);
 
   private _tradeInfo: TradeInfo;
 
@@ -65,6 +53,96 @@ export class OrderBooksFormComponent {
 
   public isAdvancedSectionOpened: boolean = false;
 
+  get tradeParameters(): OrderBooksParameters {
+    return this._tradeParameters;
+  }
+
+  set tradeParameters(value) {
+    if (
+      this._tradeParameters.fromToken?.address === value.fromToken?.address &&
+      this._tradeParameters.fromAmount?.isEqualTo(value.fromAmount) &&
+      this._tradeParameters.toToken?.address === value.toToken?.address &&
+      this._tradeParameters.toAmount?.isEqualTo(value.toAmount)
+    ) {
+      return;
+    }
+    this._tradeParameters = value;
+
+    this.tradeParametersService.setTradeParameters(this.blockchain, {
+      ...this._tradeParameters
+    });
+  }
+
+  get tokens(): List<SwapToken> {
+    return this._tokens;
+  }
+
+  set tokens(value: List<SwapToken>) {
+    this._tokens = value.filter(token => token.blockchain === this.blockchain);
+    this.availableQuoteTokens = this._tokens.concat();
+    this.availableBaseTokens = this._tokens.concat();
+  }
+
+  get baseToken(): SwapToken {
+    return this.tradeParameters.fromToken;
+  }
+
+  set baseToken(value) {
+    this.tradeParameters = {
+      ...this.tradeParameters,
+      fromToken: value
+    };
+    this.availableQuoteTokens = this.tokens.filter(token => token.address !== value?.address);
+  }
+
+  get quoteToken(): SwapToken {
+    return this.tradeParameters.toToken;
+  }
+
+  set quoteToken(value) {
+    this.tradeParameters = {
+      ...this.tradeParameters,
+      toToken: value
+    };
+    this.availableBaseTokens = this.tokens.filter(token => token.address !== value?.address);
+  }
+
+  get baseAmountAsString(): string {
+    return !this.tradeParameters.fromAmount || this.tradeParameters.fromAmount?.isNaN()
+      ? ''
+      : this.tradeParameters.fromAmount.toFixed();
+  }
+
+  set baseAmountAsString(value) {
+    this.tradeParameters = {
+      ...this.tradeParameters,
+      fromAmount: new BigNumber(value)
+    };
+  }
+
+  get quoteAmountAsString(): string {
+    return !this.tradeParameters.toAmount || this.tradeParameters.toAmount?.isNaN()
+      ? ''
+      : this.tradeParameters.toAmount.toFixed();
+  }
+
+  set quoteAmountAsString(value) {
+    this.tradeParameters = {
+      ...this.tradeParameters,
+      toAmount: new BigNumber(value)
+    };
+  }
+
+  get tradeInfo(): TradeInfo {
+    return this._tradeInfo;
+  }
+
+  set tradeInfo(value) {
+    this._tradeInfo = value;
+
+    this.checkIfCreateTradeIsAvailable();
+  }
+
   get areAdvancedOptionsValid(): boolean {
     return this._areAdvancedOptionsValid;
   }
@@ -77,7 +155,16 @@ export class OrderBooksFormComponent {
 
   public _areAdvancedOptionsValid: boolean;
 
-  constructor(private orderBookService: OrderBookService) {
+  @ViewChild('baseCustomToken') baseCustomToken: NgModel;
+
+  @ViewChild('quoteCustomToken') quoteCustomToken: NgModel;
+
+  constructor(
+    private tradeTypeService: TradeTypeService,
+    private tokensService: TokensService,
+    private tradeParametersService: TradeParametersService,
+    private orderBookService: OrderBookService
+  ) {
     this.isCreateTradeAvailable = false;
 
     this.tradeInfo = {
@@ -85,21 +172,50 @@ export class OrderBooksFormComponent {
     } as TradeInfo;
   }
 
-  private resetTokens(): void {
-    const defaultTokenInfo = {
-      address: '',
-      name: '',
-      symbol: ''
-    };
-    this.tradeInfo.tokens = {
-      base: {
-        ...this.tradeInfo.tokens.base,
-        ...defaultTokenInfo
-      },
-      quote: {
-        ...this.tradeInfo.tokens.quote,
-        ...defaultTokenInfo
-      }
+  ngOnInit(): void {
+    this.tokensService.tokens.subscribe(tokens => {
+      this.tokens = tokens;
+    });
+
+    this.blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
+      this.blockchain = blockchain;
+      this.tradeInfo = { ...this.tradeInfo, blockchain: this.blockchain };
+
+      this.tokens = this.tokensService.tokens.getValue();
+
+      this.updateCustomTokenAddresses();
+
+      const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
+
+      this._tradeParameters = {
+        fromToken: null,
+        toToken: null,
+        fromAmount: null,
+        toAmount: null
+      };
+
+      this.baseToken = tradeParameters?.fromToken;
+      this.quoteToken = tradeParameters?.toToken;
+      this.baseAmountAsString = tradeParameters?.fromAmount?.toFixed(
+        tradeParameters?.fromToken?.decimals
+      );
+    });
+  }
+
+  ngOnDestroy() {
+    this.blockchainSubscription$.unsubscribe();
+  }
+
+  public revertTokens() {
+    const { fromToken, toToken, fromAmount, toAmount } = this.tradeParameters;
+    this.baseToken = toToken;
+    this.quoteToken = fromToken;
+
+    this.tradeParameters = {
+      fromToken: toToken,
+      toToken: fromToken,
+      fromAmount: toAmount,
+      toAmount: fromAmount
     };
   }
 

@@ -76,7 +76,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   set tradeParameters(value) {
     if (
-      this._tradeParameters.toToken?.address === value.toToken?.address &&
+      this._tradeParameters.fromToken?.address === value.fromToken?.address &&
       this._tradeParameters.fromAmount?.isEqualTo(value.fromAmount) &&
       this._tradeParameters.toToken?.address === value.toToken?.address
     ) {
@@ -84,7 +84,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     }
     this._tradeParameters = value;
 
-    this.tradesParametersService.setTradeParameters(this._blockchain, {
+    this.tradeParametersService.setTradeParameters(this._blockchain, {
       ...this._tradeParameters,
       toAmount: null
     });
@@ -144,13 +144,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private tradeTypeService: TradeTypeService,
-    private tradesParametersService: TradeParametersService,
-    private tokenService: TokensService,
+    private tradeParametersService: TradeParametersService,
+    private tokensService: TokensService,
     private uniSwapService: UniSwapService,
     private oneInchService: OneInchService,
     private burgerSwapService: BurgerSwapService
   ) {
-    tokenService.tokens.subscribe(tokens => {
+    tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
     });
   }
@@ -201,9 +201,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this._blockchain = blockchain;
       this.initInstantTradeProviders();
 
-      this.tokens = this.tokenService.tokens.getValue();
+      this.tokens = this.tokensService.tokens.getValue();
 
-      const tradeParameters = this.tradesParametersService.getTradeParameters(this._blockchain);
+      const tradeParameters = this.tradeParametersService.getTradeParameters(this._blockchain);
 
       this._tradeParameters = {
         fromToken: null,
@@ -281,7 +281,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.calculateBestRate();
       const toAmount = this.trades.find(tradeController => tradeController.isBestRate)?.trade?.to
         ?.amount;
-      this.tradesParametersService.setTradeParameters(this._blockchain, {
+      this.tradeParametersService.setTradeParameters(this._blockchain, {
         ...this.tradeParameters,
         toAmount
       });
