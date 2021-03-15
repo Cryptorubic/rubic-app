@@ -13,7 +13,7 @@ $mobile-width: 1024px;
     margin-bottom: 20px;
   }
 
-  &--mobile {
+  &_mobile {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -37,7 +37,7 @@ $mobile-width: 1024px;
     text-transform: uppercase;
     letter-spacing: 2px;
 
-    &--social {
+    &_social {
       max-width: 150px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -82,7 +82,7 @@ $mobile-width: 1024px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
     top: 100%;
 
-    &--opened {
+    &_opened {
       display: block;
     }
   }

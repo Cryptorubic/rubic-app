@@ -7,7 +7,7 @@
     </div>
     <div
       class="header__mobile-container"
-      [ngClass]="{ 'header__mobile-container--opened':  $isMobileMenuOpened | async }"
+      [ngClass]="{ 'header__mobile-container_opened':  $isMobileMenuOpened | async }"
     >
       <app-login-button *ngIf="($currentUser | async) === null"></app-login-button>
       <app-user-profile *ngIf="($currentUser | async) !== null"></app-user-profile>
@@ -16,7 +16,7 @@
   </header>
 </ng-container>
 <ng-template #desktopHeader>
-  <header class="header" [ngClass]="{ 'header--scrolled': pageScrolled }">
+  <header class="header" [ngClass]="{ 'header_scrolled': pageScrolled }">
     <div class="header__container app-content-block">
       <app-header-logotype></app-header-logotype>
       <app-header-navigation></app-header-navigation>

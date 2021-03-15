@@ -24,7 +24,7 @@
     }
   }
 
-  &--opened &__icon-bar {
+  &_opened &__icon-bar {
     &:first-child {
       transform: translateY(6px) rotate(45deg);
     }

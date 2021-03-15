@@ -1,11 +1,11 @@
-<div class="user-profile" [ngClass]="{ 'user-profile--mobile': $isMobile | async }">
-  <span (click)="toggleMenu()" class="user-profile__text" [ngClass]="{ 'user-profile__text--social': ($currentUser | async)?.is_social }">
+<div class="user-profile" [ngClass]="{ 'user-profile_mobile': $isMobile | async }">
+  <span (click)="toggleMenu()" class="user-profile__text" [ngClass]="{ 'user-profile__text_social': ($currentUser | async)?.is_social }">
     {{ ($currentUser | async)?.username }}
   </span>
   <ul
     *ngIf="!($isMobile | async)"
     class="user-profile__sublist"
-    [ngClass]="{ 'user-profile__sublist--opened': ($isUserMenuOpened | async) }"
+    [ngClass]="{ 'user-profile__sublist_opened': ($isUserMenuOpened | async) }"
   >
     <li class="user-profile__sublist-item">
       <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'My trades' | translate }}</a>

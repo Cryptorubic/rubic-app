@@ -38,7 +38,7 @@ $main-color: #4aa956;
       transition: transform 0.3s ease-in-out;
     }
 
-    &--opened {
+    &_opened {
       max-height: $languages-amount * $language-block-height;
 
       &:after {
@@ -80,7 +80,7 @@ $main-color: #4aa956;
         clear: both;
       }
 
-      &--active {
+      &_active {
         position: relative;
         cursor: pointer;
 

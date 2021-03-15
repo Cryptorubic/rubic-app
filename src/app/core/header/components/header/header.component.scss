@@ -11,7 +11,7 @@ $mobile-width: 1024px;
   z-index: 10;
   background-color: white;
 
-  &--scrolled {
+  &_scrolled {
     background-color: white;
     padding-top: 13px;
     padding-bottom: 10px;
@@ -59,7 +59,7 @@ $mobile-width: 1024px;
     transition: all linear 0.2s;
     padding: 15px 0;
 
-    &--opened {
+    &_opened {
       transform: translateY(0);
     }
   }
