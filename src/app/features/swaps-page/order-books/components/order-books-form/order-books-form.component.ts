@@ -42,7 +42,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     quote: false
   };
 
-  public customTokens = {
+  public customToken = {
     base: {} as OrderBookFormToken,
     quote: {} as OrderBookFormToken
   };
@@ -174,21 +174,33 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // tokens subscription
     this.tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
+
+      const foundBaseToken = tokens.find(t => t.address === this.baseToken?.address);
+      if (foundBaseToken) {
+        this.baseToken = foundBaseToken;
+      }
+
+      const foundQuoteToken = tokens.find(t => t.address === this.quoteToken?.address);
+      if (foundQuoteToken) {
+        this.quoteToken = foundQuoteToken;
+      }
     });
 
+    // trade-form subscription
     this.tradeFormSubscription$ = this.orderBookFormService.getTradeForm().subscribe(tradeForm => {
       this._tradeForm = tradeForm;
-
-      this.updateCustomTokensAddressesValidity();
+      this.updateCustomTokensValidity();
     });
 
+    // blockchain subscription
     this.blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
       this.blockchain = blockchain;
 
       this.tradeForm = { ...this.tradeForm, blockchain: this.blockchain };
-      this.updateCustomTokensAddressesValidity();
+      this.updateCustomTokensValidity();
 
       this.tokens = this.tokensService.tokens.getValue();
 
@@ -230,26 +242,30 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  public addCustomToken(tokenPart: string, tokenBody: Token): void {
-    this.customTokens[tokenPart] = { ...this.customTokens[tokenPart], ...tokenBody };
+  public setCustomToken(tokenPart: string, tokenBody: Token): void {
+    const token = this.tokens.find(t => t.address === tokenBody.address);
+    this.customToken[tokenPart] = token
+      ? { ...token }
+      : { ...this.customToken[tokenPart], ...tokenBody };
   }
 
-  private updateCustomTokensAddressesValidity(): void {
+  private updateCustomTokensValidity(): void {
     this.baseCustomToken?.control.updateValueAndValidity();
     this.quoteCustomToken?.control.updateValueAndValidity();
   }
 
-  public setCustomToken(tokenPart: string): void {
-    this.tradeForm = {
-      ...this.tradeForm,
-      token: {
-        ...this.tradeForm.token,
-        [tokenPart]: {
-          ...this.tradeForm.token[tokenPart],
-          ...this.customTokens[tokenPart]
-        }
-      }
-    };
+  public addCustomToken(tokenPart: string): void {
+    if (tokenPart === 'base') {
+      this.baseToken = {
+        ...this.tradeForm.token[tokenPart],
+        ...this.customToken[tokenPart]
+      };
+    } else {
+      this.quoteToken = {
+        ...this.tradeForm.token[tokenPart],
+        ...this.customToken[tokenPart]
+      };
+    }
   }
 
   public async createTrade(): Promise<void> {

@@ -31,12 +31,12 @@
               type="text"
               class="custom-section-form__input"
               id="base-custom-input"
-              placeholder="Token Contract Address"
+              placeholder="Token contract address"
               pattern="0x[A-Fa-f0-9]{40}"
               appTokenAddress
               [blockchain]="blockchain"
-              (tokenValidated)="addCustomToken('base', $event)"
-              [(ngModel)]="customTokens.base.address"
+              (tokenValidated)="setCustomToken('base', $event)"
+              [(ngModel)]="customToken.base.address"
               #baseCustomToken="ngModel"
               [ngClass]="{
                 'custom-section-form__input_invalid':
@@ -47,13 +47,13 @@
               label="Add"
               [animate]="baseCustomToken.pending"
               [disabled]="!baseCustomToken.valid"
-              (click)="setCustomToken('base')"
+              (click)="addCustomToken('base')"
             ></app-primary-button>
           </div>
         </div>
       </div>
 
-      <button class="tokens-forms__revert-btn" type="button">
+      <button class="tokens-forms__revert-btn" type="button" (click)="revertTokens()">
         <img src="/assets/images/icons/revert.svg" alt="reverse tokens" />
       </button>
 
@@ -85,12 +85,12 @@
               type="text"
               class="custom-section-form__input"
               id="quote-custom-input"
-              placeholder="Token Contract Address"
+              placeholder="Token contract address"
               pattern="0x[A-Fa-f0-9]{40}"
               appTokenAddress
               [blockchain]="blockchain"
-              (tokenValidated)="addCustomToken('quote', $event)"
-              [(ngModel)]="customTokens.quote.address"
+              (tokenValidated)="setCustomToken('quote', $event)"
+              [(ngModel)]="customToken.quote.address"
               #quoteCustomToken="ngModel"
               [ngClass]="{
                 'custom-section-form__input_invalid':
@@ -101,7 +101,7 @@
               label="Add"
               [animate]="quoteCustomToken.pending"
               [disabled]="!quoteCustomToken.valid"
-              (click)="setCustomToken('quote')"
+              (click)="addCustomToken('quote')"
             ></app-primary-button>
           </div>
         </div>
