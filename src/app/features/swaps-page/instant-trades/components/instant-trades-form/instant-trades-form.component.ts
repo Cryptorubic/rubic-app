@@ -55,11 +55,17 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private _tokens = List<SwapToken>([]);
 
+  public TRADE_STATE = TRADE_STATE;
+
   public availableFromTokens = List<SwapToken>([]);
 
   public availableToTokens = List<SwapToken>([]);
 
   public trades: InstantTradeProviderController[];
+
+  public selectedTradeState: TRADE_STATE;
+
+  public transactionHash: string;
 
   get tokens(): List<SwapToken> {
     return this._tokens;
@@ -353,5 +359,23 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         isBestRate: true
       };
     }
+  }
+
+  public createTrade(selectedServiceIndex: number) {
+    this.selectedTradeState = this.trades[selectedServiceIndex].tradeState;
+    this._instantTradeServices[selectedServiceIndex]
+      .createTrade(this.trades[selectedServiceIndex].trade, {
+        onApprove: () => (this.selectedTradeState = TRADE_STATE.APPROVAL),
+        onConfirm: () => (this.selectedTradeState = TRADE_STATE.TX_IN_PROGRESS)
+      })
+      .then(receipt => {
+        this.selectedTradeState = TRADE_STATE.COMPLETED;
+        this.transactionHash = receipt.transactionHash;
+      });
+  }
+
+  public onCloseModal() {
+    this.selectedTradeState = null;
+    this.transactionHash = undefined;
   }
 }

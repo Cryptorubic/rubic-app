@@ -66,6 +66,7 @@
             shouldAnimateButton(index)
           "
           [animate]="shouldAnimateButton(index)"
+          (click)="createTrade(index)"
         >
         </app-primary-button>
         <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate">
@@ -76,3 +77,12 @@
     </ng-container>
   </div>
 </form>
+
+<app-trade-in-progress-modal
+  *ngIf="(selectedTradeState === TRADE_STATE.APPROVAL) || (selectedTradeState === TRADE_STATE.TX_IN_PROGRESS)">
+</app-trade-in-progress-modal>
+
+<app-trade-success-modal
+  *ngIf="selectedTradeState === TRADE_STATE.COMPLETED"
+  [transactionId]="transactionHash">
+</app-trade-success-modal>
