@@ -254,5 +254,24 @@
   "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
   "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
-  "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами."
+  "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами.",
+
+  "Listing request":
+  "Запрос на листинг",
+  "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:":
+  "Если вы хотите, чтобы ваш проект был добавлен на платформу Rubic, пожалуйста, отправьте электронное письмо по адресу <a href='mailto:support@rubic.finance'>support@rubic.finance</a> со следующей информацией:",
+  "Project name":
+  "Название проекта",
+  "Project description":
+  "Описание проекта",
+  "Links to the project and social media":
+  "Ссылки на проект и социальные сети",
+  "Contract address":
+  "Адрес договора",
+  "Whitepaper/Onepager":
+  "Whitepaper/Onepager",
+  "Link to logo in PNG and SVG":
+  "Ссылка на логотип в PNG и SVG",
+  "Why you have chosen Rubic.exchange?":
+  "Почему вы выбрали Rubic.exchange?"
 }
