@@ -54,7 +54,7 @@ abstract class InstantTradeService {
     }
 
     if (
-      this.web3Private.networkName !== selectedBlockchain ||
+      this.web3Private.networkName !== selectedBlockchain &&
       this.web3Private.networkName !== `${selectedBlockchain}_TESTNET`
     ) {
       throw new NetworkError(selectedBlockchain);

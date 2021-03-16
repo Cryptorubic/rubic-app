@@ -5,10 +5,20 @@
 
   &__from-section {
     flex: 4;
+
+    &_aligned {
+      align-self: flex-start;
+    }
   }
 
   &__arrow-section {
     flex: 1;
+
+    &_aligned {
+      align-self: flex-start;
+      position: relative;
+      top: 10px;
+    }
 
     & > * {
       margin: 0 auto;
@@ -42,6 +52,12 @@
     img {
       transform: scale(0.8);
     }
+  }
+
+  &_small {
+    align-self: flex-start;
+    position: relative;
+    top: 20px;
   }
 
   &:hover {

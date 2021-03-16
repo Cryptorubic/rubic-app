@@ -156,12 +156,17 @@ export class OneInchService extends InstantTradeService {
 
       return this.web3Private.sendTransaction(oneInchTrade.tx.to, '0', {
         onTransactionHash: options.onConfirm,
-        data: oneInchTrade.tx.data
+        data: oneInchTrade.tx.data,
+        gas: oneInchTrade.tx.gas.toString(),
+        gasPrice: oneInchTrade.tx.gasPrice
       });
     }
 
     return this.web3Private.sendTransaction(oneInchTrade.tx.to, fromAmount, {
       onTransactionHash: options.onConfirm,
+      data: oneInchTrade.tx.data,
+      gas: oneInchTrade.tx.gas.toString(),
+      gasPrice: oneInchTrade.tx.gasPrice,
       inWei: true
     });
   }

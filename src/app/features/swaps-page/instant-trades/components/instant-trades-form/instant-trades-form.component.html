@@ -1,6 +1,8 @@
 <form class="instant-trade">
 
-  <div class="instant-trade__from-section selection-block">
+  <div class="instant-trade__from-section selection-block"
+       [ngClass]="{'instant-trade__from-section_aligned': trades.length === 1}"
+  >
     <div class="selection-block__label">
       you have
     </div>
@@ -14,7 +16,8 @@
     </app-tokens-input>
   </div>
 
-  <div class="instant-trade__arrow-section" (click)="revertTokens()">
+  <div class="instant-trade__arrow-section" (click)="revertTokens()"
+       [ngClass]="{'instant-trade__arrow-section_aligned': trades.length === 1}">
     <button type="button" class="arrow-button" [ngClass]="{'arrow-button_big': trades.length === 2}">
       <img *ngIf="trades.length === 2" src="assets/images/icons/RoundArrows.svg" alt="">
       <img *ngIf="trades.length === 1" src="assets/images/icons/revert.svg" alt="">
@@ -63,13 +66,13 @@
           [disabled]="
             !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
             !tradeController.trade ||
-            shouldAnimateButton(index)
-          "
+            shouldAnimateButton(index) ||
+            (selectedTradeState && selectedTradeState !== TRADE_STATE.ERROR && selectedTradeState !== TRADE_STATE.COMPLETED)"
           [animate]="shouldAnimateButton(index)"
-          (click)="createTrade(index)"
+          (onClick)="createTrade(index)"
         >
         </app-primary-button>
-        <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate">
+        <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate && trades.length > 1">
           <span>Best Rate</span>
           <img src="assets/images/icons/BestRate.svg" alt="">
         </div>

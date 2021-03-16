@@ -362,19 +362,23 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
-    this.selectedTradeState = this.trades[selectedServiceIndex].tradeState;
+    const setTradeState = (state: TRADE_STATE) => {
+      this.trades[selectedServiceIndex].tradeState = state;
+      this.selectedTradeState = state;
+    };
     this._instantTradeServices[selectedServiceIndex]
       .createTrade(this.trades[selectedServiceIndex].trade, {
-        onApprove: () => (this.selectedTradeState = TRADE_STATE.APPROVAL),
-        onConfirm: () => (this.selectedTradeState = TRADE_STATE.TX_IN_PROGRESS)
+        onApprove: () => setTradeState(TRADE_STATE.APPROVAL),
+        onConfirm: () => setTradeState(TRADE_STATE.TX_IN_PROGRESS)
       })
       .then(receipt => {
-        this.selectedTradeState = TRADE_STATE.COMPLETED;
+        setTradeState(TRADE_STATE.COMPLETED);
         this.transactionHash = receipt.transactionHash;
       });
   }
 
   public onCloseModal() {
+    this.trades.map(trade => ({ ...trade, tradeState: null }));
     this.selectedTradeState = null;
     this.transactionHash = undefined;
   }

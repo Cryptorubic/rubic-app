@@ -140,6 +140,8 @@ export class Web3PrivateService {
    * @param [options.data] data for calling smart contract methods.
    *    Use this field only if you are receiving data from a third-party api.
    *    When manually calling contract methods, use executeContractMethod()
+   * @param [options.gas] transaction gas limit in absolute gas units
+   * @param [options.gasPrice] price of gas unit in wei
    * @return transaction receipt
    */
   public async sendTransaction(
@@ -149,6 +151,8 @@ export class Web3PrivateService {
       onTransactionHash?: (hash: string) => void;
       inWei?: boolean;
       data?: string;
+      gas?: string;
+      gasPrice?: string;
     } = {}
   ): Promise<TransactionReceipt> {
     return new Promise((resolve, reject) => {
@@ -157,8 +161,11 @@ export class Web3PrivateService {
           from: this.address,
           to: toAddress,
           value: options.inWei ? value.toString() : this.ethToWei(value),
-          ...(this.defaultMockGas && { gas: this.defaultMockGas }),
-          ...(options.data && { data: options.data })
+          ...((options.gas || this.defaultMockGas) && {
+            gas: options.gas || this.defaultMockGas
+          }),
+          ...(options.data && { data: options.data }),
+          ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))
