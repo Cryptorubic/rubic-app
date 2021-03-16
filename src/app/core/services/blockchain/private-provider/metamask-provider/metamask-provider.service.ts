@@ -55,7 +55,7 @@ export class MetamaskProviderService extends PrivateProvider {
   }
 
   protected getAddress(): string {
-    return this._metaMask?.selectedAddress();
+    return this._metaMask?.selectedAddress;
   }
 
   protected getNetwork(): IBlockchain {

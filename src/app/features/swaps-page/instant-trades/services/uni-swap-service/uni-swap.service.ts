@@ -19,10 +19,8 @@ import { Web3PrivateService } from '../../../../../core/services/blockchain/web3
 import { UniSwapContractAbi, UniSwapContractAddress } from './uni-swap-contract';
 import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
 import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { PublicProviderService } from '../../../../../core/services/blockchain/public-provider/public-provider.service';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import InsufficientFundsError from '../../../../../shared/models/errors/instant-trade/InsufficientFundsError';
 import InstantTradeToken from '../../models/InstantTradeToken';
 
 interface UniSwapTrade {
@@ -53,17 +51,16 @@ export class UniSwapService extends InstantTradeService {
 
   private readonly WETH;
 
-  private readonly web3PublicEth: Web3Public;
-
   constructor(
-    private web3Private: Web3PrivateService,
     private coingeckoApiService: CoingeckoApiService,
+    web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
     publicProvider: PublicProviderService
   ) {
     super();
 
-    this.web3PublicEth = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
+    this.web3Private = web3Private;
+    this.web3Public = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
     this.provider = new ethers.providers.JsonRpcProvider(
       publicProvider.getBlockchainRpcLink(BLOCKCHAIN_NAME.ETHEREUM)
     );
@@ -80,12 +77,12 @@ export class UniSwapService extends InstantTradeService {
     const toTokenClone = { ...toToken };
     let estimatedGasPredictionMethod = 'calculateTokensToTokensGasLimit';
 
-    if (this.web3PublicEth.isNativeAddress(fromTokenClone.address)) {
+    if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
       fromTokenClone.address = this.WETH.address;
       estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
     }
 
-    if (this.web3PublicEth.isNativeAddress(toTokenClone.address)) {
+    if (this.web3Public.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.WETH.address;
       estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
     }
@@ -117,8 +114,8 @@ export class UniSwapService extends InstantTradeService {
 
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
 
-    const gasFeeInUsd = await this.web3PublicEth.getGasFee(estimatedGas, ethPrice);
-    const gasFeeInEth = await this.web3PublicEth.getGasFee(estimatedGas, new BigNumber(1));
+    const gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
+    const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
     const amountOut = uniSwapTrade
       .minimumAmountOut(new Percent('0', '1'))
       .toSignificant(toTokenClone.decimals);
@@ -147,14 +144,14 @@ export class UniSwapService extends InstantTradeService {
   ): Promise<BigNumber> {
     let estimatedGas = UniSwapService.tokensToTokensEstimatedGas;
     if (walletAddress) {
-      const allowance = await this.web3PublicEth.getAllowance(
+      const allowance = await this.web3Public.getAllowance(
         path[0],
         walletAddress,
         UniSwapContractAddress
       );
-      const balance = await this.web3PublicEth.getTokenBalance(walletAddress, path[0]);
+      const balance = await this.web3Public.getTokenBalance(walletAddress, path[0]);
       if (allowance.gte(amountIn) && balance.gte(amountIn)) {
-        estimatedGas = await this.web3PublicEth.getEstimatedGas(
+        estimatedGas = await this.web3Public.getEstimatedGas(
           UniSwapContractAbi,
           UniSwapContractAddress,
           SWAP_METHOD.TOKENS_TO_TOKENS,
@@ -175,9 +172,9 @@ export class UniSwapService extends InstantTradeService {
     deadline: number
   ): Promise<BigNumber> {
     if (walletAddress) {
-      const balance = await this.web3PublicEth.getBalance(walletAddress);
+      const balance = await this.web3Public.getBalance(walletAddress);
       return balance.gte(amountIn)
-        ? this.web3PublicEth.getEstimatedGas(
+        ? this.web3Public.getEstimatedGas(
             UniSwapContractAbi,
             UniSwapContractAddress,
             SWAP_METHOD.ETH_TO_TOKENS,
@@ -199,14 +196,14 @@ export class UniSwapService extends InstantTradeService {
   ): Promise<BigNumber> {
     let estimatedGas = UniSwapService.tokensToEthEstimatedGas;
     if (walletAddress) {
-      const allowance = await this.web3PublicEth.getAllowance(
+      const allowance = await this.web3Public.getAllowance(
         path[0],
         walletAddress,
         UniSwapContractAddress
       );
-      const balance = await this.web3PublicEth.getTokenBalance(walletAddress, path[0]);
+      const balance = await this.web3Public.getTokenBalance(walletAddress, path[0]);
       if (allowance.gte(amountIn) && balance.gte(amountIn)) {
-        estimatedGas = await this.web3PublicEth.getEstimatedGas(
+        estimatedGas = await this.web3Public.getEstimatedGas(
           UniSwapContractAbi,
           UniSwapContractAddress,
           SWAP_METHOD.TOKENS_TO_ETH,
@@ -241,11 +238,11 @@ export class UniSwapService extends InstantTradeService {
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
-    if (this.web3PublicEth.isNativeAddress(trade.from.token.address)) {
+    if (this.web3Public.isNativeAddress(trade.from.token.address)) {
       return this.createEthToTokensTrade(uniSwapTrade, options);
     }
 
-    if (this.web3PublicEth.isNativeAddress(trade.to.token.address)) {
+    if (this.web3Public.isNativeAddress(trade.to.token.address)) {
       return this.createTokensToEthTrade(uniSwapTrade, options);
     }
 
@@ -282,7 +279,12 @@ export class UniSwapService extends InstantTradeService {
   ): Promise<TransactionReceipt> {
     trade.path[1] = this.WETH.address;
 
-    await this.provideAllowance(trade.path[0], new BigNumber(trade.amountIn), options.onApprove);
+    await this.provideAllowance(
+      trade.path[0],
+      new BigNumber(trade.amountIn),
+      UniSwapContractAddress,
+      options.onApprove
+    );
 
     return this.web3Private.executeContractMethod(
       UniSwapContractAddress,
@@ -302,7 +304,12 @@ export class UniSwapService extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
-    await this.provideAllowance(trade.path[0], new BigNumber(trade.amountIn), options.onApprove);
+    await this.provideAllowance(
+      trade.path[0],
+      new BigNumber(trade.amountIn),
+      UniSwapContractAddress,
+      options.onApprove
+    );
 
     return this.web3Private.executeContractMethod(
       UniSwapContractAddress,
@@ -311,57 +318,6 @@ export class UniSwapService extends InstantTradeService {
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       { onTransactionHash: options.onConfirm }
     );
-  }
-
-  private async provideAllowance(
-    tokenAddress: string,
-    value: BigNumber,
-    onApprove?: (hash: string) => void
-  ): Promise<void> {
-    const allowance = await this.web3PublicEth.getAllowance(
-      tokenAddress,
-      this.web3Private.address,
-      UniSwapContractAddress
-    );
-    if (value.gt(allowance)) {
-      const uintInfinity = new BigNumber(2).pow(256).minus(1);
-      await this.web3Private.approveTokens(tokenAddress, UniSwapContractAddress, uintInfinity, {
-        onTransactionHash: onApprove
-      });
-    }
-  }
-
-  private async checkBalance(trade: InstantTrade): Promise<void> {
-    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
-
-    if (this.web3PublicEth.isNativeAddress(trade.from.token.address)) {
-      const balance = await this.web3PublicEth.getBalance(this.web3Private.address, {
-        inWei: true
-      });
-      if (balance.lt(amountIn)) {
-        const formattedBalance = this.web3PublicEth.weiToEth(balance);
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedBalance,
-          trade.from.amount.toString()
-        );
-      }
-    } else {
-      const tokensBalance = await this.web3PublicEth.getTokenBalance(
-        this.web3Private.address,
-        trade.from.token.address
-      );
-      if (tokensBalance.lt(amountIn)) {
-        const formattedTokensBalance = tokensBalance
-          .div(10 ** trade.from.token.decimals)
-          .toString();
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedTokensBalance,
-          trade.from.amount.toString()
-        );
-      }
-    }
   }
 
   private async getUniSwapTrade(

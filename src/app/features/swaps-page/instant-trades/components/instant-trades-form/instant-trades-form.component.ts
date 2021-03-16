@@ -5,14 +5,14 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { UniSwapService } from 'src/app/features/swaps-page/instant-trades/services/uni-swap-service/uni-swap.service';
 import BigNumber from 'bignumber.js';
 import InstantTradeService from 'src/app/features/swaps-page/instant-trades/services/InstantTradeService';
-import { OneInchService } from 'src/app/features/swaps-page/instant-trades/services/one-inch-service/one-inch.service';
-import { BurgerSwapService } from 'src/app/features/swaps-page/instant-trades/services/burger-swap-service/burger-swap-service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
 import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from '../../../../../core/services/swaps/trade-parameters-service/trade-parameters.service';
 import InstantTrade from '../../models/InstantTrade';
 import InstantTradeToken from '../../models/InstantTradeToken';
+import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
+import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
 
 interface TradeProviderInfo {
   label: string;
@@ -148,8 +148,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private tradeParametersService: TradeParametersService,
     private tokensService: TokensService,
     private uniSwapService: UniSwapService,
-    private oneInchService: OneInchService,
-    private burgerSwapService: BurgerSwapService
+    private oneInchEthService: OneInchEthService,
+    private onInchBscService: OneInchBscService
   ) {
     tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
@@ -159,7 +159,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private initInstantTradeProviders() {
     switch (this._blockchain) {
       case BLOCKCHAIN_NAME.ETHEREUM:
-        this._instantTradeServices = [this.oneInchService, this.uniSwapService];
+        this._instantTradeServices = [this.oneInchEthService, this.uniSwapService];
         this.trades = [
           {
             trade: null,
@@ -180,7 +180,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        this._instantTradeServices = [this.burgerSwapService];
+        this._instantTradeServices = [this.onInchBscService];
         this.trades = [
           {
             trade: null,

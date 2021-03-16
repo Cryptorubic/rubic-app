@@ -1,11 +1,8 @@
-import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { HttpClient } from '@angular/common/http';
 import InstantTradeService from '../InstantTradeService';
 import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
-import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
-import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
@@ -36,7 +33,6 @@ interface OneInchSwapResponse {
   };
 }
 
-@Injectable()
 export class OneInchService extends InstantTradeService {
   static SLIPPAGE_PERCENT = '1'; // 1%
 
@@ -46,20 +42,13 @@ export class OneInchService extends InstantTradeService {
 
   private tokensLoadingProcess: Promise<void>;
 
-  protected readonly apiBaseUrl = 'https://api.1inch.exchange/v2.0/';
+  protected apiBaseUrl: string;
 
-  protected readonly blockchain: BLOCKCHAIN_NAME;
+  protected blockchain: BLOCKCHAIN_NAME;
 
-  constructor(
-    private httpClient: HttpClient,
-    private coingeckoApiService: CoingeckoApiService,
-    web3Private: Web3PrivateService,
-    web3Public: Web3PublicService
-  ) {
+  constructor(private httpClient: HttpClient, private coingeckoApiService: CoingeckoApiService) {
     super();
-    this.web3Private = web3Private;
-    this.web3Public = web3Public[this.blockchain];
-    this.loadSupportedTokens();
+    setTimeout(() => this.loadSupportedTokens());
   }
 
   private loadSupportedTokens() {
@@ -159,7 +148,7 @@ export class OneInchService extends InstantTradeService {
 
     if (fromTokenAddress !== this.oneInchEtherAddress) {
       await this.provideAllowance(
-        trade.from.token,
+        trade.from.token.address,
         new BigNumber(fromAmount),
         oneInchTrade.tx.to,
         options.onApprove

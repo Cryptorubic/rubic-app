@@ -92,19 +92,19 @@ abstract class InstantTradeService {
   }
 
   protected async provideAllowance(
-    token: InstantTradeToken,
+    tokenAddress: string,
     value: BigNumber,
     targetAddress: string,
     onApprove?: (hash: string) => void
   ): Promise<void> {
     const allowance = await this.web3Public.getAllowance(
-      token.address,
+      tokenAddress,
       this.web3Private.address,
       targetAddress
     );
     if (value.gt(allowance)) {
       const uintInfinity = new BigNumber(2).pow(256).minus(1);
-      await this.web3Private.approveTokens(token.address, targetAddress, uintInfinity, {
+      await this.web3Private.approveTokens(tokenAddress, targetAddress, uintInfinity, {
         onTransactionHash: onApprove
       });
     }
