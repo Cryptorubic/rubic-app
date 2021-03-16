@@ -301,6 +301,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.fromToken,
         this.toToken
       );
+      if (!calculatedTrade) {
+        tradeController.trade = null;
+        tradeController.tradeState = TRADE_STATE.ERROR;
+        return;
+      }
       if (
         this.isCalculatedTradeActual(
           calculatedTrade.from.amount,

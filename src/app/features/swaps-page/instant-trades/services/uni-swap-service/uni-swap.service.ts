@@ -22,6 +22,7 @@ import { Web3PublicService } from '../../../../../core/services/blockchain/web3-
 import { PublicProviderService } from '../../../../../core/services/blockchain/public-provider/public-provider.service';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from '../../models/InstantTradeToken';
+import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 
 interface UniSwapTrade {
   amountIn: string;
@@ -47,9 +48,9 @@ export class UniSwapService extends InstantTradeService {
 
   static ethToTokensEstimatedGas = new BigNumber(150_000);
 
-  private readonly provider;
+  private provider;
 
-  private readonly WETH;
+  private WETH;
 
   constructor(
     private coingeckoApiService: CoingeckoApiService,
@@ -60,12 +61,17 @@ export class UniSwapService extends InstantTradeService {
     super();
 
     this.web3Private = web3Private;
-    this.web3Public = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
+    const blockchain: IBlockchain = web3Private.network || {
+      id: 1,
+      name: BLOCKCHAIN_NAME.ETHEREUM,
+      nativeCoin: null
+    };
+
+    this.web3Public = web3Public[blockchain.name];
     this.provider = new ethers.providers.JsonRpcProvider(
-      publicProvider.getBlockchainRpcLink(BLOCKCHAIN_NAME.ETHEREUM)
+      publicProvider.getBlockchainRpcLink(blockchain.name)
     );
-    const networkId = this.web3Private.network?.id || '1';
-    this.WETH = WETH[networkId.toString()];
+    this.WETH = WETH[blockchain.id.toString()];
   }
 
   public async calculateTrade(

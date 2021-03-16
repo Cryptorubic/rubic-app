@@ -53,7 +53,10 @@ abstract class InstantTradeService {
       throw new AccountError();
     }
 
-    if (this.web3Private.networkName !== selectedBlockchain) {
+    if (
+      this.web3Private.networkName !== selectedBlockchain ||
+      this.web3Private.networkName !== `${selectedBlockchain}_TESTNET`
+    ) {
       throw new NetworkError(selectedBlockchain);
     }
   }
