@@ -36,7 +36,7 @@ interface OneInchSwapResponse {
 export class OneInchService extends InstantTradeService {
   static SLIPPAGE_PERCENT = '1'; // 1%
 
-  private readonly oneInchEtherAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+  private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
   private supportedTokensAddresses: string[] = [];
 
@@ -146,7 +146,7 @@ export class OneInchService extends InstantTradeService {
       })
       .toPromise()) as OneInchSwapResponse;
 
-    if (fromTokenAddress !== this.oneInchEtherAddress) {
+    if (fromTokenAddress !== this.oneInchNativeAddress) {
       await this.provideAllowance(
         trade.from.token.address,
         new BigNumber(fromAmount),
@@ -171,10 +171,10 @@ export class OneInchService extends InstantTradeService {
     toToken: InstantTradeToken
   ): { fromTokenAddress: string; toTokenAddress: string } {
     const fromTokenAddress = this.web3Public.isNativeAddress(fromToken.address)
-      ? this.oneInchEtherAddress
+      ? this.oneInchNativeAddress
       : fromToken.address;
     const toTokenAddress = this.web3Public.isNativeAddress(toToken.address)
-      ? this.oneInchEtherAddress
+      ? this.oneInchNativeAddress
       : toToken.address;
     return { fromTokenAddress, toTokenAddress };
   }
