@@ -1,11 +1,13 @@
+@import '../../../../../../../scss/mixins';
+
 $ltablet-width: 1024px;
 $mobile-logo-margin: 10px;
 
 .logotype {
-    cursor: pointer;
-    float: left;
+  cursor: pointer;
+  float: left;
 
-    @media screen and (max-width: $ltablet-width) {
-        margin-left: $mobile-logo-margin;
-    }
+  @include b($ltablet-width) {
+    margin-left: $mobile-logo-margin;
+  }
 }

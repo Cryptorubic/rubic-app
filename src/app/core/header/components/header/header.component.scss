@@ -1,3 +1,5 @@
+@import '../../../../../scss/mixins';
+
 $mobile-width: 1024px;
 
 .header {
@@ -18,7 +20,7 @@ $mobile-width: 1024px;
     z-index: 10;
   }
 
-  @media screen and (max-width: $mobile-width) {
+  @include b($mobile-width) {
     padding: 0;
   }
 
@@ -30,7 +32,8 @@ $mobile-width: 1024px;
     z-index: 1;
     background: #fff;
 
-    @media screen and (max-width: $mobile-width) {
+    
+    @include b($mobile-width) {
       height: 65px;
       padding-top: 12px;
       padding-bottom: 11px;
@@ -39,15 +42,13 @@ $mobile-width: 1024px;
   }
 
   app-header-language-dropdown {
-    @media screen and (max-width: $mobile-width) {
+    @include b($mobile-width) {
       margin-left: auto;
     }
   }
 
   app-header-navigation {
-    @media screen and (min-width: $mobile-width + 1) {
-      margin-left: auto;
-    }
+    margin-left: auto;
   }
 
   &__mobile-container {

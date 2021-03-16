@@ -17,7 +17,7 @@ $mobile-width: 1024px;
     align-items: center;
     height: 42px;
 
-    @media screen and (max-width: $mobile-width) {
+    @include b($mobile-width) {
       flex-direction: column;
       height: auto;
       align-items: flex-end;
@@ -43,7 +43,7 @@ $mobile-width: 1024px;
       text-decoration: underline;
     }
 
-    @media screen and (max-width: $mobile-width) {
+    @include b($mobile-width) {
       padding: 15px;
     }
   }
@@ -54,7 +54,7 @@ $mobile-width: 1024px;
   }
 
   &__sublink {
-    color: #000;
+    color: black;
     text-decoration: none;
     display: inline-block;
     vertical-align: middle;
