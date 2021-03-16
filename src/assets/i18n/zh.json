@@ -218,5 +218,24 @@
   "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
   "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
-  "跨链交换的过程已经开始。请等待双方区块链完成交易。"
+  "跨链交换的过程已经开始。请等待双方区块链完成交易。",
+
+  "Listing request":
+  "上市要求",
+  "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:":
+  "如果您希望您的项目在Rubic平台上列出，请发送电子邮件至support@rubic。金融(<a href='mailto:support@rubic.finance'>http://support@rubic</a>。财务/）与以下信息:",
+  "Project name":
+  "项目名称",
+  "Project description":
+  "项目描述",
+  "Links to the project and social media":
+  "链接到项目和社交媒体",
+  "Contract address":
+  "合同地址",
+  "Whitepaper/Onepager":
+  "Whitepaper/Onepager",
+  "Link to logo in PNG and SVG":
+  "链接到PNG和SVG中的徽标",
+  "Why you have chosen Rubic.exchange?":
+  "为什么你选择Rubic。交换？"
 }

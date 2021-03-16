@@ -271,7 +271,26 @@
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
 
   "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete.":
-  "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete."
+  "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete.",
+
+  "Listing request":
+  "Listing request",
+  "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:":
+  "If you want your project to be listed on the Rubic platform please send an email to <a href='mailto:support@rubic.finance'>support@rubic.finance</a> with the following information:",
+  "Project name":
+  "Project name",
+  "Project description":
+  "Project description",
+  "Links to the project and social media":
+  "Links to the project and social media",
+  "Contract address":
+  "Contract address",
+  "Whitepaper/Onepager":
+  "Whitepaper/Onepager",
+  "Link to logo in PNG and SVG":
+  "Link to logo in PNG and SVG",
+  "Why you have chosen Rubic.exchange?":
+  "Why you have chosen Rubic.exchange?"
 }
 
 

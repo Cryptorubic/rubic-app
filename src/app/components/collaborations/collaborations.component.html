@@ -1,4 +1,8 @@
 <div class="collaborations">
+  <button class="collaborations__listing-request" (click)="isListingRequestPopupShown = true">
+    {{ 'Listing request' | translate }}
+  </button>
+
   <div class="collaborations__title">Software Integrations And Collaborations With</div>
   <div class="collaborations__description"></div>
   <div class="collaborations__content">
@@ -12,3 +16,11 @@
     </a>
   </div>
 </div>
+
+<app-message-box
+  *ngIf="isListingRequestPopupShown"
+  title="Listing Request"
+  [descriptionComponentClass]="listingRequestPopupComponentClass"
+  (onClose)="isListingRequestPopupShown = false"
+>
+</app-message-box>

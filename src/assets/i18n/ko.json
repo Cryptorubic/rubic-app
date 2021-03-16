@@ -218,5 +218,24 @@
   "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
   "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
-  "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오."
+  "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
+
+  "Listing request":
+  "리스팅 요청",
+  "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:":
+  "프로젝트가 루빅 플랫폼에 나열되기를 원한다면 Rubic 을 지원하도록 이메일을 보내주십시오.재무(<a href='mailto:support@rubic.finance'>http://support@rubic.com</a>)다음 정보와 함께:",
+  "Project name":
+  "프로젝트 이름",
+  "Project description":
+  "프로젝트 설명",
+  "Links to the project and social media":
+  "프로젝트 및 소셜 미디어에 대한 링크",
+  "Contract address":
+  "계약 주소",
+  "Whitepaper/Onepager":
+  "Whitepaper/Onepager",
+  "Link to logo in PNG and SVG":
+  "PNG 및 SVG 의 로고 링크",
+  "Why you have chosen Rubic.exchange?":
+  "루빅을 선택한 이유.교환?"
 }
