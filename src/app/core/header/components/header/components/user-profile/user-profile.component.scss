@@ -1,0 +1,128 @@
+@import '../../../../../../../scss//mixins';
+
+$mobile-width: 1024;
+
+.user-profile {
+  position: relative;
+  visibility: visible;
+  display: inline-block;
+  line-height: 13px;
+  padding: 0;
+  display: flex;
+
+  @include b($mobile-width) {
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+
+  &_mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    & ::marker {
+      display: none;
+    }
+  }
+
+  &__text {
+    position: relative;
+    z-index: 2;
+    color: #000;
+    text-decoration: none;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 9px 25px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+
+    &_social {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @include b($mobile-width) {
+      padding: 15px;
+      max-width: 100%;
+      cursor: inherit;
+    }
+  }
+
+  &:after {
+    content: '';
+    border-width: 0 2px 2px 0;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.7);
+    width: 4px;
+    height: 4px;
+    transform: rotate(45deg);
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    margin-top: -6px;
+  }
+  &.opened-list {
+    &:after {
+      transform: rotate(-135deg);
+    }
+  }
+
+  &__sublist {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    right: 5px;
+    border-radius: 3px;
+    background: linear-gradient(0deg, #ffffff, #ffffff);
+    border: 1px solid #f4f4f4;
+    display: none;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    top: 100%;
+
+    &_opened {
+      display: block;
+    }
+  }
+
+  &__sublist-item & + & &__sublist-link {
+    border-top: 1px solid #f4f4f4;
+  }
+
+  &__sublist-link {
+    color: #000;
+    padding: 15px 25px;
+    display: block;
+    cursor: pointer;
+    &:hover {
+      color: #4aa956;
+      text-decoration: none;
+    }
+  }
+
+  &__list-item {
+    display: inline-block;
+    line-height: 13px;
+    padding: 0;
+    list-style-type: none;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  &__link {
+    color: #4aa956;
+    text-decoration: none;
+    text-decoration: none;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 9px 25px;
+    cursor: pointer;
+    padding: 15px;
+  }
+}
