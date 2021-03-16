@@ -256,15 +256,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   public addCustomToken(tokenPart: string): void {
     if (tokenPart === 'base') {
-      this.baseToken = {
-        ...this.tradeForm.token[tokenPart],
-        ...this.customToken[tokenPart]
-      };
+      this.baseToken = { ...this.customToken.base };
     } else {
-      this.quoteToken = {
-        ...this.tradeForm.token[tokenPart],
-        ...this.customToken[tokenPart]
-      };
+      this.quoteToken = { ...this.customToken.quote };
     }
   }
 
