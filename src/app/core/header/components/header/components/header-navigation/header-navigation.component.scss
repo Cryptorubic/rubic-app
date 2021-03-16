@@ -1,0 +1,86 @@
+@import '../../../../../../../scss/mixins';
+
+$mobile-width: 1024;
+
+.header-menu {
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #fefefe;
+
+  &__list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    height: 42px;
+
+    @include b($mobile-width) {
+      flex-direction: column;
+      height: auto;
+      align-items: flex-end;
+    }
+  }
+
+  &__list-item {
+    display: inline-block;
+    line-height: 13px;
+    padding: 0;
+  }
+
+  &__link {
+    color: #4aa956;
+    text-decoration: none;
+    text-decoration: none;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 9px 25px;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    @include b($mobile-width) {
+      padding: 15px;
+    }
+  }
+
+  &__sublist {
+    padding: 0;
+    margin: 0;
+  }
+
+  &__sublink {
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 9px 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+::ng-deep .header-menu__sublist-container {
+  padding: 0;
+  margin: 0;
+  right: 5px;
+  border-radius: 3px;
+  border: 1px solid #f4f4f4;
+  box-shadow: 0 2px 15px rgb(0 0 0 / 5%);
+
+  & > * {
+    padding: 0;
+  } 
+}
