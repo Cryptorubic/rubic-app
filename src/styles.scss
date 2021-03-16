@@ -753,7 +753,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         top: 8px;
         display: block;
         transition: 0.1s linear;
-        background: url(assets/images/icons/PublicDealCross.svg) center center no-repeat #d8d8d8;
+        background: url(assets/images/icons/checkbox-cross.svg) center center no-repeat #d8d8d8;
       }
 
       .checkbox-text {
@@ -773,7 +773,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       input:checked ~ .checkbox-rect {
         left: 100%;
         margin-left: -32px;
-        background: url(assets/images/icons/PublicDealTick.svg) center center no-repeat #fcd600;
+        background: url(assets/images/icons/checkbox-tick.svg) center center no-repeat #fcd600;
       }
 
       input:checked ~ .checkbox-text {
