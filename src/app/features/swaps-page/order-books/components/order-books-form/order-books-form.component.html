@@ -2,7 +2,11 @@
   <div class="order-book-form__main-section main-section">
     <div class="main-section__tokens-forms tokens-forms">
       <div class="tokens-forms__tokens-form tokens-form">
-        <span class="tokens-form__header">{{ 'You have' | translate }}</span>
+        <div class="tokens-form__header tokens-form-header">
+          <span class="tokens-form-header__label">
+            {{ 'You have' | translate }}
+          </span>
+        </div>
 
         <app-tokens-input
           [tokensList]="availableBaseTokens"
@@ -58,7 +62,41 @@
       </button>
 
       <div class="tokens-forms__tokens-form tokens-form">
-        <span class="tokens-form__header">{{ 'You want to get' | translate }}</span>
+        <div class="tokens-form__header tokens-form-header">
+          <span class="tokens-form-header__label">
+            {{ 'You want to get' | translate }}
+          </span>
+
+          <div class="tokens-form-header__rate tokens-rate" *ngIf="tokensRate">
+            <div class="tokens-rate__main">
+              {{
+                (tokensRate.abs().toFixed(2) | number) +
+                  '% ' +
+                  (tokensRate.isGreaterThan(0) ? 'higher' : 'lower')
+              }}
+
+              <div class="tokens-rate__info tokens-rate-info">
+                <img src="/assets/images/icons/info.svg" alt="info" />
+
+                <div class="tokens-rate-info__popup-container">
+                  <div class="tokens-rate-info__popup tokens-rate-popup">
+                    <span>
+                      Your rate is
+                      <span class="tokens-rate-popup__rate">{{
+                        (tokensRate.abs().toFixed(2) | number) +
+                          '% ' +
+                          (tokensRate.isGreaterThan(0) ? 'higher' : 'lower')
+                      }}</span>
+                      than coingecko rate
+                    </span>
+
+                    <span class="tokens-rate-popup__triangle"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <app-tokens-input
           [tokensList]="availableQuoteTokens"

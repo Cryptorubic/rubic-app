@@ -47,6 +47,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     quote: {} as OrderBookFormToken
   };
 
+  public tokensRate: BigNumber;
+
   get tradeParameters(): TradeParameters {
     return this._tradeParameters;
   }
@@ -81,6 +83,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
         }
       }
     };
+
+    this.calculateTokensRate();
   }
 
   get tokens(): List<SwapToken> {
@@ -260,6 +264,20 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     } else {
       this.quoteToken = { ...this.customToken.quote };
     }
+  }
+
+  private calculateTokensRate(): void {
+    if (
+      !(this.baseToken?.price && this.tradeForm.token.base?.amount.isGreaterThan(0)) ||
+      !(this.quoteToken?.price && this.tradeForm.token.quote?.amount.isGreaterThan(0))
+    ) {
+      this.tokensRate = null;
+      return;
+    }
+
+    const baseRate = this.tradeForm.token.base.amount.times(this.baseToken.price);
+    const quoteRate = this.tradeForm.token.quote.amount.times(this.quoteToken.price);
+    this.tokensRate = quoteRate.minus(baseRate).div(baseRate).times(100);
   }
 
   public async createTrade(): Promise<void> {

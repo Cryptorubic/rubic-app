@@ -47,21 +47,105 @@
 
 .tokens-form {
   &__header {
-    position: relative;
-    left: 9px;
-
-    display: inline-block;
-
     margin-bottom: 7px;
-
-    color: $dark;
-
-    font-size: 13px;
-    text-transform: uppercase;
   }
 
   &__custom-section {
     margin-top: 8px;
+  }
+}
+
+.tokens-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 14px;
+
+  font-size: 13px;
+
+  &__label {
+    position: relative;
+    left: 9px;
+
+    color: $dark;
+    text-transform: uppercase;
+  }
+
+  &__rate {
+    position: relative;
+    right: 6px;
+  }
+}
+
+.tokens-rate {
+  &__main {
+    display: flex;
+    align-items: center;
+
+    color: $main-green;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  &__info {
+    margin-left: 6px;
+  }
+}
+
+.tokens-rate-info {
+  position: relative;
+
+  white-space: normal;
+
+  &__popup-container {
+    position: absolute;
+    bottom: 36%;
+    left: -95px;
+
+    padding-bottom: 20px;
+
+    display: none;
+  }
+
+  img:hover ~ &__popup-container,
+  &__popup-container:hover {
+    display: block;
+  }
+}
+
+.tokens-rate-popup {
+  position: relative;
+
+  width: 190px;
+  padding: 10px;
+  border-radius: 5px;
+
+  background: white;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+  text-align: center;
+  color: $dark;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: none;
+
+  &__rate {
+    color: $main-green;
+  }
+
+  &__triangle {
+    position: absolute;
+    bottom: -6px;
+    left: 47.5%;
+
+    width: 12px;
+    height: 12px;
+
+    background: white;
+
+    transform: rotate(45deg);
   }
 }
 
