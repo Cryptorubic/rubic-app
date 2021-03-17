@@ -6,6 +6,7 @@ export class BlockchainsInfo {
   static blockchainsList: IBlockchain[] = networks.map(network => ({
     id: network.id,
     name: network.name,
+    imagePath: network.imagePath,
     nativeCoin: network.nativeCoin
   }));
 

@@ -10,11 +10,10 @@ import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { HeaderStore } from '../../../../services/header.store';
-import { Blockchain } from './models/blockchain';
-import { BLOCKCHAINS } from './models/blockchains';
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -31,8 +30,6 @@ export class UserProfileComponent {
   public readonly $currentUser: Observable<UserInterface>;
 
   public readonly $currentBlockchain: Observable<BLOCKCHAIN_NAME>;
-
-  private readonly BLOCKCHAINS: Blockchain[] = BLOCKCHAINS;
 
   constructor(
     private readonly elementRef: ElementRef,
@@ -55,8 +52,8 @@ export class UserProfileComponent {
     this.$currentBlockchain = this.tradeTypeService.getBlockchain();
   }
 
-  public getCurrentChainIcon(chainName: string): string {
-    return this.BLOCKCHAINS.find(el => el.name === chainName).image;
+  public getCurrentChainIcon(chainName: BLOCKCHAIN_NAME): string {
+    return BlockchainsInfo.getBlockchainByName(chainName).imagePath;
   }
 
   @HostListener('document:mousedown', ['$event'])
