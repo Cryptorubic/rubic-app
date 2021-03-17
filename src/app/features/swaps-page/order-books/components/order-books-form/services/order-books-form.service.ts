@@ -38,8 +38,12 @@ export class OrderBooksFormService {
   /**
    * @description creates order book through smart contract and then makes post request to backend-api
    * @param tradeForm information about the trade
+   * @param onTransactionHash callback to execute when transaction enters the mempool
    */
-  public async createOrder(tradeForm: OrderBookTradeForm): Promise<void> {
+  public async createOrder(
+    tradeForm: OrderBookTradeForm,
+    onTransactionHash?: (hash: string) => void
+  ): Promise<string> {
     const web3Public: Web3Public = this.web3PublicService[tradeForm.blockchain];
 
     const contractAddress = CONTRACT.ADDRESSES[2][tradeForm.blockchain];
@@ -72,12 +76,14 @@ export class OrderBooksFormService {
       'createOrder',
       createOrderArguments,
       {
-        value: fee
+        value: fee,
+        onTransactionHash
       }
     );
     tradeApi.memo_contract = receipt.events.OrderCreated.returnValues.id;
 
     await this.orderBookApiService.createTrade(tradeApi);
+    return receipt.transactionHash;
   }
 
   private generateTradeApiObject(tradeForm: OrderBookTradeForm): OrderBookTradeApi {

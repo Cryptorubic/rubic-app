@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
-import { OrderBookService } from 'src/app/core/services/order-book/order-book.service';
 import { List } from 'immutable';
 import { Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -14,6 +13,12 @@ import { OrderBookFormToken } from 'src/app/core/services/order-book/types/token
 import { OrderBookTradeForm } from 'src/app/core/services/order-book/types/trade-form';
 import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
 import { OrderBooksFormService } from './services/order-books-form.service';
+
+enum TRADE_STATE {
+  TX_IN_PROGRESS = 'TX_IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  ERROR = 'ERROR'
+}
 
 @Component({
   selector: 'app-order-books-form',
@@ -48,6 +53,12 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   };
 
   public tokensRate: BigNumber;
+
+  public TRADE_STATE = TRADE_STATE;
+
+  public selectedTradeState: TRADE_STATE;
+
+  public transactionHash: string;
 
   get tradeParameters(): TradeParameters {
     return this._tradeParameters;
@@ -173,26 +184,10 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     private tradeTypeService: TradeTypeService,
     private tokensService: TokensService,
     private tradeParametersService: TradeParametersService,
-    private orderBookService: OrderBookService,
     private orderBookFormService: OrderBooksFormService
   ) {}
 
   ngOnInit(): void {
-    // tokens subscription
-    this.tokensService.tokens.subscribe(tokens => {
-      this.tokens = tokens;
-
-      const foundBaseToken = tokens.find(t => t.address === this.baseToken?.address);
-      if (foundBaseToken) {
-        this.baseToken = foundBaseToken;
-      }
-
-      const foundQuoteToken = tokens.find(t => t.address === this.quoteToken?.address);
-      if (foundQuoteToken) {
-        this.quoteToken = foundQuoteToken;
-      }
-    });
-
     // trade-form subscription
     this.tradeFormSubscription$ = this.orderBookFormService.getTradeForm().subscribe(tradeForm => {
       this._tradeForm = tradeForm;
@@ -225,6 +220,21 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       this.quoteAmountAsString = tradeParameters?.toAmount?.toFixed(
         tradeParameters?.toToken?.decimals
       );
+    });
+
+    // tokens subscription
+    this.tokensService.tokens.subscribe(tokens => {
+      this.tokens = tokens;
+
+      const foundBaseToken = tokens.find(t => t.address === this.baseToken?.address);
+      if (foundBaseToken) {
+        this.baseToken = foundBaseToken;
+      }
+
+      const foundQuoteToken = tokens.find(t => t.address === this.quoteToken?.address);
+      if (foundQuoteToken) {
+        this.quoteToken = foundQuoteToken;
+      }
     });
   }
 
@@ -280,11 +290,19 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this.tokensRate = quoteRate.minus(baseRate).div(baseRate).times(100);
   }
 
-  public async createTrade(): Promise<void> {
-    try {
-      await this.orderBookService.createOrder(this.tradeForm);
-    } catch (err) {
-      console.log('err', err);
-    }
+  public createTrade(): void {
+    this.orderBookFormService
+      .createOrder(this.tradeForm, () => {
+        console.log('??');
+        this.selectedTradeState = TRADE_STATE.TX_IN_PROGRESS;
+      })
+      .then(transactionHash => {
+        this.selectedTradeState = TRADE_STATE.COMPLETED;
+        this.transactionHash = transactionHash;
+      })
+      .catch(err => {
+        this.selectedTradeState = TRADE_STATE.ERROR;
+        console.log('err', err);
+      });
   }
 }

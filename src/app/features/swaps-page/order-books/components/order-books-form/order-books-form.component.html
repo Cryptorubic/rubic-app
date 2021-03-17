@@ -149,6 +149,7 @@
     <div class="main-section__confirm-section confirm-section">
       <app-primary-button
         label="Create Trade"
+        [animate]="selectedTradeState === TRADE_STATE.TX_IN_PROGRESS"
         [disabled]="!(tradeForm.areAmountsAndTokensSet && tradeForm.areOptionsValid)"
         (click)="createTrade()"
       ></app-primary-button>
@@ -157,3 +158,12 @@
 
   <app-order-books-form-options></app-order-books-form-options>
 </div>
+
+<app-trade-in-progress-modal *ngIf="selectedTradeState === TRADE_STATE.TX_IN_PROGRESS">
+</app-trade-in-progress-modal>
+
+<app-trade-success-modal
+  *ngIf="selectedTradeState === TRADE_STATE.COMPLETED"
+  [transactionId]="transactionHash"
+>
+</app-trade-success-modal>
