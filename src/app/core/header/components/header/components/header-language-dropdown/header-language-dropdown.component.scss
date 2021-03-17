@@ -1,57 +1,45 @@
 $language-block-height: 42px;
 $languages-amount: 4;
 $main-color: #4aa956;
+$secondary-color: #e9f5eb;
 
 .language-dropdown {
-  margin: 0 10px;
-  color: $main-color;
-  height: $language-block-height;
-  margin-top: -3px;
+  height: 33px;
+  width: 33px;
+  border: 1px solid $main-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
 
-  &__list {
-    padding: 0;
+  &__sublist {
     margin: 0;
-    border: 1px solid $main-color;
-    box-sizing: border-box;
-    border-radius: 4px;
-    position: relative;
-    cursor: pointer;
-    background-color: #fff;
-    max-height: $language-block-height;
-    overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
+    padding: 0;
+  }
 
-    &:after {
-      content: '';
-      transform-origin: center;
-      display: block;
-      width: 5px;
-      height: 5px;
-      border-width: 2px 2px 0 0;
-      border-style: solid;
-      border-color: $main-color;
-      transform: rotate(135deg);
-      position: absolute;
-      top: 16px;
-      right: 11px;
-      z-index: 2;
-      transition: transform 0.3s ease-in-out;
+  &__element {
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+
+    & > * {
+      filter: grayscale(0.8) opacity(0.4);
     }
 
-    &_opened {
-      max-height: $languages-amount * $language-block-height;
+    &_selected > * {
+      filter: none;
+    }
 
-      &:after {
-        transform: rotate(-45deg);
-        top: 16px;
-        z-index: 2;
-      }
+    &:hover {
+      background: $secondary-color;
+      cursor: pointer;
     }
   }
 
   &__element-text {
     position: relative;
-    top: 2px;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -60,48 +48,12 @@ $main-color: #4aa956;
   &__element-image {
     width: 24px;
     height: 24px;
-    margin-right: 6px;
+    margin-right: 15px;
   }
+}
 
-  &__element {
-      padding: 8px 10px 8px 5px;
-      line-height: 24px;
-      box-sizing: border-box;
-      height: $language-block-height;
-      display: flex;
-
-      &:not(:first-child) {
-        border-top: 1px solid #ddd;
-      }
-
-      &:after {
-        content: '';
-        display: block;
-        clear: both;
-      }
-
-      &_active {
-        position: relative;
-        cursor: pointer;
-
-        &:after {
-          content: '';
-          display: block;
-          position: absolute;
-          right: 0;
-          top: 0;
-          bottom: 0;
-          width: 40px;
-          z-index: 1;
-          background: linear-gradient(
-            to right,
-            rgba(white, 0) 0%,
-            rgba(white, 0.8) 15%,
-            rgba(white, 1) 100%
-          );
-          filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );
-          border-radius: 5px;
-        }
-      }
-    }
+::ng-deep .mat-menu-panel.language-dropdown__sublist-container {
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(black, 0.1);
 }

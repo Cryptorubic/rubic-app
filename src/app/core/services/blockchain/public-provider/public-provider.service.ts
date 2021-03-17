@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import ConnectionLink from '../types/ConnectionLink';
 
-import networks from '../constants/networks';
+import networks from '../../../../shared/models/blockchain/networks';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Injectable({
