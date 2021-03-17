@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
+import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { OrderBooksComponent } from './components/order-books/order-books.component';
 import { TradesModule } from '../trades-module/trades.module';
 import { OrderBooksFormComponent } from './components/order-book-form/order-books-form.component';
@@ -21,6 +23,16 @@ import { SharedModule } from '../../../shared/shared.module';
     MatDatepickerModule,
     NgxMaterialTimepickerModule
   ],
-  exports: [OrderBooksComponent]
+  exports: [OrderBooksComponent],
+  providers: [
+    {
+      provide: TradeTypeService,
+      useClass: TradeTypeService
+    },
+    {
+      provide: TradeParametersService,
+      useClass: TradeParametersService
+    }
+  ]
 })
 export class OrderBooksModule {}
