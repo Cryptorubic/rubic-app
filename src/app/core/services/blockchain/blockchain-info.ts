@@ -1,4 +1,4 @@
-import networks from './constants/networks';
+import networks from '../../../shared/models/blockchain/networks';
 import { IBlockchain } from '../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 

@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from './BLOCKCHAIN_NAME';
 
 export default [
   {
