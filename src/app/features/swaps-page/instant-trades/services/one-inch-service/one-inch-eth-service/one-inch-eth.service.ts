@@ -16,7 +16,7 @@ export class OneInchEthService extends OneInchService {
   ) {
     super(httpClient, coingeckoApiService);
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    this.apiBaseUrl = 'https://api.1inch.exchange/v2.0/';
+    this.apiBaseUrl = 'https://api.1inch.exchange/v3.0/1/';
     this.web3Private = web3Private;
     this.web3Public = web3Public[this.blockchain];
   }
