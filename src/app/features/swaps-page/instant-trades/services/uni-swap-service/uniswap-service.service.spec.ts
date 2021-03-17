@@ -4,17 +4,17 @@ import BigNumber from 'bignumber.js';
 
 import { HttpClientModule } from '@angular/common/http';
 import { UniSwapService } from './uni-swap.service';
-import { MetamaskProviderService } from '../../blockchain/private-provider/metamask-provider/metamask-provider.service';
-import providerServiceStub from '../../blockchain/private-provider/metamask-provider/metamask-provider.service.stub';
+import { MetamaskProviderService } from '../../../../../core/services/blockchain/private-provider/metamask-provider/metamask-provider.service';
+import providerServiceStub from '../../../../../core/services/blockchain/private-provider/metamask-provider/metamask-provider.service.stub';
 
-import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
+import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { UniSwapContractAddress } from './uni-swap-contract';
-import { PublicProviderService } from '../../blockchain/public-provider/public-provider.service';
-import publicProviderServiceStub from '../../blockchain/public-provider/public-provider-service-stub';
-import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ETH, WEENUS, YEENUS } from '../../../../../test/tokens/eth-tokens';
+import { PublicProviderService } from '../../../../../core/services/blockchain/public-provider/public-provider.service';
+import publicProviderServiceStub from '../../../../../core/services/blockchain/public-provider/public-provider-service-stub';
+import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
+import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { ETH, WEENUS, YEENUS } from '../../../../../../test/tokens/eth-tokens';
 
 describe('UniswapServiceService', () => {
   let originalTimeout: number;

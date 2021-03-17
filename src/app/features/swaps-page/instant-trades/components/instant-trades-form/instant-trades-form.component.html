@@ -1,6 +1,8 @@
 <form class="instant-trade">
 
-  <div class="instant-trade__from-section selection-block">
+  <div class="instant-trade__from-section selection-block"
+       [ngClass]="{'instant-trade__from-section_aligned': trades.length === 1}"
+  >
     <div class="selection-block__label">
       you have
     </div>
@@ -14,8 +16,9 @@
     </app-tokens-input>
   </div>
 
-  <div class="instant-trade__arrow-section" (click)="revertTokens()">
-    <button class="arrow-button" [ngClass]="{'arrow-button_big': trades.length === 2}">
+  <div class="instant-trade__arrow-section" (click)="revertTokens()"
+       [ngClass]="{'instant-trade__arrow-section_aligned': trades.length === 1}">
+    <button type="button" class="arrow-button" [ngClass]="{'arrow-button_big': trades.length === 2}">
       <img *ngIf="trades.length === 2" src="assets/images/icons/RoundArrows.svg" alt="">
       <img *ngIf="trades.length === 1" src="assets/images/icons/revert.svg" alt="">
     </button>
@@ -50,7 +53,7 @@
           <div class="selection-block__warning">
             <app-warning-label
               *ngIf="checkIfError(index)"
-              [warningText]="'Trade in' + tradeController.tradeProviderInfo.label + 'is not available.'">
+              [warningText]="'Trade in ' + tradeController.tradeProviderInfo.label + 'is not available.'">
             </app-warning-label>
           </div>
         </div>
@@ -58,16 +61,18 @@
 
       <div class="instant-trade-button">
         <app-primary-button
+          type="button"
           [label]="'Via ' + tradeController.tradeProviderInfo.label"
           [disabled]="
             !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
             !tradeController.trade ||
-            shouldAnimateButton(index)
-          "
+            shouldAnimateButton(index) ||
+            (selectedTradeState && selectedTradeState !== TRADE_STATE.ERROR && selectedTradeState !== TRADE_STATE.COMPLETED)"
           [animate]="shouldAnimateButton(index)"
+          (onClick)="createTrade(index)"
         >
         </app-primary-button>
-        <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate">
+        <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate && trades.length > 1">
           <span>Best Rate</span>
           <img src="assets/images/icons/BestRate.svg" alt="">
         </div>
@@ -75,3 +80,12 @@
     </ng-container>
   </div>
 </form>
+
+<app-trade-in-progress-modal
+  *ngIf="(selectedTradeState === TRADE_STATE.APPROVAL) || (selectedTradeState === TRADE_STATE.TX_IN_PROGRESS)">
+</app-trade-in-progress-modal>
+
+<app-trade-success-modal
+  *ngIf="selectedTradeState === TRADE_STATE.COMPLETED"
+  [transactionId]="transactionHash">
+</app-trade-success-modal>
