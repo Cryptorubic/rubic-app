@@ -1,25 +1,31 @@
 <div class="user-profile" [ngClass]="{ 'user-profile_mobile': $isMobile | async }">
-  <span (click)="toggleMenu()" class="user-profile__text" [ngClass]="{ 'user-profile__text_social': ($currentUser | async)?.is_social }">
-    {{ ($currentUser | async)?.username }}
-  </span>
-  <ul
-    *ngIf="!($isMobile | async)"
-    class="user-profile__sublist"
-    [ngClass]="{ 'user-profile__sublist_opened': ($isUserMenuOpened | async) }"
-  >
-    <li class="user-profile__sublist-item">
+  <div class="user-profile__account">
+    <img [src]="getCurrentChainIcon($currentBlockchain | async)" class="user-profile__blockchain-icon" />
+    <span class="user-profile__text">{{ ($currentUser | async)?.username }}</span>
+  </div>
+  <ul *ngIf="$isMobile | async" class="user-profile__list">
+    <li class="user-profile__item">
       <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'My trades' | translate }}</a>
     </li>
-    <li class="user-profile__sublist-item">
-      <span class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</span>
+    <li class="user-profile__item">
+      <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
     </li>
   </ul>
-  <ng-container *ngIf="$isMobile | async">
-    <li class="user-profile__list-item">
-      <a routerLink="/trades/contracts" class="user-profile__link">{{ 'My trades' | translate }}</a>
-    </li>
-    <li class="user-profile__list-item">
-      <a class="user-profile__link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
-    </li>
-  </ng-container>
+  <div *ngIf="!($isMobile | async)" class="user-profile__menu">
+    <div class="user-profile__menu-icon" mat-button [matMenuTriggerFor]="userMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <mat-menu class="user-profile__sublist-container" #userMenu="matMenu">
+      <ul class="user-profile__sublist">
+        <li class="user-profile__sublist-item">
+          <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'My trades' | translate }}</a>
+        </li>
+        <li class="user-profile__sublist-item">
+          <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
+        </li>
+      </ul>
+    </mat-menu>
+  </div>
 </div>
