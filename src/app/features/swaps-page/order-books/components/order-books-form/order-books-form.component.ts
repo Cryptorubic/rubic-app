@@ -293,7 +293,6 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   public createTrade(): void {
     this.orderBookFormService
       .createOrder(this.tradeForm, () => {
-        console.log('??');
         this.selectedTradeState = TRADE_STATE.TX_IN_PROGRESS;
       })
       .then(transactionHash => {

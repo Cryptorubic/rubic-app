@@ -10,6 +10,9 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import { OrderBookService } from 'src/app/core/services/order-book/order-book.service';
+import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
+import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 
 @Injectable()
 export class OrderBooksFormService {
@@ -35,6 +38,23 @@ export class OrderBooksFormService {
     return this._tradeForm.next(tradeForm);
   }
 
+  private checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
+    if (!this.web3PrivateService.isProviderActive) {
+      throw new MetamaskError();
+    }
+
+    if (!this.web3PrivateService.address) {
+      throw new AccountError();
+    }
+
+    if (
+      this.web3PrivateService.networkName !== selectedBlockchain &&
+      this.web3PrivateService.networkName !== `${selectedBlockchain}_TESTNET`
+    ) {
+      throw new NetworkError(selectedBlockchain);
+    }
+  }
+
   /**
    * @description creates order book through smart contract and then makes post request to backend-api
    * @param tradeForm information about the trade
@@ -44,6 +64,8 @@ export class OrderBooksFormService {
     tradeForm: OrderBookTradeForm,
     onTransactionHash?: (hash: string) => void
   ): Promise<string> {
+    this.checkSettings(tradeForm.blockchain);
+
     const web3Public: Web3Public = this.web3PublicService[tradeForm.blockchain];
 
     const contractAddress = CONTRACT.ADDRESSES[2][tradeForm.blockchain];
