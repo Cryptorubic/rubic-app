@@ -7,7 +7,7 @@ import { map, catchError, flatMap } from 'rxjs/operators';
 import { IBridgeToken, ITableTransaction } from './types';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { BridgeTransaction } from './BridgeTransaction';
-import { NetworkError } from '../../../shared/models/errors/bridge/NetworkError';
+import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
 import { RubicError } from '../../../shared/models/errors/RubicError';
 import { OverQueryLimitError } from '../../../shared/models/errors/bridge/OverQueryLimitError';
 import { BackendApiService } from '../backend/backend-api/backend-api.service';

@@ -1,5 +1,5 @@
 import { WETH as UniSwapWETH } from '@uniswap/sdk';
-import { InstantTradeToken } from '../../app/core/services/instant-trade/types';
+import InstantTradeToken from '../../app/features/swaps-page/instant-trades/models/InstantTradeToken';
 
 const WEENUS: InstantTradeToken = {
   address: '0xaff4481d10270f50f203e0763e2597776068cbc5',

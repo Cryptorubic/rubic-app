@@ -36,5 +36,18 @@ export default [
       symbol: 'MATIC',
       decimals: 18
     }
+  },
+  // Testnets
+  {
+    id: 42,
+    name: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
+    rpcLink: 'https://kovan.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    nativeCoin: {
+      blockchainName: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18
+    }
   }
 ];

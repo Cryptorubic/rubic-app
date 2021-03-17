@@ -29,20 +29,17 @@ export class MetamaskProviderService extends PrivateProvider {
   constructor() {
     super();
 
-    // @ts-ignore
-    const { ethereum } = window;
+    const { ethereum } = window as any;
     if (!ethereum) {
       console.error('No Metamask installed.');
       return;
     }
-    const web3 = new Web3(this._metaMask);
-    // @ts-ignore
-    if (web3.currentProvider && web3.currentProvider.isMetaMask) {
+    const web3 = new Web3(ethereum);
+    if ((web3.currentProvider as any)?.isMetaMask) {
       this._metaMask = ethereum;
       this.web3 = web3;
 
       this._metaMask.on('chainChanged', (chain: string) => {
-        const chainId = parseInt(chain);
         this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
         console.info('Chain changed', chain);
         window.location.reload();
@@ -58,7 +55,7 @@ export class MetamaskProviderService extends PrivateProvider {
   }
 
   protected getAddress(): string {
-    return this._metaMask?.selectedAddress();
+    return this._metaMask?.selectedAddress;
   }
 
   protected getNetwork(): IBlockchain {

@@ -61,7 +61,6 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
         deps: [HttpClient, TransferState]
       }
     }),
-
     HttpClientXsrfModule.withOptions({
       cookieName: 'csrftoken',
       headerName: 'X-CSRFToken'

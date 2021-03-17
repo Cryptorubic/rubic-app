@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 
 import BigNumber from 'bignumber.js';
-import { HttpClient } from '@angular/common/http';
 import { TransactionReceipt } from 'web3-eth';
 
 import { Subject } from 'rxjs';
@@ -10,7 +9,7 @@ import { MetamaskProviderService } from '../private-provider/metamask-provider/m
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { UserRejectError } from '../../../../shared/models/errors/bridge/UserRejectError';
+import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
 
 @Injectable({
   providedIn: 'root'
@@ -48,15 +47,21 @@ export class Web3PrivateService {
     return this.provider.activate();
   }
 
-  constructor(
-    private readonly httpClient: HttpClient,
-    private readonly provider: MetamaskProviderService
-  ) {
-    this.provider = provider;
+  constructor(private readonly provider: MetamaskProviderService) {
     this.onAddressChanges = provider.onAddressChanges;
     this.onNetworkChanges = provider.onNetworkChanges;
     this.web3 = provider.web3;
     this.defaultMockGas = provider.defaultGasLimit;
+  }
+
+  /**
+   * @description Calculates an Ethereum specific signature.
+   * @param message Data to sign.
+   * @param address Address to sign data with.
+   * @return The signature.
+   */
+  public async signPersonal(message, address) {
+    return this.web3.eth.sign(message, address);
   }
 
   /**
@@ -132,6 +137,11 @@ export class Web3PrivateService {
    * @param [options] additional options
    * @param [options.onTransactionHash] callback to execute when transaction enters the mempool
    * @param [options.inWei = false] boolean flag for determining the input parameter "value" in Wei
+   * @param [options.data] data for calling smart contract methods.
+   *    Use this field only if you are receiving data from a third-party api.
+   *    When manually calling contract methods, use executeContractMethod()
+   * @param [options.gas] transaction gas limit in absolute gas units
+   * @param [options.gasPrice] price of gas unit in wei
    * @return transaction receipt
    */
   public async sendTransaction(
@@ -140,6 +150,9 @@ export class Web3PrivateService {
     options: {
       onTransactionHash?: (hash: string) => void;
       inWei?: boolean;
+      data?: string;
+      gas?: string;
+      gasPrice?: string;
     } = {}
   ): Promise<TransactionReceipt> {
     return new Promise((resolve, reject) => {
@@ -148,7 +161,11 @@ export class Web3PrivateService {
           from: this.address,
           to: toAddress,
           value: options.inWei ? value.toString() : this.ethToWei(value),
-          ...(this.defaultMockGas && { gas: this.defaultMockGas })
+          ...((options.gas || this.defaultMockGas) && {
+            gas: options.gas || this.defaultMockGas
+          }),
+          ...(options.data && { data: options.data }),
+          ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))
