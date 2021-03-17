@@ -143,7 +143,13 @@
 }
 
 .token-block {
-  background: white;
+  display: grid;
+  grid-template-rows: auto 55px;
+  grid-gap: 15px;
+
+  &__main-area {
+    background: white;
+  }
 
   &__area {
     display: flex;
@@ -304,6 +310,12 @@
     &:hover {
       font-weight: 500;
     }
+  }
+}
+
+.area-fourth {
+  &__withdraw-button {
+    width: 100%;
   }
 }
 

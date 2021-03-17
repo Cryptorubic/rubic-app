@@ -1,0 +1,19 @@
+.withdraw-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 55px;
+  padding: 0;
+  border: none;
+
+  background: white;
+
+  font-size: 19px;
+
+  img {
+    width: 7px;
+    margin-right: 7px;
+  }
+}

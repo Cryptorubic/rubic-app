@@ -10,7 +10,7 @@ import { List } from 'immutable';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
-import { OrderBookTradeService } from '../services/order-book-trade.service';
+import { OrderBookTradeService } from '../../services/order-book-trade.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
