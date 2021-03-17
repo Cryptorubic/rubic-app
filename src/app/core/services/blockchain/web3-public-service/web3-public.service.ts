@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
+import BigNumber from 'bignumber.js';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import ConnectionLink from '../types/ConnectionLink';
 
 import { Web3Public } from './Web3Public';
@@ -12,6 +14,14 @@ import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN
 })
 export class Web3PublicService {
   private readonly connectionLinks: ConnectionLink[];
+
+  static tokenAmountToWei(token: SwapToken, amount: string | BigNumber): string {
+    return new BigNumber(amount || '0').times(new BigNumber(10).pow(token.decimals)).toFixed(0);
+  }
+
+  static tokenWeiToAmount(token: SwapToken, amount: string): BigNumber {
+    return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
+  }
 
   constructor(publicProvider: PublicProviderService) {
     this.connectionLinks = publicProvider.connectionLinks;

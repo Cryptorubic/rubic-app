@@ -1,14 +1,9 @@
 import { Injectable } from '@angular/core';
-import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { CONTRACT } from './smart-contract';
 import { OrderBookApiService } from '../backend/order-book-api/order-book-api.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
-import { OrderBookDataToken, TokenPart } from './types/tokens';
-import { OrderBookTradeApi } from './types/trade-api';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from './types/trade-page';
-import SwapToken from '../../../shared/models/tokens/SwapToken';
 
 interface Web3PublicParameters {
   web3Public: Web3Public;
@@ -26,78 +21,6 @@ export class OrderBookService {
     private orderBookApiService: OrderBookApiService,
     private web3PublicService: Web3PublicService
   ) {}
-
-  static tokenAmountToWei(token: SwapToken, amount: string | BigNumber): string {
-    return new BigNumber(amount || '0').times(new BigNumber(10).pow(token.decimals)).toFixed(0);
-  }
-
-  private static tokenWeiToAmount(token: SwapToken, amount: string): BigNumber {
-    return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
-  }
-
-  public async getTradeData(uniqueLink: string): Promise<OrderBookTradeData> {
-    const tradeInfoApi = await this.orderBookApiService.getTradeData(uniqueLink);
-
-    let blockchain;
-    switch (tradeInfoApi.network) {
-      case 1:
-        blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-        break;
-      case 22:
-        blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
-        break;
-      case 24:
-        blockchain = BLOCKCHAIN_NAME.MATIC;
-      // no default
-    }
-
-    const expirationDate = new Date(tradeInfoApi.stop_date);
-
-    const tradeData = {
-      memo: tradeInfoApi.memo_contract,
-      contractAddress: tradeInfoApi.contract_address,
-
-      token: {
-        base: {} as OrderBookDataToken,
-        quote: {} as OrderBookDataToken
-      },
-      blockchain,
-      expirationDate,
-      isPublic: tradeInfoApi.public
-    } as OrderBookTradeData;
-    await this.setTokensData('base', tradeData, tradeInfoApi);
-    await this.setTokensData('quote', tradeData, tradeInfoApi);
-
-    return tradeData;
-  }
-
-  private async setTokensData(
-    tokenPart: TokenPart,
-    tradeData: OrderBookTradeData,
-    tradeInfoApi: OrderBookTradeApi
-  ): Promise<void> {
-    tradeData.token[tokenPart].address = tradeInfoApi[`${tokenPart}_address`];
-
-    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-
-    tradeData.token[tokenPart] = {
-      ...tradeData.token[tokenPart],
-      ...(await web3Public.getTokenInfo(tradeData.token[tokenPart].address))
-    };
-
-    tradeData.token[tokenPart] = {
-      ...tradeData.token[tokenPart],
-      amountTotal: OrderBookService.tokenWeiToAmount(
-        tradeData.token[tokenPart],
-        tradeInfoApi[`${tokenPart}_limit`]
-      ),
-      minContribution: OrderBookService.tokenWeiToAmount(
-        tradeData.token[tokenPart],
-        tradeInfoApi[`min_${tokenPart}_wei`]
-      ),
-      brokerPercent: tradeInfoApi[`broker_fee_${tokenPart}`]
-    };
-  }
 
   private getWeb3PublicParameters(tradeData: OrderBookTradeData): Web3PublicParameters {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
@@ -165,7 +88,7 @@ export class OrderBookService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.base.amountContributed = OrderBookService.tokenWeiToAmount(
+    tradeData.token.base.amountContributed = Web3PublicService.tokenWeiToAmount(
       tradeData.token.base,
       baseContributed
     );
@@ -178,7 +101,7 @@ export class OrderBookService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.quote.amountContributed = OrderBookService.tokenWeiToAmount(
+    tradeData.token.quote.amountContributed = Web3PublicService.tokenWeiToAmount(
       tradeData.token.quote,
       quoteContributed
     );

@@ -12,7 +12,7 @@ import { TradeParametersService } from 'src/app/core/services/swaps/trade-parame
 import { OrderBookFormToken } from 'src/app/core/services/order-book/types/tokens';
 import { OrderBookTradeForm } from 'src/app/core/services/order-book/types/trade-form';
 import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
-import { OrderBooksFormService } from './services/order-books-form.service';
+import { OrderBooksFormService } from '../../services/order-book-form-service/order-books-form.service';
 
 enum TRADE_STATE {
   TX_IN_PROGRESS = 'TX_IN_PROGRESS',

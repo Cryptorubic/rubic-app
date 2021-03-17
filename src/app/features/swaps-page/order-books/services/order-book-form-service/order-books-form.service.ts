@@ -127,21 +127,21 @@ export class OrderBooksFormService {
       contract_address: CONTRACT.ADDRESSES[2][tradeForm.blockchain],
       base_address: tradeForm.token.base.address,
       quote_address: tradeForm.token.quote.address,
-      base_limit: OrderBookService.tokenAmountToWei(
+      base_limit: Web3PublicService.tokenAmountToWei(
         tradeForm.token.base,
         tradeForm.token.base.amount
       ),
-      quote_limit: OrderBookService.tokenAmountToWei(
+      quote_limit: Web3PublicService.tokenAmountToWei(
         tradeForm.token.quote,
         tradeForm.token.quote.amount
       ),
       stop_date: tradeForm.stopDate,
       public: tradeForm.isPublic,
-      min_base_wei: OrderBookService.tokenAmountToWei(
+      min_base_wei: Web3PublicService.tokenAmountToWei(
         tradeForm.token.base,
         tradeForm.token.base.minContribution
       ),
-      min_quote_wei: OrderBookService.tokenAmountToWei(
+      min_quote_wei: Web3PublicService.tokenAmountToWei(
         tradeForm.token.quote,
         tradeForm.token.quote.minContribution
       ),
