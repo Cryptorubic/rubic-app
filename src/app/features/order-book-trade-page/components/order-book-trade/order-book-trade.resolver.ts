@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { OrderBookTradeData } from 'src/app/core/services/order-book/types/trade-page';
+import { OrderBookTradeData } from 'src/app/shared/models/order-book/trade-page';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 
 @Injectable()

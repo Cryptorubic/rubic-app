@@ -1,5 +1,5 @@
 import { OrderBookTokens } from './tokens';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '../blockchain/BLOCKCHAIN_NAME';
 
 export interface OrderBookTradeForm {
   token: OrderBookTokens;

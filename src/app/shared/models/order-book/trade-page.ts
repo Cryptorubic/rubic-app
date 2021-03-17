@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '../blockchain/BLOCKCHAIN_NAME';
 import { OrderBookDataTokens } from './tokens';
 
 export enum ORDER_BOOK_TRADE_STATUS {

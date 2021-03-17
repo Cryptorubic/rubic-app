@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
-export const CONTRACT = {
+export const ORDER_BOOK_CONTRACT = {
   ADDRESSES: [
     {
       [BLOCKCHAIN_NAME.ETHEREUM]: '0xAAaCFf66942df4f1e1cB32C21Af875AC971A8117',

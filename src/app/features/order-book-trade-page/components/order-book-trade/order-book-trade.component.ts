@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { OrderBookService } from '../../../../core/services/order-book/order-book.service';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
   ORDER_BOOK_TRADE_STATUS,
   OrderBookTradeData
-} from '../../../../core/services/order-book/types/trade-page';
-import { TokenPart } from '../../../../core/services/order-book/types/tokens';
+} from 'src/app/shared/models/order-book/trade-page';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { OrderBookTradeService } from '../services/order-book-trade.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -76,7 +76,7 @@ export class OrderBookTradeComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private orderBookService: OrderBookService
+    private orderBookTradeService: OrderBookTradeService
   ) {}
 
   ngOnInit(): void {
@@ -91,17 +91,17 @@ export class OrderBookTradeComponent implements OnInit {
 
     this.setExpirationDate();
 
-    this.orderBookService.setStatus(this.tradeData);
+    this.orderBookTradeService.setStatus(this.tradeData);
 
     this.setShortedAmountTotal('base');
     this.setShortedAmountTotal('quote');
 
-    this.orderBookService.setAmountContributed(this.tradeData).then(() => {
+    this.orderBookTradeService.setAmountContributed(this.tradeData).then(() => {
       this.setAmountLeft('base');
       this.setAmountLeft('quote');
     });
 
-    this.orderBookService.setInvestorsNumber(this.tradeData);
+    this.orderBookTradeService.setInvestorsNumber(this.tradeData);
   }
 
   private setAmountLeft(tokenPart: TokenPart): void {

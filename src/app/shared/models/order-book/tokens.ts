@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import SwapToken from '../../../../shared/models/tokens/SwapToken';
+import SwapToken from '../tokens/SwapToken';
 
 export interface OrderBookFormToken extends SwapToken {
   amount: BigNumber;

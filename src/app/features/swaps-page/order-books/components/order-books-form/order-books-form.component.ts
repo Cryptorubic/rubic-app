@@ -9,8 +9,8 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
-import { OrderBookFormToken } from 'src/app/core/services/order-book/types/tokens';
-import { OrderBookTradeForm } from 'src/app/core/services/order-book/types/trade-form';
+import { OrderBookFormToken } from 'src/app/shared/models/order-book/tokens';
+import { OrderBookTradeForm } from 'src/app/shared/models/order-book/trade-form';
 import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
 import { OrderBooksFormService } from '../../services/order-book-form-service/order-books-form.service';
 
