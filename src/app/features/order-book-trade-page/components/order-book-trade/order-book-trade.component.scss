@@ -1,5 +1,14 @@
 @import 'src/scss/elements/vars';
 
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100vw;
+  height: 100vh;
+}
+
 .trade-container {
   max-width: 1180px;
   margin: 140px auto 80px;
@@ -422,4 +431,11 @@
       transform: rotate(45deg);
     }
   }
+}
+
+.no-trade {
+  margin: 140px 0 0 80px;
+
+  font-size: 24px;
+  font-weight: bold;
 }

@@ -6,6 +6,10 @@ import {
   OrderBookTradeData
 } from 'src/app/shared/models/order-book/trade-page';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { List } from 'immutable';
+import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { OrderBookTradeService } from '../services/order-book-trade.service';
 
 interface Blockchain {
@@ -38,6 +42,8 @@ export class OrderBookTradeComponent implements OnInit {
     }
   ];
 
+  private uniqueLink: string;
+
   // eslint-disable-next-line no-magic-numbers
   private readonly BILLION = 1e9;
 
@@ -54,6 +60,10 @@ export class OrderBookTradeComponent implements OnInit {
 
   public readonly TRADE_STATUS = ORDER_BOOK_TRADE_STATUS;
 
+  public doesTradeExist = true;
+
+  public isMainTradeDataLoaded = false;
+
   public tradeData: OrderBookTradeData;
 
   public blockchain: Blockchain;
@@ -64,6 +74,8 @@ export class OrderBookTradeComponent implements OnInit {
     base: {},
     quote: {}
   };
+
+  private tokens: List<SwapToken>;
 
   public expirationDay: string;
 
@@ -76,21 +88,56 @@ export class OrderBookTradeComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private orderBookTradeService: OrderBookTradeService
+    private orderBookTradeService: OrderBookTradeService,
+    private orderBookApiService: OrderBookApiService,
+    private tokensService: TokensService
   ) {}
 
   ngOnInit(): void {
     this.currentUrl = `https://rubic.exchange${this.router.url}`;
+
+    this.uniqueLink = this.route.snapshot.params.unique_link;
     this.setTradeData();
+
+    this.tokensService.tokens.subscribe(tokens => {
+      this.tokens = tokens;
+
+      const foundBaseToken = tokens.find(t => t.address === this.tradeData.token.base.address);
+      if (foundBaseToken) {
+        this.tradeData.token.base = { ...this.tradeData.token.base, ...foundBaseToken };
+      }
+
+      const foundQuoteToken = tokens.find(t => t.address === this.tradeData.token.quote.address);
+      if (foundQuoteToken) {
+        this.tradeData.token.quote = { ...this.tradeData.token.base, ...foundQuoteToken };
+      }
+    });
   }
 
   private setTradeData(): void {
-    this.tradeData = this.route.snapshot.data.tradeData;
+    this.orderBookApiService.getTradeData(this.uniqueLink).subscribe(
+      tradeData => {
+        this.tradeData = tradeData;
+        this.setStaticTradeData();
+        this.isMainTradeDataLoaded = true;
+        console.log(this.tradeData, this.isMainTradeDataLoaded);
 
+        this.setDynamicData();
+        // eslint-disable-next-line no-magic-numbers
+        setTimeout(() => this.setDynamicData(), 4000);
+      },
+      () => {
+        this.doesTradeExist = false;
+      }
+    );
+  }
+
+  private setStaticTradeData(): void {
     this.blockchain = this.BLOCKCHAINS.find(b => b.name === this.tradeData.blockchain);
-
     this.setExpirationDate();
+  }
 
+  private setDynamicData(): void {
     this.orderBookTradeService.setStatus(this.tradeData);
 
     this.setShortedAmountTotal('base');
@@ -102,6 +149,12 @@ export class OrderBookTradeComponent implements OnInit {
     });
 
     this.orderBookTradeService.setInvestorsNumber(this.tradeData);
+  }
+
+  private setExpirationDate(): void {
+    const { expirationDate } = this.tradeData;
+    this.expirationDay = expirationDate.toLocaleDateString('ru');
+    this.expirationTime = `${expirationDate.getUTCHours()}:${expirationDate.getUTCMinutes()}`;
   }
 
   private setAmountLeft(tokenPart: TokenPart): void {
@@ -124,12 +177,6 @@ export class OrderBookTradeComponent implements OnInit {
     this.shortedAmountTotal[tokenPart] = shortedAmount;
   }
 
-  private setExpirationDate(): void {
-    const { expirationDate } = this.tradeData;
-    this.expirationDay = expirationDate.toLocaleDateString('ru');
-    this.expirationTime = `${expirationDate.getUTCHours()}:${expirationDate.getUTCMinutes()}`;
-  }
-
   public getRate(): string {
     const baseToQuoteRate = this.tradeData.token.base.amountTotal
       .div(this.tradeData.token.quote.amountTotal)
@@ -149,7 +196,6 @@ export class OrderBookTradeComponent implements OnInit {
     this.isCopied = true;
     setTimeout(() => {
       this.isCopied = false;
-      // eslint-disable-next-line no-magic-numbers
     }, 1000);
   }
 }
