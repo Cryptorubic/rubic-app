@@ -49,6 +49,7 @@ export default [
     name: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
     scannerUrl: 'https://kovan.etherscan.io/',
     rpcLink: 'https://kovan.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    imagePath: 'assets/images/icons/coins/kovan.png',
     nativeCoin: {
       blockchainName: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
       address: '0x0000000000000000000000000000000000000000',

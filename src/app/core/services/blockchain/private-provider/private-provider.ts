@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 
-import { Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
@@ -18,12 +18,12 @@ export abstract class PrivateProvider {
   /**
    * @description observable address of the selected wallet
    */
-  public abstract readonly onAddressChanges: Subject<string>;
+  public abstract readonly onAddressChanges: ReplaySubject<string>;
 
   /**
    * @description observable value of the network id and name
    */
-  public abstract readonly onNetworkChanges: Subject<IBlockchain>;
+  public abstract readonly onNetworkChanges: ReplaySubject<IBlockchain>;
 
   /**
    * @description is the blockchain provider installed

@@ -6,6 +6,6 @@ export interface IBlockchain {
   name: BLOCKCHAIN_NAME;
   scannerUrl: string;
   rpcLink: string;
-  imagePath?: string;
+  imagePath: string;
   nativeCoin: Token;
 }
