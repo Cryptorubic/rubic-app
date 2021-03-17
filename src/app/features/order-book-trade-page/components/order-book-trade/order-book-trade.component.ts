@@ -144,12 +144,11 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   private setDynamicData(): void {
     this.orderBookTradeService.setStatus(this.tradeData);
 
-    this.setShortedAmountTotal('base');
-    this.setShortedAmountTotal('quote');
+    this.orderBookTradeService.setAllowance(this.tradeData);
 
+    this.setShortedAmountTotal();
     this.orderBookTradeService.setAmountContributed(this.tradeData).then(() => {
-      this.setAmountLeft('base');
-      this.setAmountLeft('quote');
+      this.setAmountLeft();
     });
 
     this.orderBookTradeService.setInvestorsNumber(this.tradeData);
@@ -161,13 +160,23 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     this.expirationTime = `${expirationDate.getUTCHours()}:${expirationDate.getUTCMinutes()}`;
   }
 
-  private setAmountLeft(tokenPart: TokenPart): void {
+  private setAmountLeft(): void {
+    this.setAmountLeftToToken('base');
+    this.setAmountLeftToToken('quote');
+  }
+
+  private setAmountLeftToToken(tokenPart: TokenPart): void {
     this.tradeData.token[tokenPart].amountLeft = this.tradeData.token[tokenPart].amountTotal.minus(
       this.tradeData.token[tokenPart].amountContributed
     );
   }
 
-  private setShortedAmountTotal(tokenPart: TokenPart): void {
+  private setShortedAmountTotal(): void {
+    this.setShortedAmountTotalToToken('base');
+    this.setShortedAmountTotalToToken('quote');
+  }
+
+  private setShortedAmountTotalToToken(tokenPart: TokenPart): void {
     const amount = this.tradeData.token[tokenPart].amountTotal;
     let shortedAmount: string;
 

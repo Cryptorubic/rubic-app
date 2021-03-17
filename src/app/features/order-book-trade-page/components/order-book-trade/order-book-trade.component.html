@@ -91,12 +91,21 @@
 
           <div
             class="token-block__area area-third"
-            *ngIf="tradeData?.status === TRADE_STATUS.ACTIVE"
+            *ngIf="
+              tradeData?.status === TRADE_STATUS.ACTIVE &&
+              tradeData.token.base.isApproved !== undefined
+            "
           >
-            <input class="area-third__amount-input" placeholder="Enter amount" />
+            <input
+              class="area-third__amount-input"
+              [placeholder]="tradeData.token.base.isApproved ? 'Enter amount' : ''"
+              [disabled]="!tradeData.token.base.isApproved"
+            />
 
             <div class="area-third__confirm-button">
-              <app-primary-button label="Contribute"></app-primary-button>
+              <app-primary-button
+                [label]="tradeData.token.base.isApproved ? 'Contribute' : 'Approve'"
+              ></app-primary-button>
             </div>
 
             <button class="area-third__fill-button">Fill all</button>
@@ -168,12 +177,21 @@
 
           <div
             class="token-block__area area-third"
-            *ngIf="tradeData.status && tradeData.status === TRADE_STATUS.ACTIVE"
+            *ngIf="
+              tradeData?.status === TRADE_STATUS.ACTIVE &&
+              tradeData.token.quote.isApproved !== undefined
+            "
           >
-            <input class="area-third__amount-input" placeholder="Enter amount" />
+            <input
+              class="area-third__amount-input"
+              [placeholder]="tradeData.token.quote.isApproved ? 'Enter amount' : ''"
+              [disabled]="!tradeData.token.quote.isApproved"
+            />
 
             <div class="area-third__confirm-button">
-              <app-primary-button label="Approve"></app-primary-button>
+              <app-primary-button
+                [label]="tradeData.token.quote.isApproved ? 'Contribute' : 'Approve'"
+              ></app-primary-button>
             </div>
 
             <button class="area-third__fill-button">Fill all</button>

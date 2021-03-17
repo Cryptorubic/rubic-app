@@ -3,20 +3,22 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { ORDER_BOOK_CONTRACT } from 'src/app/shared/constants/order-book/smart-contract';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../types/trade-data';
+import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
+import { TokenPart } from '../../../shared/models/order-book/tokens';
 
-interface Web3PublicParameters {
-  web3Public: Web3Public;
+interface ContractParameters {
   contractAddress: string;
   contractAbi: any[];
 }
 
 @Injectable()
 export class OrderBookTradeService {
-  constructor(private web3PublicService: Web3PublicService) {}
+  constructor(
+    private web3PublicService: Web3PublicService,
+    private web3PrivateService: Web3PrivateService
+  ) {}
 
-  private getWeb3PublicParameters(tradeData: OrderBookTradeData): Web3PublicParameters {
-    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-
+  private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
     const { contractAddress } = tradeData;
     const contractVersion = ORDER_BOOK_CONTRACT.ADDRESSES.findIndex(addresses =>
       Object.values(addresses)
@@ -26,14 +28,14 @@ export class OrderBookTradeService {
     const contractAbi = ORDER_BOOK_CONTRACT.ABI[contractVersion];
 
     return {
-      web3Public,
       contractAddress,
       contractAbi
     };
   }
 
   public async setStatus(tradeData: OrderBookTradeData): Promise<void> {
-    const { web3Public, contractAddress, contractAbi } = this.getWeb3PublicParameters(tradeData);
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
     const { expirationDate } = tradeData;
     if (expirationDate <= new Date()) {
@@ -70,7 +72,8 @@ export class OrderBookTradeService {
   }
 
   public async setAmountContributed(tradeData: OrderBookTradeData): Promise<void> {
-    const { web3Public, contractAddress, contractAbi } = this.getWeb3PublicParameters(tradeData);
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
     const baseContributed: string = await web3Public.callContractMethod(
       contractAddress,
@@ -100,7 +103,8 @@ export class OrderBookTradeService {
   }
 
   public async setInvestorsNumber(tradeData: OrderBookTradeData): Promise<void> {
-    const { web3Public, contractAddress, contractAbi } = this.getWeb3PublicParameters(tradeData);
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
     const baseInvestors: string[] = await web3Public.callContractMethod(
       contractAddress,
@@ -121,5 +125,22 @@ export class OrderBookTradeService {
       }
     );
     tradeData.token.quote.investorsNumber = quoteInvestors.length;
+  }
+
+  public setAllowance(tradeData: OrderBookTradeData): void {
+    this.setAllowanceToToken(tradeData, 'base');
+    this.setAllowanceToToken(tradeData, 'quote');
+  }
+
+  private async setAllowanceToToken(tradeData: OrderBookTradeData, tokenPart: TokenPart) {
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    const { contractAddress } = this.getContractParameters(tradeData);
+
+    const amount = await web3Public.getAllowance(
+      tradeData.token[tokenPart].address,
+      this.web3PrivateService.address,
+      contractAddress
+    );
+    tradeData.token[tokenPart].isApproved = amount.isGreaterThan(0);
   }
 }
