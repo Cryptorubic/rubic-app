@@ -7,12 +7,17 @@ import BigNumber from 'bignumber.js';
 import InstantTradeService from 'src/app/features/swaps-page/instant-trades/services/InstantTradeService';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from '../../../../../core/services/swaps/trade-parameters-service/trade-parameters.service';
 import InstantTrade from '../../models/InstantTrade';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
+import { MessageBoxComponent } from '../../../../../shared/components/message-box/message-box.component';
+import { RubicError } from '../../../../../shared/models/errors/RubicError';
+import { NetworkError } from '../../../../../shared/models/errors/provider/NetworkError';
+import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
 
 interface TradeProviderInfo {
   label: string;
@@ -155,7 +160,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private uniSwapService: UniSwapService,
     private oneInchEthService: OneInchEthService,
-    private onInchBscService: OneInchBscService
+    private onInchBscService: OneInchBscService,
+    private dialog: MatDialog
   ) {
     tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
@@ -374,6 +380,20 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       .then(receipt => {
         setTradeState(TRADE_STATE.COMPLETED);
         this.transactionHash = receipt.transactionHash;
+      })
+      .catch((err: RubicError) => {
+        let data: any = { title: 'Error', descriptionText: err.comment };
+        if (err instanceof NetworkError) {
+          data = {
+            title: 'Error',
+            descriptionComponentClass: NetworkErrorComponent,
+            descriptionComponentInputs: { networkError: err }
+          };
+        }
+        this.dialog.open(MessageBoxComponent, {
+          width: '400px',
+          data
+        });
       });
   }
 

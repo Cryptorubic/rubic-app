@@ -70,6 +70,7 @@ import { NumberPrecisionDirective } from './directives/number-precision/number-p
     TokenAddressDirective,
     NumberPrecisionDirective
   ],
+  entryComponents: [MessageBoxComponent],
   imports: [CommonModule, TranslateModule, DynamicModule, MatDialogModule, FormsModule],
   exports: [
     FooterComponent,

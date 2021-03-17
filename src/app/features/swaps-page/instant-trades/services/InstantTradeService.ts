@@ -11,6 +11,8 @@ import { NetworkError } from '../../../../shared/models/errors/provider/NetworkE
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 abstract class InstantTradeService {
+  protected isTestingMode;
+
   protected web3Public: Web3Public;
 
   protected web3Private: Web3PrivateService;
@@ -55,7 +57,7 @@ abstract class InstantTradeService {
 
     if (
       this.web3Private.networkName !== selectedBlockchain &&
-      this.web3Private.networkName !== `${selectedBlockchain}_TESTNET`
+      (this.web3Private.networkName !== `${selectedBlockchain}_TESTNET` || !this.isTestingMode)
     ) {
       throw new NetworkError(selectedBlockchain);
     }

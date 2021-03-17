@@ -7,6 +7,7 @@ import { CoingeckoApiService } from '../../../../../core/services/external-api/c
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
+import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 
 interface OneInchQuoteResponse {
   fromToken: Object;
@@ -51,8 +52,14 @@ export class OneInchService extends InstantTradeService {
 
   protected blockchain: BLOCKCHAIN_NAME;
 
-  constructor(private httpClient: HttpClient, private coingeckoApiService: CoingeckoApiService) {
+  constructor(
+    private httpClient: HttpClient,
+    private coingeckoApiService: CoingeckoApiService,
+    useTestingModeService: UseTestingModeService
+  ) {
     super();
+
+    useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
     setTimeout(() => this.loadSupportedTokens());
   }
 

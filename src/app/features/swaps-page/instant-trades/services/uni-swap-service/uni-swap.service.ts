@@ -23,6 +23,7 @@ import { PublicProviderService } from '../../../../../core/services/blockchain/p
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
+import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 
 interface UniSwapTrade {
   amountIn: string;
@@ -56,9 +57,12 @@ export class UniSwapService extends InstantTradeService {
     private coingeckoApiService: CoingeckoApiService,
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
-    publicProvider: PublicProviderService
+    publicProvider: PublicProviderService,
+    useTestingModeService: UseTestingModeService
   ) {
     super();
+
+    useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
 
     this.web3Private = web3Private;
     const blockchain: IBlockchain = web3Private.network || {
