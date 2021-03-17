@@ -1,8 +1,4 @@
 <div class="collaborations">
-  <button class="collaborations__listing-request" (click)="isListingRequestPopupShown = true">
-    {{ 'Listing request' | translate }}
-  </button>
-
   <div class="collaborations__title">Software Integrations And Collaborations With</div>
   <div class="collaborations__description"></div>
   <div class="collaborations__content">
@@ -14,6 +10,12 @@
     >
       <img [src]="'assets/images/icons/collaborations/' + company.img" alt="" />
     </a>
+  </div>
+
+  <div class="collaborations__listing-request-container">
+    <button class="collaborations__listing-request" (click)="isListingRequestPopupShown = true">
+      {{ 'Listing request' | translate }}
+    </button>
   </div>
 </div>
 
