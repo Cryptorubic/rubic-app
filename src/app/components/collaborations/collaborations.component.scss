@@ -2,9 +2,11 @@
 
 .collaborations {
   &__listing-request {
+    display: block;
+
     width: 195px;
     height: 50px;
-    margin-bottom: 30px;
+    margin: 0 auto;
     border: none;
 
     cursor: pointer;
