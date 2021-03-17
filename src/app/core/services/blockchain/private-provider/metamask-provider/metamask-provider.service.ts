@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
@@ -14,9 +14,9 @@ export class MetamaskProviderService extends PrivateProvider {
 
   public readonly web3: Web3;
 
-  public readonly onAddressChanges = new Subject<string>();
+  public readonly onAddressChanges = new ReplaySubject<string>();
 
-  public readonly onNetworkChanges = new Subject<IBlockchain>();
+  public readonly onNetworkChanges = new ReplaySubject<IBlockchain>();
 
   get isInstalled(): boolean {
     return !!this._metaMask;
@@ -38,6 +38,11 @@ export class MetamaskProviderService extends PrivateProvider {
     if ((web3.currentProvider as any)?.isMetaMask) {
       this._metaMask = ethereum;
       this.web3 = web3;
+
+      if (this.isActive) {
+        this.onNetworkChanges.next(this.getNetwork());
+        this.onAddressChanges.next(this.getAddress());
+      }
 
       this._metaMask.on('chainChanged', (chain: string) => {
         this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));

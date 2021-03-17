@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import {
   Component,
   EventEmitter,
@@ -10,6 +11,7 @@ import {
   Type
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-message-box',
@@ -34,7 +36,23 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     this.onClose.emit();
   }
 
-  constructor(@Inject(DOCUMENT) private document: Document, private renderer: Renderer2) {}
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private renderer: Renderer2,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    data?.title && (this.title = data.title);
+
+    data?.descriptionText && (this.descriptionText = data.descriptionText);
+
+    data?.descriptionComponentClass &&
+      (this.descriptionComponentClass = data.descriptionComponentClass);
+
+    data?.descriptionComponentInputs &&
+      (this.descriptionComponentInputs = data.descriptionComponentInputs);
+
+    data?.additionalDescription && (this.additionalDescription = data.additionalDescription);
+  }
 
   ngOnInit() {
     this.renderer.addClass(this.document.body, 'noscroll');

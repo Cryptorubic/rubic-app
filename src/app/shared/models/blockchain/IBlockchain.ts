@@ -4,6 +4,8 @@ import { Token } from '../tokens/Token';
 export interface IBlockchain {
   id: Number;
   name: BLOCKCHAIN_NAME;
-  imagePath?: string;
+  scannerUrl: string;
+  rpcLink: string;
+  imagePath: string;
   nativeCoin: Token;
 }
