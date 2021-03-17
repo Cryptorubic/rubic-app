@@ -7,8 +7,8 @@ import BigNumber from 'bignumber.js';
 import InstantTradeService from 'src/app/features/swaps-page/instant-trades/services/InstantTradeService';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
-import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
-import { TradeParametersService } from '../../../../../core/services/swaps/trade-parameters-service/trade-parameters.service';
+import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
+import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import InstantTrade from '../../models/InstantTrade';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
@@ -54,6 +54,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private _tradeParameters: InstantTradeParameters;
 
   private _tokens = List<SwapToken>([]);
+
+  private _tokensSubscription$: Subscription;
 
   public TRADE_STATE = TRADE_STATE;
 
@@ -156,11 +158,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private uniSwapService: UniSwapService,
     private oneInchEthService: OneInchEthService,
     private onInchBscService: OneInchBscService
-  ) {
-    tokensService.tokens.subscribe(tokens => {
-      this.tokens = tokens;
-    });
-  }
+  ) {}
 
   private initInstantTradeProviders() {
     switch (this._blockchain) {
@@ -204,6 +202,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
+      this.tokens = tokens;
+    });
+
     this._blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
       this._blockchain = blockchain;
       this.initInstantTradeProviders();
@@ -227,6 +229,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this._tokensSubscription$.unsubscribe();
     this._blockchainSubscription$.unsubscribe();
   }
 

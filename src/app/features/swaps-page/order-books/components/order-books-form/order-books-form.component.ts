@@ -27,11 +27,13 @@ enum TRADE_STATE {
 export class OrderBooksFormComponent implements OnInit, OnDestroy {
   public blockchain: BLOCKCHAIN_NAME;
 
-  private blockchainSubscription$: Subscription;
+  private _blockchainSubscription$: Subscription;
 
   private _tradeParameters: TradeParameters;
 
   private _tokens = List<SwapToken>([]);
+
+  private _tokensSubscription$: Subscription;
 
   public availableBaseTokens = List<SwapToken>([]);
 
@@ -39,7 +41,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   private _tradeForm: OrderBookTradeForm;
 
-  private tradeFormSubscription$: Subscription;
+  private _tradeFormSubscription$: Subscription;
 
   public isCustomTokenSectionOpened = {
     base: false,
@@ -188,13 +190,13 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // trade-form subscription
-    this.tradeFormSubscription$ = this.orderBookFormService.getTradeForm().subscribe(tradeForm => {
+    this._tradeFormSubscription$ = this.orderBookFormService.getTradeForm().subscribe(tradeForm => {
       this._tradeForm = tradeForm;
       this.updateCustomTokensValidity();
     });
 
     // blockchain subscription
-    this.blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
+    this._blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
       this.blockchain = blockchain;
 
       this.tradeForm = { ...this.tradeForm, blockchain: this.blockchain };
@@ -222,7 +224,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     });
 
     // tokens subscription
-    this.tokensService.tokens.subscribe(tokens => {
+    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
 
       const foundBaseToken = tokens.find(t => t.address === this.baseToken?.address);
@@ -238,8 +240,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.blockchainSubscription$.unsubscribe();
-    this.tradeFormSubscription$.unsubscribe();
+    this._blockchainSubscription$.unsubscribe();
+    this._tradeFormSubscription$.unsubscribe();
+    this._tokensSubscription$.unsubscribe();
   }
 
   public revertTokens() {

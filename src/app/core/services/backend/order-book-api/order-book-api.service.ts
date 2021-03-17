@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { List } from 'immutable';
-import { from, Observable } from 'rxjs';
+import { from, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -21,19 +21,21 @@ import { OrderBookTradeApi } from './types/trade-api';
 export class OrderBookApiService implements OnDestroy {
   private _tokens: List<SwapToken>;
 
+  private _tokensSubscription$: Subscription;
+
   constructor(
     private httpService: HttpService,
     private orderBookApiService: OrderBookApiService,
     private tokensService: TokensService,
     private web3PublicService: Web3PublicService
   ) {
-    this.tokensService.tokens.subscribe(tokens => {
+    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
       this._tokens = tokens;
     });
   }
 
-  ngOnDestroy() {
-    this.tokensService.tokens.unsubscribe();
+  ngOnDestroy(): void {
+    this._tokensSubscription$.unsubscribe();
   }
 
   public createTrade(tradeInfo: OrderBookTradeApi): Promise<OrderBookTradeApi> {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
@@ -6,6 +6,7 @@ import { List } from 'immutable';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { Subscription } from 'rxjs';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../types/trade-data';
 
@@ -20,7 +21,7 @@ interface Blockchain {
   templateUrl: './order-book-trade.component.html',
   styleUrls: ['./order-book-trade.component.scss']
 })
-export class OrderBookTradeComponent implements OnInit {
+export class OrderBookTradeComponent implements OnInit, OnDestroy {
   private readonly BLOCKCHAINS: Array<Blockchain> = [
     {
       name: BLOCKCHAIN_NAME.ETHEREUM,
@@ -72,7 +73,9 @@ export class OrderBookTradeComponent implements OnInit {
     quote: {}
   };
 
-  private tokens: List<SwapToken>;
+  private _tokens: List<SwapToken>;
+
+  private _tokensSubscription$: Subscription;
 
   public expirationDay: string;
 
@@ -96,8 +99,8 @@ export class OrderBookTradeComponent implements OnInit {
     this.uniqueLink = this.route.snapshot.params.unique_link;
     this.setTradeData();
 
-    this.tokensService.tokens.subscribe(tokens => {
-      this.tokens = tokens;
+    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
+      this._tokens = tokens;
 
       const foundBaseToken = tokens.find(t => t.address === this.tradeData.token.base.address);
       if (foundBaseToken) {
@@ -109,6 +112,10 @@ export class OrderBookTradeComponent implements OnInit {
         this.tradeData.token.quote = { ...this.tradeData.token.base, ...foundQuoteToken };
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this._tokensSubscription$.unsubscribe();
   }
 
   private setTradeData(): void {
