@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import {
-  ORDER_BOOK_TRADE_STATUS,
-  OrderBookTradeData
-} from 'src/app/shared/models/order-book/trade-page';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { ORDER_BOOK_CONTRACT } from 'src/app/shared/constants/order-book/smart-contract';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../types/trade-data';
 
 interface Web3PublicParameters {
   web3Public: Web3Public;

@@ -2,15 +2,18 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { List } from 'immutable';
 import { from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { OrderBookTradeApi } from 'src/app/shared/models/order-book/trade-api';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { OrderBookTradeData } from 'src/app/shared/models/order-book/trade-page';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { OrderBookDataToken, TokenPart } from 'src/app/shared/models/order-book/tokens';
+import {
+  OrderBookDataToken,
+  OrderBookTradeData
+} from 'src/app/features/order-book-trade-page/types/trade-data';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import { HttpService } from '../../http/http.service';
 import { TokensService } from '../tokens-service/tokens.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
+import { OrderBookTradeApi } from './types/trade-api';
 
 @Injectable({
   providedIn: 'root'

@@ -1,16 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import {
-  ORDER_BOOK_TRADE_STATUS,
-  OrderBookTradeData
-} from 'src/app/shared/models/order-book/trade-page';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import { List } from 'immutable';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
+import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../types/trade-data';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;

@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { OrderBookTradeForm } from 'src/app/shared/models/order-book/trade-form';
-import { OrderBookFormToken } from 'src/app/shared/models/order-book/tokens';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { ORDER_BOOK_CONTRACT } from 'src/app/shared/constants/order-book/smart-contract';
-import { OrderBookTradeApi } from 'src/app/shared/models/order-book/trade-api';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
@@ -12,7 +9,9 @@ import { OrderBookApiService } from 'src/app/core/services/backend/order-book-ap
 import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { EMPTY_ADDRESS } from '../../../../../shared/constants/order-book/empty-address';
+import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
+import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
+import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
 
 @Injectable()
 export class OrderBooksFormService {

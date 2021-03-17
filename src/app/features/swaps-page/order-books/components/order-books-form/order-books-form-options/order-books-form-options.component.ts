@@ -7,9 +7,9 @@ import * as moment from 'moment';
 import { NgModel } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { Subscription } from 'rxjs';
-import { OrderBookFormToken, TokenPart } from 'src/app/shared/models/order-book/tokens';
-import { OrderBookTradeForm } from 'src/app/shared/models/order-book/trade-form';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import { OrderBooksFormService } from '../../../services/order-book-form-service/order-books-form.service';
+import { OrderBookFormToken, OrderBookTradeForm } from '../../../types/trade-form';
 
 const MY_FORMATS = {
   useUtc: true,
