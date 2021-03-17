@@ -2,16 +2,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { InstantTrade, InstantTradeToken } from 'src/app/core/services/instant-trade/types';
-import { UniSwapService } from 'src/app/core/services/instant-trade/uni-swap-service/uni-swap.service';
+import { UniSwapService } from 'src/app/features/swaps-page/instant-trades/services/uni-swap-service/uni-swap.service';
 import BigNumber from 'bignumber.js';
-import InstantTradeService from 'src/app/core/services/instant-trade/InstantTradeService';
-import { OneInchService } from 'src/app/core/services/instant-trade/one-inch-service/one-inch.service';
-import { BurgerSwapService } from 'src/app/core/services/instant-trade/burger-swap-service/burger-swap-service';
+import InstantTradeService from 'src/app/features/swaps-page/instant-trades/services/InstantTradeService';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
 import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from '../../../../../core/services/swaps/trade-parameters-service/trade-parameters.service';
+import InstantTrade from '../../models/InstantTrade';
+import InstantTradeToken from '../../models/InstantTradeToken';
+import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
+import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
 
 interface TradeProviderInfo {
   label: string;
@@ -54,11 +55,17 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private _tokens = List<SwapToken>([]);
 
+  public TRADE_STATE = TRADE_STATE;
+
   public availableFromTokens = List<SwapToken>([]);
 
   public availableToTokens = List<SwapToken>([]);
 
   public trades: InstantTradeProviderController[];
+
+  public selectedTradeState: TRADE_STATE;
+
+  public transactionHash: string;
 
   get tokens(): List<SwapToken> {
     return this._tokens;
@@ -147,8 +154,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private tradeParametersService: TradeParametersService,
     private tokensService: TokensService,
     private uniSwapService: UniSwapService,
-    private oneInchService: OneInchService,
-    private burgerSwapService: BurgerSwapService
+    private oneInchEthService: OneInchEthService,
+    private onInchBscService: OneInchBscService
   ) {
     tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
@@ -158,7 +165,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private initInstantTradeProviders() {
     switch (this._blockchain) {
       case BLOCKCHAIN_NAME.ETHEREUM:
-        this._instantTradeServices = [this.oneInchService, this.uniSwapService];
+        this._instantTradeServices = [this.oneInchEthService, this.uniSwapService];
         this.trades = [
           {
             trade: null,
@@ -179,7 +186,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        this._instantTradeServices = [this.burgerSwapService];
+        this._instantTradeServices = [this.onInchBscService];
         this.trades = [
           {
             trade: null,
@@ -300,6 +307,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.fromToken,
         this.toToken
       );
+      if (!calculatedTrade) {
+        tradeController.trade = null;
+        tradeController.tradeState = TRADE_STATE.ERROR;
+        return;
+      }
       if (
         this.isCalculatedTradeActual(
           calculatedTrade.from.amount,
@@ -347,5 +359,27 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         isBestRate: true
       };
     }
+  }
+
+  public createTrade(selectedServiceIndex: number) {
+    const setTradeState = (state: TRADE_STATE) => {
+      this.trades[selectedServiceIndex].tradeState = state;
+      this.selectedTradeState = state;
+    };
+    this._instantTradeServices[selectedServiceIndex]
+      .createTrade(this.trades[selectedServiceIndex].trade, {
+        onApprove: () => setTradeState(TRADE_STATE.APPROVAL),
+        onConfirm: () => setTradeState(TRADE_STATE.TX_IN_PROGRESS)
+      })
+      .then(receipt => {
+        setTradeState(TRADE_STATE.COMPLETED);
+        this.transactionHash = receipt.transactionHash;
+      });
+  }
+
+  public onCloseModal() {
+    this.trades.map(trade => ({ ...trade, tradeState: null }));
+    this.selectedTradeState = null;
+    this.transactionHash = undefined;
   }
 }
