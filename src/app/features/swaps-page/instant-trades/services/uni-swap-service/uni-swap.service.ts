@@ -22,7 +22,6 @@ import { Web3PublicService } from '../../../../../core/services/blockchain/web3-
 import { PublicProviderService } from '../../../../../core/services/blockchain/public-provider/public-provider.service';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from '../../models/InstantTradeToken';
-import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 
 interface UniSwapTrade {
@@ -65,10 +64,9 @@ export class UniSwapService extends InstantTradeService {
     useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
 
     this.web3Private = web3Private;
-    const blockchain: IBlockchain = web3Private.network || {
+    const blockchain = web3Private.network || {
       id: 1,
-      name: BLOCKCHAIN_NAME.ETHEREUM,
-      nativeCoin: null
+      name: BLOCKCHAIN_NAME.ETHEREUM
     };
 
     this.web3Public = web3Public[blockchain.name];
