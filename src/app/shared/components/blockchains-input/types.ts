@@ -1,9 +1,7 @@
-import { BridgeNetwork } from 'src/app/core/services/bridge/types';
+import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
-interface IBlockchainShort {
-  name: BridgeNetwork;
+export interface IBlockchainShort {
+  name: BLOCKCHAIN_NAME;
   label: string;
   img: string;
 }
-
-export { IBlockchainShort };

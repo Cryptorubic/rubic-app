@@ -1,10 +1,11 @@
 import { Component, HostListener } from '@angular/core';
 import { List } from 'immutable';
 import date from 'date-and-time';
-import { BridgeService } from 'src/app/core/services/bridge/bridge.service';
-import { ITableTransaction, BridgeNetwork } from 'src/app/core/services/bridge/types';
+import { BridgeService } from 'src/app/features/bridge-page/services/bridge.service';
+import { BridgeTableTransaction } from '../../models/BridgeTableTransaction';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
-interface ITableTransactionWithState extends ITableTransaction {
+interface ITableTransactionWithState extends BridgeTableTransaction {
   opened: boolean;
 }
 
@@ -17,12 +18,12 @@ const TRANSACTION_PAGE_SIZE = 5;
 })
 export class BridgeTableComponent {
   public Blockchains = {
-    [BridgeNetwork.ETHEREUM]: {
+    [BLOCKCHAIN_NAME.ETHEREUM]: {
       label: 'Ethereum',
       img: 'eth.png',
       symbolPropName: 'ethSymbol'
     },
-    [BridgeNetwork.BINANCE_SMART_CHAIN]: {
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
       label: 'Binance Smart Chain',
       img: 'bnb.svg',
       symbolPropName: 'bscSymbol'
@@ -148,6 +149,10 @@ export class BridgeTableComponent {
       return 'Arrows.svg';
     }
     return this.sort.downDirection ? 'Arrows-down.svg' : 'Arrows-up.svg';
+  }
+
+  public capitalize(word: string): string {
+    return word[0].toUpperCase() + word.slice(1);
   }
 
   @HostListener('window:resize', ['$event'])

@@ -1,23 +1,17 @@
-import { Component, HostListener, OnInit, Type } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import BigNumber from 'bignumber.js';
 
-import { BridgeService } from 'src/app/core/services/bridge/bridge.service';
-import {
-  IBlockchains,
-  BridgeNetwork,
-  IBlockchain,
-  IBridgeToken
-} from 'src/app/core/services/bridge/types';
+import { BridgeService } from 'src/app/features/bridge-page/services/bridge.service';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { MatDialog } from '@angular/material/dialog';
 import { NetworkErrorComponent } from '../network-error/network-error.component';
 import InputToken from '../../../../shared/models/tokens/InputToken';
-
-interface ErrorComponent {
-  componentClass: Type<any>;
-  inputs: any;
-}
+import { BridgeToken } from '../../models/BridgeToken';
+import { BridgeBlockchain } from '../../models/BridgeBlockchain';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 
 @Component({
   selector: 'app-bridge-form',
@@ -25,9 +19,9 @@ interface ErrorComponent {
   styleUrls: ['./bridge-form.component.scss']
 })
 export class BridgeFormComponent implements OnInit {
-  public Blockchains: IBlockchains = {
+  public Blockchains = {
     Ethereum: {
-      name: BridgeNetwork.ETHEREUM,
+      name: BLOCKCHAIN_NAME.ETHEREUM,
       shortLabel: 'Ethereum',
       label: 'Ethereum',
       img: 'eth.png',
@@ -42,7 +36,7 @@ export class BridgeFormComponent implements OnInit {
       addressName: 'ethContractAddress'
     },
     Binance: {
-      name: BridgeNetwork.BINANCE_SMART_CHAIN,
+      name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       shortLabel: 'Binance Smart Chain',
       label: 'Binance Smart Chain',
       img: 'bnb.svg',
@@ -58,17 +52,17 @@ export class BridgeFormComponent implements OnInit {
     }
   };
 
-  public blockchainsList: IBlockchain[] = Object.values(this.Blockchains);
+  public blockchainsList: BridgeBlockchain[] = Object.values(this.Blockchains);
 
   private _fromBlockchain = this.Blockchains.Ethereum;
 
   private _toBlockchain = this.Blockchains.Binance;
 
-  private _tokens: List<IBridgeToken> = List([]);
+  private _tokens: List<BridgeToken> = List([]);
 
   public dropDownTokens: List<InputToken> = List([]);
 
-  public _selectedToken: IBridgeToken = null;
+  public _selectedToken: BridgeToken = null;
 
   public selectedTokenAsInputToken: InputToken = null;
 
@@ -84,10 +78,6 @@ export class BridgeFormComponent implements OnInit {
 
   public tradeInProgress: boolean = false;
 
-  public error: RubicError;
-
-  public errorComponent: ErrorComponent;
-
   public tradeSuccessId: string;
 
   public fromWalletAddress: string = this.bridgeService.walletAddress;
@@ -98,11 +88,11 @@ export class BridgeFormComponent implements OnInit {
 
   private smallMobileWidth = 410;
 
-  get tokens(): List<IBridgeToken> {
+  get tokens(): List<BridgeToken> {
     return this._tokens;
   }
 
-  set tokens(tokens: List<IBridgeToken>) {
+  set tokens(tokens: List<BridgeToken>) {
     this._tokens = tokens;
     this.updateDropDownTokens();
   }
@@ -117,11 +107,11 @@ export class BridgeFormComponent implements OnInit {
     }));
   }
 
-  get selectedToken(): IBridgeToken {
+  get selectedToken(): BridgeToken {
     return this._selectedToken;
   }
 
-  set selectedToken(value: IBridgeToken) {
+  set selectedToken(value: BridgeToken) {
     this._selectedToken = value;
     this.selectedTokenAsInputToken = this.dropDownTokens.find(
       token => token.address === this.selectedToken[this.fromBlockchain.addressName]
@@ -195,7 +185,7 @@ export class BridgeFormComponent implements OnInit {
     }
   }
 
-  constructor(private bridgeService: BridgeService) {
+  constructor(private bridgeService: BridgeService, private dialog: MatDialog) {
     bridgeService.tokens.subscribe(tokens => {
       this.tokens = tokens;
     });
@@ -213,7 +203,7 @@ export class BridgeFormComponent implements OnInit {
     }
   }
 
-  private changeSelectedToken(token: IBridgeToken) {
+  private changeSelectedToken(token: BridgeToken) {
     this.fee = undefined;
     this.selectedToken = token;
     if (!token) {
@@ -234,7 +224,7 @@ export class BridgeFormComponent implements OnInit {
 
   public onSelectedTokenChanges(inputToken: InputToken | null) {
     if (inputToken) {
-      const bridgeToken: IBridgeToken = this.tokens.find(
+      const bridgeToken: BridgeToken = this.tokens.find(
         token => token[this.fromBlockchain.addressName] === inputToken.address
       );
       this.changeSelectedToken(bridgeToken);
@@ -267,28 +257,27 @@ export class BridgeFormComponent implements OnInit {
           this.tradeSuccessId = res;
         },
         err => {
-          console.log('E', err, err instanceof NetworkError);
-          if (err instanceof NetworkError) {
-            this.errorComponent = {
-              componentClass: NetworkErrorComponent,
-              inputs: { networkError: err }
-            };
-          } else if (err instanceof RubicError) {
-            this.error = err;
-          } else {
-            this.error = new RubicError();
+          if (!(err instanceof RubicError)) {
+            err = new RubicError();
           }
+          let data: any = { title: 'Error', descriptionText: err.comment };
+          if (err instanceof NetworkError) {
+            data = {
+              title: 'Error',
+              descriptionComponentClass: NetworkErrorComponent,
+              descriptionComponentInputs: { networkError: err }
+            };
+          }
+          this.dialog.open(MessageBoxComponent, {
+            width: '400px',
+            data
+          });
         }
       )
       .add(() => {
         this.tradeInProgress = false;
         this.buttonAnimation = false;
       });
-  }
-
-  public closeErrorModal() {
-    this.errorComponent = null;
-    this.error = null;
   }
 
   @HostListener('window:resize', ['$event'])

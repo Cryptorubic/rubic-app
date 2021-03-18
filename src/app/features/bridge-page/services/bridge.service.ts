@@ -3,71 +3,88 @@ import { BehaviorSubject, from, Observable, throwError } from 'rxjs';
 import { List } from 'immutable';
 import { HttpClient } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
-import { map, catchError, flatMap } from 'rxjs/operators';
-import { IBridgeToken, ITableTransaction } from './types';
-import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
+import { catchError, flatMap, map, mergeMap } from 'rxjs/operators';
+
+import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
 import { RubicError } from '../../../shared/models/errors/RubicError';
 import { OverQueryLimitError } from '../../../shared/models/errors/bridge/OverQueryLimitError';
-import { BackendApiService } from '../backend/backend-api/backend-api.service';
+import { BackendApiService } from '../../../core/services/backend/backend-api/backend-api.service';
+import { MetamaskError } from '../../../shared/models/errors/provider/MetamaskError';
+import { AccountError } from '../../../shared/models/errors/provider/AccountError';
+import { BridgeToken } from '../models/BridgeToken';
+import { BridgeTableTransaction } from '../models/BridgeTableTransaction';
+import { TokensService } from '../../../core/services/backend/tokens-service/tokens.service';
+import SwapToken from '../../../shared/models/tokens/SwapToken';
+import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface BinanceResponse {
   code: number;
   data: any;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class BridgeService {
   private apiUrl = 'https://api.binance.org/bridge/api/v2/';
 
-  private _tokens: BehaviorSubject<List<IBridgeToken>> = new BehaviorSubject(List([]));
+  private _tokens: BehaviorSubject<List<BridgeToken>> = new BehaviorSubject(List([]));
 
-  private _transactions: BehaviorSubject<List<ITableTransaction>> = new BehaviorSubject(List([]));
+  private _transactions: BehaviorSubject<List<BridgeTableTransaction>> = new BehaviorSubject(
+    List([])
+  );
 
   public walletAddress: string;
 
-  public readonly tokens: Observable<List<IBridgeToken>> = this._tokens.asObservable();
+  public readonly tokens: Observable<List<BridgeToken>> = this._tokens.asObservable();
 
   public readonly transactions: Observable<
-    List<ITableTransaction>
+    List<BridgeTableTransaction>
   > = this._transactions.asObservable();
 
   constructor(
+    private tokensService: TokensService,
     private httpClient: HttpClient,
-    private web3Api: Web3PrivateService,
+    private web3Private: Web3PrivateService,
     private backendApiService: BackendApiService
   ) {
     this.getTokensList();
     this.updateTransactionsList();
-    this.walletAddress = web3Api.address;
+    this.walletAddress = web3Private.address;
   }
 
   private getTokensList(): void {
-    this.httpClient.get(`${this.apiUrl}tokens`).subscribe(
-      (res: BinanceResponse) => {
-        if (res.code !== 20000) {
-          console.log(`Error retrieving Todos, code ${res.code}`);
-        } else {
-          const tokensWithUpdatedImages = this.getTokensImages(List(res.data.tokens));
-          this._tokens.next(tokensWithUpdatedImages);
-        }
-      },
-      err => console.log(`Error retrieving tokens ${err}`)
-    );
+    this.httpClient
+      .get(`${this.apiUrl}tokens`)
+      .pipe(
+        mergeMap((res: BinanceResponse) => {
+          if (res.code !== 20000) {
+            console.log(`Error retrieving Todos, code ${res.code}`);
+            return List([]);
+          }
+          return this.tokensService.tokens.pipe(
+            map(tokens => this.getTokensWithImages(List(res.data.tokens), tokens))
+          );
+        })
+      )
+      .subscribe(tokens => this._tokens.next(tokens));
   }
 
-  private getTokensImages(tokens: List<IBridgeToken>): List<IBridgeToken> {
-    // @ts-ignore
-    const allTokensList = window.coingecko_tokens;
-
+  private getTokensWithImages(
+    tokens: List<BridgeToken>,
+    swapTokens: List<SwapToken>
+  ): List<BridgeToken> {
     return tokens
       .filter(token => token.ethContractAddress || token.symbol === 'ETH')
       .map(token => {
-        const tokenInfo = allTokensList.find(item => item.token_short_title === token.symbol);
-        token.icon = (tokenInfo && tokenInfo.image_link) || '/assets/images/icons/coins/empty.svg';
+        const tokenInfo = swapTokens
+          .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
+          .find(item =>
+            token.ethContractAddress
+              ? item.address === token.ethContractAddress
+              : item.symbol === 'ETH'
+          );
+        token.icon = (tokenInfo && tokenInfo.image) || '/assets/images/icons/coins/empty.svg';
         return token;
       });
   }
@@ -90,18 +107,22 @@ export class BridgeService {
   }
 
   public createTrade(
-    token: IBridgeToken,
-    fromNetwork: string,
+    token: BridgeToken,
+    fromNetwork: BLOCKCHAIN_NAME,
     toNetwork: string,
     amount: BigNumber,
     toAddress: string,
     onTransactionHash?: (hash: string) => void
   ): Observable<string> {
-    /* if (this.web3Api.error) {
-      return throwError(this.web3Api.error);
-    } */
+    if (!this.web3Private.isProviderActive) {
+      return throwError(new MetamaskError());
+    }
 
-    if (!this.web3Api.network || this.web3Api.network.name !== fromNetwork) {
+    if (!this.web3Private.address) {
+      return throwError(new AccountError());
+    }
+
+    if (!this.web3Private.network || this.web3Private.network.name !== fromNetwork) {
       return throwError(new NetworkError(fromNetwork));
     }
 
@@ -113,7 +134,7 @@ export class BridgeService {
       toAddress,
       toAddressLabel: '',
       toNetwork,
-      walletAddress: this.web3Api.address,
+      walletAddress: this.web3Private.address,
       walletNetwork: toNetwork
     };
 
@@ -132,7 +153,7 @@ export class BridgeService {
           data.depositAddress,
           amount,
           data.toAddress,
-          this.web3Api
+          this.web3Private
         );
         return from(this.sendDeposit(tx, onTransactionHash));
       }),
@@ -154,7 +175,7 @@ export class BridgeService {
 
       await this.sendTransactionInfo(tx);
       await this.updateTransactionsList();
-      this.backendApiService.notifyBridgeBot(tx, this.web3Api.address);
+      this.backendApiService.notifyBridgeBot(tx, this.web3Private.address);
     };
 
     await tx.sendDeposit(onTxHash);
@@ -164,7 +185,7 @@ export class BridgeService {
 
   public async updateTransactionsList(): Promise<void> {
     const txArray = await this.backendApiService.getTransactions(
-      this.web3Api.address.toLowerCase()
+      this.web3Private.address.toLowerCase()
     );
     this._transactions.next(List(txArray));
   }
