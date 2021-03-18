@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import BigNumber from 'bignumber.js';
 
@@ -6,6 +6,7 @@ import { BridgeService } from 'src/app/features/bridge-page/services/bridge.serv
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { NetworkErrorComponent } from '../network-error/network-error.component';
 import InputToken from '../../../../shared/models/tokens/InputToken';
 import { BridgeToken } from '../../models/BridgeToken';
@@ -18,7 +19,7 @@ import { MessageBoxComponent } from '../../../../shared/components/message-box/m
   templateUrl: './bridge-form.component.html',
   styleUrls: ['./bridge-form.component.scss']
 })
-export class BridgeFormComponent implements OnInit {
+export class BridgeFormComponent implements OnInit, OnDestroy {
   public Blockchains = {
     Ethereum: {
       name: BLOCKCHAIN_NAME.ETHEREUM,
@@ -80,13 +81,17 @@ export class BridgeFormComponent implements OnInit {
 
   public tradeSuccessId: string;
 
-  public fromWalletAddress: string = this.bridgeService.walletAddress;
+  public fromWalletAddress: string;
 
-  public toWalletAddress: string = this.fromWalletAddress;
+  public toWalletAddress: string;
 
   public isAdvancedSectionShown = false;
 
   private smallMobileWidth = 410;
+
+  private tokensSubscription$: Subscription;
+
+  private addressSubscription$: Subscription;
 
   get tokens(): List<BridgeToken> {
     return this._tokens;
@@ -193,6 +198,18 @@ export class BridgeFormComponent implements OnInit {
 
   ngOnInit() {
     this.setBlockchainLabelName();
+    this.tokensSubscription$ = this.bridgeService.tokens.subscribe(tokens => {
+      this.tokens = tokens;
+    });
+    this.addressSubscription$ = this.bridgeService.walletAddress.subscribe(address => {
+      this.fromWalletAddress = address;
+      this.toWalletAddress = address;
+    });
+  }
+
+  ngOnDestroy() {
+    this.tokensSubscription$.unsubscribe();
+    this.addressSubscription$.unsubscribe();
   }
 
   public revertBlockchains() {

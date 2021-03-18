@@ -34,7 +34,7 @@ export class BridgeService {
     List([])
   );
 
-  public walletAddress: string;
+  public walletAddress: Observable<string>;
 
   public readonly tokens: Observable<List<BridgeToken>> = this._tokens.asObservable();
 
@@ -50,7 +50,7 @@ export class BridgeService {
   ) {
     this.getTokensList();
     this.updateTransactionsList();
-    this.walletAddress = web3Private.address;
+    this.walletAddress = web3Private.onAddressChanges;
   }
 
   private getTokensList(): void {
