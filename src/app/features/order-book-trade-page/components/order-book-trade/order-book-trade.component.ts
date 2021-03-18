@@ -269,42 +269,49 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public makeApproveOrContribute(tokenPart: TokenPart): void {
     if (!this.tradeData.token[tokenPart].isApproved) {
-      this.approveStatus[tokenPart] = TX_STATUS.STARTED;
-      this.approveStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
-
-      this.orderBookTradeService
-        .makeApprove(this.tradeData, tokenPart, () => {
-          this.approveStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
-        })
-        .then(() => {
-          this.orderBookTradeService.setAllowance(this.tradeData).then(() => {
-            this.approveStatus[tokenPart] = TX_STATUS.COMPLETED;
-          });
-        })
-        .catch(err => {
-          console.log(err);
-          this.approveStatus[tokenPart] = TX_STATUS.ERROR;
-        });
+      this.makeApprove(tokenPart);
     } else {
-      this.contributeStatus[tokenPart] = TX_STATUS.STARTED;
-
-      this.orderBookTradeService
-        .makeApproveOrContribute(
-          this.tradeData,
-          tokenPart,
-          tokenPart === 'base' ? this.baseAmountToContribute : this.quoteAmountToContribute,
-          () => {
-            this.contributeStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
-          }
-        )
-        .then(() => {
-          this.contributeStatus[tokenPart] = TX_STATUS.COMPLETED;
-        })
-        .catch(err => {
-          console.log(err);
-          this.contributeStatus[tokenPart] = TX_STATUS.ERROR;
-        });
+      this.makeContribute(tokenPart);
     }
+  }
+
+  private makeApprove(tokenPart: TokenPart): void {
+    this.approveStatus[tokenPart] = TX_STATUS.STARTED;
+
+    this.orderBookTradeService
+      .makeApprove(this.tradeData, tokenPart, () => {
+        this.approveStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
+      })
+      .then(() => {
+        this.orderBookTradeService.setAllowance(this.tradeData).then(() => {
+          this.approveStatus[tokenPart] = TX_STATUS.COMPLETED;
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        this.approveStatus[tokenPart] = TX_STATUS.ERROR;
+      });
+  }
+
+  private makeContribute(tokenPart: TokenPart): void {
+    this.contributeStatus[tokenPart] = TX_STATUS.STARTED;
+
+    this.orderBookTradeService
+      .makeApproveOrContribute(
+        this.tradeData,
+        tokenPart,
+        tokenPart === 'base' ? this.baseAmountToContribute : this.quoteAmountToContribute,
+        () => {
+          this.contributeStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
+        }
+      )
+      .then(() => {
+        this.contributeStatus[tokenPart] = TX_STATUS.COMPLETED;
+      })
+      .catch(err => {
+        console.log(err);
+        this.contributeStatus[tokenPart] = TX_STATUS.ERROR;
+      });
   }
 
   public makeWithdraw(tokenPart: TokenPart): void {
