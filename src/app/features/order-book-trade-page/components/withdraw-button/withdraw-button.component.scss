@@ -9,6 +9,7 @@
   border: none;
 
   background: white;
+  cursor: pointer;
 
   font-size: 18px;
 
@@ -18,5 +19,9 @@
 
     width: 7px;
     margin-right: 6px;
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 }

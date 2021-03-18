@@ -19,6 +19,7 @@ interface Blockchain {
 
 enum TX_STATUS {
   NONE = 'NONE',
+  STARTED = 'STARTED',
   IN_PROGRESS = 'IN_PROGRESS',
   ERROR = 'ERROR',
   COMPLETED = 'COMPLETED'
@@ -268,10 +269,13 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public makeApproveOrContribute(tokenPart: TokenPart): void {
     if (!this.tradeData.token[tokenPart].isApproved) {
+      this.approveStatus[tokenPart] = TX_STATUS.STARTED;
       this.approveStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
 
       this.orderBookTradeService
-        .makeApprove(this.tradeData, tokenPart)
+        .makeApprove(this.tradeData, tokenPart, () => {
+          this.approveStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
+        })
         .then(() => {
           this.orderBookTradeService.setAllowance(this.tradeData).then(() => {
             this.approveStatus[tokenPart] = TX_STATUS.COMPLETED;
@@ -282,13 +286,16 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
           this.approveStatus[tokenPart] = TX_STATUS.ERROR;
         });
     } else {
-      this.contributeStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
+      this.contributeStatus[tokenPart] = TX_STATUS.STARTED;
 
       this.orderBookTradeService
         .makeApproveOrContribute(
           this.tradeData,
           tokenPart,
-          tokenPart === 'base' ? this.baseAmountToContribute : this.quoteAmountToContribute
+          tokenPart === 'base' ? this.baseAmountToContribute : this.quoteAmountToContribute,
+          () => {
+            this.contributeStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
+          }
         )
         .then(() => {
           this.contributeStatus[tokenPart] = TX_STATUS.COMPLETED;
@@ -298,5 +305,21 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
           this.contributeStatus[tokenPart] = TX_STATUS.ERROR;
         });
     }
+  }
+
+  public makeWithdraw(tokenPart: TokenPart): void {
+    this.withdrawStatus[tokenPart] = TX_STATUS.STARTED;
+
+    this.orderBookTradeService
+      .makeWithdraw(this.tradeData, tokenPart, () => {
+        this.withdrawStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
+      })
+      .then(() => {
+        this.withdrawStatus[tokenPart] = TX_STATUS.COMPLETED;
+      })
+      .catch(err => {
+        console.log(err);
+        this.withdrawStatus[tokenPart] = TX_STATUS.ERROR;
+      });
   }
 }

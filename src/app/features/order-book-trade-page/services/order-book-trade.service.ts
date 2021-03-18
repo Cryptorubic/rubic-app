@@ -164,7 +164,8 @@ export class OrderBookTradeService {
 
   public makeApprove(
     tradeData: OrderBookTradeData,
-    tokenPart: TokenPart
+    tokenPart: TokenPart,
+    onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
     const { contractAddress } = this.getContractParameters(tradeData);
 
@@ -173,14 +174,18 @@ export class OrderBookTradeService {
     return this.web3PrivateService.approveTokens(
       tradeData.token[tokenPart].address,
       contractAddress,
-      amountToApprove
+      amountToApprove,
+      {
+        onTransactionHash
+      }
     );
   }
 
   public async makeApproveOrContribute(
     tradeData: OrderBookTradeData,
     tokenPart: TokenPart,
-    amount: string
+    amount: string,
+    onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
 
@@ -191,16 +196,17 @@ export class OrderBookTradeService {
       );
 
       if (amountToContribute.isGreaterThan(allowance)) {
-        return this.makeApprove(tradeData, tokenPart);
+        return this.makeApprove(tradeData, tokenPart, onTransactionHash);
       }
     }
-    return this.makeContribute(tradeData, tokenPart, amount);
+    return this.makeContribute(tradeData, tokenPart, amount, onTransactionHash);
   }
 
   private async makeContribute(
     tradeData: OrderBookTradeData,
     tokenPart: TokenPart,
-    amount: string
+    amount: string,
+    onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
@@ -211,7 +217,28 @@ export class OrderBookTradeService {
       contractAbi,
       'deposit',
       [tradeData.memo, tradeData.token[tokenPart].address, value],
-      web3Public.isNativeAddress(tradeData.token[tokenPart].address) ? { value } : {}
+      {
+        onTransactionHash,
+        value: web3Public.isNativeAddress(tradeData.token[tokenPart].address) ? value : undefined
+      }
+    );
+  }
+
+  public async makeWithdraw(
+    tradeData: OrderBookTradeData,
+    tokenPart: TokenPart,
+    onTransactionHash: (hash: string) => void
+  ): Promise<TransactionReceipt> {
+    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+
+    return this.web3PrivateService.executeContractMethod(
+      contractAddress,
+      contractAbi,
+      'refund',
+      [tradeData.memo, tradeData.token[tokenPart].address],
+      {
+        onTransactionHash
+      }
     );
   }
 }

@@ -42,7 +42,15 @@
 
     <div class="trade-container__tokens-swap tokens-swap">
       <!--base-->
-      <div class="tokens-swap__block token-block">
+      <div
+        class="tokens-swap__block token-block"
+        [ngClass]="{
+          'token-block_without-withdraw':
+            (tradeData?.status !== TRADE_STATUS.ACTIVE &&
+              tradeData?.status !== TRADE_STATUS.EXPIRED) ||
+            tradeData.token.base.amountContributed?.isEqualTo(0)
+        }"
+      >
         <div class="token-block__main-area">
           <div class="token-block__area area-first">
             <div class="area-first__amount-total">{{ shortedAmountTotal.base }}</div>
@@ -127,9 +135,11 @@
           <div
             class="token-block__area area-fourth"
             *ngIf="
-              tradeData?.status === TRADE_STATUS.ACTIVE ||
-              tradeData?.status === TRADE_STATUS.EXPIRED
+              (tradeData?.status === TRADE_STATUS.ACTIVE ||
+                tradeData?.status === TRADE_STATUS.EXPIRED) &&
+              tradeData.token.base.amountContributed?.isGreaterThan(0)
             "
+            (click)="makeWithdraw('base')"
           >
             <app-withdraw-button class="area-fourth__withdraw-button"></app-withdraw-button>
           </div>
@@ -137,7 +147,15 @@
       </div>
 
       <!--quoute-->
-      <div class="tokens-swap__block token-block">
+      <div
+        class="tokens-swap__block token-block"
+        [ngClass]="{
+          'token-block_without-withdraw':
+            (tradeData?.status !== TRADE_STATUS.ACTIVE &&
+              tradeData?.status !== TRADE_STATUS.EXPIRED) ||
+            tradeData.token.base.amountContributed?.isEqualTo(0)
+        }"
+      >
         <div class="token-block__main-area">
           <div class="token-block__area area-first">
             <div class="area-first__amount-total">{{ shortedAmountTotal.quote }}</div>
@@ -224,9 +242,11 @@
           <div
             class="token-block__area area-fourth"
             *ngIf="
-              tradeData?.status === TRADE_STATUS.ACTIVE ||
-              tradeData?.status === TRADE_STATUS.EXPIRED
+              (tradeData?.status === TRADE_STATUS.ACTIVE ||
+                tradeData?.status === TRADE_STATUS.EXPIRED) &&
+              tradeData.token.quote.amountContributed?.isGreaterThan(0)
             "
+            (click)="makeWithdraw('quote')"
           >
             <app-withdraw-button class="area-fourth__withdraw-button"></app-withdraw-button>
           </div>
@@ -244,7 +264,7 @@
       <div class="trade-options__option trade-option">
         <div class="trade-option__title">Closing Time</div>
 
-        <div class="trade-option__body">{{ expirationTime }}</div>
+        <div class="trade-option__body">{{ expirationTime }} UTC</div>
       </div>
 
       <div class="trade-options__option trade-option copy-link">
