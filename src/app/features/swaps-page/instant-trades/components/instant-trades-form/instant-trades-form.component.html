@@ -91,8 +91,8 @@
           (onClick)="createTrade(index)"
         >
         </app-primary-button>
-        <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate && trades.length > 1">
-          <span>Best Rate</span>
+        <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState">
+          <span>{{ 'Best Rate' | translate }}</span>
           <img src="assets/images/icons/BestRate.svg" alt="">
         </div>
       </div>
