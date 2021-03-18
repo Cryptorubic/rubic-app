@@ -127,7 +127,7 @@ export class BridgeService {
     }
 
     const body = {
-      amount: amount.toString(),
+      amount: amount.toFixed(),
       fromNetwork,
       source: 921,
       symbol: token.symbol,

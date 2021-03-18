@@ -44,13 +44,13 @@ export class BridgeTransaction {
       this.receipt = await this.web3Api.transferTokens(
         tokenAddress,
         this.depositAddress,
-        realAmount.toString(),
+        realAmount.toFixed(0),
         { onTransactionHash }
       );
     } else {
       this.receipt = await this.web3Api.sendTransaction(
         this.depositAddress,
-        realAmount.toString(),
+        realAmount.toFixed(0),
         { onTransactionHash, inWei: true }
       );
     }
