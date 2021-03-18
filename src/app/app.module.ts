@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { DynamicModule } from 'ng-dynamic-component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
@@ -73,7 +74,8 @@ export function exportTranslateStaticLoader(http: HttpClient, transferState: Tra
       TokenLabelComponent,
       BlockchainLabelComponent,
       NetworkErrorComponent
-    ])
+    ]),
+    NgxMaterialTimepickerModule
   ],
   bootstrap: [AppComponent]
 })
