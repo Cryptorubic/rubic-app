@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { ReplaySubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
@@ -17,9 +17,9 @@ export class MetamaskProviderService extends PrivateProvider {
 
   private readonly _web3: Web3;
 
-  public readonly onAddressChanges = new ReplaySubject<string>();
+  public readonly onAddressChanges: BehaviorSubject<string>;
 
-  public readonly onNetworkChanges = new ReplaySubject<IBlockchain>();
+  public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
 
   get isInstalled(): boolean {
     return !!this._metaMask;
@@ -48,20 +48,26 @@ export class MetamaskProviderService extends PrivateProvider {
       this._metaMask = ethereum;
       this._web3 = web3;
 
-      if (this.isActive) {
-        this.onNetworkChanges.next(this.getNetwork());
-        this.onAddressChanges.next(this.getAddress());
+      if (this._metaMask?.selectedAddress) {
+        this.isEnabled = true;
       }
 
+      this.onNetworkChanges = new BehaviorSubject<IBlockchain>(this.getNetwork());
+      this.onAddressChanges = new BehaviorSubject<string>(this.getAddress());
+
       this._metaMask.on('chainChanged', (chain: string) => {
-        this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
-        console.info('Chain changed', chain);
-        window.location.reload();
+        if (this.isEnabled) {
+          this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
+          console.info('Chain changed', chain);
+          // window.location.reload();
+        }
       });
 
       this._metaMask.on('accountsChanged', (accounts: string[]) => {
-        this.onAddressChanges.next(accounts[0]);
-        console.info('Selected account changed to', accounts[0]);
+        if (this.isEnabled) {
+          this.onAddressChanges.next(accounts[0]);
+          console.info('Selected account changed to', accounts[0]);
+        }
       });
     } else {
       console.error('Selected other provider.');
@@ -84,9 +90,13 @@ export class MetamaskProviderService extends PrivateProvider {
   public async activate(): Promise<void> {
     await this._metaMask?.request({ method: 'eth_requestAccounts' });
     this.isEnabled = true;
+    this.onNetworkChanges.next(this.getNetwork());
+    this.onAddressChanges.next(this.getAddress());
   }
 
   public deActivate(): void {
+    this.onAddressChanges.next(undefined);
+    this.onNetworkChanges.next(undefined);
     this.isEnabled = false;
   }
 }

@@ -17,6 +17,6 @@ export class LoginButtonComponent {
   }
 
   public authUser(): void {
-    this.authService.metamaskAuth();
+    this.authService.signIn();
   }
 }

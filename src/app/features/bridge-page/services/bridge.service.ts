@@ -184,10 +184,12 @@ export class BridgeService {
   }
 
   public async updateTransactionsList(): Promise<void> {
-    const txArray = await this.backendApiService.getTransactions(
-      this.web3Private.address.toLowerCase()
-    );
-    this._transactions.next(List(txArray));
+    if (this.web3Private.address) {
+      const txArray = await this.backendApiService.getTransactions(
+        this.web3Private.address.toLowerCase()
+      );
+      this._transactions.next(List(txArray));
+    }
   }
 
   private async sendTransactionInfo(tx: BridgeTransaction): Promise<void> {
