@@ -4,7 +4,7 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
@@ -19,9 +19,9 @@ export class Web3PrivateService {
 
   private defaultMockGas: string;
 
-  public readonly onAddressChanges: Observable<string>;
+  public readonly onAddressChanges: BehaviorSubject<string>;
 
-  public readonly onNetworkChanges: Observable<IBlockchain>;
+  public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
 
   public get address(): string {
     return this.provider.address;
@@ -52,6 +52,14 @@ export class Web3PrivateService {
     this.onNetworkChanges = provider.onNetworkChanges;
     this.web3 = provider.web3;
     this.defaultMockGas = provider.defaultGasLimit;
+  }
+
+  public getNetwork(): Observable<IBlockchain> {
+    return this.onNetworkChanges.asObservable();
+  }
+
+  public getAddress(): Observable<string> {
+    return this.onAddressChanges.asObservable();
   }
 
   /**

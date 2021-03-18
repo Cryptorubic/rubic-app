@@ -123,6 +123,10 @@ $main-color: #4aa956;
     text-transform: uppercase;
     letter-spacing: 2px;
 
+    &_iconless {
+      padding-left: 20px;
+    }
+
     @include b($mobile-width) {
       max-width: 250px;
       box-sizing: border-box;
