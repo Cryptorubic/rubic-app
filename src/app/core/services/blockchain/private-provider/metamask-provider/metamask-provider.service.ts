@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { ReplaySubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
@@ -14,9 +14,9 @@ export class MetamaskProviderService extends PrivateProvider {
 
   public readonly web3: Web3;
 
-  public readonly onAddressChanges = new ReplaySubject<string>();
+  public readonly onAddressChanges = new BehaviorSubject<string>(null);
 
-  public readonly onNetworkChanges = new ReplaySubject<IBlockchain>();
+  public readonly onNetworkChanges = new BehaviorSubject<IBlockchain>(null);
 
   get isInstalled(): boolean {
     return !!this._metaMask;
@@ -38,6 +38,8 @@ export class MetamaskProviderService extends PrivateProvider {
     if ((web3.currentProvider as any)?.isMetaMask) {
       this._metaMask = ethereum;
       this.web3 = web3;
+      this.onNetworkChanges.next(this.getNetwork());
+      this.onAddressChanges.next(this.getAddress());
 
       if (this.isActive) {
         this.onNetworkChanges.next(this.getNetwork());
@@ -53,6 +55,7 @@ export class MetamaskProviderService extends PrivateProvider {
       this._metaMask.on('accountsChanged', (accounts: string[]) => {
         this.onAddressChanges.next(accounts[0]);
         console.info('Selected account changed to', accounts[0]);
+        window.location.reload();
       });
     } else {
       console.error('Selected other provider.');
