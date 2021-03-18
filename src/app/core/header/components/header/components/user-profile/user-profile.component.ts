@@ -8,11 +8,10 @@ import {
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { HeaderStore } from '../../../../services/header.store';
-import { Web3PrivateService } from '../../../../../services/blockchain/web3-private-service/web3-private.service';
-import { IBlockchain } from '../../../../../../shared/models/blockchain/IBlockchain';
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -30,15 +29,15 @@ export class UserProfileComponent {
 
   public readonly $currentBlockchain: Observable<IBlockchain>;
 
+  public readonly $currentAccountAddress: Observable<string>;
+
   constructor(
     private readonly elementRef: ElementRef,
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
     private readonly cdr: ChangeDetectorRef,
-    private readonly authService: AuthService,
-    private readonly web3PrivateService: Web3PrivateService
+    private web3PrivateService: Web3PrivateService
   ) {
-    this.$currentUser = this.authService.getCurrentUser();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.$isUserMenuOpened = this.headerStore.getUserMenuOpeningStatus();
     this.$isConfirmModalOpened = this.headerStore.getConfirmModalOpeningStatus();
@@ -48,7 +47,8 @@ export class UserProfileComponent {
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
-    this.$currentBlockchain = web3PrivateService.onNetworkChanges;
+    this.$currentBlockchain = this.web3PrivateService.getNetwork();
+    this.$currentAccountAddress = this.web3PrivateService.getAddress();
   }
 
   @HostListener('document:mousedown', ['$event'])
