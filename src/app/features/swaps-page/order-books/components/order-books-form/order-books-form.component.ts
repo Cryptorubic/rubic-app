@@ -13,7 +13,8 @@ import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
 import { OrderBooksFormService } from '../../services/order-book-form-service/order-books-form.service';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
 
-enum TRADE_STATE {
+enum TRADE_STATUS {
+  STARTED = 'STARTED',
   TX_IN_PROGRESS = 'TX_IN_PROGRESS',
   COMPLETED = 'COMPLETED',
   ERROR = 'ERROR'
@@ -55,9 +56,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   public tokensRate: BigNumber;
 
-  public TRADE_STATE = TRADE_STATE;
+  public TRADE_STATUS = TRADE_STATUS;
 
-  public selectedTradeState: TRADE_STATE;
+  public selectedTradeState: TRADE_STATUS;
 
   public transactionHash: string;
 
@@ -227,12 +228,12 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
 
-      const foundBaseToken = tokens.find(t => t.address === this.baseToken?.address);
+      const foundBaseToken = this.tokens.find(t => t.address === this.baseToken?.address);
       if (foundBaseToken) {
         this.baseToken = foundBaseToken;
       }
 
-      const foundQuoteToken = tokens.find(t => t.address === this.quoteToken?.address);
+      const foundQuoteToken = this.tokens.find(t => t.address === this.quoteToken?.address);
       if (foundQuoteToken) {
         this.quoteToken = foundQuoteToken;
       }
@@ -293,16 +294,17 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(): void {
+    this.selectedTradeState = TRADE_STATUS.STARTED;
     this.orderBookFormService
       .createOrder(this.tradeForm, () => {
-        this.selectedTradeState = TRADE_STATE.TX_IN_PROGRESS;
+        this.selectedTradeState = TRADE_STATUS.TX_IN_PROGRESS;
       })
       .then(transactionHash => {
-        this.selectedTradeState = TRADE_STATE.COMPLETED;
+        this.selectedTradeState = TRADE_STATUS.COMPLETED;
         this.transactionHash = transactionHash;
       })
       .catch(err => {
-        this.selectedTradeState = TRADE_STATE.ERROR;
+        this.selectedTradeState = TRADE_STATUS.ERROR;
         console.log('err', err);
       });
   }

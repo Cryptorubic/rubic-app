@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { ORDER_BOOK_CONTRACT } from 'src/app/shared/constants/order-book/smart-contract';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import BigNumber from 'bignumber.js';
+import { TransactionReceipt } from 'web3-eth';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../types/trade-data';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { TokenPart } from '../../../shared/models/order-book/tokens';
@@ -127,20 +129,89 @@ export class OrderBookTradeService {
     tradeData.token.quote.investorsNumber = quoteInvestors.length;
   }
 
-  public setAllowance(tradeData: OrderBookTradeData): void {
-    this.setAllowanceToToken(tradeData, 'base');
-    this.setAllowanceToToken(tradeData, 'quote');
+  public async setAllowance(tradeData: OrderBookTradeData): Promise<void> {
+    await this.setAllowanceToToken(tradeData, 'base');
+    await this.setAllowanceToToken(tradeData, 'quote');
   }
 
-  private async setAllowanceToToken(tradeData: OrderBookTradeData, tokenPart: TokenPart) {
+  private async setAllowanceToToken(
+    tradeData: OrderBookTradeData,
+    tokenPart: TokenPart
+  ): Promise<void> {
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    if (web3Public.isNativeAddress(tradeData.token[tokenPart].address)) {
+      tradeData.token[tokenPart].isApproved = true;
+    } else {
+      tradeData.token[tokenPart].isApproved = (
+        await this.getAllowance(tradeData, tokenPart)
+      ).isGreaterThan(0);
+    }
+  }
+
+  private async getAllowance(
+    tradeData: OrderBookTradeData,
+    tokenPart: TokenPart
+  ): Promise<BigNumber> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress } = this.getContractParameters(tradeData);
 
-    const amount = await web3Public.getAllowance(
+    return web3Public.getAllowance(
       tradeData.token[tokenPart].address,
       this.web3PrivateService.address,
       contractAddress
     );
-    tradeData.token[tokenPart].isApproved = amount.isGreaterThan(0);
+  }
+
+  public makeApprove(
+    tradeData: OrderBookTradeData,
+    tokenPart: TokenPart
+  ): Promise<TransactionReceipt> {
+    const { contractAddress } = this.getContractParameters(tradeData);
+
+    // eslint-disable-next-line no-magic-numbers
+    const amountToApprove = new BigNumber(2).pow(256).minus(1);
+    return this.web3PrivateService.approveTokens(
+      tradeData.token[tokenPart].address,
+      contractAddress,
+      amountToApprove
+    );
+  }
+
+  public async makeApproveOrContribute(
+    tradeData: OrderBookTradeData,
+    tokenPart: TokenPart,
+    amount: string
+  ): Promise<TransactionReceipt> {
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+
+    if (!web3Public.isNativeAddress(tradeData.token[tokenPart].address)) {
+      const allowance = await this.getAllowance(tradeData, tokenPart);
+      const amountToContribute = new BigNumber(
+        Web3PublicService.tokenAmountToWei(tradeData.token[tokenPart], amount)
+      );
+
+      if (amountToContribute.isGreaterThan(allowance)) {
+        return this.makeApprove(tradeData, tokenPart);
+      }
+    }
+    return this.makeContribute(tradeData, tokenPart, amount);
+  }
+
+  private async makeContribute(
+    tradeData: OrderBookTradeData,
+    tokenPart: TokenPart,
+    amount: string
+  ): Promise<TransactionReceipt> {
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+
+    const value = Web3PublicService.tokenAmountToWei(tradeData.token[tokenPart], amount);
+    return this.web3PrivateService.executeContractMethod(
+      contractAddress,
+      contractAbi,
+      'deposit',
+      [tradeData.memo, tradeData.token[tokenPart].address, value],
+      web3Public.isNativeAddress(tradeData.token[tokenPart].address) ? { value } : {}
+    );
   }
 }

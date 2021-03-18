@@ -7,6 +7,7 @@ import { OrderBookApiService } from 'src/app/core/services/backend/order-book-ap
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { Subscription } from 'rxjs';
+import BigNumber from 'bignumber.js';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../types/trade-data';
 
@@ -15,6 +16,17 @@ interface Blockchain {
   label: string;
   imagePath: string;
 }
+
+enum TX_STATUS {
+  NONE = 'NONE',
+  IN_PROGRESS = 'IN_PROGRESS',
+  ERROR = 'ERROR',
+  COMPLETED = 'COMPLETED'
+}
+
+type tokensStatus = {
+  [tokenPart in TokenPart]: TX_STATUS;
+};
 
 @Component({
   selector: 'app-order-book-trade',
@@ -77,6 +89,27 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   private _tokensSubscription$: Subscription;
 
+  public baseAmountToContribute: string;
+
+  public quoteAmountToContribute: string;
+
+  public TX_STATUS = TX_STATUS;
+
+  public approveStatus: tokensStatus = {
+    base: TX_STATUS.NONE,
+    quote: TX_STATUS.NONE
+  };
+
+  public contributeStatus: tokensStatus = {
+    base: TX_STATUS.NONE,
+    quote: TX_STATUS.NONE
+  };
+
+  public withdrawStatus: tokensStatus = {
+    base: TX_STATUS.NONE,
+    quote: TX_STATUS.NONE
+  };
+
   public expirationDay: string;
 
   public expirationTime: string;
@@ -84,6 +117,22 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   public currentUrl: string;
 
   public isCopied = false;
+
+  get tokens(): List<SwapToken> {
+    return this._tokens;
+  }
+
+  set tokens(value) {
+    this._tokens = value.filter(t => t.blockchain === this.tradeData.blockchain);
+  }
+
+  get baseAmountToContributeAsNumber(): BigNumber {
+    return new BigNumber(this.baseAmountToContribute);
+  }
+
+  get quoteAmountToContributeAsNumber(): BigNumber {
+    return new BigNumber(this.quoteAmountToContribute);
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -98,20 +147,6 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
     this.uniqueLink = this.route.snapshot.params.unique_link;
     this.setTradeData();
-
-    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
-      this._tokens = tokens;
-
-      const foundBaseToken = tokens.find(t => t.address === this.tradeData.token.base.address);
-      if (foundBaseToken) {
-        this.tradeData.token.base = { ...this.tradeData.token.base, ...foundBaseToken };
-      }
-
-      const foundQuoteToken = tokens.find(t => t.address === this.tradeData.token.quote.address);
-      if (foundQuoteToken) {
-        this.tradeData.token.quote = { ...this.tradeData.token.base, ...foundQuoteToken };
-      }
-    });
   }
 
   ngOnDestroy(): void {
@@ -124,11 +159,27 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
         this.tradeData = tradeData;
         this.setStaticTradeData();
         this.isMainTradeDataLoaded = true;
-        console.log(this.tradeData, this.isMainTradeDataLoaded);
 
         this.setDynamicData();
-        // eslint-disable-next-line no-magic-numbers
-        setTimeout(() => this.setDynamicData(), 4000);
+
+        // tokens subscription
+        this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
+          this.tokens = tokens;
+
+          const foundBaseToken = this.tokens.find(
+            t => t.address === this.tradeData.token.base.address
+          );
+          if (foundBaseToken) {
+            this.tradeData.token.base = { ...this.tradeData.token.base, ...foundBaseToken };
+          }
+
+          const foundQuoteToken = this.tokens.find(
+            t => t.address === this.tradeData.token.quote.address
+          );
+          if (foundQuoteToken) {
+            this.tradeData.token.quote = { ...this.tradeData.token.base, ...foundQuoteToken };
+          }
+        });
       },
       () => {
         this.doesTradeExist = false;
@@ -152,6 +203,9 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     });
 
     this.orderBookTradeService.setInvestorsNumber(this.tradeData);
+
+    // eslint-disable-next-line no-magic-numbers
+    setTimeout(() => this.setDynamicData(), 4000);
   }
 
   private setExpirationDate(): void {
@@ -210,5 +264,39 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.isCopied = false;
     }, 1000);
+  }
+
+  public makeApproveOrContribute(tokenPart: TokenPart): void {
+    if (!this.tradeData.token[tokenPart].isApproved) {
+      this.approveStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
+
+      this.orderBookTradeService
+        .makeApprove(this.tradeData, tokenPart)
+        .then(() => {
+          this.orderBookTradeService.setAllowance(this.tradeData).then(() => {
+            this.approveStatus[tokenPart] = TX_STATUS.COMPLETED;
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          this.approveStatus[tokenPart] = TX_STATUS.ERROR;
+        });
+    } else {
+      this.contributeStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
+
+      this.orderBookTradeService
+        .makeApproveOrContribute(
+          this.tradeData,
+          tokenPart,
+          tokenPart === 'base' ? this.baseAmountToContribute : this.quoteAmountToContribute
+        )
+        .then(() => {
+          this.contributeStatus[tokenPart] = TX_STATUS.COMPLETED;
+        })
+        .catch(err => {
+          console.log(err);
+          this.contributeStatus[tokenPart] = TX_STATUS.ERROR;
+        });
+    }
   }
 }

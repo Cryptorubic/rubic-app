@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { ORDER_BOOK_CONTRACT } from 'src/app/shared/constants/order-book/smart-contract';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -11,10 +11,11 @@ import { AccountError } from 'src/app/shared/models/errors/provider/AccountError
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
 
 @Injectable()
-export class OrderBooksFormService {
+export class OrderBooksFormService implements OnDestroy {
   private readonly _tradeForm = new BehaviorSubject<OrderBookTradeForm>({
     token: {
       base: {} as OrderBookFormToken,
@@ -22,11 +23,26 @@ export class OrderBooksFormService {
     }
   } as OrderBookTradeForm);
 
+  private _isTestingMode: boolean;
+
+  private _useTestingModeSubscription$: Subscription;
+
   constructor(
     private orderBookApiService: OrderBookApiService,
     private web3PublicService: Web3PublicService,
-    private web3PrivateService: Web3PrivateService
-  ) {}
+    private web3PrivateService: Web3PrivateService,
+    private useTestingModeService: UseTestingModeService
+  ) {
+    this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
+      isTestingMode => {
+        this._isTestingMode = isTestingMode;
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this._useTestingModeSubscription$.unsubscribe();
+  }
 
   public getTradeForm(): Observable<OrderBookTradeForm> {
     return this._tradeForm.asObservable();
@@ -62,6 +78,10 @@ export class OrderBooksFormService {
     tradeForm: OrderBookTradeForm,
     onTransactionHash?: (hash: string) => void
   ): Promise<string> {
+    if (this._isTestingMode) {
+      tradeForm.blockchain = BLOCKCHAIN_NAME.ETHEREUM_TESTNET;
+    }
+
     this.checkSettings(tradeForm.blockchain);
 
     const web3Public: Web3Public = this.web3PublicService[tradeForm.blockchain];

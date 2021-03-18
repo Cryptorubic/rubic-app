@@ -49,17 +49,15 @@
 
             <div class="area-first__amount-sent">
               <span class="area-first__amount-description">Sent</span>
-              <span
-                class="area-first__amount-number"
-                *ngIf="tradeData.token.base.amountContributed"
-                >{{ tradeData.token.base.amountContributed.toFormat(shortedFormat) }}</span
-              >
+              <span class="area-first__amount-number">
+                {{ tradeData.token.base.amountContributed?.toFormat(shortedFormat) }}
+              </span>
             </div>
 
             <div class="area-first__amount-left">
               <span class="area-first__amount-description">Left</span>
-              <span class="area-first__amount-number" *ngIf="tradeData.token.base.amountLeft">{{
-                tradeData.token.base.amountLeft.toFormat(shortedFormat)
+              <span class="area-first__amount-number">{{
+                tradeData.token.base.amountLeft?.toFormat(shortedFormat)
               }}</span>
             </div>
           </div>
@@ -83,7 +81,7 @@
 
               <img
                 class="token-info__image"
-                src="/assets/images/icons/coins/empty.svg"
+                [src]="tradeData.token.base.image || '/assets/images/icons/coins/empty.svg'"
                 alt="token"
               />
             </div>
@@ -100,11 +98,24 @@
               class="area-third__amount-input"
               [placeholder]="tradeData.token.base.isApproved ? 'Enter amount' : ''"
               [disabled]="!tradeData.token.base.isApproved"
+              appNumberPrecision
+              [(ngModel)]="baseAmountToContribute"
+              #baseAmountToContributeModel="ngModel"
             />
 
-            <div class="area-third__confirm-button">
+            <div class="area-third__confirm-button" (click)="makeApproveOrContribute('base')">
               <app-primary-button
                 [label]="tradeData.token.base.isApproved ? 'Contribute' : 'Approve'"
+                [animate]="
+                  approveStatus.base === TX_STATUS.IN_PROGRESS ||
+                  contributeStatus.base === TX_STATUS.IN_PROGRESS
+                "
+                [disabled]="
+                  !(
+                    baseAmountToContributeAsNumber?.isGreaterThan(0) &&
+                    baseAmountToContributeModel.valid
+                  )
+                "
               ></app-primary-button>
             </div>
 
@@ -133,26 +144,24 @@
 
             <div class="area-first__amount-sent">
               <span class="area-first__amount-description">Sent</span>
-              <span
-                class="area-first__amount-number"
-                *ngIf="tradeData.token.quote.amountContributed"
-                >{{ tradeData.token.quote.amountContributed.toFixed() }}</span
-              >
+              <span class="area-first__amount-number">
+                {{ tradeData.token.quote.amountContributed?.toFixed() }}
+              </span>
             </div>
 
             <div class="area-first__amount-left">
               <span class="area-first__amount-description">Left</span>
-              <span class="area-first__amount-number" *ngIf="tradeData.token.quote.amountLeft">{{
-                tradeData.token.quote.amountLeft.toFixed()
+              <span class="area-first__amount-number">{{
+                tradeData.token.quote.amountLeft?.toFixed()
               }}</span>
             </div>
           </div>
 
           <div class="token-block__area area-second">
             <div class="area-second__investors investors">
-              <span class="investors__amount"
-                >{{ tradeData.token.quote.investorsNumber }} / 10</span
-              >
+              <span class="investors__amount">
+                {{ tradeData.token.quote.investorsNumber }} / 10
+              </span>
               <span class="investors__text">Number of investors</span>
             </div>
 
@@ -169,7 +178,7 @@
 
               <img
                 class="token-info__image"
-                src="/assets/images/icons/coins/empty.svg"
+                [src]="tradeData.token.quote.image || '/assets/images/icons/coins/empty.svg'"
                 alt="token"
               />
             </div>
@@ -186,11 +195,24 @@
               class="area-third__amount-input"
               [placeholder]="tradeData.token.quote.isApproved ? 'Enter amount' : ''"
               [disabled]="!tradeData.token.quote.isApproved"
+              appNumberPrecision
+              [(ngModel)]="quoteAmountToContribute"
+              #quoteAmountToContributeModel="ngModel"
             />
 
-            <div class="area-third__confirm-button">
+            <div class="area-third__confirm-button" (click)="makeApproveOrContribute('quote')">
               <app-primary-button
                 [label]="tradeData.token.quote.isApproved ? 'Contribute' : 'Approve'"
+                [animate]="
+                  approveStatus.quote === TX_STATUS.IN_PROGRESS ||
+                  contributeStatus.quote === TX_STATUS.IN_PROGRESS
+                "
+                [disabled]="
+                  !(
+                    quoteAmountToContributeAsNumber?.isGreaterThan(0) &&
+                    quoteAmountToContributeModel.valid
+                  )
+                "
               ></app-primary-button>
             </div>
 

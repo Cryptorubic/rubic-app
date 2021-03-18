@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { FormsModule } from '@angular/forms';
 import { OrderBookTradePageRoutingModule } from './order-book-trade-page-routing.module';
 import { OrderBookTradeComponent } from './components/order-book-trade/order-book-trade.component';
 import { SharedModule } from '../../shared/shared.module';
@@ -9,7 +10,13 @@ import { WithdrawButtonComponent } from './components/withdraw-button/withdraw-b
 
 @NgModule({
   declarations: [OrderBookTradeComponent, WithdrawButtonComponent],
-  imports: [CommonModule, OrderBookTradePageRoutingModule, SharedModule, ClipboardModule],
+  imports: [
+    CommonModule,
+    OrderBookTradePageRoutingModule,
+    SharedModule,
+    ClipboardModule,
+    FormsModule
+  ],
   providers: [OrderBookTradeService]
 })
 export class OrderBookTradePageModule {}

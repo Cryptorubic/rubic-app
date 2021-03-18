@@ -7,8 +7,11 @@ export interface OrderBookDataToken extends SwapToken {
   amountTotal: BigNumber;
   amountContributed: BigNumber;
   amountLeft: BigNumber;
+
   investorsNumber: number;
+
   isApproved: boolean;
+
   minContribution: BigNumber;
   brokerPercent: number;
 }
