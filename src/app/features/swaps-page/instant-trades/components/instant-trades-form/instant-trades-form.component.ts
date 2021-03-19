@@ -32,12 +32,12 @@ interface InstantTradeParameters {
 
 interface InstantTradeProviderController {
   trade: InstantTrade;
-  tradeState: TRADE_STATE;
+  tradeState: TRADE_STATUS;
   tradeProviderInfo: TradeProviderInfo;
   isBestRate: boolean;
 }
 
-enum TRADE_STATE {
+enum TRADE_STATUS {
   CALCULATION = 'CALCULATION',
   APPROVAL = 'APPROVAL',
   TX_IN_PROGRESS = 'TX_IN_PROGRESS',
@@ -63,7 +63,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public blockchain: BLOCKCHAIN_NAME;
 
-  public TRADE_STATE = TRADE_STATE;
+  public TRADE_STATUS = TRADE_STATUS;
 
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
@@ -75,7 +75,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public trades: InstantTradeProviderController[];
 
-  public selectedTradeState: TRADE_STATE;
+  public selectedTradeState: TRADE_STATUS;
 
   public transactionHash: string;
 
@@ -169,8 +169,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private oneInchEthService: OneInchEthService,
     private onInchBscService: OneInchBscService,
     private dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   private initInstantTradeProviders() {
     switch (this.blockchain) {
@@ -276,12 +275,12 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public checkIfError(providerIndex: number): boolean {
-    return this.trades[providerIndex].tradeState === TRADE_STATE.ERROR;
+    return this.trades[providerIndex].tradeState === TRADE_STATUS.ERROR;
   }
 
   public shouldAnimateButton(providerIndex: number) {
     const { tradeState } = this.trades[providerIndex];
-    return tradeState && tradeState !== TRADE_STATE.ERROR && tradeState !== TRADE_STATE.COMPLETED;
+    return tradeState && tradeState !== TRADE_STATUS.ERROR && tradeState !== TRADE_STATUS.COMPLETED;
   }
 
   private async calculateTradeParameters() {
@@ -315,7 +314,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     tradeController: InstantTradeProviderController
   ): Promise<void> {
     tradeController.trade = null;
-    tradeController.tradeState = TRADE_STATE.CALCULATION;
+    tradeController.tradeState = TRADE_STATUS.CALCULATION;
     try {
       const calculatedTrade = await service.calculateTrade(
         this.tradeParameters.fromAmount,
@@ -324,7 +323,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       );
       if (!calculatedTrade) {
         tradeController.trade = null;
-        tradeController.tradeState = TRADE_STATE.ERROR;
+        tradeController.tradeState = TRADE_STATUS.ERROR;
         return;
       }
       if (
@@ -340,7 +339,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error(error);
       tradeController.trade = null;
-      tradeController.tradeState = TRADE_STATE.ERROR;
+      tradeController.tradeState = TRADE_STATUS.ERROR;
     }
   }
 
@@ -377,17 +376,17 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
-    const setTradeState = (state: TRADE_STATE) => {
+    const setTradeState = (state: TRADE_STATUS) => {
       this.trades[selectedServiceIndex].tradeState = state;
       this.selectedTradeState = state;
     };
     this._instantTradeServices[selectedServiceIndex]
       .createTrade(this.trades[selectedServiceIndex].trade, {
-        onApprove: () => setTradeState(TRADE_STATE.APPROVAL),
-        onConfirm: () => setTradeState(TRADE_STATE.TX_IN_PROGRESS)
+        onApprove: () => setTradeState(TRADE_STATUS.APPROVAL),
+        onConfirm: () => setTradeState(TRADE_STATUS.TX_IN_PROGRESS)
       })
       .then(receipt => {
-        setTradeState(TRADE_STATE.COMPLETED);
+        setTradeState(TRADE_STATUS.COMPLETED);
         this.transactionHash = receipt.transactionHash;
       })
       .catch((err: RubicError) => {
