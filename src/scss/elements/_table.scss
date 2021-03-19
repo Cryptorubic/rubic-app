@@ -1,0 +1,78 @@
+$cell-gap: 4px;
+$cell-padding: 10px;
+
+.table {
+  &.mat-table {
+    border-spacing: $cell-gap;
+    background: inherit;
+    margin: 0 -$cell-gap;
+    width: calc(100% + #{$cell-gap} * 2);
+  }
+
+  th, td {
+    padding: $cell-padding;
+    background-color: #fff;
+    color: #000;
+    position: relative;
+    border: none;
+
+    & div {
+      display: flex;
+      justify-content: center;
+
+      & .separator {
+        left: calc(50% - 2px);
+        top: 0;
+        position: absolute;
+        display: block;
+        width: 4px;
+        background-color: #f4f4f4;
+        height: 100%;
+        box-sizing: border-box;
+
+        &_iconfull {
+          &::after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            background: url(/assets/images/icons/ch_03.svg) center center/24px no-repeat;
+            top: 50%;
+            margin-top: -25px;
+            transform: translate(calc(-50% + 2px));
+          }
+        }
+      }
+    }
+  }
+
+  th {
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  td {
+    font-size: 15px;
+  }
+
+  img {
+    height: 25px;
+    width: 25px;
+  }
+
+  &__centered {
+    justify-content: center;
+  }
+}
+
+::ng-deep .table {
+  &__centered-child > * {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__volume-cell {
+
+  }
+}

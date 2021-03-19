@@ -1,0 +1,43 @@
+.volume-cell {
+  display: flex;
+
+  &__token-from,
+  &__token-to {
+    display: flex;
+    width: 50%;
+    font-size: 15px;
+    flex-direction: column;
+  }
+
+  &__token-from {
+    align-items: flex-end;
+    padding-right: 15px;
+  }
+
+  &__token-to {
+    align-items: flex-start;
+    padding-left: 15px;
+  }
+
+  &__separator {
+    left: calc(50% - 2px);
+    top: 0;
+    position: absolute;
+    display: block;
+    width: 4px;
+    background-color: #f4f4f4;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  &__text {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  
+  &__subtext {
+    color: rgba(0,0,0,.5);
+    font-size: 14px;
+    margin-top: 14px;
+  }
+}

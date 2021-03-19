@@ -1,0 +1,15 @@
+<div class="volume-cell" routerLink="/trades/public-v3/{{ element?.unique_link }}">
+  <div class="volume-cell__token-from">
+    <div class="volume-cell__text">{{ element.amount.from }}&nbsp;{{ element.token.from }}</div>
+    <div class="volume-cell__subtext">
+      {{ (element.amount.from / element.amount.to).toFixed(5) }}&nbsp;{{ element.token.from }}&nbsp;/&nbsp;1&nbsp;{{ element.token.to }}
+    </div>
+  </div>
+  <div class="volume-cell__separator"></div>
+  <div class="volume-cell__token-to">
+    <div class="volume-cell__text">{{ element.amount.to }}&nbsp;{{ element.token.to }}</div>
+    <div class="volume-cell__subtext">
+      {{ (element.amount.to / element.amount.from).toFixed(5) }}&nbsp;{{ element.token.to }}&nbsp;/&nbsp;1&nbsp;{{ element.token.from }}
+    </div>
+  </div>
+</div>

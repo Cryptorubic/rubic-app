@@ -1,1 +1,64 @@
-<p>order-books-table works!</p>
+<div class="order-books-table">
+  <div class="order-books-table__title-section">
+    <h2 class="order-books-table__title">{{ 'Order Book' | translate }}</h2>
+    <button class="order-books-table__refresh-button refresh-btn" (click)="refresnOrderBooks()">
+      <img class="arrow" src="./assets/images/icons/refresh.svg">
+    </button>
+  </div>
+  <table mat-table matSort [dataSource]="$dataSource | async" class="table order-books">
+    <colgroup>
+      <ng-container *ngFor="let size of $columnsSizes | async">
+        <col [style.width]="size">
+      </ng-container>
+   </colgroup>
+    <!-- Tokens icons column  -->
+    <ng-container matColumnDef="token">
+      <th mat-header-cell *matHeaderCellDef #tokensHeader matAutocompleteOrigin>
+        <app-coins-filter></app-coins-filter>
+      </th>
+      <td *matCellDef="let element">
+        <app-tokens-cell [element]="element"></app-tokens-cell>
+      </td>
+    </ng-container>
+    <!-- Tokens amount column  -->
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="centered-child">
+        <div class="order-books-table__cell">
+          {{ 'Volume' | translate }}
+        </div>
+      </th>
+      <td *matCellDef="let element" class="centered-child clickable">
+        <app-volume-cell [element]="element"></app-volume-cell>
+      </td>
+    </ng-container>
+    <!-- Network column  -->
+    <ng-container matColumnDef="network">
+      <th mat-header-cell *matHeaderCellDef class="centered-child">
+        <div class="order-books-table__cell">
+          {{ 'Chain' | translate }}
+        </div>
+      </th>
+      <td *matCellDef="let element" class="centered-child">
+        <div class="order-books-table__cell">
+          <img class="table__image" src="{{ getChainIcon(element.network) }}" alt="{{ element.network }}">
+        </div>  
+      </td>
+    </ng-container>
+    <!-- Expires in column  -->
+    <ng-container matColumnDef="expires">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="centered-child">
+        <div class="order-books-table__cell">
+          {{ 'Expires in' | translate }}
+        </div>
+      </th>
+      <td *matCellDef="let element" class="centered-child">
+        <div class="order-books-table__cell">
+          {{ element.expires }}
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="$displayedColumns | async"></tr>
+    <tr mat-row *matRowDef="let row; columns: $displayedColumns | async;"></tr>
+  </table>
+</div>
+
