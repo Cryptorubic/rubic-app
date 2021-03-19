@@ -6,7 +6,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./withdraw-button.component.scss']
 })
 export class WithdrawButtonComponent {
-  @Input() animate = false;
+  @Input() animated = false;
+
+  @Input() disabled = false;
 
   @Output() onClick = new EventEmitter<void>();
 

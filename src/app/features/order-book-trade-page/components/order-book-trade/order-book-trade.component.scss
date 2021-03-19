@@ -322,7 +322,7 @@
   flex-direction: column;
   grid-gap: 12px;
 
-  padding: 0 20px 16px;
+  padding: 0 20px 17px;
 
   font-weight: 500;
 }
@@ -330,7 +330,7 @@
 .area-fifth {
   border-top: 15px solid $grey-background;
 
-  &__withdraw-button {
+  app-withdraw-button {
     width: 100%;
   }
 }

@@ -191,7 +191,7 @@ export class OrderBookTradeService {
     );
   }
 
-  public async makeApproveOrContribute(
+  public async checkApproveAndMakeContribute(
     tradeData: OrderBookTradeData,
     tokenPart: TokenPart,
     amount: string,

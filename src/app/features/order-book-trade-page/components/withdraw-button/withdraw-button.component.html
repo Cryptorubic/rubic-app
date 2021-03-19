@@ -1,5 +1,5 @@
-<button class="withdraw-button" [disabled]="animate" (click)="onClickHandler()">
-  <span class="lds-ellipsis" *ngIf="animate">
+<button class="withdraw-button" [disabled]="disabled || animated" (click)="onClickHandler()">
+  <span class="lds-ellipsis" *ngIf="animated">
     <span class="lds-ellipsis-container">
       <span></span><span></span><span></span><span></span>
     </span>

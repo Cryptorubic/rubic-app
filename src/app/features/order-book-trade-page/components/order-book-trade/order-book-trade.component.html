@@ -123,11 +123,12 @@
                   contributeStatus.base === TX_STATUS.IN_PROGRESS
                 "
                 [disabled]="
-                  tradeData.token.base.isApproved &&
-                  !(
-                    baseAmountToContributeAsNumber?.isGreaterThan(0) &&
-                    baseAmountToContributeModel.valid
-                  )
+                  (tradeData.token.base.isApproved &&
+                    !(
+                      baseAmountToContributeAsNumber?.isGreaterThan(0) &&
+                      baseAmountToContributeModel.valid
+                    )) ||
+                  isOperationInProgress
                 "
                 (onClick)="makeApproveOrContribute('base')"
               ></app-primary-button>
@@ -177,11 +178,11 @@
             "
           >
             <app-withdraw-button
-              class="area-fifth__withdraw-button"
-              [animate]="
+              [animated]="
                 withdrawStatus.base === TX_STATUS.STARTED ||
                 withdrawStatus.base === TX_STATUS.IN_PROGRESS
               "
+              [disabled]="isOperationInProgress"
               (onClick)="makeWithdraw('base')"
             ></app-withdraw-button>
           </div>
@@ -272,11 +273,12 @@
                   contributeStatus.quote === TX_STATUS.IN_PROGRESS
                 "
                 [disabled]="
-                  tradeData.token.quote.isApproved &&
-                  !(
-                    quoteAmountToContributeAsNumber?.isGreaterThan(0) &&
-                    quoteAmountToContributeModel.valid
-                  )
+                  (tradeData.token.quote.isApproved &&
+                    !(
+                      quoteAmountToContributeAsNumber?.isGreaterThan(0) &&
+                      quoteAmountToContributeModel.valid
+                    )) ||
+                  isOperationInProgress
                 "
                 (onClick)="makeApproveOrContribute('quote')"
               ></app-primary-button>
@@ -327,10 +329,11 @@
           >
             <app-withdraw-button
               class="area-fourth__withdraw-button"
-              [animate]="
+              [animated]="
                 withdrawStatus.quote === TX_STATUS.STARTED ||
                 withdrawStatus.quote === TX_STATUS.IN_PROGRESS
               "
+              [disabled]="isOperationInProgress"
               (onClick)="makeWithdraw('quote')"
             ></app-withdraw-button>
           </div>
@@ -424,7 +427,10 @@
         <app-primary-button
           label="Cancel trade"
           [animate]="cancelStatus === TX_STATUS.STARTED || cancelStatus === TX_STATUS.IN_PROGRESS"
-          [disabled]="(onAddressChanges | async).toLowerCase() !== tradeData.owner.toLowerCase()"
+          [disabled]="
+            (onAddressChanges | async).toLowerCase() !== tradeData.owner.toLowerCase() ||
+            isOperationInProgress
+          "
           (onClick)="cancelTrade()"
         ></app-primary-button>
       </div>
@@ -433,3 +439,18 @@
 </div>
 
 <div class="no-trade" *ngIf="!doesTradeExist">Such trade doesn't exist.</div>
+
+<app-operation-in-progress-modal *ngIf="isOperationInProgress"></app-operation-in-progress-modal>
+
+<app-operation-completed-modal
+  *ngIf="isOperationCompleted"
+  [transactionId]="lastCompletedTransactionId"
+  [blockchain]="tradeData.blockchain"
+></app-operation-completed-modal>
+
+<app-cancel-completed-modal
+  *ngIf="cancelStatus === TX_STATUS.COMPLETED"
+  [transactionId]="lastCompletedTransactionId"
+  [blockchain]="tradeData.blockchain"
+>
+</app-cancel-completed-modal>
