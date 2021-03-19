@@ -101,6 +101,7 @@ import { TradeSuccessModalComponent } from './index/trade-success-modal/trade-su
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
+import { VolumeBlockComponent } from './components/volume-block/volume-block.component';
 
 export class TranslateBrowserLoader implements TranslateLoader {
   constructor(
@@ -253,7 +254,8 @@ export function appInitializerFactory(
     TradeSuccessModalComponent,
     TooltipComponent,
     InfoTooltipComponent,
-    ListingRequestPopupComponent
+    ListingRequestPopupComponent,
+    VolumeBlockComponent
   ],
   entryComponents: [AuthComponent, ChangePasswordComponent, DisclaimerComponent],
   imports: [
