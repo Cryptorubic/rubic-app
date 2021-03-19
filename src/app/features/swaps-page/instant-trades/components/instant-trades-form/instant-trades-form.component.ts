@@ -19,6 +19,7 @@ import { RubicError } from '../../../../../shared/models/errors/RubicError';
 import { NetworkError } from '../../../../../shared/models/errors/provider/NetworkError';
 import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
 import ADDRESS_TYPE from '../../../../../shared/models/blockchain/ADDRESS_TYPE';
+import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 
 interface TradeProviderInfo {
   label: string;
@@ -168,7 +169,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private uniSwapService: UniSwapService,
     private oneInchEthService: OneInchEthService,
     private onInchBscService: OneInchBscService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private instantTradesApiService: InstantTradesApiService
   ) {}
 
   private initInstantTradeProviders() {
@@ -388,6 +390,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       .then(receipt => {
         setTradeState(TRADE_STATUS.COMPLETED);
         this.transactionHash = receipt.transactionHash;
+        this.instantTradesApiService.notifyInstantTradesBot({
+          provider: this.trades[selectedServiceIndex].tradeProviderInfo.label,
+          blockchain: this.blockchain,
+          walletAddress: receipt.from,
+          trade: this.trades[selectedServiceIndex].trade,
+          txHash: receipt.transactionHash
+        });
       })
       .catch((err: RubicError) => {
         let data: any = { title: 'Error', descriptionText: err.comment };

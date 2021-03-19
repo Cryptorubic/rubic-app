@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Web3ServiceLEGACY } from './web3LEGACY.service';
+import { BridgeApiService } from './bridge-api.service';
 
-describe('Web3Service', () => {
+describe('BackendApiService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: Web3ServiceLEGACY = TestBed.get(Web3ServiceLEGACY);
+    const service: BridgeApiService = TestBed.get(BridgeApiService);
 
     expect(service).toBeTruthy();
   });

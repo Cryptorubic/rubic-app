@@ -10,7 +10,7 @@ import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
 import { RubicError } from '../../../shared/models/errors/RubicError';
 import { OverQueryLimitError } from '../../../shared/models/errors/bridge/OverQueryLimitError';
-import { BackendApiService } from '../../../core/services/backend/backend-api/backend-api.service';
+import { BridgeApiService } from '../../../core/services/backend/bridge-api/bridge-api.service';
 import { MetamaskError } from '../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../shared/models/errors/provider/AccountError';
 import { BridgeToken } from '../models/BridgeToken';
@@ -46,7 +46,7 @@ export class BridgeService {
     private tokensService: TokensService,
     private httpClient: HttpClient,
     private web3Private: Web3PrivateService,
-    private backendApiService: BackendApiService
+    private backendApiService: BridgeApiService
   ) {
     this.getTokensList();
     this.updateTransactionsList();
