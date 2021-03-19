@@ -273,10 +273,20 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   }
 
   public getMinContributionAsString(tokenPart: TokenPart): string {
-    return !this.tradeData.token[tokenPart].minContribution ||
+    if (
+      !this.tradeData.token[tokenPart].minContribution ||
       this.tradeData.token[tokenPart].minContribution.isNaN()
-      ? ''
-      : this.tradeData.token[tokenPart].minContribution.toFixed();
+    ) {
+      return '';
+    }
+    if (
+      this.tradeData.token[tokenPart].minContribution.isGreaterThan(
+        this.tradeData.token[tokenPart].amountLeft
+      )
+    ) {
+      return '0';
+    }
+    return this.tradeData.token[tokenPart].minContribution.toFixed();
   }
 
   public onCopiedLink(type: CopiedType): void {

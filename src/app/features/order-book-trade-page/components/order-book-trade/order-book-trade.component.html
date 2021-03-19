@@ -91,7 +91,8 @@
             class="token-block__area area-third"
             *ngIf="
               tradeData?.status === TRADE_STATUS.ACTIVE &&
-              tradeData.token.base.isApproved !== undefined
+              tradeData.token.base.isApproved !== undefined &&
+              tradeData.token.base.amountLeft
             "
           >
             <input
@@ -101,7 +102,7 @@
               appNumberPrecision
               [decimalLength]="tradeData.token.base.decimals"
               [minValue]="getMinContributionAsString('base')"
-              [maxValue]="tradeData.token.base.amountTotal.toFixed()"
+              [maxValue]="tradeData.token.base.amountLeft.toFixed()"
               [(ngModel)]="baseAmountToContribute"
               #baseAmountToContributeModel="ngModel"
               [ngClass]="{
@@ -129,7 +130,12 @@
               ></app-primary-button>
             </div>
 
-            <button class="area-third__fill-button">Fill all</button>
+            <button
+              class="area-third__fill-button"
+              (click)="baseAmountToContribute = tradeData.token.base.amountLeft.toFixed()"
+            >
+              Fill all
+            </button>
           </div>
 
           <div
@@ -231,7 +237,8 @@
             class="token-block__area area-third"
             *ngIf="
               tradeData?.status === TRADE_STATUS.ACTIVE &&
-              tradeData.token.quote.isApproved !== undefined
+              tradeData.token.quote.isApproved !== undefined &&
+              tradeData.token.quote.amountLeft
             "
           >
             <input
@@ -241,7 +248,7 @@
               appNumberPrecision
               [decimalLength]="tradeData.token.quote.decimals"
               [minValue]="getMinContributionAsString('quote')"
-              [maxValue]="tradeData.token.quote.amountTotal.toFixed()"
+              [maxValue]="tradeData.token.quote.amountLeft.toFixed()"
               [(ngModel)]="quoteAmountToContribute"
               #quoteAmountToContributeModel="ngModel"
               [ngClass]="{
@@ -269,7 +276,12 @@
               ></app-primary-button>
             </div>
 
-            <button class="area-third__fill-button">Fill all</button>
+            <button
+              class="area-third__fill-button"
+              (click)="quoteAmountToContribute = tradeData.token.quote.amountLeft.toFixed()"
+            >
+              Fill all
+            </button>
           </div>
 
           <div
