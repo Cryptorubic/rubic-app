@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import { List } from 'immutable';
-import { IBlockchain } from 'src/app/core/services/bridge/types';
 import { IBlockchainShort } from './types';
 import { BlockchainLabelComponent } from './blockchain-label/blockchain-label.component';
 import { InputDropdownComponent } from '../input-dropdown/input-dropdown.component';
 import { DropdownComponentData } from '../input-dropdown/types';
+import { BridgeBlockchain } from '../../../features/bridge-page/models/BridgeBlockchain';
 
 interface BlockchainLabelData {
   blockchain: IBlockchainShort;
@@ -26,11 +26,11 @@ interface BlockchainDropdownData extends DropdownComponentData {
   styleUrls: ['./blockchains-input.component.scss']
 })
 export class BlockchainsInputComponent implements OnChanges {
-  @Input() selectedBlockchain: IBlockchain;
+  @Input() selectedBlockchain: BridgeBlockchain;
 
-  @Input() blockchains: IBlockchain[];
+  @Input() blockchains: BridgeBlockchain[];
 
-  @Output() blockchainChanges = new EventEmitter<IBlockchain>();
+  @Output() blockchainChanges = new EventEmitter<BridgeBlockchain>();
 
   @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<BlockchainDropdownData>;
 

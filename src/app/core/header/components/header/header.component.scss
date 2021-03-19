@@ -13,6 +13,10 @@ $mobile-width: 1024;
   z-index: 10;
   background-color: white;
 
+  &__mobile-language{
+    margin-right: 10px;
+  }
+
   &_scrolled {
     background-color: white;
     padding-top: 13px;
@@ -44,6 +48,7 @@ $mobile-width: 1024;
   app-header-language-dropdown {
     @include b($mobile-width) {
       margin-left: auto;
+      margin-right: 10px;
     }
   }
 

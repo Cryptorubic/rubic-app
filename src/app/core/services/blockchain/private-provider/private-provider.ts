@@ -6,11 +6,6 @@ import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN
 
 export abstract class PrivateProvider {
   /**
-   * @description an instance of web3 to access the blockchain
-   */
-  public abstract readonly web3: Web3;
-
-  /**
    * @description default value for transactions gasLimit. Required for tests provider stub
    */
   public readonly defaultGasLimit: string | undefined = undefined;
@@ -24,6 +19,11 @@ export abstract class PrivateProvider {
    * @description observable value of the network id and name
    */
   public abstract readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
+
+  /**
+   * @description an instance of web3 to access the blockchain
+   */
+  abstract get web3(): Web3;
 
   /**
    * @description is the blockchain provider installed
@@ -73,4 +73,9 @@ export abstract class PrivateProvider {
    * @description activate the blockchain provider
    */
   public abstract async activate(): Promise<void>;
+
+  /**
+   * @description deactivate the blockchain provider
+   */
+  public abstract deActivate(): void;
 }

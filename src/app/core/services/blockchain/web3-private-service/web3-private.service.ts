@@ -4,7 +4,7 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
@@ -15,13 +15,15 @@ import { UserRejectError } from '../../../../shared/models/errors/provider/UserR
   providedIn: 'root'
 })
 export class Web3PrivateService {
-  private web3: Web3;
-
   private defaultMockGas: string;
 
-  public readonly onAddressChanges: BehaviorSubject<string>;
+  private get web3(): Web3 {
+    return this.provider.web3;
+  }
 
-  public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
+  public readonly onAddressChanges: Observable<string>;
+
+  public readonly onNetworkChanges: Observable<IBlockchain>;
 
   public get address(): string {
     return this.provider.address;
@@ -47,29 +49,24 @@ export class Web3PrivateService {
     return this.provider.activate();
   }
 
+  public deActivate(): void {
+    return this.provider.deActivate();
+  }
+
   constructor(private readonly provider: MetamaskProviderService) {
-    this.onAddressChanges = provider.onAddressChanges;
-    this.onNetworkChanges = provider.onNetworkChanges;
-    this.web3 = provider.web3;
+    this.onAddressChanges = provider.onAddressChanges.asObservable();
+    this.onNetworkChanges = provider.onNetworkChanges.asObservable();
     this.defaultMockGas = provider.defaultGasLimit;
-  }
-
-  public getNetwork(): Observable<IBlockchain> {
-    return this.onNetworkChanges.asObservable();
-  }
-
-  public getAddress(): Observable<string> {
-    return this.onAddressChanges.asObservable();
   }
 
   /**
    * @description Calculates an Ethereum specific signature.
    * @param message Data to sign.
-   * @param address Address to sign data with.
    * @return The signature.
    */
-  public async signPersonal(message, address) {
-    return this.web3.eth.sign(message, address);
+  public async signPersonal(message) {
+    // @ts-ignore
+    return this.web3.eth.personal.sign(message, this.address);
   }
 
   /**

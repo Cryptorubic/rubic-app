@@ -175,6 +175,8 @@ export class OneInchService extends InstantTradeService {
       })
       .toPromise()) as OneInchSwapResponse;
 
+    const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.25).toFixed(0);
+
     if (fromTokenAddress !== this.oneInchNativeAddress) {
       await this.provideAllowance(
         trade.from.token.address,
@@ -186,7 +188,7 @@ export class OneInchService extends InstantTradeService {
       return this.web3Private.sendTransaction(oneInchTrade.tx.to, '0', {
         onTransactionHash: options.onConfirm,
         data: oneInchTrade.tx.data,
-        gas: oneInchTrade.tx.gas.toString(),
+        gas: increasedGas,
         gasPrice: oneInchTrade.tx.gasPrice
       });
     }
@@ -194,7 +196,7 @@ export class OneInchService extends InstantTradeService {
     return this.web3Private.sendTransaction(oneInchTrade.tx.to, fromAmount, {
       onTransactionHash: options.onConfirm,
       data: oneInchTrade.tx.data,
-      gas: oneInchTrade.tx.gas.toString(),
+      gas: increasedGas,
       gasPrice: oneInchTrade.tx.gasPrice,
       inWei: true
     });

@@ -47,8 +47,8 @@ export class UserProfileComponent {
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
-    this.$currentBlockchain = this.web3PrivateService.getNetwork();
-    this.$currentAccountAddress = this.web3PrivateService.getAddress();
+    this.$currentBlockchain = this.web3PrivateService.onNetworkChanges;
+    this.$currentAccountAddress = this.web3PrivateService.onAddressChanges;
   }
 
   @HostListener('document:mousedown', ['$event'])

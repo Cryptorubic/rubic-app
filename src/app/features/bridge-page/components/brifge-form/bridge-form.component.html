@@ -1,16 +1,4 @@
 <div class="index-start-form__wrapper">
-  <!-- Form label
-  <div class="start-form-menus">
-    <ul class="block-tabs block-tabs_blockchains">
-      <li class="block-tabs_item active">
-        <div>
-          <img class="block-tabs_item_icon" style="margin-right: 5px" src="../../../assets/images/icons/coins/eth.png" alt="Ethereum"/>
-          <img class="block-tabs_item_icon" style="margin-right: 5px" src="../../../assets/images/icons/coins/bnb.svg" alt="Binance"/>
-          <span class="block-tabs_item_text">Ethereum and Binance Smart Chain</span>
-        </div>
-    </ul>
-  </div> -->
-
   <!-- Panel -->
   <form class="cross-chain-form">
     <div class="cross-chain-form__main-section">
@@ -195,6 +183,7 @@
       <div class="cross-chain-form__last-section">
         <div class="cross-chain-form__confirm-section">
           <app-primary-button
+            type="button"
             class="cross-chain-form__confirm-wrapper"
             label="Create Swap"
             [animate]="feeCalculationProgress || buttonAnimation"
@@ -245,20 +234,3 @@
   [txId]="tradeSuccessId"
   (onCloseEvent)="tradeSuccessId = undefined"
 ></app-bridge-success>
-
-<app-message-box
-  *ngIf="error"
-  title="Error"
-  [descriptionText]="error.comment || 'Something went wrong, please try again later.'"
-  (onClose)="closeErrorModal()"
->
-</app-message-box>
-
-<app-message-box
-  *ngIf="errorComponent"
-  title="Error"
-  [descriptionComponentClass]="errorComponent.componentClass"
-  [descriptionComponentInputs]="errorComponent.inputs"
-  (onClose)="closeErrorModal()"
->
-</app-message-box>
