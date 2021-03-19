@@ -33,17 +33,6 @@
     ]
   },
   {
-    "img": "AlexandrKelepko.png",
-    "name": "Alexandr Kelepko",
-    "role": "Backend Developer",
-    "links": [
-      {
-        "icon": "Github.svg",
-        "url": "https://github.com/slycaptcha"
-      }
-    ]
-  },
-  {
     "img": "SergeyAndreev.png",
     "name": "Sergey Andreev",
     "role": "Frontend Developer",
@@ -51,28 +40,6 @@
       {
         "icon": "Github.svg",
         "url": "https://github.com/siandreev"
-      }
-    ]
-  },
-  {
-    "img": "DaniilSvetlov.png",
-    "name": "Daniil Svetlov",
-    "role": "Backend Developer",
-    "links": [
-      {
-        "icon": "Github.svg",
-        "url": "https://github.com/ddsvetlov"
-      }
-    ]
-  },
-  {
-    "img": "AndreyAksenov.png",
-    "name": "Andrey Aksenov",
-    "role": "Marketing",
-    "links": [
-      {
-        "icon": "Telegram.svg",
-        "url": "https://t.me/renedsaa"
       }
     ]
   },
@@ -99,24 +66,46 @@
     ]
   },
   {
-    "img": "DmitriyYershov.png",
-    "name": "Dmitriy Yershov",
-    "role": "Blockchain developer",
+    "img": "AlexandrKelepko.png",
+    "name": "Alexandr Kelepko",
+    "role": "Backend Developer",
     "links": [
       {
-        "icon": "Telegram.svg",
-        "url": "https://t.me/dmitriy_yershov"
+        "icon": "Github.svg",
+        "url": "https://github.com/slycaptcha"
       }
     ]
   },
   {
-    "img": "GeorgeStefan.png",
-    "name": "George Stefan",
-    "role": "SMM",
+    "img": "DaniilSvetlov.png",
+    "name": "Daniil Svetlov",
+    "role": "Backend Developer",
+    "links": [
+      {
+        "icon": "Github.svg",
+        "url": "https://github.com/ddsvetlov"
+      }
+    ]
+  },
+  {
+    "img": "AlexandrVolkov.jpg",
+    "name": "Alexandr Volkov",
+    "role": "Backend Developer",
+    "links": [
+      {
+        "icon": "Github.svg",
+        "url": "https://github.com/slycaptcha"
+      }
+    ]
+  },
+  {
+    "img": "AndreyAksenov.png",
+    "name": "Andrey Aksenov",
+    "role": "Marketing",
     "links": [
       {
         "icon": "Telegram.svg",
-        "url": "https://teleg.run/GeorgeDLT"
+        "url": "https://t.me/renedsaa"
       }
     ]
   },
@@ -128,6 +117,17 @@
       {
         "icon": "Telegram.svg",
         "url": "https://t.me/Guilhemw"
+      }
+    ]
+  },
+  {
+    "img": "GeorgeStefan.png",
+    "name": "George Stefan",
+    "role": "SMM",
+    "links": [
+      {
+        "icon": "Telegram.svg",
+        "url": "https://teleg.run/GeorgeDLT"
       }
     ]
   }
