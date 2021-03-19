@@ -19,6 +19,7 @@
         *ngIf="!crossChainMode"
         (blockchainTradesSelect)="changeBlockchain($event)"
         (instanceTradesSelect)="changeOrderType($event)"
+        (swapModeChangedToOB)="orderBookMode = $event"
       >
       </app-start-form>
       <app-bridge-form *ngIf="crossChainMode"> </app-bridge-form>
@@ -46,6 +47,10 @@
         'By trading on our platform you agree with the following terms and conditions' | translate
       "
     ></div>
+
+    <div class="volume-block" *ngIf="!orderBookMode">
+      <app-volume-block></app-volume-block>
+    </div>
 
     <app-collaborations></app-collaborations>
   </div>

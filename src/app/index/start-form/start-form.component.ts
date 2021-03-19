@@ -128,6 +128,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('metaMaskError') metaMaskError: TemplateRef<any>;
   @ViewChild('insufficientFundsError') insufficientFundsError: TemplateRef<any>;
   @ViewChild('container') container: ElementRef;
+  @Output() swapModeChangedToOB = new EventEmitter<boolean>();
   @Output() BaseTokenCustom = new EventEmitter<any>();
   @Output() QuoteTokenCustom = new EventEmitter<any>();
   @Output() changedSocialState = new EventEmitter<string>();
@@ -612,6 +613,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public activateInstanceTrade() {
+    this.swapModeChangedToOB.emit(false);
     if (this.instanceTrade) {
       return;
     }
@@ -637,6 +639,7 @@ export class StartFormComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public deActivateInstanceTrade() {
+    this.swapModeChangedToOB.emit(true);
     if (!this.instanceTrade) {
       return;
     }
