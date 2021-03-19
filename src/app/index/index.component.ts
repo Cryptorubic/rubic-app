@@ -26,6 +26,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   public crossChainMode = false;
 
+  public orderBookMode = false;
+
   collaborations = collaborations;
 
   constructor(

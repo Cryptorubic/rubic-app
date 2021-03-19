@@ -19,6 +19,7 @@
         *ngIf="!crossChainMode"
         (blockchainTradesSelect)="changeBlockchain($event)"
         (instanceTradesSelect)="changeOrderType($event)"
+        (swapModeChangedToOB)="orderBookMode = $event"
       >
       </app-start-form>
       <app-bridge-form *ngIf="crossChainMode"> </app-bridge-form>
@@ -47,7 +48,7 @@
       "
     ></div>
 
-    <div class="volume-block">
+    <div class="volume-block" *ngIf="!orderBookMode">
       <app-volume-block></app-volume-block>
     </div>
 
