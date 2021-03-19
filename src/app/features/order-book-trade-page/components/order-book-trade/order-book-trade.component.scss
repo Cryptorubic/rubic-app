@@ -272,13 +272,21 @@
 
   &__amount-input {
     padding: 12px;
-    border: none;
+    border: 1px solid white;
 
     background: $grey-background;
 
     color: $dark;
     font-size: 19px;
     font-family: inherit;
+
+    &_invalid {
+      border-color: $error-red;
+
+      &:focus {
+        box-shadow: 0 0 2px $error-red;
+      }
+    }
   }
 
   &__fill-button {
@@ -311,11 +319,12 @@
   position: relative;
   top: -5px;
 
+  flex-direction: column;
+  grid-gap: 12px;
+
   padding: 0 20px 16px;
 
-  &__brokers-fee {
-    font-weight: 500;
-  }
+  font-weight: 500;
 }
 
 .area-fifth {

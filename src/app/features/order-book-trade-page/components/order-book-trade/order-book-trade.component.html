@@ -99,8 +99,14 @@
               [placeholder]="tradeData.token.base.isApproved ? 'Enter amount' : ''"
               [disabled]="!tradeData.token.base.isApproved"
               appNumberPrecision
+              [decimalLength]="tradeData.token.base.decimals"
+              [minValue]="getMinContributionAsString('base')"
+              [maxValue]="tradeData.token.base.amountTotal.toFixed()"
               [(ngModel)]="baseAmountToContribute"
               #baseAmountToContributeModel="ngModel"
+              [ngClass]="{
+                'area-third__amount-input_invalid': baseAmountToContributeModel.invalid
+              }"
             />
 
             <div class="area-third__confirm-button">
@@ -126,7 +132,20 @@
             <button class="area-third__fill-button">Fill all</button>
           </div>
 
-          <div class="token-block__area area-fourth" *ngIf="tradeData.isWithBrokerFee">
+          <div
+            class="token-block__area area-fourth"
+            *ngIf="
+              tradeData.token.base.minContribution.isGreaterThan(0) || tradeData.isWithBrokerFee
+            "
+          >
+            <div
+              class="area-fourth__min-contribution"
+              *ngIf="tradeData.token.base.minContribution.isGreaterThan(0)"
+            >
+              Min contribution limit:
+              {{ tradeData.token.base.minContribution + ' ' + tradeData.token.base.symbol }}
+            </div>
+
             <div class="area-fourth__brokers-fee" *ngIf="tradeData.isWithBrokerFee">
               Broker's fee:
               {{
@@ -220,8 +239,14 @@
               [placeholder]="tradeData.token.quote.isApproved ? 'Enter amount' : ''"
               [disabled]="!tradeData.token.quote.isApproved"
               appNumberPrecision
+              [decimalLength]="tradeData.token.quote.decimals"
+              [minValue]="getMinContributionAsString('quote')"
+              [maxValue]="tradeData.token.quote.amountTotal.toFixed()"
               [(ngModel)]="quoteAmountToContribute"
               #quoteAmountToContributeModel="ngModel"
+              [ngClass]="{
+                'area-third__amount-input_invalid': quoteAmountToContributeModel.invalid
+              }"
             />
 
             <div class="area-third__confirm-button">
@@ -247,7 +272,20 @@
             <button class="area-third__fill-button">Fill all</button>
           </div>
 
-          <div class="token-block__area area-fourth" *ngIf="tradeData.isWithBrokerFee">
+          <div
+            class="token-block__area area-fourth"
+            *ngIf="
+              tradeData.token.quote.minContribution.isGreaterThan(0) || tradeData.isWithBrokerFee
+            "
+          >
+            <div
+              class="area-fourth__min-contribution"
+              *ngIf="tradeData.token.quote.minContribution.isGreaterThan(0)"
+            >
+              Min contribution limit:
+              {{ tradeData.token.quote.minContribution + ' ' + tradeData.token.quote.symbol }}
+            </div>
+
             <div class="area-fourth__brokers-fee" *ngIf="tradeData.isWithBrokerFee">
               Broker's fee:
               {{
