@@ -72,7 +72,9 @@ export class OrderBookApiService implements OnDestroy {
       token: {},
       blockchain,
       expirationDate: moment.utc(tradeApi.stop_date),
-      isPublic: tradeApi.public
+      isPublic: tradeApi.public,
+      isWithBrokerFee: tradeApi.broker_fee,
+      brokerAddress: tradeApi.broker_fee_address
     } as OrderBookTradeData;
     await this.setTokensData('base', tradeApi, tradeData);
     await this.setTokensData('quote', tradeApi, tradeData);

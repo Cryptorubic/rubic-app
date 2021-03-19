@@ -29,6 +29,8 @@ type tokensStatus = {
   [tokenPart in TokenPart]: TX_STATUS;
 };
 
+type CopiedType = 'linkToDeal' | 'brokerAddress';
+
 @Component({
   selector: 'app-order-book-trade',
   templateUrl: './order-book-trade.component.html',
@@ -117,7 +119,10 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public currentUrl: string;
 
-  public isCopied = false;
+  public isCopied = {
+    linkToDeal: false,
+    brokerAddress: false
+  };
 
   get tokens(): List<SwapToken> {
     return this._tokens;
@@ -260,10 +265,17 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
       : `1 ${this.tradeData.token.base.symbol} / ${quoteToBaseRate} ${this.tradeData.token.quote.symbol}`;
   }
 
-  public onCopiedLink(): void {
-    this.isCopied = true;
+  public getBrokerPercent(tokenPart: TokenPart): string {
+    return this.tradeData.token[tokenPart].amountTotal
+      .times(this.tradeData.token[tokenPart].brokerPercent)
+      .dp(10)
+      .toFixed();
+  }
+
+  public onCopiedLink(type: CopiedType): void {
+    this.isCopied[type] = true;
     setTimeout(() => {
-      this.isCopied = false;
+      this.isCopied[type] = false;
     }, 1000);
   }
 

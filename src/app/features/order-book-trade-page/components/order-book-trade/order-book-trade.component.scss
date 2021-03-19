@@ -308,6 +308,17 @@
 }
 
 .area-fourth {
+  position: relative;
+  top: -5px;
+
+  padding: 0 20px 16px;
+
+  &__brokers-fee {
+    font-weight: 500;
+  }
+}
+
+.area-fifth {
   border-top: 15px solid $grey-background;
 
   &__withdraw-button {
@@ -318,9 +329,11 @@
 .trade-options {
   display: flex;
   align-items: center;
-  grid-gap: 50px;
+  grid-column-gap: 50px;
+  grid-row-gap: 35px;
+  flex-wrap: wrap;
 
-  padding: 20px;
+  padding: 24px 32px;
 
   background: white;
 

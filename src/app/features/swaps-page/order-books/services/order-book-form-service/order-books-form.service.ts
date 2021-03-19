@@ -167,8 +167,8 @@ export class OrderBooksFormService implements OnDestroy {
       quote_amount_contributed: '0',
       broker_fee: tradeForm.isWithBrokerFee,
       broker_fee_address: tradeForm.isWithBrokerFee ? tradeForm.brokerAddress : EMPTY_ADDRESS,
-      broker_fee_base: parseInt(tradeForm.token.base.brokerPercent),
-      broker_fee_quote: parseInt(tradeForm.token.quote.brokerPercent),
+      broker_fee_base: parseFloat(tradeForm.token.base.brokerPercent),
+      broker_fee_quote: parseFloat(tradeForm.token.quote.brokerPercent),
 
       name: `${tradeForm.token.base.symbol} <> ${tradeForm.token.quote.symbol}`,
       network,

@@ -35,6 +35,9 @@ export interface OrderBookTradeData {
   token: OrderBookDataTokens;
   blockchain: BLOCKCHAIN_NAME;
   status: ORDER_BOOK_TRADE_STATUS;
+
   expirationDate: moment.Moment;
   isPublic: boolean;
+  isWithBrokerFee: boolean;
+  brokerAddress: string;
 }

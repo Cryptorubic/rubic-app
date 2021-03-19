@@ -4,6 +4,7 @@ import { ORDER_BOOK_CONTRACT } from 'src/app/shared/constants/order-book/smart-c
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
+import * as moment from 'moment';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../types/trade-data';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { TokenPart } from '../../../shared/models/order-book/tokens';
@@ -40,7 +41,7 @@ export class OrderBookTradeService {
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
     const { expirationDate } = tradeData;
-    if (expirationDate <= new Date()) {
+    if (expirationDate.isBefore(moment.utc())) {
       tradeData.status = ORDER_BOOK_TRADE_STATUS.EXPIRED;
     } else {
       const isDone: boolean = await web3Public.callContractMethod(

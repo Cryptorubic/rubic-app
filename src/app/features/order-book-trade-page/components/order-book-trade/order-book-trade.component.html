@@ -126,8 +126,22 @@
             <button class="area-third__fill-button">Fill all</button>
           </div>
 
+          <div class="token-block__area area-fourth" *ngIf="tradeData.isWithBrokerFee">
+            <div class="area-fourth__brokers-fee" *ngIf="tradeData.isWithBrokerFee">
+              Broker's fee:
+              {{
+                tradeData.token.base.brokerPercent +
+                  '% (' +
+                  getBrokerPercent('base') +
+                  ' ' +
+                  tradeData.token.base.symbol +
+                  ')'
+              }}
+            </div>
+          </div>
+
           <div
-            class="token-block__area area-fourth"
+            class="token-block__area area-fifth"
             *ngIf="
               (tradeData?.status === TRADE_STATUS.ACTIVE ||
                 tradeData?.status === TRADE_STATUS.EXPIRED) &&
@@ -135,7 +149,7 @@
             "
           >
             <app-withdraw-button
-              class="area-fourth__withdraw-button"
+              class="area-fifth__withdraw-button"
               [animate]="
                 withdrawStatus.base === TX_STATUS.STARTED ||
                 withdrawStatus.base === TX_STATUS.IN_PROGRESS
@@ -233,8 +247,22 @@
             <button class="area-third__fill-button">Fill all</button>
           </div>
 
+          <div class="token-block__area area-fourth" *ngIf="tradeData.isWithBrokerFee">
+            <div class="area-fourth__brokers-fee" *ngIf="tradeData.isWithBrokerFee">
+              Broker's fee:
+              {{
+                tradeData.token.quote.brokerPercent +
+                  '% (' +
+                  getBrokerPercent('base') +
+                  ' ' +
+                  tradeData.token.quote.symbol +
+                  ')'
+              }}
+            </div>
+          </div>
+
           <div
-            class="token-block__area area-fourth"
+            class="token-block__area area-fifth"
             *ngIf="
               (tradeData?.status === TRADE_STATUS.ACTIVE ||
                 tradeData?.status === TRADE_STATUS.EXPIRED) &&
@@ -275,13 +303,13 @@
           <button
             class="trade-option__body_button"
             [cdkCopyToClipboard]="currentUrl"
-            (cdkCopyToClipboardCopied)="onCopiedLink()"
+            (cdkCopyToClipboardCopied)="onCopiedLink('linkToDeal')"
           >
             <img src="/assets/images/icons/copy.svg" alt="copy" />
           </button>
         </div>
 
-        <div class="copy-link__copied-notification" *ngIf="isCopied">
+        <div class="copy-link__copied-notification" *ngIf="isCopied.linkToDeal">
           Copied
           <div class="triangle"></div>
         </div>
@@ -300,6 +328,26 @@
             class="trade-option-body-public__image"
             [ngClass]="{ 'trade-option-body-public__image_not-checked': !tradeData.isPublic }"
           ></span>
+        </div>
+      </div>
+
+      <div class="trade-options__option trade-option copy-link" *ngIf="tradeData.isWithBrokerFee">
+        <div class="trade-option__title">Broker Address</div>
+
+        <div class="trade-option__body trade-option__body_copy-link">
+          {{ tradeData.brokerAddress }}
+          <button
+            class="trade-option__body_button"
+            [cdkCopyToClipboard]="tradeData.brokerAddress"
+            (cdkCopyToClipboardCopied)="onCopiedLink('brokerAddress')"
+          >
+            <img src="/assets/images/icons/copy.svg" alt="copy" />
+          </button>
+        </div>
+
+        <div class="copy-link__copied-notification" *ngIf="isCopied.brokerAddress">
+          Copied
+          <div class="triangle"></div>
         </div>
       </div>
     </div>
