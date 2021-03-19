@@ -74,9 +74,12 @@
                   tradeData.token.base.name + ' (' + tradeData.token.base.symbol + ')'
                 }}</span>
 
-                <a href="https://etherscan.io/stat/supply" class="token-info__link" target="_blank">
-                  Check on Explorer <img src="/assets/images/icons/link.svg" alt="link" />
-                </a>
+                <app-scanner-link
+                  [address]="tradeData.token.base.address"
+                  [blockchainName]="tradeData.blockchain"
+                  [addressType]="ADDRESS_TYPE.TOKEN"
+                >
+                </app-scanner-link>
               </div>
 
               <img
@@ -220,9 +223,12 @@
                   tradeData.token.quote.name + ' (' + tradeData.token.quote.symbol + ')'
                 }}</span>
 
-                <a href="https://etherscan.io/stat/supply" class="token-info__link" target="_blank">
-                  Check on Explorer <img src="/assets/images/icons/link.svg" alt="link" />
-                </a>
+                <app-scanner-link
+                  [address]="tradeData.token.quote.address"
+                  [blockchainName]="tradeData.blockchain"
+                  [addressType]="ADDRESS_TYPE.TOKEN"
+                >
+                </app-scanner-link>
               </div>
 
               <img
@@ -390,7 +396,12 @@
         <div class="trade-option__title">Broker Address</div>
 
         <div class="trade-option__body trade-option__body_copy-link">
-          {{ tradeData.brokerAddress }}
+          <a
+            target="_blank"
+            [href]="tradeData.brokerAddress | scannerLink: tradeData.blockchain:ADDRESS_TYPE.WALLET"
+          >
+            {{ tradeData.brokerAddress }}
+          </a>
           <button
             class="trade-option__body_button"
             [cdkCopyToClipboard]="tradeData.brokerAddress"
@@ -408,15 +419,12 @@
 
       <div
         class="trade-options__option trade-option trade-option_cancel"
-        *ngIf="
-          tradeData.status === TRADE_STATUS.ACTIVE &&
-          tradeData.owner &&
-          (onAddressChanges | async).toLowerCase() === tradeData.owner.toLowerCase()
-        "
+        *ngIf="tradeData.status === TRADE_STATUS.ACTIVE && tradeData.owner"
       >
         <app-primary-button
           label="Cancel trade"
           [animate]="cancelStatus === TX_STATUS.STARTED || cancelStatus === TX_STATUS.IN_PROGRESS"
+          [disabled]="(onAddressChanges | async).toLowerCase() !== tradeData.owner.toLowerCase()"
           (onClick)="cancelTrade()"
         ></app-primary-button>
       </div>

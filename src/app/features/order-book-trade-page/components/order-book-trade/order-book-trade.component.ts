@@ -8,9 +8,10 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../types/trade-data';
-import { Web3PrivateService } from '../../../../core/services/blockchain/web3-private-service/web3-private.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -73,6 +74,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   };
 
   public readonly TRADE_STATUS = ORDER_BOOK_TRADE_STATUS;
+
+  public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
   public doesTradeExist = true;
 
