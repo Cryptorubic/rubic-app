@@ -9,7 +9,7 @@ import { BridgeTableTransaction } from '../../../../features/bridge-page/models/
 @Injectable({
   providedIn: 'root'
 })
-export class BackendApiService {
+export class BridgeApiService {
   constructor(private httpService: HttpService, private httpClient: HttpClient) {}
 
   public getTransactions(walletAddress: string): Promise<BridgeTableTransaction[]> {
@@ -62,28 +62,6 @@ export class BackendApiService {
 
     return new Promise<void>((resolve, reject) => {
       this.httpClient.post(environment.bridgeBotUrl, body).subscribe(
-        () => {
-          resolve();
-        },
-        error => {
-          console.log(error);
-          reject(error);
-        }
-      );
-    });
-  }
-
-  public notifyInstantTradesBot(body: {
-    provider: string;
-    walletAddress: string;
-    amountFrom: number;
-    amountTo: number;
-    symbolFrom: string;
-    symbolTo: string;
-    txHash: string;
-  }): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.httpClient.post(environment.instantTradesBotUrl, body).subscribe(
         () => {
           resolve();
         },

@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BackendApiService } from './backend-api.service';
+import { BridgeApiService } from './bridge-api.service';
 
 describe('BackendApiService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: BackendApiService = TestBed.get(BackendApiService);
+    const service: BridgeApiService = TestBed.get(BridgeApiService);
 
     expect(service).toBeTruthy();
   });
