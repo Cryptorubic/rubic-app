@@ -143,17 +143,7 @@
 }
 
 .token-block {
-  display: grid;
-  grid-template-rows: auto 55px;
-  grid-gap: 15px;
-
-  &_without-withdraw {
-    grid-template-rows: auto;
-  }
-
-  &__main-area {
-    background: white;
-  }
+  background: white;
 
   &__area {
     display: flex;
@@ -318,6 +308,8 @@
 }
 
 .area-fourth {
+  border-top: 15px solid $grey-background;
+
   &__withdraw-button {
     width: 100%;
   }

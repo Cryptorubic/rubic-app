@@ -161,7 +161,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
   }
 
   private setClosingDate(): void {
-    const currentTime = moment();
+    const currentTime = moment.utc();
 
     this.minClosingDate = currentTime.clone().add(1, 'hour');
     this.closingDate = currentTime.clone().add(1, 'week');
@@ -173,7 +173,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
 
     const TEN_MINUTES = 600_000;
     setInterval(() => {
-      this.minClosingDate = moment().add(1, 'hour');
+      this.minClosingDate = moment.utc().add(1, 'hour');
       this.onDateChange();
     }, TEN_MINUTES);
   }
@@ -215,7 +215,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
 
     this.tradeForm = {
       ...this.tradeForm,
-      stopDate: stopDate.utc().format('YYYY-MM-DD HH:mm')
+      stopDate: stopDate.format('YYYY-MM-DD HH:mm')
     };
   }
 

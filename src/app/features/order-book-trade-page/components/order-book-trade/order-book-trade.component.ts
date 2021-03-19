@@ -178,7 +178,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
             t => t.address === this.tradeData.token.quote.address
           );
           if (foundQuoteToken) {
-            this.tradeData.token.quote = { ...this.tradeData.token.base, ...foundQuoteToken };
+            this.tradeData.token.quote = { ...this.tradeData.token.quote, ...foundQuoteToken };
           }
         });
       },
@@ -211,8 +211,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   private setExpirationDate(): void {
     const { expirationDate } = this.tradeData;
-    this.expirationDay = expirationDate.toLocaleDateString('ru');
-    this.expirationTime = `${expirationDate.getUTCHours()}:${expirationDate.getUTCMinutes()}`;
+    this.expirationDay = expirationDate.format('DD.MM.YYYY');
+    this.expirationTime = expirationDate.format('HH:mm');
   }
 
   private setAmountLeft(): void {

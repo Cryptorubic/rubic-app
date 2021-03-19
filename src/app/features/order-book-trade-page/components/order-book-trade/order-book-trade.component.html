@@ -42,16 +42,8 @@
 
     <div class="trade-container__tokens-swap tokens-swap">
       <!--base-->
-      <div
-        class="tokens-swap__block token-block"
-        [ngClass]="{
-          'token-block_without-withdraw':
-            (tradeData?.status !== TRADE_STATUS.ACTIVE &&
-              tradeData?.status !== TRADE_STATUS.EXPIRED) ||
-            tradeData.token.base.amountContributed?.isEqualTo(0)
-        }"
-      >
-        <div class="token-block__main-area">
+      <div class="tokens-swap__block-container">
+        <div class="tokens-swap__block token-block">
           <div class="token-block__area area-first">
             <div class="area-first__amount-total">{{ shortedAmountTotal.base }}</div>
 
@@ -133,9 +125,7 @@
 
             <button class="area-third__fill-button">Fill all</button>
           </div>
-        </div>
 
-        <div class="token-block__withdraw-area">
           <div
             class="token-block__area area-fourth"
             *ngIf="
@@ -157,16 +147,8 @@
       </div>
 
       <!--quote-->
-      <div
-        class="tokens-swap__block token-block"
-        [ngClass]="{
-          'token-block_without-withdraw':
-            (tradeData?.status !== TRADE_STATUS.ACTIVE &&
-              tradeData?.status !== TRADE_STATUS.EXPIRED) ||
-            tradeData.token.base.amountContributed?.isEqualTo(0)
-        }"
-      >
-        <div class="token-block__main-area">
+      <div class="tokens-swap__block-container">
+        <div class="tokens-swap__block token-block">
           <div class="token-block__area area-first">
             <div class="area-first__amount-total">{{ shortedAmountTotal.quote }}</div>
 
@@ -250,9 +232,7 @@
 
             <button class="area-third__fill-button">Fill all</button>
           </div>
-        </div>
 
-        <div class="token-block__withdraw-area">
           <div
             class="token-block__area area-fourth"
             *ngIf="

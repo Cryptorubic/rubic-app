@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import * as moment from 'moment';
 
 export interface OrderBookDataToken extends SwapToken {
   amountTotal: BigNumber;
@@ -34,6 +35,6 @@ export interface OrderBookTradeData {
   token: OrderBookDataTokens;
   blockchain: BLOCKCHAIN_NAME;
   status: ORDER_BOOK_TRADE_STATUS;
-  expirationDate: Date;
+  expirationDate: moment.Moment;
   isPublic: boolean;
 }
