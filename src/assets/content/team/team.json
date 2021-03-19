@@ -88,13 +88,13 @@
     ]
   },
   {
-    "img": "AlexandrVolkov.jpg",
+    "img": "AleksandrVolkov.jpg",
     "name": "Alexandr Volkov",
     "role": "Backend Developer",
     "links": [
       {
         "icon": "Github.svg",
-        "url": "https://github.com/slycaptcha"
+        "url": "https://github.com/jetvolkov"
       }
     ]
   },
