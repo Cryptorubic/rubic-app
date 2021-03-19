@@ -90,6 +90,10 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public blockchain: Blockchain;
 
+  private baseToQuoteRate: BigNumber;
+
+  private quoteToBaseRate: BigNumber;
+
   public isRevertedRate = false;
 
   public shortedAmountTotal = {
@@ -217,6 +221,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   private setStaticTradeData(): void {
     this.blockchain = this.BLOCKCHAINS.find(b => b.name === this.tradeData.blockchain);
+    this.calculateRate();
     this.setExpirationDate();
 
     this.orderBookTradeService.setOwner(this.tradeData);
@@ -274,43 +279,62 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     this.shortedAmountTotal[tokenPart] = shortedAmount;
   }
 
-  public getRate(): string {
-    const baseToQuoteRate = this.tradeData.token.base.amountTotal
-      .div(this.tradeData.token.quote.amountTotal)
-      .dp(10)
-      .toFormat(this.bigNumberFormat);
-    const quoteToBaseRate = this.tradeData.token.quote.amountTotal
-      .div(this.tradeData.token.base.amountTotal)
-      .dp(10)
-      .toFormat(this.bigNumberFormat);
+  private calculateRate(): void {
+    this.baseToQuoteRate = this.tradeData.token.base.amountTotal.div(
+      this.tradeData.token.quote.amountTotal
+    );
 
+    this.quoteToBaseRate = this.tradeData.token.quote.amountTotal.div(
+      this.tradeData.token.base.amountTotal
+    );
+  }
+
+  public getRate(): string {
     return !this.isRevertedRate
-      ? `${baseToQuoteRate} ${this.tradeData.token.base.symbol} / 1 ${this.tradeData.token.quote.symbol}`
-      : `1 ${this.tradeData.token.base.symbol} / ${quoteToBaseRate} ${this.tradeData.token.quote.symbol}`;
+      ? `${this.baseToQuoteRate.dp(8).toFormat(this.bigNumberFormat)}
+         ${this.tradeData.token.base.symbol} 
+         / 1 ${this.tradeData.token.quote.symbol}`
+      : `1 ${this.tradeData.token.base.symbol} / 
+         ${this.quoteToBaseRate.dp(8).toFormat(this.bigNumberFormat)}
+         ${this.tradeData.token.quote.symbol}`;
+  }
+
+  public calculateAmountToGet(tokenPart: TokenPart): string {
+    if (tokenPart === 'base') {
+      return this.baseAmountToContributeAsNumber
+        .times(this.quoteToBaseRate)
+        .div(100)
+        .times(100 - this.tradeData.token.quote.brokerPercent)
+        .dp(this.tradeData.token.quote.decimals)
+        .toFormat(this.bigNumberFormat);
+    }
+    return this.quoteAmountToContributeAsNumber
+      .times(this.baseToQuoteRate)
+      .div(100)
+      .times(100 - this.tradeData.token.base.brokerPercent)
+      .dp(this.tradeData.token.base.decimals)
+      .toFormat(this.bigNumberFormat);
   }
 
   public getBrokerPercent(tokenPart: TokenPart): string {
     return this.tradeData.token[tokenPart].amountTotal
+      .div(100)
       .times(this.tradeData.token[tokenPart].brokerPercent)
-      .dp(10)
-      .toFixed();
+      .dp(this.tradeData.token[tokenPart].decimals)
+      .toFormat(this.bigNumberFormat);
   }
 
   public getMinContributionAsString(tokenPart: TokenPart): string {
     if (
       !this.tradeData.token[tokenPart].minContribution ||
-      this.tradeData.token[tokenPart].minContribution.isNaN()
-    ) {
-      return '';
-    }
-    if (
+      this.tradeData.token[tokenPart].minContribution.isNaN() ||
       this.tradeData.token[tokenPart].minContribution.isGreaterThan(
         this.tradeData.token[tokenPart].amountLeft
       )
     ) {
-      return '0';
+      return '';
     }
-    return this.tradeData.token[tokenPart].minContribution.toFixed();
+    return this.tradeData.token[tokenPart].minContribution.toFormat(this.bigNumberFormat);
   }
 
   public onCopiedLink(type: CopiedType): void {

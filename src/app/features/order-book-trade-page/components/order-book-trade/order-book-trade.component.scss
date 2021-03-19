@@ -266,9 +266,9 @@
 .area-third {
   display: grid;
   grid-template-columns: auto 200px;
-  grid-gap: 15px;
+  grid-column-gap: 15px;
 
-  padding: 20px 20px 19px 19px;
+  padding: 15px 20px 19px 19px;
 
   &__amount-input {
     padding: 12px;
@@ -289,13 +289,22 @@
     }
   }
 
+  &__amount-to-get {
+    grid-column: span 2;
+
+    position: relative;
+    left: 2px;
+
+    margin: 14px 0 3px;
+  }
+
   &__fill-button {
     position: relative;
-    top: -4px;
-    left: 1px;
+    left: 2px;
 
     width: 50px;
     padding: 0;
+    margin-top: 8px;
     border: none;
     border-bottom: 1px $grey-text dashed;
 
@@ -312,6 +321,12 @@
     &:hover {
       font-weight: 500;
     }
+  }
+}
+
+.amount-to-get {
+  &__number {
+    font-weight: 500;
   }
 }
 

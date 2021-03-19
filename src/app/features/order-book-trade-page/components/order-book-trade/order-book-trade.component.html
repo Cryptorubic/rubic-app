@@ -134,6 +134,21 @@
               ></app-primary-button>
             </div>
 
+            <div
+              class="area-third__amount-to-get amount-to-get"
+              *ngIf="
+                !tradeData.token.base.isApproved ||
+                (baseAmountToContributeAsNumber?.isGreaterThan(0) &&
+                  baseAmountToContributeModel.valid)
+              "
+            >
+              You will get
+              <span class="amount-to-get__number">{{
+                calculateAmountToGet('base') + ' ' + tradeData.token.quote.symbol
+              }}</span>
+              after the trade is complete
+            </div>
+
             <button
               class="area-third__fill-button"
               (click)="baseAmountToContribute = tradeData.token.base.amountLeft.toFixed()"
@@ -148,12 +163,9 @@
               tradeData.token.base.minContribution.isGreaterThan(0) || tradeData.isWithBrokerFee
             "
           >
-            <div
-              class="area-fourth__min-contribution"
-              *ngIf="tradeData.token.base.minContribution.isGreaterThan(0)"
-            >
+            <div class="area-fourth__min-contribution" *ngIf="getMinContributionAsString('base')">
               Min contribution limit:
-              {{ tradeData.token.base.minContribution + ' ' + tradeData.token.base.symbol }}
+              {{ getMinContributionAsString('base') + ' ' + tradeData.token.base.symbol }}
             </div>
 
             <div class="area-fourth__brokers-fee" *ngIf="tradeData.isWithBrokerFee">
@@ -284,6 +296,21 @@
               ></app-primary-button>
             </div>
 
+            <div
+              class="area-third__amount-to-get amount-to-get"
+              *ngIf="
+                !tradeData.token.quote.isApproved ||
+                (quoteAmountToContributeAsNumber?.isGreaterThan(0) &&
+                  quoteAmountToContributeModel.valid)
+              "
+            >
+              You will get
+              <span class="amount-to-get__number">{{
+                calculateAmountToGet('quote') + ' ' + tradeData.token.base.symbol
+              }}</span>
+              after the trade is complete
+            </div>
+
             <button
               class="area-third__fill-button"
               (click)="quoteAmountToContribute = tradeData.token.quote.amountLeft.toFixed()"
@@ -298,12 +325,9 @@
               tradeData.token.quote.minContribution.isGreaterThan(0) || tradeData.isWithBrokerFee
             "
           >
-            <div
-              class="area-fourth__min-contribution"
-              *ngIf="tradeData.token.quote.minContribution.isGreaterThan(0)"
-            >
+            <div class="area-fourth__min-contribution" *ngIf="getMinContributionAsString('quote')">
               Min contribution limit:
-              {{ tradeData.token.quote.minContribution + ' ' + tradeData.token.quote.symbol }}
+              {{ getMinContributionAsString('quote') + ' ' + tradeData.token.quote.symbol }}
             </div>
 
             <div class="area-fourth__brokers-fee" *ngIf="tradeData.isWithBrokerFee">
@@ -311,7 +335,7 @@
               {{
                 tradeData.token.quote.brokerPercent +
                   '% (' +
-                  getBrokerPercent('base') +
+                  getBrokerPercent('quote') +
                   ' ' +
                   tradeData.token.quote.symbol +
                   ')'
