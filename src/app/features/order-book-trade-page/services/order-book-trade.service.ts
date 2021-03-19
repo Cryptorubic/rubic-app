@@ -36,6 +36,15 @@ export class OrderBookTradeService {
     };
   }
 
+  public async setOwner(tradeData: OrderBookTradeData): Promise<void> {
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+
+    tradeData.owner = await web3Public.callContractMethod(contractAddress, contractAbi, 'owners', {
+      methodArguments: [tradeData.memo]
+    });
+  }
+
   public async setStatus(tradeData: OrderBookTradeData): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
@@ -237,6 +246,23 @@ export class OrderBookTradeService {
       contractAbi,
       'refund',
       [tradeData.memo, tradeData.token[tokenPart].address],
+      {
+        onTransactionHash
+      }
+    );
+  }
+
+  public async cancelTrade(
+    tradeData: OrderBookTradeData,
+    onTransactionHash: (hash: string) => void
+  ): Promise<TransactionReceipt> {
+    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+
+    return this.web3PrivateService.executeContractMethod(
+      contractAddress,
+      contractAbi,
+      'cancel',
+      [tradeData.memo],
       {
         onTransactionHash
       }

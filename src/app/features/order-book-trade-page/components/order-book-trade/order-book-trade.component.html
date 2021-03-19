@@ -50,14 +50,14 @@
             <div class="area-first__amount-sent">
               <span class="area-first__amount-description">Sent</span>
               <span class="area-first__amount-number">
-                {{ tradeData.token.base.amountContributed?.toFormat(shortedFormat) }}
+                {{ tradeData.token.base.amountContributed?.toFormat(bigNumberFormat) }}
               </span>
             </div>
 
             <div class="area-first__amount-left">
               <span class="area-first__amount-description">Left</span>
               <span class="area-first__amount-number">{{
-                tradeData.token.base.amountLeft?.toFormat(shortedFormat)
+                tradeData.token.base.amountLeft?.toFormat(bigNumberFormat)
               }}</span>
             </div>
           </div>
@@ -194,14 +194,14 @@
             <div class="area-first__amount-sent">
               <span class="area-first__amount-description">Sent</span>
               <span class="area-first__amount-number">
-                {{ tradeData.token.quote.amountContributed?.toFixed() }}
+                {{ tradeData.token.quote.amountContributed?.toFormat(bigNumberFormat) }}
               </span>
             </div>
 
             <div class="area-first__amount-left">
               <span class="area-first__amount-description">Left</span>
               <span class="area-first__amount-number">{{
-                tradeData.token.quote.amountLeft?.toFixed()
+                tradeData.token.quote.amountLeft?.toFormat(bigNumberFormat)
               }}</span>
             </div>
           </div>
@@ -381,7 +381,12 @@
         </div>
       </div>
 
-      <div class="trade-options__option trade-option copy-link" *ngIf="tradeData.isWithBrokerFee">
+      <div class="trade-options__break"></div>
+
+      <div
+        class="trade-options__option trade-option trade-option_broker copy-link"
+        *ngIf="tradeData.isWithBrokerFee"
+      >
         <div class="trade-option__title">Broker Address</div>
 
         <div class="trade-option__body trade-option__body_copy-link">
@@ -399,6 +404,21 @@
           Copied
           <div class="triangle"></div>
         </div>
+      </div>
+
+      <div
+        class="trade-options__option trade-option trade-option_cancel"
+        *ngIf="
+          tradeData.status === TRADE_STATUS.ACTIVE &&
+          tradeData.owner &&
+          (onAddressChanges | async).toLowerCase() === tradeData.owner.toLowerCase()
+        "
+      >
+        <app-primary-button
+          label="Cancel trade"
+          [animate]="cancelStatus === TX_STATUS.STARTED || cancelStatus === TX_STATUS.IN_PROGRESS"
+          (onClick)="cancelTrade()"
+        ></app-primary-button>
       </div>
     </div>
   </section>

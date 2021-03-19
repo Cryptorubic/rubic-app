@@ -120,7 +120,7 @@ export class OrderBooksFormService implements OnDestroy {
         onTransactionHash
       }
     );
-    tradeApi.memo_contract = receipt.events.OrderCreated.returnValues.id;
+    tradeApi.memo = receipt.events.OrderCreated.returnValues.id;
 
     await this.orderBookApiService.createTrade(tradeApi);
     return receipt.transactionHash;
@@ -141,7 +141,7 @@ export class OrderBooksFormService implements OnDestroy {
     }
 
     return {
-      memo_contract: '',
+      memo: '',
       contract_address: ORDER_BOOK_CONTRACT.ADDRESSES[2][tradeForm.blockchain],
       base_address: tradeForm.token.base.address,
       quote_address: tradeForm.token.quote.address,

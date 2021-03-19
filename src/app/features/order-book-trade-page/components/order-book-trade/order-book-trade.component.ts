@@ -6,10 +6,11 @@ import { List } from 'immutable';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../types/trade-data';
+import { Web3PrivateService } from '../../../../core/services/blockchain/web3-private-service/web3-private.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -63,7 +64,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line no-magic-numbers
   private readonly MILLION = 1e6;
 
-  public readonly shortedFormat = {
+  public readonly bigNumberFormat = {
     decimalSeparator: '.',
     groupSeparator: ',',
     // eslint-disable-next-line no-magic-numbers
@@ -113,6 +114,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     quote: TX_STATUS.NONE
   };
 
+  public cancelStatus = TX_STATUS.NONE;
+
   public expirationDay: string;
 
   public expirationTime: string;
@@ -123,6 +126,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     linkToDeal: false,
     brokerAddress: false
   };
+
+  public onAddressChanges: Observable<string>;
 
   get tokens(): List<SwapToken> {
     return this._tokens;
@@ -145,7 +150,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private router: Router,
     private orderBookTradeService: OrderBookTradeService,
     private orderBookApiService: OrderBookApiService,
-    private tokensService: TokensService
+    private tokensService: TokensService,
+    private web3PrivateService: Web3PrivateService
   ) {}
 
   ngOnInit(): void {
@@ -153,6 +159,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
     this.uniqueLink = this.route.snapshot.params.unique_link;
     this.setTradeData();
+
+    this.onAddressChanges = this.web3PrivateService.onAddressChanges;
   }
 
   ngOnDestroy(): void {
@@ -196,6 +204,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   private setStaticTradeData(): void {
     this.blockchain = this.BLOCKCHAINS.find(b => b.name === this.tradeData.blockchain);
     this.setExpirationDate();
+
+    this.orderBookTradeService.setOwner(this.tradeData);
   }
 
   private setDynamicData(): void {
@@ -241,11 +251,11 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     let shortedAmount: string;
 
     if (amount.isGreaterThanOrEqualTo(this.BILLION * 100)) {
-      shortedAmount = `${amount.div(this.BILLION).toFormat(0, this.shortedFormat)}B`;
+      shortedAmount = `${amount.div(this.BILLION).toFormat(0, this.bigNumberFormat)}B`;
     } else if (amount.isGreaterThanOrEqualTo(this.MILLION * 100)) {
-      shortedAmount = `${amount.div(this.MILLION).dp(0).toFormat(0, this.shortedFormat)}M`;
+      shortedAmount = `${amount.div(this.MILLION).dp(0).toFormat(0, this.bigNumberFormat)}M`;
     } else {
-      shortedAmount = amount.toFormat(this.shortedFormat);
+      shortedAmount = amount.toFormat(this.bigNumberFormat);
     }
     this.shortedAmountTotal[tokenPart] = shortedAmount;
   }
@@ -254,11 +264,11 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     const baseToQuoteRate = this.tradeData.token.base.amountTotal
       .div(this.tradeData.token.quote.amountTotal)
       .dp(10)
-      .toFormat(this.shortedFormat);
+      .toFormat(this.bigNumberFormat);
     const quoteToBaseRate = this.tradeData.token.quote.amountTotal
       .div(this.tradeData.token.base.amountTotal)
       .dp(10)
-      .toFormat(this.shortedFormat);
+      .toFormat(this.bigNumberFormat);
 
     return !this.isRevertedRate
       ? `${baseToQuoteRate} ${this.tradeData.token.base.symbol} / 1 ${this.tradeData.token.quote.symbol}`
@@ -356,6 +366,22 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
       .catch(err => {
         console.log(err);
         this.withdrawStatus[tokenPart] = TX_STATUS.ERROR;
+      });
+  }
+
+  public cancelTrade(): void {
+    this.cancelStatus = TX_STATUS.STARTED;
+
+    this.orderBookTradeService
+      .cancelTrade(this.tradeData, () => {
+        this.cancelStatus = TX_STATUS.IN_PROGRESS;
+      })
+      .then(() => {
+        this.cancelStatus = TX_STATUS.COMPLETED;
+      })
+      .catch(err => {
+        console.log(err);
+        this.cancelStatus = TX_STATUS.ERROR;
       });
   }
 }

@@ -339,7 +339,6 @@
   display: flex;
   align-items: center;
   grid-column-gap: 50px;
-  grid-row-gap: 35px;
   flex-wrap: wrap;
 
   padding: 24px 32px;
@@ -347,6 +346,12 @@
   background: white;
 
   color: $dark;
+
+  &__break {
+    flex-basis: 100%;
+
+    height: 0;
+  }
 }
 
 .trade-option {
@@ -362,6 +367,22 @@
     grid-gap: 15px;
 
     margin-left: auto;
+  }
+
+  &_broker {
+    justify-content: center;
+
+    height: 50px;
+    margin-top: 35px;
+  }
+
+  &_cancel {
+    margin-top: 35px;
+    margin-left: auto;
+
+    app-primary-button {
+      width: 160px;
+    }
   }
 
   &__title {

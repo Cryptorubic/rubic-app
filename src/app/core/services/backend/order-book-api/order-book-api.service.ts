@@ -66,7 +66,7 @@ export class OrderBookApiService implements OnDestroy {
     }
 
     const tradeData = {
-      memo: tradeApi.memo_contract,
+      memo: tradeApi.memo,
       contractAddress: tradeApi.contract_address,
 
       token: {},
