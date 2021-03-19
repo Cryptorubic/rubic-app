@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../types/trade-data';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { TokenPart } from '../../../shared/models/order-book/tokens';
+import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
 
 interface ContractParameters {
   contractAddress: string;
@@ -149,6 +150,7 @@ export class OrderBookTradeService {
     tokenPart: TokenPart
   ): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+
     if (web3Public.isNativeAddress(tradeData.token[tokenPart].address)) {
       tradeData.token[tokenPart].isApproved = true;
     } else {
@@ -172,11 +174,22 @@ export class OrderBookTradeService {
     );
   }
 
+  private checkSettings(tradeData: OrderBookTradeData): void {
+    if (
+      this.web3PrivateService.networkName !== tradeData.blockchain &&
+      this.web3PrivateService.networkName !== `${tradeData.blockchain}_TESTNET`
+    ) {
+      throw new NetworkError(tradeData.blockchain);
+    }
+  }
+
   public makeApprove(
     tradeData: OrderBookTradeData,
     tokenPart: TokenPart,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
+    this.checkSettings(tradeData);
+
     const { contractAddress } = this.getContractParameters(tradeData);
 
     // eslint-disable-next-line no-magic-numbers
@@ -197,6 +210,8 @@ export class OrderBookTradeService {
     amount: string,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
+    this.checkSettings(tradeData);
+
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
 
     if (!web3Public.isNativeAddress(tradeData.token[tokenPart].address)) {
@@ -239,6 +254,8 @@ export class OrderBookTradeService {
     tokenPart: TokenPart,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
+    this.checkSettings(tradeData);
+
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
     return this.web3PrivateService.executeContractMethod(
@@ -256,6 +273,8 @@ export class OrderBookTradeService {
     tradeData: OrderBookTradeData,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
+    this.checkSettings(tradeData);
+
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
     return this.web3PrivateService.executeContractMethod(

@@ -11,8 +11,15 @@ import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { NgModel } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../types/trade-data';
+import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
+import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
+import { RubicError } from '../../../../shared/models/errors/RubicError';
+import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
+import { NetworkErrorComponent } from '../../../bridge-page/components/network-error/network-error.component';
+import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -169,10 +176,17 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private orderBookTradeService: OrderBookTradeService,
     private orderBookApiService: OrderBookApiService,
     private tokensService: TokensService,
-    private web3PrivateService: Web3PrivateService
+    private web3PrivateService: Web3PrivateService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    try {
+      this.checkMetamaskSettings();
+    } catch (err) {
+      this.showErrorMessage(err);
+    }
+
     this.currentUrl = `https://rubic.exchange${this.router.url}`;
 
     this.uniqueLink = this.route.snapshot.params.unique_link;
@@ -183,6 +197,31 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._tokensSubscription$.unsubscribe();
+  }
+
+  private checkMetamaskSettings() {
+    if (!this.web3PrivateService.isProviderActive) {
+      throw new MetamaskError();
+    }
+
+    if (!this.web3PrivateService.address) {
+      throw new AccountError();
+    }
+  }
+
+  private showErrorMessage(err: RubicError): void {
+    let data: any = { title: 'Error', descriptionText: err.comment };
+    if (err instanceof NetworkError) {
+      data = {
+        title: 'Error',
+        descriptionComponentClass: NetworkErrorComponent,
+        descriptionComponentInputs: { networkError: err }
+      };
+    }
+    this.dialog.open(MessageBoxComponent, {
+      width: '400px',
+      data
+    });
   }
 
   private setTradeData(): void {
@@ -366,10 +405,14 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     this.lastCompletedTransactionId = transactionId;
   }
 
-  private setOperationError(tokensStatus: TokensStatus, tokenPart: TokenPart, err: Error): void {
+  private setOperationError(
+    tokensStatus: TokensStatus,
+    tokenPart: TokenPart,
+    err: RubicError
+  ): void {
     tokensStatus[tokenPart] = TX_STATUS.ERROR;
     this.isOperationInProgress = false;
-    console.log(err);
+    this.showErrorMessage(err);
   }
 
   public makeApproveOrContribute(tokenPart: TokenPart): void {
@@ -447,7 +490,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
       })
       .catch(err => {
         this.cancelStatus = TX_STATUS.ERROR;
-        console.log(err);
+        this.showErrorMessage(err);
       });
   }
 }
