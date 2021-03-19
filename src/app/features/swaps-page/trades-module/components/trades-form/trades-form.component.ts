@@ -16,6 +16,7 @@ interface Mode {
   label: string;
   imageActive: string;
   imageNotActive: string;
+  supportedBlockchains: BLOCKCHAIN_NAME[];
 }
 
 @Component({
@@ -50,17 +51,25 @@ export class TradesFormComponent implements OnInit, OnDestroy {
       name: TRADE_MODE.INSTANT_TRADE,
       label: 'Instant trade',
       imageActive: 'assets/images/icons/main-page/InstantTrade.svg',
-      imageNotActive: 'assets/images/icons/main-page/InstantTrade_deactive.svg'
+      imageNotActive: 'assets/images/icons/main-page/InstantTrade_deactive.svg',
+      supportedBlockchains: [BLOCKCHAIN_NAME.ETHEREUM, BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]
     },
     {
       name: TRADE_MODE.ORDER_BOOK,
       label: 'Order book',
       imageActive: 'assets/images/icons/main-page/OrderBook.svg',
-      imageNotActive: 'assets/images/icons/main-page/OrderBook_deactive.svg'
+      imageNotActive: 'assets/images/icons/main-page/OrderBook_deactive.svg',
+      supportedBlockchains: [
+        BLOCKCHAIN_NAME.ETHEREUM,
+        BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        BLOCKCHAIN_NAME.MATIC
+      ]
     }
   ];
 
   public TRADE_MODE = TRADE_MODE;
+
+  public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
   private _modeSubscription$: Subscription;
 
@@ -104,11 +113,9 @@ export class TradesFormComponent implements OnInit, OnDestroy {
     this._blockchainSubscription$.unsubscribe();
   }
 
-  public selectBlockchain(blockchainName: BLOCKCHAIN_NAME) {
-    this.selectedBlockchain = blockchainName;
-  }
-
-  public selectMode(mode: TRADE_MODE) {
-    this.selectedMode = mode;
+  public isSupported(blockchainName: BLOCKCHAIN_NAME, modeName: TRADE_MODE) {
+    return this.MODES.find(mode => mode.name === modeName).supportedBlockchains.includes(
+      blockchainName
+    );
   }
 }
