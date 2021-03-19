@@ -199,14 +199,14 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
           this.tokens = tokens;
 
           const foundBaseToken = this.tokens.find(
-            t => t.address === this.tradeData.token.base.address
+            t => t.address.toLowerCase() === this.tradeData.token.base.address.toLowerCase()
           );
           if (foundBaseToken) {
             this.tradeData.token.base = { ...this.tradeData.token.base, ...foundBaseToken };
           }
 
           const foundQuoteToken = this.tokens.find(
-            t => t.address === this.tradeData.token.quote.address
+            t => t.address.toLowerCase() === this.tradeData.token.quote.address.toLowerCase()
           );
           if (foundQuoteToken) {
             this.tradeData.token.quote = { ...this.tradeData.token.quote, ...foundQuoteToken };

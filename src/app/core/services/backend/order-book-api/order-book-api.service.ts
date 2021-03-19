@@ -92,7 +92,9 @@ export class OrderBookApiService implements OnDestroy {
     } as OrderBookDataToken;
 
     const foundToken = this._tokens.find(
-      t => t.blockchain === tradeData.blockchain && t.address === tradeData.token[tokenPart].address
+      t =>
+        t.blockchain === tradeData.blockchain &&
+        t.address.toLowerCase() === tradeData.token[tokenPart].address.toLowerCase()
     );
     if (foundToken) {
       tradeData.token[tokenPart] = { ...tradeData.token[tokenPart], ...foundToken };

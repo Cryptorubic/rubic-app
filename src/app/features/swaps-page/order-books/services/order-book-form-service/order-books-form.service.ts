@@ -12,6 +12,7 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import SameTokens from 'src/app/shared/models/errors/order-book/SameTokens';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
 
 @Injectable()
@@ -52,7 +53,7 @@ export class OrderBooksFormService implements OnDestroy {
     return this._tradeForm.next(tradeForm);
   }
 
-  private checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
+  private checkSettings(tradeForm: OrderBookTradeForm) {
     if (!this.web3PrivateService.isProviderActive) {
       throw new MetamaskError();
     }
@@ -62,10 +63,16 @@ export class OrderBooksFormService implements OnDestroy {
     }
 
     if (
-      this.web3PrivateService.networkName !== selectedBlockchain &&
-      this.web3PrivateService.networkName !== `${selectedBlockchain}_TESTNET`
+      tradeForm.token.base.address.toLowerCase() === tradeForm.token.quote.address.toLowerCase()
     ) {
-      throw new NetworkError(selectedBlockchain);
+      throw new SameTokens();
+    }
+
+    if (
+      this.web3PrivateService.networkName !== tradeForm.blockchain &&
+      this.web3PrivateService.networkName !== `${tradeForm.blockchain}_TESTNET`
+    ) {
+      throw new NetworkError(tradeForm.blockchain);
     }
   }
 
@@ -82,7 +89,7 @@ export class OrderBooksFormService implements OnDestroy {
       tradeForm.blockchain = BLOCKCHAIN_NAME.ETHEREUM_TESTNET;
     }
 
-    this.checkSettings(tradeForm.blockchain);
+    this.checkSettings(tradeForm);
 
     const web3Public: Web3Public = this.web3PublicService[tradeForm.blockchain];
 
