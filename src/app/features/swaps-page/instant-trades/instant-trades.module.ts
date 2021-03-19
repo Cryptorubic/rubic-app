@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
+import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { InstantTradesComponent } from './components/instant-trades/instant-trades.component';
 import { InstantTradesFormComponent } from './components/instant-trades-form/instant-trades-form.component';
 import { InstantTradesTableComponent } from './components/instant-trades-table/instant-trades-table.component';
@@ -14,6 +16,19 @@ import { OneInchBscService } from './services/one-inch-service/one-inch-bsc-serv
   declarations: [InstantTradesComponent, InstantTradesFormComponent, InstantTradesTableComponent],
   imports: [CommonModule, TradesModule, SharedModule],
   exports: [InstantTradesComponent],
-  providers: [UniSwapService, OneInchBscService, OneInchEthService, BurgerSwapService]
+  providers: [
+    {
+      provide: TradeTypeService,
+      useClass: TradeTypeService
+    },
+    {
+      provide: TradeParametersService,
+      useClass: TradeParametersService
+    },
+    UniSwapService,
+    OneInchBscService,
+    OneInchEthService,
+    BurgerSwapService
+  ]
 })
 export class InstantTradesModule {}

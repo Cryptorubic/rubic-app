@@ -1,7 +1,7 @@
 <div class="message-box-wrapper">
   <div class="dialog-block">
     <div class="dialog-block__content">
-      <button class="dialog-closer" (click)="close()" type="button">
+      <button class="dialog-closer" (click)="close()" type="button" mat-dialog-close>
         <img src="./assets/images/icons/cross-blue.svg" alt="close" />
       </button>
 
@@ -24,7 +24,7 @@
       </div>
 
       <div class="alert-window-buttons text-center">
-        <button class="btn btn-green btn-auto btn-min" (click)="close()" type="button">
+        <button class="btn btn-green btn-auto btn-min" (click)="close()" type="button" mat-dialog-close>
           <span>&nbsp;&nbsp;&nbsp;{{ 'Close' | translate }}&nbsp;&nbsp;&nbsp;</span>
         </button>
       </div>

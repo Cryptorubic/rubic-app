@@ -1,19 +1,17 @@
 <nav class="header-menu">
   <ul class="header-menu__list">
-      <li class="header-menu__list-item">
-        <a class="header-menu__link">{{ 'Instant Trades' | translate }}</a>
-      </li>
-      <li class="header-menu__list-item">
-        <a class="header-menu__link">{{ 'Order Book' | translate }}</a>
-      </li>
-      <li class="header-menu__list-item">
-        <a routerLink="/bridge" class="header-menu__link">{{ 'Bridge' | translate }}</a>
-      </li>
       <ng-container #desktopPart *ngIf="!($isMobile | async)">
-        <li class="header-menu__list-item" mat-button [matMenuTriggerFor]="about">
+        <li
+          class="header-menu__list-item header-menu__toggle-indicator"
+          [ngClass]="{ 'header-menu__togglable-indicator_opened' : false }"
+          mat-button [matMenuTriggerFor]="about">
           <a class="header-menu__link">{{ 'About' | translate }}</a>
         </li>
-        <mat-menu class="header-menu__sublist-container" #about="matMenu">
+        <mat-menu
+          class="header-menu__sublist-container"
+          #about="matMenu"
+          (menuOpened)="toggleAboutMenu()"
+          (menuClose)="toggleAboutMenu()">
           <ul class="header-menu__sublist">
             <li class="header-menu__sublist-item">
               <a routerLink="/faq" class="header-menu__sublink">{{ 'Faq' | translate }}</a>

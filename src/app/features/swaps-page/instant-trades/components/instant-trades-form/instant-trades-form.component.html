@@ -3,6 +3,14 @@
   <div class="instant-trade__from-section selection-block"
        [ngClass]="{'instant-trade__from-section_aligned': trades.length === 1}"
   >
+    <div *ngIf="fromToken?.address" class="selection-block__scanner">
+     <app-scanner-link
+       [address]="fromToken.address"
+       [blockchainName]="blockchain"
+       [addressType]="ADDRESS_TYPE.TOKEN"
+     >
+     </app-scanner-link>
+    </div>
     <div class="selection-block__label">
       you have
     </div>
@@ -29,6 +37,14 @@
 
     <ng-container *ngFor="let tradeController of trades; let index = index">
       <div class="selection-block">
+        <div *ngIf="index === 0 && toToken?.address" class="selection-block__scanner">
+          <app-scanner-link
+            [address]="toToken.address"
+            [blockchainName]="blockchain"
+            [addressType]="ADDRESS_TYPE.TOKEN"
+          >
+          </app-scanner-link>
+        </div>
         <div class="selection-block__label" *ngIf="index === 0">
           you get
         </div>
@@ -41,7 +57,10 @@
                             (tokenChanges)="toToken = $any($event)"
           >
           </app-tokens-input>
-          <div class="gas-fee" *ngIf="tradeController.trade?.gasFeeInEth && tradeController.trade?.gasFeeInUsd">
+          <div class="gas-fee"
+               *ngIf="blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
+               tradeController.trade?.gasFeeInEth &&
+               tradeController.trade?.gasFeeInUsd">
             <span class="gas-fee__text">Estimated gas fee:
               {{tradeController.trade.gasFeeInEth.toFixed(3)}}
               ETH ≈ {{tradeController.trade.gasFeeInUsd.toFixed(1)}}$
@@ -72,8 +91,8 @@
           (onClick)="createTrade(index)"
         >
         </app-primary-button>
-        <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate && trades.length > 1">
-          <span>Best Rate</span>
+        <div class="instant-trade-button__best-rate" *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState">
+          <span>{{ 'Best Rate' | translate }}</span>
           <img src="assets/images/icons/BestRate.svg" alt="">
         </div>
       </div>
@@ -87,5 +106,7 @@
 
 <app-trade-success-modal
   *ngIf="selectedTradeState === TRADE_STATE.COMPLETED"
-  [transactionId]="transactionHash">
+  [transactionId]="transactionHash"
+  [blockchainName]="blockchain"
+>
 </app-trade-success-modal>

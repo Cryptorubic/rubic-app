@@ -1,6 +1,7 @@
 @import '../../../../../../../scss/mixins';
 
 $mobile-width: 1024;
+$main-color: #4aa956;
 
 .header-menu {
   font-weight: bold;
@@ -8,6 +9,19 @@ $mobile-width: 1024;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: #fefefe;
+  position: relative;
+
+  &::before {
+    content: "";
+    width: 1px;
+    height: 50%;
+    position: absolute;
+    right: 0;
+    right: 0;
+    background-color: $main-color;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 
   &__list {
     list-style-type: none;
@@ -28,10 +42,43 @@ $mobile-width: 1024;
     display: inline-block;
     line-height: 13px;
     padding: 0;
+
+    &[aria-expanded="true"] {
+      a {
+        padding-right: 40px;
+      }
+
+      &::after {
+        transform: translateY(-50%) rotate(-45deg);
+      }
+
+    }
+    
+  }
+
+  &__toggle-indicator {
+    position: relative;
+
+    &:after {
+      content: '';
+      transform-origin: center;
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-width: 2px 2px 0 0;
+      border-style: solid;
+      border-color: $main-color;
+      transform: translateY(-100%) rotate(135deg);
+      position: absolute;
+      top: calc(50% + 2px);
+      right: 25px;
+      z-index: 2;
+      transition: transform 0.3s ease-in-out;
+    }
   }
 
   &__link {
-    color: #4aa956;
+    color: $main-color;
     text-decoration: none;
     text-decoration: none;
     display: inline-block;
@@ -42,7 +89,7 @@ $mobile-width: 1024;
     &:hover {
       text-decoration: underline;
     }
-
+    padding-right: 40px;
     @include b($mobile-width) {
       padding: 15px;
     }
@@ -72,15 +119,8 @@ $mobile-width: 1024;
   }
 }
 
-::ng-deep .header-menu__sublist-container {
-  padding: 0;
-  margin: 0;
-  right: 5px;
-  border-radius: 3px;
-  border: 1px solid #f4f4f4;
-  box-shadow: 0 2px 15px rgb(0 0 0 / 5%);
-
-  & > * {
-    padding: 0;
-  } 
+::ng-deep .mat-menu-panel.header-menu__sublist-container {
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(black, 0.1);
 }

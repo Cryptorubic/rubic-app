@@ -7,12 +7,18 @@ import BigNumber from 'bignumber.js';
 import InstantTradeService from 'src/app/features/swaps-page/instant-trades/services/InstantTradeService';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import InstantTrade from '../../models/InstantTrade';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
+import { MessageBoxComponent } from '../../../../../shared/components/message-box/message-box.component';
+import { RubicError } from '../../../../../shared/models/errors/RubicError';
+import { NetworkError } from '../../../../../shared/models/errors/provider/NetworkError';
+import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
+import ADDRESS_TYPE from '../../../../../shared/models/blockchain/ADDRESS_TYPE';
 
 interface TradeProviderInfo {
   label: string;
@@ -45,8 +51,6 @@ enum TRADE_STATE {
   styleUrls: ['./instant-trades-form.component.scss']
 })
 export class InstantTradesFormComponent implements OnInit, OnDestroy {
-  private _blockchain: BLOCKCHAIN_NAME;
-
   private _blockchainSubscription$: Subscription;
 
   private _instantTradeServices: InstantTradeService[];
@@ -57,7 +61,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private _tokensSubscription$: Subscription;
 
+  public blockchain: BLOCKCHAIN_NAME;
+
   public TRADE_STATE = TRADE_STATE;
+
+  public ADDRESS_TYPE = ADDRESS_TYPE;
+
+  public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
   public availableFromTokens = List<SwapToken>([]);
 
@@ -74,7 +84,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   set tokens(value: List<SwapToken>) {
-    this._tokens = value.filter(token => token.blockchain === this._blockchain);
+    this._tokens = value.filter(token => token.blockchain === this.blockchain);
     this.availableToTokens = this._tokens.concat();
     this.availableFromTokens = this._tokens.concat();
   }
@@ -93,7 +103,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     }
     this._tradeParameters = value;
 
-    this.tradeParametersService.setTradeParameters(this._blockchain, {
+    this.tradeParametersService.setTradeParameters(this.blockchain, {
       ...this._tradeParameters,
       toAmount: null
     });
@@ -157,11 +167,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private uniSwapService: UniSwapService,
     private oneInchEthService: OneInchEthService,
-    private onInchBscService: OneInchBscService
-  ) {}
+    private onInchBscService: OneInchBscService,
+    private dialog: MatDialog
+  ) {
+  }
 
   private initInstantTradeProviders() {
-    switch (this._blockchain) {
+    switch (this.blockchain) {
       case BLOCKCHAIN_NAME.ETHEREUM:
         this._instantTradeServices = [this.oneInchEthService, this.uniSwapService];
         this.trades = [
@@ -190,14 +202,14 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: 'Burgerswap'
+              label: 'Oneinch'
             },
             isBestRate: false
           }
         ];
         break;
       default:
-        console.log(`Blockchain ${this._blockchain} was not found.`);
+        console.log(`Blockchain ${this.blockchain} was not found.`);
     }
   }
 
@@ -207,12 +219,12 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     });
 
     this._blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
-      this._blockchain = blockchain;
+      this.blockchain = blockchain;
       this.initInstantTradeProviders();
 
       this.tokens = this.tokensService.tokens.getValue();
 
-      const tradeParameters = this.tradeParametersService.getTradeParameters(this._blockchain);
+      const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
 
       this._tradeParameters = {
         fromToken: null,
@@ -247,7 +259,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public revertTokens() {
     const { fromToken, toToken } = this.tradeParameters;
-    const toAmount = this.trades[1].trade?.to?.amount;
+    const toAmount = this.trades[0].trade?.to?.amount;
     this.fromToken = toToken;
     this.toToken = fromToken;
 
@@ -291,7 +303,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.calculateBestRate();
       const toAmount = this.trades.find(tradeController => tradeController.isBestRate)?.trade?.to
         ?.amount;
-      this.tradeParametersService.setTradeParameters(this._blockchain, {
+      this.tradeParametersService.setTradeParameters(this.blockchain, {
         ...this.tradeParameters,
         toAmount
       });
@@ -377,6 +389,20 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       .then(receipt => {
         setTradeState(TRADE_STATE.COMPLETED);
         this.transactionHash = receipt.transactionHash;
+      })
+      .catch((err: RubicError) => {
+        let data: any = { title: 'Error', descriptionText: err.comment };
+        if (err instanceof NetworkError) {
+          data = {
+            title: 'Error',
+            descriptionComponentClass: NetworkErrorComponent,
+            descriptionComponentInputs: { networkError: err }
+          };
+        }
+        this.dialog.open(MessageBoxComponent, {
+          width: '400px',
+          data
+        });
       });
   }
 

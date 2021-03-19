@@ -10,6 +10,7 @@ import { BridgeSuccessComponent } from './components/bridge-success/bridge-succe
 import { BridgeTableComponent } from './components/bridge-table/bridge-table.component';
 import { BridgeFormComponent } from './components/brifge-form/bridge-form.component';
 import { NetworkErrorComponent } from './components/network-error/network-error.component';
+import { BridgeService } from './services/bridge.service';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,6 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
     NetworkErrorComponent
   ],
   imports: [CommonModule, BridgePageRoutingModule, SharedModule, TranslateModule],
-  exports: [BridgeFormComponent]
+  providers: [BridgeService]
 })
 export class BridgePageModule {}

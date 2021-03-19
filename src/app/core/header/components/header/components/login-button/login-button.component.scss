@@ -2,13 +2,20 @@
 
 $text-size: 14px;
 $letter-spacing: 2px;
-$mobile-size: 1024px;
+$mobile-size: 1024;
+$primary-color: #4aa956;
 
 .login-button {
+  border: 1px solid $primary-color;
+  background: transparent;
   display: flex;
   align-items: center;
-  color: #fff;
+  color: $primary-color;
   padding: 0 16px;
+  height: 35px;
+  border-radius: 10px;
+  margin-left: 10px;
+  cursor: pointer;
 
   @include b($mobile-size) {
     margin-left: auto;
