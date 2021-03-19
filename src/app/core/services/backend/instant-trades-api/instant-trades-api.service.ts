@@ -18,11 +18,14 @@ export class InstantTradesApiService {
     trade: InstantTrade;
     txHash: string;
   }): Promise<void> {
-    const { trade, ...req } = body;
-    req.amountFrom = trade.from.amount;
-    req.amountTo = trade.to.amount;
-    req.symbolFrom = trade.from.token.symbol;
-    req.symbolTo = trade.to.token.symbol;
+    const { trade, ...props } = body;
+    const req = {
+      ...props,
+      amountFrom: trade.from.amount,
+      amountTo: trade.to.amount,
+      symbolFrom: trade.from.token.symbol,
+      symbolTo: trade.to.token.symbol
+    };
 
     return this.httpService.post(this.botUrl, req).toPromise();
   }
