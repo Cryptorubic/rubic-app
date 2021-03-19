@@ -42,24 +42,22 @@
 
     <div class="trade-container__tokens-swap tokens-swap">
       <!--base-->
-      <div class="tokens-swap__block token-block">
-        <div class="token-block__main-area">
+      <div class="tokens-swap__block-container">
+        <div class="tokens-swap__block token-block">
           <div class="token-block__area area-first">
             <div class="area-first__amount-total">{{ shortedAmountTotal.base }}</div>
 
             <div class="area-first__amount-sent">
               <span class="area-first__amount-description">Sent</span>
-              <span
-                class="area-first__amount-number"
-                *ngIf="tradeData.token.base.amountContributed"
-                >{{ tradeData.token.base.amountContributed.toFormat(shortedFormat) }}</span
-              >
+              <span class="area-first__amount-number">
+                {{ tradeData.token.base.amountContributed?.toFormat(shortedFormat) }}
+              </span>
             </div>
 
             <div class="area-first__amount-left">
               <span class="area-first__amount-description">Left</span>
-              <span class="area-first__amount-number" *ngIf="tradeData.token.base.amountLeft">{{
-                tradeData.token.base.amountLeft.toFormat(shortedFormat)
+              <span class="area-first__amount-number">{{
+                tradeData.token.base.amountLeft?.toFormat(shortedFormat)
               }}</span>
             </div>
           </div>
@@ -83,7 +81,7 @@
 
               <img
                 class="token-info__image"
-                src="/assets/images/icons/coins/empty.svg"
+                [src]="tradeData.token.base.image || '/assets/images/icons/coins/empty.svg'"
                 alt="token"
               />
             </div>
@@ -91,59 +89,128 @@
 
           <div
             class="token-block__area area-third"
-            *ngIf="tradeData?.status === TRADE_STATUS.ACTIVE"
+            *ngIf="
+              tradeData?.status === TRADE_STATUS.ACTIVE &&
+              tradeData.token.base.isApproved !== undefined &&
+              tradeData.token.base.amountLeft
+            "
           >
-            <input class="area-third__amount-input" placeholder="Enter amount" />
+            <input
+              class="area-third__amount-input"
+              [placeholder]="tradeData.token.base.isApproved ? 'Enter amount' : ''"
+              [disabled]="!tradeData.token.base.isApproved"
+              appNumberPrecision
+              [decimalLength]="tradeData.token.base.decimals"
+              [minValue]="getMinContributionAsString('base')"
+              [maxValue]="tradeData.token.base.amountLeft.toFixed()"
+              [(ngModel)]="baseAmountToContribute"
+              #baseAmountToContributeModel="ngModel"
+              [ngClass]="{
+                'area-third__amount-input_invalid': baseAmountToContributeModel.invalid
+              }"
+            />
 
             <div class="area-third__confirm-button">
-              <app-primary-button label="Contribute"></app-primary-button>
+              <app-primary-button
+                [label]="tradeData.token.base.isApproved ? 'Contribute' : 'Approve'"
+                [animate]="
+                  approveStatus.base === TX_STATUS.STARTED ||
+                  approveStatus.base === TX_STATUS.IN_PROGRESS ||
+                  contributeStatus.base === TX_STATUS.STARTED ||
+                  contributeStatus.base === TX_STATUS.IN_PROGRESS
+                "
+                [disabled]="
+                  tradeData.token.base.isApproved &&
+                  !(
+                    baseAmountToContributeAsNumber?.isGreaterThan(0) &&
+                    baseAmountToContributeModel.valid
+                  )
+                "
+                (onClick)="makeApproveOrContribute('base')"
+              ></app-primary-button>
             </div>
 
-            <button class="area-third__fill-button">Fill all</button>
+            <button
+              class="area-third__fill-button"
+              (click)="baseAmountToContribute = tradeData.token.base.amountLeft.toFixed()"
+            >
+              Fill all
+            </button>
           </div>
-        </div>
 
-        <div class="token-block__withdraw-area">
           <div
             class="token-block__area area-fourth"
             *ngIf="
-              tradeData?.status === TRADE_STATUS.ACTIVE ||
-              tradeData?.status === TRADE_STATUS.EXPIRED
+              tradeData.token.base.minContribution.isGreaterThan(0) || tradeData.isWithBrokerFee
             "
           >
-            <app-withdraw-button class="area-fourth__withdraw-button"></app-withdraw-button>
+            <div
+              class="area-fourth__min-contribution"
+              *ngIf="tradeData.token.base.minContribution.isGreaterThan(0)"
+            >
+              Min contribution limit:
+              {{ tradeData.token.base.minContribution + ' ' + tradeData.token.base.symbol }}
+            </div>
+
+            <div class="area-fourth__brokers-fee" *ngIf="tradeData.isWithBrokerFee">
+              Broker's fee:
+              {{
+                tradeData.token.base.brokerPercent +
+                  '% (' +
+                  getBrokerPercent('base') +
+                  ' ' +
+                  tradeData.token.base.symbol +
+                  ')'
+              }}
+            </div>
+          </div>
+
+          <div
+            class="token-block__area area-fifth"
+            *ngIf="
+              (tradeData?.status === TRADE_STATUS.ACTIVE ||
+                tradeData?.status === TRADE_STATUS.EXPIRED) &&
+              tradeData.token.base.amountContributed?.isGreaterThan(0)
+            "
+          >
+            <app-withdraw-button
+              class="area-fifth__withdraw-button"
+              [animate]="
+                withdrawStatus.base === TX_STATUS.STARTED ||
+                withdrawStatus.base === TX_STATUS.IN_PROGRESS
+              "
+              (onClick)="makeWithdraw('base')"
+            ></app-withdraw-button>
           </div>
         </div>
       </div>
 
-      <!--quoute-->
-      <div class="tokens-swap__block token-block">
-        <div class="token-block__main-area">
+      <!--quote-->
+      <div class="tokens-swap__block-container">
+        <div class="tokens-swap__block token-block">
           <div class="token-block__area area-first">
             <div class="area-first__amount-total">{{ shortedAmountTotal.quote }}</div>
 
             <div class="area-first__amount-sent">
               <span class="area-first__amount-description">Sent</span>
-              <span
-                class="area-first__amount-number"
-                *ngIf="tradeData.token.quote.amountContributed"
-                >{{ tradeData.token.quote.amountContributed.toFixed() }}</span
-              >
+              <span class="area-first__amount-number">
+                {{ tradeData.token.quote.amountContributed?.toFixed() }}
+              </span>
             </div>
 
             <div class="area-first__amount-left">
               <span class="area-first__amount-description">Left</span>
-              <span class="area-first__amount-number" *ngIf="tradeData.token.quote.amountLeft">{{
-                tradeData.token.quote.amountLeft.toFixed()
+              <span class="area-first__amount-number">{{
+                tradeData.token.quote.amountLeft?.toFixed()
               }}</span>
             </div>
           </div>
 
           <div class="token-block__area area-second">
             <div class="area-second__investors investors">
-              <span class="investors__amount"
-                >{{ tradeData.token.quote.investorsNumber }} / 10</span
-              >
+              <span class="investors__amount">
+                {{ tradeData.token.quote.investorsNumber }} / 10
+              </span>
               <span class="investors__text">Number of investors</span>
             </div>
 
@@ -160,7 +227,7 @@
 
               <img
                 class="token-info__image"
-                src="/assets/images/icons/coins/empty.svg"
+                [src]="tradeData.token.quote.image || '/assets/images/icons/coins/empty.svg'"
                 alt="token"
               />
             </div>
@@ -168,27 +235,98 @@
 
           <div
             class="token-block__area area-third"
-            *ngIf="tradeData.status && tradeData.status === TRADE_STATUS.ACTIVE"
+            *ngIf="
+              tradeData?.status === TRADE_STATUS.ACTIVE &&
+              tradeData.token.quote.isApproved !== undefined &&
+              tradeData.token.quote.amountLeft
+            "
           >
-            <input class="area-third__amount-input" placeholder="Enter amount" />
+            <input
+              class="area-third__amount-input"
+              [placeholder]="tradeData.token.quote.isApproved ? 'Enter amount' : ''"
+              [disabled]="!tradeData.token.quote.isApproved"
+              appNumberPrecision
+              [decimalLength]="tradeData.token.quote.decimals"
+              [minValue]="getMinContributionAsString('quote')"
+              [maxValue]="tradeData.token.quote.amountLeft.toFixed()"
+              [(ngModel)]="quoteAmountToContribute"
+              #quoteAmountToContributeModel="ngModel"
+              [ngClass]="{
+                'area-third__amount-input_invalid': quoteAmountToContributeModel.invalid
+              }"
+            />
 
             <div class="area-third__confirm-button">
-              <app-primary-button label="Approve"></app-primary-button>
+              <app-primary-button
+                [label]="tradeData.token.quote.isApproved ? 'Contribute' : 'Approve'"
+                [animate]="
+                  approveStatus.quote === TX_STATUS.STARTED ||
+                  approveStatus.quote === TX_STATUS.IN_PROGRESS ||
+                  contributeStatus.quote === TX_STATUS.STARTED ||
+                  contributeStatus.quote === TX_STATUS.IN_PROGRESS
+                "
+                [disabled]="
+                  tradeData.token.quote.isApproved &&
+                  !(
+                    quoteAmountToContributeAsNumber?.isGreaterThan(0) &&
+                    quoteAmountToContributeModel.valid
+                  )
+                "
+                (onClick)="makeApproveOrContribute('quote')"
+              ></app-primary-button>
             </div>
 
-            <button class="area-third__fill-button">Fill all</button>
+            <button
+              class="area-third__fill-button"
+              (click)="quoteAmountToContribute = tradeData.token.quote.amountLeft.toFixed()"
+            >
+              Fill all
+            </button>
           </div>
-        </div>
 
-        <div class="token-block__withdraw-area">
           <div
             class="token-block__area area-fourth"
             *ngIf="
-              tradeData?.status === TRADE_STATUS.ACTIVE ||
-              tradeData?.status === TRADE_STATUS.EXPIRED
+              tradeData.token.quote.minContribution.isGreaterThan(0) || tradeData.isWithBrokerFee
             "
           >
-            <app-withdraw-button class="area-fourth__withdraw-button"></app-withdraw-button>
+            <div
+              class="area-fourth__min-contribution"
+              *ngIf="tradeData.token.quote.minContribution.isGreaterThan(0)"
+            >
+              Min contribution limit:
+              {{ tradeData.token.quote.minContribution + ' ' + tradeData.token.quote.symbol }}
+            </div>
+
+            <div class="area-fourth__brokers-fee" *ngIf="tradeData.isWithBrokerFee">
+              Broker's fee:
+              {{
+                tradeData.token.quote.brokerPercent +
+                  '% (' +
+                  getBrokerPercent('base') +
+                  ' ' +
+                  tradeData.token.quote.symbol +
+                  ')'
+              }}
+            </div>
+          </div>
+
+          <div
+            class="token-block__area area-fifth"
+            *ngIf="
+              (tradeData?.status === TRADE_STATUS.ACTIVE ||
+                tradeData?.status === TRADE_STATUS.EXPIRED) &&
+              tradeData.token.quote.amountContributed?.isGreaterThan(0)
+            "
+          >
+            <app-withdraw-button
+              class="area-fourth__withdraw-button"
+              [animate]="
+                withdrawStatus.quote === TX_STATUS.STARTED ||
+                withdrawStatus.quote === TX_STATUS.IN_PROGRESS
+              "
+              (onClick)="makeWithdraw('quote')"
+            ></app-withdraw-button>
           </div>
         </div>
       </div>
@@ -204,7 +342,7 @@
       <div class="trade-options__option trade-option">
         <div class="trade-option__title">Closing Time</div>
 
-        <div class="trade-option__body">{{ expirationTime }}</div>
+        <div class="trade-option__body">{{ expirationTime }} UTC</div>
       </div>
 
       <div class="trade-options__option trade-option copy-link">
@@ -215,13 +353,13 @@
           <button
             class="trade-option__body_button"
             [cdkCopyToClipboard]="currentUrl"
-            (cdkCopyToClipboardCopied)="onCopiedLink()"
+            (cdkCopyToClipboardCopied)="onCopiedLink('linkToDeal')"
           >
             <img src="/assets/images/icons/copy.svg" alt="copy" />
           </button>
         </div>
 
-        <div class="copy-link__copied-notification" *ngIf="isCopied">
+        <div class="copy-link__copied-notification" *ngIf="isCopied.linkToDeal">
           Copied
           <div class="triangle"></div>
         </div>
@@ -240,6 +378,26 @@
             class="trade-option-body-public__image"
             [ngClass]="{ 'trade-option-body-public__image_not-checked': !tradeData.isPublic }"
           ></span>
+        </div>
+      </div>
+
+      <div class="trade-options__option trade-option copy-link" *ngIf="tradeData.isWithBrokerFee">
+        <div class="trade-option__title">Broker Address</div>
+
+        <div class="trade-option__body trade-option__body_copy-link">
+          {{ tradeData.brokerAddress }}
+          <button
+            class="trade-option__body_button"
+            [cdkCopyToClipboard]="tradeData.brokerAddress"
+            (cdkCopyToClipboardCopied)="onCopiedLink('brokerAddress')"
+          >
+            <img src="/assets/images/icons/copy.svg" alt="copy" />
+          </button>
+        </div>
+
+        <div class="copy-link__copied-notification" *ngIf="isCopied.brokerAddress">
+          Copied
+          <div class="triangle"></div>
         </div>
       </div>
     </div>

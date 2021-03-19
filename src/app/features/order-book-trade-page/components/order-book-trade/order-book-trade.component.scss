@@ -143,13 +143,7 @@
 }
 
 .token-block {
-  display: grid;
-  grid-template-rows: auto 55px;
-  grid-gap: 15px;
-
-  &__main-area {
-    background: white;
-  }
+  background: white;
 
   &__area {
     display: flex;
@@ -278,13 +272,21 @@
 
   &__amount-input {
     padding: 12px;
-    border: none;
+    border: 1px solid white;
 
     background: $grey-background;
 
     color: $dark;
     font-size: 19px;
     font-family: inherit;
+
+    &_invalid {
+      border-color: $error-red;
+
+      &:focus {
+        box-shadow: 0 0 2px $error-red;
+      }
+    }
   }
 
   &__fill-button {
@@ -314,6 +316,20 @@
 }
 
 .area-fourth {
+  position: relative;
+  top: -5px;
+
+  flex-direction: column;
+  grid-gap: 12px;
+
+  padding: 0 20px 16px;
+
+  font-weight: 500;
+}
+
+.area-fifth {
+  border-top: 15px solid $grey-background;
+
   &__withdraw-button {
     width: 100%;
   }
@@ -322,9 +338,11 @@
 .trade-options {
   display: flex;
   align-items: center;
-  grid-gap: 50px;
+  grid-column-gap: 50px;
+  grid-row-gap: 35px;
+  flex-wrap: wrap;
 
-  padding: 20px;
+  padding: 24px 32px;
 
   background: white;
 

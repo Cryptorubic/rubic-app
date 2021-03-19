@@ -51,7 +51,7 @@ export class LogoutConfirmModalComponent {
 
   public confirmLogout(): void {
     this.logoutProgress = true;
-    this.authService.logoutRequest().subscribe(
+    this.authService.signOut().subscribe(
       () => {
         this.headerStore.setConfirmModalOpeningStatus(false);
         this.logoutConfirmationModal.close();

@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 
-import { IBridgeToken } from './types';
 import { RubicError } from '../../../shared/models/errors/RubicError';
-import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
+import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
+import { BridgeToken } from '../models/BridgeToken';
+import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export class BridgeTransaction {
   public txHash: string;
@@ -12,8 +13,8 @@ export class BridgeTransaction {
 
   constructor(
     public binanceId: string,
-    public network: string,
-    public token: IBridgeToken,
+    public network: BLOCKCHAIN_NAME,
+    public token: BridgeToken,
     public status: string,
     public depositAddress: string,
     public amount: BigNumber,
@@ -25,11 +26,11 @@ export class BridgeTransaction {
     let tokenAddress;
     let decimals;
     switch (this.network) {
-      case 'ETH':
+      case BLOCKCHAIN_NAME.ETHEREUM:
         tokenAddress = this.token.ethContractAddress;
         decimals = this.token.ethContractDecimal;
         break;
-      case 'BSC':
+      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
         tokenAddress = this.token.bscContractAddress;
         decimals = this.token.bscContractDecimal;
         break;
@@ -43,18 +44,15 @@ export class BridgeTransaction {
       this.receipt = await this.web3Api.transferTokens(
         tokenAddress,
         this.depositAddress,
-        realAmount.toString(),
+        realAmount.toFixed(0),
         { onTransactionHash }
       );
     } else {
       this.receipt = await this.web3Api.sendTransaction(
         this.depositAddress,
-        realAmount.toString(),
-        { onTransactionHash }
+        realAmount.toFixed(0),
+        { onTransactionHash, inWei: true }
       );
     }
-
-    console.log(this.receipt);
-    console.log(this.binanceId);
   }
 }

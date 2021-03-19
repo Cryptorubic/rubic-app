@@ -8,11 +8,13 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RouterModule } from '@angular/router';
+import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
+import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { OrderBooksComponent } from './components/order-books/order-books.component';
 import { TradesModule } from '../trades-module/trades.module';
 import { OrderBooksFormComponent } from './components/order-books-form/order-books-form.component';
 import { OrderBooksFormOptionsComponent } from './components/order-books-form/order-books-form-options/order-books-form-options.component';
-import { SharedModule } from '../../../shared/shared.module';
 import { OrderBooksFormService } from './services/order-book-form-service/order-books-form.service';
 import { OrderBooksTableComponent } from './components/order-books-table/order-books-table.component';
 import { CoinsFilterComponent } from './components/order-books-table/components/coins-dropdown/coins-filter.component';
@@ -43,7 +45,17 @@ import { VolumeCellComponent } from './components/order-books-table/components/v
     ReactiveFormsModule,
     RouterModule
   ],
-  providers: [OrderBooksFormService],
-  exports: [OrderBooksComponent]
+  exports: [OrderBooksComponent],
+  providers: [
+    OrderBooksFormService,
+    {
+      provide: TradeTypeService,
+      useClass: TradeTypeService
+    },
+    {
+      provide: TradeParametersService,
+      useClass: TradeParametersService
+    }
+  ]
 })
 export class OrderBooksModule {}

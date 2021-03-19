@@ -20,6 +20,8 @@ export class NumberPrecisionDirective implements Validator {
   // eslint-disable-next-line no-magic-numbers
   @Input() decimalLength = 8; // 8 is default length of decimal part of token's amount
 
+  @Input() minValue: string;
+
   @Input() maxValue: string;
 
   private readonly decimalNumberRegex = /^[0-9]+\.?[0-9]*$/;
@@ -49,7 +51,11 @@ export class NumberPrecisionDirective implements Validator {
     }
     this.lastValidValue = control.value;
 
-    if (new BigNumber(control.value).isGreaterThan(this.maxValue)) {
+    if (this.minValue && new BigNumber(control.value).isLessThan(this.minValue)) {
+      return { overflowMinValue: true };
+    }
+
+    if (this.maxValue && new BigNumber(control.value).isGreaterThan(this.maxValue)) {
       return { overflowMaxValue: true };
     }
 

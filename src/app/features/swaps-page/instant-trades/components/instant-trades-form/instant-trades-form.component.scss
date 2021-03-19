@@ -80,6 +80,12 @@
 .selection-block {
   position: relative;
 
+  &__scanner {
+    position: absolute;
+    right: 0;
+    top: -24px;
+  }
+
   &__label {
     position: absolute;
     top: -21px;

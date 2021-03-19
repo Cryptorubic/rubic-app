@@ -7,9 +7,9 @@ import * as moment from 'moment';
 import { NgModel } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { Subscription } from 'rxjs';
-import { OrderBookFormToken, TokenPart } from 'src/app/shared/models/order-book/tokens';
-import { OrderBookTradeForm } from 'src/app/shared/models/order-book/trade-form';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import { OrderBooksFormService } from '../../../services/order-book-form-service/order-books-form.service';
+import { OrderBookFormToken, OrderBookTradeForm } from '../../../types/trade-form';
 
 const MY_FORMATS = {
   useUtc: true,
@@ -161,7 +161,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
   }
 
   private setClosingDate(): void {
-    const currentTime = moment();
+    const currentTime = moment.utc();
 
     this.minClosingDate = currentTime.clone().add(1, 'hour');
     this.closingDate = currentTime.clone().add(1, 'week');
@@ -173,7 +173,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
 
     const TEN_MINUTES = 600_000;
     setInterval(() => {
-      this.minClosingDate = moment().add(1, 'hour');
+      this.minClosingDate = moment.utc().add(1, 'hour');
       this.onDateChange();
     }, TEN_MINUTES);
   }
@@ -215,7 +215,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
 
     this.tradeForm = {
       ...this.tradeForm,
-      stopDate: stopDate.utc().format('YYYY-MM-DD HH:mm')
+      stopDate: stopDate.format('YYYY-MM-DD HH:mm')
     };
   }
 

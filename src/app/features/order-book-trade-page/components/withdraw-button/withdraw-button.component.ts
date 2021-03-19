@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-withdraw-button',
@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./withdraw-button.component.scss']
 })
 export class WithdrawButtonComponent {
+  @Input() animate = false;
+
+  @Output() onClick = new EventEmitter<void>();
+
+  onClickHandler() {
+    this.onClick.emit();
+  }
+
   constructor() {}
 }

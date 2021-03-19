@@ -30,11 +30,12 @@ import { BigNumberMax } from './pipes/big-number-max.pipe';
 import { BigNumberFormat } from './pipes/big-number-format.pipe';
 import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { NativeUrlPipe } from './pipes/native-url.pipe';
-import { EtherscanUrlPipe } from './pipes/etherscan-url.pipe';
+import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
 import { AddressInputComponent } from './components/address-input/address-input.component';
 import { WarningLabelComponent } from './components/warning-label/warning-label.component';
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
 import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
+import { ScannerLinkComponent } from './components/scanner-link/scanner-link.component';
 
 @NgModule({
   declarations: [
@@ -63,13 +64,15 @@ import { NumberPrecisionDirective } from './directives/number-precision/number-p
     BigNumberMin,
     BigNumberMax,
     CoinsListComponent,
-    EtherscanUrlPipe,
+    ScannerLinkPipe,
     NativeUrlPipe,
     AddressInputComponent,
     WarningLabelComponent,
     TokenAddressDirective,
-    NumberPrecisionDirective
+    NumberPrecisionDirective,
+    ScannerLinkComponent
   ],
+  entryComponents: [MessageBoxComponent],
   imports: [CommonModule, TranslateModule, DynamicModule, MatDialogModule, FormsModule],
   exports: [
     FooterComponent,
@@ -97,13 +100,14 @@ import { NumberPrecisionDirective } from './directives/number-precision/number-p
     BigNumberMin,
     BigNumberMax,
     CoinsListComponent,
-    EtherscanUrlPipe,
+    ScannerLinkPipe,
     NativeUrlPipe,
     AddressInputComponent,
     WarningLabelComponent,
     TokenAddressDirective,
     TranslateModule,
-    NumberPrecisionDirective
+    NumberPrecisionDirective,
+    ScannerLinkComponent
   ]
 })
 export class SharedModule {}

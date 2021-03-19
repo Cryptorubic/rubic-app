@@ -1,16 +1,20 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { List } from 'immutable';
-import { from, Observable } from 'rxjs';
+import { from, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { OrderBookTradeApi } from 'src/app/shared/models/order-book/trade-api';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { OrderBookTradeData } from 'src/app/shared/models/order-book/trade-page';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { OrderBookDataToken, TokenPart } from 'src/app/shared/models/order-book/tokens';
+import {
+  OrderBookDataToken,
+  OrderBookTradeData
+} from 'src/app/features/order-book-trade-page/types/trade-data';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import * as moment from 'moment';
 import { HttpService } from '../../http/http.service';
 import { TokensService } from '../tokens-service/tokens.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
+import { OrderBookTradeApi } from './types/trade-api';
 
 @Injectable({
   providedIn: 'root'
@@ -18,19 +22,21 @@ import { Web3PublicService } from '../../blockchain/web3-public-service/web3-pub
 export class OrderBookApiService implements OnDestroy {
   private _tokens: List<SwapToken>;
 
+  private _tokensSubscription$: Subscription;
+
   constructor(
     private httpService: HttpService,
     private orderBookApiService: OrderBookApiService,
     private tokensService: TokensService,
     private web3PublicService: Web3PublicService
   ) {
-    this.tokensService.tokens.subscribe(tokens => {
+    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
       this._tokens = tokens;
     });
   }
 
-  ngOnDestroy() {
-    this.tokensService.tokens.unsubscribe();
+  ngOnDestroy(): void {
+    this._tokensSubscription$.unsubscribe();
   }
 
   public createTrade(tradeInfo: OrderBookTradeApi): Promise<OrderBookTradeApi> {
@@ -65,8 +71,10 @@ export class OrderBookApiService implements OnDestroy {
 
       token: {},
       blockchain,
-      expirationDate: new Date(tradeApi.stop_date),
-      isPublic: tradeApi.public
+      expirationDate: moment.utc(tradeApi.stop_date),
+      isPublic: tradeApi.public,
+      isWithBrokerFee: tradeApi.broker_fee,
+      brokerAddress: tradeApi.broker_fee_address
     } as OrderBookTradeData;
     await this.setTokensData('base', tradeApi, tradeData);
     await this.setTokensData('quote', tradeApi, tradeData);
@@ -83,7 +91,9 @@ export class OrderBookApiService implements OnDestroy {
       address: tradeApi[`${tokenPart}_address`]
     } as OrderBookDataToken;
 
-    const foundToken = this._tokens.find(t => t.address === tradeData.token[tokenPart].address);
+    const foundToken = this._tokens.find(
+      t => t.blockchain === tradeData.blockchain && t.address === tradeData.token[tokenPart].address
+    );
     if (foundToken) {
       tradeData.token[tokenPart] = { ...tradeData.token[tokenPart], ...foundToken };
     } else {
