@@ -11,4 +11,8 @@
       <img [src]="'assets/images/icons/collaborations/' + company.img" alt="" />
     </a>
   </div>
+
+  <button class="collaborations__listing-request" (click)="openListingRequestPopup()">
+    {{ 'Listing request' | translate }}
+  </button>
 </div>
