@@ -1,11 +1,15 @@
-@import '../../../../../../scss/elements/table';
+@import '../../../../../scss/elements/table';
 
 $primary-color: #4aa956;
 
-.order-books-table {
+.trades-table {
   &__title-section {
     display: flex;
     align-items: center;
+  }
+
+  tr {
+    cursor: pointer;
   }
 
   &__refresh-button {

@@ -1,0 +1,55 @@
+.volume-cell {
+  display: flex;
+
+  &__token-from,
+  &__token-to {
+    display: inline-flex;
+    width: 50%;
+    font-size: 15px;
+    flex-direction: column;
+  }
+
+  &__token-from {
+    align-items: flex-end;
+    padding-right: 15px;
+  }
+
+  &__token-to {
+    align-items: flex-start;
+    padding-left: 15px;
+  }
+
+  &__separator {
+    left: calc(50% - 2px);
+    top: 0;
+    position: absolute;
+    display: block;
+    width: 4px;
+    background-color: #f4f4f4;
+    height: 100%;
+    box-sizing: border-box;
+
+    &::after {
+      content: "";
+      display: block;
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      background: url(/assets/images/icons/ch_03.svg) center center/24px no-repeat;
+      top: 50%;
+      margin-top: -25px;
+      transform: translate(calc(-50% + 2px));
+    }
+  }
+
+  &__text {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  
+  &__subtext {
+    color: rgba(0,0,0,.5);
+    font-size: 14px;
+    margin-top: 14px;
+  }
+}

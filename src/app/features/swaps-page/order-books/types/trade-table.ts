@@ -7,11 +7,11 @@ export interface OrderBookTableToken extends SwapToken {
   amountTotal: BigNumber;
 }
 
-type OrderBookTableTokens = {
+export type OrderBookTableTokens = {
   [tokenPart in TokenPart]: OrderBookTableToken;
 };
 
-export interface OrderBookTradeTable {
+export interface OrderBookTradeTableRow {
   token: OrderBookTableTokens;
   blockchain: BLOCKCHAIN_NAME;
   expirationDate: Date;

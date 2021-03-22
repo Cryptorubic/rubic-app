@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { DynamicModule } from 'ng-dynamic-component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -36,6 +37,9 @@ import { WarningLabelComponent } from './components/warning-label/warning-label.
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
 import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
 import { ScannerLinkComponent } from './components/scanner-link/scanner-link.component';
+import { CoinsFilterComponent } from './components/coins-filter/coins-filter.component';
+import { TokensCellComponent } from './components/tokens-cell/tokens-cell.component';
+import { VolumeCellComponent } from './components/volume-cell/volume-cell.component';
 import { VolumeBlockComponent } from './components/volume-block/volume-block.component';
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
 
@@ -73,11 +77,22 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     TokenAddressDirective,
     NumberPrecisionDirective,
     ScannerLinkComponent,
+    CoinsFilterComponent,
+    TokensCellComponent,
+    VolumeCellComponent,
     VolumeBlockComponent,
     ListingRequestPopupComponent
   ],
   entryComponents: [MessageBoxComponent],
-  imports: [CommonModule, TranslateModule, DynamicModule, MatDialogModule, FormsModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    DynamicModule,
+    MatDialogModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule
+  ],
   exports: [
     FooterComponent,
     SpinnerComponent,
@@ -112,6 +127,9 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     TranslateModule,
     NumberPrecisionDirective,
     ScannerLinkComponent,
+    CoinsFilterComponent,
+    TokensCellComponent,
+    VolumeCellComponent,
     VolumeBlockComponent
   ]
 })

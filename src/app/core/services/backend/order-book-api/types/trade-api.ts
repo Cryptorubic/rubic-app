@@ -15,6 +15,7 @@ export interface OrderBookTradeApi {
   broker_fee_address: string; // broker's adress
   broker_fee_base: number; // broker's percent on base token
   broker_fee_quote: number; // broker's percent on quote token
+  unique_link?: string; // Unique link to display trade.
 
   // to delete or change
   name: string; // base.token_short_title + ' <> ' + quote.token_short_title

@@ -1,0 +1,35 @@
+.tokens-cell {
+  display: flex;
+
+  &__token-from,
+  &__token-to {
+    display: inline-flex;
+    width: 50%;
+    align-items: center;
+    font-size: 15px;
+  }
+
+  &__token-from {
+    padding-right: 15px;
+  }
+
+  &__token-to{
+    padding-left: 15px;
+  }
+
+  &__separator {
+    left: calc(50% - 2px);
+    top: 0;
+    position: absolute;
+    display: block;
+    width: 4px;
+    background-color: #f4f4f4;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  &__token-icon {
+    height: 22px;
+    margin-right: 15px;
+  }
+}
