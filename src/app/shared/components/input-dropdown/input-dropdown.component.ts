@@ -78,7 +78,8 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   constructor() {}
 
   ngOnChanges() {
-    this.searchComponent('');
+    this.searchComponent(this.inputQuery);
+
     if (this.selectedComponentData) {
       this.inputQuery = this.selectedComponentData.filterParameters[this.filterBy[0]];
       this.unshiftComponentToVisibleList(
@@ -143,9 +144,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    * Puts the given component to the start of the visible list.
    */
   private unshiftComponentToVisibleList(component: T) {
-    this.visibleComponentsData = this.visibleComponentsData
-      .filter(item => item.id !== component.id)
-      .slice(0, this.VISIBLE_COMPONENTS_NUMBER - 1)
-      .unshift(component);
+    if (component) {
+      this.visibleComponentsData = this.visibleComponentsData
+        .filter(item => item.id !== component.id)
+        .slice(0, this.VISIBLE_COMPONENTS_NUMBER - 1)
+        .unshift(component);
+    }
   }
 }

@@ -47,7 +47,7 @@
     "ng-toggle-button": "^0.1.5",
     "ngx-clipboard": "^12.3.1",
     "ngx-cookie-service": "^2.4.0",
-    "ngx-material-timepicker": "^3.3.1",
+    "ngx-material-timepicker": "^5.5.3",
     "ngx-owl-carousel": "^2.0.7",
     "ngx-scrollbar": "^4.2.0",
     "owl.carousel": "^2.3.4",

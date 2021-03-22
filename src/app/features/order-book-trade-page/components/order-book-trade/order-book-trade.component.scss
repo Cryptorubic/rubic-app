@@ -1,5 +1,14 @@
 @import 'src/scss/elements/vars';
 
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100vw;
+  height: 100vh;
+}
+
 .trade-container {
   max-width: 1180px;
   margin: 140px auto 80px;
@@ -133,181 +142,23 @@
   color: $dark;
 }
 
-.token-block {
-  background: white;
-
-  &__area {
-    display: flex;
-  }
-}
-
-.area-first {
-  flex-direction: column;
-
-  padding: 12px 20px 10px;
-  border-bottom: 2px $grey-background solid;
-
-  &__amount-total {
-    margin-bottom: 4px;
-
-    font-size: 40px;
-  }
-
-  &__amount-sent, &__amount-left {
-    display: flex;
-    align-items: center;
-
-    height: 23px;
-
-    color: $grey-text;
-  }
-
-  &__amount-sent {
-    margin-bottom: 2px;
-  }
-
-  &__amount-description {
-    display: inline-block;
-
-    width: 35px;
-    margin-right: 6px;
-
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-  }
-
-  &__amount-number {
-    font-size: 19px;
-  }
-}
-
-.area-second {
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 25px 20px 20px;
-
-  &_quote {
-    flex-direction: row-reverse;
-  }
-}
-
-.investors {
-  display: flex;
-  flex-direction: column;
-
-  &_quote {
-    text-align: right;
-  }
-
-  &__amount {
-    font-weight: 500;
-    margin-bottom: 5px;
-    word-spacing: -2px;
-  }
-
-  &__text {
-    color: $grey-text;
-  }
-}
-
-.token-info {
-  display: flex;
-  align-items: center;
-  grid-gap: 15px;
-
-  white-space: nowrap;
-
-  &_quote {
-    flex-direction: row-reverse;
-  }
-
-  &__text {
-    display: flex;
-    flex-direction: column;
-
-    text-align: right;
-
-    &_quote {
-      text-align: left;
-    }
-  }
-
-  &__title {
-    margin-bottom: 8px;
-
-    font-weight: 500;
-  }
-
-  &__link {
-    img {
-      position: relative;
-      top: 1px;
-
-      margin-left: 2px;
-    }
-  }
-
-  &__image {
-    width: 50px;
-  }
-}
-
-.area-third {
-  display: grid;
-  grid-template-columns: auto 200px;
-  grid-gap: 15px;
-
-  padding: 20px 20px 19px 19px;
-
-  &__amount-input {
-    padding: 12px;
-    border: none;
-
-    background: $grey-background;
-
-    color: $dark;
-    font-size: 19px;
-    font-family: inherit;
-  }
-
-  &__fill-button {
-    position: relative;
-    top: -4px;
-    left: 1px;
-
-    width: 50px;
-    padding: 0;
-    border: none;
-    border-bottom: 1px $grey-text dashed;
-
-    background: white;
-
-    color: $grey-text;
-    font-size: 17px;
-    font-family: inherit;
-
-    cursor: pointer;
-
-    transition: font-weight 0.1s linear;
-
-    &:hover {
-      font-weight: 500;
-    }
-  }
-}
-
 .trade-options {
   display: flex;
   align-items: center;
-  grid-gap: 50px;
+  grid-column-gap: 50px;
+  flex-wrap: wrap;
 
-  padding: 20px;
+  padding: 24px 32px;
 
   background: white;
 
   color: $dark;
+
+  &__break {
+    flex-basis: 100%;
+
+    height: 0;
+  }
 }
 
 .trade-option {
@@ -323,6 +174,22 @@
     grid-gap: 15px;
 
     margin-left: auto;
+  }
+
+  &_broker {
+    justify-content: center;
+
+    height: 50px;
+    margin-top: 35px;
+  }
+
+  &_cancel {
+    margin-top: 35px;
+    margin-left: auto;
+
+    app-primary-button {
+      width: 160px;
+    }
   }
 
   &__title {
@@ -356,25 +223,40 @@
         margin-left: 10px;
       }
     }
+  }
+}
 
-    &_public {
-      display: flex;
-      grid-gap: 10px;
-      align-items: center;
+.trade-option-body-public {
+  display: flex;
+  grid-gap: 10px;
+  align-items: center;
+  justify-content: space-between;
 
-      padding: 8px 12px;
+  padding: 8px 14px;
 
-      background: $grey-background;
+  background: $grey-background;
 
-      font-size: 17px;
-      font-weight: normal;
-      text-transform: uppercase;
+  font-size: 17px;
+  font-weight: normal;
+  text-transform: uppercase;
 
-      cursor: pointer;
-    }
+  cursor: pointer;
 
-    &_reverted {
-      flex-direction: row-reverse;
+  &_not-checked {
+    flex-direction: row-reverse;
+  }
+
+  &__image {
+    width: 26px;
+    height: 28px;
+
+    background-image: url(/assets/images/icons/checkbox-tick.svg);
+    background-repeat: no-repeat;
+
+    transition: background-image 0.2s linear;
+
+    &_not-checked {
+      background-image: url(/assets/images/icons/checkbox-cross.svg);
     }
   }
 }
@@ -407,4 +289,11 @@
       transform: rotate(45deg);
     }
   }
+}
+
+.no-trade {
+  margin: 140px 0 0 80px;
+
+  font-size: 24px;
+  font-weight: bold;
 }

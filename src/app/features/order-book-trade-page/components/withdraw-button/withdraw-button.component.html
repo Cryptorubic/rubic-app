@@ -1,0 +1,10 @@
+<button class="withdraw-button" [disabled]="disabled || animated" (click)="onClickHandler()">
+  <span class="lds-ellipsis" *ngIf="animated">
+    <span class="lds-ellipsis-container">
+      <span></span><span></span><span></span><span></span>
+    </span>
+  </span>
+
+  <img src="assets/images/icons/arrow/arrow-right-green.svg" alt="arrow" />
+  <span>Withdraw</span>
+</button>

@@ -1,198 +1,164 @@
-<section class="trade-container">
-  <div class="trade-container__header header">
-    <div class="header__row header-row">
-      <span class="header-row__tokens-names">{{
-        tradeData.token.base.symbol + ' <> ' + tradeData.token.quote.symbol
-      }}</span>
-    </div>
+<div class="trade" *ngIf="doesTradeExist">
+  <section class="spinner-container" *ngIf="!isMainTradeDataLoaded">
+    <app-spinner></app-spinner>
+  </section>
 
-    <div class="header__row header-row">
-      <span class="header-row__blockchain">
-        <img [src]="blockchain.imagePath" alt="blockchain" /> {{ blockchain.label }}
-      </span>
-
-      <span class="header-row__tokens-rate tokens-rate">
-        <span class="tokens-rate__title">Rate:</span>
-        {{ getRate() }}
-
-        <button class="tokens-rate__button" (click)="isRevertedRate = !isRevertedRate">
-          <img src="./assets/images/icons/revert.svg" alt="reverse rate" />
-        </button>
-      </span>
-
-      <span
-        class="header-row__state"
-        *ngIf="tradeData.status"
-        [ngClass]="{
-          'header-row__state_active': tradeData.status === TRADE_STATUS.ACTIVE,
-          'header-row__state_expired': tradeData.status === TRADE_STATUS.EXPIRED,
-          'header-row__state_cancelled': tradeData.status === TRADE_STATUS.CANCELLED,
-          'header-row__state_done': tradeData.status === TRADE_STATUS.DONE
-        }"
-      >
-        {{ tradeData.status }}
-      </span>
-    </div>
-  </div>
-
-  <div class="trade-container__tokens-swap tokens-swap">
-    <!--base-->
-    <div class="tokens-swap__block token-block">
-      <div class="token-block__area area-first">
-        <div class="area-first__amount-total">{{ shortedAmountTotal.base }}</div>
-
-        <div class="area-first__amount-sent">
-          <span class="area-first__amount-description">Sent</span>
-          <span class="area-first__amount-number" *ngIf="tradeData.token.base.amountContributed">{{
-            tradeData.token.base.amountContributed.toFormat(shortedFormat)
-          }}</span>
-        </div>
-
-        <div class="area-first__amount-left">
-          <span class="area-first__amount-description">Left</span>
-          <span class="area-first__amount-number" *ngIf="tradeData.token.base.amountLeft">{{
-            tradeData.token.base.amountLeft.toFormat(shortedFormat)
-          }}</span>
-        </div>
+  <section class="trade-container" *ngIf="isMainTradeDataLoaded">
+    <div class="trade-container__header header">
+      <div class="header__row header-row">
+        <span class="header-row__tokens-names">{{
+          tradeData.token.base.symbol + ' <> ' + tradeData.token.quote.symbol
+        }}</span>
       </div>
 
-      <div class="token-block__area area-second">
-        <div class="area-second__investors investors">
-          <span class="investors__amount">{{ tradeData.token.base.investorsNumber }} / 10</span>
-          <span class="investors__text">Number of investors</span>
-        </div>
+      <div class="header__row header-row">
+        <span class="header-row__blockchain">
+          <img [src]="blockchain.imagePath" alt="blockchain" /> {{ blockchain.label }}
+        </span>
 
-        <div class="area-second__token-info token-info">
-          <div class="token-info__text">
-            <span class="token-info__title">{{
-              tradeData.token.base.name + ' (' + tradeData.token.base.symbol + ')'
-            }}</span>
+        <span class="header-row__tokens-rate tokens-rate">
+          <span class="tokens-rate__title">Rate:</span>
+          {{ getRate() }}
 
-            <a href="https://etherscan.io/stat/supply" class="token-info__link" target="_blank">
-              Check on Explorer <img src="/assets/images/icons/link.svg" alt="link" />
-            </a>
-          </div>
+          <button class="tokens-rate__button" (click)="isRevertedRate = !isRevertedRate">
+            <img src="./assets/images/icons/revert.svg" alt="reverse rate" />
+          </button>
+        </span>
 
-          <img class="token-info__image" src="/assets/images/icons/coins/empty.svg" alt="token" />
-        </div>
-      </div>
-
-      <div
-        class="token-block__area area-third"
-        *ngIf="tradeData.status && tradeData.status === TRADE_STATUS.ACTIVE"
-      >
-        <input class="area-third__amount-input" placeholder="Enter amount" />
-
-        <div class="area-third__confirm-button">
-          <app-primary-button label="Contribute"></app-primary-button>
-        </div>
-
-        <button class="area-third__fill-button">Fill all</button>
-      </div>
-    </div>
-
-    <!--quoute-->
-    <div class="tokens-swap__block token-block">
-      <div class="token-block__area area-first">
-        <div class="area-first__amount-total">{{ shortedAmountTotal.quote }}</div>
-
-        <div class="area-first__amount-sent">
-          <span class="area-first__amount-description">Sent</span>
-          <span class="area-first__amount-number" *ngIf="tradeData.token.quote.amountContributed">{{
-            tradeData.token.quote.amountContributed.toFixed()
-          }}</span>
-        </div>
-
-        <div class="area-first__amount-left">
-          <span class="area-first__amount-description">Left</span>
-          <span class="area-first__amount-number" *ngIf="tradeData.token.quote.amountLeft">{{
-            tradeData.token.quote.amountLeft.toFixed()
-          }}</span>
-        </div>
-      </div>
-
-      <div class="token-block__area area-second">
-        <div class="area-second__investors investors">
-          <span class="investors__amount">{{ tradeData.token.quote.investorsNumber }} / 10</span>
-          <span class="investors__text">Number of investors</span>
-        </div>
-
-        <div class="area-second__token-info token-info">
-          <div class="token-info__text">
-            <span class="token-info__title">{{
-              tradeData.token.quote.name + ' (' + tradeData.token.quote.symbol + ')'
-            }}</span>
-
-            <a href="https://etherscan.io/stat/supply" class="token-info__link" target="_blank">
-              Check on Explorer <img src="/assets/images/icons/link.svg" alt="link" />
-            </a>
-          </div>
-
-          <img class="token-info__image" src="/assets/images/icons/coins/empty.svg" alt="token" />
-        </div>
-      </div>
-
-      <div
-        class="token-block__area area-third"
-        *ngIf="tradeData.status && tradeData.status === TRADE_STATUS.ACTIVE"
-      >
-        <input class="area-third__amount-input" placeholder="Enter amount" />
-
-        <div class="area-third__confirm-button">
-          <app-primary-button label="Approve"></app-primary-button>
-        </div>
-
-        <button class="area-third__fill-button">Fill all</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="trade-container__trade-options trade-options">
-    <div class="trade-options__option trade-option">
-      <div class="trade-option__title">Closing Date</div>
-
-      <div class="trade-option__body">{{ expirationDay }}</div>
-    </div>
-
-    <div class="trade-options__option trade-option">
-      <div class="trade-option__title">Closing Time</div>
-
-      <div class="trade-option__body">{{ expirationTime }}</div>
-    </div>
-
-    <div class="trade-options__option trade-option copy-link">
-      <div class="trade-option__title">Link To Deal</div>
-
-      <div class="trade-option__body trade-option__body_copy-link">
-        {{ currentUrl }}
-        <button
-          class="trade-option__body_button"
-          [cdkCopyToClipboard]="currentUrl"
-          (cdkCopyToClipboardCopied)="onCopiedLink()"
+        <span
+          class="header-row__state"
+          *ngIf="tradeData.status"
+          [ngClass]="{
+            'header-row__state_active': tradeData.status === TRADE_STATUS.ACTIVE,
+            'header-row__state_expired': tradeData.status === TRADE_STATUS.EXPIRED,
+            'header-row__state_cancelled': tradeData.status === TRADE_STATUS.CANCELLED,
+            'header-row__state_done': tradeData.status === TRADE_STATUS.DONE
+          }"
         >
-          <img src="/assets/images/icons/copy.svg" alt="copy" />
-        </button>
-      </div>
-
-      <div class="copy-link__copied-notification" *ngIf="isCopied">
-        Copied
-        <div class="triangle"></div>
+          {{ tradeData.status }}
+        </span>
       </div>
     </div>
 
-    <div class="trade-options__option trade-option trade-option_public">
-      <div class="trade-option__title">Public Deal</div>
+    <div class="trade-container__tokens-swap tokens-swap">
+      <div class="tokens-swap__block-container">
+        <app-token-form
+          [tradeData]="tradeData"
+          tokenPart="base"
+          [oppositeTokenToGet]="quoteTokenAmountToGet + ' ' + tradeData.token.quote.symbol"
+          (amountToContributeChanges)="calculateAmountToGet($event, 'base')"
+        ></app-token-form>
+      </div>
+
+      <div class="tokens-swap__block-container">
+        <app-token-form
+          [tradeData]="tradeData"
+          tokenPart="quote"
+          [oppositeTokenToGet]="baseTokenAmountToGet + ' ' + tradeData.token.base.symbol"
+          (amountToContributeChanges)="calculateAmountToGet($event, 'quote')"
+        ></app-token-form>
+      </div>
+    </div>
+
+    <div class="trade-container__trade-options trade-options">
+      <div class="trade-options__option trade-option">
+        <div class="trade-option__title">Closing Date</div>
+
+        <div class="trade-option__body">{{ expirationDay }}</div>
+      </div>
+
+      <div class="trade-options__option trade-option">
+        <div class="trade-option__title">Closing Time</div>
+
+        <div class="trade-option__body">{{ expirationTime }} UTC</div>
+      </div>
+
+      <div class="trade-options__option trade-option copy-link">
+        <div class="trade-option__title">Link To Deal</div>
+
+        <div class="trade-option__body trade-option__body_copy-link">
+          {{ currentUrl }}
+          <button
+            class="trade-option__body_button"
+            [cdkCopyToClipboard]="currentUrl"
+            (cdkCopyToClipboardCopied)="onCopiedLink('linkToDeal')"
+          >
+            <img src="/assets/images/icons/copy.svg" alt="copy" />
+          </button>
+        </div>
+
+        <div class="copy-link__copied-notification" *ngIf="isCopied.linkToDeal">
+          Copied
+          <div class="triangle"></div>
+        </div>
+      </div>
+
+      <div class="trade-options__option trade-option trade-option_public">
+        <div class="trade-option__title">Public Deal</div>
+
+        <div
+          class="trade-option__body trade-option-body-public"
+          [ngClass]="{ 'trade-option-body-public_not-checked': !tradeData.isPublic }"
+        >
+          <span>{{ tradeData.isPublic ? 'Yes' : 'No' }}</span>
+
+          <span
+            class="trade-option-body-public__image"
+            [ngClass]="{ 'trade-option-body-public__image_not-checked': !tradeData.isPublic }"
+          ></span>
+        </div>
+      </div>
+
+      <div class="trade-options__break"></div>
 
       <div
-        class="trade-option__body trade-option__body_public"
-        [ngClass]="{ 'trade-option__body_reverted': !tradeData.isPublic }"
+        class="trade-options__option trade-option trade-option_broker copy-link"
+        *ngIf="tradeData.isWithBrokerFee"
       >
-        <span>{{ tradeData.isPublic ? 'Yes' : 'No' }}</span>
-        <img
-          [src]="'/assets/images/icons/' + (tradeData.isPublic ? 'yes' : 'no') + '.svg'"
-          alt=""
-        />
+        <div class="trade-option__title">Broker Address</div>
+
+        <div class="trade-option__body trade-option__body_copy-link">
+          <a
+            target="_blank"
+            [href]="tradeData.brokerAddress | scannerLink: tradeData.blockchain:ADDRESS_TYPE.WALLET"
+          >
+            {{ tradeData.brokerAddress }}
+          </a>
+          <button
+            class="trade-option__body_button"
+            [cdkCopyToClipboard]="tradeData.brokerAddress"
+            (cdkCopyToClipboardCopied)="onCopiedLink('brokerAddress')"
+          >
+            <img src="/assets/images/icons/copy.svg" alt="copy" />
+          </button>
+        </div>
+
+        <div class="copy-link__copied-notification" *ngIf="isCopied.brokerAddress">
+          Copied
+          <div class="triangle"></div>
+        </div>
+      </div>
+
+      <div
+        class="trade-options__option trade-option trade-option_cancel"
+        *ngIf="tradeData.status === TRADE_STATUS.ACTIVE && tradeData.owner"
+      >
+        <app-primary-button
+          label="Cancel trade"
+          [animate]="cancelStatus === TX_STATUS.STARTED || cancelStatus === TX_STATUS.IN_PROGRESS"
+          [disabled]="(onAddressChanges | async).toLowerCase() !== tradeData.owner.toLowerCase()"
+          (onClick)="cancelTrade()"
+        ></app-primary-button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>
+
+<div class="no-trade" *ngIf="!doesTradeExist">Such trade doesn't exist.</div>
+
+<app-cancel-completed-modal
+  *ngIf="cancelStatus === TX_STATUS.COMPLETED"
+  [transactionId]="cancelTransactionId"
+  [blockchain]="tradeData.blockchain"
+>
+</app-cancel-completed-modal>

@@ -1,0 +1,157 @@
+<div class="token-block" *ngIf="token">
+  <div class="token-block__area area-first">
+    <div class="area-first__amount-total">{{ shortedAmountTotal }}</div>
+
+    <div class="area-first__amount-sent">
+      <span class="area-first__amount-description">Sent</span>
+      <span class="area-first__amount-number">
+        {{ token.amountContributed?.toFormat(BIG_NUMBER_FORMAT) }}
+      </span>
+    </div>
+
+    <div class="area-first__amount-left">
+      <span class="area-first__amount-description">Left</span>
+      <span class="area-first__amount-number" *ngIf="!token.amountLeft?.isNaN()">{{
+        token.amountLeft?.toFormat(BIG_NUMBER_FORMAT)
+      }}</span>
+    </div>
+  </div>
+
+  <div
+    class="token-block__area area-second"
+    [ngClass]="{ 'area-second_quote': tokenPart === 'quote' }"
+  >
+    <div class="area-second__investors investors">
+      <span class="investors__amount">{{ token.investorsNumber }} / 10</span>
+      <span class="investors__text">Number of investors</span>
+    </div>
+
+    <div
+      class="area-second__token-info token-info"
+      [ngClass]="{ 'token-info_quote': tokenPart === 'quote' }"
+    >
+      <div class="token-info__text">
+        <span
+          class="token-info__title"
+          [ngClass]="{ 'token-info__title_quote': tokenPart === 'quote' }"
+        >
+          {{ token.name + ' (' + token.symbol + ')' }}
+        </span>
+
+        <app-scanner-link
+          [address]="token.address"
+          [blockchainName]="token.blockchain"
+          [addressType]="ADDRESS_TYPE.TOKEN"
+        >
+        </app-scanner-link>
+      </div>
+
+      <img
+        class="token-info__image"
+        [src]="token.image || '/assets/images/icons/coins/empty.svg'"
+        alt="token"
+      />
+    </div>
+  </div>
+
+  <div
+    class="token-block__area area-third"
+    *ngIf="
+      tradeData.status === TRADE_STATUS.ACTIVE && token.isApproved !== undefined && token.amountLeft
+    "
+  >
+    <input
+      class="area-third__amount-input"
+      [placeholder]="token.isApproved ? 'Enter amount' : ''"
+      [disabled]="!token.isApproved"
+      appNumberPrecision
+      [decimalLength]="token.decimals"
+      [minValue]="getMinContributionAsString()"
+      [maxValue]="token.amountLeft.toFixed()"
+      [ngModel]="amountToContribute"
+      (ngModelChange)="setAmountToContribute($event)"
+      #amountToContributeModel="ngModel"
+      [ngClass]="{
+        'area-third__amount-input_invalid': amountToContributeModel.invalid
+      }"
+    />
+
+    <div class="area-third__confirm-button">
+      <app-primary-button
+        [label]="token.isApproved ? 'Contribute' : 'Approve'"
+        [animate]="
+          operationStatus.approve === TX_STATUS.STARTED ||
+          operationStatus.approve === TX_STATUS.IN_PROGRESS ||
+          operationStatus.contribute === TX_STATUS.STARTED ||
+          operationStatus.contribute === TX_STATUS.IN_PROGRESS
+        "
+        [disabled]="
+          (token.isApproved &&
+            !(amountToContributeAsNumber?.isGreaterThan(0) && amountToContributeModel.valid)) ||
+          isOperationInProgress
+        "
+        (onClick)="makeApproveOrContribute()"
+      ></app-primary-button>
+    </div>
+
+    <div
+      class="area-third__amount-to-get amount-to-get"
+      *ngIf="
+        token.isApproved &&
+        amountToContributeAsNumber?.isGreaterThan(0) &&
+        amountToContributeModel.valid
+      "
+    >
+      You will get
+      <span class="amount-to-get__number">{{ oppositeTokenToGet }}</span>
+      after the trade is complete
+    </div>
+
+    <button
+      class="area-third__fill-button"
+      (click)="amountToContribute = token.amountLeft.toFixed()"
+    >
+      Fill all
+    </button>
+  </div>
+
+  <div
+    class="token-block__area area-fourth"
+    *ngIf="token.minContribution.isGreaterThan(0) || tradeData.isWithBrokerFee"
+  >
+    <div class="area-fourth__min-contribution" *ngIf="getMinContributionAsString()">
+      Min contribution limit:
+      {{ getMinContributionAsString() + ' ' + token.symbol }}
+    </div>
+
+    <div class="area-fourth__brokers-fee" *ngIf="tradeData.isWithBrokerFee">
+      Broker's fee:
+      {{ token.brokerPercent + '% (' + getBrokerPercent() + ' ' + token.symbol + ')' }}
+    </div>
+  </div>
+
+  <div
+    class="token-block__area area-fifth"
+    *ngIf="
+      (tradeData.status === TRADE_STATUS.ACTIVE || tradeData.status === TRADE_STATUS.EXPIRED) &&
+      token.amountContributed?.isGreaterThan(0)
+    "
+  >
+    <app-withdraw-button
+      [animated]="
+        operationStatus.withdraw === TX_STATUS.STARTED ||
+        operationStatus.withdraw === TX_STATUS.IN_PROGRESS
+      "
+      [disabled]="isOperationInProgress"
+      (onClick)="makeWithdraw()"
+    ></app-withdraw-button>
+  </div>
+</div>
+
+<app-operation-in-progress-modal *ngIf="isOperationInProgress"></app-operation-in-progress-modal>
+
+<app-operation-completed-modal
+  *ngIf="isOperationCompleted"
+  [transactionId]="lastCompletedTransactionId"
+  [blockchain]="tradeData.blockchain"
+></app-operation-completed-modal>

@@ -1,0 +1,7 @@
+export enum TX_STATUS {
+  NONE = 'NONE',
+  STARTED = 'STARTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  ERROR = 'ERROR',
+  COMPLETED = 'COMPLETED'
+}

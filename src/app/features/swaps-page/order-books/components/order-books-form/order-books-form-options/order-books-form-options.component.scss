@@ -1,0 +1,239 @@
+@import 'src/scss/elements/vars';
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+
+  color: $dark;
+
+  &__row {
+    padding: 20px 30px 22px;
+    border-top: 2px solid $grey-background;
+  }
+}
+
+.form-section-row {
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 32px;
+
+  &_second {
+    grid-column-gap: 66px;
+  }
+
+  &__prompt {
+    width: 100%;
+
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+
+  &__broker-data {
+    display: flex;
+    flex-wrap: wrap;
+    grid-row-gap: 32px;
+  }
+}
+
+.form-section-block {
+  display: flex;
+  align-items: center;
+
+  min-height: 68px;
+
+  &_full {
+    flex-basis: 100%;
+  }
+
+  &_button {
+    margin-left: auto;
+  }
+
+  &__description-container {
+    position: relative;
+    top: 10px;
+    left: 3px;
+  }
+
+  &__advanced-options-button {
+    position: relative;
+    top: 10px;
+    right: 10px;
+
+    margin-left: auto;
+
+    color: $main-green;
+    cursor: pointer;
+
+    font-weight: bold;
+    font-size: 16px;
+
+    img {
+      position: relative;
+      top: -1px;
+      left: 3px;
+
+      width: 12px;
+
+      transition: transform 0.3s ease;
+    }
+
+    &_opened {
+      img {
+        transform: rotateX(180deg);
+      }
+    }
+  }
+}
+
+.input-container {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  &_broker-address {
+    width: 100%;
+    max-width: 494px;
+  }
+
+  &_broker-percent {
+    width: 256px;
+  }
+
+  &__label {
+    margin-bottom: 7px;
+
+    font-size: 14px;
+    text-transform: uppercase;
+
+    &_broker-address {
+      position: relative;
+      left: 4px;
+
+      text-align: left;
+    }
+  }
+
+  &__input {
+    height: 21px;
+    padding: 12px 14px;
+    margin: 0 auto;
+    border: none;
+
+    color: $dark;
+    background: $grey-background;
+
+    text-align: center;
+    font-size: 17px;
+
+    &_date {
+      width: 86px;
+
+      cursor: pointer;
+    }
+
+    &_time {
+      width: 43px;
+
+      cursor: pointer;
+    }
+
+    &_checkbox {
+      width: 65px;
+      height: 31px;
+      padding: 7px 14px;
+
+      cursor: pointer;
+    }
+
+    &_min-contribute {
+      width: 259px;
+
+      text-align: left;
+      font-size: 18px;
+    }
+
+    &_broker-address {
+      width: 100%;
+
+      text-align: left;
+    }
+
+    &_broker-percent {
+      width: 45px;
+    }
+
+    &_validated {
+      border: 1px solid white;
+    }
+
+    &_invalid {
+      border-color: $error-red;
+
+      &:focus {
+        box-shadow: 0 0 2px $error-red;
+      }
+    }
+  }
+
+  &__checkbox {
+    &_hidden {
+      display: none;
+    }
+  }
+
+  &__percent-sign {
+    position: absolute;
+    top: 33%;
+    right: 28.5%;
+  }
+
+  &__calculation {
+    margin-top: 6px;
+
+    color: $grey-text;
+
+    white-space: nowrap;
+  }
+}
+
+.input-checkbox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  text-transform: uppercase;
+
+  &_not-checked {
+    flex-direction: row-reverse;
+  }
+
+  &__image {
+    width: 26px;
+    height: 28px;
+
+    background-image: url(/assets/images/icons/checkbox-tick.svg);
+    background-repeat: no-repeat;
+
+    transition: background-image 0.2s linear;
+
+    &_not-checked {
+      background-image: url(/assets/images/icons/checkbox-cross.svg);
+    }
+  }
+}
+
+.description-container {
+  display: flex;
+  align-items: center;
+
+  color: $grey-text;
+
+  &__dash {
+    margin: 0 5px;
+  }
+}

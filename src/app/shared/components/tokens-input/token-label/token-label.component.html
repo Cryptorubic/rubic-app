@@ -1,5 +1,7 @@
 <div class="dropdown-label" [ngClass]="{ 'dropdown-label_selected': selected }">
-  <img [src]="token.image" alt="Token" />
+  <div class="dropdown-label__image-container">
+    <img [src]="token.image || '/assets/images/icons/coins/empty.svg'" alt="Token" />
+  </div>
 
   <div class="dropdown-label__text">
     <span *ngIf="!selected">
