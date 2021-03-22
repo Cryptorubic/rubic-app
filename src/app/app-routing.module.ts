@@ -48,6 +48,14 @@ const routes: Routes = [
   },
   {
     path: 'public-v3/:unique_link',
+    redirectTo: '/trade/:unique_link'
+  },
+  {
+    path: 'trades/public-v3/:unique_link',
+    redirectTo: '/trade/:unique_link'
+  },
+  {
+    path: 'trade/:unique_link',
     loadChildren: () =>
       import('./features/order-book-trade-page/order-book-trade-page.module').then(
         m => m.OrderBookTradePageModule

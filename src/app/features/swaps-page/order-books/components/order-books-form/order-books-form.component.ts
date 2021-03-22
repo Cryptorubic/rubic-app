@@ -10,8 +10,13 @@ import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
+import { MatDialog } from '@angular/material/dialog';
+import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { OrderBooksFormService } from '../../services/order-book-form-service/order-books-form.service';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
+import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
 
 enum TRADE_STATUS {
   STARTED = 'STARTED',
@@ -169,9 +174,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       ...value,
       areAmountsAndTokensSet: !!(
         value.token.base?.address &&
-        value.token.base?.amount.isGreaterThan(0) &&
+        value.token.base?.amount?.isGreaterThan(0) &&
         value.token.quote?.address &&
-        value.token.quote?.amount.isGreaterThan(0)
+        value.token.quote?.amount?.isGreaterThan(0)
       ),
       areOptionsValid: false
     };
@@ -186,7 +191,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     private tradeTypeService: TradeTypeService,
     private tokensService: TokensService,
     private tradeParametersService: TradeParametersService,
-    private orderBookFormService: OrderBooksFormService
+    private orderBookFormService: OrderBooksFormService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -228,12 +234,16 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
 
-      const foundBaseToken = this.tokens.find(t => t.address === this.baseToken?.address);
+      const foundBaseToken = this.tokens.find(
+        t => t.address.toLowerCase() === this.baseToken?.address.toLowerCase()
+      );
       if (foundBaseToken) {
         this.baseToken = foundBaseToken;
       }
 
-      const foundQuoteToken = this.tokens.find(t => t.address === this.quoteToken?.address);
+      const foundQuoteToken = this.tokens.find(
+        t => t.address.toLowerCase() === this.quoteToken?.address.toLowerCase()
+      );
       if (foundQuoteToken) {
         this.quoteToken = foundQuoteToken;
       }
@@ -260,7 +270,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   public setCustomToken(tokenPart: string, tokenBody: Token): void {
-    const token = this.tokens.find(t => t.address === tokenBody.address);
+    const token = this.tokens.find(
+      t => t.address.toLowerCase() === tokenBody.address.toLowerCase()
+    );
     this.customToken[tokenPart] = token
       ? { ...token }
       : { ...this.customToken[tokenPart], ...tokenBody };
@@ -281,8 +293,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   private calculateTokensRate(): void {
     if (
-      !(this.baseToken?.price && this.tradeForm.token.base?.amount.isGreaterThan(0)) ||
-      !(this.quoteToken?.price && this.tradeForm.token.quote?.amount.isGreaterThan(0))
+      !(this.baseToken?.price && this.tradeForm.token.base?.amount?.isGreaterThan(0)) ||
+      !(this.quoteToken?.price && this.tradeForm.token.quote?.amount?.isGreaterThan(0))
     ) {
       this.tokensRate = null;
       return;
@@ -304,9 +316,20 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
         this.selectedTradeState = TRADE_STATUS.COMPLETED;
         this.transactionHash = transactionHash;
       })
-      .catch(err => {
+      .catch((err: RubicError) => {
         this.selectedTradeState = TRADE_STATUS.ERROR;
-        console.log('err', err);
+        let data: any = { title: 'Error', descriptionText: err.comment };
+        if (err instanceof NetworkError) {
+          data = {
+            title: 'Error',
+            descriptionComponentClass: NetworkErrorComponent,
+            descriptionComponentInputs: { networkError: err }
+          };
+        }
+        this.dialog.open(MessageBoxComponent, {
+          width: '400px',
+          data
+        });
       });
   }
 }

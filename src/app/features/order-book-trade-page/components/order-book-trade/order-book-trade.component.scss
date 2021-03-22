@@ -142,204 +142,10 @@
   color: $dark;
 }
 
-.token-block {
-  background: white;
-
-  &__area {
-    display: flex;
-  }
-}
-
-.area-first {
-  flex-direction: column;
-
-  padding: 12px 20px 10px;
-  border-bottom: 2px $grey-background solid;
-
-  &__amount-total {
-    margin-bottom: 4px;
-
-    font-size: 40px;
-  }
-
-  &__amount-sent, &__amount-left {
-    display: flex;
-    align-items: center;
-
-    height: 23px;
-
-    color: $grey-text;
-  }
-
-  &__amount-sent {
-    margin-bottom: 2px;
-  }
-
-  &__amount-description {
-    display: inline-block;
-
-    width: 35px;
-    margin-right: 6px;
-
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-  }
-
-  &__amount-number {
-    font-size: 19px;
-  }
-}
-
-.area-second {
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 25px 20px 20px;
-
-  &_quote {
-    flex-direction: row-reverse;
-  }
-}
-
-.investors {
-  display: flex;
-  flex-direction: column;
-
-  &_quote {
-    text-align: right;
-  }
-
-  &__amount {
-    font-weight: 500;
-    margin-bottom: 5px;
-    word-spacing: -2px;
-  }
-
-  &__text {
-    color: $grey-text;
-  }
-}
-
-.token-info {
-  display: flex;
-  align-items: center;
-  grid-gap: 15px;
-
-  white-space: nowrap;
-
-  &_quote {
-    flex-direction: row-reverse;
-  }
-
-  &__text {
-    display: flex;
-    flex-direction: column;
-
-    text-align: right;
-
-    &_quote {
-      text-align: left;
-    }
-  }
-
-  &__title {
-    margin-bottom: 8px;
-
-    font-weight: 500;
-  }
-
-  &__link {
-    img {
-      position: relative;
-      top: 1px;
-
-      margin-left: 2px;
-    }
-  }
-
-  &__image {
-    width: 50px;
-  }
-}
-
-.area-third {
-  display: grid;
-  grid-template-columns: auto 200px;
-  grid-gap: 15px;
-
-  padding: 20px 20px 19px 19px;
-
-  &__amount-input {
-    padding: 12px;
-    border: 1px solid white;
-
-    background: $grey-background;
-
-    color: $dark;
-    font-size: 19px;
-    font-family: inherit;
-
-    &_invalid {
-      border-color: $error-red;
-
-      &:focus {
-        box-shadow: 0 0 2px $error-red;
-      }
-    }
-  }
-
-  &__fill-button {
-    position: relative;
-    top: -4px;
-    left: 1px;
-
-    width: 50px;
-    padding: 0;
-    border: none;
-    border-bottom: 1px $grey-text dashed;
-
-    background: white;
-
-    color: $grey-text;
-    font-size: 17px;
-    font-family: inherit;
-
-    cursor: pointer;
-
-    transition: font-weight 0.1s linear;
-
-    &:hover {
-      font-weight: 500;
-    }
-  }
-}
-
-.area-fourth {
-  position: relative;
-  top: -5px;
-
-  flex-direction: column;
-  grid-gap: 12px;
-
-  padding: 0 20px 16px;
-
-  font-weight: 500;
-}
-
-.area-fifth {
-  border-top: 15px solid $grey-background;
-
-  &__withdraw-button {
-    width: 100%;
-  }
-}
-
 .trade-options {
   display: flex;
   align-items: center;
   grid-column-gap: 50px;
-  grid-row-gap: 35px;
   flex-wrap: wrap;
 
   padding: 24px 32px;
@@ -347,6 +153,12 @@
   background: white;
 
   color: $dark;
+
+  &__break {
+    flex-basis: 100%;
+
+    height: 0;
+  }
 }
 
 .trade-option {
@@ -362,6 +174,22 @@
     grid-gap: 15px;
 
     margin-left: auto;
+  }
+
+  &_broker {
+    justify-content: center;
+
+    height: 50px;
+    margin-top: 35px;
+  }
+
+  &_cancel {
+    margin-top: 35px;
+    margin-left: auto;
+
+    app-primary-button {
+      width: 160px;
+    }
   }
 
   &__title {

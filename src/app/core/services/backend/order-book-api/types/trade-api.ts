@@ -1,5 +1,5 @@
 export interface OrderBookTradeApi {
-  memo_contract: string; // unique id, returned from smart-contract after creation
+  memo: string; // unique id, returned from smart-contract after creation
   contract_address: string; // address of smart-contract
   base_address: string; // address of base token
   quote_address: string; // address of quote token

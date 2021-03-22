@@ -5,9 +5,11 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import * as moment from 'moment';
-import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../types/trade-data';
+import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../models/trade-data';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { TokenPart } from '../../../shared/models/order-book/tokens';
+import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
+import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
 
 interface ContractParameters {
   contractAddress: string;
@@ -18,7 +20,8 @@ interface ContractParameters {
 export class OrderBookTradeService {
   constructor(
     private web3PublicService: Web3PublicService,
-    private web3PrivateService: Web3PrivateService
+    private web3PrivateService: Web3PrivateService,
+    private orderBookApiService: OrderBookApiService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
@@ -36,7 +39,18 @@ export class OrderBookTradeService {
     };
   }
 
-  public async setStatus(tradeData: OrderBookTradeData): Promise<void> {
+  public async setOwner(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
+    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+
+    tradeData.owner = await web3Public.callContractMethod(contractAddress, contractAbi, 'owners', {
+      methodArguments: [tradeData.memo]
+    });
+
+    return tradeData;
+  }
+
+  public async setStatus(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
@@ -72,9 +86,11 @@ export class OrderBookTradeService {
         }
       }
     }
+
+    return tradeData;
   }
 
-  public async setAmountContributed(tradeData: OrderBookTradeData): Promise<void> {
+  public async setAmountContributed(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
@@ -103,9 +119,11 @@ export class OrderBookTradeService {
       tradeData.token.quote,
       quoteContributed
     );
+
+    return tradeData;
   }
 
-  public async setInvestorsNumber(tradeData: OrderBookTradeData): Promise<void> {
+  public async setInvestorsNumber(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
@@ -128,18 +146,20 @@ export class OrderBookTradeService {
       }
     );
     tradeData.token.quote.investorsNumber = quoteInvestors.length;
+
+    return tradeData;
   }
 
-  public async setAllowance(tradeData: OrderBookTradeData): Promise<void> {
+  public async setAllowance(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
     await this.setAllowanceToToken(tradeData, 'base');
     await this.setAllowanceToToken(tradeData, 'quote');
+
+    return tradeData;
   }
 
-  private async setAllowanceToToken(
-    tradeData: OrderBookTradeData,
-    tokenPart: TokenPart
-  ): Promise<void> {
+  async setAllowanceToToken(tradeData: OrderBookTradeData, tokenPart: TokenPart): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+
     if (web3Public.isNativeAddress(tradeData.token[tokenPart].address)) {
       tradeData.token[tokenPart].isApproved = true;
     } else {
@@ -163,11 +183,22 @@ export class OrderBookTradeService {
     );
   }
 
+  private checkSettings(tradeData: OrderBookTradeData): void {
+    if (
+      this.web3PrivateService.networkName !== tradeData.blockchain &&
+      this.web3PrivateService.networkName !== `${tradeData.blockchain}_TESTNET`
+    ) {
+      throw new NetworkError(tradeData.blockchain);
+    }
+  }
+
   public makeApprove(
     tradeData: OrderBookTradeData,
     tokenPart: TokenPart,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
+    this.checkSettings(tradeData);
+
     const { contractAddress } = this.getContractParameters(tradeData);
 
     // eslint-disable-next-line no-magic-numbers
@@ -182,12 +213,14 @@ export class OrderBookTradeService {
     );
   }
 
-  public async makeApproveOrContribute(
+  public async checkApproveAndMakeContribute(
     tradeData: OrderBookTradeData,
     tokenPart: TokenPart,
     amount: string,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
+    this.checkSettings(tradeData);
+
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
 
     if (!web3Public.isNativeAddress(tradeData.token[tokenPart].address)) {
@@ -213,7 +246,7 @@ export class OrderBookTradeService {
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
     const value = Web3PublicService.tokenAmountToWei(tradeData.token[tokenPart], amount);
-    return this.web3PrivateService.executeContractMethod(
+    const receipt = await this.web3PrivateService.executeContractMethod(
       contractAddress,
       contractAbi,
       'deposit',
@@ -223,6 +256,15 @@ export class OrderBookTradeService {
         value: web3Public.isNativeAddress(tradeData.token[tokenPart].address) ? value : undefined
       }
     );
+    this.orderBookApiService.contributeBotNotification(
+      tradeData.token[tokenPart],
+      amount,
+      tradeData.uniqueLink,
+      receipt.from,
+      receipt.transactionHash
+    );
+
+    return receipt;
   }
 
   public async makeWithdraw(
@@ -230,13 +272,42 @@ export class OrderBookTradeService {
     tokenPart: TokenPart,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
+    this.checkSettings(tradeData);
+
+    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+
+    const receipt = await this.web3PrivateService.executeContractMethod(
+      contractAddress,
+      contractAbi,
+      'refund',
+      [tradeData.memo, tradeData.token[tokenPart].address],
+      {
+        onTransactionHash
+      }
+    );
+    this.orderBookApiService.withdrawBotNotification(
+      tradeData.token[tokenPart],
+      tradeData.uniqueLink,
+      receipt.from,
+      receipt.transactionHash
+    );
+
+    return receipt;
+  }
+
+  public async cancelTrade(
+    tradeData: OrderBookTradeData,
+    onTransactionHash: (hash: string) => void
+  ): Promise<TransactionReceipt> {
+    this.checkSettings(tradeData);
+
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
     return this.web3PrivateService.executeContractMethod(
       contractAddress,
       contractAbi,
-      'refund',
-      [tradeData.memo, tradeData.token[tokenPart].address],
+      'cancel',
+      [tradeData.memo],
       {
         onTransactionHash
       }

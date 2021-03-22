@@ -7,9 +7,20 @@ import { OrderBookTradeComponent } from './components/order-book-trade/order-boo
 import { SharedModule } from '../../shared/shared.module';
 import { OrderBookTradeService } from './services/order-book-trade.service';
 import { WithdrawButtonComponent } from './components/withdraw-button/withdraw-button.component';
+import { OperationInProgressModalComponent } from './components/operation-in-progress-modal/operation-in-progress-modal.component';
+import { OperationCompletedModalComponent } from './components/operation-success-modal/operation-completed-modal.component';
+import { CancelCompletedModalComponent } from './components/cancel-completed-modal/cancel-completed-modal.component';
+import { TokenFormComponent } from './components/token-form/token-form.component';
 
 @NgModule({
-  declarations: [OrderBookTradeComponent, WithdrawButtonComponent],
+  declarations: [
+    OrderBookTradeComponent,
+    WithdrawButtonComponent,
+    OperationInProgressModalComponent,
+    OperationCompletedModalComponent,
+    CancelCompletedModalComponent,
+    TokenFormComponent
+  ],
   imports: [
     CommonModule,
     OrderBookTradePageRoutingModule,
