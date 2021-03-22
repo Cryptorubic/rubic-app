@@ -10,6 +10,7 @@ import { WithdrawButtonComponent } from './components/withdraw-button/withdraw-b
 import { OperationInProgressModalComponent } from './components/operation-in-progress-modal/operation-in-progress-modal.component';
 import { OperationCompletedModalComponent } from './components/operation-success-modal/operation-completed-modal.component';
 import { CancelCompletedModalComponent } from './components/cancel-completed-modal/cancel-completed-modal.component';
+import { TokenFormComponent } from './components/token-form/token-form.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { CancelCompletedModalComponent } from './components/cancel-completed-mod
     WithdrawButtonComponent,
     OperationInProgressModalComponent,
     OperationCompletedModalComponent,
-    CancelCompletedModalComponent
+    CancelCompletedModalComponent,
+    TokenFormComponent
   ],
   imports: [
     CommonModule,

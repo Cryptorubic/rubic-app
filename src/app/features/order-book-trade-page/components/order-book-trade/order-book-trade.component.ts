@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import { List } from 'immutable';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
@@ -9,35 +8,25 @@ import { TokensService } from 'src/app/core/services/backend/tokens-service/toke
 import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
-import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
-import { NgModel } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
-import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../types/trade-data';
+import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { NetworkErrorComponent } from '../../../bridge-page/components/network-error/network-error.component';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
+import { TX_STATUS } from '../../models/TX_STATUS';
+import { BIG_NUMBER_FORMAT } from '../../constants/BIG_NUMBER_FORMAT';
+import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
+import { TokenPart } from '../../../../shared/models/order-book/tokens';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
   label: string;
   imagePath: string;
 }
-
-enum TX_STATUS {
-  NONE = 'NONE',
-  STARTED = 'STARTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  ERROR = 'ERROR',
-  COMPLETED = 'COMPLETED'
-}
-
-type TokensStatus = {
-  [tokenPart in TokenPart]: TX_STATUS;
-};
 
 type CopiedType = 'linkToDeal' | 'brokerAddress';
 
@@ -65,27 +54,11 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     }
   ];
 
-  // eslint-disable-next-line no-magic-numbers
-  private readonly BILLION = 1e9;
+  public TRADE_STATUS = ORDER_BOOK_TRADE_STATUS;
 
-  // eslint-disable-next-line no-magic-numbers
-  private readonly MILLION = 1e6;
+  public TX_STATUS = TX_STATUS;
 
-  public readonly bigNumberFormat = {
-    decimalSeparator: '.',
-    groupSeparator: ',',
-    // eslint-disable-next-line no-magic-numbers
-    groupSize: 3,
-    secondaryGroupSize: 0
-  };
-
-  public readonly TRADE_STATUS = ORDER_BOOK_TRADE_STATUS;
-
-  public readonly ADDRESS_TYPE = ADDRESS_TYPE;
-
-  @ViewChild('baseAmountToContributeModel') baseAmountToContributeModel: NgModel;
-
-  @ViewChild('quoteAmountToContributeModel') quoteAmountToContributeModel: NgModel;
+  public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public doesTradeExist = true;
 
@@ -101,43 +74,17 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public isRevertedRate = false;
 
-  public shortedAmountTotal = {
-    base: {},
-    quote: {}
-  };
+  public baseTokenAmountToGet: string;
+
+  public quoteTokenAmountToGet: string;
 
   private _tokens: List<SwapToken>;
 
   private _tokensSubscription$: Subscription;
 
-  public baseAmountToContribute: string;
-
-  public quoteAmountToContribute: string;
-
-  public TX_STATUS = TX_STATUS;
-
-  public approveStatus: TokensStatus = {
-    base: TX_STATUS.NONE,
-    quote: TX_STATUS.NONE
-  };
-
-  public contributeStatus: TokensStatus = {
-    base: TX_STATUS.NONE,
-    quote: TX_STATUS.NONE
-  };
-
-  public withdrawStatus: TokensStatus = {
-    base: TX_STATUS.NONE,
-    quote: TX_STATUS.NONE
-  };
-
   public cancelStatus = TX_STATUS.NONE;
 
-  public lastCompletedTransactionId: string;
-
-  public isOperationInProgress: boolean;
-
-  public isOperationCompleted: boolean;
+  public cancelTransactionId: string;
 
   public expirationDay: string;
 
@@ -158,14 +105,6 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   set tokens(value) {
     this._tokens = value.filter(t => t.blockchain === this.tradeData.blockchain);
-  }
-
-  get baseAmountToContributeAsNumber(): BigNumber {
-    return new BigNumber(this.baseAmountToContribute);
-  }
-
-  get quoteAmountToContributeAsNumber(): BigNumber {
-    return new BigNumber(this.quoteAmountToContribute);
   }
 
   constructor(
@@ -227,8 +166,6 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
       tradeData => {
         this.tradeData = tradeData;
         this.setStaticTradeData();
-        this.isMainTradeDataLoaded = true;
-
         this.setDynamicData();
 
         // tokens subscription
@@ -256,25 +193,20 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     );
   }
 
-  private setStaticTradeData(): void {
+  private async setStaticTradeData(): Promise<void> {
     this.blockchain = this.BLOCKCHAINS.find(b => b.name === this.tradeData.blockchain);
     this.calculateRate();
     this.setExpirationDate();
+    this.isMainTradeDataLoaded = true;
 
-    this.orderBookTradeService.setOwner(this.tradeData);
+    this.tradeData = { ...(await this.orderBookTradeService.setOwner(this.tradeData)) };
   }
 
-  private setDynamicData(): void {
-    this.orderBookTradeService.setStatus(this.tradeData);
-
-    this.orderBookTradeService.setAllowance(this.tradeData);
-
-    this.setShortedAmountTotal();
-    this.orderBookTradeService.setAmountContributed(this.tradeData).then(() => {
-      this.setAmountLeft();
-    });
-
-    this.orderBookTradeService.setInvestorsNumber(this.tradeData);
+  private async setDynamicData(): Promise<void> {
+    this.tradeData = { ...(await this.orderBookTradeService.setStatus(this.tradeData)) };
+    this.tradeData = { ...(await this.orderBookTradeService.setAllowance(this.tradeData)) };
+    this.tradeData = { ...(await this.orderBookTradeService.setAmountContributed(this.tradeData)) };
+    this.tradeData = { ...(await this.orderBookTradeService.setInvestorsNumber(this.tradeData)) };
 
     // eslint-disable-next-line no-magic-numbers
     setTimeout(() => this.setDynamicData(), 10000);
@@ -284,36 +216,6 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     const { expirationDate } = this.tradeData;
     this.expirationDay = expirationDate.format('DD.MM.YYYY');
     this.expirationTime = expirationDate.format('HH:mm');
-  }
-
-  private setAmountLeft(): void {
-    this.setAmountLeftToToken('base');
-    this.setAmountLeftToToken('quote');
-  }
-
-  private setAmountLeftToToken(tokenPart: TokenPart): void {
-    this.tradeData.token[tokenPart].amountLeft = this.tradeData.token[tokenPart].amountTotal.minus(
-      this.tradeData.token[tokenPart].amountContributed
-    );
-  }
-
-  private setShortedAmountTotal(): void {
-    this.setShortedAmountTotalToToken('base');
-    this.setShortedAmountTotalToToken('quote');
-  }
-
-  private setShortedAmountTotalToToken(tokenPart: TokenPart): void {
-    const amount = this.tradeData.token[tokenPart].amountTotal;
-    let shortedAmount: string;
-
-    if (amount.isGreaterThanOrEqualTo(this.BILLION * 100)) {
-      shortedAmount = `${amount.div(this.BILLION).toFormat(0, this.bigNumberFormat)}B`;
-    } else if (amount.isGreaterThanOrEqualTo(this.MILLION * 100)) {
-      shortedAmount = `${amount.div(this.MILLION).dp(0).toFormat(0, this.bigNumberFormat)}M`;
-    } else {
-      shortedAmount = amount.toFormat(this.bigNumberFormat);
-    }
-    this.shortedAmountTotal[tokenPart] = shortedAmount;
   }
 
   private calculateRate(): void {
@@ -328,50 +230,30 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public getRate(): string {
     return !this.isRevertedRate
-      ? `${this.baseToQuoteRate.dp(8).toFormat(this.bigNumberFormat)}
+      ? `${this.baseToQuoteRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
          ${this.tradeData.token.base.symbol} 
          / 1 ${this.tradeData.token.quote.symbol}`
       : `1 ${this.tradeData.token.base.symbol} / 
-         ${this.quoteToBaseRate.dp(8).toFormat(this.bigNumberFormat)}
+         ${this.quoteToBaseRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
          ${this.tradeData.token.quote.symbol}`;
   }
 
-  public calculateAmountToGet(tokenPart: TokenPart): string {
+  public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
     if (tokenPart === 'base') {
-      return this.baseAmountToContributeAsNumber
+      this.quoteTokenAmountToGet = new BigNumber(value)
         .times(this.quoteToBaseRate)
         .div(100)
         .times(100 - this.tradeData.token.quote.brokerPercent)
         .dp(this.tradeData.token.quote.decimals)
-        .toFormat(this.bigNumberFormat);
+        .toFormat(BIG_NUMBER_FORMAT);
+    } else {
+      this.baseTokenAmountToGet = new BigNumber(value)
+        .times(this.baseToQuoteRate)
+        .div(100)
+        .times(100 - this.tradeData.token.base.brokerPercent)
+        .dp(this.tradeData.token.base.decimals)
+        .toFormat(BIG_NUMBER_FORMAT);
     }
-    return this.quoteAmountToContributeAsNumber
-      .times(this.baseToQuoteRate)
-      .div(100)
-      .times(100 - this.tradeData.token.base.brokerPercent)
-      .dp(this.tradeData.token.base.decimals)
-      .toFormat(this.bigNumberFormat);
-  }
-
-  public getBrokerPercent(tokenPart: TokenPart): string {
-    return this.tradeData.token[tokenPart].amountTotal
-      .div(100)
-      .times(this.tradeData.token[tokenPart].brokerPercent)
-      .dp(this.tradeData.token[tokenPart].decimals)
-      .toFormat(this.bigNumberFormat);
-  }
-
-  public getMinContributionAsString(tokenPart: TokenPart): string {
-    if (
-      !this.tradeData.token[tokenPart].minContribution ||
-      this.tradeData.token[tokenPart].minContribution.isNaN() ||
-      this.tradeData.token[tokenPart].minContribution.isGreaterThan(
-        this.tradeData.token[tokenPart].amountLeft
-      )
-    ) {
-      return '';
-    }
-    return this.tradeData.token[tokenPart].minContribution.toFormat(this.bigNumberFormat);
   }
 
   public onCopiedLink(type: CopiedType): void {
@@ -379,100 +261,6 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.isCopied[type] = false;
     }, 1000);
-  }
-
-  private updateAmountToContributeModels(): void {
-    this.baseAmountToContributeModel?.control.updateValueAndValidity();
-    this.quoteAmountToContributeModel?.control.updateValueAndValidity();
-  }
-
-  private setOperationInProgress(tokensStatus: TokensStatus, tokenPart: TokenPart): void {
-    tokensStatus[tokenPart] = TX_STATUS.IN_PROGRESS;
-    this.isOperationInProgress = true;
-    this.isOperationCompleted = false;
-  }
-
-  private setOperationCompleted(
-    tokensStatus: TokensStatus,
-    tokenPart: TokenPart,
-    transactionId: string
-  ): void {
-    tokensStatus[tokenPart] = TX_STATUS.COMPLETED;
-    this.isOperationInProgress = false;
-    this.isOperationCompleted = true;
-    this.lastCompletedTransactionId = transactionId;
-  }
-
-  private setOperationError(
-    tokensStatus: TokensStatus,
-    tokenPart: TokenPart,
-    err: RubicError
-  ): void {
-    tokensStatus[tokenPart] = TX_STATUS.ERROR;
-    this.isOperationInProgress = false;
-    this.showErrorMessage(err);
-  }
-
-  public makeApproveOrContribute(tokenPart: TokenPart): void {
-    if (!this.tradeData.token[tokenPart].isApproved) {
-      this.makeApprove(tokenPart);
-    } else {
-      this.makeContribute(tokenPart);
-    }
-  }
-
-  private makeApprove(tokenPart: TokenPart): void {
-    this.approveStatus[tokenPart] = TX_STATUS.STARTED;
-
-    this.orderBookTradeService
-      .makeApprove(this.tradeData, tokenPart, () => {
-        this.setOperationInProgress(this.approveStatus, tokenPart);
-      })
-      .then(receipt => {
-        this.orderBookTradeService.setAllowance(this.tradeData).then(() => {
-          this.setOperationCompleted(this.approveStatus, tokenPart, receipt.transactionHash);
-        });
-      })
-      .catch(err => {
-        this.setOperationError(this.approveStatus, tokenPart, err);
-      });
-  }
-
-  private makeContribute(tokenPart: TokenPart): void {
-    this.contributeStatus[tokenPart] = TX_STATUS.STARTED;
-
-    this.orderBookTradeService
-      .checkApproveAndMakeContribute(
-        this.tradeData,
-        tokenPart,
-        tokenPart === 'base' ? this.baseAmountToContribute : this.quoteAmountToContribute,
-        () => {
-          this.setOperationInProgress(this.contributeStatus, tokenPart);
-        }
-      )
-      .then(receipt => {
-        this.setOperationCompleted(this.contributeStatus, tokenPart, receipt.transactionHash);
-        this.updateAmountToContributeModels();
-      })
-      .catch(err => {
-        this.setOperationError(this.contributeStatus, tokenPart, err);
-      });
-  }
-
-  public makeWithdraw(tokenPart: TokenPart): void {
-    this.withdrawStatus[tokenPart] = TX_STATUS.STARTED;
-
-    this.orderBookTradeService
-      .makeWithdraw(this.tradeData, tokenPart, () => {
-        this.setOperationInProgress(this.withdrawStatus, tokenPart);
-      })
-      .then(receipt => {
-        this.setOperationCompleted(this.withdrawStatus, tokenPart, receipt.transactionHash);
-        this.updateAmountToContributeModels();
-      })
-      .catch(err => {
-        this.setOperationError(this.withdrawStatus, tokenPart, err);
-      });
   }
 
   public cancelTrade(): void {
@@ -484,7 +272,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
       })
       .then(receipt => {
         this.cancelStatus = TX_STATUS.COMPLETED;
-        this.lastCompletedTransactionId = receipt.transactionHash;
+        this.cancelTransactionId = receipt.transactionHash;
       })
       .catch(err => {
         this.cancelStatus = TX_STATUS.ERROR;

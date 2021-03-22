@@ -7,7 +7,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import {
   OrderBookDataToken,
   OrderBookTradeData
-} from 'src/app/features/order-book-trade-page/types/trade-data';
+} from 'src/app/features/order-book-trade-page/models/trade-data';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import * as moment from 'moment';
 import { HttpService } from '../../http/http.service';
