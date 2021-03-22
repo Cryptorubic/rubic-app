@@ -1,7 +1,7 @@
 {
   "volume": {
-    "instantTradesVolume": "$5",
-    "bridgeVolume": "$333"
+    "instantTradesVolume": "$3,131,304",
+    "bridgeVolume": "$1,378,965"
   },
   "team": [
     {
@@ -38,17 +38,6 @@
       ]
     },
     {
-      "img": "AlexandrKelepko.png",
-      "name": "Alexandr Kelepko",
-      "role": "Backend Developer",
-      "links": [
-        {
-          "icon": "Github.svg",
-          "url": "https://github.com/slycaptcha"
-        }
-      ]
-    },
-    {
       "img": "SergeyAndreev.png",
       "name": "Sergey Andreev",
       "role": "Frontend Developer",
@@ -60,41 +49,8 @@
       ]
     },
     {
-      "img": "DaniilSvetlov.png",
-      "name": "Daniil Svetlov",
-      "role": "Backend Developer",
-      "links": [
-        {
-          "icon": "Github.svg",
-          "url": "https://github.com/ddsvetlov"
-        }
-      ]
-    },
-    {
-      "img": "GeorgeStefan.png",
-      "name": "George Stefan",
-      "role": "SMM",
-      "links": [
-        {
-          "icon": "Telegram.svg",
-          "url": "https://teleg.run/GeorgeDLT"
-        }
-      ]
-    },
-    {
-      "img": "AndreyAksenov.png",
-      "name": "Andrey Aksenov",
-      "role": "Marketing",
-      "links": [
-        {
-          "icon": "Telegram.svg",
-          "url": "https://t.me/renedsaa"
-        }
-      ]
-    },
-    {
-      "img": "SletaDmitry.png",
-      "name": "Sleta Dmitry",
+      "img": "DmitrySleta.png",
+      "name": "Dmitry Sleta",
       "role": "Frontend developer",
       "links": [
         {
@@ -115,13 +71,68 @@
       ]
     },
     {
-      "img": "DmitriyYershov.png",
-      "name": "Dmitriy Yershov",
-      "role": "Blockchain developer",
+      "img": "AlexandrKelepko.png",
+      "name": "Alexandr Kelepko",
+      "role": "Backend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/slycaptcha"
+        }
+      ]
+    },
+    {
+      "img": "DaniilSvetlov.png",
+      "name": "Daniil Svetlov",
+      "role": "Backend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/ddsvetlov"
+        }
+      ]
+    },
+    {
+      "img": "AleksandrVolkov.jpg",
+      "name": "Alexandr Volkov",
+      "role": "Backend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/jetvolkov"
+        }
+      ]
+    },
+    {
+      "img": "AndreyAksenov.png",
+      "name": "Andrey Aksenov",
+      "role": "Marketing",
       "links": [
         {
           "icon": "Telegram.svg",
-          "url": "https://t.me/dmitriy_yershov"
+          "url": "https://t.me/renedsaa"
+        }
+      ]
+    },
+    {
+      "img": "GuilhemDeRooyesteyn.png",
+      "name": "Guilhem de Rooyesteyn",
+      "role": "Marketing",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/Guilhemw"
+        }
+      ]
+    },
+    {
+      "img": "GeorgeStefan.png",
+      "name": "George Stefan",
+      "role": "SMM",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://teleg.run/GeorgeDLT"
         }
       ]
     }
@@ -154,6 +165,10 @@
     {
       "img": "Uniswap.svg",
       "url": "https://app.uniswap.org/#/swap?inputCurrency=0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3"
+    },
+    {
+      "img": "DashNext.png",
+      "url": "https://dashnext.org/"
     }
   ]
 }
