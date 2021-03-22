@@ -1,30 +1,26 @@
 <div class="trades-form">
   <div class="trades-form__tabs">
     <ul class="trades-form__tabs-blockchains">
-      <ng-template ngFor let-blockchain [ngForOf]="BLOCKCHAINS">
         <li
           class="tab tab_blockchain tab_active"
-          *ngIf="isSupported(blockchain.name, selectedMode)"
+          *ngFor="let blockchain of BLOCKCHAINS"
           [ngClass]="{ tab_active: selectedBlockchain === blockchain.name }"
-          (click)="selectedBlockchain = blockchain.name"
+          (click)="selectBlockchain(blockchain.name)"
         >
           <img [src]="blockchain.image" alt="" />
           <span>{{ blockchain.label }}</span>
         </li>
-      </ng-template>
     </ul>
     <ul class="trades-form__tabs-modes">
-      <ng-template ngFor let-mode [ngForOf]="MODES">
         <li
           class="tab tab_mode"
-          *ngIf="isSupported(selectedBlockchain, mode.name)"
+          *ngFor="let mode of MODES"
           [ngClass]="{ tab_active: selectedMode === mode.name }"
-          (click)="selectedMode = mode.name"
+          (click)="selectMode(mode.name)"
         >
           <span>{{ mode.label }}</span>
           <img [src]="selectedMode === mode.name ? mode.imageActive : mode.imageNotActive" alt="" />
         </li>
-      </ng-template>
     </ul>
   </div>
 
