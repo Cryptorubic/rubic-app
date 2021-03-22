@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ContentLoaderService } from '../../../core/services/content-loader/content-loader.service';
+import { VolumeContent } from '../../models/content';
 
 @Component({
   selector: 'app-volume-block',
@@ -6,8 +8,10 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   styleUrls: ['./volume-block.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VolumeBlockComponent implements OnInit {
-  constructor() {}
+export class VolumeBlockComponent {
+  public volume: VolumeContent;
 
-  ngOnInit(): void {}
+  constructor(contentLoaderService: ContentLoaderService) {
+    this.volume = contentLoaderService.volumeContent;
+  }
 }

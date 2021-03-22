@@ -1,15 +1,28 @@
 import { Injectable } from '@angular/core';
-import { Content, VolumeContent } from 'src/app/shared/models/content';
+import {
+  Content,
+  VolumeContent,
+  TeamCardContent,
+  CollaborationsContent
+} from 'src/app/shared/models/content';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContentLoaderService {
-  public content: Content;
+  private content: Content;
 
   get volumeContent(): VolumeContent {
     return this.content.volume;
+  }
+
+  get teamCardsContent(): TeamCardContent[] {
+    return this.content.team;
+  }
+
+  get collaborationsContent(): CollaborationsContent[] {
+    return this.content.collaborations;
   }
 
   constructor(private httpClient: HttpClient) {}

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-
-// @ts-ignore
-import collaborations from '../../../../assets/content/collaborations/collaborations.json';
+import { ContentLoaderService } from 'src/app/core/services/content-loader/content-loader.service';
+import { CollaborationsContent } from '../../models/content';
 
 @Component({
   selector: 'app-collaborations',
@@ -9,7 +8,9 @@ import collaborations from '../../../../assets/content/collaborations/collaborat
   styleUrls: ['./collaborations.component.scss']
 })
 export class CollaborationsComponent {
-  public collaborations = collaborations;
+  public collaborations: CollaborationsContent[];
 
-  constructor() {}
+  constructor(contentLoaderService: ContentLoaderService) {
+    this.collaborations = contentLoaderService.collaborationsContent;
+  }
 }
