@@ -91,20 +91,10 @@
   </head>
   <body>
     <app-root></app-root>
-    <!--
-    <div id="spring-spinner" class="spring-spinner">
-      <div class="spring-spinner__wrapper">
-        <div class="spring-spinner__part">
-          <div class="spring-spinner__rotator"></div>
-        </div>
-        <div class="spring-spinner__part spring-spinner__part_bottom">
-          <div class="spring-spinner__rotator"></div>
-        </div>
-      </div>
-    </div>-->
 
     <script src="//connect.facebook.net/en_US/sdk.js"></script>
     <script src="https://apis.google.com/js/platform.js"></script>
+
 
     <!-- Start of LiveChat (www.livechatinc.com) code -->
     <script type="text/javascript">
@@ -123,57 +113,10 @@
     </script>
     <!-- End of LiveChat code -->
 
-    <script>
-      window.ScrollTopButton = function (pixels) {
-        this.scrolledPixels = 0;
-        this.maxPixels = pixels;
-        this.scrollTopButton = document.getElementById('scroll-btn');
-        this.scrollTopButton.addEventListener('click', scrollTop);
-        var self = this;
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PZ8NH4J"
+                    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
-        function checkButtonVisible() {
-          return self.scrollTopButton.classList.contains('scroll-top-btn--visible');
-        }
-        function showButton() {
-          self.scrollTopButton.classList.add('scroll-top-btn--visible');
-        }
-        function hideButton() {
-          self.scrollTopButton.classList.remove('scroll-top-btn--visible');
-        }
-
-        function scrollTop() {
-          var scrollStep = -window.scrollY / (500 / 15),
-            scrollInterval = setInterval(function () {
-              if (window.scrollY != 0) {
-                window.scrollBy(0, scrollStep);
-              } else clearInterval(scrollInterval);
-            }, 15);
-        }
-
-        function ButtonController() {
-          self.scrolledPixels = window.pageYOffset || document.documentElement.scrollTop;
-          if (self.scrolledPixels > self.maxPixels) {
-            if (!checkButtonVisible()) showButton();
-          } else {
-            if (checkButtonVisible()) hideButton();
-          }
-        }
-
-        jQuery(window).on('scroll', function () {
-          return ButtonController();
-        });
-      };
-    </script>
-
-    <!-- Google Tag Manager (noscript) -->
-    <noscript
-      ><iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-PZ8NH4J"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-      ></iframe
-    ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
   </body>
 </html>
