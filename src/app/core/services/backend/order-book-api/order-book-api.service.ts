@@ -1,6 +1,6 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { List } from 'immutable';
-import { from, Observable, Subscription } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -20,7 +20,7 @@ import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/
 @Injectable({
   providedIn: 'root'
 })
-export class OrderBookApiService implements OnDestroy {
+export class OrderBookApiService {
   private readonly PROD_ORIGIN = 'https://rubic.exchange';
 
   private readonly TEST_ORIGIN = 'https://devswaps.mywish.io';
@@ -29,21 +29,15 @@ export class OrderBookApiService implements OnDestroy {
 
   private _tokens: List<SwapToken>;
 
-  private _tokensSubscription$: Subscription;
-
   constructor(
     private httpService: HttpService,
     private orderBookApiService: OrderBookApiService,
     private tokensService: TokensService,
     private web3PublicService: Web3PublicService
   ) {
-    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
+    this.tokensService.tokens.subscribe(tokens => {
       this._tokens = tokens;
     });
-  }
-
-  ngOnDestroy(): void {
-    this._tokensSubscription$.unsubscribe();
   }
 
   public createTrade(tradeInfo: OrderBookTradeApi): Promise<{ unique_link: string }> {
