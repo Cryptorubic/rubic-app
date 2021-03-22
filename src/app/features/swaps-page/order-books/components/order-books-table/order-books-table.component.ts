@@ -1,9 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
-import date from 'date-and-time';
 import { Observable } from 'rxjs';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/types/trade-data';
+import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { CoinsFilterComponent } from '../../../../../shared/components/coins-filter/coins-filter.component';
 import { OrderBooksTableService } from './services/order-books-table.service';
@@ -40,13 +39,8 @@ export class OrderBooksTableComponent {
     return BlockchainsInfo.getBlockchainByName(name).imagePath;
   }
 
-  public sortByDate(a: string, b: string): number {
-    const date1 = new Date(date.transform(a, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
-    const date2 = new Date(date.transform(b, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
-    return date.subtract(date2, date1).toMilliseconds();
-  }
-
   public refresnOrderBooks(): void {
+    this.orderBooksTableService.setTableLoadingStatus(true);
     this.orderBookApi.fetchPublicSwap3();
   }
 }

@@ -1,11 +1,11 @@
 <div *ngIf="!($tableLoading | async)" class="trades-table">
     <div class="trades-table__title-section">
       <h2 class="trades-table__title">{{ 'My trades' | translate }}</h2>
-      <button  class="trades-table__refresh-button refresh-btn" (click)="refresnOrderBooks()">
+      <button  class="trades-table__refresh-button refresh-btn" (click)="refreshTable()">
         <img class="arrow" src="./assets/images/icons/refresh.svg">
       </button>
     </div>
-    <table mat-table matSort [dataSource]="$dataSource | async" class="table order-books" *ngIf="($dataSource | async).length !== 0">
+    <table mat-table matSort [dataSource]="$dataSource | async" class="table" *ngIf="($dataSource | async).length !== 0">
       <colgroup *ngIf="">
         <ng-container>
           <col *ngFor="let size of $columnsSizes | async" [style.width]="size">

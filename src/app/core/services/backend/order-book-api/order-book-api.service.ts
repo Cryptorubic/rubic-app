@@ -64,8 +64,7 @@ export class OrderBookApiService {
       .get('get_public_swap3/')
       .pipe(
         map((swaps: OrderBookTradeApi[]) => {
-          const uniqueLink = this.router.snapshot.params.unique_link;
-          return swaps.map(swap => this.tradeApiToTradeData(swap, uniqueLink));
+          return swaps.map(swap => this.tradeApiToTradeData(swap, swap.unique_link));
         })
       )
       .subscribe(async tradeData => {

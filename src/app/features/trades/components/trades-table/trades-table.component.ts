@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
-import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/types/trade-data';
+import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { CoinsFilterComponent } from 'src/app/shared/components/coins-filter/coins-filter.component';
 import { TradesService } from '../../services/trades-service/trades.service';
 
@@ -30,7 +30,8 @@ export class TradesTableComponent {
     this.$columnsSizes = this.tradesService.getTableColumnsSizes();
   }
 
-  public refresnOrderBooks(): void {
+  public refreshTable(): void {
+    this.tradesService.setTableLoadingStatus(true);
     this.tradesService.fetchSwaps();
   }
 }
