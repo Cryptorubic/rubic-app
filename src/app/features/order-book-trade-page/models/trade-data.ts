@@ -42,4 +42,5 @@ export interface OrderBookTradeData {
   isPublic: boolean;
   isWithBrokerFee: boolean;
   brokerAddress: string;
+  uniqieLink?: string;
 }

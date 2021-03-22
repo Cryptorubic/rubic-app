@@ -1,0 +1,48 @@
+$cell-gap: 4px;
+$cell-padding: 10px;
+
+.table {
+  &.mat-table {
+    border-spacing: $cell-gap;
+    background: inherit;
+    margin: 0 -$cell-gap;
+    width: calc(100% + #{$cell-gap} * 2);
+  }
+
+  th, td {
+    padding: $cell-padding;
+    background-color: #fff;
+    color: #000;
+    position: relative;
+    border: none;
+
+    & div {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  th {
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  td {
+    font-size: 15px;
+  }
+
+  img {
+    height: 25px;
+  }
+
+  &__centered {
+    justify-content: center;
+  }
+}
+
+::ng-deep .table {
+  &__centered-child > * {
+    display: flex;
+    justify-content: center;
+  }
+}

@@ -1,12 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { RouterModule } from '@angular/router';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+
 import { OrderBooksComponent } from './components/order-books/order-books.component';
 import { TradesModule } from '../trades-module/trades.module';
 import { OrderBooksFormComponent } from './components/order-books-form/order-books-form.component';
@@ -28,7 +33,11 @@ import { OrderBooksTableComponent } from './components/order-books-table/order-b
     FormsModule,
     MatInputModule,
     MatDatepickerModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    MatTableModule,
+    MatSortModule,
+    ReactiveFormsModule,
+    RouterModule
   ],
   exports: [OrderBooksComponent],
   providers: [

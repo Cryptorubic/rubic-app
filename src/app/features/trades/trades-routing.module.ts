@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { TradesPageComponent } from './components/trades-page/trades-page.component';
 
 const routes: Routes = [
   {
@@ -20,10 +21,7 @@ const routes: Routes = [
   },
   {
     path: 'contracts',
-    component: null,
-    resolve: {
-      contracts: null
-    }
+    component: TradesPageComponent
   }
 ];
 
