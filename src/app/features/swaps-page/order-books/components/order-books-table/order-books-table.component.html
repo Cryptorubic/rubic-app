@@ -1,16 +1,29 @@
-<div class="order-books-table">
+<div *ngIf="!($tableLoading | async)" class="order-books-table">
   <div class="order-books-table__title-section">
     <h2 class="order-books-table__title">{{ 'Order Book' | translate }}</h2>
     <button class="order-books-table__refresh-button refresh-btn" (click)="refresnOrderBooks()">
       <img class="arrow" src="./assets/images/icons/refresh.svg">
     </button>
   </div>
-  <table mat-table matSort [dataSource]="$dataSource | async" class="table order-books">
-    <colgroup>
-      <ng-container *ngFor="let size of $columnsSizes | async">
-        <col [style.width]="size">
+  <table mat-table matSort [dataSource]="$dataSource | async" class="table order-books" *ngIf="($dataSource | async).length !== 0">
+    <colgroup *ngIf="">
+      <ng-container>
+        <col *ngFor="let size of $columnsSizes | async" [style.width]="size">
       </ng-container>
    </colgroup>
+   <!-- Status column  -->
+   <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef class="centered-child">
+      <div class="order-books-table__cell">
+        {{ 'Status' | translate }}
+      </div>
+    </th>
+    <td *matCellDef="let element" class="centered-child">
+      <div class="order-books-table__cell">
+        {{ element.status }}
+      </div>
+    </td>
+  </ng-container>
     <!-- Tokens icons column  -->
     <ng-container matColumnDef="token">
       <th mat-header-cell *matHeaderCellDef #tokensHeader matAutocompleteOrigin>
@@ -55,13 +68,17 @@
       <td *matCellDef="let element" class="centered-child">
         <div class="order-books-table__cell">
           {{ element.expirationDate | date: 'd' }}d: 
-          {{ element.expirationDate | date: 'd' }}h:
-          {{ element.expirationDate | date: 'd' }}m
+          {{ element.expirationDate | date: 'h' }}h:
+          {{ element.expirationDate | date: 'm' }}m
         </div>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="$displayedColumns | async"></tr>
-    <tr [routerLink]="row.uniqueLink" mat-row *matRowDef="let row; columns: $displayedColumns | async;"></tr>
+    <tr routerLink="/public-v3/{{ row.uniqueLink }}" mat-row *matRowDef="let row; columns: $displayedColumns | async;"></tr>
   </table>
+  <p *ngIf="($dataSource | async).length === 0">No table data</p>
 </div>
+<ng-container *ngIf="$tableLoading | async">
+  <app-spinner></app-spinner>
+</ng-container>
 

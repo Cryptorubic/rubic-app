@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import BigNumber from 'bignumber.js';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { OrderBookTradeTableRow } from '../../../types/trade-table';
 
 @Injectable({
@@ -20,7 +18,10 @@ export class OrderBooksTableService {
 
   private readonly $filterQuoteValue: BehaviorSubject<any>;
 
+  private readonly $tableLoadingStatus: BehaviorSubject<boolean>;
+
   constructor() {
+    this.$tableLoadingStatus = new BehaviorSubject<boolean>(false);
     this.$filterBaseValue = new BehaviorSubject<any>(null);
     this.$filterQuoteValue = new BehaviorSubject<any>(null);
     this.$dataSource = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
@@ -41,6 +42,7 @@ export class OrderBooksTableService {
   public setTableData(value: any): void {
     this.$dataSource.next(value);
     this.$visibleTableData.next(value);
+    this.$tableLoadingStatus.next(false);
   }
 
   public getTableColumns(): Observable<string[]> {
@@ -59,6 +61,14 @@ export class OrderBooksTableService {
     this.$filterBaseValue.next(value);
   }
 
+  public getQuoteTokenFilter(): Observable<any> {
+    return this.$filterQuoteValue.asObservable();
+  }
+
+  public setQuoteTokenFilter(value: any): void {
+    this.$filterQuoteValue.next(value);
+  }
+
   public filterByToken(token: any, tokenType: 'quote' | 'base'): void {
     const filterValue = token.option.value.toLowerCase();
     if (filterValue.length < 2) {
@@ -69,5 +79,13 @@ export class OrderBooksTableService {
       );
       this.$visibleTableData.next(filteredData);
     }
+  }
+
+  public setTableLoadingStatus(value: boolean): void {
+    this.$tableLoadingStatus.next(value);
+  }
+
+  public getTableLoadingStatus(): Observable<boolean> {
+    return this.$tableLoadingStatus.asObservable();
   }
 }

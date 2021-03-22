@@ -20,12 +20,16 @@ export class OrderBooksTableComponent {
 
   public readonly $columnsSizes: Observable<string[]>;
 
+  public readonly $tableLoading: Observable<boolean>;
+
   @ViewChild(CoinsFilterComponent) public filter: CoinsFilterComponent;
 
   constructor(
     private readonly orderBooksTableService: OrderBooksTableService,
     private readonly orderBookApi: OrderBookApiService
   ) {
+    this.$tableLoading = this.orderBooksTableService.getTableLoadingStatus();
+    this.orderBooksTableService.setTableLoadingStatus(true);
     this.orderBookApi.fetchPublicSwap3();
     this.$dataSource = this.orderBooksTableService.getTableData();
     this.$displayedColumns = this.orderBooksTableService.getTableColumns();
