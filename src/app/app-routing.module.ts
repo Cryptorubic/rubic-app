@@ -47,7 +47,11 @@ const routes: Routes = [
     loadChildren: () => import('./features/team-page/team-page.module').then(m => m.TeamPageModule)
   },
   {
-    path: 'public-v3/:unique_link',
+    path: 'public-v3/:public_link',
+    redirectTo: '/trades/public-v3/:public_link'
+  },
+  {
+    path: 'trades/public-v3/:unique_link',
     loadChildren: () =>
       import('./features/order-book-trade-page/order-book-trade-page.module').then(
         m => m.OrderBookTradePageModule

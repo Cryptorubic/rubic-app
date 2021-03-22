@@ -9,6 +9,7 @@ import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../types/trade-data
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { TokenPart } from '../../../shared/models/order-book/tokens';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
+import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
 
 interface ContractParameters {
   contractAddress: string;
@@ -19,7 +20,8 @@ interface ContractParameters {
 export class OrderBookTradeService {
   constructor(
     private web3PublicService: Web3PublicService,
-    private web3PrivateService: Web3PrivateService
+    private web3PrivateService: Web3PrivateService,
+    private orderBookApiService: OrderBookApiService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
@@ -237,7 +239,7 @@ export class OrderBookTradeService {
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
     const value = Web3PublicService.tokenAmountToWei(tradeData.token[tokenPart], amount);
-    return this.web3PrivateService.executeContractMethod(
+    const receipt = await this.web3PrivateService.executeContractMethod(
       contractAddress,
       contractAbi,
       'deposit',
@@ -247,6 +249,15 @@ export class OrderBookTradeService {
         value: web3Public.isNativeAddress(tradeData.token[tokenPart].address) ? value : undefined
       }
     );
+    this.orderBookApiService.contributeBotNotification(
+      tradeData.token[tokenPart],
+      amount,
+      tradeData.uniqueLink,
+      receipt.from,
+      receipt.transactionHash
+    );
+
+    return receipt;
   }
 
   public async makeWithdraw(
@@ -258,7 +269,7 @@ export class OrderBookTradeService {
 
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
-    return this.web3PrivateService.executeContractMethod(
+    const receipt = await this.web3PrivateService.executeContractMethod(
       contractAddress,
       contractAbi,
       'refund',
@@ -267,6 +278,14 @@ export class OrderBookTradeService {
         onTransactionHash
       }
     );
+    this.orderBookApiService.withdrawBotNotification(
+      tradeData.token[tokenPart],
+      tradeData.uniqueLink,
+      receipt.from,
+      receipt.transactionHash
+    );
+
+    return receipt;
   }
 
   public async cancelTrade(

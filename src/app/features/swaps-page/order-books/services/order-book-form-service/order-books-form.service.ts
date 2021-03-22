@@ -127,9 +127,16 @@ export class OrderBooksFormService implements OnDestroy {
         onTransactionHash
       }
     );
-    tradeApi.memo = receipt.events.OrderCreated.returnValues.id;
 
-    await this.orderBookApiService.createTrade(tradeApi);
+    tradeApi.memo = receipt.events.OrderCreated.returnValues.id;
+    const tradeApiObject = await this.orderBookApiService.createTrade(tradeApi);
+    this.orderBookApiService.createTradeBotNotification(
+      tradeForm,
+      tradeApiObject.unique_link,
+      receipt.from,
+      receipt.transactionHash
+    );
+
     return receipt.transactionHash;
   }
 

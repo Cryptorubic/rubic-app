@@ -15,11 +15,18 @@ import { TokensService } from '../tokens-service/tokens.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { OrderBookTradeApi } from './types/trade-api';
+import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/types/trade-form';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderBookApiService implements OnDestroy {
+  private readonly PROD_ORIGIN = 'https://rubic.exchange';
+
+  private readonly TEST_ORIGIN = 'https://devswaps.mywish.io';
+
+  private readonly botUrl = 'bot/orderbook';
+
   private _tokens: List<SwapToken>;
 
   private _tokensSubscription$: Subscription;
@@ -39,7 +46,7 @@ export class OrderBookApiService implements OnDestroy {
     this._tokensSubscription$.unsubscribe();
   }
 
-  public createTrade(tradeInfo: OrderBookTradeApi): Promise<OrderBookTradeApi> {
+  public createTrade(tradeInfo: OrderBookTradeApi): Promise<{ unique_link: string }> {
     return this.httpService.post('create_swap3/', tradeInfo).toPromise();
   }
 
@@ -48,10 +55,17 @@ export class OrderBookApiService implements OnDestroy {
       .get('get_swap3_for_unique_link/', {
         unique_link: uniqueLink
       })
-      .pipe(switchMap((tradeApi: OrderBookTradeApi) => from(this.tradeApiToTradeData(tradeApi))));
+      .pipe(
+        switchMap((tradeApi: OrderBookTradeApi) =>
+          from(this.tradeApiToTradeData(tradeApi, uniqueLink))
+        )
+      );
   }
 
-  public async tradeApiToTradeData(tradeApi: OrderBookTradeApi): Promise<OrderBookTradeData> {
+  public async tradeApiToTradeData(
+    tradeApi: OrderBookTradeApi,
+    uniqueLink: string
+  ): Promise<OrderBookTradeData> {
     let blockchain;
     switch (tradeApi.network) {
       case 1:
@@ -68,6 +82,7 @@ export class OrderBookApiService implements OnDestroy {
     const tradeData = {
       memo: tradeApi.memo,
       contractAddress: tradeApi.contract_address,
+      uniqueLink,
 
       token: {},
       blockchain,
@@ -88,6 +103,7 @@ export class OrderBookApiService implements OnDestroy {
     tradeData: OrderBookTradeData
   ): Promise<void> {
     tradeData.token[tokenPart] = {
+      blockchain: tradeData.blockchain,
       address: tradeApi[`${tokenPart}_address`]
     } as OrderBookDataToken;
 
@@ -118,5 +134,69 @@ export class OrderBookApiService implements OnDestroy {
       ),
       brokerPercent: tradeApi[`broker_fee_${tokenPart}`]
     };
+  }
+
+  public createTradeBotNotification(
+    tradeForm: OrderBookTradeForm,
+    uniqueLink: string,
+    walletAddress: string,
+    transactionHash: string
+  ) {
+    const tradeBot = {
+      blockchain: tradeForm.blockchain,
+      walletAddress,
+      txHash: transactionHash,
+      link: `${
+        window.location.origin === this.PROD_ORIGIN ? this.PROD_ORIGIN : this.TEST_ORIGIN
+      }/trades/public-v3/${uniqueLink}`,
+      amountFrom: tradeForm.token.base.amount.toFixed(),
+      amountTo: tradeForm.token.quote.amount.toFixed(),
+      symbolFrom: tradeForm.token.base.symbol,
+      symbolTo: tradeForm.token.quote.symbol
+    };
+
+    this.httpService.post(`${this.botUrl}/create`, tradeBot);
+  }
+
+  public contributeBotNotification(
+    token: OrderBookDataToken,
+    amount: string,
+    uniqueLink: string,
+    walletAddress: string,
+    transactionHash: string
+  ) {
+    const tradeBot = {
+      blockchain: token.blockchain,
+      walletAddress,
+      txHash: transactionHash,
+      link: `${
+        window.location.origin === this.PROD_ORIGIN ? this.PROD_ORIGIN : this.TEST_ORIGIN
+      }/trades/public-v3/${uniqueLink}`,
+      typeName: 'contribute',
+      amount,
+      symbol: token.symbol
+    };
+
+    this.httpService.post(`${this.botUrl}/contribute`, tradeBot);
+  }
+
+  public withdrawBotNotification(
+    token: OrderBookDataToken,
+    uniqueLink: string,
+    walletAddress: string,
+    transactionHash: string
+  ) {
+    const tradeBot = {
+      blockchain: token.blockchain,
+      walletAddress,
+      txHash: transactionHash,
+      link: `${
+        window.location.origin === this.PROD_ORIGIN ? this.PROD_ORIGIN : this.TEST_ORIGIN
+      }/trades/public-v3/${uniqueLink}`,
+      typeName: 'withdraw',
+      symbol: token.symbol
+    };
+
+    this.httpService.post(`${this.botUrl}/contribute`, tradeBot);
   }
 }

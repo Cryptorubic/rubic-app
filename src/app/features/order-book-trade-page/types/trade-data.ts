@@ -31,6 +31,7 @@ export enum ORDER_BOOK_TRADE_STATUS {
 export interface OrderBookTradeData {
   memo: string;
   contractAddress: string;
+  uniqueLink: string;
   owner: string;
 
   token: OrderBookDataTokens;

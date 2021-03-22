@@ -65,8 +65,6 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     }
   ];
 
-  private uniqueLink: string;
-
   // eslint-disable-next-line no-magic-numbers
   private readonly BILLION = 1e9;
 
@@ -189,8 +187,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
     this.currentUrl = `https://rubic.exchange${this.router.url}`;
 
-    this.uniqueLink = this.route.snapshot.params.unique_link;
-    this.setTradeData();
+    const uniqueLink = this.route.snapshot.params.unique_link;
+    this.setTradeData(uniqueLink);
 
     this.onAddressChanges = this.web3PrivateService.onAddressChanges;
   }
@@ -224,8 +222,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setTradeData(): void {
-    this.orderBookApiService.getTradeData(this.uniqueLink).subscribe(
+  private setTradeData(uniqueLink: string): void {
+    this.orderBookApiService.getTradeData(uniqueLink).subscribe(
       tradeData => {
         this.tradeData = tradeData;
         this.setStaticTradeData();
