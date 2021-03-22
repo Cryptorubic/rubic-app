@@ -4,12 +4,13 @@
     type="text"
     name="amountField"
     autocomplete="off"
-    placeholder="{{ amountPlaceholder | translate }}"
+    placeholder="{{ inputDisabled ? '' : amountPlaceholder | translate }}"
+    [disabled]="inputDisabled"
     [required]="true"
     [appBigNumber]="bigNumberDirective"
     [tabindex]="inputDisabled ? '-1' : ''"
-    (ngModelChange)="onNumberChanges(amount)"
-    [(ngModel)]="amount"
+    (ngModelChange)="onNumberChanges(selectedAmount)"
+    [(ngModel)]="selectedAmount"
   />
 
   <app-input-dropdown
@@ -17,7 +18,8 @@
     [componentsData]="tokensDropdownData"
     [selectedComponentData]="selectedTokenDropdownData"
     [VISIBLE_COMPONENTS_NUMBER]="VISIBLE_TOKENS_NUMBER"
-    [sortOrder]="tokensSortOrder"
+    [filterBy]="tokensFilterOrder"
+    [sortBy]="tokensSortOrder"
     chooseComponentText="Choose Token"
     [disabled]="listDisabled"
     (componentChanges)="onTokenChanges($event)"

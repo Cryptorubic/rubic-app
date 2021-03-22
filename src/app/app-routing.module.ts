@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { IndexComponent } from './features/index-page/components/index/index.component';
-import { StartFormResolver } from './features/index-page/components/start-form/start-form.component';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -32,10 +30,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./features/index-page/index-page.module').then(m => m.IndexPageModule),
-    resolve: {
-      checkedTokens: StartFormResolver
-    }
+      import('./features/swaps-page/page-module/swaps-page.module').then(m => m.SwapsPageModule)
   },
   {
     path: 'bridge',
@@ -52,8 +47,19 @@ const routes: Routes = [
     loadChildren: () => import('./features/team-page/team-page.module').then(m => m.TeamPageModule)
   },
   {
-    path: 'public-v3/:public_link',
-    redirectTo: '/trades/public-v3/:public_link'
+    path: 'public-v3/:unique_link',
+    redirectTo: '/trade/:unique_link'
+  },
+  {
+    path: 'trades/public-v3/:unique_link',
+    redirectTo: '/trade/:unique_link'
+  },
+  {
+    path: 'trade/:unique_link',
+    loadChildren: () =>
+      import('./features/order-book-trade-page/order-book-trade-page.module').then(
+        m => m.OrderBookTradePageModule
+      )
   },
   {
     path: 'contracts',
@@ -62,10 +68,6 @@ const routes: Routes = [
   {
     path: 'trades',
     loadChildren: () => import('./features/trades/trades.module').then(m => m.TradesModule)
-  },
-  {
-    path: 'reset/:uid/:token',
-    component: IndexComponent
   },
   {
     path: 'faq',
@@ -77,14 +79,6 @@ const routes: Routes = [
       import('./features/token-sale-page/token-sale-page/token-sale-page.module').then(
         m => m.TokenSalePageModule
       )
-  },
-  {
-    path: ':token',
-    loadChildren: () =>
-      import('./features/index-page/index-page.module').then(m => m.IndexPageModule),
-    resolve: {
-      checkedTokens: StartFormResolver
-    }
   }
 ];
 

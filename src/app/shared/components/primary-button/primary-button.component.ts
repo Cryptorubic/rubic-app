@@ -6,6 +6,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./primary-button.component.scss']
 })
 export class PrimaryButtonComponent {
+  @Input() type: string = 'submit';
+
   @Input() animate?: boolean = false;
 
   @Input() label: string;

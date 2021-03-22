@@ -1,7 +1,8 @@
 interface DropdownComponentData {
   inputs: any;
   id: any;
-  sortParameters: any;
+  filterParameters: any;
+  sortParameters?: any;
 }
 
 export { DropdownComponentData };

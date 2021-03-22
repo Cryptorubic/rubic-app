@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-
-// @ts-ignore
-import collaborations from '../../../../assets/content/collaborations/collaborations.json';
+import { ContentLoaderService } from 'src/app/core/services/content-loader/content-loader.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CollaborationsContent } from '../../models/content';
+import { ListingRequestPopupComponent } from './listing-request-popup/listing-request-popup.component';
+import { MessageBoxComponent } from '../message-box/message-box.component';
 
 @Component({
   selector: 'app-collaborations',
@@ -9,7 +11,20 @@ import collaborations from '../../../../assets/content/collaborations/collaborat
   styleUrls: ['./collaborations.component.scss']
 })
 export class CollaborationsComponent {
-  public collaborations = collaborations;
+  public collaborations: CollaborationsContent[];
 
-  constructor() {}
+  constructor(contentLoaderService: ContentLoaderService, private dialog: MatDialog) {
+    this.collaborations = contentLoaderService.collaborationsContent;
+  }
+
+  public openListingRequestPopup(): void {
+    const data = {
+      title: 'Listing request',
+      descriptionComponentClass: ListingRequestPopupComponent
+    };
+    this.dialog.open(MessageBoxComponent, {
+      width: '400px',
+      data
+    });
+  }
 }

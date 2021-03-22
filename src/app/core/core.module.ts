@@ -1,86 +1,46 @@
-import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { RouterModule } from '@angular/router';
-import { ContractsListResolver } from '../features/trades/components/contracts-list/contracts-list.reslover';
-import { HttpService } from './services/http/http.service';
-import { UserService } from './services/user/user.service';
-import { OneInchService } from './services/1inch/1inch';
-import { MaintenanceComponent } from './components/maintenance/maintenance.component';
+import { TransferState } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
+import { HeaderComponent } from './header/components/header/header.component';
+import { HeaderModule } from './header/header.module';
 import { SharedModule } from '../shared/shared.module';
-import { HeaderComponent } from './components/header/header.component';
-import { ContractEditV3Resolver } from '../features/trades/components/contracts-preview-v3/contracts-preview-v3.resolver';
-import { StartFormResolver } from '../features/index-page/components/start-form/start-form.component';
-
-export function appInitializerFactory(
-  translate: TranslateService,
-  userService: UserService,
-  httpService: HttpService,
-  injector: Injector
-) {
-  const defaultLng = (navigator.language || navigator['browserLanguage']).split('-')[0];
-
-  const langToSet =
-    window['jQuery'].cookie('lng') || (['en', 'ko'].indexOf(defaultLng) > -1 ? defaultLng : 'en');
-
-  return () =>
-    new Promise<any>((resolve: any) => {
-      const oneInchService = injector.get(OneInchService, Promise.resolve(null));
-
-      translate.setDefaultLang('en');
-
-      translate.use(langToSet).subscribe(() => {
-        const subscriber = userService.getCurrentUser(true).subscribe(() => {
-          httpService
-            .get('coingecko_tokens/')
-            .toPromise()
-            .then(result => {
-              let { tokens } = result;
-              tokens = tokens.sort((a, b) => {
-                const aRank = a.coingecko_rank || 100000;
-                const bRank = b.coingecko_rank || 100000;
-                // eslint-disable-next-line no-nested-ternary
-                return aRank > bRank ? 1 : aRank < bRank ? -1 : 0;
-              });
-
-              window['coingecko_tokens'] = tokens;
-              oneInchService.onLoadTokens().subscribe(() => {
-                document.getElementById('spring-spinner').remove();
-                resolve(null);
-              });
-            })
-            .catch(e => {
-              console.error('Loading error');
-              console.error(e);
-              window['coingecko_tokens'] = [];
-              oneInchService.onLoadTokens().subscribe(() => {
-                document.getElementById('spring-spinner').remove();
-                resolve(null);
-              });
-            });
-
-          subscriber.unsubscribe();
-        });
-      });
-    });
-}
+import { configLoader, translateStaticLoader, languageLoader } from './app.loaders';
+import { ContentLoaderService } from './services/content-loader/content-loader.service';
 
 @NgModule({
-  declarations: [MaintenanceComponent, HeaderComponent],
+  declarations: [MaintenanceComponent],
   providers: [
     CookieService,
-    ContractsListResolver,
-    ContractEditV3Resolver,
-    StartFormResolver,
     {
       provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [TranslateService, UserService, HttpService, Injector],
+      useFactory: languageLoader,
+      deps: [TranslateService, CookieService],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: configLoader,
+      deps: [ContentLoaderService],
       multi: true
     }
   ],
-  imports: [CommonModule, SharedModule, TranslateModule, RouterModule],
-  exports: [MaintenanceComponent, HeaderComponent, RouterModule]
+  imports: [
+    CommonModule,
+    HeaderModule,
+    SharedModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: translateStaticLoader,
+        deps: [HttpClient, TransferState]
+      }
+    })
+  ],
+  exports: [MaintenanceComponent, RouterModule, HeaderComponent]
 })
 export class CoreModule {}

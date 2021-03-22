@@ -1,62 +1,52 @@
 import { ETH, WEENUS, XEENUS, YEENUS } from './eth-tokens';
+import { BLOCKCHAIN_NAME } from '../../app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import SwapToken from '../../app/shared/models/tokens/SwapToken';
 
-const eth = {
+const eth: SwapToken = {
+  name: 'Ethereum',
+  symbol: ETH.symbol,
+  blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: ETH.address,
-  coingecko_rank: 1,
   decimals: ETH.decimals,
-  image_link: 'https://devswaps.mywish.io/media/token_images/cg_logo_eth_ethereum_uibu3ky.png',
-  platform: 'ethereum',
-  token_short_title: 'ETH',
-  token_title: 'Ethereum',
-  usd_price: 48005
+  image: 'https://devswaps.mywish.io/media/token_images/cg_logo_eth_ethereum_uibu3ky.png',
+  rank: 1,
+  price: 1705
 };
 
 const weenus = {
+  name: 'Weenus',
+  symbol: WEENUS.symbol,
+  blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: WEENUS.address,
-  coingecko_rank: 2,
   decimals: WEENUS.decimals,
-  image_link:
+  image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  platform: 'ethereum',
-  token_short_title: 'WEENUS',
-  token_title: 'WEENUS',
-  usd_price: 48005
+  rank: 2,
+  price: 10
 };
 
 const yeenus = {
+  name: 'Yeenus',
+  symbol: YEENUS.symbol,
+  blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: YEENUS.address,
-  coingecko_rank: 3,
   decimals: YEENUS.decimals,
-  image_link:
+  image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  platform: 'ethereum',
-  token_short_title: 'YEENUS',
-  token_title: 'YEENUS',
-  usd_price: 48005
+  rank: 3,
+  price: 50
 };
 
 const xeenus = {
+  name: 'Xeenus',
+  symbol: XEENUS.symbol,
+  blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: XEENUS.address,
-  coingecko_rank: 4,
   decimals: XEENUS.decimals,
-  image_link:
+  image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  platform: 'ethereum',
-  token_short_title: 'XEENUS',
-  token_title: 'XEENUS',
-  usd_price: 48005
+  rank: 4,
+  price: 2
 };
-
-// const zeenus = {
-//   address: ZEENUS.address,
-//   coingecko_rank: 3,
-//   decimals: ZEENUS.decimals,
-//   image_link:
-//     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-//   platform: 'ethereum',
-//   token_short_title: 'ZEENUS',
-//   token_title: 'ZEENUS',
-//   usd_price: 48005
-// };
 
 export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus];

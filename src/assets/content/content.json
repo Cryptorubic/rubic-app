@@ -1,0 +1,174 @@
+{
+  "volume": {
+    "instantTradesVolume": "$3,131,304",
+    "bridgeVolume": "$1,378,965"
+  },
+  "team": [
+    {
+      "img": "VladimirTikhomirov.png",
+      "name": "Vladimir Tikhomirov",
+      "role": "Founder",
+      "links": [
+        {
+          "icon": "LinkedIn.svg",
+          "url": "https://ru.linkedin.com/in/vtikhomirov"
+        }
+      ]
+    },
+    {
+      "img": "AlexandraKorneva.png",
+      "name": "Alexandra Korneva",
+      "role": "PR and Marketing",
+      "links": [
+        {
+          "icon": "LinkedIn.svg",
+          "url": "https://ru.linkedin.com/in/alexandrakorneva"
+        }
+      ]
+    },
+    {
+      "img": "VladislavGreen.png",
+      "name": "Vladislav Green",
+      "role": "Product manager",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://teleg.run/VladGren"
+        }
+      ]
+    },
+    {
+      "img": "SergeyAndreev.png",
+      "name": "Sergey Andreev",
+      "role": "Frontend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/siandreev"
+        }
+      ]
+    },
+    {
+      "img": "DmitrySleta.png",
+      "name": "Dmitry Sleta",
+      "role": "Frontend developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/axtezy"
+        }
+      ]
+    },
+    {
+      "img": "AndreyOtt.png",
+      "name": "Andrey Ott",
+      "role": "Frontend developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/ottebrut"
+        }
+      ]
+    },
+    {
+      "img": "AlexandrKelepko.png",
+      "name": "Alexandr Kelepko",
+      "role": "Backend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/slycaptcha"
+        }
+      ]
+    },
+    {
+      "img": "DaniilSvetlov.png",
+      "name": "Daniil Svetlov",
+      "role": "Backend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/ddsvetlov"
+        }
+      ]
+    },
+    {
+      "img": "AleksandrVolkov.jpg",
+      "name": "Alexandr Volkov",
+      "role": "Backend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/jetvolkov"
+        }
+      ]
+    },
+    {
+      "img": "AndreyAksenov.png",
+      "name": "Andrey Aksenov",
+      "role": "Marketing",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/renedsaa"
+        }
+      ]
+    },
+    {
+      "img": "GuilhemDeRooyesteyn.png",
+      "name": "Guilhem de Rooyesteyn",
+      "role": "Marketing",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/Guilhemw"
+        }
+      ]
+    },
+    {
+      "img": "GeorgeStefan.png",
+      "name": "George Stefan",
+      "role": "SMM",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://teleg.run/GeorgeDLT"
+        }
+      ]
+    }
+  ],
+  "collaborations": [
+    {
+      "img": "Binance.svg",
+      "url": "https://coinmarketcap.com/ru/headlines/news/binance-smart-chain-bags-yet-another-defi-integration/"
+    },
+    {
+      "img": "Cryptogeek.svg",
+      "url": "https://cryptogeek.info/en/exchanges/rubic"
+    },
+    {
+      "img": "Matic.svg",
+      "url": "https://twitter.com/maticnetwork/status/1314563396629458944?s=20"
+    },
+    {
+      "img": "Mywish.svg",
+      "url": "https://mywish.io/"
+    },
+    {
+      "img": "OneInch.svg",
+      "url": "https://1inch.exchange/"
+    },
+    {
+      "img": "PROBIT.svg",
+      "url": "https://medium.com/probit-exchange/probit-exchange-lists-rubic-rbc-5948f21ea3be"
+    },
+    {
+      "img": "Uniswap.svg",
+      "url": "https://app.uniswap.org/#/swap?inputCurrency=0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3"
+    },
+    {
+      "img": "DashNext.png",
+      "url": "https://dashnext.org/"
+    }
+  ]
+}

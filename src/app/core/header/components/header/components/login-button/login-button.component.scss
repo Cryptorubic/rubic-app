@@ -1,0 +1,33 @@
+@import '../../../../../../../scss/mixins';
+
+$text-size: 14px;
+$letter-spacing: 2px;
+$mobile-size: 1024;
+$primary-color: #4aa956;
+
+.login-button {
+  border: 1px solid $primary-color;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  color: $primary-color;
+  padding: 0 16px;
+  height: 35px;
+  border-radius: 10px;
+  margin-left: 10px;
+  cursor: pointer;
+
+  @include b($mobile-size) {
+    margin-left: auto;
+    margin-right: 15px;
+  }
+
+  &__text {
+    padding: 9px;
+    font-size: $text-size;
+    line-height: $text-size;
+    padding-left: 0;
+    font-weight: 700;
+    letter-spacing: $letter-spacing;
+  }
+}

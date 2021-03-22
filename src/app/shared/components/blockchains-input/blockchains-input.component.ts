@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import { List } from 'immutable';
-import { IBlockchain } from 'src/app/core/services/bridge/types';
 import { IBlockchainShort } from './types';
 import { BlockchainLabelComponent } from './blockchain-label/blockchain-label.component';
 import { InputDropdownComponent } from '../input-dropdown/input-dropdown.component';
 import { DropdownComponentData } from '../input-dropdown/types';
+import { BridgeBlockchain } from '../../../features/bridge-page/models/BridgeBlockchain';
 
 interface BlockchainLabelData {
   blockchain: IBlockchainShort;
@@ -14,7 +14,7 @@ interface BlockchainLabelData {
 interface BlockchainDropdownData extends DropdownComponentData {
   inputs: BlockchainLabelData;
   id: string;
-  sortParameters: {
+  filterParameters: {
     name: string;
     label: string;
   };
@@ -26,11 +26,11 @@ interface BlockchainDropdownData extends DropdownComponentData {
   styleUrls: ['./blockchains-input.component.scss']
 })
 export class BlockchainsInputComponent implements OnChanges {
-  @Input() selectedBlockchain: IBlockchain;
+  @Input() selectedBlockchain: BridgeBlockchain;
 
-  @Input() blockchains: IBlockchain[];
+  @Input() blockchains: BridgeBlockchain[];
 
-  @Output() blockchainChanges = new EventEmitter<IBlockchain>();
+  @Output() blockchainChanges = new EventEmitter<BridgeBlockchain>();
 
   @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<BlockchainDropdownData>;
 
@@ -69,7 +69,7 @@ export class BlockchainsInputComponent implements OnChanges {
       this.blockchains.map(blockchain => ({
         inputs: { blockchain },
         id: blockchain.name,
-        sortParameters: { name: blockchain.name, label: blockchain.label }
+        filterParameters: { name: blockchain.name, label: blockchain.label }
       }))
     );
 
@@ -77,7 +77,7 @@ export class BlockchainsInputComponent implements OnChanges {
       this.selectedBlockchainDropdownData = {
         inputs: { blockchain: this.selectedBlockchain, selected: true },
         id: this.selectedBlockchain.name,
-        sortParameters: {
+        filterParameters: {
           name: this.selectedBlockchain.name,
           label: this.selectedBlockchain.label
         }

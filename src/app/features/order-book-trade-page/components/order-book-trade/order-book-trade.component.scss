@@ -1,0 +1,299 @@
+@import 'src/scss/elements/vars';
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100vw;
+  height: 100vh;
+}
+
+.trade-container {
+  max-width: 1180px;
+  margin: 140px auto 80px;
+
+  &__header {
+    margin-bottom: 15px;
+  }
+
+  &__tokens-swap {
+    margin-bottom: 20px;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 13px;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  grid-gap: 30px;
+
+  &__tokens-names {
+    color: $dark;
+    font-size: 25px;
+    font-weight: bold;
+  }
+
+  &__state {
+    margin-left: auto;
+    margin-right: 10px;
+
+    font-size: 24px;
+    font-weight: bold;
+
+    &:before {
+      position: relative;
+      top: -3px;
+      left: -12px;
+
+      display: inline-block;
+
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+
+      content: '';
+    }
+
+    &_active {
+      color: $active-green;
+
+      &:before {
+        background: $active-green;
+        box-shadow: 0 0 11px $active-green;
+      }
+    }
+
+    &_expired {
+      color: $expired-yellow;
+
+      &:before {
+        background: $expired-yellow;
+        box-shadow: 0 0 11px $expired-yellow;
+      }
+    }
+
+    &_cancelled {
+      color: $cancelled-red;
+
+      &:before {
+        background: $cancelled-red;
+        box-shadow: 0 0 11px $cancelled-red;
+      }
+    }
+
+    &_done {
+      color: $done-grey;
+
+      &:before {
+        background: $done-grey;
+        box-shadow: 0 0 11px $done-grey;
+      }
+    }
+  }
+
+  &__blockchain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 54px;
+    padding: 0 20px 0 17px;
+
+    background: white;
+
+    img {
+      width: 20px;
+      margin-right: 9px;
+    }
+  }
+}
+
+.tokens-rate {
+  color: $grey-text;
+
+  &__title {
+    text-transform: uppercase;
+  }
+
+  &__button {
+    position: relative;
+    top: 3px;
+
+    padding: 0;
+    margin-left: 12px;
+    border: none;
+
+    background: transparent;
+    cursor: pointer;
+  }
+}
+
+.tokens-swap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 20px;
+
+  color: $dark;
+}
+
+.trade-options {
+  display: flex;
+  align-items: center;
+  grid-column-gap: 50px;
+  flex-wrap: wrap;
+
+  padding: 24px 32px;
+
+  background: white;
+
+  color: $dark;
+
+  &__break {
+    flex-basis: 100%;
+
+    height: 0;
+  }
+}
+
+.trade-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-gap: 6px;
+
+  width: fit-content;
+
+  &_public {
+    flex-direction: row;
+    grid-gap: 15px;
+
+    margin-left: auto;
+  }
+
+  &_broker {
+    justify-content: center;
+
+    height: 50px;
+    margin-top: 35px;
+  }
+
+  &_cancel {
+    margin-top: 35px;
+    margin-left: auto;
+
+    app-primary-button {
+      width: 160px;
+    }
+  }
+
+  &__title {
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  &__body {
+    display: flex;
+    align-items: center;
+
+    font-size: 18px;
+    font-weight: 500;
+
+    &_copy-link {
+      color: $main-green;
+    }
+
+    &_button {
+      padding: 0;
+      border: none;
+
+      background: white;
+      cursor: pointer;
+
+      img {
+        position: relative;
+        top: 2px;
+
+        width: 17px;
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+.trade-option-body-public {
+  display: flex;
+  grid-gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 8px 14px;
+
+  background: $grey-background;
+
+  font-size: 17px;
+  font-weight: normal;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  &_not-checked {
+    flex-direction: row-reverse;
+  }
+
+  &__image {
+    width: 26px;
+    height: 28px;
+
+    background-image: url(/assets/images/icons/checkbox-tick.svg);
+    background-repeat: no-repeat;
+
+    transition: background-image 0.2s linear;
+
+    &_not-checked {
+      background-image: url(/assets/images/icons/checkbox-cross.svg);
+    }
+  }
+}
+
+.copy-link {
+  position: relative;
+
+  &__copied-notification {
+    position: absolute;
+    top: -7px;
+    right: -23px;
+
+    padding: 5px 8px;
+    border-radius: 4px;
+
+    background: #818181;
+
+    color: white;
+
+    .triangle {
+      position: absolute;
+      bottom: -6px;
+      left: 42%;
+
+      width: 12px;
+      height: 12px;
+
+      background: #818181;
+
+      transform: rotate(45deg);
+    }
+  }
+}
+
+.no-trade {
+  margin: 140px 0 0 80px;
+
+  font-size: 24px;
+  font-weight: bold;
+}

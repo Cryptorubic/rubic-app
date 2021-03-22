@@ -1,0 +1,15 @@
+<div class="volume-cell">
+  <div class="volume-cell__token-from">
+    <div class="volume-cell__text">{{ token.base.price }}&nbsp;{{ token.base.symbol }}</div>
+    <div class="volume-cell__subtext">
+      {{ token.base.amountTotal }}&nbsp;{{ token.base.symbol }}&nbsp;/&nbsp;1&nbsp;{{ token.quote.symbol }}
+    </div>
+  </div>
+  <div class="volume-cell__separator"></div>
+  <div class="volume-cell__token-to">
+    <div class="volume-cell__text">{{ token.quote.price }}&nbsp;{{ token.quote.symbol }}</div>
+    <div class="volume-cell__subtext">
+      {{ token.quote.amountTotal }}&nbsp;{{ token.base.symbol }}&nbsp;/&nbsp;1&nbsp;{{ token.quote.symbol }}
+    </div>
+  </div>
+</div>

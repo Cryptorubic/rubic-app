@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-import { Web3ApiService } from '../../../core/services/web3Api/web3-api.service';
+import { Web3PublicService } from '../../../core/services/blockchain/web3-public-service/web3-public.service';
+import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-address-input',
@@ -16,14 +16,14 @@ export class AddressInputComponent {
 
   public isAddressIncorrect: boolean;
 
-  constructor(private web3Api: Web3ApiService) {}
+  constructor(private web3: Web3PublicService) {}
 
   public checkAddressCorrectness(addressQuery: string) {
     if (!addressQuery) {
       this.isAddressCorrect = false;
       this.isAddressIncorrect = false;
     } else {
-      this.isAddressCorrect = this.web3Api.isAddressCorrect(addressQuery);
+      this.isAddressCorrect = this.web3[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(addressQuery);
       this.isAddressIncorrect = !this.isAddressCorrect;
 
       if (this.isAddressCorrect) {

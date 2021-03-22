@@ -37,10 +37,16 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   @Input() private readonly VISIBLE_COMPONENTS_NUMBER? = 10;
 
   /**
-   * The list of the component class' fields, in order of which the components will be sorted.
+   * The list of the component class' fields, in order of which the components will be filtered.
    * The first field has the biggest priority.
    */
-  @Input() readonly sortOrder: string[];
+  @Input() readonly filterBy: string[];
+
+  /**
+   * The list of the component class' fields, in order of which the filtered components will be sorted.
+   * The first field has the biggest priority.
+   */
+  @Input() readonly sortBy: string[];
 
   /**
    * What must be printed, if there's no selected component.
@@ -72,9 +78,10 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   constructor() {}
 
   ngOnChanges() {
-    this.setVisibleComponents();
+    this.searchComponent(this.inputQuery);
+
     if (this.selectedComponentData) {
-      this.inputQuery = this.selectedComponentData.sortParameters[this.sortOrder[0]];
+      this.inputQuery = this.selectedComponentData.filterParameters[this.filterBy[0]];
       this.unshiftComponentToVisibleList(
         this.componentsData.find(component => component.id === this.selectedComponentData.id)
       );
@@ -92,33 +99,41 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   public searchComponent(inputQuery) {
     this.inputQuery = inputQuery;
 
-    if (!inputQuery) {
-      this.setVisibleComponents();
-    } else {
-      const query = inputQuery.toLowerCase();
-      const queryMatch: T[] = [];
-      this.sortOrder.forEach(field =>
-        queryMatch.push(
-          ...this.componentsData
-            .filter(
-              token =>
-                !queryMatch.includes(token) &&
-                token.sortParameters[field].toLowerCase().includes(query)
-            )
-            .toArray()
-        )
-      );
+    const query = inputQuery.toLowerCase();
+    const queryMatch: T[] = [];
+    this.filterBy.forEach(field =>
+      queryMatch.push(
+        ...this.componentsData
+          .filter(
+            token =>
+              !queryMatch.includes(token) &&
+              (!query || token.filterParameters[field].toLowerCase().includes(query))
+          )
+          .toArray()
+          .sort((a, b) => {
+            let compare: number;
+            if (this.sortBy) {
+              // eslint-disable-next-line
+              for (let parameter of this.sortBy) {
+                compare = a.sortParameters[parameter] - b.sortParameters[parameter];
+                if (compare) {
+                  break;
+                }
+              }
+            }
+            if (!compare && query) {
+              compare = a.filterParameters[field].length - b.filterParameters[field].length;
+            }
+            return compare;
+          })
+      )
+    );
 
-      this.visibleComponentsData = List(queryMatch.slice(0, this.VISIBLE_COMPONENTS_NUMBER));
-    }
-  }
-
-  private setVisibleComponents() {
-    this.visibleComponentsData = this.componentsData.slice(0, this.VISIBLE_COMPONENTS_NUMBER);
+    this.visibleComponentsData = List(queryMatch.slice(0, this.VISIBLE_COMPONENTS_NUMBER));
   }
 
   public selectComponent(component: T) {
-    this.inputQuery = component.sortParameters[this.sortOrder[0]];
+    this.inputQuery = component.filterParameters[this.filterBy[0]];
     this.unshiftComponentToVisibleList(component);
     this.toggleListOpen(false);
 
@@ -129,9 +144,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    * Puts the given component to the start of the visible list.
    */
   private unshiftComponentToVisibleList(component: T) {
-    this.visibleComponentsData = this.componentsData
-      .filter(item => item.id !== component.id)
-      .slice(0, this.VISIBLE_COMPONENTS_NUMBER - 1)
-      .unshift(component);
+    if (component) {
+      this.visibleComponentsData = this.visibleComponentsData
+        .filter(item => item.id !== component.id)
+        .slice(0, this.VISIBLE_COMPONENTS_NUMBER - 1)
+        .unshift(component);
+    }
   }
 }

@@ -5,23 +5,33 @@
   line-height: 21px;
   font-size: 16px;
 
-  img {
+  &__image-container {
     width: 39px;
     height: 39px;
     margin-right: 15px;
+  }
+
+  img {
+    max-width: 39px;
+    max-height: 39px;
   }
 
   &_selected {
     padding: 5px 25px 5px 11px;
     margin: 0;
 
+    .dropdown-label__image-container {
+      width: initial;
+      height: initial;
+      margin-right: 10px;
+    }
+
     img {
       vertical-align: middle;
       float: unset;
 
-      width: 28px;
+      max-width: 28px;
       height: 28px;
-      margin: 0 10px 0 0;
     }
 
     .dropdown-label__text {
