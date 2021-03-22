@@ -51,12 +51,13 @@ export class TradesService {
     this.$dataSource = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
     this.$visibleTableData = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
     this.$displayedColumns = new BehaviorSubject<string[]>([
+      'status',
       'token',
       'amount',
       'network',
       'expires'
     ]);
-    this.$columnsSizes = new BehaviorSubject<string[]>(['25%', '50%', '10%', '15%']);
+    this.$columnsSizes = new BehaviorSubject<string[]>(['10%', '15%', '50%', '10%', '15%']);
   }
 
   public getTableData(): Observable<any> {
