@@ -38,8 +38,6 @@
     "date-and-time": "^0.14.2",
     "ethers": "^5.0.30",
     "immutable": "^4.0.0-rc.12",
-    "jquery": "^3.5.1",
-    "jquery.cookie": "^1.4.1",
     "latest": "^0.2.0",
     "luxon": "^1.26.0",
     "moment": "^2.29.1",
