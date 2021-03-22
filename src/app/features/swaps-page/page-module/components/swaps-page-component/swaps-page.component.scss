@@ -17,6 +17,14 @@
     font-size: 22px;
     line-height: 40px;
     color: rgba(black, 0.4);
+
+    .app-index__intro_bold {
+      font-weight: 700;
+    }
+
+    .app-index__intro_green {
+      color: #4aa956;
+    }
   }
 
   &__title {
