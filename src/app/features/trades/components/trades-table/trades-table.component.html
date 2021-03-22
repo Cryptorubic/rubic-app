@@ -6,7 +6,7 @@
       </button>
     </div>
     <table mat-table matSort [dataSource]="$dataSource | async" class="table" *ngIf="($dataSource | async).length !== 0">
-      <colgroup *ngIf="">
+      <colgroup>
         <ng-container>
           <col *ngFor="let size of $columnsSizes | async" [style.width]="size">
         </ng-container>

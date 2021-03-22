@@ -11,7 +11,8 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import {
   OrderBookTradeData,
   OrderBookDataToken
-} from 'src/app/features/order-book-trade-page/types/trade-data';
+} from 'src/app/features/order-book-trade-page/models/trade-data';
+
 import { OrderBookTradeTableRow } from 'src/app/features/swaps-page/order-books/types/trade-table';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
@@ -132,7 +133,7 @@ export class TradesService {
     }
 
     const tradeData = {
-      memo: tradeApi.memo_contract,
+      memo: (tradeApi as any).memo_contract,
       contractAddress: tradeApi.contract_address,
 
       token: {
