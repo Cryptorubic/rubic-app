@@ -36,6 +36,7 @@ import { WarningLabelComponent } from './components/warning-label/warning-label.
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
 import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
 import { ScannerLinkComponent } from './components/scanner-link/scanner-link.component';
+import { VolumeBlockComponent } from './components/volume-block/volume-block.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { ScannerLinkComponent } from './components/scanner-link/scanner-link.com
     WarningLabelComponent,
     TokenAddressDirective,
     NumberPrecisionDirective,
-    ScannerLinkComponent
+    ScannerLinkComponent,
+    VolumeBlockComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [CommonModule, TranslateModule, DynamicModule, MatDialogModule, FormsModule],
@@ -107,7 +109,8 @@ import { ScannerLinkComponent } from './components/scanner-link/scanner-link.com
     TokenAddressDirective,
     TranslateModule,
     NumberPrecisionDirective,
-    ScannerLinkComponent
+    ScannerLinkComponent,
+    VolumeBlockComponent
   ]
 })
 export class SharedModule {}

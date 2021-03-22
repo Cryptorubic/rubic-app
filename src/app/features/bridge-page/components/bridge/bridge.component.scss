@@ -55,7 +55,7 @@
   font-size: 14px;
   color: #000000;
   margin-top: 20px;
-  margin-bottom: 62px;
+  margin-bottom: 20px;
 }
 
 @include b(800) {
@@ -76,4 +76,9 @@
   .disclaimer-text {
     margin-bottom: 30px;
   }
+}
+
+app-volume-block {
+  display: block;
+  margin-bottom: 35px;
 }
