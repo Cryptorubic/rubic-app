@@ -241,9 +241,9 @@ export class Web3Public {
       tokenFieldsPromises.push(this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, methodName));
     }
 
-    (await Promise.all(tokenFieldsPromises)).forEach((elem, index) => {
-      token[tokenMethods[index]] = elem;
-    });
+    (await Promise.all(tokenFieldsPromises)).forEach(
+      (elem, index) => (token[tokenMethods[index]] = elem)
+    );
 
     token.decimals = Number(token.decimals);
 

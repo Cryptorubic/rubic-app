@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 
@@ -7,7 +7,7 @@ import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
   templateUrl: './cancel-completed-modal.component.html',
   styleUrls: ['./cancel-completed-modal.component.scss']
 })
-export class CancelCompletedModalComponent implements OnInit {
+export class CancelCompletedModalComponent {
   @Input() transactionId: string;
 
   @Input() blockchain: BLOCKCHAIN_NAME;
@@ -15,6 +15,4 @@ export class CancelCompletedModalComponent implements OnInit {
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
   constructor() {}
-
-  ngOnInit(): void {}
 }
