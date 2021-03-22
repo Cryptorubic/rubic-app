@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-// @ts-ignore
-import team from '../../../../../assets/content/team/team.json';
-import { ICardContent } from '../team-card/team-card.component';
+import { ContentLoaderService } from '../../../../core/services/content-loader/content-loader.service';
+import { TeamCardContent } from '../../../../shared/models/content';
 
 @Component({
   selector: 'app-team',
@@ -9,7 +8,9 @@ import { ICardContent } from '../team-card/team-card.component';
   styleUrls: ['./team.component.scss']
 })
 export class TeamComponent {
-  cards: Array<ICardContent> = team;
+  public cards: TeamCardContent[];
 
-  constructor() {}
+  constructor(contentLoaderService: ContentLoaderService) {
+    this.cards = contentLoaderService.teamCardsContent;
+  }
 }

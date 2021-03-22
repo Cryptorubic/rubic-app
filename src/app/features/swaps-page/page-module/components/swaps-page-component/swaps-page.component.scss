@@ -67,7 +67,12 @@
   line-height: 40px;
   color: #000000;
   margin-top: 0;
-  margin-bottom: 52px;
+  margin-bottom: 20px;
+}
+
+app-volume-block {
+  display: block;
+  margin-bottom: 35px;
 }
 
 @media (max-width: 1240px) {
