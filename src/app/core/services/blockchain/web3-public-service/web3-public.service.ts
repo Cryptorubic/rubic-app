@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
+import BigNumber from 'bignumber.js';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import ConnectionLink from '../types/ConnectionLink';
 
 import { Web3Public } from './Web3Public';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 import { BlockchainsInfo } from '../blockchain-info';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +16,15 @@ import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN
 export class Web3PublicService {
   private readonly connectionLinks: ConnectionLink[];
 
-  constructor(publicProvider: PublicProviderService) {
+  static tokenAmountToWei(token: SwapToken, amount: string | BigNumber): string {
+    return new BigNumber(amount || '0').times(new BigNumber(10).pow(token.decimals)).toFixed(0);
+  }
+
+  static tokenWeiToAmount(token: SwapToken, amount: string): BigNumber {
+    return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
+  }
+
+  constructor(publicProvider: PublicProviderService, useTestingModeService: UseTestingModeService) {
     this.connectionLinks = publicProvider.connectionLinks;
     const web3Connections = this.connectionLinks.reduce(
       (acc, connection) => ({
@@ -26,5 +37,17 @@ export class Web3PublicService {
       {} as any
     );
     Object.assign(this, web3Connections);
+
+    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      if (isTestingMode) {
+        const connection = this.connectionLinks.find(
+          c => c.blockchainName === BLOCKCHAIN_NAME.ETHEREUM_TESTNET
+        );
+        this[BLOCKCHAIN_NAME.ETHEREUM] = new Web3Public(
+          new Web3(connection.rpcLink),
+          BlockchainsInfo.getBlockchainByName(connection.blockchainName)
+        );
+      }
+    });
   }
 }

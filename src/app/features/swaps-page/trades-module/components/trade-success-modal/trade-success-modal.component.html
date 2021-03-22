@@ -1,10 +1,13 @@
 <app-modal (onCloseEvent)="onCloseHandler()">
   <div class="trade-modal">
-    <img class="trade-modal__icon" src='../../../../../../assets/images/icons/success.svg' alt="success" />
+    <img class="trade-modal__icon" src="/assets/images/icons/success.svg" alt="success" />
     <div class="trade-modal__description">
       Successful swap! <br />
-      <a target='_blank' [href]="transactionId | scannerLink:blockchainName:ADDRESS_TYPE.TRANSACTION">
-        See transaction on scanner
+      <a
+        target="_blank"
+        [href]="transactionId | scannerLink: blockchainName:ADDRESS_TYPE.TRANSACTION"
+      >
+        Check transaction on scanner
       </a>
     </div>
   </div>

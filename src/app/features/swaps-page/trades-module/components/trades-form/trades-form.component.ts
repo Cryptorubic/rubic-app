@@ -68,9 +68,9 @@ export class TradesFormComponent implements OnInit, OnDestroy {
 
   private _blockchainSubscription$: Subscription;
 
-  private _selectedBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
+  private _selectedBlockchain: BLOCKCHAIN_NAME;
 
-  private _selectedMode: TRADE_MODE = TRADE_MODE.INSTANT_TRADE;
+  private _selectedMode: TRADE_MODE;
 
   set selectedMode(mode: TRADE_MODE) {
     this._selectedMode = mode;

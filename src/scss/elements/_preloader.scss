@@ -1,242 +1,30 @@
-.preloader-container {
-  display: inline-block;
-  vertical-align: middle;
-  white-space: nowrap;
-}
-.preloader-circle {
-  //background-color: $main-color;
-  display: inline-block;
-  vertical-align: middle;
-  height: 1em;
-  width: 1em;
-  margin-left: 0.5em;
-  animation-name:bounce_circleG;
-  -o-animation-name:bounce_circleG;
-  -ms-animation-name:bounce_circleG;
-  -webkit-animation-name:bounce_circleG;
-  -moz-animation-name:bounce_circleG;
-  animation-duration:2.24s;
-  -o-animation-duration:2.24s;
-  -ms-animation-duration:2.24s;
-  -webkit-animation-duration:2.24s;
-  -moz-animation-duration:2.24s;
-  animation-iteration-count:infinite;
-  -o-animation-iteration-count:infinite;
-  -ms-animation-iteration-count:infinite;
-  -webkit-animation-iteration-count:infinite;
-  -moz-animation-iteration-count:infinite;
-  animation-direction:normal;
-  -o-animation-direction:normal;
-  -ms-animation-direction:normal;
-  -webkit-animation-direction:normal;
-  -moz-animation-direction:normal;
-}
-
-.preloader-circle-1 {
-  animation-delay:0.45s;
-  -o-animation-delay:0.45s;
-  -ms-animation-delay:0.45s;
-  -webkit-animation-delay:0.45s;
-  -moz-animation-delay:0.45s;
-}
-.preloader-circle-2 {
-  animation-delay:1.05s;
-  -o-animation-delay:1.05s;
-  -ms-animation-delay:1.05s;
-  -webkit-animation-delay:1.05s;
-  -moz-animation-delay:1.05s;
-}
-.preloader-circle-3 {
-  animation-delay:1.35s;
-  -o-animation-delay:1.35s;
-  -ms-animation-delay:1.35s;
-  -webkit-animation-delay:1.35s;
-  -moz-animation-delay:1.35s;
-}
-
-
-@keyframes bounce_circleG{
-  0%{}
-
-  50%{
-    background-color:rgba(0,0,0, 0);
-  }
-
-  100%{}
-}
-
-@-o-keyframes bounce_circleG{
-  0%{}
-
-  50%{
-    background-color:rgba(0,0,0, 0);
-  }
-
-  100%{}
-}
-
-@-ms-keyframes bounce_circleG{
-  0%{}
-
-  50%{
-    background-color:rgba(0,0,0, 0);
-  }
-
-  100%{}
-}
-
-@-webkit-keyframes bounce_circleG{
-  0%{}
-
-  50%{
-    background-color:rgba(0,0,0, 0);
-  }
-
-  100%{}
-}
-
-@-moz-keyframes bounce_circleG{
-  0%{}
-
-  50%{
-    background-color:rgba(0,0,0, 0);
-  }
-
-  100%{}
-}
-
-
-
-.refresh-in-progress {
-
-  animation-name: refreshProgress;
-  -o-animation-name: refreshProgress;
-  -ms-animation-name: refreshProgress;
-  -webkit-animation-name: refreshProgress;
-  -moz-animation-name: refreshProgress;
-  //animation-duration:2.24s;
-  //-o-animation-duration:2.24s;
-  //-ms-animation-duration:2.24s;
-  //-webkit-animation-duration:2.24s;
-  //-moz-animation-duration:2.24s;
-  animation-iteration-count:infinite;
-  -o-animation-iteration-count:infinite;
-  -ms-animation-iteration-count:infinite;
-  -webkit-animation-iteration-count:infinite;
-  -moz-animation-iteration-count:infinite;
-  animation-direction:normal;
-  -o-animation-direction:normal;
-  -ms-animation-direction:normal;
-  -webkit-animation-direction:normal;
-  -moz-animation-direction:normal;
-}
-
-@keyframes refreshProgress {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@-o-keyframes refreshProgress {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@-ms-keyframes refreshProgress {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@-webkit-keyframes refreshProgress {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@-moz-keyframes refreshProgress {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-
-
 .lds-ellipsis {
-  display: block;
-  &.inline {
-    display: inline-block;
-    vertical-align: middle;
-  }
-  .btn & {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-  }
   ~ * {
-    visibility: hidden;
+    display: none;
   }
 }
+
 .lds-ellipsis-container {
   position: relative;
-  height: 100%;
+
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+
   width: 62px;
+  height: 100%;
+  margin: 0 auto;
+
   span {
     position: absolute;
     top: 50%;
-    background: rgba(255, 255, 255, 0.7);
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
-    margin-top: -5px;
+
     width: 10px;
     height: 10px;
-  }
-  &.min {
-    width: 31px;
-    span {
-      margin-top: -3px;
-      width: 5px;
-      height: 5px;
-      &:nth-child(1) {
-        left: 3px;
-        animation: lds-ellipsis1min 0.4s infinite;
-      }
-      &:nth-child(2) {
-        left: 3px;
-        animation: lds-ellipsis2min 0.4s infinite;
-      }
-      &:nth-child(3) {
-        left: 13px;
-        animation: lds-ellipsis2min 0.4s infinite;
-      }
-      &:nth-child(4) {
-        left: 23px;
-        animation: lds-ellipsis3min 0.4s infinite;
-      }
-      animation-timing-function: cubic-bezier(1, 1, 0, 0) !important;
-    }
-  }
+    margin-top: -5px;
 
+    background: rgba(255, 255, 255, 0.7);
+
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  }
 }
 
 .lds-ellipsis-container span:nth-child(1) {
@@ -279,69 +67,3 @@
     transform: translate(19px, 0);
   }
 }
-
-
-
-
-@keyframes lds-ellipsis1min {
-  0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-@keyframes lds-ellipsis3min {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(0);
-  }
-}
-@keyframes lds-ellipsis2min {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(10px, 0);
-  }
-}
-
-
-.lds-ring {
-  display: inline-block;
-  position: relative;
-  width: 42px;
-  height: 42px;
-}
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 36px;
-  height: 36px;
-  margin: 3px;
-  border: 3px solid;
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #8C9BA5 transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
