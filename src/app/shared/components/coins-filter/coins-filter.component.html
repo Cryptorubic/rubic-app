@@ -8,6 +8,7 @@
     <mat-autocomplete
       #autoFrom="matAutocomplete"
       [panelWidth]="tokensHostWidth"
+      (optionSelected)="selectToken($event, 'base')"
     >
       <mat-option *ngFor="let option of $filteredFromOptions | async" [value]="option.token_short_title">
         <div class="coins-filter-form__tokens-dropdown">
@@ -28,6 +29,7 @@
     <mat-autocomplete
       #autoTo="matAutocomplete"
       [panelWidth]="tokensHostWidth"
+      (optionSelected)="selectToken($event, 'quote')"
     >
       <mat-option *ngFor="let option of $filteredToOptions | async" [value]="option.token_short_title">
         <div class="coins-filter-form__tokens-dropdown">

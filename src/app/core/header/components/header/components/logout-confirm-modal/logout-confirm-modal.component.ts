@@ -44,7 +44,7 @@ export class LogoutConfirmModalComponent {
       this.closeModalEvent.subscribe(() => {
         this.headerStore.setConfirmModalOpeningStatus(false);
       });
-    } else {
+    } else if (this.logoutConfirmationModal) {
       this.logoutConfirmationModal.close();
     }
   }

@@ -6,9 +6,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { ClipboardModule } from 'ngx-clipboard';
 import { TradesRoutingModule } from './trades-routing.module';
+import { TradesPageComponent } from './components/trades-page/trades-page.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [TradesPageComponent],
   imports: [
     CommonModule,
     TradesRoutingModule,

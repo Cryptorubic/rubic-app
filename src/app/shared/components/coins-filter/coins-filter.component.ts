@@ -10,8 +10,11 @@ import { FormControl } from '@angular/forms';
 import { List } from 'immutable';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
+import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { OrderBooksTableService } from '../../../features/swaps-page/order-books/components/order-books-table/services/order-books-table.service';
 
 @Component({
   selector: 'app-coins-filter',
@@ -35,16 +38,16 @@ export class CoinsFilterComponent {
   @ViewChild('filterForm')
   public set tokensHeader(value: ElementRef) {
     if (value) {
-      setTimeout(() => {
-        const { width } = getComputedStyle(value.nativeElement);
-        this.tokensHostWidth = width;
-      });
+      const { width } = getComputedStyle(value.nativeElement);
+      this.tokensHostWidth = width;
+      this.cdr.detectChanges();
     }
   }
 
   constructor(
     private readonly tokensService: TokensService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly orderBookTableService: OrderBooksTableService
   ) {
     this.options = this.tokensService.tokens.asObservable();
     this.tokensHostWidth = '150px';
@@ -75,6 +78,10 @@ export class CoinsFilterComponent {
         return nameIndexMatch || symbolIndexMatch;
       })
       .toArray();
+  }
+
+  public selectToken(value: any, tokenType: TokenPart): void {
+    this.orderBookTableService.filterByToken(value, tokenType);
   }
 
   public switchTokens(): void {

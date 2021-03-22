@@ -11,25 +11,20 @@ import { RouterModule } from '@angular/router';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+
 import { OrderBooksComponent } from './components/order-books/order-books.component';
 import { TradesModule } from '../trades-module/trades.module';
 import { OrderBooksFormComponent } from './components/order-books-form/order-books-form.component';
 import { OrderBooksFormOptionsComponent } from './components/order-books-form/order-books-form-options/order-books-form-options.component';
 import { OrderBooksFormService } from './services/order-book-form-service/order-books-form.service';
 import { OrderBooksTableComponent } from './components/order-books-table/order-books-table.component';
-import { CoinsFilterComponent } from './components/order-books-table/components/coins-dropdown/coins-filter.component';
-import { TokensCellComponent } from './components/order-books-table/components/tokens-cell/tokens-cell.component';
-import { VolumeCellComponent } from './components/order-books-table/components/volume-cell/volume-cell.component';
 
 @NgModule({
   declarations: [
     OrderBooksComponent,
     OrderBooksFormComponent,
     OrderBooksFormOptionsComponent,
-    OrderBooksTableComponent,
-    CoinsFilterComponent,
-    TokensCellComponent,
-    VolumeCellComponent
+    OrderBooksTableComponent
   ],
   imports: [
     CommonModule,
@@ -41,7 +36,6 @@ import { VolumeCellComponent } from './components/order-books-table/components/v
     NgxMaterialTimepickerModule,
     MatTableModule,
     MatSortModule,
-    MatAutocompleteModule,
     ReactiveFormsModule,
     RouterModule
   ],

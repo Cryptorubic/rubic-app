@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { OrderBookTableTokens } from 'src/app/features/swaps-page/order-books/types/trade-table';
 
 @Component({
   selector: 'app-tokens-cell',
@@ -7,13 +8,7 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensCellComponent {
-  @Input() element: any;
+  @Input() token: OrderBookTableTokens;
 
   constructor() {}
-
-  public getChainIcon(/* name: string */) {
-    // Uncomment after merge with rubic-181_(refactoring)
-    // return return BlockchainsInfo.getBlockchainByName(chainName).imagePath;
-    return './assets/images/icons/coins/eth.png';
-  }
 }

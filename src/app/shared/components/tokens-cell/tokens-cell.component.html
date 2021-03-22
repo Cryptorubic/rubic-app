@@ -1,0 +1,11 @@
+<div class="tokens-cell">
+  <div class="tokens-cell__token-from">
+    <img *ngIf="token.base.image" class="tokens-cell__token-icon" [src]="token.base.image" [alt]="token.base.symbol">
+    {{ token.base.symbol }}
+  </div>
+  <div class="tokens-cell__separator"></div>
+  <div class="tokens-cell__token-to">
+    <img *ngIf="token.quote.image" class="tokens-cell__token-icon" [src]="token.quote.image" [alt]="token.quote.symbol">
+    {{ token.quote.symbol }}
+  </div>
+</div>

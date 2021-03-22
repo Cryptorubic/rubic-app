@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { OrderBookTableTokens } from 'src/app/features/swaps-page/order-books/types/trade-table';
 
 @Component({
   selector: 'app-volume-cell',
@@ -7,7 +8,7 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VolumeCellComponent {
-  @Input() element: any;
+  @Input() token: OrderBookTableTokens;
 
   constructor() {}
 }
