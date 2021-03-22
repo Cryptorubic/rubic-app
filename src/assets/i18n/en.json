@@ -183,11 +183,11 @@
       "QUESTION": "What is the purpose of Limit Orders?",
       "ANSWER": "Limit orders allow users to buy or sell a token at a desired rate and offer them the opportunity for the order book trades to be automatically completed after certain conditions are met."
     }, {
-      "QUESTION": "What are the conditions for completing a Limit Order?",
-      "ANSWER": "The conditions for a limit order to be automatically filled are:\n<ul><li>The trade rate from the order book is the same as the market rate, including gas fee + platform reward (that is now 0.15 ETH, this will change over time).</li><li>Trade is not expired.</li></ul>Also the order can be completed if other users accept the trade parameters and participate in the trade."
+      "QUESTION": "What are the conditions for a Limit Order to be executed?",
+      "ANSWER": "The conditions for a limit order to be automatically filled are:\n<ul><li>The trade rate from the order book is the same as the market rate, including gas fee + platform reward (that is now 0.01 ETH, this will change over time).</li><li>The trade is not expired.</li><li>The trade has to be public.</li><li>The minimum trade size is 0.1 ETH or 400 RBC</li></ul>Also the order can be completed if other users accept the trade parameters and participate in the trade."
     }, {
       "QUESTION": "How to use Limit Orders?",
-      "ANSWER": "<strong>Step 1:</strong> Select your blockchain in which you want to swap tokens and choose Order Book (currently, the Limit Orders feature supports trades on Ethereum, so you would want to select the Ethereum network - more blockchains will be supported in the future).\n\n<strong>Step 2:</strong> Choose the tokens you want to exchange, at your desired rate. Currently, only “RBC-ETH” and “ETH-RBC” pairs are available.\n\n<strong>Step 3:</strong> Choose advanced options, such as closing date and time, minimum and maximum contribution, privacy, brokerage fee if needed.\n\n<strong>Step 4:</strong> Click Create Trade & Confirm creation transaction in MetaMask.\n\n<strong>Step 5:</strong> Contribute to your part of the deal (there are 2 transactions: Approve tokens & Contribute). Choose ‘Fill all’ if you’re planning to be the only participant on your side of the deal, a network fee will apply.\n<a href='https://www.youtube.com/watch?v=9FCHTOT9Z9k'>Video tutorial (this method works for any blockchain)</a>\n\n<strong>Step 6:</strong> Wait for order closing. Please note that your order can be filled by other users or automatically by Rubic if Uniswap’s rate of the pair matches it (including gas fees).\n\n<strong>Important:</strong>\n* Sellers need to have 100% completed their sides of the deal (check video tutorial), so if you plan to be the only seller in your trade you should select ‘Fill all’. This way your part of the deal will be 100% completed, and will make it available for other buyers (or the Limit Orders functionality). \n** If a buyer wants to partially fill your order, the Limit Order feature will still perform its part and will automatically fill the rest of your order until it's 100% completed.\n*** If the expiration date of the trade has been reached, you can get your tokens back by going to your trades table and click on ‘Withdraw’ button (a network fee will apply).\n\nThe first pair of tokens that is available for the Limit Orders is RBC/ETH. We plan to add new pairs and support for multiple blockchains later: Ethereum, Polygon, and Binance Smart Chain.\n\nPlease note that the deal will be closed after the time specified in the “CLOSING DATE” parameter is reached."
+      "ANSWER": "<strong>Step 1:</strong> Select your blockchain in which you want to swap tokens and choose Order Book (currently, the Limit Orders feature supports trades on Ethereum, so you would want to select the Ethereum network - more blockchains will be supported in the future).\n\n<strong>Step 2:</strong> Choose the tokens you want to exchange, at your desired rate. Currently, only “RBC-ETH” and “ETH-RBC” pairs are available.\n\n<strong>Step 3:</strong> Choose advanced options, such as closing date and time, minimum and maximum contribution, brokerage fee if needed.\n\n<strong>Step 4:</strong> Click Create Trade & Confirm creation transaction in MetaMask.\n\n<strong>Step 5:</strong> Contribute to your part of the deal (there are 2 transactions: Approve tokens & Contribute). Choose ‘Fill all’ if you’re planning to be the only participant on your side of the deal, a network fee will apply.\n<a href='https://youtu.be/xiuT59ueJ8c'>Video tutorial (this method works for any blockchain)</a>\n\n<strong>Step 6:</strong> Wait for order closing. Please note that your order can be filled by other users or automatically by Rubic if Uniswap’s rate of the pair matches it (including gas fees).\n\n<strong>Important:</strong>\n* Sellers need to have 100% completed their sides of the deal (check video tutorial), so if you plan to be the only seller in your trade you should select ‘Fill all’. This way your part of the deal will be 100% completed, and will make it available for other buyers (or the Limit Orders functionality). \n** If a buyer wants to partially fill your order, the Limit Order feature will still perform its part and will automatically fill the rest of your order until it's 100% completed.\n*** If the expiration date of the trade has been reached, you can get your tokens back by going to your trades table and click on ‘Withdraw’ button (a network fee will apply).\n\nThe first pair of tokens that is available for the Limit Orders is RBC/ETH. We plan to add new pairs and support for multiple blockchains later: Ethereum, Polygon, and Binance Smart Chain.\n\nPlease note that the deal will be closed after the time specified in the “CLOSING DATE” parameter is reached."
     }
   ],
 
@@ -219,7 +219,7 @@
   "Check on Explorer": "Check on Explorer",
   "Number of investors": "Number of investors",
 
-  "You will get {amount} {token} after Trade": "You will get {{ amount }} {{ token }} after Trade",
+  "You will get {amount} {token} after the trade is complete": "You will get {{ amount }} {{ token }} after the trade is complete",
   "Fill all": "Fill all",
   "Min Contribution Limit:": "Min Contribution Limit:",
   "Only Owner can contribute": "Only Owner can contribute",
@@ -272,9 +272,27 @@
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
 
   "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete.":
-  "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete."
-}
+  "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is complete.",
 
+  "Listing request":
+  "Listing request",
+  "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:":
+  "If you want your project to be listed on the Rubic platform please send an email to <a href='mailto:support@rubic.finance'>support@rubic.finance</a> with the following information:",
+  "Project name":
+  "Project name",
+  "Project description":
+  "Project description",
+  "Links to the project and social media":
+  "Links to the project and social media",
+  "Contract address":
+  "Contract address",
+  "Whitepaper/Onepager":
+  "Whitepaper/Onepager",
+  "Link to logo in PNG and SVG":
+  "Link to logo in PNG and SVG",
+  "Why you have chosen Rubic.exchange?":
+  "Why you have chosen Rubic.exchange?"
+}
 
 
 

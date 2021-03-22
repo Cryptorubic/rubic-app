@@ -37,6 +37,7 @@ import { TokenAddressDirective } from './directives/token-address/token-address.
 import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
 import { ScannerLinkComponent } from './components/scanner-link/scanner-link.component';
 import { VolumeBlockComponent } from './components/volume-block/volume-block.component';
+import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { VolumeBlockComponent } from './components/volume-block/volume-block.com
     TokenAddressDirective,
     NumberPrecisionDirective,
     ScannerLinkComponent,
-    VolumeBlockComponent
+    VolumeBlockComponent,
+    ListingRequestPopupComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [CommonModule, TranslateModule, DynamicModule, MatDialogModule, FormsModule],

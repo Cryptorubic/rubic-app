@@ -13,6 +13,7 @@ import { DisclaimerComponent } from './shared/components/disclaimer/disclaimer.c
 import { TokenLabelComponent } from './shared/components/tokens-input/token-label/token-label.component';
 import { BlockchainLabelComponent } from './shared/components/blockchains-input/blockchain-label/blockchain-label.component';
 import { NetworkErrorComponent } from './features/bridge-page/components/network-error/network-error.component';
+import { ListingRequestPopupComponent } from './shared/components/collaborations/listing-request-popup/listing-request-popup.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +33,8 @@ import { NetworkErrorComponent } from './features/bridge-page/components/network
     DynamicModule.withComponents([
       TokenLabelComponent,
       BlockchainLabelComponent,
-      NetworkErrorComponent
+      NetworkErrorComponent,
+      ListingRequestPopupComponent
     ]),
     NgxMaterialTimepickerModule
   ],
