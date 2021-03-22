@@ -137,9 +137,9 @@
             <div
               class="area-third__amount-to-get amount-to-get"
               *ngIf="
-                !tradeData.token.base.isApproved ||
-                (baseAmountToContributeAsNumber?.isGreaterThan(0) &&
-                  baseAmountToContributeModel.valid)
+                tradeData.token.base.isApproved &&
+                baseAmountToContributeAsNumber?.isGreaterThan(0) &&
+                  baseAmountToContributeModel.valid
               "
             >
               You will get
@@ -299,9 +299,9 @@
             <div
               class="area-third__amount-to-get amount-to-get"
               *ngIf="
-                !tradeData.token.quote.isApproved ||
-                (quoteAmountToContributeAsNumber?.isGreaterThan(0) &&
-                  quoteAmountToContributeModel.valid)
+                tradeData.token.quote.isApproved &&
+                quoteAmountToContributeAsNumber?.isGreaterThan(0) &&
+                  quoteAmountToContributeModel.valid
               "
             >
               You will get

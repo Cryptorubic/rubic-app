@@ -8,6 +8,7 @@ import { Web3Public } from './Web3Public';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 import { BlockchainsInfo } from '../blockchain-info';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class Web3PublicService {
     return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
   }
 
-  constructor(publicProvider: PublicProviderService) {
+  constructor(publicProvider: PublicProviderService, useTestingModeService: UseTestingModeService) {
     this.connectionLinks = publicProvider.connectionLinks;
     const web3Connections = this.connectionLinks.reduce(
       (acc, connection) => ({
@@ -36,5 +37,17 @@ export class Web3PublicService {
       {} as any
     );
     Object.assign(this, web3Connections);
+
+    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      if (isTestingMode) {
+        const connection = this.connectionLinks.find(
+          c => c.blockchainName === BLOCKCHAIN_NAME.ETHEREUM_TESTNET
+        );
+        this[BLOCKCHAIN_NAME.ETHEREUM] = new Web3Public(
+          new Web3(connection.rpcLink),
+          BlockchainsInfo.getBlockchainByName(connection.blockchainName)
+        );
+      }
+    });
   }
 }

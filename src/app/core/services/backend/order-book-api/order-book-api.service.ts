@@ -155,7 +155,7 @@ export class OrderBookApiService implements OnDestroy {
       symbolTo: tradeForm.token.quote.symbol
     };
 
-    this.httpService.post(`${this.botUrl}/create`, tradeBot);
+    this.httpService.post(`${this.botUrl}/create`, tradeBot).subscribe();
   }
 
   public contributeBotNotification(
@@ -177,7 +177,7 @@ export class OrderBookApiService implements OnDestroy {
       symbol: token.symbol
     };
 
-    this.httpService.post(`${this.botUrl}/contribute`, tradeBot);
+    this.httpService.post(`${this.botUrl}/contribute`, tradeBot).subscribe();
   }
 
   public withdrawBotNotification(
@@ -197,6 +197,6 @@ export class OrderBookApiService implements OnDestroy {
       symbol: token.symbol
     };
 
-    this.httpService.post(`${this.botUrl}/contribute`, tradeBot);
+    this.httpService.post(`${this.botUrl}/contribute`, tradeBot).subscribe();
   }
 }

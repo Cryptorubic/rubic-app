@@ -235,18 +235,17 @@
   &__text {
     display: flex;
     flex-direction: column;
-
-    text-align: right;
-
-    &_quote {
-      text-align: left;
-    }
   }
 
   &__title {
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+
+    height: 26px;
+    margin-bottom: 6px;
 
     font-weight: 500;
+    text-align: right;
   }
 
   &__link {
