@@ -40,6 +40,8 @@ import { ScannerLinkComponent } from './components/scanner-link/scanner-link.com
 import { CoinsFilterComponent } from './components/coins-filter/coins-filter.component';
 import { TokensCellComponent } from './components/tokens-cell/tokens-cell.component';
 import { VolumeCellComponent } from './components/volume-cell/volume-cell.component';
+import { VolumeBlockComponent } from './components/volume-block/volume-block.component';
+import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +79,9 @@ import { VolumeCellComponent } from './components/volume-cell/volume-cell.compon
     ScannerLinkComponent,
     CoinsFilterComponent,
     TokensCellComponent,
-    VolumeCellComponent
+    VolumeCellComponent,
+    VolumeBlockComponent,
+    ListingRequestPopupComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -125,7 +129,8 @@ import { VolumeCellComponent } from './components/volume-cell/volume-cell.compon
     ScannerLinkComponent,
     CoinsFilterComponent,
     TokensCellComponent,
-    VolumeCellComponent
+    VolumeCellComponent,
+    VolumeBlockComponent
   ]
 })
 export class SharedModule {}

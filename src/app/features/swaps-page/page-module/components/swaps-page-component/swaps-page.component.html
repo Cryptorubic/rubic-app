@@ -1,6 +1,6 @@
 <div class="main-page">
   <div class="main-page__intro">
-    {{ 'Make trades on your terms, share and generate revenue' | translate }}
+    Trading Re<span class="app-index__intro_green app-index__intro_bold">DeFi</span>ned
   </div>
 
   <div class="main-page__title">
@@ -8,7 +8,7 @@
     <a routerLink="/bridge" class="toggle">
       <span class="toggle__text">Cross-chain swaps beta</span>
       <div class="toggle__arrow-button">
-        <img src='../../../../../../assets/images/icons/arrow/arrow-right-green.svg' alt="Arrow" />
+        <img src="/assets/images/icons/arrow/arrow-right-green.svg" alt="Arrow" />
       </div>
     </a>
   </div>
@@ -24,6 +24,8 @@
       'By trading on our platform you agree with the following terms and conditions' | translate
     "
   ></div>
+
+  <app-volume-block *ngIf="selectedMode === TRADE_MODE.INSTANT_TRADE"></app-volume-block>
 
   <app-collaborations></app-collaborations>
 </div>
