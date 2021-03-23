@@ -2,7 +2,7 @@
   <div class="trades-table__title-section">
     <h2 class="trades-table__title">{{ 'My trades' | translate }}</h2>
     <button class="trades-table__refresh-button refresh-btn" (click)="refreshTable()">
-      <img class="arrow" src="./assets/images/icons/refresh.svg" />
+      <img class="arrow" src="./assets/images/icons/refresh.svg" alt="refresh" />
     </button>
   </div>
   <table
@@ -60,7 +60,11 @@
       </th>
       <td *matCellDef="let element" class="centered-child">
         <div class="trades-table__cell">
-          <img class="table__image" [src]="element.image" alt="{{ element.blockchain }}" />
+          <img
+            class="table__image"
+            [src]="getChainIcon(element.blockchain)"
+            alt="{{ element.blockchain }}"
+          />
         </div>
       </td>
     </ng-container>
