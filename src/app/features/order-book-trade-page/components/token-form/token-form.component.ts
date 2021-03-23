@@ -18,7 +18,7 @@ import {
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TX_STATUS } from '../../models/TX_STATUS';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
-import { BIG_NUMBER_FORMAT } from '../../constants/BIG_NUMBER_FORMAT';
+import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';

@@ -1,15 +1,25 @@
 <div class="volume-cell">
   <div class="volume-cell__token-from">
-    <div class="volume-cell__text">{{ token.base.price }}&nbsp;{{ token.base.symbol }}</div>
+    <div class="volume-cell__text">{{ token.base.amountTotal }}&nbsp;{{ token.base.symbol }}</div>
     <div class="volume-cell__subtext">
-      {{ token.base.amountTotal }}&nbsp;{{ token.base.symbol }}&nbsp;/&nbsp;1&nbsp;{{ token.quote.symbol }}
+      {{
+        this.token.base.amountTotal
+          .div(this.token.quote.amountTotal)
+          .dp(8)
+          .toFormat(BIG_NUMBER_FORMAT)
+      }}&nbsp;{{ token.base.symbol }}&nbsp;/&nbsp;1&nbsp;{{ token.quote.symbol }}
     </div>
   </div>
   <div class="volume-cell__separator"></div>
   <div class="volume-cell__token-to">
-    <div class="volume-cell__text">{{ token.quote.price }}&nbsp;{{ token.quote.symbol }}</div>
+    <div class="volume-cell__text">{{ token.quote.amountTotal }}&nbsp;{{ token.quote.symbol }}</div>
     <div class="volume-cell__subtext">
-      {{ token.quote.amountTotal }}&nbsp;{{ token.base.symbol }}&nbsp;/&nbsp;1&nbsp;{{ token.quote.symbol }}
+      1&nbsp;{{ token.base.symbol }}&nbsp;/&nbsp;{{
+        this.token.quote.amountTotal
+          .div(this.token.base.amountTotal)
+          .dp(8)
+          .toFormat(BIG_NUMBER_FORMAT)
+      }}&nbsp;{{ token.quote.symbol }}
     </div>
   </div>
 </div>
