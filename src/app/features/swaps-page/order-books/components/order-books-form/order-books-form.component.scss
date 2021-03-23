@@ -9,39 +9,12 @@
 .main-section {
   display: flex;
 
-  &__tokens-forms {
-    flex: 3.5;
-
-    margin-right: 30px;
+  &__from-section {
+    flex: 4;
   }
 
-  &__confirm-section {
-    flex: 1;
-
-    position: relative;
-    top: 23px;
-    margin-left: auto;
-  }
-}
-
-.tokens-forms {
-  display: flex;
-
-  &__tokens-form {
-    flex: 1;
-  }
-
-  &__revert-btn {
-    position: relative;
-    top: 38px;
-
-    height: 18px;
-    padding: 0;
-    margin: 0 10px;
-    border: none;
-
-    background: white;
-    cursor: pointer;
+  &__arrow-section {
+    flex: 0.6;
   }
 }
 
@@ -149,6 +122,39 @@
   }
 }
 
+.arrow-button {
+  position: relative;
+  top: 26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+  margin: 0 auto;
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+  background-color: white;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
+
+  transition: transform 0.15s ease-in-out;
+
+  img {
+    transform: scale(1.1);
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
 .custom-section {
   text-align: right;
 
@@ -197,5 +203,18 @@
         box-shadow: 0 0 2px $error-red;
       }
     }
+  }
+}
+
+.to-section {
+  flex: 6;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-column-gap: 25px;
+  align-items: center;
+
+  &__confirm-section {
+    position: relative;
+    top: -4px;
   }
 }

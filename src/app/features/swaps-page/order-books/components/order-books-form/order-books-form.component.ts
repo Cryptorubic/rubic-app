@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
@@ -116,7 +116,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   get baseToken(): SwapToken {
-    return this.tradeParameters.fromToken;
+    return this.tradeParameters?.fromToken;
   }
 
   set baseToken(value) {
@@ -128,7 +128,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   get quoteToken(): SwapToken {
-    return this.tradeParameters.toToken;
+    return this.tradeParameters?.toToken;
   }
 
   set quoteToken(value) {
@@ -140,7 +140,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   get baseAmountAsString(): string {
-    return !this.tradeParameters.fromAmount || this.tradeParameters.fromAmount?.isNaN()
+    return !this.tradeParameters?.fromAmount || this.tradeParameters.fromAmount?.isNaN()
       ? ''
       : this.tradeParameters.fromAmount.toFixed();
   }
@@ -153,7 +153,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   get quoteAmountAsString(): string {
-    return !this.tradeParameters.toAmount || this.tradeParameters.toAmount?.isNaN()
+    return !this.tradeParameters?.toAmount || this.tradeParameters.toAmount?.isNaN()
       ? ''
       : this.tradeParameters.toAmount.toFixed();
   }
@@ -192,6 +192,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private tradeParametersService: TradeParametersService,
     private orderBookFormService: OrderBooksFormService,
+    private changeDetectionRef: ChangeDetectorRef,
     private dialog: MatDialog
   ) {}
 
@@ -200,6 +201,10 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this._tradeFormSubscription$ = this.orderBookFormService.getTradeForm().subscribe(tradeForm => {
       this._tradeForm = tradeForm;
       this.updateCustomTokensValidity();
+
+      if (tradeForm.areOptionsValid) {
+        this.changeDetectionRef.detectChanges();
+      }
     });
 
     // blockchain subscription

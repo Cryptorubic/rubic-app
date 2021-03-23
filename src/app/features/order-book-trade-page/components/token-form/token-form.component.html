@@ -5,14 +5,14 @@
     <div class="area-first__amount-sent">
       <span class="area-first__amount-description">Sent</span>
       <span class="area-first__amount-number">
-        {{ token.amountContributed?.toFormat(BIG_NUMBER_FORMAT) }}
+        {{ token.amountContributed | bigNumberFormat }}
       </span>
     </div>
 
     <div class="area-first__amount-left">
       <span class="area-first__amount-description">Left</span>
       <span class="area-first__amount-number" *ngIf="!token.amountLeft?.isNaN()">{{
-        token.amountLeft?.toFormat(BIG_NUMBER_FORMAT)
+        token.amountLeft | bigNumberFormat
       }}</span>
     </div>
   </div>
@@ -122,7 +122,10 @@
   </div>
 
   <div class="token-block__area area-fourth">
-    <div class="area-fourth__min-contribution" *ngIf="token.minContribution.isGreaterThan(0)">
+    <div
+      class="area-fourth__min-contribution"
+      *ngIf="getMinContributionAsString() && token.minContribution.isGreaterThan(0)"
+    >
       Min contribution limit:
       {{ getMinContributionAsString() + ' ' + token.symbol }}
     </div>
@@ -132,7 +135,15 @@
       *ngIf="tradeData.isWithBrokerFee && token.brokerPercent > 0"
     >
       Broker's fee:
-      {{ token.brokerPercent + '% (' + getBrokerPercent() + ' ' + token.symbol + ')' }}
+      {{
+        token.brokerPercent +
+          '% (' +
+          (token.amountTotal.div(100).times(this.token.brokerPercent).dp(this.token.decimals)
+            | bigNumberFormat) +
+          ' ' +
+          token.symbol +
+          ')'
+      }}
     </div>
   </div>
 
