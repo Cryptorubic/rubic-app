@@ -41,6 +41,7 @@ import { TokensCellComponent } from './components/tokens-cell/tokens-cell.compon
 import { VolumeCellComponent } from './components/volume-cell/volume-cell.component';
 import { VolumeBlockComponent } from './components/volume-block/volume-block.component';
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
+import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer-text.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     TokensCellComponent,
     VolumeCellComponent,
     VolumeBlockComponent,
-    ListingRequestPopupComponent
+    ListingRequestPopupComponent,
+    DisclaimerTextComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -126,7 +128,8 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     CoinsFilterComponent,
     TokensCellComponent,
     VolumeCellComponent,
-    VolumeBlockComponent
+    VolumeBlockComponent,
+    DisclaimerTextComponent
   ]
 })
 export class SharedModule {}
