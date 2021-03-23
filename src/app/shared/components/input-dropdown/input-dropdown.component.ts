@@ -73,6 +73,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
 
   public inputQuery = '';
 
+  // eslint-disable-next-line no-magic-numbers
   public isMobile = window.innerWidth <= 640;
 
   constructor() {}
@@ -138,6 +139,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
     this.toggleListOpen(false);
 
     this.componentChanges.emit(component);
+  }
+
+  public clearSearch() {
+    this.toggleListOpen(false);
+    this.searchComponent('');
   }
 
   /**
