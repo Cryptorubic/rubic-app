@@ -28,8 +28,6 @@ describe('Web3PublicService', () => {
     expect(service).toBeTruthy();
   });
 
-  executeWeb3PublicTests(BLOCKCHAIN_NAME.ETHEREUM);
-
   function executeWeb3PublicTests(blockchainName: BLOCKCHAIN_NAME) {
     describe('Web3Public', function () {
       const aliceAddress = config.testWallet.address;
@@ -81,6 +79,8 @@ describe('Web3PublicService', () => {
               expect(gasFee?.gt(0)).toBeTruthy();
             }
             break;
+          default:
+            break;
         }
 
         done();
@@ -100,6 +100,8 @@ describe('Web3PublicService', () => {
           case BLOCKCHAIN_NAME.ETHEREUM:
             txHash = '0x95952a6d4fbdf941d2c4d57b173c33a2ec67c8cb0280c50499021ed933c778f3';
             txRealFee = 0.004341885;
+            break;
+          default:
             break;
         }
         const gasFee = await getWeb3Public().getTransactionGasFee(txHash);
@@ -137,4 +139,6 @@ describe('Web3PublicService', () => {
       });
     });
   }
+
+  executeWeb3PublicTests(BLOCKCHAIN_NAME.ETHEREUM);
 });

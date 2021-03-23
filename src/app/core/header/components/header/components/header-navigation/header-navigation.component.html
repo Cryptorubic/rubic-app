@@ -1,6 +1,6 @@
 <nav class="header-menu">
   <ul class="header-menu__list">
-      <ng-container #desktopPart *ngIf="!($isMobile | async)">
+      <ng-container #desktopPart *ngIf="($isMobile | async) === false">
         <li
           class="header-menu__list-item header-menu__toggle-indicator"
           [ngClass]="{ 'header-menu__togglable-indicator_opened' : false }"

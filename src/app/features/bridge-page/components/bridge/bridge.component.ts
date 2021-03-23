@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { DisclaimerComponent } from '../../../../shared/components/disclaimer/disclaimer.component';
 
 @Component({
   selector: 'app-bridge',

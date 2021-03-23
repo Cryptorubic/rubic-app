@@ -10,7 +10,6 @@ import { FormControl } from '@angular/forms';
 import { List } from 'immutable';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';

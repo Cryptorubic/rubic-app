@@ -19,7 +19,7 @@
       <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
     </li>
   </ul>
-  <div *ngIf="!($isMobile | async)" class="user-profile__menu">
+  <div *ngIf="($isMobile | async) === false" class="user-profile__menu">
     <div class="user-profile__menu-icon" mat-button [matMenuTriggerFor]="userMenu">
       <span></span>
       <span></span>
