@@ -49,7 +49,12 @@
   
   &__subtext {
     color: rgba(0,0,0,.5);
-    font-size: 14px;
     margin-top: 14px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  &__subtext-with-spacing {
+    word-spacing: 1px;
   }
 }

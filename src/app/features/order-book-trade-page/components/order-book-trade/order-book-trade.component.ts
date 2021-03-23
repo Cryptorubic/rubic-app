@@ -18,7 +18,7 @@ import { NetworkError } from '../../../../shared/models/errors/provider/NetworkE
 import { NetworkErrorComponent } from '../../../bridge-page/components/network-error/network-error.component';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { TX_STATUS } from '../../models/TX_STATUS';
-import { BIG_NUMBER_FORMAT } from '../../constants/BIG_NUMBER_FORMAT';
+import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
 

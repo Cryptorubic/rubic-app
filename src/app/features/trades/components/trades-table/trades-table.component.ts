@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { CoinsFilterComponent } from 'src/app/shared/components/coins-filter/coins-filter.component';
 import { TradesService } from '../../services/trades-service/trades.service';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BlockchainsInfo } from '../../../../core/services/blockchain/blockchain-info';
 
 @Component({
   selector: 'app-trades-table',
@@ -28,6 +30,10 @@ export class TradesTableComponent {
     this.$dataSource = this.tradesService.getTableData();
     this.$displayedColumns = this.tradesService.getTableColumns();
     this.$columnsSizes = this.tradesService.getTableColumnsSizes();
+  }
+
+  public getChainIcon(name: BLOCKCHAIN_NAME): string {
+    return BlockchainsInfo.getBlockchainByName(name).imagePath;
   }
 
   public refreshTable(): void {
