@@ -109,7 +109,7 @@ $main-color: #4aa956;
     left: -1px;
     box-sizing: border-box;
     border-radius: 10px;
-    width: 35px;
+    max-width: 35px;
   }
 
   &__text {
@@ -122,6 +122,7 @@ $main-color: #4aa956;
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 2px;
+    line-height: 15px;
 
     &_iconless {
       padding-left: 20px;
