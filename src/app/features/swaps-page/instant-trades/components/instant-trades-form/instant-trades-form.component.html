@@ -3,15 +3,19 @@
     class="instant-trade__from-section selection-block"
     [ngClass]="{ 'instant-trade__from-section_aligned': trades.length === 1 }"
   >
-    <div *ngIf="fromToken?.address" class="selection-block__scanner">
-      <app-scanner-link
-        [address]="fromToken.address"
-        [blockchainName]="blockchain"
-        [addressType]="ADDRESS_TYPE.TOKEN"
-      >
-      </app-scanner-link>
+    <div class="selection-block__header">
+      <div class="selection-block__label">you have</div>
+
+      <div *ngIf="fromToken?.address" class="selection-block__scanner">
+        <app-scanner-link
+          [address]="fromToken.address"
+          [blockchainName]="blockchain"
+          [addressType]="ADDRESS_TYPE.TOKEN"
+        >
+        </app-scanner-link>
+      </div>
     </div>
-    <div class="selection-block__label">you have</div>
+
     <app-tokens-input
       [tokensList]="availableFromTokens"
       [selectedToken]="fromToken"
@@ -22,11 +26,7 @@
     </app-tokens-input>
   </div>
 
-  <div
-    class="instant-trade__arrow-section"
-    (click)="revertTokens()"
-    [ngClass]="{ 'instant-trade__arrow-section_aligned': trades.length === 1 }"
-  >
+  <div class="instant-trade__arrow-section" (click)="revertTokens()">
     <button
       type="button"
       class="arrow-button"
@@ -40,15 +40,19 @@
   <div class="instant-trade__to-section grid">
     <ng-container *ngFor="let tradeController of trades; let index = index">
       <div class="selection-block">
-        <div *ngIf="index === 0 && toToken?.address" class="selection-block__scanner">
-          <app-scanner-link
-            [address]="toToken.address"
-            [blockchainName]="blockchain"
-            [addressType]="ADDRESS_TYPE.TOKEN"
-          >
-          </app-scanner-link>
+        <div class="selection-block__header" *ngIf="index === 0">
+          <div class="selection-block__label">you get</div>
+
+          <div *ngIf="toToken?.address" class="selection-block__scanner">
+            <app-scanner-link
+              [address]="toToken.address"
+              [blockchainName]="blockchain"
+              [addressType]="ADDRESS_TYPE.TOKEN"
+            >
+            </app-scanner-link>
+          </div>
         </div>
-        <div class="selection-block__label" *ngIf="index === 0">you get</div>
+
         <div class="selection-block__input-container">
           <app-tokens-input
             class="instant-trade__tokens-input"
@@ -91,7 +95,7 @@
         </div>
       </div>
 
-      <div class="instant-trade-button">
+      <div class="instant-trade-button" [ngClass]="{ 'instant-trade-button_second': index === 1 }">
         <app-primary-button
           type="button"
           [label]="'Via ' + tradeController.tradeProviderInfo.label"
