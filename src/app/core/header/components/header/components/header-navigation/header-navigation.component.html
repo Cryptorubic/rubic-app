@@ -1,6 +1,6 @@
 <nav class="header-menu">
   <ul class="header-menu__list">
-      <ng-container #desktopPart *ngIf="!($isMobile | async)">
+      <ng-container #desktopPart *ngIf="($isMobile | async) === false">
         <li
           class="header-menu__list-item header-menu__toggle-indicator"
           [ngClass]="{ 'header-menu__togglable-indicator_opened' : false }"
@@ -23,7 +23,7 @@
               <a routerLink="/team" class="header-menu__sublink">{{ 'Team' | translate }}</a>
             </li>
             <li class="header-menu__sublist-item">
-              <a href="https://rubic.finance/" class="header-menu__sublink">{{ 'Project' | translate }}</a>
+              <a href="https://rubic.finance/" target="_blank" class="header-menu__sublink">{{ 'Project' | translate }}</a>
             </li>
           </ul>
         </mat-menu>

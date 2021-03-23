@@ -8,9 +8,8 @@ describe('ScannerLinkComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScannerLinkComponent ]
-    })
-    .compileComponents();
+      declarations: [ScannerLinkComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

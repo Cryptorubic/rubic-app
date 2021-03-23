@@ -1,0 +1,60 @@
+@import '../../../../scss/elements/table';
+
+$primary-color: #4aa956;
+
+.tokens-table {
+  margin-bottom: 20px;
+
+  &__title-section {
+    display: flex;
+    align-items: center;
+  }
+
+  &__refresh-button {
+    margin-left: 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    &_animated img {
+      animation: spin 0.5s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform:rotate(360deg);
+  }
+}
+
+::ng-deep {
+  .mat-row {
+    cursor: pointer;
+  }
+
+  .mat-option:hover:not(.mat-option-disabled) {
+    background: inherit;
+
+    & > .mat-option-text {
+      color: $primary-color;
+    }
+  }
+
+  .mat-option.mat-selected:not(.mat-option-multiple):not(.mat-option-disabled),
+  .mat-option.mat-active {
+    background: inherit;
+
+    & > .mat-option-text {
+      color: $primary-color;
+      font-weight: 600;
+    }
+  }
+
+  .mat-sort-header-container {
+    justify-content: center;
+  }
+}

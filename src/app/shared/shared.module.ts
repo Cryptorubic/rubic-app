@@ -5,6 +5,10 @@ import { DynamicModule } from 'ng-dynamic-component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { RouterModule } from '@angular/router';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -40,6 +44,8 @@ import { TokensCellComponent } from './components/tokens-cell/tokens-cell.compon
 import { VolumeCellComponent } from './components/volume-cell/volume-cell.component';
 import { VolumeBlockComponent } from './components/volume-block/volume-block.component';
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
+import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer-text.component';
+import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +83,9 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     TokensCellComponent,
     VolumeCellComponent,
     VolumeBlockComponent,
-    ListingRequestPopupComponent
+    ListingRequestPopupComponent,
+    DisclaimerTextComponent,
+    TokensTableComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -87,7 +95,11 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     MatDialogModule,
     FormsModule,
     ReactiveFormsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatProgressBarModule,
+    MatTableModule,
+    MatSortModule,
+    RouterModule
   ],
   exports: [
     FooterComponent,
@@ -124,7 +136,9 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     CoinsFilterComponent,
     TokensCellComponent,
     VolumeCellComponent,
-    VolumeBlockComponent
+    VolumeBlockComponent,
+    DisclaimerTextComponent,
+    TokensTableComponent
   ]
 })
 export class SharedModule {}

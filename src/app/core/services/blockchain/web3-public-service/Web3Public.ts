@@ -9,6 +9,16 @@ export class Web3Public {
   constructor(private web3: Web3, private blockchain: IBlockchain) {}
 
   /**
+   * @description gets information about token through ERC-20 token contract
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   * @param blockchain platform of the token
+   * @return object, with written token fields, or a error, if there's no such token
+   */
+  public getTokenInfo: (
+    tokenAddress: string
+  ) => Promise<Token> = this.getTokenInfoCachingDecorator();
+
+  /**
    * @description gets account balance in Eth units
    * @param address wallet address whose balance you want to find out
    * @param [options] additional options
@@ -203,16 +213,6 @@ export class Web3Public {
     });
   }
 
-  /**
-   * @description gets information about token through ERC-20 token contract
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param blockchain platform of the token
-   * @return object, with written token fields, or a error, if there's no such token
-   */
-  public getTokenInfo: (
-    tokenAddress: string
-  ) => Promise<Token> = this.getTokenInfoCachingDecorator();
-
   private getTokenInfoCachingDecorator(): (tokenAddress: string) => Promise<Token> {
     const tokensCache: { [address: string]: Token } = {};
 
@@ -231,15 +231,13 @@ export class Web3Public {
     }
 
     const tokenMethods = ['decimals', 'symbol', 'name'];
-    const tokenFieldsPromises = [];
+    const tokenFieldsPromises = tokenMethods.map((method: string) =>
+      this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
+    );
     const token: Token = {
       blockchainName: this.blockchain.name,
       address: tokenAddress
     } as Token;
-
-    for (const methodName of tokenMethods) {
-      tokenFieldsPromises.push(this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, methodName));
-    }
 
     (await Promise.all(tokenFieldsPromises)).forEach(
       (elem, index) => (token[tokenMethods[index]] = elem)

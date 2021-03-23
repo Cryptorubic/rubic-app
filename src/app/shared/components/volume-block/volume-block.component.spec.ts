@@ -8,9 +8,8 @@ describe('VolumeBlockComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VolumeBlockComponent ]
-    })
-    .compileComponents();
+      declarations: [VolumeBlockComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

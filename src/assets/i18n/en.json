@@ -62,6 +62,7 @@
   "Show more": "Show more",
   "There is no matching pair, please": "There is no matching pair, please",
   "create your own": "create your own",
+  "Network": "Network",
 
   "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue. ":
   "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue. ",
@@ -239,8 +240,8 @@
   "Do you want to remove it?": "Do you want to remove it?",
   "Do you really want to Log Out?": "Do you really want to Log Out?",
 
-  "By trading on our platform you agree with the following terms and conditions":
-  "By trading on our platform you agree with the following <a href=\"#\" class=\"as-link\" data-disclaimer>terms and conditions</span>",
+  "Trades disclaimer text": "By trading on our platform you agree with the following",
+  "Terms and conditions": "terms and conditions",
 
   "DISCLAIMERS": {
     "START": {
@@ -248,6 +249,8 @@
       "TEXT": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform."
     }
   },
+
+  "No data": "No data",
 
   "BUTTONS": {
     "ACCEPT": "Accept"

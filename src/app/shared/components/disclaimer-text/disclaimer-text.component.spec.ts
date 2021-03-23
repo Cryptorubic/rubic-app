@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TradesTableComponent } from './trades-table.component';
+import { DisclaimerTextComponent } from './disclaimer-text.component';
 
-describe('TradesTableComponent', () => {
-  let component: TradesTableComponent;
-  let fixture: ComponentFixture<TradesTableComponent>;
+describe('DisclaimerTextComponent', () => {
+  let component: DisclaimerTextComponent;
+  let fixture: ComponentFixture<DisclaimerTextComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TradesTableComponent]
+      declarations: [DisclaimerTextComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TradesTableComponent);
+    fixture = TestBed.createComponent(DisclaimerTextComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

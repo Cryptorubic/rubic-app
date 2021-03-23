@@ -1,10 +1,11 @@
 <div class="user-profile" [ngClass]="{ 'user-profile_mobile': $isMobile | async }">
   <div class="user-profile__account">
-    <img
+    <div
       *ngIf="($currentBlockchain | async)?.imagePath"
-      [src]="($currentBlockchain | async)?.imagePath"
       class="user-profile__blockchain-icon"
-    />
+    >
+      <img [src]="($currentBlockchain | async)?.imagePath" alt="($currentBlockchain | async)?.name">
+    </div>
     <span
       class="user-profile__text"
       [ngClass]="{ 'user-profile__text_iconless': !($currentBlockchain | async)?.imagePath }"
@@ -18,7 +19,7 @@
       <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
     </li>
   </ul>
-  <div *ngIf="!($isMobile | async)" class="user-profile__menu">
+  <div *ngIf="($isMobile | async) === false" class="user-profile__menu">
     <div class="user-profile__menu-icon" mat-button [matMenuTriggerFor]="userMenu">
       <span></span>
       <span></span>

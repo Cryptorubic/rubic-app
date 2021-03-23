@@ -4,7 +4,8 @@ import {
   ChangeDetectionStrategy,
   HostListener,
   ElementRef,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  AfterViewInit
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -18,7 +19,7 @@ import { HeaderStore } from '../../../../services/header.store';
   styleUrls: ['./user-profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserProfileComponent {
+export class UserProfileComponent implements AfterViewInit {
   public readonly $isUserMenuOpened: Observable<boolean>;
 
   public readonly $isConfirmModalOpened: Observable<boolean>;
@@ -49,6 +50,11 @@ export class UserProfileComponent {
     });
     this.$currentBlockchain = this.web3PrivateService.onNetworkChanges;
     this.$currentAccountAddress = this.web3PrivateService.onAddressChanges;
+  }
+
+  public ngAfterViewInit(): void {
+    this.web3PrivateService.onNetworkChanges.subscribe(() => this.cdr.detectChanges());
+    this.web3PrivateService.onAddressChanges.subscribe(() => this.cdr.detectChanges());
   }
 
   @HostListener('document:mousedown', ['$event'])

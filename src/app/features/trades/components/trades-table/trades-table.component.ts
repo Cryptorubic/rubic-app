@@ -1,7 +1,6 @@
-import { Component, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
-import { CoinsFilterComponent } from 'src/app/shared/components/coins-filter/coins-filter.component';
 import { TradesService } from '../../services/trades-service/trades.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainsInfo } from '../../../../core/services/blockchain/blockchain-info';
@@ -20,8 +19,6 @@ export class TradesTableComponent {
   public readonly $columnsSizes: Observable<string[]>;
 
   public readonly $tableLoading: Observable<boolean>;
-
-  @ViewChild(CoinsFilterComponent) public filter: CoinsFilterComponent;
 
   constructor(private readonly tradesService: TradesService) {
     this.$tableLoading = this.tradesService.getTableLoadingStatus();

@@ -13,20 +13,9 @@
     </div>
     <app-bridge-form></app-bridge-form>
   </div>
-
-  <div
-    class="disclaimer-text"
-    #disclaimerText
-    [innerHTML]="
-      'By trading on our platform you agree with the following terms and conditions' | translate
-    "
-  ></div>
-
+  <app-disclaimer-text></app-disclaimer-text>
   <app-volume-block></app-volume-block>
-
   <app-bridge-table></app-bridge-table>
 </div>
-
 <app-footer></app-footer>
-
 <div class="scroll-top-btn" id="scroll-btn"></div>
