@@ -1,3 +1,6 @@
+$primary-color: #4aa956;
+$primary-light-color: #dbeedd;
+
 .volume-cell {
   display: flex;
 
@@ -56,5 +59,21 @@
 
   &__subtext-with-spacing {
     word-spacing: 1px;
+  }
+}
+
+::ng-deep {
+  .volume-cell {
+    &__progress-bar {
+      margin-top: 10px;
+
+      .mat-progress-bar-fill::after {
+        background-color: $primary-color;
+      }
+
+      .mat-progress-bar-element {
+        background-color: $primary-light-color;
+      }
+    }
   }
 }

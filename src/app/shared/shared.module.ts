@@ -5,6 +5,7 @@ import { DynamicModule } from 'ng-dynamic-component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -87,7 +88,8 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     MatDialogModule,
     FormsModule,
     ReactiveFormsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatProgressBarModule
   ],
   exports: [
     FooterComponent,
