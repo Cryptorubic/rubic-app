@@ -1,15 +1,7 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ViewChild,
-  Input,
-  Output,
-  EventEmitter
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
-import { CoinsFilterComponent } from '../coins-filter/coins-filter.component';
 
 @Component({
   selector: 'app-tokens-table',
@@ -26,9 +18,9 @@ export class TokensTableComponent {
 
   @Input() public tableLoading: boolean;
 
-  @Output() public refreshTableEvent: EventEmitter<void>;
+  @Input() public title: string;
 
-  @ViewChild(CoinsFilterComponent) public filter: CoinsFilterComponent;
+  @Output() public refreshTableEvent: EventEmitter<void>;
 
   constructor() {
     this.refreshTableEvent = new EventEmitter<void>();

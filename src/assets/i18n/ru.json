@@ -11,6 +11,8 @@
 
   "Copyright": "Авторские права",
   "Privacy policy": "Политика конфиденциальности",
+  "Trades disclaimer text": "By trading on our platform you agree with the following",
+  "Terms and conditions": "terms and conditions",
 
   "Make trades on your terms, share and generate revenue":
   "Торгуйте на ваших условиях, делитесь сделками и получайте доход.",
@@ -45,6 +47,8 @@
   "Token Contract Address": "Адрес контракта токена",
   "Choose Token": "Выберете токен",
   "Enter Amount": "Введите количество",
+
+  "No data": "Нет данных",
 
   "Error": "Ошибка",
   "Please choose main net network in Metamask.": "Пожалуйста, выберите соответствующую сеть токенов, которыми вы хотите торговать. Если проблема не исчезнет, обратитесь к разделу часто задаваемых вопросов.",
@@ -237,6 +241,13 @@
   "Creation date": "Дата создания",
   "Do you want to remove it?": "Вы хотите удалить?",
   "Do you really want to Log Out?": "Вы действительно хотите выйти?",
+
+  "DISCLAIMERS": {
+    "START": {
+      "TITLE": "Token safety alert!",
+      "TEXT": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform."
+    }
+  },
 
   "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.":
   "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",

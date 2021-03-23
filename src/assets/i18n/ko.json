@@ -11,6 +11,8 @@
 
   "Copyright": "Copyright",
   "Privacy policy": "Privacy policy",
+  "Trades disclaimer text": "By trading on our platform you agree with the following",
+  "Terms and conditions": "terms and conditions",
 
   "Make trades on your terms, share and generate revenue":
   "귀하의 조건에 따라 거래하고 공유하고 수익을 창출하십시오",
@@ -237,6 +239,15 @@
   "Creation date": "생산 일자",
   "Do you want to remove it?": "제거 하시겠습니까?",
   "Do you really want to Log Out?": "정말 로그 아웃 하시겠습니까?",
+
+  "DISCLAIMERS": {
+    "START": {
+      "TITLE": "Token safety alert!",
+      "TEXT": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform."
+    }
+  },
+
+  "No data": "No data",
 
   "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.":
   "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",

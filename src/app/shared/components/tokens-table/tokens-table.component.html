@@ -1,6 +1,6 @@
 <div class="tokens-table">
   <div class="tokens-table__title-section">
-    <h2 class="tokens-table__title">{{ 'Order Book' | translate }}</h2>
+    <h2 class="tokens-table__title">{{ title }}</h2>
     <button
       class="tokens-table__refresh-button refresh-btn"
       [ngClass]="{ 'tokens-table__refresh-button_animated': tableLoading  }"
@@ -101,5 +101,5 @@
       *matRowDef="let row; columns: displayedColumns "
     ></tr>
   </table>
-  <p *ngIf="tableData.length === 0">No table data</p>
+  <p *ngIf="tableData.length === 0">{{ 'No data' | translate }}</p>
 </div>
