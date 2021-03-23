@@ -26,8 +26,6 @@ import { WhiteButtonComponent } from './components/white-button/white-button.com
 import { BigNumberDirective } from './directives/big-number/big-number.directive';
 import { EthAddressDirective } from './directives/eth-address/eth-address.directive';
 import { MinMaxDirective } from './directives/minMax/min-max.directive';
-import { BigNumberMin } from './pipes/big-number-min.pipe';
-import { BigNumberMax } from './pipes/big-number-max.pipe';
 import { BigNumberFormat } from './pipes/big-number-format.pipe';
 import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { NativeUrlPipe } from './pipes/native-url.pipe';
@@ -67,8 +65,6 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     MinMaxDirective,
     BigNumberDirective,
     BigNumberFormat,
-    BigNumberMin,
-    BigNumberMax,
     CoinsListComponent,
     ScannerLinkPipe,
     NativeUrlPipe,
@@ -116,8 +112,6 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
     MinMaxDirective,
     BigNumberDirective,
     BigNumberFormat,
-    BigNumberMin,
-    BigNumberMax,
     CoinsListComponent,
     ScannerLinkPipe,
     NativeUrlPipe,

@@ -35,8 +35,7 @@ export class OrderBookApiService {
     private httpService: HttpService,
     private tokensService: TokensService,
     private web3PublicService: Web3PublicService,
-    private orderBookTableService: OrderBooksTableService,
-    private readonly router: ActivatedRoute
+    private orderBookTableService: OrderBooksTableService
   ) {
     this.tokensService.tokens.subscribe(tokens => {
       this._tokens = tokens;
@@ -102,8 +101,7 @@ export class OrderBookApiService {
       expirationDate: moment.utc(tradeApi.stop_date),
       isPublic: tradeApi.public,
       isWithBrokerFee: tradeApi.broker_fee,
-      brokerAddress: tradeApi.broker_fee_address,
-      status: tradeApi.state
+      brokerAddress: tradeApi.broker_fee_address
     } as OrderBookTradeData;
     await this.setTokensData('base', tradeApi, tradeData);
     await this.setTokensData('quote', tradeApi, tradeData);
@@ -129,15 +127,11 @@ export class OrderBookApiService {
     if (foundToken) {
       tradeData.token[tokenPart] = { ...tradeData.token[tokenPart], ...foundToken };
     } else {
-      try {
-        const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-        tradeData.token[tokenPart] = {
-          ...tradeData.token[tokenPart],
-          ...(await web3Public.getTokenInfo(tradeData.token[tokenPart].address))
-        };
-      } catch (err) {
-        console.error(err);
-      }
+      const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+      tradeData.token[tokenPart] = {
+        ...tradeData.token[tokenPart],
+        ...(await web3Public.getTokenInfo(tradeData.token[tokenPart].address))
+      };
     }
 
     tradeData.token[tokenPart] = {

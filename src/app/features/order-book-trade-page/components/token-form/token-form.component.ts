@@ -59,8 +59,6 @@ export class TokenFormComponent implements OnInit, OnChanges {
 
   public TX_STATUS = TX_STATUS;
 
-  public BIG_NUMBER_FORMAT = BIG_NUMBER_FORMAT;
-
   public token: OrderBookDataToken;
 
   public shortedAmountTotal: string;
@@ -122,14 +120,6 @@ export class TokenFormComponent implements OnInit, OnChanges {
   public setAmountToContribute(value: string): void {
     this.amountToContribute = value;
     this.amountToContributeChanges.emit(value);
-  }
-
-  public getBrokerPercent(): string {
-    return this.token.amountTotal
-      .div(100)
-      .times(this.token.brokerPercent)
-      .dp(this.token.decimals)
-      .toFormat(BIG_NUMBER_FORMAT);
   }
 
   public getMinContributionAsString(): string {
