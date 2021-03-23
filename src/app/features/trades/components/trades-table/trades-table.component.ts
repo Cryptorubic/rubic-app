@@ -21,8 +21,6 @@ export class TradesTableComponent {
 
   public readonly $tableLoading: Observable<boolean>;
 
-  @ViewChild(CoinsFilterComponent) public filter: CoinsFilterComponent;
-
   constructor(private readonly tradesService: TradesService) {
     this.$tableLoading = this.tradesService.getTableLoadingStatus();
     this.tradesService.setTableLoadingStatus(true);

@@ -6,6 +6,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { RouterModule } from '@angular/router';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -42,6 +45,7 @@ import { VolumeCellComponent } from './components/volume-cell/volume-cell.compon
 import { VolumeBlockComponent } from './components/volume-block/volume-block.component';
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
 import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer-text.component';
+import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +84,8 @@ import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer
     VolumeCellComponent,
     VolumeBlockComponent,
     ListingRequestPopupComponent,
-    DisclaimerTextComponent
+    DisclaimerTextComponent,
+    TokensTableComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -91,7 +96,10 @@ import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer
     FormsModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatTableModule,
+    MatSortModule,
+    RouterModule
   ],
   exports: [
     FooterComponent,
@@ -129,7 +137,8 @@ import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer
     TokensCellComponent,
     VolumeCellComponent,
     VolumeBlockComponent,
-    DisclaimerTextComponent
+    DisclaimerTextComponent,
+    TokensTableComponent
   ]
 })
 export class SharedModule {}

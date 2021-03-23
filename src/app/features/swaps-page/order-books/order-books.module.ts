@@ -34,8 +34,6 @@ import { OrderBooksTableComponent } from './components/order-books-table/order-b
     MatInputModule,
     MatDatepickerModule,
     NgxMaterialTimepickerModule,
-    MatTableModule,
-    MatSortModule,
     ReactiveFormsModule,
     RouterModule
   ],
