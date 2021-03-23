@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import { OrderBookTradeTableRow } from '../../../types/trade-table';
 
 @Injectable({
@@ -69,7 +70,7 @@ export class OrderBooksTableService {
     this.$filterQuoteValue.next(value);
   }
 
-  public filterByToken(token: any, tokenType: 'quote' | 'base'): void {
+  public filterByToken(token: any, tokenType: TokenPart): void {
     const filterValue = token.option.value.toLowerCase();
     if (filterValue.length < 2) {
       this.$visibleTableData.next(this.$dataSource.value);
