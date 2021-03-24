@@ -38,6 +38,9 @@
     <!-- Tokens icons column  -->
     <ng-container matColumnDef="token">
       <th mat-header-cell *matHeaderCellDef #tokensHeader matAutocompleteOrigin>
+        <div class="tokens-table__cell">
+          {{ 'Tokens' | translate }}
+        </div>
         <!-- Uncomment after filtering release -->
         <!-- <app-coins-filter></app-coins-filter> -->
       </th>
