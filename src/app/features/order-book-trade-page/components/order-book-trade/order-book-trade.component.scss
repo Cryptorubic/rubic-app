@@ -116,10 +116,7 @@
 
 .tokens-rate {
   color: $grey-text;
-
-  &__title {
-    text-transform: uppercase;
-  }
+  text-transform: uppercase;
 
   &__button {
     position: relative;
