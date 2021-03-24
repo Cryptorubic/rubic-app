@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +7,12 @@ import { map } from 'rxjs/operators';
 export class HealthcheckService {
   constructor(private httpClient: HttpClient) {}
 
-  public healthCheck(): Observable<boolean> {
-    return this.httpClient
-      .get('/api/v1/healthcheck', { observe: 'response' })
-      .pipe(map(response => response.status === 200));
+  public healthCheck(): Promise<boolean> {
+    return new Promise(resolve => {
+      this.httpClient.get('/api/v1/healthcheck', { observe: 'response' }).subscribe(
+        response => resolve(response.status === 200),
+        () => resolve(false)
+      );
+    });
   }
 }
