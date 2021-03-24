@@ -97,7 +97,17 @@
   }
 
   &__warning {
+    position: relative;
     margin-top: 7px;
+
+    cursor: pointer;
+
+    &:hover {
+      app-tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
   }
 }
 
@@ -134,4 +144,16 @@
       color: rgba(black, 0.5);
     }
   }
+}
+
+app-tooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: calc(100% - 7px);
+
+  opacity: 0;
+
+  text-align: center;
+
+  transition: opacity 0.3s ease-in-out;
 }
