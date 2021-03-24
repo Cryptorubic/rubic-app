@@ -63,7 +63,9 @@
   <div
     class="token-block__area area-third"
     *ngIf="
-      tradeData.status === TRADE_STATUS.ACTIVE && token.isApproved !== undefined && token.amountLeft
+      tradeData.status === TRADE_STATUS.ACTIVE &&
+      token.isApproved !== undefined &&
+      !token.amountLeft?.isNaN()
     "
   >
     <input
