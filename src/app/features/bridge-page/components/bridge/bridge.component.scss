@@ -3,9 +3,12 @@
 
 .bridge-container {
   max-width: 1180px;
-  margin: 85px 18px;
+  margin: 85px auto 0;
   height: 100%;
-  padding: 0 2vw;
+
+  @include b(1240) {
+    padding: 0 2vw;
+  }
 
   &__intro {
     padding-top: 40px;
