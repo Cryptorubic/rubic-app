@@ -182,7 +182,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: 'Oneinch'
+              label: '1inch'
             },
             isBestRate: false
           },
@@ -203,7 +203,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: 'Oneinch'
+              label: '1inch'
             },
             isBestRate: false
           }
