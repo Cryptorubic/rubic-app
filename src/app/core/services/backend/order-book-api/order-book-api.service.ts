@@ -63,7 +63,7 @@ export class OrderBookApiService {
       );
   }
 
-  public fetchPublicSwap3(): void {
+  public fetchPublicSwaps(): void {
     this.httpService
       .get('get_public_swap3/')
       .pipe(
@@ -78,6 +78,7 @@ export class OrderBookApiService {
       .subscribe(
         async tradeData => {
           this.orderBookTableService.setTableData(await Promise.all(tradeData));
+          setTimeout(() => this.orderBookTableService.filterByBlockchain());
         },
         err => console.error(err),
         () => this.orderBookTableService.setTableLoadingStatus(false)
