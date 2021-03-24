@@ -118,7 +118,7 @@
     <button
       class="area-third__fill-button"
       [disabled]="!token.isApproved"
-      (click)="amountToContribute = token.amountLeft.toFixed()"
+      (click)="setAmountToContribute(token.amountLeft.toFixed())"
     >
       Fill all
     </button>
