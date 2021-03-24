@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 import { OrderBooksFormService } from '../../services/order-book-form-service/order-books-form.service';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
 import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
+import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 
 enum TRADE_STATUS {
   STARTED = 'STARTED',
@@ -329,6 +330,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       .catch((err: RubicError) => {
         this.selectedTradeState = TRADE_STATUS.ERROR;
         let data: any = { title: 'Error', descriptionText: err.comment };
+        if (err instanceof MetamaskError) {
+          data.title = 'Warning';
+        }
         if (err instanceof NetworkError) {
           data = {
             title: 'Error',

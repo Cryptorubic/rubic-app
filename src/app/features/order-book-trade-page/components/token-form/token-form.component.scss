@@ -194,6 +194,15 @@
     &:hover {
       font-weight: 500;
     }
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.6;
+
+      &:hover {
+        font-weight: normal;
+      }
+    }
   }
 }
 

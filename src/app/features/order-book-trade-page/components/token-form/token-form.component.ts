@@ -24,6 +24,7 @@ import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { NetworkErrorComponent } from '../../../bridge-page/components/network-error/network-error.component';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
+import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 
 type Operation = 'approve' | 'contribute' | 'withdraw';
 
@@ -158,6 +159,9 @@ export class TokenFormComponent implements OnInit, OnChanges {
 
   private showErrorMessage(err: RubicError): void {
     let data: any = { title: 'Error', descriptionText: err.comment };
+    if (err instanceof MetamaskError) {
+      data.title = 'Warning';
+    }
     if (err instanceof NetworkError) {
       data = {
         title: 'Error',

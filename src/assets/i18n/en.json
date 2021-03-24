@@ -260,6 +260,8 @@
   "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
   "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to www.metamask.io and follow the steps.":
   "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> and follow the steps.",
+  "Please check that you have active Metamask plugin in your browser and Metamask wallet is connected.\nIf not please download it from www.metamask.io and connect wallet using Connect Wallet button.":
+  "Please check that you have active Metamask plugin in your browser and Metamask wallet is connected.\nIf not please download it from <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> and connect wallet using Connect Wallet button.",
   "You have selected the wrong network. Please choose { networkToChoose } from MetaMask.":
   "You have selected the wrong network. Please choose {{ networkToChoose }} from MetaMask.",
   "You have attempted to execute too many trades in a short period of time. Please wait and try again later, if you still have problems please reach out to our Customer Support.":

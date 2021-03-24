@@ -74,7 +74,6 @@
   grid-auto-flow: row;
   row-gap: 20px;
   column-gap: 25px;
-  align-items: center;
 }
 
 .selection-block {
@@ -123,10 +122,10 @@
 
 .instant-trade-button {
   position: relative;
-  top: 6px;
+  top: 22px;
 
   &_second {
-    top: -4px;
+    top: 1px;
   }
 
   &__best-rate {

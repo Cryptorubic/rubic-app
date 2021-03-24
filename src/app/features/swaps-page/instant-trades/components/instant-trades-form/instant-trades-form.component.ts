@@ -20,6 +20,7 @@ import { NetworkError } from '../../../../../shared/models/errors/provider/Netwo
 import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
 import ADDRESS_TYPE from '../../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
+import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 
 interface TradeProviderInfo {
   label: string;
@@ -400,6 +401,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       })
       .catch((err: RubicError) => {
         let data: any = { title: 'Error', descriptionText: err.comment };
+        if (err instanceof MetamaskError) {
+          data.title = 'Warning';
+        }
         if (err instanceof NetworkError) {
           data = {
             title: 'Error',

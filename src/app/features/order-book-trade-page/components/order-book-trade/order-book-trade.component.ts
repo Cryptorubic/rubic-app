@@ -148,6 +148,9 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   private showErrorMessage(err: RubicError): void {
     let data: any = { title: 'Error', descriptionText: err.comment };
+    if (err instanceof MetamaskError) {
+      data.title = 'Warning';
+    }
     if (err instanceof NetworkError) {
       data = {
         title: 'Error',
