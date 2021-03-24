@@ -1,0 +1,69 @@
+// *****  buttons styles *****
+
+.rubic {
+  &-btn {
+    border-radius: 5px;
+    min-width: 185px;
+    min-height: 50px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border: none;
+    transition: 0.4s ease;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+
+    span {
+      cursor: pointer;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+
+      span {
+        cursor: default;
+      }
+    }
+
+    &:hover {
+      transition: 0.4s ease;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:focus,
+    &:active {
+      outline: none;
+    }
+
+    &-green {
+      background: none;
+      border: 2px solid var(--main-green);
+      color: var(--main-green);
+
+      &:not(.rubic-btn-border) {
+        background-color: var(--main-green);
+        color: white;
+      }
+
+      &:hover {
+        opacity: 0.9;
+        background-color: var(--green-btn-border-hover-bg);
+
+        &:not(.rubic-btn-border) {
+          background-color: var(--main-green);
+        }
+      }
+
+      &:active {
+        box-shadow: 0px 0px 15px -4px var(--main-green);
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+<div class="selector">
+  <div
+    class="selector-selected"
+    [ngClass]="{ 'options-shown': isOptionsShown }"
+    [style.width.px]="minOptionWidth"
+    (click)="isOptionsShown = !isOptionsShown"
+  >
+    {{ selectedOption }}
+  </div>
+  <div class="selector-options" *ngIf="isOptionsShown">
+    <span
+      *ngFor="let option of options"
+      class="selector-options-option"
+      [ngClass]="{ active: option === selectedOption }"
+      [style.width.px]="minOptionWidth"
+      (click)="sortByOption(option)"
+    >
+      {{ option }}
+    </span>
+  </div>
+  <div class="selector-sort" (click)="invertSort()" *ngIf="isSortable">
+    <img [src]="'assets/images/bridge/' + getArrow()" alt="Sort" />
+  </div>
+</div>

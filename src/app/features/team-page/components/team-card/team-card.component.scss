@@ -1,0 +1,66 @@
+@import '../../../../../scss/elements/vars';
+
+.team-card {
+  box-sizing: border-box;
+  margin: 0 auto;
+  width: 320px;
+  height: 475px;
+  padding: 10px;
+  background-color: #fafafa;
+  cursor: pointer;
+
+  transition: transform 0.1s linear;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &__image {
+    display: block;
+    width: 300px;
+    height: 305px;
+    margin-bottom: 25px;
+    object-fit: cover;
+    object-position: 50% 2%;
+  }
+
+  &__description {
+    padding: 0 10px;
+  }
+
+  &__name {
+    margin-bottom: 3px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 32px;
+    color: $main-green;
+  }
+
+  &__role {
+    margin-bottom: 21px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 32px;
+  }
+
+  &__links-container {
+    display: flex;
+    align-items: center;
+  }
+
+  &__link {
+    width: 18px;
+    height: 18px;
+    margin-right: 17px;
+  }
+}

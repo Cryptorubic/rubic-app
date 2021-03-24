@@ -1,0 +1,92 @@
+.coins-list-control {
+  position: relative;
+  font-size: 15px;
+  line-height: 18px;
+  &_input {
+    color: #110931;
+    background: 4px center no-repeat rgba(0, 0, 0, 0.05);
+    background-size: 28px auto;
+    border: 0 none;
+    border-radius: 0;
+    font-size: 15px;
+    line-height: 18px;
+    padding: 10px 7px;
+    height: 38px;
+    box-sizing: border-box;
+
+    &::-webkit-input-placeholder {
+      color: #110931;
+      text-transform: uppercase;
+    }
+    &:-ms-input-placeholder {
+      color: #110931;
+      text-transform: uppercase;
+    }
+    &::-ms-input-placeholder {
+      color: #110931;
+      text-transform: uppercase;
+    }
+    &::placeholder {
+      color: #110931;
+      text-transform: uppercase;
+    }
+
+    &.selected {
+      padding-left: 35px;
+    }
+  }
+  &_res {
+    position: relative;
+    height: 0;
+    overflow: visible;
+    min-width: 100%;
+    white-space: nowrap;
+  }
+  &_list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+    max-height: 200px;
+    overflow: auto;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    position: absolute;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.05);
+    &_item {
+      color: #000;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      &.active {
+        cursor: default;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: #2873fb;
+      }
+      &-content {
+        padding: 13px 22px 13px 40px;
+        line-height: 21px;
+        display: block;
+        &_ico {
+          margin-left: -35px;
+          width: 26px;
+          text-align: center;
+          float: left;
+          margin-top: -13px;
+          margin-bottom: -13px;
+          line-height: 47px;
+          height: 30px;
+          img {
+            vertical-align: middle;
+            max-height: 80%;
+          }
+        }
+        &_name {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}

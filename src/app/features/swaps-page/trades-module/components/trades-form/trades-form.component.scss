@@ -1,0 +1,85 @@
+.trades-form {
+  width: 100%;
+  margin-bottom: 10px;
+
+  &__tabs {
+    height: 52px;
+    display: flex;
+    justify-content: space-between;
+
+    ul {
+      margin: 0;
+      padding: 0;
+
+      display: flex;
+      align-items: flex-start;
+    }
+  }
+
+  &__body {
+    background-color: white;
+  }
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  height: 47px;
+  padding: 0 15px;
+
+  opacity: 0.85;
+  background-color: white;
+  cursor: pointer;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  span {
+    font-weight: normal;
+    font-size: 14px;
+    color: #000000;
+  }
+
+  img {
+    max-width: 18px;
+    max-height: 18px;
+    margin-right: 10px;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 6px rgba(black, 0.1);
+  }
+
+  &_active {
+    height: 52px;
+
+    opacity: unset;
+    cursor: default;
+
+    span {
+      position: static;
+
+      font-weight: bold;
+    }
+
+    &:hover {
+      box-shadow: unset;
+    }
+  }
+
+  &_blockchain {
+    min-width: 130px;
+  }
+
+  &_mode {
+    min-width: 160px;
+
+    img {
+      margin-right: 0;
+      margin-left: 10px;
+    }
+  }
+}

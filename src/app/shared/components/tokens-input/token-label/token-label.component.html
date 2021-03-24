@@ -1,0 +1,14 @@
+<div class="dropdown-label" [ngClass]="{ 'dropdown-label_selected': selected }">
+  <div class="dropdown-label__image-container">
+    <img [src]="token.image || '/assets/images/icons/coins/empty.svg'" alt="Token" />
+  </div>
+
+  <div class="dropdown-label__text">
+    <span *ngIf="!selected">
+      {{ token.name }}<br />
+      ({{ token.symbol }})
+    </span>
+
+    <span *ngIf="selected">{{ token.symbol }}</span>
+  </div>
+</div>

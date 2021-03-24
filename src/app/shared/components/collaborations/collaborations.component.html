@@ -1,0 +1,18 @@
+<div class="collaborations">
+  <div class="collaborations__title">Software Integrations And Collaborations With</div>
+  <div class="collaborations__description"></div>
+  <div class="collaborations__content">
+    <a
+      class="collaborations__item"
+      target="_blank"
+      *ngFor="let company of collaborations"
+      [href]="company.url"
+    >
+      <img [src]="'assets/images/icons/collaborations/' + company.img" alt="" />
+    </a>
+  </div>
+
+  <button class="collaborations__listing-request" (click)="openListingRequestPopup()">
+    {{ 'Listing request' | translate }}
+  </button>
+</div>

@@ -1,0 +1,220 @@
+@import 'src/scss/elements/vars';
+
+.order-book-form {
+  &__main-section {
+    padding: 27px 30px 29px;
+  }
+}
+
+.main-section {
+  display: flex;
+  align-items: flex-start;
+
+  &__from-section {
+    flex: 4;
+  }
+
+  &__arrow-section {
+    flex: 0.6;
+  }
+}
+
+.tokens-form {
+  &__header {
+    margin-bottom: 7px;
+  }
+
+  &__custom-section {
+    margin-top: 8px;
+  }
+}
+
+.tokens-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 14px;
+
+  font-size: 13px;
+
+  &__label {
+    position: relative;
+    left: 9px;
+
+    color: $dark;
+    text-transform: uppercase;
+  }
+
+  &__rate {
+    position: relative;
+    right: 6px;
+  }
+}
+
+.tokens-rate {
+  &__main {
+    display: flex;
+    align-items: center;
+
+    color: $main-green;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  &__info {
+    margin-left: 6px;
+  }
+}
+
+.tokens-rate-info {
+  position: relative;
+
+  white-space: normal;
+
+  &__popup-container {
+    position: absolute;
+    bottom: 36%;
+    left: -95px;
+
+    padding-bottom: 20px;
+
+    display: none;
+  }
+
+  img:hover ~ &__popup-container,
+  &__popup-container:hover {
+    display: block;
+  }
+}
+
+.tokens-rate-popup {
+  position: relative;
+
+  width: 190px;
+  padding: 10px;
+  border-radius: 5px;
+
+  background: white;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+  text-align: center;
+  color: $dark;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: none;
+
+  &__rate {
+    color: $main-green;
+  }
+
+  &__triangle {
+    position: absolute;
+    bottom: -6px;
+    left: 47.5%;
+
+    width: 12px;
+    height: 12px;
+
+    background: white;
+
+    transform: rotate(45deg);
+  }
+}
+
+.arrow-button {
+  position: relative;
+  top: 26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+  margin: 0 auto;
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+  background-color: white;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
+
+  transition: transform 0.15s ease-in-out;
+
+  img {
+    transform: scale(1.1);
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.custom-section {
+  text-align: right;
+
+  &__button {
+    display: block;
+
+    width: 136px;
+    padding-right: 6px;
+    margin-left: auto;
+
+    color: $grey-text;
+    cursor: pointer;
+
+    transition: font-weight 0.1s linear;
+
+    &:hover {
+      font-weight: 500;
+    }
+  }
+
+  &__form {
+    margin: 9px 0 5px;
+  }
+}
+
+.custom-section-form {
+  display: flex;
+  grid-gap: 10px;
+
+  &__input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 11px 10px 11px 18px;
+    border: 1px solid white;
+
+    color: $dark;
+    background: $grey-background;
+
+    font-family: $ubuntu-font;
+    font-size: 18px;
+
+    &_invalid {
+      border: 1px solid $error-red;
+
+      &:focus {
+        box-shadow: 0 0 2px $error-red;
+      }
+    }
+  }
+}
+
+.to-section {
+  flex: 6;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-column-gap: 25px;
+
+  &__confirm-section {
+    position: relative;
+    top: 22px;
+  }
+}

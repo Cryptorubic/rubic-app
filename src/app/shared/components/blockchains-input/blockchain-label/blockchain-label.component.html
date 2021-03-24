@@ -1,0 +1,14 @@
+<div class="dropdown-label" [ngClass]="{ 'dropdown-label_selected': selected }">
+  <div class="dropdown-label__image-container">
+    <img [src]="'./assets/images/icons/coins/' + blockchain.img" alt="Blockchain" />
+  </div>
+
+  <div class="dropdown-label__text">
+    <span *ngIf="!selected">
+      {{ blockchain.label }}<br />
+      ({{ blockchain.name }})
+    </span>
+
+    <span *ngIf="selected">{{ blockchain.name }}</span>
+  </div>
+</div>

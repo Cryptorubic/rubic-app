@@ -1,0 +1,39 @@
+<div class="user-profile" [ngClass]="{ 'user-profile_mobile': $isMobile | async }">
+  <div class="user-profile__account">
+    <div
+      *ngIf="($currentBlockchain | async)?.imagePath"
+      class="user-profile__blockchain-icon"
+    >
+      <img [src]="($currentBlockchain | async)?.imagePath" alt="($currentBlockchain | async)?.name">
+    </div>
+    <span
+      class="user-profile__text"
+      [ngClass]="{ 'user-profile__text_iconless': !($currentBlockchain | async)?.imagePath }"
+    >{{ $currentAccountAddress | async }}</span>
+  </div>
+  <ul *ngIf="$isMobile | async" class="user-profile__list">
+    <li class="user-profile__item">
+      <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'My trades' | translate }}</a>
+    </li>
+    <li class="user-profile__item">
+      <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
+    </li>
+  </ul>
+  <div *ngIf="($isMobile | async) === false" class="user-profile__menu">
+    <div class="user-profile__menu-icon" mat-button [matMenuTriggerFor]="userMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <mat-menu class="user-profile__sublist-container" #userMenu="matMenu">
+      <ul class="user-profile__sublist">
+        <li class="user-profile__sublist-item">
+          <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'My trades' | translate }}</a>
+        </li>
+        <li class="user-profile__sublist-item">
+          <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
+        </li>
+      </ul>
+    </mat-menu>
+  </div>
+</div>

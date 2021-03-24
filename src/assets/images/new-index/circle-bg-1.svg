@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="374"
+   height="327"
+   viewBox="0 0 374 327"
+   fill="none"
+   version="1.1"
+   id="svg11"
+   sodipodi:docname="circle-bg-1.svg"
+   inkscape:version="0.92.4 (unknown)">
+  <metadata
+     id="metadata15">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="777"
+     inkscape:window-height="480"
+     id="namedview13"
+     showgrid="false"
+     inkscape:zoom="0.72171254"
+     inkscape:cx="187"
+     inkscape:cy="163.5"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg11" />
+  <path
+     d="M240.275 321.899C335.779 296.119 411.916 202.413 351.757 93.4334C291.597 -15.5465 96.6426 -23.3679 35.4294 40.3029C-25.7839 103.974 -3.3466 211.065 73.1479 229.301C149.642 247.538 144.771 347.679 240.275 321.899Z"
+     fill="url(#paint0_linear)"
+     id="path2"
+     style="opacity:0.35" />
+  <defs
+     id="defs9">
+    <linearGradient
+       id="paint0_linear"
+       x1="295.427"
+       y1="298.39"
+       x2="87.5337"
+       y2="1.7839"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#B7C3F6"
+         id="stop4" />
+      <stop
+         offset="1"
+         stop-color="#CFD4EA"
+         stop-opacity="0.4"
+         id="stop6" />
+    </linearGradient>
+  </defs>
+</svg>

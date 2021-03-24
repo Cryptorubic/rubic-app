@@ -1,0 +1,24 @@
+<div class="bridge-container">
+  <div class="bridge-container__intro">
+    Trading Re<span class="app-index__intro_green app-index__intro_bold">DeFi</span>ned
+  </div>
+  <div class="bridge-container__wrapper">
+    <div class="bridge-container__form">
+      <div class="bridge-form">
+        <span>{{ 'Create your cross-chain swap' | translate }}</span>
+        <a routerLink="/" class="bridge-form__toggle">
+          <span class="bridge-form__toggle-text">Use our swaps</span>
+          <div class="bridge-form__arrow-button">
+            <img src="assets/images/icons/arrow/arrow-right-green.svg" alt="Arrow" />
+          </div>
+        </a>
+      </div>
+    </div>
+    <app-bridge-form></app-bridge-form>
+  </div>
+  <app-disclaimer-text></app-disclaimer-text>
+  <app-volume-block></app-volume-block>
+  <app-bridge-table></app-bridge-table>
+</div>
+<app-footer></app-footer>
+<div class="scroll-top-btn" id="scroll-btn"></div>

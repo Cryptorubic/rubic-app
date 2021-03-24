@@ -1,0 +1,30 @@
+.faq {
+  &__highlight {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  &__img {
+    max-width: 100%;
+  }
+
+  &__warning {
+    display: inline-block;
+
+    box-sizing: border-box;
+    height: 24px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 3px;
+
+    color: white;
+    background-color: #ff9f9f;
+  }
+
+  &__warning-flex-container {
+    display: flex;
+    align-items: center;
+
+    height: 100%;
+  }
+}

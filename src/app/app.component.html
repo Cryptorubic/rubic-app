@@ -1,0 +1,8 @@
+<ng-template [ngIf]="isBackendAvailable">
+  <app-header></app-header>
+  <router-outlet></router-outlet>
+</ng-template>
+
+<app-maintenance *ngIf="isBackendAvailable === false"></app-maintenance>
+
+<app-spinner *ngIf="isBackendAvailable === undefined"></app-spinner>

@@ -1,0 +1,34 @@
+<div class="volume-cell">
+  <div class="volume-cell__token-from">
+    <div class="volume-cell__text">{{ token.base.amountTotal.dp(8) }} {{ token.base.symbol }}</div>
+    <div class="volume-cell__subtext">
+      {{ this.token.base.amountTotal.div(this.token.quote.amountTotal).dp(8) | bigNumberFormat }}
+      <span class="volume-cell__subtext-with-spacing">{{ token.base.symbol }} / 1</span>
+      {{ token.quote.symbol }}
+    </div>
+    <mat-progress-bar
+      *ngIf="token.base?.amountContributed && token.base?.amountContributed > 1" 
+      class="volume-cell__progress-bar"
+      mode="determinate"
+      [value]="getProgressBarValue(token.base)">
+    </mat-progress-bar>
+  </div>
+  <div class="volume-cell__separator"></div>
+  <div class="volume-cell__token-to">
+    <div class="volume-cell__text">{{ token.quote.amountTotal.dp(8) }} {{ token.quote.symbol }}</div>
+    <div class="volume-cell__subtext">
+      1
+      <span class="volume-cell__subtext-with-spacing">
+        {{ token.base.symbol }} /
+        {{ this.token.quote.amountTotal.div(this.token.base.amountTotal).dp(8) | bigNumberFormat }}
+      </span>
+      {{ token.quote.symbol }}
+    </div>
+    <mat-progress-bar
+      *ngIf="token.quote?.amountContributed && token.quote?.amountContributed > 1"
+      class="volume-cell__progress-bar"
+      mode="determinate"
+      [value]="getProgressBarValue(token.quote)">
+    </mat-progress-bar>
+  </div>
+</div>

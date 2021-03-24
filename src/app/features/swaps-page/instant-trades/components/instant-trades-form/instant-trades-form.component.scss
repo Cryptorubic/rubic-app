@@ -1,0 +1,161 @@
+@import 'src/scss/elements/vars';
+
+.instant-trade {
+  padding: 27px 30px 29px;
+  display: flex;
+  align-items: center;
+
+  &__from-section {
+    flex: 4;
+
+    &_aligned {
+      align-self: flex-start;
+    }
+  }
+
+  &__arrow-section {
+    flex: 0.6;
+  }
+
+  &__to-section {
+    flex: 6;
+  }
+}
+
+.arrow-button {
+  position: relative;
+  top: 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 auto;
+
+  cursor: pointer;
+  border: none;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
+
+  transition: transform 0.15s ease-in-out;
+
+  img {
+    transform: scale(1.1);
+  }
+
+  &_big {
+    top: 6px;
+
+    width: 42px;
+    height: 42px;
+
+    img {
+      position: relative;
+      left: -1px;
+
+      transform: scale(0.8);
+    }
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template: 1fr / 2fr 1fr;
+  grid-auto-flow: row;
+  row-gap: 20px;
+  column-gap: 25px;
+}
+
+.selection-block {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    height: 14px;
+    margin-bottom: 7px;
+  }
+
+  &__label {
+    position: relative;
+    left: 9px;
+
+    color: $dark;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  &__warning {
+    position: relative;
+    margin-top: 7px;
+
+    cursor: pointer;
+
+    &:hover {
+      app-tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.gas-fee {
+  display: flex;
+  margin-top: 5px;
+
+  &__text {
+    opacity: 0.5;
+    margin-right: 8px;
+  }
+}
+
+.instant-trade-button {
+  position: relative;
+  top: 22px;
+
+  &_second {
+    top: 1px;
+  }
+
+  &__best-rate {
+    position: absolute;
+    top: -40px;
+    right: -10px;
+
+    img {
+      position: relative;
+      top: 20px;
+    }
+
+    span {
+      font-size: 14px;
+      color: rgba(black, 0.5);
+    }
+  }
+}
+
+app-tooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: calc(100% - 7px);
+  right: -88px;
+
+  z-index: 10;
+  opacity: 0;
+
+  text-align: center;
+  font-size: 11px;
+
+  transition: opacity 0.3s ease-in-out;
+}

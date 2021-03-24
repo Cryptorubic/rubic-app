@@ -1,0 +1,40 @@
+.navbar-toggler {
+  background: none;
+  border: 0 none;
+  padding: 10px 6px;
+  cursor: pointer;
+  margin-top: -5px;
+
+  &__icon-bar {
+    transition: transform 0.3s ease-in-out;
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: black;
+
+    &:nth-child(2) {
+      transition: opacity 0.3s ease-in-out;
+      opacity: 1;
+      margin-top: 4px;
+    }
+
+    &:last-child {
+      margin-top: 4px;
+    }
+  }
+
+  &_opened &__icon-bar {
+    &:first-child {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    &:nth-child(2) {
+      opacity: 0;
+    }
+
+    &:last-child {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+  }
+}

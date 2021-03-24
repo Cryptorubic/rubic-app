@@ -1,0 +1,27 @@
+<form class="form-field_input">
+  <input
+    class="all-input"
+    type="text"
+    name="amountField"
+    autocomplete="off"
+    placeholder="{{ inputDisabled ? '' : amountPlaceholder | translate }}"
+    [disabled]="inputDisabled"
+    [required]="true"
+    [appBigNumber]="bigNumberDirective"
+    [tabindex]="inputDisabled ? '-1' : ''"
+    (ngModelChange)="onNumberChanges(selectedAmount)"
+    [(ngModel)]="selectedAmount"
+  />
+
+  <app-input-dropdown
+    [componentClass]="tokenLabelComponentClass"
+    [componentsData]="tokensDropdownData"
+    [selectedComponentData]="selectedTokenDropdownData"
+    [VISIBLE_COMPONENTS_NUMBER]="VISIBLE_TOKENS_NUMBER"
+    [filterBy]="tokensFilterOrder"
+    [sortBy]="tokensSortOrder"
+    chooseComponentText="Choose Token"
+    [disabled]="listDisabled"
+    (componentChanges)="onTokenChanges($event)"
+  ></app-input-dropdown>
+</form>

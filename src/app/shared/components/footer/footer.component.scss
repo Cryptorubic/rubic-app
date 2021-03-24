@@ -1,0 +1,126 @@
+footer {
+  padding: 0 2%;
+}
+
+.subscribe {
+  padding-top: 10px;
+  color: #000;
+  padding-bottom: 50px;
+  .page-content__title {
+    font-size: 28px;
+    letter-spacing: 0;
+    line-height: 53px;
+    font-weight: bold;
+  }
+}
+
+.subscribe__row {
+  margin-bottom: 60px;
+  margin-top: 20px;
+
+  display: flex;
+  justify-content: center;
+
+  .top__bar__input {
+    width: 400px;
+  }
+
+  &_form {
+    display: table;
+    &__cell {
+      display: table-cell;
+      vertical-align: middle;
+      padding: 0 5px;
+    }
+  }
+}
+
+.subscribe__row--nw {
+  &:after {
+    clear: both;
+    content: '';
+    display: block;
+  }
+  margin-bottom: 20px;
+  img {
+    transition: all linear 0.1s;
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    width: 50px;
+    max-width: 70%;
+  }
+  span {
+    float: left;
+    width: 7%;
+    text-align: center;
+  }
+  a {
+    outline: 0 none;
+    &:hover,
+    &:focus,
+    &:active {
+      img {
+        transform: scale(1.05);
+        //box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+}
+
+.subscribe__row--btns {
+  margin-bottom: 80px;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.5);
+  padding: 30px 0;
+}
+
+@media screen and (max-width: 720px) {
+  .subscribe__row--nw {
+    span {
+      width: 25%;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .subscribe {
+    padding-bottom: 8vw;
+    .page-content__title {
+      font-size: 10vw;
+      line-height: initial;
+      margin: 2vw 0;
+    }
+  }
+  .subscribe__row {
+    .top__bar__input {
+      width: 100%;
+    }
+    &_form {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      &__cell {
+        display: block;
+        vertical-align: middle;
+        padding: 0;
+        &:first-child {
+          padding-left: 0;
+        }
+        .btn {
+          width: 100%;
+        }
+      }
+      &__cell + &__cell {
+        margin-top: 20px;
+      }
+    }
+  }
+  footer {
+    margin-top: 10vw;
+  }
+}

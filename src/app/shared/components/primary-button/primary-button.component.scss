@@ -1,0 +1,39 @@
+.primary-button {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 100%;
+  position: relative;
+  padding: 0 15px;
+
+  background-color: #4aa956;
+  border: none;
+  border-left: 5px solid rgba(255, 255, 255, 0.67) !important;
+  outline: none;
+  font-family: inherit;
+  font-size: 18px;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: transform 0.1s ease-in-out;
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+
+    &:active {
+      transform: none;
+    }
+  }
+
+  &__arrow {
+    margin-right: 13px;
+  }
+}

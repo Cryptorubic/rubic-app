@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>time</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ts_21" transform="translate(-598.000000, -1327.000000)" fill="#000000" fill-rule="nonzero">
+            <g id="time" transform="translate(598.000000, 1327.000000)">
+                <path d="M12,0 C5.3832,0 0,5.3832 0,12 C0,18.6168 5.3832,24 12,24 C18.6168,24 24,18.6168 24,12 C24,5.3832 18.6168,0 12,0 Z M12,23.2 C5.8244,23.2 0.8,18.1756 0.8,12 C0.8,5.8244 5.8244,0.8 12,0.8 C18.1756,0.8 23.2,5.8244 23.2,12 C23.2,18.1756 18.1756,23.2 12,23.2 Z" id="Shape"></path>
+                <path d="M12,2.4 C11.7792,2.4 11.6,2.5788 11.6,2.8 L11.6,12 L5.6,12 C5.3792,12 5.2,12.1788 5.2,12.4 C5.2,12.6212 5.3792,12.8 5.6,12.8 L12,12.8 C12.2208,12.8 12.4,12.6212 12.4,12.4 L12.4,2.8 C12.4,2.5788 12.2208,2.4 12,2.4 Z" id="Path"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,16 @@
+<div class="disclaimer">
+  <div class="disclaimer-title" mat-dialog-title>
+    {{ data.title | translate }}
+  </div>
+  <mat-dialog-content>
+    <div class="disclaimer-content" [innerHTML]="data.text | translate"></div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <div class="disclaimer-controls">
+      <button class="btn btn-green btn-min" mat-dialog-close type="button" (click)="okAction()">
+        <img _ngcontent-c1="" class="arrow" src="./assets/images/buttons/arrow_w.svg" />
+        <span>{{ 'BUTTONS.ACCEPT' | translate }}</span>
+      </button>
+    </div>
+  </mat-dialog-actions>
+</div>

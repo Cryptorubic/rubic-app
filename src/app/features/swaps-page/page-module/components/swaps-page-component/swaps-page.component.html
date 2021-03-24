@@ -1,0 +1,26 @@
+<div class="main-page">
+  <div class="main-page__intro">
+    Trading Re<span class="app-index__intro_green app-index__intro_bold">DeFi</span>ned
+  </div>
+
+  <div class="main-page__title">
+    <span>{{ 'Create your Trade' | translate }}</span>
+    <a routerLink="/bridge" class="toggle">
+      <span class="toggle__text">Cross-chain swaps</span>
+      <div class="toggle__arrow-button">
+        <img src="/assets/images/icons/arrow/arrow-right-green.svg" alt="Arrow" />
+      </div>
+    </a>
+  </div>
+
+  <ng-container [ngSwitch]="selectedMode">
+    <app-instant-trades *ngSwitchCase="TRADE_MODE.INSTANT_TRADE"></app-instant-trades>
+    <app-order-books *ngSwitchCase="TRADE_MODE.ORDER_BOOK"></app-order-books>
+  </ng-container>
+
+  <app-volume-block *ngIf="selectedMode === TRADE_MODE.INSTANT_TRADE"></app-volume-block>
+
+  <app-collaborations></app-collaborations>
+</div>
+
+<app-footer></app-footer>
