@@ -27,7 +27,10 @@
       [style.width]="token.amountContributed.div(token.amountTotal).times(100).toFixed() + '%'"
     ></div>
 
-    <div class="area-second__investors investors">
+    <div
+      class="area-second__investors investors"
+      [ngClass]="{ investors_quote: tokenPart === 'quote' }"
+    >
       <span class="investors__amount">{{ token.investorsNumber }} / 10</span>
       <span class="investors__text">Number of investors</span>
     </div>
