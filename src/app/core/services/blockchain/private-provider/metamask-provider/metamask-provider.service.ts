@@ -6,6 +6,7 @@ import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
+import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,8 @@ export class MetamaskProviderService extends PrivateProvider {
     const { ethereum } = window as any;
     if (!ethereum) {
       console.error('No Metamask installed.');
+      this.onNetworkChanges = new BehaviorSubject<IBlockchain>(undefined);
+      this.onAddressChanges = new BehaviorSubject<string>(undefined);
       return;
     }
     const web3 = new Web3(ethereum);
@@ -88,10 +91,15 @@ export class MetamaskProviderService extends PrivateProvider {
   }
 
   public async activate(): Promise<void> {
-    await this._metaMask?.request({ method: 'eth_requestAccounts' });
-    this.isEnabled = true;
-    this.onNetworkChanges.next(this.getNetwork());
-    this.onAddressChanges.next(this.getAddress());
+    try {
+      await this._metaMask.request({ method: 'eth_requestAccounts' });
+      this.isEnabled = true;
+      this.onNetworkChanges.next(this.getNetwork());
+      this.onAddressChanges.next(this.getAddress());
+    } catch (error) {
+      console.error(`No Metamask installed. ${error}`);
+      throw new MetamaskError();
+    }
   }
 
   public deActivate(): void {
