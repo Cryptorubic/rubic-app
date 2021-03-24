@@ -13,6 +13,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { ethers } from 'ethers';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import InstantTradeService from '../InstantTradeService';
 import InstantTrade from '../../models/InstantTrade';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
@@ -52,6 +53,8 @@ export class UniSwapService extends InstantTradeService {
 
   private WETH;
 
+  private blockchain: IBlockchain | { id: number; name: BLOCKCHAIN_NAME.ETHEREUM };
+
   constructor(
     private coingeckoApiService: CoingeckoApiService,
     web3Private: Web3PrivateService,
@@ -64,16 +67,16 @@ export class UniSwapService extends InstantTradeService {
     useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
 
     this.web3Private = web3Private;
-    const blockchain = web3Private.network || {
+    this.blockchain = web3Private.network || {
       id: 1,
       name: BLOCKCHAIN_NAME.ETHEREUM
     };
 
-    this.web3Public = web3Public[blockchain.name];
+    this.web3Public = web3Public[this.blockchain.name];
     this.provider = new ethers.providers.JsonRpcProvider(
-      publicProvider.getBlockchainRpcLink(blockchain.name)
+      publicProvider.getBlockchainRpcLink(this.blockchain.name)
     );
-    this.WETH = WETH[blockchain.id.toString()];
+    this.WETH = WETH[this.blockchain.id.toString()];
   }
 
   public async calculateTrade(
@@ -231,6 +234,7 @@ export class UniSwapService extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
+    await this.checkSettings(this.blockchain.name);
     await this.checkBalance(trade);
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
     const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(

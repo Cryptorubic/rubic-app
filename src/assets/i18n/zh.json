@@ -64,6 +64,9 @@
   "There is no matching pair, please":"没有匹配的一对，请",
   "create your own":"创造你自己的",
   "Network": "Network",
+  "BUTTONS": {
+    "ACCEPT": "Accept"
+  },
 
   "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue.":
   "Rubic p2p trades是一个去中心化的p2p平台。它帮助用户按照自己的条件进行交易，分享和创收。",
