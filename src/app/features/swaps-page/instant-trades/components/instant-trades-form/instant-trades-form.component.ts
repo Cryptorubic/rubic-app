@@ -36,7 +36,6 @@ interface InstantTradeProviderController {
   tradeState: TRADE_STATUS;
   tradeProviderInfo: TradeProviderInfo;
   isBestRate: boolean;
-  warningText: string;
 }
 
 enum TRADE_STATUS {
@@ -185,8 +184,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             tradeProviderInfo: {
               label: '1inch'
             },
-            isBestRate: false,
-            warningText: ''
+            isBestRate: false
           },
           {
             trade: null,
@@ -194,8 +192,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             tradeProviderInfo: {
               label: 'Uniswap'
             },
-            isBestRate: false,
-            warningText: ''
+            isBestRate: false
           }
         ];
         break;
@@ -208,8 +205,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             tradeProviderInfo: {
               label: '1inch'
             },
-            isBestRate: false,
-            warningText: ''
+            isBestRate: false
           }
         ];
         break;
