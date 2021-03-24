@@ -118,11 +118,23 @@ export class OneInchService extends InstantTradeService {
       throw new Error('Oneinch quote error');
     }
 
-    const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
-    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+    // TODO: верменный фикс, потому что rpc binance сломалось
 
-    const gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
-    const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
+    let estimatedGas;
+    let gasFeeInUsd;
+    let gasFeeInEth;
+
+    if (this.blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
+      estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
+      const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+
+      gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
+      gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
+    } else {
+      estimatedGas = new BigNumber(0);
+      gasFeeInUsd = new BigNumber(0);
+      gasFeeInEth = new BigNumber(0);
+    }
 
     return {
       from: {
@@ -144,7 +156,11 @@ export class OneInchService extends InstantTradeService {
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
     await this.checkSettings(this.blockchain);
-    await this.checkBalance(trade);
+
+    // TODO: верменный фикс, потому что rpc binance сломалось
+    if (this.blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
+      await this.checkBalance(trade);
+    }
 
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       trade.from.token,
