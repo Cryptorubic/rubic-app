@@ -64,6 +64,9 @@
   "There is no matching pair, please": "일치하는 쌍이 없습니다.",
   "create your own": "직접 만들어 봐",
   "Network": "Network",
+  "BUTTONS": {
+    "ACCEPT": "Accept"
+  },
 
   "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue.":
   "Rubic p2p 거래는 분산형 p2p 플랫폼입니다. 사용자가 자신의 조건에 따라 거래하고 공유하고 수익을 창출하는 데 도움이 됩니다.",
