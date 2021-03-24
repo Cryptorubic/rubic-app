@@ -37,4 +37,10 @@ const WETH: InstantTradeToken = {
   symbol: 'WETH'
 };
 
-export { WEENUS, YEENUS, XEENUS, ZEENUS, ETH, WETH };
+const WSATT: InstantTradeToken = {
+  address: '0x93171f534715d36fAC7ED6b02A052671ee09Fc23',
+  decimals: 18,
+  symbol: 'WSATT'
+};
+
+export { WEENUS, YEENUS, XEENUS, ZEENUS, ETH, WETH, WSATT };

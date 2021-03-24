@@ -147,6 +147,11 @@
           label="Cancel trade"
           [animate]="cancelStatus === TX_STATUS.STARTED || cancelStatus === TX_STATUS.IN_PROGRESS"
           [disabled]="(onAddressChanges | async).toLowerCase() !== tradeData.owner.toLowerCase()"
+          [title]="
+            (onAddressChanges | async).toLowerCase() !== tradeData.owner.toLowerCase()
+              ? 'You are not the owner'
+              : ''
+          "
           (onClick)="cancelTrade()"
         ></app-primary-button>
       </div>

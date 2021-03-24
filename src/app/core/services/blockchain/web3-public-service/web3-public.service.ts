@@ -40,13 +40,18 @@ export class Web3PublicService {
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        const connection = this.connectionLinks.find(
-          c => c.blockchainName === BLOCKCHAIN_NAME.ETHEREUM_TESTNET
-        );
-        this[BLOCKCHAIN_NAME.ETHEREUM] = new Web3Public(
-          new Web3(connection.rpcLink),
-          BlockchainsInfo.getBlockchainByName(connection.blockchainName)
-        );
+        this.connectionLinks.forEach(connection => {
+          if (!connection.blockchainName.includes('_TESTNET')) {
+            const testingConnection = this.connectionLinks.find(
+              c => c.blockchainName === `${connection.blockchainName}_TESTNET`
+            );
+
+            this[connection.blockchainName] = new Web3Public(
+              new Web3(testingConnection.rpcLink),
+              BlockchainsInfo.getBlockchainByName(testingConnection.blockchainName)
+            );
+          }
+        });
       }
     });
   }
