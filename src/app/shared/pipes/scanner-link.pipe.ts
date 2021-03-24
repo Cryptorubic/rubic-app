@@ -26,6 +26,10 @@ export class ScannerLinkPipe implements PipeTransform {
       return baseUrl + nativeCoinUrl;
     }
 
+    if (blockchainName === BLOCKCHAIN_NAME.MATIC && type === ADDRESS_TYPE.TOKEN) {
+      return baseUrl + urlPaths[ADDRESS_TYPE.WALLET] + address;
+    }
+
     return baseUrl + urlPaths[type] + address;
   }
 }
