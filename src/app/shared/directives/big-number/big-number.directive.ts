@@ -93,7 +93,7 @@ export class BigNumberDirective implements OnInit, OnChanges {
 
         modelValue = bigNumberValue.toString(10);
 
-        if (bigNumberValue.div(256 ** 2 - 1).toNumber() > 1) {
+        if (bigNumberValue.div(2 ** 256 - 1).toNumber() > 1) {
           errors.totalMaximum = true;
         }
 
@@ -135,7 +135,7 @@ export class BigNumberDirective implements OnInit, OnChanges {
     const visibleValue = this.latestValue
       ? new BigNumber(this.latestValue)
       : value
-      ? new BigNumber(value).div(this.currentDecimals ** 10)
+      ? new BigNumber(value).div(10 ** this.currentDecimals)
       : '';
 
     return visibleValue
