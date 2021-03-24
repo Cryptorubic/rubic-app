@@ -205,6 +205,7 @@ export class UniSwapService extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
+    await this.checkSettings(this.blockchain.name);
     await this.checkBalance(trade);
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 

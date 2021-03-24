@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
+import { Router } from '@angular/router';
 import { OrderBooksFormService } from '../../services/order-book-form-service/order-books-form.service';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
 import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
@@ -66,6 +67,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   public selectedTradeState: TRADE_STATUS;
 
   public transactionHash: string;
+
+  private createdUniqueLink: string;
 
   get tradeParameters(): TradeParameters {
     return this._tradeParameters;
@@ -188,6 +191,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   @ViewChild('quoteCustomToken') quoteCustomToken: NgModel;
 
   constructor(
+    private router: Router,
     private tradeTypeService: TradeTypeService,
     private tokensService: TokensService,
     private tradeParametersService: TradeParametersService,
@@ -317,9 +321,10 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       .createOrder(this.tradeForm, () => {
         this.selectedTradeState = TRADE_STATUS.TX_IN_PROGRESS;
       })
-      .then(transactionHash => {
+      .then(({ transactionHash, uniqueLink }) => {
         this.selectedTradeState = TRADE_STATUS.COMPLETED;
         this.transactionHash = transactionHash;
+        this.createdUniqueLink = uniqueLink;
       })
       .catch((err: RubicError) => {
         this.selectedTradeState = TRADE_STATUS.ERROR;
@@ -336,5 +341,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
           data
         });
       });
+  }
+
+  public navigateToTrade(): void {
+    this.router.navigate(['trade', this.createdUniqueLink]);
   }
 }
