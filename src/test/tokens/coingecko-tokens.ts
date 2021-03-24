@@ -1,4 +1,4 @@
-import { ETH, WEENUS, XEENUS, YEENUS } from './eth-tokens';
+import { ETH, WEENUS, WSATT, XEENUS, YEENUS } from './eth-tokens';
 import { BLOCKCHAIN_NAME } from '../../app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from '../../app/shared/models/tokens/SwapToken';
 
@@ -49,4 +49,16 @@ const xeenus = {
   price: 2
 };
 
-export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus];
+const wsatt = {
+  name: 'Wsatt',
+  symbol: WSATT.symbol,
+  blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+  address: WSATT.address,
+  decimals: WSATT.decimals,
+  image:
+    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  rank: 5,
+  price: 5
+};
+
+export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt];

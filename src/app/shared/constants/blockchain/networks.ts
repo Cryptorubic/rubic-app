@@ -57,5 +57,33 @@ export default [
       symbol: 'ETH',
       decimals: 18
     }
+  },
+  {
+    id: 97,
+    name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
+    scannerUrl: 'https://testnet.bscscan.com/',
+    rpcLink: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+    imagePath: 'assets/images/icons/coins/bnb.svg',
+    nativeCoin: {
+      blockchainName: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'Binance Coin',
+      symbol: 'BNB',
+      decimals: 18
+    }
+  },
+  {
+    id: 80001,
+    name: BLOCKCHAIN_NAME.MATIC_TESTNET,
+    scannerUrl: 'https://explorer-mumbai.maticvigil.com/',
+    rpcLink: 'https://rpc-mumbai.maticvigil.com',
+    imagePath: 'assets/images/icons/coins/matic.svg',
+    nativeCoin: {
+      blockchainName: BLOCKCHAIN_NAME.MATIC_TESTNET,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'Polygon',
+      symbol: 'MATIC',
+      decimals: 18
+    }
   }
 ];

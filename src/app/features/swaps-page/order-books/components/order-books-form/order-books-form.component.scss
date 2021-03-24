@@ -212,10 +212,9 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-column-gap: 25px;
-  align-items: center;
 
   &__confirm-section {
     position: relative;
-    top: -4px;
+    top: 21px;
   }
 }

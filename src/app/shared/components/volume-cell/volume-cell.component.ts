@@ -1,6 +1,8 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { OrderBookDataToken } from 'src/app/features/order-book-trade-page/models/trade-data';
-import { OrderBookTableTokens } from 'src/app/features/swaps-page/order-books/types/trade-table';
+import {
+  OrderBookTableToken,
+  OrderBookTableTokens
+} from 'src/app/features/swaps-page/order-books/types/trade-table';
 
 @Component({
   selector: 'app-volume-cell',
@@ -13,7 +15,7 @@ export class VolumeCellComponent {
 
   constructor() {}
 
-  public getProgressBarValue(token: OrderBookDataToken): number {
+  public getProgressBarValue(token: OrderBookTableToken): number {
     return Number(token.amountContributed.div(token.amountTotal).times(100).toFixed());
   }
 }

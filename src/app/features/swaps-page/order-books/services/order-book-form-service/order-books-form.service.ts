@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { ORDER_BOOK_CONTRACT } from 'src/app/shared/constants/order-book/smart-contract';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -13,9 +13,10 @@ import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
 import SameTokens from 'src/app/shared/models/errors/order-book/SameTokens';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
+import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 
 @Injectable()
-export class OrderBooksFormService {
+export class OrderBooksFormService implements OnDestroy {
   private readonly _tradeForm = new BehaviorSubject<OrderBookTradeForm>({
     token: {
       base: {} as OrderBookFormToken,
@@ -23,11 +24,31 @@ export class OrderBooksFormService {
     }
   } as OrderBookTradeForm);
 
+  private _useTestingModeSubscription$: Subscription;
+
   constructor(
     private orderBookApiService: OrderBookApiService,
     private web3PublicService: Web3PublicService,
-    private web3PrivateService: Web3PrivateService
-  ) {}
+    private web3PrivateService: Web3PrivateService,
+    private useTestingModeService: UseTestingModeService
+  ) {
+    this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
+      isTestingMode => {
+        if (isTestingMode) {
+          ORDER_BOOK_CONTRACT.ADDRESSES[2][BLOCKCHAIN_NAME.ETHEREUM] =
+            ORDER_BOOK_CONTRACT.ADDRESSES[2][BLOCKCHAIN_NAME.ETHEREUM_TESTNET];
+          ORDER_BOOK_CONTRACT.ADDRESSES[2][BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN] =
+            ORDER_BOOK_CONTRACT.ADDRESSES[2][BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET];
+          ORDER_BOOK_CONTRACT.ADDRESSES[2][BLOCKCHAIN_NAME.MATIC] =
+            ORDER_BOOK_CONTRACT.ADDRESSES[2][BLOCKCHAIN_NAME.MATIC_TESTNET];
+        }
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this._useTestingModeSubscription$.unsubscribe();
+  }
 
   public getTradeForm(): Observable<OrderBookTradeForm> {
     return this._tradeForm.asObservable();
