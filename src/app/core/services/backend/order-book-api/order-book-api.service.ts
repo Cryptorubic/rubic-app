@@ -78,7 +78,7 @@ export class OrderBookApiService {
       .subscribe(
         async tradeData => {
           this.orderBookTableService.setTableData(await Promise.all(tradeData));
-          setTimeout(() => this.orderBookTableService.filterByBlockchain());
+          this.orderBookTableService.filterByBlockchain();
         },
         err => console.error(err),
         () => this.orderBookTableService.setTableLoadingStatus(false)
