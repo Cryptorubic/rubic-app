@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import { OrderBookTradeTableRow } from '../../../types/trade-table';
 
@@ -21,12 +22,15 @@ export class OrderBooksTableService {
 
   private readonly $tableLoadingStatus: BehaviorSubject<boolean>;
 
+  private readonly $blockchainMode: BehaviorSubject<BLOCKCHAIN_NAME>;
+
   constructor() {
     this.$tableLoadingStatus = new BehaviorSubject<boolean>(false);
     this.$filterBaseValue = new BehaviorSubject<any>(null);
     this.$filterQuoteValue = new BehaviorSubject<any>(null);
     this.$dataSource = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
     this.$visibleTableData = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
+    this.$blockchainMode = new BehaviorSubject<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM);
     this.$displayedColumns = new BehaviorSubject<string[]>([
       'token',
       'amount',
@@ -88,5 +92,15 @@ export class OrderBooksTableService {
 
   public getTableLoadingStatus(): Observable<boolean> {
     return this.$tableLoadingStatus.asObservable();
+  }
+
+  public setBlockchain(blockchain: BLOCKCHAIN_NAME): void {
+    this.$blockchainMode.next(blockchain);
+  }
+
+  public filterByBlockchain(): void {
+    this.$visibleTableData.next(
+      this.$dataSource.value.filter(trade => trade.blockchain === this.$blockchainMode.value)
+    );
   }
 }
