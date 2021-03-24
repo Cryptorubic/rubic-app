@@ -75,9 +75,13 @@ export class OrderBookApiService {
           });
         })
       )
-      .subscribe(async tradeData => {
-        this.orderBookTableService.setTableData(await Promise.all(tradeData));
-      });
+      .subscribe(
+        async tradeData => {
+          this.orderBookTableService.setTableData(await Promise.all(tradeData));
+        },
+        err => console.error(err),
+        () => this.orderBookTableService.setTableLoadingStatus(false)
+      );
   }
 
   public async setAmountContributed(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
