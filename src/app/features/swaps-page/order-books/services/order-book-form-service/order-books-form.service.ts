@@ -89,7 +89,10 @@ export class OrderBooksFormService implements OnDestroy {
   public async createOrder(
     tradeForm: OrderBookTradeForm,
     onTransactionHash?: (hash: string) => void
-  ): Promise<string> {
+  ): Promise<{
+    transactionHash: string;
+    uniqueLink: string;
+  }> {
     this.checkSettings(tradeForm);
 
     const web3Public: Web3Public = this.web3PublicService[tradeForm.blockchain];
@@ -130,15 +133,18 @@ export class OrderBooksFormService implements OnDestroy {
     );
 
     tradeApi.memo = receipt.events.OrderCreated.returnValues.id;
-    const tradeApiObject = await this.orderBookApiService.createTrade(tradeApi);
+    const { unique_link } = await this.orderBookApiService.createTrade(tradeApi);
     this.orderBookApiService.createTradeBotNotification(
       tradeForm,
-      tradeApiObject.unique_link,
+      unique_link,
       receipt.from,
       receipt.transactionHash
     );
 
-    return receipt.transactionHash;
+    return {
+      transactionHash: receipt.transactionHash,
+      uniqueLink: unique_link
+    };
   }
 
   private generateTradeApiObject(tradeForm: OrderBookTradeForm): OrderBookTradeApi {

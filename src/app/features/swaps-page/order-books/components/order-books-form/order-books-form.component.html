@@ -175,5 +175,6 @@
   *ngIf="selectedTradeState === TRADE_STATUS.COMPLETED"
   [transactionId]="transactionHash"
   [blockchainName]="blockchain"
+  (onClose)="navigateToTrade()"
 >
 </app-trade-success-modal>
