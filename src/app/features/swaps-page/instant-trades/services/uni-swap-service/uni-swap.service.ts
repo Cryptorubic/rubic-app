@@ -301,26 +301,6 @@ export class UniSwapService extends InstantTradeService {
     );
   }
 
-  /* private async getUniSwapTrade(
-    fromAmount: BigNumber,
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
-  ): Promise<Trade> {
-    const chainId = (this.web3Private.network?.id as ChainId) || ChainId.MAINNET;
-    const uniSwapFromToken = new Token(chainId, fromToken.address, fromToken.decimals);
-    const uniSwapToToken = new Token(chainId, toToken.address, toToken.decimals);
-    const pair = await Fetcher.fetchPairData(uniSwapFromToken, uniSwapToToken, this.provider);
-    const route = new Route([pair], uniSwapFromToken);
-
-    const fullFromAmount = fromAmount.multipliedBy(10 ** fromToken.decimals);
-
-    return new Trade(
-      route,
-      new TokenAmount(uniSwapFromToken, fullFromAmount.toFixed(0)),
-      TradeType.EXACT_INPUT
-    );
-  } */
-
   private async getToAmount(
     fromAmountRelative: BigNumber,
     fromToken: InstantTradeToken,
