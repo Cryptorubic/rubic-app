@@ -5,6 +5,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 
 export interface OrderBookTableToken extends SwapToken {
   amountTotal: BigNumber;
+  amountContributed: BigNumber;
 }
 
 export type OrderBookTableTokens = {

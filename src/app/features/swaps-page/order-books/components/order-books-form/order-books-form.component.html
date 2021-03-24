@@ -37,6 +37,7 @@
               id="base-custom-input"
               placeholder="Token contract address"
               pattern="0x[A-Fa-f0-9]{40}"
+              name="base"
               appTokenAddress
               [blockchain]="blockchain"
               (tokenValidated)="setCustomToken('base', $event)"
@@ -129,6 +130,7 @@
               id="quote-custom-input"
               placeholder="Token contract address"
               pattern="0x[A-Fa-f0-9]{40}"
+              name="quote"
               appTokenAddress
               [blockchain]="blockchain"
               (tokenValidated)="setCustomToken('quote', $event)"
@@ -172,5 +174,6 @@
 <app-trade-success-modal
   *ngIf="selectedTradeState === TRADE_STATUS.COMPLETED"
   [transactionId]="transactionHash"
+  [blockchainName]="blockchain"
 >
 </app-trade-success-modal>
