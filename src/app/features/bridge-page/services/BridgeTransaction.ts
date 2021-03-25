@@ -19,7 +19,7 @@ export class BridgeTransaction {
     public depositAddress: string,
     public amount: BigNumber,
     public toAddress: string,
-    public web3Api: Web3PrivateService
+    public web3Private: Web3PrivateService
   ) {}
 
   public async sendDeposit(onTransactionHash?: (hash: string) => void): Promise<void> {
@@ -41,14 +41,15 @@ export class BridgeTransaction {
     const realAmount = this.amount.multipliedBy(10 ** decimals);
 
     if (tokenAddress) {
-      this.receipt = await this.web3Api.transferTokens(
+      const estimatedGas = '120000'; // TODO: хотфикс сломавшегося в метамаске рассчета газа. Estimated gas не подойдет, т.к. в BSC не работает rpc
+      this.receipt = await this.web3Private.transferTokens(
         tokenAddress,
         this.depositAddress,
         realAmount.toFixed(0),
-        { onTransactionHash }
+        { onTransactionHash, gas: estimatedGas }
       );
     } else {
-      this.receipt = await this.web3Api.sendTransaction(
+      this.receipt = await this.web3Private.sendTransaction(
         this.depositAddress,
         realAmount.toFixed(0),
         { onTransactionHash, inWei: true }
