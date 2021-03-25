@@ -1,20 +1,5 @@
 export interface UserInterface {
-  isLogout?: boolean;
-  balance: number;
-  eos_balance: number;
-  visibleBalance: string;
-  contracts: number;
-  eos_address: string;
-  id: number;
-  internal_address: string;
-  internal_btc_address: string;
-  is_social: boolean;
-  lang: string;
-  memo: string;
-  use_totp: boolean;
-  username: string;
-  is_ghost?: boolean;
-  is_swaps_admin?: any;
+  address: string;
 }
 
 export interface AuthUserInterface {

@@ -13,6 +13,7 @@ import { UserInterface } from 'src/app/core/services/auth/models/user.interface'
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { HeaderStore } from '../../../../services/header.store';
+import { AuthService } from '../../../../../services/auth/auth.service';
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -30,14 +31,13 @@ export class UserProfileComponent implements AfterViewInit {
 
   public readonly $currentBlockchain: Observable<IBlockchain>;
 
-  public readonly $currentAccountAddress: Observable<string>;
-
   constructor(
     private readonly elementRef: ElementRef,
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
     private readonly cdr: ChangeDetectorRef,
-    private web3PrivateService: Web3PrivateService
+    private web3PrivateService: Web3PrivateService,
+    private readonly authService: AuthService
   ) {
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.$isUserMenuOpened = this.headerStore.getUserMenuOpeningStatus();
@@ -49,7 +49,7 @@ export class UserProfileComponent implements AfterViewInit {
       }
     });
     this.$currentBlockchain = this.web3PrivateService.onNetworkChanges;
-    this.$currentAccountAddress = this.web3PrivateService.onAddressChanges;
+    this.$currentUser = this.authService.getCurrentUser();
   }
 
   public ngAfterViewInit(): void {

@@ -35,7 +35,7 @@ export class HeaderComponent {
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService
   ) {
-    this.authService.fetchUser();
+    this.authService.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
