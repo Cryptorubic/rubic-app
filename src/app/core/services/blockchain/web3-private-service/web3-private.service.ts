@@ -84,6 +84,7 @@ export class Web3PrivateService {
     amount: string | BigNumber,
     options: {
       onTransactionHash?: (hash: string) => void;
+      gas?: string;
     } = {}
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], contractAddress);
@@ -91,7 +92,10 @@ export class Web3PrivateService {
     return new Promise((resolve, reject) => {
       contract.methods
         .transfer(toAddress, amount.toString())
-        .send({ from: this.address, ...(this.defaultMockGas && { gas: this.defaultMockGas }) })
+        .send({
+          from: this.address,
+          ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas })
+        })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
