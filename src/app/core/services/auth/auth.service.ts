@@ -14,6 +14,9 @@ import { URLS } from './models/user.service.api';
   providedIn: 'root'
 })
 export class AuthService {
+  /**
+   * Is auth process going in.
+   */
   private isAuthProcess: boolean = false;
 
   /**
@@ -51,17 +54,21 @@ export class AuthService {
    * @description Fetch user data from backend.
    */
   public fetchUser(): void {
-    this.httpService.get(URLS.PROFILE).subscribe(
-      (user: UserInterface) => {
-        this.$currentUser.next(user);
-      },
-      () => {
-        this.$currentUser.next(null);
-      },
-      () => {
-        this.isAuthProcess = false;
-      }
-    );
+    if (this.web3Service.isProviderActive) {
+      this.httpService.get(URLS.PROFILE).subscribe(
+        (user: UserInterface) => {
+          this.$currentUser.next(user);
+        },
+        () => {
+          this.$currentUser.next(null);
+        },
+        () => {
+          this.isAuthProcess = false;
+        }
+      );
+    } else {
+      this.$currentUser.next(null);
+    }
   }
 
   /**
@@ -72,7 +79,7 @@ export class AuthService {
   }
 
   /**
-   * Authenticate user ob backend.
+   * @description Authenticate user on backend.
    * @param address wallet address
    * @param nonce nonce to sign
    * @param signature signed nonce

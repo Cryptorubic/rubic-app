@@ -10,8 +10,6 @@ export class AppComponent {
   public isBackendAvailable: boolean;
 
   constructor(healthcheckService: HealthcheckService) {
-    healthcheckService
-      .healthCheck()
-      .subscribe(isAvailable => (this.isBackendAvailable = isAvailable));
+    healthcheckService.healthCheck().then(isAvailable => (this.isBackendAvailable = isAvailable));
   }
 }

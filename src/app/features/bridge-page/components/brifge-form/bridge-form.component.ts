@@ -13,6 +13,7 @@ import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
+import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 
 @Component({
   selector: 'app-bridge-form',
@@ -278,6 +279,9 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
             err = new RubicError();
           }
           let data: any = { title: 'Error', descriptionText: err.comment };
+          if (err instanceof MetamaskError) {
+            data.title = 'Warning';
+          }
           if (err instanceof NetworkError) {
             data = {
               title: 'Error',

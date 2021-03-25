@@ -19,7 +19,7 @@ export default [
     id: 56,
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     scannerUrl: 'https://bscscan.com/',
-    rpcLink: 'https://bsc-dataseed.binance.org',
+    rpcLink: 'https://bsc-node2.web3api.com/',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchainName: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,

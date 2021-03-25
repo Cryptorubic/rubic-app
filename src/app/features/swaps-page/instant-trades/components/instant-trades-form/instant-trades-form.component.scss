@@ -74,7 +74,6 @@
   grid-auto-flow: row;
   row-gap: 20px;
   column-gap: 25px;
-  align-items: center;
 }
 
 .selection-block {
@@ -97,7 +96,17 @@
   }
 
   &__warning {
+    position: relative;
     margin-top: 7px;
+
+    cursor: pointer;
+
+    &:hover {
+      app-tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
   }
 }
 
@@ -113,10 +122,10 @@
 
 .instant-trade-button {
   position: relative;
-  top: 6px;
+  top: 22px;
 
   &_second {
-    top: -4px;
+    top: 1px;
   }
 
   &__best-rate {
@@ -134,4 +143,19 @@
       color: rgba(black, 0.5);
     }
   }
+}
+
+app-tooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: calc(100% - 7px);
+  right: -88px;
+
+  z-index: 10;
+  opacity: 0;
+
+  text-align: center;
+  font-size: 11px;
+
+  transition: opacity 0.3s ease-in-out;
 }
