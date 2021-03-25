@@ -7,7 +7,7 @@ import { MetamaskProviderService } from '../private-provider/metamask-provider/m
 import providerServiceStub from '../private-provider/metamask-provider/metamask-provider.service.stub';
 
 // @ts-ignore
-import config from '../../../../test/enviroment.test.json';
+import config from '../../../../../test/enviroment.test.json';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
 import { Web3PublicService } from '../web3-public-service/web3-public.service';
@@ -35,8 +35,8 @@ describe('Web3ApiService', () => {
     });
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
-    service = TestBed.get(Web3PrivateService);
     web3PublicEth = TestBed.get(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
+    service = TestBed.get(Web3PrivateService);
   });
 
   afterEach(() => {

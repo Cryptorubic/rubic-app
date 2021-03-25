@@ -5,7 +5,7 @@ import { PublicProviderService } from '../public-provider/public-provider.servic
 
 import { Web3Public } from './Web3Public';
 // @ts-ignore
-import config from '../../../../test/enviroment.test.json';
+import config from '../../../../../test/enviroment.test.json';
 import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
 
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
