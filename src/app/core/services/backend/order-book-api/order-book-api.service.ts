@@ -24,6 +24,10 @@ interface ContractParameters {
   contractAbi: any[];
 }
 
+interface PublicSwapsResponse extends OrderBookTradeApi {
+  memo_contract: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -69,9 +73,13 @@ export class OrderBookApiService {
       .pipe(
         map((swaps: OrderBookTradeApi[]) => {
           return swaps.map(async swap => {
-            const trade = await this.tradeApiToTradeData(swap, swap.unique_link);
-            await this.setAmountContributed(trade);
-            return trade;
+            const tradeData = await this.tradeApiToTradeData(swap, swap.unique_link);
+            try {
+              await this.setAmountContributed(tradeData);
+            } catch (err) {
+              console.error(err);
+            }
+            return tradeData;
           });
         })
       )
@@ -119,7 +127,7 @@ export class OrderBookApiService {
   }
 
   public async tradeApiToTradeData(
-    tradeApi: OrderBookTradeApi,
+    tradeApi: OrderBookTradeApi | PublicSwapsResponse,
     uniqueLink: string
   ): Promise<OrderBookTradeData> {
     let blockchain;
@@ -136,7 +144,7 @@ export class OrderBookApiService {
     }
 
     const tradeData = {
-      memo: tradeApi.memo,
+      memo: (<OrderBookTradeApi>tradeApi).memo ?? (<PublicSwapsResponse>tradeApi).memo_contract,
       contractAddress: tradeApi.contract_address,
       uniqueLink,
 
