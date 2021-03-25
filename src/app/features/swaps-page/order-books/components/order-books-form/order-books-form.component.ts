@@ -74,9 +74,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   set tradeParameters(value) {
     if (
       this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-      this._tradeParameters.fromAmount?.isEqualTo(value.fromAmount) &&
+      new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
       this._tradeParameters.toToken?.address === value.toToken?.address &&
-      this._tradeParameters.toAmount?.isEqualTo(value.toAmount)
+      new BigNumber(this._tradeParameters.toAmount).isEqualTo(value.toAmount)
     ) {
       return;
     }
@@ -139,29 +139,25 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this.availableBaseTokens = this.tokens.filter(token => token.address !== value?.address);
   }
 
-  get baseAmountAsString(): string {
-    return !this.tradeParameters?.fromAmount || this.tradeParameters.fromAmount?.isNaN()
-      ? ''
-      : this.tradeParameters.fromAmount.toFixed();
+  get baseAmount(): string {
+    return this.tradeParameters.fromAmount;
   }
 
-  set baseAmountAsString(value) {
+  set baseAmount(value) {
     this.tradeParameters = {
       ...this.tradeParameters,
-      fromAmount: new BigNumber(value)
+      fromAmount: value
     };
   }
 
-  get quoteAmountAsString(): string {
-    return !this.tradeParameters?.toAmount || this.tradeParameters.toAmount?.isNaN()
-      ? ''
-      : this.tradeParameters.toAmount.toFixed();
+  get quoteAmount(): string {
+    return this.tradeParameters.toAmount;
   }
 
-  set quoteAmountAsString(value) {
+  set quoteAmount(value) {
     this.tradeParameters = {
       ...this.tradeParameters,
-      toAmount: new BigNumber(value)
+      toAmount: value
     };
   }
 
@@ -174,9 +170,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       ...value,
       areAmountsAndTokensSet: !!(
         value.token.base?.address &&
-        value.token.base?.amount?.isGreaterThan(0) &&
+        new BigNumber(value.token.base?.amount).isGreaterThan(0) &&
         value.token.quote?.address &&
-        value.token.quote?.amount?.isGreaterThan(0)
+        new BigNumber(value.token.quote?.amount).isGreaterThan(0)
       ),
       areOptionsValid: false
     };
@@ -227,12 +223,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
       this.baseToken = tradeParameters?.fromToken;
       this.quoteToken = tradeParameters?.toToken;
-      this.baseAmountAsString = tradeParameters?.fromAmount?.toFixed(
-        tradeParameters?.fromToken?.decimals
-      );
-      this.quoteAmountAsString = tradeParameters?.toAmount?.toFixed(
-        tradeParameters?.toToken?.decimals
-      );
+      this.baseAmount = tradeParameters?.fromAmount;
+      this.quoteAmount = tradeParameters?.toAmount;
     });
 
     // tokens subscription
@@ -298,15 +290,19 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   private calculateTokensRate(): void {
     if (
-      !(this.baseToken?.price && this.tradeForm.token.base?.amount?.isGreaterThan(0)) ||
-      !(this.quoteToken?.price && this.tradeForm.token.quote?.amount?.isGreaterThan(0))
+      !(
+        this.baseToken?.price && new BigNumber(this.tradeForm.token.base?.amount).isGreaterThan(0)
+      ) ||
+      !(
+        this.quoteToken?.price && new BigNumber(this.tradeForm.token.quote?.amount).isGreaterThan(0)
+      )
     ) {
       this.tokensRate = null;
       return;
     }
 
-    const baseRate = this.tradeForm.token.base.amount.times(this.baseToken.price);
-    const quoteRate = this.tradeForm.token.quote.amount.times(this.quoteToken.price);
+    const baseRate = new BigNumber(this.tradeForm.token.base.amount).times(this.baseToken.price);
+    const quoteRate = new BigNumber(this.tradeForm.token.quote.amount).times(this.quoteToken.price);
     this.tokensRate = quoteRate.minus(baseRate).div(baseRate).times(100);
   }
 

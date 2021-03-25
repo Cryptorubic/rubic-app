@@ -203,8 +203,8 @@ export class OrderBookApiService {
       link: `${
         window.location.origin === this.PROD_ORIGIN ? this.PROD_ORIGIN : this.TEST_ORIGIN
       }/trades/public-v3/${uniqueLink}`,
-      amountFrom: tradeForm.token.base.amount.toFixed(),
-      amountTo: tradeForm.token.quote.amount.toFixed(),
+      amountFrom: tradeForm.token.base.amount,
+      amountTo: tradeForm.token.quote.amount,
       symbolFrom: tradeForm.token.base.symbol,
       symbolTo: tradeForm.token.quote.symbol
     };

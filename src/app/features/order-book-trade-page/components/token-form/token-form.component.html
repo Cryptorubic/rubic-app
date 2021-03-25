@@ -71,6 +71,7 @@
       [placeholder]="token.isApproved ? 'Enter amount' : ''"
       [disabled]="!token.isApproved"
       appNumberPrecision
+      [inputElement]="amountToContributeInput"
       [decimalLength]="token.decimals"
       [minValue]="getMinContributionAsString()"
       [maxValue]="token.amountLeft.toFixed()"
@@ -80,6 +81,7 @@
       [ngClass]="{
         'area-third__amount-input_invalid': amountToContributeModel.invalid
       }"
+      #amountToContributeInput
     />
 
     <div class="area-third__confirm-button">

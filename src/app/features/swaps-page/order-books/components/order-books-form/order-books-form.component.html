@@ -11,9 +11,9 @@
         <app-tokens-input
           [tokensList]="availableBaseTokens"
           [selectedToken]="baseToken"
-          [selectedAmount]="baseAmountAsString"
+          [selectedAmount]="baseAmount"
           (tokenChanges)="baseToken = $any($event)"
-          (numberChanges)="baseAmountAsString = $event"
+          (numberChanges)="baseAmount = $event"
         ></app-tokens-input>
 
         <div class="tokens-form__custom-section custom-section">
@@ -106,9 +106,9 @@
         <app-tokens-input
           [tokensList]="availableQuoteTokens"
           [selectedToken]="quoteToken"
-          [selectedAmount]="quoteAmountAsString"
+          [selectedAmount]="quoteAmount"
           (tokenChanges)="quoteToken = $any($event)"
-          (numberChanges)="quoteAmountAsString = $event"
+          (numberChanges)="quoteAmount = $event"
         ></app-tokens-input>
 
         <div class="tokens-form__custom-section custom-section">
