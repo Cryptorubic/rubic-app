@@ -157,9 +157,7 @@ describe('UniswapServiceService', () => {
 
     const fromAmount = new BigNumber(2);
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
-    const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(
-      100
-    );
+    const percentSlippage = UniSwapService.slippageTolerance;
 
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
@@ -202,9 +200,7 @@ describe('UniswapServiceService', () => {
     );
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS);
-    const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(
-      100
-    );
+    const percentSlippage = UniSwapService.slippageTolerance;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {
@@ -236,9 +232,7 @@ describe('UniswapServiceService', () => {
   it('create eth-tokens trade', async done => {
     const fromAmount = new BigNumber(0.05);
     const trade = await service.calculateTrade(fromAmount, ETH, YEENUS);
-    const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(
-      100
-    );
+    const percentSlippage = UniSwapService.slippageTolerance;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {
@@ -266,9 +260,7 @@ describe('UniswapServiceService', () => {
 
     const fromAmount = new BigNumber(30);
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH);
-    const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(
-      100
-    );
+    const percentSlippage = UniSwapService.slippageTolerance;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     let gasFee = new BigNumber(0);
@@ -321,9 +313,7 @@ describe('UniswapServiceService', () => {
     );
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH);
-    const percentSlippage = new BigNumber(UniSwapService.slippageTolerance.toSignificant(10)).div(
-      100
-    );
+    const percentSlippage = UniSwapService.slippageTolerance;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {

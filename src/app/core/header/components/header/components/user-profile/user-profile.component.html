@@ -9,7 +9,7 @@
     <span
       class="user-profile__text"
       [ngClass]="{ 'user-profile__text_iconless': !($currentBlockchain | async)?.imagePath }"
-    >{{ $currentAccountAddress | async }}</span>
+    >{{ ($currentUser | async)?.address }}</span>
   </div>
   <ul *ngIf="$isMobile | async" class="user-profile__list">
     <li class="user-profile__item">

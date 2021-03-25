@@ -1,5 +1,5 @@
 // @ts-ignore
-import config from '../../../../test/enviroment.test.json';
+import config from '../../../../../test/enviroment.test.json';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 /**
