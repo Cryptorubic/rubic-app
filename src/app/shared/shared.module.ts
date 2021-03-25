@@ -27,11 +27,7 @@ import { PrimaryButtonComponent } from './components/primary-button/primary-butt
 import { TokenLabelComponent } from './components/tokens-input/token-label/token-label.component';
 import { TokensInputComponent } from './components/tokens-input/tokens-input.component';
 import { WhiteButtonComponent } from './components/white-button/white-button.component';
-import { BigNumberDirective } from './directives/big-number/big-number.directive';
-import { EthAddressDirective } from './directives/eth-address/eth-address.directive';
-import { MinMaxDirective } from './directives/minMax/min-max.directive';
 import { BigNumberFormat } from './pipes/big-number-format.pipe';
-import { CoinsListComponent } from './directives/coins-list/coins-list.component';
 import { NativeUrlPipe } from './pipes/native-url.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
 import { AddressInputComponent } from './components/address-input/address-input.component';
@@ -67,11 +63,7 @@ import { TokensTableComponent } from './components/tokens-table/tokens-table.com
     InputDropdownComponent,
     BlockchainsInputComponent,
     BlockchainLabelComponent,
-    EthAddressDirective,
-    MinMaxDirective,
-    BigNumberDirective,
     BigNumberFormat,
-    CoinsListComponent,
     ScannerLinkPipe,
     NativeUrlPipe,
     AddressInputComponent,
@@ -120,11 +112,7 @@ import { TokensTableComponent } from './components/tokens-table/tokens-table.com
     InputDropdownComponent,
     BlockchainsInputComponent,
     BlockchainLabelComponent,
-    EthAddressDirective,
-    MinMaxDirective,
-    BigNumberDirective,
     BigNumberFormat,
-    CoinsListComponent,
     ScannerLinkPipe,
     NativeUrlPipe,
     AddressInputComponent,
