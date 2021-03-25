@@ -1,13 +1,13 @@
 .faq-container {
   height: 100%;
-  padding: 130px 15px 0 15px;
+  padding: 130px 15px 0;
 }
 
 .questions-container {
   padding-bottom: 100px;
 
-  &:after,
-  &:before {
+  &::after,
+  &::before {
     content: '';
     display: table;
     width: 100%;
@@ -21,15 +21,18 @@
     margin: 15px 0;
     padding: 30px 20px 17px;
     border-left: 5px solid #4aa956;
-    background: white;
+    background: #fff;
     color: #000;
     cursor: pointer;
+
     &_active {
       border-left: 5px solid #4aa956;
       color: #000;
+
       .questions-container__arrow {
         transform: rotate(405deg);
       }
+
       .questions-container__text {
         margin: 12px 0;
         opacity: 1;

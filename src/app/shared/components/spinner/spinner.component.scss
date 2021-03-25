@@ -42,16 +42,20 @@
   0% {
     border-width: calc(60px / 7);
   }
+
   25% {
     border-width: calc(60px / 23.33);
   }
+
   50% {
     transform: rotate(115deg);
     border-width: calc(60px / 7);
   }
+
   75% {
     border-width: calc(60px / 23.33);
   }
+
   100% {
     border-width: calc(60px / 7);
   }

@@ -34,7 +34,7 @@
 
   &__no-swaps {
     text-align: center;
-    color: rgba(black, 0.34);
+    color: rgba(#000, 0.34);
     font-weight: normal;
     font-size: 24px;
   }
@@ -56,7 +56,7 @@
   width: 100%;
 
   border-collapse: collapse;
-  background-color: white;
+  background-color: #fff;
 
   td,
   th {
@@ -91,7 +91,7 @@
   }
 
   tbody {
-    color: black;
+    color: #000;
     font-size: 15px;
     font-weight: normal;
   }
@@ -154,7 +154,7 @@
       grid-template-columns: 1fr 1.6fr 0.2fr;
       align-items: center;
       height: 56px;
-      background: white;
+      background: #fff;
 
       &__option {
         opacity: 1;
@@ -201,7 +201,7 @@
 
     .content {
       border-radius: 0 0 5px 5px;
-      background: white;
+      background: #fff;
 
       &__item {
         display: grid;
@@ -225,7 +225,7 @@
     align-items: center;
     padding-left: 20px;
 
-    color: rgba(black, 0.5);
+    color: rgba(#000, 0.5);
 
     &::before {
       content: '';
@@ -284,12 +284,12 @@
     }
 
     span {
-      color: rgba(black, 0.5);
+      color: rgba(#000, 0.5);
     }
   }
 
   &__date {
-    color: rgba(black, 0.5);
+    color: rgba(#000, 0.5);
 
     div {
       width: fit-content;
@@ -302,6 +302,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

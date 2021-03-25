@@ -1,5 +1,5 @@
 @import 'vars';
-@import '../_mixins';
+@import '../mixins';
 
 
 // svg:hover,
@@ -89,7 +89,7 @@
     font-weight: normal;
     font-size: 15px;
     line-height: 27px;
-    color: #000000;
+    color: #000;
   }
 
   &-text {
@@ -110,7 +110,7 @@
     font-weight: normal;
     font-size: 18px;
     line-height: 27px;
-    color: #000000;
+    color: #000;
 
     li {
       &:not(:last-child) {
@@ -118,8 +118,8 @@
       }
 
       &::before {
-        content: "\2022";
-        color: #4AA956;
+        content: '\2022';
+        color: #4aa956;
         font-weight: bold;
         display: inline-block;
         width: 1em;
@@ -154,6 +154,7 @@
     }
   }
 }
+
 .p {
   &-info {
     &-text {

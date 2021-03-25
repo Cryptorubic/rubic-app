@@ -167,7 +167,7 @@
     }
 
     &_validated {
-      border: 1px solid white;
+      border: 1px solid #fff;
     }
 
     &_invalid {
@@ -215,13 +215,13 @@
     width: 26px;
     height: 28px;
 
-    background-image: url(/assets/images/icons/checkbox-tick.svg);
+    background-image: url('/assets/images/icons/checkbox-tick.svg');
     background-repeat: no-repeat;
 
     transition: background-image 0.2s linear;
 
     &_not-checked {
-      background-image: url(/assets/images/icons/checkbox-cross.svg);
+      background-image: url('/assets/images/icons/checkbox-cross.svg');
     }
   }
 }

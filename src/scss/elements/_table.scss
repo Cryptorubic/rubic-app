@@ -9,14 +9,15 @@ $cell-padding: 10px;
     width: calc(100% + #{$cell-gap} * 2);
   }
 
-  th, td {
+  th,
+  td {
     padding: $cell-padding;
     background-color: #fff;
     color: #000;
     position: relative;
     border: none;
 
-    & div {
+    div {
       display: flex;
       justify-content: center;
     }
@@ -30,7 +31,7 @@ $cell-padding: 10px;
   td {
     font-size: 15px;
 
-    & > a {
+    > a {
       color: inherit;
       text-decoration: none;
       cursor: pointer;

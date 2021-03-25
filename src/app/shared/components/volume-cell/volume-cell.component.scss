@@ -33,12 +33,12 @@ $primary-light-color: #dbeedd;
     box-sizing: border-box;
 
     &::after {
-      content: "";
+      content: '';
       display: block;
       width: 50px;
       height: 50px;
       position: absolute;
-      background: url(/assets/images/icons/ch_03.svg) center center/24px no-repeat;
+      background: url('/assets/images/icons/ch_03.svg') center center/24px no-repeat;
       top: 50%;
       margin-top: -25px;
       transform: translate(calc(-50% + 2px));
@@ -51,7 +51,7 @@ $primary-light-color: #dbeedd;
   }
   
   &__subtext {
-    color: rgba(0,0,0,.5);
+    color: rgba(0, 0, 0, 0.5);
     margin-top: 14px;
     font-size: 14px;
     white-space: nowrap;

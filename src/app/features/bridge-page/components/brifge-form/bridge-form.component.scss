@@ -5,12 +5,13 @@
 }
 
 .cross-chain-form {
+
+  background-color: #fff;
+
   &,
   * {
     box-sizing: border-box;
   }
-
-  background-color: white;
 
   &__main-section {
     display: flex;
@@ -59,6 +60,7 @@
 
     &:hover {
       cursor: pointer;
+
       img {
         filter: grayscale(0);
       }
@@ -70,7 +72,7 @@
       height: 24px;
     }
 
-    & > div {
+    > div {
       margin-bottom: 10px;
     }
   }
@@ -86,7 +88,7 @@
     border: none;
 
     color: #4aa956;
-    background: white;
+    background: #fff;
 
     font-size: inherit;
     font-family: inherit;
@@ -117,7 +119,7 @@
 
     max-height: 0;
     padding: 0 20px;
-    border-top: 2px solid white;
+    border-top: 2px solid #fff;
 
     opacity: 0;
 
@@ -180,7 +182,7 @@
     display: block;
     margin-bottom: 26px;
 
-    color: rgba(black, 0.5) !important;
+    color: rgba(#000, 0.5) !important;
     text-decoration: none !important;
     font-size: 16px;
     line-height: 16px;
@@ -191,11 +193,12 @@
   }
 
   &__token {
-    & > * {
-      width: 100%;
-    }
 
     margin-bottom: 0;
+
+    > * {
+      width: 100%;
+    }
   }
 
   &__get {
@@ -209,7 +212,7 @@
 
     background-color: #f4f4f4;
 
-    & > span {
+    > span {
       font-size: 20px;
       font-weight: 400;
       line-height: 52px;
@@ -230,7 +233,7 @@
     justify-content: center;
 
     border-radius: 50%;
-    background-color: white;
+    background-color: #fff;
     line-height: 35px;
     box-shadow: 0 0 5px 1px #e2e2e2;
     cursor: pointer;
@@ -267,7 +270,7 @@
 
     &_wrong {
       background-color: #ff9f9f;
-      color: white;
+      color: #fff;
 
       td {
         opacity: 1;
@@ -341,7 +344,7 @@
 
   opacity: 0.8;
   border: 2px solid rgb(229, 229, 229);
-  background-color: white;
+  background-color: #fff;
 
   &__icon {
     margin-right: 10px;

@@ -13,15 +13,6 @@ $main-color: #4aa956;
   display: flex;
   height: 35px;
 
-  &__list {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    list-style: none;
-  }
-
   @include b($mobile-width) {
     width: 100%;
     box-sizing: border-box;
@@ -34,13 +25,22 @@ $main-color: #4aa956;
     margin-bottom: 30px;
   }
 
+  &__list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    list-style: none;
+  }
+
   &__sublist {
     margin: 0;
     padding: 0;
   }
 
   &__sublist-link {
-    color: black;
+    color: #000;
     text-decoration: none;
     display: inline-block;
     vertical-align: middle;
@@ -80,7 +80,7 @@ $main-color: #4aa956;
     height: 35px;
     cursor: pointer;
 
-    & > span {
+    > span {
       width: 4px;
       height: 4px;
       border-radius: 4px;
@@ -132,13 +132,13 @@ $main-color: #4aa956;
     letter-spacing: 2px;
     line-height: 15px;
 
-    &_iconless {
-      padding-left: 20px;
-    }
-
     @include b($mobile-width) {
       max-width: 250px;
       box-sizing: border-box;
+    }
+
+    &_iconless {
+      padding-left: 20px;
     }
   }
 }
@@ -146,5 +146,5 @@ $main-color: #4aa956;
 ::ng-deep .mat-menu-panel.user-profile__sublist-container {
   margin-top: 10px;
   border-radius: 10px;
-  box-shadow: 0 2px 15px rgba(black, 0.1);
+  box-shadow: 0 2px 15px rgba(#000, 0.1);
 }

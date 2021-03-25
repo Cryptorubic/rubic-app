@@ -17,7 +17,7 @@
     font-weight: normal;
     font-size: 22px;
     line-height: 40px;
-    color: rgba(black, 0.4);
+    color: rgba(#000, 0.4);
 
     .app-index__intro_bold {
       font-weight: 700;
@@ -49,7 +49,7 @@
     position: relative;
     top: -2px;
 
-    background-color: white;
+    background-color: #000;
     border-radius: 50%;
 
     transition: transform 0.2s linear;

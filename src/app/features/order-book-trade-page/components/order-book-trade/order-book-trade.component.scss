@@ -46,7 +46,7 @@
     font-size: 24px;
     font-weight: bold;
 
-    &:before {
+    &::before {
       position: relative;
       top: -3px;
       left: -12px;
@@ -63,7 +63,7 @@
     &_active {
       color: $active-green;
 
-      &:before {
+      &::before {
         background: $active-green;
         box-shadow: 0 0 11px $active-green;
       }
@@ -72,7 +72,7 @@
     &_expired {
       color: $expired-yellow;
 
-      &:before {
+      &::before {
         background: $expired-yellow;
         box-shadow: 0 0 11px $expired-yellow;
       }
@@ -81,7 +81,7 @@
     &_cancelled {
       color: $cancelled-red;
 
-      &:before {
+      &::before {
         background: $cancelled-red;
         box-shadow: 0 0 11px $cancelled-red;
       }
@@ -90,7 +90,7 @@
     &_done {
       color: $done-grey;
 
-      &:before {
+      &::before {
         background: $done-grey;
         box-shadow: 0 0 11px $done-grey;
       }
@@ -105,7 +105,7 @@
     height: 54px;
     padding: 0 20px 0 17px;
 
-    background: white;
+    background: #fff;
 
     img {
       width: 20px;
@@ -147,7 +147,7 @@
 
   padding: 24px 32px;
 
-  background: white;
+  background: #fff;
 
   color: $dark;
 
@@ -209,7 +209,7 @@
       padding: 0;
       border: none;
 
-      background: white;
+      background: #fff;
       cursor: pointer;
 
       img {
@@ -245,13 +245,13 @@
     width: 26px;
     height: 28px;
 
-    background-image: url(/assets/images/icons/checkbox-tick.svg);
+    background-image: url('/assets/images/icons/checkbox-tick.svg');
     background-repeat: no-repeat;
 
     transition: background-image 0.2s linear;
 
     &_not-checked {
-      background-image: url(/assets/images/icons/checkbox-cross.svg);
+      background-image: url('/assets/images/icons/checkbox-cross.svg');
     }
   }
 }
@@ -269,7 +269,7 @@
 
     background: #818181;
 
-    color: white;
+    color: #fff;
 
     .triangle {
       position: absolute;

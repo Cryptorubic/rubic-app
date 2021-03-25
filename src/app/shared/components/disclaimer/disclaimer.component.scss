@@ -1,5 +1,6 @@
 .disclaimer {
   padding: 30px;
+
   &-title {
     margin-top: 10px;
     color: #4aa956;
@@ -8,20 +9,24 @@
     font-weight: bold;
     margin-bottom: initial;
   }
+
   &-content {
-    color: #000000;
+    color: #000;
     font-size: 16px;
     line-height: 27px;
     margin: 20px 0;
   }
+
   &-controls {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding-top: 30px;
+
     .btn {
       width: auto;
       min-width: 209px;
     }
   }
+
   .mat-dialog-actions {
     display: block;
     margin: initial;

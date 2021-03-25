@@ -11,7 +11,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    background-color: #fff;
     padding: 20%;
     font-weight: bold;
     font-size: 44px;
@@ -29,14 +29,14 @@
       font-size: 20px;
     }
 
-    &:after {
+    &::after {
       content: attr(data-title);
       position: absolute;
       font-weight: normal;
       font-size: 15px;
       line-height: 17px;
       text-align: center;
-      color: white;
+      color: #fff;
       bottom: -30px;
     }
   }

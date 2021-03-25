@@ -4,8 +4,24 @@
   box-sizing: border-box;
   height: 100vh;
   width: 100vw;
-  background-color: white;
+  background-color: #fff;
   padding-top: 48px;
+
+  @include b(900px) {
+    padding-top: 24px;
+
+    &__logo {
+      margin-bottom: 16px;
+    }
+
+    &__content {
+      padding: 67px 20px;
+    }
+
+    &__description {
+      max-width: unset;
+    }
+  }
 
   &__logo {
     display: block;
@@ -40,27 +56,12 @@
     font-weight: bold;
     font-size: 14px;
     line-height: 32px;
-    color: black;
+    color: #000;
   }
 
   &__footer {
     position: fixed;
     width: 100%;
     bottom: 0;
-  }
-
-  @include b(900px) {
-    padding-top: 24px;
-
-    &__logo {
-      margin-bottom: 16px;
-    }
-    &__content {
-      padding: 67px 20px;
-    }
-
-    &__description {
-      max-width: unset;
-    }
   }
 }

@@ -24,7 +24,7 @@ $secondary-color: #e9f5eb;
     align-items: center;
     font-weight: 500;
 
-    & > * {
+    > * {
       filter: grayscale(0.8) opacity(0.4);
     }
 
@@ -55,5 +55,5 @@ $secondary-color: #e9f5eb;
 ::ng-deep .mat-menu-panel.language-dropdown__sublist-container {
   margin-top: 10px;
   border-radius: 10px;
-  box-shadow: 0 2px 15px rgba(black, 0.1);
+  box-shadow: 0 2px 15px rgba(#000, 0.1);
 }

@@ -1,4 +1,4 @@
-@import '../../../../scss/_mixins';
+@import '../../../../scss/mixins';
 
 .input-dropdown {
   &__choose-button {
@@ -35,7 +35,7 @@
 
     box-sizing: border-box;
     padding: 11px 10px 11px 22px;
-    border: 1px solid white;
+    border: 1px solid #fff;
 
     background: #f4f4f4;
     color: #110931;
@@ -104,7 +104,7 @@
       border-top: 1px solid #dedede;
       border-bottom: 1px solid #dedede;
 
-      background-color: white;
+      background-color: #fff;
 
       list-style-type: none;
 

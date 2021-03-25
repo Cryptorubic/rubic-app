@@ -4,7 +4,7 @@
 .about-page {
   font-family: $ubuntu-font;
   font-weight: normal;
-  background-color: #ffffff;
+  background-color: #fff;
 
   @include b(1100) {
     background-image: none;
@@ -100,7 +100,7 @@
 
       &-item {
         background-color: #fafafa;
-        padding: 25px 35px 25px 35px;
+        padding: 25px 35px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -159,7 +159,7 @@
         flex-direction: column;
       }
 
-      &:after {
+      &::after {
         content: '';
         background-color: #4aa956;
         height: 2px;
@@ -192,7 +192,7 @@
           margin-bottom: 15px;
         }
 
-        &:after {
+        &::after {
           content: '';
           border: 1px dashed #4aa956;
           height: 50px;
@@ -209,7 +209,7 @@
           }
         }
 
-        &:before {
+        &::before {
           content: '';
           height: 15px;
           width: 15px;

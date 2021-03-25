@@ -26,8 +26,9 @@ $primary-color: #4aa956;
   0% {
     transform: rotate(0deg);
   }
+
   100% {
-    transform:rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
@@ -39,7 +40,7 @@ $primary-color: #4aa956;
   .mat-option:hover:not(.mat-option-disabled) {
     background: inherit;
 
-    & > .mat-option-text {
+    > .mat-option-text {
       color: $primary-color;
     }
   }
@@ -48,7 +49,7 @@ $primary-color: #4aa956;
   .mat-option.mat-active {
     background: inherit;
 
-    & > .mat-option-text {
+    > .mat-option-text {
       color: $primary-color;
       font-weight: 600;
     }

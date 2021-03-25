@@ -1,7 +1,7 @@
 @import 'src/scss/elements/vars';
 
 .token-block {
-  background: white;
+  background: #fff;
 
   &__area {
     display: flex;
@@ -20,7 +20,8 @@
     font-size: 40px;
   }
 
-  &__amount-sent, &__amount-left {
+  &__amount-sent,
+  &__amount-left {
     display: flex;
     align-items: center;
 
@@ -145,7 +146,7 @@
 
   &__amount-input {
     padding: 12px;
-    border: 1px solid white;
+    border: 1px solid #fff;
 
     background: $grey-background;
 
@@ -181,7 +182,7 @@
     border: none;
     border-bottom: 1px $grey-text dashed;
 
-    background: white;
+    background: #fff;
 
     color: $grey-text;
     font-size: 17px;

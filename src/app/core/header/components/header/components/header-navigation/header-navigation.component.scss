@@ -12,7 +12,7 @@ $main-color: #4aa956;
   position: relative;
 
   &::before {
-    content: "";
+    content: '';
     width: 1px;
     height: 50%;
     position: absolute;
@@ -43,7 +43,7 @@ $main-color: #4aa956;
     line-height: 13px;
     padding: 0;
 
-    &[aria-expanded="true"] {
+    &[aria-expanded='true'] {
       a {
         padding-right: 40px;
       }
@@ -59,7 +59,7 @@ $main-color: #4aa956;
   &__toggle-indicator {
     position: relative;
 
-    &:after {
+    &::after {
       content: '';
       transform-origin: center;
       display: block;
@@ -85,13 +85,13 @@ $main-color: #4aa956;
     vertical-align: middle;
     padding: 9px 25px;
     cursor: pointer;
-
-    &:hover {
-      text-decoration: underline;
-    }
     padding-right: 40px;
     @include b($mobile-width) {
       padding: 15px;
+    }
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 
@@ -101,7 +101,7 @@ $main-color: #4aa956;
   }
 
   &__sublink {
-    color: black;
+    color: #000;
     text-decoration: none;
     display: inline-block;
     vertical-align: middle;
@@ -122,5 +122,5 @@ $main-color: #4aa956;
 ::ng-deep .mat-menu-panel.header-menu__sublist-container {
   margin-top: 10px;
   border-radius: 10px;
-  box-shadow: 0 2px 15px rgba(black, 0.1);
+  box-shadow: 0 2px 15px rgba(#000, 0.1);
 }

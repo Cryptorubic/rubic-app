@@ -11,22 +11,22 @@ $mobile-width: 1024;
   right: 0;
   transition: all linear 0.2s;
   z-index: 10;
-  background-color: white;
-
-  &__mobile-language{
-    margin-right: 10px;
-  }
-
-  &_scrolled {
-    background-color: white;
-    padding-top: 13px;
-    padding-bottom: 10px;
-    z-index: 10;
-  }
+  background-color: #fff;
 
   @include b($mobile-width) {
     padding: 0;
   }
+
+  &__mobile-language {
+    margin-right: 10px;
+  }
+
+  &_scrolled {
+    background-color: #fff;
+    padding-top: 13px;
+    padding-bottom: 10px;
+    z-index: 10;
+  }  
 
   &__container {
     display: flex;
@@ -36,7 +36,6 @@ $mobile-width: 1024;
     z-index: 1;
     background: #fff;
 
-    
     @include b($mobile-width) {
       height: 65px;
       padding-top: 12px;

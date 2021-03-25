@@ -1,7 +1,6 @@
-@import "src/scss/elements/vars";
+@import 'src/scss/elements/vars';
 
 .accumulated-volume {
-
   &__title {
     margin-bottom: 16px;
 
@@ -26,7 +25,7 @@
 .volume-block {
   padding: 24px 21px 10px;
 
-  background-color: white;
+  background-color: #fff;
 
   &__number {
     margin-bottom: 14px;

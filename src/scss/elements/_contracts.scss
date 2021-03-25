@@ -5,7 +5,8 @@
   font-weight: bold;
   white-space: nowrap;
   line-height: 24px;
-  &:before {
+
+  &::before {
     content: '';
     display: inline-block;
     width: 8px;
@@ -14,37 +15,44 @@
     vertical-align: middle;
     margin-right: 5px;
   }
+
   &__0 {
-    &:before {
+    &::before {
       background-color: #fff;
     }
   }
+
   &__1 {
-    &:before {
+    &::before {
       background: #2bcf78;
       box-shadow: 0px 0px 9px #65f7b0;
     }
   }
+
   &__2 {
-    &:before {
+    &::before {
       background-color: #660002;
     }
   }
+
   &__3,
   &__6 {
-    &:before {
+    &::before {
       background-color: #ffd139;
       box-shadow: 0 0 9px rgba(255, 209, 57, 0.68);
     }
   }
+
   &__4 {
-    &:before {
+    &::before {
       background-color: #0c660b;
     }
   }
+
   &__5 {
     color: #660002;
-    &:before {
+
+    &::before {
       background-color: #660002;
     }
   }

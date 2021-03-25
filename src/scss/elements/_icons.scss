@@ -1,7 +1,7 @@
 // *****  buttons styles *****
 
 .icon {
-  &:before {
+  &::before {
     content: '';
     border-radius: 5px;
     display: flex;

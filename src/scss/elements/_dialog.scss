@@ -1,4 +1,4 @@
-@import '../_mixins';
+@import '../mixins';
 
 .cdk-global-overlay-wrapper,
 .cdk-overlay-container {
@@ -8,15 +8,18 @@
   height: 100%;
   width: 100%;
 }
+
 .cdk-overlay-container {
   position: fixed;
   z-index: 1000;
 }
+
 .cdk-global-overlay-wrapper {
   display: flex;
   position: absolute;
   z-index: 1000;
 }
+
 .cdk-overlay-backdrop {
   position: absolute;
   top: 0;
@@ -29,9 +32,11 @@
   transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   opacity: 0;
 }
+
 .cdk-overlay-dark-backdrop {
   background: rgba(0, 0, 0, 0.35);
 }
+
 .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
   opacity: 1;
 }
@@ -45,6 +50,7 @@
   max-width: 100%;
   max-height: 100%;
 }
+
 .mat-dialog-container {
   padding: 0 !important;
   box-shadow: 0 1em 5em rgba(0, 0, 0, 0.6);
@@ -60,6 +66,7 @@
 
 .alert-window-buttons {
   padding: 10px 0;
+
   .btn {
     margin: 0 2%;
   }
@@ -68,12 +75,15 @@
 .dialog-block {
   background-color: #fff;
   color: #000;
+
   &__content {
     padding: 30px;
   }
+
   .transaction-title {
     font-size: 18px;
   }
+
   .transaction-title,
   .transaction-description {
     text-align: center;
@@ -86,6 +96,7 @@
     }
   }
 }
+
 .dialog-closer {
   float: right;
   margin-top: -8px;
@@ -94,6 +105,7 @@
   padding: 0;
   border: 0 none;
   cursor: pointer;
+
   img {
     width: 30px;
     vertical-align: middle;
@@ -104,12 +116,15 @@
     max-width: 100% !important;
     width: 90% !important;
   }
+
   .mat-dialog-content {
     margin: 0 -4% !important;
     padding: 0 4% !important;
   }
+
   .dialog-block {
     overflow: auto !important;
+
     &__content {
       padding: 4%;
     }
@@ -121,13 +136,14 @@
     width: 100% !important;
     height: 100%;
   }
+
   .dialog-block {
     height: 100%;
   }
 }
 
 .dialog-block-listing {
-  background: white;
+  background: #fff;
   background-image: url('/assets/images/props/modal-listing-left-top.svg'),
     url('//assets/images/props/modal-listing-right-top.svg'),
     url('/assets/images/props/modal-listing-right-bottom.svg');
@@ -152,7 +168,7 @@
       grid-template-columns: 1fr;
       grid-gap: 20px;
       text-align: center;
-      color: black;
+      color: #000;
 
       @include b(500) {
         grid-gap: 10px;
@@ -163,7 +179,7 @@
         top: 20px;
         right: 20px;
         background-color: #00000085;
-        color: white;
+        color: #fff;
         width: 25px;
         height: 25px;
         display: flex;
@@ -205,7 +221,7 @@
       .btn {
         max-width: 185px;
         width: 100%;
-        margin: 10px auto 0 auto;
+        margin: 10px auto 0;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -237,7 +253,7 @@
           line-height: 44px;
           color: #4aa956;
           display: block;
-          margin: 0 0 20px 0;
+          margin: 0 0 20px;
           text-align: left;
 
           @include b(550) {
@@ -252,7 +268,7 @@
           font-weight: normal;
           font-size: 16px;
           line-height: 27px;
-          color: #000000;
+          color: #000;
           margin-bottom: 20px;
 
           @include b(550) {
@@ -306,7 +322,7 @@
               ~ .checkmark {
                 background-color: transparent;
 
-                &:after {
+                &::after {
                   display: block;
                 }
               }
@@ -322,7 +338,7 @@
             background-color: transparent;
             border: 1px solid #4aa956;
 
-            &:after {
+            &::after {
               content: '';
               position: absolute;
               display: none;
@@ -332,8 +348,8 @@
               height: 12px;
               border: solid #4aa956;
               border-width: 0 3px 3px 0;
-              -webkit-transform: rotate(45deg);
-              -ms-transform: rotate(45deg);
+              transform: rotate(45deg);
+              transform: rotate(45deg);
               transform: rotate(45deg);
             }
           }
@@ -355,7 +371,7 @@
           font-weight: normal;
           font-size: 16px;
           line-height: 27px;
-          color: #000000;
+          color: #000;
           padding: 5px 15px 5px 5px;
           min-width: 115px;
           display: flex;
@@ -413,7 +429,7 @@
             font-size: 16px;
             line-height: 18px;
             display: block;
-            color: #000000;
+            color: #000;
             margin-bottom: 10px;
           }
 
@@ -439,13 +455,13 @@
           max-width: 200px;
           font-size: 23px;
           height: 60px;
-          margin: 20px 0px 0px 0px;
+          margin: 20px 0px 0px;
 
           @include b(550) {
             max-width: 100%;
             font-size: 17px;
             height: 50px;
-            margin: 10px 0px 0px 0px;
+            margin: 10px 0px 0px;
           }
         }
       }

@@ -17,7 +17,7 @@
   }
 
   &__body {
-    background-color: white;
+    background-color: #fff;
   }
 }
 
@@ -30,7 +30,7 @@
   padding: 0 15px;
 
   opacity: 0.85;
-  background-color: white;
+  background-color: #fff;
   cursor: pointer;
 
   &:last-child {
@@ -40,7 +40,7 @@
   span {
     font-weight: normal;
     font-size: 14px;
-    color: #000000;
+    color: #000;
   }
 
   img {
@@ -50,7 +50,7 @@
   }
 
   &:hover {
-    box-shadow: 0 2px 6px rgba(black, 0.1);
+    box-shadow: 0 2px 6px rgba(#000, 0.1);
   }
 
   &_active {

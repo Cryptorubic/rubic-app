@@ -1,13 +1,14 @@
 @import '../../../../../../scss/elements/vars';
 
 .main-page {
-  &,
-  & * {
-    box-sizing: border-box;
-  }
 
   max-width: 1180px;
   margin: 85px auto 0;
+
+  &,
+  * {
+    box-sizing: border-box;
+  }
 
   &__intro {
     padding-top: 40px;
@@ -16,7 +17,7 @@
     font-weight: normal;
     font-size: 22px;
     line-height: 40px;
-    color: rgba(black, 0.4);
+    color: rgba(#000, 0.4);
 
     .app-index__intro_bold {
       font-weight: 700;
@@ -63,7 +64,7 @@
     position: relative;
     top: -2px;
 
-    background-color: white;
+    background-color: #fff;
     border-radius: 50%;
 
     transition: transform 0.2s linear;
@@ -73,7 +74,7 @@
 .disclaimer-text {
   font-size: 14px;
   line-height: 40px;
-  color: #000000;
+  color: #000;
   margin-top: 0;
   margin-bottom: 20px;
 }

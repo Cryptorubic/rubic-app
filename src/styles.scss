@@ -1,8 +1,5 @@
 * {
-  -webkit-appearance: none;
-}
-
-* {
+  appearance: none;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -120,10 +117,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 }
 
-.text-left {
-  text-align: left !important;
-}
-
 .info-modal-text {
   text-align: left;
   font-weight: 100;
@@ -138,6 +131,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
 #livechat-top-button {
   @extend .app-content-block;
+
   position: relative;
   //padding-top: 100px;
 }
@@ -175,6 +169,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
 #livechat-compact-container {
   position: fixed;
+  visibility: hidden !important;
 }
 
 .without-support #livechat-compact-container {
@@ -209,8 +204,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   border-left: 5px solid #fcd600 !important;
   line-height: 62px;
   padding: 0 !important;
-  background: url(/assets/images/icons/support.svg) 15px 17px no-repeat rgba(255, 255, 255, 0.1) !important;
-
+  background: url('/assets/images/icons/support.svg') 15px 17px no-repeat rgba(255, 255, 255, 0.1) !important;
   transform: translateY(0%) !important;
   opacity: 1 !important;
   visibility: visible !important;
@@ -222,21 +216,16 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     background-color: rgba(255, 255, 255, 0.2) !important;
   }
 
-  &:before {
+  &::before {
     content: 'Support';
     color: #fff;
     font-weight: bold;
     line-height: 62px;
     float: left;
     display: block;
-    vertical-align: middle;
     font-size: 18px;
     margin-left: 50px;
   }
-}
-
-#livechat-compact-container {
-  visibility: hidden !important;
 }
 
 .with-support #livechat-compact-container,
@@ -244,21 +233,24 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   visibility: visible !important;
 }
 
-.with-support #livechat-compact-container {
-  display: block !important;
-  overflow: hidden;
-}
+.with-support {
+  #livechat-compact-view {
+    opacity: 0;
+    top: 0 !important;
+    margin-top: -62px !important;
+  }
 
-.with-support #livechat-compact-view {
-  opacity: 0;
-  top: 0 !important;
-  margin-top: -62px !important;
+  #livechat-compact-container {
+    display: block !important;
+    overflow: hidden;
+  }
 }
 
 @media screen and (max-width: 1180px) {
   .with-support #livechat-compact-container {
     margin-left: 16.66666666% !important;
   }
+
   .watch-instruction-btn {
     margin-left: 16.66666666%;
   }
@@ -269,6 +261,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     margin-left: 25% !important;
     width: 23vw !important;
   }
+
   .watch-instruction-btn {
     margin-left: 25%;
 
@@ -320,10 +313,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   width: 100% !important;
 }
 
-.text-center {
-  text-align: center;
-}
-
 .uppercase {
   text-transform: uppercase;
 }
@@ -354,7 +343,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 .with-after-text {
   position: relative;
 
-  &:after {
+  &::after {
     background-color: #fff;
     content: attr(data-after-text);
     color: rgba(0, 0, 0, 0.8);
@@ -454,6 +443,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   &-transparent {
     color: #000;
 
+    border: 1px solid #b9bdc2;
+    border-left-width: 5px;
+
     &:not(.with-bg) {
       background-color: transparent;
     }
@@ -461,9 +453,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     &.with-bg {
       background-color: rgba(255, 255, 255, 0.5);
     }
-
-    border: 1px solid #b9bdc2;
-    border-left-width: 5px;
 
     &:not([disabled]):hover {
       border-color: #dbe0e6;
@@ -491,7 +480,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   &-white-opacity {
     border-color: #2873fb;
     background-color: rgb(255, 255, 255);
-    color: black;
+    color: #000;
 
     &.white-border {
       border-color: rgba(255, 255, 255, 0.67);
@@ -508,7 +497,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     color: #000;
 
     &:not([disabled]):hover {
-      background-color: #ffff00;
+      background-color: #ff0;
     }
 
     &:not([disabled]):active {
@@ -519,7 +508,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   &-blue {
     background: #2873fb;
     border-left-color: rgba(255, 255, 255, 0.67);
-    color: white;
+    color: #fff;
 
     &:not([disabled]):hover {
       background-color: #2872fbcc;
@@ -533,7 +522,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   &-green {
     background: #4aa956;
     border-left-color: rgba(255, 255, 255, 0.67);
-    color: white;
+    color: #fff;
 
     &:not([disabled]):hover {
       background-color: #4aa956;
@@ -637,7 +626,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         display: none;
 
         &_content {
-          background: #FFFFFF;
+          background: #fff;
           box-shadow: 0 12px 12px rgba(0, 0, 0, 0.25);
           padding: 9px 5px;
           text-align: center;
@@ -645,10 +634,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
           line-height: 1.25em;
           width: 190px;
           text-transform: initial;
-          color: #000000;
+          color: #000;
           position: relative;
 
-          &:after {
+          &::after {
             content: '';
             display: block;
             width: 12px;
@@ -656,7 +645,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
             position: absolute;
             top: 100%;
             left: 50%;
-            background-color: #ffffff;
+            background-color: #fff;
             transform: rotate(45deg);
             margin-top: -7px;
             margin-left: -6px;
@@ -669,7 +658,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         text-transform: uppercase;
         color: #4aa956;
 
-        &-txt, &-icon {
+        &-txt,
+        &-icon {
           vertical-align: middle;
           display: inline-block;
         }
@@ -698,16 +688,13 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   input[type='number'] {
+    appearance: textfield;
+  
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
+      appearance: none;
       margin: 0;
     }
-  }
-
-  /* Firefox */
-  input[type='number'] {
-    -moz-appearance: textfield;
   }
 
   &_input {
@@ -721,16 +708,16 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       line-height: 28px;
       overflow: hidden;
 
-      &:after {
+      &::after {
         clear: both;
         display: block;
         content: '';
       }
 
-      & + span {
+      + span {
         font-size: 14px;
         line-height: 14px;
-        color: #000000;
+        color: #000;
         opacity: 0.5;
         margin-left: 20px;
       }
@@ -753,7 +740,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         top: 8px;
         display: block;
         transition: 0.1s linear;
-        background: url(assets/images/icons/checkbox-cross.svg) center center no-repeat #d8d8d8;
+        background: url('assets/images/icons/checkbox-cross.svg') center center no-repeat #d8d8d8;
       }
 
       .checkbox-text {
@@ -773,7 +760,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       input:checked ~ .checkbox-rect {
         left: 100%;
         margin-left: -32px;
-        background: url(assets/images/icons/checkbox-tick.svg) center center no-repeat #fcd600;
+        background: url('assets/images/icons/checkbox-tick.svg') center center no-repeat #fcd600;
       }
 
       input:checked ~ .checkbox-text {
@@ -943,7 +930,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     &-show {
       margin-bottom: 15px;
 
-      & > span {
+      > span {
         cursor: pointer;
       }
 
@@ -1063,7 +1050,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
   &_value {
     font-size: 18px;
-    color: #ffffff;
+    color: #fff;
     word-break: break-all;
   }
 
@@ -1081,7 +1068,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   &_info-field {
     color: #8e939b;
 
-    &:after {
+    &::after {
       clear: both;
       content: '';
       display: block;
@@ -1106,7 +1093,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   top: 5px;
 
   &.copied {
-    &:after {
+    &::after {
       position: absolute;
       bottom: 100%;
       width: 100px;
@@ -1122,11 +1109,11 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       color: #fff;
     }
 
-    &:before {
+    &::before {
       position: absolute;
       right: 0;
       bottom: 100%;
-      border-width: 7px 7px 0 7px;
+      border-width: 7px 7px 0;
       border-color: rgba(0, 0, 0, 0.4) transparent;
       border-style: solid;
       content: '';
@@ -1180,7 +1167,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
 .minimal-btn {
   border: 1px solid #979797;
-  color: #eeeeee;
+  color: #eee;
   background: none;
   font-size: 14px;
   line-height: 18px;
@@ -1265,7 +1252,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   background-color: #222 !important;
 }
 
-.clock-face__clock-hand_minute:before {
+.clock-face__clock-hand_minute::before {
   border-color: #222 !important;
 }
 
@@ -1295,6 +1282,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   .base-block-content {
     padding-top: 17vw;
   }
+
   .with-support #livechat-compact-container,
   .watch-instruction-btn {
     display: none !important;
@@ -1365,7 +1353,7 @@ ng-scrollbar-y {
 
     &:not(.active) {
       cursor: pointer;
-      background-color: #ffffff;
+      background-color: #fff;
       color: #777;
 
       &:hover {
@@ -1389,15 +1377,15 @@ ng-scrollbar-y {
     }
 
     &_highlight {
-      border: 1px solid #4AA956;
+      border: 1px solid #4aa956;
       box-shadow: 0 2px 12px rgba(74, 169, 86, 0.6);
 
       span {
-        color: #4AA956;
+        color: #4aa956;
       }
 
       svg {
-        fill: #4AA956 !important;
+        fill: #4aa956 !important;
       }
     }
   }
@@ -1411,7 +1399,7 @@ ng-scrollbar-y {
     padding-right: 42px;
 
     svg {
-      fill: #CACACA;
+      fill: #cacaca;
     }
 
     &.active {
@@ -1428,10 +1416,9 @@ ng-scrollbar-y {
 
     &.active {
       svg {
-        fill: #4AA956;
+        fill: #4aa956;
       }
     }
-
   }
 
   &_item + &_item {
@@ -1443,6 +1430,7 @@ ng-scrollbar-y {
   .start-form-menus {
     display: block;
   }
+
   .block-tabs {
     &_order-type {
       display: flex;
@@ -1457,10 +1445,9 @@ ng-scrollbar-y {
 
       &.active {
         transform: scale(1);
-        background-color: #ffffff;
+        background-color: #fff;
       }
     }
-
 
     &_blockchains {
       display: flex;
@@ -1492,7 +1479,7 @@ ng-scrollbar-y {
       &.active {
         border-bottom: 2px solid #4aa956;
 
-        &:after {
+        &::after {
           content: '';
           position: absolute;
           top: 100%;
@@ -1501,7 +1488,7 @@ ng-scrollbar-y {
           height: 0;
           border-width: 8px;
           border-style: solid;
-          border-color: transparent transparent #4AA956 #4AA956;
+          border-color: transparent transparent #4aa956 #4aa956;
           transform: rotate(-45deg);
           display: block;
           margin-top: -8px;
@@ -1521,7 +1508,7 @@ ng-scrollbar-y {
     }
 
     .form-field_input input:not([type='checkbox']):not([type='radio']) {
-      padding: 29px 10px 10px 10px !important;
+      padding: 29px 10px 10px !important;
     }
 
     .form-field_input__btn {
@@ -1570,7 +1557,8 @@ ng-scrollbar-y {
     width: 60px;
   }
 
-  &, * {
+  &,
+  * {
     box-sizing: border-box;
   }
 
@@ -1601,19 +1589,21 @@ ng-scrollbar-y {
   0% {
     border-width: calc(60px / 7);
   }
+
   25% {
     border-width: calc(60px / 23.33);
   }
+
   50% {
     transform: rotate(115deg);
     border-width: calc(60px / 7);
   }
+
   75% {
     border-width: calc(60px / 23.33);
   }
+
   100% {
     border-width: calc(60px / 7);
   }
 }
-
-
