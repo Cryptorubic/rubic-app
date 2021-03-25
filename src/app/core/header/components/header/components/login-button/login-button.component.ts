@@ -22,6 +22,9 @@ export class LoginButtonComponent {
     try {
       await this.authService.signIn();
     } catch (error) {
+      if (error.code === 4001) {
+        return;
+      }
       const e = error instanceof RubicError ? error : new RubicError();
       const data: any = { title: 'Warinig', descriptionText: e.comment };
       this.dialog.open(MessageBoxComponent, {
