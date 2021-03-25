@@ -108,14 +108,16 @@
             id="min-base-contribute-input-id"
             placeholder="Enter amount"
             appNumberPrecision
+            [inputElement]="baseMinContribute"
             [decimalLength]="tradeForm.token.base.decimals"
-            [maxValue]="tradeForm.token.base.amount.toFixed()"
+            [maxValue]="tradeForm.token.base.amount"
             [ngModel]="tradeForm.token.base.minContribution"
             (ngModelChange)="onMinContributeChange('base', $event)"
             #baseMinContribute="ngModel"
             [ngClass]="{
               'input-container__input_invalid': baseMinContribute.invalid
             }"
+            #baseMinContribute
           />
         </div>
       </div>
@@ -131,14 +133,16 @@
             id="min-quote-contribute-input-id"
             placeholder="Enter amount"
             appNumberPrecision
+            [inputElement]="quoteMinContributeInput"
             [decimalLength]="tradeForm.token.quote.decimals"
-            [maxValue]="tradeForm.token.quote.amount.toFixed()"
+            [maxValue]="tradeForm.token.quote.amount"
             [ngModel]="tradeForm.token.quote.minContribution"
             (ngModelChange)="onMinContributeChange('quote', $event)"
             #quoteMinContribute="ngModel"
             [ngClass]="{
               'input-container__input_invalid': quoteMinContribute.invalid
             }"
+            #quoteMinContributeInput
           />
         </div>
       </div>
@@ -222,6 +226,7 @@
               class="input-container__input input-container__input_broker-percent input-container__input_validated"
               id="broker-percent-base-input-id"
               appNumberPrecision
+              [inputElement]="baseBrokerInput"
               integerLength="2"
               decimalLength="2"
               maxValue="50"
@@ -231,6 +236,7 @@
               [ngClass]="{
                 'input-container__input_invalid': baseBrokerPercent.invalid
               }"
+              #baseBrokerInput
             />
 
             <span class="input-container__percent-sign">%</span>
@@ -254,6 +260,7 @@
               class="input-container__input input-container__input_broker-percent input-container__input_validated"
               id="broker-percent-quote-input-id"
               appNumberPrecision
+              [inputElement]="quoteBrokerInput"
               integerLength="2"
               decimalLength="2"
               maxValue="50"
@@ -263,6 +270,7 @@
               [ngClass]="{
                 'input-container__input_invalid': quoteBrokerPercent.invalid
               }"
+              #quoteBrokerInput
             />
 
             <span class="input-container__percent-sign">%</span>

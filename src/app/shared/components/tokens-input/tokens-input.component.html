@@ -1,16 +1,20 @@
-<form class="form-field_input">
+<form class="tokens-form">
   <input
-    class="all-input"
+    class="tokens-form__input"
     type="text"
     name="amountField"
     autocomplete="off"
-    placeholder="{{ inputDisabled ? '' : amountPlaceholder | translate }}"
+    placeholder="{{ inputDisabled ? '' : (amountPlaceholder | translate) }}"
     [disabled]="inputDisabled"
-    [required]="true"
-    [appBigNumber]="bigNumberDirective"
+    required
     [tabindex]="inputDisabled ? '-1' : ''"
-    (ngModelChange)="onNumberChanges(selectedAmount)"
+    appNumberPrecision
+    [inputElement]="numberInput"
     [(ngModel)]="selectedAmount"
+    (ngModelChange)="onNumberChanges(selectedAmount)"
+    #numberModel="ngModel"
+    [ngClass]="{ 'tokens-form__input_invalid': numberModel.value && numberModel.invalid }"
+    #numberInput
   />
 
   <app-input-dropdown

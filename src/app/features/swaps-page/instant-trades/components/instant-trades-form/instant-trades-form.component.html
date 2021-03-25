@@ -19,9 +19,9 @@
     <app-tokens-input
       [tokensList]="availableFromTokens"
       [selectedToken]="fromToken"
-      [selectedAmount]="fromAmountAsString"
+      [selectedAmount]="fromAmount"
       (tokenChanges)="fromToken = $any($event)"
-      (numberChanges)="fromAmountAsString = $event"
+      (numberChanges)="fromAmount = $event"
     >
     </app-tokens-input>
   </div>
@@ -103,7 +103,11 @@
           type="button"
           [label]="'Via ' + tradeController.tradeProviderInfo.label"
           [disabled]="
-            !(tradeParameters.fromAmount && tradeParameters.toToken && tradeParameters.fromToken) ||
+            !(
+              fromAmountAsNumber.isGreaterThan(0) &&
+              tradeParameters.toToken &&
+              tradeParameters.fromToken
+            ) ||
             !tradeController.trade ||
             shouldAnimateButton(index) ||
             (selectedTradeState &&

@@ -27,7 +27,7 @@ interface TradeProviderInfo {
 }
 
 interface InstantTradeParameters {
-  fromAmount: BigNumber;
+  fromAmount: string;
   fromToken: SwapToken;
   toToken: SwapToken;
 }
@@ -98,7 +98,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   set tradeParameters(value) {
     if (
       this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-      this._tradeParameters.fromAmount?.isEqualTo(value.fromAmount) &&
+      new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
       this._tradeParameters.toToken?.address === value.toToken?.address
     ) {
       return;
@@ -115,7 +115,12 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       isBestRate: false
     }));
 
-    if (value.fromAmount && !value.fromAmount.isNaN() && value.fromToken && value.toToken) {
+    if (
+      value.fromAmount &&
+      !new BigNumber(value.fromAmount).isNaN() &&
+      value.fromToken &&
+      value.toToken
+    ) {
       this.calculateTradeParameters();
     } else {
       this.trades = this.trades.map(tradeController => ({
@@ -150,17 +155,19 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this.availableFromTokens = this.tokens.filter(token => token.address !== value?.address);
   }
 
-  get fromAmountAsString(): string {
-    return !this.tradeParameters.fromAmount || this.tradeParameters.fromAmount?.isNaN()
-      ? ''
-      : this.tradeParameters.fromAmount.toFixed();
+  get fromAmount(): string {
+    return this.tradeParameters.fromAmount;
   }
 
-  set fromAmountAsString(value) {
+  set fromAmount(value) {
     this.tradeParameters = {
       ...this.tradeParameters,
-      fromAmount: new BigNumber(value)
+      fromAmount: value
     };
+  }
+
+  get fromAmountAsNumber(): BigNumber {
+    return new BigNumber(this.tradeParameters.fromAmount);
   }
 
   constructor(
@@ -236,9 +243,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
       this.fromToken = tradeParameters?.fromToken;
       this.toToken = tradeParameters?.toToken;
-      this.fromAmountAsString = tradeParameters?.fromAmount?.toFixed(
-        tradeParameters?.fromToken?.decimals
-      );
+      this.fromAmount = tradeParameters?.fromAmount;
     });
   }
 
@@ -248,20 +253,20 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   private isCalculatedTradeActual(
-    fromAmount: BigNumber,
+    fromAmount: string,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
   ) {
     return (
       this._tradeParameters.fromToken?.address === fromToken?.address &&
-      this._tradeParameters.fromAmount?.isEqualTo(fromAmount) &&
+      new BigNumber(this._tradeParameters.fromAmount).isEqualTo(fromAmount) &&
       this._tradeParameters.toToken?.address === toToken?.address
     );
   }
 
   public revertTokens() {
     const { fromToken, toToken } = this.tradeParameters;
-    const toAmount = this.trades[0].trade?.to?.amount;
+    const toAmount = this.trades[0].trade?.to?.amount.toFixed();
     this.fromToken = toToken;
     this.toToken = fromToken;
 
@@ -303,8 +308,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       )
     ) {
       this.calculateBestRate();
-      const toAmount = this.trades.find(tradeController => tradeController.isBestRate)?.trade?.to
-        ?.amount;
+      const toAmount = this.trades
+        .find(tradeController => tradeController.isBestRate)
+        ?.trade?.to?.amount.toFixed();
       this.tradeParametersService.setTradeParameters(this.blockchain, {
         ...this.tradeParameters,
         toAmount
@@ -320,7 +326,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     tradeController.tradeState = TRADE_STATUS.CALCULATION;
     try {
       const calculatedTrade = await service.calculateTrade(
-        this.tradeParameters.fromAmount,
+        new BigNumber(this.tradeParameters.fromAmount),
         this.fromToken,
         this.toToken
       );
@@ -331,7 +337,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       }
       if (
         this.isCalculatedTradeActual(
-          calculatedTrade.from.amount,
+          calculatedTrade.from.amount.toFixed(),
           calculatedTrade.from.token,
           calculatedTrade.to.token
         )

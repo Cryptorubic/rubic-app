@@ -1,19 +1,29 @@
 @import '../../../../scss/mixins';
+@import '../../../../scss/elements/vars';
 
-.form-field_input {
+.tokens-form {
+  position: relative;
   height: 52px;
 
-  .all-input {
-    width: calc(100% + 2px) !important;
-    padding-right: 139px;
-    margin-left: -1px;
-  }
-}
+  &__input {
+    position: relative;
 
-@include b(550) {
-  .form-field_input {
-    .all-input {
-      padding-left: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 11px 139px 11px 14px;
+    border: 1px solid white;
+
+    background: $grey-background;
+
+    font-size: 18px;
+
+    &_invalid {
+      border-color: $error-red;
+
+      &:focus {
+        box-shadow: 0 0 2px $error-red;
+      }
     }
   }
 }

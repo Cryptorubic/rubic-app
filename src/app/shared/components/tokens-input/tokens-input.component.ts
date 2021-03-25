@@ -67,8 +67,6 @@ export class TokensInputComponent implements OnChanges {
 
   public VISIBLE_TOKENS_NUMBER = 10;
 
-  public bigNumberDirective: { decimals: number; min: number } = { decimals: 18, min: 0 };
-
   private cutAmount() {
     if (this.selectedAmount && this.selectedAmount.includes('.')) {
       const startIndex = this.selectedAmount.indexOf('.') + 1;
@@ -83,11 +81,6 @@ export class TokensInputComponent implements OnChanges {
 
     if (changes.selectedToken && changes.selectedToken.currentValue) {
       this.cutAmount();
-
-      this.bigNumberDirective = {
-        decimals: changes.selectedToken.currentValue.decimals,
-        min: 10 ** -changes.selectedToken.currentValue.decimals
-      };
     }
   }
 
