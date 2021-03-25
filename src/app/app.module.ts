@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
-import { TransferHttpCacheModule } from '@nguniversal/common';
 import { DynamicModule } from 'ng-dynamic-component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
@@ -21,7 +20,6 @@ import { ListingRequestPopupComponent } from './shared/components/collaborations
   imports: [
     CoreModule,
     SharedModule,
-    TransferHttpCacheModule,
     HttpClientXsrfModule.withOptions({
       cookieName: 'csrftoken',
       headerName: 'X-CSRFToken'
