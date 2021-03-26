@@ -3,6 +3,7 @@ import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import SwapToken from '../../../../shared/models/tokens/SwapToken';
 
 export abstract class PrivateProvider {
   /**
@@ -78,4 +79,10 @@ export abstract class PrivateProvider {
    * @description deactivate the blockchain provider
    */
   public abstract deActivate(): void;
+
+  /**
+   * @description opens a window with suggestion to add token to user's wallet
+   * @param token token to add
+   */
+  public abstract addToken(token: SwapToken): Promise<void>;
 }
