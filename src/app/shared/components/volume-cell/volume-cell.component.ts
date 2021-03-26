@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import {
   OrderBookTableToken,
   OrderBookTableTokens
-} from 'src/app/features/swaps-page/order-books/types/trade-table';
+} from 'src/app/features/swaps-page/order-books/models/trade-table';
 
 @Component({
   selector: 'app-volume-cell',

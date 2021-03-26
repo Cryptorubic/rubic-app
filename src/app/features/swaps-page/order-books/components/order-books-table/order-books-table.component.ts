@@ -40,7 +40,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
     });
   }
 
-  public refresnOrderBooks(): void {
+  public refreshOrderBooks(): void {
     this.orderBooksTableService.setTableLoadingStatus(true);
     this.orderBookApi.fetchPublicSwaps();
   }

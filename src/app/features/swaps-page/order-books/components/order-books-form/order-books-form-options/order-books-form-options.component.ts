@@ -9,8 +9,8 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { Subscription } from 'rxjs';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import BigNumber from 'bignumber.js';
-import { OrderBooksFormService } from '../../../services/order-book-form-service/order-books-form.service';
-import { OrderBookFormToken, OrderBookTradeForm } from '../../../types/trade-form';
+import { OrderBooksFormService } from '../services/order-books-form.service';
+import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
 
 const MY_FORMATS = {
   useUtc: true,

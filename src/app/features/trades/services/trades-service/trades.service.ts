@@ -13,7 +13,7 @@ import {
   OrderBookDataToken
 } from 'src/app/features/order-book-trade-page/models/trade-data';
 
-import { OrderBookTradeTableRow } from 'src/app/features/swaps-page/order-books/types/trade-table';
+import { OrderBookTradeTableRow } from 'src/app/features/swaps-page/order-books/models/trade-table';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';

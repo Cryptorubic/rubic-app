@@ -15,10 +15,10 @@ import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { Router } from '@angular/router';
-import { OrderBooksFormService } from '../../services/order-book-form-service/order-books-form.service';
-import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
+import { OrderBookFormToken, OrderBookTradeForm } from '../../models/trade-form';
 import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
+import { OrderBooksFormService } from './services/order-books-form.service';
 
 enum TRADE_STATUS {
   STARTED = 'STARTED',
