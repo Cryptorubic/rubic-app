@@ -1,47 +1,50 @@
 $primary-grey: #f4f4f4;
 
 .coins-filter-form {
-    display: flex;
+  display: flex;
 
-    &__switch-icon {
-      transform: rotate(90deg);
+  &__switch-icon {
+    transform: rotate(90deg);
+  }
+
+  &__tokens-form {
+    > {
+      padding-bottom: 0 !important;
     }
+  }
 
-    &__tokens-form {
-        & >  {
-          padding-bottom: 0 !important;
-        }
-      }
+  &__tokens-input {
+    box-sizing: border-box;
+    max-width: 120px;
+    height: 38px;
+    padding: 10px 7px;
 
-    &__tokens-input {
-        color: #110931;
-        background: $primary-grey;
-        background-size: 28px auto;
-        border: 0;
-        border-radius: 0;
-        font-size: 15px;
-        line-height: 18px;
-        padding: 10px 7px;
-        height: 38px;
-        box-sizing: border-box;
-        max-width: 120px;
-      }
+    color: #110931;
+    font-size: 15px;
+    line-height: 18px;
+
+    background: $primary-grey;
+    background-size: 28px auto;
+    border: 0;
+    border-radius: 0;
+  }
     
-      &__switch-button {
-        border: none;
-        background: $primary-grey;
-        margin: 0 5px;
-        cursor: pointer;
-      }
+  &__switch-button {
+    margin: 0 5px;
 
-      &__tokens-dropdown {
-        display: flex;
-        align-items: center;
+    background: $primary-grey;
+    border: none;
+    cursor: pointer;
+  }
+
+  &__tokens-dropdown {
+    display: flex;
+    align-items: center;
     
-        img {
-          height: 25px;
-          width: 25px;
-          margin-right: 10px;
-        }
-      }
+    img {
+      width: 25px;
+      height: 25px;
+      margin-right: 10px;
+    }
+  }
 }

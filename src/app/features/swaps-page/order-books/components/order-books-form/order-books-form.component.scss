@@ -31,8 +31,8 @@
 
 .tokens-form-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
   height: 14px;
 
@@ -59,8 +59,8 @@
 
     color: $main-green;
     font-weight: bold;
-    text-transform: uppercase;
     white-space: nowrap;
+    text-transform: uppercase;
   }
 
   &__info {
@@ -78,9 +78,9 @@
     bottom: 36%;
     left: -95px;
 
-    padding-bottom: 20px;
-
     display: none;
+
+    padding-bottom: 20px;
   }
 
   img:hover ~ &__popup-container,
@@ -94,16 +94,17 @@
 
   width: 190px;
   padding: 10px;
-  border-radius: 5px;
 
-  background: white;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  color: $dark;
+  font-weight: 500;
+  font-size: 14px;
 
   text-align: center;
-  color: $dark;
-  font-size: 14px;
-  font-weight: 500;
   text-transform: none;
+
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 
   &__rate {
     color: $main-green;
@@ -134,12 +135,13 @@
   width: 36px;
   height: 36px;
   margin: 0 auto;
+
+  background-color: white;
   border: none;
   border-radius: 50%;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
 
   cursor: pointer;
-  background-color: white;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
 
   transition: transform 0.15s ease-in-out;
 
@@ -163,10 +165,11 @@
     display: block;
 
     width: 136px;
-    padding-right: 6px;
     margin-left: auto;
+    padding-right: 6px;
 
     color: $grey-text;
+
     cursor: pointer;
 
     transition: font-weight 0.1s linear;
@@ -189,13 +192,14 @@
     box-sizing: border-box;
     width: 100%;
     padding: 11px 10px 11px 18px;
-    border: 1px solid white;
 
     color: $dark;
-    background: $grey-background;
+    font-size: 18px;
 
     font-family: $ubuntu-font;
-    font-size: 18px;
+
+    background: $grey-background;
+    border: 1px solid white;
 
     &_invalid {
       border: 1px solid $error-red;
@@ -208,10 +212,10 @@
 }
 
 .to-section {
-  flex: 6;
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  flex: 6;
   grid-column-gap: 25px;
+  grid-template-columns: 2fr 1fr;
 
   &__confirm-section {
     position: relative;

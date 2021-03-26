@@ -2,10 +2,11 @@
 
 .team-card {
   box-sizing: border-box;
-  margin: 0 auto;
   width: 320px;
   height: 475px;
+  margin: 0 auto;
   padding: 10px;
+
   background-color: #fafafa;
   cursor: pointer;
 
@@ -35,21 +36,23 @@
   &__name {
     margin-bottom: 3px;
 
-    font-family: $ubuntu-font;
-    font-style: normal;
+    color: $main-green;
     font-weight: bold;
     font-size: 22px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
     line-height: 32px;
-    color: $main-green;
   }
 
   &__role {
     margin-bottom: 21px;
 
-    font-family: $ubuntu-font;
-    font-style: normal;
     font-weight: normal;
     font-size: 14px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
     line-height: 32px;
   }
 

@@ -4,8 +4,9 @@ $ltablet-width: 1024px;
 $mobile-logo-margin: 10px;
 
 .logotype {
-  cursor: pointer;
   float: left;
+
+  cursor: pointer;
 
   @include b($ltablet-width) {
     margin-left: $mobile-logo-margin;

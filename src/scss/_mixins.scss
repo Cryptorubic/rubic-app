@@ -8,8 +8,8 @@
   $asset-pipeline: false
 ) {
   @font-face {
-    font-family: $font-family;
     font-weight: $weight;
+    font-family: $font-family;
     font-style: $style;
 
     @if $asset-pipeline==true {
@@ -28,13 +28,15 @@
 
 @mixin notext {
   overflow: hidden;
+
   text-indent: -9999px;
 }
 
-.clearfix:after {
-  content: '';
+.clearfix::after {
   display: table;
   clear: both;
+
+  content: '';
 }
 
 .centered {
@@ -44,6 +46,7 @@
 
   > * {
     display: table-cell;
+
     text-align: center;
     vertical-align: middle;
   }
@@ -56,11 +59,13 @@
 
   &:-moz-placeholder {
     color: $input-text-color;
+
     opacity: 1;
   }
 
   &::-moz-placeholder {
     color: $input-text-color;
+
     opacity: 1;
   }
 
@@ -70,16 +75,19 @@
 
   &::placeholder {
     color: $input-text-color;
+
     opacity: 1;
   }
 
   &:focus:-moz-placeholder {
     color: transparent;
+
     opacity: 1;
   }
 
   &:focus::-moz-placeholder {
     color: transparent;
+
     opacity: 1;
   }
 
@@ -97,21 +105,23 @@
 }
 
 @mixin clearfix {
-  &:after {
-    content: ' ';
+  &::after {
     display: block;
     clear: both;
+
+    content: ' ';
   }
 }
 
 // clear select without default button
 @mixin clearSelect {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
   border-radius: 0;
+  border-radius: 0;
+  border-radius: 0;
+
+  appearance: none;
+  appearance: none;
+  appearance: none;
 }
 
 // elements get appended with "__" and the $name
@@ -170,8 +180,12 @@
 
 @mixin before-img($display, $width, $height, $position) {
   @at-root #{&}:before {
-    content: '';
     display: $display;
+
+    width: $width;
+    height: $height;
+
+    content: '';
 
     @if $position==a {
       position: absolute;
@@ -180,17 +194,18 @@
     @if $position==r {
       position: relative;
     }
-
-    width: $width;
-    height: $height;
     @content;
   }
 }
 
 @mixin after-img($display, $width, $height, $position) {
   @at-root #{&}:after {
-    content: '';
     display: $display;
+
+    width: $width;
+    height: $height;
+
+    content: '';
 
     @if $position==a {
       position: absolute;
@@ -199,9 +214,6 @@
     @if $position==r {
       position: relative;
     }
-
-    width: $width;
-    height: $height;
     @content;
   }
 }
@@ -223,10 +235,10 @@
 
 @mixin textCut($col, $height) {
   display: -webkit-box;
-  -webkit-line-clamp: $col;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   max-height: $height;
+  overflow: hidden;
+  -webkit-line-clamp: $col;
+  box-orient: vertical;
 }
 
 // button gradient
@@ -240,19 +252,20 @@
   $hover
 ) {
   color: $cText;
-  transition: 0.5s;
+
+  background-image: linear-gradient($direction,
+  $cFirst 0%,
+  $cSecons 51%,
+  $cThird 100%);
   background-size: 200% auto;
-  background-image: linear-gradient(
-    $direction,
-    $cFirst 0%,
-    $cSecons 51%,
-    $cThird 100%
-  );
+
+  transition: 0.5s;
 
   &:hover {
-    text-decoration: none;
-    background-position: $hover;
     color: $cHover;
+    text-decoration: none;
+
+    background-position: $hover;
     box-shadow: 0px 20px 30px -15px $cThird;
   }
 }
@@ -260,13 +273,11 @@
 @mixin gradient($top, $bottom) {
   background: $top;
   background: -moz-linear-gradient(top, $top 0%, $bottom 100%);
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0%, $top),
-    color-stop(100%, $bottom)
-  );
+  background: -webkit-gradient(linear,
+  left top,
+  left bottom,
+  color-stop(0%, $top),
+  color-stop(100%, $bottom));
   background: -webkit-linear-gradient(top, $top 0%, $bottom 100%);
   background: -o-linear-gradient(top, $top 0%, $bottom 100%);
   background: -ms-linear-gradient(top, $top 0%, $bottom 100%);

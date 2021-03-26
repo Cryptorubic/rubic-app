@@ -2,18 +2,21 @@
 
 .field-error {
   display: none;
+  padding: 0.5em 0;
+
   color: rgba(255, 41, 68, 0.8);
   font-size: 12px;
-  padding: 0.5em 0;
   text-transform: uppercase;
 }
 
 .field-success {
+  display: block;
+  padding: 0.5em 0;
+
   color: rgba(6, 176, 31, 0.96);
   font-size: 12px;
-  padding: 0.5em 0;
-  display: block;
   text-transform: uppercase;
+
   &.grey-text-color {
     color: #878787;
   }
@@ -21,37 +24,46 @@
 
 .textarea {
   &__black {
-    width: 100%;
-    font-family: inherit;
-    padding: 15px;
     box-sizing: border-box;
-    border: 0 none;
-    background-color: rgba(0, 0, 0, 0.3);
-    font-size: inherit;
+    width: 100%;
     max-width: 100%;
     height: 181px;
+    padding: 15px;
+
     color: #fff;
+    font-size: inherit;
+    font-family: inherit;
+
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 0 none;
   }
 }
 
 .form-field {
-  input, textarea {
+  input,
+  textarea {
     outline: none;
+
     form.ng-submitted &:not(.without-error-lightning).ng-invalid,
     &.ng-invalid:not(.without-error-lightning):focus,
     &:not(.without-error-lightning).ng-touched.ng-invalid,
-    &:not(.without-error-lightning)[invalid="true"] {
-      &:not(:disabled), &:not([disabled]), &:not([readonly]) {
+    &:not(.without-error-lightning)[invalid='true'] {
+      &:not(:disabled),
+      &:not([disabled]),
+      &:not([readonly]) {
         border-color: #ff2944;
       }
+
       &:focus {
         box-shadow: 0 0 0.2em rgba(249, 28, 28, 0.4);
       }
+
       ~ {
         .field-label {
           //color: #ffa2a8;
         }
       }
+
       ~ .field-advanced-description {
         display: none;
       }
@@ -59,35 +71,42 @@
       &.ng-invalid-required {
         ~ .form-field_error-required {
           display: block;
+
           ~ .field-error {
             display: none !important;
           }
         }
       }
+
       &.ng-invalid-email {
         ~ {
           .form-field_error-email {
             display: block;
+
             ~ .field-error {
               display: none !important;
             }
           }
         }
       }
+
       &.ng-invalid-pattern {
         ~ {
           .form-field_error-pattern {
             display: block;
+
             ~ .field-error {
               display: none !important;
             }
           }
         }
       }
+
       &.ng-invalid-minlength {
         ~ {
           .form-field_error-minlength {
             display: block;
+
             ~ .field-error {
               display: none !important;
             }
@@ -99,26 +118,31 @@
         ~ {
           .form-field_error-server {
             display: block;
+
             ~ .field-error {
               display: none !important;
             }
           }
         }
       }
+
       &.ng-invalid-soft-cap {
         ~ {
           .form-field_error-soft-cap {
             display: block;
+
             ~ .field-error {
               display: none !important;
             }
           }
         }
       }
+
       &.ng-invalid-check-sum {
         ~ {
           .form-field_error-check-sum {
             display: block;
+
             ~ .field-error {
               display: none !important;
             }
@@ -130,6 +154,7 @@
         ~ {
           .form-field_error-contract-address {
             display: block;
+
             ~ .field-error {
               display: none !important;
             }
@@ -141,38 +166,49 @@
 }
 
 .radio-buttons-list {
-  list-style-type: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
+
+  list-style-type: none;
+
   li {
-    padding: 13px 0;
     margin: 0;
+    padding: 13px 0;
   }
 }
+
 .radio-button-decorated {
   position: relative;
-  overflow: hidden;
+
   padding-left: 40px;
+  overflow: hidden;
+
   &_input {
     position: absolute;
     right: 105%;
     bottom: 105%;
+
     margin: 0;
+
     opacity: 0;
   }
+
   &_mask {
+    position: absolute;
+    top: -7px;
+    left: 0;
+
+    display: inline-block;
     width: 26px;
     height: 26px;
+
     line-height: 26px;
     text-align: center;
-    border: 1px solid #fff;
-    display: inline-block;
     vertical-align: middle;
-    position: absolute;
-    left: 0;
-    top: -7px;
-    cursor: pointer;
+
+    border: 1px solid #fff;
     border-radius: 50%;
+    cursor: pointer;
   }
 
   &_input[readonly] + &_mask {
@@ -182,20 +218,25 @@
   &_input[readonly]:not(:checked) ~ * {
     opacity: 0.5;
   }
+
   &_input:checked + &_mask {
     background-color: #fff;
     cursor: default;
-    &:after {
-      content: '';
+
+    &::after {
       display: inline-block;
-      border-width: 0 2px 2px 0;
-      border-color: #000;
-      border-style: solid;
-      transform: rotate(45deg);
       width: 4px;
       height: 9px;
+
+      border-color: #000;
+      border-style: solid;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+
+      content: '';
     }
   }
+
   &_label {
     color: #fff;
     font-size: 16px;

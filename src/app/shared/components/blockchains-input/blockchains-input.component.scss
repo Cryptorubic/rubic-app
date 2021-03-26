@@ -7,16 +7,18 @@
   height: 52px;
   padding-left: 10px;
 
-  background-color: #f4f4f4;
   font-size: 18px;
+
+  background-color: #f4f4f4;
 
   &__selected {
     img {
-      vertical-align: middle;
 
       height: 23px;
-      margin-right: 12px;
       margin-top: -4px;
+      margin-right: 12px;
+
+      vertical-align: middle;
     }
   }
 }
