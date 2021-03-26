@@ -4,10 +4,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import { OrderBookTradeTableRow } from '../../../models/trade-table';
 
-// TODO understand, why this is working only with 'root'
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OrderBooksTableService {
   private readonly $dataSource: BehaviorSubject<OrderBookTradeTableRow[]>;
 

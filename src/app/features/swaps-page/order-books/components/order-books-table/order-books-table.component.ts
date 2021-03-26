@@ -27,7 +27,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
   ) {
     this.$tableLoading = this.orderBooksTableService.getTableLoadingStatus();
     this.orderBooksTableService.setTableLoadingStatus(true);
-    this.orderBookApi.fetchPublicSwaps();
+    this.fetchPublicSwaps();
     this.$dataSource = this.orderBooksTableService.getTableData();
     this.$displayedColumns = this.orderBooksTableService.getTableColumns();
     this.$columnsSizes = this.orderBooksTableService.getTableColumnsSizes();
@@ -42,6 +42,17 @@ export class OrderBooksTableComponent implements AfterViewInit {
 
   public refreshOrderBooks(): void {
     this.orderBooksTableService.setTableLoadingStatus(true);
-    this.orderBookApi.fetchPublicSwaps();
+    this.fetchPublicSwaps();
+  }
+
+  private fetchPublicSwaps(): void {
+    this.orderBookApi.fetchPublicSwaps().subscribe(
+      async tradeData => {
+        this.orderBooksTableService.setTableData(await Promise.all(tradeData));
+        this.orderBooksTableService.filterByBlockchain();
+      },
+      err => console.error(err),
+      () => this.orderBooksTableService.setTableLoadingStatus(false)
+    );
   }
 }
