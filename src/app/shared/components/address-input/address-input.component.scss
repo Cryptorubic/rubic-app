@@ -2,8 +2,8 @@
 
 .address-input {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 0 1%;
 
   &__label {
@@ -13,6 +13,7 @@
 
   &__container {
     position: relative;
+
     width: 60%;
     min-width: 500px;
     height: 54px;
@@ -23,13 +24,14 @@
 
     height: 100%;
     padding: 11px 11px 11px 22px;
-    border: 1px solid #fff;
 
     color: #110931;
-    background: #f4f4f4;
+    font-size: 18px;
 
     font-family: inherit;
-    font-size: 18px;
+
+    background: #f4f4f4;
+    border: 1px solid white;
 
     &::placeholder {
       font-size: 20px;
@@ -50,9 +52,9 @@
 @include b(1150) {
   .address-input {
     flex-direction: column;
-    justify-content: space-around;
-    align-items: flex-start;
     grid-gap: 9px;
+    align-items: flex-start;
+    justify-content: space-around;
 
     &__label {
       padding-left: 9px;
@@ -82,6 +84,7 @@
 
     &__input {
       padding-left: 12px;
+
       font-size: 16px;
 
       &::placeholder {

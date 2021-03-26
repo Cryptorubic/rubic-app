@@ -4,23 +4,24 @@ footer {
 
 .subscribe {
   padding-top: 10px;
-  color: #000;
   padding-bottom: 50px;
 
+  color: black;
+
   .page-content__title {
-    font-size: 28px;
-    letter-spacing: 0;
-    line-height: 53px;
     font-weight: bold;
+    font-size: 28px;
+    line-height: 53px;
+    letter-spacing: 0;
   }
 }
 
 .subscribe__row {
-  margin-bottom: 60px;
-  margin-top: 20px;
 
   display: flex;
   justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 60px;
 
   .top__bar__input {
     width: 400px;
@@ -31,8 +32,9 @@ footer {
 
     &__cell {
       display: table-cell;
-      vertical-align: middle;
       padding: 0 5px;
+
+      vertical-align: middle;
     }
   }
 }
@@ -41,22 +43,26 @@ footer {
   margin-bottom: 20px;
 
   &::after {
-    clear: both;
-    content: '';
     display: block;
+    clear: both;
+
+    content: '';
   }
 
   img {
-    transition: all linear 0.1s;
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
     width: 50px;
     max-width: 70%;
+
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    transform: scale(1);
+
+    transition: all linear 0.1s;
   }
 
   span {
     float: left;
     width: 7%;
+
     text-align: center;
   }
 
@@ -79,10 +85,11 @@ footer {
 }
 
 .copyright {
-  text-align: center;
-  font-size: 15px;
-  color: rgba(0, 0, 0, 0.5);
   padding: 30px 0;
+
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 15px;
+  text-align: center;
 }
 
 @media screen and (max-width: 720px) {
@@ -99,9 +106,10 @@ footer {
     padding-bottom: 8vw;
 
     .page-content__title {
+      margin: 2vw 0;
+
       font-size: 10vw;
       line-height: initial;
-      margin: 2vw 0;
     }
   }
 
@@ -112,8 +120,8 @@ footer {
 
     &_form {
       display: block;
-      margin-left: auto;
       margin-right: auto;
+      margin-left: auto;
 
       &__cell {
         display: block;

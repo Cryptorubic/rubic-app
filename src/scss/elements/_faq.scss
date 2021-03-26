@@ -1,7 +1,7 @@
 .faq {
   &__highlight {
-    font-size: 1.2em;
     font-weight: bold;
+    font-size: 1.2em;
   }
 
   &__img {
@@ -13,12 +13,13 @@
 
     box-sizing: border-box;
     height: 24px;
-    padding-left: 10px;
     padding-right: 10px;
-    border-radius: 3px;
+    padding-left: 10px;
 
-    color: #fff;
+    color: white;
+
     background-color: #ff9f9f;
+    border-radius: 3px;
   }
 
   &__warning-flex-container {

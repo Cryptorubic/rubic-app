@@ -2,8 +2,9 @@
   display: flex;
   margin: 15px 12px;
 
-  line-height: 21px;
   font-size: 16px;
+
+  line-height: 21px;
 
   &__image-container {
     width: 39px;
@@ -17,8 +18,8 @@
   }
 
   &_selected {
-    padding: 5px 25px 5px 11px;
     margin: 0;
+    padding: 5px 25px 5px 11px;
 
     .dropdown-label__image-container {
       width: initial;
@@ -27,11 +28,12 @@
     }
 
     img {
-      vertical-align: middle;
       float: unset;
 
       max-width: 28px;
       height: 28px;
+
+      vertical-align: middle;
     }
 
     .dropdown-label__text {
@@ -40,20 +42,23 @@
     }
 
     &::after {
-      content: '';
-      display: block;
 
       position: absolute;
       top: calc(50% - 5px);
       right: 8px;
 
+      display: block;
+
       width: 5px;
       height: 5px;
-      border-width: 0 2px 2px 0;
-      border-style: solid;
+
       border-color: rgba(0, 0, 0, 0.47);
+      border-style: solid;
+      border-width: 0 2px 2px 0;
 
       transform: rotate(45deg);
+
+      content: '';
     }
   }
 }

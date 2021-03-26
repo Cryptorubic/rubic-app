@@ -2,20 +2,23 @@
 
 .rubic {
   &-btn {
-    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-width: 185px;
     min-height: 50px;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+    color: white;
     font-weight: bold;
-    letter-spacing: 1px;
-    border: none;
-    transition: 0.4s ease;
-    cursor: pointer;
     font-size: 16px;
+    letter-spacing: 1px;
     text-decoration: none;
+
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    transition: 0.4s ease;
 
     span {
       cursor: pointer;
@@ -43,18 +46,20 @@
     }
 
     &-green {
-      background: none;
-      border: 2px solid var(--main-green);
       color: var(--main-green);
 
+      background: none;
+      border: 2px solid var(--main-green);
+
       &:not(.rubic-btn-border) {
+        color: white;
+
         background-color: var(--main-green);
-        color: #fff;
       }
 
       &:hover {
-        opacity: 0.9;
         background-color: var(--green-btn-border-hover-bg);
+        opacity: 0.9;
 
         &:not(.rubic-btn-border) {
           background-color: var(--main-green);

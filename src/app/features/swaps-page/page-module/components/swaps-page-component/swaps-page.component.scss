@@ -11,13 +11,14 @@
   }
 
   &__intro {
-    padding-top: 40px;
     margin-bottom: 60px;
+    padding-top: 40px;
+
+    color: rgba(#000, 0.4);
 
     font-weight: normal;
     font-size: 22px;
     line-height: 40px;
-    color: rgba(#000, 0.4);
 
     .app-index__intro_bold {
       font-weight: 700;
@@ -31,10 +32,11 @@
   &__title {
     margin-bottom: 20px;
 
+    color: #110931;
+
     font-weight: bold;
     font-size: 28px;
     line-height: 32px;
-    color: #110931;
   }
 }
 
@@ -56,15 +58,16 @@
   }
 
   &__arrow-button {
-    height: 17px;
-    width: 17px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
     top: -2px;
 
-    background-color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+
+    background-color: white;
     border-radius: 50%;
 
     transition: transform 0.2s linear;
@@ -72,11 +75,12 @@
 }
 
 .disclaimer-text {
-  font-size: 14px;
-  line-height: 40px;
-  color: #000;
   margin-top: 0;
   margin-bottom: 20px;
+
+  color: black;
+  font-size: 14px;
+  line-height: 40px;
 }
 
 app-volume-block {

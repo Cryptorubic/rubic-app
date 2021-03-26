@@ -5,6 +5,7 @@
   &::before {
     display: table;
     width: 100%;
+
     content: '';
   }
 }
@@ -19,8 +20,8 @@
   padding: 0 1vw;
 
   &.without-padding {
-    padding-left: 0;
     padding-right: 0;
+    padding-left: 0;
   }
 
   &.float-right {

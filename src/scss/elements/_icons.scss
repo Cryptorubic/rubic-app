@@ -2,27 +2,30 @@
 
 .icon {
   &::before {
-    content: '';
-    border-radius: 5px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+
     background-repeat: no-repeat;
     background-position: center;
     background-size: initial;
+    border-radius: 5px;
+
+    content: '';
   }
 
   &__checked {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
     @include before-img(block, 20px, 20px, r) {
-      background-image: url('/assets/images/icons/icon-checked.svg');
-      background-size: contain;
-      margin-right: 25px;
       min-width: 20px !important;
       min-height: 20px !important;
+      margin-right: 25px;
+
+      background-image: url('/assets/images/icons/icon-checked.svg');
+      background-size: contain;
     }
   }
 }

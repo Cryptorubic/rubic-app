@@ -2,9 +2,10 @@
 @import '../../../../../scss/elements/vars';
 
 .about-page {
-  font-family: $ubuntu-font;
   font-weight: normal;
-  background-color: #fff;
+  font-family: $ubuntu-font;
+
+  background-color: white;
 
   @include b(1100) {
     background-image: none;
@@ -18,21 +19,21 @@
     }
 
     .container {
-      max-width: 1100px;
       display: grid;
-      grid-template-columns: minmax(300px, 450px) minmax(300px, 1fr);
       grid-gap: 50px;
-      justify-content: center;
+      grid-template-columns: minmax(300px, 450px) minmax(300px, 1fr);
       align-items: center;
+      justify-content: center;
+      max-width: 1100px;
 
       @include b(850) {
-        grid-template-columns: 1fr;
         grid-gap: 25px;
+        grid-template-columns: 1fr;
       }
 
       img {
-        max-width: 415px;
         width: 100%;
+        max-width: 415px;
       }
 
       h3 {
@@ -54,21 +55,22 @@
 
     &-blocks {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(355px, 1fr));
       grid-gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(355px, 1fr));
 
       @include b(700) {
         grid-template-columns: 1fr;
       }
 
       &-item {
-        background-color: #fafafa;
-        padding: 40px 60px 25px 25px;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
         align-items: flex-start;
+        justify-content: flex-start;
         min-height: 155px;
+        padding: 40px 60px 25px 25px;
+
+        background-color: #fafafa;
 
         @include b(850) {
           padding: 20px;
@@ -90,22 +92,23 @@
 
     &-blocks {
       display: grid;
+      grid-gap: 16px;
       grid-template-columns: repeat(auto-fit, minmax(355px, 1fr));
       margin-top: 20px;
-      grid-gap: 16px;
 
       @include b(700) {
         grid-template-columns: 1fr;
       }
 
       &-item {
-        background-color: #fafafa;
-        padding: 25px 35px;
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: flex-start;
+        justify-content: center;
         min-height: 50px;
+        padding: 25px 35px;
+
+        background-color: #fafafa;
 
         @include b(850) {
           padding: 20px;
@@ -130,8 +133,8 @@
       margin-top: 20px;
 
       @include b(500) {
-        padding-bottom: 0;
         min-height: 400px;
+        padding-bottom: 0;
       }
     }
   }
@@ -149,10 +152,12 @@
     }
 
     &-block {
+      position: relative;
+
       display: flex;
       justify-content: space-between;
       margin-top: 50px;
-      position: relative;
+
       font-family: $main-font;
 
       @include b(1100) {
@@ -160,71 +165,87 @@
       }
 
       &::after {
-        content: '';
-        background-color: #4aa956;
-        height: 2px;
         position: absolute;
-        width: 100vw;
         bottom: -69.5px;
         left: calc((100% - 100vw) / 2 - 8px);
 
+        width: 100vw;
+        height: 2px;
+
+        background-color: #4aa956;
+
+        content: '';
+
         @include b(1100) {
-          height: 100%;
           position: absolute;
-          width: 2px;
-          left: 1px;
           top: 0;
+          left: 1px;
+
+          width: 2px;
+          height: 100%;
         }
       }
 
       &-item {
-        background-color: #fafafa;
-        border-radius: 5px;
-        padding: 25px 20px;
         position: relative;
+
         width: 223px;
         height: 326px;
+        padding: 25px 20px;
+
+        background-color: #fafafa;
+        border-radius: 5px;
 
         @include b(1100) {
-          max-width: 100%;
-          margin-left: 60px;
           width: auto;
+          max-width: 100%;
           margin-bottom: 15px;
+          margin-left: 60px;
         }
 
         &::after {
-          content: '';
-          border: 1px dashed #4aa956;
-          height: 50px;
           position: absolute;
           bottom: -55px;
 
+          height: 50px;
+
+          border: 1px dashed #4aa956;
+
+          content: '';
+
           @include b(1100) {
-            border: 1px dashed #4aa956;
-            height: 50px;
             position: absolute;
             top: 0;
             left: -30px;
+
+            height: 50px;
+
+            border: 1px dashed #4aa956;
             transform: rotate(90deg);
           }
         }
 
         &::before {
-          content: '';
-          height: 15px;
-          width: 15px;
-          background-color: #4aa956;
           position: absolute;
           bottom: -75px;
           left: 14.5px;
 
+          width: 15px;
+          height: 15px;
+
+          background-color: #4aa956;
+
+          content: '';
+
           @include b(1100) {
-            height: 15px;
-            width: 15px;
-            background-color: #4aa956;
             position: absolute;
             top: 18px;
             left: -65px;
+
+            width: 15px;
+            height: 15px;
+
+            background-color: #4aa956;
           }
         }
       }

@@ -2,18 +2,18 @@
 
 .withdraw-button {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
   width: 100%;
   height: 55px;
   padding: 0;
-  border: none;
-
-  background: #fff;
-  cursor: pointer;
 
   font-size: 18px;
+
+  background: white;
+  border: none;
+  cursor: pointer;
 
   transition: transform 0.1s ease-in-out;
 
@@ -30,8 +30,8 @@
   }
 
   &:disabled {
-    opacity: 0.7;
     cursor: default;
+    opacity: 0.7;
 
     &:active {
       transform: none;

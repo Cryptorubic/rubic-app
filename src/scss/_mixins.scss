@@ -8,8 +8,8 @@
   $asset-pipeline: false
 ) {
   @font-face {
-    font-family: $font-family;
     font-weight: $weight;
+    font-family: $font-family;
     font-style: $style;
 
     @if $asset-pipeline==true {
@@ -28,13 +28,15 @@
 
 @mixin notext {
   overflow: hidden;
+
   text-indent: -9999px;
 }
 
 .clearfix::after {
-  content: '';
   display: table;
   clear: both;
+
+  content: '';
 }
 
 .centered {
@@ -44,6 +46,7 @@
 
   > * {
     display: table-cell;
+
     text-align: center;
     vertical-align: middle;
   }
@@ -56,6 +59,7 @@
 
   &::-moz-placeholder {
     color: $input-text-color;
+
     opacity: 1;
   }
 
@@ -65,6 +69,7 @@
 
   &::placeholder {
     color: $input-text-color;
+
     opacity: 1;
   }
 
@@ -74,6 +79,7 @@
 
   &:focus:-moz-placeholder {
     color: transparent;
+
     opacity: 1;
   }
 
@@ -88,16 +94,18 @@
 
 @mixin clearfix {
   &::after {
-    content: ' ';
     display: block;
     clear: both;
+
+    content: ' ';
   }
 }
 
 // clear select without default button
 @mixin clearSelect {
-  appearance: none;
   border-radius: 0;
+
+  appearance: none;
 }
 
 // elements get appended with "__" and the $name
@@ -156,8 +164,12 @@
 
 @mixin before-img($display, $width, $height, $position) {
   @at-root #{&}:before {
-    content: '';
     display: $display;
+
+    width: $width;
+    height: $height;
+
+    content: '';
 
     @if $position==a {
       position: absolute;
@@ -166,17 +178,18 @@
     @if $position==r {
       position: relative;
     }
-
-    width: $width;
-    height: $height;
     @content;
   }
 }
 
 @mixin after-img($display, $width, $height, $position) {
   @at-root #{&}:after {
-    content: '';
     display: $display;
+
+    width: $width;
+    height: $height;
+
+    content: '';
 
     @if $position==a {
       position: absolute;
@@ -185,9 +198,6 @@
     @if $position==r {
       position: relative;
     }
-
-    width: $width;
-    height: $height;
     @content;
   }
 }
@@ -208,8 +218,8 @@
 }
 
 @mixin textCut($col, $height) {
-  overflow: hidden;
   max-height: $height;
+  overflow: hidden;
 }
 
 // button gradient
@@ -223,14 +233,17 @@
   $hover
 ) {
   color: $cText;
-  transition: 0.5s;
-  background-size: 200% auto;
+
   background-image: linear-gradient($direction, $cFirst 0%, $cSecons 51%, cThird 100%);
+  background-size: 200% auto;
+
+  transition: 0.5s;
 
   &:hover {
-    text-decoration: none;
-    background-position: $hover;
     color: $cHover;
+    text-decoration: none;
+
+    background-position: $hover;
     box-shadow: 0px 20px 30px -15px $cThird;
   }
 }

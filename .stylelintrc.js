@@ -1,13 +1,17 @@
 module.exports = {
   plugins: ['stylelint-scss'],
-  extends: ['stylelint-config-sass-guidelines'],
+  extends: ['stylelint-config-sass-guidelines', 'stylelint-config-rational-order'],
   rules: {
+    /* Ordering */
+    'plugin/rational-order': [true, {
+      'border-in-box-model': false,
+      'empty-line-between-groups': true,
+    }],
     /* css rules */
     'selector-type-no-unknown': null,
     'at-rule-no-unknown': null,
     'order/properties-alphabetical-order': null,
-    // Better if <= 4. Now it's 8 because of current css state of project.
-    'max-nesting-depth': 8,
+    'max-nesting-depth': 8, // Better if <= 4. Now it's 8 because of current css state of project.
     'selector-no-vendor-prefix': null,
     'media-feature-name-no-vendor-prefix': null,
     'length-zero-no-unit': null,
@@ -17,7 +21,9 @@ module.exports = {
     'selector-max-compound-selectors': null,
     'selector-class-pattern': null,
     'selector-pseudo-element-no-unknown': null,
-    'selector-max-id': 1,
+    'selector-max-id': [1, { 'severity': 'warning' }],
+    'color-named': null,
+    'property-disallowed-list': ['background-image'],
     /* scss rules */
     'scss/at-rule-no-unknown': true,
     'scss/selector-no-redundant-nesting-selector': true,

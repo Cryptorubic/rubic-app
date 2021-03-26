@@ -4,23 +4,25 @@
   &__title {
     margin-bottom: 8px;
 
-    font-family: $ubuntu-font;
-    font-style: normal;
+    color: #110931;
     font-weight: bold;
     font-size: 22px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
     line-height: 25px;
-    color: #110931;
   }
 
   &__description {
     margin-bottom: 50px;
 
-    font-family: $ubuntu-font;
-    font-style: normal;
+    color: black;
     font-weight: normal;
     font-size: 19px;
+
+    font-family: $ubuntu-font;
+    font-style: normal;
     line-height: 40px;
-    color: #000;
   }
 
   &__content {
@@ -30,11 +32,12 @@
   }
 
   &__item {
-    width: 295px;
-    margin-bottom: 90px;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 295px;
+    margin-bottom: 90px;
+
     cursor: pointer;
 
     transition: transform 0.1s linear;
@@ -59,15 +62,15 @@
     width: 195px;
     height: 50px;
     margin: 0 auto;
-    border: none;
 
-    cursor: pointer;
-
-    background: $main-green;
-
-    color: #fff;
+    color: white;
     font-weight: bold;
     font-size: 18px;
     font-family: inherit;
+
+    background: $main-green;
+    border: none;
+
+    cursor: pointer;
   }
 }

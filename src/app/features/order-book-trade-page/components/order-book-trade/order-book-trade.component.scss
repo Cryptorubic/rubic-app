@@ -2,8 +2,8 @@
 
 .spinner-container {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
   width: 100vw;
   height: 100vh;
@@ -30,21 +30,22 @@
 
 .header-row {
   display: flex;
-  align-items: center;
   grid-gap: 30px;
+  align-items: center;
 
   &__tokens-names {
     color: $dark;
-    font-size: 25px;
     font-weight: bold;
+    font-size: 25px;
   }
 
   &__state {
-    margin-left: auto;
     margin-right: 10px;
+    margin-left: auto;
+
+    font-weight: bold;
 
     font-size: 24px;
-    font-weight: bold;
 
     &::before {
       position: relative;
@@ -55,6 +56,7 @@
 
       width: 10px;
       height: 10px;
+
       border-radius: 50%;
 
       content: '';
@@ -105,7 +107,7 @@
     height: 54px;
     padding: 0 20px 0 17px;
 
-    background: #fff;
+    background: white;
 
     img {
       width: 20px;
@@ -122,34 +124,35 @@
     position: relative;
     top: 3px;
 
-    padding: 0;
     margin-left: 12px;
-    border: none;
+
+    padding: 0;
 
     background: transparent;
+    border: none;
     cursor: pointer;
   }
 }
 
 .tokens-swap {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   grid-column-gap: 20px;
+  grid-template-columns: 1fr 1fr;
 
   color: $dark;
 }
 
 .trade-options {
   display: flex;
-  align-items: center;
-  grid-column-gap: 50px;
   flex-wrap: wrap;
+  grid-column-gap: 50px;
+  align-items: center;
 
   padding: 24px 32px;
 
-  background: #fff;
-
   color: $dark;
+
+  background: white;
 
   &__break {
     flex-basis: 100%;
@@ -161,8 +164,8 @@
 .trade-option {
   display: flex;
   flex-direction: column;
-  align-items: center;
   grid-gap: 6px;
+  align-items: center;
 
   width: fit-content;
 
@@ -198,8 +201,9 @@
     display: flex;
     align-items: center;
 
-    font-size: 18px;
     font-weight: 500;
+
+    font-size: 18px;
 
     &_copy-link {
       color: $main-green;
@@ -207,9 +211,9 @@
 
     &_button {
       padding: 0;
-      border: none;
 
-      background: #fff;
+      background: white;
+      border: none;
       cursor: pointer;
 
       img {
@@ -231,11 +235,12 @@
 
   padding: 8px 14px;
 
-  background: $grey-background;
+  font-weight: normal;
 
   font-size: 17px;
-  font-weight: normal;
   text-transform: uppercase;
+
+  background: $grey-background;
 
   &_not-checked {
     flex-direction: row-reverse;
@@ -265,11 +270,11 @@
     right: -23px;
 
     padding: 5px 8px;
-    border-radius: 4px;
+
+    color: white;
 
     background: #818181;
-
-    color: #fff;
+    border-radius: 4px;
 
     .triangle {
       position: absolute;
@@ -289,6 +294,7 @@
 .no-trade {
   margin: 140px 0 0 80px;
 
-  font-size: 24px;
   font-weight: bold;
+
+  font-size: 24px;
 }

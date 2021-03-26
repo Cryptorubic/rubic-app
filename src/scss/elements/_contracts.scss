@@ -1,24 +1,28 @@
 .contract-state {
   float: right;
+
   color: #4aa956;
-  font-size: 20px;
   font-weight: bold;
-  white-space: nowrap;
+  font-size: 20px;
   line-height: 24px;
+  white-space: nowrap;
 
   &::before {
-    content: '';
     display: inline-block;
     width: 8px;
     height: 8px;
-    border-radius: 50%;
-    vertical-align: middle;
     margin-right: 5px;
+
+    vertical-align: middle;
+
+    border-radius: 50%;
+
+    content: '';
   }
 
   &__0 {
     &::before {
-      background-color: #fff;
+      background-color: white;
     }
   }
 

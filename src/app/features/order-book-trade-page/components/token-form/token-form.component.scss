@@ -1,7 +1,7 @@
 @import 'src/scss/elements/vars';
 
 .token-block {
-  background: #fff;
+  background: white;
 
   &__area {
     display: flex;
@@ -12,6 +12,7 @@
   flex-direction: column;
 
   padding: 12px 20px 10px;
+
   border-bottom: 2px $grey-background solid;
 
   &__amount-total {
@@ -40,8 +41,9 @@
     width: 35px;
     margin-right: 6px;
 
-    font-size: 14px;
     font-weight: 500;
+
+    font-size: 14px;
     text-transform: uppercase;
   }
 
@@ -53,8 +55,9 @@
 .area-second {
   position: relative;
 
-  justify-content: space-between;
   align-items: center;
+
+  justify-content: space-between;
 
   padding: 25px 20px 20px;
 
@@ -82,8 +85,9 @@
   }
 
   &__amount {
-    font-weight: 500;
     margin-bottom: 5px;
+
+    font-weight: 500;
     word-spacing: -2px;
   }
 
@@ -94,8 +98,8 @@
 
 .token-info {
   display: flex;
-  align-items: center;
   grid-gap: 15px;
+  align-items: center;
 
   white-space: nowrap;
 
@@ -110,8 +114,8 @@
 
   &__title {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: flex-end;
 
     height: 26px;
     margin-bottom: 6px;
@@ -139,20 +143,20 @@
 
 .area-third {
   display: grid;
-  grid-template-columns: auto 200px;
   grid-column-gap: 15px;
+  grid-template-columns: auto 200px;
 
   padding: 15px 20px 19px 19px;
 
   &__amount-input {
     padding: 12px;
-    border: 1px solid #fff;
-
-    background: $grey-background;
 
     color: $dark;
     font-size: 19px;
     font-family: inherit;
+
+    background: $grey-background;
+    border: 1px solid white;
 
     &_invalid {
       border-color: $error-red;
@@ -164,10 +168,11 @@
   }
 
   &__amount-to-get {
-    grid-column: span 2;
 
     position: relative;
     left: 2px;
+
+    grid-column: span 2;
 
     margin: 14px 0 3px;
   }
@@ -177,16 +182,16 @@
     left: 2px;
 
     width: 50px;
-    padding: 0;
     margin-top: 8px;
-    border: none;
-    border-bottom: 1px $grey-text dashed;
-
-    background: #fff;
+    padding: 0;
 
     color: $grey-text;
     font-size: 17px;
     font-family: inherit;
+
+    background: white;
+    border: none;
+    border-bottom: 1px $grey-text dashed;
 
     cursor: pointer;
 
@@ -226,9 +231,9 @@
 }
 
 .area-fifth {
-  border-top: 15px solid $grey-background;
 
   background: $grey-background;
+  border-top: 15px solid $grey-background;
 
   app-withdraw-button {
     width: 100%;

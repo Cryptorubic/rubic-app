@@ -4,44 +4,50 @@ $mobile-width: 1024;
 $main-color: #4aa956;
 
 .header-menu {
-  font-weight: bold;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: #fefefe;
   position: relative;
 
+  color: #fefefe;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+
   &::before {
-    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    right: 0;
+
     width: 1px;
     height: 50%;
-    position: absolute;
-    right: 0;
-    right: 0;
+
     background-color: $main-color;
-    top: 50%;
     transform: translateY(-50%);
+
+    content: '';
   }
 
   &__list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
     display: flex;
     align-items: center;
     height: 42px;
+    margin: 0;
+    padding: 0;
+
+    list-style-type: none;
 
     @include b($mobile-width) {
       flex-direction: column;
-      height: auto;
       align-items: flex-end;
+      height: auto;
     }
   }
 
   &__list-item {
     display: inline-block;
-    line-height: 13px;
     padding: 0;
+
+    line-height: 13px;
 
     &[aria-expanded='true'] {
       a {
@@ -60,32 +66,38 @@ $main-color: #4aa956;
     position: relative;
 
     &::after {
-      content: '';
-      transform-origin: center;
-      display: block;
-      width: 5px;
-      height: 5px;
-      border-width: 2px 2px 0 0;
-      border-style: solid;
-      border-color: $main-color;
-      transform: translateY(-100%) rotate(135deg);
       position: absolute;
       top: calc(50% + 2px);
       right: 25px;
       z-index: 2;
+
+      display: block;
+      width: 5px;
+      height: 5px;
+
+      border-color: $main-color;
+      border-style: solid;
+      border-width: 2px 2px 0 0;
+      transform: translateY(-100%) rotate(135deg);
+      transform-origin: center;
+
       transition: transform 0.3s ease-in-out;
+
+      content: '';
     }
   }
 
   &__link {
+    display: inline-block;
+    padding: 9px 25px;
+    padding-right: 40px;
+
     color: $main-color;
     text-decoration: none;
     text-decoration: none;
-    display: inline-block;
     vertical-align: middle;
-    padding: 9px 25px;
+
     cursor: pointer;
-    padding-right: 40px;
     @include b($mobile-width) {
       padding: 15px;
     }
@@ -96,21 +108,23 @@ $main-color: #4aa956;
   }
 
   &__sublist {
-    padding: 0;
     margin: 0;
+    padding: 0;
   }
 
   &__sublink {
-    color: #000;
-    text-decoration: none;
     display: inline-block;
-    vertical-align: middle;
     padding: 9px 25px;
-    cursor: pointer;
+
+    color: black;
     font-weight: bold;
     font-size: 12px;
-    text-transform: uppercase;
     letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    vertical-align: middle;
+
+    cursor: pointer;
 
 
     &:hover {
@@ -121,6 +135,7 @@ $main-color: #4aa956;
 
 ::ng-deep .mat-menu-panel.header-menu__sublist-container {
   margin-top: 10px;
+
   border-radius: 10px;
   box-shadow: 0 2px 15px rgba(#000, 0.1);
 }

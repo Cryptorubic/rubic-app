@@ -3,22 +3,25 @@
 
 .countdown {
   display: grid;
-  grid-template-columns: repeat(4, minmax(45px, 120px));
   grid-gap: 20px;
+  grid-template-columns: repeat(4, minmax(45px, 120px));
   margin-top: 25px;
 
   &-item {
+    position: relative;
+
     display: flex;
-    justify-content: center;
     align-items: center;
-    background-color: #fff;
+    justify-content: center;
     padding: 20%;
+
+    color: #4aa956;
     font-weight: bold;
     font-size: 44px;
     line-height: 51px;
     text-align: center;
-    color: #4aa956;
-    position: relative;
+
+    background-color: white;
     border-radius: 5px;
 
     @include b(700) {
@@ -30,14 +33,16 @@
     }
 
     &::after {
-      content: attr(data-title);
       position: absolute;
+      bottom: -30px;
+
+      color: white;
       font-weight: normal;
       font-size: 15px;
       line-height: 17px;
       text-align: center;
-      color: #fff;
-      bottom: -30px;
+
+      content: attr(data-title);
     }
   }
 }

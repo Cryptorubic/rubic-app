@@ -1,11 +1,13 @@
 .disclaimer-text {
-  font-size: 14px;
-  color: #000;
   margin: 20px 0;
+
+  color: black;
+  font-size: 14px;
 
   &__link {
     color: #4aa956;
     text-decoration: none;
+
     cursor: pointer;
 
     &:hover {

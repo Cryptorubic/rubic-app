@@ -2,10 +2,11 @@
 
 .maintenance {
   box-sizing: border-box;
-  height: 100vh;
   width: 100vw;
-  background-color: #fff;
+  height: 100vh;
   padding-top: 48px;
+
+  background-color: white;
 
   @include b(900px) {
     padding-top: 24px;
@@ -38,30 +39,33 @@
 
   &__title {
     margin-bottom: 34px;
-    text-align: center;
 
-    font-style: normal;
+    color: #4aa956;
     font-weight: bold;
     font-size: 40px;
+
+    font-style: normal;
     line-height: 32px;
-    color: #4aa956;
+    text-align: center;
   }
 
   &__description {
-    margin: 0 auto;
     max-width: 400px;
-    text-align: center;
+    margin: 0 auto;
 
-    font-style: normal;
+    color: black;
     font-weight: bold;
     font-size: 14px;
+
+    font-style: normal;
     line-height: 32px;
-    color: #000;
+    text-align: center;
   }
 
   &__footer {
     position: fixed;
-    width: 100%;
     bottom: 0;
+
+    width: 100%;
   }
 }

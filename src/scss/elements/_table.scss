@@ -3,18 +3,22 @@ $cell-padding: 10px;
 
 .table {
   &.mat-table {
-    border-spacing: $cell-gap;
-    background: inherit;
-    margin: 0 -$cell-gap;
     width: calc(100% + #{$cell-gap} * 2);
+    margin: 0 -$cell-gap;
+
+    background: inherit;
+    border-spacing: $cell-gap;
   }
 
   th,
   td {
-    padding: $cell-padding;
-    background-color: #fff;
-    color: #000;
     position: relative;
+
+    padding: $cell-padding;
+
+    color: black;
+
+    background-color: white;
     border: none;
 
     div {
@@ -34,6 +38,7 @@ $cell-padding: 10px;
     > a {
       color: inherit;
       text-decoration: none;
+
       cursor: pointer;
 
       &:hover,
