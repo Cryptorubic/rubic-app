@@ -84,5 +84,5 @@ export abstract class PrivateProvider {
    * @description opens a window with suggestion to add token to user's wallet
    * @param token token to add
    */
-  public abstract addToken(token: SwapToken): void;
+  public abstract addToken(token: SwapToken): Promise<void>;
 }
