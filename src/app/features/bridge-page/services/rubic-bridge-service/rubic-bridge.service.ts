@@ -19,9 +19,7 @@ interface BridgeTrade {
   swapContractAbi: any[];
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RubicBridgeService {
   private EthereumSmartContractAddress = '0x8E3BCC334657560253B83f08331d85267316e08a';
 

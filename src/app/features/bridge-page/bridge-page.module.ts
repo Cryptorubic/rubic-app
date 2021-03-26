@@ -15,6 +15,7 @@ import { BridgeFormComponent } from './components/brifge-form/bridge-form.compon
 import { NetworkErrorComponent } from './components/network-error/network-error.component';
 import { BridgeService } from './services/bridge.service';
 import { AdvertModalComponent } from './components/ad-modal/advert-modal.component';
+import { RubicBridgeService } from './services/rubic-bridge-service/rubic-bridge.service';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,6 @@ import { AdvertModalComponent } from './components/ad-modal/advert-modal.compone
     HttpClientModule,
     InlineSVGModule.forRoot()
   ],
-  providers: [BridgeService]
+  providers: [BridgeService, RubicBridgeService]
 })
 export class BridgePageModule {}
