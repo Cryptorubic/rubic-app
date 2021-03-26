@@ -7,6 +7,8 @@ import { PrivateProvider } from '../private-provider';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
+import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { NetworkError } from '../../../../../shared/models/errors/provider/NetworkError';
 
 @Injectable({
   providedIn: 'root'
@@ -106,5 +108,24 @@ export class MetamaskProviderService extends PrivateProvider {
     this.onAddressChanges.next(undefined);
     this.onNetworkChanges.next(undefined);
     this.isEnabled = false;
+  }
+
+  public addBRBCToken(): void {
+    if (this.getNetwork().name !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
+      throw new NetworkError(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+    }
+
+    this._metaMask.request({
+      method: 'wallet_watchAsset',
+      params: {
+        type: 'ERC20',
+        options: {
+          address: '0x8E3BCC334657560253B83f08331d85267316e08a',
+          symbol: 'BRBC',
+          decimals: 18,
+          image: `${window.location}/assets/images/icons/coins/brbc.svg`
+        }
+      }
+    });
   }
 }

@@ -78,4 +78,9 @@ export abstract class PrivateProvider {
    * @description deactivate the blockchain provider
    */
   public abstract deActivate(): void;
+
+  /**
+   * @description opens a window with suggestion to add BRCB token to user's wallet
+   */
+  public abstract addBRBCToken(): void;
 }
