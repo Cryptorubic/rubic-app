@@ -1,25 +1,29 @@
 .tooltip {
   position: relative;
-  width: 190px;
   z-index: 20;
+
+  width: 190px;
 
   margin-bottom: 16px;
   padding: 10px;
 
   background-color: white;
-  box-shadow: 0 12px 12px rgba(black, 0.25);
+  box-shadow: 0 12px 12px rgba(#000, 0.25);
 
   &::after {
-    content: '';
-    display: block;
-    width: 12px;
-    height: 12px;
     position: absolute;
     top: 100%;
     left: 50%;
-    background-color: #fff;
-    transform: rotate(45deg);
+
+    display: block;
+    width: 12px;
+    height: 12px;
     margin-top: -7px;
     margin-left: -6px;
+
+    background-color: white;
+    transform: rotate(45deg);
+
+    content: '';
   }
 }

@@ -2,8 +2,8 @@
 
 .spinner-container {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
   width: 100vw;
   height: 100vh;
@@ -30,23 +30,24 @@
 
 .header-row {
   display: flex;
-  align-items: center;
   grid-gap: 30px;
+  align-items: center;
 
   &__tokens-names {
     color: $dark;
-    font-size: 25px;
     font-weight: bold;
+    font-size: 25px;
   }
 
   &__state {
-    margin-left: auto;
     margin-right: 10px;
+    margin-left: auto;
 
-    font-size: 24px;
     font-weight: bold;
 
-    &:before {
+    font-size: 24px;
+
+    &::before {
       position: relative;
       top: -3px;
       left: -12px;
@@ -55,6 +56,7 @@
 
       width: 10px;
       height: 10px;
+
       border-radius: 50%;
 
       content: '';
@@ -63,7 +65,7 @@
     &_active {
       color: $active-green;
 
-      &:before {
+      &::before {
         background: $active-green;
         box-shadow: 0 0 11px $active-green;
       }
@@ -72,7 +74,7 @@
     &_expired {
       color: $expired-yellow;
 
-      &:before {
+      &::before {
         background: $expired-yellow;
         box-shadow: 0 0 11px $expired-yellow;
       }
@@ -81,7 +83,7 @@
     &_cancelled {
       color: $cancelled-red;
 
-      &:before {
+      &::before {
         background: $cancelled-red;
         box-shadow: 0 0 11px $cancelled-red;
       }
@@ -90,7 +92,7 @@
     &_done {
       color: $done-grey;
 
-      &:before {
+      &::before {
         background: $done-grey;
         box-shadow: 0 0 11px $done-grey;
       }
@@ -122,34 +124,35 @@
     position: relative;
     top: 3px;
 
-    padding: 0;
     margin-left: 12px;
-    border: none;
+
+    padding: 0;
 
     background: transparent;
+    border: none;
     cursor: pointer;
   }
 }
 
 .tokens-swap {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   grid-column-gap: 20px;
+  grid-template-columns: 1fr 1fr;
 
   color: $dark;
 }
 
 .trade-options {
   display: flex;
-  align-items: center;
-  grid-column-gap: 50px;
   flex-wrap: wrap;
+  grid-column-gap: 50px;
+  align-items: center;
 
   padding: 24px 32px;
 
-  background: white;
-
   color: $dark;
+
+  background: white;
 
   &__break {
     flex-basis: 100%;
@@ -161,8 +164,8 @@
 .trade-option {
   display: flex;
   flex-direction: column;
-  align-items: center;
   grid-gap: 6px;
+  align-items: center;
 
   width: fit-content;
 
@@ -198,8 +201,9 @@
     display: flex;
     align-items: center;
 
-    font-size: 18px;
     font-weight: 500;
+
+    font-size: 18px;
 
     &_copy-link {
       color: $main-green;
@@ -207,9 +211,9 @@
 
     &_button {
       padding: 0;
-      border: none;
 
       background: white;
+      border: none;
       cursor: pointer;
 
       img {
@@ -231,11 +235,12 @@
 
   padding: 8px 14px;
 
-  background: $grey-background;
+  font-weight: normal;
 
   font-size: 17px;
-  font-weight: normal;
   text-transform: uppercase;
+
+  background: $grey-background;
 
   &_not-checked {
     flex-direction: row-reverse;
@@ -245,13 +250,13 @@
     width: 26px;
     height: 28px;
 
-    background-image: url(/assets/images/icons/checkbox-tick.svg);
+    background-image: url('/assets/images/icons/checkbox-tick.svg');
     background-repeat: no-repeat;
 
     transition: background-image 0.2s linear;
 
     &_not-checked {
-      background-image: url(/assets/images/icons/checkbox-cross.svg);
+      background-image: url('/assets/images/icons/checkbox-cross.svg');
     }
   }
 }
@@ -265,11 +270,11 @@
     right: -23px;
 
     padding: 5px 8px;
-    border-radius: 4px;
-
-    background: #818181;
 
     color: white;
+
+    background: #818181;
+    border-radius: 4px;
 
     .triangle {
       position: absolute;
@@ -289,6 +294,7 @@
 .no-trade {
   margin: 140px 0 0 80px;
 
-  font-size: 24px;
   font-weight: bold;
+
+  font-size: 24px;
 }

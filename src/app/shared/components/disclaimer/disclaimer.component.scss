@@ -1,27 +1,35 @@
 .disclaimer {
   padding: 30px;
+
   &-title {
     margin-top: 10px;
+    margin-bottom: initial;
+
     color: #4aa956;
+    font-weight: bold;
     font-size: 28px;
     line-height: 44px;
-    font-weight: bold;
-    margin-bottom: initial;
   }
+
   &-content {
-    color: #000000;
+    margin: 20px 0;
+
+    color: black;
     font-size: 16px;
     line-height: 27px;
-    margin: 20px 0;
   }
+
   &-controls {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding-top: 30px;
+
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+
     .btn {
       width: auto;
       min-width: 209px;
     }
   }
+
   .mat-dialog-actions {
     display: block;
     margin: initial;

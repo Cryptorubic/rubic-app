@@ -4,12 +4,13 @@ $main-color: #4aa956;
 $secondary-color: #e9f5eb;
 
 .language-dropdown {
-  height: 33px;
-  width: 33px;
-  border: 1px solid $main-color;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 33px;
+  height: 33px;
+
+  border: 1px solid $main-color;
   border-radius: 10px;
   cursor: pointer;
 
@@ -19,12 +20,13 @@ $secondary-color: #e9f5eb;
   }
 
   &__element {
-    padding: 8px 15px;
     display: flex;
     align-items: center;
+    padding: 8px 15px;
+
     font-weight: 500;
 
-    & > * {
+    > * {
       filter: grayscale(0.8) opacity(0.4);
     }
 
@@ -40,8 +42,9 @@ $secondary-color: #e9f5eb;
 
   &__element-text {
     position: relative;
-    font-size: 12px;
+
     font-weight: 700;
+    font-size: 12px;
     letter-spacing: 2px;
   }
 
@@ -54,6 +57,7 @@ $secondary-color: #e9f5eb;
 
 ::ng-deep .mat-menu-panel.language-dropdown__sublist-container {
   margin-top: 10px;
+
   border-radius: 10px;
-  box-shadow: 0 2px 15px rgba(black, 0.1);
+  box-shadow: 0 2px 15px rgba(#000, 0.1);
 }

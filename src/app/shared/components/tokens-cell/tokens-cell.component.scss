@@ -4,8 +4,9 @@
   &__token-from,
   &__token-to {
     display: inline-flex;
-    width: 50%;
     align-items: center;
+    width: 50%;
+
     font-size: 15px;
   }
 
@@ -13,19 +14,21 @@
     padding-right: 15px;
   }
 
-  &__token-to{
+  &__token-to {
     padding-left: 15px;
   }
 
   &__separator {
-    left: calc(50% - 2px);
-    top: 0;
     position: absolute;
+    top: 0;
+    left: calc(50% - 2px);
+
     display: block;
-    width: 4px;
-    background-color: #f4f4f4;
-    height: 100%;
     box-sizing: border-box;
+    width: 4px;
+    height: 100%;
+
+    background-color: #f4f4f4;
   }
 
   &__token-icon {

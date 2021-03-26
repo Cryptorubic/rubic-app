@@ -1,22 +1,27 @@
 .navbar-toggler {
+  margin-top: -5px;
+  padding: 10px 6px;
+
   background: none;
   border: 0 none;
-  padding: 10px 6px;
   cursor: pointer;
-  margin-top: -5px;
 
   &__icon-bar {
-    transition: transform 0.3s ease-in-out;
     display: block;
     width: 22px;
     height: 2px;
-    border-radius: 1px;
+
     background-color: black;
+    border-radius: 1px;
+
+    transition: transform 0.3s ease-in-out;
 
     &:nth-child(2) {
-      transition: opacity 0.3s ease-in-out;
-      opacity: 1;
       margin-top: 4px;
+
+      opacity: 1;
+
+      transition: opacity 0.3s ease-in-out;
     }
 
     &:last-child {
