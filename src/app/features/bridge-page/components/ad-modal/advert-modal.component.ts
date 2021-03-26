@@ -36,7 +36,7 @@ export class AdvertModalComponent implements AfterViewInit {
       address: '0x8E3BCC334657560253B83f08331d85267316e08a',
       symbol: 'BRBC',
       decimals: 18,
-      image: '/assets/images/icons/coins/brbc.svg',
+      image: `${window.location.origin}/assets/images/icons/coins/brbc.svg`,
       blockchain: undefined,
       price: undefined,
       name: undefined,
