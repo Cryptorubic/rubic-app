@@ -34,7 +34,7 @@
   }
 
   &__no-swaps {
-    color: rgba(#000, 0.34);
+    color: rgba(black, 0.34);
     font-weight: normal;
     font-size: 24px;
     text-align: center;
@@ -236,7 +236,7 @@
     align-items: center;
     padding-left: 20px;
 
-    color: rgba(#000, 0.5);
+    color: rgba(black, 0.5);
 
     &::before {
       position: relative;
@@ -300,12 +300,12 @@
     }
 
     span {
-      color: rgba(#000, 0.5);
+      color: rgba(black, 0.5);
     }
   }
 
   &__date {
-    color: rgba(#000, 0.5);
+    color: rgba(black, 0.5);
 
     div {
       width: fit-content;
