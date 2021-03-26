@@ -1,15 +1,15 @@
-@import "src/scss/elements/vars";
+@import 'src/scss/elements/vars';
 
 .accumulated-volume {
-
   &__title {
     margin-bottom: 16px;
 
-    font-style: normal;
+    color: #110931;
     font-weight: bold;
     font-size: 22px;
+
+    font-style: normal;
     line-height: 25px;
-    color: #110931;
   }
 
   &__content-wrapper {
@@ -31,28 +31,30 @@
   &__number {
     margin-bottom: 14px;
 
-    font-style: normal;
+    color: $main-green;
     font-weight: bold;
     font-size: 24px;
+
+    font-style: normal;
     line-height: 28px;
     text-transform: uppercase;
-    color: $main-green;
   }
 
   &__divider {
-    margin-bottom: 7px;
     width: 43px;
     height: 0;
+    margin-bottom: 7px;
 
     border: 1px solid $main-green;
   }
 
   &__note {
-    font-style: normal;
+    color: $dark-secondary;
     font-weight: normal;
     font-size: 12px;
+    font-style: normal;
     line-height: 14px;
-    color: $dark-secondary;
+
     opacity: 0.5;
   }
 }

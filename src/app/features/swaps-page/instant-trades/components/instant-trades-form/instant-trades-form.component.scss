@@ -1,9 +1,9 @@
 @import 'src/scss/elements/vars';
 
 .instant-trade {
-  padding: 27px 30px 29px;
   display: flex;
   align-items: center;
+  padding: 27px 30px 29px;
 
   &__from-section {
     flex: 4;
@@ -33,11 +33,12 @@
   height: 36px;
   margin: 0 auto;
 
-  cursor: pointer;
-  border: none;
   background-color: white;
+  border: none;
   border-radius: 50%;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
+
+  cursor: pointer;
 
   transition: transform 0.15s ease-in-out;
 
@@ -70,17 +71,18 @@
 
 .grid {
   display: grid;
-  grid-template: 1fr / 2fr 1fr;
   grid-auto-flow: row;
-  row-gap: 20px;
+  grid-template: 1fr / 2fr 1fr;
+
   column-gap: 25px;
+  row-gap: 20px;
 }
 
 .selection-block {
   &__header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 
     height: 14px;
     margin-bottom: 7px;
@@ -97,6 +99,7 @@
 
   &__warning {
     position: relative;
+
     margin-top: 7px;
 
     cursor: pointer;
@@ -115,8 +118,9 @@
   margin-top: 5px;
 
   &__text {
-    opacity: 0.5;
     margin-right: 8px;
+
+    opacity: 0.5;
   }
 }
 
@@ -139,23 +143,25 @@
     }
 
     span {
+      color: rgba(#000, 0.5);
       font-size: 14px;
-      color: rgba(black, 0.5);
     }
   }
 }
 
 app-tooltip {
-  visibility: hidden;
   position: absolute;
-  bottom: calc(100% - 7px);
   right: -88px;
+  bottom: calc(100% - 7px);
 
   z-index: 10;
-  opacity: 0;
+
+  font-size: 11px;
 
   text-align: center;
-  font-size: 11px;
+
+  visibility: hidden;
+  opacity: 0;
 
   transition: opacity 0.3s ease-in-out;
 }

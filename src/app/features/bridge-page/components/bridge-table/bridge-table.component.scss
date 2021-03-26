@@ -5,10 +5,11 @@
     span {
       margin-right: 12px;
 
+      color: #110931;
+
       font-weight: bold;
       font-size: 28px;
       line-height: 32px;
-      color: #110931;
     }
   }
 
@@ -18,13 +19,13 @@
     animation-iteration-count: 1;
 
     &_rotating {
-      animation-name: rotate;
-      animation-delay: 0.1s;
-      animation-duration: 1s;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
 
       transition: 1s;
+      animation-name: rotate;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-delay: 0.1s;
+      animation-iteration-count: infinite;
     }
 
     &_stop {
@@ -33,16 +34,16 @@
   }
 
   &__no-swaps {
-    text-align: center;
-    color: rgba(black, 0.34);
+    color: rgba(#000, 0.34);
     font-weight: normal;
     font-size: 24px;
+    text-align: center;
   }
 
   &__init-animation {
-    margin: 50px auto 0;
     width: 50px;
     height: 50px;
+    margin: 50px auto 0;
   }
 
   &__show-more-button {
@@ -55,8 +56,9 @@
 .bridge-table {
   width: 100%;
 
-  border-collapse: collapse;
   background-color: white;
+
+  border-collapse: collapse;
 
   td,
   th {
@@ -64,10 +66,10 @@
   }
 
   thead {
+    color: #110931;
     font-weight: bold;
     font-size: 14px;
     line-height: 14px;
-    color: #110931;
 
     th {
       padding: 14px 10px 14px 20px;
@@ -79,21 +81,23 @@
       }
 
       span {
-        line-height: 28px;
         display: inline-block;
+
+        line-height: 28px;
       }
 
       img {
-        cursor: pointer;
         float: right;
+
+        cursor: pointer;
       }
     }
   }
 
   tbody {
     color: black;
-    font-size: 15px;
     font-weight: normal;
+    font-size: 15px;
   }
 }
 
@@ -109,8 +113,8 @@
     position: relative;
 
     .data__status {
-      padding-left: 10%;
       margin-right: auto;
+      padding-left: 10%;
     }
 
     .data__network {
@@ -142,6 +146,7 @@
 
     &__header {
       border-radius: 5px;
+
       transition: border-radius 0.7s ease;
 
       &_active {
@@ -154,10 +159,12 @@
       grid-template-columns: 1fr 1.6fr 0.2fr;
       align-items: center;
       height: 56px;
+
       background: white;
 
       &__option {
         opacity: 1;
+
         transition: opacity 0.7s ease;
 
         &_inactive {
@@ -183,15 +190,18 @@
       &__plus,
       &__minus {
         margin: 0 10px 0 auto;
+
         color: #4aa956;
         font-size: 29px;
+
         cursor: pointer;
       }
     }
 
     &__content {
-      overflow: hidden;
       max-height: 300px;
+      overflow: hidden;
+
       transition: max-height 0.7s ease;
 
       &_inactive {
@@ -200,8 +210,8 @@
     }
 
     .content {
-      border-radius: 0 0 5px 5px;
       background: white;
+      border-radius: 0 0 5px 5px;
 
       &__item {
         display: grid;
@@ -209,6 +219,7 @@
         align-items: center;
         height: 55px;
         padding-top: 2px;
+
         border-top: 1px solid #e8e8e8;
 
         &-name {
@@ -225,17 +236,20 @@
     align-items: center;
     padding-left: 20px;
 
-    color: rgba(black, 0.5);
+    color: rgba(#000, 0.5);
 
     &::before {
-      content: '';
       position: relative;
       top: -2px;
+
       display: inline-block;
-      margin-right: 10px;
       min-width: 8px;
       height: 8px;
+      margin-right: 10px;
+
       border-radius: 50%;
+
+      content: '';
     }
 
     &_green {
@@ -262,10 +276,11 @@
 
   &__network {
     img {
-      vertical-align: middle;
-      margin: 0 16px 0 12px;
       max-width: 22px;
       max-height: 22px;
+      margin: 0 16px 0 12px;
+
+      vertical-align: middle;
     }
   }
 
@@ -273,23 +288,24 @@
     padding: 20px 0 13px 20px;
 
     div {
-      font-weight: bold;
       margin-bottom: 7px;
+
+      font-weight: bold;
     }
 
     img {
-      max-height: 15px;
       max-width: 15px;
+      max-height: 15px;
       margin-right: 4px;
     }
 
     span {
-      color: rgba(black, 0.5);
+      color: rgba(#000, 0.5);
     }
   }
 
   &__date {
-    color: rgba(black, 0.5);
+    color: rgba(#000, 0.5);
 
     div {
       width: fit-content;
@@ -302,6 +318,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

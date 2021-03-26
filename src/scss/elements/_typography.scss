@@ -1,5 +1,5 @@
 @import 'vars';
-@import '../_mixins';
+@import '../mixins';
 
 
 // svg:hover,
@@ -11,17 +11,21 @@
 .span {
   &-icon-svg {
     position: relative;
+
     overflow: hidden;
+
     cursor: pointer;
 
     &-link {
       position: absolute;
       top: 0;
       left: 0;
+      z-index: 1;
+
       width: 100%;
       height: 100%;
+
       cursor: pointer;
-      z-index: 1;
 
       &:hover {
         ~ svg,
@@ -34,11 +38,12 @@
   }
 
   &-roadmap-title {
+    margin-bottom: 5px;
+
+    color: #4aa956;
     font-weight: bold;
     font-size: 20px;
     line-height: 27px;
-    color: #4aa956;
-    margin-bottom: 5px;
   }
 
   &-title {
@@ -49,23 +54,25 @@
     }
 
     &-section {
+      display: inline-block;
+      margin-bottom: 15px;
+
       font-weight: bold;
       font-size: 28px;
       line-height: 32px;
-      margin-bottom: 15px;
-      display: inline-block;
     }
   }
 }
 
 .h1 {
   &-title {
-    font-family: $main-font;
-    font-style: normal;
+    margin: 10px 0;
+
     font-weight: normal;
     font-size: 7vw;
+    font-family: $main-font;
+    font-style: normal;
     text-align: center;
-    margin: 10px 0;
   }
 }
 
@@ -78,18 +85,18 @@
 .p {
   &-info {
     &-text {
-      font-style: normal;
       font-weight: normal;
       font-size: 18px;
+      font-style: normal;
       line-height: 28px;
     }
   }
 
   &-roadmap-text {
+    color: black;
     font-weight: normal;
     font-size: 15px;
     line-height: 27px;
-    color: #000000;
   }
 
   &-text {
@@ -104,13 +111,15 @@
 
 .ul {
   &-roadmap-text {
-    list-style: none;
     padding-left: 1rem;
+
+    color: black;
 
     font-weight: normal;
     font-size: 18px;
     line-height: 27px;
-    color: #000000;
+
+    list-style: none;
 
     li {
       &:not(:last-child) {
@@ -118,12 +127,14 @@
       }
 
       &::before {
-        content: "\2022";
-        color: #4AA956;
-        font-weight: bold;
         display: inline-block;
         width: 1em;
         margin-left: -1em;
+
+        color: #4aa956;
+        font-weight: bold;
+
+        content: '\2022';
       }
     }
 
@@ -133,18 +144,18 @@
 .h3 {
   &-info {
     &-text {
-      font-style: normal;
       font-weight: 500;
       font-size: 27px;
+      font-style: normal;
       line-height: 27px;
     }
   }
 
   &-block {
     &-title {
-      font-style: normal;
       font-weight: normal;
       font-size: 50px;
+      font-style: normal;
       line-height: 50px;
     }
 
@@ -154,12 +165,13 @@
     }
   }
 }
+
 .p {
   &-info {
     &-text {
-      font-style: normal;
       font-weight: normal;
       font-size: 18px;
+      font-style: normal;
       line-height: 28px;
     }
   }
@@ -167,8 +179,8 @@
 
 .container {
   max-width: var(--container-max-width);
-  padding: 10px 50px;
   margin: 0 auto;
+  padding: 10px 50px;
 
   @include b(850) {
     padding: 10px 25px;

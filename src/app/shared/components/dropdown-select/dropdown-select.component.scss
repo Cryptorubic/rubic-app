@@ -1,17 +1,20 @@
 .selector {
   position: relative;
   z-index: 1;
+
   display: flex;
 
   &-selected {
     padding: 16px 27px 14px 12px;
-    border: 2px solid #e8e8e8;
+
     color: #4aa956;
-    font-size: 18px;
     font-weight: bold;
-    cursor: pointer;
+    font-size: 18px;
+
     background: center right 10px / 10% url('/src/assets/images/icons/arrow/arrow-down-green.svg')
       no-repeat white;
+    border: 2px solid #e8e8e8;
+    cursor: pointer;
 
     &.options-shown {
       background-image: url('/src/assets/images/icons/arrow/arrow-up-green.svg');
@@ -21,16 +24,20 @@
   &-options {
     position: absolute;
     top: 51px;
+
     display: flex;
     flex-direction: column;
     padding: 0 27px 0 12px;
-    border: 2px solid #e8e8e8;
-    background: white;
+
     color: #110931;
     font-size: 18px;
 
+    background: white;
+    border: 2px solid #e8e8e8;
+
     &-option {
       padding: 14px 0 11px;
+
       cursor: pointer;
 
       &.active {
@@ -48,10 +55,11 @@
     display: flex;
     width: 51px;
     height: 49px;
+
+    background: white;
     border: 2px solid #e8e8e8;
     border-left: none;
     border-radius: 0 5px 5px 0;
-    background: white;
     cursor: pointer;
 
     img {

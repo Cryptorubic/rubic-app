@@ -1,8 +1,9 @@
 .tooltip-group {
   position: relative;
-  cursor: pointer;
 
   font-size: 12px;
+
+  cursor: pointer;
 
   &:hover {
     .tooltip-group__container {
@@ -12,11 +13,12 @@
   }
 
   &__container {
-    visibility: hidden;
     position: absolute;
     bottom: 20px;
     left: -95px;
     z-index: 20;
+
+    visibility: hidden;
 
     opacity: 0;
 
