@@ -5,12 +5,13 @@
 }
 
 .cross-chain-form {
+
+  background-color: white;
+
   &,
   * {
     box-sizing: border-box;
   }
-
-  background-color: white;
 
   &__main-section {
     display: flex;
@@ -24,8 +25,9 @@
   &__last-section {
     position: relative;
     left: 10px;
-    flex: 1;
+
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
   }
@@ -33,6 +35,7 @@
   &__confirm-section {
     position: relative;
     top: 35px;
+
     display: flex;
     flex-direction: column;
     width: 85%;
@@ -53,24 +56,27 @@
     align-items: center;
     margin-top: 20px;
 
-    font-size: 12px !important;
     color: #a8a8a8 !important;
+
+    font-size: 12px !important;
     text-decoration: none !important;
 
     &:hover {
       cursor: pointer;
+
       img {
         filter: grayscale(0);
       }
     }
 
     img {
-      filter: grayscale(1);
       width: 99px;
       height: 24px;
+
+      filter: grayscale(1);
     }
 
-    & > div {
+    > div {
       margin-bottom: 10px;
     }
   }
@@ -81,17 +87,18 @@
     left: 2.5%;
 
     width: 156px;
-    padding: 0;
     margin-top: auto;
-    border: none;
+    padding: 0;
 
     color: #4aa956;
-    background: white;
+    font-weight: bold;
 
     font-size: inherit;
     font-family: inherit;
-    font-weight: bold;
     text-align: left;
+
+    background: white;
+    border: none;
 
     cursor: pointer;
 
@@ -113,10 +120,11 @@
   }
 
   &__advanced-section {
-    overflow: hidden;
 
     max-height: 0;
     padding: 0 20px;
+    overflow: hidden;
+
     border-top: 2px solid white;
 
     opacity: 0;
@@ -126,6 +134,7 @@
     &_opened {
       max-height: 96px;
       padding: 20px;
+
       border-color: #e5e5e5;
       opacity: 1;
     }
@@ -141,34 +150,38 @@
 }
 
 .choose-blockchains {
+  position: relative;
+
   display: flex;
   align-items: center;
-  position: relative;
 
   &__box {
     flex: 1;
     align-self: stretch;
     padding: 20px;
 
-    box-shadow: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
+
+    box-shadow: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
 
     &:first-child {
       margin-right: 7px;
     }
 
     &:last-child {
-      margin-left: 7px;
       align-self: stretch;
+      margin-left: 7px;
     }
   }
 
   &__title {
     margin-bottom: 8px;
 
-    font-size: 13px;
     color: #242424;
+
+    font-size: 13px;
     text-transform: uppercase;
+
     opacity: 0.85;
   }
 
@@ -181,9 +194,9 @@
     margin-bottom: 26px;
 
     color: rgba(black, 0.5) !important;
-    text-decoration: none !important;
     font-size: 16px;
     line-height: 16px;
+    text-decoration: none !important;
 
     &:hover {
       color: rgba(#2856fb, 0.7) !important;
@@ -191,47 +204,51 @@
   }
 
   &__token {
-    & > * {
-      width: 100%;
-    }
 
     margin-bottom: 0;
+
+    > * {
+      width: 100%;
+    }
   }
 
   &__get {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 52px;
     width: 100%;
-    padding-left: 22px;
+    height: 52px;
     padding-right: 10px;
+    padding-left: 22px;
 
     background-color: #f4f4f4;
 
-    & > span {
-      font-size: 20px;
+    > span {
       font-weight: 400;
+      font-size: 20px;
       line-height: 52px;
+
       opacity: 0.3;
     }
   }
 
   &__revert-button {
-    border: none;
     position: absolute;
-    height: 42px;
-    width: 42px;
     top: calc(50% - 21px);
     left: calc(50% - 21px);
 
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 42px;
+    height: 42px;
+
+    line-height: 35px;
+
+    background-color: white;
+    border: none;
 
     border-radius: 50%;
-    background-color: white;
-    line-height: 35px;
     box-shadow: 0 0 5px 1px #e2e2e2;
     cursor: pointer;
 
@@ -253,6 +270,7 @@
   &__info {
     height: 42px;
     margin-top: 8px;
+
     font-size: 14px;
 
     border-collapse: collapse;
@@ -266,8 +284,9 @@
     }
 
     &_wrong {
-      background-color: #ff9f9f;
       color: white;
+
+      background-color: #ff9f9f;
 
       td {
         opacity: 1;
@@ -296,18 +315,21 @@
 
     font-size: 14px;
     line-height: 14px;
+
     opacity: 0.4;
   }
 
   &__binance {
-    cursor: pointer;
     font-size: 14px;
+
+    cursor: pointer;
   }
 
   &__scanner-link-box {
     margin-top: 10px;
-    text-align: right;
+
     font-size: 14px;
+    text-align: right;
 
     img {
       height: 14px;
@@ -321,11 +343,12 @@
 }
 
 .choose-token {
-  flex: 1.5;
+  position: relative;
+
   display: flex;
+  flex: 1.5;
   align-items: center;
   justify-content: center;
-  position: relative;
   margin: 0;
 
   &__wrapper {
@@ -334,28 +357,30 @@
 }
 
 .get-token-card {
-  height: 42px;
-  padding: 10px 11px;
   display: flex;
   align-items: center;
+  height: 42px;
+  padding: 10px 11px;
+
+  background-color: white;
+  border: 2px solid rgb(229, 229, 229);
 
   opacity: 0.8;
-  border: 2px solid rgb(229, 229, 229);
-  background-color: white;
 
   &__icon {
-    margin-right: 10px;
     max-width: 28px;
+    margin-right: 10px;
   }
 
   &__name {
     position: relative;
     top: 2px;
 
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 40px;
     color: rgb(67, 71, 108);
+    font-weight: 400;
+
+    font-size: 16px;
+    line-height: 40px;
   }
 }
 
@@ -367,6 +392,7 @@
 
     &__last-section {
       left: 0;
+
       flex-direction: row;
       justify-content: space-between;
       margin-top: 17px;
@@ -374,8 +400,9 @@
 
     &__confirm-section {
       top: 0;
-      align-self: flex-end;
+
       flex-direction: row;
+      align-self: flex-end;
       justify-content: space-between;
       width: 47.5%;
     }
@@ -392,6 +419,7 @@
 
     &__advanced-options {
       left: 22px;
+
       order: -1;
     }
 
@@ -407,8 +435,8 @@
   .cross-chain-form {
     &__main-section {
       flex-direction: column;
-      align-items: center;
       grid-gap: 0;
+      align-items: center;
       padding: 20px 7px;
     }
 
@@ -440,6 +468,7 @@
       right: 4px;
       bottom: 11px;
       left: initial;
+
       order: 2;
     }
 
@@ -468,8 +497,8 @@
 
       &:last-child {
         align-self: initial;
-        margin-left: 0;
         margin-top: 7px;
+        margin-left: 0;
       }
     }
 

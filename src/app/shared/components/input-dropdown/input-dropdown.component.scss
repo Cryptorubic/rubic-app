@@ -1,4 +1,4 @@
-@import '../../../../scss/_mixins';
+@import '../../../../scss/mixins';
 
 .input-dropdown {
   &__choose-button {
@@ -7,18 +7,20 @@
     right: 8px;
     z-index: 2;
 
-    padding: 0;
     margin-top: -21px;
-    border: 2px solid #e5e5e5;
-    border-radius: 0 4px 4px 0;
 
-    background: #fff;
+    padding: 0;
+
     color: #43476c;
+    font-size: 16px;
 
     font-family: inherit;
-    font-size: 16px;
-    letter-spacing: -0.43px;
     line-height: 18px;
+    letter-spacing: -0.43px;
+
+    background: #fff;
+    border: 2px solid #e5e5e5;
+    border-radius: 0 4px 4px 0;
 
     cursor: pointer;
 
@@ -35,15 +37,16 @@
 
     box-sizing: border-box;
     padding: 11px 10px 11px 22px;
-    border: 1px solid white;
 
-    background: #f4f4f4;
     color: #110931;
-    opacity: 0;
+    font-size: 18px;
 
     font-family: inherit;
-    font-size: 18px;
     line-height: 30px;
+
+    background: #f4f4f4;
+    border: 1px solid white;
+    opacity: 0;
 
     transition: all linear 0.2s;
   }
@@ -65,8 +68,10 @@
     width: 0;
     height: 30px;
 
-    opacity: 0;
     cursor: pointer;
+
+    opacity: 0;
+
     transition: all linear 0.2s;
 
     img {
@@ -97,21 +102,22 @@
     }
 
     .components-list {
-      overflow: auto;
+      margin: 0;
 
       padding: 0;
-      margin: 0;
-      border-top: 1px solid #dedede;
-      border-bottom: 1px solid #dedede;
-
-      background-color: white;
+      overflow: auto;
 
       list-style-type: none;
 
+      background-color: white;
+      border-top: 1px solid #dedede;
+      border-bottom: 1px solid #dedede;
+
       &__item {
-        border: 1px solid #fff;
 
         color: #000;
+
+        border: 1px solid #fff;
 
         cursor: pointer;
 

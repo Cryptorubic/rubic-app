@@ -8,6 +8,7 @@
 
   &__row {
     padding: 20px 30px 22px;
+
     border-top: 2px solid $grey-background;
   }
 }
@@ -24,8 +25,9 @@
   &__prompt {
     width: 100%;
 
-    text-align: center;
     font-size: 16px;
+
+    text-align: center;
   }
 
 
@@ -64,10 +66,11 @@
     margin-left: auto;
 
     color: $main-green;
-    cursor: pointer;
 
     font-weight: bold;
     font-size: 16px;
+
+    cursor: pointer;
 
     img {
       position: relative;
@@ -92,6 +95,7 @@
 
   display: flex;
   flex-direction: column;
+
   text-align: center;
 
   &_broker-address {
@@ -119,15 +123,16 @@
 
   &__input {
     height: 21px;
-    padding: 12px 14px;
     margin: 0 auto;
-    border: none;
+    padding: 12px 14px;
 
     color: $dark;
-    background: $grey-background;
+    font-size: 17px;
 
     text-align: center;
-    font-size: 17px;
+
+    background: $grey-background;
+    border: none;
 
     &_date {
       width: 86px;
@@ -152,8 +157,9 @@
     &_min-contribute {
       width: 259px;
 
-      text-align: left;
       font-size: 18px;
+
+      text-align: left;
     }
 
     &_broker-address {
@@ -202,8 +208,8 @@
 
 .input-checkbox {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
   text-transform: uppercase;
 
@@ -215,13 +221,13 @@
     width: 26px;
     height: 28px;
 
-    background-image: url(/assets/images/icons/checkbox-tick.svg);
+    background-image: url('/assets/images/icons/checkbox-tick.svg');
     background-repeat: no-repeat;
 
     transition: background-image 0.2s linear;
 
     &_not-checked {
-      background-image: url(/assets/images/icons/checkbox-cross.svg);
+      background-image: url('/assets/images/icons/checkbox-cross.svg');
     }
   }
 }

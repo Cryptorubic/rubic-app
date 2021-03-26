@@ -1,13 +1,13 @@
 .spring-spinner {
-  height: unset !important;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: unset !important;
 
   &__wrapper {
-    height: 60px;
     width: 60px;
+    height: 60px;
   }
 
   &,
@@ -16,9 +16,9 @@
   }
 
   &__part {
-    overflow: hidden;
-    height: calc(60px / 2);
     width: 60px;
+    height: calc(60px / 2);
+    overflow: hidden;
 
     &_bottom {
       transform: rotate(180deg) scale(-1, 1);
@@ -26,15 +26,17 @@
   }
 
   &__rotator {
+    box-sizing: border-box;
     width: 60px;
     height: 60px;
+
     border: calc(60px / 7) solid transparent;
-    border-right-color: #4aa956;
     border-top-color: #4aa956;
+    border-right-color: #4aa956;
     border-radius: 50%;
-    box-sizing: border-box;
-    animation: spring-spinner-animation 3s ease-in-out infinite;
     transform: rotate(-200deg);
+
+    animation: spring-spinner-animation 3s ease-in-out infinite;
   }
 }
 
@@ -42,16 +44,20 @@
   0% {
     border-width: calc(60px / 7);
   }
+
   25% {
     border-width: calc(60px / 23.33);
   }
+
   50% {
-    transform: rotate(115deg);
     border-width: calc(60px / 7);
+    transform: rotate(115deg);
   }
+
   75% {
     border-width: calc(60px / 23.33);
   }
+
   100% {
     border-width: calc(60px / 7);
   }

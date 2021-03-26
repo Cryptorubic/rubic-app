@@ -1,5 +1,5 @@
 * {
-  -webkit-appearance: none;
+  appearance: none;
 }
 
 * {
@@ -34,10 +34,12 @@
 
 /* You can add global styles to this file, and also import other style files */
 body {
+  min-width: 320px;
   margin: 0;
   padding: 0;
+
   font-family: 'Ubuntu', 'Josefin Sans', Arial, sans-serif;
-  min-width: 320px;
+
   background: #f4f4f4;
   background-size: cover;
 }
@@ -52,8 +54,9 @@ html {
 
 .noscroll {
   position: fixed;
-  left: 0;
   right: 0;
+  left: 0;
+
   overflow: hidden;
 }
 
@@ -62,12 +65,12 @@ html {
 }
 
 .app-content-block {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1180px;
   box-sizing: border-box;
-  padding-left: 0;
+  max-width: 1180px;
+  margin-right: auto;
+  margin-left: auto;
   padding-right: 0;
+  padding-left: 0;
 }
 
 .bold {
@@ -105,8 +108,8 @@ html {
 
 @media screen and (max-width: 1240px) {
   .app-content-block {
-    padding-left: 2vw;
     padding-right: 2vw;
+    padding-left: 2vw;
   }
 }
 
@@ -116,8 +119,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
   &:hover,
   &:focus {
-    text-decoration: underline;
     color: #4aa956;
+    text-decoration: underline;
   }
 }
 
@@ -126,10 +129,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 }
 
 .info-modal-text {
-  text-align: left;
   font-weight: 100;
   font-size: 16px;
   line-height: 22px;
+  text-align: left;
 
   b {
     font-weight: bold;
@@ -145,26 +148,28 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
 .watch-instruction-btn {
   position: fixed;
-  left: 50%;
   top: 135px;
-  bottom: auto;
   right: auto;
+  bottom: auto;
+  left: 50%;
+
   margin-left: 207px;
 
   .btn {
-    width: 285px;
-    height: 64px;
-    text-align: left;
-    padding-left: 15px;
     justify-content: flex-start;
     box-sizing: border-box;
+    width: 285px;
+    height: 64px;
+    padding-left: 15px;
+
+    text-align: left;
 
     &-icon {
       margin-right: 10px;
 
       &.arrow {
-        margin-left: 8px;
         margin-right: 16px;
+        margin-left: 8px;
       }
     }
 
@@ -179,19 +184,22 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 }
 
 .without-support #livechat-compact-container {
+  right: 20px !important;
+  bottom: 20px !important;
+
+  box-sizing: border-box;
   width: 64px !important;
   height: 64px !important;
-  border-radius: 50% !important;
-  box-sizing: border-box;
-  bottom: 20px !important;
+  padding: 0 !important;
+
   background: #fcd600 url('data:image/svg+xml;base64,PCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjU3NiIgaGVpZ2h0PSI1MTIiIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj4KPHRpdGxlPjwvdGl0bGU+CjxnIGlkPSJpY29tb29uLWlnbm9yZSI+CjwvZz4KPHBhdGggZD0iTTU0NCA0NTAuNTgzYzAgMjIuNzUgMTMuMDE0IDQyLjQ1NCAzMiA1Mi4wOTJ2Ny45NjljLTUuMzEzIDAuNzI3LTEwLjczNiAxLjExMi0xNi4yNSAxLjExMi0zNC4wMDQgMC02NC42NzQtMTQuMjY0LTg2LjM2MS0zNy4xMzItMTMuMTExIDMuNDkxLTI3LjAwMSA1LjM3Ni00MS4zODkgNS4zNzYtNzkuNTI5IDAtMTQ0LTU3LjMwOC0xNDQtMTI4czY0LjQ3MS0xMjggMTQ0LTEyOGM3OS41MjkgMCAxNDQgNTcuMzA4IDE0NCAxMjggMCAyNy42NzQtOS44ODIgNTMuMjk2LTI2LjY3OCA3NC4yMzMtMy40MTIgNy40MTItNS4zMjIgMTUuNjU2LTUuMzIyIDI0LjM1ek0yNTYgMGMxMzkuMjI5IDAgMjUyLjQ5NiA5MC4zMDcgMjU1LjkxOCAyMDIuNzYtMjQuNTkxLTEwLjk2LTUxLjc5My0xNi43Ni03OS45MTgtMTYuNzYtNDcuNzggMC05Mi45MDggMTYuNzIzLTEyNy4wNjkgNDcuMDg5LTM1LjQyMyAzMS40ODYtNTQuOTMxIDczLjcxNy01NC45MzEgMTE4LjkxMSAwIDIyLjMzNiA0Ljc3MiA0My45NDQgMTMuODY4IDYzLjg5NC0yLjYxNCAwLjA2My01LjIzNCAwLjEwNi03Ljg2OCAwLjEwNi0xMy41NzggMC0yNi45MDUtMC44NjctMzkuOTEyLTIuNTIyLTU0Ljk4OSA1NC45ODktMTIwLjYyNSA2NC44NS0xODQuMDg4IDY2LjI5OHYtMTMuNDU4YzM0LjI2OC0xNi43ODkgNjQtNDcuMzcgNjQtODIuMzE4IDAtNC44NzctMC4zNzktOS42NjUtMS4wODItMTQuMzQ4LTU3Ljg5OC0zOC4xMzItOTQuOTE4LTk2LjM3Ny05NC45MTgtMTYxLjY1MiAwLTExNC44NzUgMTE0LjYxNS0yMDggMjU2LTIwOHoiPjwvcGF0aD4KPC9zdmc+Cg==') no-repeat center center !important;
   background-size: 60% !important;
-  padding: 0 !important;
-  right: 20px !important;
+  border-radius: 50% !important;
 
   iframe {
-    opacity: 0;
     top: 0 !important;
+
+    opacity: 0;
   }
 }
 
@@ -201,38 +209,42 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
 .with-support #livechat-compact-container {
   position: fixed !important;
-  left: 50% !important;
   top: 135px !important;
-  bottom: auto !important;
   right: auto !important;
-  margin-left: 207px !important;
-  height: 62px !important;
-  border-left: 5px solid #fcd600 !important;
-  line-height: 62px;
-  padding: 0 !important;
-  background: url(/assets/images/icons/support.svg) 15px 17px no-repeat rgba(255, 255, 255, 0.1) !important;
-
-  transform: translateY(0%) !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+  bottom: auto !important;
+  left: 50% !important;
   z-index: 5 !important;
+
   display: none !important;
   width: 285px;
+  height: 62px !important;
+  margin-left: 207px !important;
+  padding: 0 !important;
+
+  line-height: 62px;
+
+  background: url('/assets/images/icons/support.svg') 15px 17px no-repeat rgba(255, 255, 255, 0.1) !important;
+  border-left: 5px solid #fcd600 !important;
+
+  transform: translateY(0%) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.2) !important;
   }
 
-  &:before {
-    content: 'Support';
+  &::before {
+    display: block;
+    float: left;
+    margin-left: 50px;
+
     color: #fff;
     font-weight: bold;
-    line-height: 62px;
-    float: left;
-    display: block;
-    vertical-align: middle;
     font-size: 18px;
-    margin-left: 50px;
+    line-height: 62px;
+
+    content: 'Support';
   }
 }
 
@@ -251,15 +263,18 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 }
 
 .with-support #livechat-compact-view {
-  opacity: 0;
   top: 0 !important;
+
   margin-top: -62px !important;
+
+  opacity: 0;
 }
 
 @media screen and (max-width: 1180px) {
   .with-support #livechat-compact-container {
     margin-left: 16.66666666% !important;
   }
+
   .watch-instruction-btn {
     margin-left: 16.66666666%;
   }
@@ -267,9 +282,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
 @media screen and (max-width: 1020px) {
   .with-support #livechat-compact-container {
-    margin-left: 25% !important;
     width: 23vw !important;
+    margin-left: 25% !important;
   }
+
   .watch-instruction-btn {
     margin-left: 25%;
 
@@ -280,24 +296,26 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 }
 
 .base-block-content {
-  padding-top: 129px;
+  box-sizing: border-box;
   // background: transparent url('/assets/images/backgrounds/bg-gradient.png') no-repeat center top;
   // background-size: 100%;
   min-height: 100vh;
+  padding-top: 129px;
   padding-bottom: 60px;
-  box-sizing: border-box;
 }
 
 .action-link {
-  color: rgba(0, 0, 0, 0.5);
-  border-bottom: 1px dashed;
   display: inline-block;
+
+  color: rgba(0, 0, 0, 0.5);
+
+  border-bottom: 1px dashed;
   cursor: pointer;
 
   &--right {
-    margin-left: auto;
     display: block;
     width: fit-content;
+    margin-left: auto;
   }
 
   &:hover {
@@ -339,33 +357,39 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 }
 
 .title-section {
-  font-size: 28px;
+  margin-bottom: 1em;
+
   color: #000;
   font-weight: bold;
-  margin-bottom: 1em;
+  font-size: 28px;
 }
 
 .description-section {
-  font-size: 25px;
   margin: 20px 0 35px;
+
   color: rgba(255, 255, 255, 0.7);
+  font-size: 25px;
   line-height: 1.5em;
 }
 
 .with-after-text {
   position: relative;
 
-  &:after {
-    background-color: #fff;
-    content: attr(data-after-text);
-    color: rgba(0, 0, 0, 0.8);
+  &::after {
     position: absolute;
     top: 1px;
-    bottom: 1px;
-    line-height: 50px;
     right: 1px;
+    bottom: 1px;
+
     padding: 0 12px;
+
+    color: rgba(0, 0, 0, 0.8);
     font-weight: bold;
+    line-height: 50px;
+
+    background-color: #fff;
+
+    content: attr(data-after-text);
   }
 }
 
@@ -376,23 +400,27 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 }
 
 .btn {
+  position: relative;
+
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   width: 96%;
   height: 50px;
   padding: 0 15px;
+
+  color: #fff;
+  font-size: 18px;
+  font-family: inherit;
+  text-decoration: none;
+
   border: none;
   border-left: 5px solid;
   outline: none;
-  font-family: inherit;
-  font-size: 18px;
-  color: #fff;
-  text-decoration: none;
-  transition: all linear 0.1s;
-  box-sizing: border-box;
   cursor: pointer;
-  position: relative;
+
+  transition: all linear 0.1s;
 
   &__auto-width {
     width: auto;
@@ -408,8 +436,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   &:disabled {
-    opacity: 0.6;
     cursor: default;
+    opacity: 0.6;
   }
 
   .spiner {
@@ -430,20 +458,22 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   &-min-padding {
-    padding-left: 0;
     padding-right: 0;
+    padding-left: 0;
   }
 
   &-min {
-    font-size: 16px;
     height: 42px;
 
+    font-size: 16px;
+
     svg {
-      vertical-align: middle;
       width: 21px;
       height: 21px;
       margin-right: 10px;
       margin-left: -6px;
+
+      vertical-align: middle;
     }
   }
 
@@ -455,6 +485,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   &-transparent {
     color: #000;
 
+    border: 1px solid #b9bdc2;
+    border-left-width: 5px;
+
     &:not(.with-bg) {
       background-color: transparent;
     }
@@ -462,9 +495,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     &.with-bg {
       background-color: rgba(255, 255, 255, 0.5);
     }
-
-    border: 1px solid #b9bdc2;
-    border-left-width: 5px;
 
     &:not([disabled]):hover {
       border-color: #dbe0e6;
@@ -477,10 +507,12 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   &-link {
+    padding: 0;
+
+    font-weight: normal;
+
     background-color: transparent;
     border: 0 none;
-    padding: 0;
-    font-weight: normal;
 
     &:hover,
     &:focus {
@@ -490,9 +522,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   &-white-opacity {
-    border-color: #2873fb;
-    background-color: rgb(255, 255, 255);
     color: black;
+
+    background-color: rgb(255, 255, 255);
+    border-color: #2873fb;
 
     &.white-border {
       border-color: rgba(255, 255, 255, 0.67);
@@ -504,12 +537,13 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   &-yellow {
-    background: #fcd600;
-    border-left-color: rgba(255, 255, 255, 0.67);
     color: #000;
 
+    background: #fcd600;
+    border-left-color: rgba(255, 255, 255, 0.67);
+
     &:not([disabled]):hover {
-      background-color: #ffff00;
+      background-color: #ff0;
     }
 
     &:not([disabled]):active {
@@ -518,9 +552,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   &-blue {
+    color: white;
+
     background: #2873fb;
     border-left-color: rgba(255, 255, 255, 0.67);
-    color: white;
 
     &:not([disabled]):hover {
       background-color: #2872fbcc;
@@ -532,9 +567,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   &-green {
+    color: white;
+
     background: #4aa956;
     border-left-color: rgba(255, 255, 255, 0.67);
-    color: white;
 
     &:not([disabled]):hover {
       background-color: #4aa956;
@@ -546,23 +582,26 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   &-payment {
-    background-color: rgba(0, 0, 0, 0.2);
+    margin-bottom: 7px;
+    padding: 0 15px;
+
     color: #fff;
-    border-radius: 2px;
-    border-width: 0;
     font-weight: normal;
     font-size: 16px;
-    padding: 0 15px;
-    margin-bottom: 7px;
+
+    background-color: rgba(0, 0, 0, 0.2);
+    border-width: 0;
+    border-radius: 2px;
 
     &:hover {
       background-color: rgba(0, 0, 0, 0.4);
     }
 
     &_ico {
-      vertical-align: middle;
       height: 26px;
       margin-right: 8px;
+
+      vertical-align: middle;
     }
 
     &_txt {
@@ -573,8 +612,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   &-ico {
     height: 28px;
     margin-right: 5px;
-    vertical-align: middle;
     margin-left: 5px;
+
+    vertical-align: middle;
   }
 }
 
@@ -584,23 +624,27 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
 .checkbox-block {
   position: relative;
-  overflow: hidden;
+
   display: block;
+  overflow: hidden;
 
   input {
-    opacity: 0;
     position: absolute;
     right: 100%;
     bottom: 100%;
-    margin: auto 5px 5px auto;
-    outline: 0;
+
     width: 1px;
     height: 1px;
+    margin: auto 5px 5px auto;
+
+    outline: 0;
+    opacity: 0;
 
     &:checked {
       ~ .btn-payment {
-        background-color: #fff;
         color: #000;
+
+        background-color: #fff;
       }
     }
   }
@@ -614,17 +658,20 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   &_label {
-    font-size: 13px;
-    color: #242424;
-    margin-bottom: 8px;
-    text-transform: uppercase;
     display: block;
+    margin-bottom: 8px;
+
+    color: #242424;
+    font-size: 13px;
+    text-transform: uppercase;
+
     opacity: 0.85;
 
     &--rate {
       position: absolute;
-      bottom: 100%;
       right: 0;
+      bottom: 100%;
+
       opacity: 1;
       @include b(450) {
         font-size: 10px;
@@ -632,52 +679,62 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
       .form-notice {
         position: absolute;
-        left: -90px;
         bottom: 100%;
-        padding-bottom: 16px;
+        left: -90px;
+
         display: none;
+        padding-bottom: 16px;
 
         &_content {
-          background: #FFFFFF;
-          box-shadow: 0 12px 12px rgba(0, 0, 0, 0.25);
-          padding: 9px 5px;
-          text-align: center;
-          font-size: 14px;
-          line-height: 1.25em;
-          width: 190px;
-          text-transform: initial;
-          color: #000000;
           position: relative;
 
-          &:after {
-            content: '';
-            display: block;
-            width: 12px;
-            height: 12px;
+          width: 190px;
+          padding: 9px 5px;
+
+          color: #000;
+          font-size: 14px;
+          line-height: 1.25em;
+          text-align: center;
+          text-transform: initial;
+
+          background: #fff;
+          box-shadow: 0 12px 12px rgba(0, 0, 0, 0.25);
+
+          &::after {
             position: absolute;
             top: 100%;
             left: 50%;
-            background-color: #ffffff;
-            transform: rotate(45deg);
+
+            display: block;
+            width: 12px;
+            height: 12px;
             margin-top: -7px;
             margin-left: -6px;
+
+            background-color: #fff;
+            transform: rotate(45deg);
+
+            content: '';
           }
         }
       }
 
       &-short {
+        color: #4aa956;
         font-weight: 700;
         text-transform: uppercase;
-        color: #4aa956;
 
-        &-txt, &-icon {
-          vertical-align: middle;
+        &-txt,
+        &-icon {
           display: inline-block;
+
+          vertical-align: middle;
         }
 
         &-icon {
-          margin-left: 5px;
           position: relative;
+
+          margin-left: 5px;
 
           &:hover {
             .form-notice {
@@ -693,77 +750,91 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     }
 
     &.bold {
-      font-size: 16px;
       font-weight: bold;
+      font-size: 16px;
     }
   }
 
   input[type='number'] {
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
       margin: 0;
+
+      appearance: none;
     }
   }
 
   /* Firefox */
   input[type='number'] {
-    -moz-appearance: textfield;
+    appearance: textfield;
   }
 
   &_input {
     position: relative;
 
     &-checkbox {
-      display: inline-block;
       position: relative;
-      background-color: #fff;
+
+      display: inline-block;
       padding: 8px 4px;
-      line-height: 28px;
       overflow: hidden;
 
-      &:after {
-        clear: both;
+      line-height: 28px;
+
+      background-color: #fff;
+
+      &::after {
         display: block;
+        clear: both;
+
         content: '';
       }
 
-      & + span {
+      + span {
+        margin-left: 20px;
+
+        color: #000;
         font-size: 14px;
         line-height: 14px;
-        color: #000000;
+
         opacity: 0.5;
-        margin-left: 20px;
       }
 
       input {
         position: absolute;
         right: 100%;
         bottom: 100%;
-        opacity: 0;
-        outline: none;
+
         width: 1px;
         height: 1px;
+
+        outline: none;
+        opacity: 0;
       }
 
       .checkbox-rect {
+        position: absolute;
+        top: 8px;
+        left: 4px;
+
+        display: block;
         width: 28px;
         height: 28px;
-        position: absolute;
-        left: 4px;
-        top: 8px;
-        display: block;
+
+        background: url('assets/images/icons/checkbox-cross.svg') center center no-repeat #d8d8d8;
+
         transition: 0.1s linear;
-        background: url(assets/images/icons/checkbox-cross.svg) center center no-repeat #d8d8d8;
       }
 
       .checkbox-text {
         float: left;
         padding: 6px 6px 4px;
-        text-transform: uppercase;
+
+        color: #110931;
         font-size: 13px;
         line-height: 18px;
-        color: #110931;
+        text-transform: uppercase;
+
         transition: 0.1s linear;
 
         &_on {
@@ -773,8 +844,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
       input:checked ~ .checkbox-rect {
         left: 100%;
+
         margin-left: -32px;
-        background: url(assets/images/icons/checkbox-tick.svg) center center no-repeat #fcd600;
+
+        background: url('assets/images/icons/checkbox-tick.svg') center center no-repeat #fcd600;
       }
 
       input:checked ~ .checkbox-text {
@@ -792,14 +865,16 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     textarea,
     .textarea {
       box-sizing: border-box;
-      border: 1px solid #fff;
-      color: #110931;
-      line-height: 30px;
-      font-family: inherit;
-      font-size: 18px !important;
-      background: #f4f4f4;
-      padding: 11px 10px 11px 22px;
       margin-top: -1px;
+      padding: 11px 10px 11px 22px;
+
+      color: #110931;
+      font-size: 18px !important;
+      font-family: inherit;
+      line-height: 30px;
+
+      background: #f4f4f4;
+      border: 1px solid #fff;
 
       &:not(.min-text),
       &.max-placeholder {
@@ -830,8 +905,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       }
 
       &.min-text {
-        font-size: 18px !important;
         color: #110931;
+        font-size: 18px !important;
 
         &:not(.max-placeholder) {
           &::-webkit-input-placeholder {
@@ -853,9 +928,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
       }
 
       &.dark-field {
+        color: #fff;
+
         background-color: rgba(106, 114, 126, 0.45);
         border-color: transparent;
-        color: #fff;
       }
 
       &.minimal-input {
@@ -864,8 +940,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     }
 
     textarea {
-      resize: none;
       height: 233px;
+
+      resize: none;
     }
 
     .textarea {
@@ -874,77 +951,91 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
     &__btn {
       position: absolute;
-      z-index: 2;
       top: 50%;
+      right: 8px;
+      z-index: 2;
+
+      margin-top: -21px;
+      padding: 10px 11px;
+
+      color: #43476c;
+      font-size: 16px;
+      font-family: inherit;
+      line-height: 18px;
+      letter-spacing: -0.43px;
+
       background: #fff;
       border: 2px solid #e5e5e5;
       border-radius: 0 4px 4px 0;
-      font-size: 16px;
-      color: #43476c;
-      letter-spacing: -0.43px;
-      line-height: 18px;
-      padding: 10px 11px;
-      right: 8px;
-      margin-top: -21px;
-      font-family: inherit;
       cursor: pointer;
     }
 
     &__ac_input {
       position: absolute;
-      z-index: 1;
-      right: 0;
       top: 0;
+      right: 0;
+      z-index: 1;
+
       width: 0;
-      opacity: 0;
-      transition: all linear 0.2s;
+
       font-size: 16px;
+
+      opacity: 0;
+
+      transition: all linear 0.2s;
     }
 
     &__ac_closer {
-      transition: all linear 0.2s;
-      opacity: 0;
       position: absolute;
+      top: 50%;
+      right: 25px;
+      z-index: 4;
+
       width: 0;
       height: 30px;
-      top: 50%;
       margin-top: 0;
-      z-index: 4;
-      right: 25px;
+
       cursor: pointer;
+      opacity: 0;
+
+      transition: all linear 0.2s;
 
       img {
-        width: 100%;
         display: block;
+        width: 100%;
       }
     }
 
     &__btn.active ~ &__ac_closer {
-      opacity: 1;
+      right: 10px;
+
       width: 30px;
       margin-top: -15px;
+
       background: #f4f4f4;
-      right: 10px;
+      opacity: 1;
     }
 
     &__btn.active + &__ac_input {
-      width: 50%;
-      opacity: 1;
-      padding: 11px 43px 11px 22px !important;
       top: 0;
-      border-left: 1px solid #d8d8d8 !important;
       z-index: 3;
+
+      width: 50%;
+      padding: 11px 43px 11px 22px !important;
+
+      border-left: 1px solid #d8d8d8 !important;
+      opacity: 1;
     }
   }
 
   &_description {
-    font-size: 14px;
     color: rgba(0, 0, 0, 0.5) !important;
+    font-size: 14px;
 
     &-show {
       margin-bottom: 15px;
 
-      & > span {
+      > span {
         cursor: pointer;
       }
 
@@ -996,8 +1087,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     }
 
     &__inline {
-      line-height: 50px;
       color: rgba(255, 255, 255, 0.5);
+      line-height: 50px;
 
       span {
         line-height: 25px;
@@ -1008,71 +1099,82 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
   &_small-desc {
     margin-top: 10px;
-    line-height: 18px;
-    font-size: 14px;
+
     color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    line-height: 18px;
 
     &.for-checkbox {
       margin-top: 0;
+
       line-height: 40px;
 
       span {
-        line-height: 20px;
         display: inline-block;
         max-width: 100%;
+
+        line-height: 20px;
       }
     }
   }
 
   &_checkbox-val {
     display: block;
-    border: 1px solid #e2e2e2;
+
     text-transform: uppercase;
+
+    border: 1px solid #e2e2e2;
 
     &_stat,
     &_label {
       display: inline-block;
+
       vertical-align: middle;
     }
 
     &_stat {
-      padding: 1px 1px 1px 10px;
-      font-size: 13px;
-      color: #110931;
-      line-height: 25px;
-      background: #e2e2e2;
-      padding-top: 3px;
-      min-width: 65px;
-      white-space: nowrap;
       box-sizing: border-box;
+      min-width: 65px;
+      padding: 1px 1px 1px 10px;
+      padding-top: 3px;
+
+      color: #110931;
+      font-size: 13px;
+      line-height: 25px;
+      white-space: nowrap;
       text-align: center;
 
+      background: #e2e2e2;
+
       img {
-        vertical-align: middle;
-        margin-left: 5px;
         margin-top: -3px;
+        margin-left: 5px;
+
+        vertical-align: middle;
       }
     }
 
     &_label {
-      font-size: 14px;
-      color: #e2e2e2;
-      line-height: 18px;
       padding: 3px 10px 0;
+
+      color: #e2e2e2;
+      font-size: 14px;
+      line-height: 18px;
     }
   }
 
   &_value {
+    color: #fff;
     font-size: 18px;
-    color: #ffffff;
     word-break: break-all;
   }
 
   &_copy {
     float: right;
-    text-align: center;
     width: 40px;
+
     line-height: 43px;
+    text-align: center;
   }
 
   &_copy + &_input_data {
@@ -1082,10 +1184,11 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   &_info-field {
     color: #8e939b;
 
-    &:after {
-      clear: both;
-      content: '';
+    &::after {
       display: block;
+      clear: both;
+
+      content: '';
     }
 
     span {
@@ -1097,44 +1200,53 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 }
 
 .copy-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  outline: none;
   position: relative;
   top: 5px;
 
+  margin: 0;
+  padding: 0;
+
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
   &.copied {
-    &:after {
+    &::after {
       position: absolute;
-      bottom: 100%;
-      width: 100px;
-      text-align: center;
       right: 0;
-      margin-left: -55px;
+      bottom: 100%;
+
+      width: 100px;
       margin-bottom: 8px;
-      border-radius: 2px;
-      content: 'Copied';
-      font-size: 14px;
+      margin-left: -55px;
       padding: 5px;
-      background-color: rgba(0, 0, 0, 0.4);
+
       color: #fff;
+      font-size: 14px;
+      text-align: center;
+
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 2px;
+
+      content: 'Copied';
     }
 
-    &:before {
+    &::before {
       position: absolute;
       right: 0;
       bottom: 100%;
-      border-width: 7px 7px 0 7px;
-      border-color: rgba(0, 0, 0, 0.4) transparent;
-      border-style: solid;
-      content: '';
+
       width: 0;
       height: 0;
       margin-right: 4px;
       margin-bottom: 1px;
+
+      border-color: rgba(0, 0, 0, 0.4) transparent;
+      border-style: solid;
+      border-width: 7px 7px 0;
+
+      content: '';
     }
   }
 }
@@ -1142,9 +1254,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 .new-btn {
   display: inline-block;
   padding: 0 40px;
+
   border: 0 none;
-  cursor: pointer;
   outline: 0 none;
+  cursor: pointer;
 
   &,
   &:hover,
@@ -1153,15 +1266,18 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   span {
-    display: block;
-    white-space: nowrap;
     position: relative;
+
+    display: block;
     margin-top: 0.1em;
+
+    white-space: nowrap;
   }
 
   &-yellow {
-    background: #f3d663;
     color: #3b4452;
+
+    background: #f3d663;
 
     &:disabled {
       opacity: 0.8;
@@ -1172,22 +1288,25 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
       &:hover,
       &:focus {
-        background: #ffe268;
         color: #2a313b;
+
+        background: #ffe268;
       }
     }
   }
 }
 
 .minimal-btn {
-  border: 1px solid #979797;
-  color: #eeeeee;
-  background: none;
+  padding: 5px 7px;
+
+  color: #eee;
   font-size: 14px;
   line-height: 18px;
-  padding: 5px 7px;
-  cursor: pointer;
   white-space: nowrap;
+
+  background: none;
+  border: 1px solid #979797;
+  cursor: pointer;
 
   &,
   &:hover,
@@ -1206,31 +1325,36 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 
   span {
-    margin-top: 3px;
     position: relative;
     top: 2px;
+
+    margin-top: 3px;
   }
 }
 
 .or-delimiter {
   height: 0;
-  border-top: 1px dashed rgba(255, 255, 255, 0.25);
-  overflow: visible;
-  text-align: center;
   margin: 25px 0;
+  overflow: visible;
+
+  text-align: center;
+
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
 
   span {
-    background-color: #6a727e;
+    display: inline-block;
+    box-sizing: border-box;
+    height: 24px;
+    margin-top: -12px;
+    padding: 3px 13px;
+
     color: rgba(255, 255, 255, 0.85);
     font-size: 14px;
     line-height: 22px;
     text-transform: uppercase;
-    padding: 3px 13px;
-    height: 24px;
-    box-sizing: border-box;
-    display: inline-block;
     vertical-align: top;
-    margin-top: -12px;
+
+    background-color: #6a727e;
   }
 }
 
@@ -1238,7 +1362,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   position: absolute;
   top: 50%;
   right: 10px;
+
   margin-top: -22px;
+
   color: rgba(57, 69, 83, 0.86) !important;
 
   &.mat-datepicker-toggle-active {
@@ -1266,7 +1392,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   background-color: #222 !important;
 }
 
-.clock-face__clock-hand_minute:before {
+.clock-face__clock-hand_minute::before {
   border-color: #222 !important;
 }
 
@@ -1296,6 +1422,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   .base-block-content {
     padding-top: 17vw;
   }
+
   .with-support #livechat-compact-container,
   .watch-instruction-btn {
     display: none !important;
@@ -1303,21 +1430,25 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 }
 
 .owl-dots {
-  text-align: center;
   position: relative;
   top: -40px;
+
   height: 0;
   overflow: visible;
 
+  text-align: center;
+
   button.owl-dot {
-    border-radius: 50%;
     display: inline-block;
-    vertical-align: middle;
     width: 10px;
     height: 10px;
-    border: 1px solid #3b4352;
-    background-color: #fff;
     margin: 0 10px;
+
+    vertical-align: middle;
+
+    background-color: #fff;
+    border: 1px solid #3b4352;
+    border-radius: 50%;
 
     &.active {
       background-color: #3b4352;
@@ -1327,6 +1458,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
 ng-scrollbar-y {
   display: block !important;
+
   visibility: hidden;
 
   &.ng-scrollbar-visible {
@@ -1339,66 +1471,76 @@ ng-scrollbar-y {
 }
 
 .block-tabs {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
   display: flex;
+  margin: 0;
+  padding: 0;
+
+  list-style-type: none;
 
   &_item {
-    padding: 11px 15px;
-    line-height: 25px;
-    transition: all linear 0.1s;
-    font-size: 14px;
     margin-bottom: 5px;
+    padding: 11px 15px;
+
+    font-size: 14px;
+    line-height: 25px;
+
+    transition: all linear 0.1s;
 
     &.hidden {
       display: none;
     }
 
     &.active {
-      background-color: #fff;
-      color: #000;
-      font-weight: 700;
+      margin-bottom: 0;
       padding-top: 13px;
       padding-bottom: 14px;
-      margin-bottom: 0;
+
+      color: #000;
+      font-weight: 700;
+
+      background-color: #fff;
     }
 
     &:not(.active) {
-      cursor: pointer;
-      background-color: #ffffff;
       color: #777;
+
+      background-color: #fff;
+      cursor: pointer;
 
       &:hover {
         color: #000;
+
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       }
     }
 
     &_icon {
       height: 18px;
-      vertical-align: middle;
-      margin-right: 15px;
       margin-top: -4px;
+      margin-right: 15px;
+
+      vertical-align: middle;
     }
 
     &_text {
-      cursor: inherit;
       display: inline-block;
-      vertical-align: middle;
+
       font-size: 14px;
+      vertical-align: middle;
+
+      cursor: inherit;
     }
 
     &_highlight {
-      border: 1px solid #4AA956;
+      border: 1px solid #4aa956;
       box-shadow: 0 2px 12px rgba(74, 169, 86, 0.6);
 
       span {
-        color: #4AA956;
+        color: #4aa956;
       }
 
       svg {
-        fill: #4AA956 !important;
+        fill: #4aa956 !important;
       }
     }
   }
@@ -1408,11 +1550,11 @@ ng-scrollbar-y {
   }
 
   &_order-type &_item {
-    padding-left: 42px;
     padding-right: 42px;
+    padding-left: 42px;
 
     svg {
-      fill: #CACACA;
+      fill: #cacaca;
     }
 
     &.active {
@@ -1420,16 +1562,18 @@ ng-scrollbar-y {
     }
 
     &_ico {
-      vertical-align: middle;
-      display: inline-block;
-      margin-left: 10px;
       position: relative;
+
+      display: inline-block;
       margin-bottom: -6px;
+      margin-left: 10px;
+
+      vertical-align: middle;
     }
 
     &.active {
       svg {
-        fill: #4AA956;
+        fill: #4aa956;
       }
     }
 
@@ -1444,6 +1588,7 @@ ng-scrollbar-y {
   .start-form-menus {
     display: block;
   }
+
   .block-tabs {
     &_order-type {
       display: flex;
@@ -1452,13 +1597,15 @@ ng-scrollbar-y {
 
     &_order-type &_item {
       width: 49%;
+
       text-align: center;
-      transform: scale(0.9);
+
       background-color: rgba(255, 255, 255, 0.6);
+      transform: scale(0.9);
 
       &.active {
+        background-color: #fff;
         transform: scale(1);
-        background-color: #ffffff;
       }
     }
 
@@ -1470,43 +1617,50 @@ ng-scrollbar-y {
     }
 
     &_blockchains &_item {
+      position: relative;
+
       box-sizing: border-box;
       width: 32%;
       min-height: 82px;
-      border-bottom: 2px solid transparent;
-      position: relative;
-      text-align: center;
       padding: 0;
+
+      text-align: center;
+
+      border-bottom: 2px solid transparent;
 
       &_icon {
         height: 38px;
+        margin-top: 10px;
         margin-right: 0;
         margin-bottom: 10px;
-        margin-top: 10px;
       }
 
       &_text {
-        font-size: 12px;
         display: block;
+
+        font-size: 12px;
       }
 
       &.active {
         border-bottom: 2px solid #4aa956;
 
-        &:after {
-          content: '';
+        &::after {
           position: absolute;
           top: 100%;
           left: 50%;
+
+          display: block;
           width: 0;
           height: 0;
-          border-width: 8px;
-          border-style: solid;
-          border-color: transparent transparent #4AA956 #4AA956;
-          transform: rotate(-45deg);
-          display: block;
           margin-top: -8px;
           margin-left: -9px;
+
+          border-color: transparent transparent #4aa956 #4aa956;
+          border-style: solid;
+          border-width: 8px;
+          transform: rotate(-45deg);
+
+          content: '';
         }
       }
     }
@@ -1522,12 +1676,12 @@ ng-scrollbar-y {
     }
 
     .form-field_input input:not([type='checkbox']):not([type='radio']) {
-      padding: 29px 10px 10px 10px !important;
+      padding: 29px 10px 10px !important;
     }
 
     .form-field_input__btn {
-      padding: 14px 11px;
       margin-top: -25px;
+      padding: 14px 11px;
     }
 
     .form-field {
@@ -1537,12 +1691,15 @@ ng-scrollbar-y {
         position: absolute;
         top: 12px;
         left: 0;
-        padding-left: 10px;
-        color: rgba(36, 36, 36, 0.5);
         z-index: 3;
+
+        padding-left: 10px;
+
+        color: rgba(36, 36, 36, 0.5);
 
         &--rate {
           top: 100%;
+
           margin-top: 10px;
         }
       }
@@ -1560,25 +1717,26 @@ ng-scrollbar-y {
 }
 
 .spring-spinner {
-  height: 100vh;
-  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100vw;
+  height: 100vh;
 
   &__wrapper {
-    height: 60px;
     width: 60px;
+    height: 60px;
   }
 
-  &, * {
+  &,
+  * {
     box-sizing: border-box;
   }
 
   &__part {
-    overflow: hidden;
-    height: calc(60px / 2);
     width: 60px;
+    height: calc(60px / 2);
+    overflow: hidden;
 
     &_bottom {
       transform: rotate(180deg) scale(-1, 1);
@@ -1586,15 +1744,17 @@ ng-scrollbar-y {
   }
 
   &__rotator {
+    box-sizing: border-box;
     width: 60px;
     height: 60px;
+
     border: calc(60px / 7) solid transparent;
-    border-right-color: #4aa956;
     border-top-color: #4aa956;
+    border-right-color: #4aa956;
     border-radius: 50%;
-    box-sizing: border-box;
-    animation: spring-spinner-animation 3s ease-in-out infinite;
     transform: rotate(-200deg);
+
+    animation: spring-spinner-animation 3s ease-in-out infinite;
   }
 }
 
@@ -1602,16 +1762,20 @@ ng-scrollbar-y {
   0% {
     border-width: calc(60px / 7);
   }
+
   25% {
     border-width: calc(60px / 23.33);
   }
+
   50% {
-    transform: rotate(115deg);
     border-width: calc(60px / 7);
+    transform: rotate(115deg);
   }
+
   75% {
     border-width: calc(60px / 23.33);
   }
+
   100% {
     border-width: calc(60px / 7);
   }

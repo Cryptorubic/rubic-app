@@ -3,52 +3,60 @@
 $mobile-width: 1024;
 
 .header {
-  padding-top: 20px;
-  padding-bottom: 20px;
   position: fixed;
   top: 0;
-  left: 0;
   right: 0;
-  transition: all linear 0.2s;
+  left: 0;
   z-index: 10;
+
+  padding-top: 20px;
+  padding-bottom: 20px;
+
   background-color: white;
 
-  &__mobile-language{
-    margin-right: 10px;
-  }
-
-  &_scrolled {
-    background-color: white;
-    padding-top: 13px;
-    padding-bottom: 10px;
-    z-index: 10;
-  }
+  transition: all linear 0.2s;
 
   @include b($mobile-width) {
     padding: 0;
   }
 
+  &__mobile-language {
+    margin-right: 10px;
+  }
+
+  &_scrolled {
+    z-index: 10;
+
+    padding-top: 13px;
+    padding-bottom: 10px;
+
+    background-color: white;
+  }
+
   &__container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     position: relative;
     z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
     background: #fff;
 
     
     @include b($mobile-width) {
+      position: relative;
+
       height: 65px;
       padding-top: 12px;
       padding-bottom: 11px;
-      position: relative;
     }
   }
 
   app-header-language-dropdown {
     @include b($mobile-width) {
-      margin-left: auto;
       margin-right: 10px;
+      margin-left: auto;
     }
   }
 
@@ -59,12 +67,15 @@ $mobile-width: 1024;
 
   &__mobile-container {
     position: absolute;
+
     width: 100%;
+    padding: 15px 0;
+
     background: #fff;
     box-shadow: inset 0 7px 9px -7px rgb(0 0 0 / 10%);
     transform: translateY(-100%);
+
     transition: all linear 0.2s;
-    padding: 15px 0;
 
     &_opened {
       transform: translateY(0);

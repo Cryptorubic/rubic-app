@@ -4,9 +4,11 @@ $font-family: 'Ubuntu', Arial, sans-serif;
 
 .team-page {
   position: relative;
-  font-family: $font-family !important;
+
   font-weight: normal;
-  background-color: #ffffff;
+  font-family: $font-family !important;
+
+  background-color: #fff;
 
   &__container {
     padding: 150px 80px 0;
@@ -24,20 +26,21 @@ $font-family: 'Ubuntu', Arial, sans-serif;
 
   &__content-wrapper {
     position: relative;
+
     display: grid;
-    width: 100%;
+    grid-column-gap: 40px;
     grid-template-columns: repeat(auto-fit, 330px);
     justify-content: center;
-    grid-column-gap: 40px;
+    width: 100%;
   }
 
   &__card {
+    z-index: 1;
+    /*flex: 1 0 auto;*/
+    width: 320px;
     margin-bottom: 60px;
     /*margin-right: 20px;*/
     padding: 0 5px;
-    /*flex: 1 0 auto;*/
-    width: 320px;
-    z-index: 1;
   }
 
   &__triangles {
@@ -48,7 +51,7 @@ $font-family: 'Ubuntu', Arial, sans-serif;
 
   &__triangles-rotated {
     position: absolute;
-    bottom: 0;
     right: 0;
+    bottom: 0;
   }
 }

@@ -7,9 +7,10 @@ $primary-light-color: #dbeedd;
   &__token-from,
   &__token-to {
     display: inline-flex;
-    width: 50%;
-    font-size: 15px;
     flex-direction: column;
+    width: 50%;
+
+    font-size: 15px;
   }
 
   &__token-from {
@@ -23,25 +24,30 @@ $primary-light-color: #dbeedd;
   }
 
   &__separator {
-    left: calc(50% - 2px);
-    top: 0;
     position: absolute;
+    top: 0;
+    left: calc(50% - 2px);
+
     display: block;
-    width: 4px;
-    background-color: #f4f4f4;
-    height: 100%;
     box-sizing: border-box;
+    width: 4px;
+    height: 100%;
+
+    background-color: #f4f4f4;
 
     &::after {
-      content: "";
+      position: absolute;
+      top: 50%;
+
       display: block;
       width: 50px;
       height: 50px;
-      position: absolute;
-      background: url(/assets/images/icons/ch_03.svg) center center/24px no-repeat;
-      top: 50%;
       margin-top: -25px;
+
+      background: url('/assets/images/icons/ch_03.svg') center center/24px no-repeat;
       transform: translate(calc(-50% + 2px));
+
+      content: '';
     }
   }
 
@@ -51,8 +57,9 @@ $primary-light-color: #dbeedd;
   }
   
   &__subtext {
-    color: rgba(0,0,0,.5);
     margin-top: 14px;
+
+    color: rgba(0, 0, 0, 0.5);
     font-size: 14px;
     white-space: nowrap;
   }

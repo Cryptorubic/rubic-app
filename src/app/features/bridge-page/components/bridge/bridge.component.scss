@@ -3,21 +3,22 @@
 
 .bridge-container {
   max-width: 1180px;
-  margin: 85px auto 0;
   height: 100%;
+  margin: 85px auto 0;
 
   @include b(1240) {
     padding: 0 2vw;
   }
 
   &__intro {
-    padding-top: 40px;
     margin-bottom: 60px;
+    padding-top: 40px;
+
+    color: rgba(black, 0.4);
 
     font-weight: normal;
     font-size: 22px;
     line-height: 40px;
-    color: rgba(black, 0.4);
 
     .app-index__intro_bold {
       font-weight: 700;
@@ -35,19 +36,21 @@
 
   margin-bottom: 30px;
 
+  color: #110931;
+
   font-weight: bold;
   font-size: 28px;
   line-height: 32px;
-  color: #110931;
 
   &__arrow-button {
-    height: 17px;
-    width: 17px;
+    position: relative;
+    top: -2px;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    top: -2px;
+    width: 17px;
+    height: 17px;
 
     background-color: white;
     border-radius: 50%;
