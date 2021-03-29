@@ -112,6 +112,9 @@ export class MetamaskProviderService extends PrivateProvider {
   }
 
   public addToken(token: SwapToken): Promise<void> {
+    if (!this.isActive) {
+      throw new MetamaskError();
+    }
     if (this.getNetwork().name !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
       throw new NetworkError(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
     }
