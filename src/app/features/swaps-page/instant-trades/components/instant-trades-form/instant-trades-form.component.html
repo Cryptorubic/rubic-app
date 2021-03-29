@@ -60,6 +60,7 @@
             [tokensList]="availableToTokens"
             [selectedToken]="toToken"
             [selectedAmount]="getToAmount(index)"
+            [withRoundMode]="true"
             (tokenChanges)="toToken = $any($event)"
           >
           </app-tokens-input>
@@ -85,7 +86,10 @@
           </div>
           <div class="selection-block__warning">
             <app-tooltip>
-              {{ 'Please make sure that selected token is supported on the specified DEX and try again later.' | translate }}
+              {{
+                'Please make sure that selected token is supported on the specified DEX and try again later.'
+                  | translate
+              }}
             </app-tooltip>
             <app-warning-label
               *ngIf="checkIfError(index)"

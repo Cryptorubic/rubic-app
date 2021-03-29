@@ -4,9 +4,12 @@ import { BIG_NUMBER_FORMAT } from '../constants/formats/BIG_NUMBER_FORMAT';
 
 @Pipe({ name: 'bigNumberFormat' })
 export class BigNumberFormat implements PipeTransform {
-  transform(value: BigNumber) {
-    if (value === undefined) {
+  transform(value: BigNumber | string) {
+    if (!value) {
       return '';
+    }
+    if (typeof value === 'string') {
+      value = new BigNumber(value);
     }
     return value.toFormat(BIG_NUMBER_FORMAT);
   }

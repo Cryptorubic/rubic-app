@@ -227,7 +227,8 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
     };
   }
 
-  public onMinContributeChange(tokenPart: TokenPart, minContribution: string): void {
+  public onMinContributeChange(tokenPart: TokenPart, minContributionAsString: string): void {
+    const minContribution = minContributionAsString.split(',').join('');
     this.tradeForm = {
       ...this.tradeForm,
       token: {

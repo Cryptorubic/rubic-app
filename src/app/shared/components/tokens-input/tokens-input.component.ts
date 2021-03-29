@@ -49,6 +49,11 @@ export class TokensInputComponent implements OnChanges {
   @Input() selectedToken: InputToken;
 
   /**
+   * Will {@link selectedAmount} be rounded or not.
+   */
+  @Input() withRoundMode? = false;
+
+  /**
    * How much decimal symbols will be left in {@link selectedAmount}, if it is greater than or equal to 1.
    */
   // eslint-disable-next-line no-magic-numbers
@@ -71,20 +76,26 @@ export class TokensInputComponent implements OnChanges {
       const startIndex = this._selectedAmount.indexOf('.') + 1;
 
       let decimalSymbols: number;
-      if (new BigNumber(this._selectedAmount).isGreaterThanOrEqualTo(1)) {
-        decimalSymbols = this.selectedAmountRoundMode;
-      } else {
-        let zerosAmount = 0;
-        for (let i = startIndex; i < this.selectedAmount.length; ++i) {
-          if (this._selectedAmount[i] === '0') {
-            zerosAmount++;
-          } else {
-            break;
+      if (this.withRoundMode) {
+        if (new BigNumber(this._selectedAmount).isGreaterThanOrEqualTo(1)) {
+          decimalSymbols = this.selectedAmountRoundMode;
+        } else {
+          let zerosAmount = 0;
+          for (let i = startIndex; i < this.selectedAmount.length; ++i) {
+            if (this._selectedAmount[i] === '0') {
+              zerosAmount++;
+            } else {
+              break;
+            }
           }
+          decimalSymbols = zerosAmount + this.smallSelectedAmountRoundMode;
         }
-        decimalSymbols = zerosAmount + this.smallSelectedAmountRoundMode;
+        decimalSymbols = Math.min(decimalSymbols, this.selectedToken.decimals);
+      } else {
+        decimalSymbols = this.selectedToken?.decimals
+          ? this.selectedToken.decimals
+          : this.DEFAULT_DECIMAL_LENGTH;
       }
-      decimalSymbols = Math.min(decimalSymbols, this.selectedToken.decimals);
 
       this._selectedAmount = this._selectedAmount.slice(0, startIndex + decimalSymbols);
       if (new BigNumber(this._selectedAmount).isEqualTo(0)) {
@@ -100,6 +111,9 @@ export class TokensInputComponent implements OnChanges {
   @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<TokenDropdownData>;
 
   private _selectedAmount: string;
+
+  // eslint-disable-next-line no-magic-numbers
+  public DEFAULT_DECIMAL_LENGTH = 8;
 
   public readonly tokenLabelComponentClass = TokenLabelComponent;
 
@@ -121,9 +135,10 @@ export class TokensInputComponent implements OnChanges {
     }
   }
 
-  public onNumberChanges(number) {
-    const numberAsString = number.split(',').join('');
-    this.numberChanges.emit(numberAsString);
+  public onNumberChanges(numberAsString) {
+    this.selectedAmount = numberAsString;
+    const number = numberAsString.split(',').join('');
+    this.numberChanges.emit(number);
   }
 
   /**
