@@ -22,14 +22,14 @@
     margin: 15px 0;
     padding: 30px 20px 17px;
 
-    color: #000;
+    color: black;
 
     background: white;
     border-left: 5px solid #4aa956;
     cursor: pointer;
 
     &_active {
-      color: #000;
+      color: black;
 
       border-left: 5px solid #4aa956;
 
@@ -92,5 +92,37 @@
     &__question {
       width: 85%;
     }
+  }
+}
+
+::ng-deep .faq {
+  &__highlight {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  &__img {
+    max-width: 100%;
+  }
+
+  &__warning {
+    display: inline-block;
+
+    box-sizing: border-box;
+    height: 24px;
+    padding-right: 10px;
+    padding-left: 10px;
+
+    color: white;
+
+    background-color: #ff9f9f;
+    border-radius: 3px;
+  }
+
+  &__warning-flex-container {
+    display: flex;
+    align-items: center;
+
+    height: 100%;
   }
 }

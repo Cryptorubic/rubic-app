@@ -1,4 +1,4 @@
-@import 'src/scss/elements/vars';
+@import 'src/scss/vars';
 
 .order-book-form {
   &__main-section {
@@ -191,7 +191,7 @@
   &__input {
     box-sizing: border-box;
     width: 100%;
-    padding: 11px 10px 11px 18px;
+    padding: 11px 10px 11px 14px;
 
     color: $dark;
     font-size: 18px;

@@ -1,5 +1,5 @@
 @import '../../../../../scss/mixins';
-@import '../../../../../scss/elements/vars';
+@import '../../../../../scss/vars';
 
 .token-sale-end {
   padding-bottom: 0px !important;
@@ -11,7 +11,7 @@
   font-weight: normal;
   font-family: var(--main-font) !important;
 
-  background-color: #fff;
+  background-color: white;
 
   @include b(1100) {
     background-image: none;
@@ -33,7 +33,7 @@
     height: 67px;
     margin-top: 60px;
 
-    color: #fff;
+    color: white;
     font-weight: bold;
     font-size: 28px;
     text-align: center;
@@ -80,7 +80,7 @@
       display: block;
       margin-bottom: 25px;
 
-      color: #fff;
+      color: white;
       font-weight: normal;
       font-size: 75px;
 
@@ -102,7 +102,7 @@
       margin-top: 25px;
       margin-bottom: 25px;
 
-      color: #fff;
+      color: white;
       font-weight: normal;
       font-size: 28px;
       line-height: 48px;
@@ -157,7 +157,7 @@
       font-size: 28px;
       text-align: center;
 
-      background-color: #fff;
+      background-color: white;
       box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.25);
     }
   }
@@ -199,14 +199,14 @@
 
       color: #4aa956;
 
-      background-color: #fff;
+      background-color: white;
     }
 
     &-title {
       margin-top: 20px;
       margin-bottom: 20px;
 
-      color: #fff;
+      color: white;
       font-weight: bold;
       font-size: 60px;
       text-align: center;
@@ -223,7 +223,7 @@
       margin-top: 20px;
       margin-bottom: 20px;
 
-      color: #fff;
+      color: white;
       font-weight: normal;
       font-size: 20px;
       text-align: center;
@@ -260,13 +260,13 @@
       margin-bottom: 10px;
       padding: 5px 15px 5px 5px;
 
-      color: #000 !important;
+      color: black !important;
       font-weight: normal;
       font-size: 15px;
       line-height: 27px;
       text-decoration: none !important;
 
-      background: #fff;
+      background: white;
       border-radius: 44px;
       cursor: pointer;
 
@@ -360,9 +360,8 @@
       margin-top: 30px;
       margin-bottom: 30px;
 
-      color: #000;
+      color: black;
 
-      color: #000;
       font-weight: normal;
       font-size: 14px;
 
@@ -418,7 +417,7 @@
         display: block;
         margin-bottom: 10px;
 
-        color: #000;
+        color: black;
         font-weight: normal;
         font-size: 20px;
         text-align: center;
@@ -472,7 +471,7 @@
       width: 100%;
       margin-bottom: 30px;
 
-      color: #000;
+      color: black;
       font-weight: normal;
       font-size: 20px;
       line-height: 1.7;
@@ -548,7 +547,7 @@
 
     &-one {
       p {
-        color: #000;
+        color: black;
         font-weight: normal;
         font-size: 20px;
         line-height: 27px;
@@ -562,7 +561,7 @@
 
     &-two {
       p {
-        color: #000;
+        color: black;
         font-weight: normal;
         font-size: 20px;
         line-height: 27px;
@@ -634,7 +633,7 @@
     //   &-text {
     //     font-size: 15px;
     //     line-height: 27px;
-    //     color: #000000;
+    //     color: black;
     //   }
     // }
   }
@@ -650,7 +649,7 @@
     .container {
       padding: 20px;
 
-      color: #000;
+      color: black;
       font-size: 14px;
       line-height: 27px;
 

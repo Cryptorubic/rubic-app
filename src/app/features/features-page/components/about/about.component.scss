@@ -1,11 +1,11 @@
 @import '../../../../../scss/mixins';
-@import '../../../../../scss/elements/vars';
+@import '../../../../../scss/vars';
 
 .about-page {
   font-weight: normal;
   font-family: $ubuntu-font;
 
-  background-color: #fff;
+  background-color: white;
 
   @include b(1100) {
     background-image: none;

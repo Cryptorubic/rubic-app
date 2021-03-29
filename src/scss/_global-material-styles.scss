@@ -1,0 +1,41 @@
+.mat-datepicker-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+
+  margin-top: -22px;
+
+  color: rgba(57, 69, 83, 0.86) !important;
+
+  &.mat-datepicker-toggle-active {
+    color: #394553 !important;
+  }
+}
+
+.mat-button-focus-overlay {
+  background: none !important;
+}
+
+.mat-calendar-body-selected {
+  background-color: #394553 !important;
+}
+
+.timepicker__header {
+  background-color: #222 !important;
+}
+
+.clock-face__number > span.active {
+  background-color: #222 !important;
+}
+
+.clock-face__clock-hand {
+  background-color: #222 !important;
+}
+
+.clock-face__clock-hand_minute::before {
+  border-color: #222 !important;
+}
+
+.timepicker-button {
+  color: #222 !important;
+}
