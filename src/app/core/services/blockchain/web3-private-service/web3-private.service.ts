@@ -10,6 +10,7 @@ import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
+import SwapToken from '../../../../shared/models/tokens/SwapToken';
 
 @Injectable({
   providedIn: 'root'
@@ -365,5 +366,13 @@ export class Web3PrivateService {
    */
   private weiToEth(value: string | BigNumber): string {
     return this.web3.utils.fromWei(value.toString(), 'ether');
+  }
+
+  /**
+   * @description opens a window with suggestion to add token to user's wallet
+   * @param token token to add
+   */
+  public addToken(token: SwapToken): Promise<void> {
+    return this.provider.addToken(token);
   }
 }

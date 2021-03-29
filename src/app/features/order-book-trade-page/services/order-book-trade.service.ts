@@ -126,7 +126,10 @@ export class OrderBookTradeService {
     return tradeData;
   }
 
-  async setAllowanceToToken(tradeData: OrderBookTradeData, tokenPart: TokenPart): Promise<void> {
+  public async setAllowanceToToken(
+    tradeData: OrderBookTradeData,
+    tokenPart: TokenPart
+  ): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
 
     if (web3Public.isNativeAddress(tradeData.token[tokenPart].address)) {
@@ -161,7 +164,7 @@ export class OrderBookTradeService {
     }
   }
 
-  public makeApprove(
+  public async makeApprove(
     tradeData: OrderBookTradeData,
     tokenPart: TokenPart,
     onTransactionHash: (hash: string) => void

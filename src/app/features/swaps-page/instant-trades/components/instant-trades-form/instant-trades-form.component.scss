@@ -1,4 +1,4 @@
-@import 'src/scss/elements/vars';
+@import 'src/scss/vars';
 
 .instant-trade {
   display: flex;
@@ -143,7 +143,7 @@
     }
 
     span {
-      color: rgba(#000, 0.5);
+      color: rgba(black, 0.5);
       font-size: 14px;
     }
   }
