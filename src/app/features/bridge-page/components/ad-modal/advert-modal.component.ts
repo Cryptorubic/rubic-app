@@ -72,10 +72,6 @@ export class AdvertModalComponent implements AfterViewInit {
       data.title = 'Error';
       data.descriptionText = `You have selected the wrong network. To add BRSC please choose ${err.networkToChoose} from MetaMask.`;
     }
-    if (err instanceof MetamaskError) {
-      data.title = 'Warning';
-      data.descriptionText = err.comment;
-    }
     this.dialog.open(MessageBoxComponent, { width: '400px', data });
   }
 
