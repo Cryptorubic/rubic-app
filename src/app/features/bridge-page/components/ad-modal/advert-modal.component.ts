@@ -58,7 +58,7 @@ export class AdvertModalComponent implements AfterViewInit {
     } catch (err) {
       console.error(err);
       this.showErrorModal(err);
-      this.close();
+      this.close(true);
     }
   }
 
@@ -67,20 +67,21 @@ export class AdvertModalComponent implements AfterViewInit {
     const data = { title: 'Warning', descriptionText: eror.comment } as any;
     if (err instanceof NetworkError) {
       data.title = 'Error';
-      data.descriptionText = `You have selected the wrong network. To add BRSC please choose ${err.networkToChoose} from MetaMask.`;
+      data.descriptionText = `You have selected the wrong network. To add BRSC please choose ${err.networkToChoose} from MetaMask, and reload page.`;
     }
     this.dialog.open(MessageBoxComponent, { width: '400px', data });
   }
 
   public open(): void {
     this.matModal = this.dialog.open(this.modal);
-    this.matModal.afterClosed().subscribe(() => {
-      this.cookieService.set(this.cookieName, '1', null, null, null, null, null);
+    this.matModal.afterClosed().subscribe((doNotSaveCookie: boolean) => {
+      if (!doNotSaveCookie) {
+        this.cookieService.set(this.cookieName, '1', null, null, null, null, null);
+      }
     });
   }
 
-  public close(): void {
-    this.cookieService.set(this.cookieName, '1', null, null, null, null, null);
-    this.matModal.close();
+  public close(doNotSaveCookie?: boolean): void {
+    this.matModal.close(doNotSaveCookie);
   }
 }
