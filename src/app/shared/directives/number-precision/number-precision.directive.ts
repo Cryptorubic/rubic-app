@@ -1,4 +1,4 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, HostListener, Input } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
 import BigNumber from 'bignumber.js';
 import { BIG_NUMBER_FORMAT } from '../../constants/formats/BIG_NUMBER_FORMAT';
@@ -34,23 +34,29 @@ export class NumberPrecisionDirective implements Validator {
 
   private lastValue: string = '';
 
+  private lastCursorPosition: number;
+
   constructor() {}
 
   validate(control: AbstractControl): ValidationErrors | null {
     if (!control.value) {
       this.lastValue = '';
-      return null;
-    }
-
-    if (control.value === this.lastValue) {
+      this.lastCursorPosition = 0;
       return null;
     }
 
     const value = control.value.split(',').join('');
 
+    if (value === this.lastValue.split(',').join('')) {
+      if (control.value !== this.lastValue) {
+        this.setLastValidValue(control);
+      }
+      return this.checkOverflow(value);
+    }
+
     if (!value.match(this.decimalNumberRegex)) {
-      control.setValue(this.lastValue);
-      return this.validate(control);
+      this.setLastValidValue(control);
+      return this.checkOverflow(this.lastValue);
     }
 
     const [integerPart, fractionalPart] = value.split('.');
@@ -58,19 +64,27 @@ export class NumberPrecisionDirective implements Validator {
       integerPart.length > this.integerLength ||
       (fractionalPart && fractionalPart.length > this.decimalLength)
     ) {
-      control.setValue(this.lastValue);
-      return this.validate(control);
+      this.setLastValidValue(control);
+      return this.checkOverflow(this.lastValue);
     }
 
     this.setNewValue(control, value);
+    return this.checkOverflow(value);
+  }
 
-    if (this.minValue && new BigNumber(control.value).isLessThan(this.minValue)) {
+  private setLastValidValue(control: AbstractControl) {
+    control.setValue(this.lastValue);
+    this.inputElement.setSelectionRange(this.lastCursorPosition, this.lastCursorPosition);
+  }
+
+  private checkOverflow(value: string) {
+    value = value.split(',').join('');
+    if (this.minValue && new BigNumber(value).isLessThan(this.minValue)) {
       return { overflowMinValue: true };
     }
-    if (this.maxValue && new BigNumber(control.value).isGreaterThan(this.maxValue)) {
+    if (this.maxValue && new BigNumber(value).isGreaterThan(this.maxValue)) {
       return { overflowMaxValue: true };
     }
-
     return null;
   }
 
@@ -94,5 +108,12 @@ export class NumberPrecisionDirective implements Validator {
     this.lastValue = newValue + (value[value.length - 1] === '.' ? '.' : '');
     control.setValue(this.lastValue);
     this.inputElement.setSelectionRange(newCursorPosition, newCursorPosition);
+    this.lastCursorPosition = newCursorPosition;
+  }
+
+  @HostListener('keyup')
+  @HostListener('click')
+  onCursorChange() {
+    this.lastCursorPosition = this.inputElement.selectionStart;
   }
 }

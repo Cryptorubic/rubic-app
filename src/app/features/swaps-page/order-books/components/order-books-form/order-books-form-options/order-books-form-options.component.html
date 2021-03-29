@@ -9,7 +9,7 @@
           class="input-container__input input-container__input_date"
           id="date-input-id"
           matInput
-          [matDatepicker]="datePicker"
+          [matDatepicker]="$any(datePicker)"
           [min]="minClosingDate"
           (dateChange)="onDateChange()"
           readonly
@@ -108,16 +108,16 @@
             id="min-base-contribute-input-id"
             placeholder="Enter amount"
             appNumberPrecision
-            [inputElement]="baseMinContribute"
+            [inputElement]="baseMinContributeInput"
             [decimalLength]="tradeForm.token.base.decimals"
             [maxValue]="tradeForm.token.base.amount"
-            [ngModel]="tradeForm.token.base.minContribution"
+            [ngModel]="tradeForm.token.base.minContribution | bigNumberFormat"
             (ngModelChange)="onMinContributeChange('base', $event)"
             #baseMinContribute="ngModel"
             [ngClass]="{
               'input-container__input_invalid': baseMinContribute.invalid
             }"
-            #baseMinContribute
+            #baseMinContributeInput
           />
         </div>
       </div>
@@ -136,7 +136,7 @@
             [inputElement]="quoteMinContributeInput"
             [decimalLength]="tradeForm.token.quote.decimals"
             [maxValue]="tradeForm.token.quote.amount"
-            [ngModel]="tradeForm.token.quote.minContribution"
+            [ngModel]="tradeForm.token.quote.minContribution | bigNumberFormat"
             (ngModelChange)="onMinContributeChange('quote', $event)"
             #quoteMinContribute="ngModel"
             [ngClass]="{

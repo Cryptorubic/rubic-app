@@ -10,8 +10,9 @@
     [tabindex]="inputDisabled ? '-1' : ''"
     appNumberPrecision
     [inputElement]="numberInput"
-    [(ngModel)]="selectedAmount"
-    (ngModelChange)="onNumberChanges(selectedAmount)"
+    [decimalLength]="selectedToken?.decimals ? selectedToken.decimals : DEFAULT_DECIMAL_LENGTH"
+    [ngModel]="selectedAmount | bigNumberFormat"
+    (ngModelChange)="onNumberChanges($event)"
     #numberModel="ngModel"
     [ngClass]="{ 'tokens-form__input_invalid': numberModel.value && numberModel.invalid }"
     #numberInput
