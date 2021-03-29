@@ -3,10 +3,9 @@ import {
   ChangeDetectionStrategy,
   TemplateRef,
   ViewChild,
-  AfterViewInit,
-  Inject
+  AfterViewInit
 } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
