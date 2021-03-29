@@ -133,7 +133,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._tokensSubscription$.unsubscribe();
+    this._tokensSubscription$?.unsubscribe();
   }
 
   private checkMetamaskSettings() {
