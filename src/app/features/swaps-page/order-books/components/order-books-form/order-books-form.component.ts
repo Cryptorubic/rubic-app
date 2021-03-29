@@ -144,7 +144,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   get baseAmount(): string {
-    return this.tradeParameters.fromAmount;
+    return this.tradeParameters?.fromAmount;
   }
 
   set baseAmount(value) {
@@ -155,7 +155,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   get quoteAmount(): string {
-    return this.tradeParameters.toAmount;
+    return this.tradeParameters?.toAmount;
   }
 
   set quoteAmount(value) {
