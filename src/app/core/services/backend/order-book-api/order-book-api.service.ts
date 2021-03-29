@@ -10,19 +10,13 @@ import {
 } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import * as moment from 'moment';
-import { OrderBooksTableService } from 'src/app/features/swaps-page/order-books/components/order-books-table/services/order-books-table.service';
-import { ORDER_BOOK_CONTRACT } from 'src/app/shared/constants/order-book/smart-contract';
 import { HttpService } from '../../http/http.service';
 import { TokensService } from '../tokens-service/tokens.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { OrderBookTradeApi } from './types/trade-api';
-import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/types/trade-form';
-
-interface ContractParameters {
-  contractAddress: string;
-  contractAbi: any[];
-}
+import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/models/trade-form';
+import { OrderBookCommonService } from '../../order-book-common/order-book-common.service';
 
 interface PublicSwapsResponse extends OrderBookTradeApi {
   memo_contract: string;
@@ -44,7 +38,7 @@ export class OrderBookApiService {
     private readonly httpService: HttpService,
     private readonly tokensService: TokensService,
     private readonly web3PublicService: Web3PublicService,
-    private readonly orderBookTableService: OrderBooksTableService
+    private readonly orderBookCommonService: OrderBookCommonService
   ) {
     this.tokensService.tokens.subscribe(tokens => {
       this._tokens = tokens;
@@ -67,63 +61,24 @@ export class OrderBookApiService {
       );
   }
 
-  public fetchPublicSwaps(): void {
-    this.httpService
-      .get('get_public_swap3/')
-      .pipe(
-        map((swaps: OrderBookTradeApi[]) => {
-          return swaps.map(async swap => {
-            const tradeData = await this.tradeApiToTradeData(swap, swap.unique_link);
-            try {
-              await this.setAmountContributed(tradeData);
-            } catch (err) {
-              console.error(err);
-            }
-            return tradeData;
-          });
-        })
-      )
-      .subscribe(
-        async tradeData => {
-          this.orderBookTableService.setTableData(await Promise.all(tradeData));
-          this.orderBookTableService.filterByBlockchain();
-        },
-        err => console.error(err),
-        () => this.orderBookTableService.setTableLoadingStatus(false)
-      );
+  public fetchPublicSwaps(): Observable<Promise<OrderBookTradeData>[]> {
+    return this.httpService.get('get_public_swap3/').pipe(
+      map((swaps: OrderBookTradeApi[]) => {
+        return swaps.map(async swap => {
+          const tradeData = await this.tradeApiToTradeData(swap, swap.unique_link);
+          try {
+            await this.setAmountContributed(tradeData);
+          } catch (err) {
+            console.error(err);
+          }
+          return tradeData;
+        });
+      })
+    );
   }
 
   public async setAmountContributed(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
-
-    const baseContributed: string = await web3Public.callContractMethod(
-      contractAddress,
-      contractAbi,
-      'baseRaised',
-      {
-        methodArguments: [tradeData.memo]
-      }
-    );
-    tradeData.token.base.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.base,
-      baseContributed
-    );
-
-    const quoteContributed: string = await web3Public.callContractMethod(
-      contractAddress,
-      contractAbi,
-      'quoteRaised',
-      {
-        methodArguments: [tradeData.memo]
-      }
-    );
-    tradeData.token.quote.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.quote,
-      quoteContributed
-    );
-
-    return tradeData;
+    return this.orderBookCommonService.setAmountContributed(tradeData);
   }
 
   public async tradeApiToTradeData(
@@ -223,21 +178,6 @@ export class OrderBookApiService {
     };
 
     this.httpService.post(`${this.botUrl}/create`, tradeBot).subscribe();
-  }
-
-  private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
-    const { contractAddress } = tradeData;
-    const contractVersion = ORDER_BOOK_CONTRACT.ADDRESSES.findIndex(addresses =>
-      Object.values(addresses)
-        .map(a => a.toLowerCase())
-        .includes(contractAddress.toLowerCase())
-    );
-    const contractAbi = ORDER_BOOK_CONTRACT.ABI[contractVersion];
-
-    return {
-      contractAddress,
-      contractAbi
-    };
   }
 
   public contributeBotNotification(

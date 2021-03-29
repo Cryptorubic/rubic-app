@@ -12,8 +12,8 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
 import SameTokens from 'src/app/shared/models/errors/order-book/SameTokens';
-import { OrderBookFormToken, OrderBookTradeForm } from '../../types/trade-form';
-import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
+import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
+import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
 
 @Injectable()
 export class OrderBooksFormService implements OnDestroy {
