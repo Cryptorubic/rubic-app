@@ -273,8 +273,13 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       .subscribe(
         (res: string) => {
           this.tradeSuccessId = res;
+          this.tradeInProgress = false;
+          this.buttonAnimation = false;
         },
         err => {
+          this.tradeInProgress = false;
+          this.buttonAnimation = false;
+          console.log(err);
           if (!(err instanceof RubicError)) {
             err = new RubicError();
           }
@@ -294,11 +299,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
             data
           });
         }
-      )
-      .add(() => {
-        this.tradeInProgress = false;
-        this.buttonAnimation = false;
-      });
+      );
   }
 
   @HostListener('window:resize', ['$event'])

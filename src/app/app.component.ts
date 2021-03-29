@@ -23,8 +23,12 @@ export class AppComponent {
   }
 
   private setupLanguage(): void {
-    const userRegionLanguage = navigator.language?.split('-')[0];
-    const lng = this.cookieService.get('lng') || userRegionLanguage || 'en';
+    const supportedLanguages = ['en', 'ko', 'ru', 'zh'];
+    let userRegionLanguage = navigator.language?.split('-')[0];
+    userRegionLanguage = supportedLanguages.includes(userRegionLanguage)
+      ? userRegionLanguage
+      : 'en';
+    const lng = this.cookieService.get('lng') || userRegionLanguage;
     this.translateService.setDefaultLang(lng);
     this.translateService.use(lng);
   }
