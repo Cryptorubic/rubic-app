@@ -30,9 +30,11 @@ export class RubicBridgeService {
     private web3PublicService: Web3PublicService,
     useTestingMode: UseTestingModeService
   ) {
-    useTestingMode.isTestingMode.subscribe(() => {
-      this.EthereumSmartContractAddress = '0xd806e441b27f4f827710469b0acb4e045e62b676';
-      this.BinanceSmartContractAddress = '0x17caca02ddf472f62bfed5165facf7a6b5c72926';
+    useTestingMode.isTestingMode.subscribe(value => {
+      if (value) {
+        this.EthereumSmartContractAddress = '0xd806e441b27f4f827710469b0acb4e045e62b676';
+        this.BinanceSmartContractAddress = '0x17caca02ddf472f62bfed5165facf7a6b5c72926';
+      }
     });
   }
 
