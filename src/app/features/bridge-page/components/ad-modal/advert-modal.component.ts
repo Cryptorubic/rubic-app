@@ -54,7 +54,6 @@ export class AdvertModalComponent implements AfterViewInit {
   public async addToken(): Promise<void> {
     try {
       await this.web3Private.addToken(this.token);
-      this.cookieService.set(this.cookieName, '1', null, null, null, null, null);
       this.close();
     } catch (err) {
       this.close();
@@ -76,9 +75,13 @@ export class AdvertModalComponent implements AfterViewInit {
 
   public open(): void {
     this.matModal = this.dialog.open(this.modal);
+    this.matModal.afterClosed().subscribe(() => {
+      this.cookieService.set(this.cookieName, '1', null, null, null, null, null);
+    });
   }
 
   public close(): void {
+    this.cookieService.set(this.cookieName, '1', null, null, null, null, null);
     this.matModal.close();
   }
 }
