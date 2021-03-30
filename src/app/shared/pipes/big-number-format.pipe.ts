@@ -8,9 +8,16 @@ export class BigNumberFormat implements PipeTransform {
     if (!value) {
       return '';
     }
+
     if (typeof value === 'string') {
-      value = new BigNumber(value);
+      const [integerPart, decimalPart] = value.split('.');
+      return (
+        new BigNumber(integerPart).toFormat(BIG_NUMBER_FORMAT) +
+        (value.includes('.') ? '.' : '') +
+        (decimalPart || '')
+      );
     }
+
     return value.toFormat(BIG_NUMBER_FORMAT);
   }
 }
