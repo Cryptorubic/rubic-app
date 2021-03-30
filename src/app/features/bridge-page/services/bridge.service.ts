@@ -181,7 +181,7 @@ export class BridgeService {
       return new Observable(subscriber => {
         this.rubicBridgeService
           .createTrade(token, fromNetwork, amount, toAddress, onTransactionHash)
-          .then(txHash => {
+          .then(async txHash => {
             const tx: BridgeTransaction = {
               binanceId: txHash,
               amount,
@@ -191,7 +191,8 @@ export class BridgeService {
                 ethSymbol: token.ethSymbol
               } as BridgeToken
             } as BridgeTransaction;
-            // this.sendTransactionInfo({ });
+
+            await this.backendApiService.postRubicTransaction(fromNetwork, txHash);
             this.updateTransactionsList();
             this.backendApiService.notifyBridgeBot(tx, this.web3Private.address);
             subscriber.next(txHash);
