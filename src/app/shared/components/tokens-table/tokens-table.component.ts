@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from 
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
+import { TokenValueType } from '../../models/order-book/tokens';
 
 @Component({
   selector: 'app-tokens-table',
@@ -22,12 +23,19 @@ export class TokensTableComponent {
 
   @Output() public refreshTableEvent: EventEmitter<void>;
 
+  @Output() public selectTokenEvent: EventEmitter<TokenValueType>;
+
   constructor() {
     this.refreshTableEvent = new EventEmitter<void>();
+    this.selectTokenEvent = new EventEmitter<TokenValueType>();
   }
 
   public getChainIcon(name: BLOCKCHAIN_NAME): string {
     return BlockchainsInfo.getBlockchainByName(name).imagePath;
+  }
+
+  public selectToken(data: TokenValueType): void {
+    this.selectTokenEvent.emit(data);
   }
 
   public refresnOrderBooks(): void {

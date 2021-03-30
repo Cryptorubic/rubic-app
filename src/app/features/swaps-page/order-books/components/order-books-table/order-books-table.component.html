@@ -5,4 +5,5 @@
   [tableLoading]="$tableLoading | async"
   (refreshTableEvent)="refreshOrderBooks()"
   [title]="'Order Book' | translate"
+  (selectTokenEvent)="selectToken($event)"
 ></app-tokens-table>

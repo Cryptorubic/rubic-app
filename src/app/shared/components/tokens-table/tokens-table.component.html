@@ -13,7 +13,6 @@
     matSort
     [dataSource]="tableData"
     class="table order-books"
-    *ngIf="!tableLoading && tableData.length !== 0"
   >
     <colgroup>
       <ng-container>
@@ -38,11 +37,7 @@
     <!-- Tokens icons column  -->
     <ng-container matColumnDef="token">
       <th mat-header-cell *matHeaderCellDef #tokensHeader matAutocompleteOrigin>
-        <div class="tokens-table__cell">
-          {{ 'Tokens' | translate }}
-        </div>
-        <!-- Uncomment after filtering release -->
-        <!-- <app-coins-filter></app-coins-filter> -->
+        <app-coins-filter (selectTokenEvent)="selectToken($event)"></app-coins-filter>
       </th>
       <td *matCellDef="let element">
         <a routerLink="/public-v3/{{ element.uniqueLink }}">

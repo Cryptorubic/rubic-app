@@ -84,6 +84,10 @@ export class OrderBooksTableService {
     }
   }
 
+  public zeroingFilters(): void {
+    this.$visibleTableData.next(this.$dataSource.value);
+  }
+
   public setTableLoadingStatus(value: boolean): void {
     this.$tableLoadingStatus.next(value);
   }
@@ -96,9 +100,26 @@ export class OrderBooksTableService {
     this.$blockchainMode.next(blockchain);
   }
 
-  public filterByBlockchain(): void {
+  public filterTable(): void {
+    const filterBaseValue = this.$filterBaseValue.value?.toLowerCase();
+    const filterQuoteValue = this.$filterQuoteValue.value?.toLowerCase();
+    const blockChain = this.$blockchainMode.value;
     this.$visibleTableData.next(
-      this.$dataSource.value.filter(trade => trade.blockchain === this.$blockchainMode.value)
+      this.$dataSource.value.filter(
+        trade => trade.blockchain === blockChain && trade.token.base.blockchain
+      )
     );
+    if (filterBaseValue) {
+      const filteredData = this.$visibleTableData.value.filter(
+        row => row.token.base.symbol.toLowerCase() === filterBaseValue
+      );
+      this.$visibleTableData.next(filteredData);
+    }
+    if (filterQuoteValue) {
+      const filteredData = this.$visibleTableData.value.filter(
+        row => row.token.quote.symbol.toLowerCase() === filterQuoteValue
+      );
+      this.$visibleTableData.next(filteredData);
+    }
   }
 }
