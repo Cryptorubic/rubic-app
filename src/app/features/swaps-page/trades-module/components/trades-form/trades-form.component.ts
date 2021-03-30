@@ -40,7 +40,7 @@ export class TradesFormComponent implements OnInit, OnDestroy {
     {
       name: BLOCKCHAIN_NAME.MATIC,
       code: 22,
-      label: 'Matic',
+      label: 'Polygon',
       image: 'assets/images/icons/coins/matic.svg'
     }
   ];
