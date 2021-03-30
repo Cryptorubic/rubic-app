@@ -55,6 +55,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
     } else {
       this.orderBooksTableService.setQuoteTokenFilter(null);
     }
+    this.orderBooksTableService.filterTable();
   }
 
   public refreshOrderBooks(): void {

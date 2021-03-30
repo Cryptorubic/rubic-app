@@ -84,8 +84,8 @@ export class CoinsFilterComponent {
 
     const filterOptions = options
       .filter((option: SwapToken) => {
-        const tokenTitle = (option as any).token_title.toLowerCase();
-        const tokenSymbol = (option as any).token_short_title.toLowerCase();
+        const tokenTitle = ((option as any).token_title || option.name).toLowerCase();
+        const tokenSymbol = ((option as any).token_short_title || option.symbol).toLowerCase();
         const nameIndexMatch = tokenTitle.indexOf(filterValue) + 1;
         const symbolIndexMatch = tokenSymbol.indexOf(filterValue) + 1;
 
