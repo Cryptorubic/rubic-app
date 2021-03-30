@@ -15,9 +15,9 @@ import { OrderBooksTableService } from './services/order-books-table.service';
 export class OrderBooksTableComponent implements AfterViewInit {
   public readonly $dataSource: Observable<OrderBookTradeData[]>;
 
-  public readonly $displayedColumns: Observable<string[]>;
+  public readonly displayedColumns: string[];
 
-  public readonly $columnsSizes: Observable<string[]>;
+  public readonly columnsSizes: string[];
 
   public readonly $tableLoading: Observable<boolean>;
 
@@ -30,8 +30,8 @@ export class OrderBooksTableComponent implements AfterViewInit {
     this.orderBooksTableService.setTableLoadingStatus(true);
     this.fetchPublicSwaps();
     this.$dataSource = this.orderBooksTableService.getTableData();
-    this.$displayedColumns = this.orderBooksTableService.getTableColumns();
-    this.$columnsSizes = this.orderBooksTableService.getTableColumnsSizes();
+    this.displayedColumns = ['token', 'amount', 'network', 'expires'];
+    this.columnsSizes = ['25%', '50%', '10%', '15%'];
   }
 
   public ngAfterViewInit(): void {

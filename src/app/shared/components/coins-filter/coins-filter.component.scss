@@ -46,6 +46,8 @@ $primary-grey: #f4f4f4;
     margin: 0 5px;
     border-radius: 5px;
     padding: 0 11px;
+    display: flex;
+    align-items: center;
 
     background: $primary-grey;
     border: none;
