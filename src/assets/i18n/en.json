@@ -128,7 +128,7 @@
       "ANSWER": "At the moment, Rubic allows trading for Ethereum-based tokens (ERC-20) and Binance Smart Chain tokens (BEP-20). More blockchains will be implemented soon (see Roadmap). However, to create and manage tokens we already provide multichain services supported by Ethereum, Tron, EOS, NEO and Binance Smart Chain."
     }, {
       "QUESTION": "Should I list my token before using your service?",
-      "ANSWER": "No, you can trade any tokens, by manually add their contract addresses. However, you can contact us and we will add your token to our list."
+      "ANSWER": "No, you can trade any tokens, by manually adding their contract addresses. However, you can contact us and we will add your token to our list."
     }, {
       "QUESTION": "How to start?",
       "ANSWER": "It is easy and fast. You only need the MetaMask crypto wallet (more wallets will be supported). Choose the blockchain in which you want to swap tokens, and choose to trade either with Instant Trades or Order Book."
