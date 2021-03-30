@@ -6,7 +6,7 @@ footer {
   padding-top: 10px;
   padding-bottom: 50px;
 
-  color: #000;
+  color: black;
 
   .page-content__title {
     font-weight: bold;
@@ -126,8 +126,6 @@ footer {
       &__cell {
         display: block;
         padding: 0;
-
-        vertical-align: middle;
 
         &:first-child {
           padding-left: 0;

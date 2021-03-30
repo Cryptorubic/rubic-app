@@ -8,8 +8,9 @@ import { NgModel } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { Subscription } from 'rxjs';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
-import { OrderBooksFormService } from '../../../services/order-book-form-service/order-books-form.service';
-import { OrderBookFormToken, OrderBookTradeForm } from '../../../types/trade-form';
+import BigNumber from 'bignumber.js';
+import { OrderBooksFormService } from '../services/order-books-form.service';
+import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
 
 const MY_FORMATS = {
   useUtc: true,
@@ -226,7 +227,8 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
     };
   }
 
-  public onMinContributeChange(tokenPart: TokenPart, minContribution: string): void {
+  public onMinContributeChange(tokenPart: TokenPart, minContributionAsString: string): void {
+    const minContribution = minContributionAsString.split(',').join('');
     this.tradeForm = {
       ...this.tradeForm,
       token: {
@@ -269,7 +271,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
   public getBrokerPercent(tokenPart: TokenPart): string {
     const { brokerPercent } = this.tradeForm.token[tokenPart];
     return brokerPercent
-      ? this.tradeForm.token[tokenPart].amount
+      ? new BigNumber(this.tradeForm.token[tokenPart].amount)
           .times(this.tradeForm.token[tokenPart].brokerPercent)
           .div(100)
           .toString()

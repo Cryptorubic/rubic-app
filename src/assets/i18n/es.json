@@ -1,0 +1,303 @@
+{
+  "About": "Información",
+  "Features": "Funciones",
+  "Faq": "Preguntas Frecuentes",
+  "Login by MetaMask": "Inicia sesión con MetaMask",
+  "My trades": "Mis intercambios",
+  "Logout": "Cerrar sesión",
+  "Yes": "Sí",
+  "No": "No",
+  "Any": "Cualquiera",
+  "Connect Wallet": "Conecta tu Billetera",
+
+  "Copyright": "Derechos de autor",
+  "Privacy policy": "Política de privacidad",
+
+  "Make trades on your terms, share and generate revenue":
+  "Haz intercambios bajo tus propios términos, comparte y genera ganancias",
+
+  "Create your Trade": "Crea tu Intercambio",
+  "Listing on Uniswap": "Alistar en Uniswap",
+
+  "You have": "Tienes",
+  "Add": "Añade",
+  "You want to get": "Quieres recibir",
+  "You get": "Recibes",
+  "Your rate is": "Tu tasa de cambio es",
+  "than": "que",
+  "coinmarketcap": "coinmarketcap",
+  "rate.": "tasa.",
+  "Closing date": "Fecha límite",
+  "Closing time": "Hora límite",
+  "Public deal": "Intercambio público",
+  "Trade will be listed on the main page": "El intercambio aparecerá en la lista de la página principal",
+  "Permanent trade": "Intercambio permanente",
+  "Lock liquidity until the trade completion": "Bloquear la liquidez hasta que se complete el intercambio",
+  "Minimum contribution in": "Contribución mínima",
+  "Brokerage fee": "Tarifa para el intermediario",
+  "You can specify % for Broker": "Puedes especificar el % para el intermediario",
+  "Enter Broker Address": "Ingresa la Dirección del Intermediario",
+  "Specify % for": "Especifica el % para",
+  "Close Settings": "Cierra los Ajustes",
+  "Advanced Settings": "Ajustes Avanzados",
+  "Creating Trade": "Creando el Intercambio",
+  "Create Trade": "Crea el Intercambio",
+  "Use custom token": "Utiliza un token personalizado",
+  "Token Contract Address": "Dirección de Contrato del Token",
+  "Choose Token": "Elige el Token",
+  "Enter Amount": "Ingresa el Monto",
+
+  "Error": "Error",
+  "Please choose main net network in Metamask.": "Por favor, elige la red principal en Metamask", 
+"Please choose the corresponding Network of the tokens you want to trade. Please see the FAQ section if you're still having problems.": "Por favor, elige la red principal correspondiente de los tokens que quieras intercambiar. Si todavía tienes problemas revisa la sección de Preguntas Frecuentes",
+  "Close": "Cerrar",
+  "Cancel": "Cancelar",
+  "Order Book": "Libro de Órdenes",
+  "SEND": "ENVIAR",
+  "GET": "RECIBIR",
+  "Volume": "Volumen",
+  "Chain": "Cadena",
+  "Expires in": "Expira en",
+  "Status": "Estado",
+  "d:h:m": "{{días}}d: {{horas}}h: {{minutos}}m",
+  "Show more": "Ver más",
+  "There is no matching pair, please": "Lo lamento, no existe este par de intercambio",
+  "create your own": "crea tu propio",
+  "Network": "Red Principal",
+
+  "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue. ":
+  "Los intercambios de pares en Rubic pertenecen a una plataforma peer-to-peer. Esto ayuda a los usuarios a realizar intercambios bajo sus propios términos, compartiendo y generando ganancias. ",
+
+  "P2P trade": "Intercambio de Pares",
+  "Create your trade and choose your rate.": "Crea tu intercambio y elige tu propia tasa",
+  "Instant Trade": "Intercambio Instantáneo",
+  "You can create an instant trade using external DEX integration": "Puedes creer un intercambio instantáneo usando la función de integración de DEXs",
+  "Order": "Orden",
+
+  "Set the desired rate and the deal will be executed when one of the DEX meets these requirements":
+  "Establece tu tasa deseada y tu intercambio se ejecutará cuando una de las DEXs cumpla esos requisitos",
+
+  "Farming": "Farming",
+
+  "If you provide liquidity for trades you will be rewarded by Rubic tokens when the trade is executed.":
+  "Si provees liquidez para intercambios serás recompensado con tokens Rubic cuando se ejecute el intercambio.",
+
+  "Pool": "Fondo",
+  "Create pools for DEXs by having only 1 token": "Crea fondos para DEXs proveyendo un solo token",
+  "Multichain support": "Soporte de multiplataformas",
+  "Ethereum now, Tron and Binance Smart Chain are coming soon": "Ahora: Ethereum, próximamente: Tron y Binance Smart Chain",
+  "Rubic P2P trades features": "Características de los intercambios de pares de Rubic",
+  "Option to lock liquidity until trade is closed": "Opción de bloquear la liquidez hasta que se cierre el intercambio",
+  "Uniswap / curve integration (in progress)": "Uniswap / curva de integración (en progreso)",
+  "No volume limits": "Sin límites de volumen",
+  "Ability to make crowdsales": "Habilidad para realizar ventas masivas",
+  "Public/Private deals": "Intercambios Públicos/Privados",
+  "No need to list token": "No hay necesidad de alistar el token",
+  "% of platform revenue can be regulated": "El % de ganancias de la plataforma puede ser regulado",
+  "Brokers support": "Soporte para intermediarios",
+  "Rubic contract": "Contrato de Rubic",
+  "Roadmap": "Hoja de Ruta",
+  "October 2020": "Octubre de 2020",
+  "Integration with Tron, Binance Smart Chain": "Integración de Tron, y  Binance Smart Chain",
+  "November 2020": "Noviembre de 2020",
+  "Instant trades": "Intercambios instantáneos",
+  "January 2021": "Enero 2021",
+
+  "Multichain solution with the help of other projects such as Ren, PolkaDot":
+  "Solución de multiplataformas con la ayuda de proyectos como REN y PolkaDot",
+
+  "February 2021": "Febrero de 2021",
+  "Anonymizer": "Anonimato",
+  "April 2021": "Abril de 2021",
+  "Liquidity Pool Platform": "Plataforma del Fondo de Liquidez",
+  "FAQ": "Preguntas Frecuentes",
+  "FAQ_QUESTIONS": [
+    {
+      "PREGUNTA": "¿Qué es Rubic?",
+      "RESPUESTA": "Rubic es un ecosistema de multiplataformas perteneciente al grupo de Financiación Descentralizada (DeFi), que presenta intercambios entre distintas plataformas, de manera instantánea y par a par, que funciona a través de across múltiples plataformas, convirtiéndose en una plataforma descentralizada única."
+    }, {
+      "PREGUNTA": "¿Quién puede utilizar nuestro servicio?",
+      "RESPUESTA": "Cualquier persona que quiera crear y administrar sus tokens, o que busca intercambiar sus criptomonedas. No es necesaria ninguna medida de identificación."
+    }, {
+      "PREGUNTA": "¿Cuál es el límite máximo y mínimo para los intercambios?",
+      "RESPUESTA": "No hay límites para los intercambios."
+    }, {
+      "PREGUNTA": "¿Cómo funciona?",
+      "RESPUESTA": ".Hay dos opciones de intercambio.\nUna opción es crear un intercambio bajo tus propios términos y esperar a que otra persona lo complete.\nOtra opción es la del intercambio instantáneo, que se completará a la tasa del mercado. \n\nPuedes crear tu propio token e intercambiarlo sin tener que alistarlo."
+    }, {
+      "PREGUNTA": "¿Qué criptomonedas son compatibles?",
+      "RESPUESTA": "Por el momento, Rubic permite el interbancario de tokens de la red de Ethereum (ERC-20) y de la red de Binance Smart Chain (BEP-20). Próximamente serán implementadas más plataformas (referirse al Mapa de Ruta). Sin embargo, para crear y administrar tokens, proveemos servicios basados en las redes de Ethereum, Tron, EOS, NEO y Binance Smart Chain."
+    }, {
+      "PREGUNTA": "¿Tengo que alistar mi token para poder usar el servicio?",
+      "RESPUESTA": "No, puedes intercambiar cualquier token agregándolos manualmente con su dirección de contrato. Sino, nos puedes contactar y alistaremos tu token."
+    }, {
+      "PREGUNTA": "¿Por dónde comienzo?",
+      "RESPUESTA": "Es fácil y simple: sólo necesitas conectar tu billetera de Metamask (otras billeteras serán agregadas), eliges la red principal donde quieres intercambiar tus tokens, y eliges entre las opciones de Intercambio Instantáneo o Libro de Órdenes."
+    }, {
+      "PREGUNTA": "¿Cómo puedo crear un intercambio?",
+      "RESPUESTA": "<span class='faq__highlight'>Libro de Órdenes:</span>\n<strong>Paso 1:</strong> Elige la plataforma donde quieras intercambiar tus tokens y selecciona la Libro de Órdenes. \n<strong>Paso 2:</strong> Elige los tokens que quieras intercambiar, bajo tus tasas de intercambio.\n<strong>Paso 3:</strong> Selecciona las Opciones Avanzadas, como la fecha y hora límite, la contribución mínima y máxima, privacidad, tarifas para el intermediario, bloquear la liquidez hasta que se complete el intercambio. \n<strong>Paso 4:</strong> Verifica los detalles de la transacción. \n<strong>Paso 5:</strong> Selecciona Crea el Intercambio.\n<strong>Paso 6:</strong> Confirma tu intercambio en MetaMask. \n<strong>Paso 7:</strong> Completa tu parte del intercambio.\n<a href='https://www.youtube.com/watch?v=9FCHTOT9Z9k' target='_blank'>Video tutorial (este método funciona para cualquier plataforma)</a>\n\n<span class='faq__highlight'>Intercambios Instantábeos:</span>\n<strong>Paso 1:</strong> Selecciona Intercambios Instantáneos y llena el formulario, eligiendo los tokens que quieres intercambiar.\n<strong>Paso 2:</strong> Ingresa el monto que quieres intercambiar.\n<strong>Paso 3:</strong> Ahora, el agregador DEX te mostrará automáticamente las mejores tarifas que ofrecen las distintas plataformas.\n<strong>Paso 4:</strong> Oprime el botón de Crea el Intercambio.\n<strong>Paso 5:</strong> Confirma tu intercambio en MetaMask, y espera a que se confirme en la red.\n<a href='https://youtu.be/kxg9GQvBU2A' target='_blank'>Video tutorial</a>\n"
+    }, {
+      "PREGUNTA": "¿Cuánto cuesta?",
+      "RESPUESTA": "Actualmente, nuestro servicio no cobra nada para realizar Intercambios Instantáneos, pero tenemos una tarifa de 0.015 ETH para crear Órdenes en el Libro."
+    }, {
+      "PREGUNTA": "¿Cuánto tarda en completarse un intercambio?",
+      "RESPUESTA": "Para intercambios en el Libro de Órdenes, este intercambio se completará apenas se complete la otra parte de la orden.\nPara los Intercambios Instantáneos, el intercambio se completará apenas lo confirme la red."
+    }, {
+      "PREGUNTA": "¿Cómo se asegura la privacidad y seguridad de las transacciones?",
+      "RESPUESTA": "Las transacciones están aseguradas por un contrato inteligente, verificados por desarrolladores experimentados y una auditoría externa."
+    }, {
+      "PREGUNTA": "¿Cuántas personas pueden participar en un intercambio (del Libro de Órdenes)?",
+      "RESPUESTA": "Pueden participar hasta 10 personas en cada parte del intercambio."
+    }, {
+      "PREGUNTA": "¿Qué pasa si la segunda parte del intercambio no se completa?",
+      "RESPUESTA": "Luego de la fecha de expiración, será necesario que selecciones la opción de Retirar, para recuperar tus tokens (aunque deberás pagar por las tarifas de red)."
+    }, {
+      "PREGUNTA": "Si creo un intercambio, pero cambio de parecer, ¿puedo cancelarlo?",
+      "RESPUESTA": "Para los intercambios del Libro de Órdenes: Sí, puedes cancelarlo en cualquier momento siempre que no se haya completado la otra parte. Si cancelas el intercambio, recibirás tus tokens de vuelta.\nPara los Intercambios Instantáneos: La mayoría de las veces, la respuesta es NO. Puedes probar de sobreescribir esta transacción con una nueva. Puedes fijarte aquí <a href='https://info.etherscan.com/how-to-cancel-ethereum-pending-transactions/' target='_blank'>official external services info</a>"
+    }, {
+      "PREGUNTA": "¿Cómo puedo agregar las redes de Binance Smart Chain y Matic a MetaMask?",
+      "RESPUESTA": "<a href='/assets/book.pdf' target='_blank'>Oprime aquí para más detalles.</a>"
+    }, {
+      "PREGUNTA": "¿Cómo se usa el puente entre plataformas?",
+      "RESPUESTA": "<strong>Paso 1.</strong> Instala la billetera de Metamask (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) y conéctala a Rubic.exchange. \n\n<strong>Paso 2.</strong> Elige la red final (de Ethereum a Binance, o viceversa). Puede intercambiar éstas oprimiendo las flechas de intercambio. \n\n<strong>Paso 3.</strong> Actualmente, los usuarios pueden intercambiar 25 tokens de ERC20 con su versión correspondiente en BEP20, y viceversa (estamos actualizando la lista de tokens constantemente). La lista de tokens:\nUSDT a BUSDT-T (Tether)\nETH a ETH (Ethereum)\nBBTC a BTCB (Bitcoin)\nBBCH a BCH (Bitcoin Cash)\nBDOT a DOT (Polkadot)\nBFIL a FIL (Filecoin)\nSNX a SNX (Synthetix Network Token)\nDAI a DAI (Dai Stablecoin)\nBAND a BAND (BandToken)\nBAT a BATBasic (Attention Token)\nLINK a LINK (ChainLink)\nUNI a UNI (Uniswap)\nYFII a YFII (DFI.Money)\nYFI a YFI (yearn.finance)\nBUSD a BUSD (Binance USD)\nCOMP a COMP (Compound)\nMKR a MKR (Maker)\nTCT a TCTToken (Club Token)\nIOTX a IOTX (IoTeX)\nBEL a BEL (Bella Protocol)\nELF a ELF (aelf)\nPAX a PAX (Paxos Standard)\nUSDC a USDC (USD Coin)\nINJ a INJ (Injective Protocol)\nSXP a SX (Swipe)\n\n<strong>Paso 4.</strong> Ingresa el número de tokens que quieres intercambiar (verifica la cantidad mínima y máxima de los tokens que puedes intercambiar). Prosigue si estás satisfecho con los tokens que recibirás (esto incluye la tarifa de Binance).\n\n<strong>Paso 5.</strong> Puedes observar los contactos de los tokens seleccionando la opción de 'Verificar en Etherscan/BSCscan'.\n\n<strong>Paso 6.</strong>  Oprime Crea el Intercambio, y confirmalo en MetaMask. \n\n<strong>Paso 7.</strong> Espera a que la red registre la transacción. Una vez que la transacción se confirme, recibirás una notificación. Puedes encontrar los detalles de la transacción en la tabla. Espera a que Binance confirme la transacción también."
+    }, {
+      "PREGUNTA": "No puedo realizar intercambios entre plataformas, parece que excedí el límite. ¿Qué debo hacer?",
+      "RESPUESTA": "Espera un momento y vuelve a intentar, ya que hay un límite de 3 transacciones de este tipo en un marco de 30 minutos. Este límite será menos estricto en el futuro."
+    }, {
+      "PREGUNTA": "¿Cuánto tarda en completarse una transacción entre plataformas?",
+      "RESPUESTA": "Usualmente varía, dependiendo de las redes principales.\nUn estimado son 2 minutos para iniciar la transacción, 4 minutos de espera para el feedback, y un par de minutos más para que se realice el depósito. \n\nEl tiempo de espera promedio es de 10 minutos."
+    }, {
+      "PREGUNTA": "¿Cuáles son los beneficios de la integración de Uniswap?",
+      "RESPUESTA": "Los usuarios podrán elegir la plataforma que ofrezca las mejores tarifas de intercambios y con los precios más bajos."
+    }, {
+      "PREGUNTA": "¿De qué me sirve elegir entre 1inch y Uniswap?",
+      "RESPUESTA": "Los precios y tarifas de intercambio son diferentes en estas plataformas, por lo que tener más opciones provee de mejores decisiones de intercambio."
+    }, {
+      "PREGUNTA": "¿Incluye esta tarifa la aprobación del token?",
+      "RESPUESTA": "La aprobación del token no está incluida en la tarifa de intercambio. Asegúrese de poder cubrir estos gastos la primera vez que lo intercambies. Esto se verá más o menos así:\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
+    }, {
+      "PREGUNTA": "¿Qué debo hacer si recibo este mensaje:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trading on Uniswap is not available</span></div>?",
+      "RESPUESTA": "Si recibes este mensaje prueba los siguientes métodos:\n1. Actualice la página\n2. Borra el caché\n3. Vuelve a iniciar sesión en Metamask\nSi todavía no se soluciona su problema, contacta al equipo de soporte"
+    }, {
+      "PREGUNTA": "¿Qué debo hacer si Uniswap no muestra los precios?",
+      "RESPUESTA": "Puedes volver a iniciar sesión en Metamask y actualizar la página."
+    }, {
+      "PREGUNTA": "What is the purpose of Limit Orders?",
+      "RESPUESTA": "Limit orders allow users to buy or sell a token at a desired rate and offer them the opportunity for the order book trades to be automatically completed after certain conditions are met."
+    }, {
+      "PREGUNTA": "¿Cuáles son las condiciones para que se ejecute una Orden Limitada?",
+      "RESPUESTA": "Las condiciones para que se complete automáticamente una Orden Limitada son: la tarifa de intercambio sea igual al del Libro de Órdenes, incluyendo las tarifas de intercambio y recompensas (que es de 0.1ETH actualmente).</li><li>El intercambio no haya expirado.</li><li>El intercambio es público.</li><li>El intercambio mínimo es de 0.1 ETH o 400 RBC</li></ul>La orden puede ser completada si los otros usuarios aceptan los parámetros y participan del intercambio."
+    }, {
+      "PREGUNTA": "¿Cómo se usan las Órdenes Limitadas?",
+      "RESPUESTA": "<strong>Paso 1:</strong> Elige la red principal correspondiente de los tokens que quieras intercambiar y selecciona la opción de Libro de Órdenes (actualmente, la función de Órdenes Limitadas funciona con intercambios en la red de Ethereum - otras redes serán incorporadas en el futuro).\n\n<strong>Paso 2:</strong> Elige los tokens que quieres intercambiar, bajo tu tasa de intercambio deseada. Actualmente, sólo se pueden realizar intercambios entre los pares “RBC-ETH” y “ETH-RBC”.\n\n<strong>Paso 3:</strong> Selecciona las Opciones Avanzadas, como la fecha y hora límite, la contribución mínima y máxima, y tarifas para el intermediario, si se requieren.\n\n<strong>Paso 4:</strong> Selecciona Crear una Transacción y Confirma la transacción en MetaMask.\n\n<strong>Paso 5:</strong> Completa tu parte del intercambio (existen 2 transacciones: Aprobar los tokens y Contribuir). Selecciona la opción ‘Llenar todo’ si planeas ser el único participante de tu parte, y se aplicará una tarifa de la red.\n<a href='https://youtu.be/xiuT59ueJ8c'>Video tutorial (este método sirve para cualquier red)</a>\n\n<strong>Paso 6:</strong> Espera que se cierre la orden. Sepa que esta transacción puede ser completada automáticamente por Rubic si la tasa concuerda con la de Uniswap (incluyendo las tarifas de intercambio).\n\n<strong>Important:</strong>\n* Los vendedores tienen que haber llenado el 100% de su parte del intercambio (como puedes ver en el video tutorial), así que si planeas ser él único debes seleccionar la opción de ‘Llenar Todo’. De esta manera, el intercambio puede ser aceptado por los compradores (o por la función automática). \n** Si un comprador busca completar la orden parcialmente, la Orden Limitada completará el resto de la parte hasta que se complete al 100%.\n*** Si la transacción expira, puedes recibir tus tokens oprimiendo en el botón de ‘Retirar’ (se aplicará una tarifa).\n\nEl primer par de tokens que pueden utilizar la función de Órdenes Limitadas es RBC/ETH. Planeamos agregar más pares en el futuro y poder utilizar distintas redes y plataformas: Ethereum, Polygon, y Binance Smart Chain.\n\nRecuerde que el intercambio deberá ser completado previo a la fecha especificada por el parámetro de “FECHA LÍMITE”."
+    }
+  ],
+
+
+  "Done": "Completado",
+  "Created": "Creado",
+  "Active": "Activo",
+  "Postponed": "Postergado",
+  "Waiting": "Esperando",
+  "Waiting for initialization": "Esperando para la inicialización",
+
+
+  "The trade was completed. If you participated in this trade, please check your wallet.":
+  "El intercambio ha sido completado. Si has participado de este intercambio, comprueba tu billetera.",
+
+  "Expired": "Expirado",
+  "The trade is no longer available.": "El intercambio ya no se encuentra disponible.",
+  "Cancelled": "Cancelado",
+  "The trade was cancelled.": "El intercambio ha sido cancelado.",
+  "Rate:": "Tasa:",
+
+  "The trade's rate is {rate}% more profitable than coinmarketcap rate":
+  "La tasa de intercambio es {{ rate }}% más rentable que la de coinmarketcap",
+
+  "The trade's rate is {rate}% less profitable than coinmarketcap rate":
+  "La tasa de intercambio es {{ rate }}% menos rentable que la de coinmarketcap",
+
+  "Sent": "Enviado",
+  "Check on Explorer": "Verifica en el Explorador",
+  "Number of investors": "Número de inversores",
+
+  "You will get {amount} {token} after the trade is complete": "Recibirás {{ amount }} {{ token }} una vez que la transacción se complete",
+  "Fill all": "Llenar todo",
+  "Min Contribution Limit:": "Límite de Contribución Mín:",
+  "Only Owner can contribute": "Sólo el Creador puede contribuir",
+  "Brokers fee:": "Tarifa de intermediarios:",
+  "Withdraw": "Retirar",
+  "Left": "Restante(s)",
+
+  "Link to deal": "Link del intercambio",
+  "Management address": "Dirección de la administración",
+  "Broker address": "Dirección del intermediario",
+  "Additional comment": "Comentario adicional",
+  "Cancel trade": "Cancelar el intercambio",
+
+  "No trades": "No hay intercambios",
+  "Name": "Nombre",
+  "Creation date": "Fecha de creación",
+  "Do you want to remove it?": "¿Deseas removerlo?",
+  "Do you really want to Log Out?": "¿Deseas Cerrar Sesión?",
+
+  "Trades disclaimer text": "Al utilizar nuestra plataforma estás de acuerdo con los siguientes",
+  "Terms and conditions": "términos y condiciones",
+
+  "AVISOS LEGALES": {
+    "START": {
+      "TITLE": "¡Alerta de seguridad del token!",
+      "TEXT": "Por favor tenga cuidado con todo el proceso de intercambio, porque involucra riesgos de seguridad importantes, como por ejemplo grandes tasas de volatilidad, ataques de hackers y riesgos relacionados a los tiempos de las transacciones. <br/><br/> Cualquier ente puede crear un token en las plataformas existentes. Esto abre la posibilidad de la existencia de versiones falsas de los tokens pre-existentes, o tokens para proyectos no legítimos. Por favor, ten cuidado y realiza una investigación previo a realizar un intercambio. Interactúa con los tokens bajo tu propio riesgo, ya que no es responsabilidad de los organizadores de Rubic la de verificar que los tokens intercambiados en la plataforma sean legítimos."
+    }
+  },
+
+  "No data": "No hay datos",
+
+  "BUTTONS": {
+    "ACCEPT": "Aceptar"
+  },
+
+  "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.":
+  "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
+  "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to www.metamask.io and follow the steps.":
+  "Este error ocurre porque no haz instalado la extensión del navegador de Metamask. Para solucionar este problema, instala y activa la extensión de Metamask en tu navegador.\nPuedes ir a <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> y seguir los pasos.",
+  "Please check that you have active Metamask plugin in your browser and Metamask wallet is connected.\nIf not please download it from www.metamask.io and connect wallet using Connect Wallet button.":
+  "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> y conectar la billeta con el botón de Conectar la Billetera.",
+  "You have selected the wrong network. Please choose { networkToChoose } from MetaMask.":
+  "Has seleccionado la red principal incorrecta. Elige {{ networkToChoose }} en MetaMask.",
+  "You have attempted to execute too many trades in a short period of time. Please wait and try again later, if you still have problems please reach out to our Customer Support.":
+  "Has intentado realizar demasiados intercambios en un período de tiempo corto. Por favor espera un momento e intente nuevamente. Si todavía persiste su problema, no dudes en contactar al <a href='mailto:support@rubic.finance' target='_blank'>Soporte al Consumidor</a>.",
+  "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.":
+  "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
+  "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
+  "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al <a href='mailto:support@rubic.finance' target='_blank'>Soporte al Consumidor</a>.",
+
+  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
+  "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
+  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
+  "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",
+
+  "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.":
+  "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
+
+  "Listing request":
+  "Petición de listado",
+  "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:":
+  "Si deseas alistar tu proyecto a la plataforma de Rubic, debes enviar un email a <a href='mailto:support@rubic.finance'>support@rubic.finance</a> con la siguiente información:",
+  "Project name":
+  "Nombre del proyecto",
+  "Project description":
+  "Descripción del proyecto",
+  "Links to the project and social media":
+  "Links y redes sociales del proyecto",
+  "Contract address":
+  "Dirección del contrato",
+  "Whitepaper/Onepager":
+  "Papel Blanco/Resumen del Proyecto",
+  "Link to logo in PNG and SVG":
+  "Link del logo en PNG y SVG",
+  "Why you have chosen Rubic.exchange?":
+  "¿Por qué has elegido a Rubic.exchange?"
+}
+
+

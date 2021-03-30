@@ -12,6 +12,7 @@ import { MessageBoxComponent } from 'src/app/shared/components/message-box/messa
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+
 @Component({
   selector: 'app-advert-modal',
   templateUrl: './advert-modal.component.html',

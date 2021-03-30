@@ -1,4 +1,4 @@
-@import '../../../../scss/elements/vars';
+@import '../../../../scss/vars';
 
 .collaborations {
   &__title {
@@ -16,7 +16,7 @@
   &__description {
     margin-bottom: 50px;
 
-    color: #000;
+    color: black;
     font-weight: normal;
     font-size: 19px;
 

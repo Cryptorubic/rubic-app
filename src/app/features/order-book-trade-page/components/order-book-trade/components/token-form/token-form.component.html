@@ -76,6 +76,7 @@
       [placeholder]="token.isApproved ? 'Enter amount' : ''"
       [disabled]="!token.isApproved"
       appNumberPrecision
+      [inputElement]="amountToContributeInput"
       [decimalLength]="token.decimals"
       [minValue]="getMinContributionAsString()"
       [maxValue]="token.amountLeft.toFixed()"
@@ -85,6 +86,7 @@
       [ngClass]="{
         'area-third__amount-input_invalid': amountToContributeModel.invalid
       }"
+      #amountToContributeInput
     />
 
     <div class="area-third__confirm-button">
@@ -130,7 +132,11 @@
   <div class="token-block__area area-fourth">
     <div
       class="area-fourth__min-contribution"
-      *ngIf="getMinContributionAsString() && token.minContribution.isGreaterThan(0)"
+      *ngIf="
+        !token.amountLeft?.isNaN() &&
+        getMinContributionAsString() &&
+        token.minContribution.isGreaterThan(0)
+      "
     >
       Min contribution limit:
       {{ getMinContributionAsString() + ' ' + token.symbol }}

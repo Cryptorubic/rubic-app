@@ -61,6 +61,8 @@
 
 .mat-dialog-container {
   padding: 0 !important;
+  overflow: hidden !important;
+
   border-radius: 10px !important;
   box-shadow: 0 1em 5em rgba(0, 0, 0, 0.6);
 }
@@ -81,9 +83,9 @@
 }
 
 .dialog-block {
-  color: #000;
+  color: black;
 
-  background-color: #fff;
+  background-color: white;
 
   &__content {
     padding: 30px;
@@ -292,7 +294,7 @@
         &-text {
           margin-bottom: 20px;
 
-          color: #000;
+          color: black;
           font-weight: normal;
           font-size: 16px;
           line-height: 27px;
@@ -410,7 +412,7 @@
           margin-bottom: 10px;
           padding: 5px 15px 5px 5px;
 
-          color: #000;
+          color: black;
           font-weight: normal;
           font-size: 16px;
           line-height: 27px;
@@ -467,7 +469,7 @@
             display: block;
             margin-bottom: 10px;
 
-            color: #000;
+            color: black;
             font-weight: normal;
             font-size: 16px;
             line-height: 18px;

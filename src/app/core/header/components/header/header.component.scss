@@ -31,7 +31,7 @@ $mobile-width: 1024;
     padding-bottom: 10px;
 
     background-color: white;
-  }
+  }  
 
   &__container {
     position: relative;
@@ -41,9 +41,8 @@ $mobile-width: 1024;
     align-items: center;
     justify-content: space-between;
 
-    background: #fff;
+    background: white;
 
-    
     @include b($mobile-width) {
       position: relative;
 
@@ -71,7 +70,7 @@ $mobile-width: 1024;
     width: 100%;
     padding: 15px 0;
 
-    background: #fff;
+    background: white;
     box-shadow: inset 0 7px 9px -7px rgb(0 0 0 / 10%);
     transform: translateY(-100%);
 

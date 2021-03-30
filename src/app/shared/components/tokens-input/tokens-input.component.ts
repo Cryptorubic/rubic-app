@@ -8,6 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { List } from 'immutable';
+import BigNumber from 'bignumber.js';
 import { InputTokenShort } from './types';
 import { TokenLabelComponent } from './token-label/token-label.component';
 import { InputDropdownComponent } from '../input-dropdown/input-dropdown.component';
@@ -47,13 +48,72 @@ export class TokensInputComponent implements OnChanges {
 
   @Input() selectedToken: InputToken;
 
-  @Input() selectedAmount: string;
+  /**
+   * Will {@link selectedAmount} be rounded or not.
+   */
+  @Input() withRoundMode? = false;
+
+  /**
+   * How much decimal symbols will be left in {@link selectedAmount}, if it is greater than or equal to 1.
+   */
+  // eslint-disable-next-line no-magic-numbers
+  @Input() selectedAmountRoundMode? = 5;
+
+  /**
+   * How much decimal symbols after zeroes will be left in {@link selectedAmount}, if it is less than 1.
+   */
+  // eslint-disable-next-line no-magic-numbers
+  @Input() smallSelectedAmountRoundMode? = 6;
+
+  @Input() get selectedAmount(): string {
+    return this._selectedAmount;
+  }
+
+  set selectedAmount(value) {
+    this._selectedAmount = value;
+
+    if (this._selectedAmount?.includes('.')) {
+      const startIndex = this._selectedAmount.indexOf('.') + 1;
+
+      let decimalSymbols: number;
+      if (this.withRoundMode) {
+        if (new BigNumber(this._selectedAmount).isGreaterThanOrEqualTo(1)) {
+          decimalSymbols = this.selectedAmountRoundMode;
+        } else {
+          let zerosAmount = 0;
+          for (let i = startIndex; i < this._selectedAmount.length; ++i) {
+            if (this._selectedAmount[i] === '0') {
+              zerosAmount++;
+            } else {
+              break;
+            }
+          }
+          decimalSymbols = zerosAmount + this.smallSelectedAmountRoundMode;
+        }
+        decimalSymbols = Math.min(decimalSymbols, this.selectedToken.decimals);
+      } else {
+        decimalSymbols = this.selectedToken?.decimals
+          ? this.selectedToken.decimals
+          : this.DEFAULT_DECIMAL_LENGTH;
+      }
+
+      this._selectedAmount = this._selectedAmount.slice(0, startIndex + decimalSymbols);
+      if (this.withRoundMode && new BigNumber(this._selectedAmount).isEqualTo(0)) {
+        this._selectedAmount = '0';
+      }
+    }
+  }
 
   @Output() numberChanges = new EventEmitter<string>();
 
   @Output() tokenChanges = new EventEmitter<InputToken | null>();
 
   @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<TokenDropdownData>;
+
+  private _selectedAmount: string;
+
+  // eslint-disable-next-line no-magic-numbers
+  public DEFAULT_DECIMAL_LENGTH = 8;
 
   public readonly tokenLabelComponentClass = TokenLabelComponent;
 
@@ -67,32 +127,17 @@ export class TokensInputComponent implements OnChanges {
 
   public VISIBLE_TOKENS_NUMBER = 10;
 
-  public bigNumberDirective: { decimals: number; min: number } = { decimals: 18, min: 0 };
-
-  private cutAmount() {
-    if (this.selectedAmount && this.selectedAmount.includes('.')) {
-      const startIndex = this.selectedAmount.indexOf('.') + 1;
-      this.selectedAmount = this.selectedAmount.slice(0, startIndex + this.selectedToken.decimals);
-    }
-  }
-
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
-    this.setTokensInputData();
-
-    if (changes.selectedToken && changes.selectedToken.currentValue) {
-      this.cutAmount();
-
-      this.bigNumberDirective = {
-        decimals: changes.selectedToken.currentValue.decimals,
-        min: 10 ** -changes.selectedToken.currentValue.decimals
-      };
+    if (changes.tokensList || changes.selectedToken) {
+      this.setTokensInputData();
     }
   }
 
-  public onNumberChanges(number) {
-    this.numberChanges.emit(number);
+  public onNumberChanges(numberAsString) {
+    this._selectedAmount = numberAsString.split(',').join('');
+    this.numberChanges.emit(this._selectedAmount);
   }
 
   /**
