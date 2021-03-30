@@ -59,16 +59,20 @@ export class NumberPrecisionDirective implements Validator {
       return this.checkOverflow(this.lastValue);
     }
 
-    const [integerPart, fractionalPart] = value.split('.');
+    const [integerPart, decimalPart] = value.split('.');
     if (
       integerPart.length > this.integerLength ||
-      (fractionalPart && fractionalPart.length > this.decimalLength)
+      (decimalPart && decimalPart.length > this.decimalLength)
     ) {
       this.setLastValidValue(control);
       return this.checkOverflow(this.lastValue);
     }
 
-    this.setNewValue(control, value);
+    const newValue =
+      new BigNumber(integerPart).toFormat(BIG_NUMBER_FORMAT) +
+      (value.includes('.') ? '.' : '') +
+      (decimalPart || '');
+    this.setNewValue(control, newValue);
     return this.checkOverflow(value);
   }
 
@@ -88,9 +92,7 @@ export class NumberPrecisionDirective implements Validator {
     return null;
   }
 
-  private setNewValue(control: AbstractControl, value: string): void {
-    const newValue = new BigNumber(value).toFormat(BIG_NUMBER_FORMAT);
-
+  private setNewValue(control: AbstractControl, newValue: string): void {
     const cursorPosition = this.inputElement.selectionStart;
 
     const isSymbolAdded = this.lastValue.length < newValue.length;
@@ -105,7 +107,7 @@ export class NumberPrecisionDirective implements Validator {
       newCursorPosition--;
     }
 
-    this.lastValue = newValue + (value[value.length - 1] === '.' ? '.' : '');
+    this.lastValue = newValue;
     control.setValue(this.lastValue);
     this.inputElement.setSelectionRange(newCursorPosition, newCursorPosition);
     this.lastCursorPosition = newCursorPosition;

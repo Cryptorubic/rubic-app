@@ -81,7 +81,7 @@ export class TokensInputComponent implements OnChanges {
           decimalSymbols = this.selectedAmountRoundMode;
         } else {
           let zerosAmount = 0;
-          for (let i = startIndex; i < this.selectedAmount.length; ++i) {
+          for (let i = startIndex; i < this._selectedAmount.length; ++i) {
             if (this._selectedAmount[i] === '0') {
               zerosAmount++;
             } else {
@@ -98,7 +98,7 @@ export class TokensInputComponent implements OnChanges {
       }
 
       this._selectedAmount = this._selectedAmount.slice(0, startIndex + decimalSymbols);
-      if (new BigNumber(this._selectedAmount).isEqualTo(0)) {
+      if (this.withRoundMode && new BigNumber(this._selectedAmount).isEqualTo(0)) {
         this._selectedAmount = '0';
       }
     }
@@ -136,9 +136,8 @@ export class TokensInputComponent implements OnChanges {
   }
 
   public onNumberChanges(numberAsString) {
-    this.selectedAmount = numberAsString;
-    const number = numberAsString.split(',').join('');
-    this.numberChanges.emit(number);
+    this._selectedAmount = numberAsString.split(',').join('');
+    this.numberChanges.emit(this._selectedAmount);
   }
 
   /**
