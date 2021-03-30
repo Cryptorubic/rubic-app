@@ -60,7 +60,11 @@ export class BridgeService {
     this.updateTransactionsList();
     this.walletAddress = web3Private.onAddressChanges;
 
-    useTestingMode.isTestingMode.subscribe(() => this._tokens.next(bridgeTestTokens));
+    useTestingMode.isTestingMode.subscribe(value => {
+      if (value) {
+        this._tokens.next(bridgeTestTokens);
+      }
+    });
   }
 
   private async getTokensList(): Promise<void> {
