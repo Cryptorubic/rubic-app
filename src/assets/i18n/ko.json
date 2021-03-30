@@ -158,7 +158,7 @@
       "QUESTION": "거래를 생성했는데 마음이 바뀌었다면 거래를 취소할 수 있나요?",
       "ANSWER": "예, 상대방이 거래를 완료하기 전에 언제든지 거래를 취소할 수 있습니다. 거래를 취소하면 토큰을 되찾을 수 있습니다."
     }, {
-      "QUESTION": "Binance Smart Chain 및 Matic 네트워크를 MetaMask에 추가하는 방법은 무엇입니까?",
+      "QUESTION": "Binance Smart Chain 및 Polygon 네트워크를 MetaMask에 추가하는 방법은 무엇입니까?",
       "ANSWER": "<a href='/assets/book.pdf' target='_blank'>자세한 내용은 여기를 클릭하십시오.</a>"
     }, {
       "QUESTION": "크로스 체인 브리지는 어떻게 사용하나요?",

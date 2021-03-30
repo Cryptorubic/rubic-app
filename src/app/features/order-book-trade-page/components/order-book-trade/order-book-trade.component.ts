@@ -50,7 +50,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     {
       name: BLOCKCHAIN_NAME.MATIC,
       label: 'Matic',
-      imagePath: 'assets/images/icons/coins/matic.svg'
+      imagePath: 'assets/images/icons/coins/polygon.svg'
     }
   ];
 

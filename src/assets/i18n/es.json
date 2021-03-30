@@ -155,7 +155,7 @@
       "PREGUNTA": "Si creo un intercambio, pero cambio de parecer, ¿puedo cancelarlo?",
       "RESPUESTA": "Para los intercambios del Libro de Órdenes: Sí, puedes cancelarlo en cualquier momento siempre que no se haya completado la otra parte. Si cancelas el intercambio, recibirás tus tokens de vuelta.\nPara los Intercambios Instantáneos: La mayoría de las veces, la respuesta es NO. Puedes probar de sobreescribir esta transacción con una nueva. Puedes fijarte aquí <a href='https://info.etherscan.com/how-to-cancel-ethereum-pending-transactions/' target='_blank'>official external services info</a>"
     }, {
-      "PREGUNTA": "¿Cómo puedo agregar las redes de Binance Smart Chain y Matic a MetaMask?",
+      "PREGUNTA": "¿Cómo puedo agregar las redes de Binance Smart Chain y Polygon a MetaMask?",
       "RESPUESTA": "<a href='/assets/book.pdf' target='_blank'>Oprime aquí para más detalles.</a>"
     }, {
       "PREGUNTA": "¿Cómo se usa el puente entre plataformas?",

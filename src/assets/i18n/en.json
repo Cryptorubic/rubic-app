@@ -154,7 +154,7 @@
       "QUESTION": "If I created a deal, however, I have changed my mind, can I cancel it?",
       "ANSWER": "For Order Book trades: Yes, you can cancel your deal any time before the part starts completing their side. If you cancel a deal, you'll get your tokens back.\nFor Instant Trades: Most of the time, the answer is NO. This action is actually an attempt to overwrite a currently pending transaction with a new one. Please check <a href='https://info.etherscan.com/how-to-cancel-ethereum-pending-transactions/' target='_blank'>official external services info</a>"
     }, {
-      "QUESTION": "How to add Binance Smart Chain and Matic networks to MetaMask?",
+      "QUESTION": "How to add Binance Smart Chain and Polygon networks to MetaMask?",
       "ANSWER": "<a href='/assets/book.pdf' target='_blank'>Please click here for more details.</a>"
     }, {
       "QUESTION": "How to use cross-chain bridge?",
