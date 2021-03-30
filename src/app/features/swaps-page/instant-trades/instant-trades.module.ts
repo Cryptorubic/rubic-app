@@ -11,6 +11,7 @@ import { UniSwapService } from './services/uni-swap-service/uni-swap.service';
 import { BurgerSwapService } from './services/burger-swap-service/burger-swap-service';
 import { OneInchEthService } from './services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from './services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
+import { PancakeSwapService } from './services/pancake-swap-service/pancake-swap.service';
 
 @NgModule({
   declarations: [InstantTradesComponent, InstantTradesFormComponent, InstantTradesTableComponent],
@@ -28,7 +29,8 @@ import { OneInchBscService } from './services/one-inch-service/one-inch-bsc-serv
     UniSwapService,
     OneInchBscService,
     OneInchEthService,
-    BurgerSwapService
+    BurgerSwapService,
+    PancakeSwapService
   ]
 })
 export class InstantTradesModule {}
