@@ -1,4 +1,5 @@
 @import '../../../../scss/elements/table';
+@import 'src/scss/vars';
 
 $primary-color: #4aa956;
 
@@ -21,6 +22,36 @@ $primary-color: #4aa956;
       animation: spin 0.5s linear infinite;
     }
   }
+
+  &__cell {
+    &_datetime {
+      white-space: nowrap;
+    }
+  }
+
+  &__status {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+
+    &_active {
+      background-color: $active-green;
+    }
+
+    &_expired {
+      background: $expired-yellow;
+    }
+
+    &_cancelled {
+      background: $cancelled-red;
+    }
+
+    &_done {
+      background: $done-grey;
+    }
+  }
 }
 
 @keyframes spin {
@@ -34,6 +65,10 @@ $primary-color: #4aa956;
 }
 
 ::ng-deep {
+  .tokens-table .table tr td .tokens-table__cell.tokens-table__cell_status {
+    justify-content: flex-start;
+  }
+
   .mat-row {
     cursor: pointer;
   }
