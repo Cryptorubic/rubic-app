@@ -132,7 +132,11 @@
   <div class="token-block__area area-fourth">
     <div
       class="area-fourth__min-contribution"
-      *ngIf="getMinContributionAsString() && token.minContribution.isGreaterThan(0)"
+      *ngIf="
+        !token.amountLeft?.isNaN() &&
+        getMinContributionAsString() &&
+        token.minContribution.isGreaterThan(0)
+      "
     >
       Min contribution limit:
       {{ getMinContributionAsString() + ' ' + token.symbol }}

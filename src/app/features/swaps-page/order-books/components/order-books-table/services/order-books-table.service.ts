@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
-import { OrderBookTradeTableRow } from '../../../types/trade-table';
+import { OrderBookTradeTableRow } from '../../../models/trade-table';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OrderBooksTableService {
   private readonly $dataSource: BehaviorSubject<OrderBookTradeTableRow[]>;
 

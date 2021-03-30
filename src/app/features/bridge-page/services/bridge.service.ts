@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, from, Observable, of, throwError } from 'rxjs';
 import { List } from 'immutable';
 import { HttpClient } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
-import { catchError, flatMap, map, mergeMap } from 'rxjs/operators';
-
+import { catchError, flatMap, map } from 'rxjs/operators';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
@@ -18,6 +17,9 @@ import { BridgeTableTransaction } from '../models/BridgeTableTransaction';
 import { TokensService } from '../../../core/services/backend/tokens-service/tokens.service';
 import SwapToken from '../../../shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { RubicBridgeService } from './rubic-bridge-service/rubic-bridge.service';
+import { UseTestingModeService } from '../../../core/services/use-testing-mode/use-testing-mode.service';
+import { bridgeTestTokens } from '../../../../test/tokens/bridge-tokens';
 
 interface BinanceResponse {
   code: number;
@@ -26,7 +28,11 @@ interface BinanceResponse {
 
 @Injectable()
 export class BridgeService {
+  static RubicMaxAmount = 100000;
+
   private apiUrl = 'https://api.binance.org/bridge/api/v2/';
+
+  private rubicApiUrl = 'https://swap.rubic.exchange/api/v1/dex/Rubic/';
 
   private _tokens: BehaviorSubject<List<BridgeToken>> = new BehaviorSubject(List([]));
 
@@ -46,28 +52,58 @@ export class BridgeService {
     private tokensService: TokensService,
     private httpClient: HttpClient,
     private web3Private: Web3PrivateService,
-    private backendApiService: BridgeApiService
+    private backendApiService: BridgeApiService,
+    private rubicBridgeService: RubicBridgeService,
+    private useTestingMode: UseTestingModeService
   ) {
     this.getTokensList();
     this.updateTransactionsList();
     this.walletAddress = web3Private.onAddressChanges;
+
+    useTestingMode.isTestingMode.subscribe(() => this._tokens.next(bridgeTestTokens));
   }
 
-  private getTokensList(): void {
-    this.httpClient
+  private async getTokensList(): Promise<void> {
+    const binanceResponse: BinanceResponse = (await this.httpClient
       .get(`${this.apiUrl}tokens`)
+      .toPromise()) as BinanceResponse;
+
+    if (binanceResponse.code !== 20000) {
+      console.log(`Error retrieving Todos, code ${binanceResponse.code}`);
+      this._tokens.next(List([]));
+      return;
+    }
+    const rubicToken: BridgeToken = await this.loadRubicTokenInfo();
+    this.tokensService.tokens.subscribe(tokens => {
+      const tokensWithImg = this.getTokensWithImages(
+        List([rubicToken].concat(binanceResponse.data.tokens)),
+        tokens
+      );
+      this._tokens.next(tokensWithImg);
+    });
+  }
+
+  private loadRubicTokenInfo(): Promise<BridgeToken> {
+    return this.httpClient
+      .get(this.rubicApiUrl)
       .pipe(
-        mergeMap((res: BinanceResponse) => {
-          if (res.code !== 20000) {
-            console.log(`Error retrieving Todos, code ${res.code}`);
-            return List([]);
-          }
-          return this.tokensService.tokens.pipe(
-            map(tokens => this.getTokensWithImages(List(res.data.tokens), tokens))
-          );
-        })
+        map((response: any) => ({
+          name: 'Rubic',
+          symbol: 'RBC',
+          ethSymbol: response.tokens[0].symbol,
+          bscSymbol: response.tokens[1].symbol,
+          icon: '',
+          minAmount: response.min_swap_amount,
+          maxAmount: BridgeService.RubicMaxAmount,
+          bscContractAddress: response.tokens[1].token_address,
+          bscContractDecimal: response.tokens[1].decimals,
+          ethContractAddress: response.tokens[0].token_address,
+          ethContractDecimal: response.tokens[0].decimals,
+          ethToBscFee: response.tokens[1].fee,
+          bscToEthFee: response.tokens[0].fee
+        }))
       )
-      .subscribe(tokens => this._tokens.next(tokens));
+      .toPromise();
   }
 
   private getTokensWithImages(
@@ -81,7 +117,7 @@ export class BridgeService {
           .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
           .find(item =>
             token.ethContractAddress
-              ? item.address === token.ethContractAddress
+              ? item.address.toLowerCase() === token.ethContractAddress.toLowerCase()
               : item.symbol === 'ETH'
           );
         token.icon = (tokenInfo && tokenInfo.image) || '/assets/images/icons/coins/empty.svg';
@@ -89,7 +125,14 @@ export class BridgeService {
       });
   }
 
-  public getFee(tokenSymbol: string, networkName: string): Observable<number> {
+  public getFee(tokenSymbol: string, networkName: BLOCKCHAIN_NAME): Observable<number> {
+    const token = this._tokens.getValue().find(item => item.symbol === tokenSymbol);
+    if (token?.ethToBscFee && token?.bscToEthFee) {
+      if (networkName === BLOCKCHAIN_NAME.ETHEREUM) {
+        return of(token.bscToEthFee);
+      }
+      return of(token.ethToBscFee);
+    }
     return this.httpClient.get(`${this.apiUrl}tokens/${tokenSymbol}/networks`).pipe(
       // eslint-disable-next-line consistent-return
       map((res: BinanceResponse) => {
@@ -122,10 +165,55 @@ export class BridgeService {
       return throwError(new AccountError());
     }
 
-    if (!this.web3Private.network || this.web3Private.network.name !== fromNetwork) {
+    if (
+      this.web3Private.network?.name !== fromNetwork &&
+      (this.web3Private.network?.name !== `${fromNetwork}_TESTNET` ||
+        !this.useTestingMode.isTestingMode.getValue())
+    ) {
       return throwError(new NetworkError(fromNetwork));
     }
 
+    if (token.symbol === 'RBC') {
+      return new Observable(subscriber => {
+        this.rubicBridgeService
+          .createTrade(token, fromNetwork, amount, toAddress, onTransactionHash)
+          .then(txHash => {
+            const tx: BridgeTransaction = {
+              binanceId: txHash,
+              amount,
+              network: fromNetwork,
+              token: {
+                symbol: token.symbol,
+                ethSymbol: token.ethSymbol
+              } as BridgeToken
+            } as BridgeTransaction;
+            // this.sendTransactionInfo({ });
+            this.updateTransactionsList();
+            this.backendApiService.notifyBridgeBot(tx, this.web3Private.address);
+            subscriber.next(txHash);
+          });
+      });
+    }
+
+    // eslint-disable-next-line prettier/prettier
+    return this.createTradeWithBinanceApi(
+      token,
+      fromNetwork,
+      toNetwork,
+      amount,
+      toAddress,
+      onTransactionHash
+    );
+  }
+
+  private createTradeWithBinanceApi(
+    token: BridgeToken,
+    fromNetwork: BLOCKCHAIN_NAME,
+    toNetwork: string,
+    amount: BigNumber,
+    toAddress: string,
+    onTransactionHash?: (hash: string) => void
+  ): Observable<string> {
     const body = {
       amount: amount.toFixed(),
       fromNetwork,

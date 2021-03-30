@@ -10,18 +10,16 @@ import { Web3PrivateService } from '../../../core/services/blockchain/web3-priva
 import { TokenPart } from '../../../shared/models/order-book/tokens';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
 import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
-
-interface ContractParameters {
-  contractAddress: string;
-  contractAbi: any[];
-}
+import { ContractParameters } from '../../../core/services/order-book-common/models/ContractParameters';
+import { OrderBookCommonService } from '../../../core/services/order-book-common/order-book-common.service';
 
 @Injectable()
 export class OrderBookTradeService {
   constructor(
     private web3PublicService: Web3PublicService,
     private web3PrivateService: Web3PrivateService,
-    private orderBookApiService: OrderBookApiService
+    private orderBookApiService: OrderBookApiService,
+    private orderBookCommonService: OrderBookCommonService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
@@ -90,37 +88,8 @@ export class OrderBookTradeService {
     return tradeData;
   }
 
-  public async setAmountContributed(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
-
-    const baseContributed: string = await web3Public.callContractMethod(
-      contractAddress,
-      contractAbi,
-      'baseRaised',
-      {
-        methodArguments: [tradeData.memo]
-      }
-    );
-    tradeData.token.base.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.base,
-      baseContributed
-    );
-
-    const quoteContributed: string = await web3Public.callContractMethod(
-      contractAddress,
-      contractAbi,
-      'quoteRaised',
-      {
-        methodArguments: [tradeData.memo]
-      }
-    );
-    tradeData.token.quote.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.quote,
-      quoteContributed
-    );
-
-    return tradeData;
+  public setAmountContributed(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
+    return this.orderBookCommonService.setAmountContributed(tradeData);
   }
 
   public async setInvestorsNumber(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
@@ -157,7 +126,10 @@ export class OrderBookTradeService {
     return tradeData;
   }
 
-  async setAllowanceToToken(tradeData: OrderBookTradeData, tokenPart: TokenPart): Promise<void> {
+  public async setAllowanceToToken(
+    tradeData: OrderBookTradeData,
+    tokenPart: TokenPart
+  ): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
 
     if (web3Public.isNativeAddress(tradeData.token[tokenPart].address)) {
@@ -192,7 +164,7 @@ export class OrderBookTradeService {
     }
   }
 
-  public makeApprove(
+  public async makeApprove(
     tradeData: OrderBookTradeData,
     tokenPart: TokenPart,
     onTransactionHash: (hash: string) => void

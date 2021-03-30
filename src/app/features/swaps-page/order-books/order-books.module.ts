@@ -13,8 +13,9 @@ import { OrderBooksComponent } from './components/order-books/order-books.compon
 import { TradesModule } from '../trades-module/trades.module';
 import { OrderBooksFormComponent } from './components/order-books-form/order-books-form.component';
 import { OrderBooksFormOptionsComponent } from './components/order-books-form/order-books-form-options/order-books-form-options.component';
-import { OrderBooksFormService } from './services/order-book-form-service/order-books-form.service';
 import { OrderBooksTableComponent } from './components/order-books-table/order-books-table.component';
+import { OrderBooksFormService } from './components/order-books-form/services/order-books-form.service';
+import { OrderBooksTableService } from './components/order-books-table/services/order-books-table.service';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { OrderBooksTableComponent } from './components/order-books-table/order-b
   exports: [OrderBooksComponent],
   providers: [
     OrderBooksFormService,
+    OrderBooksTableService,
     {
       provide: TradeTypeService,
       useClass: TradeTypeService

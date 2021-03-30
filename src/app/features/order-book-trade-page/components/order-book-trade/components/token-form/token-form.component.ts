@@ -14,17 +14,17 @@ import {
   ORDER_BOOK_TRADE_STATUS,
   OrderBookDataToken,
   OrderBookTradeData
-} from '../../models/trade-data';
-import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
-import { TX_STATUS } from '../../models/TX_STATUS';
-import { TokenPart } from '../../../../shared/models/order-book/tokens';
-import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
-import { RubicError } from '../../../../shared/models/errors/RubicError';
-import { OrderBookTradeService } from '../../services/order-book-trade.service';
-import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
-import { NetworkErrorComponent } from '../../../bridge-page/components/network-error/network-error.component';
-import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
-import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
+} from '../../../../models/trade-data';
+import ADDRESS_TYPE from '../../../../../../shared/models/blockchain/ADDRESS_TYPE';
+import { TX_STATUS } from '../../../../models/TX_STATUS';
+import { TokenPart } from '../../../../../../shared/models/order-book/tokens';
+import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
+import { RubicError } from '../../../../../../shared/models/errors/RubicError';
+import { OrderBookTradeService } from '../../../../services/order-book-trade.service';
+import { NetworkError } from '../../../../../../shared/models/errors/provider/NetworkError';
+import { NetworkErrorComponent } from '../../../../../bridge-page/components/network-error/network-error.component';
+import { MessageBoxComponent } from '../../../../../../shared/components/message-box/message-box.component';
+import { MetamaskError } from '../../../../../../shared/models/errors/provider/MetamaskError';
 
 type Operation = 'approve' | 'contribute' | 'withdraw';
 
