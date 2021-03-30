@@ -16,5 +16,9 @@ export const languagesList: LanguageListElement[] = [
   {
     lng: 'ru',
     title: 'Русский'
+  },
+  {
+    lng: 'es',
+    title: 'Español'
   }
 ];
