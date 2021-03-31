@@ -186,11 +186,12 @@ export class BridgeService {
     }
 
     if (token.symbol === 'RBC') {
-      const onTxHash = hash => {
+      const onTxHash = async hash => {
         if (onTransactionHash) {
           onTransactionHash(hash);
         }
-        this.backendApiService.postRubicTransaction(fromNetwork, hash);
+        //  await this.backendApiService.postRubicTransaction(fromNetwork, hash);
+        await this.updateTransactionsList();
       };
 
       return new Observable(subscriber => {
@@ -207,7 +208,6 @@ export class BridgeService {
               } as BridgeToken
             } as BridgeTransaction;
 
-            await this.backendApiService.postRubicTransaction(fromNetwork, txHash);
             this.updateTransactionsList();
             this.backendApiService.notifyBridgeBot(tx, this.web3Private.address);
             subscriber.next(txHash);
