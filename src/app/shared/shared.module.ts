@@ -44,6 +44,7 @@ import { VolumeBlockComponent } from './components/volume-block/volume-block.com
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
 import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer-text.component';
 import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
+import { TokensMoblieTableComponent } from './components/tokens-moblie-table/tokens-moblie-table.component';
 
 @NgModule({
   declarations: [
