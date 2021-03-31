@@ -21,6 +21,7 @@ import { NetworkErrorComponent } from '../../../../bridge-page/components/networ
 import ADDRESS_TYPE from '../../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
+import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
 
 interface TradeProviderInfo {
   label: string;
@@ -177,6 +178,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private uniSwapService: UniSwapService,
     private oneInchEthService: OneInchEthService,
     private onInchBscService: OneInchBscService,
+    private pancakeSwapService: PancakeSwapService,
     private dialog: MatDialog,
     private instantTradesApiService: InstantTradesApiService
   ) {}
@@ -205,13 +207,21 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        this._instantTradeServices = [this.onInchBscService];
+        this._instantTradeServices = [this.onInchBscService, this.pancakeSwapService];
         this.trades = [
           {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
               label: '1inch'
+            },
+            isBestRate: false
+          },
+          {
+            trade: null,
+            tradeState: null,
+            tradeProviderInfo: {
+              label: 'Pancakeswap'
             },
             isBestRate: false
           }
