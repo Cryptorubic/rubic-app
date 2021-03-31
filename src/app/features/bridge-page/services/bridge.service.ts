@@ -32,6 +32,8 @@ export class BridgeService {
 
   private apiUrl = 'https://api.binance.org/bridge/api/v2/';
 
+  private gasPriceUrl = 'https://swap.rubic.exchange/api/v1/gas/';
+
   private rubicApiUrl = 'https://swap.rubic.exchange/api/v1/dex/Rubic/';
 
   private _tokens: BehaviorSubject<List<BridgeToken>> = new BehaviorSubject(List([]));
@@ -153,6 +155,12 @@ export class BridgeService {
     );
   }
 
+  public checkIfEthereumGasPriceIsHigh(): Observable<boolean> {
+    return this.httpClient
+      .get(`${this.gasPriceUrl}Ethereum`)
+      .pipe(map((res: { status: string }) => res.status === 'HIGH'));
+  }
+
   public createTrade(
     token: BridgeToken,
     fromNetwork: BLOCKCHAIN_NAME,
@@ -203,6 +211,9 @@ export class BridgeService {
             this.updateTransactionsList();
             this.backendApiService.notifyBridgeBot(tx, this.web3Private.address);
             subscriber.next(txHash);
+          })
+          .catch(err => {
+            subscriber.error(err);
           });
       });
     }
