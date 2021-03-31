@@ -5,6 +5,7 @@ import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';
 import { BridgeTransaction } from '../../../../features/bridge-page/services/BridgeTransaction';
 import { BridgeTableTransaction } from '../../../../features/bridge-page/models/BridgeTableTransaction';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,26 @@ export class BridgeApiService {
       transaction_id: binanceTransactionId,
       ethSymbol,
       bscSymbol
+    };
+
+    return new Promise<void>((resolve, reject) => {
+      this.httpService.post('bridge/transactions', body).subscribe(
+        () => {
+          resolve();
+        },
+        error => {
+          console.log(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  public postRubicTransaction(fromNetwork: BLOCKCHAIN_NAME, txHash: string) {
+    const body = {
+      swap_type: 'rbc_swap',
+      source_network: fromNetwork === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
+      tx_hash: txHash
     };
 
     return new Promise<void>((resolve, reject) => {

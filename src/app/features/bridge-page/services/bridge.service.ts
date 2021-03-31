@@ -60,7 +60,11 @@ export class BridgeService {
     this.updateTransactionsList();
     this.walletAddress = web3Private.onAddressChanges;
 
-    useTestingMode.isTestingMode.subscribe(() => this._tokens.next(bridgeTestTokens));
+    useTestingMode.isTestingMode.subscribe(value => {
+      if (value) {
+        this._tokens.next(bridgeTestTokens);
+      }
+    });
   }
 
   private async getTokensList(): Promise<void> {
@@ -174,10 +178,17 @@ export class BridgeService {
     }
 
     if (token.symbol === 'RBC') {
+      const onTxHash = hash => {
+        if (onTransactionHash) {
+          onTransactionHash(hash);
+        }
+        this.backendApiService.postRubicTransaction(fromNetwork, hash);
+      };
+
       return new Observable(subscriber => {
         this.rubicBridgeService
-          .createTrade(token, fromNetwork, amount, toAddress, onTransactionHash)
-          .then(txHash => {
+          .createTrade(token, fromNetwork, amount, toAddress, onTransactionHash, onTxHash)
+          .then(async txHash => {
             const tx: BridgeTransaction = {
               binanceId: txHash,
               amount,
@@ -187,7 +198,8 @@ export class BridgeService {
                 ethSymbol: token.ethSymbol
               } as BridgeToken
             } as BridgeTransaction;
-            // this.sendTransactionInfo({ });
+
+            await this.backendApiService.postRubicTransaction(fromNetwork, txHash);
             this.updateTransactionsList();
             this.backendApiService.notifyBridgeBot(tx, this.web3Private.address);
             subscriber.next(txHash);
