@@ -32,7 +32,7 @@ export class BridgeService {
 
   private apiUrl = 'https://api.binance.org/bridge/api/v2/';
 
-  private gasPriceUrl = 'https://swap.rubic.exchange/api/v1/gas/Ethereum';
+  private gasPriceUrl = 'https://swap.rubic.exchange/api/v1/gas/';
 
   private rubicApiUrl = 'https://swap.rubic.exchange/api/v1/dex/Rubic/';
 
@@ -151,9 +151,9 @@ export class BridgeService {
     );
   }
 
-  public checkIfGasPriceIsHigh(): Observable<boolean> {
+  public checkIfEthereumGasPriceIsHigh(): Observable<boolean> {
     return this.httpClient
-      .get(this.gasPriceUrl)
+      .get(`${this.gasPriceUrl}Ethereum`)
       .pipe(map((res: { status: string }) => res.status === 'HIGH'));
   }
 

@@ -265,9 +265,10 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     this.buttonAnimation = true;
     if (
       this.fromBlockchain.name === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
+      this.toBlockchain.name === BLOCKCHAIN_NAME.ETHEREUM &&
       this.selectedToken.bscContractAddress === this.BRBC_ADDRESS
     ) {
-      this.bridgeService.checkIfGasPriceIsHigh().subscribe(isHigh => {
+      this.bridgeService.checkIfEthereumGasPriceIsHigh().subscribe(isHigh => {
         if (isHigh) {
           this.isHighGasPriceModalShown = true;
         } else {
