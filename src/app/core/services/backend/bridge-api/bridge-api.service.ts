@@ -33,6 +33,7 @@ export class BridgeApiService {
     bscSymbol: string
   ): Promise<void> {
     const body = {
+      swap_type: 'panama',
       transaction_id: binanceTransactionId,
       ethSymbol,
       bscSymbol

@@ -8,11 +8,13 @@ import { Web3Public } from '../../../../core/services/blockchain/web3-public-ser
 import BinanceContractAbi from './abi/BinanceContractAbi';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import { UseTestingModeService } from '../../../../core/services/use-testing-mode/use-testing-mode.service';
+import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
 
 interface BridgeTrade {
   token: {
     address: string;
     decimals: number;
+    symbol: string;
   };
   amount: BigNumber;
   swapContractAddress: string;
@@ -50,22 +52,34 @@ export class RubicBridgeService {
       throw new Error('Rubic bridge supports only rubic token.');
     }
 
-    const web3Public = this.web3PublicService[fromNetwork];
+    const web3Public: Web3Public = this.web3PublicService[fromNetwork];
     const trade: BridgeTrade = { token: {} } as BridgeTrade;
 
     if (fromNetwork === BLOCKCHAIN_NAME.ETHEREUM) {
       trade.token.address = token.ethContractAddress;
       trade.token.decimals = Number(token.ethContractDecimal);
+      trade.token.symbol = 'RBC';
       trade.swapContractAddress = this.EthereumSmartContractAddress;
       trade.swapContractAbi = EthereumContractAbi;
     } else {
       trade.token.address = token.bscContractAddress;
       trade.token.decimals = Number(token.bscContractDecimal);
+      trade.token.symbol = 'BRBC';
       trade.swapContractAddress = this.BinanceSmartContractAddress;
       trade.swapContractAbi = BinanceContractAbi;
     }
 
     trade.amount = amount.multipliedBy(10 ** trade.token.decimals);
+
+    const balance = await web3Public.getTokenBalance(this.web3Private.address, trade.token.address);
+    if (balance.lt(trade.amount)) {
+      const formattedTokensBalance = balance.div(10 ** trade.token.decimals).toString();
+      throw new InsufficientFundsError(
+        trade.token.symbol,
+        formattedTokensBalance,
+        amount.toString()
+      );
+    }
 
     await this.provideAllowance(trade, web3Public, onApprove);
 
