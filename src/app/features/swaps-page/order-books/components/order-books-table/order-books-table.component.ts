@@ -4,6 +4,7 @@ import { OrderBookApiService } from 'src/app/core/services/backend/order-book-ap
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TokenValueType } from 'src/app/shared/models/order-book/tokens';
 import { OrderBooksTableService } from './services/order-books-table.service';
 
 @Component({
@@ -14,9 +15,9 @@ import { OrderBooksTableService } from './services/order-books-table.service';
 export class OrderBooksTableComponent implements AfterViewInit {
   public readonly $dataSource: Observable<OrderBookTradeData[]>;
 
-  public readonly $displayedColumns: Observable<string[]>;
+  public readonly displayedColumns: string[];
 
-  public readonly $columnsSizes: Observable<string[]>;
+  public readonly columnsSizes: string[];
 
   public readonly $tableLoading: Observable<boolean>;
 
@@ -29,15 +30,32 @@ export class OrderBooksTableComponent implements AfterViewInit {
     this.orderBooksTableService.setTableLoadingStatus(true);
     this.fetchPublicSwaps();
     this.$dataSource = this.orderBooksTableService.getTableData();
-    this.$displayedColumns = this.orderBooksTableService.getTableColumns();
-    this.$columnsSizes = this.orderBooksTableService.getTableColumnsSizes();
+    this.displayedColumns = ['token', 'amount', 'network', 'expires'];
+    this.columnsSizes = ['25%', '50%', '10%', '15%'];
   }
 
   public ngAfterViewInit(): void {
     this.tradeTypeService.getBlockchain().subscribe((mode: BLOCKCHAIN_NAME) => {
       this.orderBooksTableService.setBlockchain(mode);
-      this.orderBooksTableService.filterByBlockchain();
+      this.orderBooksTableService.setBaseTokenFilter(null);
+      this.orderBooksTableService.setQuoteTokenFilter(null);
+      this.orderBooksTableService.filterTable();
     });
+  }
+
+  public selectToken(tokenData: TokenValueType): void {
+    if (tokenData.value) {
+      if (tokenData.tokenType === 'base') {
+        this.orderBooksTableService.setBaseTokenFilter(tokenData.value);
+      } else {
+        this.orderBooksTableService.setQuoteTokenFilter(tokenData.value);
+      }
+    } else if (tokenData.tokenType === 'base') {
+      this.orderBooksTableService.setBaseTokenFilter(null);
+    } else {
+      this.orderBooksTableService.setQuoteTokenFilter(null);
+    }
+    this.orderBooksTableService.filterTable();
   }
 
   public refreshOrderBooks(): void {
@@ -49,7 +67,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
     this.orderBookApi.fetchPublicSwaps().subscribe(
       async tradeData => {
         this.orderBooksTableService.setTableData(await Promise.all(tradeData));
-        this.orderBooksTableService.filterByBlockchain();
+        this.orderBooksTableService.filterTable();
       },
       err => console.error(err),
       () => this.orderBooksTableService.setTableLoadingStatus(false)

@@ -1,8 +1,9 @@
 <app-tokens-table
   [tableData]="$dataSource | async"
-  [displayedColumns]="$displayedColumns | async"
-  [columnsSizes]="$columnsSizes | async"
+  [displayedColumns]="displayedColumns"
+  [columnsSizes]="columnsSizes"
   [tableLoading]="$tableLoading | async"
   (refreshTableEvent)="refreshOrderBooks()"
   [title]="'Order Book' | translate"
+  (selectTokenEvent)="selectToken($event)"
 ></app-tokens-table>

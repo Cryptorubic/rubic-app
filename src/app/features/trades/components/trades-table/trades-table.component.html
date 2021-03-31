@@ -1,8 +1,9 @@
 <app-tokens-table
   [tableData]="$dataSource | async"
-  [displayedColumns]="$displayedColumns | async"
-  [columnsSizes]="$columnsSizes | async"
+  [displayedColumns]="displayedColumns"
+  [columnsSizes]="columnsSizes"
   [tableLoading]="$tableLoading | async"
   (refreshTableEvent)="refreshTable()"
   [title]="'My trades' | translate"
+  (selectTokenEvent)="selectToken($event)"
 ></app-tokens-table>
