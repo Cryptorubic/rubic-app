@@ -21,7 +21,7 @@ import { MetamaskError } from '../../../../shared/models/errors/provider/Metamas
   styleUrls: ['./bridge-form.component.scss']
 })
 export class BridgeFormComponent implements OnInit, OnDestroy {
-  public Blockchains = {
+  public readonly Blockchains = {
     Ethereum: {
       name: BLOCKCHAIN_NAME.ETHEREUM,
       shortLabel: 'Ethereum',
@@ -53,6 +53,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       addressName: 'bscContractAddress'
     }
   };
+
+  public readonly BRBC_ADDRESS = '0x8E3BCC334657560253B83f08331d85267316e08a';
 
   public blockchainsList: BridgeBlockchain[] = Object.values(this.Blockchains);
 
@@ -93,6 +95,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   private tokensSubscription$: Subscription;
 
   private addressSubscription$: Subscription;
+
+  public isHighGasPriceModalShown = false;
 
   get tokens(): List<BridgeToken> {
     return this._tokens;
@@ -257,8 +261,36 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onConfirm() {
+  public checkAndConfirm() {
     this.buttonAnimation = true;
+    if (
+      this.fromBlockchain.name === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
+      this.toBlockchain.name === BLOCKCHAIN_NAME.ETHEREUM &&
+      this.selectedToken.bscContractAddress === this.BRBC_ADDRESS
+    ) {
+      this.bridgeService.checkIfEthereumGasPriceIsHigh().subscribe(isHigh => {
+        if (isHigh) {
+          this.isHighGasPriceModalShown = true;
+        } else {
+          this.onConfirm();
+        }
+      });
+    } else {
+      this.onConfirm();
+    }
+  }
+
+  public onHighGasPriceCancel() {
+    this.isHighGasPriceModalShown = false;
+    this.buttonAnimation = false;
+  }
+
+  public onHighGasPriceConfirm() {
+    this.isHighGasPriceModalShown = false;
+    this.onConfirm();
+  }
+
+  public onConfirm() {
     this.bridgeService
       .createTrade(
         this.selectedToken,
