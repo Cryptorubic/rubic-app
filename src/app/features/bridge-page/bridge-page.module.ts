@@ -16,6 +16,7 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
 import { BridgeService } from './services/bridge.service';
 import { AdvertModalComponent } from './components/ad-modal/advert-modal.component';
 import { RubicBridgeService } from './services/rubic-bridge-service/rubic-bridge.service';
+import { HighGasPriceModalComponent } from './components/high-gas-price-modal/high-gas-price-modal.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { RubicBridgeService } from './services/rubic-bridge-service/rubic-bridge
     BridgeSuccessComponent,
     BridgeTableComponent,
     NetworkErrorComponent,
-    AdvertModalComponent
+    AdvertModalComponent,
+    HighGasPriceModalComponent
   ],
   imports: [
     CommonModule,

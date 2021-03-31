@@ -193,7 +193,7 @@
               fromNumber.lt(selectedToken.minAmount) ||
               fromNumber.gt(selectedToken.maxAmount)
             "
-            (onClick)="onConfirm()"
+            (onClick)="checkAndConfirm()"
           >
           </app-primary-button>
 
@@ -204,7 +204,7 @@
         </div>
 
         <button
-          style="visibility: hidden;"
+          style="visibility: hidden"
           class="cross-chain-form__advanced-options"
           [ngClass]="{ 'cross-chain-form__advanced-options_opened': isAdvancedSectionShown }"
           (click)="isAdvancedSectionShown = !isAdvancedSectionShown"
@@ -226,6 +226,12 @@
     </div>
   </form>
 </div>
+
+<app-high-gas-price-modal
+  *ngIf="isHighGasPriceModalShown"
+  (onCancel)="onHighGasPriceCancel()"
+  (onConfirm)="onHighGasPriceConfirm()"
+></app-high-gas-price-modal>
 
 <app-bridge-in-progress-modal *ngIf="tradeInProgress"></app-bridge-in-progress-modal>
 

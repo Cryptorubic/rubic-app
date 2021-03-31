@@ -19,11 +19,12 @@
     padding-bottom: 30px;
 
     background-color: white;
+    border-radius: 10px;
   }
 
   &__close-icon {
     position: absolute;
-    top: 10px;
+    top: 12px;
     right: 10px;
 
     cursor: pointer;
