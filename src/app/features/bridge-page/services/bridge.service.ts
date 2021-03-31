@@ -178,9 +178,16 @@ export class BridgeService {
     }
 
     if (token.symbol === 'RBC') {
+      const onTxHash = hash => {
+        if (onTransactionHash) {
+          onTransactionHash(hash);
+        }
+        this.backendApiService.postRubicTransaction(fromNetwork, hash);
+      };
+
       return new Observable(subscriber => {
         this.rubicBridgeService
-          .createTrade(token, fromNetwork, amount, toAddress, onTransactionHash)
+          .createTrade(token, fromNetwork, amount, toAddress, onTransactionHash, onTxHash)
           .then(async txHash => {
             const tx: BridgeTransaction = {
               binanceId: txHash,
