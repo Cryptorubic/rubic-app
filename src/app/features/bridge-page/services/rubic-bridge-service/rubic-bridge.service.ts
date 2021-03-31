@@ -43,6 +43,7 @@ export class RubicBridgeService {
     fromNetwork: BLOCKCHAIN_NAME,
     amount: BigNumber,
     toAddress: string,
+    onApprove?: (hash: string) => void,
     onTransactionHash?: (hash: string) => void
   ): Promise<string> {
     if (token.symbol !== 'RBC') {
@@ -66,7 +67,7 @@ export class RubicBridgeService {
 
     trade.amount = amount.multipliedBy(10 ** trade.token.decimals);
 
-    await this.provideAllowance(trade, web3Public, onTransactionHash);
+    await this.provideAllowance(trade, web3Public, onApprove);
 
     const blockchain = fromNetwork === BLOCKCHAIN_NAME.ETHEREUM ? 1 : 2;
 
