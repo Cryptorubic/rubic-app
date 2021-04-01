@@ -16,45 +16,17 @@
           (numberChanges)="baseAmount = $event"
         ></app-tokens-input>
 
-        <div class="tokens-form__custom-section custom-section">
-          <div class="custom-section__button-container">
-            <label
-              class="custom-section__button"
-              for="base-custom-input"
-              (click)="isCustomTokenSectionOpened.base = !isCustomTokenSectionOpened.base"
-            >
-              {{ isCustomTokenSectionOpened.base ? 'Cancel' : 'Use custom token' }}
-            </label>
-          </div>
-
-          <div
-            class="custom-section__form custom-section-form"
-            *ngIf="isCustomTokenSectionOpened.base"
-          >
-            <input
-              type="text"
-              class="custom-section-form__input"
-              id="base-custom-input"
-              placeholder="Token contract address"
-              pattern="0x[A-Fa-f0-9]{40}"
-              name="base"
-              appTokenAddress
-              [blockchain]="blockchain"
-              (tokenValidated)="setCustomToken('base', $event)"
-              [(ngModel)]="customToken.base.address"
-              #baseCustomToken="ngModel"
-              [ngClass]="{
-                'custom-section-form__input_invalid':
-                  baseCustomToken.value && baseCustomToken.invalid
-              }"
-            />
-            <app-primary-button
-              label="Add"
-              [animate]="baseCustomToken.pending"
-              [disabled]="!baseCustomToken.valid"
-              (click)="addCustomToken('base')"
-            ></app-primary-button>
-          </div>
+        <div class="tokens-form__custom-token-section">
+          <app-custom-token-form
+            type="from"
+            [isSectionOpened]="commonTradeParameters.isCustomFromTokenFormOpened"
+            (isSectionOpenedChange)="setIsCustomTokenFormOpened('base', $event)"
+            [blockchain]="blockchain"
+            [tokenAddress]="commonTradeParameters.customFromTokenAddress"
+            (tokenAddressChange)="setCustomTokenAddress('base', $event)"
+            (tokenValidated)="updateCustomToken('base', $event)"
+            (addToken)="addCustomToken('base')"
+          ></app-custom-token-form>
         </div>
       </div>
     </div>
@@ -111,43 +83,17 @@
           (numberChanges)="quoteAmount = $event"
         ></app-tokens-input>
 
-        <div class="tokens-form__custom-section custom-section">
-          <label
-            class="custom-section__button"
-            for="quote-custom-input"
-            (click)="isCustomTokenSectionOpened.quote = !isCustomTokenSectionOpened.quote"
-          >
-            {{ isCustomTokenSectionOpened.quote ? 'Cancel' : 'Use custom token' }}
-          </label>
-
-          <div
-            class="custom-section__form custom-section-form"
-            *ngIf="isCustomTokenSectionOpened.quote"
-          >
-            <input
-              type="text"
-              class="custom-section-form__input"
-              id="quote-custom-input"
-              placeholder="Token contract address"
-              pattern="0x[A-Fa-f0-9]{40}"
-              name="quote"
-              appTokenAddress
-              [blockchain]="blockchain"
-              (tokenValidated)="setCustomToken('quote', $event)"
-              [(ngModel)]="customToken.quote.address"
-              #quoteCustomToken="ngModel"
-              [ngClass]="{
-                'custom-section-form__input_invalid':
-                  quoteCustomToken.value && quoteCustomToken.invalid
-              }"
-            />
-            <app-primary-button
-              label="Add"
-              [animate]="quoteCustomToken.pending"
-              [disabled]="!quoteCustomToken.valid"
-              (click)="addCustomToken('quote')"
-            ></app-primary-button>
-          </div>
+        <div class="tokens-form__custom-token-section">
+          <app-custom-token-form
+            type="to"
+            [isSectionOpened]="commonTradeParameters.isCustomToTokenFormOpened"
+            (isSectionOpenedChange)="setIsCustomTokenFormOpened('quote', $event)"
+            [blockchain]="blockchain"
+            [tokenAddress]="commonTradeParameters.customToTokenAddress"
+            (tokenAddressChange)="setCustomTokenAddress('quote', $event)"
+            (tokenValidated)="updateCustomToken('quote', $event)"
+            (addToken)="addCustomToken('quote')"
+          ></app-custom-token-form>
         </div>
       </div>
 

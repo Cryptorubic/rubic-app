@@ -44,6 +44,7 @@ import { VolumeBlockComponent } from './components/volume-block/volume-block.com
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
 import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer-text.component';
 import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
+import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { TokensTableComponent } from './components/tokens-table/tokens-table.com
     VolumeBlockComponent,
     ListingRequestPopupComponent,
     DisclaimerTextComponent,
-    TokensTableComponent
+    TokensTableComponent,
+    CustomTokenFormComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -130,7 +132,8 @@ import { TokensTableComponent } from './components/tokens-table/tokens-table.com
     VolumeCellComponent,
     VolumeBlockComponent,
     DisclaimerTextComponent,
-    TokensTableComponent
+    TokensTableComponent,
+    CustomTokenFormComponent
   ]
 })
 export class SharedModule {}

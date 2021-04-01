@@ -22,6 +22,8 @@ import ADDRESS_TYPE from '../../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
+import { Token } from '../../../../../shared/models/tokens/Token';
+import { CommonTradeParameters } from '../../../../../shared/models/swaps/TradeParameters';
 
 interface TradeProviderInfo {
   label: string;
@@ -60,6 +62,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private _tradeParameters: InstantTradeParameters;
 
+  private _commonTradeParameters: CommonTradeParameters;
+
   private _tokens = List<SwapToken>([]);
 
   private _tokensSubscription$: Subscription;
@@ -82,6 +86,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public transactionHash: string;
 
+  public customToken = {
+    from: {} as SwapToken,
+    to: {} as SwapToken
+  };
+
   get tokens(): List<SwapToken> {
     return this._tokens;
   }
@@ -90,6 +99,15 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this._tokens = value.filter(token => token.blockchain === this.blockchain);
     this.availableToTokens = this._tokens.concat();
     this.availableFromTokens = this._tokens.concat();
+  }
+
+  get commonTradeParameters(): CommonTradeParameters {
+    return this._commonTradeParameters;
+  }
+
+  set commonTradeParameters(value) {
+    this._commonTradeParameters = value;
+    this.tradeParametersService.setCommonTradeParameters(value);
   }
 
   get tradeParameters(): InstantTradeParameters {
@@ -243,6 +261,15 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
       this.tokens = this.tokensService.tokens.getValue();
 
+      const commonTradeParameters = this.tradeParametersService.getCommonTradeParameters();
+
+      this._commonTradeParameters = {
+        isCustomFromTokenFormOpened: commonTradeParameters.isCustomFromTokenFormOpened,
+        isCustomToTokenFormOpened: commonTradeParameters.isCustomToTokenFormOpened,
+        customFromTokenAddress: commonTradeParameters.customFromTokenAddress,
+        customToTokenAddress: commonTradeParameters.customToTokenAddress
+      };
+
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
 
       this._tradeParameters = {
@@ -281,6 +308,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this.toToken = fromToken;
 
     this.tradeParameters = {
+      ...this.tradeParameters,
       fromToken: toToken,
       toToken: fromToken,
       fromAmount: toAmount
@@ -391,6 +419,49 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ...this.trades[bestRateProviderIndex],
         isBestRate: true
       };
+    }
+  }
+
+  public setIsCustomTokenFormOpened(part: 'from' | 'to', isOpened: boolean): void {
+    if (part === 'from') {
+      this.commonTradeParameters = {
+        ...this.commonTradeParameters,
+        isCustomFromTokenFormOpened: isOpened
+      };
+    } else {
+      this.commonTradeParameters = {
+        ...this.commonTradeParameters,
+        isCustomToTokenFormOpened: isOpened
+      };
+    }
+  }
+
+  public setCustomTokenAddress(part: 'from' | 'to', address: string): void {
+    if (part === 'from') {
+      this.commonTradeParameters = {
+        ...this.commonTradeParameters,
+        customFromTokenAddress: address
+      };
+    } else {
+      this.commonTradeParameters = {
+        ...this.commonTradeParameters,
+        customToTokenAddress: address
+      };
+    }
+  }
+
+  public updateCustomToken(part: 'from' | 'to', tokenBody: Token): void {
+    const token = this.tokens.find(
+      t => t.address.toLowerCase() === tokenBody.address.toLowerCase()
+    );
+    this.customToken[part] = token ? { ...token } : { ...this.customToken[part], ...tokenBody };
+  }
+
+  public addCustomToken(part: 'from' | 'to'): void {
+    if (part === 'from') {
+      this.fromToken = { ...this.customToken.from };
+    } else {
+      this.toToken = { ...this.customToken.to };
     }
   }
 

@@ -2,14 +2,17 @@
 
 .instant-trade {
   display: flex;
-  align-items: center;
   padding: 27px 30px 29px;
+
+  &_extended {
+    height: 237px;
+  }
 
   &__from-section {
     flex: 4;
 
-    &_aligned {
-      align-self: flex-start;
+    &_lowered {
+      margin-top: 41px;
     }
   }
 
@@ -19,6 +22,12 @@
 
   &__to-section {
     flex: 6;
+
+    max-height: 178px;
+
+    &_extended {
+      max-height: 237px;
+    }
   }
 }
 
@@ -47,7 +56,7 @@
   }
 
   &_big {
-    top: 6px;
+    top: 64px;
 
     width: 42px;
     height: 42px;
@@ -110,6 +119,10 @@
         opacity: 1;
       }
     }
+  }
+
+  &__custom-token-section {
+    margin-top: 8px;
   }
 }
 

@@ -1,7 +1,16 @@
-<form class="instant-trade">
+<form
+  class="instant-trade"
+  [ngClass]="{
+    'instant-trade_extended':
+      trades.length === 2 &&
+      (commonTradeParameters.isCustomFromTokenFormOpened ||
+        commonTradeParameters.isCustomToTokenFormOpened)
+  }"
+  (submit)="$event.preventDefault()"
+>
   <div
     class="instant-trade__from-section selection-block"
-    [ngClass]="{ 'instant-trade__from-section_aligned': trades.length === 1 }"
+    [ngClass]="{ 'instant-trade__from-section_lowered': trades.length === 2 }"
   >
     <div class="selection-block__header">
       <div class="selection-block__label">you have</div>
@@ -24,6 +33,22 @@
       (numberChanges)="fromAmount = $event"
     >
     </app-tokens-input>
+
+    <div
+      class="selection-block__custom-token-section"
+      [ngClass]="{ 'instant-trade__custom-token-section_lowered': trades.length === 2 }"
+    >
+      <app-custom-token-form
+        type="from"
+        [isSectionOpened]="commonTradeParameters.isCustomFromTokenFormOpened"
+        (isSectionOpenedChange)="setIsCustomTokenFormOpened('from', $event)"
+        [blockchain]="blockchain"
+        [tokenAddress]="commonTradeParameters.customFromTokenAddress"
+        (tokenAddressChange)="setCustomTokenAddress('from', $event)"
+        (tokenValidated)="updateCustomToken('from', $event)"
+        (addToken)="addCustomToken('from')"
+      ></app-custom-token-form>
+    </div>
   </div>
 
   <div class="instant-trade__arrow-section" (click)="revertTokens()">
@@ -37,7 +62,12 @@
     </button>
   </div>
 
-  <div class="instant-trade__to-section grid">
+  <div
+    class="instant-trade__to-section grid"
+    [ngClass]="{
+      'instant-trade__to-section_extended': commonTradeParameters.isCustomToTokenFormOpened
+    }"
+  >
     <ng-container *ngFor="let tradeController of trades; let index = index">
       <div class="selection-block">
         <div class="selection-block__header" *ngIf="index === 0">
@@ -64,6 +94,7 @@
             (tokenChanges)="toToken = $any($event)"
           >
           </app-tokens-input>
+
           <div
             class="gas-fee"
             *ngIf="
@@ -84,6 +115,7 @@
               }}
             </app-info-tooltip>
           </div>
+
           <div class="selection-block__warning">
             <app-tooltip>
               {{
@@ -98,6 +130,19 @@
               "
             >
             </app-warning-label>
+          </div>
+
+          <div class="selection-block__custom-token-section" *ngIf="index === trades.length - 1">
+            <app-custom-token-form
+              type="to"
+              [isSectionOpened]="commonTradeParameters.isCustomToTokenFormOpened"
+              (isSectionOpenedChange)="setIsCustomTokenFormOpened('to', $event)"
+              [blockchain]="blockchain"
+              [tokenAddress]="commonTradeParameters.customToTokenAddress"
+              (tokenAddressChange)="setCustomTokenAddress('to', $event)"
+              (tokenValidated)="updateCustomToken('to', $event)"
+              (addToken)="addCustomToken('to')"
+            ></app-custom-token-form>
           </div>
         </div>
       </div>

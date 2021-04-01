@@ -6,3 +6,10 @@ export interface TradeParameters {
   fromAmount: string;
   toAmount: string;
 }
+
+export interface CommonTradeParameters {
+  isCustomFromTokenFormOpened: boolean;
+  isCustomToTokenFormOpened: boolean;
+  customFromTokenAddress: string;
+  customToTokenAddress: string;
+}
