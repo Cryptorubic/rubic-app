@@ -261,14 +261,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
       this.tokens = this.tokensService.tokens.getValue();
 
-      const commonTradeParameters = this.tradeParametersService.getCommonTradeParameters();
-
-      this._commonTradeParameters = {
-        isCustomFromTokenFormOpened: commonTradeParameters.isCustomFromTokenFormOpened,
-        isCustomToTokenFormOpened: commonTradeParameters.isCustomToTokenFormOpened,
-        customFromTokenAddress: commonTradeParameters.customFromTokenAddress,
-        customToTokenAddress: commonTradeParameters.customToTokenAddress
-      };
+      this._commonTradeParameters = this.tradeParametersService.getCommonTradeParameters();
 
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
 
