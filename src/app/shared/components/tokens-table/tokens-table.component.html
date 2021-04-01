@@ -8,7 +8,7 @@
       <img class="arrow" src="./assets/images/icons/refresh.svg" />
     </button>
   </div>
-  <!-- Desktop table -->
+  <!-- Desktop presentation -->
   <table
     *ngIf="($isMobile | async) === false"
     mat-table
@@ -106,161 +106,26 @@
       *matRowDef="let row; columns: displayedColumns "
     ></tr>
   </table>
-  <!-- Mobile table -->
-  <div *ngIf="$isMobile | async" class="bridge-list">
-    <app-dropdown-select
-      [options]="sortableColumns"
-      [isSortable]="true"
-      [minOptionWidth]="89"
-      (optionToSortBy)="onSortClick($event)"
-    ></app-dropdown-select>
-  
-    <div class="bridge-list__items">
-      <div class="bridge-list__accordion accordion" *ngFor="let trade of tokensTableData">
-        <div
-          class="accordion__header header"
-          [ngClass]="{ accordion__header_active: trade.opened }"
-          (click)="trade.opened = !trade.opened"
-        >
-          <span
-            class="data__status"
-            [ngClass]="{
-              data__status_green: trade.code === 2,
-              data__status_yellow: trade.code === 1,
-              data__status_red: trade.code === 0
-            }"
-          >
-            {{ trade.status }}
-          </span>
-  
-          <div class="header__option option" [ngClass]="{ header__option_inactive: trade.opened }">
-            <span
-              class="option__name"
-              *ngIf="selectedOption !== 'Status' && selectedOption !== 'Date'"
-            >
-              selectedOption
-            </span>
-  
-            <div class="data__network" *ngIf="selectedOption === 'From'">
-              <img
-                [src]="trade.token.base.image || '/assets/images/icons/coins/empty.svg'"
-                [alt]="trade.token.base.symbol"
-              />
-              <span>{{ trade.token.base.symbol }}</span>
-            </div>
-  
-            <div class="data__network" *ngIf="selectedOption === 'To'">
-              <img
-                src="assets/images/icons/coins/eth.png"
-                alt=""
-              />
-              <span>label to</span>
-            </div>
-  
-            <div class="data__amount" *ngIf="selectedOption === 'Spent'">
-              <div>from amount}</div>
-              <img src="assets/images/icons/coins/eth.png" alt="" />
-              <span>symbol</span>
-            </div>
-  
-            <div class="data__amount" *ngIf="selectedOption === 'Expected'">
-              <div>actual amount</div>
-              <img src="assets/images/icons/coins/eth.png" alt="" />
-              <span>aymbol</span>
-            </div>
-  
-            <div class="data__date" *ngIf="selectedOption === 'Date'">
-              <div>
-                <span>time</span>
-                <br />
-                <span>time 2</span>
-              </div>
-            </div>
-          </div>
-  
-          <div class="header__plus" *ngIf="!trade.opened">+</div>
-  
-          <div class="header__minus" *ngIf="trade.opened">-</div>
-        </div>
-  
-        <div
-          class="accordion__content content"
-          [ngClass]="{ accordion__content_inactive: !trade.opened }"
-        >
-          <div class="content__item">
-            <div class="content__item-name">From</div>
-            <div class="data__network">
-              <img
-                [src]="trade.token.base.image || '/assets/images/icons/coins/empty.svg'"
-                [alt]="trade.token.base.symbol"
-              />
-              <span>{{ trade.token.base.symbol }}</span>
-            </div>
-          </div>
-  
-          <div class="content__item">
-            <div class="content__item-name">To</div>
-            <div class="data__network">
-              <img
-                [src]="trade.token.quote.image || '/assets/images/icons/coins/empty.svg'"
-                [alt]="trade.token.quote.symbol"
-              />
-              <span>{{ trade.token.quote.symbol }}</span>
-            </div>
-          </div>
-  
-          <div class="content__item">
-            <div class="content__item-name">Spent</div>
-            <div class="data__amount">
-              <div>{{ trade.token.base.amountTotal.dp(8) }} {{ trade.token.base.symbol }}</div>
-              <span>
-                {{ trade.token.base.amountTotal.div(trade.token.quote.amountTotal).dp(8) | bigNumberFormat }}
-                <span class="volume-cell__subtext-with-spacing">{{ trade.token.base.symbol }} / 1</span>
-                {{ trade.token.quote.symbol }}
-              </span>
-            </div>
-          </div>
-  
-          <div class="content__item">
-            <div class="content__item-name">Expected</div>
-            <div class="data__amount">
-              <div>{{ trade.token.quote.amountTotal.dp(8) }} {{ trade.token.quote.symbol }}</div>
-              <span>
-                1
-                <span class="volume-cell__subtext-with-spacing">
-                  {{ trade.token.base.symbol }} /
-                  {{ trade.token.quote.amountTotal.div(trade.token.base.amountTotal).dp(8) | bigNumberFormat }}
-                </span>
-                {{ trade.token.quote.symbol }}
-              </span>
-            </div>
-          </div>
-  
-          <div class="content__item">
-            <div class="content__item-name">{{ 'Network' | translate }}</div>
-            <div class="data__network">
-              <div>
-                <img
-                  class="table__image"
-                  [src]="getChainIcon(trade.blockchain)"
-                  alt="{{ trade.blockchain }}"
-                />
-                <span>{{ trade.blockchain }}</span>
-              </div>
-            </div>
-          </div>
-  
-          <div class="content__item">
-            <div class="content__item-name">{{ 'Expires in' | translate }}</div>
-            <div class="data__date">
-              <div>
-                {{ trade.expirationDate | date: 'd' }}d: {{ trade.expirationDate | date: 'h' }}h:
-                {{ trade.expirationDate | date: 'm' }}m
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <!-- Mobile presentation -->
+  <div *ngIf="$isMobile | async" class="tokens-table-mobile">
+    <div class="tokens-table-mobile__header">
+      <app-sorting-dropdown
+        [options]="displayedColumns"
+        [whithoutSorting]="true"
+        (selectEvent)="selectColumnName($event)"
+        label="Show data"
+      ></app-sorting-dropdown>
+      <app-sorting-dropdown
+        [options]="sortableColumns"
+        [sortingState]="tableSorting"
+        (sortEvent)="sortData($event)"
+        label="Filter by"
+      ></app-sorting-dropdown>
+    </div>
+    <div class="tokens-table-mobile__items">
+      <ng-container *ngFor="let trade of sotredTableData">
+        <app-tokens-accordion [data]="trade" [chainIconPath]="getChainIcon(trade.blockchain)"></app-tokens-accordion>
+      </ng-container>
     </div>
   </div>
 </div>

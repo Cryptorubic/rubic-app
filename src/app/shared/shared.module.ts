@@ -11,6 +11,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
+import { InlineSVGModule } from 'ng-inline-svg';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -44,7 +46,8 @@ import { VolumeBlockComponent } from './components/volume-block/volume-block.com
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
 import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer-text.component';
 import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
-import { TokensMoblieTableComponent } from './components/tokens-moblie-table/tokens-moblie-table.component';
+import { SortingDropdownComponent } from './components/tokens-table/components/sorting-dropdown/sorting-dropdown.component';
+import { TokensAccordionComponent } from './components/tokens-table/components/sorting-dropdown/tokens-accordion/tokens-accordion.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +83,9 @@ import { TokensMoblieTableComponent } from './components/tokens-moblie-table/tok
     VolumeBlockComponent,
     ListingRequestPopupComponent,
     DisclaimerTextComponent,
-    TokensTableComponent
+    TokensTableComponent,
+    SortingDropdownComponent,
+    TokensAccordionComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -96,7 +101,9 @@ import { TokensMoblieTableComponent } from './components/tokens-moblie-table/tok
     MatSortModule,
     RouterModule,
     ScrollingModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSelectModule,
+    InlineSVGModule.forRoot()
   ],
   exports: [
     FooterComponent,

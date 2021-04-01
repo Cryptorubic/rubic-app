@@ -1,0 +1,22 @@
+<div class="sorting-dropdown">
+  <div class="sorting-dropdown__label">
+    <span>{{ label }}</span>
+  </div>
+  <div class="sorting-dropdown__select" [ngClass]="{ 'sorting-dropdown__select_rounded': whithoutSorting }">
+    <mat-select [(value)]="selectedValue" (selectionChange)="sortTable($event)">
+      <mat-option *ngFor="let option of options" [value]="option">
+        {{ option }}
+      </mat-option>
+    </mat-select>
+  </div>
+  <div
+    *ngIf="!whithoutSorting"
+    class="sorting-dropdown__icon"
+    (click)="sortTable()"
+    [ngClass]="{
+      'sorting-dropdown__icon_asc' : sortingState.direction === 'asc',
+      'sorting-dropdown__icon_desc' : sortingState.direction === 'desc'
+    }">
+    <div [inlineSVG]="'assets/images/bridge/Arrows-down-white.svg'"></div>
+  </div>
+</div>

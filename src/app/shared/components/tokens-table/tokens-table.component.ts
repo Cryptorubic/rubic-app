@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, ViewChild, Inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild
+} from '@angular/core';
 import { MatSort, MatSortHeaderIntl, Sort } from '@angular/material/sort';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
@@ -48,17 +55,20 @@ export class TokensTableComponent {
   private readonly sortableColumnNames: string[];
 
   public get sortableColumns(): string[] {
-    return this.displayedColumns.filter((column: string) => this.sortableColumnNames.includes(column));
+    return this.displayedColumns.filter((column: string) =>
+      this.sortableColumnNames.includes(column)
+    );
   }
 
-  constructor(private readonly headerStore: HeaderStore, private readonly sortHeader: MatSortHeaderIntl) {
+  constructor(
+    private readonly headerStore: HeaderStore,
+    private readonly sortHeader: MatSortHeaderIntl
+  ) {
     this.refreshTableEvent = new EventEmitter<void>();
     this.selectTokenEvent = new EventEmitter<TokenValueType>();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.sortableColumnNames = ['status', 'expires'];
-  }
-
-  ngOnInit() {
+    this.tableSorting = { active: 'expires', direction: 'asc' };
   }
 
   /**
@@ -95,23 +105,6 @@ export class TokensTableComponent {
    */
   public refreshTable(): void {
     this.refreshTableEvent.emit();
-  }
-
-  public onSortClick(tableColumn: string): void {
-    const currentDirection = this.sort?.direction;
-    const sorting = {
-      id: tableColumn,
-      start: undefined,
-      disableClear: false
-    };
-    if (currentDirection === 'asc') {
-      sorting.start = 'desc'
-    } else if (currentDirection === 'desc') {
-      sorting.start = null;
-    } else {
-      sorting.start = 'asc'
-    }
-    this.sortData({active:sorting.id, direction: sorting.start});
   }
 
   /**
