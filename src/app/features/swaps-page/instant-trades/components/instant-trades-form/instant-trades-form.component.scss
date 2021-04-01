@@ -165,3 +165,10 @@ app-tooltip {
 
   transition: opacity 0.3s ease-in-out;
 }
+
+@media (max-width: 960px) {
+  .instant-trade {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

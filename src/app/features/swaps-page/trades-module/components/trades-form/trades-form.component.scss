@@ -1,3 +1,5 @@
+@import 'src/scss/vars';
+
 .trades-form {
   width: 100%;
   margin-bottom: 10px;
@@ -82,6 +84,59 @@
     img {
       margin-right: 0;
       margin-left: 10px;
+    }
+  }
+}
+
+@media (max-width: 960px) {
+  .trades-form {
+    &__tabs {
+      flex-direction: column;
+      align-items: center;
+      height: auto;
+    }
+
+    .trades-form__tabs-blockchains {
+      margin-bottom: 21px;
+    }
+  }
+
+  .tab {
+    &_blockchain {
+      height: 80px;
+
+      &.tab_active {
+        position: relative;
+        border-bottom: 2px solid $main-green;
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 50%;
+          bottom: -9px;
+          width: 0;
+          height: 0;
+          transform: translateX(-50%);
+          border-style: solid;
+          border-width: 9px 9px 0 9px;
+          border-color: $main-green transparent transparent transparent;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .tab {
+    &_blockchain {
+      flex-direction: column;
+
+      img {
+        margin-right: 0;
+        margin-bottom: 5px;
+        max-width: 33px;
+        max-height: 33px;
+      }
     }
   }
 }
