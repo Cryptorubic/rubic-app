@@ -45,7 +45,7 @@
         [blockchain]="blockchain"
         [tokenAddress]="commonTradeParameters.customFromTokenAddress"
         (tokenAddressChange)="setCustomTokenAddress('from', $event)"
-        (tokenValidated)="updateCustomToken('from', $event)"
+        (tokenIsValidated)="updateCustomToken('from', $event)"
         (addToken)="addCustomToken('from')"
       ></app-custom-token-form>
     </div>
@@ -140,7 +140,7 @@
               [blockchain]="blockchain"
               [tokenAddress]="commonTradeParameters.customToTokenAddress"
               (tokenAddressChange)="setCustomTokenAddress('to', $event)"
-              (tokenValidated)="updateCustomToken('to', $event)"
+              (tokenIsValidated)="updateCustomToken('to', $event)"
               (addToken)="addCustomToken('to')"
             ></app-custom-token-form>
           </div>

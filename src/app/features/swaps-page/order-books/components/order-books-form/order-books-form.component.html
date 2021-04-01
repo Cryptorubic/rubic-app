@@ -24,7 +24,7 @@
             [blockchain]="blockchain"
             [tokenAddress]="commonTradeParameters.customFromTokenAddress"
             (tokenAddressChange)="setCustomTokenAddress('base', $event)"
-            (tokenValidated)="updateCustomToken('base', $event)"
+            (tokenIsValidated)="updateCustomToken('base', $event)"
             (addToken)="addCustomToken('base')"
           ></app-custom-token-form>
         </div>
@@ -91,7 +91,7 @@
             [blockchain]="blockchain"
             [tokenAddress]="commonTradeParameters.customToTokenAddress"
             (tokenAddressChange)="setCustomTokenAddress('quote', $event)"
-            (tokenValidated)="updateCustomToken('quote', $event)"
+            (tokenIsValidated)="updateCustomToken('quote', $event)"
             (addToken)="addCustomToken('quote')"
           ></app-custom-token-form>
         </div>

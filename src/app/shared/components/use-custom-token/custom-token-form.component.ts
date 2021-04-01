@@ -42,7 +42,7 @@ export class CustomTokenFormComponent {
     this.tokenAddressChange.emit(value);
   }
 
-  @Output() tokenValidated = new EventEmitter<Token>();
+  @Output() tokenIsValidated = new EventEmitter<Token>();
 
   @Output() addToken = new EventEmitter<Token>();
 

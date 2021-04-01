@@ -18,7 +18,7 @@
       pattern="0x[A-Fa-f0-9]{40}"
       appTokenAddress
       [blockchain]="blockchain"
-      (tokenValidated)="tokenValidated.emit($event)"
+      (tokenIsValidated)="tokenIsValidated.emit($event)"
       [(ngModel)]="tokenAddress"
       #customTokenModel="ngModel"
       [ngClass]="{
