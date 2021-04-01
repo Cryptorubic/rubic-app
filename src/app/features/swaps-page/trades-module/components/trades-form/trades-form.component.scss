@@ -130,6 +130,8 @@
   .tab {
     &_blockchain {
       flex-direction: column;
+      min-width: auto;
+      text-align: center;
 
       img {
         margin-right: 0;

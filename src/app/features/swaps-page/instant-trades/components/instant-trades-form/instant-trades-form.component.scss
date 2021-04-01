@@ -168,7 +168,32 @@ app-tooltip {
 
 @media (max-width: 960px) {
   .instant-trade {
-    flex-direction: column;
-    align-items: stretch;
+    display: block;
+  }
+
+  .selection-block {
+    &__label {
+      left: 0;
+    }
+
+    &__warning {
+      margin-bottom: 7px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .instant-trade {
+    &__to-section {
+      display: block;
+
+      .instant-trade-button:nth-child(2) {
+        margin-bottom: 22px;
+      }
+    }
+
+    &-button {
+      top: auto;
+    }
   }
 }

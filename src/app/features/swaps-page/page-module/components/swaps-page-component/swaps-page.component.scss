@@ -93,3 +93,13 @@ app-volume-block {
     padding: 0 2vw;
   }
 }
+
+@media (max-width: 768px) {
+  .main-page__title-text {
+    display: block;
+  }
+
+  .toggle {
+    float: none;
+  }
+}
