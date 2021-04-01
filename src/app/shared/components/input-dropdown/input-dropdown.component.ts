@@ -6,7 +6,8 @@ import {
   Input,
   Output,
   Type,
-  ViewChild
+  ViewChild,
+  HostListener
 } from '@angular/core';
 
 import { List } from 'immutable';
@@ -144,6 +145,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   public clearSearch() {
     this.toggleListOpen(false);
     this.searchComponent('');
+    this.componentChanges.emit(null);
   }
 
   /**
@@ -155,6 +157,12 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
         .filter(item => item.id !== component.id)
         .slice(0, this.VISIBLE_COMPONENTS_NUMBER - 1)
         .unshift(component);
+    }
+  }
+
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler() {
+    if (this.isOpenList) {
+      this.clearSearch();
     }
   }
 }

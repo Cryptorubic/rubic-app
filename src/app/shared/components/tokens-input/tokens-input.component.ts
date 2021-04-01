@@ -145,7 +145,7 @@ export class TokensInputComponent implements OnChanges {
    * Every token-component has `id`, which is actually the `address` of that token.
    */
   public onTokenChanges(tokenComponent) {
-    this.tokenChanges.emit(this.tokensList.find(token => token.address === tokenComponent.id));
+    this.tokenChanges.emit(this.tokensList.find(token => token.address === tokenComponent?.id));
   }
 
   /**
