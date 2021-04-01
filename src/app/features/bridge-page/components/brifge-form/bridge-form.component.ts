@@ -124,7 +124,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   set selectedToken(value: BridgeToken) {
     this._selectedToken = value;
     this.selectedTokenAsInputToken = this.dropDownTokens.find(
-      token => token.address === this.selectedToken[this.fromBlockchain.addressName]
+      token => token.address === this.selectedToken?.[this.fromBlockchain.addressName]
     );
   }
 
