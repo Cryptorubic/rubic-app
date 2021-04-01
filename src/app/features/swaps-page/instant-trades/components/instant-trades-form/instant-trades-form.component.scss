@@ -169,6 +169,14 @@ app-tooltip {
 @media (max-width: 960px) {
   .instant-trade {
     display: block;
+
+    &__from-section {
+      margin-bottom: 22px;
+    }
+
+    &__arrow-section {
+      display: none;
+    }
   }
 
   .selection-block {

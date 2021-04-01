@@ -103,7 +103,9 @@
 
   .tab {
     &_blockchain {
-      height: 80px;
+      padding: 15px;
+      width: 180px;
+      height: 50px;
 
       &.tab_active {
         position: relative;
@@ -127,10 +129,19 @@
 }
 
 @media (max-width: 768px) {
+  .trades-form {
+    &__tabs-blockchains {
+      align-items: stretch !important;
+      width: 90%;
+    }
+  }
+
   .tab {
     &_blockchain {
       flex-direction: column;
       min-width: auto;
+      height: auto;
+      width: 33.33%;
       text-align: center;
 
       img {
@@ -139,6 +150,24 @@
         max-width: 33px;
         max-height: 33px;
       }
+    }
+  }
+}
+
+@media (max-width: 401px) {
+  .trades-form {
+    &__tabs {
+      
+    }
+    &__tabs-modes {
+      width: 100%;
+    }
+  }
+
+  .tab {
+    &_mode {
+      min-width: auto;
+      width: 50%;
     }
   }
 }
