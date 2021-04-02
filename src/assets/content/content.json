@@ -1,7 +1,7 @@
 {
   "volume": {
-    "instantTradesVolume": "$3,172,915",
-    "bridgeVolume": "$1,399,097"
+    "instantTradesVolume": "$3,674,807",
+    "bridgeVolume": "$2,267,083"
   },
   "team": [
     {
@@ -67,6 +67,17 @@
         {
           "icon": "Github.svg",
           "url": "https://github.com/ottebrut"
+        }
+      ]
+    },
+    {
+      "img": "PoezzhaevVlad.png",
+      "name": "Vladislav Poezzhaev",
+      "role": "Frontend developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/vlad3k"
         }
       ]
     },
