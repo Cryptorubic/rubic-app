@@ -222,3 +222,41 @@
     top: 22px;
   }
 }
+
+@media (max-width: 960px) {
+  .order-book-form {
+    &__main-section {
+      flex-direction: column;
+    }
+  }
+
+  .main-section {
+    &__from-section,
+    &__to-section {
+      width: 100%;
+    }
+
+    &__from-section {
+      margin-bottom: 22px;
+    }
+
+    &__to-section {
+      display: block;
+    }
+
+    &__arrow-section {
+      display: none;
+    }
+  }
+
+  .tokens-form-header {
+    &__label {
+      left: 0;
+    }
+  }
+
+  .to-section__confirm-section {
+    margin-top: 22px;
+    top: auto;
+  }
+}

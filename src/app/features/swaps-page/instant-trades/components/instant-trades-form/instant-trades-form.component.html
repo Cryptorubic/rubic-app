@@ -72,17 +72,14 @@
               tradeController.trade?.gasFeeInUsd
             "
           >
-            <span class="gas-fee__text"
-              >Estimated gas fee:
+            <span class="gas-fee__text">
+              Estimated gas fee:
               {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
               ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
+              <img src="/assets/images/icons/info.svg"
+                   matTooltip="{{'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.' | translate }}"
+                   alt="info" />
             </span>
-            <app-info-tooltip [emptyIcon]="true">
-              {{
-                'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
-                  | translate
-              }}
-            </app-info-tooltip>
           </div>
           <div class="selection-block__warning">
             <app-warning-label

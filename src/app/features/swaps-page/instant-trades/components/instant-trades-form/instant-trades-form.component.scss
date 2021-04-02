@@ -119,8 +119,11 @@
 
   &__text {
     margin-right: 8px;
-
     opacity: 0.5;
+
+    img {
+      vertical-align: bottom;
+    }
   }
 }
 
@@ -187,6 +190,10 @@ app-tooltip {
     &__warning {
       margin-bottom: 7px;
     }
+  }
+
+  .gas-fee {
+    margin-bottom: 25px;
   }
 }
 
