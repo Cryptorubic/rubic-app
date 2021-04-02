@@ -71,6 +71,17 @@
       ]
     },
     {
+      "img": "PoezzhaevVlad.png",
+      "name": "Vladislav Poezzhaev",
+      "role": "Frontend developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/vlad3k"
+        }
+      ]
+    },
+    {
       "img": "AlexandrKelepko.png",
       "name": "Alexandr Kelepko",
       "role": "Backend Developer",
