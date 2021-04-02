@@ -1,183 +1,202 @@
-<form
-  class="instant-trade"
-  [ngClass]="{
-    'instant-trade_extended':
-      trades.length === 2 &&
-      (commonTradeParameters.isCustomFromTokenFormOpened ||
-        commonTradeParameters.isCustomToTokenFormOpened),
-    'instant-trade_not-extended':
-      (trades[0].trade?.gasFeeInEth && trades[0].trade?.gasFeeInUsd) ||
-      checkIfError(0) ||
-      (trades.length > 1 &&
-        ((trades[1].trade?.gasFeeInEth && trades[1].trade?.gasFeeInUsd) || checkIfError(1)))
-  }"
-  (submit)="$event.preventDefault()"
->
+<div class="instant-trade">
   <div
-    class="instant-trade__from-section selection-block"
-    [ngClass]="{ 'instant-trade__from-section_lowered': trades.length === 2 }"
+    class="instant-trade__warning"
+    *ngIf="
+      fromToken?.address === customToken.from?.address ||
+      toToken?.address === customToken.to?.address
+    "
   >
-    <div class="selection-block__header">
-      <div class="selection-block__label">you have</div>
+    <app-warning-disclaimer
+      [warningText]="'Use custom tokens at your own risk.'"
+      [tooltipText]="
+        'Hi. You start using custom token. Be sure what are you doing cause all of the swaps are done at your own risk. May the Lord help you.'
+          | translate
+      "
+    ></app-warning-disclaimer>
+  </div>
 
-      <div *ngIf="fromToken?.address" class="selection-block__scanner">
-        <app-scanner-link
-          [address]="fromToken.address"
-          [blockchainName]="blockchain"
-          [addressType]="ADDRESS_TYPE.TOKEN"
-        >
-        </app-scanner-link>
+  <form
+    class="instant-trade-form"
+    [ngClass]="{
+      'instant-trade-form_extended':
+        trades.length === 2 &&
+        (commonTradeParameters.isCustomFromTokenFormOpened ||
+          commonTradeParameters.isCustomToTokenFormOpened),
+      'instant-trade-form_not-extended':
+        (trades[0].trade?.gasFeeInEth && trades[0].trade?.gasFeeInUsd) ||
+        checkIfError(0) ||
+        (trades.length > 1 &&
+          ((trades[1].trade?.gasFeeInEth && trades[1].trade?.gasFeeInUsd) || checkIfError(1)))
+    }"
+    (submit)="$event.preventDefault()"
+  >
+    <div
+      class="instant-trade-form__from-section selection-block"
+      [ngClass]="{ 'instant-trade-form__from-section_lowered': trades.length === 2 }"
+    >
+      <div class="selection-block__header">
+        <div class="selection-block__label">you have</div>
+
+        <div *ngIf="fromToken?.address" class="selection-block__scanner">
+          <app-scanner-link
+            [address]="fromToken.address"
+            [blockchainName]="blockchain"
+            [addressType]="ADDRESS_TYPE.TOKEN"
+          >
+          </app-scanner-link>
+        </div>
+      </div>
+
+      <app-tokens-input
+        [tokensList]="availableFromTokens"
+        [selectedToken]="fromToken"
+        [selectedAmount]="fromAmount"
+        (tokenChanges)="fromToken = $any($event)"
+        (numberChanges)="fromAmount = $event"
+      >
+      </app-tokens-input>
+
+      <div
+        class="selection-block__custom-token-section"
+        [ngClass]="{ 'instant-trade-form__custom-token-section_lowered': trades.length === 2 }"
+      >
+        <app-custom-token-form
+          type="from"
+          [isSectionOpened]="commonTradeParameters.isCustomFromTokenFormOpened"
+          (isSectionOpenedChange)="setIsCustomTokenFormOpened('from', $event)"
+          [blockchain]="blockchain"
+          [tokenAddress]="commonTradeParameters.customFromTokenAddress"
+          (tokenAddressChange)="setCustomTokenAddress('from', $event)"
+          (tokenIsValidated)="updateCustomToken('from', $event)"
+          (addToken)="addCustomToken('from')"
+        ></app-custom-token-form>
       </div>
     </div>
 
-    <app-tokens-input
-      [tokensList]="availableFromTokens"
-      [selectedToken]="fromToken"
-      [selectedAmount]="fromAmount"
-      (tokenChanges)="fromToken = $any($event)"
-      (numberChanges)="fromAmount = $event"
-    >
-    </app-tokens-input>
-
-    <div
-      class="selection-block__custom-token-section"
-      [ngClass]="{ 'instant-trade__custom-token-section_lowered': trades.length === 2 }"
-    >
-      <app-custom-token-form
-        type="from"
-        [isSectionOpened]="commonTradeParameters.isCustomFromTokenFormOpened"
-        (isSectionOpenedChange)="setIsCustomTokenFormOpened('from', $event)"
-        [blockchain]="blockchain"
-        [tokenAddress]="commonTradeParameters.customFromTokenAddress"
-        (tokenAddressChange)="setCustomTokenAddress('from', $event)"
-        (tokenIsValidated)="updateCustomToken('from', $event)"
-        (addToken)="addCustomToken('from')"
-      ></app-custom-token-form>
+    <div class="instant-trade-form__arrow-section" (click)="revertTokens()">
+      <button
+        type="button"
+        class="arrow-button"
+        [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
+      >
+        <img *ngIf="trades.length === 2" src="assets/images/icons/RoundArrows.svg" alt="" />
+        <img *ngIf="trades.length === 1" src="assets/images/icons/revert.svg" alt="" />
+      </button>
     </div>
-  </div>
 
-  <div class="instant-trade__arrow-section" (click)="revertTokens()">
-    <button
-      type="button"
-      class="arrow-button"
-      [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
-    >
-      <img *ngIf="trades.length === 2" src="assets/images/icons/RoundArrows.svg" alt="" />
-      <img *ngIf="trades.length === 1" src="assets/images/icons/revert.svg" alt="" />
-    </button>
-  </div>
+    <div class="instant-trade-form__to-section grid">
+      <ng-container *ngFor="let tradeController of trades; let index = index">
+        <div class="selection-block">
+          <div class="selection-block__header" *ngIf="index === 0">
+            <div class="selection-block__label">you get</div>
 
-  <div class="instant-trade__to-section grid">
-    <ng-container *ngFor="let tradeController of trades; let index = index">
-      <div class="selection-block">
-        <div class="selection-block__header" *ngIf="index === 0">
-          <div class="selection-block__label">you get</div>
+            <div *ngIf="toToken?.address" class="selection-block__scanner">
+              <app-scanner-link
+                [address]="toToken.address"
+                [blockchainName]="blockchain"
+                [addressType]="ADDRESS_TYPE.TOKEN"
+              >
+              </app-scanner-link>
+            </div>
+          </div>
 
-          <div *ngIf="toToken?.address" class="selection-block__scanner">
-            <app-scanner-link
-              [address]="toToken.address"
-              [blockchainName]="blockchain"
-              [addressType]="ADDRESS_TYPE.TOKEN"
+          <div class="selection-block__input-container">
+            <app-tokens-input
+              class="instant-trade-form__tokens-input"
+              [inputDisabled]="true"
+              [tokensList]="availableToTokens"
+              [selectedToken]="toToken"
+              [selectedAmount]="getToAmount(index)"
+              [withRoundMode]="true"
+              (tokenChanges)="toToken = $any($event)"
             >
-            </app-scanner-link>
-          </div>
-        </div>
+            </app-tokens-input>
 
-        <div class="selection-block__input-container">
-          <app-tokens-input
-            class="instant-trade__tokens-input"
-            [inputDisabled]="true"
-            [tokensList]="availableToTokens"
-            [selectedToken]="toToken"
-            [selectedAmount]="getToAmount(index)"
-            [withRoundMode]="true"
-            (tokenChanges)="toToken = $any($event)"
-          >
-          </app-tokens-input>
-
-          <div
-            class="gas-fee"
-            *ngIf="
-              blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
-              tradeController.trade?.gasFeeInEth &&
-              tradeController.trade?.gasFeeInUsd
-            "
-          >
-            <span class="gas-fee__text"
-              >Estimated gas fee:
-              {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
-              ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
-            </span>
-            <app-info-tooltip [emptyIcon]="true">
-              {{
-                'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
-                  | translate
-              }}
-            </app-info-tooltip>
-          </div>
-
-          <div class="selection-block__warning">
-            <app-tooltip>
-              {{
-                'Please make sure that selected token is supported on the specified DEX and try again later.'
-                  | translate
-              }}
-            </app-tooltip>
-            <app-warning-label
-              *ngIf="checkIfError(index)"
-              [warningText]="
-                'Trading on ' + tradeController.tradeProviderInfo.label + ' is not available.'
+            <div
+              class="gas-fee"
+              *ngIf="
+                blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
+                tradeController.trade?.gasFeeInEth &&
+                tradeController.trade?.gasFeeInUsd
               "
             >
-            </app-warning-label>
-          </div>
+              <span class="gas-fee__text"
+                >Estimated gas fee:
+                {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
+                ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
+              </span>
+              <app-info-tooltip [emptyIcon]="true">
+                {{
+                  'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
+                    | translate
+                }}
+              </app-info-tooltip>
+            </div>
 
-          <div class="selection-block__custom-token-section" *ngIf="index === trades.length - 1">
-            <app-custom-token-form
-              type="to"
-              [isSectionOpened]="commonTradeParameters.isCustomToTokenFormOpened"
-              (isSectionOpenedChange)="setIsCustomTokenFormOpened('to', $event)"
-              [blockchain]="blockchain"
-              [tokenAddress]="commonTradeParameters.customToTokenAddress"
-              (tokenAddressChange)="setCustomTokenAddress('to', $event)"
-              (tokenIsValidated)="updateCustomToken('to', $event)"
-              (addToken)="addCustomToken('to')"
-            ></app-custom-token-form>
+            <div class="selection-block__warning">
+              <app-error-disclaimer
+                *ngIf="checkIfError(index)"
+                [errorText]="
+                  'Trading on ' + tradeController.tradeProviderInfo.label + ' is not available.'
+                "
+                [tooltipText]="
+                  'Please make sure that selected token is supported on the specified DEX and try again later.'
+                    | translate
+                "
+              >
+              </app-error-disclaimer>
+            </div>
+
+            <div class="selection-block__custom-token-section" *ngIf="index === trades.length - 1">
+              <app-custom-token-form
+                type="to"
+                [isSectionOpened]="commonTradeParameters.isCustomToTokenFormOpened"
+                (isSectionOpenedChange)="setIsCustomTokenFormOpened('to', $event)"
+                [blockchain]="blockchain"
+                [tokenAddress]="commonTradeParameters.customToTokenAddress"
+                (tokenAddressChange)="setCustomTokenAddress('to', $event)"
+                (tokenIsValidated)="updateCustomToken('to', $event)"
+                (addToken)="addCustomToken('to')"
+              ></app-custom-token-form>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="instant-trade-button" [ngClass]="{ 'instant-trade-button_second': index === 1 }">
-        <app-primary-button
-          type="button"
-          [label]="'Via ' + tradeController.tradeProviderInfo.label"
-          [disabled]="
-            !(
-              fromAmountAsNumber.isGreaterThan(0) &&
-              tradeParameters.toToken &&
-              tradeParameters.fromToken
-            ) ||
-            !tradeController.trade ||
-            shouldAnimateButton(index) ||
-            (selectedTradeState &&
-              selectedTradeState !== TRADE_STATUS.ERROR &&
-              selectedTradeState !== TRADE_STATUS.COMPLETED)
-          "
-          [animate]="shouldAnimateButton(index)"
-          (onClick)="createTrade(index)"
-        >
-        </app-primary-button>
         <div
-          class="instant-trade-button__best-rate"
-          *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState"
+          class="instant-trade-button"
+          [ngClass]="{ 'instant-trade-button_second': index === 1 }"
         >
-          <span>{{ 'Best Rate' | translate }}</span>
-          <img src="assets/images/icons/BestRate.svg" alt="" />
+          <app-primary-button
+            type="button"
+            [label]="'Via ' + tradeController.tradeProviderInfo.label"
+            [disabled]="
+              !(
+                fromAmountAsNumber.isGreaterThan(0) &&
+                tradeParameters.toToken &&
+                tradeParameters.fromToken
+              ) ||
+              !tradeController.trade ||
+              shouldAnimateButton(index) ||
+              (selectedTradeState &&
+                selectedTradeState !== TRADE_STATUS.ERROR &&
+                selectedTradeState !== TRADE_STATUS.COMPLETED)
+            "
+            [animate]="shouldAnimateButton(index)"
+            (onClick)="createTrade(index)"
+          >
+          </app-primary-button>
+          <div
+            class="instant-trade-button__best-rate"
+            *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState"
+          >
+            <span>{{ 'Best Rate' | translate }}</span>
+            <img src="assets/images/icons/BestRate.svg" alt="" />
+          </div>
         </div>
-      </div>
-    </ng-container>
-  </div>
-</form>
+      </ng-container>
+    </div>
+  </form>
+</div>
 
 <app-trade-in-progress-modal
   *ngIf="

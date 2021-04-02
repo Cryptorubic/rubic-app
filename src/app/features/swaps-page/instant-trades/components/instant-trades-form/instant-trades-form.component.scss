@@ -2,6 +2,19 @@
 
 .instant-trade {
   display: flex;
+  flex-direction: column;
+
+  &__warning {
+    position: relative;
+    top: 18px;
+    right: 30px;
+
+    margin-left: auto;
+  }
+}
+
+.instant-trade-form {
+  display: flex;
   align-items: flex-start;
 
   padding: 27px 30px 29px;
@@ -107,18 +120,7 @@
   }
 
   &__warning {
-    position: relative;
-
     margin-top: 7px;
-
-    cursor: pointer;
-
-    &:hover {
-      app-tooltip {
-        visibility: visible;
-        opacity: 1;
-      }
-    }
   }
 
   &__custom-token-section {
@@ -160,21 +162,4 @@
       font-size: 14px;
     }
   }
-}
-
-app-tooltip {
-  position: absolute;
-  right: -88px;
-  bottom: calc(100% - 7px);
-
-  z-index: 10;
-
-  font-size: 11px;
-
-  text-align: center;
-
-  visibility: hidden;
-  opacity: 0;
-
-  transition: opacity 0.3s ease-in-out;
 }

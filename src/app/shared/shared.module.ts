@@ -33,7 +33,7 @@ import { BigNumberFormat } from './pipes/big-number-format.pipe';
 import { NativeUrlPipe } from './pipes/native-url.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
 import { AddressInputComponent } from './components/address-input/address-input.component';
-import { WarningLabelComponent } from './components/warning-label/warning-label.component';
+import { ErrorDisclaimerComponent } from './components/warning-label/error-disclaimer.component';
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
 import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
 import { ScannerLinkComponent } from './components/scanner-link/scanner-link.component';
@@ -45,6 +45,7 @@ import { ListingRequestPopupComponent } from './components/collaborations/listin
 import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer-text.component';
 import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
 import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
+import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,7 @@ import { CustomTokenFormComponent } from './components/use-custom-token/custom-t
     ScannerLinkPipe,
     NativeUrlPipe,
     AddressInputComponent,
-    WarningLabelComponent,
+    ErrorDisclaimerComponent,
     TokenAddressDirective,
     NumberPrecisionDirective,
     ScannerLinkComponent,
@@ -81,7 +82,8 @@ import { CustomTokenFormComponent } from './components/use-custom-token/custom-t
     ListingRequestPopupComponent,
     DisclaimerTextComponent,
     TokensTableComponent,
-    CustomTokenFormComponent
+    CustomTokenFormComponent,
+    WarningDisclaimerComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -122,7 +124,7 @@ import { CustomTokenFormComponent } from './components/use-custom-token/custom-t
     ScannerLinkPipe,
     NativeUrlPipe,
     AddressInputComponent,
-    WarningLabelComponent,
+    ErrorDisclaimerComponent,
     TokenAddressDirective,
     TranslateModule,
     NumberPrecisionDirective,
@@ -133,7 +135,8 @@ import { CustomTokenFormComponent } from './components/use-custom-token/custom-t
     VolumeBlockComponent,
     DisclaimerTextComponent,
     TokensTableComponent,
-    CustomTokenFormComponent
+    CustomTokenFormComponent,
+    WarningDisclaimerComponent
   ]
 })
 export class SharedModule {}

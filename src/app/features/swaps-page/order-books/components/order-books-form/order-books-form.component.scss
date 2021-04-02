@@ -1,5 +1,18 @@
 @import 'src/scss/vars';
 
+.order-book {
+  display: flex;
+  flex-direction: column;
+
+  &__warning {
+    position: relative;
+    top: 18px;
+    right: 30px;
+
+    margin-left: auto;
+  }
+}
+
 .order-book-form {
   &__main-section {
     padding: 27px 30px 29px;
