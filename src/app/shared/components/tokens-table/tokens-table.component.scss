@@ -33,8 +33,9 @@ $primary-color: #4aa956;
     display: block;
     width: 10px;
     height: 10px;
-    border-radius: 50%;
     margin-right: 10px;
+
+    border-radius: 50%;
 
     &_active {
       background-color: $active-green;

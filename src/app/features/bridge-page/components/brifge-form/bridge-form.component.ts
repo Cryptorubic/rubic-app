@@ -7,13 +7,13 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { NetworkErrorComponent } from '../network-error/network-error.component';
 import InputToken from '../../../../shared/models/tokens/InputToken';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
+import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
 
 @Component({
   selector: 'app-bridge-form',

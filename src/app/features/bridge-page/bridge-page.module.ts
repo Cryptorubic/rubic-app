@@ -8,15 +8,14 @@ import { InlineSVGModule } from 'ng-inline-svg';
 import { HttpClientModule } from '@angular/common/http';
 import { BridgePageRoutingModule } from './bridge-page-routing.module';
 import { BridgeComponent } from './components/bridge/bridge.component';
-import { BridgeInProgressModalComponent } from './components/bridge-in-progress-modal/bridge-in-progress-modal.component';
-import { BridgeSuccessComponent } from './components/bridge-success/bridge-success.component';
-import { BridgeTableComponent } from './components/bridge-table/bridge-table.component';
-import { BridgeFormComponent } from './components/brifge-form/bridge-form.component';
-import { NetworkErrorComponent } from './components/network-error/network-error.component';
 import { BridgeService } from './services/bridge.service';
-import { AdvertModalComponent } from './components/ad-modal/advert-modal.component';
 import { RubicBridgeService } from './services/rubic-bridge-service/rubic-bridge.service';
-import { HighGasPriceModalComponent } from './components/high-gas-price-modal/high-gas-price-modal.component';
+import { BridgeFormComponent } from './components/brifge-form/bridge-form.component';
+import { BridgeInProgressModalComponent } from './components/dialogs/bridge-in-progress-modal/bridge-in-progress-modal.component';
+import { BridgeSuccessComponent } from './components/dialogs/bridge-success/bridge-success.component';
+import { BridgeTableComponent } from './components/bridge-table/bridge-table.component';
+import { AdvertModalComponent } from './components/dialogs/advert-modal/advert-modal.component';
+import { HighGasPriceModalComponent } from './components/dialogs/high-gas-price-modal/high-gas-price-modal.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +24,6 @@ import { HighGasPriceModalComponent } from './components/high-gas-price-modal/hi
     BridgeInProgressModalComponent,
     BridgeSuccessComponent,
     BridgeTableComponent,
-    NetworkErrorComponent,
     AdvertModalComponent,
     HighGasPriceModalComponent
   ],

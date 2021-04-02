@@ -22,9 +22,9 @@ import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BI
 import { RubicError } from '../../../../../../shared/models/errors/RubicError';
 import { OrderBookTradeService } from '../../../../services/order-book-trade.service';
 import { NetworkError } from '../../../../../../shared/models/errors/provider/NetworkError';
-import { NetworkErrorComponent } from '../../../../../bridge-page/components/network-error/network-error.component';
 import { MessageBoxComponent } from '../../../../../../shared/components/message-box/message-box.component';
 import { MetamaskError } from '../../../../../../shared/models/errors/provider/MetamaskError';
+import { NetworkErrorComponent } from '../../../../../../shared/components/network-error/network-error.component';
 
 type Operation = 'approve' | 'contribute' | 'withdraw';
 

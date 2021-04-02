@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
+import { NetworkError } from '../../models/errors/provider/NetworkError';
 
 @Component({
   selector: 'app-network-error',

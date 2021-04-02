@@ -11,8 +11,8 @@ import { SharedModule } from './shared/shared.module';
 import { DisclaimerComponent } from './shared/components/disclaimer/disclaimer.component';
 import { TokenLabelComponent } from './shared/components/tokens-input/token-label/token-label.component';
 import { BlockchainLabelComponent } from './shared/components/blockchains-input/blockchain-label/blockchain-label.component';
-import { NetworkErrorComponent } from './features/bridge-page/components/network-error/network-error.component';
 import { ListingRequestPopupComponent } from './shared/components/collaborations/listing-request-popup/listing-request-popup.component';
+import { NetworkErrorComponent } from './shared/components/network-error/network-error.component';
 
 @NgModule({
   declarations: [AppComponent],
