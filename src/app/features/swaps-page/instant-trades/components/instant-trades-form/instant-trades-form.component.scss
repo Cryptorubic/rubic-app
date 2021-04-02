@@ -2,10 +2,16 @@
 
 .instant-trade {
   display: flex;
+  align-items: flex-start;
+
   padding: 27px 30px 29px;
 
   &_extended {
-    height: 237px;
+    min-height: 237px;
+  }
+
+  &_not-extended {
+    min-height: initial;
   }
 
   &__from-section {
@@ -22,12 +28,6 @@
 
   &__to-section {
     flex: 6;
-
-    max-height: 178px;
-
-    &_extended {
-      max-height: 237px;
-    }
   }
 }
 
