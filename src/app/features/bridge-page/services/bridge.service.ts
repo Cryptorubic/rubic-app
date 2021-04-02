@@ -190,7 +190,7 @@ export class BridgeService {
         if (onTransactionHash) {
           onTransactionHash(hash);
         }
-        await this.backendApiService.postRubicTransaction(fromNetwork, hash);
+        await this.backendApiService.postRubicTransaction(fromNetwork, hash, amount.toFixed(2));
         await this.updateTransactionsList();
       };
 

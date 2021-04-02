@@ -52,11 +52,12 @@ export class BridgeApiService {
     });
   }
 
-  public postRubicTransaction(fromNetwork: BLOCKCHAIN_NAME, txHash: string) {
+  public postRubicTransaction(fromNetwork: BLOCKCHAIN_NAME, txHash: string, fromAmount: string) {
     const body = {
       type: 'swap_rbc',
       fromNetwork: fromNetwork === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
-      transaction_id: txHash
+      transaction_id: txHash,
+      fromAmount
     };
 
     return new Promise<void>((resolve, reject) => {
