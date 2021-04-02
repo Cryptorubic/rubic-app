@@ -9,6 +9,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { RouterModule } from '@angular/router';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -91,7 +93,9 @@ import { TokensTableComponent } from './components/tokens-table/tokens-table.com
     MatProgressBarModule,
     MatTableModule,
     MatSortModule,
-    RouterModule
+    RouterModule,
+    ScrollingModule,
+    MatTooltipModule
   ],
   exports: [
     FooterComponent,

@@ -6,7 +6,8 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
   OrderBookDataToken,
-  OrderBookTradeData
+  OrderBookTradeData,
+  ORDER_BOOK_TRADE_STATUS
 } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import * as moment from 'moment';
@@ -111,7 +112,8 @@ export class OrderBookApiService {
       expirationDate: moment.utc(tradeApi.stop_date),
       isPublic: tradeApi.public,
       isWithBrokerFee: tradeApi.broker_fee,
-      brokerAddress: tradeApi.broker_fee_address
+      brokerAddress: tradeApi.broker_fee_address,
+      status: ORDER_BOOK_TRADE_STATUS[tradeApi.state]
     } as OrderBookTradeData;
     await this.setTokensData('base', tradeApi, tradeData);
     await this.setTokensData('quote', tradeApi, tradeData);

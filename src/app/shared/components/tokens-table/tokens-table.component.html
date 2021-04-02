@@ -4,16 +4,16 @@
     <button
       class="tokens-table__refresh-button refresh-btn"
       [ngClass]="{ 'tokens-table__refresh-button_animated': tableLoading  }"
-      (click)="refresnOrderBooks()">
+      (click)="refreshTable()">
       <img class="arrow" src="./assets/images/icons/refresh.svg" />
     </button>
   </div>
   <table
     mat-table
     matSort
-    [dataSource]="tableData"
+    [dataSource]="sotredTableData"
+    (matSortChange)="sortData($event)"
     class="table order-books"
-    *ngIf="!tableLoading && tableData.length !== 0"
   >
     <colgroup>
       <ng-container>
@@ -22,14 +22,19 @@
     </colgroup>
     <!-- Status column  -->
     <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef class="centered-child">
+      <th mat-header-cell *matHeaderCellDef class="centered-child"  mat-sort-header>
         <div class="tokens-table__cell">
           {{ 'Status' | translate }}
         </div>
       </th>
-      <td *matCellDef="let element" class="centered-child">
+      <td *matCellDef="let element">
         <a routerLink="/public-v3/{{ element.uniqueLink }}">
-          <div class="tokens-table__cell">
+          <div class="tokens-table__cell tokens-table__cell_status">
+            <span
+              class="tokens-table__status"
+              *ngIf="element.status"
+              [ngClass]="getClassName(element.status)"
+            ></span>
             {{ element.status }}
           </div>
         </a>
@@ -38,11 +43,7 @@
     <!-- Tokens icons column  -->
     <ng-container matColumnDef="token">
       <th mat-header-cell *matHeaderCellDef #tokensHeader matAutocompleteOrigin>
-        <div class="tokens-table__cell">
-          {{ 'Tokens' | translate }}
-        </div>
-        <!-- Uncomment after filtering release -->
-        <!-- <app-coins-filter></app-coins-filter> -->
+        <app-coins-filter (selectTokenEvent)="selectToken($event)"></app-coins-filter>
       </th>
       <td *matCellDef="let element">
         <a routerLink="/public-v3/{{ element.uniqueLink }}">
@@ -84,16 +85,15 @@
     </ng-container>
     <!-- Expires in column  -->
     <ng-container matColumnDef="expires">
-      <th mat-header-cell *matHeaderCellDef class="centered-child">
+      <th mat-header-cell *matHeaderCellDef class="centered-child" mat-sort-header>
         <div class="tokens-table__cell">
           {{ 'Expires in' | translate }}
         </div>
       </th>
       <td *matCellDef="let element" class="centered-child">
         <a routerLink="/public-v3/{{ element.uniqueLink }}">
-          <div class="tokens-table__cell">
-            {{ element.expirationDate | date: 'd' }}d: {{ element.expirationDate | date: 'h' }}h:
-            {{ element.expirationDate | date: 'm' }}m
+          <div class="tokens-table__cell tokens-table__cell_datetime">
+            {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h: {{ element.expiresIn.minutes() }}m
           </div>
         </a>
       </td>
@@ -104,5 +104,5 @@
       *matRowDef="let row; columns: displayedColumns "
     ></tr>
   </table>
-  <p *ngIf="tableData.length === 0">{{ 'No data' | translate }}</p>
+  <p *ngIf="sotredTableData.length === 0">{{ 'No data' | translate }}</p>
 </div>

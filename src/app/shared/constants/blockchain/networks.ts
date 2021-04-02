@@ -34,7 +34,7 @@ export default [
     name: BLOCKCHAIN_NAME.MATIC,
     scannerUrl: 'https://explorer-mainnet.maticvigil.com/',
     rpcLink: 'https://rpc-mainnet.matic.network',
-    imagePath: 'assets/images/icons/coins/matic.svg',
+    imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
       blockchainName: BLOCKCHAIN_NAME.MATIC,
       address: '0x0000000000000000000000000000000000000000',
@@ -77,7 +77,7 @@ export default [
     name: BLOCKCHAIN_NAME.MATIC_TESTNET,
     scannerUrl: 'https://explorer-mumbai.maticvigil.com/',
     rpcLink: 'https://rpc-mumbai.maticvigil.com',
-    imagePath: 'assets/images/icons/coins/matic.svg',
+    imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
       blockchainName: BLOCKCHAIN_NAME.MATIC_TESTNET,
       address: '0x0000000000000000000000000000000000000000',

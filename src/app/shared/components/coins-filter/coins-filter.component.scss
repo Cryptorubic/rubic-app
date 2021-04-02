@@ -13,6 +13,19 @@ $primary-grey: #f4f4f4;
     }
   }
 
+  &__virtual-scroll {
+    height: 240px;
+    overflow-x: hidden;
+
+    .cdk-virtual-scroll-content-wrapper {
+      width: 100%;
+    }
+  }
+
+  &__virtual-scroll-element {
+    height: 48px;
+  }
+
   &__tokens-input {
     box-sizing: border-box;
     max-width: 120px;
@@ -26,15 +39,23 @@ $primary-grey: #f4f4f4;
     background: $primary-grey;
     background-size: 28px auto;
     border: 0;
-    border-radius: 0;
+    border-radius: 5px;
   }
     
   &__switch-button {
     margin: 0 5px;
+    border-radius: 5px;
+    padding: 0 11px;
+    display: flex;
+    align-items: center;
 
     background: $primary-grey;
     border: none;
     cursor: pointer;
+
+    img {
+      transform: rotate(90deg);
+    }
   }
 
   &__tokens-dropdown {
@@ -46,5 +67,17 @@ $primary-grey: #f4f4f4;
       height: 25px;
       margin-right: 10px;
     }
+
+    span {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      line-height: normal;
+    }
+  }
+}
+
+::ng-deep {
+  .cdk-virtual-scroll-content-wrapper {
+    width: 100%;
   }
 }
