@@ -248,6 +248,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.fromWalletAddress = address;
       this.toWalletAddress = address;
     });
+
+    console.log(this.blockchainsList)
   }
 
   ngOnDestroy() {

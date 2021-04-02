@@ -8,11 +8,22 @@
           <div class="choose-blockchains__title">From</div>
 
           <div class="choose-blockchains__blockchain form-field">
-            <app-blockchains-input
+            <!-- <app-blockchains-input
               [selectedBlockchain]="fromBlockchain"
               [blockchains]="blockchainsList"
               (blockchainChanges)="fromBlockchain = $event"
-            ></app-blockchains-input>
+            ></app-blockchains-input> -->
+            <input type="text"
+              placeholder="Pick one"
+              aria-label="Number"
+              matInput
+              [matAutocomplete]="auto">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+              <mat-option *ngFor="let blockchain of blockchainsList" value="{{ blockchain.shortLabel }} ({{ blockchain.name }})">
+                <img [src]="'./assets/images/icons/coins/' + blockchain.img" alt="Blockchain" width="20" height="23">
+                {{ blockchain.shortLabel }} ({{ blockchain.name }})
+              </mat-option>
+            </mat-autocomplete>
           </div>
 
           <a

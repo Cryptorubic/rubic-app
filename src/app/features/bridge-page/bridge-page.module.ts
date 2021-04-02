@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { HttpClientModule } from '@angular/common/http';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { BridgePageRoutingModule } from './bridge-page-routing.module';
 import { BridgeComponent } from './components/bridge/bridge.component';
 import { BridgeInProgressModalComponent } from './components/bridge-in-progress-modal/bridge-in-progress-modal.component';
@@ -38,7 +39,8 @@ import { BridgeSectionComponent } from './components/bridge-section/bridge-secti
     TranslateModule,
     MatDialogModule,
     HttpClientModule,
-    InlineSVGModule.forRoot()
+    InlineSVGModule.forRoot(),
+    MatAutocompleteModule
   ],
   providers: [BridgeService, RubicBridgeService]
 })
