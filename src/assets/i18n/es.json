@@ -261,7 +261,7 @@
   "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
   "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to www.metamask.io and follow the steps.":
   "Este error ocurre porque no haz instalado la extensión del navegador de Metamask. Para solucionar este problema, instala y activa la extensión de Metamask en tu navegador.\nPuedes ir a <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> y seguir los pasos.",
-  "Please check that you have active Metamask plugin in your browser and Metamask wallet is connected.\nIf not please download it from www.metamask.io and connect wallet using Connect Wallet button.":
+  "Please make sure that you have metamask plugin installed and unlocked.\nYou can download it on metamask.io.":
   "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> y conectar la billeta con el botón de Conectar la Billetera.",
   "You have selected the wrong network. Please choose { networkToChoose } from MetaMask.":
   "Has seleccionado la red principal incorrecta. Elige {{ networkToChoose }} en MetaMask.",
