@@ -33,7 +33,7 @@ export class BridgeApiService {
     bscSymbol: string
   ): Promise<void> {
     const body = {
-      swap_type: 'panama',
+      type: 'panama',
       transaction_id: binanceTransactionId,
       ethSymbol,
       bscSymbol
@@ -52,11 +52,18 @@ export class BridgeApiService {
     });
   }
 
-  public postRubicTransaction(fromNetwork: BLOCKCHAIN_NAME, txHash: string) {
+  public postRubicTransaction(
+    fromNetwork: BLOCKCHAIN_NAME,
+    txHash: string,
+    fromAmount: string,
+    walletFromAddress: string
+  ) {
     const body = {
-      swap_type: 'rbc_swap',
-      source_network: fromNetwork === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
-      tx_hash: txHash
+      type: 'swap_rbc',
+      fromNetwork: fromNetwork === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
+      transaction_id: txHash,
+      fromAmount,
+      walletFromAddress
     };
 
     return new Promise<void>((resolve, reject) => {
