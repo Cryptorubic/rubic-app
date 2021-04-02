@@ -242,3 +242,24 @@
     margin: 0 5px;
   }
 }
+
+@media(max-width: 768px) {
+  .form-section-row {
+    justify-content: center;
+  }
+
+  .form-section-block {
+    &_deal {
+      width: 100%;
+      justify-content: center;
+    }
+
+    &_button {
+      min-height: auto;
+    }
+
+    &__advanced-options-button {
+      top: auto;
+    }
+  }
+}

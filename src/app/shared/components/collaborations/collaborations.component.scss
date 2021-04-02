@@ -29,13 +29,14 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    grid-gap: 0 175px;
   }
 
   &__item {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 295px;
+    width: 120px;
     margin-bottom: 90px;
 
     cursor: pointer;
@@ -72,5 +73,13 @@
     border: none;
 
     cursor: pointer;
+  }
+}
+
+@media (max-width: 768px) { 
+  .collaborations {
+    &__content {
+      grid-gap: 0 65px;
+    }
   }
 }
