@@ -1,4 +1,4 @@
-@import '../../../../../../../scss/mixins';
+@import '../../../../../../scss/mixins';
 
 .tokens-accordion {
   position: relative;
@@ -21,6 +21,10 @@
     &_active {
       border-radius: 5px 5px 0 0;
     }
+  }
+
+  &__column-name {
+    margin-right: 10px;
   }
 
   &__header-data {

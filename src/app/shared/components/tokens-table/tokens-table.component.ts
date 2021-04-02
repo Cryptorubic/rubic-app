@@ -44,6 +44,8 @@ export class TokensTableComponent {
 
   @Output() public selectTokenEvent: EventEmitter<TokenValueType>;
 
+  public selectedColumn: string;
+
   @ViewChild(MatSort) sort: MatSort;
 
   public sotredTableData: TokensTableData[];
@@ -52,13 +54,9 @@ export class TokensTableComponent {
 
   private tableSorting: Sort;
 
-  private readonly sortableColumnNames: string[];
+  public readonly sortableColumnNames: any;
 
-  public get sortableColumns(): string[] {
-    return this.displayedColumns.filter((column: string) =>
-      this.sortableColumnNames.includes(column)
-    );
-  }
+  public readonly selectableColumns: string[];
 
   constructor(
     private readonly headerStore: HeaderStore,
@@ -67,8 +65,8 @@ export class TokensTableComponent {
     this.refreshTableEvent = new EventEmitter<void>();
     this.selectTokenEvent = new EventEmitter<TokenValueType>();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
-    this.sortableColumnNames = ['status', 'expires'];
-    this.tableSorting = { active: 'expires', direction: 'asc' };
+    this.tableSorting = { active: 'Expires in', direction: 'asc' };
+    this.selectedColumn = 'Expires in';
   }
 
   /**
@@ -90,6 +88,10 @@ export class TokensTableComponent {
    */
   public getChainIcon(name: BLOCKCHAIN_NAME): string {
     return BlockchainsInfo.getBlockchainByName(name).imagePath;
+  }
+
+  public selectColumnName(name: string): void {
+    this.selectedColumn = name;
   }
 
   /**

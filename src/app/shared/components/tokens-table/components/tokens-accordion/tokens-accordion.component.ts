@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { TokensTableData } from '../../../models/tokens-table-data';
+import { TokensTableData } from '../../models/tokens-table-data';
 
 @Component({
   selector: 'app-tokens-accordion',

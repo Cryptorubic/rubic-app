@@ -26,7 +26,7 @@ export class TradesTableComponent {
     this.tradesService.setTableLoadingStatus(true);
     this.fetchSwaps();
     this.$dataSource = this.tradesService.getTableData();
-    this.displayedColumns = ['status', 'token', 'amount', 'network', 'expires'];
+    this.displayedColumns = ['Status', 'Tokens', 'Amount', 'Network', 'Expires in'];
     this.columnsSizes = ['10%', '15%', '50%', '10%', '15%'];
   }
 

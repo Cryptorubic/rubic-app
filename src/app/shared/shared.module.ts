@@ -46,8 +46,8 @@ import { VolumeBlockComponent } from './components/volume-block/volume-block.com
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
 import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer-text.component';
 import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
-import { SortingDropdownComponent } from './components/tokens-table/components/sorting-dropdown/sorting-dropdown.component';
-import { TokensAccordionComponent } from './components/tokens-table/components/sorting-dropdown/tokens-accordion/tokens-accordion.component';
+import { TokensAccordionComponent } from './components/tokens-table/components/tokens-accordion/tokens-accordion.component';
+import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +84,7 @@ import { TokensAccordionComponent } from './components/tokens-table/components/s
     ListingRequestPopupComponent,
     DisclaimerTextComponent,
     TokensTableComponent,
-    SortingDropdownComponent,
+    TokensMobileHeaderComponent,
     TokensAccordionComponent
   ],
   entryComponents: [MessageBoxComponent],

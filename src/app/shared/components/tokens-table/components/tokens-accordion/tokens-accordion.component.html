@@ -14,48 +14,65 @@
     >
       {{ data.status }}
     </span>
-
     <span class="tokens-accordion__header-data" [ngClass]="{ 'tokens-accordion__header-data_inactive': data.opened }">
       <span
-      class="option__name"
-      *ngIf="selectedOption !== 'Status' && selectedOption !== 'Date'"
+        class="tokens-accordion__column-name"
+        *ngIf="selectedOption && selectedOption !== 'Status'"
       >
-        {{ selectedOption }}
+        {{ selectedOption | translate }}:
       </span>
 
       <div class="data__network" *ngIf="selectedOption === 'From'">
-        <img
-          [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img"
-          alt=""
-        />
-        <span>{{ Blockchains[tx.fromNetwork].label }}</span>
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+          <img
+            [src]="data.token.base.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.base.symbol"
+          />
+          <span>{{ data.token.base.symbol }}</span>
+        </div>
       </div>
 
       <div class="data__network" *ngIf="selectedOption === 'To'">
-        <img
-          [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img"
-          alt=""
-        />
-        <span>{{ Blockchains[tx.toNetwork].label }}</span>
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+          <img
+            [src]="data.token.quote.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.quote.symbol"
+          />
+          <span>{{ data.token.quote.symbol }}</span>
+        </div>
       </div>
 
       <div class="data__amount" *ngIf="selectedOption === 'Spent'">
-        <div>{{ tx.actualFromAmount }}</div>
-        <img [src]="tx.image_link" alt="" />
-        <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
+          <div>{{ data.token.base.amountTotal.dp(8) }} {{ data.token.base.symbol }}</div>
+          <span>
+            {{ data.token.base.amountTotal.div(data.token.quote.amountTotal).dp(8) | bigNumberFormat }}
+            <span>{{ data.token.base.symbol }} / 1</span>
+            {{ data.token.quote.symbol }}
+          </span>
+        </div>
       </div>
 
       <div class="data__amount" *ngIf="selectedOption === 'Expected'">
-        <div>{{ tx.actualToAmount }}</div>
-        <img [src]="tx.image_link" alt="" />
-        <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
+          <div>{{ data.token.quote.amountTotal.dp(8) }} {{ data.token.quote.symbol }}</div>
+          <span>
+            1
+            <span>
+              {{ data.token.base.symbol }} /
+              {{ data.token.quote.amountTotal.div(data.token.base.amountTotal).dp(8) | bigNumberFormat }}
+            </span>
+            {{ data.token.quote.symbol }}
+          </span>
+        </div>
       </div>
 
-      <div class="data__date" *ngIf="selectedOption === 'Date'">
-        <div>
-          <span>{{ tx.updateTime.split(' ')[0] }}</span>
-          <br />
-          <span>{{ tx.updateTime.split(' ')[1] }}</span>
+      <div class="data__amount" *ngIf="selectedOption === 'Expires in'">
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
+          <div>
+            {{ data.expirationDate | date: 'd' }}d: {{ data.expirationDate | date: 'h' }}h:
+            {{ data.expirationDate | date: 'm' }}m
+          </div>
         </div>
       </div>
     </span>

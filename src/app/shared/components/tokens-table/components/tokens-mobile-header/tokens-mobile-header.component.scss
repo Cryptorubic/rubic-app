@@ -1,19 +1,42 @@
+@import 'src/scss/mixins';
+
 $primary-color: #4aa956;
+$mobile-size: 600;
 
-.sorting-dropdown {
+.mobile-table-header {
   display: flex;
-  height: 40px;
 
-  &__label {
+  justify-content: space-between;
+
+  @include b($mobile-size) {
+    flex-direction: column;
+    height: auto;
+  }
+
+  &__dropdown-label {
     display: flex;
     align-items: center;
+
+    min-width: 150px;
     padding: 10px 10px 10px 20px;
 
     color: #7a7a7a;
+    font-size: 14px;
 
     background-color: white;
     border-right: 1px solid #f4f4f4;
     border-radius: 5px 0 0 5px;
+  }
+
+  &__select-columns-dropdown,
+  &__sort-table-dropdown {
+    display: flex;
+    margin-bottom: 20px;
+
+    > div {
+      box-sizing: border-box;
+      height: 56px;
+    }
   }
 
   &__select {
@@ -22,11 +45,15 @@ $primary-color: #4aa956;
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    min-width: 120px;
+    min-width: 130px;
     height: 100%;
     padding: 10px 10px 10px 25px;
 
     background-color: white;
+
+    @include b($mobile-size) {
+      width: 100%;
+    }
 
     &_rounded {
       border-radius: 0 5px 5px 0;

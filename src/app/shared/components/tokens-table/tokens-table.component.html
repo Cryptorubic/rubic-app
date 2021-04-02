@@ -23,7 +23,7 @@
       </ng-container>
     </colgroup>
     <!-- Status column  -->
-    <ng-container matColumnDef="status">
+    <ng-container matColumnDef="Status">
       <th mat-header-cell *matHeaderCellDef class="centered-child"  mat-sort-header>
         <div class="tokens-table__cell">
           {{ 'Status' | translate }}
@@ -43,7 +43,7 @@
       </td>
     </ng-container>
     <!-- Tokens icons column  -->
-    <ng-container matColumnDef="token">
+    <ng-container matColumnDef="Tokens">
       <th mat-header-cell *matHeaderCellDef #tokensHeader matAutocompleteOrigin>
         <app-coins-filter (selectTokenEvent)="selectToken($event)"></app-coins-filter>
       </th>
@@ -54,7 +54,7 @@
       </td>
     </ng-container>
     <!-- Tokens amount column  -->
-    <ng-container matColumnDef="amount">
+    <ng-container matColumnDef="Amount">
       <th mat-header-cell *matHeaderCellDef class="centered-child">
         <div class="tokens-table__cell">
           {{ 'Volume' | translate }}
@@ -67,7 +67,7 @@
       </td>
     </ng-container>
     <!-- Network column  -->
-    <ng-container matColumnDef="network">
+    <ng-container matColumnDef="Network">
       <th mat-header-cell *matHeaderCellDef class="centered-child">
         <div class="tokens-table__cell">
           {{ 'Network' | translate }}
@@ -86,7 +86,7 @@
       </td>
     </ng-container>
     <!-- Expires in column  -->
-    <ng-container matColumnDef="expires">
+    <ng-container matColumnDef="Expires in">
       <th mat-header-cell *matHeaderCellDef class="centered-child" mat-sort-header>
         <div class="tokens-table__cell">
           {{ 'Expires in' | translate }}
@@ -108,23 +108,19 @@
   </table>
   <!-- Mobile presentation -->
   <div *ngIf="$isMobile | async" class="tokens-table-mobile">
-    <div class="tokens-table-mobile__header">
-      <app-sorting-dropdown
-        [options]="displayedColumns"
-        [whithoutSorting]="true"
-        (selectEvent)="selectColumnName($event)"
-        label="Show data"
-      ></app-sorting-dropdown>
-      <app-sorting-dropdown
-        [options]="sortableColumns"
-        [sortingState]="tableSorting"
-        (sortEvent)="sortData($event)"
-        label="Filter by"
-      ></app-sorting-dropdown>
-    </div>
+    <app-tokens-mobile-header
+      (selectEvent)="selectColumnName($event)"
+      (sortEvent)="sortData($event)"
+      [sortingValue]="tableSorting"
+      [sortingColumns]="displayedColumns"
+      [selectedValue]="selectedColumn"
+    ></app-tokens-mobile-header>
     <div class="tokens-table-mobile__items">
       <ng-container *ngFor="let trade of sotredTableData">
-        <app-tokens-accordion [data]="trade" [chainIconPath]="getChainIcon(trade.blockchain)"></app-tokens-accordion>
+        <app-tokens-accordion
+          [data]="trade"
+          [chainIconPath]="getChainIcon(trade.blockchain)"
+          [selectedOption]="selectedColumn"></app-tokens-accordion>
       </ng-container>
     </div>
   </div>

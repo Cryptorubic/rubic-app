@@ -30,7 +30,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
     this.orderBooksTableService.setTableLoadingStatus(true);
     this.fetchPublicSwaps();
     this.$dataSource = this.orderBooksTableService.getTableData();
-    this.displayedColumns = ['token', 'amount', 'network', 'expires'];
+    this.displayedColumns = ['Tokens', 'Amount', 'Network', 'Expires in'];
     this.columnsSizes = ['25%', '50%', '10%', '15%'];
   }
 

@@ -8,9 +8,8 @@ describe('TokensAccordionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TokensAccordionComponent ]
-    })
-    .compileComponents();
+      declarations: [TokensAccordionComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
