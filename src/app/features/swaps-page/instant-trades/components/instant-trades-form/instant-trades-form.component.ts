@@ -108,6 +108,23 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   set tradeParameters(value) {
+    if (
+      this._tradeParameters.fromToken?.address === value.fromToken?.address &&
+      this._tradeParameters.fromAmount === value.fromAmount &&
+      this._tradeParameters.toToken?.address === value.toToken?.address
+    ) {
+      this._tradeParameters = value;
+      const toAmount = this.trades
+        .find(tradeController => tradeController.isBestRate)
+        ?.trade?.to?.amount.toFixed();
+
+      this.tradeParametersService.setTradeParameters(this.blockchain, {
+        ...this._tradeParameters,
+        toAmount
+      });
+      return;
+    }
+
     this._tradeParameters = value;
 
     this.tradeParametersService.setTradeParameters(this.blockchain, {
@@ -126,15 +143,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       value.fromToken &&
       value.toToken
     ) {
-      if (
-        !(
-          this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-          new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
-          this._tradeParameters.toToken?.address === value.toToken?.address
-        )
-      ) {
-        this.calculateTradeParameters();
-      }
+      this.calculateTradeParameters();
     } else {
       this.trades = this.trades.map(tradeController => ({
         ...tradeController,

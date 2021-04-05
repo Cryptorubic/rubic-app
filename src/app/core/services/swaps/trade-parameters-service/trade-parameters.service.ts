@@ -24,12 +24,13 @@ export class TradeParametersService {
           fromToken: null,
           toToken: null,
           fromAmount: null,
-          toAmount: null
-        },
-        isCustomFromTokenFormOpened: false,
-        isCustomToTokenFormOpened: false,
-        customFromTokenAddress: null,
-        customToTokenAddress: null
+          toAmount: null,
+
+          isCustomFromTokenFormOpened: false,
+          isCustomToTokenFormOpened: false,
+          customFromTokenAddress: null,
+          customToTokenAddress: null
+        }
       }),
       {} as Trades
     );

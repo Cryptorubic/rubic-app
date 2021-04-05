@@ -71,38 +71,37 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   set tradeParameters(value) {
+    const tokensParametersAreTheSame =
+      this._tradeParameters.fromToken?.address === value.fromToken?.address &&
+      this._tradeParameters.fromAmount === value.fromAmount &&
+      this._tradeParameters.toToken?.address === value.toToken?.address &&
+      this._tradeParameters.toAmount === value.toAmount;
+
     this._tradeParameters = value;
 
     this.tradeParametersService.setTradeParameters(this.blockchain, {
       ...this._tradeParameters
     });
 
-    if (
-      !(
-        this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-        new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
-        this._tradeParameters.toToken?.address === value.toToken?.address &&
-        new BigNumber(this._tradeParameters.toAmount).isEqualTo(value.toAmount)
-      )
-    ) {
-      this.tradeForm = {
-        ...this.tradeForm,
-        token: {
-          base: {
-            ...this.tradeForm.token.base,
-            ...this._tradeParameters.fromToken,
-            amount: this._tradeParameters.fromAmount
-          },
-          quote: {
-            ...this.tradeForm.token.quote,
-            ...this._tradeParameters.toToken,
-            amount: this._tradeParameters.toAmount
-          }
-        }
-      };
+    if (tokensParametersAreTheSame) return;
 
-      this.calculateTokensRate();
-    }
+    this.tradeForm = {
+      ...this.tradeForm,
+      token: {
+        base: {
+          ...this.tradeForm.token.base,
+          ...this._tradeParameters.fromToken,
+          amount: this._tradeParameters.fromAmount
+        },
+        quote: {
+          ...this.tradeForm.token.quote,
+          ...this._tradeParameters.toToken,
+          amount: this._tradeParameters.toAmount
+        }
+      }
+    };
+
+    this.calculateTokensRate();
   }
 
   get tokens(): List<SwapToken> {
