@@ -1,5 +1,18 @@
 @import 'src/scss/vars';
 
+.order-book {
+  display: flex;
+  flex-direction: column;
+
+  &__warning {
+    position: relative;
+    top: 18px;
+    right: 30px;
+
+    margin-left: auto;
+  }
+}
+
 .order-book-form {
   &__main-section {
     padding: 27px 30px 29px;
@@ -24,7 +37,7 @@
     margin-bottom: 7px;
   }
 
-  &__custom-section {
+  &__custom-token-section {
     margin-top: 8px;
   }
 }
@@ -155,59 +168,6 @@
 
   &:active {
     transform: scale(0.9);
-  }
-}
-
-.custom-section {
-  text-align: right;
-
-  &__button {
-    display: block;
-
-    width: 136px;
-    margin-left: auto;
-    padding-right: 6px;
-
-    color: $grey-text;
-
-    cursor: pointer;
-
-    transition: font-weight 0.1s linear;
-
-    &:hover {
-      font-weight: 500;
-    }
-  }
-
-  &__form {
-    margin: 9px 0 5px;
-  }
-}
-
-.custom-section-form {
-  display: flex;
-  grid-gap: 10px;
-
-  &__input {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 11px 10px 11px 14px;
-
-    color: $dark;
-    font-size: 18px;
-
-    font-family: $ubuntu-font;
-
-    background: $grey-background;
-    border: 1px solid white;
-
-    &_invalid {
-      border: 1px solid $error-red;
-
-      &:focus {
-        box-shadow: 0 0 2px $error-red;
-      }
-    }
   }
 }
 

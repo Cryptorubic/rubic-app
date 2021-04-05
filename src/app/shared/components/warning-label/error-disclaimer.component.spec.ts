@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WarningLabelComponent } from './warning-label.component';
+import { ErrorDisclaimerComponent } from './error-disclaimer.component';
 
 describe('WarningLabelComponent', () => {
-  let component: WarningLabelComponent;
-  let fixture: ComponentFixture<WarningLabelComponent>;
+  let component: ErrorDisclaimerComponent;
+  let fixture: ComponentFixture<ErrorDisclaimerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [WarningLabelComponent]
+      declarations: [ErrorDisclaimerComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WarningLabelComponent);
+    fixture = TestBed.createComponent(ErrorDisclaimerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
