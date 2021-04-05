@@ -13,6 +13,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { InlineSVGModule } from 'ng-inline-svg';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -50,6 +52,7 @@ import { TokensAccordionComponent } from './components/tokens-table/components/t
 import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
 import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
+import { TokenInputComponent } from './components/token-input/token-input.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +92,8 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     TokensMobileHeaderComponent,
     TokensAccordionComponent,
     CustomTokenFormComponent,
-    WarningDisclaimerComponent
+    WarningDisclaimerComponent,
+    TokenInputComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -107,7 +111,9 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     ScrollingModule,
     MatTooltipModule,
     MatSelectModule,
-    InlineSVGModule.forRoot()
+    InlineSVGModule.forRoot(),
+    MatFormFieldModule,
+    MatInputModule
   ],
   exports: [
     FooterComponent,
@@ -144,7 +150,8 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     DisclaimerTextComponent,
     TokensTableComponent,
     CustomTokenFormComponent,
-    WarningDisclaimerComponent
+    WarningDisclaimerComponent,
+    TokenInputComponent
   ]
 })
 export class SharedModule {}

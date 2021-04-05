@@ -1,0 +1,27 @@
+<mat-form-field>
+  <mat-label></mat-label>
+  <img
+    matPrefix
+    [src]="'./assets/images/icons/coins/' + selectedBlockchain.img"
+    width="19"
+    height="23"
+    alt="">
+  <input type="text"
+    aria-label="Number"
+    matInput
+    [formControl]="blockchainControl"
+    [matAutocomplete]="auto" />
+  <mat-autocomplete
+    autoActiveFirstOption
+    [disableRipple]="true"
+    [displayWith]="getOptionText"
+    #auto="matAutocomplete"
+    (optionSelected)='getSelectedBlockchain($event.option.value)'>
+    <mat-option 
+      *ngFor="let blockchain of blockchains"
+      [value]="blockchain">
+      <img [src]="'./assets/images/icons/coins/' + blockchain.img" width="19" height="23" alt="">
+      {{ blockchain.shortLabel }} ({{ blockchain.name }})
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
