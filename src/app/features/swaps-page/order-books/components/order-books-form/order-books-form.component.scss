@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .order-book-form {
@@ -220,5 +221,44 @@
   &__confirm-section {
     position: relative;
     top: 22px;
+  }
+}
+
+@include b($laptop) {
+  .order-book-form {
+    &__main-section {
+      flex-direction: column;
+    }
+  }
+
+  .main-section {
+    &__from-section,
+    &__to-section {
+      width: 100%;
+    }
+
+    &__from-section {
+      margin-bottom: 22px;
+    }
+
+    &__to-section {
+      display: block;
+    }
+
+    &__arrow-section {
+      display: none;
+    }
+  }
+
+  .tokens-form-header {
+    &__label {
+      left: 0;
+    }
+  }
+
+  .to-section__confirm-section {
+    top: auto;
+
+    margin-top: 22px;
   }
 }

@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .instant-trade {
@@ -121,6 +122,10 @@
     margin-right: 8px;
 
     opacity: 0.5;
+
+    img {
+      vertical-align: bottom;
+    }
   }
 }
 
@@ -164,4 +169,48 @@ app-tooltip {
   opacity: 0;
 
   transition: opacity 0.3s ease-in-out;
+}
+
+@include b($laptop) {
+  .instant-trade {
+    display: block;
+
+    &__from-section {
+      margin-bottom: 22px;
+    }
+
+    &__arrow-section {
+      display: none;
+    }
+  }
+
+  .selection-block {
+    &__label {
+      left: 0;
+    }
+
+    &__warning {
+      margin-bottom: 7px;
+    }
+  }
+
+  .gas-fee {
+    margin-bottom: 25px;
+  }
+}
+
+@include b($tablet) {
+  .instant-trade {
+    &__to-section {
+      display: block;
+
+      .instant-trade-button:nth-child(2) {
+        margin-bottom: 22px;
+      }
+    }
+
+    &-button {
+      top: auto;
+    }
+  }
 }
