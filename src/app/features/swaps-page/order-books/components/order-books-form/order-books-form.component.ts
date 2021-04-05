@@ -8,10 +8,7 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
-import {
-  CommonTradeParameters,
-  TradeParameters
-} from 'src/app/shared/models/swaps/TradeParameters';
+import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
 import { MatDialog } from '@angular/material/dialog';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
@@ -42,8 +39,6 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   private _tradeParameters: TradeParameters;
 
-  private _commonTradeParameters: CommonTradeParameters;
-
   private _tokens = List<SwapToken>([]);
 
   private _tokensSubscription$: Subscription;
@@ -71,51 +66,43 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   private createdUniqueLink: string;
 
-  get commonTradeParameters(): CommonTradeParameters {
-    return this._commonTradeParameters;
-  }
-
-  set commonTradeParameters(value) {
-    this._commonTradeParameters = value;
-    this.tradeParametersService.setCommonTradeParameters(value);
-  }
-
   get tradeParameters(): TradeParameters {
     return this._tradeParameters;
   }
 
   set tradeParameters(value) {
-    if (
-      this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-      new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
-      this._tradeParameters.toToken?.address === value.toToken?.address &&
-      new BigNumber(this._tradeParameters.toAmount).isEqualTo(value.toAmount)
-    ) {
-      return;
-    }
     this._tradeParameters = value;
 
     this.tradeParametersService.setTradeParameters(this.blockchain, {
       ...this._tradeParameters
     });
 
-    this.tradeForm = {
-      ...this.tradeForm,
-      token: {
-        base: {
-          ...this.tradeForm.token.base,
-          ...this._tradeParameters.fromToken,
-          amount: this._tradeParameters.fromAmount
-        },
-        quote: {
-          ...this.tradeForm.token.quote,
-          ...this._tradeParameters.toToken,
-          amount: this._tradeParameters.toAmount
+    if (
+      !(
+        this._tradeParameters.fromToken?.address === value.fromToken?.address &&
+        new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
+        this._tradeParameters.toToken?.address === value.toToken?.address &&
+        new BigNumber(this._tradeParameters.toAmount).isEqualTo(value.toAmount)
+      )
+    ) {
+      this.tradeForm = {
+        ...this.tradeForm,
+        token: {
+          base: {
+            ...this.tradeForm.token.base,
+            ...this._tradeParameters.fromToken,
+            amount: this._tradeParameters.fromAmount
+          },
+          quote: {
+            ...this.tradeForm.token.quote,
+            ...this._tradeParameters.toToken,
+            amount: this._tradeParameters.toAmount
+          }
         }
-      }
-    };
+      };
 
-    this.calculateTokensRate();
+      this.calculateTokensRate();
+    }
   }
 
   get tokens(): List<SwapToken> {
@@ -220,11 +207,10 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
       this.tokens = this.tokensService.tokens.getValue();
 
-      this._commonTradeParameters = this.tradeParametersService.getCommonTradeParameters();
-
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
 
       this._tradeParameters = {
+        ...tradeParameters,
         fromToken: null,
         toToken: null,
         fromAmount: null,
@@ -279,13 +265,13 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   public setIsCustomTokenFormOpened(tokenPart: TokenPart, isOpened: boolean): void {
     if (tokenPart === 'base') {
-      this.commonTradeParameters = {
-        ...this.commonTradeParameters,
+      this.tradeParameters = {
+        ...this.tradeParameters,
         isCustomFromTokenFormOpened: isOpened
       };
     } else {
-      this.commonTradeParameters = {
-        ...this.commonTradeParameters,
+      this.tradeParameters = {
+        ...this.tradeParameters,
         isCustomToTokenFormOpened: isOpened
       };
     }
@@ -293,13 +279,13 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   public setCustomTokenAddress(tokenPart: TokenPart, address: string): void {
     if (tokenPart === 'base') {
-      this.commonTradeParameters = {
-        ...this.commonTradeParameters,
+      this.tradeParameters = {
+        ...this.tradeParameters,
         customFromTokenAddress: address
       };
     } else {
-      this.commonTradeParameters = {
-        ...this.commonTradeParameters,
+      this.tradeParameters = {
+        ...this.tradeParameters,
         customToTokenAddress: address
       };
     }

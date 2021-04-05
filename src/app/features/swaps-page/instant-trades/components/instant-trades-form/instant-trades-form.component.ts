@@ -23,7 +23,6 @@ import { InstantTradesApiService } from '../../../../../core/services/backend/in
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
 import { Token } from '../../../../../shared/models/tokens/Token';
-import { CommonTradeParameters } from '../../../../../shared/models/swaps/TradeParameters';
 
 interface TradeProviderInfo {
   label: string;
@@ -33,6 +32,11 @@ interface InstantTradeParameters {
   fromAmount: string;
   fromToken: SwapToken;
   toToken: SwapToken;
+
+  isCustomFromTokenFormOpened: boolean;
+  isCustomToTokenFormOpened: boolean;
+  customFromTokenAddress: string;
+  customToTokenAddress: string;
 }
 
 interface InstantTradeProviderController {
@@ -61,8 +65,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private _instantTradeServices: InstantTradeService[];
 
   private _tradeParameters: InstantTradeParameters;
-
-  private _commonTradeParameters: CommonTradeParameters;
 
   private _tokens = List<SwapToken>([]);
 
@@ -101,27 +103,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this.availableFromTokens = this._tokens.concat();
   }
 
-  get commonTradeParameters(): CommonTradeParameters {
-    return this._commonTradeParameters;
-  }
-
-  set commonTradeParameters(value) {
-    this._commonTradeParameters = value;
-    this.tradeParametersService.setCommonTradeParameters(value);
-  }
-
   get tradeParameters(): InstantTradeParameters {
     return this._tradeParameters;
   }
 
   set tradeParameters(value) {
-    if (
-      this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-      new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
-      this._tradeParameters.toToken?.address === value.toToken?.address
-    ) {
-      return;
-    }
     this._tradeParameters = value;
 
     this.tradeParametersService.setTradeParameters(this.blockchain, {
@@ -140,7 +126,15 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       value.fromToken &&
       value.toToken
     ) {
-      this.calculateTradeParameters();
+      if (
+        !(
+          this._tradeParameters.fromToken?.address === value.fromToken?.address &&
+          new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
+          this._tradeParameters.toToken?.address === value.toToken?.address
+        )
+      ) {
+        this.calculateTradeParameters();
+      }
     } else {
       this.trades = this.trades.map(tradeController => ({
         ...tradeController,
@@ -261,11 +255,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
       this.tokens = this.tokensService.tokens.getValue();
 
-      this._commonTradeParameters = this.tradeParametersService.getCommonTradeParameters();
-
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
 
       this._tradeParameters = {
+        ...tradeParameters,
         fromToken: null,
         toToken: null,
         fromAmount: null
@@ -417,13 +410,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public setIsCustomTokenFormOpened(part: 'from' | 'to', isOpened: boolean): void {
     if (part === 'from') {
-      this.commonTradeParameters = {
-        ...this.commonTradeParameters,
+      this.tradeParameters = {
+        ...this.tradeParameters,
         isCustomFromTokenFormOpened: isOpened
       };
     } else {
-      this.commonTradeParameters = {
-        ...this.commonTradeParameters,
+      this.tradeParameters = {
+        ...this.tradeParameters,
         isCustomToTokenFormOpened: isOpened
       };
     }
@@ -431,13 +424,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public setCustomTokenAddress(part: 'from' | 'to', address: string): void {
     if (part === 'from') {
-      this.commonTradeParameters = {
-        ...this.commonTradeParameters,
+      this.tradeParameters = {
+        ...this.tradeParameters,
         customFromTokenAddress: address
       };
     } else {
-      this.commonTradeParameters = {
-        ...this.commonTradeParameters,
+      this.tradeParameters = {
+        ...this.tradeParameters,
         customToTokenAddress: address
       };
     }

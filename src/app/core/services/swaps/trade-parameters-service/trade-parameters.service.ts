@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import {
-  CommonTradeParameters,
-  TradeParameters
-} from '../../../../shared/models/swaps/TradeParameters';
+import { TradeParameters } from '../../../../shared/models/swaps/TradeParameters';
 
 type Trades = { [key in BLOCKCHAIN_NAME]: TradeParameters };
 
@@ -11,22 +8,12 @@ type Trades = { [key in BLOCKCHAIN_NAME]: TradeParameters };
 export class TradeParametersService {
   private readonly _tradesParameters: Trades;
 
-  private _commonTradeParameters: CommonTradeParameters;
-
   public getTradeParameters(blockchain: BLOCKCHAIN_NAME): TradeParameters {
     return this._tradesParameters[blockchain];
   }
 
   public setTradeParameters(blockchain: BLOCKCHAIN_NAME, tradeParameters: TradeParameters) {
     this._tradesParameters[blockchain] = tradeParameters;
-  }
-
-  public getCommonTradeParameters(): CommonTradeParameters {
-    return this._commonTradeParameters;
-  }
-
-  public setCommonTradeParameters(commonTradeParameters: CommonTradeParameters) {
-    this._commonTradeParameters = commonTradeParameters;
   }
 
   constructor() {
@@ -38,15 +25,13 @@ export class TradeParametersService {
           toToken: null,
           fromAmount: null,
           toAmount: null
-        }
+        },
+        isCustomFromTokenFormOpened: false,
+        isCustomToTokenFormOpened: false,
+        customFromTokenAddress: null,
+        customToTokenAddress: null
       }),
       {} as Trades
     );
-    this._commonTradeParameters = {
-      isCustomFromTokenFormOpened: false,
-      isCustomToTokenFormOpened: false,
-      customFromTokenAddress: null,
-      customToTokenAddress: null
-    };
   }
 }

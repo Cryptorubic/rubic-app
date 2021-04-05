@@ -5,9 +5,7 @@ export interface TradeParameters {
   toToken: SwapToken;
   fromAmount: string;
   toAmount: string;
-}
 
-export interface CommonTradeParameters {
   isCustomFromTokenFormOpened: boolean;
   isCustomToTokenFormOpened: boolean;
   customFromTokenAddress: string;

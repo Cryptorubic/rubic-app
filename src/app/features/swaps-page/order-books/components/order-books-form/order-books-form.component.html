@@ -30,10 +30,10 @@
           <div class="tokens-form__custom-token-section">
             <app-custom-token-form
               type="from"
-              [isSectionOpened]="commonTradeParameters.isCustomFromTokenFormOpened"
+              [isSectionOpened]="tradeParameters.isCustomFromTokenFormOpened"
               (isSectionOpenedChange)="setIsCustomTokenFormOpened('base', $event)"
               [blockchain]="blockchain"
-              [tokenAddress]="commonTradeParameters.customFromTokenAddress"
+              [tokenAddress]="tradeParameters.customFromTokenAddress"
               (tokenAddressChange)="setCustomTokenAddress('base', $event)"
               (tokenIsValidated)="updateCustomToken('base', $event)"
               (addToken)="addCustomToken('base')"
@@ -97,10 +97,10 @@
           <div class="tokens-form__custom-token-section">
             <app-custom-token-form
               type="to"
-              [isSectionOpened]="commonTradeParameters.isCustomToTokenFormOpened"
+              [isSectionOpened]="tradeParameters.isCustomToTokenFormOpened"
               (isSectionOpenedChange)="setIsCustomTokenFormOpened('quote', $event)"
               [blockchain]="blockchain"
-              [tokenAddress]="commonTradeParameters.customToTokenAddress"
+              [tokenAddress]="tradeParameters.customToTokenAddress"
               (tokenAddressChange)="setCustomTokenAddress('quote', $event)"
               (tokenIsValidated)="updateCustomToken('quote', $event)"
               (addToken)="addCustomToken('quote')"
