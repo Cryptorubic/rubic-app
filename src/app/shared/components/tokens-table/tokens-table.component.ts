@@ -40,6 +40,12 @@ export class TokensTableComponent {
 
   @Input() public title: string;
 
+  @Input() public hasData: boolean;
+
+  public get hasVisibledData(): boolean {
+    return this.sotredTableData.length > 0;
+  }
+
   @Output() public refreshTableEvent: EventEmitter<void>;
 
   @Output() public selectTokenEvent: EventEmitter<TokenValueType>;

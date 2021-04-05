@@ -6,4 +6,5 @@
   (refreshTableEvent)="refreshOrderBooks()"
   [title]="'Order Book' | translate"
   (selectTokenEvent)="selectToken($event)"
+  [hasData]="$hasData | async"
 ></app-tokens-table>

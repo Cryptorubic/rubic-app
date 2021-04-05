@@ -7,6 +7,29 @@ $primary-color: #4aa956;
 .tokens-table {
   margin-bottom: 20px;
 
+  &__mobile-tokens-dropdown {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 56px;
+
+    margin-bottom: 20px;
+    padding: 0 10px;
+
+    background: white;
+    border-radius: 5px;
+  }
+
+  &__text {
+    display: flex;
+
+    color: rgba(0, 0, 0, 0.34);
+    font-weight: normal;
+    font-size: 24px;
+    text-align: center;
+  }
+
   &__title-section {
     display: flex;
     align-items: center;
@@ -67,6 +90,16 @@ $primary-color: #4aa956;
 }
 
 ::ng-deep {
+  .tokens-table__mobile-tokens-dropdown {
+    app-coins-filter {
+      width: 100%;
+    }
+
+    .coins-filter-form {
+      justify-content: space-between;
+    }
+  }
+
   .tokens-table .table tr td .tokens-table__cell.tokens-table__cell_status {
     justify-content: flex-start;
   }

@@ -21,6 +21,8 @@ export class TradesTableComponent {
 
   public readonly $tableLoading: Observable<boolean>;
 
+  public readonly $hasData: Observable<boolean>;
+
   constructor(private readonly tradesService: TradesService) {
     this.$tableLoading = this.tradesService.getTableLoadingStatus();
     this.tradesService.setTableLoadingStatus(true);
@@ -28,6 +30,7 @@ export class TradesTableComponent {
     this.$dataSource = this.tradesService.getTableData();
     this.displayedColumns = ['Status', 'Tokens', 'Amount', 'Network', 'Expires in'];
     this.columnsSizes = ['10%', '15%', '50%', '10%', '15%'];
+    this.$hasData = this.tradesService.hasData();
   }
 
   public getChainIcon(name: BLOCKCHAIN_NAME): string {

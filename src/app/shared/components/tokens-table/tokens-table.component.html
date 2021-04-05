@@ -10,7 +10,7 @@
   </div>
   <!-- Desktop presentation -->
   <table
-    *ngIf="($isMobile | async) === false"
+    *ngIf="($isMobile | async) === false && hasData"
     mat-table
     matSort
     [dataSource]="sotredTableData"
@@ -107,7 +107,7 @@
     ></tr>
   </table>
   <!-- Mobile presentation -->
-  <div *ngIf="$isMobile | async" class="tokens-table-mobile">
+  <div *ngIf="($isMobile | async) && hasData" class="tokens-table-mobile">
     <app-tokens-mobile-header
       (selectEvent)="selectColumnName($event)"
       (sortEvent)="sortData($event)"
@@ -115,6 +115,9 @@
       [sortingColumns]="displayedColumns"
       [selectedValue]="selectedColumn"
     ></app-tokens-mobile-header>
+    <div class="tokens-table__mobile-tokens-dropdown">
+      <app-coins-filter (selectTokenEvent)="selectToken($event)"></app-coins-filter>
+    </div>
     <div class="tokens-table-mobile__items">
       <ng-container *ngFor="let trade of sotredTableData">
         <app-tokens-accordion
@@ -123,5 +126,11 @@
           [selectedOption]="selectedColumn"></app-tokens-accordion>
       </ng-container>
     </div>
+  </div>
+  <div class="tokens-table__text" *ngIf="hasData === false">
+    Seems like you don't have existing swaps yet
+  </div>
+  <div class="tokens-table__text" *ngIf="hasData && sotredTableData.length === 0">
+    Seems like we don't have data with setted filter parametres
   </div>
 </div>
