@@ -224,7 +224,7 @@
   }
 }
 
-@include b(960) {
+@include b($laptop) {
   .order-book-form {
     &__main-section {
       flex-direction: column;

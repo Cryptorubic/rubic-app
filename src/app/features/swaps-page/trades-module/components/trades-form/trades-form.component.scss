@@ -89,7 +89,7 @@
   }
 }
 
-@include b(960) {
+@include b($laptop) {
   .trades-form {
     &__tabs {
       flex-direction: column;
@@ -129,7 +129,7 @@
   }
 }
 
-@include b(768) {
+@include b($tablet) {
   .trades-form {
     &__tabs-blockchains {
       align-items: stretch !important;
@@ -155,7 +155,7 @@
   }
 }
 
-@include b(401) {
+@include b($mobile-sm) {
   .trades-form {
     &__tabs-blockchains,
     &__tabs-modes {

@@ -170,7 +170,7 @@ app-tooltip {
   transition: opacity 0.3s ease-in-out;
 }
 
-@include b(960) {
+@include b($laptop) {
   .instant-trade {
     display: block;
 
@@ -198,7 +198,7 @@ app-tooltip {
   }
 }
 
-@include b(768) {
+@include b($tablet) {
   .instant-trade {
     &__to-section {
       display: block;

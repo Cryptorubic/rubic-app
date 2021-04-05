@@ -244,7 +244,7 @@
   }
 }
 
-@include b(768) {
+@include b($tablet) {
   .form-section-row_second {
     grid-gap: 32px 3%;
   }
@@ -272,7 +272,7 @@
   }
 }
 
-@include b(636) {
+@include b($mobile-md) {
   .form-section-row {
     grid-gap: 32px 3%;
   }

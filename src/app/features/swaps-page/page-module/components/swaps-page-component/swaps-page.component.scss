@@ -89,13 +89,13 @@ app-volume-block {
   margin-bottom: 35px;
 }
 
-@include b(1240) {
+@include b($desktop) {
   .main-page {
     padding: 0 2vw;
   }
 }
 
-@include b(768) {
+@include b($tablet) {
   .main-page__title-text {
     display: block;
   }
