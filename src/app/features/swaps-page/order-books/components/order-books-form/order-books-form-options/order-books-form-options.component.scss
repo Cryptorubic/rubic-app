@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .form-section {
@@ -243,7 +244,7 @@
   }
 }
 
-@media(max-width: 768px) {
+@include b(768) {
   .form-section-row_second {
     grid-gap: 32px 3%;
   }
@@ -271,7 +272,7 @@
   }
 }
 
-@media (max-width: 636px) {
+@include b(636) {
   .form-section-row {
     grid-gap: 32px 3%;
   }

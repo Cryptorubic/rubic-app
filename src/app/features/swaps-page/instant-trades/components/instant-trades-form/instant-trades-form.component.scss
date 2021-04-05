@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .instant-trade {
@@ -169,7 +170,7 @@ app-tooltip {
   transition: opacity 0.3s ease-in-out;
 }
 
-@media (max-width: 960px) {
+@include b(960) {
   .instant-trade {
     display: block;
 
@@ -197,7 +198,7 @@ app-tooltip {
   }
 }
 
-@media (max-width: 768px) {
+@include b(768) {
   .instant-trade {
     &__to-section {
       display: block;

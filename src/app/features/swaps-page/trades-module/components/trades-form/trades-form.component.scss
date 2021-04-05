@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .trades-form {
@@ -88,7 +89,7 @@
   }
 }
 
-@media (max-width: 960px) {
+@include b(960) {
   .trades-form {
     &__tabs {
       flex-direction: column;
@@ -128,7 +129,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include b(768) {
   .trades-form {
     &__tabs-blockchains {
       align-items: stretch !important;
@@ -154,7 +155,7 @@
   }
 }
 
-@media (max-width: 401px) {
+@include b(401) {
   .trades-form {
     &__tabs-blockchains,
     &__tabs-modes {

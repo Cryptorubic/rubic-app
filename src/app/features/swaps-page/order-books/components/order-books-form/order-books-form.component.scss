@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .order-book-form {
@@ -223,7 +224,7 @@
   }
 }
 
-@media (max-width: 960px) {
+@include b(960) {
   .order-book-form {
     &__main-section {
       flex-direction: column;

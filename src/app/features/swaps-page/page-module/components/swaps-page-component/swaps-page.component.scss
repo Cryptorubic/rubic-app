@@ -1,4 +1,5 @@
-@import '../../../../../../scss/vars';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 .main-page {
 
@@ -88,13 +89,13 @@ app-volume-block {
   margin-bottom: 35px;
 }
 
-@media (max-width: 1240px) {
+@include b(1240) {
   .main-page {
     padding: 0 2vw;
   }
 }
 
-@media (max-width: 768px) {
+@include b(768) {
   .main-page__title-text {
     display: block;
   }
