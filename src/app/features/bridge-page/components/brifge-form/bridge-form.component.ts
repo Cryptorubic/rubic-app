@@ -7,6 +7,7 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { NetworkErrorComponent } from '../network-error/network-error.component';
 import InputToken from '../../../../shared/models/tokens/InputToken';
 import { BridgeToken } from '../../models/BridgeToken';
@@ -14,7 +15,6 @@ import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-bridge-form',
@@ -98,6 +98,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   private addressSubscription$: Subscription;
 
   public isHighGasPriceModalShown = false;
+
+  public selectedBlockchain: BridgeBlockchain = this.blockchainsList[0];
 
   get tokens(): List<BridgeToken> {
     return this._tokens;
@@ -248,8 +250,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.fromWalletAddress = address;
       this.toWalletAddress = address;
     });
-
-    console.log(this.blockchainsList)
   }
 
   ngOnDestroy() {
@@ -407,11 +407,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         token => token.ethContractAddress.toLocaleLowerCase() === queryParam.toLocaleLowerCase()
       );
     }
-
     if (this.fromBlockchain.name === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
       return this.tokens.find(
         token => token.bscContractAddress.toLocaleLowerCase() === queryParam.toLocaleLowerCase()
       );
     }
+    return null;
   }
 }

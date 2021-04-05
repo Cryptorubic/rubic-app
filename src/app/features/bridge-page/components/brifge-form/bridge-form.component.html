@@ -13,17 +13,26 @@
               [blockchains]="blockchainsList"
               (blockchainChanges)="fromBlockchain = $event"
             ></app-blockchains-input> -->
-            <input type="text"
-              placeholder="Pick one"
-              aria-label="Number"
-              matInput
-              [matAutocomplete]="auto">
-            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-              <mat-option *ngFor="let blockchain of blockchainsList" value="{{ blockchain.shortLabel }} ({{ blockchain.name }})">
-                <img [src]="'./assets/images/icons/coins/' + blockchain.img" alt="Blockchain" width="20" height="23">
-                {{ blockchain.shortLabel }} ({{ blockchain.name }})
-              </mat-option>
-            </mat-autocomplete>
+            <mat-form-field>
+              <mat-label></mat-label>
+              <img matPrefix [src]="'./assets/images/icons/coins/' + selectedBlockchain.img" width="19" height="23" alt="">
+              <input type="text"
+                aria-label="Number"
+                matInput
+                [matAutocomplete]="auto" />
+              <mat-autocomplete 
+                autoActiveFirstOption
+                [displayWith]="getOptionText"
+                #auto="matAutocomplete"
+                (optionSelected)='getSelectedBlockchain($event.option.value)'>
+                <mat-option 
+                  *ngFor="let blockchain of blockchainsList"
+                  [value]="blockchain">
+                  <img [src]="'./assets/images/icons/coins/' + blockchain.img" width="19" height="23" alt="">
+                  {{ blockchain.shortLabel }} ({{ blockchain.name }})
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
           </div>
 
           <a
