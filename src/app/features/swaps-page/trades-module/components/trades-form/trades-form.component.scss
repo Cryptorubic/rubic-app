@@ -104,25 +104,29 @@
 
   .tab {
     &_blockchain {
-      padding: 15px;
       width: 180px;
       height: 50px;
+      padding: 15px;
 
       &.tab_active {
         position: relative;
+
         border-bottom: 2px solid $main-green;
 
         &::after {
-          content: '';
           position: absolute;
-          left: 50%;
           bottom: -9px;
+          left: 50%;
+
           width: 0;
           height: 0;
-          transform: translateX(-50%);
-          border-style: solid;
-          border-width: 9px 9px 0 9px;
+
           border-color: $main-green transparent transparent transparent;
+          border-style: solid;
+          border-width: 9px 9px 0;
+          transform: translateX(-50%);
+
+          content: '';
         }
       }
     }
@@ -140,16 +144,17 @@
   .tab {
     &_blockchain {
       flex-direction: column;
+      width: 33.33%;
       min-width: auto;
       height: auto;
-      width: 33.33%;
+
       text-align: center;
 
       img {
-        margin-right: 0;
-        margin-bottom: 5px;
         max-width: 33px;
         max-height: 33px;
+        margin-right: 0;
+        margin-bottom: 5px;
       }
     }
   }
@@ -165,8 +170,8 @@
 
   .tab {
     &_mode {
-      min-width: auto;
       width: 50%;
+      min-width: auto;
     }
   }
 }

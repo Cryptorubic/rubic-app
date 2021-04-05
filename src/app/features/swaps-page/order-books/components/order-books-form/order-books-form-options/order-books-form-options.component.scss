@@ -249,7 +249,7 @@
     grid-gap: 32px 3%;
   }
 
- .form-section-block {
+  .form-section-block {
     &_deal {
       width: 251px;
     }
@@ -265,9 +265,9 @@
 
   .input-container__input {
     &_min-contribute {
+      box-sizing: border-box;
       width: 100%;
       height: 47px;
-      box-sizing: border-box;
     }
   }
 }
@@ -289,12 +289,11 @@
   }
 
   .input-container__input {
-
     &_time,
     &_date {
+      box-sizing: border-box;
       width: 100%;
       height: 45px;
-      box-sizing: border-box;
     }
   }
 }
