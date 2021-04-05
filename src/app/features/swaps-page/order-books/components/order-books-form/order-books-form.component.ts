@@ -322,6 +322,15 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  public isAnyTokenCustom(): boolean {
+    return (
+      (this.baseToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.baseToken.address.toLowerCase())) ||
+      (this.quoteToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.quoteToken.address.toLowerCase()))
+    );
+  }
+
   private calculateTokensRate(): void {
     if (
       !(

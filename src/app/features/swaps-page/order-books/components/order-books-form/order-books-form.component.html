@@ -1,11 +1,5 @@
 <div class="order-book">
-  <div
-    class="order-book__warning"
-    *ngIf="
-      baseToken?.address === customToken.base?.address ||
-      quoteToken?.address === customToken.quote?.address
-    "
-  >
+  <div class="order-book__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
       [warningText]="'Use custom tokens at your own risk.'"
       [tooltipText]="

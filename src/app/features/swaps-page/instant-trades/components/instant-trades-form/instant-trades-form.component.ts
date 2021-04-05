@@ -458,6 +458,15 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  public isAnyTokenCustom(): boolean {
+    return (
+      (this.fromToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.fromToken.address.toLowerCase())) ||
+      (this.toToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.toToken.address.toLowerCase()))
+    );
+  }
+
   public createTrade(selectedServiceIndex: number) {
     const setTradeState = (state: TRADE_STATUS) => {
       this.trades[selectedServiceIndex].tradeState = state;

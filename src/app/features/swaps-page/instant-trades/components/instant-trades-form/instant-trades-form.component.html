@@ -1,11 +1,5 @@
 <div class="instant-trade">
-  <div
-    class="instant-trade__warning"
-    *ngIf="
-      fromToken?.address === customToken.from?.address ||
-      toToken?.address === customToken.to?.address
-    "
-  >
+  <div class="instant-trade__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
       [warningText]="'Use custom tokens at your own risk.'"
       [tooltipText]="
