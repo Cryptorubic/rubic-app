@@ -1,9 +1,9 @@
 <div class="instant-trade">
   <div class="instant-trade__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
-      [warningText]="'Use custom tokens at your own risk.'"
+      [warningText]="'Unknown token. Please check it before trading.'"
       [tooltipText]="
-        'Hi. You start using custom token. Be sure what are you doing cause all of the swaps are done at your own risk. May the Lord help you.'
+        'Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk.'
           | translate
       "
     ></app-warning-disclaimer>
