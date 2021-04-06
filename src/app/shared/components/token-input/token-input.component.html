@@ -5,18 +5,19 @@
     [src]="'./assets/images/icons/coins/' + selectedBlockchain.img"
     width="19"
     height="23"
-    alt="">
+    [alt]="selectedBlockchain.label">
   <input type="text"
     aria-label="Number"
     matInput
     [formControl]="blockchainControl"
+    [ngModel]="selectedBlockchain"
     [matAutocomplete]="auto" />
   <mat-autocomplete
     autoActiveFirstOption
     [disableRipple]="true"
     [displayWith]="getOptionText"
     #auto="matAutocomplete"
-    (optionSelected)='getSelectedBlockchain($event.option.value)'>
+    (optionSelected)='onBlockchainChanges($event.option.value)'>
     <mat-option 
       *ngFor="let blockchain of blockchains"
       [value]="blockchain">

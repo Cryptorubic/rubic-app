@@ -12,7 +12,8 @@ import { BridgeBlockchain } from 'src/app/features/bridge-page/models/BridgeBloc
 export class TokenInputComponent implements OnInit {
 
   @ViewChild(MatAutocompleteTrigger) _auto: MatAutocompleteTrigger;
-  blockchainControl = new FormControl();
+
+  public blockchainControl = new FormControl();
 
   @Input() selectedBlockchain: BridgeBlockchain;
 
@@ -27,7 +28,7 @@ export class TokenInputComponent implements OnInit {
   }
 
   /**
- * Takes the components selected in input-dropdown.
+  * Takes the components selected in input-dropdown.
  * Every blockchain-component has `id`, which is actually the `name` of that blockchain.
  */
   public onBlockchainChanges(blockchainComponent) {
