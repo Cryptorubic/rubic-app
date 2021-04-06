@@ -187,10 +187,11 @@ app-tooltip {
 }
 
 @include b($laptop) {
-  .instant-trade {
+  .instant-trade-form {
     display: block;
 
-    &__from-section {
+    &__from-section_lowered {
+      margin-top: 0;
       margin-bottom: 22px;
     }
 
@@ -208,24 +209,36 @@ app-tooltip {
       margin-bottom: 7px;
     }
   }
-
-  .gas-fee {
-    margin-bottom: 25px;
-  }
 }
 
 @include b($tablet) {
   .instant-trade {
-    &__to-section {
-      display: block;
+    &-form {
+      &__to-section {
+        display: block;
 
-      .instant-trade-button:nth-child(2) {
-        margin-bottom: 22px;
+        .instant-trade-button:nth-child(2) {
+          margin-bottom: 22px;
+        }
+      } 
+
+      &_from-section_lowered {
+        margin-bottom: 0;
       }
     }
 
     &-button {
       top: auto;
+    }
+  }
+
+  .instant-trade-form {
+    display: block;
+  }
+
+  .selection-block {
+    &__custom-token-section {
+      margin-bottom: 22px;
     }
   }
 }

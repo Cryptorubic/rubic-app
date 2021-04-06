@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .custom-token-section {
@@ -49,6 +50,16 @@
       &:focus {
         box-shadow: 0 0 2px $error-red;
       }
+    }
+  }
+}
+
+@include b($laptop) {
+  .custom-token-section {
+    text-align: left;
+
+    &__toggler {
+      margin-left: 0;
     }
   }
 }
