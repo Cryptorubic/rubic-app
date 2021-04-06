@@ -127,6 +127,7 @@
     }
 
     .data__amount {
+      display: flex;
       padding: 0;
     }
 
@@ -236,7 +237,7 @@
     align-items: center;
     padding-left: 20px;
 
-    color: rgba(black, 0.5);
+    color: black;
 
     &::before {
       position: relative;
@@ -284,14 +285,18 @@
     }
   }
 
+  &__amount-inner {
+    display: flex;
+  }
+
+  &__amount-number {
+    margin-right: 10px;
+
+    font-weight: bold;
+  }
+
   &__amount {
-    padding: 20px 0 13px 20px;
-
-    div {
-      margin-bottom: 7px;
-
-      font-weight: bold;
-    }
+    padding: 13px 20px;
 
     img {
       max-width: 15px;
@@ -305,7 +310,7 @@
   }
 
   &__date {
-    color: rgba(black, 0.5);
+    color: black;
 
     div {
       width: fit-content;

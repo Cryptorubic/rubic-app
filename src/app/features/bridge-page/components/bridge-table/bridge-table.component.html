@@ -20,7 +20,7 @@
         <thead>
           <tr>
             <th>
-              <span>Status</span>
+              <span>{{ 'Status' | translate }}</span>
               <img
                 [src]="'assets/images/bridge/' + getArrow('Status')"
                 alt="Sort"
@@ -44,7 +44,7 @@
               />
             </th>
             <th>
-              <span>Spent</span>
+              <span>{{ 'SEND' | translate }}</span>
               <img
                 [src]="'assets/images/bridge/' + getArrow('Spent')"
                 alt="Sort"
@@ -52,7 +52,7 @@
               />
             </th>
             <th>
-              <span>Expected</span>
+              <span>{{ 'GET' | translate }}</span>
               <img
                 [src]="'assets/images/bridge/' + getArrow('Expected')"
                 alt="Sort"
@@ -95,22 +95,24 @@
             </td>
 
             <td class="data__amount">
-              <div>{{ tx.actualFromAmount }}</div>
-              <img [src]="tx.image_link" alt="" />
-              <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+              <div class="data__amount-inner">
+                <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
+                <img [src]="tx.image_link" alt="" />
+                <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+              </div>
             </td>
 
             <td class="data__amount">
-              <div>{{ tx.actualToAmount }}</div>
-              <img [src]="tx.image_link" alt="" />
-              <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+              <div class="data__amount-inner">
+                <div class="data__amount-number">{{ tx.actualToAmount }}</div>
+                <img [src]="tx.image_link" alt="" />
+                <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+              </div>
             </td>
 
             <td class="data__date">
               <div>
-                {{ tx.updateTime.split(' ')[0] }}
-                <br />
-                {{ tx.updateTime.split(' ')[1] }}
+                {{ tx.updateTime.split(' ')[0] }} {{ tx.updateTime.split(' ')[1] }}
               </div>
             </td>
           </tr>
@@ -171,15 +173,19 @@
                 </div>
 
                 <div class="data__amount" *ngIf="selectedOption === 'Spent'">
-                  <div>{{ tx.actualFromAmount }}</div>
-                  <img [src]="tx.image_link" alt="" />
-                  <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                  <div class="data__amount-inner">
+                    <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
+                    <img [src]="tx.image_link" alt="" />
+                    <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                  </div>
                 </div>
 
                 <div class="data__amount" *ngIf="selectedOption === 'Expected'">
-                  <div>{{ tx.actualToAmount }}</div>
-                  <img [src]="tx.image_link" alt="" />
-                  <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                  <div class="data__amount-inner">
+                    <div class="data__amount-number">{{ tx.actualToAmount }}</div>
+                    <img [src]="tx.image_link" alt="" />
+                    <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                  </div>
                 </div>
 
                 <div class="data__date" *ngIf="selectedOption === 'Date'">
@@ -223,20 +229,24 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">Spent</div>
+                <div class="content__item-name">{{ 'GET' | translate}}</div>
                 <div class="data__amount">
-                  <div>{{ tx.actualFromAmount }}</div>
-                  <img [src]="tx.image_link" alt="" />
-                  <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                  <div class="data__amount-inner">
+                    <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
+                    <img [src]="tx.image_link" alt="" />
+                    <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                  </div>
                 </div>
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">Expected</div>
+                <div class="content__item-name">{{ 'SEND' | translate}}</div>
                 <div class="data__amount">
-                  <div>{{ tx.actualToAmount }}</div>
-                  <img [src]="tx.image_link" alt="" />
-                  <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                  <div class="data__amount-inner">
+                    <div class="data__amount-number">{{ tx.actualToAmount }}</div>
+                    <img [src]="tx.image_link" alt="" />
+                    <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                  </div>
                 </div>
               </div>
 
