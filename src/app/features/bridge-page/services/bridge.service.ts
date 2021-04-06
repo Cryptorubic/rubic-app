@@ -28,7 +28,7 @@ interface BinanceResponse {
 
 @Injectable()
 export class BridgeService {
-  static RubicMaxAmount = 100000;
+  static RubicMaxAmount = 50000;
 
   private apiUrl = 'https://api.binance.org/bridge/api/v2/';
 
@@ -190,7 +190,12 @@ export class BridgeService {
         if (onTransactionHash) {
           onTransactionHash(hash);
         }
-        //  await this.backendApiService.postRubicTransaction(fromNetwork, hash);
+        await this.backendApiService.postRubicTransaction(
+          fromNetwork,
+          hash,
+          amount.toFixed(2),
+          this.web3Private.address
+        );
         await this.updateTransactionsList();
       };
 

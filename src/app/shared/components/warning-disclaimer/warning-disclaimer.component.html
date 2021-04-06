@@ -1,0 +1,8 @@
+<div class="warning-container">
+  <div class="warning" [ngClass]="{ 'warning_with-tooltip': tooltipText }">
+    <img src="assets/images/warning.svg" alt="warning" />
+    <span>{{ warningText }}</span>
+  </div>
+
+  <app-tooltip *ngIf="tooltipText">{{ tooltipText }}</app-tooltip>
+</div>

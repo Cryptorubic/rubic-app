@@ -1,158 +1,131 @@
-<form class="order-book-form">
-  <div class="order-book-form__main-section main-section">
-    <div class="main-section__from-section">
-      <div class="main-section__tokens-form tokens-form">
-        <div class="tokens-form__header tokens-form-header">
-          <span class="tokens-form-header__label">
-            {{ 'You have' | translate }}
-          </span>
-        </div>
+<div class="order-book">
+  <div class="order-book__warning" *ngIf="isAnyTokenCustom()">
+    <app-warning-disclaimer
+      [warningText]="'Use custom tokens at your own risk.'"
+      [tooltipText]="
+        'Hi. You start using custom token. Be sure what are you doing cause all of the swaps are done at your own risk. May the Lord help you.'
+          | translate
+      "
+    ></app-warning-disclaimer>
+  </div>
 
-        <app-tokens-input
-          [tokensList]="availableBaseTokens"
-          [selectedToken]="baseToken"
-          [selectedAmount]="baseAmount"
-          (tokenChanges)="baseToken = $any($event)"
-          (numberChanges)="baseAmount = $event"
-        ></app-tokens-input>
-
-        <div class="tokens-form__custom-section custom-section">
-          <div class="custom-section__button-container">
-            <label
-              class="custom-section__button"
-              for="base-custom-input"
-              (click)="isCustomTokenSectionOpened.base = !isCustomTokenSectionOpened.base"
-            >
-              {{ isCustomTokenSectionOpened.base ? 'Cancel' : 'Use custom token' }}
-            </label>
+  <form class="order-book-form">
+    <div class="order-book-form__main-section main-section">
+      <div class="main-section__from-section">
+        <div class="main-section__tokens-form tokens-form">
+          <div class="tokens-form__header tokens-form-header">
+            <span class="tokens-form-header__label">
+              {{ 'You have' | translate }}
+            </span>
           </div>
 
-          <div
-            class="custom-section__form custom-section-form"
-            *ngIf="isCustomTokenSectionOpened.base"
-          >
-            <input
-              type="text"
-              class="custom-section-form__input"
-              id="base-custom-input"
-              placeholder="Token contract address"
-              pattern="0x[A-Fa-f0-9]{40}"
-              name="base"
-              appTokenAddress
+          <app-tokens-input
+            [tokensList]="availableBaseTokens"
+            [selectedToken]="baseToken"
+            [selectedAmount]="baseAmount"
+            (tokenChanges)="baseToken = $any($event)"
+            (numberChanges)="baseAmount = $event"
+          ></app-tokens-input>
+
+          <div class="tokens-form__custom-token-section">
+            <app-custom-token-form
+              type="from"
+              [isSectionOpened]="tradeParameters.isCustomFromTokenFormOpened"
+              (isSectionOpenedChange)="setIsCustomTokenFormOpened('base', $event)"
               [blockchain]="blockchain"
-              (tokenValidated)="setCustomToken('base', $event)"
-              [(ngModel)]="customToken.base.address"
-              #baseCustomToken="ngModel"
-              [ngClass]="{
-                'custom-section-form__input_invalid':
-                  baseCustomToken.value && baseCustomToken.invalid
-              }"
-            />
-            <app-primary-button
-              label="Add"
-              [animate]="baseCustomToken.pending"
-              [disabled]="!baseCustomToken.valid"
-              (click)="addCustomToken('base')"
-            ></app-primary-button>
+              [tokenAddress]="tradeParameters.customFromTokenAddress"
+              (tokenAddressChange)="setCustomTokenAddress('base', $event)"
+              (tokenIsValidated)="updateCustomToken('base', $event)"
+              (addToken)="addCustomToken('base')"
+            ></app-custom-token-form>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="main-section__arrow-section" (click)="revertTokens()">
-      <button type="button" class="arrow-button">
-        <img src="assets/images/icons/revert.svg" alt="" />
-      </button>
-    </div>
+      <div class="main-section__arrow-section" (click)="revertTokens()">
+        <button type="button" class="arrow-button">
+          <img src="assets/images/icons/revert.svg" alt="" />
+        </button>
+      </div>
 
-    <div class="main-section__to-section to-section">
-      <div class="main-section__tokens-form tokens-form">
-        <div class="tokens-form__header tokens-form-header">
-          <span class="tokens-form-header__label">
-            {{ 'You want to get' | translate }}
-          </span>
+      <div class="main-section__to-section to-section">
+        <div class="main-section__tokens-form tokens-form">
+          <div class="tokens-form__header tokens-form-header">
+            <span class="tokens-form-header__label">
+              {{ 'You want to get' | translate }}
+            </span>
 
-          <div class="tokens-form-header__rate tokens-rate" *ngIf="tokensRate">
-            <div class="tokens-rate__main">
-              {{
-                (tokensRate.abs().toFixed(2) | number) +
-                  '% ' +
-                  (tokensRate.isGreaterThan(0) ? 'higher' : 'lower')
-              }}
+            <div class="tokens-form-header__rate tokens-rate" *ngIf="tokensRate">
+              <div class="tokens-rate__main">
+                {{
+                  (tokensRate.abs().toFixed(2) | number) +
+                    '% ' +
+                    (tokensRate.isGreaterThan(0) ? 'higher' : 'lower')
+                }}
 
-              <div class="tokens-rate__info tokens-rate-info">
-                <img src="/assets/images/icons/info.svg"
-                     [matTooltip]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'"
-                     [alt]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'" />
+                <div class="tokens-rate__info tokens-rate-info">
+                  <img src="/assets/images/icons/info.svg"
+                       [matTooltip]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'"
+                       [alt]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'" />
+                  <div class="tokens-rate-info__popup-container">
+                    <div class="tokens-rate-info__popup tokens-rate-popup">
+                      <span>
+                        Your rate is
+                        <span class="tokens-rate-popup__rate">{{
+                          (tokensRate.abs().toFixed(2) | number) +
+                            '% ' +
+                            (tokensRate.isGreaterThan(0) ? 'higher' : 'lower')
+                        }}</span>
+                        than coingecko rate
+                      </span>
+
+                      <span class="tokens-rate-popup__triangle"></span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <app-tokens-input
-          [tokensList]="availableQuoteTokens"
-          [selectedToken]="quoteToken"
-          [selectedAmount]="quoteAmount"
-          (tokenChanges)="quoteToken = $any($event)"
-          (numberChanges)="quoteAmount = $event"
-        ></app-tokens-input>
+          <app-tokens-input
+            [tokensList]="availableQuoteTokens"
+            [selectedToken]="quoteToken"
+            [selectedAmount]="quoteAmount"
+            (tokenChanges)="quoteToken = $any($event)"
+            (numberChanges)="quoteAmount = $event"
+          ></app-tokens-input>
 
-        <div class="tokens-form__custom-section custom-section">
-          <label
-            class="custom-section__button"
-            for="quote-custom-input"
-            (click)="isCustomTokenSectionOpened.quote = !isCustomTokenSectionOpened.quote"
-          >
-            {{ isCustomTokenSectionOpened.quote ? 'Cancel' : 'Use custom token' }}
-          </label>
-
-          <div
-            class="custom-section__form custom-section-form"
-            *ngIf="isCustomTokenSectionOpened.quote"
-          >
-            <input
-              type="text"
-              class="custom-section-form__input"
-              id="quote-custom-input"
-              placeholder="Token contract address"
-              pattern="0x[A-Fa-f0-9]{40}"
-              name="quote"
-              appTokenAddress
+          <div class="tokens-form__custom-token-section">
+            <app-custom-token-form
+              type="to"
+              [isSectionOpened]="tradeParameters.isCustomToTokenFormOpened"
+              (isSectionOpenedChange)="setIsCustomTokenFormOpened('quote', $event)"
               [blockchain]="blockchain"
-              (tokenValidated)="setCustomToken('quote', $event)"
-              [(ngModel)]="customToken.quote.address"
-              #quoteCustomToken="ngModel"
-              [ngClass]="{
-                'custom-section-form__input_invalid':
-                  quoteCustomToken.value && quoteCustomToken.invalid
-              }"
-            />
-            <app-primary-button
-              label="Add"
-              [animate]="quoteCustomToken.pending"
-              [disabled]="!quoteCustomToken.valid"
-              (click)="addCustomToken('quote')"
-            ></app-primary-button>
+              [tokenAddress]="tradeParameters.customToTokenAddress"
+              (tokenAddressChange)="setCustomTokenAddress('quote', $event)"
+              (tokenIsValidated)="updateCustomToken('quote', $event)"
+              (addToken)="addCustomToken('quote')"
+            ></app-custom-token-form>
           </div>
         </div>
-      </div>
 
-      <div class="to-section__confirm-section confirm-section">
-        <app-primary-button
-          label="Create Trade"
-          [animate]="
-            selectedTradeState === TRADE_STATUS.STARTED ||
-            selectedTradeState === TRADE_STATUS.TX_IN_PROGRESS
-          "
-          [disabled]="!(tradeForm.areAmountsAndTokensSet && tradeForm.areOptionsValid)"
-          (click)="createTrade()"
-        ></app-primary-button>
+        <div class="to-section__confirm-section confirm-section">
+          <app-primary-button
+            label="Create Trade"
+            [animate]="
+              selectedTradeState === TRADE_STATUS.STARTED ||
+              selectedTradeState === TRADE_STATUS.TX_IN_PROGRESS
+            "
+            [disabled]="!(tradeForm.areAmountsAndTokensSet && tradeForm.areOptionsValid)"
+            (click)="createTrade()"
+          ></app-primary-button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <app-order-books-form-options></app-order-books-form-options>
-</form>
+    <app-order-books-form-options></app-order-books-form-options>
+  </form>
+</div>
 
 <app-trade-in-progress-modal *ngIf="selectedTradeState === TRADE_STATUS.TX_IN_PROGRESS">
 </app-trade-in-progress-modal>

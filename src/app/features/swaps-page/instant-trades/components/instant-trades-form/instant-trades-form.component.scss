@@ -3,14 +3,36 @@
 
 .instant-trade {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+
+  &__warning {
+    position: relative;
+    top: 18px;
+    right: 30px;
+
+    margin-left: auto;
+  }
+}
+
+.instant-trade-form {
+  display: flex;
+  align-items: flex-start;
+
   padding: 27px 30px 29px;
+
+  &_extended {
+    min-height: 237px;
+  }
+
+  &_not-extended {
+    min-height: initial;
+  }
 
   &__from-section {
     flex: 4;
 
-    &_aligned {
-      align-self: flex-start;
+    &_lowered {
+      margin-top: 41px;
     }
   }
 
@@ -48,7 +70,7 @@
   }
 
   &_big {
-    top: 6px;
+    top: 64px;
 
     width: 42px;
     height: 42px;
@@ -99,18 +121,11 @@
   }
 
   &__warning {
-    position: relative;
-
     margin-top: 7px;
+  }
 
-    cursor: pointer;
-
-    &:hover {
-      app-tooltip {
-        visibility: visible;
-        opacity: 1;
-      }
-    }
+  &__custom-token-section {
+    margin-top: 8px;
   }
 }
 

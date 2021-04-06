@@ -73,7 +73,7 @@
                       fromNumber != undefined &&
                       fromNumber.lt(selectedToken.minAmount)
                     "
-                    src="assets/images/icons/warning-red.svg"
+                    src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
                   />
                 </td>
@@ -97,7 +97,7 @@
                       fromNumber != undefined &&
                       fromNumber.gt(selectedToken.maxAmount)
                     "
-                    src="assets/images/icons/warning-red.svg"
+                    src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
                   />
                 </td>
@@ -113,7 +113,7 @@
           (click)="revertBlockchains()"
         >
           <img
-            src="../../../assets/images/icons/revert.svg"
+            src="assets/images/icons/revert.svg"
             class="choose-blockchains__revert-icon"
             alt="Revert"
           />
@@ -204,7 +204,7 @@
         </div>
 
         <button
-          style="visibility: hidden"
+          style="visibility: hidden;"
           class="cross-chain-form__advanced-options"
           [ngClass]="{ 'cross-chain-form__advanced-options_opened': isAdvancedSectionShown }"
           (click)="isAdvancedSectionShown = !isAdvancedSectionShown"
