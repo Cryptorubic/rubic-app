@@ -8,7 +8,9 @@
       <img class="arrow" src="./assets/images/icons/refresh.svg" />
     </button>
   </div>
+  <!-- Desktop presentation -->
   <table
+    *ngIf="($isMobile | async) === false && hasData"
     mat-table
     matSort
     [dataSource]="sotredTableData"
@@ -21,7 +23,7 @@
       </ng-container>
     </colgroup>
     <!-- Status column  -->
-    <ng-container matColumnDef="status">
+    <ng-container matColumnDef="Status">
       <th mat-header-cell *matHeaderCellDef class="centered-child"  mat-sort-header>
         <div class="tokens-table__cell">
           {{ 'Status' | translate }}
@@ -41,7 +43,7 @@
       </td>
     </ng-container>
     <!-- Tokens icons column  -->
-    <ng-container matColumnDef="token">
+    <ng-container matColumnDef="Tokens">
       <th mat-header-cell *matHeaderCellDef #tokensHeader matAutocompleteOrigin>
         <app-coins-filter (selectTokenEvent)="selectToken($event)"></app-coins-filter>
       </th>
@@ -52,7 +54,7 @@
       </td>
     </ng-container>
     <!-- Tokens amount column  -->
-    <ng-container matColumnDef="amount">
+    <ng-container matColumnDef="Amount">
       <th mat-header-cell *matHeaderCellDef class="centered-child">
         <div class="tokens-table__cell">
           {{ 'Volume' | translate }}
@@ -65,7 +67,7 @@
       </td>
     </ng-container>
     <!-- Network column  -->
-    <ng-container matColumnDef="network">
+    <ng-container matColumnDef="Network">
       <th mat-header-cell *matHeaderCellDef class="centered-child">
         <div class="tokens-table__cell">
           {{ 'Network' | translate }}
@@ -84,7 +86,7 @@
       </td>
     </ng-container>
     <!-- Expires in column  -->
-    <ng-container matColumnDef="expires">
+    <ng-container matColumnDef="Expires in">
       <th mat-header-cell *matHeaderCellDef class="centered-child" mat-sort-header>
         <div class="tokens-table__cell">
           {{ 'Expires in' | translate }}
@@ -104,5 +106,31 @@
       *matRowDef="let row; columns: displayedColumns "
     ></tr>
   </table>
-  <p *ngIf="sotredTableData.length === 0">{{ 'No data' | translate }}</p>
+  <!-- Mobile presentation -->
+  <div *ngIf="($isMobile | async) && hasData" class="tokens-table-mobile">
+    <app-tokens-mobile-header
+      (selectEvent)="selectColumnName($event)"
+      (sortEvent)="sortData($event)"
+      [sortingValue]="tableSorting"
+      [sortingColumns]="displayedColumns"
+      [selectedValue]="selectedColumn"
+    ></app-tokens-mobile-header>
+    <div class="tokens-table__mobile-tokens-dropdown">
+      <app-coins-filter (selectTokenEvent)="selectToken($event)"></app-coins-filter>
+    </div>
+    <div class="tokens-table-mobile__items">
+      <ng-container *ngFor="let trade of sotredTableData">
+        <app-tokens-accordion
+          [data]="trade"
+          [chainIconPath]="getChainIcon(trade.blockchain)"
+          [selectedOption]="selectedColumn"></app-tokens-accordion>
+      </ng-container>
+    </div>
+  </div>
+  <div class="tokens-table__text" *ngIf="hasData === false">
+    Seems like you don't have existing swaps yet
+  </div>
+  <div class="tokens-table__text" *ngIf="hasData && sotredTableData.length === 0">
+    Seems like we don't have data with setted filter parametres
+  </div>
 </div>

@@ -11,6 +11,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
+import { InlineSVGModule } from 'ng-inline-svg';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -44,6 +46,8 @@ import { VolumeBlockComponent } from './components/volume-block/volume-block.com
 import { ListingRequestPopupComponent } from './components/collaborations/listing-request-popup/listing-request-popup.component';
 import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer-text.component';
 import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
+import { TokensAccordionComponent } from './components/tokens-table/components/tokens-accordion/tokens-accordion.component';
+import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
 import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
 
@@ -82,6 +86,8 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     ListingRequestPopupComponent,
     DisclaimerTextComponent,
     TokensTableComponent,
+    TokensMobileHeaderComponent,
+    TokensAccordionComponent,
     CustomTokenFormComponent,
     WarningDisclaimerComponent
   ],
@@ -99,7 +105,9 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     MatSortModule,
     RouterModule,
     ScrollingModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSelectModule,
+    InlineSVGModule.forRoot()
   ],
   exports: [
     FooterComponent,

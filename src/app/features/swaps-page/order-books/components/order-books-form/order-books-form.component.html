@@ -64,8 +64,9 @@
                 }}
 
                 <div class="tokens-rate__info tokens-rate-info">
-                  <img src="/assets/images/icons/info.svg" alt="info" />
-
+                  <img src="/assets/images/icons/info.svg"
+                       [matTooltip]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'"
+                       [alt]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'" />
                   <div class="tokens-rate-info__popup-container">
                     <div class="tokens-rate-info__popup tokens-rate-popup">
                       <span>

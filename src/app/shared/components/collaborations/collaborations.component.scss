@@ -1,4 +1,5 @@
-@import '../../../../scss/vars';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 .collaborations {
   &__title {
@@ -28,6 +29,7 @@
   &__content {
     display: flex;
     flex-wrap: wrap;
+    grid-gap: 0 175px;
     justify-content: center;
   }
 
@@ -35,7 +37,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 295px;
+    width: 120px;
     margin-bottom: 90px;
 
     cursor: pointer;
@@ -72,5 +74,13 @@
     border: none;
 
     cursor: pointer;
+  }
+}
+
+@include b($tablet) { 
+  .collaborations {
+    &__content {
+      grid-gap: 0 65px;
+    }
   }
 }
