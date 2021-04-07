@@ -13,13 +13,12 @@ export class FaqComponent {
   public questions: Question[];
 
   constructor(private readonly translateService: TranslateService) {
-    this.translateService.get('FAQ_QUESTIONS').subscribe(((questions: any[]) => {
-      this.questions = questions.map(question => ({
-        title: question.QUESTION,
-        answer: question.ANSWER,
-        isActive: false
+    this.translateService.get('faq-page.questions').subscribe(questions => {
+      this.questions = Object.values(questions).map((question: Question) => ({
+        isActive: false,
+        ...question
       }))
-    }));
+    });
   }
 
   public toggleQuestion(containerElement: MouseEvent, question: Question) {

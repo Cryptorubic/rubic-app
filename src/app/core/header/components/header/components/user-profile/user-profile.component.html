@@ -13,10 +13,10 @@
   </div>
   <ul *ngIf="$isMobile | async" class="user-profile__list">
     <li class="user-profile__item">
-      <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'My trades' | translate }}</a>
+      <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'navigation.myTrades' | translate }}</a>
     </li>
     <li class="user-profile__item">
-      <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
+      <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'navigation.logout' | translate }}</a>
     </li>
   </ul>
   <div *ngIf="($isMobile | async) === false" class="user-profile__menu">
@@ -28,10 +28,10 @@
     <mat-menu class="user-profile__sublist-container" #userMenu="matMenu">
       <ul class="user-profile__sublist">
         <li class="user-profile__sublist-item">
-          <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'My trades' | translate }}</a>
+          <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'navigation.myTrades' | translate }}</a>
         </li>
         <li class="user-profile__sublist-item">
-          <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
+          <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'logout' | translate }}</a>
         </li>
       </ul>
     </mat-menu>
