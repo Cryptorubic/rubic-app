@@ -12,6 +12,7 @@ import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCH
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { BlockchainsInfo } from '../../../../../core/services/blockchain/blockchain-info';
+import { TranslateService } from '@ngx-translate/core';
 
 interface UniSwapTrade {
   amountIn: string;
@@ -43,9 +44,10 @@ export class UniSwapService extends InstantTradeService {
     private coingeckoApiService: CoingeckoApiService,
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    protected readonly translateService: TranslateService
   ) {
-    super();
+    super(translateService);
 
     useTestingModeService.isTestingMode.subscribe(value => {
       this.isTestingMode = value;

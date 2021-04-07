@@ -10,6 +10,7 @@ import { MetamaskError } from '../../../../../shared/models/errors/provider/Meta
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NetworkError } from '../../../../../shared/models/errors/provider/NetworkError';
 import SwapToken from '../../../../../shared/models/tokens/SwapToken';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,7 @@ export class MetamaskProviderService extends PrivateProvider {
     }
   }
 
-  constructor() {
+  constructor(private readonly translateService: TranslateService) {
     super();
 
     const { ethereum } = window as any;
@@ -101,7 +102,7 @@ export class MetamaskProviderService extends PrivateProvider {
       this.onAddressChanges.next(this.getAddress());
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
   }
 
@@ -113,10 +114,10 @@ export class MetamaskProviderService extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
     if (this.getNetwork().name !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-      throw new NetworkError(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+      throw new NetworkError(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, this.translateService);
     }
 
     return this._metaMask.request({

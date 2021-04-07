@@ -8,6 +8,7 @@ import { Web3PublicService } from '../../../../../core/services/blockchain/web3-
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { PancakeSwapContractAbi, PancakeSwapContractAddress } from './pancake-swap-contract';
+import { TranslateService } from '@ngx-translate/core';
 
 interface PancakeSwapTrade {
   amountIn: string;
@@ -29,8 +30,12 @@ export class PancakeSwapService extends InstantTradeService {
 
   private WETH = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c';
 
-  constructor(web3PublicService: Web3PublicService, web3Private: Web3PrivateService) {
-    super();
+  constructor(
+    web3PublicService: Web3PublicService,
+    web3Private: Web3PrivateService,
+    protected readonly translateService: TranslateService
+  ) {
+    super(translateService);
     this.web3Public = web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
     this.web3Private = web3Private;
   }

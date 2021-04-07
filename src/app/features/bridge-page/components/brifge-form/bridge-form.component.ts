@@ -14,6 +14,7 @@ import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bridge-form',
@@ -195,7 +196,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private bridgeService: BridgeService, private dialog: MatDialog) {
+  constructor(
+    private bridgeService: BridgeService,
+    private dialog: MatDialog,
+    private readonly translateService: TranslateService
+  ) {
     bridgeService.tokens.subscribe(tokens => {
       this.tokens = tokens;
     });
@@ -313,7 +318,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
           this.buttonAnimation = false;
           console.log(err);
           if (!(err instanceof RubicError)) {
-            err = new RubicError();
+            err = new RubicError(this.translateService);
           }
           let data: any = { title: 'Error', descriptionText: err.comment };
           if (err instanceof MetamaskError) {

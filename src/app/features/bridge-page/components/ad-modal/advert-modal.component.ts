@@ -6,6 +6,7 @@ import {
   AfterViewInit
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
@@ -31,7 +32,8 @@ export class AdvertModalComponent implements AfterViewInit {
   constructor(
     private dialog: MatDialog,
     private readonly cookieService: CookieService,
-    private readonly web3Private: Web3PrivateService
+    private readonly web3Private: Web3PrivateService,
+    private readonly translateServuce: TranslateService
   ) {
     this.token = {
       address: '0x8E3BCC334657560253B83f08331d85267316e08a',
@@ -64,7 +66,7 @@ export class AdvertModalComponent implements AfterViewInit {
   }
 
   private showErrorModal(err: Error): void {
-    const eror = err instanceof RubicError ? err : new RubicError();
+    const eror = err instanceof RubicError ? err : new RubicError(this.translateServuce);
     const data = { title: 'Warning', descriptionText: eror.comment } as any;
     if (err instanceof NetworkError) {
       data.title = 'Error';

@@ -9,6 +9,7 @@ import BinanceContractAbi from './abi/BinanceContractAbi';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import { UseTestingModeService } from '../../../../core/services/use-testing-mode/use-testing-mode.service';
 import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
+import { TranslateService } from '@ngx-translate/core';
 
 interface BridgeTrade {
   token: {
@@ -30,7 +31,8 @@ export class RubicBridgeService {
   constructor(
     private web3Private: Web3PrivateService,
     private web3PublicService: Web3PublicService,
-    useTestingMode: UseTestingModeService
+    useTestingMode: UseTestingModeService,
+    private readonly translateService: TranslateService
   ) {
     useTestingMode.isTestingMode.subscribe(value => {
       if (value) {
@@ -77,7 +79,8 @@ export class RubicBridgeService {
       throw new InsufficientFundsError(
         trade.token.symbol,
         formattedTokensBalance,
-        amount.toString()
+        amount.toString(),
+        this.translateService
       );
     }
 

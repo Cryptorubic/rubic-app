@@ -11,6 +11,7 @@ import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +55,10 @@ export class Web3PrivateService {
     return this.provider.deActivate();
   }
 
-  constructor(private readonly provider: MetamaskProviderService) {
+  constructor(
+    private readonly provider: MetamaskProviderService,
+    private readonly translateService: TranslateService
+  ) {
     this.onAddressChanges = provider.onAddressChanges.asObservable();
     this.onNetworkChanges = provider.onNetworkChanges.asObservable();
     this.defaultMockGas = provider.defaultGasLimit;
@@ -102,7 +106,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.log(`Tokens transfer error. ${err}`);
           if (err.code === 4001) {
-            reject(new UserRejectError());
+            reject(new UserRejectError(this.translateService));
           } else {
             reject(err);
           }
@@ -132,7 +136,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.log(`Tokens transfer error. ${err}`);
           if (err.code === 4001) {
-            reject(new UserRejectError());
+            reject(new UserRejectError(this.translateService));
           } else {
             reject(err);
           }
@@ -183,7 +187,7 @@ export class Web3PrivateService {
           console.log(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
-            reject(new UserRejectError());
+            reject(new UserRejectError(this.translateService));
           } else {
             reject(err);
           }
@@ -219,7 +223,7 @@ export class Web3PrivateService {
           console.log(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
-            reject(new UserRejectError());
+            reject(new UserRejectError(this.translateService));
           } else {
             reject(err);
           }
@@ -258,7 +262,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.log(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
-            reject(new UserRejectError());
+            reject(new UserRejectError(this.translateService));
           } else {
             reject(err);
           }
@@ -301,7 +305,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.log(`Method execution error. ${err}`);
           if (err.code === 4001) {
-            reject(new UserRejectError());
+            reject(new UserRejectError(this.translateService));
           } else {
             reject(err);
           }
@@ -335,7 +339,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.log(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
-            reject(new UserRejectError());
+            reject(new UserRejectError(this.translateService));
           } else {
             reject(err);
           }

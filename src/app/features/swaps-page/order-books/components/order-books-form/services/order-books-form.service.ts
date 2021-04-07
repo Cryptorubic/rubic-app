@@ -11,9 +11,10 @@ import { AccountError } from 'src/app/shared/models/errors/provider/AccountError
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
-import SameTokens from 'src/app/shared/models/errors/order-book/SameTokens';
+import SameTokensError from 'src/app/shared/models/errors/order-book/SameTokens';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class OrderBooksFormService implements OnDestroy {
@@ -30,7 +31,8 @@ export class OrderBooksFormService implements OnDestroy {
     private orderBookApiService: OrderBookApiService,
     private web3PublicService: Web3PublicService,
     private web3PrivateService: Web3PrivateService,
-    private useTestingModeService: UseTestingModeService
+    private useTestingModeService: UseTestingModeService,
+    private readonly translateService: TranslateService
   ) {
     this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
@@ -60,24 +62,24 @@ export class OrderBooksFormService implements OnDestroy {
 
   private checkSettings(tradeForm: OrderBookTradeForm) {
     if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
 
     if (!this.web3PrivateService.address) {
-      throw new AccountError();
+      throw new AccountError(this.translateService);
     }
 
     if (
       tradeForm.token.base.address.toLowerCase() === tradeForm.token.quote.address.toLowerCase()
     ) {
-      throw new SameTokens();
+      throw new SameTokensError(this.translateService);
     }
 
     if (
       this.web3PrivateService.networkName !== tradeForm.blockchain &&
       this.web3PrivateService.networkName !== `${tradeForm.blockchain}_TESTNET`
     ) {
-      throw new NetworkError(tradeForm.blockchain);
+      throw new NetworkError(tradeForm.blockchain, this.translateService);
     }
   }
 

@@ -20,6 +20,7 @@ import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NA
 import { RubicBridgeService } from './rubic-bridge-service/rubic-bridge.service';
 import { UseTestingModeService } from '../../../core/services/use-testing-mode/use-testing-mode.service';
 import { bridgeTestTokens } from '../../../../test/tokens/bridge-tokens';
+import { TranslateService } from '@ngx-translate/core';
 
 interface BinanceResponse {
   code: number;
@@ -56,7 +57,8 @@ export class BridgeService {
     private web3Private: Web3PrivateService,
     private backendApiService: BridgeApiService,
     private rubicBridgeService: RubicBridgeService,
-    private useTestingMode: UseTestingModeService
+    private useTestingMode: UseTestingModeService,
+    private readonly translateService: TranslateService
   ) {
     this.getTokensList();
     this.updateTransactionsList();
@@ -170,11 +172,11 @@ export class BridgeService {
     onTransactionHash?: (hash: string) => void
   ): Observable<string> {
     if (!this.web3Private.isProviderActive) {
-      return throwError(new MetamaskError());
+      return throwError(new MetamaskError(this.translateService));
     }
 
     if (!this.web3Private.address) {
-      return throwError(new AccountError());
+      return throwError(new AccountError(this.translateService));
     }
 
     if (
@@ -182,7 +184,7 @@ export class BridgeService {
       (this.web3Private.network?.name !== `${fromNetwork}_TESTNET` ||
         !this.useTestingMode.isTestingMode.getValue())
     ) {
-      return throwError(new NetworkError(fromNetwork));
+      return throwError(new NetworkError(fromNetwork, this.translateService));
     }
 
     if (token.symbol === 'RBC') {
@@ -258,7 +260,7 @@ export class BridgeService {
       flatMap((res: BinanceResponse) => {
         if (res.code !== 20000) {
           console.log(`Bridge POST error, code ${res.code}`);
-          return throwError(new OverQueryLimitError());
+          return throwError(new OverQueryLimitError(this.translateService));
         }
         const { data } = res;
         const tx = new BridgeTransaction(
@@ -275,7 +277,7 @@ export class BridgeService {
       }),
       catchError(err => {
         console.error(`Error bridge post ${err}`);
-        return throwError(err instanceof RubicError ? err : new RubicError());
+        return throwError(err instanceof RubicError ? err : new RubicError(this.translateService));
       })
     );
   }
@@ -293,8 +295,11 @@ export class BridgeService {
       await this.updateTransactionsList();
       this.backendApiService.notifyBridgeBot(tx, this.web3Private.address);
     };
-
-    await tx.sendDeposit(onTxHash);
+    try {
+      await tx.sendDeposit(onTxHash);
+    } catch(err) {
+      throw new RubicError(this.translateService, `The ${tx.network} network is not supported`);
+    }
 
     return tx.binanceId;
   }

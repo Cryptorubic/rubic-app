@@ -35,7 +35,7 @@ export class BridgeTransaction {
         decimals = this.token.bscContractDecimal;
         break;
       default:
-        throw new RubicError(`The ${this.network} network is not supported`);
+        break;
     }
 
     const realAmount = this.amount.multipliedBy(10 ** decimals);

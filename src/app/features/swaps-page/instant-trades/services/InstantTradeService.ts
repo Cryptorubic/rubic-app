@@ -9,6 +9,7 @@ import { MetamaskError } from '../../../../shared/models/errors/provider/Metamas
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TranslateService } from '@ngx-translate/core';
 
 abstract class InstantTradeService {
   protected isTestingMode;
@@ -16,6 +17,8 @@ abstract class InstantTradeService {
   protected web3Public: Web3Public;
 
   protected web3Private: Web3PrivateService;
+
+  constructor(protected readonly translateService: TranslateService) {}
 
   /**
    * @description calculate instant trade parameters
@@ -48,18 +51,18 @@ abstract class InstantTradeService {
 
   protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
     if (!this.web3Private.isProviderActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
 
     if (!this.web3Private.address) {
-      throw new AccountError();
+      throw new AccountError(this.translateService);
     }
 
     if (
       this.web3Private.networkName !== selectedBlockchain &&
       (this.web3Private.networkName !== `${selectedBlockchain}_TESTNET` || !this.isTestingMode)
     ) {
-      throw new NetworkError(selectedBlockchain);
+      throw new NetworkError(selectedBlockchain, this.translateService);
     }
   }
 
@@ -75,7 +78,8 @@ abstract class InstantTradeService {
         throw new InsufficientFundsError(
           trade.from.token.symbol,
           formattedBalance,
-          trade.from.amount.toString()
+          trade.from.amount.toString(),
+          this.translateService
         );
       }
     } else {
@@ -90,7 +94,8 @@ abstract class InstantTradeService {
         throw new InsufficientFundsError(
           trade.from.token.symbol,
           formattedTokensBalance,
-          trade.from.amount.toString()
+          trade.from.amount.toString(),
+          this.translateService
         );
       }
     }

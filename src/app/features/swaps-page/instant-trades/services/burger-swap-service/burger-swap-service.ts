@@ -4,11 +4,12 @@ import { TransactionReceipt } from 'web3-eth';
 import InstantTradeService from '../InstantTradeService';
 // import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class BurgerSwapService extends InstantTradeService {
-  constructor() {
-    super();
+  constructor(protected readonly translateService: TranslateService) {
+    super(translateService);
   }
 
   /** Unused params
