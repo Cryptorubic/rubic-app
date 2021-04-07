@@ -1,3 +1,6 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
 .primary-button {
   position: relative;
 
@@ -37,5 +40,13 @@
 
   &__arrow {
     margin-right: 13px;
+  }
+}
+
+@include b($tablet) {
+  .primary-button {
+    &:active {
+      transform: none;
+    }
   }
 }

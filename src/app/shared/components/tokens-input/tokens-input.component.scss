@@ -28,3 +28,11 @@
     }
   }
 }
+
+@include b($mobile-md) {
+  .tokens-form {
+    &__input {
+      font-size: 14px;
+    }
+  }
+}
