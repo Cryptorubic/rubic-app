@@ -1,41 +1,34 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { Question } from '../../models/question';
 
-export interface IQuestion {
-  isActive: boolean;
-}
+
 
 @Component({
   selector: 'app-faq',
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss']
 })
-export class FaqComponent implements OnInit, AfterViewInit {
-  public questions: Array<IQuestion> = [];
+export class FaqComponent {
+  public questions: Question[];
 
-  private questionsNumber = 26;
-
-  private questionsHTMLTexts;
-
-  constructor() {}
-
-  public ngOnInit(): void {
-    for (let i = 0; i < this.questionsNumber; i++) {
-      this.questions.push({ isActive: false });
-    }
+  constructor(private readonly translateService: TranslateService) {
+    this.translateService.get('FAQ_QUESTIONS').subscribe(((questions: any[]) => {
+      this.questions = questions.map(question => ({
+        title: question.QUESTION,
+        answer: question.ANSWER,
+        isActive: false
+      }))
+    }));
   }
 
-  ngAfterViewInit() {
-    this.questionsHTMLTexts = document.querySelectorAll('.questions-container__text');
-  }
-
-  public makeQuestionActive(question, index) {
+  public toggleQuestion(containerElement: MouseEvent, question: Question) {
+    const answerElement = (containerElement.currentTarget as HTMLElement).children[1] as HTMLElement;
     question.isActive = !question.isActive;
     if (question.isActive) {
-      this.questionsHTMLTexts[
-        index
-      ].style.height = `${this.questionsHTMLTexts[index].scrollHeight}px`;
+      answerElement.style.height = `${answerElement.scrollHeight}px`;
     } else {
-      this.questionsHTMLTexts[index].style.height = 0;
+      answerElement.style.height = '0';
     }
   }
 }
