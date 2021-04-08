@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
+import { DOCUMENT } from '@angular/common';
 import InstantTrade from '../../models/InstantTrade';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
@@ -92,6 +93,14 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     from: {} as SwapToken,
     to: {} as SwapToken
   };
+
+  public get hasBestRate(): boolean {
+    return this.trades.some(provider => provider.isBestRate);
+  }
+
+  public get isIframe(): boolean {
+    return this.document.body.classList.contains('iframe');
+  }
 
   get tokens(): List<SwapToken> {
     return this._tokens;
@@ -201,7 +210,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private onInchBscService: OneInchBscService,
     private pancakeSwapService: PancakeSwapService,
     private dialog: MatDialog,
-    private instantTradesApiService: InstantTradesApiService
+    private instantTradesApiService: InstantTradesApiService,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   private initInstantTradeProviders() {

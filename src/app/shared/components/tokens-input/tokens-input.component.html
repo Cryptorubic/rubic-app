@@ -4,7 +4,7 @@
     type="text"
     name="amountField"
     autocomplete="off"
-    placeholder="{{ inputDisabled ? '' : (amountPlaceholder | translate) }}"
+    placeholder="{{ (amountPlaceholder | translate) || '' }}"
     [disabled]="inputDisabled"
     required
     [tabindex]="inputDisabled ? '-1' : ''"

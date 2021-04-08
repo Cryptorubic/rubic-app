@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
@@ -14,8 +15,11 @@ export class AppComponent {
   constructor(
     private readonly healthcheckService: HealthcheckService,
     private readonly translateService: TranslateService,
-    private readonly cookieService: CookieService
+    private readonly cookieService: CookieService,
+    @Inject(DOCUMENT) private document: Document
   ) {
+    this.document.body.classList.add('iframe');
+
     this.setupLanguage();
     this.healthcheckService
       .healthCheck()
