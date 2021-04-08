@@ -137,7 +137,7 @@
   }
 }
 
-@include b($mobile-md) {
+@include b($desktop) {
   .input-dropdown__choose-button {
     &_with-text {
       font-size: 14px;

@@ -222,3 +222,11 @@
     margin-top: 22px;
   }
 }
+
+@include b($mobile-sm) {
+  .order-book-form {
+    &__main-section {
+      padding: 27px 10px 29px;
+    }
+  }
+}

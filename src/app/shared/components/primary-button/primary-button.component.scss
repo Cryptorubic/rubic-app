@@ -43,10 +43,18 @@
   }
 }
 
+@include b($desktop) {
+  .primary-button {
+    font-size: 16px;
+  }
+}
+
 @include b($tablet) {
   .primary-button {
     &:active {
       transform: none;
     }
   }
+  
 }
+
