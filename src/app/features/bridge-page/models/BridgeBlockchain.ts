@@ -11,7 +11,4 @@ export interface BridgeBlockchain {
     label: string;
     baseUrl: string;
   };
-  symbolName: string;
-  decimalsName: string;
-  addressName: string;
 }

@@ -95,7 +95,7 @@ export class OrderBookApiService {
         blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
         break;
       case 24:
-        blockchain = BLOCKCHAIN_NAME.MATIC;
+        blockchain = BLOCKCHAIN_NAME.POLYGON;
       // no default
     }
 

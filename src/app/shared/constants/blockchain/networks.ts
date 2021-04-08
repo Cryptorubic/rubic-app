@@ -31,12 +31,12 @@ export default [
   },
   {
     id: 137,
-    name: BLOCKCHAIN_NAME.MATIC,
+    name: BLOCKCHAIN_NAME.POLYGON,
     scannerUrl: 'https://explorer-mainnet.maticvigil.com/',
     rpcLink: 'https://rpc-mainnet.matic.network',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.MATIC,
+      blockchainName: BLOCKCHAIN_NAME.POLYGON,
       address: '0x0000000000000000000000000000000000000000',
       name: 'Polygon',
       symbol: 'MATIC',
@@ -74,12 +74,12 @@ export default [
   },
   {
     id: 80001,
-    name: BLOCKCHAIN_NAME.MATIC_TESTNET,
+    name: BLOCKCHAIN_NAME.POLYGON_TESTNET,
     scannerUrl: 'https://explorer-mumbai.maticvigil.com/',
     rpcLink: 'https://rpc-mumbai.maticvigil.com',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.MATIC_TESTNET,
+      blockchainName: BLOCKCHAIN_NAME.POLYGON_TESTNET,
       address: '0x0000000000000000000000000000000000000000',
       name: 'Polygon',
       symbol: 'MATIC',

@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';
-import { BridgeTransaction } from '../../../../features/bridge-page/services/BridgeTransaction';
 import { BridgeTableTransaction } from '../../../../features/bridge-page/models/BridgeTableTransaction';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BridgeTrade } from '../../../../features/bridge-page/models/BridgeTrade';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class BridgeApiService {
     });
   }
 
-  public postTransaction(
+  public postPanamaTransaction(
     binanceTransactionId: string,
     ethSymbol: string,
     bscSymbol: string
@@ -72,14 +72,18 @@ export class BridgeApiService {
     });
   }
 
-  public notifyBridgeBot(tx: BridgeTransaction, walletAddress: string): Promise<void> {
+  public notifyBridgeBot(
+    bridgeTrade: BridgeTrade,
+    binanceId: string,
+    walletAddress: string
+  ): Promise<void> {
     const body = {
-      binanceId: tx.binanceId,
+      binanceId,
       walletAddress,
-      amount: tx.amount,
-      network: tx.network,
-      symbol: tx.token.symbol,
-      ethSymbol: tx.token.ethSymbol
+      amount: bridgeTrade.amount,
+      network: bridgeTrade.fromBlockchain,
+      symbol: bridgeTrade.token.symbol,
+      ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol
     };
 
     return new Promise<void>((resolve, reject) => {

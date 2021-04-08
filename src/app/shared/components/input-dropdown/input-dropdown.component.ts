@@ -80,13 +80,14 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   constructor() {}
 
   ngOnChanges() {
-    this.searchComponent(this.inputQuery);
-
     if (this.selectedComponentData) {
+      this.searchComponent('');
       this.inputQuery = this.selectedComponentData.filterParameters[this.filterBy[0]];
       this.unshiftComponentToVisibleList(
         this.componentsData.find(component => component.id === this.selectedComponentData.id)
       );
+    } else {
+      this.searchComponent(this.inputQuery);
     }
   }
 
