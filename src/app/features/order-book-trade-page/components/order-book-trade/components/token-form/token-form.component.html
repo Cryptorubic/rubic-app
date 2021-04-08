@@ -177,7 +177,7 @@
   </div>
 </section>
 
-<app-operation-in-progress-modal></app-operation-in-progress-modal>
+<app-operation-in-progress-modal *ngIf="isOperationInProgress"></app-operation-in-progress-modal>
 
 <app-operation-completed-modal
   *ngIf="isOperationCompleted"
