@@ -3,7 +3,15 @@
     "yes": "Yes",
     "no": "No",
     "any": "Any",
-    "error": "Error"
+    "error": "Error",
+    "have": "You have",
+    "want": "You want to get",
+    "confirm": "Confirm",
+    "copy": "Copy",
+    "accept": "Accept",
+    "copyright": "Copyright",
+    "privacyPolicy": "Privacy policy",
+    "close": "Close"
   },
   "errors": {
     "noMetamaskAccess":
@@ -31,9 +39,10 @@
     "project": "Project",
     "login": "Connect Wallet",
     "myTrades": "My trades",
-    "logout": "Logout"
+    "logout": "Logout",
+    "logoutMessage": "Do you really want to Log Out?"
   },
-  "about-page": {
+  "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
     "benefits": {
       "0": {
@@ -114,10 +123,10 @@
       }
     }
   },
-  "team-page": {
+  "teamPage": {
     "title": "Team"
   },
-  "faq-page": {
+  "faqPage": {
     "title": "FAQ",
     "questions": {
       "0": {
@@ -223,6 +232,66 @@
       "25": {
         "title": "How to use Limit Orders?",
         "answer": "<strong>Step 1:</strong> Select your blockchain in which you want to swap tokens and choose Order Book (currently, the Limit Orders feature supports trades on Ethereum, so you would want to select the Ethereum network - more blockchains will be supported in the future).\n\n<strong>Step 2:</strong> Choose the tokens you want to exchange, at your desired rate. Currently, only “RBC-ETH” and “ETH-RBC” pairs are available.\n\n<strong>Step 3:</strong> Choose advanced options, such as closing date and time, minimum and maximum contribution, brokerage fee if needed.\n\n<strong>Step 4:</strong> Click Create Trade & Confirm creation transaction in MetaMask.\n\n<strong>Step 5:</strong> Contribute to your part of the deal (there are 2 transactions: Approve tokens & Contribute). Choose ‘Fill all’ if you’re planning to be the only participant on your side of the deal, a network fee will apply.\n<a href='https://youtu.be/xiuT59ueJ8c'>Video tutorial (this method works for any blockchain)</a>\n\n<strong>Step 6:</strong> Wait for order closing. Please note that your order can be filled by other users or automatically by Rubic if Uniswap’s rate of the pair matches it (including gas fees).\n\n<strong>Important:</strong>\n* Sellers need to have 100% completed their sides of the deal (check video tutorial), so if you plan to be the only seller in your trade you should select ‘Fill all’. This way your part of the deal will be 100% completed, and will make it available for other buyers (or the Limit Orders functionality). \n** If a buyer wants to partially fill your order, the Limit Order feature will still perform its part and will automatically fill the rest of your order until it's 100% completed.\n*** If the expiration date of the trade has been reached, you can get your tokens back by going to your trades table and click on ‘Withdraw’ button (a network fee will apply).\n\nThe first pair of tokens that is available for the Limit Orders is RBC/ETH. We plan to add new pairs and support for multiple blockchains later: Ethereum, Polygon, and Binance Smart Chain.\n\nPlease note that the deal will be closed after the time specified in the “CLOSING DATE” parameter is reached."
+      }
+    }
+  },
+  "bridgePage": {
+    "title": "Create your cross-chain swap",
+    "progressMessage": "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
+    "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains."
+  },
+  "instantTrades": {
+    "title": "Instant Trades",
+    "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
+    "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
+    "bestRate": "Best Rate"
+  },
+  "orderBook": {
+    "title": "Order Book"
+  },
+  "bridge": {
+    "title": "Cross-Chain Swaps"
+  },
+  "myTrades": {
+    "title": "My trades"
+  },
+  "tradesForm": {
+    "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."
+  },
+  "tradesTable": {
+    "columns": {
+      "status": "Status",
+      "from": "From",
+      "to": "To",
+      "get": "Get",
+      "send": "SEND",
+      "expireDate": "Expire date",
+      "expiresIn": "Expires in",
+      "volume": "Volume",
+      "network": "Network"
+    },
+    "noData": "You have no swaps yet",
+    "showData": "Show data",
+    "sortBy": "Sort by"
+  },
+  "tradesPage": {
+    "createTrade": "Create your Trade",
+    "tradesDisclaimer": "By trading on our platform you agree with the following",
+    "termsAndConditions": "terms and conditions",
+    "disclaimerTitle": "Token safety alert!",
+    "disclaimerText": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform.",
+    "accumulatedTransactionsVolume": "Accumulated Transactions Volume",
+    "listingRequest": {
+      "title": "Listing request",
+      "description": "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:",
+      "information": {
+        "projectName": "Project name",
+        "projectDescription": "Project description",
+        "links": "Links to the project and social media",
+        "contractAddress": "Contract address",
+        "onepager": "Whitepaper/Onepager",
+        "logo": "Link to logo in PNG and SVG",
+        "why": "Why you have chosen Rubic.exchange?"
       }
     }
   }

@@ -1,6 +1,6 @@
 <form #filterForm class="coins-filter-form">
     <input type="text"
-      placeholder="{{ 'SEND' | translate }}"
+      placeholder="{{ 'tradesTable.columns.send' | translate }}"
       class="coins-filter-form__tokens-input"
       [formControl]="tokensFromInput"
       [matAutocomplete]="autoFrom"
@@ -32,7 +32,7 @@
       <img class="order-books-table__switch-icon" src="assets/images/icons/table/sort-1.svg" alt="Switch tokens">
     </button>
     <input type="text"
-      placeholder="{{ 'GET' | translate }}"
+      placeholder="{{ 'tradesTable.columns.get' | translate }}"
       class="coins-filter-form__tokens-input"
       [formControl]="tokensToInput"
       [matAutocomplete]="autoTo"

@@ -3,7 +3,7 @@
     <div class="container">
       <img src="assets/images/about/cube-img.svg" alt="cube" />
       <h3 class="h3-block-title-s1">
-        {{ 'about-page.description' | translate }}
+        {{ 'aboutPage.description' | translate }}
       </h3>
     </div>
   </section>
@@ -21,7 +21,7 @@
 
   <section class="features">
     <div class="container">
-      <span class="span-title-section">{{ 'about-page.features.title' | translate }}</span>
+      <span class="span-title-section">{{ 'aboutPage.features.title' | translate }}</span>
       <div class="features-blocks">
         <div *ngFor="let feature of features" class="features-blocks-item">
           <span class="icon icon__checked">{{ feature | translate }}</span>
@@ -32,7 +32,7 @@
 
   <section class="rubic-contract">
     <div class="container">
-      <span class="span-title-section">{{ 'about-page.contract.title' | translate }}</span>
+      <span class="span-title-section">{{ 'aboutPage.contract.title' | translate }}</span>
       <img
         [src]="
           ($isMobile | async)
@@ -47,7 +47,7 @@
 
   <section class="rubic-roadmap">
     <div class="container">
-      <span class="span-title-section">{{ 'about-page.roadmap.title' | translate }}</span>
+      <span class="span-title-section">{{ 'aboutPage.roadmap.title' | translate }}</span>
       <div class="rubic-roadmap-block">
         <div class="rubic-roadmap-block-item">
           <span class="span-roadmap-title">{{ roadmap.q1.title | translate }}</span>

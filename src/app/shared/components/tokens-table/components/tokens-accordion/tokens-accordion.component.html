@@ -85,7 +85,7 @@
     [ngClass]="{ 'tokens-accordion__content_inactive': !data.opened }"
   >
     <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">From</div>
+      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.from' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
         <img
           [src]="data.token.base.image || '/assets/images/icons/coins/empty.svg'"
@@ -96,7 +96,7 @@
     </div>
 
     <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">To</div>
+      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.to' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
         <img
           [src]="data.token.quote.image || '/assets/images/icons/coins/empty.svg'"
@@ -134,7 +134,7 @@
     </div>
 
     <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">{{ 'Network' | translate }}</div>
+      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.network' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
         <div>
           <img
@@ -148,7 +148,7 @@
     </div>
 
     <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">{{ 'Expires in' | translate }}</div>
+      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.expiresIn' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
         <div>
           {{ data.expirationDate | date: 'd' }}d: {{ data.expirationDate | date: 'h' }}h:

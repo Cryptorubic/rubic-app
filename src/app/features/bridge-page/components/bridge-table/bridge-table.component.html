@@ -20,7 +20,7 @@
         <thead>
           <tr>
             <th>
-              <span>{{ 'Status' | translate }}</span>
+              <span>{{ 'tradesTable.columns.status' | translate }}</span>
               <img
                 [src]="'assets/images/bridge/' + getArrow('Status')"
                 alt="Sort"
@@ -28,7 +28,7 @@
               />
             </th>
             <th>
-              <span>From</span>
+              <span>{{ 'tradesTable.columns.from' | translate }}</span>
               <img
                 [src]="'assets/images/bridge/' + getArrow('From')"
                 alt="Sort"
@@ -36,7 +36,7 @@
               />
             </th>
             <th>
-              <span>To</span>
+              <span>{{ 'tradesTable.columns.to' | translate }}</span>
               <img
                 [src]="'assets/images/bridge/' + getArrow('To')"
                 alt="Sort"
@@ -44,7 +44,7 @@
               />
             </th>
             <th>
-              <span>{{ 'SEND' | translate }}</span>
+              <span>{{ 'tradesTable.columns.send' | translate }}</span>
               <img
                 [src]="'assets/images/bridge/' + getArrow('Spent')"
                 alt="Sort"
@@ -52,7 +52,7 @@
               />
             </th>
             <th>
-              <span>{{ 'GET' | translate }}</span>
+              <span>{{ 'tradesTable.columns.get' | translate }}</span>
               <img
                 [src]="'assets/images/bridge/' + getArrow('Expected')"
                 alt="Sort"
@@ -60,7 +60,7 @@
               />
             </th>
             <th>
-              <span>Date</span>
+              <span>{{ 'tradesTable.columns.expiresDate' | translate }}</span>
               <img
                 [src]="'assets/images/bridge/' + getArrow('Date')"
                 alt="Sort"
@@ -207,7 +207,7 @@
               [ngClass]="{ accordion__content_inactive: !tx.opened }"
             >
               <div class="content__item">
-                <div class="content__item-name">From</div>
+                <div class="content__item-name">{{ 'tradesTable.columns.from' | translate }}</div>
                 <div class="data__network">
                   <img
                     [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img"
@@ -218,7 +218,7 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">To</div>
+                <div class="content__item-name">{{ 'tradesTable.columns.to' | translate }}</div>
                 <div class="data__network">
                   <img
                     [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img"
@@ -229,7 +229,7 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">{{ 'GET' | translate}}</div>
+                <div class="content__item-name">{{ 'tradesTable.columns.get' | translate}}</div>
                 <div class="data__amount">
                   <div class="data__amount-inner">
                     <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
@@ -240,7 +240,7 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">{{ 'SEND' | translate}}</div>
+                <div class="content__item-name">{{ 'tradesTable.columns.send' | translate}}</div>
                 <div class="data__amount">
                   <div class="data__amount-inner">
                     <div class="data__amount-number">{{ tx.actualToAmount }}</div>
@@ -251,7 +251,7 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">Date</div>
+                <div class="content__item-name">{{ 'tradesTable.columns.expiresDate' | translate}}</div>
                 <div class="data__date">
                   <div>
                     <span>{{ tx.updateTime.split(' ')[0] }}</span>
@@ -273,9 +273,7 @@
       ></app-white-button>
     </div>
 
-    <div *ngIf="!transactions.size" class="bridge-results__no-swaps">
-      You have no cross-chain swaps yet
-    </div>
+    <div *ngIf="!transactions.size" class="bridge-results__no-swaps">{{ 'tradesTable.noData' | translate }}</div>
   </ng-template>
 
   <app-spinner *ngIf="!transactions" class="bridge-results__init-animation"></app-spinner>

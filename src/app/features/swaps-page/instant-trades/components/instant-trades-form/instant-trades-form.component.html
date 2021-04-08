@@ -2,10 +2,7 @@
   <div class="instant-trade__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
       [warningText]="'Unknown token. Please check it before trading.'"
-      [tooltipText]="
-        'Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk.'
-          | translate
-      "
+      [tooltipText]="'tradesForm.unknownTokenWarning'| translate"
     ></app-warning-disclaimer>
   </div>
 
@@ -117,9 +114,10 @@
                 Estimated gas fee:
                 {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
                 ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
-                <img src="/assets/images/icons/info.svg"
-                     matTooltip="{{'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.' | translate }}"
-                     alt="Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed." />
+                <img
+                  src="/assets/images/icons/info.svg"
+                  matTooltip="{{ 'instantTrades.gasFeeMessage' | translate }}"
+                  alt="{{ 'instantTrades.gasFeeMessage' | translate }}" />
               </span>
             </div>
 
@@ -129,10 +127,7 @@
                 [errorText]="
                   'Trading on ' + tradeController.tradeProviderInfo.label + ' is not available.'
                 "
-                [tooltipText]="
-                  'Please make sure that selected token is supported on the specified DEX and try again later.'
-                    | translate
-                "
+                [tooltipText]="'instantTrades.notSupportedToken' | translate"
               >
               </app-error-disclaimer>
             </div>
@@ -179,7 +174,7 @@
             class="instant-trade-button__best-rate"
             *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState"
           >
-            <span>{{ 'Best Rate' | translate }}</span>
+            <span>{{ 'instantTrades.bestRate' | translate }}</span>
             <img src="assets/images/icons/BestRate.svg" alt="" />
           </div>
         </div>

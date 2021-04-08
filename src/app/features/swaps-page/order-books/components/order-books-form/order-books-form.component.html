@@ -2,10 +2,7 @@
   <div class="order-book__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
       [warningText]="'Unknown token. Please check it before trading.'"
-      [tooltipText]="
-        'Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk.'
-          | translate
-      "
+      [tooltipText]=" 'tradesFrom.unknownTokenWarning' | translate"
     ></app-warning-disclaimer>
   </div>
 
@@ -15,7 +12,7 @@
         <div class="main-section__tokens-form tokens-form">
           <div class="tokens-form__header tokens-form-header">
             <span class="tokens-form-header__label">
-              {{ 'You have' | translate }}
+              {{ 'common.have' | translate }}
             </span>
           </div>
 
@@ -52,7 +49,7 @@
         <div class="main-section__tokens-form tokens-form">
           <div class="tokens-form__header tokens-form-header">
             <span class="tokens-form-header__label">
-              {{ 'You want to get' | translate }}
+              {{ 'common.want' | translate }}
             </span>
 
             <div class="tokens-form-header__rate tokens-rate" *ngIf="tokensRate">
