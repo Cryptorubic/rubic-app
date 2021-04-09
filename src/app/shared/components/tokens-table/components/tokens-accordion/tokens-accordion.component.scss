@@ -213,7 +213,6 @@
   }
 }
 
-::
 @include b($mobile-sm) {
   .tokens-accordion {
     &__header {
@@ -233,5 +232,3 @@
     }
   }
 }
-
-
