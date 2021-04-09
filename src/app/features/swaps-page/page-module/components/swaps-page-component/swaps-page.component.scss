@@ -104,3 +104,9 @@ app-volume-block {
     float: none;
   }
 }
+
+@include b($mobile-md) {
+  .main-page__title-text {
+    font-size: 24px;
+  }
+}
