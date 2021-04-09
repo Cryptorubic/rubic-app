@@ -107,16 +107,13 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
   public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
     return new Observable(subscriber => {
       this.createRubicTrade(bridgeTrade)
-        .then(async binanceId => {
-          if (bridgeTrade.onTransactionHash) {
-            bridgeTrade.onTransactionHash(binanceId);
-          }
+        .then(async transactionHash => {
           this.bridgeApiService.notifyBridgeBot(
             bridgeTrade,
-            binanceId,
+            transactionHash,
             this.web3PrivateService.address
           );
-          subscriber.next(binanceId);
+          subscriber.next(transactionHash);
         })
         .catch(err => {
           subscriber.error(err);
@@ -135,17 +132,18 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
     }
 
     const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
-    const trade: RubicTrade = { token: {} } as RubicTrade;
+    const trade: RubicTrade = {
+      token: {
+        address: token.blockchainToken[bridgeTrade.fromBlockchain].address,
+        decimals: token.blockchainToken[bridgeTrade.fromBlockchain].decimal
+      }
+    } as RubicTrade;
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      trade.token.address = token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address;
-      trade.token.decimals = token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].decimal;
       trade.token.symbol = 'RBC';
       trade.swapContractAddress = this.EthereumSmartContractAddress;
       trade.swapContractAbi = EthereumContractAbi;
     } else {
-      trade.token.address = token.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].address;
-      trade.token.decimals = token.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].decimal;
       trade.token.symbol = 'BRBC';
       trade.swapContractAddress = this.BinanceSmartContractAddress;
       trade.swapContractAbi = BinanceContractAbi;

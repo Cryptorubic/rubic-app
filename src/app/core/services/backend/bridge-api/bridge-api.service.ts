@@ -53,17 +53,47 @@ export class BridgeApiService {
   }
 
   public postRubicTransaction(
-    fromNetwork: BLOCKCHAIN_NAME,
+    fromBlockchain: BLOCKCHAIN_NAME,
     txHash: string,
     fromAmount: string,
     walletFromAddress: string
   ) {
     const body = {
       type: 'swap_rbc',
-      fromNetwork: fromNetwork === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
+      fromNetwork: fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
       transaction_id: txHash,
       fromAmount,
       walletFromAddress
+    };
+
+    return new Promise<void>((resolve, reject) => {
+      this.httpService.post('bridge/transactions', body).subscribe(
+        () => {
+          resolve();
+        },
+        error => {
+          console.log(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  public postPolygonTransaction(bridgeTrade: BridgeTrade, txHash: string, userAddress: string) {
+    const body = {
+      type: 'polygon',
+      fromNetwork: bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.POLYGON ? 'POL' : 'ETH',
+      toNetwork: bridgeTrade.toBlockchain === BLOCKCHAIN_NAME.POLYGON ? 'POL' : 'ETH',
+      actualFromAmount: bridgeTrade.amount,
+      actualToAmount: bridgeTrade.amount,
+      ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol,
+      bscSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.POLYGON].symbol,
+      updateTime: new Date(),
+      status: 'DepositInProgress',
+      transaction_id: txHash,
+      walletFromAddress: userAddress,
+      walletToAddress: userAddress,
+      walletDepositAddress: '0xBbD7cBFA79faee899Eaf900F13C9065bF03B1A74'
     };
 
     return new Promise<void>((resolve, reject) => {

@@ -154,23 +154,10 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
     depositAddress: string
   ): Promise<string> {
     const { token } = bridgeTrade;
+    const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
+    const decimals = token.blockchainToken[bridgeTrade.fromBlockchain].decimal;
 
-    let tokenAddress;
-    let decimals;
-    switch (bridgeTrade.fromBlockchain) {
-      case BLOCKCHAIN_NAME.ETHEREUM:
-        tokenAddress = token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address;
-        decimals = token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].decimal;
-        break;
-      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        tokenAddress = token.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].address;
-        decimals = token.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].decimal;
-        break;
-      default:
-        throw new RubicError(`The ${bridgeTrade.fromBlockchain} network is not supported`);
-    }
-
-    const realAmount = bridgeTrade.amount.multipliedBy(10 ** decimals);
+    const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
     const onTradeTransactionHash = async (hash: string): Promise<void> => {
       if (bridgeTrade.onTransactionHash) {
@@ -190,7 +177,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && token.symbol === 'ETH') {
-      await this.web3PrivateService.sendTransaction(depositAddress, realAmount.toFixed(0), {
+      await this.web3PrivateService.sendTransaction(depositAddress, amountInWei.toFixed(), {
         onTransactionHash: onTradeTransactionHash,
         inWei: true
       });
@@ -199,13 +186,15 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
       await this.web3PrivateService.transferTokens(
         tokenAddress,
         depositAddress,
-        realAmount.toFixed(0),
+        amountInWei.toFixed(),
         {
           onTransactionHash: onTradeTransactionHash,
           gas: estimatedGas
         }
       );
     }
+
+    this.bridgeApiService.notifyBridgeBot(bridgeTrade, binanceId, this.web3PrivateService.address);
 
     return binanceId;
   }

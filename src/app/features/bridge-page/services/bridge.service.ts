@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription, throwError } from 'rxjs';
 import { List } from 'immutable';
-import { first } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeToken } from '../models/BridgeToken';
 import { TokensService } from '../../../core/services/backend/tokens-service/tokens.service';
@@ -62,8 +62,6 @@ export class BridgeService implements OnDestroy {
   ) {
     this._swapTokensSubscription$ = this.tokensService.tokens.subscribe(swapTokens => {
       this._swapTokens = swapTokens;
-      const token = this._swapTokens.find(t => t.symbol === 'WQT');
-      if (token) console.log('bridgeService', token);
       this.setTokens();
     });
 
@@ -101,7 +99,7 @@ export class BridgeService implements OnDestroy {
       return;
     }
 
-    if (this._blockchainTokens[this.selectedBlockchain].size) {
+    if (this._blockchainTokens[this.selectedBlockchain]?.size) {
       this._tokens.next(this._blockchainTokens[this.selectedBlockchain]);
       return;
     }
@@ -141,8 +139,11 @@ export class BridgeService implements OnDestroy {
     const { fromBlockchain } = bridgeTrade;
     if (
       this.web3PrivateService.network?.name !== fromBlockchain &&
-      (this.web3PrivateService.network?.name !== `${fromBlockchain}_TESTNET` ||
-        !this.useTestingModeService.isTestingMode.getValue())
+      (!this.useTestingModeService.isTestingMode.getValue() ||
+        this.web3PrivateService.network?.name !== `${fromBlockchain}_TESTNET`) &&
+      (!this.useTestingModeService.isTestingMode.getValue() ||
+        fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM ||
+        this.web3PrivateService.network?.name !== BLOCKCHAIN_NAME.GOERLI_TESTNET)
     ) {
       return throwError(new NetworkError(fromBlockchain));
     }
@@ -155,7 +156,9 @@ export class BridgeService implements OnDestroy {
       this.updateTransactionsList();
     };
 
-    return this.bridgeProvider.createTrade(bridgeTrade);
+    return this.bridgeProvider
+      .createTrade(bridgeTrade)
+      .pipe(tap(() => this.updateTransactionsList()));
   }
 
   public async updateTransactionsList(): Promise<void> {

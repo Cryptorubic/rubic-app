@@ -59,6 +59,20 @@ export default [
     }
   },
   {
+    id: 5,
+    name: BLOCKCHAIN_NAME.GOERLI_TESTNET,
+    scannerUrl: 'https://goerli.infura.io/',
+    rpcLink: 'https://goerli.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    imagePath: 'assets/images/icons/coins/goerli.png',
+    nativeCoin: {
+      blockchainName: BLOCKCHAIN_NAME.GOERLI_TESTNET,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18
+    }
+  },
+  {
     id: 97,
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
     scannerUrl: 'https://testnet.bscscan.com/',

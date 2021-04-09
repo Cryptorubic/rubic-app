@@ -337,36 +337,39 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         this.tradeInProgress = true;
       }
     };
-    this.bridgeService.createTrade(bridgeTrade).subscribe(
-      (res: string) => {
-        this.tradeSuccessId = res;
-        this.tradeInProgress = false;
-        this.buttonAnimation = false;
-      },
-      err => {
-        this.tradeInProgress = false;
-        this.buttonAnimation = false;
-        console.log(err);
-        if (!(err instanceof RubicError)) {
-          err = new RubicError();
+    this.bridgeService
+      .createTrade(bridgeTrade)
+      .pipe(first())
+      .subscribe(
+        (res: string) => {
+          this.tradeSuccessId = res;
+          this.tradeInProgress = false;
+          this.buttonAnimation = false;
+        },
+        err => {
+          this.tradeInProgress = false;
+          this.buttonAnimation = false;
+          console.log(err);
+          if (!(err instanceof RubicError)) {
+            err = new RubicError();
+          }
+          let data: any = { title: 'Error', descriptionText: err.comment };
+          if (err instanceof MetamaskError) {
+            data.title = 'Warning';
+          }
+          if (err instanceof NetworkError) {
+            data = {
+              title: 'Error',
+              descriptionComponentClass: NetworkErrorComponent,
+              descriptionComponentInputs: { networkError: err }
+            };
+          }
+          this.dialog.open(MessageBoxComponent, {
+            width: '400px',
+            data
+          });
         }
-        let data: any = { title: 'Error', descriptionText: err.comment };
-        if (err instanceof MetamaskError) {
-          data.title = 'Warning';
-        }
-        if (err instanceof NetworkError) {
-          data = {
-            title: 'Error',
-            descriptionComponentClass: NetworkErrorComponent,
-            descriptionComponentInputs: { networkError: err }
-          };
-        }
-        this.dialog.open(MessageBoxComponent, {
-          width: '400px',
-          data
-        });
-      }
-    );
+      );
   }
 
   public changeToWalletAddress(newAddress: string) {

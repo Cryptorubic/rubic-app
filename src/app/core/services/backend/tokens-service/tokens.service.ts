@@ -58,7 +58,6 @@ export class TokensService {
   }
 
   private parseToken(token: BackendToken): SwapToken {
-    if (token.token_short_title === 'WQT') console.log(token.image_link);
     return {
       ...token,
       name: token.token_title,

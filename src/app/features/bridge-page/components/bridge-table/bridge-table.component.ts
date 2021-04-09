@@ -27,7 +27,18 @@ export class BridgeTableComponent {
       label: 'Binance Smart Chain',
       img: 'bnb.svg',
       symbolPropName: 'bscSymbol'
+    },
+    [BLOCKCHAIN_NAME.POLYGON]: {
+      label: 'Polygon',
+      img: 'polygon.svg',
+      symbolPropName: 'bscSymbol'
     }
+  };
+
+  private transactionBlockchain = {
+    ETH: BLOCKCHAIN_NAME.ETHEREUM,
+    BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    POL: BLOCKCHAIN_NAME.POLYGON
   };
 
   /**
@@ -60,7 +71,12 @@ export class BridgeTableComponent {
 
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
-      this.transactions = transactions.map(tx => ({ ...tx, opened: false }));
+      this.transactions = transactions.map(tx => ({
+        ...tx,
+        fromNetwork: this.transactionBlockchain[tx.fromNetwork],
+        toNetwork: this.transactionBlockchain[tx.toNetwork],
+        opened: false
+      }));
       this.sort = { fieldName: null, downDirection: null };
       this.onSortClick('date');
 

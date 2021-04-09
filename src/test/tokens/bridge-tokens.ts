@@ -1,6 +1,7 @@
 import { List } from 'immutable';
 import { BlockchainsTokens, BridgeToken } from '../../app/features/bridge-page/models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { NATIVE_TOKEN_ADDRESS } from '../../app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 const RBC: BridgeToken = {
   symbol: 'RBC',
@@ -32,26 +33,26 @@ const RBC: BridgeToken = {
   toEthFee: 100
 };
 
-const BAZ: BridgeToken = {
-  symbol: 'Baz',
+const ETH: BridgeToken = {
+  symbol: 'ETH',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
 
   blockchainToken: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
-      address: '0x2a45463986715cBd80A2Fb4F419BaBBba1e3a2d8',
-      name: 'BAZ Token',
-      symbol: 'Baz',
-      decimal: 2,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'Ethereum - Polygon',
+      symbol: 'ETH',
+      decimal: 18,
 
       minAmount: 0,
       maxAmount: Infinity
     },
     [BLOCKCHAIN_NAME.POLYGON]: {
-      address: '0x73a8e8602D51e25baF3be19e0339316ccd62072f',
-      name: 'BAZ Token',
-      symbol: 'Baz',
-      decimal: 2,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'Ethereum - Polygon',
+      symbol: 'ETH',
+      decimal: 18,
 
       minAmount: 0,
       maxAmount: Infinity
@@ -62,4 +63,34 @@ const BAZ: BridgeToken = {
   toEthFee: 0
 };
 
-export const bridgeTestTokens = List([RBC, BAZ]);
+const WETH: BridgeToken = {
+  symbol: 'WETH',
+  image:
+    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+
+  blockchainToken: {
+    [BLOCKCHAIN_NAME.ETHEREUM]: {
+      address: '0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimal: 18,
+
+      minAmount: 0,
+      maxAmount: Infinity
+    },
+    [BLOCKCHAIN_NAME.POLYGON]: {
+      address: '0xE8F3118fDB41edcFEF7bF1DCa8009Fa8274aa070',
+      name: 'Wrapped Ether (PoS)',
+      symbol: 'WETH',
+      decimal: 18,
+
+      minAmount: 0,
+      maxAmount: Infinity
+    }
+  } as BlockchainsTokens,
+
+  fromEthFee: 0,
+  toEthFee: 0
+};
+
+export const bridgeTestTokens = List([RBC, ETH, WETH]);

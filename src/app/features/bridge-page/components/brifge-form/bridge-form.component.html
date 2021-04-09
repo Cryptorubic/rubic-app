@@ -155,7 +155,11 @@
               {{ this.toNumber }}
             </span>
             <div class="get-token-card" *ngIf="selectedToken">
-              <img class="get-token-card__icon" [src]="selectedToken.image" alt="Token" />
+              <img
+                class="get-token-card__icon"
+                [src]="selectedToken.image || '/assets/images/icons/coins/empty.svg'"
+                alt="Token"
+              />
               <span class="get-token-card__name">
                 {{ selectedToken.blockchainToken[toBlockchain.name].symbol }}
               </span>

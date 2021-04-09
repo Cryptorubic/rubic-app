@@ -23,8 +23,7 @@ export class BinanceBridgeProviderService extends BlockchainBridgeProvider {
     const panamaTokensObservable = this.panamaBridgeProvider.getTokensList();
     const rubicTokenObservable = this.rubicBridgeProvider.getTokensList();
     return forkJoin([rubicTokenObservable, panamaTokensObservable]).pipe(
-      map(result => {
-        const [rubicToken, panamaTokens] = result;
+      map(([rubicToken, panamaTokens]) => {
         return this.getTokensWithImages(rubicToken.concat(panamaTokens), swapTokens);
       })
     );
