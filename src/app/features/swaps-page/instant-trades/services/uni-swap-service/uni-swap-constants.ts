@@ -1,6 +1,28 @@
-export const PancakeSwapContractAddress = '0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F';
+export const uniSwapContracts = {
+  address: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+  testnetAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
+};
 
-export const PancakeSwapContractAbi = [
+export const WETH = {
+  address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  testnetAddress: '0xd0a1e359811322d97991e03f863a0c30c2cf029c'
+};
+
+export const routingProviders = {
+  addresses: [
+    '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // WETH
+    '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+    '0x6b175474e89094c44da98b954eedeac495271d0f' // DAI
+  ],
+  testnetAddresses: [
+    '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // WETH,
+    '0x022e292b44b5a146f2e8ee36ff44d3dd863c915c' // XEENUS
+  ]
+};
+
+export const maxTransitTokens = 3;
+
+export const abi = [
   {
     inputs: [
       {
