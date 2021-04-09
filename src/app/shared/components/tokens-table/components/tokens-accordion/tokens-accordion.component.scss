@@ -1,5 +1,5 @@
-@import '../../../../../../scss/mixins';
-@import '../../../../../../scss/vars';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 .tokens-accordion {
   position: relative;
@@ -231,6 +231,21 @@
     &_link {
       color: $main-green;
       font-weight: 500;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .tokens-accordion {
+    &__header {
+      padding-left: 15px;
+      font-size: 12px;
+    }
+
+    &__item {
+      padding: 9px 15px;
+      min-height: 55px;
+      height: auto;
     }
   }
 }

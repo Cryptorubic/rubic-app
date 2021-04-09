@@ -78,6 +78,10 @@ export class HeaderStore {
     return this.$isMobileMenuOpened.asObservable();
   }
 
+  public setMobileMenuOpeningStatus(value): void {
+    this.$isMobileMenuOpened.next(value);
+  }
+
   public toggleMobileMenuOpeningStatus(): void {
     const currentValue = this.$isMobileMenuOpened.value;
     this.$isMobileMenuOpened.next(!currentValue);
