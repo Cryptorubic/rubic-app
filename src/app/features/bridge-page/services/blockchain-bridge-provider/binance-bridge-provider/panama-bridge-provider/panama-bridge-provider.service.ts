@@ -155,23 +155,6 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
   ): Promise<string> {
     const { token } = bridgeTrade;
 
-    const onTradeTransactionHash = async (hash: string): Promise<void> => {
-      if (bridgeTrade.onTransactionHash) {
-        bridgeTrade.onTransactionHash(hash);
-      }
-
-      await this.bridgeApiService.postPanamaTransaction(
-        binanceId,
-        token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol,
-        token.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].symbol
-      );
-      this.bridgeApiService.notifyBridgeBot(
-        bridgeTrade,
-        binanceId,
-        this.web3PrivateService.address
-      );
-    };
-
     let tokenAddress;
     let decimals;
     switch (bridgeTrade.fromBlockchain) {
@@ -188,6 +171,23 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
     }
 
     const realAmount = bridgeTrade.amount.multipliedBy(10 ** decimals);
+
+    const onTradeTransactionHash = async (hash: string): Promise<void> => {
+      if (bridgeTrade.onTransactionHash) {
+        bridgeTrade.onTransactionHash(hash);
+      }
+
+      await this.bridgeApiService.postPanamaTransaction(
+        binanceId,
+        token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol,
+        token.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].symbol
+      );
+      this.bridgeApiService.notifyBridgeBot(
+        bridgeTrade,
+        binanceId,
+        this.web3PrivateService.address
+      );
+    };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && token.symbol === 'ETH') {
       await this.web3PrivateService.sendTransaction(depositAddress, realAmount.toFixed(0), {

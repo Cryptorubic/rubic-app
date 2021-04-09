@@ -105,15 +105,8 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
   }
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
-    const onTradeTransactionHash = async hash => {
-      if (bridgeTrade.onTransactionHash) {
-        bridgeTrade.onTransactionHash(hash);
-      }
-      await this.bridgeApiService.postRubicTransaction(bridgeTrade.fromBlockchain, hash);
-    };
-
     return new Observable(subscriber => {
-      this.createRubicTrade(bridgeTrade, onTradeTransactionHash)
+      this.createRubicTrade(bridgeTrade)
         .then(async binanceId => {
           if (bridgeTrade.onTransactionHash) {
             bridgeTrade.onTransactionHash(binanceId);
@@ -134,10 +127,7 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
     });
   }
 
-  private async createRubicTrade(
-    bridgeTrade: BridgeTrade,
-    onTradeTransactionHash?: (hash: string) => void
-  ): Promise<string> {
+  private async createRubicTrade(bridgeTrade: BridgeTrade): Promise<string> {
     const { token } = bridgeTrade;
 
     if (token.symbol !== 'RBC') {
@@ -180,6 +170,18 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
     await this.provideAllowance(trade, web3Public, onApprove);
 
     const blockchain = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? 1 : 2;
+
+    const onTradeTransactionHash = async hash => {
+      if (bridgeTrade.onTransactionHash) {
+        bridgeTrade.onTransactionHash(hash);
+      }
+      await this.bridgeApiService.postRubicTransaction(
+        bridgeTrade.fromBlockchain,
+        hash,
+        trade.amount.toFixed(),
+        this.web3PrivateService.address
+      );
+    };
 
     const receipt = await this.web3PrivateService.executeContractMethod(
       trade.swapContractAddress,
