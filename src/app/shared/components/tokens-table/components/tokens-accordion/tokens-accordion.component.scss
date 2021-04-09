@@ -4,6 +4,39 @@
 .tokens-accordion {
   position: relative;
 
+  @include b($mobile-md) {
+    .tokens-accordion {
+      &__header {
+        padding-left: 15px;
+      }
+
+      &__item {
+        padding: 9px 15px;
+      }
+    }
+  }
+
+  @include b($mobile-sm) {
+    .tokens-accordion {
+      &__header {
+        font-size: 12px;
+      }
+
+      &__item {
+        height: auto;
+        min-height: 55px;
+
+        font-size: 14px;
+
+        &-value_network {
+          img {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  }
+
   &__header {
     display: flex;
     display: flex;
@@ -198,37 +231,6 @@
     &_link {
       color: $main-green;
       font-weight: 500;
-  }
-}
-
-@include b($mobile-md) {
-  .tokens-accordion {
-    &__header {
-      padding-left: 15px;
-    }
-
-    &__item {
-      padding: 9px 15px;
-    }
-  }
-}
-
-@include b($mobile-sm) {
-  .tokens-accordion {
-    &__header {
-      font-size: 12px;
-    }
-
-    &__item {
-      font-size: 14px;
-      min-height: 55px;
-      height: auto;
-
-      &-value_network {
-        img {
-          margin-right: 5px;
-        }
-      }
     }
   }
 }
