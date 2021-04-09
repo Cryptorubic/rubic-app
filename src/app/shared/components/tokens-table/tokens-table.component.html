@@ -6,7 +6,7 @@
       [ngClass]="{ 'tokens-table__refresh-button_animated': tableLoading }"
       (click)="refreshTable()"
     >
-      <img class="arrow" src="./assets/images/icons/refresh.svg" />
+      <img class="arrow" src="./assets/images/icons/refresh.svg" alt="arrow" />
     </button>
   </div>
   <!-- Desktop presentation -->
@@ -128,7 +128,9 @@
       </ng-container>
     </div>
   </div>
-  <div class="tokens-table__text" *ngIf="hasData === false">There are no trades</div>
+  <div class="tokens-table__text tokens-table__text_with-no-data" *ngIf="hasData === false">
+    There are no trades
+  </div>
   <div class="tokens-table__text" *ngIf="hasData && sortedTableData.length === 0">
     There are no trades with selected parameters
   </div>
