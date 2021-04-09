@@ -64,24 +64,10 @@
                 }}
 
                 <div class="tokens-rate__info tokens-rate-info">
-                  <img src="/assets/images/icons/info.svg"
-                       [matTooltip]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'"
-                       [alt]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'" />
-                  <div class="tokens-rate-info__popup-container">
-                    <div class="tokens-rate-info__popup tokens-rate-popup">
-                      <span>
-                        Your rate is
-                        <span class="tokens-rate-popup__rate">{{
-                          (tokensRate.abs().toFixed(2) | number) +
-                            '% ' +
-                            (tokensRate.isGreaterThan(0) ? 'higher' : 'lower')
-                        }}</span>
-                        than coingecko rate
-                      </span>
-
-                      <span class="tokens-rate-popup__triangle"></span>
-                    </div>
-                  </div>
+                  <img 
+                    src="/assets/images/icons/info.svg"
+                    [matTooltip]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'"
+                    [alt]="'Your rate is ' + (tokensRate.abs().toFixed(2) | number) + '% ' + (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') + ' than coingecko rate'" />
                 </div>
               </div>
             </div>

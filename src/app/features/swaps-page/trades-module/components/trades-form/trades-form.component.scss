@@ -173,5 +173,11 @@
       width: 50%;
       min-width: auto;
     }
+
+    &_blockchain {
+      span {
+        font-size: 12px;
+      }
+    }
   }
 }

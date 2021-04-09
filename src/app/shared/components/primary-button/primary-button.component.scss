@@ -1,3 +1,6 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
 .primary-button {
   position: relative;
 
@@ -39,3 +42,19 @@
     margin-right: 13px;
   }
 }
+
+@include b($desktop) {
+  .primary-button {
+    font-size: 16px;
+  }
+}
+
+@include b($tablet) {
+  .primary-button {
+    &:active {
+      transform: none;
+    }
+  }
+  
+}
+
