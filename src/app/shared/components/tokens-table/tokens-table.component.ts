@@ -1,6 +1,15 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { Sort } from '@angular/material/sort';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild
+} from '@angular/core';
+import { MatSort, MatSortHeaderIntl, Sort } from '@angular/material/sort';
 import * as moment from 'moment';
+import { Observable } from 'rxjs';
+import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
@@ -18,7 +27,7 @@ export class TokensTableComponent {
   private tokensTableData: TokensTableData[];
 
   @Input() set tableData(data: OrderBookTradeData[]) {
-    const newData = this.dataToModel(data);
+    const newData = this.prepareData(data);
     this.tokensTableData = newData;
     this.sotredTableData = newData;
   }
@@ -31,15 +40,39 @@ export class TokensTableComponent {
 
   @Input() public title: string;
 
+  @Input() public hasData: boolean;
+
+  public get hasVisibledData(): boolean {
+    return this.sotredTableData.length > 0;
+  }
+
   @Output() public refreshTableEvent: EventEmitter<void>;
 
   @Output() public selectTokenEvent: EventEmitter<TokenValueType>;
 
+  public selectedColumn: string;
+
+  @ViewChild(MatSort) sort: MatSort;
+
   public sotredTableData: TokensTableData[];
 
-  constructor() {
+  public $isMobile: Observable<boolean>;
+
+  private tableSorting: Sort;
+
+  public readonly sortableColumnNames: any;
+
+  public readonly selectableColumns: string[];
+
+  constructor(
+    private readonly headerStore: HeaderStore,
+    private readonly sortHeader: MatSortHeaderIntl
+  ) {
     this.refreshTableEvent = new EventEmitter<void>();
     this.selectTokenEvent = new EventEmitter<TokenValueType>();
+    this.$isMobile = this.headerStore.getMobileDisplayStatus();
+    this.tableSorting = { active: 'Expires in', direction: 'asc' };
+    this.selectedColumn = 'Expires in';
   }
 
   /**
@@ -63,6 +96,10 @@ export class TokensTableComponent {
     return BlockchainsInfo.getBlockchainByName(name).imagePath;
   }
 
+  public selectColumnName(name: string): void {
+    this.selectedColumn = name;
+  }
+
   /**
    * @description Token dropdown selection event. Uses for table filtering.
    * @param data Selected token.
@@ -83,6 +120,7 @@ export class TokensTableComponent {
    * @param sort Current sort state.
    */
   public sortData(sort: Sort): void {
+    this.tableSorting = sort;
     const data = this.tokensTableData.slice();
     if (!sort.active || sort.direction === '') {
       this.sotredTableData = data;
@@ -135,10 +173,11 @@ export class TokensTableComponent {
    * @param data Order book trade data.
    * @returns Converted table data.
    */
-  private dataToModel(data: OrderBookTradeData[]): TokensTableData[] {
+  private prepareData(data: OrderBookTradeData[]): TokensTableData[] {
     return data.map((trade: OrderBookTradeData) => ({
       ...trade,
-      expiresIn: moment.duration(trade.expirationDate.diff(moment().utc()))
+      expiresIn: moment.duration(trade.expirationDate.diff(moment().utc())),
+      opened: false
     }));
   }
 }

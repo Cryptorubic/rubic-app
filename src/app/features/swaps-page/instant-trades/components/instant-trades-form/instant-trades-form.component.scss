@@ -1,15 +1,38 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .instant-trade {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+
+  &__warning {
+    position: relative;
+    top: 18px;
+    right: 30px;
+
+    margin-left: auto;
+  }
+}
+
+.instant-trade-form {
+  display: flex;
+  align-items: flex-start;
+
   padding: 27px 30px 29px;
+
+  &_extended {
+    min-height: 237px;
+  }
+
+  &_not-extended {
+    min-height: initial;
+  }
 
   &__from-section {
     flex: 4;
 
-    &_aligned {
-      align-self: flex-start;
+    &_lowered {
+      margin-top: 41px;
     }
   }
 
@@ -47,7 +70,7 @@
   }
 
   &_big {
-    top: 6px;
+    top: 64px;
 
     width: 42px;
     height: 42px;
@@ -98,18 +121,11 @@
   }
 
   &__warning {
-    position: relative;
-
     margin-top: 7px;
+  }
 
-    cursor: pointer;
-
-    &:hover {
-      app-tooltip {
-        visibility: visible;
-        opacity: 1;
-      }
-    }
+  &__custom-token-section {
+    margin-top: 8px;
   }
 }
 
@@ -121,6 +137,10 @@
     margin-right: 8px;
 
     opacity: 0.5;
+
+    img {
+      vertical-align: bottom;
+    }
   }
 }
 
@@ -164,4 +184,67 @@ app-tooltip {
   opacity: 0;
 
   transition: opacity 0.3s ease-in-out;
+}
+
+@include b($laptop) {
+  .instant-trade-form {
+    display: block;
+
+    &__from-section_lowered {
+      margin-top: 0;
+      margin-bottom: 22px;
+    }
+
+    &__arrow-section {
+      display: none;
+    }
+  }
+
+  .selection-block {
+    &__label {
+      left: 0;
+    }
+
+    &__warning {
+      margin-bottom: 7px;
+    }
+  }
+}
+
+@include b($tablet) {
+  .instant-trade {
+    &-form {
+      &__to-section {
+        display: block;
+
+        .instant-trade-button:nth-child(2) {
+          margin-bottom: 22px;
+        }
+      } 
+
+      &_from-section_lowered {
+        margin-bottom: 0;
+      }
+    }
+
+    &-button {
+      top: auto;
+    }
+  }
+
+  .instant-trade-form {
+    display: block;
+  }
+
+  .selection-block {
+    &__custom-token-section {
+      margin-bottom: 22px;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .instant-trade-form {
+    padding: 27px 10px 29px;
+  }
 }

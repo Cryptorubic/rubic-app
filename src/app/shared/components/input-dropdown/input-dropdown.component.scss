@@ -1,4 +1,5 @@
-@import '../../../../scss/mixins';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 .input-dropdown {
   &__choose-button {
@@ -132,6 +133,14 @@
           cursor: default;
         }
       }
+    }
+  }
+}
+
+@include b($desktop) {
+  .input-dropdown__choose-button {
+    &_with-text {
+      font-size: 14px;
     }
   }
 }

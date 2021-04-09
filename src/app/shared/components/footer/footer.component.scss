@@ -1,3 +1,6 @@
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
+
 footer {
   padding: 0 2%;
 }
@@ -90,6 +93,12 @@ footer {
   color: rgba(0, 0, 0, 0.5);
   font-size: 15px;
   text-align: center;
+}
+
+@include b($tablet) {
+  .subscribe__row {
+    flex-wrap: wrap;
+  }
 }
 
 @media screen and (max-width: 720px) {
