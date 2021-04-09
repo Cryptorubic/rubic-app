@@ -21,7 +21,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
 
   public readonly $tableLoading: Observable<boolean>;
 
-  public readonly $hasData: Observable<boolean>;
+  public $hasData: Observable<boolean>;
 
   constructor(
     private readonly orderBooksTableService: OrderBooksTableService,
@@ -43,6 +43,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
       this.orderBooksTableService.setBaseTokenFilter(null);
       this.orderBooksTableService.setQuoteTokenFilter(null);
       this.orderBooksTableService.filterTable();
+      this.$hasData = this.orderBooksTableService.hasData();
     });
   }
 
