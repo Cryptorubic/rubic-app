@@ -1,4 +1,5 @@
 @import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 $primary-color: #4aa956;
 $mobile-size: 600;
@@ -33,11 +34,16 @@ $mobile-size: 600;
     display: flex;
     margin-bottom: 20px;
 
+    @include b($mobile-sm) {
+      min-width: 135px;
+    }
+
     > div {
       box-sizing: border-box;
       height: 56px;
     }
   }
+  
 
   &__select {
     position: relative;
@@ -87,5 +93,11 @@ $mobile-size: 600;
     &_desc path:nth-child(3) {
       fill: $primary-color;
     }
+  }
+}
+
+::ng-deep .mat-select-value-text {
+  @include b($mobile-sm) {
+    font-size: 14px;
   }
 }
