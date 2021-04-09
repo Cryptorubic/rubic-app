@@ -1,3 +1,6 @@
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
+
 .dropdown-label {
   display: flex;
   margin: 15px 12px;
@@ -60,5 +63,11 @@
 
       content: '';
     }
+  }
+}
+
+@include b($desktop) {
+  .dropdown-label {
+    font-size: 14px;
   }
 }

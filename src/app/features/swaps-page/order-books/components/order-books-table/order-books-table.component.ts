@@ -21,6 +21,8 @@ export class OrderBooksTableComponent implements AfterViewInit {
 
   public readonly $tableLoading: Observable<boolean>;
 
+  public $hasData: Observable<boolean>;
+
   constructor(
     private readonly orderBooksTableService: OrderBooksTableService,
     private readonly orderBookApi: OrderBookApiService,
@@ -30,8 +32,9 @@ export class OrderBooksTableComponent implements AfterViewInit {
     this.orderBooksTableService.setTableLoadingStatus(true);
     this.fetchPublicSwaps();
     this.$dataSource = this.orderBooksTableService.getTableData();
-    this.displayedColumns = ['token', 'amount', 'network', 'expires'];
+    this.displayedColumns = ['Tokens', 'Amount', 'Network', 'Expires in'];
     this.columnsSizes = ['25%', '50%', '10%', '15%'];
+    this.$hasData = this.orderBooksTableService.hasData();
   }
 
   public ngAfterViewInit(): void {
@@ -40,6 +43,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
       this.orderBooksTableService.setBaseTokenFilter(null);
       this.orderBooksTableService.setQuoteTokenFilter(null);
       this.orderBooksTableService.filterTable();
+      this.$hasData = this.orderBooksTableService.hasData();
     });
   }
 

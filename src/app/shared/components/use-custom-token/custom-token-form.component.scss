@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .custom-token-section {
@@ -33,6 +34,7 @@
   &__input {
     box-sizing: border-box;
     width: 100%;
+    height: 52px;
     padding: 11px 10px 11px 14px;
 
     color: $dark;
@@ -49,6 +51,39 @@
       &:focus {
         box-shadow: 0 0 2px $error-red;
       }
+    }
+  }
+}
+
+@include b($desktop) {
+  .form {
+    &__input {
+      font-size: 14px;
+    }
+  }
+}
+
+@include b($laptop) {
+  .custom-token-section {
+    text-align: left;
+
+    &__toggler {
+      margin-left: 0;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .custom-token-section {
+    &__form {
+      flex-direction: column;
+    }
+  }
+
+  .tokens-form {
+    &__input {
+      padding-left: 8px;
+      padding-right: 8px;
     }
   }
 }

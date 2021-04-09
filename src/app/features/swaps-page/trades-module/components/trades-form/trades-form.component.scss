@@ -1,3 +1,6 @@
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
+
 .trades-form {
   width: 100%;
   margin-bottom: 10px;
@@ -82,6 +85,99 @@
     img {
       margin-right: 0;
       margin-left: 10px;
+    }
+  }
+}
+
+@include b($laptop) {
+  .trades-form {
+    &__tabs {
+      flex-direction: column;
+      align-items: center;
+      height: auto;
+    }
+
+    .trades-form__tabs-blockchains {
+      margin-bottom: 21px;
+    }
+  }
+
+  .tab {
+    &_blockchain {
+      width: 180px;
+      height: 50px;
+      padding: 15px;
+
+      &.tab_active {
+        position: relative;
+
+        border-bottom: 2px solid $main-green;
+
+        &::after {
+          position: absolute;
+          bottom: -9px;
+          left: 50%;
+
+          width: 0;
+          height: 0;
+
+          border-color: $main-green transparent transparent transparent;
+          border-style: solid;
+          border-width: 9px 9px 0;
+          transform: translateX(-50%);
+
+          content: '';
+        }
+      }
+    }
+  }
+}
+
+@include b($tablet) {
+  .trades-form {
+    &__tabs-blockchains {
+      align-items: stretch !important;
+      width: 90%;
+    }
+  }
+
+  .tab {
+    &_blockchain {
+      flex-direction: column;
+      width: 33.33%;
+      min-width: auto;
+      height: auto;
+
+      text-align: center;
+
+      img {
+        max-width: 33px;
+        max-height: 33px;
+        margin-right: 0;
+        margin-bottom: 5px;
+      }
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .trades-form {
+    &__tabs-blockchains,
+    &__tabs-modes {
+      width: 100%;
+    }
+  }
+
+  .tab {
+    &_mode {
+      width: 50%;
+      min-width: auto;
+    }
+
+    &_blockchain {
+      span {
+        font-size: 12px;
+      }
     }
   }
 }

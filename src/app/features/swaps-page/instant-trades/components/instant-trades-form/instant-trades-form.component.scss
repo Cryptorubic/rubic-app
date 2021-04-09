@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .instant-trade {
@@ -9,6 +10,7 @@
     top: 18px;
     right: 30px;
 
+    max-width: calc(100% - 60px);
     margin-left: auto;
   }
 }
@@ -136,6 +138,10 @@
     margin-right: 8px;
 
     opacity: 0.5;
+
+    img {
+      vertical-align: bottom;
+    }
   }
 }
 
@@ -161,5 +167,97 @@
       color: rgba(black, 0.5);
       font-size: 14px;
     }
+  }
+}
+
+app-tooltip {
+  position: absolute;
+  right: -88px;
+  bottom: calc(100% - 7px);
+
+  z-index: 10;
+
+  font-size: 11px;
+
+  text-align: center;
+
+  visibility: hidden;
+  opacity: 0;
+
+  transition: opacity 0.3s ease-in-out;
+}
+
+@include b($laptop) {
+  .instant-trade-form {
+    display: block;
+
+    &__from-section_lowered {
+      margin-top: 0;
+      margin-bottom: 22px;
+    }
+
+    &__arrow-section {
+      display: none;
+    }
+  }
+
+  .selection-block {
+    &__label {
+      left: 0;
+    }
+
+    &__warning {
+      margin-bottom: 7px;
+    }
+  }
+}
+
+@include b($tablet) {
+  .instant-trade {
+    &-form {
+      &__from-section,
+      &__to-section {
+        padding: 20px 13px;
+        box-shadow: $shadow-block;
+      }
+
+      &__to-section {
+        display: block;
+
+        .instant-trade-button:nth-child(2) {
+          margin-bottom: 22px;
+        }
+      } 
+
+      &_from-section_lowered {
+        margin-bottom: 0;
+      }
+    }
+
+    &-button {
+      top: auto;
+
+      &_second {
+        margin-top: 22px;
+      }
+    }
+  }
+
+  .instant-trade-form {
+    display: block;
+  }
+}
+
+@include b($mobile-sm) {
+  .instant-trade {
+    &__warning {
+      right: 10px;
+
+      max-width: calc(100% - 20px);
+    }
+  }
+
+  .instant-trade-form {
+    padding: 27px 10px 29px;
   }
 }

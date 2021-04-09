@@ -1,4 +1,5 @@
-@import '../../../../../../scss/vars';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 .main-page {
 
@@ -88,8 +89,31 @@ app-volume-block {
   margin-bottom: 35px;
 }
 
-@media (max-width: 1240px) {
+@include b($desktop) {
   .main-page {
     padding: 0 2vw;
+  }
+}
+
+@include b($tablet) {
+  .main-page__title-text {
+    display: block;
+  }
+
+  .toggle {
+    float: none;
+  }
+}
+
+@include b($mobile-md) {
+  .main-page {
+    &__title-text {
+      font-size: 24px;
+    }
+
+    &__intro {
+      padding-top: 0;
+      margin-bottom: 20px;
+    }
   }
 }

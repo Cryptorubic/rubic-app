@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .token-block {
   background: white;
@@ -147,6 +148,15 @@
   grid-template-columns: auto 200px;
 
   padding: 15px 20px 19px 19px;
+
+  @include b($laptop) {
+    display: flex;
+    flex-direction: column;
+
+    > *:not(:last-child) {
+      margin-bottom: 15px;
+    }
+  }
 
   &__amount-input {
     padding: 12px;

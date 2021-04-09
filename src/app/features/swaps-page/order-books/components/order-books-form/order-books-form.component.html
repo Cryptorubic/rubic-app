@@ -30,10 +30,10 @@
           <div class="tokens-form__custom-token-section">
             <app-custom-token-form
               type="from"
-              [isSectionOpened]="tradeParameters.isCustomFromTokenFormOpened"
+              [isSectionOpened]="tradeParameters?.isCustomFromTokenFormOpened"
               (isSectionOpenedChange)="setIsCustomTokenFormOpened('base', $event)"
               [blockchain]="blockchain"
-              [tokenAddress]="tradeParameters.customFromTokenAddress"
+              [tokenAddress]="tradeParameters?.customFromTokenAddress"
               (tokenAddressChange)="setCustomTokenAddress('base', $event)"
               (tokenIsValidated)="updateCustomToken('base', $event)"
               (addToken)="addCustomToken('base')"
@@ -64,23 +64,23 @@
                 }}
 
                 <div class="tokens-rate__info tokens-rate-info">
-                  <img src="/assets/images/icons/info.svg" alt="info" />
-
-                  <div class="tokens-rate-info__popup-container">
-                    <div class="tokens-rate-info__popup tokens-rate-popup">
-                      <span>
-                        Your rate is
-                        <span class="tokens-rate-popup__rate">{{
-                          (tokensRate.abs().toFixed(2) | number) +
-                            '% ' +
-                            (tokensRate.isGreaterThan(0) ? 'higher' : 'lower')
-                        }}</span>
-                        than coingecko rate
-                      </span>
-
-                      <span class="tokens-rate-popup__triangle"></span>
-                    </div>
-                  </div>
+                  <img
+                    src="/assets/images/icons/info.svg"
+                    [matTooltip]="
+                      'Your rate is ' +
+                      (tokensRate.abs().toFixed(2) | number) +
+                      '% ' +
+                      (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') +
+                      ' than coingecko rate'
+                    "
+                    [alt]="
+                      'Your rate is ' +
+                      (tokensRate.abs().toFixed(2) | number) +
+                      '% ' +
+                      (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') +
+                      ' than coingecko rate'
+                    "
+                  />
                 </div>
               </div>
             </div>
@@ -97,10 +97,10 @@
           <div class="tokens-form__custom-token-section">
             <app-custom-token-form
               type="to"
-              [isSectionOpened]="tradeParameters.isCustomToTokenFormOpened"
+              [isSectionOpened]="tradeParameters?.isCustomToTokenFormOpened"
               (isSectionOpenedChange)="setIsCustomTokenFormOpened('quote', $event)"
               [blockchain]="blockchain"
-              [tokenAddress]="tradeParameters.customToTokenAddress"
+              [tokenAddress]="tradeParameters?.customToTokenAddress"
               (tokenAddressChange)="setCustomTokenAddress('quote', $event)"
               (tokenIsValidated)="updateCustomToken('quote', $event)"
               (addToken)="addCustomToken('quote')"
