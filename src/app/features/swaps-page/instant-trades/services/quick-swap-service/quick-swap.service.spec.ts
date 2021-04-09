@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BurgerSwapService } from './burger-swap-service';
+import { QuickSwapService } from './quick-swap.service';
 
-describe('BurgerSwapServiceService', () => {
-  let service: BurgerSwapService;
+describe('QuickSwapService', () => {
+  let service: QuickSwapService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BurgerSwapService);
+    service = TestBed.inject(QuickSwapService);
   });
 
   it('should be created', () => {
