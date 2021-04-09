@@ -86,12 +86,12 @@
 
     &::before {
       position: relative;
-      top: -2px;
+      top: -1px;
 
       display: inline-block;
       min-width: 8px;
       height: 8px;
-      margin-right: 10px;
+      margin-right: 3px;
 
       border-radius: 50%;
 
@@ -198,6 +198,40 @@
     &_link {
       color: $main-green;
       font-weight: 500;
+  }
+}
+
+@include b($mobile-md) {
+  .tokens-accordion {
+    &__header {
+      padding-left: 15px;
+    }
+
+    &__item {
+      padding: 9px 15px;
     }
   }
 }
+
+::
+@include b($mobile-sm) {
+  .tokens-accordion {
+    &__header {
+      font-size: 12px;
+    }
+
+    &__item {
+      font-size: 14px;
+      min-height: 55px;
+      height: auto;
+
+      &-value_network {
+        img {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}
+
+
