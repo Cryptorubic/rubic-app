@@ -3,8 +3,9 @@
     <h2 class="tokens-table__title">{{ title }}</h2>
     <button
       class="tokens-table__refresh-button refresh-btn"
-      [ngClass]="{ 'tokens-table__refresh-button_animated': tableLoading  }"
-      (click)="refreshTable()">
+      [ngClass]="{ 'tokens-table__refresh-button_animated': tableLoading }"
+      (click)="refreshTable()"
+    >
       <img class="arrow" src="./assets/images/icons/refresh.svg" />
     </button>
   </div>
@@ -13,18 +14,18 @@
     *ngIf="($isMobile | async) === false && hasData"
     mat-table
     matSort
-    [dataSource]="sotredTableData"
+    [dataSource]="sortedTableData"
     (matSortChange)="sortData($event)"
     class="table order-books"
   >
     <colgroup>
       <ng-container>
-        <col *ngFor="let size of columnsSizes " [style.width]="size" />
+        <col *ngFor="let size of columnsSizes" [style.width]="size" />
       </ng-container>
     </colgroup>
     <!-- Status column  -->
     <ng-container matColumnDef="Status">
-      <th mat-header-cell *matHeaderCellDef class="centered-child"  mat-sort-header>
+      <th mat-header-cell *matHeaderCellDef class="centered-child" mat-sort-header>
         <div class="tokens-table__cell">
           {{ 'Status' | translate }}
         </div>
@@ -95,16 +96,14 @@
       <td *matCellDef="let element" class="centered-child">
         <a routerLink="/public-v3/{{ element.uniqueLink }}">
           <div class="tokens-table__cell tokens-table__cell_datetime">
-            {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h: {{ element.expiresIn.minutes() }}m
+            {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h:
+            {{ element.expiresIn.minutes() }}m
           </div>
         </a>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns "
-    ></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
   <!-- Mobile presentation -->
   <div *ngIf="($isMobile | async) && hasData" class="tokens-table-mobile">
@@ -118,19 +117,19 @@
     <div class="tokens-table__mobile-tokens-dropdown">
       <app-coins-filter (selectTokenEvent)="selectToken($event)"></app-coins-filter>
     </div>
-    <div class="tokens-table-mobile__items">
-      <ng-container *ngFor="let trade of sotredTableData">
+    <div class="tokens-table-mobile__items mobile-items">
+      <ng-container *ngFor="let trade of sortedTableData">
         <app-tokens-accordion
+          class="mobile-items__item"
           [data]="trade"
           [chainIconPath]="getChainIcon(trade.blockchain)"
-          [selectedOption]="selectedColumn"></app-tokens-accordion>
+          [selectedOption]="selectedColumn"
+        ></app-tokens-accordion>
       </ng-container>
     </div>
   </div>
-  <div class="tokens-table__text" *ngIf="hasData === false">
-    Seems like you don't have existing swaps yet
-  </div>
-  <div class="tokens-table__text" *ngIf="hasData && sotredTableData.length === 0">
-    Seems like we don't have data with setted filter parametres
+  <div class="tokens-table__text" *ngIf="hasData === false">There are no trades</div>
+  <div class="tokens-table__text" *ngIf="hasData && sortedTableData.length === 0">
+    There are no trades with selected parameters
   </div>
 </div>

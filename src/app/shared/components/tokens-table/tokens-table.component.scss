@@ -24,6 +24,8 @@ $primary-color: #4aa956;
   &__text {
     display: flex;
 
+    margin-top: 20px;
+
     color: rgba(0, 0, 0, 0.34);
     font-weight: normal;
     font-size: 24px;
@@ -144,6 +146,14 @@ app-sorting-dropdown {
     @include b(660) {
       flex-direction: column;
     }
+  }
+}
+
+.mobile-items {
+  &__item:not(:first-child) {
+    display: block;
+
+    margin-top: 15px;
   }
 }
 
