@@ -37,6 +37,8 @@ export class UniswapAbstract extends InstantTradeService {
 
   protected coingeckoApiService: CoingeckoApiService;
 
+  protected blockchain: BLOCKCHAIN_NAME;
+
   private WETHAddress: string;
 
   private uniswapContractAddress: string;
@@ -61,6 +63,7 @@ export class UniswapAbstract extends InstantTradeService {
     private abi
   ) {
     super();
+    this.isTestingMode = useTestingModeService.isTestingMode;
     this.WETHAddress = WETH.address;
     this.uniswapContractAddress = uniswapContract.address;
     this.routingProviders = routingProviders.addresses;
@@ -131,7 +134,10 @@ export class UniswapAbstract extends InstantTradeService {
       },
       estimatedGas,
       gasFeeInUsd,
-      gasFeeInEth
+      gasFeeInEth,
+      options: {
+        path
+      }
     };
   }
 
@@ -238,7 +244,7 @@ export class UniswapAbstract extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
-    await this.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
+    await this.checkSettings(this.blockchain);
     await this.checkBalance(trade);
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
@@ -246,7 +252,7 @@ export class UniswapAbstract extends InstantTradeService {
       .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
       .multipliedBy(10 ** trade.to.token.decimals)
       .toFixed(0);
-    const path = [trade.from.token.address, trade.to.token.address];
+    const { path } = trade.options;
     const to = this.web3Private.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
 

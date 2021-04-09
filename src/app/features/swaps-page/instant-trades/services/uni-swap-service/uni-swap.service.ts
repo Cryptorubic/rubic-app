@@ -30,6 +30,7 @@ export class UniSwapService extends UniswapAbstract {
     this.ethToTokensEstimatedGas = new BigNumber(150_000);
     this.web3Private = web3Private;
     this.web3Public = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
+    this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {

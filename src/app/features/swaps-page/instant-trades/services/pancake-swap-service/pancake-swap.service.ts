@@ -30,6 +30,7 @@ export class PancakeSwapService extends UniswapAbstract {
     this.ethToTokensEstimatedGas = new BigNumber(150_000);
     this.web3Private = web3Private;
     this.web3Public = web3Public[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+    this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
 
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
