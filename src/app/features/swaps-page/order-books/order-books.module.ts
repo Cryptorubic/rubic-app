@@ -16,6 +16,7 @@ import { OrderBooksFormOptionsComponent } from './components/order-books-form/or
 import { OrderBooksTableComponent } from './components/order-books-table/order-books-table.component';
 import { OrderBooksFormService } from './components/order-books-form/services/order-books-form.service';
 import { OrderBooksTableService } from './components/order-books-table/services/order-books-table.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { OrderBooksTableService } from './components/order-books-table/services/
     MatDatepickerModule,
     NgxMaterialTimepickerModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    MatTooltipModule
   ],
   exports: [OrderBooksComponent],
   providers: [

@@ -18,7 +18,7 @@ import { Web3PublicService } from '../../../core/services/blockchain/web3-public
 export class TokenAddressDirective {
   @Input() blockchain: BLOCKCHAIN_NAME;
 
-  @Output() tokenValidated = new EventEmitter<Token>();
+  @Output() tokenIsValidated = new EventEmitter<Token>();
 
   private readonly tokenAddressRegex = /^0x[A-Fa-f0-9]{40}$/;
 
@@ -32,9 +32,9 @@ export class TokenAddressDirective {
       }
 
       this.web3[this.blockchain]
-        .getTokenInfo(control.value, this.blockchain)
+        .getTokenInfo(control.value)
         .then((token: Token) => {
-          this.tokenValidated.emit(token);
+          this.tokenIsValidated.emit(token);
           resolve(null);
         })
         .catch(err => {

@@ -21,6 +21,7 @@ import ADDRESS_TYPE from '../../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
+import { Token } from '../../../../../shared/models/tokens/Token';
 import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
 
 interface TradeProviderInfo {
@@ -31,6 +32,11 @@ interface InstantTradeParameters {
   fromAmount: string;
   fromToken: SwapToken;
   toToken: SwapToken;
+
+  isCustomFromTokenFormOpened: boolean;
+  isCustomToTokenFormOpened: boolean;
+  customFromTokenAddress: string;
+  customToTokenAddress: string;
 }
 
 interface InstantTradeProviderController {
@@ -82,6 +88,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public transactionHash: string;
 
+  public customToken = {
+    from: {} as SwapToken,
+    to: {} as SwapToken
+  };
+
   get tokens(): List<SwapToken> {
     return this._tokens;
   }
@@ -99,11 +110,21 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   set tradeParameters(value) {
     if (
       this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-      new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
+      this._tradeParameters.fromAmount === value.fromAmount &&
       this._tradeParameters.toToken?.address === value.toToken?.address
     ) {
+      this._tradeParameters = value;
+      const toAmount = this.trades
+        .find(tradeController => tradeController.isBestRate)
+        ?.trade?.to?.amount.toFixed();
+
+      this.tradeParametersService.setTradeParameters(this.blockchain, {
+        ...this._tradeParameters,
+        toAmount
+      });
       return;
     }
+
     this._tradeParameters = value;
 
     this.tradeParametersService.setTradeParameters(this.blockchain, {
@@ -246,6 +267,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
 
       this._tradeParameters = {
+        ...tradeParameters,
         fromToken: null,
         toToken: null,
         fromAmount: null
@@ -281,6 +303,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this.toToken = fromToken;
 
     this.tradeParameters = {
+      ...this.tradeParameters,
       fromToken: toToken,
       toToken: fromToken,
       fromAmount: toAmount
@@ -392,6 +415,58 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         isBestRate: true
       };
     }
+  }
+
+  public setIsCustomTokenFormOpened(part: 'from' | 'to', isOpened: boolean): void {
+    if (part === 'from') {
+      this.tradeParameters = {
+        ...this.tradeParameters,
+        isCustomFromTokenFormOpened: isOpened
+      };
+    } else {
+      this.tradeParameters = {
+        ...this.tradeParameters,
+        isCustomToTokenFormOpened: isOpened
+      };
+    }
+  }
+
+  public setCustomTokenAddress(part: 'from' | 'to', address: string): void {
+    if (part === 'from') {
+      this.tradeParameters = {
+        ...this.tradeParameters,
+        customFromTokenAddress: address
+      };
+    } else {
+      this.tradeParameters = {
+        ...this.tradeParameters,
+        customToTokenAddress: address
+      };
+    }
+  }
+
+  public updateCustomToken(part: 'from' | 'to', tokenBody: Token): void {
+    const token = this.tokens.find(
+      t => t.address.toLowerCase() === tokenBody.address.toLowerCase()
+    );
+    this.customToken[part] = token ? { ...token } : { ...this.customToken[part], ...tokenBody };
+  }
+
+  public addCustomToken(part: 'from' | 'to'): void {
+    if (part === 'from') {
+      this.fromToken = { ...this.customToken.from };
+    } else {
+      this.toToken = { ...this.customToken.to };
+    }
+  }
+
+  public isAnyTokenCustom(): boolean {
+    return (
+      (this.fromToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.fromToken.address.toLowerCase())) ||
+      (this.toToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.toToken.address.toLowerCase()))
+    );
   }
 
   public createTrade(selectedServiceIndex: number) {

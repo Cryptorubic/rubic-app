@@ -1,5 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NgModel } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { List } from 'immutable';
@@ -15,9 +14,10 @@ import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { Router } from '@angular/router';
-import { OrderBookFormToken, OrderBookTradeForm } from '../../models/trade-form';
+import { OrderBookTradeForm } from '../../models/trade-form';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { OrderBooksFormService } from './services/order-books-form.service';
+import { TokenPart } from '../../../../../shared/models/order-book/tokens';
 import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
 
 enum TRADE_STATUS {
@@ -51,14 +51,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   private _tradeFormSubscription$: Subscription;
 
-  public isCustomTokenSectionOpened = {
-    base: false,
-    quote: false
-  };
-
   public customToken = {
-    base: {} as OrderBookFormToken,
-    quote: {} as OrderBookFormToken
+    base: {} as SwapToken,
+    quote: {} as SwapToken
   };
 
   public tokensRate: BigNumber;
@@ -76,19 +71,19 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   set tradeParameters(value) {
-    if (
+    const tokensParametersAreTheSame =
       this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-      new BigNumber(this._tradeParameters.fromAmount).isEqualTo(value.fromAmount) &&
+      this._tradeParameters.fromAmount === value.fromAmount &&
       this._tradeParameters.toToken?.address === value.toToken?.address &&
-      new BigNumber(this._tradeParameters.toAmount).isEqualTo(value.toAmount)
-    ) {
-      return;
-    }
+      this._tradeParameters.toAmount === value.toAmount;
+
     this._tradeParameters = value;
 
     this.tradeParametersService.setTradeParameters(this.blockchain, {
       ...this._tradeParameters
     });
+
+    if (tokensParametersAreTheSame) return;
 
     this.tradeForm = {
       ...this.tradeForm,
@@ -183,10 +178,6 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this.orderBookFormService.setTradeForm(this._tradeForm);
   }
 
-  @ViewChild('baseCustomToken') baseCustomToken: NgModel;
-
-  @ViewChild('quoteCustomToken') quoteCustomToken: NgModel;
-
   constructor(
     private router: Router,
     private tradeTypeService: TradeTypeService,
@@ -201,7 +192,6 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     // trade-form subscription
     this._tradeFormSubscription$ = this.orderBookFormService.getTradeForm().subscribe(tradeForm => {
       this._tradeForm = tradeForm;
-      this.updateCustomTokensValidity();
 
       if (tradeForm.areOptionsValid) {
         this.changeDetectionRef.detectChanges();
@@ -213,13 +203,13 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       this.blockchain = blockchain;
 
       this.tradeForm = { ...this.tradeForm, blockchain: this.blockchain };
-      this.updateCustomTokensValidity();
 
       this.tokens = this.tokensService.tokens.getValue();
 
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
 
       this._tradeParameters = {
+        ...tradeParameters,
         fromToken: null,
         toToken: null,
         fromAmount: null,
@@ -264,6 +254,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this.quoteToken = fromToken;
 
     this.tradeParameters = {
+      ...this.tradeParameters,
       fromToken: toToken,
       toToken: fromToken,
       fromAmount: toAmount,
@@ -271,7 +262,35 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  public setCustomToken(tokenPart: string, tokenBody: Token): void {
+  public setIsCustomTokenFormOpened(tokenPart: TokenPart, isOpened: boolean): void {
+    if (tokenPart === 'base') {
+      this.tradeParameters = {
+        ...this.tradeParameters,
+        isCustomFromTokenFormOpened: isOpened
+      };
+    } else {
+      this.tradeParameters = {
+        ...this.tradeParameters,
+        isCustomToTokenFormOpened: isOpened
+      };
+    }
+  }
+
+  public setCustomTokenAddress(tokenPart: TokenPart, address: string): void {
+    if (tokenPart === 'base') {
+      this.tradeParameters = {
+        ...this.tradeParameters,
+        customFromTokenAddress: address
+      };
+    } else {
+      this.tradeParameters = {
+        ...this.tradeParameters,
+        customToTokenAddress: address
+      };
+    }
+  }
+
+  public updateCustomToken(tokenPart: TokenPart, tokenBody: Token): void {
     const token = this.tokens.find(
       t => t.address.toLowerCase() === tokenBody.address.toLowerCase()
     );
@@ -280,17 +299,21 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       : { ...this.customToken[tokenPart], ...tokenBody };
   }
 
-  private updateCustomTokensValidity(): void {
-    this.baseCustomToken?.control.updateValueAndValidity();
-    this.quoteCustomToken?.control.updateValueAndValidity();
-  }
-
-  public addCustomToken(tokenPart: string): void {
+  public addCustomToken(tokenPart: TokenPart): void {
     if (tokenPart === 'base') {
       this.baseToken = { ...this.customToken.base };
     } else {
       this.quoteToken = { ...this.customToken.quote };
     }
+  }
+
+  public isAnyTokenCustom(): boolean {
+    return (
+      (this.baseToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.baseToken.address.toLowerCase())) ||
+      (this.quoteToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.quoteToken.address.toLowerCase()))
+    );
   }
 
   private calculateTokensRate(): void {

@@ -6,4 +6,5 @@
   (refreshTableEvent)="refreshTable()"
   [title]="'My trades' | translate"
   (selectTokenEvent)="selectToken($event)"
+  [hasData]="$hasData | async"
 ></app-tokens-table>

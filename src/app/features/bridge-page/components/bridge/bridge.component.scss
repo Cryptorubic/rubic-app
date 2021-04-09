@@ -75,17 +75,7 @@
   }
 }
 
-@include b(800) {
-  .bridge-container {
-    padding-top: 115px;
-  }
-}
-
 @include b(600) {
-  .bridge-container {
-    padding: 115px 10px 0;
-  }
-
   .bridge-form {
     flex-direction: column;
   }

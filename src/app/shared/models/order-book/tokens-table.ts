@@ -1,4 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { OrderBookTradeTableRow } from 'src/app/features/swaps-page/order-books/models/trade-table';
 import { TokenPart } from './tokens';
 
@@ -23,6 +24,10 @@ export abstract class TokensTableService {
 
   public getTableData(): Observable<any> {
     return this.$visibleTableData.asObservable();
+  }
+
+  public hasData(): Observable<boolean> {
+    return this.$dataSource.pipe(map(data => data.length > 0));
   }
 
   public setTableData(value: any): void {
