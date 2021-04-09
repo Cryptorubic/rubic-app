@@ -72,10 +72,10 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   set tradeParameters(value) {
     const tokensParametersAreTheSame =
-      this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-      this._tradeParameters.fromAmount === value.fromAmount &&
-      this._tradeParameters.toToken?.address === value.toToken?.address &&
-      this._tradeParameters.toAmount === value.toAmount;
+      this._tradeParameters?.fromToken?.address === value.fromToken?.address &&
+      this._tradeParameters?.fromAmount === value.fromAmount &&
+      this._tradeParameters?.toToken?.address === value.toToken?.address &&
+      this._tradeParameters?.toAmount === value.toAmount;
 
     this._tradeParameters = value;
 
