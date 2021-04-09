@@ -1,3 +1,4 @@
+@import 'src/scss/mixins';
 @import 'src/scss/vars';
 
 .accumulated-volume {
@@ -56,5 +57,13 @@
     line-height: 14px;
 
     opacity: 0.5;
+  }
+}
+
+@include b($mobile-md) {
+  .accumulated-volume {
+    &__title {
+      font-size: 20px;
+    }
   }
 }

@@ -297,3 +297,11 @@
     }
   }
 }
+
+@include b($mobile-sm) {
+  .form-section {
+    &__row {
+      padding: 20px 10px 22px;
+    }
+  }
+}

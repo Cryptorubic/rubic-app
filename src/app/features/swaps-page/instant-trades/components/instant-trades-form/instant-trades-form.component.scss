@@ -242,3 +242,9 @@ app-tooltip {
     }
   }
 }
+
+@include b($mobile-sm) {
+  .instant-trade-form {
+    padding: 27px 10px 29px;
+  }
+}

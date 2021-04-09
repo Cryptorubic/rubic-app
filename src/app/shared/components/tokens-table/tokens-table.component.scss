@@ -146,3 +146,11 @@ app-sorting-dropdown {
     }
   }
 }
+
+@include b($mobile-md) {
+  .tokens-table {
+    &__title {
+      font-size: 20px;
+    }
+  }
+}
