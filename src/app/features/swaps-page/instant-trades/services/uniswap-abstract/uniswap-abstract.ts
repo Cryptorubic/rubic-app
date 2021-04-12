@@ -27,11 +27,11 @@ enum SWAP_METHOD {
 }
 
 export class UniswapAbstract extends InstantTradeService {
-  protected tokensToTokensEstimatedGas = new BigNumber(120_000);
+  protected tokensToTokensEstimatedGas: BigNumber[];
 
-  protected tokensToEthEstimatedGas = new BigNumber(150_000);
+  protected tokensToEthEstimatedGas: BigNumber[];
 
-  protected ethToTokensEstimatedGas = new BigNumber(150_000);
+  protected ethToTokensEstimatedGas: BigNumber[];
 
   protected slippageTolerance = 0.015; // 1.5%
 
@@ -148,7 +148,7 @@ export class UniswapAbstract extends InstantTradeService {
     walletAddress: string,
     deadline: number
   ): Promise<BigNumber> {
-    let estimatedGas = this.tokensToTokensEstimatedGas;
+    let estimatedGas = this.tokensToTokensEstimatedGas[path.length - 2];
     try {
       if (walletAddress) {
         const allowance = await this.web3Public.getAllowance(
@@ -194,12 +194,12 @@ export class UniswapAbstract extends InstantTradeService {
               walletAddress,
               amountIn
             )
-          : this.ethToTokensEstimatedGas;
+          : this.ethToTokensEstimatedGas[path.length - 2];
       }
-      return this.ethToTokensEstimatedGas;
+      return this.ethToTokensEstimatedGas[path.length - 2];
     } catch (e) {
       console.debug(e);
-      return this.ethToTokensEstimatedGas;
+      return this.ethToTokensEstimatedGas[path.length - 2];
     }
   }
 
@@ -210,7 +210,7 @@ export class UniswapAbstract extends InstantTradeService {
     walletAddress: string,
     deadline: number
   ): Promise<BigNumber> {
-    let estimatedGas = this.tokensToEthEstimatedGas;
+    let estimatedGas = this.tokensToEthEstimatedGas[path.length - 2];
     try {
       if (walletAddress) {
         const allowance = await this.web3Public.getAllowance(

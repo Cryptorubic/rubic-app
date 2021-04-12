@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 export const uniSwapContracts = {
   address: '0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F',
   testnetAddress: '0xD99D1c33F9fC3444f8101754aBC46c52416550D1'
@@ -22,6 +24,27 @@ export const routingProviders = {
 };
 
 export const maxTransitTokens = 3;
+
+export const tokensToTokensEstimatedGas = [
+  new BigNumber(120_000),
+  new BigNumber(120_000),
+  new BigNumber(120_000),
+  new BigNumber(120_000)
+];
+
+export const tokensToEthEstimatedGas = [
+  new BigNumber(150_000),
+  new BigNumber(150_000),
+  new BigNumber(150_000),
+  new BigNumber(150_000)
+];
+
+export const ethToTokensEstimatedGas = [
+  new BigNumber(150_000),
+  new BigNumber(150_000),
+  new BigNumber(150_000),
+  new BigNumber(150_000)
+];
 
 export const abi = [
   {

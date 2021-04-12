@@ -3,8 +3,11 @@ import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import {
   abi,
+  ethToTokensEstimatedGas,
   maxTransitTokens,
   routingProviders,
+  tokensToEthEstimatedGas,
+  tokensToTokensEstimatedGas,
   uniSwapContracts,
   WETH
 } from './uni-swap-constants';
@@ -25,9 +28,9 @@ export class UniSwapService extends UniswapAbstract {
     super(useTestingModeService, WETH, uniSwapContracts, routingProviders, maxTransitTokens, abi);
     this.coingeckoApiService = coingeckoApiService;
     this.slippageTolerance = 0.015; // 1.5%
-    this.tokensToTokensEstimatedGas = new BigNumber(120_000);
-    this.tokensToEthEstimatedGas = new BigNumber(150_000);
-    this.ethToTokensEstimatedGas = new BigNumber(150_000);
+    this.tokensToTokensEstimatedGas = tokensToTokensEstimatedGas;
+    this.tokensToEthEstimatedGas = tokensToEthEstimatedGas;
+    this.ethToTokensEstimatedGas = ethToTokensEstimatedGas;
     this.web3Private = web3Private;
     this.web3Public = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
