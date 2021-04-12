@@ -23,6 +23,9 @@ import { InstantTradesApiService } from '../../../../../core/services/backend/in
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
 import { Token } from '../../../../../shared/models/tokens/Token';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { skip, take } from 'rxjs/operators';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 
 interface TradeProviderInfo {
   label: string;
@@ -62,6 +65,8 @@ enum TRADE_STATUS {
 export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private _blockchainSubscription$: Subscription;
 
+  private _blockchainSubscription2$: Subscription;
+
   private _instantTradeServices: InstantTradeService[];
 
   private _tradeParameters: InstantTradeParameters;
@@ -69,6 +74,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private _tokens = List<SwapToken>([]);
 
   private _tokensSubscription$: Subscription;
+
+  private _tokensSubscription2$: Subscription;
 
   public blockchain: BLOCKCHAIN_NAME;
 
@@ -163,6 +170,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       fromToken: value
     };
     this.availableToTokens = this.tokens.filter(token => token.address !== value?.address);
+    if (value) {
+      this.queryParamsService.setQueryParam('from', value.symbol);
+      this.queryParamsService.navigate();
+    }
   }
 
   get toToken(): SwapToken {
@@ -175,6 +186,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       toToken: value
     };
     this.availableFromTokens = this.tokens.filter(token => token.address !== value?.address);
+    if (value) {
+      this.queryParamsService.setQueryParam('to', value.symbol);
+      this.queryParamsService.navigate();
+    }
   }
 
   get fromAmount(): string {
@@ -201,7 +216,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private onInchBscService: OneInchBscService,
     private pancakeSwapService: PancakeSwapService,
     private dialog: MatDialog,
-    private instantTradesApiService: InstantTradesApiService
+    private instantTradesApiService: InstantTradesApiService,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly web3private: Web3PublicService
   ) {}
 
   private initInstantTradeProviders() {
@@ -254,14 +271,45 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
+    this._tokensSubscription$ = this.tokensService.tokens.pipe(take(2)).subscribe(tokens => {
       this.tokens = tokens;
+      if (tokens.size > 0) {
+        const fromQuery = this.queryParamsService.currentQueryParams.from;
+        const toQuery = this.queryParamsService.currentQueryParams.to;
+        if (this.queryParamsService.isAddressQuery(this.queryParamsService.currentQueryParams.from)) {
+          this.fromToken = this.searchTokenByAddress(fromQuery);
+          if (!this.fromToken) {
+            this.getCustomToken(fromQuery).then(res => {
+              this.fromToken = res;
+            })
+          };
+        } else {
+          this.fromToken = this.searchTokenBySymbol(this.queryParamsService.currentQueryParams.from);
+        }
+  
+        if (this.queryParamsService.isAddressQuery(this.queryParamsService.currentQueryParams.to)) {
+          this.toToken = this.searchTokenByAddress(toQuery);
+          if (!this.toToken) {
+            this.getCustomToken(toQuery).then(res => {
+              this.toToken = res;
+            })
+          }
+        } else {
+          this.toToken = this.searchTokenBySymbol(this.queryParamsService.currentQueryParams.to);
+        }
+        this.queryParamsService.navigate();
+      }
     });
 
-    this._blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
-      this.blockchain = blockchain;
+    this._tokensSubscription2$ = this.tokensService.tokens.pipe(skip(2)).subscribe(tokens => {
+      this.tokens = tokens;
+    });
+  
+    this._blockchainSubscription$ = this.tradeTypeService.getBlockchain().pipe(take(1)).subscribe(blockchain => {
+      this.blockchain = this.queryParamsService.currentQueryParams.chain as BLOCKCHAIN_NAME || blockchain;
+      this.tradeTypeService.setBlockchain(this.blockchain);
+      this.queryParamsService.setQueryParam('chain', this.blockchain);
       this.initInstantTradeProviders();
-
       this.tokens = this.tokensService.tokens.getValue();
 
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
@@ -276,11 +324,35 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.fromToken = tradeParameters?.fromToken;
       this.toToken = tradeParameters?.toToken;
       this.fromAmount = tradeParameters?.fromAmount;
+      this.queryParamsService.navigate();
+    })
+    this._blockchainSubscription2$ = this.tradeTypeService.getBlockchain().pipe(skip(1)).subscribe(blockchain => {
+      this.blockchain = blockchain
+      this.queryParamsService.setQueryParam('chain', this.blockchain);
+      this.initInstantTradeProviders();
+      this.tokens = this.tokensService.tokens.getValue();
+
+      const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
+
+      this._tradeParameters = {
+        ...tradeParameters,
+        fromToken: null,
+        toToken: null,
+        fromAmount: null
+      };
+
+      this.fromToken = tradeParameters?.fromToken;
+      this.toToken = tradeParameters?.toToken;
+      this.fromAmount = tradeParameters?.fromAmount;
+
+      this.queryParamsService.navigate();
     });
   }
 
   ngOnDestroy() {
     this._tokensSubscription$.unsubscribe();
+    this._tokensSubscription2$.unsubscribe();
+    this._blockchainSubscription2$.unsubscribe();
     this._blockchainSubscription$.unsubscribe();
   }
 
@@ -455,9 +527,12 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   public addCustomToken(part: 'from' | 'to'): void {
     if (part === 'from') {
       this.fromToken = { ...this.customToken.from };
+      this.queryParamsService.setQueryParam(part, this.customToken.from.address);
     } else {
       this.toToken = { ...this.customToken.to };
+      this.queryParamsService.setQueryParam(part, this.customToken.to.address);
     }
+     this.queryParamsService.navigate();
   }
 
   public isAnyTokenCustom(): boolean {
@@ -514,4 +589,29 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this.selectedTradeState = null;
     this.transactionHash = undefined;
   }
+
+  public getCustomToken = (query: String) => {
+    return this.web3private[this.blockchain].getTokenInfo(query).then((token: Token) => ({
+      blockchain: undefined,
+      image: undefined,
+      rank: undefined,
+      price: undefined,
+      used_in_iframe: undefined,
+      ...token,
+    }))
+  }
+
+  public searchTokenBySymbol(queryParam: string): SwapToken {
+    return this.tokens.find(
+      token =>
+        token.symbol.toLowerCase() === queryParam.toLowerCase() ||
+        token.symbol.toLowerCase() === queryParam.toLowerCase()
+    );
+  };
+
+  public searchTokenByAddress(queryParam: string): SwapToken {
+    return this.tokens.find(
+      token => token.address.toLowerCase() === queryParam.toLowerCase()
+    );
+  };
 }
