@@ -35,12 +35,6 @@ export class BridgeTableComponent {
     }
   };
 
-  private transactionBlockchain = {
-    ETH: BLOCKCHAIN_NAME.ETHEREUM,
-    BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    POL: BLOCKCHAIN_NAME.POLYGON
-  };
-
   /**
    * Transactions are sorted by date first.
    */
@@ -65,16 +59,19 @@ export class BridgeTableComponent {
 
   public isShowMoreActive = true;
 
+  // eslint-disable-next-line no-magic-numbers
   private minDesktopWidth = 1024;
 
   public isDesktop: boolean;
 
   constructor(private bridgeService: BridgeService) {
     bridgeService.transactions.subscribe(transactions => {
+      if (!transactions) {
+        return;
+      }
+
       this.transactions = transactions.map(tx => ({
         ...tx,
-        fromNetwork: this.transactionBlockchain[tx.fromNetwork],
-        toNetwork: this.transactionBlockchain[tx.toNetwork],
         opened: false
       }));
       this.sort = { fieldName: null, downDirection: null };
@@ -136,12 +133,18 @@ export class BridgeTableComponent {
           break;
         case 'spent':
           this.transactions = this.transactions.sort((a, b) =>
-            BridgeTableComponent.sortByNumber(a.actualFromAmount, b.actualFromAmount)
+            BridgeTableComponent.sortByNumber(
+              parseFloat(a.actualFromAmount),
+              parseFloat(b.actualFromAmount)
+            )
           );
           break;
         case 'expected':
           this.transactions = this.transactions.sort((a, b) =>
-            BridgeTableComponent.sortByNumber(a.actualToAmount, b.actualToAmount)
+            BridgeTableComponent.sortByNumber(
+              parseFloat(a.actualToAmount),
+              parseFloat(b.actualToAmount)
+            )
           );
           break;
         case 'date':

@@ -61,7 +61,13 @@ module.exports = {
         'max-classes-per-file': 'off',
         radix: ['warn', 'as-needed'],
         'no-prototype-builtins': 'off',
-        'no-return-assign': 'off'
+        'no-return-assign': 'off',
+        'no-console': [
+          'error',
+          {
+            allow: ['debug', 'error']
+          }
+        ]
       }
     },
     {

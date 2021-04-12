@@ -111,9 +111,7 @@
             </td>
 
             <td class="data__date">
-              <div>
-                {{ tx.updateTime.split(' ')[0] }} {{ tx.updateTime.split(' ')[1] }}
-              </div>
+              <div>{{ tx.updateTime.split(' ')[0] }} {{ tx.updateTime.split(' ')[1] }}</div>
             </td>
           </tr>
         </tbody>
@@ -229,10 +227,12 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">{{ 'GET' | translate}}</div>
+                <div class="content__item-name">{{ 'GET' | translate }}</div>
                 <div class="data__amount">
                   <div class="data__amount-inner">
-                    <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
+                    <div class="data__amount-number">
+                      {{ tx.actualFromAmount | bigNumberFormat }}
+                    </div>
                     <img [src]="tx.image_link" alt="" />
                     <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
                   </div>
@@ -240,10 +240,10 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">{{ 'SEND' | translate}}</div>
+                <div class="content__item-name">{{ 'SEND' | translate }}</div>
                 <div class="data__amount">
                   <div class="data__amount-inner">
-                    <div class="data__amount-number">{{ tx.actualToAmount }}</div>
+                    <div class="data__amount-number">{{ tx.actualToAmount | bigNumberFormat }}</div>
                     <img [src]="tx.image_link" alt="" />
                     <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
                   </div>

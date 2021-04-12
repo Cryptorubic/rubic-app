@@ -20,7 +20,7 @@ export class BridgeApiService {
           resolve(response);
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );
@@ -45,7 +45,7 @@ export class BridgeApiService {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );
@@ -72,7 +72,7 @@ export class BridgeApiService {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );
@@ -86,8 +86,8 @@ export class BridgeApiService {
       toNetwork: bridgeTrade.toBlockchain === BLOCKCHAIN_NAME.POLYGON ? 'POL' : 'ETH',
       actualFromAmount: bridgeTrade.amount,
       actualToAmount: bridgeTrade.amount,
-      ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol,
-      bscSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.POLYGON].symbol,
+      ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address,
+      bscSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.POLYGON].address,
       updateTime: new Date(),
       status: 'DepositInProgress',
       transaction_id: txHash,
@@ -102,7 +102,7 @@ export class BridgeApiService {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );
@@ -129,7 +129,7 @@ export class BridgeApiService {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );

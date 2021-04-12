@@ -49,7 +49,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     private web3PrivateService: Web3PrivateService,
     private bridgeApiService: BridgeApiService,
     private useTestingModeService: UseTestingModeService,
-    private metamaskProvidersService: MetamaskProviderService
+    private metamaskProviderService: MetamaskProviderService
   ) {
     super();
     this.web3PublicEth = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
@@ -57,39 +57,6 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
-    });
-  }
-
-  private getMaticPOSClient(fromBlockchain: BLOCKCHAIN_NAME): MaticPOSClient {
-    let ethRPC: string;
-    let maticRPC: string;
-    let network: string;
-    let version: string;
-    if (!this.isTestingMode) {
-      ethRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.ETHEREUM).rpcLink;
-      maticRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON).rpcLink;
-      network = 'mainnet';
-      version = 'v1';
-    } else {
-      ethRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.GOERLI_TESTNET).rpcLink;
-      maticRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON_TESTNET).rpcLink;
-      network = 'testnet';
-      version = 'mumbai';
-    }
-
-    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      return new MaticPOSClient({
-        network,
-        version,
-        maticProvider: maticRPC,
-        parentProvider: this.metamaskProvidersService.web3
-      });
-    }
-    return new MaticPOSClient({
-      network,
-      version,
-      maticProvider: this.metamaskProvidersService.web3,
-      parentProvider: ethRPC
     });
   }
 
@@ -173,13 +140,46 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
         toEthFee: 0
       };
     } catch (err) {
-      console.error('Error getting polygon tokens:', err, token.rootToken, token.childToken);
+      console.debug('Error getting polygon tokens:', err, token.rootToken, token.childToken);
       return null;
     }
   }
 
   public getFee(): Observable<number> {
     return of(0);
+  }
+
+  private getMaticPOSClient(fromBlockchain: BLOCKCHAIN_NAME): MaticPOSClient {
+    let ethRPC: string;
+    let maticRPC: string;
+    let network: string;
+    let version: string;
+    if (!this.isTestingMode) {
+      ethRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.ETHEREUM).rpcLink;
+      maticRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON).rpcLink;
+      network = 'mainnet';
+      version = 'v1';
+    } else {
+      ethRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.GOERLI_TESTNET).rpcLink;
+      maticRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON_TESTNET).rpcLink;
+      network = 'testnet';
+      version = 'mumbai';
+    }
+
+    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+      return new MaticPOSClient({
+        network,
+        version,
+        maticProvider: maticRPC,
+        parentProvider: this.metamaskProviderService.web3
+      });
+    }
+    return new MaticPOSClient({
+      network,
+      version,
+      maticProvider: this.metamaskProviderService.web3,
+      parentProvider: ethRPC
+    });
   }
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<string> {

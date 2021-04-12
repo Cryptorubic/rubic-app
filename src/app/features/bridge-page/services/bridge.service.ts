@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription, throwError } from 'rxjs';
 import { List } from 'immutable';
 import { first, tap } from 'rxjs/operators';
+import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeToken } from '../models/BridgeToken';
 import { TokensService } from '../../../core/services/backend/tokens-service/tokens.service';
@@ -39,17 +40,23 @@ export class BridgeService implements OnDestroy {
     [BLOCKCHAIN_NAME.POLYGON]: List([])
   };
 
-  private _transactions: BehaviorSubject<List<BridgeTableTransaction>> = new BehaviorSubject(
-    List([])
-  );
+  private _transactions: BehaviorSubject<List<BridgeTableTransaction>> = new BehaviorSubject(null);
 
   public readonly transactions: Observable<
     List<BridgeTableTransaction>
   > = this._transactions.asObservable();
 
+  private readonly transactionBlockchain = {
+    ETH: BLOCKCHAIN_NAME.ETHEREUM,
+    BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    POL: BLOCKCHAIN_NAME.POLYGON
+  };
+
   public walletAddress: Observable<string>;
 
   private _useTestingModeSubscription$: Subscription;
+
+  private _isTestingMode: boolean;
 
   constructor(
     private bridgeApiService: BridgeApiService,
@@ -62,18 +69,20 @@ export class BridgeService implements OnDestroy {
   ) {
     this._swapTokensSubscription$ = this.tokensService.tokens.subscribe(swapTokens => {
       this._swapTokens = swapTokens;
+      this.updateTransactionsList();
       this.setTokens();
     });
 
-    this.updateTransactionsList();
-
     this.walletAddress = web3PrivateService.onAddressChanges;
 
-    this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(value => {
-      if (value) {
-        this._tokens.next(bridgeTestTokens);
+    this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
+      isTestingMode => {
+        this._isTestingMode = isTestingMode;
+        if (isTestingMode) {
+          this._tokens.next(bridgeTestTokens);
+        }
       }
-    });
+    );
   }
 
   ngOnDestroy(): void {
@@ -95,10 +104,14 @@ export class BridgeService implements OnDestroy {
   }
 
   private setTokens(): void {
-    if (!this._swapTokens.size) {
+    if (this._isTestingMode) {
+      this._tokens.next(bridgeTestTokens);
       return;
     }
-
+    if (!this._swapTokens.size || !this.bridgeProvider) {
+      this._tokens.next(List([]));
+      return;
+    }
     if (this._blockchainTokens[this.selectedBlockchain]?.size) {
       this._tokens.next(this._blockchainTokens[this.selectedBlockchain]);
       return;
@@ -162,10 +175,62 @@ export class BridgeService implements OnDestroy {
   }
 
   public async updateTransactionsList(): Promise<void> {
+    if (!this._swapTokens.size) {
+      return;
+    }
+
     if (this.web3PrivateService.address) {
-      const transactionsArray = await this.bridgeApiService.getTransactions(
+      let transactionsArray = await this.bridgeApiService.getTransactions(
         this.web3PrivateService.address.toLowerCase()
       );
+
+      transactionsArray = transactionsArray.map(transaction => ({
+        ...transaction,
+        fromNetwork: this.transactionBlockchain[transaction.fromNetwork],
+        toNetwork: this.transactionBlockchain[transaction.toNetwork],
+        actualFromAmount: new BigNumber(transaction.actualFromAmount).toFixed(),
+        actualToAmount: new BigNumber(transaction.actualToAmount).toFixed(),
+        opened: false
+      }));
+
+      transactionsArray = transactionsArray.map(transaction => {
+        if (
+          transaction.fromNetwork === BLOCKCHAIN_NAME.POLYGON ||
+          transaction.toNetwork === BLOCKCHAIN_NAME.POLYGON
+        ) {
+          let ethSymbol: string;
+          let polygonSymbol: string;
+          if (!this._isTestingMode) {
+            ethSymbol = this._swapTokens
+              .filter(token => token.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
+              .find(token => token.address.toLowerCase() === transaction.ethSymbol.toLowerCase())
+              .symbol;
+            polygonSymbol = this._swapTokens
+              .filter(token => token.blockchain === BLOCKCHAIN_NAME.POLYGON)
+              .find(token => token.address.toLowerCase() === transaction.bscSymbol.toLowerCase())
+              .symbol;
+          } else {
+            ethSymbol = bridgeTestTokens.find(
+              token =>
+                token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() ===
+                transaction.ethSymbol.toLowerCase()
+            ).blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol;
+            polygonSymbol = bridgeTestTokens.find(
+              token =>
+                token.blockchainToken[BLOCKCHAIN_NAME.POLYGON]?.address.toLowerCase() ===
+                transaction.bscSymbol.toLowerCase()
+            ).blockchainToken[BLOCKCHAIN_NAME.POLYGON].symbol;
+          }
+
+          return {
+            ...transaction,
+            ethSymbol,
+            bscSymbol: polygonSymbol
+          };
+        }
+        return transaction;
+      });
+
       this._transactions.next(List(transactionsArray));
     }
   }

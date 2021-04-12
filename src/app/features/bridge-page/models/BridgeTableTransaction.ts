@@ -1,8 +1,8 @@
 export interface BridgeTableTransaction {
   fromNetwork: string;
   toNetwork: string;
-  actualFromAmount: number;
-  actualToAmount: number;
+  actualFromAmount: string;
+  actualToAmount: string;
   ethSymbol: string;
   bscSymbol: string;
   updateTime: string;
