@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BigNumberFormat } from '../../pipes/big-number-format.pipe';
 
 import { VolumeCellComponent } from './volume-cell.component';
 
@@ -8,7 +9,7 @@ describe('VolumeCellComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [VolumeCellComponent]
+      declarations: [VolumeCellComponent, BigNumberFormat]
     }).compileComponents();
   });
 

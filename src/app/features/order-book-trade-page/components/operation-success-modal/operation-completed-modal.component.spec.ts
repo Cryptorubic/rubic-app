@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 
 import { OperationCompletedModalComponent } from './operation-completed-modal.component';
 
@@ -8,7 +9,7 @@ describe('OperationSuccessComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [OperationCompletedModalComponent]
+      declarations: [OperationCompletedModalComponent, ScannerLinkPipe]
     }).compileComponents();
   });
 

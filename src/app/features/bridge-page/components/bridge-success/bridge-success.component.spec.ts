@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { BridgeSuccessComponent } from './bridge-success.component';
 
@@ -9,6 +10,7 @@ describe('BridgeSuccessComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [TranslateModule.forRoot()],
         declarations: [BridgeSuccessComponent]
       }).compileComponents();
     })

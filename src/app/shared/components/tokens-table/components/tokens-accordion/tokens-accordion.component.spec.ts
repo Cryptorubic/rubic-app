@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { BigNumberFormat } from 'src/app/shared/pipes/big-number-format.pipe';
 
 import { TokensAccordionComponent } from './tokens-accordion.component';
 
@@ -8,7 +10,8 @@ describe('TokensAccordionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TokensAccordionComponent]
+      imports: [TranslateModule.forRoot()],
+      declarations: [TokensAccordionComponent, BigNumberFormat]
     }).compileComponents();
   });
 

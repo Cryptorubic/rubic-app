@@ -1,4 +1,6 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { TradesTableComponent } from './trades-table.component';
 
@@ -8,6 +10,7 @@ describe('TradesTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientModule, TranslateModule.forRoot()],
       declarations: [TradesTableComponent]
     }).compileComponents();
   });

@@ -1,13 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { TokensMobileHeaderComponent } from './tokens-mobile-header.component';
 
-describe('SortingDropdownComponent', () => {
+describe('TokensMobileHeaderComponent', () => {
   let component: TokensMobileHeaderComponent;
   let fixture: ComponentFixture<TokensMobileHeaderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       declarations: [TokensMobileHeaderComponent]
     }).compileComponents();
   });

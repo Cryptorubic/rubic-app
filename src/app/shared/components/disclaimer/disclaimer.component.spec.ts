@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { DisclaimerComponent } from './disclaimer.component';
 
@@ -9,7 +11,8 @@ describe('DisclaimerComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [DisclaimerComponent]
+        providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
+        declarations: [DisclaimerComponent, TranslateModule.forRoot()]
       }).compileComponents();
     })
   );

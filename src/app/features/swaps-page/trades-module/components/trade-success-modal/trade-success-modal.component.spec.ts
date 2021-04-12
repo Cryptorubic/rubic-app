@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 
 import { TradeSuccessModalComponent } from './trade-success-modal.component';
 
@@ -8,7 +9,7 @@ describe('TradeSuccessModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TradeSuccessModalComponent]
+      declarations: [TradeSuccessModalComponent, ScannerLinkPipe]
     }).compileComponents();
   }));
 

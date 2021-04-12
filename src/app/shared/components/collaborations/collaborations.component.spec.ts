@@ -1,4 +1,6 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { CollaborationsComponent } from './collaborations.component';
 
@@ -9,6 +11,7 @@ describe('CollaborationsComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [HttpClientModule, MatDialogModule],
         declarations: [CollaborationsComponent]
       }).compileComponents();
     })

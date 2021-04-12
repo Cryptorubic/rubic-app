@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { HeaderNavigationComponent } from './header-navigation.component';
 
@@ -8,6 +9,7 @@ describe('HeaderNavigationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       declarations: [HeaderNavigationComponent]
     }).compileComponents();
   });

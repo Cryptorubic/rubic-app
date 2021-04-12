@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { VolumeBlockComponent } from './volume-block.component';
@@ -8,6 +9,7 @@ describe('VolumeBlockComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientModule],
       declarations: [VolumeBlockComponent]
     }).compileComponents();
   });

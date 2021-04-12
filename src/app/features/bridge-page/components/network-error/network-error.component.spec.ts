@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { NetworkErrorComponent } from './network-error.component';
 
@@ -9,6 +10,7 @@ describe('NetworkErrorComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [TranslateModule.forRoot()],
         declarations: [NetworkErrorComponent]
       }).compileComponents();
     })

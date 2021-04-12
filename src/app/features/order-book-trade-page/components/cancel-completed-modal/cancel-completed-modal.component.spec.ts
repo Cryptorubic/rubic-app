@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 
 import { CancelCompletedModalComponent } from './cancel-completed-modal.component';
 
@@ -8,7 +9,7 @@ describe('CancelCompletedModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CancelCompletedModalComponent]
+      declarations: [CancelCompletedModalComponent, ScannerLinkPipe]
     }).compileComponents();
   });
 

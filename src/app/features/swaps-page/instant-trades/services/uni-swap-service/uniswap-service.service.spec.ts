@@ -25,6 +25,7 @@ describe('UniswapServiceService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        UniSwapService,
         Web3PrivateService,
         { provide: MetamaskProviderService, useValue: providerServiceStub() },
         { provide: PublicProviderService, useValue: publicProviderServiceStub() }
@@ -34,9 +35,9 @@ describe('UniswapServiceService', () => {
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 
-    web3PublicEth = TestBed.get(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
-    service = TestBed.get(UniSwapService);
-    web3Private = TestBed.get(Web3PrivateService);
+    web3PublicEth = TestBed.inject(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
+    service = TestBed.inject(UniSwapService);
+    web3Private = TestBed.inject(Web3PrivateService);
   });
 
   afterEach(() => {
