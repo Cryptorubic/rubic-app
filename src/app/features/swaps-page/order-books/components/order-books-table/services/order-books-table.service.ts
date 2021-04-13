@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokensTableService } from 'src/app/shared/models/order-book/tokens-table';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class OrderBooksTableService extends TokensTableService {
@@ -37,5 +38,11 @@ export class OrderBooksTableService extends TokensTableService {
       );
       this.$visibleTableData.next(filteredData);
     }
+  }
+
+  public hasData(): Observable<boolean> {
+    return this.$dataSource.pipe(
+      map(data => data.filter(d => d.blockchain === this.$blockchainMode.getValue()).length > 0)
+    );
   }
 }

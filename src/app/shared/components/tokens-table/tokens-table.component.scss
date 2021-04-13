@@ -24,10 +24,16 @@ $primary-color: #4aa956;
   &__text {
     display: flex;
 
+    margin-top: 20px;
+
     color: rgba(0, 0, 0, 0.34);
     font-weight: normal;
     font-size: 24px;
     text-align: center;
+
+    &_without-data {
+      margin-top: 0;
+    }
   }
 
   &__title-section {
@@ -147,10 +153,23 @@ app-sorting-dropdown {
   }
 }
 
+.mobile-items {
+  &__item:not(:first-child) {
+    display: block;
+
+    margin-top: 15px;
+  }
+}
+
 @include b($mobile-md) {
   .tokens-table {
     &__title {
       font-size: 20px;
+    }
+
+    &__text {
+      font-size: 18px;
+      text-align: left;
     }
   }
 }

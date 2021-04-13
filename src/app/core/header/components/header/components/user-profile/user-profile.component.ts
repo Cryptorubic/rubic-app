@@ -45,6 +45,7 @@ export class UserProfileComponent implements AfterViewInit {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.headerStore.setUserMenuOpeningStatus(false);
+        this.headerStore.setMobileMenuOpeningStatus(false);
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
