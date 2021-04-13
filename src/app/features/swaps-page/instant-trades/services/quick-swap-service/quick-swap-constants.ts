@@ -1,25 +1,45 @@
+import BigNumber from 'bignumber.js';
+
 export const uniSwapContracts = {
-  address: '0x831753DD7087CaC61aB5644b308642cc1c33Dc13',
+  address: '0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff',
   testnetAddress: ''
 };
 
 export const WETH = {
-  address: '',
+  address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
   testnetAddress: ''
 };
 
 export const routingProviders = {
   addresses: [
-    '', // WETH
-    '', // CAKE
-    '', // BUSD
-    '' // XVS
+    '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270', // WETH
+    '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', // DAI
+    '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', // USDT
+    '0x831753DD7087CaC61aB5644b308642cc1c33Dc13' // QUICK
   ],
-  testnetAddresses: [
-    '', // WETH,
-    '' // WBNB
-  ]
+  testnetAddresses: ['']
 };
+
+export const tokensToTokensEstimatedGas = [
+  new BigNumber(120_000),
+  new BigNumber(120_000),
+  new BigNumber(120_000),
+  new BigNumber(120_000)
+];
+
+export const tokensToEthEstimatedGas = [
+  new BigNumber(150_000),
+  new BigNumber(150_000),
+  new BigNumber(150_000),
+  new BigNumber(150_000)
+];
+
+export const ethToTokensEstimatedGas = [
+  new BigNumber(150_000),
+  new BigNumber(150_000),
+  new BigNumber(150_000),
+  new BigNumber(150_000)
+];
 
 export const maxTransitTokens = 3;
 

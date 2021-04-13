@@ -109,6 +109,7 @@
               class="gas-fee"
               *ngIf="
                 blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
+                blockchain !== BLOCKCHAIN_NAME.MATIC &&
                 tradeController.trade?.gasFeeInEth &&
                 tradeController.trade?.gasFeeInUsd
               "

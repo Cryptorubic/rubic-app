@@ -107,16 +107,16 @@ export class TradesFormComponent implements OnInit, OnDestroy {
   }
 
   public selectBlockchain(blockchain: BLOCKCHAIN_NAME) {
-    if (blockchain === BLOCKCHAIN_NAME.MATIC && this.selectedMode === TRADE_MODE.INSTANT_TRADE) {
+    /* if (blockchain === BLOCKCHAIN_NAME.MATIC && this.selectedMode === TRADE_MODE.INSTANT_TRADE) {
       this.selectedMode = TRADE_MODE.ORDER_BOOK;
-    }
+    } */
     this.selectedBlockchain = blockchain;
   }
 
   public selectMode(mode: TRADE_MODE) {
-    if (this.selectedBlockchain === BLOCKCHAIN_NAME.MATIC && mode === TRADE_MODE.INSTANT_TRADE) {
+    /* if (this.selectedBlockchain === BLOCKCHAIN_NAME.MATIC && mode === TRADE_MODE.INSTANT_TRADE) {
       this.selectedBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    }
+    } */
     this.selectedMode = mode;
   }
 }

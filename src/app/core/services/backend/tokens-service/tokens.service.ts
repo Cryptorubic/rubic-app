@@ -33,7 +33,8 @@ export class TokensService {
 
   private backendBlockchains = {
     ethereum: BLOCKCHAIN_NAME.ETHEREUM,
-    'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    polygon: BLOCKCHAIN_NAME.MATIC
   };
 
   public tokens: BehaviorSubject<List<SwapToken>> = new BehaviorSubject(List([]));

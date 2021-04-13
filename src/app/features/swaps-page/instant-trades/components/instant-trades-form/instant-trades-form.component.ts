@@ -23,6 +23,7 @@ import { InstantTradesApiService } from '../../../../../core/services/backend/in
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
 import { Token } from '../../../../../shared/models/tokens/Token';
+import { QuickSwapService } from '../../services/quick-swap-service/quick-swap.service';
 
 interface TradeProviderInfo {
   label: string;
@@ -200,6 +201,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private oneInchEthService: OneInchEthService,
     private onInchBscService: OneInchBscService,
     private pancakeSwapService: PancakeSwapService,
+    private quickSwapService: QuickSwapService,
     private dialog: MatDialog,
     private instantTradesApiService: InstantTradesApiService
   ) {}
@@ -243,6 +245,19 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             tradeState: null,
             tradeProviderInfo: {
               label: 'Pancakeswap'
+            },
+            isBestRate: false
+          }
+        ];
+        break;
+      case BLOCKCHAIN_NAME.MATIC:
+        this._instantTradeServices = [this.quickSwapService];
+        this.trades = [
+          {
+            trade: null,
+            tradeState: null,
+            tradeProviderInfo: {
+              label: 'Quickswap'
             },
             isBestRate: false
           }

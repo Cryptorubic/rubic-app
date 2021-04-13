@@ -45,6 +45,8 @@ export class UniswapAbstract extends InstantTradeService {
 
   protected blockchain: BLOCKCHAIN_NAME;
 
+  protected shouldCalculateGas: boolean;
+
   private WETHAddress: string;
 
   private uniswapContractAddress: string;
@@ -337,12 +339,27 @@ export class UniswapAbstract extends InstantTradeService {
     const routes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort((a, b) =>
       b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
     );
-    return this.getOptimalRouteAndGas(
-      fromAmountAbsolute,
-      toToken,
-      routes,
-      this[gasCalculationMethodName].bind(this)
-    );
+
+    if (this.shouldCalculateGas) {
+      return this.getOptimalRouteAndGas(
+        fromAmountAbsolute,
+        toToken,
+        routes,
+        this[gasCalculationMethodName].bind(this)
+      );
+    }
+    const optimalRoute = routes.sort((a, b) =>
+      b.outputAbsoluteAmount.minus(a.outputAbsoluteAmount).gt(0) ? 1 : -1
+    )[0];
+
+    return {
+      route: optimalRoute,
+      gasData: {
+        estimatedGas: new BigNumber(0),
+        gasFeeInEth: new BigNumber(0),
+        gasFeeInUsd: new BigNumber(0)
+      }
+    };
   }
 
   private async getAllRoutes(
