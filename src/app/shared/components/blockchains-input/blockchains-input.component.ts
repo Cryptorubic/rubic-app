@@ -40,7 +40,10 @@ export class BlockchainsInputComponent implements OnChanges {
 
   public selectedBlockchainDropdownData: BlockchainDropdownData;
 
-  public blockchainsSortOrder = ['name', 'label'];
+  public blockchainsSortOrder = ['label', 'name'];
+
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+  public readonly isSmallWidth = window.innerWidth <= 410;
 
   constructor() {}
 

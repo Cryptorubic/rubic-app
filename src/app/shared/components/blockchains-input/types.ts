@@ -1,7 +1,5 @@
-import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
-
 export interface IBlockchainShort {
-  name: BLOCKCHAIN_NAME;
+  name: string;
   label: string;
   img: string;
 }

@@ -75,7 +75,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   public inputQuery = '';
 
   // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-  public isMobile = window.innerWidth <= 640;
+  public readonly isMobile = window.innerWidth <= 640;
 
   constructor() {}
 
@@ -114,20 +114,14 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
           )
           .toArray()
           .sort((a, b) => {
-            let compare: number;
             if (this.sortBy) {
-              // eslint-disable-next-line
-              for (let parameter of this.sortBy) {
-                compare = a.sortParameters[parameter] - b.sortParameters[parameter];
-                if (compare) {
-                  break;
-                }
+              // eslint-disable-next-line no-restricted-syntax
+              for (const parameter of this.sortBy) {
+                if (a.sortParameters[parameter] > b.sortParameters[parameter]) return 1;
+                if (a.sortParameters[parameter] < b.sortParameters[parameter]) return -1;
               }
             }
-            if (!compare && query) {
-              compare = a.filterParameters[field].length - b.filterParameters[field].length;
-            }
-            return compare;
+            return 0;
           })
       )
     );

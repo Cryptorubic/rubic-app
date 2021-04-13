@@ -43,10 +43,10 @@
                   !selectedToken
                     ? ''
                     : selectedToken.symbol === 'ETH' &&
-                      fromBlockchain.name === BLOCKCHAIN_NAME.ETHEREUM
+                      fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM
                     ? fromBlockchain.baseUrl
                     : fromBlockchain.scanner.baseUrl +
-                      selectedToken.blockchainToken[fromBlockchain.name].address
+                      selectedToken.blockchainToken[fromBlockchain.key].address
                 "
                 target="_blank"
               >
@@ -55,13 +55,19 @@
               </a>
             </div>
 
-            <table class="choose-blockchains__info">
+            <table
+              class="choose-blockchains__info"
+              *ngIf="
+                fromBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
+                toBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+              "
+            >
               <tr
                 [ngClass]="{
                   'choose-blockchains__info_wrong':
                     selectedToken &&
                     fromNumber != undefined &&
-                    fromNumber.lt(selectedToken.blockchainToken[fromBlockchain.name].minAmount)
+                    fromNumber.lt(selectedToken.blockchainToken[fromBlockchain.key].minAmount)
                 }"
               >
                 <td>
@@ -69,15 +75,13 @@
                 </td>
                 <td>
                   {{
-                    selectedToken
-                      ? selectedToken.blockchainToken[fromBlockchain.name].minAmount
-                      : ''
+                    selectedToken ? selectedToken.blockchainToken[fromBlockchain.key].minAmount : ''
                   }}
                   <img
                     *ngIf="
                       selectedToken &&
                       fromNumber != undefined &&
-                      fromNumber.lt(selectedToken.blockchainToken[fromBlockchain.name].minAmount)
+                      fromNumber.lt(selectedToken.blockchainToken[fromBlockchain.key].minAmount)
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -89,7 +93,7 @@
                   'choose-blockchains__info_wrong':
                     selectedToken &&
                     fromNumber != undefined &&
-                    fromNumber.gt(selectedToken.blockchainToken[fromBlockchain.name].maxAmount)
+                    fromNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
                 }"
               >
                 <td>
@@ -97,15 +101,13 @@
                 </td>
                 <td>
                   {{
-                    selectedToken
-                      ? selectedToken.blockchainToken[fromBlockchain.name].maxAmount
-                      : ''
+                    selectedToken ? selectedToken.blockchainToken[fromBlockchain.key].maxAmount : ''
                   }}
                   <img
                     *ngIf="
                       selectedToken &&
                       fromNumber != undefined &&
-                      fromNumber.gt(selectedToken.blockchainToken[fromBlockchain.name].maxAmount)
+                      fromNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -161,7 +163,7 @@
                 alt="Token"
               />
               <span class="get-token-card__name">
-                {{ selectedToken.blockchainToken[toBlockchain.name].symbol }}
+                {{ selectedToken.blockchainToken[toBlockchain.key].symbol }}
               </span>
             </div>
           </div>
@@ -174,10 +176,10 @@
               [href]="
                 !selectedToken
                   ? ''
-                  : selectedToken.symbol === 'ETH' && toBlockchain.name === BLOCKCHAIN_NAME.ETHEREUM
+                  : selectedToken.symbol === 'ETH' && toBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM
                   ? toBlockchain.baseUrl
                   : toBlockchain.scanner.baseUrl +
-                    selectedToken.blockchainToken[toBlockchain.name].address
+                    selectedToken.blockchainToken[toBlockchain.key].address
               "
               target="_blank"
             >
@@ -187,9 +189,17 @@
           </div>
 
           <div class="choose-blockchains__address-info">
-            You will get {{ toBlockchain.label }} tokens to the provided address
+            You will get {{ toBlockchain.name }} tokens to the selected address
           </div>
-          <a class="choose-blockchains__binance" href="https://www.binance.org/" target="_blank">
+          <a
+            class="choose-blockchains__binance"
+            href="https://www.binance.org/"
+            target="_blank"
+            *ngIf="
+              fromBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
+              toBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+            "
+          >
             What is Binance Smart Chain?
           </a>
         </div>
@@ -205,8 +215,8 @@
             [disabled]="
               !selectedToken ||
               !fromNumber ||
-              fromNumber.lt(selectedToken.blockchainToken[fromBlockchain.name].minAmount) ||
-              fromNumber.gt(selectedToken.blockchainToken[fromBlockchain.name].maxAmount)
+              fromNumber.lt(selectedToken.blockchainToken[fromBlockchain.key].minAmount) ||
+              fromNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
             "
             (onClick)="checkAndConfirm()"
           >

@@ -1,9 +1,10 @@
 import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export interface BridgeBlockchain {
-  name: BLOCKCHAIN_NAME;
-  shortLabel: string; // for mobiles
+  key: BLOCKCHAIN_NAME;
   label: string;
+  name: string;
+  shortedName: string; // for mobiles
   img: string;
   baseUrl: string;
   addressBaseUrl: string;
