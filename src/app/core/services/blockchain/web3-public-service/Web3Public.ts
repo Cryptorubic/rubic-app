@@ -4,6 +4,7 @@ import { Transaction } from 'web3-core';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { Token } from '../../../../shared/models/tokens/Token';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export class Web3Public {
   constructor(private web3: Web3, private blockchain: IBlockchain) {}
@@ -184,6 +185,9 @@ export class Web3Public {
    * @param address address to check
    */
   public isNativeAddress(address: string): boolean {
+    if (this.blockchain.name === BLOCKCHAIN_NAME.MATIC) {
+      return address.toLowerCase() === '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'.toLowerCase();
+    }
     return address === '0x0000000000000000000000000000000000000000';
   }
 
