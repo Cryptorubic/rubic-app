@@ -17,6 +17,7 @@ describe('TokensMobileHeaderComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TokensMobileHeaderComponent);
     component = fixture.componentInstance;
+    component.sortingValue = { active: '', direction: 'asc' };
     fixture.detectChanges();
   });
 

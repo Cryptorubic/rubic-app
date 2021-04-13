@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { DisclaimerComponent } from './disclaimer.component';
@@ -7,12 +8,14 @@ import { DisclaimerComponent } from './disclaimer.component';
 describe('DisclaimerComponent', () => {
   let component: DisclaimerComponent;
   let fixture: ComponentFixture<DisclaimerComponent>;
+  const model = { title: 'Hi', text: `It's a test` };
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
-        declarations: [DisclaimerComponent, TranslateModule.forRoot()]
+        imports: [MatDialogModule, MatButtonModule, TranslateModule.forRoot()],
+        providers: [{ provide: MAT_DIALOG_DATA, useValue: model }],
+        declarations: [DisclaimerComponent]
       }).compileComponents();
     })
   );

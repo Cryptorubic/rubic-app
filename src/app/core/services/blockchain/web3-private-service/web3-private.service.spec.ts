@@ -110,7 +110,6 @@ describe('Web3ApiService', () => {
       service.address,
       bobAddress
     );
-    console.log(bobStartAllowance.toString());
     const callbackObject = {
       onTransactionHash: (hash: string) => {}
     };
@@ -131,7 +130,6 @@ describe('Web3ApiService', () => {
       service.address,
       bobAddress
     );
-
     expect(bobNewAllowance.minus(bobStartAllowance).toString()).toBe(amount.toString());
     done();
   });

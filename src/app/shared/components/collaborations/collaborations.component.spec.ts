@@ -1,8 +1,14 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
+import { ContentLoaderService } from 'src/app/core/services/content-loader/content-loader.service';
 
 import { CollaborationsComponent } from './collaborations.component';
+
+class MockService {
+  collaborationsContent = [];
+}
 
 describe('CollaborationsComponent', () => {
   let component: CollaborationsComponent;
@@ -11,7 +17,8 @@ describe('CollaborationsComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientModule, MatDialogModule],
+        imports: [HttpClientModule, MatDialogModule, TranslateModule.forRoot()],
+        providers: [{ provide: ContentLoaderService, useValue: MockService }],
         declarations: [CollaborationsComponent]
       }).compileComponents();
     })

@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoinsFilterComponent } from './coins-filter.component';
 
@@ -9,7 +10,7 @@ describe('CointFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientModule, TranslateModule.forRoot()],
+      imports: [HttpClientModule, TranslateModule.forRoot(), MatAutocompleteModule],
       declarations: [CoinsFilterComponent]
     }).compileComponents();
   });
