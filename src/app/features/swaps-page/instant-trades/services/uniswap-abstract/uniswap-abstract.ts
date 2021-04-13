@@ -20,6 +20,12 @@ interface UniswapRoute {
   outputAbsoluteAmount: BigNumber;
 }
 
+interface Gas {
+  estimatedGas;
+  gasFeeInUsd;
+  gasFeeInEth;
+}
+
 enum SWAP_METHOD {
   TOKENS_TO_TOKENS = 'swapExactTokensForTokens',
   ETH_TO_TOKENS = 'swapExactETHForTokens',
@@ -27,11 +33,11 @@ enum SWAP_METHOD {
 }
 
 export class UniswapAbstract extends InstantTradeService {
-  protected tokensToTokensEstimatedGas = new BigNumber(120_000);
+  protected tokensToTokensEstimatedGas: BigNumber[];
 
-  protected tokensToEthEstimatedGas = new BigNumber(150_000);
+  protected tokensToEthEstimatedGas: BigNumber[];
 
-  protected ethToTokensEstimatedGas = new BigNumber(150_000);
+  protected ethToTokensEstimatedGas: BigNumber[];
 
   protected slippageTolerance = 0.015; // 1.5%
 
@@ -96,32 +102,14 @@ export class UniswapAbstract extends InstantTradeService {
       estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
     }
 
-    const { outputAbsoluteAmount, path } = await this.getToAmountAndPath(
-      fromAmount,
-      fromTokenClone,
-      toTokenClone
-    );
-
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
-    const amountOutMin = outputAbsoluteAmount
-      .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
-      .toFixed(0);
 
-    const to = this.web3Private.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
-
-    const estimatedGas = await this[estimatedGasPredictionMethod](
+    const { route, gasData } = await this.getToAmountAndPath(
       amountIn,
-      amountOutMin,
-      path,
-      to,
-      deadline
+      fromTokenClone,
+      toTokenClone,
+      estimatedGasPredictionMethod
     );
-
-    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-
-    const gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
-    const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
 
     return {
       from: {
@@ -130,13 +118,13 @@ export class UniswapAbstract extends InstantTradeService {
       },
       to: {
         token: toToken,
-        amount: outputAbsoluteAmount.div(10 ** toToken.decimals)
+        amount: route.outputAbsoluteAmount.div(10 ** toToken.decimals)
       },
-      estimatedGas,
-      gasFeeInUsd,
-      gasFeeInEth,
+      estimatedGas: gasData.estimatedGas,
+      gasFeeInUsd: gasData.gasFeeInUsd,
+      gasFeeInEth: gasData.gasFeeInEth,
       options: {
-        path
+        path: route.path
       }
     };
   }
@@ -148,7 +136,7 @@ export class UniswapAbstract extends InstantTradeService {
     walletAddress: string,
     deadline: number
   ): Promise<BigNumber> {
-    let estimatedGas = this.tokensToTokensEstimatedGas;
+    let estimatedGas = this.tokensToTokensEstimatedGas[path.length - 2];
     try {
       if (walletAddress) {
         const allowance = await this.web3Public.getAllowance(
@@ -194,12 +182,12 @@ export class UniswapAbstract extends InstantTradeService {
               walletAddress,
               amountIn
             )
-          : this.ethToTokensEstimatedGas;
+          : this.ethToTokensEstimatedGas[path.length - 2];
       }
-      return this.ethToTokensEstimatedGas;
+      return this.ethToTokensEstimatedGas[path.length - 2];
     } catch (e) {
       console.debug(e);
-      return this.ethToTokensEstimatedGas;
+      return this.ethToTokensEstimatedGas[path.length - 2];
     }
   }
 
@@ -210,7 +198,7 @@ export class UniswapAbstract extends InstantTradeService {
     walletAddress: string,
     deadline: number
   ): Promise<BigNumber> {
-    let estimatedGas = this.tokensToEthEstimatedGas;
+    let estimatedGas = this.tokensToEthEstimatedGas[path.length - 2];
     try {
       if (walletAddress) {
         const allowance = await this.web3Public.getAllowance(
@@ -341,15 +329,20 @@ export class UniswapAbstract extends InstantTradeService {
   }
 
   private async getToAmountAndPath(
-    fromAmountRelative: BigNumber,
+    fromAmountAbsolute: string,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
-  ): Promise<UniswapRoute> {
-    const fromAmountAbsolute = fromAmountRelative.multipliedBy(10 ** fromToken.decimals).toFixed(0);
+    toToken: InstantTradeToken,
+    gasCalculationMethodName: string
+  ): Promise<{ route: UniswapRoute; gasData: Gas }> {
     const routes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort((a, b) =>
       b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
     );
-    return routes[0];
+    return this.getOptimalRouteAndGas(
+      fromAmountAbsolute,
+      toToken,
+      routes,
+      this[gasCalculationMethodName].bind(this)
+    );
   }
 
   private async getAllRoutes(
@@ -410,5 +403,64 @@ export class UniswapAbstract extends InstantTradeService {
     return (await Promise.allSettled(routePromises))
       .filter(res => res.status === 'fulfilled')
       .map((res: PromiseFulfilledResult<UniswapRoute>) => res.value);
+  }
+
+  private async getOptimalRouteAndGas(
+    amountIn: string,
+    toToken: InstantTradeToken,
+    routes: UniswapRoute[],
+    gasCalculationMethod: (
+      amountIn: string,
+      amountOutMin: string,
+      path: string[],
+      walletAddress: string,
+      deadline: number
+    ) => Promise<BigNumber>
+  ): Promise<{ route: UniswapRoute; gasData: Gas }> {
+    const to = this.web3Private.address;
+    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+
+    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+    const gasPrice = await this.web3Public.getGasPriceInETH();
+
+    const promises: Promise<{
+      route: UniswapRoute;
+      gasData: Gas;
+      profit: BigNumber;
+    }>[] = routes.map(async route => {
+      const amountOutMin = route.outputAbsoluteAmount
+        .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
+        .toFixed(0);
+
+      const estimatedGas = await gasCalculationMethod(
+        amountIn,
+        amountOutMin,
+        route.path,
+        to,
+        deadline
+      );
+
+      const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+      const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
+
+      const profit = route.outputAbsoluteAmount
+        .div(10 ** toToken.decimals)
+        .multipliedBy(toToken.price)
+        .minus(gasFeeInUsd);
+
+      return {
+        route,
+        gasData: {
+          estimatedGas,
+          gasFeeInUsd,
+          gasFeeInEth
+        },
+        profit
+      };
+    });
+
+    const results = await Promise.all(promises);
+
+    return results.sort((a, b) => (b.profit.minus(a.profit).gt(0) ? 1 : -1))[0];
   }
 }
