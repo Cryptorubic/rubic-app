@@ -4,7 +4,7 @@ interface BlockchainToken {
   address: string;
   name: string;
   symbol: string;
-  decimal: number;
+  decimals: number;
 
   minAmount: number;
   maxAmount: number;

@@ -99,7 +99,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   public isAdvancedSectionShown = false;
 
-  private smallMobileWidth = 410;
+  private readonly smallMobileWidth = 410;
 
   private tokensSubscription$: Subscription;
 
@@ -122,7 +122,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       name: token.blockchainToken[this.fromBlockchain.name].name,
       symbol: token.blockchainToken[this.fromBlockchain.name].symbol,
       image: token.image,
-      decimals: token.blockchainToken[this.fromBlockchain.name].decimal
+      decimals: token.blockchainToken[this.fromBlockchain.name].decimals
     }));
   }
 
@@ -205,7 +205,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       const startIndex = amount.indexOf('.') + 1;
       amount = amount.slice(
         0,
-        startIndex + this.selectedToken.blockchainToken[this.toBlockchain.name].decimal
+        startIndex + this.selectedToken.blockchainToken[this.toBlockchain.name].decimals
       );
     }
 
@@ -272,7 +272,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         fee => {
           this.fee = new BigNumber(fee);
         },
-        err => console.log(err),
+        err => console.error(err),
         () => {
           this.feeCalculationProgress = false;
         }
@@ -349,7 +349,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         err => {
           this.tradeInProgress = false;
           this.buttonAnimation = false;
-          console.log(err);
           if (!(err instanceof RubicError)) {
             err = new RubicError();
           }

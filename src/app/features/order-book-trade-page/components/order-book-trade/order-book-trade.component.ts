@@ -211,7 +211,6 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     this.tradeData = { ...(await this.orderBookTradeService.setAmountContributed(this.tradeData)) };
     this.tradeData = { ...(await this.orderBookTradeService.setInvestorsNumber(this.tradeData)) };
 
-    // eslint-disable-next-line no-magic-numbers
     setTimeout(() => this.setDynamicData(), 10000);
   }
 

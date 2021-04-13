@@ -2,8 +2,16 @@ import { Component, HostListener } from '@angular/core';
 import { List } from 'immutable';
 import date from 'date-and-time';
 import { BridgeService } from 'src/app/features/bridge-page/services/bridge.service';
+import { first } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 import { BridgeTableTransaction } from '../../models/BridgeTableTransaction';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { PolygonBridgeTrade } from '../../models/BridgeTrade';
+import { RubicError } from '../../../../shared/models/errors/RubicError';
+import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
+import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
+import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
+import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 
 interface ITableTransactionWithState extends BridgeTableTransaction {
   opened: boolean;
@@ -35,6 +43,8 @@ export class BridgeTableComponent {
     }
   };
 
+  public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
   /**
    * Transactions are sorted by date first.
    */
@@ -59,12 +69,15 @@ export class BridgeTableComponent {
 
   public isShowMoreActive = true;
 
-  // eslint-disable-next-line no-magic-numbers
-  private minDesktopWidth = 1024;
+  private readonly minDesktopWidth = 1024;
 
   public isDesktop: boolean;
 
-  constructor(private bridgeService: BridgeService) {
+  public tradeInProgress: boolean = false;
+
+  public tradeSuccessId: string;
+
+  constructor(private bridgeService: BridgeService, private dialog: MatDialog) {
     bridgeService.transactions.subscribe(transactions => {
       if (!transactions) {
         return;
@@ -188,5 +201,53 @@ export class BridgeTableComponent {
     const end = this.transactionPages * TRANSACTION_PAGE_SIZE;
     this.visibleTransactions = this.transactions.slice(0, end);
     this.checkIsShowMoreActive();
+  }
+
+  public depositPolygonBridgeTransaction(transaction: BridgeTableTransaction): void {
+    if (
+      transaction.status !== 'Waiting for deposit' ||
+      transaction.fromNetwork !== BLOCKCHAIN_NAME.POLYGON
+    ) {
+      return;
+    }
+
+    const bridgeTrade = {
+      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      isBurnt: true,
+      burnTransactionHash: transaction.transaction_id,
+      onTransactionHash: _hash => {
+        this.tradeInProgress = true;
+      }
+    } as PolygonBridgeTrade;
+    this.bridgeService
+      .createTrade(bridgeTrade)
+      .pipe(first())
+      .subscribe(
+        (res: string) => {
+          this.tradeSuccessId = res;
+          this.tradeInProgress = false;
+        },
+        err => {
+          this.tradeInProgress = false;
+          if (!(err instanceof RubicError)) {
+            err = new RubicError();
+          }
+          let data: any = { title: 'Error', descriptionText: err.comment };
+          if (err instanceof MetamaskError) {
+            data.title = 'Warning';
+          }
+          if (err instanceof NetworkError) {
+            data = {
+              title: 'Error',
+              descriptionComponentClass: NetworkErrorComponent,
+              descriptionComponentInputs: { networkError: err }
+            };
+          }
+          this.dialog.open(MessageBoxComponent, {
+            width: '400px',
+            data
+          });
+        }
+      );
   }
 }

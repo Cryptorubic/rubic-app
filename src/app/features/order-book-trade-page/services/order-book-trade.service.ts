@@ -173,7 +173,7 @@ export class OrderBookTradeService {
 
     const { contractAddress } = this.getContractParameters(tradeData);
 
-    // eslint-disable-next-line no-magic-numbers
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     const amountToApprove = new BigNumber(2).pow(256).minus(1);
     return this.web3PrivateService.approveTokens(
       tradeData.token[tokenPart].address,

@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription, throwError } from 'rxjs';
 import { List } from 'immutable';
-import { first, tap } from 'rxjs/operators';
+import { catchError, first, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeToken } from '../models/BridgeToken';
@@ -20,9 +20,12 @@ import { NetworkError } from '../../../shared/models/errors/provider/NetworkErro
 import { BridgeTrade } from '../models/BridgeTrade';
 import { BridgeTableTransaction } from '../models/BridgeTableTransaction';
 import { BridgeApiService } from '../../../core/services/backend/bridge-api/bridge-api.service';
+import { UserRejectError } from '../../../shared/models/errors/provider/UserRejectError';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
+  private readonly USER_REJECT_ERROR_CODE = 4001;
+
   private bridgeProvider: BlockchainBridgeProvider;
 
   private selectedBlockchain: BLOCKCHAIN_NAME;
@@ -78,9 +81,7 @@ export class BridgeService implements OnDestroy {
     this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
         this._isTestingMode = isTestingMode;
-        if (isTestingMode) {
-          this._tokens.next(bridgeTestTokens);
-        }
+        this.setTokens();
       }
     );
   }
@@ -104,12 +105,12 @@ export class BridgeService implements OnDestroy {
   }
 
   private setTokens(): void {
-    if (this._isTestingMode) {
-      this._tokens.next(bridgeTestTokens);
+    if (!this._swapTokens.size || !this.selectedBlockchain) {
+      this._tokens.next(List([]));
       return;
     }
-    if (!this._swapTokens.size || !this.bridgeProvider) {
-      this._tokens.next(List([]));
+    if (this._isTestingMode) {
+      this._tokens.next(bridgeTestTokens[this.selectedBlockchain]);
       return;
     }
     if (this._blockchainTokens[this.selectedBlockchain]?.size) {
@@ -169,9 +170,16 @@ export class BridgeService implements OnDestroy {
       this.updateTransactionsList();
     };
 
-    return this.bridgeProvider
-      .createTrade(bridgeTrade)
-      .pipe(tap(() => this.updateTransactionsList()));
+    return this.bridgeProvider.createTrade(bridgeTrade).pipe(
+      tap(() => this.updateTransactionsList()),
+      catchError(err => {
+        if (err.code === this.USER_REJECT_ERROR_CODE) {
+          return throwError(new UserRejectError());
+        }
+        console.debug(`Bridge trade error: ${err}`);
+        return throwError(err);
+      })
+    );
   }
 
   public async updateTransactionsList(): Promise<void> {
@@ -210,12 +218,12 @@ export class BridgeService implements OnDestroy {
               .find(token => token.address.toLowerCase() === transaction.bscSymbol.toLowerCase())
               .symbol;
           } else {
-            ethSymbol = bridgeTestTokens.find(
+            ethSymbol = bridgeTestTokens[BLOCKCHAIN_NAME.POLYGON].find(
               token =>
                 token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() ===
                 transaction.ethSymbol.toLowerCase()
             ).blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol;
-            polygonSymbol = bridgeTestTokens.find(
+            polygonSymbol = bridgeTestTokens[BLOCKCHAIN_NAME.POLYGON].find(
               token =>
                 token.blockchainToken[BLOCKCHAIN_NAME.POLYGON]?.address.toLowerCase() ===
                 transaction.bscSymbol.toLowerCase()

@@ -13,7 +13,7 @@ const RBC: BridgeToken = {
       address: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
       name: 'RBC',
       symbol: 'RBC',
-      decimal: 18,
+      decimals: 18,
 
       minAmount: 200,
       maxAmount: 100000
@@ -22,7 +22,7 @@ const RBC: BridgeToken = {
       address: '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8',
       name: 'RBC',
       symbol: 'WRBC',
-      decimal: 18,
+      decimals: 18,
 
       minAmount: 200,
       maxAmount: 100000
@@ -33,7 +33,7 @@ const RBC: BridgeToken = {
   toEthFee: 100
 };
 
-const ETH: BridgeToken = {
+const ETH_POL: BridgeToken = {
   symbol: 'ETH',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
@@ -43,7 +43,7 @@ const ETH: BridgeToken = {
       address: NATIVE_TOKEN_ADDRESS,
       name: 'Ethereum - Polygon',
       symbol: 'ETH',
-      decimal: 18,
+      decimals: 18,
 
       minAmount: 0,
       maxAmount: Infinity
@@ -52,7 +52,7 @@ const ETH: BridgeToken = {
       address: NATIVE_TOKEN_ADDRESS,
       name: 'Ethereum - Polygon',
       symbol: 'ETH',
-      decimal: 18,
+      decimals: 18,
 
       minAmount: 0,
       maxAmount: Infinity
@@ -73,7 +73,7 @@ const WETH: BridgeToken = {
       address: '0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6',
       name: 'Wrapped Ether',
       symbol: 'WETH',
-      decimal: 18,
+      decimals: 18,
 
       minAmount: 0,
       maxAmount: Infinity
@@ -82,7 +82,7 @@ const WETH: BridgeToken = {
       address: '0xE8F3118fDB41edcFEF7bF1DCa8009Fa8274aa070',
       name: 'Wrapped Ether (PoS)',
       symbol: 'WETH',
-      decimal: 18,
+      decimals: 18,
 
       minAmount: 0,
       maxAmount: Infinity
@@ -93,4 +93,7 @@ const WETH: BridgeToken = {
   toEthFee: 0
 };
 
-export const bridgeTestTokens = List([RBC, ETH, WETH]);
+export const bridgeTestTokens = {
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: List([RBC]),
+  [BLOCKCHAIN_NAME.POLYGON]: List([ETH_POL, WETH])
+};

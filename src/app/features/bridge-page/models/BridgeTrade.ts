@@ -10,3 +10,8 @@ export interface BridgeTrade {
   toAddress: string;
   onTransactionHash?: (hash: string) => void;
 }
+
+export interface PolygonBridgeTrade extends BridgeTrade {
+  isBurnt?: boolean;
+  burnTransactionHash?: string;
+}

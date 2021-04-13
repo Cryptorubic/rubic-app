@@ -2,20 +2,22 @@ import { Injectable } from '@angular/core';
 import { List } from 'immutable';
 import { defer, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
+import BigNumber from 'bignumber.js';
 import { BlockchainBridgeProvider } from '../blockchain-bridge-provider';
 import { BlockchainsTokens, BridgeToken } from '../../../models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import SwapToken from '../../../../../shared/models/tokens/SwapToken';
-import { BridgeTrade } from '../../../models/BridgeTrade';
+import { PolygonBridgeTrade } from '../../../models/BridgeTrade';
 import networks from '../../../../../shared/constants/blockchain/networks';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { MetamaskProviderService } from '../../../../../core/services/blockchain/private-provider/metamask-provider/metamask-provider.service';
 import { BridgeApiService } from '../../../../../core/services/backend/bridge-api/bridge-api.service';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 interface PolygonGraphToken {
   rootToken: string;
@@ -39,7 +41,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
 
   private readonly web3PublicEth: Web3Public;
 
-  private readonly web3PublicMatic: Web3Public;
+  private readonly web3PublicPolygon: Web3Public;
 
   private isTestingMode = false;
 
@@ -53,7 +55,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
   ) {
     super();
     this.web3PublicEth = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    this.web3PublicMatic = this.web3PublicService[BLOCKCHAIN_NAME.POLYGON];
+    this.web3PublicPolygon = this.web3PublicService[BLOCKCHAIN_NAME.POLYGON];
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
@@ -95,10 +97,15 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     token: PolygonGraphToken,
     swapTokens: List<SwapToken>
   ): Promise<BridgeToken> {
-    try {
-      const ethAddress = token.rootToken.toLowerCase();
-      const polygonAddress = token.childToken.toLowerCase();
+    const ethAddress = token.rootToken.toLowerCase();
+    let polygonAddress = token.childToken.toLowerCase();
 
+    // Mapping from API is wrong for ETH token
+    if (ethAddress === NATIVE_TOKEN_ADDRESS) {
+      polygonAddress = '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619';
+    }
+
+    try {
       const ethToken = swapTokens
         .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
         .find(swapToken => swapToken.address.toLowerCase() === ethAddress) || {
@@ -109,7 +116,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
         swapTokens
           .filter(item => item.blockchain === BLOCKCHAIN_NAME.POLYGON)
           .find(swapToken => swapToken.address.toLowerCase() === polygonAddress) ||
-        (await this.web3PublicMatic.getTokenInfo(polygonAddress));
+        (await this.web3PublicPolygon.getTokenInfo(polygonAddress));
 
       return {
         symbol: ethToken.symbol,
@@ -120,7 +127,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
             address: ethToken.address,
             name: ethToken.name,
             symbol: ethToken.symbol,
-            decimal: ethToken.decimals,
+            decimals: ethToken.decimals,
 
             minAmount: 0,
             maxAmount: Infinity
@@ -129,7 +136,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
             address: polygonToken.address,
             name: polygonToken.name,
             symbol: polygonToken.symbol,
-            decimal: polygonToken.decimals,
+            decimals: polygonToken.decimals,
 
             minAmount: 0,
             maxAmount: Infinity
@@ -182,65 +189,158 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     });
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
-    const { token } = bridgeTrade;
+  public createTrade(bridgeTrade: PolygonBridgeTrade): Observable<string> {
     const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
-    const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
-    const decimals = token.blockchainToken[bridgeTrade.fromBlockchain].decimal;
-
     const userAddress = this.web3PrivateService.address;
+
+    this.bridgeApiService.patchPolygonTransaction(
+      bridgeTrade.burnTransactionHash,
+      'DepositInProgress'
+    );
+
+    if (bridgeTrade.isBurnt) {
+      const onTradeTransactionHash = (hash: string): void => {
+        if (bridgeTrade.onTransactionHash) {
+          bridgeTrade.onTransactionHash(hash);
+        }
+
+        this.bridgeApiService.patchPolygonTransaction(
+          bridgeTrade.burnTransactionHash,
+          'DepositInProgress'
+        );
+      };
+      return this.exitERC20(
+        maticPOSClient,
+        bridgeTrade.burnTransactionHash,
+        userAddress,
+        onTradeTransactionHash
+      ).pipe(
+        tap(() => {
+          this.bridgeApiService.patchPolygonTransaction(
+            bridgeTrade.burnTransactionHash,
+            'Completed'
+          );
+        })
+      );
+    }
+
+    const { token } = bridgeTrade;
+    const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
+    const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
-    const onTradeTransactionHash = async (hash: string): Promise<void> => {
-      if (bridgeTrade.onTransactionHash) {
-        bridgeTrade.onTransactionHash(hash);
-      }
+    const onTradeTransactionHashFactory = (status: string) => {
+      return (hash: string): void => {
+        if (bridgeTrade.onTransactionHash) {
+          bridgeTrade.onTransactionHash(hash);
+        }
 
-      await this.bridgeApiService.postPolygonTransaction(
-        bridgeTrade,
-        hash,
-        this.web3PrivateService.address
-      );
+        this.bridgeApiService.postPolygonTransaction(
+          bridgeTrade,
+          status,
+          hash,
+          this.web3PrivateService.address
+        );
+      };
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+      const onTradeTransactionHash = onTradeTransactionHashFactory('DepositInProgress');
       if (token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
-        return defer(async () => {
-          const receipt = await maticPOSClient.depositEtherForUser(
-            userAddress,
-            amountInWei.toFixed(),
-            {
-              from: userAddress,
-              onTransactionHash: onTradeTransactionHash
-            }
-          );
-          return receipt.transactionHash;
-        });
+        return this.depositEther(maticPOSClient, userAddress, amountInWei, onTradeTransactionHash);
       }
-
-      return defer(async () => {
-        const allowance = await maticPOSClient.getERC20Allowance(userAddress, tokenAddress);
-        if (amountInWei.gt(allowance)) {
-          await maticPOSClient.approveMaxERC20ForDeposit(tokenAddress, {
-            from: userAddress,
-            onTransactionHash: bridgeTrade.onTransactionHash
-          });
-        }
-        const receipt = await maticPOSClient.depositERC20ForUser(
-          tokenAddress,
-          userAddress,
-          amountInWei.toFixed(),
-          {
-            from: userAddress,
-            onTransactionHash: onTradeTransactionHash
-          }
-        );
-        return receipt.transactionHash;
-      });
+      return this.depositERC20(
+        maticPOSClient,
+        userAddress,
+        tokenAddress,
+        amountInWei,
+        bridgeTrade.onTransactionHash,
+        onTradeTransactionHash
+      );
     }
 
-    // bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
-    // TODO implement POL -> ETH
-    return null;
+    const onTradeTransactionHash = onTradeTransactionHashFactory('WithdrawInProgress');
+    return this.burnERC20(
+      maticPOSClient,
+      userAddress,
+      tokenAddress,
+      amountInWei,
+      onTradeTransactionHash
+    );
+  }
+
+  private depositEther(
+    maticPOSClient: MaticPOSClient,
+    userAddress: string,
+    amountInWei: BigNumber,
+    onTradeTransactionHash: (hash: string) => void
+  ): Observable<string> {
+    return defer(async () => {
+      const receipt = await maticPOSClient.depositEtherForUser(userAddress, amountInWei.toFixed(), {
+        from: userAddress,
+        onTransactionHash: onTradeTransactionHash
+      });
+      return receipt.transactionHash;
+    });
+  }
+
+  private depositERC20(
+    maticPOSClient: MaticPOSClient,
+    userAddress: string,
+    tokenAddress: string,
+    amountInWei: BigNumber,
+    onApprove: (hash: string) => void,
+    onTradeTransactionHash: (hash: string) => void
+  ): Observable<string> {
+    return defer(async () => {
+      const allowance = await maticPOSClient.getERC20Allowance(userAddress, tokenAddress);
+      if (amountInWei.gt(allowance)) {
+        await maticPOSClient.approveMaxERC20ForDeposit(tokenAddress, {
+          from: userAddress,
+          onTransactionHash: onApprove
+        });
+      }
+      const receipt = await maticPOSClient.depositERC20ForUser(
+        tokenAddress,
+        userAddress,
+        amountInWei.toFixed(),
+        {
+          from: userAddress,
+          onTransactionHash: onTradeTransactionHash
+        }
+      );
+      return receipt.transactionHash;
+    });
+  }
+
+  private burnERC20(
+    maticPOSClient: MaticPOSClient,
+    userAddress: string,
+    tokenAddress: string,
+    amountInWei: BigNumber,
+    onTradeTransactionHash: (hash: string) => void
+  ): Observable<string> {
+    return defer(async () => {
+      const receipt = await maticPOSClient.burnERC20(tokenAddress, amountInWei.toFixed(), {
+        from: userAddress,
+        onTransactionHash: onTradeTransactionHash
+      });
+      return receipt.transactionHash;
+    });
+  }
+
+  private exitERC20(
+    maticPOSClient: MaticPOSClient,
+    burnTransactionHash: string,
+    userAddress: string,
+    onTradeTransactionHash: (hash: string) => void
+  ): Observable<string> {
+    return defer(async () => {
+      const receipt = await maticPOSClient.exitERC20(burnTransactionHash, {
+        from: userAddress,
+        onTransactionHash: onTradeTransactionHash
+      });
+      return receipt.transactionHash;
+    });
   }
 }

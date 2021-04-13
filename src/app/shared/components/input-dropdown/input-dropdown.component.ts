@@ -74,7 +74,7 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
 
   public inputQuery = '';
 
-  // eslint-disable-next-line no-magic-numbers
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   public isMobile = window.innerWidth <= 640;
 
   constructor() {}

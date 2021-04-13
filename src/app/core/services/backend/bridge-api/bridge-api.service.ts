@@ -54,14 +54,14 @@ export class BridgeApiService {
 
   public postRubicTransaction(
     fromBlockchain: BLOCKCHAIN_NAME,
-    txHash: string,
+    transactionHash: string,
     fromAmount: string,
     walletFromAddress: string
-  ) {
+  ): Promise<void> {
     const body = {
       type: 'swap_rbc',
       fromNetwork: fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
-      transaction_id: txHash,
+      transaction_id: transactionHash,
       fromAmount,
       walletFromAddress
     };
@@ -79,7 +79,12 @@ export class BridgeApiService {
     });
   }
 
-  public postPolygonTransaction(bridgeTrade: BridgeTrade, txHash: string, userAddress: string) {
+  public postPolygonTransaction(
+    bridgeTrade: BridgeTrade,
+    status: string,
+    transactionHash: string,
+    userAddress: string
+  ): Promise<void> {
     const body = {
       type: 'polygon',
       fromNetwork: bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.POLYGON ? 'POL' : 'ETH',
@@ -89,8 +94,8 @@ export class BridgeApiService {
       ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address,
       bscSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.POLYGON].address,
       updateTime: new Date(),
-      status: 'DepositInProgress',
-      transaction_id: txHash,
+      status,
+      transaction_id: transactionHash,
       walletFromAddress: userAddress,
       walletToAddress: userAddress,
       walletDepositAddress: '0xBbD7cBFA79faee899Eaf900F13C9065bF03B1A74'
@@ -98,6 +103,20 @@ export class BridgeApiService {
 
     return new Promise<void>((resolve, reject) => {
       this.httpService.post('bridge/transactions', body).subscribe(
+        () => {
+          resolve();
+        },
+        error => {
+          console.error(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  public patchPolygonTransaction(transactionHash: string, status: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.httpService.patch(`bridge/transactions/${transactionHash}`, { status }).subscribe(
         () => {
           resolve();
         },

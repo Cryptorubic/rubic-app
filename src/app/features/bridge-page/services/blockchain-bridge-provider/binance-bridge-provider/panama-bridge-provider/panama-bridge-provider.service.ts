@@ -59,7 +59,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
           address: token.ethContractAddress || (token.ethSymbol === 'ETH' && NATIVE_TOKEN_ADDRESS),
           name: token.name,
           symbol: token.ethSymbol,
-          decimal: token.ethContractDecimal,
+          decimals: token.ethContractDecimal,
 
           minAmount: token.minAmount,
           maxAmount: token.maxAmount
@@ -68,7 +68,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
           address: token.bscContractAddress,
           name: token.name,
           symbol: token.bscSymbol,
-          decimal: token.bscContractDecimal,
+          decimals: token.bscContractDecimal,
 
           minAmount: token.minAmount,
           maxAmount: token.maxAmount
@@ -84,7 +84,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
     return this.httpClient.get(`${this.apiUrl}tokens`).pipe(
       map((response: PanamaResponse) => {
         if (response.code !== this.PANAMA_SUCCESS_CODE) {
-          console.log(`Error retrieving tokens, code ${response.code}`);
+          console.debug(`Error retrieving tokens, code ${response.code}`);
           return List([]);
         }
         return List(
@@ -104,16 +104,13 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
       return of(token.fromEthFee);
     }
     return this.httpClient.get(`${this.apiUrl}tokens/${token.symbol}/networks`).pipe(
-      // eslint-disable-next-line consistent-return
       map((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
-          console.log(`Error retrieving tokens, code ${res.code}`);
-        } else {
-          return res.data.networks.find(network => network.name === toBlockchain).networkFee;
+          return throwError(new Error(`Error retrieving tokens, code ${res.code}`));
         }
+        return res.data.networks.find(network => network.name === toBlockchain).networkFee;
       }),
       catchError(err => {
-        console.log(`Error retrieving tokens ${err}`);
         return throwError(err);
       })
     );
@@ -135,7 +132,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
     return this.httpClient.post(`${this.apiUrl}swaps/`, body).pipe(
       flatMap((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
-          console.log(`Bridge POST error, code ${res.code}`);
+          console.error(`Bridge POST error, code ${res.code}`);
           return throwError(new OverQueryLimitError());
         }
         const { data } = res;
@@ -155,7 +152,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
   ): Promise<string> {
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
-    const decimals = token.blockchainToken[bridgeTrade.fromBlockchain].decimal;
+    const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
 
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 

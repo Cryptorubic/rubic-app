@@ -30,7 +30,7 @@ interface RubicTrade {
 
 @Injectable()
 export class RubicBridgeProviderService extends BlockchainBridgeProvider {
-  private static RubicMaxAmount = 50000;
+  private static readonly RubicMaxAmount = 50000;
 
   private readonly apiUrl = 'https://swap.rubic.exchange/api/v1/';
 
@@ -69,7 +69,7 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
             address: response.tokens[0].token_address,
             name: 'RBC',
             symbol: response.tokens[0].symbol,
-            decimal: response.tokens[0].decimals,
+            decimals: response.tokens[0].decimals,
 
             minAmount: response.min_swap_amount,
             maxAmount: RubicBridgeProviderService.RubicMaxAmount
@@ -78,7 +78,7 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
             address: response.tokens[1].token_address,
             name: 'RBC',
             symbol: response.tokens[1].symbol,
-            decimal: response.tokens[1].decimals,
+            decimals: response.tokens[1].decimals,
 
             minAmount: response.min_swap_amount,
             maxAmount: RubicBridgeProviderService.RubicMaxAmount
@@ -135,7 +135,7 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
     const trade: RubicTrade = {
       token: {
         address: token.blockchainToken[bridgeTrade.fromBlockchain].address,
-        decimals: token.blockchainToken[bridgeTrade.fromBlockchain].decimal
+        decimals: token.blockchainToken[bridgeTrade.fromBlockchain].decimals
       }
     } as RubicTrade;
 
@@ -201,6 +201,7 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
       trade.swapContractAddress
     );
     if (trade.amount.gt(allowance)) {
+      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       const uintInfinity = new BigNumber(2).pow(256).minus(1);
       await this.web3PrivateService.approveTokens(
         trade.token.address,

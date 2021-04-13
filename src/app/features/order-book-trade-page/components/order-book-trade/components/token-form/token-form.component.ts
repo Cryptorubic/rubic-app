@@ -46,10 +46,8 @@ export class TokenFormComponent implements OnInit, OnChanges {
 
   @Output() amountToContributeChanges = new EventEmitter<string>();
 
-  // eslint-disable-next-line no-magic-numbers
   private readonly BILLION = 1e9;
 
-  // eslint-disable-next-line no-magic-numbers
   private readonly MILLION = 1e6;
 
   @ViewChild('amountToContributeModel') amountToContributeModel: NgModel;

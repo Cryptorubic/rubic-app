@@ -231,6 +231,18 @@
   }
 }
 
+.td {
+  &_clickable {
+    cursor: pointer;
+
+    &:hover {
+      .data__status_waiting-for-deposit {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
 .data {
   &__status {
     display: flex;
@@ -240,9 +252,6 @@
     color: black;
 
     &::before {
-      position: relative;
-      top: -2px;
-
       display: inline-block;
       min-width: 8px;
       height: 8px;
@@ -272,6 +281,11 @@
         background: #f4bb2b;
         box-shadow: 0 0 6px #f4bb2b;
       }
+    }
+
+    &_waiting-for-deposit {
+      color: #e6ae1f;
+      font-weight: bold;
     }
   }
 

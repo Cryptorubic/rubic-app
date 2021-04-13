@@ -71,13 +71,22 @@
         </thead>
         <tbody>
           <tr *ngFor="let tx of visibleTransactions">
-            <td>
+            <td
+              [ngClass]="{
+                td_clickable:
+                  tx.status === 'Waiting for deposit' && tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
+              }"
+              (click)="depositPolygonBridgeTransaction(tx)"
+            >
               <span
                 class="data__status"
                 [ngClass]="{
                   data__status_green: tx.code === 2,
                   data__status_yellow: tx.code === 1,
-                  data__status_red: tx.code === 0
+                  data__status_red: tx.code === 0,
+                  'data__status_waiting-for-deposit':
+                    tx.status === 'Waiting for deposit' &&
+                    tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
                 }"
               >
                 {{ tx.status }}
@@ -280,3 +289,11 @@
 
   <app-spinner *ngIf="!transactions" class="bridge-results__init-animation"></app-spinner>
 </div>
+
+<app-bridge-in-progress-modal *ngIf="tradeInProgress"></app-bridge-in-progress-modal>
+
+<app-bridge-success
+  *ngIf="tradeSuccessId"
+  [txId]="tradeSuccessId"
+  (onCloseEvent)="tradeSuccessId = undefined"
+></app-bridge-success>
