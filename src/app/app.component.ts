@@ -20,7 +20,7 @@ export class AppComponent {
     private readonly queryParamsService: QueryParamsService,
     private readonly router: ActivatedRoute
   ) {
-    this.router.queryParams.subscribe((queryParams) => {
+    this.router.queryParams.subscribe(queryParams => {
       if (queryParams) {
         this.queryParamsService.setupParams(queryParams);
       } 

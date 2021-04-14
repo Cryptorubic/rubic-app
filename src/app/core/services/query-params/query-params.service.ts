@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { TRADE_MODE } from 'src/app/features/swaps-page/trades-module/models';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { QueryParams } from './models/query-params';
 
@@ -10,46 +9,32 @@ import { QueryParams } from './models/query-params';
 export class QueryParamsService {
   public currentQueryParams: QueryParams;
 
-  private readonly defaultBSCparams: QueryParams;
+  public defaultBSCparams: QueryParams;
 
-  private readonly defaultETHparams: QueryParams;
+  public defaultETHparams: QueryParams;
 
   constructor(private readonly route: Router) {
     this.defaultBSCparams = {
       from: 'BNB',
       to: 'BRBC',
       chain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      mode: TRADE_MODE.INSTANT_TRADE,
       amount: '1'
     };
     this.defaultETHparams = {
       from: 'ETH',
       to: 'RBC',
       chain: BLOCKCHAIN_NAME.ETHEREUM,
-      mode: TRADE_MODE.INSTANT_TRADE,
       amount: '1'
     };
   }
 
   public setupParams(queryParams: QueryParams): void {
-    if (queryParams.from || queryParams.to) {
-      if (queryParams.chain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-        this.currentQueryParams = {
-          from: queryParams.from || this.defaultBSCparams.from,
-          to: queryParams.to || this.defaultBSCparams.to,
-          amount: queryParams.amount || this.defaultBSCparams.amount,
-          chain: queryParams.chain || this.defaultBSCparams.chain,
-          mode: queryParams.mode || this.defaultBSCparams.mode,
-        };
-      } else if (queryParams.chain === undefined || queryParams.chain === BLOCKCHAIN_NAME.ETHEREUM) {
-        this.currentQueryParams = {
-          from: queryParams.from || this.defaultETHparams.from,
-          to: queryParams.to || this.defaultETHparams.to,
-          amount: queryParams.amount || this.defaultETHparams.amount,
-          chain: queryParams.chain || this.defaultETHparams.chain,
-          mode: queryParams.mode || this.defaultETHparams.mode,
-        };
-      }
+
+    this.currentQueryParams = {
+      from: queryParams.from,
+      to: queryParams.to,
+      chain: queryParams.chain,
+      amount: queryParams.amount,
     }
   }
 
@@ -61,10 +46,43 @@ export class QueryParamsService {
     this.route.navigate([], {
       queryParams: this.currentQueryParams,
       queryParamsHandling: 'merge'
-    })
+    });
   }
 
   public isAddressQuery(paramName: string): boolean {
     return paramName.length > 10 && paramName.slice(0, 2) === '0x';
+  }
+
+  public setDefaultParams = () => {
+    const chain = this.currentQueryParams.chain;
+
+    if (chain === BLOCKCHAIN_NAME.ETHEREUM) {
+      this.currentQueryParams = {
+        from: this.currentQueryParams.from || this.defaultETHparams.from,
+        to: this.currentQueryParams.to || this.defaultETHparams.to,
+        amount: this.currentQueryParams.amount || this.defaultETHparams.amount,
+        chain: this.currentQueryParams.chain || this.defaultETHparams.chain,
+      }
+    } else if (chain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN){
+      this.currentQueryParams = {
+        from: this.currentQueryParams.from || this.defaultBSCparams.from,
+        to: this.currentQueryParams.to || this.defaultBSCparams.to,
+        amount: this.currentQueryParams.amount || this.defaultBSCparams.amount,
+        chain: this.currentQueryParams.chain || this.defaultBSCparams.chain,
+      }
+    }
+  }
+
+  public clearCurrentParams() {
+    this.currentQueryParams = {
+      from: null,
+      to: null,
+      amount: null,
+    };
+  }
+
+  public swapDefaultParams() {
+    [this.defaultETHparams.from, this.defaultETHparams.to] = [this.defaultETHparams.to, this.defaultETHparams.from];
+    [this.defaultBSCparams.from, this.defaultBSCparams.to] = [this.defaultBSCparams.to, this.defaultBSCparams.from];
   }
 }
