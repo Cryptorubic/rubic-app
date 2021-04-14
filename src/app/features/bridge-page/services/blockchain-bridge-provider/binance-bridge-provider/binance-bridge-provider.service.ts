@@ -53,10 +53,13 @@ export class BinanceBridgeProviderService extends BlockchainBridgeProvider {
     return this.panamaBridgeProvider.getFee(token, toBlockchain);
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
+  public createTrade(
+    bridgeTrade: BridgeTrade,
+    updateTransactionsList: () => Promise<void>
+  ): Observable<string> {
     if (bridgeTrade.token.symbol === 'RBC') {
-      return this.rubicBridgeProvider.createTrade(bridgeTrade);
+      return this.rubicBridgeProvider.createTrade(bridgeTrade, updateTransactionsList);
     }
-    return this.panamaBridgeProvider.createTrade(bridgeTrade);
+    return this.panamaBridgeProvider.createTrade(bridgeTrade, updateTransactionsList);
   }
 }

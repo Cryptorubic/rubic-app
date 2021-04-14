@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { List } from 'immutable';
 import { defer, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
 import { BlockchainBridgeProvider } from '../blockchain-bridge-provider';
@@ -11,7 +11,7 @@ import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCH
 import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import SwapToken from '../../../../../shared/models/tokens/SwapToken';
-import { PolygonBridgeTrade } from '../../../models/BridgeTrade';
+import { BridgeTrade } from '../../../models/BridgeTrade';
 import networks from '../../../../../shared/constants/blockchain/networks';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
@@ -189,40 +189,12 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     });
   }
 
-  public createTrade(bridgeTrade: PolygonBridgeTrade): Observable<string> {
+  public createTrade(
+    bridgeTrade: BridgeTrade,
+    updateTransactionsList: () => Promise<void>
+  ): Observable<string> {
     const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
     const userAddress = this.web3PrivateService.address;
-
-    this.bridgeApiService.patchPolygonTransaction(
-      bridgeTrade.burnTransactionHash,
-      'DepositInProgress'
-    );
-
-    if (bridgeTrade.isBurnt) {
-      const onTradeTransactionHash = (hash: string): void => {
-        if (bridgeTrade.onTransactionHash) {
-          bridgeTrade.onTransactionHash(hash);
-        }
-
-        this.bridgeApiService.patchPolygonTransaction(
-          bridgeTrade.burnTransactionHash,
-          'DepositInProgress'
-        );
-      };
-      return this.exitERC20(
-        maticPOSClient,
-        bridgeTrade.burnTransactionHash,
-        userAddress,
-        onTradeTransactionHash
-      ).pipe(
-        tap(() => {
-          this.bridgeApiService.patchPolygonTransaction(
-            bridgeTrade.burnTransactionHash,
-            'Completed'
-          );
-        })
-      );
-    }
 
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
@@ -230,17 +202,17 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
     const onTradeTransactionHashFactory = (status: string) => {
-      return (hash: string): void => {
+      return async (hash: string) => {
         if (bridgeTrade.onTransactionHash) {
           bridgeTrade.onTransactionHash(hash);
         }
-
-        this.bridgeApiService.postPolygonTransaction(
+        await this.bridgeApiService.postPolygonTransaction(
           bridgeTrade,
           status,
           hash,
           this.web3PrivateService.address
         );
+        updateTransactionsList();
       };
     };
 
@@ -329,12 +301,22 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     });
   }
 
-  private exitERC20(
-    maticPOSClient: MaticPOSClient,
+  public depositTradeAfterCheckpoint(
     burnTransactionHash: string,
-    userAddress: string,
-    onTradeTransactionHash: (hash: string) => void
+    onTransactionHash: (hash: string) => void,
+    updateTransactionsList: () => Promise<void>
   ): Observable<string> {
+    const maticPOSClient = this.getMaticPOSClient(BLOCKCHAIN_NAME.ETHEREUM);
+    const userAddress = this.web3PrivateService.address;
+
+    const onTradeTransactionHash = async (hash: string) => {
+      if (onTransactionHash) {
+        onTransactionHash(hash);
+      }
+      await this.bridgeApiService.patchPolygonTransaction(burnTransactionHash, 'DepositInProgress');
+      updateTransactionsList();
+    };
+
     return defer(async () => {
       const receipt = await maticPOSClient.exitERC20(burnTransactionHash, {
         from: userAddress,

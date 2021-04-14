@@ -141,36 +141,35 @@ export class BridgeService implements OnDestroy {
     return this.rubicBridgeProviderService.checkIfEthereumGasPriceIsHigh();
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
+  private checkSettings(blockchain: BLOCKCHAIN_NAME): void {
     if (!this.web3PrivateService.isProviderActive) {
-      return throwError(new MetamaskError());
+      throw new MetamaskError();
     }
 
     if (!this.web3PrivateService.address) {
-      return throwError(new AccountError());
+      throw new AccountError();
     }
 
-    const { fromBlockchain } = bridgeTrade;
     if (
-      this.web3PrivateService.network?.name !== fromBlockchain &&
+      this.web3PrivateService.network?.name !== blockchain &&
       (!this.useTestingModeService.isTestingMode.getValue() ||
-        this.web3PrivateService.network?.name !== `${fromBlockchain}_TESTNET`) &&
+        this.web3PrivateService.network?.name !== `${blockchain}_TESTNET`) &&
       (!this.useTestingModeService.isTestingMode.getValue() ||
-        fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM ||
+        blockchain !== BLOCKCHAIN_NAME.ETHEREUM ||
         this.web3PrivateService.network?.name !== BLOCKCHAIN_NAME.GOERLI_TESTNET)
     ) {
-      return throwError(new NetworkError(fromBlockchain));
+      throw new NetworkError(blockchain);
+    }
+  }
+
+  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
+    try {
+      this.checkSettings(bridgeTrade.fromBlockchain);
+    } catch (err) {
+      return throwError(err);
     }
 
-    const { onTransactionHash } = bridgeTrade;
-    bridgeTrade.onTransactionHash = async hash => {
-      if (onTransactionHash) {
-        onTransactionHash(hash);
-      }
-      this.updateTransactionsList();
-    };
-
-    return this.bridgeProvider.createTrade(bridgeTrade).pipe(
+    return this.bridgeProvider.createTrade(bridgeTrade, this.updateTransactionsList).pipe(
       tap(() => this.updateTransactionsList()),
       catchError(err => {
         if (err.code === this.USER_REJECT_ERROR_CODE) {
@@ -180,6 +179,34 @@ export class BridgeService implements OnDestroy {
         return throwError(err);
       })
     );
+  }
+
+  public depositPolygonTradeAfterCheckpoint(
+    burnTransactionHash: string,
+    onTransactionHash: (hash: string) => void
+  ): Observable<string> {
+    try {
+      this.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
+    } catch (err) {
+      return throwError(err);
+    }
+
+    return this.polygonBridgeProviderService
+      .depositTradeAfterCheckpoint(
+        burnTransactionHash,
+        onTransactionHash,
+        this.updateTransactionsList
+      )
+      .pipe(
+        tap(() => this.updateTransactionsList()),
+        catchError(err => {
+          if (err.code === this.USER_REJECT_ERROR_CODE) {
+            return throwError(new UserRejectError());
+          }
+          console.debug(`Bridge trade from Polygon to Eth error: ${err}`);
+          return throwError(err);
+        })
+      );
   }
 
   public async updateTransactionsList(): Promise<void> {

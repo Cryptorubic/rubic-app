@@ -24,7 +24,7 @@
               <img
                 [src]="'assets/images/bridge/' + getArrow('Status')"
                 alt="Sort"
-                (click)="onSortClick('Status')"
+                (click)="sortTransactions('Status')"
               />
             </th>
             <th>
@@ -32,7 +32,7 @@
               <img
                 [src]="'assets/images/bridge/' + getArrow('From')"
                 alt="Sort"
-                (click)="onSortClick('From')"
+                (click)="sortTransactions('From')"
               />
             </th>
             <th>
@@ -40,7 +40,7 @@
               <img
                 [src]="'assets/images/bridge/' + getArrow('To')"
                 alt="Sort"
-                (click)="onSortClick('To')"
+                (click)="sortTransactions('To')"
               />
             </th>
             <th>
@@ -48,7 +48,7 @@
               <img
                 [src]="'assets/images/bridge/' + getArrow('Spent')"
                 alt="Sort"
-                (click)="onSortClick('Spent')"
+                (click)="sortTransactions('Spent')"
               />
             </th>
             <th>
@@ -56,7 +56,7 @@
               <img
                 [src]="'assets/images/bridge/' + getArrow('Expected')"
                 alt="Sort"
-                (click)="onSortClick('Expected')"
+                (click)="sortTransactions('Expected')"
               />
             </th>
             <th>
@@ -64,33 +64,39 @@
               <img
                 [src]="'assets/images/bridge/' + getArrow('Date')"
                 alt="Sort"
-                (click)="onSortClick('Date')"
+                (click)="sortTransactions('Date')"
               />
             </th>
           </tr>
         </thead>
+
         <tbody>
-          <tr *ngFor="let tx of visibleTransactions">
-            <td
-              [ngClass]="{
-                td_clickable:
-                  tx.status === 'Waiting for deposit' && tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
-              }"
-              (click)="depositPolygonBridgeTransaction(tx)"
-            >
+          <tr class="bridge-table__row" *ngFor="let tx of visibleTransactions">
+            <td>
               <span
                 class="data__status"
                 [ngClass]="{
                   data__status_green: tx.code === 2,
                   data__status_yellow: tx.code === 1,
-                  data__status_red: tx.code === 0,
-                  'data__status_waiting-for-deposit':
-                    tx.status === 'Waiting for deposit' &&
-                    tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
+                  data__status_red: tx.code === 0
                 }"
               >
                 {{ tx.status }}
               </span>
+
+              <div
+                class="data__deposit-button-container"
+                *ngIf="
+                  tx.status === 'Waiting for deposit' && tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
+                "
+              >
+                <app-deposit-button
+                  class="data__deposit-button"
+                  [animate]="tx.inProgress"
+                  (onClick)="depositPolygonBridgeTransaction(tx)"
+                >
+                </app-deposit-button>
+              </div>
             </td>
 
             <td class="data__network">
@@ -130,11 +136,11 @@
       <div class="bridge-list" *ngIf="!isDesktop">
         <app-dropdown-select
           [options]="options"
-          [defaultOption]="options.indexOf(capitalize(selectedOption))"
+          [defaultOption]="options.indexOf(selectedOption)"
           [isSortable]="true"
           [downDirection]="sort.downDirection"
           [minOptionWidth]="89"
-          (optionToSortBy)="onSortClick($event)"
+          (optionToSortBy)="sortTransactions($event)"
         ></app-dropdown-select>
 
         <div class="bridge-list__items">

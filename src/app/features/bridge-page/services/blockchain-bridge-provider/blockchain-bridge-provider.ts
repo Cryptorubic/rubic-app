@@ -10,5 +10,8 @@ export abstract class BlockchainBridgeProvider {
 
   public abstract getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number>;
 
-  public abstract createTrade(bridgeTrade: BridgeTrade): Observable<string>;
+  public abstract createTrade(
+    bridgeTrade: BridgeTrade,
+    updateTransactionsList: () => Promise<void>
+  ): Observable<string>;
 }

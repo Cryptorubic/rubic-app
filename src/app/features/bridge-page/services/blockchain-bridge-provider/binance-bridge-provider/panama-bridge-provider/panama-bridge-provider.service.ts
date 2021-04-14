@@ -116,7 +116,10 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
     );
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
+  public createTrade(
+    bridgeTrade: BridgeTrade,
+    updateTransactionsList: () => Promise<void>
+  ): Observable<string> {
     const body = {
       amount: bridgeTrade.amount.toFixed(),
       fromBlockchain: bridgeTrade.fromBlockchain,
@@ -136,7 +139,9 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
           return throwError(new OverQueryLimitError());
         }
         const { data } = res;
-        return from(this.sendDeposit(data.id, bridgeTrade, data.depositAddress));
+        return from(
+          this.sendDeposit(data.id, bridgeTrade, data.depositAddress, updateTransactionsList)
+        );
       }),
       catchError(err => {
         console.error(`Error bridge post ${err}`);
@@ -148,7 +153,8 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
   private async sendDeposit(
     binanceId: string,
     bridgeTrade: BridgeTrade,
-    depositAddress: string
+    depositAddress: string,
+    updateTransactionsList: () => Promise<void>
   ): Promise<string> {
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
@@ -156,21 +162,16 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
 
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
-    const onTradeTransactionHash = async (hash: string): Promise<void> => {
+    const onTradeTransactionHash = async (hash: string) => {
       if (bridgeTrade.onTransactionHash) {
         bridgeTrade.onTransactionHash(hash);
       }
-
       await this.bridgeApiService.postPanamaTransaction(
         binanceId,
         token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol,
         token.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].symbol
       );
-      this.bridgeApiService.notifyBridgeBot(
-        bridgeTrade,
-        binanceId,
-        this.web3PrivateService.address
-      );
+      updateTransactionsList();
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && token.symbol === 'ETH') {
@@ -190,7 +191,6 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
         }
       );
     }
-
     this.bridgeApiService.notifyBridgeBot(bridgeTrade, binanceId, this.web3PrivateService.address);
 
     return binanceId;

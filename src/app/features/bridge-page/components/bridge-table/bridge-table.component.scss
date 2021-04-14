@@ -1,3 +1,5 @@
+@import '/src/scss/vars';
+
 .bridge-results {
   &__header {
     margin-bottom: 30px;
@@ -98,6 +100,10 @@
     color: black;
     font-weight: normal;
     font-size: 15px;
+  }
+
+  &__row {
+    height: 73px;
   }
 }
 
@@ -231,18 +237,6 @@
   }
 }
 
-.td {
-  &_clickable {
-    cursor: pointer;
-
-    &:hover {
-      .data__status_waiting-for-deposit {
-        text-decoration: underline;
-      }
-    }
-  }
-}
-
 .data {
   &__status {
     display: flex;
@@ -282,11 +276,19 @@
         box-shadow: 0 0 6px #f4bb2b;
       }
     }
+  }
 
-    &_waiting-for-deposit {
-      color: #e6ae1f;
-      font-weight: bold;
-    }
+  &__deposit-button-container {
+    width: 100%;
+  }
+
+  &__deposit-button {
+    position: relative;
+    left: 20px;
+
+    display: block;
+
+    margin-top: 7px;
   }
 
   &__network {

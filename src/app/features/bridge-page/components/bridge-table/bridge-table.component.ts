@@ -1,12 +1,12 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import date from 'date-and-time';
 import { BridgeService } from 'src/app/features/bridge-page/services/bridge.service';
 import { first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { BridgeTableTransaction } from '../../models/BridgeTableTransaction';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { PolygonBridgeTrade } from '../../models/BridgeTrade';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
@@ -15,6 +15,7 @@ import { MessageBoxComponent } from '../../../../shared/components/message-box/m
 
 interface ITableTransactionWithState extends BridgeTableTransaction {
   opened: boolean;
+  inProgress?: boolean;
 }
 
 const TRANSACTION_PAGE_SIZE = 5;
@@ -24,7 +25,7 @@ const TRANSACTION_PAGE_SIZE = 5;
   templateUrl: './bridge-table.component.html',
   styleUrls: ['./bridge-table.component.scss']
 })
-export class BridgeTableComponent {
+export class BridgeTableComponent implements OnInit, OnDestroy {
   public Blockchains = {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
       label: 'Ethereum',
@@ -57,15 +58,20 @@ export class BridgeTableComponent {
 
   private transactionPages = 1;
 
+  private _transactionsSubscription$: Subscription;
+
   public tableInitLoading = true;
 
   public updateProcess = '';
 
-  public sort = { fieldName: 'date', downDirection: true }; // Date is default to sort by
-
-  public selectedOption = 'Date'; // Capitalized sort.fieldName
+  public sort: {
+    fieldName: string;
+    downDirection: boolean;
+  };
 
   public options = ['Status', 'From', 'To', 'Spent', 'Expected', 'Date'];
+
+  public selectedOption;
 
   public isShowMoreActive = true;
 
@@ -77,25 +83,7 @@ export class BridgeTableComponent {
 
   public tradeSuccessId: string;
 
-  constructor(private bridgeService: BridgeService, private dialog: MatDialog) {
-    bridgeService.transactions.subscribe(transactions => {
-      if (!transactions) {
-        return;
-      }
-
-      this.transactions = transactions.map(tx => ({
-        ...tx,
-        opened: false
-      }));
-      this.sort = { fieldName: null, downDirection: null };
-      this.onSortClick('date');
-
-      this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
-      this.checkIsShowMoreActive();
-    });
-
-    this.checkIfDesktop();
-  }
+  constructor(private bridgeService: BridgeService, private dialog: MatDialog) {}
 
   private static sortByDate(a: string, b: string): number {
     const date1 = new Date(date.transform(a, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
@@ -111,6 +99,31 @@ export class BridgeTableComponent {
     return value[0].toUpperCase() + value.slice(1);
   }
 
+  ngOnInit(): void {
+    this._transactionsSubscription$ = this.bridgeService.transactions.subscribe(transactions => {
+      if (!transactions) {
+        return;
+      }
+
+      this.transactions = transactions.map(tx => ({
+        ...tx,
+        opened: false
+      }));
+      this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
+
+      this.sort = { fieldName: null, downDirection: null };
+      this.sortTransactions('date');
+
+      this.checkIsShowMoreActive();
+    });
+
+    this.checkIfDesktop();
+  }
+
+  ngOnDestroy() {
+    this._transactionsSubscription$.unsubscribe();
+  }
+
   public onUpdate() {
     if (!this.updateProcess) {
       this.updateProcess = 'progress';
@@ -123,29 +136,31 @@ export class BridgeTableComponent {
     }
   }
 
-  public onSortClick(fieldName: string) {
+  public sortTransactions(fieldName: string) {
     fieldName = fieldName.toLowerCase();
 
     if (fieldName === this.sort.fieldName) {
       this.sort.downDirection = !this.sort.downDirection;
-      this.transactions = this.transactions.reverse();
+      this.visibleTransactions = this.visibleTransactions.reverse();
     } else {
       switch (fieldName) {
         case 'status':
-          this.transactions = this.transactions.sort((a, b) => (a.status > b.status ? -1 : 1));
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
+            a.status > b.status ? -1 : 1
+          );
           break;
         case 'from':
-          this.transactions = this.transactions.sort((a, b) =>
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             a.fromNetwork > b.fromNetwork ? -1 : 1
           );
           break;
         case 'to':
-          this.transactions = this.transactions.sort((a, b) =>
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             a.toNetwork > b.toNetwork ? -1 : 1
           );
           break;
         case 'spent':
-          this.transactions = this.transactions.sort((a, b) =>
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             BridgeTableComponent.sortByNumber(
               parseFloat(a.actualFromAmount),
               parseFloat(b.actualFromAmount)
@@ -153,7 +168,7 @@ export class BridgeTableComponent {
           );
           break;
         case 'expected':
-          this.transactions = this.transactions.sort((a, b) =>
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             BridgeTableComponent.sortByNumber(
               parseFloat(a.actualToAmount),
               parseFloat(b.actualToAmount)
@@ -161,7 +176,7 @@ export class BridgeTableComponent {
           );
           break;
         case 'date':
-          this.transactions = this.transactions.sort((a, b) =>
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             BridgeTableComponent.sortByDate(a.updateTime, b.updateTime)
           );
           break;
@@ -183,15 +198,6 @@ export class BridgeTableComponent {
     return this.sort.downDirection ? 'Arrows-down.svg' : 'Arrows-up.svg';
   }
 
-  public capitalize(word: string): string {
-    return word[0].toUpperCase() + word.slice(1);
-  }
-
-  @HostListener('window:resize', ['$event'])
-  private checkIfDesktop(): void {
-    this.isDesktop = window.innerWidth > this.minDesktopWidth;
-  }
-
   private checkIsShowMoreActive(): void {
     this.isShowMoreActive = this.visibleTransactions.size < this.transactions.size;
   }
@@ -200,6 +206,11 @@ export class BridgeTableComponent {
     this.transactionPages++;
     const end = this.transactionPages * TRANSACTION_PAGE_SIZE;
     this.visibleTransactions = this.transactions.slice(0, end);
+
+    const sortFieldName = this.sort.fieldName;
+    this.sort = { fieldName: null, downDirection: null };
+    this.sortTransactions(sortFieldName);
+
     this.checkIsShowMoreActive();
   }
 
@@ -211,16 +222,23 @@ export class BridgeTableComponent {
       return;
     }
 
-    const bridgeTrade = {
-      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-      isBurnt: true,
-      burnTransactionHash: transaction.transaction_id,
-      onTransactionHash: _hash => {
-        this.tradeInProgress = true;
+    this.transactions = this.transactions.map(tx => {
+      if (tx.transaction_id === transaction.transaction_id) {
+        return {
+          ...tx,
+          inProgress: true
+        };
       }
-    } as PolygonBridgeTrade;
+      return tx;
+    });
+
+    const burnTransactionHash = transaction.transaction_id;
+    const onTransactionHash = () => {
+      this.tradeInProgress = true;
+    };
+
     this.bridgeService
-      .createTrade(bridgeTrade)
+      .depositPolygonTradeAfterCheckpoint(burnTransactionHash, onTransactionHash)
       .pipe(first())
       .subscribe(
         (res: string) => {
@@ -249,5 +267,10 @@ export class BridgeTableComponent {
           });
         }
       );
+  }
+
+  @HostListener('window:resize', ['$event'])
+  private checkIfDesktop(): void {
+    this.isDesktop = window.innerWidth > this.minDesktopWidth;
   }
 }
