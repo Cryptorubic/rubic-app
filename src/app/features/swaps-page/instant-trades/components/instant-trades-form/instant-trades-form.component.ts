@@ -302,8 +302,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._tokensSubscription$ = this.tokensService.tokens.pipe(take(2)).subscribe(tokens => {
       this.tokens = tokens;
-
-      this.setupParams().then(() => this.searchTokensAfter());
+      this.setupParams();
     });
 
     this._tokensSubscription2$ = this.tokensService.tokens.pipe(skip(2)).subscribe(tokens => {
@@ -364,7 +363,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.toToken = tradeParameters?.toToken;
         this.fromAmount = tradeParameters?.fromAmount;
 
-        this.queryParamsService.clearCurrentParams();
+        this.queryParamsService.setDefaultParams();
         this.queryParamsService.navigate();
       });
   }
@@ -382,6 +381,27 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     if (this.tokens.size > 0 && haveParams) {
       await this.searchFromToken();
       await this.searchToToken();
+      if (this.fromToken || this.toToken) {
+        if (
+          this.fromToken?.symbol === this.queryParamsService.defaultETHparams.to ||
+          this.fromToken?.symbol === this.queryParamsService.defaultBSCparams.to ||
+          this.toToken?.symbol === this.queryParamsService.defaultETHparams.from ||
+          this.toToken?.symbol === this.queryParamsService.defaultBSCparams.from
+        ) {
+          this.queryParamsService.swapDefaultParams();
+        }
+        this.queryParamsService.setDefaultParams();
+        this.queryParamsService.navigate();
+        if (!this.fromToken) {
+          this.searchFromToken();
+        }
+        if (!this.toToken) {
+          this.searchToToken();
+        }
+        if (!this.fromAmount) {
+          this.fromAmount = this.queryParamsService.currentQueryParams.amount;
+        }
+      }
     }
   }
 
@@ -634,7 +654,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     const similarTokens = this.tokens.filter(
       token => token.symbol.toLowerCase() === queryParam.toLowerCase()
     );
-    return similarTokens.size > 0
+    return similarTokens.size > 1
       ? similarTokens.find(token => token.used_in_iframe)
       : similarTokens.first();
   }
@@ -647,13 +667,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     const fromQuery = this.queryParamsService.currentQueryParams.from;
     if (fromQuery) {
       if (this.queryParamsService.isAddressQuery(fromQuery)) {
-        const from = this.searchTokenByAddress(fromQuery) || (await this.getCustomToken(fromQuery));
-        this.fromToken = await from;
+        this.fromToken =
+          this.searchTokenByAddress(fromQuery) || (await this.getCustomToken(fromQuery));
       } else {
-        const from = this.searchTokenBySymbol(fromQuery);
-        if (from) {
-          this.fromToken = from;
-        }
+        this.fromToken = this.searchTokenBySymbol(fromQuery);
       }
     }
   }
@@ -662,39 +679,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     const toQuery = this.queryParamsService.currentQueryParams.to;
     if (toQuery) {
       if (this.queryParamsService.isAddressQuery(toQuery)) {
-        const to = this.searchTokenByAddress(toQuery) || (await this.getCustomToken(toQuery));
-        this.toToken = await to;
+        this.toToken = this.searchTokenByAddress(toQuery) || (await this.getCustomToken(toQuery));
       } else {
-        const to = this.searchTokenBySymbol(this.queryParamsService.currentQueryParams.to);
-        if (to) {
-          this.toToken = to;
-        }
+        this.toToken = this.searchTokenBySymbol(toQuery);
       }
-    }
-  }
-
-  private async searchTokensAfter() {
-    if (this.fromToken || this.toToken) {
-      if (this.fromToken) {
-        if (
-          this.fromToken.symbol === this.queryParamsService.defaultETHparams.to ||
-          this.fromToken.symbol === this.queryParamsService.defaultBSCparams.to
-        ) {
-          this.queryParamsService.swapDefaultParams();
-        }
-      } else if (
-        this.toToken.symbol === this.queryParamsService.defaultETHparams.from ||
-        this.toToken.symbol === this.queryParamsService.defaultBSCparams.from
-      ) {
-        this.queryParamsService.swapDefaultParams();
-      }
-
-      this.queryParamsService.setDefaultParams();
-      this.queryParamsService.navigate();
-
-      if (!this.fromToken) this.searchFromToken();
-      if (!this.toToken) this.searchToToken();
-      if (!this.fromAmount) this.fromAmount = this.queryParamsService.currentQueryParams.amount;
     }
   }
 }
