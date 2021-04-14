@@ -293,36 +293,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this._tokensSubscription$ = this.tokensService.tokens.pipe(take(2)).subscribe(tokens => {
       this.tokens = tokens;
 
-      const haveParams = Boolean(this.queryParamsService.currentQueryParams);
-
-      if (tokens.size > 0 && haveParams) {
-        this.searchFromToken();
-        this.searchToToken();
-
-        console.log(this.fromToken)
-
-        if (this.fromToken || this.toToken) {
-          if (this.fromToken) {
-            if (
-              this.fromToken.symbol === this.queryParamsService.defaultETHparams.to ||
-              this.fromToken.symbol === this.queryParamsService.defaultBSCparams.to) {
-              this.queryParamsService.swapDefaultParams();
-            }
-          } else if (
-            this.toToken.symbol === this.queryParamsService.defaultETHparams.from ||
-            this.toToken.symbol === this.queryParamsService.defaultBSCparams.from) {
-              this.queryParamsService.swapDefaultParams();
-          }
-
-          if (!this.fromToken) this.searchFromToken();
-          if (!this.toToken) this.searchToToken();
-          if (!this.fromAmount) this.fromAmount = this.queryParamsService.currentQueryParams.amount;
-
-          this.queryParamsService.setDefaultParams();
-        }
-
-        this.queryParamsService.navigate();
-      }
+      this.setupParams().then(() => this.searchTokensAfter());
     });
 
     this._tokensSubscription2$ = this.tokensService.tokens.pipe(skip(2)).subscribe(tokens => {
@@ -366,8 +337,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       .pipe(skip(1))
       .subscribe(blockchain => {
         this.blockchain = blockchain;
-        this.fromToken = null;
-        this.toToken = null;
         this.queryParamsService.setQueryParam('chain', this.blockchain);
         this.initInstantTradeProviders();
         this.tokens = this.tokensService.tokens.getValue();
@@ -385,6 +354,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.toToken = tradeParameters?.toToken;
         this.fromAmount = tradeParameters?.fromAmount;
 
+        this.queryParamsService.clearCurrentParams();
         this.queryParamsService.navigate();
       });
   }
@@ -394,6 +364,15 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this._tokensSubscription2$.unsubscribe();
     this._blockchainSubscription2$.unsubscribe();
     this._blockchainSubscription$.unsubscribe();
+  }
+
+  private async setupParams(): Promise<void> {
+    const haveParams = Boolean(this.queryParamsService.currentQueryParams);
+
+    if (this.tokens.size > 0 && haveParams) {
+      await this.searchFromToken();
+      await this.searchToToken();
+    }
   }
 
   private isCalculatedTradeActual(
@@ -641,7 +620,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     }));
   };
 
-  public searchTokenBySymbol(queryParam: string): SwapToken {
+  private searchTokenBySymbol(queryParam: string): SwapToken {
     const similarTokens = this.tokens.filter(
       token => token.symbol.toLowerCase() === queryParam.toLowerCase()
     );
@@ -650,16 +629,16 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       : similarTokens.first();
   }
 
-  public searchTokenByAddress(queryParam: string): SwapToken {
+  private searchTokenByAddress(queryParam: string): SwapToken {
     return this.tokens.find(token => token.address.toLowerCase() === queryParam.toLowerCase());
   }
 
-  public async searchFromToken(): Promise<void> {
+  private async searchFromToken(): Promise<void> {
     const fromQuery = this.queryParamsService.currentQueryParams.from;
     if (fromQuery) {
       if (this.queryParamsService.isAddressQuery(fromQuery)) {
         const from = this.searchTokenByAddress(fromQuery) || (await this.getCustomToken(fromQuery));
-        this.fromToken = from;
+        this.fromToken = await from;
       } else {
         const from = this.searchTokenBySymbol(fromQuery);
         if (from) {
@@ -669,18 +648,41 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public async searchToToken(): Promise<void> {
+  private async searchToToken(): Promise<void> {
     const toQuery = this.queryParamsService.currentQueryParams.to;
     if (toQuery) {
       if (this.queryParamsService.isAddressQuery(toQuery)) {
         const to = this.searchTokenByAddress(toQuery) || (await this.getCustomToken(toQuery));
-        this.toToken = to;
+        this.toToken = await to;
       } else {
         const to = this.searchTokenBySymbol(this.queryParamsService.currentQueryParams.to);
         if (to) {
           this.toToken = to;
         }
       }
+    }
+  }
+
+  private async searchTokensAfter() {
+    if (this.fromToken || this.toToken) {
+      if (this.fromToken) {
+        if (
+          this.fromToken.symbol === this.queryParamsService.defaultETHparams.to ||
+          this.fromToken.symbol === this.queryParamsService.defaultBSCparams.to) {
+          this.queryParamsService.swapDefaultParams();
+        }
+      } else if (
+        this.toToken.symbol === this.queryParamsService.defaultETHparams.from ||
+        this.toToken.symbol === this.queryParamsService.defaultBSCparams.from) {
+          this.queryParamsService.swapDefaultParams();
+      }
+
+      this.queryParamsService.setDefaultParams();
+      this.queryParamsService.navigate();
+
+      if (!this.fromToken) this.searchFromToken();
+      if (!this.toToken) this.searchToToken();
+      if (!this.fromAmount) this.fromAmount = this.queryParamsService.currentQueryParams.amount;
     }
   }
 }
