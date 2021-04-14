@@ -350,7 +350,9 @@ export class UniswapAbstract extends InstantTradeService {
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
   ): Promise<UniswapRoute[]> {
-    const vertexes: string[] = this.routingProviders.concat(toToken.address);
+    const vertexes: string[] = this.routingProviders
+      .map(elem => elem.toLowerCase())
+      .filter(elem => elem !== toToken.address.toLowerCase());
     const initialPath = [fromToken.address];
     const routePromises: Promise<UniswapRoute>[] = [];
 
@@ -385,14 +387,7 @@ export class UniswapAbstract extends InstantTradeService {
         .filter(vertex => !path.includes(vertex))
         .forEach(vertex => {
           const extendedPath = path.concat(vertex);
-          if (vertex !== toToken.address) {
-            recGraphVisitor(extendedPath, maxTransitTokens);
-          } else {
-            if (path.length < maxTransitTokens + 1) {
-              return;
-            }
-            addPath(extendedPath);
-          }
+          recGraphVisitor(extendedPath, maxTransitTokens);
         });
     };
 
