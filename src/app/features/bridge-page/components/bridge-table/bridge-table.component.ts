@@ -128,14 +128,14 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
       this.checkIsShowMoreActive();
     });
 
-    this.checkIfDesktop();
+    this.checkIsDesktop();
   }
 
   ngOnDestroy() {
     this._transactionsSubscription$.unsubscribe();
   }
 
-  public onUpdate() {
+  public updateTransactionsList() {
     if (!this.updateProcess) {
       this.updateProcess = 'progress';
       this.bridgeService.updateTransactionsList().finally(() => {
@@ -285,7 +285,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:resize', ['$event'])
-  private checkIfDesktop(): void {
+  private checkIsDesktop(): void {
     this.isDesktop = window.innerWidth > this.minDesktopWidth;
   }
 }

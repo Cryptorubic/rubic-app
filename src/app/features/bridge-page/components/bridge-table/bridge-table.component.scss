@@ -18,10 +18,7 @@
   &__spinner {
     cursor: pointer;
 
-    animation-iteration-count: 1;
-
     &_rotating {
-
       transition: 1s;
       animation-name: rotate;
       animation-duration: 1s;
@@ -151,6 +148,12 @@
       }
     }
 
+    .data__deposit-button {
+      left: 0;
+
+      margin-top: 0;
+    }
+
     &__header {
       border-radius: 5px;
 
@@ -206,7 +209,7 @@
     }
 
     &__content {
-      max-height: 300px;
+      max-height: 342px;
       overflow: hidden;
 
       transition: max-height 0.7s ease;
@@ -224,8 +227,7 @@
         display: grid;
         grid-template-columns: 1fr 1.8fr;
         align-items: center;
-        height: 55px;
-        padding-top: 2px;
+        height: 56px;
 
         border-top: 1px solid #e8e8e8;
 
@@ -275,6 +277,11 @@
         background: #f4bb2b;
         box-shadow: 0 0 6px #f4bb2b;
       }
+    }
+
+    &_waiting-for-deposit {
+      color: #e6ae1f;
+      font-weight: bold;
     }
   }
 
