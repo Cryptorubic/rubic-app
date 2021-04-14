@@ -88,6 +88,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public transactionHash: string;
 
+  public isTradeAvailable: boolean;
+
   public customToken = {
     from: {} as SwapToken,
     to: {} as SwapToken
@@ -470,6 +472,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
+    this.isTradeAvailable = true;
     const setTradeState = (state: TRADE_STATUS) => {
       this.trades[selectedServiceIndex].tradeState = state;
       this.selectedTradeState = state;
@@ -480,6 +483,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         onConfirm: () => setTradeState(TRADE_STATUS.TX_IN_PROGRESS)
       })
       .then(receipt => {
+        this.isTradeAvailable = false;
         setTradeState(TRADE_STATUS.COMPLETED);
         this.transactionHash = receipt.transactionHash;
         this.instantTradesApiService.notifyInstantTradesBot({
