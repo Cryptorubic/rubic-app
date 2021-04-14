@@ -3,10 +3,11 @@
     <span>Your cross-chain swaps</span>
     <img
       [ngClass]="{
-        'bridge-results__spinner_rotating': updateProcess === 'process' || updateProcess === 'stop',
+        'bridge-results__spinner_rotating':
+          updateProcess === 'progress' || updateProcess === 'stop',
         'bridge-results__spinner_stop': updateProcess === 'stop'
       }"
-      (click)="onUpdate()"
+      (click)="updateTransactionsList()"
       class="bridge-results__spinner"
       src="assets/images/icons/refresh.svg"
       alt="Update"
@@ -15,7 +16,7 @@
 
   <ng-template [ngIf]="transactions">
     <div class="bridge-results__container" *ngIf="transactions.size">
-      <!-- Table is for desktop's representation -->
+      <!-- Desktop Table -->
       <table class="bridge-table" *ngIf="isDesktop">
         <thead>
           <tr>
@@ -132,7 +133,7 @@
         </tbody>
       </table>
 
-      <!-- Accordion is for mobile and tablet's representation -->
+      <!-- Mobile Accordion -->
       <div class="bridge-list" *ngIf="!isDesktop">
         <app-dropdown-select
           [options]="sortFields"
@@ -155,7 +156,10 @@
                 [ngClass]="{
                   data__status_green: tx.code === 2,
                   data__status_yellow: tx.code === 1,
-                  data__status_red: tx.code === 0
+                  data__status_red: tx.code === 0,
+                  'data__status_waiting-for-deposit':
+                    tx.status === 'Waiting for deposit' &&
+                    tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
                 }"
               >
                 {{ tx.status }}
@@ -276,6 +280,21 @@
                     <span>{{ tx.updateTime.split(' ')[1] }}</span>
                   </div>
                 </div>
+              </div>
+
+              <div
+                class="content__item"
+                *ngIf="
+                  tx.status === 'Waiting for deposit' && tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
+                "
+              >
+                <div class="content__item-name">Deposit</div>
+                <app-deposit-button
+                  class="data__deposit-button"
+                  [animate]="tx.inProgress"
+                  (onClick)="depositPolygonBridgeTransaction(tx)"
+                >
+                </app-deposit-button>
               </div>
             </div>
           </div>

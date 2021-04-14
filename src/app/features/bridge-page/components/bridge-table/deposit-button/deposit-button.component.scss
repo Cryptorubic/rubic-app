@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
 
-  width: 120px;
+  width: 121px;
   height: 28px;
 
   color: white;
@@ -33,7 +33,10 @@
   }
 
   img {
+    position: relative;
+    top: 1%;
+
     width: 7px;
-    margin-right: 6px;
+    margin-right: 4px;
   }
 }

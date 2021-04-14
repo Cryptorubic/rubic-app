@@ -113,10 +113,12 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.transactions = transactions.map(tx => ({
-        ...tx,
-        opened: false
-      }));
+      this.transactions = transactions
+        .sort((a, b) => BridgeTableComponent.sortByDate(a.updateTime, b.updateTime))
+        .map(tx => ({
+          ...tx,
+          opened: false
+        }));
       this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
 
       this.sortOptions = {
@@ -128,14 +130,14 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
       this.checkIsShowMoreActive();
     });
 
-    this.checkIfDesktop();
+    this.checkIsDesktop();
   }
 
   ngOnDestroy() {
     this._transactionsSubscription$.unsubscribe();
   }
 
-  public onUpdate() {
+  public updateTransactionsList() {
     if (!this.updateProcess) {
       this.updateProcess = 'progress';
       this.bridgeService.updateTransactionsList().finally(() => {
@@ -285,7 +287,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:resize', ['$event'])
-  private checkIfDesktop(): void {
+  private checkIsDesktop(): void {
     this.isDesktop = window.innerWidth > this.minDesktopWidth;
   }
 }
