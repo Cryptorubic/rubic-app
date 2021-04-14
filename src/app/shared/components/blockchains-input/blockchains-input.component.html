@@ -9,6 +9,7 @@
     [componentsData]="blockchainsDropdownData"
     [selectedComponentData]="selectedBlockchainDropdownData"
     [filterBy]="blockchainsSortOrder"
+    [withoutHiding]="true"
     chooseComponentText="Choose Blockchain"
     (componentChanges)="onBlockchainChanges($event)"
   ></app-input-dropdown>

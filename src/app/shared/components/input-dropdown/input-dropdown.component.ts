@@ -62,6 +62,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   @Input() fullWidth? = false;
 
   /**
+   * If true, then all components will be visible all time, despite search query.
+   */
+  @Input() withoutHiding? = false;
+
+  /**
    * Emits the event after a component was chosen.
    */
   @Output() componentChanges = new EventEmitter<DropdownComponentData>();
@@ -80,14 +85,13 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   constructor() {}
 
   ngOnChanges() {
+    this.searchComponent(this.inputQuery);
     if (this.selectedComponentData) {
-      this.searchComponent('');
       this.inputQuery = this.selectedComponentData.filterParameters[this.filterBy[0]];
+      this.searchComponent(this.inputQuery);
       this.unshiftComponentToVisibleList(
         this.componentsData.find(component => component.id === this.selectedComponentData.id)
       );
-    } else {
-      this.searchComponent(this.inputQuery);
     }
   }
 
@@ -108,9 +112,9 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
       queryMatch.push(
         ...this.componentsData
           .filter(
-            token =>
-              !queryMatch.includes(token) &&
-              (!query || token.filterParameters[field].toLowerCase().includes(query))
+            component =>
+              !queryMatch.includes(component) &&
+              (!query || component.filterParameters[field].toLowerCase().includes(query))
           )
           .toArray()
           .sort((a, b) => {
@@ -125,6 +129,9 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
           })
       )
     );
+    if (this.withoutHiding) {
+      queryMatch.push(...this.componentsData.filter(component => !queryMatch.includes(component)));
+    }
 
     this.visibleComponentsData = List(queryMatch.slice(0, this.VISIBLE_COMPONENTS_NUMBER));
   }
