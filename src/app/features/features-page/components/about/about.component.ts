@@ -18,7 +18,7 @@ interface Quartal {
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss']
 })
-export class AboutageComponent {
+export class AboutPageComponent {
   public $isMobile: Observable<boolean>;
 
   public benefits: TitleDescription[];
@@ -30,16 +30,22 @@ export class AboutageComponent {
     q2: Quartal;
     q3: Quartal;
     q4: Quartal;
-  }
+  };
 
-  constructor(private readonly translateService: TranslateService, private readonly headerStore: HeaderStore) {
+  constructor(
+    private readonly translateService: TranslateService,
+    private readonly headerStore: HeaderStore
+  ) {
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
-    const benefitsTranslateKey = 'about-page.benefits';
-    const featuresTranslateKey = 'about-page.features.data';
-    const roadmapTranslateKey = 'about-page.roadmap.data';
-    this.translateService.get([benefitsTranslateKey, featuresTranslateKey, roadmapTranslateKey])
-      .subscribe((translations) => {
-        this.benefits = Object.values(translations[benefitsTranslateKey]).map((benefit: TitleDescription) => benefit);
+    const benefitsTranslateKey = 'aboutPage.benefits';
+    const featuresTranslateKey = 'aboutPage.features.data';
+    const roadmapTranslateKey = 'aboutPage.roadmap.data';
+    this.translateService
+      .get([benefitsTranslateKey, featuresTranslateKey, roadmapTranslateKey])
+      .subscribe(translations => {
+        this.benefits = Object.values(translations[benefitsTranslateKey]).map(
+          (benefit: TitleDescription) => benefit
+        );
         this.features = Object.values(translations[featuresTranslateKey]);
         const roadmapValue = translations[roadmapTranslateKey];
         this.roadmap = {
@@ -58,9 +64,8 @@ export class AboutageComponent {
           q4: {
             title: roadmapValue.q4.title,
             data: Object.values(roadmapValue.q4.data)
-          },
+          }
         };
-        console.log(this.roadmap)
-      })
+      });
   }
 }
