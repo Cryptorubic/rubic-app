@@ -130,6 +130,7 @@ describe('Web3ApiService', () => {
       service.address,
       bobAddress
     );
+
     expect(bobNewAllowance.minus(bobStartAllowance).toString()).toBe(amount.toString());
     done();
   });
