@@ -35,6 +35,7 @@ export class QuickSwapService extends UniswapAbstract {
     this.web3Private = web3Private;
     this.web3Public = web3Public[BLOCKCHAIN_NAME.MATIC];
     this.blockchain = BLOCKCHAIN_NAME.MATIC;
+    this.shouldCalculateGas = false;
 
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
