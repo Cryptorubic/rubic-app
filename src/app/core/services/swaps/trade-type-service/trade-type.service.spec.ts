@@ -6,7 +6,9 @@ describe('TradeTypeService', () => {
   let service: TradeTypeService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [TradeTypeService]
+    });
     service = TestBed.inject(TradeTypeService);
   });
 

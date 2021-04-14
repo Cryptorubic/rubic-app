@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { FaqComponent } from './faq.component';
 
@@ -9,6 +10,7 @@ describe('FaqComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [TranslateModule.forRoot()],
         declarations: [FaqComponent]
       }).compileComponents();
     })

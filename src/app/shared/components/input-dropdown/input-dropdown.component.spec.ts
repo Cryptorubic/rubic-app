@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { InputDropdownComponent } from './input-dropdown.component';
 
@@ -9,6 +10,7 @@ describe('InputDropdownComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [TranslateModule.forRoot()],
         declarations: [InputDropdownComponent]
       }).compileComponents();
     })

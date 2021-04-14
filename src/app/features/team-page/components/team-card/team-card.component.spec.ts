@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { TeamCardComponent } from './team-card.component';
+import { ICardContent, TeamCardComponent } from './team-card.component';
 
 describe('TeamCardComponent', () => {
   let component: TeamCardComponent;
@@ -17,6 +17,7 @@ describe('TeamCardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TeamCardComponent);
     component = fixture.componentInstance;
+    component.content = { img: '', name: '', role: '', links: [] };
     fixture.detectChanges();
   });
 

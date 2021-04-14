@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnInit, Inject } from '@angular/core';
+import { WINDOW } from 'src/app/core/models/window';
 import { TokensTableData } from '../../models/tokens-table-data';
 
 @Component({
@@ -16,9 +17,9 @@ export class TokensAccordionComponent implements OnInit {
 
   public linkToTrade;
 
-  constructor() {}
+  constructor(@Inject(WINDOW) private readonly window: Window) {}
 
   ngOnInit(): void {
-    this.linkToTrade = `${window.location.host}/trade/${this.data.uniqueLink}`;
+    this.linkToTrade = `${this.window.location.host}/trade/${this.data.uniqueLink}`;
   }
 }

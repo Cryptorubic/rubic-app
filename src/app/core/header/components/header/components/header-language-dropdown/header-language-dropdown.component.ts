@@ -38,7 +38,7 @@ export class HeaderLanguageDropdownComponent {
         return lang.active === Boolean(this.currentLanguage);
       })[0].active = false;
     }
-    this.currentLanguage = event.lang;
+    this.currentLanguage = event.lang || languagesList[0].lng;
     this.cookieService.set('lng', this.currentLanguage, null, null, null, null, null);
     this.languagesList.filter(lang => {
       return lang.lng === this.currentLanguage;
