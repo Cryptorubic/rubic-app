@@ -14,7 +14,6 @@ import { BridgeApiService } from '../../../../../../core/services/backend/bridge
 import { Web3Public } from '../../../../../../core/services/blockchain/web3-public-service/Web3Public';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import BinanceContractAbi from './abi/BinanceContractAbi';
-import InsufficientFundsError from '../../../../../../shared/models/errors/instant-trade/InsufficientFundsError';
 import { BridgeTrade } from '../../../../models/BridgeTrade';
 
 interface RubicTrade {
@@ -156,19 +155,6 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
     }
 
     trade.amount = bridgeTrade.amount.multipliedBy(10 ** trade.token.decimals);
-
-    const balance = await web3Public.getTokenBalance(
-      this.web3PrivateService.address,
-      trade.token.address
-    );
-    if (balance.lt(trade.amount)) {
-      const formattedTokensBalance = balance.div(10 ** trade.token.decimals).toString();
-      throw new InsufficientFundsError(
-        trade.token.symbol,
-        formattedTokensBalance,
-        bridgeTrade.amount.toString()
-      );
-    }
 
     const onApprove = bridgeTrade.onTransactionHash;
     await this.provideAllowance(trade, web3Public, onApprove);

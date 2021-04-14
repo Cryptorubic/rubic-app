@@ -1,8 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription, throwError } from 'rxjs';
+import { BehaviorSubject, defer, Observable, Subscription, throwError } from 'rxjs';
 import { List } from 'immutable';
 import { catchError, first, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
+import { flatMap } from 'rxjs/internal/operators';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeToken } from '../models/BridgeToken';
 import { TokensService } from '../../../core/services/backend/tokens-service/tokens.service';
@@ -21,6 +22,9 @@ import { BridgeTrade } from '../models/BridgeTrade';
 import { BridgeTableTransaction } from '../models/BridgeTableTransaction';
 import { BridgeApiService } from '../../../core/services/backend/bridge-api/bridge-api.service';
 import { UserRejectError } from '../../../shared/models/errors/provider/UserRejectError';
+import InsufficientFundsError from '../../../shared/models/errors/instant-trade/InsufficientFundsError';
+import { Web3PublicService } from '../../../core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from '../../../core/services/blockchain/web3-public-service/Web3Public';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -68,6 +72,7 @@ export class BridgeService implements OnDestroy {
     private polygonBridgeProviderService: PolygonBridgeProviderService,
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
+    private web3PublicService: Web3PublicService,
     private useTestingModeService: UseTestingModeService
   ) {
     this._swapTokensSubscription$ = this.tokensService.tokens.subscribe(swapTokens => {
@@ -118,12 +123,15 @@ export class BridgeService implements OnDestroy {
       return;
     }
 
+    const blockchain = this.selectedBlockchain;
     this.bridgeProvider
       .getTokensList(this._swapTokens)
       .pipe(first())
       .subscribe(tokensList => {
-        this._blockchainTokens[this.selectedBlockchain] = tokensList;
-        this._tokens.next(this._blockchainTokens[this.selectedBlockchain]);
+        this._blockchainTokens[blockchain] = tokensList;
+        if (this.selectedBlockchain === blockchain) {
+          this._tokens.next(this._blockchainTokens[this.selectedBlockchain]);
+        }
       });
   }
 
@@ -162,20 +170,55 @@ export class BridgeService implements OnDestroy {
     }
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
-    try {
-      this.checkSettings(bridgeTrade.fromBlockchain);
-    } catch (err) {
-      return throwError(err);
+  private async checkBalance(
+    blockchain: BLOCKCHAIN_NAME,
+    tokenAddress: string,
+    symbol: string,
+    decimals: number,
+    amount: BigNumber
+  ): Promise<void> {
+    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    let balance;
+    if (web3Public.isNativeAddress(tokenAddress)) {
+      balance = await web3Public.getBalance(this.web3PrivateService.address, {
+        inWei: true
+      });
+    } else {
+      balance = await web3Public.getTokenBalance(this.web3PrivateService.address, tokenAddress);
     }
+    const amountInWei = amount.multipliedBy(10 ** decimals);
+    if (balance.lt(amountInWei)) {
+      const formattedTokensBalance = balance.div(10 ** decimals).toString();
+      throw new InsufficientFundsError(symbol, formattedTokensBalance, amount.toFixed());
+    }
+  }
 
-    return this.bridgeProvider.createTrade(bridgeTrade, this.updateTransactionsList).pipe(
-      tap(() => this.updateTransactionsList()),
+  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
+    return defer(async () => {
+      this.checkSettings(bridgeTrade.fromBlockchain);
+      const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+      await this.checkBalance(
+        bridgeTrade.fromBlockchain,
+        token.address,
+        token.symbol,
+        token.decimals,
+        bridgeTrade.amount
+      );
+    }).pipe(
+      flatMap(() => {
+        return this.bridgeProvider.createTrade(bridgeTrade, this.updateTransactionsList).pipe(
+          tap(() => this.updateTransactionsList()),
+          catchError(err => {
+            if (err.code === this.USER_REJECT_ERROR_CODE) {
+              return throwError(new UserRejectError());
+            }
+            console.debug('Bridge trade error:', err);
+            return throwError(err);
+          })
+        );
+      }),
       catchError(err => {
-        if (err.code === this.USER_REJECT_ERROR_CODE) {
-          return throwError(new UserRejectError());
-        }
-        console.debug(`Bridge trade error: ${err}`);
+        console.debug(err);
         return throwError(err);
       })
     );

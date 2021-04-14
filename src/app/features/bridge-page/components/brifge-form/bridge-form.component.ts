@@ -161,9 +161,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         this._toBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
       }
       this.selectedToken = null;
-      this.bridgeService.setNonEthereumBlockchain(this.getNonEthereumBlockchain()).then(() => {
-        this.updateDropDownTokens();
-      });
+      this.bridgeService.setNonEthereumBlockchain(this.getNonEthereumBlockchain());
     }
   }
 
@@ -180,9 +178,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         this._fromBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
       }
       this.selectedToken = null;
-      this.bridgeService.setNonEthereumBlockchain(this.getNonEthereumBlockchain()).then(() => {
-        this.updateDropDownTokens();
-      });
+      this.bridgeService.setNonEthereumBlockchain(this.getNonEthereumBlockchain());
     }
   }
 

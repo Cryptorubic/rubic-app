@@ -122,12 +122,12 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
   ): Observable<string> {
     const body = {
       amount: bridgeTrade.amount.toFixed(),
-      fromBlockchain: bridgeTrade.fromBlockchain,
+      fromNetwork: bridgeTrade.fromBlockchain,
       source: 921,
       symbol: bridgeTrade.token.symbol,
       toAddress: bridgeTrade.toAddress,
       toAddressLabel: '',
-      toBlockchain: bridgeTrade.toBlockchain,
+      toNetwork: bridgeTrade.toBlockchain,
       walletAddress: this.web3PrivateService.address,
       walletNetwork: bridgeTrade.toBlockchain
     };
@@ -144,7 +144,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
         );
       }),
       catchError(err => {
-        console.error(`Error bridge post ${err}`);
+        console.error('Error bridge post:', err);
         return throwError(err instanceof RubicError ? err : new RubicError());
       })
     );
