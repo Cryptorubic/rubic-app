@@ -14,7 +14,7 @@ import { BridgeInProgressModalComponent } from './components/dialogs/bridge-in-p
 import { BridgeSuccessComponent } from './components/dialogs/bridge-success/bridge-success.component';
 import { BridgeTableComponent } from './components/bridge-table/bridge-table.component';
 import { AdvertModalComponent } from './components/dialogs/advert-modal/advert-modal.component';
-import { HighGasPriceModalComponent } from './components/dialogs/high-gas-price-modal/high-gas-price-modal.component';
+import { WarningModalComponent } from './components/dialogs/warning-modal/warning-modal.component';
 import { BinanceBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/binance-bridge-provider.service';
 import { PanamaBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/panama-bridge-provider/panama-bridge-provider.service';
 import { RubicBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/rubic-bridge-provider/rubic-bridge-provider.service';
@@ -29,7 +29,7 @@ import { DepositButtonComponent } from './components/bridge-table/deposit-button
     BridgeSuccessComponent,
     BridgeTableComponent,
     AdvertModalComponent,
-    HighGasPriceModalComponent,
+    WarningModalComponent,
     DepositButtonComponent
   ],
   imports: [

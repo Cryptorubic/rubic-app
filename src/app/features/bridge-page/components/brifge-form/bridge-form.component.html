@@ -252,11 +252,19 @@
   </form>
 </div>
 
-<app-high-gas-price-modal
+<warning-modal
   *ngIf="isHighGasPriceModalShown"
+  warningText="Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours."
   (onCancel)="onHighGasPriceCancel()"
   (onConfirm)="onHighGasPriceConfirm()"
-></app-high-gas-price-modal>
+></warning-modal>
+
+<warning-modal
+  *ngIf="isPolygonToEthTradeModalShown"
+  warningText="Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Deposit' button will appear in the corresponding line of the swaps' list under the form."
+  (onCancel)="onPolygonToEthTradeCancel()"
+  (onConfirm)="onPolygonToEthTradeConfirm()"
+></warning-modal>
 
 <app-bridge-in-progress-modal *ngIf="tradeInProgress"></app-bridge-in-progress-modal>
 

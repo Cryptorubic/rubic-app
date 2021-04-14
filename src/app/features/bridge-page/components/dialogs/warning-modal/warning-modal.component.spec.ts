@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HighGasPriceModalComponent } from './high-gas-price-modal.component';
+import { WarningModalComponent } from './warning-modal.component';
 
 describe('HighGasPriceModalComponent', () => {
-  let component: HighGasPriceModalComponent;
-  let fixture: ComponentFixture<HighGasPriceModalComponent>;
+  let component: WarningModalComponent;
+  let fixture: ComponentFixture<WarningModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HighGasPriceModalComponent]
+      declarations: [WarningModalComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HighGasPriceModalComponent);
+    fixture = TestBed.createComponent(WarningModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

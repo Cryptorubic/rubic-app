@@ -115,6 +115,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   public isHighGasPriceModalShown = false;
 
+  public isPolygonToEthTradeModalShown = false;
+
   get tokens(): List<BridgeToken> {
     return this._tokens;
   }
@@ -207,6 +209,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       return '';
     }
 
+    if (!this.selectedToken) {
+      this._toNumber = null;
+      return '';
+    }
+
     let amount = this._toNumber.toString();
 
     if (amount.includes('.')) {
@@ -252,7 +259,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       : this.toBlockchain.key;
   }
 
-  public revertBlockchains() {
+  public revertBlockchains(): void {
     [this._fromBlockchain, this._toBlockchain] = [this._toBlockchain, this._fromBlockchain];
     this.updateDropDownTokens();
     if (this.selectedToken) {
@@ -260,7 +267,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private changeSelectedToken(token: BridgeToken) {
+  private changeSelectedToken(token: BridgeToken): void {
     this.fee = undefined;
     this.selectedToken = token;
     if (!token) {
@@ -285,7 +292,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       );
   }
 
-  public onSelectedTokenChanges(inputToken: InputToken | null) {
+  public onSelectedTokenChanges(inputToken: InputToken | null): void {
     if (inputToken) {
       const bridgeToken = this.tokens.find(
         token => token.blockchainToken[this.fromBlockchain.key].address === inputToken.address
@@ -296,13 +303,13 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onTokensNumberChanges(tokensNumber: number | string) {
+  public onTokensNumberChanges(tokensNumber: number | string): void {
     if (tokensNumber) {
       this.fromNumber = new BigNumber(tokensNumber);
     }
   }
 
-  public checkAndConfirm() {
+  public checkAndConfirm(): void {
     this.buttonAnimation = true;
     if (
       this.fromBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
@@ -317,6 +324,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
           this.onConfirm();
         }
       });
+    } else if (
+      this.fromBlockchain.key === BLOCKCHAIN_NAME.POLYGON &&
+      this.toBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM
+    ) {
+      this.isPolygonToEthTradeModalShown = true;
     } else {
       this.onConfirm();
     }
@@ -332,7 +344,17 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     this.onConfirm();
   }
 
-  public onConfirm() {
+  public onPolygonToEthTradeCancel(): void {
+    this.isPolygonToEthTradeModalShown = false;
+    this.buttonAnimation = false;
+  }
+
+  public onPolygonToEthTradeConfirm(): void {
+    this.isPolygonToEthTradeModalShown = false;
+    this.onConfirm();
+  }
+
+  public onConfirm(): void {
     const bridgeTrade: BridgeTrade = {
       token: this.selectedToken,
       fromBlockchain: this.fromBlockchain.key,
@@ -377,7 +399,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       );
   }
 
-  public changeToWalletAddress(newAddress: string) {
+  public changeToWalletAddress(newAddress: string): void {
     this.toWalletAddress = newAddress;
   }
 }
