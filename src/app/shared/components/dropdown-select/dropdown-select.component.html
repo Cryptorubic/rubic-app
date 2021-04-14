@@ -1,18 +1,18 @@
 <div class="selector">
   <div
     class="selector-selected"
-    [ngClass]="{ 'options-shown': isOptionsShown }"
+    [ngClass]="{ 'options-shown': areOptionsShown }"
     [style.width.px]="minOptionWidth"
-    (click)="isOptionsShown = !isOptionsShown"
+    (click)="areOptionsShown = !areOptionsShown"
   >
     {{ selectedOption }}
   </div>
-  <div class="selector-options" *ngIf="isOptionsShown">
+  <div class="selector-options" *ngIf="areOptionsShown">
     <span
       *ngFor="let option of options"
       class="selector-options-option"
       [ngClass]="{ active: option === selectedOption }"
-      [style.width.px]="minOptionWidth"
+      [style.minWidth.px]="minOptionWidth"
       (click)="sortByOption(option)"
     >
       {{ option }}

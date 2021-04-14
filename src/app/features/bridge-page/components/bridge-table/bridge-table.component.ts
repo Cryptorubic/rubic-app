@@ -20,6 +20,15 @@ interface ITableTransactionWithState extends BridgeTableTransaction {
 
 const TRANSACTION_PAGE_SIZE = 5;
 
+enum SORT_FIELD {
+  STATUS = 'Status',
+  FROM = 'From',
+  TO = 'To',
+  SEND = 'Send',
+  GET = 'Get',
+  DATE = 'Date'
+}
+
 @Component({
   selector: 'app-bridge-table',
   templateUrl: './bridge-table.component.html',
@@ -46,9 +55,8 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
 
   public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
-  /**
-   * Transactions are sorted by date first.
-   */
+  public SORT_FIELD = SORT_FIELD;
+
   public transactions: List<ITableTransactionWithState>;
 
   /**
@@ -64,14 +72,14 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
 
   public updateProcess = '';
 
-  public sort: {
-    fieldName: string;
+  public sortOptions: {
+    field: SORT_FIELD;
     downDirection: boolean;
   };
 
-  public options = ['Status', 'From', 'To', 'Spent', 'Expected', 'Date'];
+  public sortFields = Object.values(SORT_FIELD);
 
-  public selectedOption;
+  public selectedSortField: SORT_FIELD;
 
   public isShowMoreActive = true;
 
@@ -111,8 +119,11 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
       }));
       this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
 
-      this.sort = { fieldName: null, downDirection: null };
-      this.sortTransactions('date');
+      this.sortOptions = {
+        field: null,
+        downDirection: null
+      };
+      this.sortTransactions(SORT_FIELD.DATE);
 
       this.checkIsShowMoreActive();
     });
@@ -136,30 +147,28 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
     }
   }
 
-  public sortTransactions(fieldName: string) {
-    fieldName = fieldName.toLowerCase();
-
-    if (fieldName === this.sort.fieldName) {
-      this.sort.downDirection = !this.sort.downDirection;
+  public sortTransactions(field: SORT_FIELD) {
+    if (field === this.sortOptions.field) {
+      this.sortOptions.downDirection = !this.sortOptions.downDirection;
       this.visibleTransactions = this.visibleTransactions.reverse();
     } else {
-      switch (fieldName) {
-        case 'status':
+      switch (field) {
+        case SORT_FIELD.STATUS:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             a.status > b.status ? -1 : 1
           );
           break;
-        case 'from':
+        case SORT_FIELD.FROM:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             a.fromNetwork > b.fromNetwork ? -1 : 1
           );
           break;
-        case 'to':
+        case SORT_FIELD.TO:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             a.toNetwork > b.toNetwork ? -1 : 1
           );
           break;
-        case 'spent':
+        case SORT_FIELD.SEND:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             BridgeTableComponent.sortByNumber(
               parseFloat(a.actualFromAmount),
@@ -167,7 +176,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
             )
           );
           break;
-        case 'expected':
+        case SORT_FIELD.GET:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             BridgeTableComponent.sortByNumber(
               parseFloat(a.actualToAmount),
@@ -175,7 +184,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
             )
           );
           break;
-        case 'date':
+        case SORT_FIELD.DATE:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             BridgeTableComponent.sortByDate(a.updateTime, b.updateTime)
           );
@@ -184,18 +193,21 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
           break;
       }
 
-      this.sort.fieldName = fieldName;
-      this.sort.downDirection = true;
-      this.selectedOption = BridgeTableComponent.capitalize(this.sort.fieldName);
+      this.sortOptions = {
+        field,
+        downDirection: true
+      };
+      this.selectedSortField = field;
     }
   }
 
-  public getArrow(fieldName: string) {
-    fieldName = fieldName.toLowerCase();
-    if (fieldName !== this.sort.fieldName) {
-      return 'Arrows.svg';
+  public getArrowImg(field: SORT_FIELD) {
+    if (field !== this.sortOptions.field) {
+      return 'assets/images/bridge/Arrows.svg';
     }
-    return this.sort.downDirection ? 'Arrows-down.svg' : 'Arrows-up.svg';
+    return `assets/images/bridge/${
+      this.sortOptions.downDirection ? 'Arrows-down.svg' : 'Arrows-up.svg'
+    }`;
   }
 
   private checkIsShowMoreActive(): void {
@@ -207,9 +219,12 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
     const end = this.transactionPages * TRANSACTION_PAGE_SIZE;
     this.visibleTransactions = this.transactions.slice(0, end);
 
-    const sortFieldName = this.sort.fieldName;
-    this.sort = { fieldName: null, downDirection: null };
-    this.sortTransactions(sortFieldName);
+    const sortField = this.sortOptions.field;
+    this.sortOptions = {
+      field: null,
+      downDirection: null
+    };
+    this.sortTransactions(sortField);
 
     this.checkIsShowMoreActive();
   }

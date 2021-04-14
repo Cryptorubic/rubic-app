@@ -1,63 +1,75 @@
 <form #filterForm class="coins-filter-form">
-    <input type="text"
-      placeholder="{{ 'SEND' | translate }}"
-      class="coins-filter-form__tokens-input"
-      [formControl]="tokensFromInput"
-      [matAutocomplete]="autoFrom"
+  <input
+    type="text"
+    placeholder="{{ 'Send' | translate }}"
+    class="coins-filter-form__tokens-input"
+    [formControl]="tokensFromInput"
+    [matAutocomplete]="autoFrom"
+  />
+  <mat-autocomplete
+    #autoFrom="matAutocomplete"
+    [panelWidth]="tokensHostWidth"
+    (optionSelected)="selectToken($event, 'base')"
+  >
+    <cdk-virtual-scroll-viewport
+      class="coins-filter-form__virtual-scroll"
+      minBufferPx="480"
+      maxBufferPx="960"
+      itemSize="48"
+      [ngStyle]="{ height: virtualScrollBaseHeight }"
     >
-    <mat-autocomplete
-      #autoFrom="matAutocomplete"
-      [panelWidth]="tokensHostWidth"
-      (optionSelected)="selectToken($event, 'base')">
-      <cdk-virtual-scroll-viewport
-        class="coins-filter-form__virtual-scroll"
-        minBufferPx="480"
-        maxBufferPx="960"
-        itemSize="48"
-        [ngStyle]="{ 'height': virtualScrollBaseHeight }"
-        >
-        <mat-option
-          class="coins-filter-form__virtual-scroll-element"
-          *cdkVirtualFor="let option of $filteredFromOptions | async"
-          [value]="option.token_short_title || option.symbol"
-          >
-          <div class="coins-filter-form__tokens-dropdown">
-            <img [src]="option.image_link || option.image" alt="option.token_title || option.name">
-            <span matTooltip="{{ option.token_title }}">{{ option.token_short_title || option.symbol }}</span>
-          </div>
-        </mat-option>
-      </cdk-virtual-scroll-viewport>
-    </mat-autocomplete>
-    <button (click)="switchTokens()" class="coins-filter-form__switch-button">
-      <img class="order-books-table__switch-icon" src="assets/images/icons/table/sort-1.svg" alt="Switch tokens">
-    </button>
-    <input type="text"
-      placeholder="{{ 'GET' | translate }}"
-      class="coins-filter-form__tokens-input"
-      [formControl]="tokensToInput"
-      [matAutocomplete]="autoTo"
+      <mat-option
+        class="coins-filter-form__virtual-scroll-element"
+        *cdkVirtualFor="let option of $filteredFromOptions | async"
+        [value]="option.token_short_title || option.symbol"
+      >
+        <div class="coins-filter-form__tokens-dropdown">
+          <img [src]="option.image_link || option.image" alt="option.token_title || option.name" />
+          <span matTooltip="{{ option.token_title }}">{{
+            option.token_short_title || option.symbol
+          }}</span>
+        </div>
+      </mat-option>
+    </cdk-virtual-scroll-viewport>
+  </mat-autocomplete>
+  <button (click)="switchTokens()" class="coins-filter-form__switch-button">
+    <img
+      class="order-books-table__switch-icon"
+      src="assets/images/icons/table/sort-1.svg"
+      alt="Switch tokens"
+    />
+  </button>
+  <input
+    type="text"
+    placeholder="{{ 'Get' | translate }}"
+    class="coins-filter-form__tokens-input"
+    [formControl]="tokensToInput"
+    [matAutocomplete]="autoTo"
+  />
+  <mat-autocomplete
+    #autoTo="matAutocomplete"
+    [panelWidth]="tokensHostWidth"
+    (optionSelected)="selectToken($event, 'quote')"
+  >
+    <cdk-virtual-scroll-viewport
+      class="coins-filter-form__virtual-scroll"
+      minBufferPx="480"
+      maxBufferPx="960"
+      itemSize="48"
+      [ngStyle]="{ height: virtualScrollQuoteHeight }"
     >
-    <mat-autocomplete
-      #autoTo="matAutocomplete"
-      [panelWidth]="tokensHostWidth"
-      (optionSelected)="selectToken($event, 'quote')">
-      <cdk-virtual-scroll-viewport
-        class="coins-filter-form__virtual-scroll"
-        minBufferPx="480"
-        maxBufferPx="960"
-        itemSize="48"
-        [ngStyle]="{ 'height': virtualScrollQuoteHeight }"
-        >
-        <mat-option
-          class="coins-filter-form__virtual-scroll-element"
-          *cdkVirtualFor="let option of $filteredToOptions | async"
-          [value]="option.token_short_title || option.symbol"
-          >
-          <div class="coins-filter-form__tokens-dropdown">
-            <img [src]="option.image_link || option.image" alt="option.token_title || option.name">
-            <span matTooltip="{{ option.token_title }}">{{ option.token_short_title || option.symbol }}</span>
-          </div>
-        </mat-option>
-      </cdk-virtual-scroll-viewport>
-    </mat-autocomplete>
-  </form>
+      <mat-option
+        class="coins-filter-form__virtual-scroll-element"
+        *cdkVirtualFor="let option of $filteredToOptions | async"
+        [value]="option.token_short_title || option.symbol"
+      >
+        <div class="coins-filter-form__tokens-dropdown">
+          <img [src]="option.image_link || option.image" alt="option.token_title || option.name" />
+          <span matTooltip="{{ option.token_title }}">{{
+            option.token_short_title || option.symbol
+          }}</span>
+        </div>
+      </mat-option>
+    </cdk-virtual-scroll-viewport>
+  </mat-autocomplete>
+</form>
