@@ -1,8 +1,10 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
+import { QueryParamsService } from './core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +18,16 @@ export class AppComponent {
     private readonly healthcheckService: HealthcheckService,
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly router: ActivatedRoute
   ) {
     this.document.body.classList.add('iframe');
-
+    this.router.queryParams.subscribe(queryParams => {
+      if (queryParams) {
+        this.queryParamsService.setupParams(queryParams);
+      }
+    });
     this.setupLanguage();
     this.healthcheckService
       .healthCheck()
