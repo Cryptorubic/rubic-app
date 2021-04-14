@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
+import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
 
 @Component({
@@ -22,9 +23,11 @@ export class AppComponent {
     private readonly queryParamsService: QueryParamsService,
     private readonly router: ActivatedRoute
   ) {
-    this.document.body.classList.add('iframe');
-    this.router.queryParams.subscribe(queryParams => {
+    this.router.queryParams.subscribe((queryParams: QueryParams) => {
       if (queryParams) {
+        if (queryParams.iframe === 'true') {
+          this.document.body.classList.add('iframe');
+        }
         this.queryParamsService.setupParams(queryParams);
       }
     });
