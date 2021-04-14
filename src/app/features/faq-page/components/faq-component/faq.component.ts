@@ -11,7 +11,7 @@ export class FaqComponent {
   public questions: Question[];
 
   constructor(private readonly translateService: TranslateService) {
-    this.translateService.get('faqPage.questions').subscribe(questions => {
+    this.translateService.stream('faqPage.questions').subscribe(questions => {
       this.questions = Object.values(questions).map((question: Question) => ({
         isActive: false,
         ...question

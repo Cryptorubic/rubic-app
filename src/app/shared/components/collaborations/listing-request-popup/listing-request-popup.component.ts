@@ -10,8 +10,10 @@ export class ListingRequestPopupComponent {
   public informtation: string[];
 
   constructor(private readonly translateService: TranslateService) {
-    this.translateService.get('tradesPage.listingRequest.information').subscribe(informtation => {
-      this.informtation = Object.values(informtation);
-    });
+    this.translateService
+      .stream('tradesPage.listingRequest.information')
+      .subscribe(informtation => {
+        this.informtation = Object.values(informtation);
+      });
   }
 }

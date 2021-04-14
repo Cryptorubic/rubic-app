@@ -41,7 +41,7 @@ export class AboutPageComponent {
     const featuresTranslateKey = 'aboutPage.features.data';
     const roadmapTranslateKey = 'aboutPage.roadmap.data';
     this.translateService
-      .get([benefitsTranslateKey, featuresTranslateKey, roadmapTranslateKey])
+      .stream([benefitsTranslateKey, featuresTranslateKey, roadmapTranslateKey])
       .subscribe(translations => {
         this.benefits = Object.values(translations[benefitsTranslateKey]).map(
           (benefit: TitleDescription) => benefit
