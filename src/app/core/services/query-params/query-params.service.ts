@@ -33,15 +33,16 @@ export class QueryParamsService {
       from: queryParams.from,
       to: queryParams.to,
       chain: queryParams.chain,
-      amount: queryParams.amount,
-    }
+      amount: queryParams.amount
+    };
   }
 
   public setQueryParam(key: keyof QueryParams, value: any): void {
     this.currentQueryParams[key] = value;
+    this.navigate();
   }
 
-  public navigate(): void {
+  private navigate(): void {
     this.route.navigate([], {
       queryParams: this.currentQueryParams,
       queryParamsHandling: 'merge'
@@ -60,28 +61,34 @@ export class QueryParamsService {
         from: this.currentQueryParams.from || this.defaultETHparams.from,
         to: this.currentQueryParams.to || this.defaultETHparams.to,
         amount: this.currentQueryParams.amount || this.defaultETHparams.amount,
-        chain: this.currentQueryParams.chain || this.defaultETHparams.chain,
-      }
-    } else if (chain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN){
+        chain: this.currentQueryParams.chain || this.defaultETHparams.chain
+      };
+    } else if (chain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
       this.currentQueryParams = {
         from: this.currentQueryParams.from || this.defaultBSCparams.from,
         to: this.currentQueryParams.to || this.defaultBSCparams.to,
         amount: this.currentQueryParams.amount || this.defaultBSCparams.amount,
-        chain: this.currentQueryParams.chain || this.defaultBSCparams.chain,
-      }
+        chain: this.currentQueryParams.chain || this.defaultBSCparams.chain
+      };
     }
-  }
+  };
 
   public clearCurrentParams() {
     this.currentQueryParams = {
       from: null,
       to: null,
-      amount: null,
+      amount: null
     };
   }
 
   public swapDefaultParams() {
-    [this.defaultETHparams.from, this.defaultETHparams.to] = [this.defaultETHparams.to, this.defaultETHparams.from];
-    [this.defaultBSCparams.from, this.defaultBSCparams.to] = [this.defaultBSCparams.to, this.defaultBSCparams.from];
+    [this.defaultETHparams.from, this.defaultETHparams.to] = [
+      this.defaultETHparams.to,
+      this.defaultETHparams.from
+    ];
+    [this.defaultBSCparams.from, this.defaultBSCparams.to] = [
+      this.defaultBSCparams.to,
+      this.defaultBSCparams.from
+    ];
   }
 }

@@ -129,7 +129,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     );
 
     this.queryParamsService.setQueryParam('from', this.selectedToken.symbol);
-    this.queryParamsService.navigate();
   }
 
   get fromBlockchain() {
@@ -144,7 +143,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
 
     this.queryParamsService.setQueryParam('chain', this.fromBlockchain.symbolName);
-    this.queryParamsService.navigate();
 
     this.updateDropDownTokens();
   }
@@ -167,7 +165,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     this.setToNumber();
 
     this.queryParamsService.setQueryParam('amount', this.fromNumber);
-    this.queryParamsService.navigate();
   }
 
   get fromNumber(): BigNumber {
@@ -219,7 +216,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (!this.queryParamsService.currentQueryParams.chain) {
       this.queryParamsService.setQueryParam('chain', this.fromBlockchain.symbolName);
-      this.queryParamsService.navigate();
     } else {
       this.fromBlockchain = this.blockchainsList.find(
         blockchain => blockchain.symbolName === this.queryParamsService.currentQueryParams.chain
