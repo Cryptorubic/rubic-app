@@ -5,15 +5,15 @@ import { BridgeService } from 'src/app/features/bridge-page/services/bridge.serv
 import { first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { BridgeTableTransaction } from '../../models/BridgeTableTransaction';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
+import { BridgeTableTrade } from '../../models/BridgeTableTrade';
 
-interface ITableTransactionWithState extends BridgeTableTransaction {
+interface ITableTransactionWithState extends BridgeTableTrade {
   opened: boolean;
   inProgress?: boolean;
 }
@@ -38,18 +38,15 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
   public Blockchains = {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
       label: 'Ethereum',
-      img: 'eth.png',
-      symbolPropName: 'ethSymbol'
+      img: 'eth.png'
     },
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
       label: 'Binance Smart Chain',
-      img: 'bnb.svg',
-      symbolPropName: 'bscSymbol'
+      img: 'bnb.svg'
     },
     [BLOCKCHAIN_NAME.POLYGON]: {
       label: 'Polygon',
-      img: 'polygon.svg',
-      symbolPropName: 'bscSymbol'
+      img: 'polygon.svg'
     }
   };
 
@@ -162,28 +159,22 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
           break;
         case SORT_FIELD.FROM:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
-            a.fromNetwork > b.fromNetwork ? -1 : 1
+            a.fromBlockchain > b.fromBlockchain ? -1 : 1
           );
           break;
         case SORT_FIELD.TO:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
-            a.toNetwork > b.toNetwork ? -1 : 1
+            a.toBlockchain > b.toBlockchain ? -1 : 1
           );
           break;
         case SORT_FIELD.SEND:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
-            BridgeTableComponent.sortByNumber(
-              parseFloat(a.actualFromAmount),
-              parseFloat(b.actualFromAmount)
-            )
+            BridgeTableComponent.sortByNumber(parseFloat(a.fromAmount), parseFloat(b.fromAmount))
           );
           break;
         case SORT_FIELD.GET:
           this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
-            BridgeTableComponent.sortByNumber(
-              parseFloat(a.actualToAmount),
-              parseFloat(b.actualToAmount)
-            )
+            BridgeTableComponent.sortByNumber(parseFloat(a.toAmount), parseFloat(b.toAmount))
           );
           break;
         case SORT_FIELD.DATE:
@@ -231,16 +222,16 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
     this.checkIsShowMoreActive();
   }
 
-  public depositPolygonBridgeTransaction(transaction: BridgeTableTransaction): void {
+  public depositPolygonBridgeTransaction(transaction: BridgeTableTrade): void {
     if (
       transaction.status !== 'Waiting for deposit' ||
-      transaction.fromNetwork !== BLOCKCHAIN_NAME.POLYGON
+      transaction.fromBlockchain !== BLOCKCHAIN_NAME.POLYGON
     ) {
       return;
     }
 
     this.transactions = this.transactions.map(tx => {
-      if (tx.transaction_id === transaction.transaction_id) {
+      if (tx.transactionHash === transaction.transactionHash) {
         return {
           ...tx,
           inProgress: true
@@ -249,7 +240,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
       return tx;
     });
 
-    const burnTransactionHash = transaction.transaction_id;
+    const burnTransactionHash = transaction.transactionHash;
     const onTransactionHash = () => {
       this.tradeInProgress = true;
     };

@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';
-import { BridgeTableTransaction } from '../../../../features/bridge-page/models/BridgeTableTransaction';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from '../../../../features/bridge-page/models/BridgeTrade';
+import { BridgeTableTradeApi } from '../../../../features/bridge-page/models/BridgeTableTrade';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +13,10 @@ import { BridgeTrade } from '../../../../features/bridge-page/models/BridgeTrade
 export class BridgeApiService {
   constructor(private httpService: HttpService, private httpClient: HttpClient) {}
 
-  public getTransactions(walletAddress: string): Promise<BridgeTableTransaction[]> {
-    return new Promise<BridgeTableTransaction[]>((resolve, reject) => {
+  public getTransactions(walletAddress: string): Promise<BridgeTableTradeApi[]> {
+    return new Promise<BridgeTableTradeApi[]>((resolve, reject) => {
       this.httpService.get('bridge/transactions', { walletAddress, t: Date.now() }).subscribe(
-        (response: BridgeTableTransaction[]) => {
+        (response: BridgeTableTradeApi[]) => {
           resolve(response);
         },
         error => {

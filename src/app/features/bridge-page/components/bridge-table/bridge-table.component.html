@@ -77,9 +77,9 @@
               <span
                 class="data__status"
                 [ngClass]="{
-                  data__status_green: tx.code === 2,
-                  data__status_yellow: tx.code === 1,
-                  data__status_red: tx.code === 0
+                  data__status_green: tx.statusCode === 2,
+                  data__status_yellow: tx.statusCode === 1,
+                  data__status_red: tx.statusCode === 0
                 }"
               >
                 {{ tx.status }}
@@ -88,7 +88,8 @@
               <div
                 class="data__deposit-button-container"
                 *ngIf="
-                  tx.status === 'Waiting for deposit' && tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
+                  tx.status === 'Waiting for deposit' &&
+                  tx.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
                 "
               >
                 <app-deposit-button
@@ -101,28 +102,31 @@
             </td>
 
             <td class="data__network">
-              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img" alt="" />
-              <span>{{ Blockchains[tx.fromNetwork].label }}</span>
+              <img
+                [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
+                alt=""
+              />
+              <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
             </td>
 
             <td class="data__network">
-              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img" alt="" />
-              <span>{{ Blockchains[tx.toNetwork].label }}</span>
+              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img" alt="" />
+              <span>{{ Blockchains[tx.toBlockchain].label }}</span>
             </td>
 
             <td class="data__amount">
               <div class="data__amount-inner">
-                <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
-                <img [src]="tx.image_link" alt="" />
-                <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                <div class="data__amount-number">{{ tx.fromAmount }}</div>
+                <img [src]="tx.tokenImage" alt="" />
+                <span>{{ tx.fromSymbol }}</span>
               </div>
             </td>
 
             <td class="data__amount">
               <div class="data__amount-inner">
-                <div class="data__amount-number">{{ tx.actualToAmount }}</div>
-                <img [src]="tx.image_link" alt="" />
-                <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                <div class="data__amount-number">{{ tx.toAmount }}</div>
+                <img [src]="tx.tokenImage" alt="" />
+                <span>{{ tx.toSymbol }}</span>
               </div>
             </td>
 
@@ -154,12 +158,12 @@
               <span
                 class="data__status"
                 [ngClass]="{
-                  data__status_green: tx.code === 2,
-                  data__status_yellow: tx.code === 1,
-                  data__status_red: tx.code === 0,
+                  data__status_green: tx.statusCode === 2,
+                  data__status_yellow: tx.statusCode === 1,
+                  data__status_red: tx.statusCode === 0,
                   'data__status_waiting-for-deposit':
                     tx.status === 'Waiting for deposit' &&
-                    tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
+                    tx.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
                 }"
               >
                 {{ tx.status }}
@@ -177,40 +181,39 @@
 
                 <div class="data__network" *ngIf="selectedSortField === SORT_FIELD.FROM">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img"
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
                     alt=""
                   />
-                  <span>{{ Blockchains[tx.fromNetwork].label }}</span>
+                  <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
                 </div>
 
                 <div class="data__network" *ngIf="selectedSortField === SORT_FIELD.TO">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img"
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img"
                     alt=""
                   />
-                  <span>{{ Blockchains[tx.toNetwork].label }}</span>
+                  <span>{{ Blockchains[tx.toBlockchain].label }}</span>
                 </div>
 
                 <div class="data__amount" *ngIf="selectedSortField === SORT_FIELD.SEND">
                   <div class="data__amount-inner">
-                    <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
-                    <img [src]="tx.image_link" alt="" />
-                    <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                    <div class="data__amount-number">{{ tx.fromAmount }}</div>
+                    <img [src]="tx.tokenImage" alt="" />
+                    <span>{{ tx.fromSymbol }}</span>
                   </div>
                 </div>
 
                 <div class="data__amount" *ngIf="selectedSortField === SORT_FIELD.GET">
                   <div class="data__amount-inner">
-                    <div class="data__amount-number">{{ tx.actualToAmount }}</div>
-                    <img [src]="tx.image_link" alt="" />
-                    <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                    <div class="data__amount-number">{{ tx.toAmount }}</div>
+                    <img [src]="tx.tokenImage" alt="" />
+                    <span>{{ tx.toSymbol }}</span>
                   </div>
                 </div>
 
                 <div class="data__date" *ngIf="selectedSortField === SORT_FIELD.DATE">
                   <div>
                     <span>{{ tx.updateTime.split(' ')[0] }}</span>
-                    <br />
                     <span>{{ tx.updateTime.split(' ')[1] }}</span>
                   </div>
                 </div>
@@ -229,10 +232,10 @@
                 <div class="content__item-name">From</div>
                 <div class="data__network">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img"
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
                     alt=""
                   />
-                  <span>{{ Blockchains[tx.fromNetwork].label }}</span>
+                  <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
                 </div>
               </div>
 
@@ -240,10 +243,10 @@
                 <div class="content__item-name">To</div>
                 <div class="data__network">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img"
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img"
                     alt=""
                   />
-                  <span>{{ Blockchains[tx.toNetwork].label }}</span>
+                  <span>{{ Blockchains[tx.toBlockchain].label }}</span>
                 </div>
               </div>
 
@@ -252,10 +255,10 @@
                 <div class="data__amount">
                   <div class="data__amount-inner">
                     <div class="data__amount-number">
-                      {{ tx.actualFromAmount | bigNumberFormat }}
+                      {{ tx.fromAmount | bigNumberFormat }}
                     </div>
-                    <img [src]="tx.image_link" alt="" />
-                    <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                    <img [src]="tx.tokenImage" alt="" />
+                    <span>{{ tx.fromSymbol }}</span>
                   </div>
                 </div>
               </div>
@@ -264,9 +267,9 @@
                 <div class="content__item-name">{{ 'Send' | translate }}</div>
                 <div class="data__amount">
                   <div class="data__amount-inner">
-                    <div class="data__amount-number">{{ tx.actualToAmount | bigNumberFormat }}</div>
-                    <img [src]="tx.image_link" alt="" />
-                    <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                    <div class="data__amount-number">{{ tx.toAmount | bigNumberFormat }}</div>
+                    <img [src]="tx.tokenImage" alt="" />
+                    <span>{{ tx.toSymbol }}</span>
                   </div>
                 </div>
               </div>
@@ -276,7 +279,6 @@
                 <div class="data__date">
                   <div>
                     <span>{{ tx.updateTime.split(' ')[0] }}</span>
-                    <br />
                     <span>{{ tx.updateTime.split(' ')[1] }}</span>
                   </div>
                 </div>
@@ -285,7 +287,8 @@
               <div
                 class="content__item"
                 *ngIf="
-                  tx.status === 'Waiting for deposit' && tx.fromNetwork === BLOCKCHAIN_NAME.POLYGON
+                  tx.status === 'Waiting for deposit' &&
+                  tx.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
                 "
               >
                 <div class="content__item-name">Deposit</div>

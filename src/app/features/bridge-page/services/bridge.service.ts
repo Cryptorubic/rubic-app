@@ -19,12 +19,12 @@ import { MetamaskError } from '../../../shared/models/errors/provider/MetamaskEr
 import { AccountError } from '../../../shared/models/errors/provider/AccountError';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
 import { BridgeTrade } from '../models/BridgeTrade';
-import { BridgeTableTransaction } from '../models/BridgeTableTransaction';
 import { BridgeApiService } from '../../../core/services/backend/bridge-api/bridge-api.service';
 import { UserRejectError } from '../../../shared/models/errors/provider/UserRejectError';
 import InsufficientFundsError from '../../../shared/models/errors/instant-trade/InsufficientFundsError';
 import { Web3PublicService } from '../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../../core/services/blockchain/web3-public-service/Web3Public';
+import { BridgeTableTrade } from '../models/BridgeTableTrade';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -47,10 +47,10 @@ export class BridgeService implements OnDestroy {
     [BLOCKCHAIN_NAME.POLYGON]: List([])
   };
 
-  private _transactions: BehaviorSubject<List<BridgeTableTransaction>> = new BehaviorSubject(null);
+  private _transactions: BehaviorSubject<List<BridgeTableTrade>> = new BehaviorSubject(null);
 
   public readonly transactions: Observable<
-    List<BridgeTableTransaction>
+    List<BridgeTableTrade>
   > = this._transactions.asObservable();
 
   private readonly transactionBlockchain = {
@@ -258,24 +258,17 @@ export class BridgeService implements OnDestroy {
     }
 
     if (this.web3PrivateService.address) {
-      let transactionsArray = await this.bridgeApiService.getTransactions(
+      const transactionsApi = await this.bridgeApiService.getTransactions(
         this.web3PrivateService.address.toLowerCase()
       );
 
-      transactionsArray = transactionsArray.map(transaction => ({
-        ...transaction,
-        fromNetwork: this.transactionBlockchain[transaction.fromNetwork],
-        toNetwork: this.transactionBlockchain[transaction.toNetwork],
-        actualFromAmount: new BigNumber(transaction.actualFromAmount).toFixed(),
-        actualToAmount: new BigNumber(transaction.actualToAmount).toFixed(),
-        opened: false
-      }));
+      const transactions = transactionsApi.map(transaction => {
+        let fromSymbol =
+          transaction.fromNetwork === 'ETH' ? transaction.ethSymbol : transaction.bscSymbol;
+        let toSymbol =
+          transaction.toNetwork === 'ETH' ? transaction.ethSymbol : transaction.bscSymbol;
 
-      transactionsArray = transactionsArray.map(transaction => {
-        if (
-          transaction.fromNetwork === BLOCKCHAIN_NAME.POLYGON ||
-          transaction.toNetwork === BLOCKCHAIN_NAME.POLYGON
-        ) {
+        if (transaction.fromNetwork === 'POL' || transaction.toNetwork === 'POL') {
           let ethSymbol: string;
           let polygonSymbol: string;
           if (!this._isTestingMode) {
@@ -300,16 +293,26 @@ export class BridgeService implements OnDestroy {
             ).blockchainToken[BLOCKCHAIN_NAME.POLYGON].symbol;
           }
 
-          return {
-            ...transaction,
-            ethSymbol,
-            bscSymbol: polygonSymbol
-          };
+          fromSymbol = transaction.fromNetwork === 'ETH' ? ethSymbol : polygonSymbol;
+          toSymbol = transaction.toNetwork === 'ETH' ? ethSymbol : polygonSymbol;
         }
-        return transaction;
+
+        return {
+          status: transaction.status,
+          statusCode: transaction.code,
+          fromBlockchain: this.transactionBlockchain[transaction.fromNetwork],
+          toBlockchain: this.transactionBlockchain[transaction.toNetwork],
+          fromAmount: new BigNumber(transaction.actualFromAmount).toFixed(),
+          toAmount: new BigNumber(transaction.actualToAmount).toFixed(),
+          fromSymbol,
+          toSymbol,
+          updateTime: transaction.updateTime,
+          transactionHash: transaction.transaction_id,
+          tokenImage: transaction.image_link
+        };
       });
 
-      this._transactions.next(List(transactionsArray));
+      this._transactions.next(List(transactions));
     }
   }
 }
