@@ -47,8 +47,8 @@ module.exports = {
         '@typescript-eslint/naming-convention': [
           'error',
           {
-            'selector': 'enumMember',
-            'format': ["UPPER_CASE"]
+            selector: 'enumMember',
+            format: ['UPPER_CASE']
           }
         ],
         // Styling.
@@ -65,6 +65,11 @@ module.exports = {
         radix: ['warn', 'as-needed'],
         'no-prototype-builtins': 'off',
         'no-return-assign': 'off',
+        'no-restricted-syntax': [
+          'error',
+          'LabeledStatement',
+          'WithStatement'
+        ],
         'no-console': [
           'warn',
           {

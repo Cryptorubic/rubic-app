@@ -22,4 +22,6 @@ export interface BridgeToken {
 
   fromEthFee?: number;
   toEthFee?: number;
+
+  used_in_iframe?: boolean;
 }

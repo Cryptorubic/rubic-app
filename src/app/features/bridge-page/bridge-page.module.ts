@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BridgePageRoutingModule } from './bridge-page-routing.module';
 import { BridgeComponent } from './components/bridge/bridge.component';
 import { BridgeService } from './services/bridge.service';
+import { BridgeSectionComponent } from './components/bridge-section/bridge-section.component';
 import { BridgeFormComponent } from './components/brifge-form/bridge-form.component';
 import { BridgeInProgressModalComponent } from './components/dialogs/bridge-in-progress-modal/bridge-in-progress-modal.component';
 import { BridgeSuccessComponent } from './components/dialogs/bridge-success/bridge-success.component';
@@ -30,7 +31,8 @@ import { DepositButtonComponent } from './components/bridge-table/deposit-button
     BridgeTableComponent,
     AdvertModalComponent,
     WarningModalComponent,
-    DepositButtonComponent
+    DepositButtonComponent,
+    BridgeSectionComponent
   ],
   imports: [
     CommonModule,

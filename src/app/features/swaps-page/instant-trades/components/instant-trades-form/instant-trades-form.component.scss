@@ -215,6 +215,12 @@ app-tooltip {
 @include b($tablet) {
   .instant-trade {
     &-form {
+      &__from-section,
+      &__to-section {
+        padding: 20px 13px;
+        box-shadow: $shadow-block;
+      }
+
       &__to-section {
         display: block;
 
@@ -230,17 +236,15 @@ app-tooltip {
 
     &-button {
       top: auto;
+
+      &_second {
+        margin-top: 22px;
+      }
     }
   }
 
   .instant-trade-form {
     display: block;
-  }
-
-  .selection-block {
-    &__custom-token-section {
-      margin-bottom: 22px;
-    }
   }
 }
 

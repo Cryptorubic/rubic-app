@@ -1,13 +1,20 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
 import { BridgeApiService } from './bridge-api.service';
 
 describe('BackendApiService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  let service: BridgeApiService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientModule],
+      providers: [BridgeApiService]
+    });
+    service = TestBed.inject(BridgeApiService);
+  });
 
   it('should be created', () => {
-    const service: BridgeApiService = TestBed.get(BridgeApiService);
-
     expect(service).toBeTruthy();
   });
 });

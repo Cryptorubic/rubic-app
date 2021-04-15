@@ -29,6 +29,7 @@
               class="choose-token__wrapper"
               [tokensList]="dropDownTokens"
               [selectedToken]="selectedTokenAsInputToken"
+              [selectedAmount]="fromNumber"
               (tokenChanges)="onSelectedTokenChanges($event)"
               (numberChanges)="onTokensNumberChanges($event)"
             >

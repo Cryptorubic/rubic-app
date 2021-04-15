@@ -1,4 +1,5 @@
-@import '../../../../../scss/mixins';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 .index-start-form__wrapper {
   clear: both;
@@ -162,7 +163,7 @@
 
     border-radius: 5px;
 
-    box-shadow: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: $shadow-block;
 
     &:first-child {
       margin-right: 7px;

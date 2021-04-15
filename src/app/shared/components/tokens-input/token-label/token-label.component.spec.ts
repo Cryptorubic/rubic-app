@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { InputTokenShort } from '../types';
 
 import { TokenLabelComponent } from './token-label.component';
 
@@ -17,6 +18,7 @@ describe('TokenLabelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TokenLabelComponent);
     component = fixture.componentInstance;
+    component.token = { image: 'test', name: 'test', symbol: 'test' } as InputTokenShort;
     fixture.detectChanges();
   });
 

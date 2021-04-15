@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { BridgeInProgressModalComponent } from './bridge-in-progress-modal.component';
 
@@ -9,6 +10,7 @@ describe('BridgeInProgressModalComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [TranslateModule.forRoot()],
         declarations: [BridgeInProgressModalComponent]
       }).compileComponents();
     })

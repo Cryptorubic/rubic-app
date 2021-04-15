@@ -144,3 +144,11 @@
     }
   }
 }
+
+@include b($mobile-sm) {
+  .input-dropdown__choose-button {
+    &_with-text {
+      font-size: 12px;
+    }
+  }
+}

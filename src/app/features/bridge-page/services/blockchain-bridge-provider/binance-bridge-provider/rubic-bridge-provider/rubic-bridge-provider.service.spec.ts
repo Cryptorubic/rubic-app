@@ -6,7 +6,9 @@ describe('RubicBridgeService', () => {
   let service: RubicBridgeProviderService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [RubicBridgeProviderService]
+    });
     service = TestBed.inject(RubicBridgeProviderService);
   });
 

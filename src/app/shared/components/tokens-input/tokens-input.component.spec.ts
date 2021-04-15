@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { BigNumberFormat } from '../../pipes/big-number-format.pipe';
 
 import { TokensInputComponent } from './tokens-input.component';
 
@@ -9,7 +12,8 @@ describe('TokensInputComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [TokensInputComponent]
+        imports: [FormsModule, TranslateModule.forRoot()],
+        declarations: [TokensInputComponent, BigNumberFormat]
       }).compileComponents();
     })
   );

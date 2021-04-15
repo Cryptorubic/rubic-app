@@ -1,0 +1,96 @@
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
+
+.bridge-section {
+  &__block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 21px 5px;
+
+    background-color: white;
+  }
+
+  &__title {
+    font-size: 22px;
+  }
+
+  &__images {
+    display: flex;
+    align-items: center;
+  }
+
+  &__image {
+    &_bridge {
+      margin: -8px 23px 0;
+    }
+  }
+
+  &__desc {
+    max-width: 355px;
+    margin: 0 4%;
+  }
+
+  &__subtitle {
+    margin-top: 0;
+    margin-bottom: 10px;
+
+    font-size: 14px;
+  }
+
+  &__text {
+    margin-bottom: 0;
+
+    color: $text-gray;
+    font-size: 12px;
+  }
+
+  &__btn {
+    flex-shrink: 0;
+    width: 200px;
+  }
+}
+
+@include b($laptop) {
+  .bridge-section {
+    &__block {
+      flex-wrap: wrap;
+      justify-content: center;
+      padding-bottom: 22px;
+    }
+
+    &__images {
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 22px;
+    }
+
+    &__desc {
+      max-width: 65%;
+      margin-left: 0;
+    }
+  }
+}
+
+@include b($tablet) {
+  .bridge-section {
+    &__desc {
+      max-width: 100%;
+      margin-right: 0;
+      margin-bottom: 22px;
+    }
+
+    &__btn {
+      width: 100%;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .bridge-section {
+    &__image {
+      width: 27%;
+      height: auto;
+    }
+  }
+}
