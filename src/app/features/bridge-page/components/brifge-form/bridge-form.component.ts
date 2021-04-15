@@ -165,6 +165,9 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   set fromNumber(fromNumber: BigNumber) {
     this._fromNumber = fromNumber;
     this.setToNumber();
+
+    this.queryParamsService.setQueryParam('amount', this.fromNumber);
+    this.queryParamsService.navigate();
   }
 
   get fromNumber(): BigNumber {
@@ -221,6 +224,10 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.fromBlockchain = this.blockchainsList.find(
         blockchain => blockchain.symbolName === this.queryParamsService.currentQueryParams.chain
       );
+    }
+
+    if (this.queryParamsService.currentQueryParams.amount) {
+      this.fromNumber = new BigNumber(this.queryParamsService.currentQueryParams.amount);
     }
 
     this.setBlockchainLabelName();

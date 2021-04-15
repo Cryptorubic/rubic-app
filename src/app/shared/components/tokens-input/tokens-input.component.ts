@@ -65,14 +65,14 @@ export class TokensInputComponent implements OnChanges {
   // eslint-disable-next-line no-magic-numbers
   @Input() smallSelectedAmountRoundMode? = 6;
 
-  @Input() get selectedAmount(): string {
+  get selectedAmount(): string {
     return this._selectedAmount;
   }
 
-  set selectedAmount(value) {
+  @Input() set selectedAmount(value) {
     this._selectedAmount = value;
 
-    if (this._selectedAmount?.includes('.')) {
+    if (String(this._selectedAmount)?.includes('.')) {
       const startIndex = this._selectedAmount.indexOf('.') + 1;
 
       let decimalSymbols: number;
