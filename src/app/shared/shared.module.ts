@@ -14,7 +14,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -111,7 +110,6 @@ import { TokenInputComponent } from './components/token-input/token-input.compon
     MatSelectModule,
     InlineSVGModule.forRoot(),
     MatFormFieldModule,
-    MatInputModule,
     MatSelectModule
   ],
   exports: [
