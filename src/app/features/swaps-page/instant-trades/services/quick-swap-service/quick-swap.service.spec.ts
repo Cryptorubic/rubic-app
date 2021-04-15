@@ -6,7 +6,9 @@ describe('QuickSwapService', () => {
   let service: QuickSwapService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [QuickSwapService]
+    });
     service = TestBed.inject(QuickSwapService);
   });
 
