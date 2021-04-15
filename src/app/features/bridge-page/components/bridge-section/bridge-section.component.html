@@ -1,0 +1,40 @@
+<p>bridge-section works!</p>
+<h3 class="bridge-section__title">{{ 'Create Bridge' | translate }}</h3>
+
+<div class="bridge-section__block">
+  <div class="bridge-section__images">
+    <img
+      class="bridge-section__image"
+      width="117"
+      height="32"
+      src="assets/images/bridge/Ethereum.svg"
+      alt="Ethereum"
+    />
+    <img
+      class="bridge-section__image bridge-section__image_bridge"
+      width="97"
+      height="106"
+      src="assets/images/bridge/Bridge.svg"
+      alt="Bridge"
+    />
+    <img
+      class="bridge-section__image"
+      width="109"
+      height="30"
+      src="assets/images/icons/collaborations/Binance.svg"
+      alt="Binance Smart Chain"
+    />
+  </div>
+  <div class="bridge-section__desc">
+    <h4 class="bridge-section__subtitle">{{ 'Create Bridge' | translate }}</h4>
+    <p class="bridge-section__text">
+      {{
+        'If your project is ERC-20 and you would like to create a wrapped version on BSC, and be added to Rubic bridge - please contact us.'
+          | translate
+      }}
+    </p>
+  </div>
+  <a class="bridge-section__btn" href="https://forms.gle/e45D1Ziocmbs2FDR6" target="_blank">
+    <app-primary-button label="Request a bridge"></app-primary-button>
+  </a>
+</div>
