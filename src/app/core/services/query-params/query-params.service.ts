@@ -9,18 +9,18 @@ import { QueryParams } from './models/query-params';
 export class QueryParamsService {
   public currentQueryParams: QueryParams;
 
-  public defaultBSCparams: QueryParams;
+  public defaultBscParams: QueryParams;
 
-  public defaultETHparams: QueryParams;
+  public defaultEthParams: QueryParams;
 
   constructor(private readonly route: Router) {
-    this.defaultBSCparams = {
+    this.defaultBscParams = {
       from: 'BNB',
       to: 'BRBC',
       chain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       amount: '1'
     };
-    this.defaultETHparams = {
+    this.defaultEthParams = {
       from: 'ETH',
       to: 'RBC',
       chain: BLOCKCHAIN_NAME.ETHEREUM,
@@ -58,17 +58,17 @@ export class QueryParamsService {
 
     if (chain === BLOCKCHAIN_NAME.ETHEREUM) {
       this.currentQueryParams = {
-        from: this.currentQueryParams.from || this.defaultETHparams.from,
-        to: this.currentQueryParams.to || this.defaultETHparams.to,
-        amount: this.currentQueryParams.amount || this.defaultETHparams.amount,
-        chain: this.currentQueryParams.chain || this.defaultETHparams.chain
+        from: this.currentQueryParams.from || this.defaultEthParams.from,
+        to: this.currentQueryParams.to || this.defaultEthParams.to,
+        amount: this.currentQueryParams.amount || this.defaultEthParams.amount,
+        chain: this.currentQueryParams.chain || this.defaultEthParams.chain
       };
     } else if (chain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
       this.currentQueryParams = {
-        from: this.currentQueryParams.from || this.defaultBSCparams.from,
-        to: this.currentQueryParams.to || this.defaultBSCparams.to,
-        amount: this.currentQueryParams.amount || this.defaultBSCparams.amount,
-        chain: this.currentQueryParams.chain || this.defaultBSCparams.chain
+        from: this.currentQueryParams.from || this.defaultBscParams.from,
+        to: this.currentQueryParams.to || this.defaultBscParams.to,
+        amount: this.currentQueryParams.amount || this.defaultBscParams.amount,
+        chain: this.currentQueryParams.chain || this.defaultBscParams.chain
       };
     }
     this.navigate();
@@ -83,13 +83,13 @@ export class QueryParamsService {
   }
 
   public swapDefaultParams() {
-    [this.defaultETHparams.from, this.defaultETHparams.to] = [
-      this.defaultETHparams.to,
-      this.defaultETHparams.from
+    [this.defaultEthParams.from, this.defaultEthParams.to] = [
+      this.defaultEthParams.to,
+      this.defaultEthParams.from
     ];
-    [this.defaultBSCparams.from, this.defaultBSCparams.to] = [
-      this.defaultBSCparams.to,
-      this.defaultBSCparams.from
+    [this.defaultBscParams.from, this.defaultBscParams.to] = [
+      this.defaultBscParams.to,
+      this.defaultBscParams.from
     ];
   }
 }

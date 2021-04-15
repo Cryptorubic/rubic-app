@@ -294,7 +294,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       default:
-        console.log(`Blockchain ${this.blockchain} was not found.`);
+        console.debug(`Blockchain ${this.blockchain} was not found.`);
     }
   }
 
@@ -379,10 +379,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       await this.searchToToken();
       if (this.fromToken || this.toToken) {
         if (
-          this.fromToken?.symbol === this.queryParamsService.defaultETHparams.to ||
-          this.fromToken?.symbol === this.queryParamsService.defaultBSCparams.to ||
-          this.toToken?.symbol === this.queryParamsService.defaultETHparams.from ||
-          this.toToken?.symbol === this.queryParamsService.defaultBSCparams.from
+          this.fromToken?.symbol === this.queryParamsService.defaultEthParams.to ||
+          this.fromToken?.symbol === this.queryParamsService.defaultBscParams.to ||
+          this.toToken?.symbol === this.queryParamsService.defaultEthParams.from ||
+          this.toToken?.symbol === this.queryParamsService.defaultBscParams.from
         ) {
           this.queryParamsService.swapDefaultParams();
         }
