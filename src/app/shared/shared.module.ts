@@ -22,7 +22,6 @@ import { MessageBoxComponent } from './components/message-box/message-box.compon
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
-import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
 import { CollaborationsComponent } from './components/collaborations/collaborations.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
@@ -72,7 +71,6 @@ import { TokenInputComponent } from './components/token-input/token-input.compon
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainsInputComponent,
     BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,
@@ -113,7 +111,8 @@ import { TokenInputComponent } from './components/token-input/token-input.compon
     MatSelectModule,
     InlineSVGModule.forRoot(),
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSelectModule
   ],
   exports: [
     FooterComponent,
@@ -132,7 +131,6 @@ import { TokenInputComponent } from './components/token-input/token-input.compon
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainsInputComponent,
     BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,

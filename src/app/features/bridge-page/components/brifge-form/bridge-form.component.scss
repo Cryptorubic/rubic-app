@@ -526,27 +526,11 @@
   }
 }
 
-@include b(440) {
-  .choose-blockchains {
-    &__address {
-      font-size: 14px;
-    }
-  }
-}
-
-@include b(390) {
-  .choose-blockchains {
-    &__address {
-      font-size: 13px;
-    }
-  }
-}
-
 ::ng-deep {
   .mat-form-field {
     display: block !important;
+
     background-color: $grey-background;
-    padding-left: 10px;
   }
 
   .mat-form-field-appearance-legacy {
@@ -569,6 +553,7 @@
 
   .mat-form-field-flex {
     align-items: center !important;
+    padding-left: 10px;
 
     img {
       display: block;
@@ -585,6 +570,22 @@
     &.mat-active,
     &:hover {
       background-color: #fffbcd !important;
+    }
+  }
+}
+
+@include b(440) {
+  .choose-blockchains {
+    &__address {
+      font-size: 14px;
+    }
+  }
+}
+
+@include b(390) {
+  .choose-blockchains {
+    &__address {
+      font-size: 13px;
     }
   }
 }

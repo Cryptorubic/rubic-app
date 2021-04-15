@@ -3,19 +3,27 @@
 ::ng-deep {
   .mat-form-field {
     display: block !important;
-    background-color: $grey-background;
-    padding-left: 10px;
 
-    .mat-input-element {
-      padding-left: 10px;
-      width: 100%;
-      min-height: 52px;
-      font-family: $ubuntu-font;
-      font-size: 18px;
-      background-color: $grey-background;
-      border: 0;
-      box-sizing: border-box;
+    background-color: $grey-background;
+  }
+
+  .mat-select-value {
+    height: 52px;
+
+    vertical-align: middle;
+
+    img {
+      display: inline-block;
+      height: 23px;
+      margin-right: 10px;
+
+      vertical-align: text-top;
     }
+  }
+
+  .mat-select-value-text {
+    font-size: 18px;
+    font-family: $ubuntu-font;
   }
 
   .mat-form-field-appearance-legacy {
@@ -38,21 +46,27 @@
 
   .mat-form-field-flex {
     align-items: center !important;
-
-    img {
-      display: block;
-    }
+    padding: 0 14px;
   }
 
   .mat-option {
     img {
       margin-right: 10px;
+
       vertical-align: middle;
     }
 
     &.mat-active,
     &:hover {
-      background-color: #fffbcd !important;
+      background-color: $grey-background !important;
     }
   }
-} 
+
+  .mat-form-field.mat-focused.mat-primary .mat-select-arrow {
+    color: $done-grey;
+  }
+
+  .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+    color: black;
+  }
+}
