@@ -99,8 +99,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   public isHighGasPriceModalShown = false;
 
-  public selectedBlockchain: BridgeBlockchain = this.blockchainsList[0];
-
   get tokens(): List<BridgeToken> {
     return this._tokens;
   }
