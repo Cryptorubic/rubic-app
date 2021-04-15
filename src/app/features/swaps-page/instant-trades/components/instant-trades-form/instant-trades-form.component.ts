@@ -10,6 +10,9 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { skip, take } from 'rxjs/operators';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import InstantTrade from '../../models/InstantTrade';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
@@ -62,6 +65,8 @@ enum TRADE_STATUS {
 export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private _blockchainSubscription$: Subscription;
 
+  private _blockchainSubscription2$: Subscription;
+
   private _instantTradeServices: InstantTradeService[];
 
   private _tradeParameters: InstantTradeParameters;
@@ -69,6 +74,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private _tokens = List<SwapToken>([]);
 
   private _tokensSubscription$: Subscription;
+
+  private _tokensSubscription2$: Subscription;
 
   public blockchain: BLOCKCHAIN_NAME;
 
@@ -165,6 +172,18 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       fromToken: value
     };
     this.availableToTokens = this.tokens.filter(token => token.address !== value?.address);
+    if (this.queryParamsService.currentQueryParams) {
+      const fromQuery = this.queryParamsService.currentQueryParams?.from;
+      if (value) {
+        let param = value.symbol;
+        if (fromQuery) {
+          param = this.queryParamsService.isAddressQuery(fromQuery) ? value.address : value.symbol;
+        }
+        this.queryParamsService.setQueryParam('from', param);
+      }
+    } else if (value) {
+      this.queryParamsService.setQueryParam('from', value.symbol);
+    }
   }
 
   get toToken(): SwapToken {
@@ -176,7 +195,17 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       ...this.tradeParameters,
       toToken: value
     };
+
     this.availableFromTokens = this.tokens.filter(token => token.address !== value?.address);
+
+    const toQuery = this.queryParamsService.currentQueryParams?.to;
+    if (value) {
+      let param = value.symbol;
+      if (toQuery) {
+        param = this.queryParamsService.isAddressQuery(toQuery) ? value.address : value.symbol;
+      }
+      this.queryParamsService.setQueryParam('to', param);
+    }
   }
 
   get fromAmount(): string {
@@ -188,6 +217,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       ...this.tradeParameters,
       fromAmount: value
     };
+
+    this.queryParamsService.setQueryParam('amount', value);
   }
 
   get fromAmountAsNumber(): BigNumber {
@@ -203,7 +234,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private onInchBscService: OneInchBscService,
     private pancakeSwapService: PancakeSwapService,
     private dialog: MatDialog,
-    private instantTradesApiService: InstantTradesApiService
+    private instantTradesApiService: InstantTradesApiService,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly web3private: Web3PublicService
   ) {}
 
   private initInstantTradeProviders() {
@@ -256,34 +289,86 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
+    this._tokensSubscription$ = this.tokensService.tokens.pipe(take(2)).subscribe(tokens => {
+      this.tokens = tokens;
+
+      this.setupParams().then(() => this.searchTokensAfter());
+    });
+
+    this._tokensSubscription2$ = this.tokensService.tokens.pipe(skip(2)).subscribe(tokens => {
       this.tokens = tokens;
     });
 
-    this._blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
-      this.blockchain = blockchain;
-      this.initInstantTradeProviders();
+    this._blockchainSubscription$ = this.tradeTypeService
+      .getBlockchain()
+      .pipe(take(1))
+      .subscribe(blockchain => {
+        const haveParams = Boolean(this.queryParamsService.currentQueryParams);
+        const chain = this.queryParamsService.currentQueryParams?.chain;
+        this.blockchain = (chain as BLOCKCHAIN_NAME) || blockchain;
+        this.tradeTypeService.setBlockchain(this.blockchain);
 
-      this.tokens = this.tokensService.tokens.getValue();
+        if (haveParams) {
+          this.queryParamsService.setQueryParam('chain', this.blockchain);
+        }
 
-      const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
+        this.initInstantTradeProviders();
+        this.tokens = this.tokensService.tokens.getValue();
 
-      this._tradeParameters = {
-        ...tradeParameters,
-        fromToken: null,
-        toToken: null,
-        fromAmount: null
-      };
+        const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
+        this._tradeParameters = {
+          ...tradeParameters,
+          fromToken: null,
+          toToken: null,
+          fromAmount: null
+        };
 
-      this.fromToken = tradeParameters?.fromToken;
-      this.toToken = tradeParameters?.toToken;
-      this.fromAmount = tradeParameters?.fromAmount;
-    });
+        this.fromToken = tradeParameters?.fromToken;
+        this.toToken = tradeParameters?.toToken;
+        this.fromAmount =
+          this.queryParamsService.currentQueryParams.amount || tradeParameters?.fromAmount;
+      });
+
+    this._blockchainSubscription2$ = this.tradeTypeService
+      .getBlockchain()
+      .pipe(skip(1))
+      .subscribe(blockchain => {
+        this.blockchain = blockchain;
+        this.queryParamsService.setQueryParam('chain', this.blockchain);
+        this.initInstantTradeProviders();
+        this.tokens = this.tokensService.tokens.getValue();
+
+        const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
+
+        this._tradeParameters = {
+          ...tradeParameters,
+          fromToken: null,
+          toToken: null,
+          fromAmount: null
+        };
+
+        this.fromToken = tradeParameters?.fromToken;
+        this.toToken = tradeParameters?.toToken;
+        this.fromAmount = tradeParameters?.fromAmount;
+
+        this.queryParamsService.clearCurrentParams();
+      });
   }
 
   ngOnDestroy() {
     this._tokensSubscription$.unsubscribe();
+    this._tokensSubscription2$.unsubscribe();
+    this._blockchainSubscription2$.unsubscribe();
     this._blockchainSubscription$.unsubscribe();
+  }
+
+  private async setupParams(): Promise<void> {
+    const haveParams = Boolean(this.queryParamsService.currentQueryParams);
+
+    if (this.tokens.size > 0 && haveParams) {
+      await this.searchFromToken();
+      await this.searchToToken();
+    }
   }
 
   private isCalculatedTradeActual(
@@ -457,8 +542,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   public addCustomToken(part: 'from' | 'to'): void {
     if (part === 'from') {
       this.fromToken = { ...this.customToken.from };
+      this.queryParamsService.setQueryParam(part, this.customToken.from.address);
     } else {
       this.toToken = { ...this.customToken.to };
+      this.queryParamsService.setQueryParam(part, this.customToken.to.address);
     }
   }
 
@@ -517,5 +604,83 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     this.trades.map(trade => ({ ...trade, tradeState: null }));
     this.selectedTradeState = null;
     this.transactionHash = undefined;
+  }
+
+  public getCustomToken = (query: String) => {
+    return this.web3private[this.blockchain].getTokenInfo(query).then((token: Token) => ({
+      blockchain: undefined,
+      image: undefined,
+      rank: undefined,
+      price: undefined,
+      used_in_iframe: undefined,
+      ...token
+    }));
+  };
+
+  private searchTokenBySymbol(queryParam: string): SwapToken {
+    const similarTokens = this.tokens.filter(
+      token => token.symbol.toLowerCase() === queryParam.toLowerCase()
+    );
+    return similarTokens.size > 1
+      ? similarTokens.find(token => token.used_in_iframe)
+      : similarTokens.first();
+  }
+
+  private searchTokenByAddress(queryParam: string): SwapToken {
+    return this.tokens.find(token => token.address.toLowerCase() === queryParam.toLowerCase());
+  }
+
+  private async searchFromToken(): Promise<void> {
+    const fromQuery = this.queryParamsService.currentQueryParams.from;
+    if (fromQuery) {
+      if (this.queryParamsService.isAddressQuery(fromQuery)) {
+        const from = this.searchTokenByAddress(fromQuery) || (await this.getCustomToken(fromQuery));
+        this.fromToken = await from;
+      } else {
+        const from = this.searchTokenBySymbol(fromQuery);
+        if (from) {
+          this.fromToken = from;
+        }
+      }
+    }
+  }
+
+  private async searchToToken(): Promise<void> {
+    const toQuery = this.queryParamsService.currentQueryParams.to;
+    if (toQuery) {
+      if (this.queryParamsService.isAddressQuery(toQuery)) {
+        const to = this.searchTokenByAddress(toQuery) || (await this.getCustomToken(toQuery));
+        this.toToken = await to;
+      } else {
+        const to = this.searchTokenBySymbol(this.queryParamsService.currentQueryParams.to);
+        if (to) {
+          this.toToken = to;
+        }
+      }
+    }
+  }
+
+  private async searchTokensAfter() {
+    if (this.fromToken || this.toToken) {
+      if (this.fromToken) {
+        if (
+          this.fromToken.symbol === this.queryParamsService.defaultETHparams.to ||
+          this.fromToken.symbol === this.queryParamsService.defaultBSCparams.to
+        ) {
+          this.queryParamsService.swapDefaultParams();
+        }
+      } else if (
+        this.toToken.symbol === this.queryParamsService.defaultETHparams.from ||
+        this.toToken.symbol === this.queryParamsService.defaultBSCparams.from
+      ) {
+        this.queryParamsService.swapDefaultParams();
+      }
+
+      this.queryParamsService.setDefaultParams();
+
+      if (!this.fromToken) this.searchFromToken();
+      if (!this.toToken) this.searchToToken();
+      if (!this.fromAmount) this.fromAmount = this.queryParamsService.currentQueryParams.amount;
+    }
   }
 }

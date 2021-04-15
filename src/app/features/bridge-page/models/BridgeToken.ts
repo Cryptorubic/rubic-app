@@ -12,4 +12,5 @@ export interface BridgeToken {
   ethContractDecimal: string;
   ethToBscFee?: number;
   bscToEthFee?: number;
+  used_in_iframe?: boolean;
 }
