@@ -668,13 +668,15 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       if (this.fromToken) {
         if (
           this.fromToken.symbol === this.queryParamsService.defaultETHparams.to ||
-          this.fromToken.symbol === this.queryParamsService.defaultBSCparams.to) {
+          this.fromToken.symbol === this.queryParamsService.defaultBSCparams.to
+        ) {
           this.queryParamsService.swapDefaultParams();
         }
       } else if (
         this.toToken.symbol === this.queryParamsService.defaultETHparams.from ||
-        this.toToken.symbol === this.queryParamsService.defaultBSCparams.from) {
-          this.queryParamsService.swapDefaultParams();
+        this.toToken.symbol === this.queryParamsService.defaultBSCparams.from
+      ) {
+        this.queryParamsService.swapDefaultParams();
       }
 
       this.queryParamsService.setDefaultParams();

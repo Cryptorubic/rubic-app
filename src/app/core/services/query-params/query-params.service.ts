@@ -29,7 +29,6 @@ export class QueryParamsService {
   }
 
   public setupParams(queryParams: QueryParams): void {
-
     this.currentQueryParams = {
       from: queryParams.from,
       to: queryParams.to,
