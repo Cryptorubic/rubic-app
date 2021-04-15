@@ -8,9 +8,8 @@ describe('BridgeSectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BridgeSectionComponent ]
-    })
-    .compileComponents();
+      declarations: [BridgeSectionComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
