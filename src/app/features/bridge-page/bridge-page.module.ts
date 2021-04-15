@@ -17,6 +17,7 @@ import { BridgeService } from './services/bridge.service';
 import { AdvertModalComponent } from './components/ad-modal/advert-modal.component';
 import { RubicBridgeService } from './services/rubic-bridge-service/rubic-bridge.service';
 import { HighGasPriceModalComponent } from './components/high-gas-price-modal/high-gas-price-modal.component';
+import { BridgeSectionComponent } from './components/bridge-section/bridge-section.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { HighGasPriceModalComponent } from './components/high-gas-price-modal/hi
     BridgeTableComponent,
     NetworkErrorComponent,
     AdvertModalComponent,
-    HighGasPriceModalComponent
+    HighGasPriceModalComponent,
+    BridgeSectionComponent
   ],
   imports: [
     CommonModule,
