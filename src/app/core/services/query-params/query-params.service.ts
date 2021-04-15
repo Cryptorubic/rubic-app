@@ -80,7 +80,6 @@ export class QueryParamsService {
       to: null,
       amount: null
     };
-    this.navigate();
   }
 
   public swapDefaultParams() {
