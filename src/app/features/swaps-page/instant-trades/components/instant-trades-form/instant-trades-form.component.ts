@@ -193,7 +193,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     } else if (value) {
       this.queryParamsService.setQueryParam('from', value.symbol);
     }
-    this.queryParamsService.navigate();
   }
 
   get toToken(): SwapToken {
@@ -215,7 +214,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         param = this.queryParamsService.isAddressQuery(toQuery) ? value.address : value.symbol;
       }
       this.queryParamsService.setQueryParam('to', param);
-      this.queryParamsService.navigate();
     }
   }
 
@@ -230,7 +228,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     };
 
     this.queryParamsService.setQueryParam('amount', value);
-    this.queryParamsService.navigate();
   }
 
   get fromAmountAsNumber(): BigNumber {
@@ -339,8 +336,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.toToken = tradeParameters?.toToken;
         this.fromAmount =
           this.queryParamsService.currentQueryParams.amount || tradeParameters?.fromAmount;
-
-        this.queryParamsService.navigate();
       });
 
     this._blockchainSubscription2$ = this.tradeTypeService
@@ -365,8 +360,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.toToken = tradeParameters?.toToken;
         this.fromAmount = tradeParameters?.fromAmount;
 
-        this.queryParamsService.setDefaultParams();
-        this.queryParamsService.navigate();
+        this.queryParamsService.clearCurrentParams();
       });
   }
 
@@ -393,7 +387,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           this.queryParamsService.swapDefaultParams();
         }
         this.queryParamsService.setDefaultParams();
-        this.queryParamsService.navigate();
         if (!this.fromToken) {
           this.searchFromToken();
         }
@@ -583,7 +576,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.toToken = { ...this.customToken.to };
       this.queryParamsService.setQueryParam(part, this.customToken.to.address);
     }
-    this.queryParamsService.navigate();
   }
 
   public isAnyTokenCustom(): boolean {

@@ -38,10 +38,11 @@ export class QueryParamsService {
   }
 
   public setQueryParam(key: keyof QueryParams, value: any): void {
-    this.currentQueryParams[key as string] = value;
+    this.currentQueryParams[key] = value;
+    this.navigate();
   }
 
-  public navigate(): void {
+  private navigate(): void {
     this.route.navigate([], {
       queryParams: this.currentQueryParams,
       queryParamsHandling: 'merge'
@@ -70,6 +71,7 @@ export class QueryParamsService {
         chain: this.currentQueryParams.chain || this.defaultBSCparams.chain
       };
     }
+    this.navigate();
   };
 
   public clearCurrentParams() {
@@ -78,6 +80,7 @@ export class QueryParamsService {
       to: null,
       amount: null
     };
+    this.navigate();
   }
 
   public swapDefaultParams() {
