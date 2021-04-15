@@ -54,7 +54,7 @@ export class QueryParamsService {
   }
 
   public setDefaultParams = () => {
-    const chain = this.currentQueryParams.chain;
+    const { chain } = this.currentQueryParams;
 
     if (chain === BLOCKCHAIN_NAME.ETHEREUM) {
       this.currentQueryParams = {
@@ -71,6 +71,7 @@ export class QueryParamsService {
         chain: this.currentQueryParams.chain || this.defaultBSCparams.chain
       };
     }
+    this.navigate();
   };
 
   public clearCurrentParams() {

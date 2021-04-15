@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
+import { DOCUMENT } from '@angular/common';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { skip, take } from 'rxjs/operators';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -101,6 +102,14 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     from: {} as SwapToken,
     to: {} as SwapToken
   };
+
+  public get hasBestRate(): boolean {
+    return this.trades.some(provider => provider.isBestRate);
+  }
+
+  public get isIframe(): boolean {
+    return this.document.body.classList.contains('iframe');
+  }
 
   get tokens(): List<SwapToken> {
     return this._tokens;
@@ -235,6 +244,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private pancakeSwapService: PancakeSwapService,
     private dialog: MatDialog,
     private instantTradesApiService: InstantTradesApiService,
+    @Inject(DOCUMENT) private readonly document: Document,
     private readonly queryParamsService: QueryParamsService,
     private readonly web3private: Web3PublicService
   ) {}
@@ -291,8 +301,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._tokensSubscription$ = this.tokensService.tokens.pipe(take(2)).subscribe(tokens => {
       this.tokens = tokens;
-
-      this.setupParams().then(() => this.searchTokensAfter());
+      this.setupParams();
     });
 
     this._tokensSubscription2$ = this.tokensService.tokens.pipe(skip(2)).subscribe(tokens => {
@@ -368,6 +377,26 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     if (this.tokens.size > 0 && haveParams) {
       await this.searchFromToken();
       await this.searchToToken();
+      if (this.fromToken || this.toToken) {
+        if (
+          this.fromToken?.symbol === this.queryParamsService.defaultETHparams.to ||
+          this.fromToken?.symbol === this.queryParamsService.defaultBSCparams.to ||
+          this.toToken?.symbol === this.queryParamsService.defaultETHparams.from ||
+          this.toToken?.symbol === this.queryParamsService.defaultBSCparams.from
+        ) {
+          this.queryParamsService.swapDefaultParams();
+        }
+        this.queryParamsService.setDefaultParams();
+        if (!this.fromToken) {
+          this.searchFromToken();
+        }
+        if (!this.toToken) {
+          this.searchToToken();
+        }
+        if (!this.fromAmount) {
+          this.fromAmount = this.queryParamsService.currentQueryParams.amount;
+        }
+      }
     }
   }
 
@@ -634,13 +663,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     const fromQuery = this.queryParamsService.currentQueryParams.from;
     if (fromQuery) {
       if (this.queryParamsService.isAddressQuery(fromQuery)) {
-        const from = this.searchTokenByAddress(fromQuery) || (await this.getCustomToken(fromQuery));
-        this.fromToken = await from;
+        this.fromToken =
+          this.searchTokenByAddress(fromQuery) || (await this.getCustomToken(fromQuery));
       } else {
-        const from = this.searchTokenBySymbol(fromQuery);
-        if (from) {
-          this.fromToken = from;
-        }
+        this.fromToken = this.searchTokenBySymbol(fromQuery);
       }
     }
   }
@@ -649,38 +675,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     const toQuery = this.queryParamsService.currentQueryParams.to;
     if (toQuery) {
       if (this.queryParamsService.isAddressQuery(toQuery)) {
-        const to = this.searchTokenByAddress(toQuery) || (await this.getCustomToken(toQuery));
-        this.toToken = await to;
+        this.toToken = this.searchTokenByAddress(toQuery) || (await this.getCustomToken(toQuery));
       } else {
-        const to = this.searchTokenBySymbol(this.queryParamsService.currentQueryParams.to);
-        if (to) {
-          this.toToken = to;
-        }
+        this.toToken = this.searchTokenBySymbol(toQuery);
       }
-    }
-  }
-
-  private async searchTokensAfter() {
-    if (this.fromToken || this.toToken) {
-      if (this.fromToken) {
-        if (
-          this.fromToken.symbol === this.queryParamsService.defaultETHparams.to ||
-          this.fromToken.symbol === this.queryParamsService.defaultBSCparams.to
-        ) {
-          this.queryParamsService.swapDefaultParams();
-        }
-      } else if (
-        this.toToken.symbol === this.queryParamsService.defaultETHparams.from ||
-        this.toToken.symbol === this.queryParamsService.defaultBSCparams.from
-      ) {
-        this.queryParamsService.swapDefaultParams();
-      }
-
-      this.queryParamsService.setDefaultParams();
-
-      if (!this.fromToken) this.searchFromToken();
-      if (!this.toToken) this.searchToToken();
-      if (!this.fromAmount) this.fromAmount = this.queryParamsService.currentQueryParams.amount;
     }
   }
 }
