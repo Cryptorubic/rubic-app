@@ -11,7 +11,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "lint-css": "stylelint '**/*.scss'",
-    "pre-commit": "lint-staged",
+    "pre-commit": "npx lint-staged",
     "prepare": "husky install"
   },
   "private": true,
