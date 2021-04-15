@@ -314,7 +314,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       .subscribe(blockchain => {
         const haveParams = Boolean(this.queryParamsService.currentQueryParams);
         const chain = this.queryParamsService.currentQueryParams?.chain;
-        this.blockchain = (chain as BLOCKCHAIN_NAME) || blockchain;
+        this.blockchain = chain && chain !== 'MAT' ? (chain as BLOCKCHAIN_NAME) : blockchain;
         this.tradeTypeService.setBlockchain(this.blockchain);
 
         if (haveParams) {
