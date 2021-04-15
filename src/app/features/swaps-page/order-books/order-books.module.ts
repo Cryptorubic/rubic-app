@@ -9,6 +9,7 @@ import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { OrderBooksComponent } from './components/order-books/order-books.component';
 import { TradesModule } from '../trades-module/trades.module';
 import { OrderBooksFormComponent } from './components/order-books-form/order-books-form.component';
@@ -16,7 +17,6 @@ import { OrderBooksFormOptionsComponent } from './components/order-books-form/or
 import { OrderBooksTableComponent } from './components/order-books-table/order-books-table.component';
 import { OrderBooksFormService } from './components/order-books-form/services/order-books-form.service';
 import { OrderBooksTableService } from './components/order-books-table/services/order-books-table.service';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
