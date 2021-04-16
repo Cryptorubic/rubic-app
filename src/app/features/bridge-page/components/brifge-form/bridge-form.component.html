@@ -31,7 +31,7 @@
               [selectedToken]="selectedTokenAsInputToken"
               [selectedAmount]="fromNumber"
               (tokenChanges)="onSelectedTokenChanges($event)"
-              (numberChanges)="onTokensNumberChanges($event)"
+              (numberChanges)="this.fromNumber = $event"
             >
             </app-tokens-input>
 
@@ -67,8 +67,10 @@
                 [ngClass]="{
                   'choose-blockchains__info_wrong':
                     selectedToken &&
-                    fromNumber != undefined &&
-                    fromNumber.lt(selectedToken.blockchainToken[fromBlockchain.key].minAmount)
+                    fromNumber &&
+                    fromNumberAsBigNumber.lt(
+                      selectedToken.blockchainToken[fromBlockchain.key].minAmount
+                    )
                 }"
               >
                 <td>
@@ -81,8 +83,10 @@
                   <img
                     *ngIf="
                       selectedToken &&
-                      fromNumber != undefined &&
-                      fromNumber.lt(selectedToken.blockchainToken[fromBlockchain.key].minAmount)
+                      fromNumber &&
+                      fromNumberAsBigNumber.lt(
+                        selectedToken.blockchainToken[fromBlockchain.key].minAmount
+                      )
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -93,8 +97,10 @@
                 [ngClass]="{
                   'choose-blockchains__info_wrong':
                     selectedToken &&
-                    fromNumber != undefined &&
-                    fromNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
+                    fromNumber &&
+                    fromNumberAsBigNumber.gt(
+                      selectedToken.blockchainToken[fromBlockchain.key].maxAmount
+                    )
                 }"
               >
                 <td>
@@ -107,8 +113,10 @@
                   <img
                     *ngIf="
                       selectedToken &&
-                      fromNumber != undefined &&
-                      fromNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
+                      fromNumber &&
+                      fromNumberAsBigNumber.gt(
+                        selectedToken.blockchainToken[fromBlockchain.key].maxAmount
+                      )
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -216,8 +224,10 @@
             [disabled]="
               !selectedToken ||
               !fromNumber ||
-              fromNumber.lt(selectedToken.blockchainToken[fromBlockchain.key].minAmount) ||
-              fromNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
+              fromNumberAsBigNumber.lt(
+                selectedToken.blockchainToken[fromBlockchain.key].minAmount
+              ) ||
+              fromNumberAsBigNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
             "
             (onClick)="checkAndConfirm()"
           >
