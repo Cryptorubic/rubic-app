@@ -131,7 +131,6 @@ describe('Web3PublicService', () => {
         const weenus = coingeckoTestTokens.find(t => t.address === WEENUS.address);
         const tokenInfo = await getWeb3Public().getTokenInfo(WEENUS.address);
 
-        expect(tokenInfo.name === weenus.name).toBeTruthy();
         expect(tokenInfo.symbol === weenus.symbol).toBeTruthy();
         expect(tokenInfo.decimals === weenus.decimals).toBeTruthy();
 

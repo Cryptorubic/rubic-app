@@ -11,4 +11,5 @@ export default interface SwapToken extends InputToken, InstantTradeToken {
   image: string;
   rank: number;
   price: number;
+  used_in_iframe?: boolean;
 }

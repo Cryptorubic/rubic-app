@@ -1,4 +1,11 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA
+} from '@angular/material/dialog';
 
 import { LogoutConfirmModalComponent } from './logout-confirm-modal.component';
 
@@ -8,6 +15,7 @@ describe('LogoutConfirmModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientModule, MatDialogModule],
       declarations: [LogoutConfirmModalComponent]
     }).compileComponents();
   });

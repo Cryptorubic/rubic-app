@@ -46,6 +46,7 @@
         [selectedAmount]="fromAmount"
         (tokenChanges)="fromToken = $any($event)"
         (numberChanges)="fromAmount = $event"
+        [amountPlaceholder]="isIframe ? 'YOU HAVE' : ''"
       >
       </app-tokens-input>
 
@@ -72,14 +73,20 @@
         class="arrow-button"
         [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
       >
-        <img *ngIf="trades.length === 2" src="assets/images/icons/RoundArrows.svg" alt="" />
-        <img *ngIf="trades.length === 1" src="assets/images/icons/revert.svg" alt="" />
+        <img *ngIf="trades.length === 2 && !isIframe" src="assets/images/icons/RoundArrows.svg" alt="" />
+        <img *ngIf="trades.length === 1 || isIframe" src="assets/images/icons/revert.svg" alt="" />
       </button>
     </div>
 
     <div class="instant-trade-form__to-section grid">
       <ng-container *ngFor="let tradeController of trades; let index = index">
-        <div class="selection-block">
+        <div
+          class="selection-block"
+          [ngClass]="{
+            'selection-block_best':
+              (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
+              index === 0 && !hasBestRate
+            }">
           <div class="selection-block__header" *ngIf="index === 0">
             <div class="selection-block__label">you get</div>
 
@@ -102,6 +109,7 @@
               [selectedAmount]="getToAmount(index)"
               [withRoundMode]="true"
               (tokenChanges)="toToken = $any($event)"
+              [amountPlaceholder]="isIframe ? 'YOU GET' : ''"
             >
             </app-tokens-input>
 
@@ -153,11 +161,15 @@
 
         <div
           class="instant-trade-button"
-          [ngClass]="{ 'instant-trade-button_second': index === 1 }"
+          [ngClass]="{
+            'instant-trade-button_second': index === 1,
+            'instant-trade-button_best': (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
+            index === 0 && !hasBestRate
+          }"
         >
           <app-primary-button
             type="button"
-            [label]="'Via ' + tradeController.tradeProviderInfo.label"
+            [label]="isIframe ? 'Swap' : ('Via ' + tradeController.tradeProviderInfo.label)"
             [disabled]="
               !(
                 fromAmountAsNumber.isGreaterThan(0) &&
@@ -165,6 +177,7 @@
                 tradeParameters.fromToken
               ) ||
               !tradeController.trade ||
+              isTradeAvailable ||
               shouldAnimateButton(index) ||
               (selectedTradeState &&
                 selectedTradeState !== TRADE_STATUS.ERROR &&

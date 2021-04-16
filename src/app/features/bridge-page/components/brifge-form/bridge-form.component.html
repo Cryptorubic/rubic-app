@@ -8,11 +8,11 @@
           <div class="choose-blockchains__title">From</div>
 
           <div class="choose-blockchains__blockchain form-field">
-            <app-blockchains-input
+            <app-blockchain-select
               [selectedBlockchain]="fromBlockchain"
               [blockchains]="blockchainsList"
               (blockchainChanges)="fromBlockchain = $event"
-            ></app-blockchains-input>
+            ></app-blockchain-select>
           </div>
 
           <a
@@ -29,6 +29,7 @@
               class="choose-token__wrapper"
               [tokensList]="dropDownTokens"
               [selectedToken]="selectedTokenAsInputToken"
+              [selectedAmount]="fromNumber"
               (tokenChanges)="onSelectedTokenChanges($event)"
               (numberChanges)="onTokensNumberChanges($event)"
             >
@@ -124,11 +125,11 @@
           <div class="choose-blockchains__title">To</div>
 
           <div class="choose-blockchains__blockchain form-field">
-            <app-blockchains-input
+            <app-blockchain-select
               [selectedBlockchain]="toBlockchain"
               [blockchains]="blockchainsList"
               (blockchainChanges)="toBlockchain = $event"
-            ></app-blockchains-input>
+            ></app-blockchain-select>
           </div>
 
           <a
@@ -204,7 +205,7 @@
         </div>
 
         <button
-          style="visibility: hidden;"
+          style="visibility: hidden"
           class="cross-chain-form__advanced-options"
           [ngClass]="{ 'cross-chain-form__advanced-options_opened': isAdvancedSectionShown }"
           (click)="isAdvancedSectionShown = !isAdvancedSectionShown"

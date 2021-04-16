@@ -31,6 +31,11 @@ interface InstantTrade {
    * Amount of predicted gas fee in Ether
    */
   gasFeeInEth: BigNumber;
+
+  /**
+   * Additional options
+   */
+  options?: any;
 }
 
 export default InstantTrade;

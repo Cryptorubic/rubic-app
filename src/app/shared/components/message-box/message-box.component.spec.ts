@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { MessageBoxComponent } from './message-box.component';
 
@@ -9,7 +11,9 @@ describe('MessageBoxComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [MessageBoxComponent]
+        imports: [TranslateModule.forRoot()],
+        declarations: [MessageBoxComponent],
+        providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }]
       }).compileComponents();
     })
   );
