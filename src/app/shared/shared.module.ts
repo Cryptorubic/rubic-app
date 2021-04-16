@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -50,7 +51,7 @@ import { TokensAccordionComponent } from './components/tokens-table/components/t
 import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
 import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
-import { TokenInputComponent } from './components/token-input/token-input.component';
+import { BlockchainSelectComponent } from './components/token-input/blockchain-select.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,7 @@ import { TokenInputComponent } from './components/token-input/token-input.compon
     TokensAccordionComponent,
     CustomTokenFormComponent,
     WarningDisclaimerComponent,
-    TokenInputComponent
+    BlockchainSelectComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -110,6 +111,7 @@ import { TokenInputComponent } from './components/token-input/token-input.compon
     MatSelectModule,
     InlineSVGModule.forRoot(),
     MatFormFieldModule,
+    MatInputModule,
     MatSelectModule
   ],
   exports: [
@@ -147,7 +149,7 @@ import { TokenInputComponent } from './components/token-input/token-input.compon
     TokensTableComponent,
     CustomTokenFormComponent,
     WarningDisclaimerComponent,
-    TokenInputComponent
+    BlockchainSelectComponent
   ]
 })
 export class SharedModule {}

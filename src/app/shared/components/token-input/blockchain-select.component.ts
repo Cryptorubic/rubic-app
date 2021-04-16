@@ -4,11 +4,11 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { BridgeBlockchain } from 'src/app/features/bridge-page/models/BridgeBlockchain';
 
 @Component({
-  selector: 'app-token-input',
-  templateUrl: './token-input.component.html',
-  styleUrls: ['./token-input.component.scss']
+  selector: 'app-blockchain-select',
+  templateUrl: './blockchain-select.component.html',
+  styleUrls: ['./blockchain-select.component.scss']
 })
-export class TokenInputComponent {
+export class BlockchainSelectComponent {
   @ViewChild(MatAutocompleteTrigger) _auto: MatAutocompleteTrigger;
 
   public blockchainControl = new FormControl();
