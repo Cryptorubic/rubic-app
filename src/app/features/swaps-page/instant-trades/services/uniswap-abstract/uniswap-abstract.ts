@@ -45,6 +45,8 @@ export class UniswapAbstract extends InstantTradeService {
 
   protected blockchain: BLOCKCHAIN_NAME;
 
+  protected shouldCalculateGas: boolean;
+
   private WETHAddress: string;
 
   private uniswapContractAddress: string;
@@ -343,7 +345,7 @@ export class UniswapAbstract extends InstantTradeService {
     const routes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort((a, b) =>
       b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
     );
-    if (shouldOptimiseGas) {
+    if (shouldOptimiseGas && this.shouldCalculateGas) {
       return this.getOptimalRouteAndGas(
         fromAmountAbsolute,
         toToken,
@@ -353,33 +355,45 @@ export class UniswapAbstract extends InstantTradeService {
     }
 
     const route = routes[0];
-    const to = this.web3Private.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
-    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-    const gasPrice = await this.web3Public.getGasPriceInETH();
 
-    const amountOutMin = route.outputAbsoluteAmount
-      .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
-      .toFixed(0);
+    if (this.shouldCalculateGas) {
+      const to = this.web3Private.address;
+      const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+      const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+      const gasPrice = await this.web3Public.getGasPriceInETH();
 
-    const estimatedGas = await this[gasCalculationMethodName].call(
-      this,
-      fromAmountAbsolute,
-      amountOutMin,
-      route.path,
-      to,
-      deadline
-    );
+      const amountOutMin = route.outputAbsoluteAmount
+        .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
+        .toFixed(0);
 
-    const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
-    const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
+      const estimatedGas = await this[gasCalculationMethodName].call(
+        this,
+        fromAmountAbsolute,
+        amountOutMin,
+        route.path,
+        to,
+        deadline
+      );
+
+      const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+      const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
+
+      return {
+        route,
+        gasData: {
+          estimatedGas,
+          gasFeeInEth,
+          gasFeeInUsd
+        }
+      };
+    }
 
     return {
       route,
       gasData: {
-        estimatedGas,
-        gasFeeInEth,
-        gasFeeInUsd
+        estimatedGas: new BigNumber(0),
+        gasFeeInEth: new BigNumber(0),
+        gasFeeInUsd: new BigNumber(0)
       }
     };
   }
