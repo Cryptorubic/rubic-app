@@ -159,10 +159,10 @@ export class UniswapAbstract extends InstantTradeService {
         }
       }
 
-      return estimatedGas;
+      return estimatedGas || this.tokensToTokensEstimatedGas[path.length - 2];
     } catch (e) {
       console.debug(e);
-      return estimatedGas;
+      return this.tokensToTokensEstimatedGas[path.length - 2];
     }
   }
 
@@ -176,16 +176,18 @@ export class UniswapAbstract extends InstantTradeService {
     try {
       if (walletAddress) {
         const balance = await this.web3Public.getBalance(walletAddress);
-        return balance.gte(amountIn)
-          ? await this.web3Public.getEstimatedGas(
-              this.abi,
-              this.uniswapContractAddress,
-              SWAP_METHOD.ETH_TO_TOKENS,
-              [amountOutMin, path, walletAddress, deadline],
-              walletAddress,
-              amountIn
-            )
-          : this.ethToTokensEstimatedGas[path.length - 2];
+        if (balance.gte(amountIn)) {
+          const gas = await this.web3Public.getEstimatedGas(
+            this.abi,
+            this.uniswapContractAddress,
+            SWAP_METHOD.ETH_TO_TOKENS,
+            [amountOutMin, path, walletAddress, deadline],
+            walletAddress,
+            amountIn
+          );
+          return gas || this.ethToTokensEstimatedGas[path.length - 2];
+        }
+        return this.ethToTokensEstimatedGas[path.length - 2];
       }
       return this.ethToTokensEstimatedGas[path.length - 2];
     } catch (e) {
@@ -221,10 +223,10 @@ export class UniswapAbstract extends InstantTradeService {
         }
       }
 
-      return estimatedGas;
+      return estimatedGas || this.tokensToEthEstimatedGas[path.length - 2];
     } catch (e) {
       console.debug(e);
-      return estimatedGas;
+      return this.tokensToEthEstimatedGas[path.length - 2];
     }
   }
 
