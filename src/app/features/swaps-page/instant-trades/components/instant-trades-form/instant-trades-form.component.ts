@@ -419,12 +419,15 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private isCalculatedTradeActual(
     fromAmount: string,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    gasOptimisationChecked: boolean
   ) {
     return (
       this._tradeParameters.fromToken?.address === fromToken?.address &&
       new BigNumber(this._tradeParameters.fromAmount).isEqualTo(fromAmount) &&
-      this._tradeParameters.toToken?.address === toToken?.address
+      this._tradeParameters.toToken?.address === toToken?.address &&
+      (gasOptimisationChecked === undefined ||
+        this._tradeParameters.gasOptimisationChecked === gasOptimisationChecked)
     );
   }
 
@@ -469,7 +472,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.isCalculatedTradeActual(
         tradeParams.fromAmount,
         tradeParams.fromToken,
-        tradeParams.toToken
+        tradeParams.toToken,
+        tradeParams.gasOptimisationChecked
       )
     ) {
       this.calculateBestRate();
@@ -493,7 +497,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       const calculatedTrade = await service.calculateTrade(
         new BigNumber(this.tradeParameters.fromAmount),
         this.fromToken,
-        this.toToken
+        this.toToken,
+        this.gasOptimisationChecked
       );
       if (!calculatedTrade) {
         tradeController.trade = null;
@@ -504,7 +509,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.isCalculatedTradeActual(
           calculatedTrade.from.amount.toFixed(),
           calculatedTrade.from.token,
-          calculatedTrade.to.token
+          calculatedTrade.to.token,
+          calculatedTrade.options?.calculatedTradegasOptimisationChecked
         )
       ) {
         tradeController.trade = calculatedTrade;
