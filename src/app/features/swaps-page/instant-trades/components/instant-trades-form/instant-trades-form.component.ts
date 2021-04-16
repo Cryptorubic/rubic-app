@@ -510,7 +510,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           calculatedTrade.from.amount.toFixed(),
           calculatedTrade.from.token,
           calculatedTrade.to.token,
-          calculatedTrade.options?.calculatedTradegasOptimisationChecked
+          calculatedTrade.options?.gasOptimisationChecked
         )
       ) {
         tradeController.trade = calculatedTrade;

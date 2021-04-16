@@ -126,7 +126,8 @@ export class UniswapAbstract extends InstantTradeService {
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
-        path: route.path
+        path: route.path,
+        gasOptimisation
       }
     };
   }
