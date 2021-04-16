@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
 import { OrderBookTradeService } from './order-book-trade.service';
@@ -6,7 +7,10 @@ describe('OrderBookTradeService', () => {
   let service: OrderBookTradeService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [HttpClientModule],
+      providers: [OrderBookTradeService]
+    });
     service = TestBed.inject(OrderBookTradeService);
   });
 

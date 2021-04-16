@@ -21,7 +21,7 @@ export class LogoutConfirmModalComponent {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly dialog: MatDialog,
+    private dialog: MatDialog,
     private readonly headerStore: HeaderStore
   ) {
     this.logoutProgress = false;

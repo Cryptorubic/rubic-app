@@ -22,12 +22,14 @@ abstract class InstantTradeService {
    * @param fromAmount input amount in absolute value (no pre-multiplied by decimals)
    * @param fromToken input token or blockchain native coin
    * @param toToken output token or blockchain native coin
+   * @param gasOptimisation should use gasOptimisation
    * @return parameters of possible trade
    */
   public abstract calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    gasOptimisation?: boolean
   ): Promise<InstantTrade>;
 
   /**
@@ -54,7 +56,6 @@ abstract class InstantTradeService {
     if (!this.web3Private.address) {
       throw new AccountError();
     }
-
     if (
       this.web3Private.networkName !== selectedBlockchain &&
       (this.web3Private.networkName !== `${selectedBlockchain}_TESTNET` || !this.isTestingMode)
