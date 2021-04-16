@@ -50,6 +50,7 @@ import { TokensAccordionComponent } from './components/tokens-table/components/t
 import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
 import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
+import { CheckboxComponent } from './components/checkbox/checkbox.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     TokensMobileHeaderComponent,
     TokensAccordionComponent,
     CustomTokenFormComponent,
-    WarningDisclaimerComponent
+    WarningDisclaimerComponent,
+    CheckboxComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -144,7 +146,8 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     DisclaimerTextComponent,
     TokensTableComponent,
     CustomTokenFormComponent,
-    WarningDisclaimerComponent
+    WarningDisclaimerComponent,
+    CheckboxComponent
   ]
 })
 export class SharedModule {}

@@ -170,6 +170,15 @@
   }
 }
 
+.checkbox-optimisation {
+  margin-top: 10px;
+
+  span {
+    color: rgba(black, 0.5);
+    font-size: 14px;
+  }
+}
+
 app-tooltip {
   position: absolute;
   right: -88px;
@@ -218,6 +227,7 @@ app-tooltip {
       &__from-section,
       &__to-section {
         padding: 20px 13px;
+
         box-shadow: $shadow-block;
       }
 

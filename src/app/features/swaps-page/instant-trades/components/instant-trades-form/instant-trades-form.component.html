@@ -194,6 +194,13 @@
             <span>{{ 'Best Rate' | translate }}</span>
             <img src="assets/images/icons/BestRate.svg" alt="" />
           </div>
+          <div *ngIf="index === 1" class="checkbox-optimisation">
+            <span>
+              Use Rubic optimisation
+            </span>
+            <app-checkbox [(checked)]="tradeParameters.gasOptimisationChecked">
+            </app-checkbox>
+          </div>
         </div>
       </ng-container>
     </div>
