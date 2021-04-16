@@ -98,7 +98,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public transactionHash: string;
 
-  public isTradeAvailable: boolean;
+  public waitingForProvider: boolean;
 
   public customToken = {
     from: {} as SwapToken,
@@ -456,7 +456,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public shouldAnimateButton(providerIndex: number) {
     const { tradeState } = this.trades[providerIndex];
-    return tradeState && tradeState !== TRADE_STATUS.ERROR && tradeState !== TRADE_STATUS.COMPLETED;
+    return (
+      (tradeState && tradeState !== TRADE_STATUS.ERROR && tradeState !== TRADE_STATUS.COMPLETED) ||
+      this.waitingForProvider
+    );
   }
 
   private async calculateTradeParameters() {
@@ -610,18 +613,23 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
-    this.isTradeAvailable = true;
+    this.waitingForProvider = true;
     const setTradeState = (state: TRADE_STATUS) => {
       this.trades[selectedServiceIndex].tradeState = state;
       this.selectedTradeState = state;
     };
     this._instantTradeServices[selectedServiceIndex]
       .createTrade(this.trades[selectedServiceIndex].trade, {
-        onApprove: () => setTradeState(TRADE_STATUS.APPROVAL),
-        onConfirm: () => setTradeState(TRADE_STATUS.TX_IN_PROGRESS)
+        onApprove: () => {
+          this.waitingForProvider = false;
+          setTradeState(TRADE_STATUS.APPROVAL);
+        },
+        onConfirm: () => {
+          this.waitingForProvider = false;
+          setTradeState(TRADE_STATUS.TX_IN_PROGRESS);
+        }
       })
       .then(receipt => {
-        this.isTradeAvailable = false;
         setTradeState(TRADE_STATUS.COMPLETED);
         this.transactionHash = receipt.transactionHash;
         this.instantTradesApiService.notifyInstantTradesBot({
@@ -633,6 +641,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         });
       })
       .catch((err: RubicError) => {
+        this.waitingForProvider = false;
         let data: any = { title: 'Error', descriptionText: err.comment };
         if (err instanceof MetamaskError) {
           data.title = 'Warning';
