@@ -1,0 +1,21 @@
+<mat-form-field>
+  <mat-select
+    [disableRipple]="true"
+    [(ngModel)]="selectedBlockchain"
+    (selectionChange)="onBlockchainChanges($event.value)"
+  >
+    <mat-select-trigger>
+      <img [src]="'./assets/images/icons/coins/' + selectedBlockchain.img" [alt]="" />
+      {{ selectedBlockchain.label }}
+    </mat-select-trigger>
+    <mat-option *ngFor="let blockchain of blockchains" [value]="blockchain">
+      <img
+        [src]="'./assets/images/icons/coins/' + blockchain.img"
+        width="19"
+        height="23"
+        [alt]="blockchain.label"
+      />
+      {{ blockchain.shortLabel }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
