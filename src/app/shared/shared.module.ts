@@ -51,6 +51,7 @@ import { TokensAccordionComponent } from './components/tokens-table/components/t
 import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
 import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
+import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/token-input/blockchain-select.component';
 
 @NgModule({
@@ -91,7 +92,8 @@ import { BlockchainSelectComponent } from './components/token-input/blockchain-s
     TokensAccordionComponent,
     CustomTokenFormComponent,
     WarningDisclaimerComponent,
-    BlockchainSelectComponent
+    BlockchainSelectComponent,
+    CheckboxComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -149,7 +151,8 @@ import { BlockchainSelectComponent } from './components/token-input/blockchain-s
     TokensTableComponent,
     CustomTokenFormComponent,
     WarningDisclaimerComponent,
-    BlockchainSelectComponent
+    BlockchainSelectComponent,
+    CheckboxComponent
   ]
 })
 export class SharedModule {}

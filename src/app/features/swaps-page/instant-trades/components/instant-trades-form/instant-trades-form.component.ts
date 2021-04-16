@@ -41,6 +41,8 @@ interface InstantTradeParameters {
   isCustomToTokenFormOpened: boolean;
   customFromTokenAddress: string;
   customToTokenAddress: string;
+
+  gasOptimisationChecked: boolean;
 }
 
 interface InstantTradeProviderController {
@@ -96,7 +98,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public transactionHash: string;
 
-  public isTradeAvailable: boolean;
+  public waitingForProvider: boolean;
 
   public customToken = {
     from: {} as SwapToken,
@@ -129,7 +131,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     if (
       this._tradeParameters.fromToken?.address === value.fromToken?.address &&
       this._tradeParameters.fromAmount === value.fromAmount &&
-      this._tradeParameters.toToken?.address === value.toToken?.address
+      this._tradeParameters.toToken?.address === value.toToken?.address &&
+      this._tradeParameters.gasOptimisationChecked === value.gasOptimisationChecked
     ) {
       this._tradeParameters = value;
       const toAmount = this.trades
@@ -234,6 +237,17 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     return new BigNumber(this.tradeParameters.fromAmount);
   }
 
+  get gasOptimisationChecked(): boolean {
+    return this.tradeParameters.gasOptimisationChecked;
+  }
+
+  set gasOptimisationChecked(value) {
+    this.tradeParameters = {
+      ...this.tradeParameters,
+      gasOptimisationChecked: value
+    };
+  }
+
   constructor(
     private tradeTypeService: TradeTypeService,
     private tradeParametersService: TradeParametersService,
@@ -329,7 +343,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           ...tradeParameters,
           fromToken: null,
           toToken: null,
-          fromAmount: null
+          fromAmount: null,
+          gasOptimisationChecked: true
         };
 
         this.fromToken = tradeParameters?.fromToken;
@@ -353,7 +368,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           ...tradeParameters,
           fromToken: null,
           toToken: null,
-          fromAmount: null
+          fromAmount: null,
+          gasOptimisationChecked: true
         };
 
         this.fromToken = tradeParameters?.fromToken;
@@ -403,12 +419,15 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private isCalculatedTradeActual(
     fromAmount: string,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    gasOptimisationChecked: boolean
   ) {
     return (
       this._tradeParameters.fromToken?.address === fromToken?.address &&
       new BigNumber(this._tradeParameters.fromAmount).isEqualTo(fromAmount) &&
-      this._tradeParameters.toToken?.address === toToken?.address
+      this._tradeParameters.toToken?.address === toToken?.address &&
+      (gasOptimisationChecked === undefined ||
+        this._tradeParameters.gasOptimisationChecked === gasOptimisationChecked)
     );
   }
 
@@ -437,7 +456,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public shouldAnimateButton(providerIndex: number) {
     const { tradeState } = this.trades[providerIndex];
-    return tradeState && tradeState !== TRADE_STATUS.ERROR && tradeState !== TRADE_STATUS.COMPLETED;
+    return (
+      (tradeState && tradeState !== TRADE_STATUS.ERROR && tradeState !== TRADE_STATUS.COMPLETED) ||
+      this.waitingForProvider
+    );
   }
 
   private async calculateTradeParameters() {
@@ -453,7 +475,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.isCalculatedTradeActual(
         tradeParams.fromAmount,
         tradeParams.fromToken,
-        tradeParams.toToken
+        tradeParams.toToken,
+        tradeParams.gasOptimisationChecked
       )
     ) {
       this.calculateBestRate();
@@ -477,7 +500,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       const calculatedTrade = await service.calculateTrade(
         new BigNumber(this.tradeParameters.fromAmount),
         this.fromToken,
-        this.toToken
+        this.toToken,
+        this.gasOptimisationChecked
       );
       if (!calculatedTrade) {
         tradeController.trade = null;
@@ -488,7 +512,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.isCalculatedTradeActual(
           calculatedTrade.from.amount.toFixed(),
           calculatedTrade.from.token,
-          calculatedTrade.to.token
+          calculatedTrade.to.token,
+          calculatedTrade.options?.gasOptimisationChecked
         )
       ) {
         tradeController.trade = calculatedTrade;
@@ -588,18 +613,23 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
-    this.isTradeAvailable = true;
+    this.waitingForProvider = true;
     const setTradeState = (state: TRADE_STATUS) => {
       this.trades[selectedServiceIndex].tradeState = state;
       this.selectedTradeState = state;
     };
     this._instantTradeServices[selectedServiceIndex]
       .createTrade(this.trades[selectedServiceIndex].trade, {
-        onApprove: () => setTradeState(TRADE_STATUS.APPROVAL),
-        onConfirm: () => setTradeState(TRADE_STATUS.TX_IN_PROGRESS)
+        onApprove: () => {
+          this.waitingForProvider = false;
+          setTradeState(TRADE_STATUS.APPROVAL);
+        },
+        onConfirm: () => {
+          this.waitingForProvider = false;
+          setTradeState(TRADE_STATUS.TX_IN_PROGRESS);
+        }
       })
       .then(receipt => {
-        this.isTradeAvailable = false;
         setTradeState(TRADE_STATUS.COMPLETED);
         this.transactionHash = receipt.transactionHash;
         this.instantTradesApiService.notifyInstantTradesBot({
@@ -611,6 +641,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         });
       })
       .catch((err: RubicError) => {
+        this.waitingForProvider = false;
         let data: any = { title: 'Error', descriptionText: err.comment };
         if (err instanceof MetamaskError) {
           data.title = 'Warning';

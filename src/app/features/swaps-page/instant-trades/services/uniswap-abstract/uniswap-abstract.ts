@@ -86,7 +86,8 @@ export class UniswapAbstract extends InstantTradeService {
   public async calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    gasOptimisation: boolean
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -105,6 +106,7 @@ export class UniswapAbstract extends InstantTradeService {
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const { route, gasData } = await this.getToAmountAndPath(
+      gasOptimisation,
       amountIn,
       fromTokenClone,
       toTokenClone,
@@ -124,7 +126,8 @@ export class UniswapAbstract extends InstantTradeService {
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
-        path: route.path
+        path: route.path,
+        gasOptimisation
       }
     };
   }
@@ -329,6 +332,7 @@ export class UniswapAbstract extends InstantTradeService {
   }
 
   private async getToAmountAndPath(
+    shouldOptimiseGas: boolean,
     fromAmountAbsolute: string,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
@@ -337,12 +341,45 @@ export class UniswapAbstract extends InstantTradeService {
     const routes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort((a, b) =>
       b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
     );
-    return this.getOptimalRouteAndGas(
+    if (shouldOptimiseGas) {
+      return this.getOptimalRouteAndGas(
+        fromAmountAbsolute,
+        toToken,
+        routes,
+        this[gasCalculationMethodName].bind(this)
+      );
+    }
+
+    const route = routes[0];
+    const to = this.web3Private.address;
+    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+    const gasPrice = await this.web3Public.getGasPriceInETH();
+
+    const amountOutMin = route.outputAbsoluteAmount
+      .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
+      .toFixed(0);
+
+    const estimatedGas = await this[gasCalculationMethodName].call(
+      this,
       fromAmountAbsolute,
-      toToken,
-      routes,
-      this[gasCalculationMethodName].bind(this)
+      amountOutMin,
+      route.path,
+      to,
+      deadline
     );
+
+    const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+    const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
+
+    return {
+      route,
+      gasData: {
+        estimatedGas,
+        gasFeeInEth,
+        gasFeeInUsd
+      }
+    };
   }
 
   private async getAllRoutes(
