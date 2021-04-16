@@ -241,6 +241,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
               this.queryParamsService.currentQueryParams.from
             );
           }
+          this.changeSelectedToken(this.selectedToken);
         }
       }
     });
