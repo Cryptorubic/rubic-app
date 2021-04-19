@@ -101,10 +101,22 @@ export class QueryParamsService {
     }
   }
 
-  public searchTokenBySymbol(queryParam: string, cdr: ChangeDetectorRef): SwapToken {
-    const tokens = new AsyncPipe(cdr).transform(this.$tokens);
-    const similarTokens = tokens.filter(
-      token => token.symbol === queryParam && token.blockchain === this.currentQueryParams.chain
+  public removeQueryParam(key: keyof QueryParams): void {
+    this.currentQueryParams[key] = undefined;
+    this.navigate();
+  }
+
+  public searchTokenBySymbol(
+    queryParam: string,
+    cdr: ChangeDetectorRef,
+    tokensList?: List<any>,
+    isBridge?: boolean
+  ): SwapToken {
+    const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
+    const similarTokens = tokens.filter(token =>
+      isBridge
+        ? token.symbol === queryParam
+        : token.symbol === queryParam && token.blockchain === this.currentQueryParams.chain
     );
 
     return similarTokens.size > 1
@@ -114,11 +126,15 @@ export class QueryParamsService {
 
   public async searchTokenByAddress(
     queryParam: string,
-    cdr: ChangeDetectorRef
+    cdr: ChangeDetectorRef,
+    tokensList?: List<any>,
+    isBridge?: boolean
   ): Promise<SwapToken> {
-    const tokens = new AsyncPipe(cdr).transform(this.$tokens);
-    const searchingToken = tokens.find(
-      token => token.address === queryParam && token.blockchain === this.currentQueryParams.chain
+    const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
+    const searchingToken = tokens.find(token =>
+      isBridge
+        ? token.address === queryParam
+        : token.address === queryParam && token.blockchain === this.currentQueryParams.chain
     );
 
     return searchingToken || (await this.getCustomToken(queryParam));

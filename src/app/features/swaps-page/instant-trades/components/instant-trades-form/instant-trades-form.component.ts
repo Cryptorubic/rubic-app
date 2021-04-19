@@ -321,7 +321,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         fromToken: null,
         toToken: null,
         fromAmount: null,
-        gasOptimisationChecked: this.gasOptimisationChecked
+        gasOptimisationChecked: true
       };
 
       this.fromToken = tradeParameters?.fromToken;

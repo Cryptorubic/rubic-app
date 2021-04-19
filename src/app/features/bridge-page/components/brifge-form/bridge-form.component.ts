@@ -127,8 +127,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     this.selectedTokenAsInputToken = this.dropDownTokens.find(
       token => token.address === this.selectedToken?.[this.fromBlockchain.addressName]
     );
-
-    this.queryParamsService.setQueryParam('from', this.selectedToken.symbol);
+    if (value) {
+      this.queryParamsService.setQueryParam('from', this.selectedToken.symbol);
+    } else {
+      this.queryParamsService.removeQueryParam('from');
+    }
   }
 
   get fromBlockchain() {
@@ -244,12 +247,16 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         if (this.queryParamsService.isAddress(this.queryParamsService.currentQueryParams.from)) {
           token = this.queryParamsService.searchTokenByAddress(
             this.queryParamsService.currentQueryParams.from,
-            this.cdr
+            this.cdr,
+            this.tokens,
+            true
           );
         } else {
           token = this.queryParamsService.searchTokenBySymbol(
             this.queryParamsService.currentQueryParams.from,
-            this.cdr
+            this.cdr,
+            this.tokens,
+            true
           );
         }
         this.changeSelectedToken(token);
@@ -264,7 +271,10 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     if (this.selectedToken) {
       this.changeSelectedToken(this.selectedToken);
     }
-    this.queryParamsService.setQueryParam('from', this.selectedToken.symbol);
+    this.queryParamsService.setQueryParam(
+      'from',
+      this.selectedToken[this._fromBlockchain.symbolName]
+    );
   }
 
   private changeSelectedToken(token: BridgeToken) {
