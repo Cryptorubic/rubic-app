@@ -45,6 +45,9 @@ export class Web3PublicService {
             const testingConnection = this.connectionLinks.find(
               c => c.blockchainName === `${connection.blockchainName}_TESTNET`
             );
+            if (!testingConnection) {
+              return;
+            }
 
             this[connection.blockchainName] = new Web3Public(
               new Web3(testingConnection.rpcLink),

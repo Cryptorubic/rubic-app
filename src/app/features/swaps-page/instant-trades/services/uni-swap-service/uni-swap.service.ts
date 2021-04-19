@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import {
   abi,
@@ -35,11 +34,5 @@ export class UniSwapService extends UniswapAbstract {
     this.web3Public = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.shouldCalculateGas = true;
-
-    useTestingModeService.isTestingMode.subscribe(value => {
-      if (value) {
-        this.web3Public = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
-      }
-    });
   }
 }
