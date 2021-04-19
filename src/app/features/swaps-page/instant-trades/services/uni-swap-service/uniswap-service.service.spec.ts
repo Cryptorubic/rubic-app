@@ -10,7 +10,7 @@ import publicProviderServiceStub from '../../../../../core/services/blockchain/p
 import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ETH, WEENUS, YEENUS } from '../../../../../../test/tokens/eth-tokens';
+import { ETH, WEENUS, XEENUS, YEENUS } from '../../../../../../test/tokens/eth-tokens';
 import { uniSwapContracts } from './uni-swap-constants';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 
@@ -50,7 +50,7 @@ describe('UniswapServiceService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('calculate token-token price', async done => {
+  it('calculate token-token price with allowance and short path', async done => {
     const fromAmount = new BigNumber(2);
 
     await web3Private.approveTokens(
@@ -63,9 +63,30 @@ describe('UniswapServiceService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.options.path.length).toBe(2);
     // @ts-ignore
     expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).not.toBeTruthy();
-    console.log(trade.estimatedGas);
+    console.log(trade.estimatedGas.toFixed());
+    done();
+  });
+
+  it('calculate token-token price with allowance and long path', async done => {
+    const fromAmount = new BigNumber(2);
+
+    await web3Private.approveTokens(
+      XEENUS.address,
+      uniSwapContractAddress,
+      new BigNumber(3).multipliedBy(10 ** WEENUS.decimals)
+    );
+
+    const trade = await service.calculateTrade(fromAmount, XEENUS, YEENUS, false);
+
+    expect(trade).toBeTruthy();
+    expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.options.path.length).toBe(3);
+    // @ts-ignore
+    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[1])).not.toBeTruthy();
+    console.log(trade.estimatedGas.toFixed());
     done();
   });
 
@@ -78,9 +99,10 @@ describe('UniswapServiceService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.options.path.length).toBe(2);
     // @ts-ignore
     expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).toBeTruthy();
-    console.log(trade.estimatedGas);
+    console.log(trade.estimatedGas.toFixed());
     done();
   });
 
@@ -97,6 +119,7 @@ describe('UniswapServiceService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.options.path.length).toBe(2);
     // @ts-ignore
     expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).toBeTruthy();
     console.log(trade.estimatedGas);
@@ -110,6 +133,7 @@ describe('UniswapServiceService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.options.path.length).toBe(2);
     console.log(trade.estimatedGas);
     done();
   });
@@ -121,6 +145,7 @@ describe('UniswapServiceService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.options.path.length).toBe(2);
     // @ts-ignore
     expect(trade.estimatedGas.eq(service.ethToTokensEstimatedGas[0])).toBeTruthy();
     console.log(trade.estimatedGas);
@@ -140,6 +165,7 @@ describe('UniswapServiceService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.options.path.length).toBe(2);
     // @ts-ignore
     expect(trade.estimatedGas.eq(service.tokensToEthEstimatedGas[0])).not.toBeTruthy();
     console.log(trade.estimatedGas);
@@ -155,6 +181,7 @@ describe('UniswapServiceService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
+    expect(trade.options.path.length).toBe(2);
     // @ts-ignore
     expect(trade.estimatedGas.eq(service.tokensToEthEstimatedGas[0])).toBeTruthy();
     console.log(trade.estimatedGas);
