@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export const SERVER_REST_URL = '/api/v1/';
+export const SERVER_REST_URL = '/api/';
 
 @Injectable({
   providedIn: 'root'

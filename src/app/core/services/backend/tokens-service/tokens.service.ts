@@ -7,18 +7,15 @@ import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN
 import { coingeckoTestTokens } from '../../../../../test/tokens/coingecko-tokens';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 
-interface TokensListResponse {
-  total: number;
-  tokens: BackendToken[];
-}
-
 interface BackendToken {
-  token_title: string;
-  token_short_title: string;
-  platform: string;
+  name: string;
+  symbol: string;
+  blockchain_network: string;
   address: string;
   decimals: number;
-  image_link: string;
+  image: string;
+  rank: number;
+  coingecko_id: number;
   coingecko_rank: number;
   usd_price: number;
 }
@@ -27,13 +24,14 @@ interface BackendToken {
   providedIn: 'root'
 })
 export class TokensService {
-  private getTokensUrl = 'coingecko_tokens/';
+  private getTokensUrl = 'tokens/';
 
   private readonly maxRankValue = 999999999;
 
   private backendBlockchains = {
     ethereum: BLOCKCHAIN_NAME.ETHEREUM,
-    'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    polygon: BLOCKCHAIN_NAME.MATIC
   };
 
   public tokens: BehaviorSubject<List<SwapToken>> = new BehaviorSubject(List([]));
@@ -50,19 +48,16 @@ export class TokensService {
 
   private getTokensList(): void {
     this.httpService.get(this.getTokensUrl).subscribe(
-      (response: TokensListResponse) =>
-        this.tokens.next(List(response.tokens.map(this.parseToken.bind(this)))),
-      err => console.log(`Error retrieving tokens ${err}`)
+      (tokens: BackendToken[]) => this.tokens.next(List(tokens.map(this.parseToken.bind(this)))),
+      err => console.error('Error retrieving tokens', err)
     );
   }
 
   private parseToken(token: BackendToken): SwapToken {
     return {
       ...token,
-      name: token.token_title,
-      symbol: token.token_short_title,
-      blockchain: this.backendBlockchains[token.platform],
-      image: token.image_link,
+      blockchain: this.backendBlockchains[token.blockchain_network],
+      image: token.image,
       rank: token.coingecko_rank || this.maxRankValue,
       price: token.usd_price
     };

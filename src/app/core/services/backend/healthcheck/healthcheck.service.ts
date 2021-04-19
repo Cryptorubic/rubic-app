@@ -9,7 +9,7 @@ export class HealthcheckService {
 
   public healthCheck(): Promise<boolean> {
     return new Promise(resolve => {
-      this.httpClient.get('/api/v1/healthcheck', { observe: 'response' }).subscribe(
+      this.httpClient.get('/api/healthcheck', { observe: 'response' }).subscribe(
         response => resolve(response.status === 200),
         () => resolve(false)
       );
