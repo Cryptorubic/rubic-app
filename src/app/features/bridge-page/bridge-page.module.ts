@@ -6,6 +6,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { HttpClientModule } from '@angular/common/http';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { BridgePageRoutingModule } from './bridge-page-routing.module';
 import { BridgeComponent } from './components/bridge/bridge.component';
 import { BridgeService } from './services/bridge.service';
@@ -41,8 +44,12 @@ import { DepositButtonComponent } from './components/bridge-table/deposit-button
     TranslateModule,
     MatDialogModule,
     HttpClientModule,
-    InlineSVGModule.forRoot()
+    InlineSVGModule.forRoot(),
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
+  exports: [MatFormFieldModule, MatInputModule],
   providers: [
     BridgeService,
     BinanceBridgeProviderService,

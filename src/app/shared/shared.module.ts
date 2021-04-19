@@ -13,6 +13,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { InlineSVGModule } from 'ng-inline-svg';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -20,7 +22,6 @@ import { MessageBoxComponent } from './components/message-box/message-box.compon
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
-import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
 import { CollaborationsComponent } from './components/collaborations/collaborations.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
@@ -51,6 +52,8 @@ import { TokensMobileHeaderComponent } from './components/tokens-table/component
 import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
 import { NetworkErrorComponent } from './components/network-error/network-error.component';
+import { CheckboxComponent } from './components/checkbox/checkbox.component';
+import { BlockchainSelectComponent } from './components/token-input/blockchain-select.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +73,6 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainsInputComponent,
     BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,
@@ -91,7 +93,9 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
     TokensAccordionComponent,
     CustomTokenFormComponent,
     WarningDisclaimerComponent,
-    NetworkErrorComponent
+    NetworkErrorComponent,
+    BlockchainSelectComponent,
+    CheckboxComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -109,7 +113,10 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
     ScrollingModule,
     MatTooltipModule,
     MatSelectModule,
-    InlineSVGModule.forRoot()
+    InlineSVGModule.forRoot(),
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule
   ],
   exports: [
     FooterComponent,
@@ -128,7 +135,6 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainsInputComponent,
     BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,
@@ -147,7 +153,9 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
     TokensTableComponent,
     CustomTokenFormComponent,
     WarningDisclaimerComponent,
-    NetworkErrorComponent
+    NetworkErrorComponent,
+    BlockchainSelectComponent,
+    CheckboxComponent
   ]
 })
 export class SharedModule {}

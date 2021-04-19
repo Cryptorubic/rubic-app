@@ -14,8 +14,8 @@
     height: 100%;
     padding: 11px 139px 11px 14px;
 
-    font-family: $main-font;
     font-size: 18px;
+    font-family: $ubuntu-font;
 
     background: $grey-background;
     border: 1px solid white;
@@ -49,9 +49,10 @@
 @include b($mobile-sm) {
   .tokens-form {
     &__input {
-      font-size: 12px;
-      padding-left: 11px;
       padding-right: 11px;
+      padding-left: 11px;
+
+      font-size: 12px;
     }
   }
 }

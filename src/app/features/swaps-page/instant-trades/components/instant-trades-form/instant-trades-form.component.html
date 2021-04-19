@@ -177,7 +177,6 @@
                 tradeParameters.fromToken
               ) ||
               !tradeController.trade ||
-              isTradeAvailable ||
               shouldAnimateButton(index) ||
               (selectedTradeState &&
                 selectedTradeState !== TRADE_STATUS.ERROR &&
@@ -193,6 +192,10 @@
           >
             <span>{{ 'Best Rate' | translate }}</span>
             <img src="assets/images/icons/BestRate.svg" alt="" />
+          </div>
+          <div *ngIf="index === 1 && blockchain === BLOCKCHAIN_NAME.ETHEREUM" class="checkbox-optimisation">
+            <span>Use Rubic optimisation</span>
+            <app-checkbox [(checked)]="gasOptimisationChecked"></app-checkbox>
           </div>
         </div>
       </ng-container>
