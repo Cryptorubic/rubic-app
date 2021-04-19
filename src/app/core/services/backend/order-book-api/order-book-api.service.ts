@@ -3,7 +3,6 @@ import { List } from 'immutable';
 import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
   OrderBookDataToken,
   OrderBookTradeData,
@@ -18,6 +17,7 @@ import { Web3PublicService } from '../../blockchain/web3-public-service/web3-pub
 import { OrderBookTradeApi } from './types/trade-api';
 import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/models/trade-form';
 import { OrderBookCommonService } from '../../order-book-common/order-book-common.service';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface PublicSwapsResponse extends OrderBookTradeApi {
   memo_contract: string;
@@ -88,13 +88,13 @@ export class OrderBookApiService {
   ): Promise<OrderBookTradeData> {
     let blockchain;
     switch (tradeApi.network) {
-      case 1:
+      case '466225d2-266b-4d6b-8bf7-c5c35b87162e':
         blockchain = BLOCKCHAIN_NAME.ETHEREUM;
         break;
-      case 22:
+      case '243ead2f-29da-4027-8e06-a9371a756cdd':
         blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
         break;
-      case 24:
+      case '6433befc-8f57-4093-b2db-a7e23465d819':
         blockchain = BLOCKCHAIN_NAME.MATIC;
       // no default
     }

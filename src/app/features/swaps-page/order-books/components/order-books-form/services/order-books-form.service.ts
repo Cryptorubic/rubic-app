@@ -100,7 +100,7 @@ export class OrderBooksFormService implements OnDestroy {
     const contractAddress = ORDER_BOOK_CONTRACT.ADDRESSES[2][tradeForm.blockchain];
     const contractAbi = ORDER_BOOK_CONTRACT.ABI[2] as any[];
 
-    const tradeApi = this.generateTradeApiObject(tradeForm);
+    const tradeApi = this.createTradeApiObject(tradeForm);
 
     const fee: string = await web3Public.callContractMethod(
       contractAddress,
@@ -147,17 +147,17 @@ export class OrderBooksFormService implements OnDestroy {
     };
   }
 
-  private generateTradeApiObject(tradeForm: OrderBookTradeForm): OrderBookTradeApi {
+  private createTradeApiObject(tradeForm: OrderBookTradeForm): OrderBookTradeApi {
     let network;
     switch (tradeForm.blockchain) {
       case BLOCKCHAIN_NAME.ETHEREUM:
-        network = 1;
+        network = '466225d2-266b-4d6b-8bf7-c5c35b87162e';
         break;
       case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        network = 22;
+        network = '243ead2f-29da-4027-8e06-a9371a756cdd';
         break;
       case BLOCKCHAIN_NAME.MATIC:
-        network = 24;
+        network = '6433befc-8f57-4093-b2db-a7e23465d819';
       // no default
     }
 
