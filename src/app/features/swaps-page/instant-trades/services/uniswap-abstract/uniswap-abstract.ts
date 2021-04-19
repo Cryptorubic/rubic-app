@@ -88,7 +88,8 @@ export class UniswapAbstract extends InstantTradeService {
   public async calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    gasOptimisation: boolean
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -96,17 +97,20 @@ export class UniswapAbstract extends InstantTradeService {
 
     if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
       fromTokenClone.address = this.WETHAddress;
+      fromTokenClone.decimals = 18;
       estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
     }
 
     if (this.web3Public.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.WETHAddress;
+      toTokenClone.decimals = 18;
       estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
     }
 
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const { route, gasData } = await this.getToAmountAndPath(
+      gasOptimisation,
       amountIn,
       fromTokenClone,
       toTokenClone,
@@ -120,13 +124,14 @@ export class UniswapAbstract extends InstantTradeService {
       },
       to: {
         token: toToken,
-        amount: route.outputAbsoluteAmount.div(10 ** toToken.decimals)
+        amount: route.outputAbsoluteAmount.div(10 ** toTokenClone.decimals)
       },
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
-        path: route.path
+        path: route.path,
+        gasOptimisation
       }
     };
   }
@@ -158,10 +163,10 @@ export class UniswapAbstract extends InstantTradeService {
         }
       }
 
-      return estimatedGas;
+      return estimatedGas || this.tokensToTokensEstimatedGas[path.length - 2];
     } catch (e) {
       console.debug(e);
-      return estimatedGas;
+      return this.tokensToTokensEstimatedGas[path.length - 2];
     }
   }
 
@@ -175,16 +180,18 @@ export class UniswapAbstract extends InstantTradeService {
     try {
       if (walletAddress) {
         const balance = await this.web3Public.getBalance(walletAddress);
-        return balance.gte(amountIn)
-          ? await this.web3Public.getEstimatedGas(
-              this.abi,
-              this.uniswapContractAddress,
-              SWAP_METHOD.ETH_TO_TOKENS,
-              [amountOutMin, path, walletAddress, deadline],
-              walletAddress,
-              amountIn
-            )
-          : this.ethToTokensEstimatedGas[path.length - 2];
+        if (balance.gte(amountIn)) {
+          const gas = await this.web3Public.getEstimatedGas(
+            this.abi,
+            this.uniswapContractAddress,
+            SWAP_METHOD.ETH_TO_TOKENS,
+            [amountOutMin, path, walletAddress, deadline],
+            walletAddress,
+            amountIn
+          );
+          return gas || this.ethToTokensEstimatedGas[path.length - 2];
+        }
+        return this.ethToTokensEstimatedGas[path.length - 2];
       }
       return this.ethToTokensEstimatedGas[path.length - 2];
     } catch (e) {
@@ -220,10 +227,10 @@ export class UniswapAbstract extends InstantTradeService {
         }
       }
 
-      return estimatedGas;
+      return estimatedGas || this.tokensToEthEstimatedGas[path.length - 2];
     } catch (e) {
       console.debug(e);
-      return estimatedGas;
+      return this.tokensToEthEstimatedGas[path.length - 2];
     }
   }
 
@@ -236,11 +243,25 @@ export class UniswapAbstract extends InstantTradeService {
   ): Promise<TransactionReceipt> {
     await this.checkSettings(this.blockchain);
     await this.checkBalance(trade);
-    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
+
+    const fromTokenClone = { ...trade.from.token };
+    const toTokenClone = { ...trade.to.token };
+
+    if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
+      fromTokenClone.address = this.WETHAddress;
+      fromTokenClone.decimals = 18;
+    }
+
+    if (this.web3Public.isNativeAddress(toTokenClone.address)) {
+      toTokenClone.address = this.WETHAddress;
+      toTokenClone.decimals = 18;
+    }
+
+    const amountIn = trade.from.amount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const amountOutMin = trade.to.amount
       .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
-      .multipliedBy(10 ** trade.to.token.decimals)
+      .multipliedBy(10 ** toTokenClone.decimals)
       .toFixed(0);
     const { path } = trade.options;
     const to = this.web3Private.address;
@@ -266,8 +287,6 @@ export class UniswapAbstract extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
-    trade.path[0] = this.WETHAddress;
-
     return this.web3Private.executeContractMethod(
       this.uniswapContractAddress,
       this.abi,
@@ -287,8 +306,6 @@ export class UniswapAbstract extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
-    trade.path[1] = this.WETHAddress;
-
     await this.provideAllowance(
       trade.path[0],
       new BigNumber(trade.amountIn),
@@ -331,6 +348,7 @@ export class UniswapAbstract extends InstantTradeService {
   }
 
   private async getToAmountAndPath(
+    shouldOptimiseGas: boolean,
     fromAmountAbsolute: string,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
@@ -339,8 +357,7 @@ export class UniswapAbstract extends InstantTradeService {
     const routes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort((a, b) =>
       b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
     );
-
-    if (this.shouldCalculateGas) {
+    if (shouldOptimiseGas && this.shouldCalculateGas) {
       return this.getOptimalRouteAndGas(
         fromAmountAbsolute,
         toToken,
@@ -348,12 +365,43 @@ export class UniswapAbstract extends InstantTradeService {
         this[gasCalculationMethodName].bind(this)
       );
     }
-    const optimalRoute = routes.sort((a, b) =>
-      b.outputAbsoluteAmount.minus(a.outputAbsoluteAmount).gt(0) ? 1 : -1
-    )[0];
+
+    const route = routes[0];
+
+    if (this.shouldCalculateGas) {
+      const to = this.web3Private.address;
+      const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+      const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+      const gasPrice = await this.web3Public.getGasPriceInETH();
+
+      const amountOutMin = route.outputAbsoluteAmount
+        .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
+        .toFixed(0);
+
+      const estimatedGas = await this[gasCalculationMethodName].call(
+        this,
+        fromAmountAbsolute,
+        amountOutMin,
+        route.path,
+        to,
+        deadline
+      );
+
+      const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+      const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
+
+      return {
+        route,
+        gasData: {
+          estimatedGas,
+          gasFeeInEth,
+          gasFeeInUsd
+        }
+      };
+    }
 
     return {
-      route: optimalRoute,
+      route,
       gasData: {
         estimatedGas: new BigNumber(0),
         gasFeeInEth: new BigNumber(0),

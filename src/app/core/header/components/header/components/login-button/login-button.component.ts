@@ -26,7 +26,7 @@ export class LoginButtonComponent {
         return;
       }
       const e = error instanceof RubicError ? error : new RubicError();
-      const data: any = { title: 'Warinig', descriptionText: e.comment };
+      const data: any = { title: 'Warning', descriptionText: e.comment };
       this.dialog.open(MessageBoxComponent, {
         width: '400px',
         data
