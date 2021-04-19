@@ -34,6 +34,7 @@ export class UniSwapService extends UniswapAbstract {
     this.web3Private = web3Private;
     this.web3Public = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.shouldCalculateGas = true;
 
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
