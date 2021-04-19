@@ -398,32 +398,4 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public changeWalletAddressTo(newAddress: string) {
     this.toWalletAddress = newAddress;
   }
-
-  // private isAddressQuery(paramName: string): boolean {
-  //   return paramName.length > 10 && paramName.slice(0, 2) === '0x';
-  // }
-
-  // private searchTokenBySymbol(queryParam: string): BridgeToken {
-  //   const similarTokens = this.tokens.filter(
-  //     token => token.symbol.toLowerCase() === queryParam.toLowerCase()
-  //   );
-
-  //   return similarTokens.size > 1
-  //     ? similarTokens.find(token => token.used_in_iframe)
-  //     : similarTokens.first();
-  // }
-
-  // private searchTokenByAddress(queryParam: string): BridgeToken {
-  //   if (this.fromBlockchain.name === BLOCKCHAIN_NAME.ETHEREUM) {
-  //     return this.tokens.find(
-  //       token => token.ethContractAddress.toLocaleLowerCase() === queryParam.toLocaleLowerCase()
-  //     );
-  //   }
-  //   if (this.fromBlockchain.name === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-  //     return this.tokens.find(
-  //       token => token.bscContractAddress.toLocaleLowerCase() === queryParam.toLocaleLowerCase()
-  //     );
-  //   }
-  //   return null;
-  // }
 }
