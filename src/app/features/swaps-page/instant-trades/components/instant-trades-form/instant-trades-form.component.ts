@@ -41,7 +41,7 @@ interface InstantTradeParameters {
   customFromTokenAddress: string;
   customToTokenAddress: string;
 
-  gasOptimisationChecked: boolean;
+  gasOptimizationChecked: boolean;
 }
 
 interface InstantTradeProviderController {
@@ -127,7 +127,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this._tradeParameters.fromToken?.address === value.fromToken?.address &&
       this._tradeParameters.fromAmount === value.fromAmount &&
       this._tradeParameters.toToken?.address === value.toToken?.address &&
-      this._tradeParameters.gasOptimisationChecked === value.gasOptimisationChecked
+      this._tradeParameters.gasOptimizationChecked === value.gasOptimizationChecked
     ) {
       this._tradeParameters = value;
       const toAmount = this.trades
@@ -216,14 +216,14 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     return new BigNumber(this.tradeParameters.fromAmount);
   }
 
-  get gasOptimisationChecked(): boolean {
-    return this.tradeParameters.gasOptimisationChecked;
+  get gasOptimizationChecked(): boolean {
+    return this.tradeParameters.gasOptimizationChecked;
   }
 
-  set gasOptimisationChecked(value) {
+  set gasOptimizationChecked(value) {
     this.tradeParameters = {
       ...this.tradeParameters,
-      gasOptimisationChecked: value
+      gasOptimizationChecked: value
     };
   }
 
@@ -321,7 +321,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         fromToken: null,
         toToken: null,
         fromAmount: null,
-        gasOptimisationChecked: true
+        gasOptimizationChecked: true
       };
 
       this.fromToken = tradeParameters?.fromToken;
@@ -335,14 +335,14 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     fromAmount: string,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
-    gasOptimisationChecked: boolean
+    gasOptimizationChecked: boolean
   ) {
     return (
       this._tradeParameters.fromToken?.address === fromToken?.address &&
       new BigNumber(this._tradeParameters.fromAmount).isEqualTo(fromAmount) &&
       this._tradeParameters.toToken?.address === toToken?.address &&
-      (gasOptimisationChecked === undefined ||
-        this._tradeParameters.gasOptimisationChecked === gasOptimisationChecked)
+      (gasOptimizationChecked === undefined ||
+        this._tradeParameters.gasOptimizationChecked === gasOptimizationChecked)
     );
   }
 
@@ -391,7 +391,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         tradeParams.fromAmount,
         tradeParams.fromToken,
         tradeParams.toToken,
-        tradeParams.gasOptimisationChecked
+        tradeParams.gasOptimizationChecked
       )
     ) {
       this.calculateBestRate();
@@ -416,7 +416,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         new BigNumber(this.tradeParameters.fromAmount),
         this.fromToken,
         this.toToken,
-        this.gasOptimisationChecked
+        this.gasOptimizationChecked
       );
       if (!calculatedTrade) {
         tradeController.trade = null;
@@ -428,7 +428,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           calculatedTrade.from.amount.toFixed(),
           calculatedTrade.from.token,
           calculatedTrade.to.token,
-          calculatedTrade.options?.gasOptimisationChecked
+          calculatedTrade.options?.gasOptimizationChecked
         )
       ) {
         tradeController.trade = calculatedTrade;
