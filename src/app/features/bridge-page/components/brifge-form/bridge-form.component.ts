@@ -217,7 +217,9 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     this.setBlockchainLabelName();
     this.tokensSubscription$ = this.bridgeService.tokens.subscribe(tokens => {
       this.tokens = tokens;
-      this.initializeForm();
+      if (tokens.size > 0) {
+        this.initializeForm();
+      }
     });
     this.addressSubscription$ = this.bridgeService.walletAddress.subscribe(address => {
       this.fromWalletAddress = address;
@@ -231,36 +233,34 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   }
 
   private initializeForm(): void {
-    if (this.tokens.size > 0) {
-      if (!this.queryParamsService.currentQueryParams.chain) {
-        this.queryParamsService.setQueryParam('chain', this.fromBlockchain.symbolName);
+    if (!this.queryParamsService.currentQueryParams.chain) {
+      this.queryParamsService.setQueryParam('chain', this.fromBlockchain.symbolName);
+    } else {
+      this.fromBlockchain = this.blockchainsList.find(
+        blockchain => blockchain.symbolName === this.queryParamsService.currentQueryParams.chain
+      );
+    }
+    if (this.queryParamsService.currentQueryParams.amount) {
+      this.fromNumber = new BigNumber(this.queryParamsService.currentQueryParams.amount);
+    }
+    if (this.queryParamsService.currentQueryParams.from) {
+      let token;
+      if (this.queryParamsService.isAddress(this.queryParamsService.currentQueryParams.from)) {
+        token = this.queryParamsService.searchTokenByAddress(
+          this.queryParamsService.currentQueryParams.from,
+          this.cdr,
+          this.tokens,
+          true
+        );
       } else {
-        this.fromBlockchain = this.blockchainsList.find(
-          blockchain => blockchain.symbolName === this.queryParamsService.currentQueryParams.chain
+        token = this.queryParamsService.searchTokenBySymbol(
+          this.queryParamsService.currentQueryParams.from,
+          this.cdr,
+          this.tokens,
+          true
         );
       }
-      if (this.queryParamsService.currentQueryParams.amount) {
-        this.fromNumber = new BigNumber(this.queryParamsService.currentQueryParams.amount);
-      }
-      if (this.queryParamsService.currentQueryParams.from) {
-        let token;
-        if (this.queryParamsService.isAddress(this.queryParamsService.currentQueryParams.from)) {
-          token = this.queryParamsService.searchTokenByAddress(
-            this.queryParamsService.currentQueryParams.from,
-            this.cdr,
-            this.tokens,
-            true
-          );
-        } else {
-          token = this.queryParamsService.searchTokenBySymbol(
-            this.queryParamsService.currentQueryParams.from,
-            this.cdr,
-            this.tokens,
-            true
-          );
-        }
-        this.changeSelectedToken(token);
-      }
+      this.changeSelectedToken(token);
     }
   }
 

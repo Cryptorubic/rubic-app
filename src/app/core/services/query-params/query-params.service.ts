@@ -1,5 +1,5 @@
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { AsyncPipe, DOCUMENT } from '@angular/common';
+import { ChangeDetectorRef, Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
 import { Observable } from 'rxjs';
@@ -11,17 +11,19 @@ import { TradeParametersService } from '../swaps/trade-parameters-service/trade-
 import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
 import { QueryParams } from './models/query-params';
 
+type DefaultQueryParams = {
+  [BLOCKCHAIN_NAME.ETHEREUM]: QueryParams;
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: QueryParams;
+  bridge: QueryParams;
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class QueryParamsService {
   public currentQueryParams: QueryParams;
 
-  public defaultBSCparams: QueryParams;
-
-  public defaultETHparams: QueryParams;
-
-  public defaultBridgeParams: QueryParams;
+  public defaultQueryParams: DefaultQueryParams;
 
   private $tokens: Observable<List<SwapToken>>;
 
@@ -30,43 +32,54 @@ export class QueryParamsService {
     private readonly tradeParametersService: TradeParametersService,
     private readonly tokensService: TokensService,
     private readonly tradeTypeService: TradeTypeService,
-    private readonly web3Public: Web3PublicService
+    private readonly web3Public: Web3PublicService,
+    @Inject(DOCUMENT) private document: Document,
+    private readonly router: Router
   ) {
     this.$tokens = this.tokensService.tokens.asObservable();
-    this.defaultBSCparams = {
-      from: 'BNB',
-      to: 'BRBC',
-      amount: '1'
-    };
-    this.defaultETHparams = {
-      from: 'ETH',
-      to: 'RBC',
-      amount: '1'
-    };
-    this.defaultBridgeParams = {
-      chain: 'ethSymbol'
+    this.defaultQueryParams = {
+      [BLOCKCHAIN_NAME.ETHEREUM]: {
+        from: 'ETH',
+        to: 'RBC',
+        amount: '1'
+      },
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+        from: 'BNB',
+        to: 'BRBC',
+        amount: '1'
+      },
+      bridge: {
+        chain: 'ethSymbol'
+      }
     };
   }
 
-  public async initiateTradesParams(params: QueryParams, cdr: ChangeDetectorRef): Promise<void> {
-    const queryParams = this.setDefaultParams(params);
-    this.currentQueryParams = queryParams;
+  public initiateTradesParams(params: QueryParams): void {
+    this.currentQueryParams = this.setDefaultParams(params);
+  }
+
+  public async setupTradeForm(cdr: ChangeDetectorRef): Promise<void> {
     const chain =
-      queryParams.chain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+      this.currentQueryParams?.chain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
         ? BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
         : BLOCKCHAIN_NAME.ETHEREUM;
     const tradeParams = {
-      fromToken: (await this.getToken('from', cdr)) || undefined,
-      toToken: (await this.getToken('to', cdr)) || undefined,
+      fromToken: (this.currentQueryParams.from && (await this.getToken('from', cdr))) || undefined,
+      toToken: (this.currentQueryParams.to && (await this.getToken('to', cdr))) || undefined,
       fromAmount:
-        queryParams.amount || this.tradeParametersService.getTradeParameters(chain).fromAmount,
+        this.currentQueryParams.amount ||
+        this.tradeParametersService.getTradeParameters(chain).fromAmount,
       toAmount: this.tradeParametersService.getTradeParameters(chain).toAmount,
       isCustomFromTokenFormOpened: false,
       isCustomToTokenFormOpened: false,
       customFromTokenAddress:
-        queryParams.from && this.isAddress(queryParams.from) ? queryParams.from : undefined,
+        this.currentQueryParams.from && this.isAddress(this.currentQueryParams.from)
+          ? this.currentQueryParams.from
+          : undefined,
       customToTokenAddress:
-        queryParams.to && this.isAddress(queryParams.to) ? queryParams.to : undefined
+        this.currentQueryParams.to && this.isAddress(this.currentQueryParams.to)
+          ? this.currentQueryParams.to
+          : undefined
     };
     this.tradeParametersService.setTradeParameters(chain, tradeParams);
     this.tradeTypeService.setBlockchain(chain);
@@ -74,9 +87,9 @@ export class QueryParamsService {
 
   public initiateBridgeParams(params: QueryParams): void {
     this.currentQueryParams = {
-      from: this.defaultBridgeParams.from || params.from,
-      amount: this.defaultBridgeParams.amount || params.amount,
-      chain: this.defaultBridgeParams.chain || params.chain
+      from: this.defaultQueryParams.bridge.from || params.from,
+      amount: this.defaultQueryParams.bridge.amount || params.amount,
+      chain: this.defaultQueryParams.bridge.chain || params.chain
     };
   }
 
@@ -88,6 +101,21 @@ export class QueryParamsService {
     return !this.isAddress(tokenInfo)
       ? this.searchTokenBySymbol(tokenInfo, cdr)
       : this.searchTokenByAddress(tokenInfo, cdr);
+  }
+
+  public setupQueryParams(queryParams: QueryParams): void {
+    if (queryParams) {
+      if (queryParams.iframe === 'true') {
+        this.document.body.classList.add('iframe');
+      }
+      const route = this.router.url.split('?')[0].substr(1);
+      const hasParams = Object.keys(queryParams).length !== 0;
+      if (hasParams && route !== 'bridge') {
+        this.initiateTradesParams(queryParams);
+      } else if (hasParams) {
+        this.initiateBridgeParams(queryParams);
+      }
+    }
   }
 
   public isAddress(token: string): boolean {
@@ -168,26 +196,17 @@ export class QueryParamsService {
   private setDefaultParams(queryParams: QueryParams): QueryParams {
     const chain =
       queryParams.chain !== BLOCKCHAIN_NAME.MATIC ? queryParams.chain : BLOCKCHAIN_NAME.ETHEREUM;
-    let newQueryParams: QueryParams;
-
-    if (queryParams.from || queryParams.to) {
-      if (chain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-        newQueryParams = {
+    return queryParams.from || queryParams.to
+      ? {
           ...queryParams,
-          from: queryParams.from || this.defaultBSCparams.from,
-          to: queryParams.to || this.defaultBSCparams.to,
-          amount: queryParams.amount || this.defaultBSCparams.amount
-        };
-      } else {
-        newQueryParams = {
+          from: queryParams.from || this.defaultQueryParams[chain].from,
+          to: queryParams.to || this.defaultQueryParams[chain].to,
+          amount: queryParams.amount || this.defaultQueryParams[chain].amount
+        }
+      : {
           ...queryParams,
-          from: queryParams.from || this.defaultETHparams.from,
-          to: queryParams.to || this.defaultETHparams.to,
-          amount: queryParams.amount || this.defaultETHparams.amount
+          chain
         };
-      }
-    }
-    return newQueryParams;
   }
 
   public clearCurrentParams() {
@@ -201,13 +220,19 @@ export class QueryParamsService {
   }
 
   public swapDefaultParams() {
-    [this.defaultETHparams.from, this.defaultETHparams.to] = [
-      this.defaultETHparams.to,
-      this.defaultETHparams.from
+    [
+      this.defaultQueryParams[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].from,
+      this.defaultQueryParams[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].to
+    ] = [
+      this.defaultQueryParams[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].to,
+      this.defaultQueryParams[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].from
     ];
-    [this.defaultBSCparams.from, this.defaultBSCparams.to] = [
-      this.defaultBSCparams.to,
-      this.defaultBSCparams.from
+    [
+      this.defaultQueryParams[BLOCKCHAIN_NAME.ETHEREUM].from,
+      this.defaultQueryParams[BLOCKCHAIN_NAME.ETHEREUM].to
+    ] = [
+      this.defaultQueryParams[BLOCKCHAIN_NAME.ETHEREUM].to,
+      this.defaultQueryParams[BLOCKCHAIN_NAME.ETHEREUM].from
     ];
   }
 }

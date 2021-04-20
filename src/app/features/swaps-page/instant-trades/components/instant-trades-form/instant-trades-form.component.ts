@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
@@ -12,7 +12,6 @@ import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { DOCUMENT } from '@angular/common';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import InstantTrade from '../../models/InstantTrade';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
@@ -227,6 +226,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     };
   }
 
+  private firstBlockhainEmitment = true;
+
   constructor(
     private tradeTypeService: TradeTypeService,
     private tradeParametersService: TradeParametersService,
@@ -238,8 +239,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private instantTradesApiService: InstantTradesApiService,
     @Inject(DOCUMENT) private readonly document: Document,
-    private queryParamsService: QueryParamsService,
-    private readonly web3private: Web3PublicService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   private initInstantTradeProviders() {
@@ -308,11 +309,18 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private setupTokens(tokens: List<SwapToken>): void {
     this.tokens = tokens;
+
+    if (tokens.size > 0 && this.queryParamsService.currentQueryParams) {
+      this.queryParamsService.setupTradeForm(this.cdr);
+    }
   }
 
   private setupBlockchain(blockchain: BLOCKCHAIN_NAME): void {
     if (blockchain) {
-      this.blockchain = blockchain;
+      const queryChain = this.queryParamsService.currentQueryParams?.chain;
+      const queryChainValue = Object.values(BLOCKCHAIN_NAME).find(el => el === queryChain);
+      this.blockchain = this.firstBlockhainEmitment && queryChain ? queryChainValue : blockchain;
+      this.firstBlockhainEmitment = false;
       this.initInstantTradeProviders();
       this.tokens = this.tokensService.tokens.getValue();
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
@@ -327,6 +335,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.fromToken = tradeParameters?.fromToken;
       this.toToken = tradeParameters?.toToken;
       this.fromAmount = tradeParameters?.fromAmount;
+      if (!this.queryParamsService.currentQueryParams) {
+        this.queryParamsService.initiateTradesParams({
+          chain: this.blockchain
+        });
+      }
       this.queryParamsService.setQueryParam('chain', this.blockchain);
     }
   }
