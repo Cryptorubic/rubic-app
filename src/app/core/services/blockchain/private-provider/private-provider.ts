@@ -73,7 +73,7 @@ export abstract class PrivateProvider {
   /**
    * @description activate the blockchain provider
    */
-  public abstract async activate(): Promise<void>;
+  public abstract activate(): Promise<void>;
 
   /**
    * @description deactivate the blockchain provider
