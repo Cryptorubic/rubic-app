@@ -106,6 +106,7 @@ export class InstantTradesApiService {
     await this.setTokensData('quote', tradeApi, tradeData);
 
     return tradeData;
+    sdfsdf;
   }
 
   private async setTokensData(
