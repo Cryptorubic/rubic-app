@@ -1,1 +1,10 @@
-<p>instant-trades-table works!</p>
+<app-tokens-table
+  [tableData]="$dataSource | async"
+  [displayedColumns]="displayedColumns"
+  [columnsSizes]="columnsSizes"
+  [tableLoading]="$tableLoading | async"
+  (refreshTableEvent)="refreshOrderBooks()"
+  [title]="'Your instant swaps' | translate"
+  (selectTokenEvent)="selectToken($event)"
+  [hasData]="$hasData | async"
+></app-tokens-table>

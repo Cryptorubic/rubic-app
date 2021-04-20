@@ -69,19 +69,45 @@ $primary-color: #4aa956;
 
     &_active {
       background-color: $active-green;
+      box-shadow: 0 0 6px #65f7b0;
     }
 
     &_expired {
-      background: $expired-yellow;
+      background-color: $expired-yellow;
+      box-shadow: 0 0 6px #f4bb2b;
     }
 
     &_cancelled {
-      background: $cancelled-red;
+      background-color: $cancelled-red;
+      box-shadow: 0 0 6px #ee4256;
     }
 
     &_done {
       background: $done-grey;
     }
+  }
+}
+
+.token-cell {
+  &__amount {
+    margin-bottom: 6px;
+    padding-left: 3px;
+
+    font-weight: bold;
+  }
+
+  &__info {
+    color: rgba(black, 0.5);
+
+    img {
+      margin-right: 9px;
+    }
+  }
+}
+
+.provider-cell {
+  img {
+    margin-right: 7px;
   }
 }
 
@@ -108,6 +134,11 @@ $primary-color: #4aa956;
 
   .tokens-table .table tr td .tokens-table__cell.tokens-table__cell_status {
     justify-content: flex-start;
+    padding-left: 35px;
+  }
+
+  .tokens-table .table tr td .tokens-table__cell.tokens-table__cell_token {
+    flex-direction: column;
   }
 
   .mat-row {

@@ -8,8 +8,9 @@ describe('InstantTradesTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [InstantTradesTableComponent]
-    }).compileComponents();
+      declarations: [ InstantTradesTableComponent ]
+    })
+    .compileComponents();
   });
 
   beforeEach(() => {

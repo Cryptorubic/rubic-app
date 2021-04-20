@@ -30,7 +30,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
   ) {
     this.$tableLoading = this.orderBooksTableService.getTableLoadingStatus();
     this.orderBooksTableService.setTableLoadingStatus(true);
-    this.fetchPublicSwaps();
+    this.fetchSwaps();
     this.$dataSource = this.orderBooksTableService.getTableData();
     this.displayedColumns = ['Tokens', 'Amount', 'Network', 'Expires in'];
     this.columnsSizes = ['25%', '50%', '10%', '15%'];
@@ -64,10 +64,10 @@ export class OrderBooksTableComponent implements AfterViewInit {
 
   public refreshOrderBooks(): void {
     this.orderBooksTableService.setTableLoadingStatus(true);
-    this.fetchPublicSwaps();
+    this.fetchSwaps();
   }
 
-  private fetchPublicSwaps(): void {
+  private fetchSwaps(): void {
     this.orderBookApi.fetchPublicSwaps().subscribe(
       async tradeData => {
         this.orderBooksTableService.setTableData(await Promise.all(tradeData));

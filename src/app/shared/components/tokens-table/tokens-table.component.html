@@ -86,11 +86,83 @@
         </a>
       </td>
     </ng-container>
+    <!-- From  -->
+    <ng-container matColumnDef="From">
+      <th mat-header-cell *matHeaderCellDef class="centered-child">
+        <div class="tokens-table__cell">
+          {{ 'From' | translate }}
+        </div>
+      </th>
+      <td *matCellDef="let element">
+        <div class="tokens-table__cell tokens-table__cell_token token-cell">
+          <div class="token-cell__amount">
+            {{ element.token.base.amountTotal }}
+          </div>
+          <div class="token-cell__info">
+            <img src="/assets/images/icons/coins/brbc.svg" alt="token icon" />
+            {{ element.token.base.symbol }}
+          </div>
+        </div>
+      </td>
+    </ng-container>
+    <!-- To  -->
+    <ng-container matColumnDef="To">
+      <th mat-header-cell *matHeaderCellDef class="centered-child">
+        <div class="tokens-table__cell">
+          {{ 'To' | translate }}
+        </div>
+      </th>
+      <td *matCellDef="let element">
+        <div class="tokens-table__cell tokens-table__cell_token token-cell">
+          <div class="token-cell__amount">{{ element.token.quote.amountTotal }}</div>
+          <div class="token-cell__info">
+            <img src="/assets/images/icons/coins/brbc.svg" alt="token icon" />
+            {{ element.token.base.symbol }}
+          </div>
+        </div>
+      </td>
+    </ng-container>
+    <!-- Provider -->
+    <ng-container matColumnDef="Provider">
+      <th mat-header-cell *matHeaderCellDef class="centered-child">
+        <div class="tokens-table__cell">
+          {{ 'Provider' | translate }}
+        </div>
+      </th>
+      <td *matCellDef="let element">
+        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+          <div class="tokens-table__cell provider-cell">
+            <img
+              class="table__image"
+              src="assets/images/icons/providers/pancakeswap.svg"
+              alt="{{ element.provider }}"
+            />
+            {{ element.provider }}
+          </div>
+        </a>
+      </td>
+    </ng-container>
     <!-- Expires in column  -->
     <ng-container matColumnDef="Expires in">
       <th mat-header-cell *matHeaderCellDef class="centered-child" mat-sort-header>
         <div class="tokens-table__cell">
           {{ 'Expires in' | translate }}
+        </div>
+      </th>
+      <td *matCellDef="let element" class="centered-child">
+        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+          <div class="tokens-table__cell tokens-table__cell_datetime">
+            {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h:
+            {{ element.expiresIn.minutes() }}m
+          </div>
+        </a>
+      </td>
+    </ng-container>
+    <!-- Date  -->
+    <ng-container matColumnDef="Date">
+      <th mat-header-cell *matHeaderCellDef class="centered-child" mat-sort-header>
+        <div class="tokens-table__cell">
+          {{ 'Date' | translate }}
         </div>
       </th>
       <td *matCellDef="let element" class="centered-child">
