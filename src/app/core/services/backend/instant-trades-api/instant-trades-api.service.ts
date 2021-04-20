@@ -100,13 +100,13 @@ export class InstantTradesApiService {
     }
 
     const tradeData = {
+      memo: 'str',
       network: blockchain
     } as InstantTradesTradeData;
     await this.setTokensData('base', tradeApi, tradeData);
     await this.setTokensData('quote', tradeApi, tradeData);
 
     return tradeData;
-    sdfsdf;
   }
 
   private async setTokensData(
