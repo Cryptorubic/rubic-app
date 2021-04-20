@@ -293,6 +293,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (this.tokens.size > 0 && this.queryParamsService.currentQueryParams) {
+      this.queryParamsService.setupTradeForm(this.cdr);
+    }
     this._tokensSubscription$ = this.tokensService.tokens
       .asObservable()
       .subscribe(tokens => this.setupTokens(tokens));

@@ -230,6 +230,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.tokensSubscription$.unsubscribe();
     this.addressSubscription$.unsubscribe();
+    this.queryParamsService.clearCurrentParams();
   }
 
   private initializeForm(): void {
