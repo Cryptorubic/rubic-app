@@ -99,6 +99,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   public isHighGasPriceModalShown = false;
 
+  private isFirstTokensEmit = true;
+
   get tokens(): List<BridgeToken> {
     return this._tokens;
   }
@@ -217,8 +219,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     this.setBlockchainLabelName();
     this.tokensSubscription$ = this.bridgeService.tokens.subscribe(tokens => {
       this.tokens = tokens;
-      if (tokens.size > 0) {
+      if (tokens.size > 0 && this.isFirstTokensEmit) {
         this.initializeForm();
+      }
+      if (tokens.size > 0) {
+        this.isFirstTokensEmit = false;
       }
     });
     this.addressSubscription$ = this.bridgeService.walletAddress.subscribe(address => {
