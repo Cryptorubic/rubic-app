@@ -14,7 +14,7 @@ import { ETH, WEENUS, XEENUS, YEENUS } from '../../../../../../test/tokens/eth-t
 import { uniSwapContracts } from './uni-swap-constants';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 
-describe('UniswapServiceService', () => {
+describe('UniSwapService', () => {
   let originalTimeout: number;
   let service: UniSwapService;
   let web3Private: Web3PrivateService;
