@@ -49,7 +49,7 @@ export class QueryParamsService {
         amount: '1'
       },
       bridge: {
-        chain: 'ethSymbol'
+        chain: 'ETH'
       }
     };
   }
@@ -87,9 +87,9 @@ export class QueryParamsService {
 
   public initiateBridgeParams(params: QueryParams): void {
     this.currentQueryParams = {
-      from: this.defaultQueryParams.bridge.from || params.from,
-      amount: this.defaultQueryParams.bridge.amount || params.amount,
-      chain: this.defaultQueryParams.bridge.chain || params.chain
+      from: params.from || this.defaultQueryParams.bridge.from,
+      amount: params.amount || this.defaultQueryParams.bridge.amount,
+      chain: params.chain || this.defaultQueryParams.bridge.chain
     };
   }
 
@@ -143,8 +143,10 @@ export class QueryParamsService {
     const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
     const similarTokens = tokens.filter(token =>
       isBridge
-        ? token.symbol === queryParam
-        : token.symbol === queryParam && token.blockchain === this.currentQueryParams.chain
+        ? (token as SwapToken)[`${this.currentQueryParams.chain.toLowerCase()}Symbol`] ===
+          queryParam
+        : (token as SwapToken).symbol === queryParam &&
+          token.blockchain === this.currentQueryParams.chain
     );
 
     return similarTokens.size > 1
