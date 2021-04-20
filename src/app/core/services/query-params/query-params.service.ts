@@ -50,7 +50,7 @@ export class QueryParamsService {
         amount: '1'
       },
       bridge: {
-        chain: 'ETH'
+        chain: BLOCKCHAIN_NAME.ETHEREUM
       }
     };
   }
