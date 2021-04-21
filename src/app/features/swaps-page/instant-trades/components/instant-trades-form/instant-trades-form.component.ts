@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
@@ -10,6 +10,8 @@ import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
+import { DOCUMENT } from '@angular/common';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import InstantTrade from '../../models/InstantTrade';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
@@ -37,6 +39,8 @@ interface InstantTradeParameters {
   isCustomToTokenFormOpened: boolean;
   customFromTokenAddress: string;
   customToTokenAddress: string;
+
+  gasOptimizationChecked: boolean;
 }
 
 interface InstantTradeProviderController {
@@ -88,12 +92,20 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public transactionHash: string;
 
-  public isTradeAvailable: boolean;
+  public waitingForProvider: boolean;
 
   public customToken = {
     from: {} as SwapToken,
     to: {} as SwapToken
   };
+
+  public get hasBestRate(): boolean {
+    return this.trades.some(provider => provider.isBestRate);
+  }
+
+  public get isIframe(): boolean {
+    return this.document.body.classList.contains('iframe');
+  }
 
   get tokens(): List<SwapToken> {
     return this._tokens;
@@ -113,7 +125,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     if (
       this._tradeParameters.fromToken?.address === value.fromToken?.address &&
       this._tradeParameters.fromAmount === value.fromAmount &&
-      this._tradeParameters.toToken?.address === value.toToken?.address
+      this._tradeParameters.toToken?.address === value.toToken?.address &&
+      this._tradeParameters.gasOptimizationChecked === value.gasOptimizationChecked
     ) {
       this._tradeParameters = value;
       const toAmount = this.trades
@@ -165,6 +178,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       fromToken: value
     };
     this.availableToTokens = this.tokens.filter(token => token.address !== value?.address);
+    if (value) {
+      this.queryParamsService.setQueryParam('from', value.symbol);
+    }
   }
 
   get toToken(): SwapToken {
@@ -176,7 +192,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       ...this.tradeParameters,
       toToken: value
     };
+
     this.availableFromTokens = this.tokens.filter(token => token.address !== value?.address);
+    if (value) {
+      this.queryParamsService.setQueryParam('to', value.symbol);
+    }
   }
 
   get fromAmount(): string {
@@ -188,11 +208,25 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       ...this.tradeParameters,
       fromAmount: value
     };
+    this.queryParamsService.setQueryParam('amount', value);
   }
 
   get fromAmountAsNumber(): BigNumber {
     return new BigNumber(this.tradeParameters.fromAmount);
   }
+
+  get gasOptimizationChecked(): boolean {
+    return this.tradeParameters.gasOptimizationChecked;
+  }
+
+  set gasOptimizationChecked(value) {
+    this.tradeParameters = {
+      ...this.tradeParameters,
+      gasOptimizationChecked: value
+    };
+  }
+
+  private firstBlockhainEmitment = true;
 
   constructor(
     private tradeTypeService: TradeTypeService,
@@ -203,7 +237,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private onInchBscService: OneInchBscService,
     private pancakeSwapService: PancakeSwapService,
     private dialog: MatDialog,
-    private instantTradesApiService: InstantTradesApiService
+    private instantTradesApiService: InstantTradesApiService,
+    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   private initInstantTradeProviders() {
@@ -256,45 +293,72 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
-      this.tokens = tokens;
-    });
-
-    this._blockchainSubscription$ = this.tradeTypeService.getBlockchain().subscribe(blockchain => {
-      this.blockchain = blockchain;
-      this.initInstantTradeProviders();
-
-      this.tokens = this.tokensService.tokens.getValue();
-
-      const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
-
-      this._tradeParameters = {
-        ...tradeParameters,
-        fromToken: null,
-        toToken: null,
-        fromAmount: null
-      };
-
-      this.fromToken = tradeParameters?.fromToken;
-      this.toToken = tradeParameters?.toToken;
-      this.fromAmount = tradeParameters?.fromAmount;
-    });
+    if (this.tokens.size > 0 && this.queryParamsService.currentQueryParams) {
+      this.queryParamsService.setupTradeForm(this.cdr);
+    }
+    this._tokensSubscription$ = this.tokensService.tokens
+      .asObservable()
+      .subscribe(tokens => this.setupTokens(tokens));
+    this._blockchainSubscription$ = this.tradeTypeService
+      .getBlockchain()
+      .subscribe(blockchain => this.setupBlockchain(blockchain));
   }
 
   ngOnDestroy() {
     this._tokensSubscription$.unsubscribe();
     this._blockchainSubscription$.unsubscribe();
+    this.queryParamsService.clearCurrentParams();
+  }
+
+  private setupTokens(tokens: List<SwapToken>): void {
+    this.tokens = tokens;
+
+    if (tokens.size > 0 && this.queryParamsService.currentQueryParams) {
+      this.queryParamsService.setupTradeForm(this.cdr);
+    }
+  }
+
+  private setupBlockchain(blockchain: BLOCKCHAIN_NAME): void {
+    if (blockchain) {
+      const queryChain = this.queryParamsService.currentQueryParams?.chain;
+      const queryChainValue = Object.values(BLOCKCHAIN_NAME).find(el => el === queryChain);
+      this.blockchain = this.firstBlockhainEmitment && queryChain ? queryChainValue : blockchain;
+      this.firstBlockhainEmitment = false;
+      this.initInstantTradeProviders();
+      this.tokens = this.tokensService.tokens.getValue();
+      const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
+      this._tradeParameters = {
+        ...tradeParameters,
+        fromToken: null,
+        toToken: null,
+        fromAmount: null,
+        gasOptimizationChecked: true
+      };
+
+      this.fromToken = tradeParameters?.fromToken;
+      this.toToken = tradeParameters?.toToken;
+      this.fromAmount = tradeParameters?.fromAmount;
+      if (!this.queryParamsService.currentQueryParams) {
+        this.queryParamsService.initiateTradesParams({
+          chain: this.blockchain
+        });
+      }
+      this.queryParamsService.setQueryParam('chain', this.blockchain);
+    }
   }
 
   private isCalculatedTradeActual(
     fromAmount: string,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    gasOptimizationChecked: boolean
   ) {
     return (
       this._tradeParameters.fromToken?.address === fromToken?.address &&
       new BigNumber(this._tradeParameters.fromAmount).isEqualTo(fromAmount) &&
-      this._tradeParameters.toToken?.address === toToken?.address
+      this._tradeParameters.toToken?.address === toToken?.address &&
+      (gasOptimizationChecked === undefined ||
+        this._tradeParameters.gasOptimizationChecked === gasOptimizationChecked)
     );
   }
 
@@ -323,7 +387,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public shouldAnimateButton(providerIndex: number) {
     const { tradeState } = this.trades[providerIndex];
-    return tradeState && tradeState !== TRADE_STATUS.ERROR && tradeState !== TRADE_STATUS.COMPLETED;
+    return (
+      (tradeState && tradeState !== TRADE_STATUS.ERROR && tradeState !== TRADE_STATUS.COMPLETED) ||
+      this.waitingForProvider
+    );
   }
 
   private async calculateTradeParameters() {
@@ -339,7 +406,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.isCalculatedTradeActual(
         tradeParams.fromAmount,
         tradeParams.fromToken,
-        tradeParams.toToken
+        tradeParams.toToken,
+        tradeParams.gasOptimizationChecked
       )
     ) {
       this.calculateBestRate();
@@ -363,7 +431,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       const calculatedTrade = await service.calculateTrade(
         new BigNumber(this.tradeParameters.fromAmount),
         this.fromToken,
-        this.toToken
+        this.toToken,
+        this.gasOptimizationChecked
       );
       if (!calculatedTrade) {
         tradeController.trade = null;
@@ -374,7 +443,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         this.isCalculatedTradeActual(
           calculatedTrade.from.amount.toFixed(),
           calculatedTrade.from.token,
-          calculatedTrade.to.token
+          calculatedTrade.to.token,
+          calculatedTrade.options?.gasOptimizationChecked
         )
       ) {
         tradeController.trade = calculatedTrade;
@@ -457,8 +527,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   public addCustomToken(part: 'from' | 'to'): void {
     if (part === 'from') {
       this.fromToken = { ...this.customToken.from };
+      this.queryParamsService.setQueryParam(part, this.customToken.from.address);
     } else {
       this.toToken = { ...this.customToken.to };
+      this.queryParamsService.setQueryParam(part, this.customToken.to.address);
     }
   }
 
@@ -472,18 +544,23 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
-    this.isTradeAvailable = true;
+    this.waitingForProvider = true;
     const setTradeState = (state: TRADE_STATUS) => {
       this.trades[selectedServiceIndex].tradeState = state;
       this.selectedTradeState = state;
     };
     this._instantTradeServices[selectedServiceIndex]
       .createTrade(this.trades[selectedServiceIndex].trade, {
-        onApprove: () => setTradeState(TRADE_STATUS.APPROVAL),
-        onConfirm: () => setTradeState(TRADE_STATUS.TX_IN_PROGRESS)
+        onApprove: () => {
+          this.waitingForProvider = false;
+          setTradeState(TRADE_STATUS.APPROVAL);
+        },
+        onConfirm: () => {
+          this.waitingForProvider = false;
+          setTradeState(TRADE_STATUS.TX_IN_PROGRESS);
+        }
       })
       .then(receipt => {
-        this.isTradeAvailable = false;
         setTradeState(TRADE_STATUS.COMPLETED);
         this.transactionHash = receipt.transactionHash;
         this.instantTradesApiService.notifyInstantTradesBot({
@@ -495,6 +572,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         });
       })
       .catch((err: RubicError) => {
+        this.waitingForProvider = false;
         let data: any = { title: 'Error', descriptionText: err.comment };
         if (err instanceof MetamaskError) {
           data.title = 'Warning';

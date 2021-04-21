@@ -43,14 +43,14 @@ $primary-grey: #f4f4f4;
   }
     
   &__switch-button {
-    margin: 0 5px;
-    border-radius: 5px;
-    padding: 0 11px;
     display: flex;
     align-items: center;
+    margin: 0 5px;
+    padding: 0 11px;
 
     background: $primary-grey;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
 
     img {
@@ -69,9 +69,10 @@ $primary-grey: #f4f4f4;
     }
 
     span {
-      text-overflow: ellipsis;
       overflow: hidden;
+
       line-height: normal;
+      text-overflow: ellipsis;
     }
   }
 }

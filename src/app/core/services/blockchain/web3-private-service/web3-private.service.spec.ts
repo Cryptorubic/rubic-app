@@ -1,22 +1,19 @@
 import { TestBed } from '@angular/core/testing';
-
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from './web3-private.service';
 import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import providerServiceStub from '../private-provider/metamask-provider/metamask-provider.service.stub';
-
 // @ts-ignore
 import config from '../../../../../test/enviroment.test.json';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
 import { Web3PublicService } from '../web3-public-service/web3-public.service';
 import { Web3Public } from '../web3-public-service/Web3Public';
-
 import { WEENUS } from '../../../../../test/tokens/eth-tokens';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
-describe('Web3ApiService', () => {
+describe('Web3PrivateService', () => {
   let originalTimeout;
 
   const bobAddress = config.testReceiverAddress;
@@ -72,7 +69,7 @@ describe('Web3ApiService', () => {
     );
 
     expect(receipt).not.toBe(undefined);
-    expect(receipt.blockNumber > 0).toBeTruthy();
+    expect(receipt.blockNumber).toBeGreaterThan(0);
     const bobNewBalance = await web3PublicEth.getBalance(bobAddress);
 
     expect(bobNewBalance.minus(bobStartBalance).toString()).toBe(amount.toString());
@@ -96,7 +93,7 @@ describe('Web3ApiService', () => {
     );
 
     expect(receipt).not.toBe(undefined);
-    expect(receipt.blockNumber > 0).toBeTruthy();
+    expect(receipt.blockNumber).toBeGreaterThan(0);
     const bobNewBalance = await web3PublicEth.getTokenBalance(bobAddress, WEENUS.address);
 
     expect(bobNewBalance.minus(bobStartBalance).toString()).toBe(amount.toString());
@@ -105,11 +102,6 @@ describe('Web3ApiService', () => {
 
   it('approve', async done => {
     const amount = new BigNumber(2.39).multipliedBy(10 ** WEENUS.decimals);
-    const bobStartAllowance = await web3PublicEth.getAllowance(
-      WEENUS.address,
-      service.address,
-      bobAddress
-    );
     const callbackObject = {
       onTransactionHash: (hash: string) => {}
     };
@@ -124,13 +116,14 @@ describe('Web3ApiService', () => {
     );
 
     expect(receipt).not.toBe(undefined);
-    expect(receipt.blockNumber > 0).toBeTruthy();
+    expect(receipt.blockNumber).toBeGreaterThan(0);
     const bobNewAllowance = await web3PublicEth.getAllowance(
       WEENUS.address,
       service.address,
       bobAddress
     );
-    expect(bobNewAllowance.minus(bobStartAllowance).toString()).toBe(amount.toString());
+
+    expect(bobNewAllowance.toString()).toBe(amount.toString());
     done();
   });
 

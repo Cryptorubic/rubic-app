@@ -8,11 +8,11 @@
           <div class="choose-blockchains__title">From</div>
 
           <div class="choose-blockchains__blockchain form-field">
-            <app-blockchains-input
+            <app-blockchain-select
               [selectedBlockchain]="fromBlockchain"
               [blockchains]="blockchainsList"
               (blockchainChanges)="fromBlockchain = $event"
-            ></app-blockchains-input>
+            ></app-blockchain-select>
           </div>
 
           <a
@@ -29,8 +29,9 @@
               class="choose-token__wrapper"
               [tokensList]="dropDownTokens"
               [selectedToken]="selectedTokenAsInputToken"
+              [selectedAmount]="fromNumber"
               (tokenChanges)="onSelectedTokenChanges($event)"
-              (numberChanges)="onTokensNumberChanges($event)"
+              (numberChanges)="fromNumber = $event"
             >
             </app-tokens-input>
 
@@ -59,7 +60,7 @@
                   'choose-blockchains__info_wrong':
                     selectedToken &&
                     fromNumber != undefined &&
-                    fromNumber.lt(selectedToken.minAmount)
+                    fromNumberAsBigNumber.lt(selectedToken.minAmount)
                 }"
               >
                 <td>
@@ -71,7 +72,7 @@
                     *ngIf="
                       selectedToken &&
                       fromNumber != undefined &&
-                      fromNumber.lt(selectedToken.minAmount)
+                      fromNumberAsBigNumber.lt(selectedToken.minAmount)
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -83,7 +84,7 @@
                   'choose-blockchains__info_wrong':
                     selectedToken &&
                     fromNumber != undefined &&
-                    fromNumber.gt(selectedToken.maxAmount)
+                    fromNumberAsBigNumber.gt(selectedToken.maxAmount)
                 }"
               >
                 <td>
@@ -95,7 +96,7 @@
                     *ngIf="
                       selectedToken &&
                       fromNumber != undefined &&
-                      fromNumber.gt(selectedToken.maxAmount)
+                      fromNumberAsBigNumber.gt(selectedToken.maxAmount)
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -124,11 +125,11 @@
           <div class="choose-blockchains__title">To</div>
 
           <div class="choose-blockchains__blockchain form-field">
-            <app-blockchains-input
+            <app-blockchain-select
               [selectedBlockchain]="toBlockchain"
               [blockchains]="blockchainsList"
               (blockchainChanges)="toBlockchain = $event"
-            ></app-blockchains-input>
+            ></app-blockchain-select>
           </div>
 
           <a
@@ -142,7 +143,7 @@
           <div class="choose-blockchains__title">You get</div>
           <div class="choose-blockchains__get">
             <span>
-              {{ this.toNumber }}
+              {{ this.toNumber | bigNumberFormat }}
             </span>
             <div class="get-token-card" *ngIf="selectedToken">
               <img class="get-token-card__icon" [src]="selectedToken.icon" alt="Token" />
@@ -190,8 +191,8 @@
             [disabled]="
               !selectedToken ||
               !fromNumber ||
-              fromNumber.lt(selectedToken.minAmount) ||
-              fromNumber.gt(selectedToken.maxAmount)
+              fromNumberAsBigNumber.lt(selectedToken.minAmount) ||
+              fromNumberAsBigNumber.gt(selectedToken.maxAmount)
             "
             (onClick)="checkAndConfirm()"
           >
@@ -204,7 +205,7 @@
         </div>
 
         <button
-          style="visibility: hidden;"
+          style="visibility: hidden"
           class="cross-chain-form__advanced-options"
           [ngClass]="{ 'cross-chain-form__advanced-options_opened': isAdvancedSectionShown }"
           (click)="isAdvancedSectionShown = !isAdvancedSectionShown"

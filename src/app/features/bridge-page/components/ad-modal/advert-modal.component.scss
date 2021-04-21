@@ -1,14 +1,17 @@
 $main-color: #4aa956;
 
 .advert {
-  background-color: $main-color;
   position: relative;
+
   padding: 40px;
+
+  background-color: $main-color;
   border-radius: 10px;
 
   &__close-icon {
-    height: 30px;
     width: 30px;
+    height: 30px;
+
     cursor: pointer;
   }
 
@@ -20,8 +23,8 @@ $main-color: #4aa956;
 
   &__body {
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
   }
 
   &__rubic-logo {
@@ -38,17 +41,20 @@ $main-color: #4aa956;
   }
 
   &__description {
-    font-weight: 400;
-    color: white;
     margin-bottom: 60px;
+
+    color: white;
+    font-weight: 400;
   }
 
   &__close {
     position: absolute;
     top: 15px;
     right: 15px;
-    background-color: transparent;
+
     color: white;
+
+    background-color: transparent;
   }
 
   &__footer {
@@ -57,13 +63,16 @@ $main-color: #4aa956;
   }
 
   &__button {
-    cursor: pointer;
-    border-radius: 10px;
-    border: 2px solid white;
-    background-color: transparent;
-    color: white;
     padding: 15px 25px;
+
+    color: white;
     font-weight: 600;
+
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 10px;
+    cursor: pointer;
+
     transition: 0.2s ease-in-out;
 
     &:hover {
@@ -74,5 +83,6 @@ $main-color: #4aa956;
 
 ::ng-deep .mat-dialog-container {
   overflow: visible !important;
+
   border-radius: 10px !important;
 }

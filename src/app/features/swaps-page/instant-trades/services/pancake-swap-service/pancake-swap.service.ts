@@ -5,18 +5,16 @@ import {
   maxTransitTokens,
   routingProviders,
   uniSwapContracts,
-  WETH
+  WETH,
+  ethToTokensEstimatedGas,
+  tokensToEthEstimatedGas,
+  tokensToTokensEstimatedGas
 } from './pankace-swap-constants';
 import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
 import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapAbstract } from '../uniswap-abstract/uniswap-abstract';
-import {
-  ethToTokensEstimatedGas,
-  tokensToEthEstimatedGas,
-  tokensToTokensEstimatedGas
-} from '../uni-swap-service/uni-swap-constants';
 
 @Injectable()
 export class PancakeSwapService extends UniswapAbstract {
@@ -35,11 +33,6 @@ export class PancakeSwapService extends UniswapAbstract {
     this.web3Private = web3Private;
     this.web3Public = web3Public[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
     this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
-
-    useTestingModeService.isTestingMode.subscribe(value => {
-      if (value) {
-        this.web3Public = web3Public[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
-      }
-    });
+    this.shouldCalculateGas = false;
   }
 }

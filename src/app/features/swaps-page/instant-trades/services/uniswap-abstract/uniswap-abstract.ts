@@ -45,6 +45,8 @@ export class UniswapAbstract extends InstantTradeService {
 
   protected blockchain: BLOCKCHAIN_NAME;
 
+  protected shouldCalculateGas: boolean;
+
   private WETHAddress: string;
 
   private uniswapContractAddress: string;
@@ -86,7 +88,8 @@ export class UniswapAbstract extends InstantTradeService {
   public async calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    gasOptimization: boolean
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -105,6 +108,7 @@ export class UniswapAbstract extends InstantTradeService {
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const { route, gasData } = await this.getToAmountAndPath(
+      gasOptimization,
       amountIn,
       fromTokenClone,
       toTokenClone,
@@ -124,7 +128,8 @@ export class UniswapAbstract extends InstantTradeService {
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
-        path: route.path
+        path: route.path,
+        gasOptimization
       }
     };
   }
@@ -156,10 +161,10 @@ export class UniswapAbstract extends InstantTradeService {
         }
       }
 
-      return estimatedGas;
+      return estimatedGas || this.tokensToTokensEstimatedGas[path.length - 2];
     } catch (e) {
       console.debug(e);
-      return estimatedGas;
+      return this.tokensToTokensEstimatedGas[path.length - 2];
     }
   }
 
@@ -173,16 +178,18 @@ export class UniswapAbstract extends InstantTradeService {
     try {
       if (walletAddress) {
         const balance = await this.web3Public.getBalance(walletAddress);
-        return balance.gte(amountIn)
-          ? await this.web3Public.getEstimatedGas(
-              this.abi,
-              this.uniswapContractAddress,
-              SWAP_METHOD.ETH_TO_TOKENS,
-              [amountOutMin, path, walletAddress, deadline],
-              walletAddress,
-              amountIn
-            )
-          : this.ethToTokensEstimatedGas[path.length - 2];
+        if (balance.gte(amountIn)) {
+          const gas = await this.web3Public.getEstimatedGas(
+            this.abi,
+            this.uniswapContractAddress,
+            SWAP_METHOD.ETH_TO_TOKENS,
+            [amountOutMin, path, walletAddress, deadline],
+            walletAddress,
+            amountIn
+          );
+          return gas || this.ethToTokensEstimatedGas[path.length - 2];
+        }
+        return this.ethToTokensEstimatedGas[path.length - 2];
       }
       return this.ethToTokensEstimatedGas[path.length - 2];
     } catch (e) {
@@ -218,10 +225,10 @@ export class UniswapAbstract extends InstantTradeService {
         }
       }
 
-      return estimatedGas;
+      return estimatedGas || this.tokensToEthEstimatedGas[path.length - 2];
     } catch (e) {
       console.debug(e);
-      return estimatedGas;
+      return this.tokensToEthEstimatedGas[path.length - 2];
     }
   }
 
@@ -234,6 +241,7 @@ export class UniswapAbstract extends InstantTradeService {
   ): Promise<TransactionReceipt> {
     await this.checkSettings(this.blockchain);
     await this.checkBalance(trade);
+
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     const amountOutMin = trade.to.amount
@@ -264,8 +272,6 @@ export class UniswapAbstract extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
-    trade.path[0] = this.WETHAddress;
-
     return this.web3Private.executeContractMethod(
       this.uniswapContractAddress,
       this.abi,
@@ -285,8 +291,6 @@ export class UniswapAbstract extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
-    trade.path[1] = this.WETHAddress;
-
     await this.provideAllowance(
       trade.path[0],
       new BigNumber(trade.amountIn),
@@ -329,6 +333,7 @@ export class UniswapAbstract extends InstantTradeService {
   }
 
   private async getToAmountAndPath(
+    shouldOptimiseGas: boolean,
     fromAmountAbsolute: string,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
@@ -337,12 +342,57 @@ export class UniswapAbstract extends InstantTradeService {
     const routes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort((a, b) =>
       b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
     );
-    return this.getOptimalRouteAndGas(
-      fromAmountAbsolute,
-      toToken,
-      routes,
-      this[gasCalculationMethodName].bind(this)
-    );
+    if (shouldOptimiseGas && this.shouldCalculateGas) {
+      return this.getOptimalRouteAndGas(
+        fromAmountAbsolute,
+        toToken,
+        routes,
+        this[gasCalculationMethodName].bind(this)
+      );
+    }
+
+    const route = routes[0];
+
+    if (this.shouldCalculateGas) {
+      const to = this.web3Private.address;
+      const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+      const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+      const gasPrice = await this.web3Public.getGasPriceInETH();
+
+      const amountOutMin = route.outputAbsoluteAmount
+        .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
+        .toFixed(0);
+
+      const estimatedGas = await this[gasCalculationMethodName].call(
+        this,
+        fromAmountAbsolute,
+        amountOutMin,
+        route.path,
+        to,
+        deadline
+      );
+
+      const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+      const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
+
+      return {
+        route,
+        gasData: {
+          estimatedGas,
+          gasFeeInEth,
+          gasFeeInUsd
+        }
+      };
+    }
+
+    return {
+      route,
+      gasData: {
+        estimatedGas: new BigNumber(0),
+        gasFeeInEth: new BigNumber(0),
+        gasFeeInUsd: new BigNumber(0)
+      }
+    };
   }
 
   private async getAllRoutes(

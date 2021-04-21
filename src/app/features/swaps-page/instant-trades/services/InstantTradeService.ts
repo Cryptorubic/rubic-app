@@ -22,12 +22,14 @@ abstract class InstantTradeService {
    * @param fromAmount input amount in absolute value (no pre-multiplied by decimals)
    * @param fromToken input token or blockchain native coin
    * @param toToken output token or blockchain native coin
+   * @param gasOptimization should use gasOptimization
    * @return parameters of possible trade
    */
   public abstract calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    gasOptimization?: boolean
   ): Promise<InstantTrade>;
 
   /**
