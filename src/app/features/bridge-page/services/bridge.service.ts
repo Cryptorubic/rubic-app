@@ -75,7 +75,7 @@ export class BridgeService {
       .toPromise()) as BinanceResponse;
 
     if (binanceResponse.code !== 20000) {
-      console.log(`Error retrieving Todos, code ${binanceResponse.code}`);
+      console.log(`Error retrieving tokens, code ${binanceResponse.code}`);
       this._tokens.next(List([]));
       return;
     }
@@ -143,13 +143,13 @@ export class BridgeService {
       // eslint-disable-next-line consistent-return
       map((res: BinanceResponse) => {
         if (res.code !== 20000) {
-          console.log(`Error retrieving tokens, code ${res.code}`);
+          console.log(`Error retrieving fee, code ${res.code}`);
         } else {
           return res.data.networks.find(network => network.name === networkName).networkFee;
         }
       }),
       catchError(err => {
-        console.log(`Error retrieving tokens ${err}`);
+        console.log('Error retrieving fee', err);
         return throwError(err);
       })
     );
