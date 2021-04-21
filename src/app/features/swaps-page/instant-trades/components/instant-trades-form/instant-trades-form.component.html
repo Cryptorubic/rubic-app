@@ -46,7 +46,7 @@
         [selectedAmount]="fromAmount"
         (tokenChanges)="fromToken = $any($event)"
         (numberChanges)="fromAmount = $event"
-        [amountPlaceholder]="isIframe ? 'YOU HAVE' : 'Enter amount'"
+        [amountPlaceholder]="($isIframe | async) ? 'You have' : 'Enter amount'"
       >
       </app-tokens-input>
 
@@ -73,12 +73,8 @@
         class="arrow-button"
         [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
       >
-        <img
-          *ngIf="trades.length === 2 && !isIframe"
-          src="assets/images/icons/RoundArrows.svg"
-          alt=""
-        />
-        <img *ngIf="trades.length === 1 || isIframe" src="assets/images/icons/revert.svg" alt="" />
+        <img *ngIf="trades.length === 2 && !($isIframe | async)" src="assets/images/icons/RoundArrows.svg" alt="" />
+        <img *ngIf="trades.length === 1 || ($isIframe | async)" src="assets/images/icons/revert.svg" alt="" />
       </button>
     </div>
 
@@ -114,7 +110,7 @@
               [selectedAmount]="getToAmount(index)"
               [withRoundMode]="true"
               (tokenChanges)="toToken = $any($event)"
-              [amountPlaceholder]="isIframe ? 'YOU GET' : ''"
+              [amountPlaceholder]="($isIframe | async) ? 'YOU GET' : ''"
             >
             </app-tokens-input>
 
@@ -185,7 +181,7 @@
         >
           <app-primary-button
             type="button"
-            [label]="isIframe ? 'Swap' : 'Via ' + tradeController.tradeProviderInfo.label"
+            [label]="($isIframe | async) ? 'Swap' : ('Via ' + tradeController.tradeProviderInfo.label)"
             [disabled]="
               !(
                 fromAmountAsNumber.isGreaterThan(0) &&
@@ -234,5 +230,6 @@
   *ngIf="selectedTradeState === TRADE_STATUS.COMPLETED"
   [transactionId]="transactionHash"
   [blockchainName]="blockchain"
+  (onClose)="onCloseModal()"
 >
 </app-trade-success-modal>

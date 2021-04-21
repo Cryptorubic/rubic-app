@@ -4,4 +4,5 @@ export interface QueryParams {
   chain?: string;
   amount?: string;
   iframe?: string;
+  hidden?: string;
 }

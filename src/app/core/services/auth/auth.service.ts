@@ -108,6 +108,14 @@ export class AuthService {
   }
 
   /**
+   * @description Login user without backend.
+   */
+  public loginWithoutbackend(): void {
+    const { address } = this.web3Service;
+    this.$currentUser.next({ address } || null);
+  }
+
+  /**
    * @description Initiate authentication via metamask.
    */
   public async signIn(): Promise<void> {
