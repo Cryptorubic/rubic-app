@@ -18,6 +18,7 @@ import { OrderBookTradeApi } from './types/trade-api';
 import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/models/trade-form';
 import { OrderBookCommonService } from '../../order-book-common/order-book-common.service';
 import { FROM_BACKEND_BLOCKCHAINS } from '../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { environment } from '../../../../../environments/environment';
 
 interface PublicSwapsResponse extends OrderBookTradeApi {
   memo_contract: string;
@@ -30,8 +31,6 @@ export class OrderBookApiService {
   private readonly PROD_ORIGIN = 'https://rubic.exchange';
 
   private readonly TEST_ORIGIN = 'https://devswaps.mywish.io';
-
-  private readonly botUrl = 'bot/orderbook';
 
   private _tokens: List<SwapToken>;
 
@@ -147,7 +146,7 @@ export class OrderBookApiService {
     };
   }
 
-  public createTradeBotNotification(
+  public notifyOrderBooksBotOnCreate(
     tradeForm: OrderBookTradeForm,
     uniqueLink: string,
     walletAddress: string,
@@ -166,10 +165,10 @@ export class OrderBookApiService {
       symbolTo: tradeForm.token.quote.symbol
     };
 
-    this.httpService.post(`${this.botUrl}/create`, tradeBot).subscribe();
+    this.httpService.post(`${environment.orderBooksBotUrl}/create`, tradeBot).subscribe();
   }
 
-  public contributeBotNotification(
+  public notifyOrderBooksBotOnContribute(
     token: OrderBookDataToken,
     amount: string,
     uniqueLink: string,
@@ -188,10 +187,10 @@ export class OrderBookApiService {
       symbol: token.symbol
     };
 
-    this.httpService.post(`${this.botUrl}/contribute`, tradeBot).subscribe();
+    this.httpService.post(`${environment.orderBooksBotUrl}/contribute`, tradeBot).subscribe();
   }
 
-  public withdrawBotNotification(
+  public notifyOrderBooksBotOnWithdraw(
     token: OrderBookDataToken,
     uniqueLink: string,
     walletAddress: string,
@@ -208,6 +207,6 @@ export class OrderBookApiService {
       symbol: token.symbol
     };
 
-    this.httpService.post(`${this.botUrl}/contribute`, tradeBot).subscribe();
+    this.httpService.post(`${environment.orderBooksBotUrl}/contribute`, tradeBot).subscribe();
   }
 }

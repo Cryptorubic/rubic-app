@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTrade from '../../../../features/swaps-page/instant-trades/models/InstantTrade';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InstantTradesApiService {
-  private readonly botUrl = 'bot/instanttrades';
-
   constructor(private httpService: HttpService) {}
 
   public notifyInstantTradesBot(body: {
@@ -27,6 +26,6 @@ export class InstantTradesApiService {
       symbolTo: trade.to.token.symbol
     };
 
-    return this.httpService.post(this.botUrl, req).toPromise();
+    return this.httpService.post(environment.instantTradesBotUrl, req).toPromise();
   }
 }

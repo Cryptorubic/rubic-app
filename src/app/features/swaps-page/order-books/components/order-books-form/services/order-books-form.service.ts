@@ -135,7 +135,7 @@ export class OrderBooksFormService implements OnDestroy {
 
     tradeApi.memo = receipt.events.OrderCreated.returnValues.id;
     const { unique_link } = await this.orderBookApiService.createTrade(tradeApi);
-    this.orderBookApiService.createTradeBotNotification(
+    this.orderBookApiService.notifyOrderBooksBotOnCreate(
       tradeForm,
       unique_link,
       receipt.from,
