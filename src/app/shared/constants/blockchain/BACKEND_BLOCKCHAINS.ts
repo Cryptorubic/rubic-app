@@ -5,3 +5,9 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   polygon: BLOCKCHAIN_NAME.MATIC
 };
+
+export const TO_BACKEND_BLOCKCHAINS = {
+  [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
+  [BLOCKCHAIN_NAME.MATIC]: 'polygon'
+};
