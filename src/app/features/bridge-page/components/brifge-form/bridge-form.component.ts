@@ -62,7 +62,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       baseUrl: 'https://explorer-mainnet.maticvigil.com/',
       addressBaseUrl: 'https://explorer-mainnet.maticvigil.com/address/',
       scanner: {
-        label: 'Mainnet',
+        label: 'Matic explorer',
         baseUrl: 'https://explorer-mainnet.maticvigil.com/address/'
       }
     }
@@ -362,7 +362,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   }
 
   public checkAndConfirm(): void {
-    this.buttonAnimation = true;
     if (
       this.fromBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
       this.toBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM &&
@@ -386,19 +385,9 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onHighGasPriceCancel() {
-    this.isHighGasPriceModalShown = false;
-    this.buttonAnimation = false;
-  }
-
   public onHighGasPriceConfirm() {
     this.isHighGasPriceModalShown = false;
     this.onConfirm();
-  }
-
-  public onPolygonToEthTradeCancel(): void {
-    this.isPolygonToEthTradeModalShown = false;
-    this.buttonAnimation = false;
   }
 
   public onPolygonToEthTradeConfirm(): void {
@@ -407,6 +396,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   }
 
   public onConfirm(): void {
+    this.buttonAnimation = true;
+
     const bridgeTrade: BridgeTrade = {
       token: this.selectedToken,
       fromBlockchain: this.fromBlockchain.key,
@@ -417,6 +408,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         this.tradeInProgress = true;
       }
     };
+
     this.bridgeService
       .createTrade(bridgeTrade)
       .pipe(first())

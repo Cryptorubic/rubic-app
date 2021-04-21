@@ -49,7 +49,7 @@ const ETH_POL: BridgeToken = {
       maxAmount: Infinity
     },
     [BLOCKCHAIN_NAME.POLYGON]: {
-      address: NATIVE_TOKEN_ADDRESS,
+      address: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
       name: 'Ethereum - Polygon',
       symbol: 'ETH',
       decimals: 18,
