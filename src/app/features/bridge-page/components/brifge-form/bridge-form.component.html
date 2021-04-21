@@ -200,16 +200,22 @@
           <div class="choose-blockchains__address-info">
             You will get {{ toBlockchain.name }} tokens to the selected address
           </div>
+
           <a
-            class="choose-blockchains__binance"
-            href="https://www.binance.org/"
-            target="_blank"
-            *ngIf="
-              fromBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
-              toBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+            class="choose-blockchains__blockchain-link"
+            [href]="
+              getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+                ? 'https://www.binance.org/'
+                : 'https://polygon.technology/'
             "
+            target="_blank"
           >
-            What is Binance Smart Chain?
+            What is
+            {{
+              getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+                ? 'Binance Smart Chain'
+                : 'Polygon'
+            }}?
           </a>
         </div>
       </div>
@@ -233,9 +239,30 @@
           >
           </app-primary-button>
 
-          <a href="https://www.binance.org/" target="_blank" class="cross-chain-form__confirm-info">
+          <a
+            [href]="
+              getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+                ? 'https://www.binance.org/'
+                : 'https://polygon.technology/'
+            "
+            target="_blank"
+            class="cross-chain-form__confirm-info"
+            [ngClass]="{
+              'cross-chain-form__confirm-info_hidden':
+                selectedToken?.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]?.address ===
+                this.BRBC_ADDRESS
+            }"
+          >
             <div>With the assistance of</div>
-            <img src="assets/images/icons/collaborations/Binance.svg" alt="Binance" />
+            <img
+              [src]="
+                'assets/images/icons/collaborations/' +
+                (getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+                  ? 'Binance.svg'
+                  : 'Polygon.svg')
+              "
+              [alt]="getNonEthereumBlockchain()"
+            />
           </a>
         </div>
 

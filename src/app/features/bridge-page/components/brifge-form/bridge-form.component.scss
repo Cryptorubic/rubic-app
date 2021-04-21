@@ -61,6 +61,10 @@
     font-size: 12px !important;
     text-decoration: none !important;
 
+    &_hidden {
+      visibility: hidden;
+    }
+
     &:hover {
       cursor: pointer;
 
@@ -332,7 +336,7 @@
     opacity: 0.4;
   }
 
-  &__binance {
+  &__blockchain-link {
     font-size: 14px;
 
     cursor: pointer;

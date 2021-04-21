@@ -310,7 +310,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getNonEthereumBlockchain(): BLOCKCHAIN_NAME {
+  public getNonEthereumBlockchain(): BLOCKCHAIN_NAME {
     return this.fromBlockchain.key !== BLOCKCHAIN_NAME.ETHEREUM
       ? this.fromBlockchain.key
       : this.toBlockchain.key;
