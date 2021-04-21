@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
-export const SERVER_REST_URL = `${environment.apiBaseUrl}/api/`;
+export const SERVER_REST_URL = `${environment.apiBaseUrl}/`;
 
 @Injectable({
   providedIn: 'root'

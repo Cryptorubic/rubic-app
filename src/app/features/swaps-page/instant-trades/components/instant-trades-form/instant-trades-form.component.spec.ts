@@ -54,7 +54,7 @@ describe('InstantTradesFormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
 
-    const tokensRequest = httpMock.expectOne(`${environment.apiBaseUrl}/api/tokens/`);
+    const tokensRequest = httpMock.expectOne(`${environment.apiBaseUrl}/tokens/`);
     tokensRequest.flush(backendTestTokens);
 
     httpMock.verify();

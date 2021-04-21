@@ -11,7 +11,7 @@ export class HealthcheckService {
   public healthCheck(): Promise<boolean> {
     return new Promise(resolve => {
       this.httpClient
-        .get(`${environment.apiBaseUrl}/api/healthcheck`, { observe: 'response' })
+        .get(`${environment.apiBaseUrl}/healthcheck`, { observe: 'response' })
         .subscribe(
           response => resolve(response.status === 200),
           () => resolve(false)

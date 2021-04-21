@@ -54,7 +54,7 @@ describe('BridgeFormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
 
-    const tokensRequest = httpMock.expectOne(`${environment.apiBaseUrl}/api/tokens/`);
+    const tokensRequest = httpMock.expectOne(`${environment.apiBaseUrl}/tokens/`);
     tokensRequest.flush(backendTestTokens);
     httpMock.expectOne('https://api.binance.org/bridge/api/v2/tokens');
 
