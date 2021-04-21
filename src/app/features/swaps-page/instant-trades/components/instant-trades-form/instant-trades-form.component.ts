@@ -624,9 +624,17 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           this.waitingForProvider = false;
           setTradeState(TRADE_STATUS.APPROVAL);
         },
-        onConfirm: () => {
+        onConfirm: hash => {
           this.waitingForProvider = false;
           setTradeState(TRADE_STATUS.TX_IN_PROGRESS);
+
+          const tradeInfo = {
+            hash,
+            network: this.blockchain,
+            provider: this.trades[selectedServiceIndex].tradeProviderInfo.label
+          };
+
+          this.instantTradesApiService.createTrade(tradeInfo);
         }
       })
       .then(receipt => {

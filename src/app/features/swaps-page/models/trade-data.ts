@@ -1,29 +1,22 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TokenPart } from 'src/app/shared/models/order-book/tokens';
-
-type InstantTradesDataTokens = {
-  [tokenPart in TokenPart]: InstantTradesTradeData;
-};
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
 export enum INTSTANT_TRADES_TRADE_STATUS {
-  ACTIVE = 'Active',
-  EXPIRED = 'Expired',
-  CANCELLED = 'Cancelled',
-  DONE = 'Done'
+  REJECTED = 'Rejected',
+  COMPLETED = 'Completed',
+  PENDING = 'Pending'
 }
 
 export interface InstantTradesTradeData {
-  memo: string;
-  contractAddress: string;
-  uniqueLink: string;
-  owner: string;
+  hash: string;
+  provider: string;
 
-  token: InstantTradesDataTokens;
+  fromToken: SwapToken;
+  toToken: SwapToken;
   blockchain: BLOCKCHAIN_NAME;
-  status: INTSTANT_TRADES_TRADE_STATUS;
 
-  expirationDate: moment.Moment;
-  isPublic: boolean;
-  isWithBrokerFee: boolean;
-  brokerAddress: string;
+  fromAmount: string;
+  toAmount: string;
+  status: INTSTANT_TRADES_TRADE_STATUS;
+  createDate: moment.Moment;
 }

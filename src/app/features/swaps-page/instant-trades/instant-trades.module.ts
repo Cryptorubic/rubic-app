@@ -17,7 +17,7 @@ import { InstantTradesTableComponent } from './components/instant-trades-table/i
 @NgModule({
   declarations: [InstantTradesComponent, InstantTradesFormComponent, InstantTradesTableComponent],
   imports: [CommonModule, TradesModule, SharedModule, MatTooltipModule],
-  exports: [InstantTradesComponent, InstantTradesTableComponent],
+  exports: [InstantTradesComponent],
   providers: [
     {
       provide: TradeTypeService,

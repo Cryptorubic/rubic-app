@@ -1,42 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { InstantTradesTradeData } from 'src/app/features/swaps-page/models/trade-data';
 import * as moment from 'moment';
-import { TokenPart } from 'src/app/shared/models/order-book/tokens';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { List } from 'immutable';
-import BigNumber from 'bignumber.js';
-import {
-  InstantTradesTradeData,
-  INTSTANT_TRADES_TRADE_STATUS
-} from 'src/app/features/swaps-page/models/trade-data';
-import { InstantTradesDataToken } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTrade from '../../../../features/swaps-page/instant-trades/models/InstantTrade';
-import { InstantTradesTradeApi } from './types/trade-api';
-import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
-import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
-import { InstantTradesCommonService } from '../../instant-trades-common/instant-trades-common.service';
-import { TokensService } from '../tokens-service/tokens.service';
+import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 @Injectable({
   providedIn: 'root'
 })
 export class InstantTradesApiService {
   private readonly botUrl = 'bot/instanttrades';
 
-  private _tokens: List<SwapToken>;
-
-  constructor(
-    private httpService: HttpService,
-    private readonly tokensService: TokensService,
-    private readonly web3PublicService: Web3PublicService,
-    private readonly instantTradesCommonService: InstantTradesCommonService
-  ) {
-    this.tokensService.tokens.subscribe(tokens => {
-      this._tokens = tokens;
-    });
-  }
+  constructor(private httpService: HttpService) {}
 
   public notifyInstantTradesBot(body: {
     provider: string;
@@ -57,94 +34,57 @@ export class InstantTradesApiService {
     return this.httpService.post(this.botUrl, req).toPromise();
   }
 
-  public createTrade(tradeInfo: InstantTradesTradeApi): Promise<{ unique_link: string }> {
-    return this.httpService.post('trades/', tradeInfo).toPromise();
+  public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
+    return this.httpService.post('instant_trades/', tradeInfo);
   }
 
-  public fetchSwaps(): Observable<InstantTradesTradeData[]> {
-    return this.httpService.get('trades/').pipe(
-      map((swaps: InstantTradesTradeApi[]) => {
+  public patchTrade(hash: string): Observable<InstantTradesResponseApi> {
+    return this.httpService.patch('instant_trades/', {}, hash);
+  }
+
+  public fetchSwaps(): Observable<Promise<InstantTradesTradeData>[]> {
+    return this.httpService.get('instant_trades/').pipe(
+      map((swaps: InstantTradesResponseApi[]) => {
         return swaps.map(async swap => {
-          const tradeData = await this.tradeApiToTradeData(swap);
-          try {
-            await this.setAmountContributed(tradeData);
-          } catch (err) {
-            console.error(err);
-          }
-          return tradeData;
+          return this.tradeApiToTradeData(swap);
         });
       })
     );
   }
 
-  public async setAmountContributed(
-    tradeData: InstantTradesTradeData
-  ): Promise<InstantTradesTradeData> {
-    return this.instantTradesCommonService.setAmountContributed(tradeData);
-  }
-
   public async tradeApiToTradeData(
-    tradeApi: InstantTradesTradeApi
+    tradeApi: InstantTradesResponseApi
   ): Promise<InstantTradesTradeData> {
-    let blockchain;
-    switch (tradeApi.network) {
-      case 1:
-        blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-        break;
-      case 22:
-        blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
-        break;
-      case 24:
-        blockchain = BLOCKCHAIN_NAME.MATIC;
-      // no default
-    }
-
     const tradeData = {
-      memo: 'str',
-      network: blockchain
+      hash: tradeApi.hash,
+      provider: tradeApi.contract.blockchain_network.title,
+      fromToken: {
+        name: tradeApi.from_token.name,
+        symbol: tradeApi.from_token.symbol,
+        blockchain: tradeApi.from_token.blockchain,
+        address: tradeApi.from_token.address,
+        decimals: tradeApi.from_token.decimals,
+        image: tradeApi.from_token.image,
+        rank: tradeApi.from_token.rank,
+        price: tradeApi.from_token.price
+      },
+      toToken: {
+        name: tradeApi.to_token.name,
+        symbol: tradeApi.to_token.symbol,
+        blockchain: tradeApi.to_token.blockchain,
+        address: tradeApi.to_token.address,
+        decimals: tradeApi.to_token.decimals,
+        image: tradeApi.to_token.image,
+        rank: tradeApi.to_token.rank,
+        price: tradeApi.to_token.price
+      },
+      blockchain: tradeApi.contract.blockchain_network.title,
+      fromAmount: tradeApi.from_amount,
+      toAmount: tradeApi.to_amount,
+      status: tradeApi.status,
+      createDate: moment(new Date(tradeApi.status_udated_at))
     } as InstantTradesTradeData;
-    await this.setTokensData('base', tradeApi, tradeData);
-    await this.setTokensData('quote', tradeApi, tradeData);
 
     return tradeData;
-  }
-
-  private async setTokensData(
-    tokenPart: TokenPart,
-    tradeApi: InstantTradesTradeApi,
-    tradeData: InstantTradesTradeData
-  ): Promise<void> {
-    tradeData.token[tokenPart] = {
-      blockchain: tradeData.blockchain,
-      address: tradeApi[`${tokenPart}_address`]
-    } as InstantTradesDataToken;
-
-    const foundToken = this._tokens.find(
-      t =>
-        t.blockchain === tradeData.blockchain &&
-        t.address.toLowerCase() === tradeData.token[tokenPart].address.toLowerCase()
-    );
-    if (foundToken) {
-      tradeData.token[tokenPart] = { ...tradeData.token[tokenPart], ...foundToken };
-    } else {
-      const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-      tradeData.token[tokenPart] = {
-        ...tradeData.token[tokenPart],
-        ...(await web3Public.getTokenInfo(tradeData.token[tokenPart].address))
-      };
-    }
-
-    tradeData.token[tokenPart] = {
-      ...tradeData.token[tokenPart],
-      amountTotal: Web3PublicService.tokenWeiToAmount(
-        tradeData.token[tokenPart],
-        tradeApi[`${tokenPart}_limit`]
-      ),
-      minContribution: Web3PublicService.tokenWeiToAmount(
-        tradeData.token[tokenPart],
-        tradeApi[`min_${tokenPart}_wei`]
-      ),
-      brokerPercent: tradeApi[`broker_fee_${tokenPart}`]
-    };
   }
 }
