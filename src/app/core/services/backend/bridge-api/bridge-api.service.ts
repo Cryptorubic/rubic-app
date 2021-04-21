@@ -20,7 +20,7 @@ export class BridgeApiService {
           resolve(response);
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );
@@ -45,7 +45,7 @@ export class BridgeApiService {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );
@@ -72,7 +72,7 @@ export class BridgeApiService {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );
@@ -95,7 +95,7 @@ export class BridgeApiService {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );

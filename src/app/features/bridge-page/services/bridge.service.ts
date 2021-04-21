@@ -75,7 +75,7 @@ export class BridgeService {
       .toPromise()) as BinanceResponse;
 
     if (binanceResponse.code !== 20000) {
-      console.log(`Error retrieving tokens, code ${binanceResponse.code}`);
+      console.error(`Error retrieving Todos, code ${binanceResponse.code}`);
       this._tokens.next(List([]));
       return;
     }
@@ -143,13 +143,13 @@ export class BridgeService {
       // eslint-disable-next-line consistent-return
       map((res: BinanceResponse) => {
         if (res.code !== 20000) {
-          console.log(`Error retrieving fee, code ${res.code}`);
+          console.error(`Error retrieving tokens, code ${res.code}`);
         } else {
           return res.data.networks.find(network => network.name === networkName).networkFee;
         }
       }),
       catchError(err => {
-        console.log('Error retrieving fee', err);
+        console.error(`Error retrieving tokens ${err}`);
         return throwError(err);
       })
     );
@@ -257,7 +257,7 @@ export class BridgeService {
     return this.httpClient.post(`${this.apiUrl}swaps/`, body).pipe(
       flatMap((res: BinanceResponse) => {
         if (res.code !== 20000) {
-          console.log(`Bridge POST error, code ${res.code}`);
+          console.error(`Bridge POST error, code ${res.code}`);
           return throwError(new OverQueryLimitError());
         }
         const { data } = res;

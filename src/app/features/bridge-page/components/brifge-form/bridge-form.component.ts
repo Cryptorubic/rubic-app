@@ -304,7 +304,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       fee => {
         this.fee = new BigNumber(fee);
       },
-      err => console.log(err),
+      err => console.error(err),
       () => {
         this.feeCalculationProgress = false;
       }
@@ -372,7 +372,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         err => {
           this.tradeInProgress = false;
           this.buttonAnimation = false;
-          console.log(err);
+          console.error(err);
           if (!(err instanceof RubicError)) {
             err = new RubicError();
           }

@@ -288,7 +288,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       default:
-        console.log(`Blockchain ${this.blockchain} was not found.`);
+        console.error(`Blockchain ${this.blockchain} was not found.`);
     }
   }
 

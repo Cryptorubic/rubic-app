@@ -6,8 +6,22 @@ import SwapToken from '../../../../shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { coingeckoTestTokens } from '../../../../../test/tokens/coingecko-tokens';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-import { BackendToken } from './models/BackendToken';
-import { TokensListResponse } from './models/TokensListResponse';
+
+interface TokensListResponse {
+  total: number;
+  tokens: BackendToken[];
+}
+
+interface BackendToken {
+  token_title: string;
+  token_short_title: string;
+  platform: string;
+  address: string;
+  decimals: number;
+  image_link: string;
+  coingecko_rank: number;
+  usd_price: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +52,7 @@ export class TokensService {
     this.httpService.get(this.getTokensUrl).subscribe(
       (response: TokensListResponse) =>
         this.tokens.next(List(response.tokens.map(this.parseToken.bind(this)))),
-      err => console.log('Error retrieving tokens', err)
+      err => console.error(`Error retrieving tokens ${err}`)
     );
   }
 
