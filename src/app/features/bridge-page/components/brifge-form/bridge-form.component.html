@@ -31,7 +31,7 @@
               [selectedToken]="selectedTokenAsInputToken"
               [selectedAmount]="fromNumber"
               (tokenChanges)="onSelectedTokenChanges($event)"
-              (numberChanges)="onTokensNumberChanges($event)"
+              (numberChanges)="fromNumber = $event"
             >
             </app-tokens-input>
 
@@ -60,7 +60,7 @@
                   'choose-blockchains__info_wrong':
                     selectedToken &&
                     fromNumber != undefined &&
-                    fromNumber.lt(selectedToken.minAmount)
+                    fromNumberAsBigNumber.lt(selectedToken.minAmount)
                 }"
               >
                 <td>
@@ -72,7 +72,7 @@
                     *ngIf="
                       selectedToken &&
                       fromNumber != undefined &&
-                      fromNumber.lt(selectedToken.minAmount)
+                      fromNumberAsBigNumber.lt(selectedToken.minAmount)
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -84,7 +84,7 @@
                   'choose-blockchains__info_wrong':
                     selectedToken &&
                     fromNumber != undefined &&
-                    fromNumber.gt(selectedToken.maxAmount)
+                    fromNumberAsBigNumber.gt(selectedToken.maxAmount)
                 }"
               >
                 <td>
@@ -96,7 +96,7 @@
                     *ngIf="
                       selectedToken &&
                       fromNumber != undefined &&
-                      fromNumber.gt(selectedToken.maxAmount)
+                      fromNumberAsBigNumber.gt(selectedToken.maxAmount)
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -143,7 +143,7 @@
           <div class="choose-blockchains__title">You get</div>
           <div class="choose-blockchains__get">
             <span>
-              {{ this.toNumber }}
+              {{ this.toNumber | bigNumberFormat }}
             </span>
             <div class="get-token-card" *ngIf="selectedToken">
               <img class="get-token-card__icon" [src]="selectedToken.icon" alt="Token" />
@@ -191,8 +191,8 @@
             [disabled]="
               !selectedToken ||
               !fromNumber ||
-              fromNumber.lt(selectedToken.minAmount) ||
-              fromNumber.gt(selectedToken.maxAmount)
+              fromNumberAsBigNumber.lt(selectedToken.minAmount) ||
+              fromNumberAsBigNumber.gt(selectedToken.maxAmount)
             "
             (onClick)="checkAndConfirm()"
           >

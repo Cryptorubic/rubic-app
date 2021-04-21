@@ -71,7 +71,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   public selectedTokenAsInputToken: InputToken = null;
 
-  public _fromNumber: BigNumber;
+  public _fromNumber: string;
 
   private _fee: BigNumber;
 
@@ -160,15 +160,19 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  set fromNumber(fromNumber: BigNumber) {
+  set fromNumber(fromNumber: string) {
     this._fromNumber = fromNumber;
     this.setToNumber();
 
     this.queryParamsService.setQueryParam('amount', this.fromNumber);
   }
 
-  get fromNumber(): BigNumber {
+  get fromNumber(): string {
     return this._fromNumber;
+  }
+
+  get fromNumberAsBigNumber(): BigNumber {
+    return new BigNumber(this._fromNumber);
   }
 
   set fee(fee: BigNumber) {
@@ -181,11 +185,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   }
 
   get toNumber(): string {
-    if (this._toNumber === undefined || null) {
+    if (!this._toNumber) {
       return '';
     }
 
-    let amount = this._toNumber.toString();
+    let amount = this._toNumber.toFixed();
 
     if (amount.includes('.')) {
       const startIndex = amount.indexOf('.') + 1;
@@ -196,10 +200,10 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   }
 
   private setToNumber(): void {
-    if (this.fromNumber !== undefined && this.fee !== undefined) {
-      this._toNumber = this.fromNumber.minus(this.fee);
+    if (this.fromNumber && this.fee) {
+      this._toNumber = new BigNumber(this.fromNumber).minus(this.fee);
     } else {
-      this._toNumber = undefined;
+      this._toNumber = null;
     }
   }
 
@@ -223,7 +227,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
 
     if (this.queryParamsService.currentQueryParams.amount) {
-      this.fromNumber = new BigNumber(this.queryParamsService.currentQueryParams.amount);
+      this.fromNumber = this.queryParamsService.currentQueryParams.amount;
     }
 
     this.setBlockchainLabelName();
@@ -294,12 +298,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onTokensNumberChanges(tokensNumber: number | string) {
-    if (tokensNumber) {
-      this.fromNumber = new BigNumber(tokensNumber);
-    }
-  }
-
   public checkAndConfirm() {
     this.buttonAnimation = true;
     if (
@@ -335,7 +333,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         this.selectedToken,
         this.fromBlockchain.name,
         this.toBlockchain.name,
-        this.fromNumber,
+        new BigNumber(this.fromNumber),
         this.toWalletAddress,
         () => {
           this.tradeInProgress = true;
