@@ -65,7 +65,7 @@ describe('UniSwapService', () => {
     expect(trade.to.amount.gt(0)).toBeTruthy();
     expect(trade.options.path.length).toBe(2);
     // @ts-ignore
-    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).not.toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).toBeFalsy();
     console.log(trade.estimatedGas.toFixed());
     done();
   });
@@ -85,7 +85,7 @@ describe('UniSwapService', () => {
     expect(trade.to.amount.gt(0)).toBeTruthy();
     expect(trade.options.path.length).toBe(3);
     // @ts-ignore
-    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[1])).not.toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[1])).toBeFalsy();
     console.log(trade.estimatedGas.toFixed());
     done();
   });
@@ -167,7 +167,7 @@ describe('UniSwapService', () => {
     expect(trade.to.amount.gt(0)).toBeTruthy();
     expect(trade.options.path.length).toBe(2);
     // @ts-ignore
-    expect(trade.estimatedGas.eq(service.tokensToEthEstimatedGas[0])).not.toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToEthEstimatedGas[0])).toBeFalsy();
     console.log(trade.estimatedGas);
     done();
   });
