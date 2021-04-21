@@ -21,7 +21,6 @@ import { ArrowComponent } from './components/arrow/arrow.component';
 import { MessageBoxComponent } from './components/message-box/message-box.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
-import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
 import { CollaborationsComponent } from './components/collaborations/collaborations.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
@@ -73,7 +72,6 @@ import { BlockchainSelectComponent } from './components/token-input/blockchain-s
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,
     NativeUrlPipe,
@@ -135,7 +133,6 @@ import { BlockchainSelectComponent } from './components/token-input/blockchain-s
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,
     NativeUrlPipe,

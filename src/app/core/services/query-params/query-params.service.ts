@@ -11,6 +11,7 @@ import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { TradeParametersService } from '../swaps/trade-parameters-service/trade-parameters.service';
 import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
 import { QueryParams } from './models/query-params';
+import { BridgeToken } from '../../../features/bridge-page/models/BridgeToken';
 
 type DefaultQueryParams = {
   [BLOCKCHAIN_NAME.ETHEREUM]: QueryParams;
@@ -121,8 +122,7 @@ export class QueryParamsService {
 
   public isAddress(token: string): boolean {
     const web3Public: Web3Public = this.web3Public[this.currentQueryParams.chain];
-    const isCorrect = web3Public.isAddressCorrect(token);
-    return isCorrect;
+    return web3Public.isAddressCorrect(token);
   }
 
   public setQueryParam(key: keyof QueryParams, value: any): void {
@@ -146,7 +146,7 @@ export class QueryParamsService {
     const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
     const similarTokens = tokens.filter(token =>
       isBridge
-        ? (token as SwapToken)[`${this.currentQueryParams.chain.toLowerCase()}Symbol`] ===
+        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.chain].symbol ===
           queryParam
         : (token as SwapToken).symbol === queryParam &&
           token.blockchain === this.currentQueryParams.chain
@@ -166,7 +166,8 @@ export class QueryParamsService {
     const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
     const searchingToken = tokens.find(token =>
       isBridge
-        ? token.address === queryParam
+        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.chain].address ===
+          queryParam
         : token.address === queryParam && token.blockchain === this.currentQueryParams.chain
     );
 
@@ -200,7 +201,7 @@ export class QueryParamsService {
 
   private setDefaultParams(queryParams: QueryParams): QueryParams {
     const chain =
-      queryParams.chain !== BLOCKCHAIN_NAME.MATIC ? queryParams.chain : BLOCKCHAIN_NAME.ETHEREUM;
+      queryParams.chain !== BLOCKCHAIN_NAME.POLYGON ? queryParams.chain : BLOCKCHAIN_NAME.ETHEREUM;
     return queryParams.from || queryParams.to
       ? {
           ...queryParams,
