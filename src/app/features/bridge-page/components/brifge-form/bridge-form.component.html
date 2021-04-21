@@ -163,7 +163,7 @@
           <div class="choose-blockchains__title">You get</div>
           <div class="choose-blockchains__get">
             <span>
-              {{ this.toNumber }}
+              {{ this.toNumber | bigNumberFormat }}
             </span>
             <div class="get-token-card" *ngIf="selectedToken">
               <img

@@ -16,7 +16,6 @@ import { MessageBoxComponent } from '../../../../shared/components/message-box/m
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
 import { BridgeTrade } from '../../models/BridgeTrade';
-import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 
 type Blockchains = {
   [BLOCKCHAIN_NAME.ETHEREUM]: BridgeBlockchain;
@@ -230,22 +229,20 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       return '';
     }
 
-    let amount = this._toNumber;
-    if (amount.includes('.')) {
-      const startIndex = amount.indexOf('.') + 1;
-      amount = amount.slice(
+    if (this._toNumber.includes('.')) {
+      const startIndex = this._toNumber.indexOf('.') + 1;
+      this._toNumber = this._toNumber.slice(
         0,
         startIndex + this.selectedToken.blockchainToken[this.toBlockchain.key].decimals
       );
     }
-    this._toNumber = amount;
 
     return this._toNumber;
   }
 
   private setToNumber(): void {
     if (this.fromNumber && this.fee) {
-      this._toNumber = new BigNumber(this.fromNumber).minus(this.fee).toFormat(BIG_NUMBER_FORMAT);
+      this._toNumber = new BigNumber(this.fromNumber).minus(this.fee).toFixed();
     } else {
       this._toNumber = null;
     }
