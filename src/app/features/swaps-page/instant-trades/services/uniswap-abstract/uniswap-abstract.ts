@@ -45,6 +45,8 @@ export class UniswapAbstract extends InstantTradeService {
 
   protected blockchain: BLOCKCHAIN_NAME;
 
+  protected shouldCalculateGas: boolean;
+
   private WETHAddress: string;
 
   private uniswapContractAddress: string;
@@ -87,7 +89,7 @@ export class UniswapAbstract extends InstantTradeService {
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
-    gasOptimisation: boolean
+    gasOptimization: boolean
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -95,18 +97,20 @@ export class UniswapAbstract extends InstantTradeService {
 
     if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
       fromTokenClone.address = this.WETHAddress;
+      fromTokenClone.decimals = 18;
       estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
     }
 
     if (this.web3Public.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.WETHAddress;
+      toTokenClone.decimals = 18;
       estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
     }
 
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const { route, gasData } = await this.getToAmountAndPath(
-      gasOptimisation,
+      gasOptimization,
       amountIn,
       fromTokenClone,
       toTokenClone,
@@ -120,14 +124,14 @@ export class UniswapAbstract extends InstantTradeService {
       },
       to: {
         token: toToken,
-        amount: route.outputAbsoluteAmount.div(10 ** toToken.decimals)
+        amount: route.outputAbsoluteAmount.div(10 ** toTokenClone.decimals)
       },
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
         path: route.path,
-        gasOptimisation
+        gasOptimization
       }
     };
   }
@@ -239,11 +243,25 @@ export class UniswapAbstract extends InstantTradeService {
   ): Promise<TransactionReceipt> {
     await this.checkSettings(this.blockchain);
     await this.checkBalance(trade);
-    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
+
+    const fromTokenClone = { ...trade.from.token };
+    const toTokenClone = { ...trade.to.token };
+
+    if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
+      fromTokenClone.address = this.WETHAddress;
+      fromTokenClone.decimals = 18;
+    }
+
+    if (this.web3Public.isNativeAddress(toTokenClone.address)) {
+      toTokenClone.address = this.WETHAddress;
+      toTokenClone.decimals = 18;
+    }
+
+    const amountIn = trade.from.amount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const amountOutMin = trade.to.amount
       .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
-      .multipliedBy(10 ** trade.to.token.decimals)
+      .multipliedBy(10 ** toTokenClone.decimals)
       .toFixed(0);
     const { path } = trade.options;
     const to = this.web3Private.address;
@@ -269,8 +287,6 @@ export class UniswapAbstract extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
-    trade.path[0] = this.WETHAddress;
-
     return this.web3Private.executeContractMethod(
       this.uniswapContractAddress,
       this.abi,
@@ -290,8 +306,6 @@ export class UniswapAbstract extends InstantTradeService {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
-    trade.path[1] = this.WETHAddress;
-
     await this.provideAllowance(
       trade.path[0],
       new BigNumber(trade.amountIn),
@@ -343,7 +357,7 @@ export class UniswapAbstract extends InstantTradeService {
     const routes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort((a, b) =>
       b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
     );
-    if (shouldOptimiseGas) {
+    if (shouldOptimiseGas && this.shouldCalculateGas) {
       return this.getOptimalRouteAndGas(
         fromAmountAbsolute,
         toToken,
@@ -353,33 +367,45 @@ export class UniswapAbstract extends InstantTradeService {
     }
 
     const route = routes[0];
-    const to = this.web3Private.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
-    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-    const gasPrice = await this.web3Public.getGasPriceInETH();
 
-    const amountOutMin = route.outputAbsoluteAmount
-      .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
-      .toFixed(0);
+    if (this.shouldCalculateGas) {
+      const to = this.web3Private.address;
+      const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+      const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+      const gasPrice = await this.web3Public.getGasPriceInETH();
 
-    const estimatedGas = await this[gasCalculationMethodName].call(
-      this,
-      fromAmountAbsolute,
-      amountOutMin,
-      route.path,
-      to,
-      deadline
-    );
+      const amountOutMin = route.outputAbsoluteAmount
+        .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
+        .toFixed(0);
 
-    const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
-    const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
+      const estimatedGas = await this[gasCalculationMethodName].call(
+        this,
+        fromAmountAbsolute,
+        amountOutMin,
+        route.path,
+        to,
+        deadline
+      );
+
+      const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+      const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
+
+      return {
+        route,
+        gasData: {
+          estimatedGas,
+          gasFeeInEth,
+          gasFeeInUsd
+        }
+      };
+    }
 
     return {
       route,
       gasData: {
-        estimatedGas,
-        gasFeeInEth,
-        gasFeeInUsd
+        estimatedGas: new BigNumber(0),
+        gasFeeInEth: new BigNumber(0),
+        gasFeeInUsd: new BigNumber(0)
       }
     };
   }

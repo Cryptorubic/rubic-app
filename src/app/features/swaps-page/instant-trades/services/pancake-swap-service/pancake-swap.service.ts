@@ -33,6 +33,7 @@ export class PancakeSwapService extends UniswapAbstract {
     this.web3Private = web3Private;
     this.web3Public = web3Public[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
     this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+    this.shouldCalculateGas = false;
 
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {

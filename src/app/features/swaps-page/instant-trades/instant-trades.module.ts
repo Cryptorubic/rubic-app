@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
-import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { InstantTradesComponent } from './components/instant-trades/instant-trades.component';
 import { InstantTradesFormComponent } from './components/instant-trades-form/instant-trades-form.component';
@@ -19,14 +17,6 @@ import { PancakeSwapService } from './services/pancake-swap-service/pancake-swap
   imports: [CommonModule, TradesModule, SharedModule, MatTooltipModule],
   exports: [InstantTradesComponent],
   providers: [
-    {
-      provide: TradeTypeService,
-      useClass: TradeTypeService
-    },
-    {
-      provide: TradeParametersService,
-      useClass: TradeParametersService
-    },
     UniSwapService,
     OneInchBscService,
     OneInchEthService,
