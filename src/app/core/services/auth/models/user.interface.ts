@@ -1,6 +1,11 @@
 export interface MetamaskLoginInterface {
-  wallet_address?: string;
-  message?: string;
+  code: string;
+  payload: {
+    user?: {
+      address: string;
+    };
+    message?: string;
+  };
 }
 
 export interface UserInterface {
