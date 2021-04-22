@@ -26,9 +26,9 @@ export class LoginButtonComponent {
   }
 
   public async authUser(): Promise<void> {
-    const authWithBackend = !new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
+    const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
     try {
-      if (authWithBackend) {
+      if (isIframe) {
         await this.authService.signInWithoudBackend();
       } else {
         await this.authService.signIn();

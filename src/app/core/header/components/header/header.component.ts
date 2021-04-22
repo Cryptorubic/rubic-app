@@ -5,12 +5,14 @@ import {
   ViewChild,
   HostListener,
   TemplateRef,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -33,9 +35,14 @@ export class HeaderComponent {
   constructor(
     @Inject(PLATFORM_ID) platformId,
     private readonly headerStore: HeaderStore,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly cdr: ChangeDetectorRef
   ) {
-    this.authService.loadUser();
+    const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
+    if (!isIframe) {
+      this.authService.loadUser();
+    }
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
