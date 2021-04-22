@@ -1,0 +1,11 @@
+<span>
+  {{
+    'Total supply for { tokenSymbol } is { totalSupply } – you cannot choose more than that. Please, decrease the amount.'
+      | translate
+        : '{ tokenSymbol:"' +
+            totalSupplyOverflowError.tokenSymbol +
+            '", totalSupply: "' +
+            totalSupplyOverflowError.totalSupply +
+            '"}'
+  }}
+</span>
