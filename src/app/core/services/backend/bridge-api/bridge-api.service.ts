@@ -41,7 +41,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions/', body).subscribe(
         () => {
           resolve();
         },
@@ -68,7 +68,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions/', body).subscribe(
         () => {
           resolve();
         },
@@ -103,7 +103,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions/', body).subscribe(
         () => {
           resolve();
         },
@@ -117,7 +117,7 @@ export class BridgeApiService {
 
   public patchPolygonTransaction(transactionHash: string, status: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.httpService.patch(`bridge/transactions/${transactionHash}`, { status }).subscribe(
+      this.httpService.patch(`bridges/transactions/${transactionHash}`, { status }).subscribe(
         () => {
           resolve();
         },
