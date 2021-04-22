@@ -1,9 +1,9 @@
 import {
-  Component,
+  AfterViewInit,
   ChangeDetectionStrategy,
+  Component,
   TemplateRef,
-  ViewChild,
-  AfterViewInit
+  ViewChild
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
@@ -12,6 +12,7 @@ import { MessageBoxComponent } from 'src/app/shared/components/message-box/messa
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-advert-modal',
@@ -38,7 +39,7 @@ export class AdvertModalComponent implements AfterViewInit {
       symbol: 'BRBC',
       decimals: 18,
       image: `${window.location.origin}/assets/images/icons/coins/brbc.svg`,
-      blockchain: undefined,
+      blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       price: undefined,
       name: undefined,
       rank: undefined
@@ -64,8 +65,8 @@ export class AdvertModalComponent implements AfterViewInit {
   }
 
   private showErrorModal(err: Error): void {
-    const eror = err instanceof RubicError ? err : new RubicError();
-    const data = { title: 'Warning', descriptionText: eror.comment } as any;
+    const error = err instanceof RubicError ? err : new RubicError();
+    const data = { title: 'Warning', descriptionText: error.comment } as any;
     if (err instanceof NetworkError) {
       data.title = 'Error';
       data.descriptionText = `You have selected the wrong network. To add BRSC please choose ${err.networkToChoose} from MetaMask, and reload page.`;
