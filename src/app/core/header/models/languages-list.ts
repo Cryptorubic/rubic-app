@@ -14,6 +14,10 @@ export const languagesList: LanguageListElement[] = [
     title: '한국어'
   },
   {
+    lng: 'ko-new',
+    title: '한국어 new'
+  },
+  {
     lng: 'zh',
     title: '中国'
   },
