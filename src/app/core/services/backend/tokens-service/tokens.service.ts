@@ -6,6 +6,8 @@ import SwapToken from '../../../../shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { coingeckoTestTokens } from '../../../../../test/tokens/coingecko-tokens';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
+import { TokensListResponse } from './models/TokensListResponse';
+import { BackendToken } from './models/BackendToken';
 
 @Injectable({
   providedIn: 'root'
