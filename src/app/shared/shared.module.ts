@@ -53,6 +53,7 @@ import { CustomTokenFormComponent } from './components/use-custom-token/custom-t
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
+import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 
 @NgModule({
   declarations: [
@@ -93,7 +94,8 @@ import { BlockchainSelectComponent } from './components/blockchain-select/blockc
     CustomTokenFormComponent,
     WarningDisclaimerComponent,
     BlockchainSelectComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    TotalSupplyOverflowErrorComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
