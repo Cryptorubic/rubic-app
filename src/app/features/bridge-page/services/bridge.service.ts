@@ -81,7 +81,9 @@ export class BridgeService implements OnDestroy {
       this.setTokens();
     });
 
-    this.walletAddress = web3PrivateService.onAddressChanges;
+    this.walletAddress.subscribe(() => {
+      this.updateTransactionsList();
+    });
 
     this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {

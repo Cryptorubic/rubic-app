@@ -119,10 +119,10 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
           .toArray()
           .sort((a, b) => {
             if (this.sortBy) {
-              // eslint-disable-next-line no-restricted-syntax
+              // eslint-disable-next-line
               for (const parameter of this.sortBy) {
-                if (a.sortParameters[parameter] > b.sortParameters[parameter]) return 1;
-                if (a.sortParameters[parameter] < b.sortParameters[parameter]) return -1;
+                if (a.sortParameters[parameter] > b.sortParameters[parameter]) return -1;
+                if (a.sortParameters[parameter] < b.sortParameters[parameter]) return 1;
               }
             }
             return 0;

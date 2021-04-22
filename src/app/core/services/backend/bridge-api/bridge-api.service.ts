@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -15,15 +14,17 @@ export class BridgeApiService {
 
   public getTransactions(walletAddress: string): Promise<BridgeTableTradeApi[]> {
     return new Promise<BridgeTableTradeApi[]>((resolve, reject) => {
-      this.httpService.get('bridge/transactions', { walletAddress, t: Date.now() }).subscribe(
-        (response: BridgeTableTradeApi[]) => {
-          resolve(response);
-        },
-        error => {
-          console.error(error);
-          reject(error);
-        }
-      );
+      this.httpService
+        .get('bridges/transactions/', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
+        .subscribe(
+          (response: BridgeTableTradeApi[]) => {
+            resolve(response);
+          },
+          error => {
+            console.error(error);
+            reject(error);
+          }
+        );
     });
   }
 

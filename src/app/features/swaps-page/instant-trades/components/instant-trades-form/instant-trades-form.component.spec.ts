@@ -13,6 +13,7 @@ import { UniSwapService } from '../../services/uni-swap-service/uni-swap.service
 import { InstantTradesFormComponent } from './instant-trades-form.component';
 import { SharedModule } from '../../../../../shared/shared.module';
 import { backendTestTokens } from '../../../../../../test/tokens/backend-tokens';
+import { environment } from '../../../../../../environments/environment';
 
 describe('InstantTradesFormComponent', () => {
   let component: InstantTradesFormComponent;
@@ -53,7 +54,7 @@ describe('InstantTradesFormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
 
-    const tokensRequest = httpMock.expectOne('/api/v1/coingecko_tokens/');
+    const tokensRequest = httpMock.expectOne(`${environment.apiBaseUrl}/tokens/`);
     tokensRequest.flush(backendTestTokens);
 
     httpMock.verify();

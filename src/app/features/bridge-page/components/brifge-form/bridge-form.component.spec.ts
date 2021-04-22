@@ -10,6 +10,7 @@ import { RubicBridgeService } from '../../services/rubic-bridge-service/rubic-br
 import { BridgeFormComponent } from './bridge-form.component';
 import { SharedModule } from '../../../../shared/shared.module';
 import { backendTestTokens } from '../../../../../test/tokens/backend-tokens';
+import { environment } from '../../../../../environments/environment';
 
 describe('BridgeFormComponent', () => {
   let component: BridgeFormComponent;
@@ -53,7 +54,7 @@ describe('BridgeFormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
 
-    const tokensRequest = httpMock.expectOne('/api/v1/coingecko_tokens/');
+    const tokensRequest = httpMock.expectOne(`${environment.apiBaseUrl}/tokens/`);
     tokensRequest.flush(backendTestTokens);
     httpMock.expectOne('https://api.binance.org/bridge/api/v2/tokens');
 
