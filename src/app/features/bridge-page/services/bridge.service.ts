@@ -263,10 +263,15 @@ export class BridgeService implements OnDestroy {
       );
 
       const transactions = transactionsApi.map(transaction => {
+        const fromBlockchain = this.transactionBlockchain[transaction.fromNetwork];
+        const toBlockchain = this.transactionBlockchain[transaction.toNetwork];
+
         let fromSymbol =
-          transaction.fromNetwork === 'ETH' ? transaction.ethSymbol : transaction.bscSymbol;
+          fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM
+            ? transaction.ethSymbol
+            : transaction.bscSymbol;
         let toSymbol =
-          transaction.toNetwork === 'ETH' ? transaction.ethSymbol : transaction.bscSymbol;
+          toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? transaction.ethSymbol : transaction.bscSymbol;
 
         if (transaction.fromNetwork === 'POL' || transaction.toNetwork === 'POL') {
           let ethSymbol: string;
@@ -281,27 +286,24 @@ export class BridgeService implements OnDestroy {
               .find(token => token.address.toLowerCase() === transaction.bscSymbol.toLowerCase())
               .symbol;
           } else {
-            ethSymbol = bridgeTestTokens[BLOCKCHAIN_NAME.POLYGON].find(
+            const testBridgeToken = bridgeTestTokens[BLOCKCHAIN_NAME.POLYGON].find(
               token =>
                 token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() ===
                 transaction.ethSymbol.toLowerCase()
-            ).blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol;
-            polygonSymbol = bridgeTestTokens[BLOCKCHAIN_NAME.POLYGON].find(
-              token =>
-                token.blockchainToken[BLOCKCHAIN_NAME.POLYGON]?.address.toLowerCase() ===
-                transaction.bscSymbol.toLowerCase()
-            ).blockchainToken[BLOCKCHAIN_NAME.POLYGON].symbol;
+            );
+            ethSymbol = testBridgeToken.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol;
+            polygonSymbol = testBridgeToken.blockchainToken[BLOCKCHAIN_NAME.POLYGON].symbol;
           }
 
-          fromSymbol = transaction.fromNetwork === 'ETH' ? ethSymbol : polygonSymbol;
-          toSymbol = transaction.toNetwork === 'ETH' ? ethSymbol : polygonSymbol;
+          fromSymbol = fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? ethSymbol : polygonSymbol;
+          toSymbol = toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? ethSymbol : polygonSymbol;
         }
 
         return {
           status: transaction.status,
           statusCode: transaction.code,
-          fromBlockchain: this.transactionBlockchain[transaction.fromNetwork],
-          toBlockchain: this.transactionBlockchain[transaction.toNetwork],
+          fromBlockchain,
+          toBlockchain,
           fromAmount: new BigNumber(transaction.actualFromAmount).toFixed(),
           toAmount: new BigNumber(transaction.actualToAmount).toFixed(),
           fromSymbol,

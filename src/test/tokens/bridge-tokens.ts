@@ -51,7 +51,7 @@ const ETH_POL: BridgeToken = {
     [BLOCKCHAIN_NAME.POLYGON]: {
       address: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
       name: 'Ethereum - Polygon',
-      symbol: 'ETH',
+      symbol: 'WETH',
       decimals: 18,
 
       minAmount: 0,
