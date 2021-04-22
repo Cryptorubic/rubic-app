@@ -55,17 +55,8 @@ module.exports = {
         radix: ['warn', 'as-needed'],
         'no-prototype-builtins': 'off',
         'no-return-assign': 'off',
-        'no-console': 'off',
-        'no-restricted-syntax': [
-          'error',
-          'LabeledStatement',
-          'WithStatement',
-          {
-            selector:
-              "CallExpression[callee.object.name='console'][callee.property.name!=/^(error|info|debug)$/]",
-            message: 'Unexpected property on console object was called'
-          }
-        ]
+        'no-console': ['error', { allow: ['info', 'error', 'debug'] }],
+        'no-restricted-syntax': ['error', 'LabeledStatement', 'WithStatement']
       }
     },
     {

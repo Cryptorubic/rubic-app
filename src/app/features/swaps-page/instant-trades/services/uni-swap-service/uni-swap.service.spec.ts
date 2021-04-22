@@ -18,7 +18,7 @@ describe('UniSwapService', () => {
   let service: UniSwapService;
   let web3Private: Web3PrivateService;
   let web3PublicEth: Web3Public;
-  let uniswapContractAddress: string;
+  let uniSwapContractAddress: string;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -36,7 +36,7 @@ describe('UniSwapService', () => {
     web3PublicEth = TestBed.inject(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
     service = TestBed.inject(UniSwapService);
     web3Private = TestBed.inject(Web3PrivateService);
-    uniswapContractAddress = uniSwapContracts.testnetAddress;
+    uniSwapContractAddress = uniSwapContracts.testnetAddress;
   });
 
   afterEach(() => {
@@ -52,7 +52,7 @@ describe('UniSwapService', () => {
 
     await web3Private.approveTokens(
       WEENUS.address,
-      uniswapContractAddress,
+      uniSwapContractAddress,
       new BigNumber(3).multipliedBy(10 ** WEENUS.decimals)
     );
 
@@ -67,7 +67,7 @@ describe('UniSwapService', () => {
   it('calculate token-token without allowance price', async done => {
     const fromAmount = new BigNumber(2);
 
-    await web3Private.unApprove(WEENUS.address, uniswapContractAddress);
+    await web3Private.unApprove(WEENUS.address, uniSwapContractAddress);
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS, false);
 
@@ -82,7 +82,7 @@ describe('UniSwapService', () => {
 
     await web3Private.approveTokens(
       WEENUS.address,
-      uniswapContractAddress,
+      uniSwapContractAddress,
       fromAmount.multipliedBy(10 ** WEENUS.decimals)
     );
 
@@ -135,7 +135,7 @@ describe('UniSwapService', () => {
   it('calculate token-eth price without allowance', async done => {
     const fromAmount = new BigNumber(2);
 
-    await web3Private.unApprove(WEENUS.address, uniswapContractAddress);
+    await web3Private.unApprove(WEENUS.address, uniSwapContractAddress);
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH, false);
 
@@ -146,7 +146,7 @@ describe('UniSwapService', () => {
   });
 
   it('create tokens-tokens trade without allowance', async done => {
-    await web3Private.unApprove(WEENUS.address, uniswapContractAddress);
+    await web3Private.unApprove(WEENUS.address, uniSwapContractAddress);
 
     const fromAmount = new BigNumber(2);
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS, false);
@@ -180,7 +180,7 @@ describe('UniSwapService', () => {
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount)).toBeTruthy();
 
-    await web3Private.unApprove(WEENUS.address, uniswapContractAddress);
+    await web3Private.unApprove(WEENUS.address, uniSwapContractAddress);
     done();
   });
 
@@ -189,7 +189,7 @@ describe('UniSwapService', () => {
 
     await web3Private.approveTokens(
       WEENUS.address,
-      uniswapContractAddress,
+      uniSwapContractAddress,
       fromAmount.multipliedBy(10 ** WEENUS.decimals)
     );
 
@@ -220,7 +220,7 @@ describe('UniSwapService', () => {
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount)).toBeTruthy();
 
-    await web3Private.unApprove(WEENUS.address, uniswapContractAddress);
+    await web3Private.unApprove(WEENUS.address, uniSwapContractAddress);
     done();
   });
 
@@ -252,7 +252,7 @@ describe('UniSwapService', () => {
   });
 
   it('create tokens-eth trade without existing allowance', async done => {
-    await web3Private.unApprove(WEENUS.address, uniswapContractAddress);
+    await web3Private.unApprove(WEENUS.address, uniSwapContractAddress);
 
     const fromAmount = new BigNumber(30);
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH, false);
@@ -293,19 +293,19 @@ describe('UniSwapService', () => {
 
     expect(newBalance.minus(startBalance).gte(outputMinAmount.minus(gasFee))).toBeTruthy();
 
-    await web3Private.unApprove(WEENUS.address, uniswapContractAddress);
+    await web3Private.unApprove(WEENUS.address, uniSwapContractAddress);
 
     done();
   });
 
   it('create tokens-eth trade with existing allowance', async done => {
-    await web3Private.unApprove(WEENUS.address, uniswapContractAddress);
+    await web3Private.unApprove(WEENUS.address, uniSwapContractAddress);
 
     const fromAmount = new BigNumber(28);
 
     await web3Private.approveTokens(
       WEENUS.address,
-      uniswapContractAddress,
+      uniSwapContractAddress,
       fromAmount.multipliedBy(10 ** WEENUS.decimals)
     );
 

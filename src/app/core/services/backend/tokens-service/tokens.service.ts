@@ -7,22 +7,6 @@ import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN
 import { coingeckoTestTokens } from '../../../../../test/tokens/coingecko-tokens';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 
-interface TokensListResponse {
-  total: number;
-  tokens: BackendToken[];
-}
-
-interface BackendToken {
-  token_title: string;
-  token_short_title: string;
-  platform: string;
-  address: string;
-  decimals: number;
-  image_link: string;
-  coingecko_rank: number;
-  usd_price: number;
-}
-
 @Injectable({
   providedIn: 'root'
 })
