@@ -1,4 +1,7 @@
-<div  class="disclaimer-text">
-  {{ 'tradesPage.tradesDisclaimer' | translate }}
-  <a (click)="openDisclaimer()" class="disclaimer-text__link">{{ 'tradesPage.termsAndConditions' | translate }}</a>
+<div class="disclaimer-text">
+  {{ 'tradesPage.tradesDisclaimer.beforeText' | translate }}
+  <a (click)="openDisclaimer()" class="disclaimer-text__link">{{
+    'tradesPage.tradesDisclaimer.termsAndConditions' | translate
+  }}</a>
+  {{ 'tradesPage.tradesDisclaimer.afterText' | translate }}
 </div>
