@@ -12,6 +12,7 @@ import { DisclaimerComponent } from './shared/components/disclaimer/disclaimer.c
 import { TokenLabelComponent } from './shared/components/tokens-input/token-label/token-label.component';
 import { ListingRequestPopupComponent } from './shared/components/collaborations/listing-request-popup/listing-request-popup.component';
 import { NetworkErrorComponent } from './shared/components/network-error/network-error.component';
+import { TotalSupplyOverflowErrorComponent } from './shared/components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,7 +31,8 @@ import { NetworkErrorComponent } from './shared/components/network-error/network
     DynamicModule.withComponents([
       TokenLabelComponent,
       NetworkErrorComponent,
-      ListingRequestPopupComponent
+      ListingRequestPopupComponent,
+      TotalSupplyOverflowErrorComponent
     ]),
     NgxMaterialTimepickerModule
   ],

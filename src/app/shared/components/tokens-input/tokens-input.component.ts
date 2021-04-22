@@ -72,7 +72,7 @@ export class TokensInputComponent implements OnChanges {
   @Input() set selectedAmount(value) {
     this._selectedAmount = value;
 
-    if (value?.includes('.')) {
+    if (this._selectedAmount?.includes('.')) {
       const startIndex = this._selectedAmount.indexOf('.') + 1;
 
       let decimalSymbols: number;

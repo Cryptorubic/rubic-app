@@ -31,7 +31,7 @@
               [selectedToken]="selectedTokenAsInputToken"
               [selectedAmount]="fromNumber"
               (tokenChanges)="onSelectedTokenChanges($event)"
-              (numberChanges)="this.fromNumber = $event"
+              (numberChanges)="fromNumber = $event"
             >
             </app-tokens-input>
 
