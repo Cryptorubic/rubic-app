@@ -110,9 +110,10 @@ export class AuthService {
   /**
    * @description Login user without backend.
    */
-  public loginWithoutbackend(): void {
+  public async loginWithoutbackend(): Promise<void> {
+    await this.web3Service.activate();
     const { address } = this.web3Service;
-    this.$currentUser.next({ address } || null);
+    this.$currentUser.next(address ? { address } : null);
   }
 
   /**
