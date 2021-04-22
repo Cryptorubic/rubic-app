@@ -13,6 +13,7 @@ import { TokenLabelComponent } from './shared/components/tokens-input/token-labe
 import { BlockchainLabelComponent } from './shared/components/blockchains-input/blockchain-label/blockchain-label.component';
 import { NetworkErrorComponent } from './features/bridge-page/components/network-error/network-error.component';
 import { ListingRequestPopupComponent } from './shared/components/collaborations/listing-request-popup/listing-request-popup.component';
+import { TotalSupplyOverflowErrorComponent } from './shared/components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +33,8 @@ import { ListingRequestPopupComponent } from './shared/components/collaborations
       TokenLabelComponent,
       BlockchainLabelComponent,
       NetworkErrorComponent,
-      ListingRequestPopupComponent
+      ListingRequestPopupComponent,
+      TotalSupplyOverflowErrorComponent
     ]),
     NgxMaterialTimepickerModule
   ],
