@@ -42,7 +42,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions/', body).subscribe(
         () => {
           resolve();
         },
@@ -69,7 +69,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions/', body).subscribe(
         () => {
           resolve();
         },
