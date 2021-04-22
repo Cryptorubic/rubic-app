@@ -56,6 +56,10 @@
       vertical-align: middle;
     }
 
+    &-text {
+      font-family: $ubuntu-font;
+    }
+
     &.mat-active,
     &:hover {
       background-color: $grey-background !important;
