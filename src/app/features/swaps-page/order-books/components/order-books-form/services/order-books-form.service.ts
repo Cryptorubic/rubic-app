@@ -13,6 +13,7 @@ import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
+import { TO_BACKEND_BLOCKCHAINS } from '../../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { SameTokensError } from '../../../../../../shared/models/errors/order-book/SameTokensError';
 import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
@@ -126,7 +127,7 @@ export class OrderBooksFormService implements OnDestroy {
     const contractAddress = ORDER_BOOK_CONTRACT.ADDRESSES[2][tradeForm.blockchain];
     const contractAbi = ORDER_BOOK_CONTRACT.ABI[2] as any[];
 
-    const tradeApi = this.generateTradeApiObject(tradeForm);
+    const tradeApi = this.createTradeApiObject(tradeForm);
 
     const fee: string = await web3Public.callContractMethod(
       contractAddress,
@@ -160,7 +161,7 @@ export class OrderBooksFormService implements OnDestroy {
 
     tradeApi.memo = receipt.events.OrderCreated.returnValues.id;
     const { unique_link } = await this.orderBookApiService.createTrade(tradeApi);
-    this.orderBookApiService.createTradeBotNotification(
+    this.orderBookApiService.notifyOrderBooksBotOnCreate(
       tradeForm,
       unique_link,
       receipt.from,
@@ -173,20 +174,7 @@ export class OrderBooksFormService implements OnDestroy {
     };
   }
 
-  private generateTradeApiObject(tradeForm: OrderBookTradeForm): OrderBookTradeApi {
-    let network;
-    switch (tradeForm.blockchain) {
-      case BLOCKCHAIN_NAME.ETHEREUM:
-        network = 1;
-        break;
-      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        network = 22;
-        break;
-      case BLOCKCHAIN_NAME.MATIC:
-        network = 24;
-      // no default
-    }
-
+  private createTradeApiObject(tradeForm: OrderBookTradeForm): OrderBookTradeApi {
     return {
       memo: '',
       contract_address: ORDER_BOOK_CONTRACT.ADDRESSES[2][tradeForm.blockchain],
@@ -218,7 +206,7 @@ export class OrderBooksFormService implements OnDestroy {
       broker_fee_quote: parseFloat(tradeForm.token.quote.brokerPercent),
 
       name: `${tradeForm.token.base.symbol} <> ${tradeForm.token.quote.symbol}`,
-      network,
+      network: TO_BACKEND_BLOCKCHAINS[tradeForm.blockchain],
       state: 'ACTIVE',
       contract_state: 'ACTIVE',
       contract_type: 20,

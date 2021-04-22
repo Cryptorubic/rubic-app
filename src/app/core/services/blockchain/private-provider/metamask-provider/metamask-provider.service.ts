@@ -7,7 +7,6 @@ import { PrivateProvider } from '../private-provider';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
-import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NetworkError } from '../../../../../shared/models/errors/provider/NetworkError';
 import SwapToken from '../../../../../shared/models/tokens/SwapToken';
 
@@ -21,9 +20,13 @@ export class MetamaskProviderService extends PrivateProvider {
 
   private readonly _web3: Web3;
 
-  public readonly onAddressChanges: BehaviorSubject<string>;
+  private selectedAddress: string;
 
-  public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
+  private selectedChain: string;
+
+  public onAddressChanges: BehaviorSubject<string>;
+
+  public onNetworkChanges: BehaviorSubject<IBlockchain>;
 
   get isInstalled(): boolean {
     return !!this._metaMask;
@@ -42,36 +45,41 @@ export class MetamaskProviderService extends PrivateProvider {
   constructor() {
     super();
 
+    this.onNetworkChanges = new BehaviorSubject<IBlockchain>(undefined);
+    this.onAddressChanges = new BehaviorSubject<string>(undefined);
+
     const { ethereum } = window as any;
     if (!ethereum) {
       console.error('No Metamask installed.');
-      this.onNetworkChanges = new BehaviorSubject<IBlockchain>(undefined);
-      this.onAddressChanges = new BehaviorSubject<string>(undefined);
       return;
     }
+
     const web3 = new Web3(ethereum);
     if ((web3.currentProvider as any)?.isMetaMask) {
       this._metaMask = ethereum;
       this._web3 = web3;
 
-      if (this._metaMask?.selectedAddress) {
-        this.isEnabled = true;
-      }
-
-      this.onNetworkChanges = new BehaviorSubject<IBlockchain>(this.getNetwork());
-      this.onAddressChanges = new BehaviorSubject<string>(this.getAddress());
+      this._metaMask.request({ method: 'eth_chainId' }).then((chain: string) => {
+        this.selectedChain = chain;
+        this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
+      });
+      this._metaMask.request({ method: 'eth_accounts' }).then((accounts: string) => {
+        [this.selectedAddress] = accounts;
+        this.onAddressChanges.next(this.selectedAddress);
+      });
 
       this._metaMask.on('chainChanged', (chain: string) => {
+        this.selectedChain = chain;
         if (this.isEnabled) {
           this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
           console.info('Chain changed', chain);
-          // window.location.reload();
         }
       });
 
       this._metaMask.on('accountsChanged', (accounts: string[]) => {
+        [this.selectedAddress] = accounts;
         if (this.isEnabled) {
-          this.onAddressChanges.next(accounts[0]);
+          this.onAddressChanges.next(this.selectedAddress);
           console.info('Selected account changed to', accounts[0]);
         }
       });
@@ -82,14 +90,13 @@ export class MetamaskProviderService extends PrivateProvider {
 
   protected getAddress(): string {
     if (this.isEnabled) {
-      return this._metaMask?.selectedAddress;
+      return this.selectedAddress;
     }
   }
 
   protected getNetwork(): IBlockchain {
     if (this.isEnabled) {
-      const networkId = this._metaMask?.networkVersion;
-      return networkId ? BlockchainsInfo.getBlockchainById(networkId) : undefined;
+      return this.selectedChain ? BlockchainsInfo.getBlockchainById(this.selectedChain) : undefined;
     }
   }
 
@@ -115,8 +122,8 @@ export class MetamaskProviderService extends PrivateProvider {
     if (!this.isActive) {
       throw new MetamaskError();
     }
-    if (this.getNetwork().name !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-      throw new NetworkError(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
+    if (this.getNetwork().name !== token.blockchain) {
+      throw new NetworkError(token.blockchain);
     }
 
     return this._metaMask.request({
