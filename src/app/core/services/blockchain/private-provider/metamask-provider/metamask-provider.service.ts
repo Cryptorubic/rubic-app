@@ -32,7 +32,7 @@ export class MetamaskProviderService extends PrivateProvider {
   }
 
   get isActive(): boolean {
-    return this.isEnabled && !!this._metaMask?.selectedAddress;
+    return this.isEnabled && !!this.selectedAddress;
   }
 
   get web3(): Web3 {

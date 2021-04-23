@@ -25,6 +25,7 @@ import InsufficientFundsError from '../../../shared/models/errors/instant-trade/
 import { Web3PublicService } from '../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../../core/services/blockchain/web3-public-service/Web3Public';
 import { BridgeTableTrade } from '../models/BridgeTableTrade';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -55,7 +56,7 @@ export class BridgeService implements OnDestroy {
 
   public walletAddress: Observable<string>;
 
-  private _walletAddressSubscription$: Subscription;
+  private _currentUserSubscription$: Subscription;
 
   private _useTestingModeSubscription$: Subscription;
 
@@ -69,6 +70,7 @@ export class BridgeService implements OnDestroy {
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
+    private authService: AuthService,
     private useTestingModeService: UseTestingModeService
   ) {
     this._swapTokensSubscription$ = this.tokensService.tokens.subscribe(swapTokens => {
@@ -78,7 +80,8 @@ export class BridgeService implements OnDestroy {
     });
 
     this.walletAddress = this.web3PrivateService.onAddressChanges;
-    this._walletAddressSubscription$ = this.walletAddress.subscribe(() => {
+
+    this._currentUserSubscription$ = this.authService.getCurrentUser().subscribe(() => {
       this.updateTransactionsList();
     });
 
@@ -92,7 +95,7 @@ export class BridgeService implements OnDestroy {
 
   ngOnDestroy(): void {
     this._swapTokensSubscription$.unsubscribe();
-    this._walletAddressSubscription$.unsubscribe();
+    this._currentUserSubscription$.unsubscribe();
     this._useTestingModeSubscription$.unsubscribe();
   }
 
@@ -270,19 +273,14 @@ export class BridgeService implements OnDestroy {
   }
 
   public async updateTransactionsList(): Promise<void> {
-    if (!this._swapTokens.size) {
-      return;
-    }
-
-    if (this.web3PrivateService.address === null) {
+    if (this.authService.user === null) {
       this._transactions.next(List([]));
       return;
     }
 
-    if (this.web3PrivateService.address) {
-      const transactionsApi = await this.bridgeApiService.getTransactions(
-        this.web3PrivateService.address
-      );
+    const userAddress = this.authService.user?.address;
+    if (this._swapTokens.size && userAddress) {
+      const transactionsApi = await this.bridgeApiService.getTransactions(userAddress);
 
       const transactions = transactionsApi.map(transaction => {
         const { fromBlockchain, toBlockchain } = transaction;
