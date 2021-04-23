@@ -160,14 +160,15 @@ export class BridgeApiService {
 
   public notifyBridgeBot(
     bridgeTrade: BridgeTrade,
-    binanceId: string,
+    transactionHash: string,
     walletAddress: string
   ): Promise<void> {
     const body = {
-      binanceId,
+      track: transactionHash,
       walletAddress,
       amount: bridgeTrade.amount,
-      network: bridgeTrade.fromBlockchain,
+      fromBlockchain: bridgeTrade.fromBlockchain,
+      toBlockchain: bridgeTrade.toBlockchain,
       symbol: bridgeTrade.token.symbol,
       ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol
     };

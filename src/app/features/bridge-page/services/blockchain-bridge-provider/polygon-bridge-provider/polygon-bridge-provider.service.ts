@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { List } from 'immutable';
 import { defer, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { switchMap } from 'rxjs/operators';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
+import { switchMap, tap } from 'rxjs/operators';
 import { BlockchainBridgeProvider } from '../blockchain-bridge-provider';
 import { BlockchainsTokens, BridgeToken } from '../../../models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -204,6 +204,21 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
   }
 
   public createTrade(
+    bridgeTrade: BridgeTrade,
+    updateTransactionsList: () => Promise<void>
+  ): Observable<string> {
+    return this.createPolygonTrade(bridgeTrade, updateTransactionsList).pipe(
+      tap(transactionHash => {
+        this.bridgeApiService.notifyBridgeBot(
+          bridgeTrade,
+          transactionHash,
+          this.web3PrivateService.address
+        );
+      })
+    );
+  }
+
+  public createPolygonTrade(
     bridgeTrade: BridgeTrade,
     updateTransactionsList: () => Promise<void>
   ): Observable<string> {

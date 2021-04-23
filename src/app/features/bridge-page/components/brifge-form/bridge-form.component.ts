@@ -278,30 +278,30 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   }
 
   private initializeForm(): void {
-    if (!this.queryParamsService.currentQueryParams.chain) {
+    if (!this.queryParamsService.currentQueryParams?.chain) {
       this.queryParamsService.setQueryParam('chain', this.fromBlockchain.key);
     } else {
       this.fromBlockchain = this.blockchainsList.find(
-        blockchain => blockchain.key === this.queryParamsService.currentQueryParams.chain
+        blockchain => blockchain.key === this.queryParamsService.currentQueryParams?.chain
       );
     }
 
-    if (this.queryParamsService.currentQueryParams.amount) {
-      this.fromNumber = this.queryParamsService.currentQueryParams.amount;
+    if (this.queryParamsService.currentQueryParams?.amount) {
+      this.fromNumber = this.queryParamsService.currentQueryParams?.amount;
     }
 
-    if (this.queryParamsService.currentQueryParams.from) {
+    if (this.queryParamsService.currentQueryParams?.from) {
       let token;
-      if (this.queryParamsService.isAddress(this.queryParamsService.currentQueryParams.from)) {
+      if (this.queryParamsService.isAddress(this.queryParamsService.currentQueryParams?.from)) {
         token = this.queryParamsService.searchTokenByAddress(
-          this.queryParamsService.currentQueryParams.from,
+          this.queryParamsService.currentQueryParams?.from,
           this.cdr,
           this.tokens,
           true
         );
       } else {
         token = this.queryParamsService.searchTokenBySymbol(
-          this.queryParamsService.currentQueryParams.from,
+          this.queryParamsService.currentQueryParams?.from,
           this.cdr,
           this.tokens,
           true
