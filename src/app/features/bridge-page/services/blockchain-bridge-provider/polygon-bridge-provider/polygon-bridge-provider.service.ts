@@ -111,12 +111,11 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     }
 
     try {
-      const ethToken = swapTokens
-        .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
-        .find(swapToken => swapToken.address.toLowerCase() === ethAddress) || {
-        ...(await this.web3PublicEth.getTokenInfo(ethAddress)),
-        image: ''
-      };
+      const ethToken =
+        swapTokens
+          .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
+          .find(swapToken => swapToken.address.toLowerCase() === ethAddress) ||
+        (await this.web3PublicEth.getTokenInfo(ethAddress));
       const polygonToken =
         swapTokens
           .filter(item => item.blockchain === BLOCKCHAIN_NAME.POLYGON)
@@ -125,7 +124,8 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
 
       return {
         symbol: ethToken.symbol,
-        image: ethToken.image,
+        image: '',
+        rank: 0,
 
         blockchainToken: {
           [BLOCKCHAIN_NAME.ETHEREUM]: {

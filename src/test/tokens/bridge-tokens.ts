@@ -7,6 +7,7 @@ const RBC: BridgeToken = {
   symbol: 'RBC',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  rank: 1,
 
   blockchainToken: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -37,6 +38,7 @@ const ETH_POL: BridgeToken = {
   symbol: 'ETH',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  rank: 1,
 
   blockchainToken: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -67,6 +69,7 @@ const WETH: BridgeToken = {
   symbol: 'WETH',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  rank: 0,
 
   blockchainToken: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {

@@ -130,8 +130,9 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       address: token.blockchainToken[this.fromBlockchain.key].address,
       name: token.blockchainToken[this.fromBlockchain.key].name,
       symbol: token.blockchainToken[this.fromBlockchain.key].symbol,
+      decimals: token.blockchainToken[this.fromBlockchain.key].decimals,
       image: token.image,
-      decimals: token.blockchainToken[this.fromBlockchain.key].decimals
+      rank: token.rank
     }));
   }
 
@@ -319,6 +320,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public revertBlockchains(): void {
     [this._fromBlockchain, this._toBlockchain] = [this._toBlockchain, this._fromBlockchain];
     this.queryParamsService.setQueryParam('chain', this._fromBlockchain.key);
+    this.updateDropDownTokens();
 
     if (this.selectedToken) {
       this.changeSelectedToken(this.selectedToken);

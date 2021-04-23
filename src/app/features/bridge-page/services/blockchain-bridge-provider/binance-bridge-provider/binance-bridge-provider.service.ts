@@ -7,7 +7,6 @@ import { PanamaBridgeProviderService } from './panama-bridge-provider/panama-bri
 import { RubicBridgeProviderService } from './rubic-bridge-provider/rubic-bridge-provider.service';
 import { BridgeToken } from '../../../models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import SwapToken from '../../../../../shared/models/tokens/SwapToken';
 import { BridgeTrade } from '../../../models/BridgeTrade';
 
 @Injectable()
@@ -19,31 +18,14 @@ export class BinanceBridgeProviderService extends BlockchainBridgeProvider {
     super();
   }
 
-  public getTokensList(swapTokens: List<SwapToken>): Observable<List<BridgeToken>> {
+  public getTokensList(): Observable<List<BridgeToken>> {
     const panamaTokensObservable = this.panamaBridgeProvider.getTokensList();
     const rubicTokenObservable = this.rubicBridgeProvider.getTokensList();
     return forkJoin([rubicTokenObservable, panamaTokensObservable]).pipe(
       map(([rubicToken, panamaTokens]) => {
-        return this.getTokensWithImages(rubicToken.concat(panamaTokens), swapTokens);
+        return rubicToken.concat(panamaTokens);
       })
     );
-  }
-
-  private getTokensWithImages(
-    tokens: List<BridgeToken>,
-    swapTokens: List<SwapToken>
-  ): List<BridgeToken> {
-    return tokens.map(token => {
-      const tokenInfo = swapTokens
-        .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
-        .find(
-          item =>
-            token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() ===
-            item.address.toLowerCase()
-        );
-      token.image = tokenInfo?.image || '/assets/images/icons/coins/empty.svg';
-      return token;
-    });
   }
 
   public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {

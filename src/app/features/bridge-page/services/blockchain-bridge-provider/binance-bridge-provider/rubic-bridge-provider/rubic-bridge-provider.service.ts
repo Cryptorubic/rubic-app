@@ -62,11 +62,12 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
       map((response: any) => ({
         symbol: 'RBC',
         image: '',
+        rank: 0,
 
         blockchainToken: {
           [BLOCKCHAIN_NAME.ETHEREUM]: {
             address: response.tokens[0].token_address,
-            name: 'RBC',
+            name: 'Rubic',
             symbol: response.tokens[0].symbol,
             decimals: response.tokens[0].decimals,
 
@@ -75,7 +76,7 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
           },
           [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
             address: response.tokens[1].token_address,
-            name: 'RBC',
+            name: 'Rubic',
             symbol: response.tokens[1].symbol,
             decimals: response.tokens[1].decimals,
 

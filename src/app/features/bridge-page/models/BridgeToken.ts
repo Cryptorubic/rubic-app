@@ -17,6 +17,7 @@ export type BlockchainsTokens = {
 export interface BridgeToken {
   symbol: string;
   image: string;
+  rank: number;
 
   blockchainToken: BlockchainsTokens;
 

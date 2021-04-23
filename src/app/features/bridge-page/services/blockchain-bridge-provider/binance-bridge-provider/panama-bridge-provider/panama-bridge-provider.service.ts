@@ -53,6 +53,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
     return {
       symbol: token.symbol,
       image: '',
+      rank: 0,
 
       blockchainToken: {
         [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -123,6 +124,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
     const body = {
       amount: bridgeTrade.amount.toFixed(),
       fromNetwork: bridgeTrade.fromBlockchain,
+      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       source: 921,
       symbol: bridgeTrade.token.symbol,
       toAddress: bridgeTrade.toAddress,

@@ -128,11 +128,26 @@ export class BridgeService implements OnDestroy {
       .getTokensList(this._swapTokens)
       .pipe(first())
       .subscribe(tokensList => {
-        this._blockchainTokens[blockchain] = tokensList;
+        this._blockchainTokens[blockchain] = this.getTokensWithImagesAndRanks(tokensList);
         if (this.selectedBlockchain === blockchain) {
           this._tokens.next(this._blockchainTokens[this.selectedBlockchain]);
         }
       });
+  }
+
+  private getTokensWithImagesAndRanks(tokens: List<BridgeToken>): List<BridgeToken> {
+    return tokens.map(token => {
+      const ethToken = this._swapTokens
+        .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
+        .find(
+          item =>
+            token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() ===
+            item.address.toLowerCase()
+        );
+      token.image = ethToken?.image || '/assets/images/icons/coins/empty.svg';
+      token.rank = ethToken?.rank || 0;
+      return token;
+    });
   }
 
   public getFee(tokenEthAddress: string, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
