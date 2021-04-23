@@ -84,25 +84,26 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
         query
       })
       .pipe(
-        switchMap((response: PolygonGraphResponse) => {
+        switchMap(async (response: PolygonGraphResponse) => {
           const posTokens = response.data.tokenMappings;
           const promisesTokens = [];
-          posTokens.forEach(token => promisesTokens.push(this.parseMaticToken(token, swapTokens)));
-          return Promise.all(promisesTokens).then(tokens => {
-            return List(
-              tokens.filter(
-                t =>
-                  t !== null &&
-                  t.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() !==
-                    this.RBC_ADDRESS_IN_ETHEREUM.toLowerCase()
-              )
-            );
-          });
+          posTokens.forEach(token =>
+            promisesTokens.push(this.parsePolygonTokens(token, swapTokens))
+          );
+          const tokens = await Promise.all(promisesTokens);
+          return List(
+            tokens.filter(
+              t =>
+                t !== null &&
+                t.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() !==
+                  this.RBC_ADDRESS_IN_ETHEREUM.toLowerCase()
+            )
+          );
         })
       );
   }
 
-  private async parseMaticToken(
+  private async parsePolygonTokens(
     token: PolygonGraphToken,
     swapTokens: List<SwapToken>
   ): Promise<BridgeToken> {
