@@ -1,24 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import BigNumber from 'bignumber.js';
 import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from '../../../../features/bridge-page/models/BridgeTrade';
-import { BridgeTableTradeApi } from '../../../../features/bridge-page/models/BridgeTableTrade';
+import {
+  BridgeTableTrade,
+  BridgeTableTradeApi
+} from '../../../../features/bridge-page/models/BridgeTableTrade';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BridgeApiService {
+  private readonly transactionBlockchain = {
+    ETH: BLOCKCHAIN_NAME.ETHEREUM,
+    BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    POL: BLOCKCHAIN_NAME.POLYGON
+  };
+
   constructor(private httpService: HttpService, private httpClient: HttpClient) {}
 
-  public getTransactions(walletAddress: string): Promise<BridgeTableTradeApi[]> {
-    return new Promise<BridgeTableTradeApi[]>((resolve, reject) => {
+  public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
+    return new Promise<BridgeTableTrade[]>((resolve, reject) => {
       this.httpService
         .get('bridges/transactions/', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
         .subscribe(
-          (response: BridgeTableTradeApi[]) => {
-            resolve(response);
+          (tradesApi: BridgeTableTradeApi[]) => {
+            resolve(tradesApi.map(trade => this.parseBridgeTableTrade(trade)));
           },
           error => {
             console.error(error);
@@ -26,6 +36,25 @@ export class BridgeApiService {
           }
         );
     });
+  }
+
+  private parseBridgeTableTrade(trade: BridgeTableTradeApi): BridgeTableTrade {
+    const fromBlockchain = this.transactionBlockchain[trade.fromNetwork];
+    const toBlockchain = this.transactionBlockchain[trade.toNetwork];
+
+    return {
+      status: trade.status,
+      statusCode: trade.code,
+      fromBlockchain,
+      toBlockchain,
+      fromAmount: new BigNumber(trade.actualFromAmount).toFixed(),
+      toAmount: new BigNumber(trade.actualToAmount).toFixed(),
+      fromSymbol: trade.ethSymbol,
+      toSymbol: trade.bscSymbol,
+      updateTime: trade.updateTime,
+      transactionHash: trade.transaction_id,
+      tokenImage: trade.image_link
+    };
   }
 
   public postPanamaTransaction(

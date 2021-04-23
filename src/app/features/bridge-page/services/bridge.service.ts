@@ -53,13 +53,9 @@ export class BridgeService implements OnDestroy {
     List<BridgeTableTrade>
   > = this._transactions.asObservable();
 
-  private readonly transactionBlockchain = {
-    ETH: BLOCKCHAIN_NAME.ETHEREUM,
-    BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    POL: BLOCKCHAIN_NAME.POLYGON
-  };
-
   public walletAddress: Observable<string>;
+
+  private _walletAddressSubscription$: Subscription;
 
   private _useTestingModeSubscription$: Subscription;
 
@@ -81,7 +77,8 @@ export class BridgeService implements OnDestroy {
       this.setTokens();
     });
 
-    this.walletAddress.subscribe(() => {
+    this.walletAddress = this.web3PrivateService.onAddressChanges;
+    this._walletAddressSubscription$ = this.walletAddress.subscribe(() => {
       this.updateTransactionsList();
     });
 
@@ -95,6 +92,7 @@ export class BridgeService implements OnDestroy {
 
   ngOnDestroy(): void {
     this._swapTokensSubscription$.unsubscribe();
+    this._walletAddressSubscription$.unsubscribe();
     this._useTestingModeSubscription$.unsubscribe();
   }
 
@@ -208,16 +206,18 @@ export class BridgeService implements OnDestroy {
       );
     }).pipe(
       flatMap(() => {
-        return this.bridgeProvider.createTrade(bridgeTrade, this.updateTransactionsList).pipe(
-          tap(() => this.updateTransactionsList()),
-          catchError(err => {
-            if (err.code === this.USER_REJECT_ERROR_CODE) {
-              return throwError(new UserRejectError());
-            }
-            console.debug('Bridge trade error:', err);
-            return throwError(err);
-          })
-        );
+        return this.bridgeProvider
+          .createTrade(bridgeTrade, () => this.updateTransactionsList())
+          .pipe(
+            tap(() => this.updateTransactionsList()),
+            catchError(err => {
+              if (err.code === this.USER_REJECT_ERROR_CODE) {
+                return throwError(new UserRejectError());
+              }
+              console.debug('Bridge trade error:', err);
+              return throwError(err);
+            })
+          );
       }),
       catchError(err => {
         console.debug(err);
@@ -248,7 +248,7 @@ export class BridgeService implements OnDestroy {
           if (err.code === this.USER_REJECT_ERROR_CODE) {
             return throwError(new UserRejectError());
           }
-          console.debug(`Bridge trade from Polygon to Eth error: ${err}`);
+          console.debug('Bridge trade from Polygon to Eth error', err);
           return throwError(err);
         })
       );
@@ -259,60 +259,46 @@ export class BridgeService implements OnDestroy {
       return;
     }
 
+    if (this.web3PrivateService.address === null) {
+      this._transactions.next(List([]));
+      return;
+    }
+
     if (this.web3PrivateService.address) {
       const transactionsApi = await this.bridgeApiService.getTransactions(
-        this.web3PrivateService.address.toLowerCase()
+        this.web3PrivateService.address
       );
 
       const transactions = transactionsApi.map(transaction => {
-        const fromBlockchain = this.transactionBlockchain[transaction.fromNetwork];
-        const toBlockchain = this.transactionBlockchain[transaction.toNetwork];
+        const { fromBlockchain, toBlockchain } = transaction;
+        let { fromSymbol, toSymbol } = transaction;
 
-        let fromSymbol =
-          fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM
-            ? transaction.ethSymbol
-            : transaction.bscSymbol;
-        let toSymbol =
-          toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? transaction.ethSymbol : transaction.bscSymbol;
-
-        if (transaction.fromNetwork === 'POL' || transaction.toNetwork === 'POL') {
-          let ethSymbol: string;
-          let polygonSymbol: string;
+        if (
+          fromBlockchain === BLOCKCHAIN_NAME.POLYGON ||
+          toBlockchain === BLOCKCHAIN_NAME.POLYGON
+        ) {
           if (!this._isTestingMode) {
-            ethSymbol = this._swapTokens
-              .filter(token => token.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
-              .find(token => token.address.toLowerCase() === transaction.ethSymbol.toLowerCase())
-              .symbol;
-            polygonSymbol = this._swapTokens
-              .filter(token => token.blockchain === BLOCKCHAIN_NAME.POLYGON)
-              .find(token => token.address.toLowerCase() === transaction.bscSymbol.toLowerCase())
-              .symbol;
+            fromSymbol = this._swapTokens
+              .filter(token => token.blockchain === fromBlockchain)
+              .find(token => token.address.toLowerCase() === fromSymbol.toLowerCase()).symbol;
+            toSymbol = this._swapTokens
+              .filter(token => token.blockchain === toBlockchain)
+              .find(token => token.address.toLowerCase() === toSymbol.toLowerCase()).symbol;
           } else {
             const testBridgeToken = bridgeTestTokens[BLOCKCHAIN_NAME.POLYGON].find(
               token =>
-                token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() ===
-                transaction.ethSymbol.toLowerCase()
+                token.blockchainToken[fromBlockchain].address.toLowerCase() ===
+                transaction.fromSymbol.toLowerCase()
             );
-            ethSymbol = testBridgeToken.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol;
-            polygonSymbol = testBridgeToken.blockchainToken[BLOCKCHAIN_NAME.POLYGON].symbol;
+            fromSymbol = testBridgeToken.blockchainToken[fromBlockchain].symbol;
+            toSymbol = testBridgeToken.blockchainToken[toBlockchain].symbol;
           }
-
-          fromSymbol = fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? ethSymbol : polygonSymbol;
-          toSymbol = toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? ethSymbol : polygonSymbol;
         }
 
         return {
-          status: transaction.status,
-          statusCode: transaction.code,
-          fromBlockchain,
-          toBlockchain,
-          fromAmount: new BigNumber(transaction.actualFromAmount).toFixed(),
-          toAmount: new BigNumber(transaction.actualToAmount).toFixed(),
+          ...transaction,
           fromSymbol,
-          toSymbol,
-          updateTime: transaction.updateTime,
-          transactionHash: transaction.transaction_id,
-          tokenImage: transaction.image_link
+          toSymbol
         };
       });
 
