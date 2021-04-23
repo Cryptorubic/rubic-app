@@ -4,7 +4,9 @@ import { TradeParameters } from '../../../../shared/models/swaps/TradeParameters
 
 type Trades = { [key in BLOCKCHAIN_NAME]: TradeParameters };
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TradeParametersService {
   private readonly _tradesParameters: Trades;
 

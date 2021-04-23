@@ -37,7 +37,7 @@ export class PancakeSwapService extends UniswapAbstract {
 
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
-        this.web3Public = web3Public[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+        this.web3Public = web3Public[BLOCKCHAIN_NAME.ETHEREUM];
       }
     });
   }

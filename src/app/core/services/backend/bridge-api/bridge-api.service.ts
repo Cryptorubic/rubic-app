@@ -15,15 +15,17 @@ export class BridgeApiService {
 
   public getTransactions(walletAddress: string): Promise<BridgeTableTransaction[]> {
     return new Promise<BridgeTableTransaction[]>((resolve, reject) => {
-      this.httpService.get('bridge/transactions', { walletAddress, t: Date.now() }).subscribe(
-        (response: BridgeTableTransaction[]) => {
-          resolve(response);
-        },
-        error => {
-          console.log(error);
-          reject(error);
-        }
-      );
+      this.httpService
+        .get('bridges/transactions/', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
+        .subscribe(
+          (response: BridgeTableTransaction[]) => {
+            resolve(response);
+          },
+          error => {
+            console.log(error);
+            reject(error);
+          }
+        );
     });
   }
 
@@ -40,7 +42,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions/', body).subscribe(
         () => {
           resolve();
         },
@@ -67,7 +69,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions/', body).subscribe(
         () => {
           resolve();
         },

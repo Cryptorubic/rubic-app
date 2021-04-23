@@ -89,7 +89,7 @@ export class UniswapAbstract extends InstantTradeService {
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
-    gasOptimisation: boolean
+    gasOptimization: boolean
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -108,7 +108,7 @@ export class UniswapAbstract extends InstantTradeService {
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const { route, gasData } = await this.getToAmountAndPath(
-      gasOptimisation,
+      gasOptimization,
       amountIn,
       fromTokenClone,
       toTokenClone,
@@ -129,7 +129,7 @@ export class UniswapAbstract extends InstantTradeService {
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
         path: route.path,
-        gasOptimisation
+        gasOptimization
       }
     };
   }
