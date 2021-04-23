@@ -96,10 +96,13 @@
       <td *matCellDef="let element">
         <div class="tokens-table__cell tokens-table__cell_token token-cell">
           <div class="token-cell__amount">
-            {{ element.token.base.amountTotal }}
+            {{ element.fromAmount }}
           </div>
           <div class="token-cell__info">
-            <img src="/assets/images/icons/coins/brbc.svg" alt="token icon" />
+            <img
+              [src]="element.token.base.image || '/assets/images/icons/coins/empty.svg'"
+              [alt]="element.token.base.symbol"
+            />
             {{ element.token.base.symbol }}
           </div>
         </div>
@@ -114,10 +117,13 @@
       </th>
       <td *matCellDef="let element">
         <div class="tokens-table__cell tokens-table__cell_token token-cell">
-          <div class="token-cell__amount">{{ element.token.quote.amountTotal }}</div>
+          <div class="token-cell__amount">{{ element.toAmount }}</div>
           <div class="token-cell__info">
-            <img src="/assets/images/icons/coins/brbc.svg" alt="token icon" />
-            {{ element.token.base.symbol }}
+            <img
+              [src]="element.token.quote.image || '/assets/images/icons/coins/empty.svg'"
+              [alt]="element.token.quote.symbol"
+            />
+            {{ element.token.quote.symbol }}
           </div>
         </div>
       </td>
@@ -134,7 +140,7 @@
           <div class="tokens-table__cell provider-cell">
             <img
               class="table__image"
-              src="assets/images/icons/providers/pancakeswap.svg"
+              src="assets/images/icons/providers/{{ element.provider }}.svg"
               alt="{{ element.provider }}"
             />
             {{ element.provider }}
@@ -166,12 +172,10 @@
         </div>
       </th>
       <td *matCellDef="let element" class="centered-child">
-        <a routerLink="/public-v3/{{ element.uniqueLink }}">
-          <div class="tokens-table__cell tokens-table__cell_datetime">
-            {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h:
-            {{ element.expiresIn.minutes() }}m
-          </div>
-        </a>
+        <div class="tokens-table__cell tokens-table__cell_datetime">
+          {{ element.date.format('DD-MM-YYYY') }} <br />
+          {{ element.date.format('HH:MM:SS') }}
+        </div>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

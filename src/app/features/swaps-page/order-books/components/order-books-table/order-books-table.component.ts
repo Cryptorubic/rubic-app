@@ -1,5 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
+import * as moment from 'moment';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
@@ -31,7 +33,12 @@ export class OrderBooksTableComponent implements AfterViewInit {
     this.$tableLoading = this.orderBooksTableService.getTableLoadingStatus();
     this.orderBooksTableService.setTableLoadingStatus(true);
     this.fetchSwaps();
-    this.$dataSource = this.orderBooksTableService.getTableData();
+    this.$dataSource = this.orderBooksTableService.getTableData().pipe(
+      map(trade => ({
+        ...trade,
+        expiresIn: moment.duration(trade.expirationDate.diff(moment().utc()))
+      }))
+    );
     this.displayedColumns = ['Tokens', 'Amount', 'Network', 'Expires in'];
     this.columnsSizes = ['25%', '50%', '10%', '15%'];
     this.$hasData = this.orderBooksTableService.hasData();

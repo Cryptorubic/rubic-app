@@ -33,7 +33,7 @@ export class InstantTradesTableComponent {
     this.fetchSwaps();
     this.$dataSource = this.instantTradesTableService.getTableData();
     this.displayedColumns = ['Status', 'Network', 'From', 'To', 'Provider', 'Date'];
-    this.columnsSizes = ['15%', '15%', '20%', '20%', '15%', '15%'];
+    this.columnsSizes = ['15%', '9%', '23%', '23%', '15%', '15%'];
     this.$hasData = this.instantTradesTableService.hasData();
   }
 
@@ -69,8 +69,8 @@ export class InstantTradesTableComponent {
 
   private fetchSwaps(): void {
     this.instantTradesApiService.fetchSwaps().subscribe(
-      async tradeData => {
-        this.instantTradesTableService.setTableData(await Promise.all(tradeData));
+      tradeData => {
+        this.instantTradesTableService.setTableData(tradeData);
         this.instantTradesTableService.filterTable();
       },
       err => console.error(err),

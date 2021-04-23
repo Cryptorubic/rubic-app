@@ -1,3 +1,4 @@
+import InputToken from 'src/app/shared/models/tokens/InputToken';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
 interface InstantTradesBlockchainNetwork {
@@ -15,7 +16,8 @@ interface InstantTradesUser {
   username: 'string';
 }
 
-interface InstantTradesTokenApi extends SwapToken {
+interface InstantTradesTokenApi extends InputToken {
+  blockchain_network: string;
   coingecko_id: string;
   usd_price: number;
 }

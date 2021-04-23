@@ -173,7 +173,6 @@ export class TokensTableComponent {
   private prepareData(data: OrderBookTradeData[]): TokensTableData[] {
     return data.map((trade: OrderBookTradeData) => ({
       ...trade,
-      expiresIn: moment.duration(trade.expirationDate.diff(moment().utc())),
       opened: false
     }));
   }
