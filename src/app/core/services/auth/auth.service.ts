@@ -111,21 +111,15 @@ export class AuthService {
    * @description Initiate authentication via metamask.
    */
   public async signIn(): Promise<void> {
-    try {
-      this.isAuthProcess = true;
-      await this.web3Service.activate();
-      const nonce = (await this.fetchMetamaskLoginBody().toPromise()).payload.message;
-      const signature = await this.web3Service.signPersonal(nonce);
+    this.isAuthProcess = true;
+    await this.web3Service.activate();
+    const nonce = (await this.fetchMetamaskLoginBody().toPromise()).payload.message;
+    const signature = await this.web3Service.signPersonal(nonce);
 
-      await this.sendSignedNonce(this.web3Service.address, nonce, signature);
+    await this.sendSignedNonce(this.web3Service.address, nonce, signature);
 
-      this.$currentUser.next({ address: this.web3Service.address });
-      this.isAuthProcess = false;
-    } catch (err) {
-      this.web3Service.deActivate();
-      this.isAuthProcess = false;
-      throw err;
-    }
+    this.$currentUser.next({ address: this.web3Service.address });
+    this.isAuthProcess = false;
   }
 
   /**
