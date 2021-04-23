@@ -1,0 +1,296 @@
+{
+  "common": {
+    "yes": "是的",
+    "no": "没有",
+    "any": "Any",
+    "error": "任何",
+    "have": "你有",
+    "want": "你想得到",
+    "confirm": "Confirm",
+    "copy": "Copy",
+    "accept": "接受",
+    "copyright": "版权",
+    "privacyPolicy": "隐私政策",
+    "close": "关闭"
+  },
+  "errors": {
+    "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
+    "noMetamaskInstalled": "Please make sure that you have metamask plugin installed and unlocked.\nYou can download it on <a href='https://www.metamask.io' target='_blank'>metamask.io</a>.",
+    "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
+    "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
+    "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
+    "undefined": "请稍后再试，或尝试使用其他设备。如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
+    "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
+    "sameTokens": "You can't choose the same token on both sides, please choose different tokens."
+  },
+  "navigation": {
+    "about": "关于",
+    "faq": "常见问题解答",
+    "features": "特点",
+    "team": "團隊",
+    "project": "Project",
+    "login": "Connect Wallet",
+    "myTrades": "我的行业",
+    "logout": "注销",
+    "logoutMessage": "你真的想注销吗？"
+  },
+  "aboutPage": {
+    "description": "Rubic 是一个支持多链的 DeFi 生态系统，以成为完整的一站式去中心化平台为目标，提供多个不同区块链间的跨链P2P即时兑换功能。",
+    "benefits": {
+      "0": {
+        "title": "P2P贸易",
+        "description": "Create your trade, choose your own terms, make it public or private, all done in a decentralized manner."
+      },
+      "1": {
+        "title": "即时交易",
+        "description": "Execute instant trades using our external DEXes, while getting the best rates."
+      },
+      "2": {
+        "title": "多链支持",
+        "description": "Live: Ethereum, Binance Smart Chain & Polygon (more to come)."
+      },
+      "3": {
+        "title": "Pools",
+        "description": "Create pools for DEXs by having 1 token (upcoming)."
+      },
+      "4": {
+        "title": "农耕",
+        "description": "If you provide liquidity for trades, you will be rewarded by RBC tokens when the trade is executed (upcoming)."
+      },
+      "5": {
+        "title": "Limit Order",
+        "description": "设置所需的费率，当DEX之一满足这些要求时，交易将被执行"
+      }
+    },
+    "features": {
+      "title": "Rubic DEX features",
+      "data": {
+        "0": "Multichain: ETH, BSC, Polygon",
+        "1": "做众包销售的能力",
+        "2": "的平台收益可以被监管",
+        "3": "支持即时交易",
+        "4": "公共/私人交易",
+        "5": "经纪人支持",
+        "6": "没有数量限制",
+        "7": "不需要列出令牌",
+        "8": "Stops scams and rugpulls from happening"
+      }
+    },
+    "contract": {
+      "title": "Rubic合同"
+    },
+    "roadmap": {
+      "title": "路线图",
+      "data": {
+        "q1": {
+          "title": "Q1 2021",
+          "data": {
+            "0": "Blockchains & DEXes integrations",
+            "1": "Binance Smart Chain instant trades",
+            "2": "Paraswap integration",
+            "3": "Cross chain solutions for ETH and BSC",
+            "4": "Mobile support"
+          }
+        },
+        "q2": {
+          "title": "Q2 2021",
+          "data": {
+            "0": "Layer 2 Solutions integration",
+            "1": "Anonymizer for DEX on L1"
+          }
+        },
+        "q3": {
+          "title": "Q3 2021",
+          "data": {
+            "0": "Polkadot integration"
+          }
+        },
+        "q4": {
+          "title": "Q4 2021",
+          "data": {
+            "0": "Own AMM DEX on L2",
+            "1": "Anonymizer for Own Dex on L2"
+          }
+        }
+      }
+    }
+  },
+  "teamPage": {
+    "title": "团队"
+  },
+  "faqPage": {
+    "title": "常见问题解答",
+    "questions": {
+      "0": {
+        "title": "Rubic是什么？",
+        "answer": "Rubic 是一个支持多链的 DeFi 生态系统，以成为完整的一站式去中心化平台为目标，提供多个不同区块链间的跨链P2P即时兑换功能"
+      },
+      "1": {
+        "title": "谁可以使用我们的服务？",
+        "answer": "任何想要创建和管理代币的人 任何拥有加密货币并想兑换的人。不需要KYC。"
+      },
+      "2": {
+        "title": "最小和最大的交易规模是多少？",
+        "answer": "没有限制"
+      },
+      "3": {
+        "title": "它是如何工作的？",
+        "answer": "交易有两种选择： 第一，你根据自己的条件创建交易，然后等待另一个部分同意你的条件，并填补其部分。 第二，你选择即时交易，你同意另一个部分的条件。即将推出。你可以在没有任何编码技能的情况下创建自己的代币，并在不上市的情况下进行交易。"
+      },
+      "4": {
+        "title": "支持哪些加密货币？",
+        "answer": "Rubic使用基于Ethereum的代币进行交易。Rubic目前使用基于Ethereum的代币进行交易. Tron、Binance Chain、BTC区块链即将发布。 然而为了创建和管理代币，我们已经提供了Ethereum、Tron、EOS、NEO、Waves、Binance智能链区块链支持的多链服务。"
+      },
+      "5": {
+        "title": "我应该在使用你们的服务之前列出我的令牌吗？",
+        "answer": "不，你可以交易任何代币。但您可以联系我们，我们会将您的代币添加到我们的列表中。"
+      },
+      "6": {
+        "title": "如何开始",
+        "answer": "这很简单，也很快速，你只需要MetaMask就可以开始了。您只需要MetaMask就可以开始了.\n 填写所需条款的字段，然后点击创建交易。"
+      },
+      "7": {
+        "title": "如何创建一个贸易？",
+        "answer": "步骤1. 填写表格，输入您拥有的金额，并输入您想获得的金额 \n步骤2. 添加高级选项，如关闭日期和时间，最低和最高出资额，隐私，经纪费，锁定流动性，直到交易完成 \n步骤3. Check details of the trade \n步骤4. 点击创建交易 \n步骤5. 使用Metamask确认你的交易\n步骤6. 贡献你的部分交易。"
+      },
+      "8": {
+        "title": "多少钱？",
+        "answer": "目前，我們的服務不為即時交易收取任何費用。但是創建訂單簿交易需要支付0.015 ETH的費用"
+      },
+      "9": {
+        "title": "完成一笔交易需要多长时间？",
+        "answer": "只要对方完成了自己这边的交易，交易就会完成。"
+      },
+      "10": {
+        "title": "如何确保交易的隐私和安全？",
+        "answer": "交易是通过智能合约来保障的，由经验丰富的开发人员和外部审计来验证。"
+      },
+      "11": {
+        "title": "有多少人可以参加一次交易？",
+        "answer": "每一方最多可以有10个人参加"
+      },
+      "12": {
+        "title": "对于一笔（P2P）交易，如果对方未完成交易 会发生什么？",
+        "answer": "在交易的到期日之后，通过在交易列表上点击“退款”，你可以取回自己的代币（需要支付区块链费用）。"
+      },
+      "13": {
+        "title": "如果我创建了一个交易，但是，我改变了主意，我可以取消交易吗？",
+        "answer": "是的，你可以在第二部分完成交易前的任何时候取消交易. 如果你取消交易，你可以拿回你的代币。"
+      },
+      "14": {
+        "title": "如何将Binance智能链和Polygon网络添加到MetaMask?",
+        "answer": "<a href='/assets/book.pdf' target='_blank'>请点击这里了解更多详情。</a>"
+      },
+      "15": {
+        "title": "如何使用跨链桥？",
+        "answer": "<strong>步骤 1.</strong> 安装MetaMask钱包 (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) 并连接到Rubic.exchange。 \n\n<strong>步骤 2.</strong> 步.选择一个交易目的地（从Ethereum到Binance或反之）。您可以通过点击分页箭头按钮改变交换目的地。 \n\n<strong>步骤 3.</strong> 第三步：目前，用户可以用25个ERC20代币换取匹配版本的BEP20，反之亦然（且名单在不断更新中）。代币清单。:\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>步骤 4.</strong> 指定你想兑换的代币数量（勾选你可以兑换的最低和最高代币数量）。如果您对返还的代币数量感到满意（包括Binance费用），请继续进行。\n\n<strong>步骤 5.</strong> 您可以通过点击 \"验证以太坊/BSC扫描 \"来查看代币合约。.\n\n<strong>步骤 6.</strong>  步骤6.点击创建掉期，然后MetaMask会确认交易。 \n\n<strong>步骤 7.</strong> 第七步，请等待交易记录在区块链上。一旦您的交易被批准，您将收到一个通知。交易详情见下表。请等待Binance的处理。"
+      },
+      "16": {
+        "title": "我不能使用跨链交换，看来我已经超过了限制。我应该怎么做。",
+        "answer": "由于目前30分钟内有3次跨链交换的限制，请稍后再试。这种情况很快就会改善。"
+      },
+      "17": {
+        "title": "完成一次跨链交换需要多长时间？",
+        "answer": "它通常是不同的，它不取决于我们，而是取决于两个区块的估值。 由于我们有2分钟的初始化时间，然后有4分钟的时间等待反馈，再有几分钟的时间存入。\\目前平均时间约为10分钟。"
+      },
+      "18": {
+        "title": "优衣库整合的好处是什么？",
+        "answer": "用户将能够选择合适的DEX协议，以最低的气价获得最优惠的代币价格。"
+      },
+      "19": {
+        "title": "为什么要在1英寸和Uniswap之间选择？",
+        "answer": "T这些协议的气费和价格是不同的，所以能够有更多的选择，让用户能够做出更好的交易决策。"
+      },
+      "20": {
+        "title": "燃气费中是否包含代币审批？",
+        "answer": "代币审批不包含在加油费中。请注意，首次使用时，只需批准一次。这就是可能的样子。\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
+      },
+      "21": {
+        "title": "当我看到这条信息时，我应该怎么做。:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trading on Uniswap is not available</span></div>?",
+        "answer": "如果您收到此消息，请尝试以下方法：\n1. 重新加载页面。\n2. 清除网站缓存。\n3. 退出并登录到MetaMask。\n如果还是不行，请联系我们的支持团队。"
+      },
+      "22": {
+        "title": "如果Uniswap不显示费率，我应该怎么办？",
+        "answer": "要查看Uniswap费率，您需要登录MetaMask账户，登录后重新刷新页面。"
+      },
+      "23": {
+        "title": "限价订单的目的是什么",
+        "answer": "限价订单允许用户以所需的价格买入或卖出代币，并为他们提供机会，使订单簿交易在满足某些条件后自动完成。"
+      },
+      "24": {
+        "title": "完成限价订单的条件是什么？",
+        "answer": "限价订单自动完成的条件是。\n<ul><li>从订单簿上的交易费率与市场费率相同，包括加油费+平台奖励（就是现在的0.01ETH，这个会随着时间的推移而变化）。</li><li>交易没有过期。</li><li>交易必须是公开的。</li><li>最小交易规模为0.1ETH或400RBC</li></ul>同时，如果其他用户接受交易参数并参与交易，也可以完成订单。"
+      },
+      "25": {
+        "title": "如何使用限价单?",
+        "answer": "<strong>第一步：</strong> 选择你要交换代币的区块链，选择订单簿（目前，限价订单功能支持Ethereum交易，所以你要选择Ethereum网络--未来会支持更多的区块链）。\n\n<strong>第二步：</strong> 选择您想以您所需的汇率兑换的代币。目前，只有 \"RBC-ETH \"和 \"ETH-RBC \"交易对可供选择。\n\n<strong>第三步：</strong> 选择其他选项，如关闭日期和时间，最低和最高存款，隐私，经纪费（如果需要）。\n\n<strong>第四步：</strong> 点击 \"创建交易 \"按钮，确认在MetaMask中创建交易。\n\n<strong>第五步：</strong> 贡献你的部分交易（有2个交易：批准代币和贡献）。如果您打算成为您这边唯一的出资者，请选择 \"全部填写\"，将收取网络费用。\n<a href='https://youtu.be/xiuT59ueJ8c'>视频教程（此方法适用于任何区块链）。</a>\n\n<strong>第六步：</strong> 等待订单关闭。请注意，您的订单可能会被其他用户或Rubic填补，如果Uniswap对价与之匹配（包括汽油费）。\n\n<strong>重要网站:</strong>\n* 卖家必须100%完成自己的交易部分（见视频教程），所以如果你打算成为交易中唯一的卖家，请选择 \"全部填写\"。这样一来，你的交易部分将100%被填满，并成为其他买家可用的交易（或限价订单功能）。\n** 如果买方想部分填满您的订单，限价订单功能仍会填满其部分，并自动填满您订单的其余部分，直到100%填满为止。\n***  如果交易已经过期，您可以通过进入交易表并点击 \"撤销 \"按钮（需要支付网络连接费）来取回您的代币。\n\n第一个可用于限价订单的代币对是RBC/ETH。以后我们计划增加新的并支持几个区块链：Ethereum、Polygon和Binance智能链。\n\n请注意，交易将在 \"收盘日期 \"参数中指定的时间后关闭。\n"
+      }
+    }
+  },
+  "bridgePage": {
+    "title": "Create your cross-chain swap",
+    "swapToggleText": "Use our swaps",
+    "progressMessage": "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
+    "successMessage": "跨链交换的过程已经开始。请等待双方区块链完成交易。"
+  },
+  "instantTrades": {
+    "title": "支持即时交易",
+    "swapToggleText": "Cross-chain swaps",
+    "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",
+    "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
+    "bestRate": "Best Rate"
+  },
+  "orderBook": {
+    "title": "订单簿"
+  },
+  "bridge": {
+    "title": "Cross-Chain Swaps"
+  },
+  "myTrades": {
+    "title": "我的行业"
+  },
+  "tradesForm": {
+    "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."
+  },
+  "tradesTable": {
+    "columns": {
+      "status": "状态",
+      "from": "From",
+      "to": "To",
+      "get": "获得",
+      "send": "发送",
+      "expiresIn": "有效期",
+      "volume": "体积",
+      "network": "网络"
+    },
+    "noData": "You have no swaps yet",
+    "showData": "Show data",
+    "sortBy": "Sort by"
+  },
+  "tradesPage": {
+    "createTrade": "创造你的贸易",
+    "swapToggleText": "Cross-chain swaps",
+    "tradesDisclaimer": {
+      "beforeText": "在我们的平台上进行交易，即代表您同意以下",
+      "termsAndConditions": "条款",
+      "afterText": ""
+    },
+    "termsAndConditions": "条款",
+    "disclaimerTitle": "代币安全警报!",
+    "disclaimerText": "在整个交易过程中都请保持高度谨慎，交易过程涉及较高的系统风险，例如剧烈的波动、黑客攻击，以及必须等待对方完成交易所导致的相关时效性风险。",
+    "accumulatedTransactionsVolume": "Accumulated Transactions Volume",
+    "listingRequest": {
+      "title": "上市要求",
+      "description": "如果您希望您的项目在Rubic平台上列出，请发送电子邮件至support@rubic。金融(<a href='mailto:support@rubic.finance'>http://support@rubic</a>。财务/）与以下信息:",
+      "information": {
+        "projectName": "项目名称",
+        "projectDescription": "项目描述",
+        "links": "链接到项目和社交媒体",
+        "contractAddress": "Contract address",
+        "onepager": "合同地址",
+        "logo": "链接到PNG和SVG中的徽标",
+        "why": "为什么你选择Rubic。交换？"
+      }
+    }
+  }
+}

@@ -22,6 +22,10 @@ export const languagesList: LanguageListElement[] = [
     title: '中国'
   },
   {
+    lng: 'zh-new',
+    title: '中国 new'
+  },
+  {
     lng: 'ru',
     title: 'Русский'
   },

@@ -23,7 +23,7 @@ export class AppComponent {
   }
 
   private setupLanguage(): void {
-    const supportedLanguages = ['en', 'ko', 'ru', 'zh', 'en-new', 'es-new'];
+    const supportedLanguages = ['en', 'ko', 'ru', 'zh', 'zh-new', 'ko-new', 'en-new', 'es-new'];
     let userRegionLanguage = navigator.language?.split('-')[0];
     userRegionLanguage = supportedLanguages.includes(userRegionLanguage)
       ? userRegionLanguage
