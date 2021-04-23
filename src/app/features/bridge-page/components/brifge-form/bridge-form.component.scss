@@ -73,11 +73,23 @@
       }
     }
 
+    &_polygon:hover {
+      img {
+        opacity: 1;
+      }
+    }
+
     img {
       width: 99px;
       height: 24px;
 
       filter: grayscale(1);
+    }
+
+    &_polygon {
+      img {
+        opacity: 0.65;
+      }
     }
 
     > div {

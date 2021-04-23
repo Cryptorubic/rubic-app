@@ -46,7 +46,7 @@
   "Use custom token": "맞춤 토큰 사용",
   "Token Contract Address": "토큰 계약 주소",
   "Choose Token": "토큰 선택",
-  "Enter Amount": "금액을 입력하세요",
+  "Enter amount": "금액을 입력하세요",
 
   "Error": "오류",
   "Please choose main net network in Metamask.": "Metamask에서 메인 넷 네트워크를 선택하세요.",

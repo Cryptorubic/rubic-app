@@ -38,7 +38,7 @@ interface TokenDropdownData extends DropdownComponentData {
   styleUrls: ['./tokens-input.component.scss']
 })
 export class TokensInputComponent implements OnChanges {
-  @Input() amountPlaceholder?: string = 'Enter Amount';
+  @Input() amountPlaceholder?: string = 'Enter amount';
 
   @Input() listDisabled?: boolean = false;
 

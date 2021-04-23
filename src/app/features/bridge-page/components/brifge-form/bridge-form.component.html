@@ -250,7 +250,9 @@
             [ngClass]="{
               'cross-chain-form__confirm-info_hidden':
                 selectedToken?.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]?.address ===
-                this.BRBC_ADDRESS
+                this.BRBC_ADDRESS,
+              'cross-chain-form__confirm-info_polygon':
+                getNonEthereumBlockchain() === BLOCKCHAIN_NAME.POLYGON
             }"
           >
             <div>With the assistance of</div>

@@ -45,7 +45,7 @@
   "Use custom token": "Utiliza un token personalizado",
   "Token Contract Address": "Dirección de Contrato del Token",
   "Choose Token": "Elige el Token",
-  "Enter Amount": "Ingresa el Monto",
+  "Enter amount": "Ingresa el monto",
 
   "Error": "Error",
   "Please choose main net network in Metamask.": "Por favor, elige la red principal en Metamask", 
