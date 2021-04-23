@@ -141,7 +141,7 @@ export class AuthService {
    * @description Logout request to backend.
    */
   public signOut(): Observable<string> {
-    return this.httpService.get('metamask/logout/', {}).pipe(
+    return this.httpService.post('metamask/logout/', {}).pipe(
       finalize(() => {
         this.$currentUser.next(null);
         this.web3Service.deActivate();
