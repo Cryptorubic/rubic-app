@@ -39,6 +39,8 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
   private readonly ERC20_TOKEN_TYPE =
     '0x8ae85d849167ff996c04040c44924fd364217285e4cad818292c7ac37c0a345b';
 
+  private readonly RBC_ADDRESS_IN_ETHEREUM = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
+
   private readonly web3PublicEth: Web3Public;
 
   private readonly web3PublicPolygon: Web3Public;
@@ -87,7 +89,14 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
           const promisesTokens = [];
           posTokens.forEach(token => promisesTokens.push(this.parseMaticToken(token, swapTokens)));
           return Promise.all(promisesTokens).then(tokens => {
-            return List(tokens.filter(t => t !== null));
+            return List(
+              tokens.filter(
+                t =>
+                  t !== null &&
+                  t.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() !==
+                    this.RBC_ADDRESS_IN_ETHEREUM.toLowerCase()
+              )
+            );
           });
         })
       );
