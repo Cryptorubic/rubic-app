@@ -235,7 +235,7 @@
   },
   "instantTrades": {
     "title": "支持即时交易",
-    "swapToggleText": "Cross-chain swaps",
+    "swapToggleText": "跨鏈掉期",
     "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",
     "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
     "bestRate": "Best Rate"
@@ -269,7 +269,7 @@
   },
   "tradesPage": {
     "createTrade": "创造你的贸易",
-    "swapToggleText": "Cross-chain swaps",
+    "swapToggleText": "跨鏈掉期",
     "tradesDisclaimer": {
       "beforeText": "在我们的平台上进行交易，即代表您同意以下",
       "termsAndConditions": "条款",

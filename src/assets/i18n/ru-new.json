@@ -228,8 +228,8 @@
     }
   },
   "bridgePage": {
-    "title": "Create your cross-chain swap",
-    "swapToggleText": "Use our swaps",
+    "title": "Создайте свой кросс-чейн обмен",
+    "swapToggleText": "Совершите сделку",
     "progressMessage": "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
     "successMessage": "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами."
   },
@@ -263,25 +263,25 @@
       "volume": "Объем",
       "network": "Сеть"
     },
-    "noData": "You have no swaps yet",
+    "noData": "У вас еще нет кросс-чейн обменов",
     "showData": "Show data",
     "sortBy": "Sort by"
   },
   "tradesPage": {
     "createTrade": "Создайте свою Сделку",
-    "swapToggleText": "Cross-chain swaps",
+    "swapToggleText": "Кросс-чейн обмены",
     "tradesDisclaimer": {
-      "beforeText": "By trading on our platform you agree with the following",
-      "termsAndConditions": "terms and conditions",
+      "beforeText": "Используя нашу платформу , вы соглашаетесь со следующими",
+      "termsAndConditions": "условиями и положениями.",
       "afterText": ""
     },
-    "termsAndConditions": "terms and conditions",
+    "termsAndConditions": "условиями и положениями",
     "disclaimerTitle": "Предупреждение о безопасности токенов!",
     "disclaimerText": "Пожалуйста, будьте очень осторожны во время всего торгового процесса, так как он сопряжен с высокими системными рисками, такими как большой уровень волатильности, хакерские атаки и временные риски, связанные с необходимостью ждать завершения сделки другой стороной.",
     "accumulatedTransactionsVolume": "Накопленный Объем Операций",
     "listingRequest": {
       "title": "Запрос на листинг",
-      "description": "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:",
+      "description": "Если вы хотите, чтобы ваш проект был добавлен на платформу Rubic, пожалуйста, отправьте электронное письмо по адресу <a href='mailto:support@rubic.finance'>support@rubic.finance</a> со следующей информацией:",
       "information": {
         "projectName": "Название проекта",
         "projectDescription": "Описание проекта",
