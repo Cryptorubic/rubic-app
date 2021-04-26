@@ -226,7 +226,7 @@
   "Check on Explorer": "Проверить в эксплорере",
   "Number of investors": "Количество инвесторов",
 
-  "You will get {amount} {token} after the trade is complete": "Вы получите {{ amount }} {{ token }} после сделки",
+  "You will get {amount} {token} after the trade is completed": "Вы получите {{ amount }} {{ token }} после сделки",
   "Fill all": "Заполните все поля",
   "Min Contribution Limit:": "Минимальный лимит взноса:",
   "Only Owner can contribute": "Только владелец может сделать взнос",
@@ -266,7 +266,7 @@
   "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
   "Пожалуйста, повторите попытку позже или попробуйте использовать другое устройство. Если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
 
-  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
+  "You accepted the transaction and the exchange has started. Please wait until the trade is completed.":
   "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
   "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами.",

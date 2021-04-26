@@ -221,7 +221,7 @@
   "Check on Explorer": "Verifica en el Explorador",
   "Number of investors": "Número de inversores",
 
-  "You will get {amount} {token} after the trade is complete": "Recibirás {{ amount }} {{ token }} una vez que la transacción se complete",
+  "You will get {amount} {token} after the trade is completed": "Recibirás {{ amount }} {{ token }} una vez que la transacción se complete",
   "Fill all": "Llenar todo",
   "Min Contribution Limit:": "Límite de Contribución Mín:",
   "Only Owner can contribute": "Sólo el Creador puede contribuir",
@@ -272,7 +272,7 @@
   "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
   "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al <a href='mailto:support@rubic.finance' target='_blank'>Soporte al Consumidor</a>.",
 
-  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
+  "You accepted the transaction and the exchange has started. Please wait until the trade is completed.":
   "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
   "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",

@@ -224,7 +224,7 @@
   "Check on Explorer": "Explorer에서 확인",
   "Number of investors": "투자자 수",
 
-  "You will get {amount} {token} after the trade is complete": "거래 후 {{amount}} {{token}}을 받게됩니다.",
+  "You will get {amount} {token} after the trade is completed": "거래 후 {{amount}} {{token}}을 받게됩니다.",
   "Fill all": "모두 채우기",
   "Min Contribution Limit:": "최소 기부 한도 :",
   "Only Owner can contribute": "소유자 만 기여할 수 있습니다.",
@@ -266,7 +266,7 @@
   "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
   "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우 <a href='mailto:support@rubic.finance' target='_blank'>고객 지원에 문의하십시오</a>.",
 
-  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
+  "You accepted the transaction and the exchange has started. Please wait until the trade is completed.":
   "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
   "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
