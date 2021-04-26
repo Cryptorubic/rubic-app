@@ -10,7 +10,7 @@
           <div class="choose-blockchains__blockchain form-field">
             <app-blockchain-select
               [selectedBlockchain]="fromBlockchain"
-              [blockchains]="blockchainsList"
+              [blockchains]="fromBlockchainsList"
               (blockchainChanges)="fromBlockchain = $event"
             ></app-blockchain-select>
           </div>
@@ -131,6 +131,9 @@
         <button
           class="choose-blockchains__revert-button"
           type="button"
+          [ngClass]="{
+            'choose-blockchains__revert-button_hidden': toBlockchain.key === BLOCKCHAIN_NAME.POLYGON
+          }"
           (click)="revertBlockchains()"
         >
           <img
@@ -147,7 +150,7 @@
           <div class="choose-blockchains__blockchain form-field">
             <app-blockchain-select
               [selectedBlockchain]="toBlockchain"
-              [blockchains]="blockchainsList"
+              [blockchains]="toBlockchainsList"
               (blockchainChanges)="toBlockchain = $event"
             ></app-blockchain-select>
           </div>
