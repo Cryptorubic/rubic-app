@@ -6,8 +6,8 @@ import { UniSwapService } from 'src/app/features/swaps-page/instant-trades/servi
 import BigNumber from 'bignumber.js';
 import InstantTradeService from 'src/app/features/swaps-page/instant-trades/services/InstantTradeService';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Subscription } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+import { Observable, Subscription } from 'rxjs';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { DOCUMENT } from '@angular/common';
@@ -103,8 +103,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     return this.trades.some(provider => provider.isBestRate);
   }
 
-  public get isIframe(): boolean {
-    return this.document.body.classList.contains('iframe');
+  public get $isIframe(): Observable<boolean> {
+    return this.queryParamsService.$isIframe;
   }
 
   get tokens(): List<SwapToken> {
@@ -227,6 +227,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   private firstBlockhainEmitment = true;
+
+  private matDialogRef: MatDialogRef<MessageBoxComponent>;
 
   constructor(
     private tradeTypeService: TradeTypeService,
@@ -592,8 +594,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public onCloseModal() {
-    this.trades.map(trade => ({ ...trade, tradeState: null }));
-    this.selectedTradeState = null;
-    this.transactionHash = undefined;
+    this.trades = this.trades.map(trade => ({ ...trade, isBestRate: false }));
   }
 }

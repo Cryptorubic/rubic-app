@@ -22,6 +22,7 @@
   app-disclaimer-text,
   app-header-navigation,
   app-custom-token-form,
+  app-header-language-dropdown,
   .main-page__intro,
   .trades-form__tabs-blockchains li:last-child,
   .trades-form__tabs-modes,
@@ -32,7 +33,12 @@
   .user-profile__menu,
   .selection-block__scanner,
   .selection-block__header,
-  .instant-trade-button__best-rate {
+  .instant-trade-button__best-rate,
+  .checkbox-optimization,
+  #livechat-compact-container,
+  .checkbox-optimisation,
+  .display-none,
+  #chat-widget-container {
     display: none !important;
   }
 
@@ -66,7 +72,7 @@
 
   .header {
     position: absolute !important;
-    top: 50px !important;
+    top: 20px !important;
     right: 0 !important;
     left: auto !important;
 
@@ -93,7 +99,7 @@
 
   .main-page {
     margin-top: 0 !important;
-    padding-top: 50px !important;
+    padding-top: 20px !important;
   }
 
   app-header-logotype {
@@ -142,15 +148,25 @@
   }
 
   .logotype {
-    margin-top: -15px;
+    margin-left: auto;
+    padding-top: 15px;
+    padding-right: 30px;
+    padding-left: 20px;
+
+    background: white;
+
+    img {
+      height: 30px;
+    }
   }
 
   .user-profile__blockchain-icon {
     position: relative !important;
+    right: -1px;
+    left: auto !important;
   }
 
   .user-profile__menu,
-  .user-profile__account,
   .language-dropdown,
   .user-profile__blockchain-icon {
     border: none !important;

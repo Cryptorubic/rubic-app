@@ -6,4 +6,5 @@ export interface QueryParams {
   chain?: BLOCKCHAIN_NAME;
   amount?: string;
   iframe?: string;
+  hidden?: string;
 }

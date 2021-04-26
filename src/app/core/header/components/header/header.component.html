@@ -9,8 +9,8 @@
       class="header__mobile-container"
       [ngClass]="{ 'header__mobile-container_opened': $isMobileMenuOpened | async }"
     >
-      <app-login-button *ngIf="($currentUser | async) === null"></app-login-button>
-      <app-user-profile *ngIf="($currentUser | async) !== null"></app-user-profile>
+      <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
+      <app-user-profile *ngIf="($currentUser | async)?.address"></app-user-profile>
       <app-header-navigation></app-header-navigation>
     </div>
   </header>
@@ -21,8 +21,8 @@
       <app-header-logotype></app-header-logotype>
       <app-header-navigation></app-header-navigation>
       <app-header-language-dropdown></app-header-language-dropdown>
-      <app-login-button *ngIf="($currentUser | async) === null"></app-login-button>
-      <app-user-profile *ngIf="$currentUser | async"></app-user-profile>
+      <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
+      <app-user-profile *ngIf="($currentUser | async)?.address"></app-user-profile>
     </div>
   </header>
 </ng-template>

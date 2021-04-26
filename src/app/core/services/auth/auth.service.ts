@@ -108,6 +108,15 @@ export class AuthService {
   }
 
   /**
+   * @description Login user without backend.
+   */
+  public async loginWithoutbackend(): Promise<void> {
+    await this.web3Service.activate();
+    const { address } = this.web3Service;
+    this.$currentUser.next(address ? { address } : null);
+  }
+
+  /**
    * @description Initiate authentication via metamask.
    */
   public async signIn(): Promise<void> {
@@ -116,7 +125,6 @@ export class AuthService {
       await this.web3Service.activate();
       const nonce = (await this.fetchMetamaskLoginBody().toPromise()).payload.message;
       const signature = await this.web3Service.signPersonal(nonce);
-
       await this.sendSignedNonce(this.web3Service.address, nonce, signature);
 
       this.$currentUser.next({ address: this.web3Service.address });
@@ -126,6 +134,14 @@ export class AuthService {
       this.isAuthProcess = false;
       throw err;
     }
+  }
+
+  public async signInWithoudBackend(): Promise<void> {
+    this.isAuthProcess = true;
+    await this.web3Service.activate();
+    const { address } = this.web3Service;
+    this.$currentUser.next({ address } || null);
+    this.isAuthProcess = false;
   }
 
   /**

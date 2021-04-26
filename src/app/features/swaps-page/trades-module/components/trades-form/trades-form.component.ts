@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TRADE_MODE } from '../../models';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
@@ -72,6 +73,8 @@ export class TradesFormComponent implements OnInit, OnDestroy {
 
   private _selectedMode: TRADE_MODE;
 
+  public readonly $hiddenNetworks: Observable<string[]>;
+
   set selectedMode(mode: TRADE_MODE) {
     this._selectedMode = mode;
     this.tradeTypeService.setMode(mode);
@@ -90,7 +93,12 @@ export class TradesFormComponent implements OnInit, OnDestroy {
     return this._selectedBlockchain;
   }
 
-  constructor(private tradeTypeService: TradeTypeService) {}
+  constructor(
+    private tradeTypeService: TradeTypeService,
+    private readonly queryParamsService: QueryParamsService
+  ) {
+    this.$hiddenNetworks = this.queryParamsService.$hiddenNetworks;
+  }
 
   ngOnInit() {
     this._modeSubscription$ = this.tradeTypeService.getMode().subscribe(mode => {
