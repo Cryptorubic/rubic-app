@@ -4,6 +4,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
+import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
 import { Web3PrivateService } from '../web3-private-service/web3-private.service';
 
 @Injectable({
@@ -63,11 +64,28 @@ export class ProviderConnectorService {
   constructor(private readonly web3private: Web3PrivateService) {
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
     this.$addressChangeSubject = new BehaviorSubject<string>(null);
-    this.provider = new MetamaskProvider(
-      this.web3private.web3,
-      this.$networkChangeSubject,
-      this.$addressChangeSubject
-    );
+    let provider = 'link';
+    switch (provider) {
+      case 'link': {
+        this.provider = new WalletLinkProvider(
+          this.web3private.web3,
+          this.$networkChangeSubject,
+          this.$addressChangeSubject
+        );
+        break;
+      }
+      case 'metamask': {
+        this.provider = new MetamaskProvider(
+          this.web3private.web3,
+          this.$networkChangeSubject,
+          this.$addressChangeSubject
+        );
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }
 
   /**
