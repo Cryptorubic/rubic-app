@@ -235,7 +235,6 @@
   },
   "instantTrades": {
     "title": "Instant Trades",
-    "swapToggleText": "Cross-chain swaps",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
     "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
     "bestRate": "Best Rate"
@@ -275,7 +274,6 @@
       "termsAndConditions": "terms and conditions",
       "afterText": ""
     },
-    "termsAndConditions": "terms and conditions",
     "disclaimerTitle": "Token safety alert!",
     "disclaimerText": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform.",
     "accumulatedTransactionsVolume": "Accumulated Transactions Volume",

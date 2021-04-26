@@ -235,7 +235,6 @@
   },
   "instantTrades": {
     "title": "支持即时交易",
-    "swapToggleText": "跨鏈掉期",
     "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",
     "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
     "bestRate": "Best Rate"
@@ -275,7 +274,6 @@
       "termsAndConditions": "条款",
       "afterText": ""
     },
-    "termsAndConditions": "条款",
     "disclaimerTitle": "代币安全警报!",
     "disclaimerText": "在整个交易过程中都请保持高度谨慎，交易过程涉及较高的系统风险，例如剧烈的波动、黑客攻击，以及必须等待对方完成交易所导致的相关时效性风险。",
     "accumulatedTransactionsVolume": "Accumulated Transactions Volume",
