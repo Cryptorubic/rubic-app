@@ -1,4 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
@@ -62,7 +63,9 @@ export class WalletLinkProvider extends PrivateProvider {
 
   protected getNetwork(): IBlockchain {
     return (
-      this.isEnabled && this.selectedChain && BlockchainsInfo.getBlockchainById(this.selectedChain)
+      this.isEnabled &&
+      this.selectedChain &&
+      BlockchainsInfo.getBlockchainByName(this.selectedChain as BLOCKCHAIN_NAME)
     );
   }
 
