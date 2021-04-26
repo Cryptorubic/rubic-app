@@ -93,6 +93,7 @@ export class OrderBooksFormService implements OnDestroy {
     );
     if (!baseTokenTotalSupply.isNaN() && baseTokenTotalSupply.lt(baseToken.amount)) {
       throw new TotalSupplyOverflowError(
+        this.translateService,
         baseToken.symbol,
         baseTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
       );
@@ -104,6 +105,7 @@ export class OrderBooksFormService implements OnDestroy {
     );
     if (!quoteTokenTotalSupply.isNaN() && quoteTokenTotalSupply.lt(quoteToken.amount)) {
       throw new TotalSupplyOverflowError(
+        this.translateService,
         quoteToken.symbol,
         quoteTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
       );

@@ -15,6 +15,7 @@ import { Web3PublicService } from '../../../../../core/services/blockchain/web3-
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapAbstract } from '../uniswap-abstract/uniswap-abstract';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class UniSwapService extends UniswapAbstract {
@@ -22,9 +23,18 @@ export class UniSwapService extends UniswapAbstract {
     coingeckoApiService: CoingeckoApiService,
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    translateService: TranslateService
   ) {
-    super(useTestingModeService, WETH, uniSwapContracts, routingProviders, maxTransitTokens, abi);
+    super(
+      useTestingModeService,
+      WETH,
+      uniSwapContracts,
+      routingProviders,
+      maxTransitTokens,
+      abi,
+      translateService
+    );
     this.coingeckoApiService = coingeckoApiService;
     this.slippageTolerance = 0.015; // 1.5%
     this.tokensToTokensEstimatedGas = tokensToTokensEstimatedGas;

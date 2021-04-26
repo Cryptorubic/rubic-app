@@ -1,4 +1,4 @@
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from '@ngx-translate/core';
 
 export class RubicError extends Error {
   public comment: string;

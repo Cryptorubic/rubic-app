@@ -1,8 +1,14 @@
+import { TranslateService } from '@ngx-translate/core';
 import { RubicError } from '../RubicError';
 
 export class TotalSupplyOverflowError extends RubicError {
-  constructor(private _tokenSymbol: string, private _totalSupply: string, message?: string) {
-    super(message);
+  constructor(
+    translateService: TranslateService,
+    private _tokenSymbol: string,
+    private _totalSupply: string,
+    message?: string
+  ) {
+    super(translateService, message);
     Object.setPrototypeOf(this, TotalSupplyOverflowError.prototype); // to make `instanceof NetworkError` work
   }
 

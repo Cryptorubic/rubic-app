@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
+import { TranslateService } from '@ngx-translate/core';
 import InstantTradeToken from '../models/InstantTradeToken';
 import InstantTrade from '../models/InstantTrade';
 import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
@@ -9,7 +10,6 @@ import { MetamaskError } from '../../../../shared/models/errors/provider/Metamas
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TranslateService } from '@ngx-translate/core';
 
 abstract class InstantTradeService {
   protected isTestingMode;
