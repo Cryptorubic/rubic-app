@@ -51,7 +51,7 @@ export class QueryParamsService {
     private readonly router: Router
   ) {
     this.$isIframeSubject = new BehaviorSubject<boolean>(false);
-    this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([BLOCKCHAIN_NAME.MATIC]);
+    this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([BLOCKCHAIN_NAME.POLYGON]);
     this.$tokens = this.tokensService.tokens.asObservable();
     this.defaultQueryParams = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {

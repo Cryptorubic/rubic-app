@@ -43,7 +43,7 @@ export class HeaderComponent {
     if (!isIframe) {
       this.authService.loadUser();
     } else {
-      this.authService.loginWithoutbackend();
+      this.authService.loginWithoutBackend();
     }
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;

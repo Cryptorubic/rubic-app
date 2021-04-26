@@ -107,15 +107,15 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     token: PolygonGraphToken,
     swapTokens: List<SwapToken>
   ): Promise<BridgeToken> {
-    const ethAddress = token.rootToken.toLowerCase();
-    let polygonAddress = token.childToken.toLowerCase();
+    const ethAddress = token.rootToken;
+    let polygonAddress = token.childToken;
 
     // Mapping from API for ETH token is wrong
     if (ethAddress === NATIVE_TOKEN_ADDRESS) {
       polygonAddress = '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619';
     }
 
-    // Mapping from API for MATIC is wrong
+    // Mapping from API for MATIC token is wrong
     if (polygonAddress === NATIVE_TOKEN_ADDRESS) {
       return null;
     }
@@ -124,12 +124,12 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
       const ethToken =
         swapTokens
           .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
-          .find(swapToken => swapToken.address.toLowerCase() === ethAddress) ||
+          .find(swapToken => swapToken.address.toLowerCase() === ethAddress.toLowerCase()) ||
         (await this.web3PublicEth.getTokenInfo(ethAddress));
       const polygonToken =
         swapTokens
           .filter(item => item.blockchain === BLOCKCHAIN_NAME.POLYGON)
-          .find(swapToken => swapToken.address.toLowerCase() === polygonAddress) ||
+          .find(swapToken => swapToken.address.toLowerCase() === polygonAddress.toLowerCase()) ||
         (await this.web3PublicPolygon.getTokenInfo(polygonAddress));
 
       return {

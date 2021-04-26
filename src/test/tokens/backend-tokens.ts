@@ -1,7 +1,6 @@
 import { ETH, WEENUS, WSATT, XEENUS, YEENUS } from './eth-tokens';
-import { BackendToken } from '../../app/core/services/backend/tokens-service/models/BackendToken';
 
-const eth: BackendToken = {
+const eth = {
   name: 'Ethereum',
   symbol: ETH.symbol,
   blockchain_network: 'ethereum',
@@ -13,7 +12,7 @@ const eth: BackendToken = {
   usd_price: 1705
 };
 
-const weenus: BackendToken = {
+const weenus = {
   name: 'Weenus',
   symbol: WEENUS.symbol,
   blockchain_network: 'ethereum',
@@ -26,7 +25,7 @@ const weenus: BackendToken = {
   usd_price: 10
 };
 
-const yeenus: BackendToken = {
+const yeenus = {
   name: 'Yeenus',
   symbol: YEENUS.symbol,
   blockchain_network: 'ethereum',
@@ -39,7 +38,7 @@ const yeenus: BackendToken = {
   usd_price: 50
 };
 
-const xeenus: BackendToken = {
+const xeenus = {
   name: 'Xeenus',
   symbol: XEENUS.symbol,
   blockchain_network: 'ethereum',
@@ -52,7 +51,7 @@ const xeenus: BackendToken = {
   usd_price: 2
 };
 
-const wsatt: BackendToken = {
+const wsatt = {
   name: 'Wsatt',
   symbol: WSATT.symbol,
   blockchain_network: 'ethereum',

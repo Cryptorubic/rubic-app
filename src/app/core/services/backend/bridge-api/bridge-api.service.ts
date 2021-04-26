@@ -25,7 +25,7 @@ export class BridgeApiService {
   public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
     return new Promise<BridgeTableTrade[]>((resolve, reject) => {
       this.httpService
-        .get('bridges/transactions/', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
+        .get('bridge/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
         .subscribe(
           (tradesApi: BridgeTableTradeApi[]) => {
             resolve(tradesApi.map(trade => this.parseBridgeTableTrade(trade)));
@@ -70,7 +70,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridges/transactions/', body).subscribe(
+      this.httpService.post('bridge/transactions', body).subscribe(
         () => {
           resolve();
         },
@@ -97,7 +97,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridges/transactions/', body).subscribe(
+      this.httpService.post('bridge/transactions', body).subscribe(
         () => {
           resolve();
         },
@@ -121,8 +121,8 @@ export class BridgeApiService {
       toNetwork: bridgeTrade.toBlockchain === BLOCKCHAIN_NAME.POLYGON ? 'POL' : 'ETH',
       actualFromAmount: bridgeTrade.amount,
       actualToAmount: bridgeTrade.amount,
-      ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address,
-      bscSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.POLYGON].address,
+      ethSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].address,
+      bscSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.toBlockchain].address,
       updateTime: new Date(),
       status,
       transaction_id: transactionHash,
@@ -132,7 +132,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridges/transactions/', body).subscribe(
+      this.httpService.post('bridge/transactions', body).subscribe(
         () => {
           resolve();
         },
@@ -146,7 +146,7 @@ export class BridgeApiService {
 
   public patchPolygonTransaction(transactionHash: string, status: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.httpService.patch(`bridges/transactions/${transactionHash}`, { status }).subscribe(
+      this.httpService.patch(`bridge/transactions/${transactionHash}`, { status }).subscribe(
         () => {
           resolve();
         },

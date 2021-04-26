@@ -195,7 +195,13 @@ export class BridgeService implements OnDestroy {
     decimals: number,
     amount: BigNumber
   ): Promise<void> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    let web3Public: Web3Public;
+    if (this._isTestingMode && blockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+      web3Public = this.web3PublicService[BLOCKCHAIN_NAME.GOERLI_TESTNET];
+    } else {
+      web3Public = this.web3PublicService[blockchain];
+    }
+
     let balance;
     if (web3Public.isNativeAddress(tokenAddress)) {
       balance = await web3Public.getBalance(this.web3PrivateService.address, {
@@ -204,6 +210,7 @@ export class BridgeService implements OnDestroy {
     } else {
       balance = await web3Public.getTokenBalance(this.web3PrivateService.address, tokenAddress);
     }
+
     const amountInWei = amount.multipliedBy(10 ** decimals);
     if (balance.lt(amountInWei)) {
       const formattedTokensBalance = balance.div(10 ** decimals).toString();
