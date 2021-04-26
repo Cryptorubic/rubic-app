@@ -13,7 +13,7 @@ import { TokensListResponse } from './models/TokensListResponse';
   providedIn: 'root'
 })
 export class TokensService {
-  private static readonly maxRankValue = 999999999;
+  public static readonly maxRankValue = 999999999;
 
   private getTokensUrl = 'coingecko_tokens/';
 
