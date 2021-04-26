@@ -4,11 +4,11 @@ import { map } from 'rxjs/operators';
 import { InstantTradesTradeData } from 'src/app/features/swaps-page/models/trade-data';
 import * as moment from 'moment';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import BigNumber from 'bignumber.js';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTrade from '../../../../features/swaps-page/instant-trades/models/InstantTrade';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
-import BigNumber from 'bignumber.js';
 @Injectable({
   providedIn: 'root'
 })
