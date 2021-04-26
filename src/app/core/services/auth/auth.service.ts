@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, first } from 'rxjs/operators';
-import { HeaderStore } from '../../header/services/header.store';
+import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
@@ -30,24 +30,24 @@ export class AuthService {
   }
 
   constructor(
-    private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService,
-    private readonly web3Service: Web3PrivateService
+    private readonly web3Service: Web3PrivateService,
+    private readonly providerConnector: ProviderConnectorService
   ) {
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
-    this.web3Service.onAddressChanges.subscribe(address => {
-      if (this.isAuthProcess) {
-        return;
-      }
-      const user = this.$currentUser.getValue();
-      // user inited, account not authorized on backend or authorized other account
-      if (address && user && user.address !== address) {
-        /* this.$currentUser.next(null);
-        this.signIn(); */
-        window.location.reload();
-        // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
-      }
-    });
+    this.web3Service.address = undefined;
+    // this.providerConnector.$addressChange.subscribe(address => {
+    //   if (this.isAuthProcess) {
+    //     return;
+    //   }
+    //   // user inited, account not authorized on backend or authorized other account
+    //   if (address && this.user?.address !== address) {
+    //     /* this.$currentUser.next(null);
+    //     this.signIn(); */
+    //     window.location.reload();
+    //     // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
+    //   }
+    // });
   }
 
   /**
@@ -83,7 +83,7 @@ export class AuthService {
     this.fetchMetamaskLoginBody().subscribe(
       async metamaskLoginBody => {
         if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
-          await this.web3Service.activate();
+          await this.providerConnector.activate();
 
           const { address } = metamaskLoginBody.payload.user;
           if (address === this.web3Service.address) {
@@ -107,12 +107,19 @@ export class AuthService {
     );
   }
 
+  public async signinWithotuBackend(): Promise<void> {
+    await this.providerConnector.activate();
+    this.web3Service.address = this.providerConnector.address;
+    this.$currentUser.next({ address: this.providerConnector.address });
+    this.isAuthProcess = false;
+  }
+
   /**
    * @description Initiate authentication via metamask.
    */
   public async signIn(): Promise<void> {
     this.isAuthProcess = true;
-    await this.web3Service.activate();
+    await this.providerConnector.activate();
     const nonce = (await this.fetchMetamaskLoginBody().toPromise()).payload.message;
     const signature = await this.web3Service.signPersonal(nonce);
 
@@ -129,7 +136,7 @@ export class AuthService {
     return this.httpService.get('metamask/logout/', {}).pipe(
       finalize(() => {
         this.$currentUser.next(null);
-        this.web3Service.deActivate();
+        this.providerConnector.deActivate();
       })
     );
   }

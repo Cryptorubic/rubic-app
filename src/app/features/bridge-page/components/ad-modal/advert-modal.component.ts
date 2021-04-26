@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CookieService } from 'ngx-cookie-service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
@@ -32,7 +32,7 @@ export class AdvertModalComponent implements AfterViewInit {
   constructor(
     private dialog: MatDialog,
     private readonly cookieService: CookieService,
-    private readonly web3Private: Web3PrivateService
+    private readonly providerConnector: ProviderConnectorService
   ) {
     this.token = {
       address: '0x8E3BCC334657560253B83f08331d85267316e08a',
@@ -55,7 +55,7 @@ export class AdvertModalComponent implements AfterViewInit {
 
   public async addToken(): Promise<void> {
     try {
-      await this.web3Private.addToken(this.token);
+      await this.providerConnector.addToken(this.token);
       this.close();
     } catch (err) {
       console.error(err);

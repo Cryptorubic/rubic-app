@@ -1,5 +1,3 @@
-import Web3 from 'web3';
-
 import { BehaviorSubject } from 'rxjs';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -20,11 +18,6 @@ export abstract class PrivateProvider {
    * @description observable value of the network id and name
    */
   public abstract readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
-
-  /**
-   * @description an instance of web3 to access the blockchain
-   */
-  abstract get web3(): Web3;
 
   /**
    * @description is the blockchain provider installed

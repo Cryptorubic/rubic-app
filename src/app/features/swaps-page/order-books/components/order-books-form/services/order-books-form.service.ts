@@ -11,6 +11,7 @@ import { AccountError } from 'src/app/shared/models/errors/provider/AccountError
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { TO_BACKEND_BLOCKCHAINS } from '../../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
@@ -33,9 +34,10 @@ export class OrderBooksFormService implements OnDestroy {
     private orderBookApiService: OrderBookApiService,
     private web3PublicService: Web3PublicService,
     private web3PrivateService: Web3PrivateService,
-    private useTestingModeService: UseTestingModeService
+    private useTestingModeService: UseTestingModeService,
+    private readonly providerConnector: ProviderConnectorService
   ) {
-    this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
+    this._useTestingModeSubscription$ = this.useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
         if (isTestingMode) {
           ORDER_BOOK_CONTRACT.ADDRESSES[2][BLOCKCHAIN_NAME.ETHEREUM] =
@@ -62,11 +64,11 @@ export class OrderBooksFormService implements OnDestroy {
   }
 
   private async checkSettings(tradeForm: OrderBookTradeForm): Promise<void> {
-    if (!this.web3PrivateService.isProviderActive) {
+    if (!this.providerConnector.isProviderActive) {
       throw new MetamaskError();
     }
 
-    if (!this.web3PrivateService.address) {
+    if (!this.providerConnector.address) {
       throw new AccountError();
     }
 
@@ -77,8 +79,8 @@ export class OrderBooksFormService implements OnDestroy {
     }
 
     if (
-      this.web3PrivateService.networkName !== tradeForm.blockchain &&
-      this.web3PrivateService.networkName !== `${tradeForm.blockchain}_TESTNET`
+      this.providerConnector.networkName !== tradeForm.blockchain &&
+      this.providerConnector.networkName !== `${tradeForm.blockchain}_TESTNET`
     ) {
       throw new NetworkError(tradeForm.blockchain);
     }

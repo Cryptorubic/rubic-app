@@ -5,6 +5,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import * as moment from 'moment';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../models/trade-data';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { TokenPart } from '../../../shared/models/order-book/tokens';
@@ -19,7 +20,8 @@ export class OrderBookTradeService {
     private web3PublicService: Web3PublicService,
     private web3PrivateService: Web3PrivateService,
     private orderBookApiService: OrderBookApiService,
-    private orderBookCommonService: OrderBookCommonService
+    private orderBookCommonService: OrderBookCommonService,
+    private readonly providerConnector: ProviderConnectorService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
@@ -157,8 +159,8 @@ export class OrderBookTradeService {
 
   private checkSettings(tradeData: OrderBookTradeData): void {
     if (
-      this.web3PrivateService.networkName !== tradeData.blockchain &&
-      this.web3PrivateService.networkName !== `${tradeData.blockchain}_TESTNET`
+      this.providerConnector.networkName !== tradeData.blockchain &&
+      this.providerConnector.networkName !== `${tradeData.blockchain}_TESTNET`
     ) {
       throw new NetworkError(tradeData.blockchain);
     }

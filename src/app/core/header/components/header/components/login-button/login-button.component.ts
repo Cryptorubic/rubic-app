@@ -20,7 +20,7 @@ export class LoginButtonComponent {
 
   public async authUser(): Promise<void> {
     try {
-      await this.authService.signIn();
+      await this.authService.signinWithotuBackend();
     } catch (error) {
       if (error.code === 4001) {
         return;

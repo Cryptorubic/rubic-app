@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import BigNumber from 'bignumber.js';
 import { HttpClientModule } from '@angular/common/http';
+import { MetamaskProvider } from 'src/app/core/services/blockchain/private-provider/metamask-provider/metamask-provider';
 import { UniSwapService } from './uni-swap.service';
-import { MetamaskProviderService } from '../../../../../core/services/blockchain/private-provider/metamask-provider/metamask-provider.service';
 import providerServiceStub from '../../../../../core/services/blockchain/private-provider/metamask-provider/metamask-provider.service.stub';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { PublicProviderService } from '../../../../../core/services/blockchain/public-provider/public-provider.service';
@@ -26,7 +26,7 @@ describe('UniSwapService', () => {
       providers: [
         UniSwapService,
         Web3PrivateService,
-        { provide: MetamaskProviderService, useValue: providerServiceStub() },
+        { provide: MetamaskProvider, useValue: providerServiceStub() },
         { provide: PublicProviderService, useValue: publicProviderServiceStub() }
       ],
       imports: [HttpClientModule]

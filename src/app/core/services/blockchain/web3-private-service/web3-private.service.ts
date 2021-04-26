@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-
-import { Observable } from 'rxjs';
-import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
-import SwapToken from '../../../../shared/models/tokens/SwapToken';
 
 @Injectable({
   providedIn: 'root'
@@ -18,46 +11,25 @@ import SwapToken from '../../../../shared/models/tokens/SwapToken';
 export class Web3PrivateService {
   private defaultMockGas: string;
 
-  private get web3(): Web3 {
-    return this.provider.web3;
+  private readonly privateWeb3: Web3;
+
+  public get web3(): Web3 {
+    return this.privateWeb3;
   }
 
-  public readonly onAddressChanges: Observable<string>;
-
-  public readonly onNetworkChanges: Observable<IBlockchain>;
+  private accountAddress: string;
 
   public get address(): string {
-    return this.provider.address;
+    return this.accountAddress;
   }
 
-  public get network(): IBlockchain {
-    return this.provider.network;
+  public set address(value: string) {
+    this.accountAddress = value;
   }
 
-  public get networkName(): BLOCKCHAIN_NAME {
-    return this.provider.networkName;
-  }
-
-  public get isProviderActive(): boolean {
-    return this.provider.isActive;
-  }
-
-  public get isProviderInstalled(): boolean {
-    return this.provider.isInstalled;
-  }
-
-  public async activate(): Promise<void> {
-    return this.provider.activate();
-  }
-
-  public deActivate(): void {
-    return this.provider.deActivate();
-  }
-
-  constructor(private readonly provider: MetamaskProviderService) {
-    this.onAddressChanges = provider.onAddressChanges.asObservable();
-    this.onNetworkChanges = provider.onNetworkChanges.asObservable();
-    this.defaultMockGas = provider.defaultGasLimit;
+  constructor() {
+    this.privateWeb3 = new Web3();
+    this.defaultMockGas = '400000';
   }
 
   /**
@@ -366,13 +338,5 @@ export class Web3PrivateService {
    */
   private weiToEth(value: string | BigNumber): string {
     return this.web3.utils.fromWei(value.toString(), 'ether');
-  }
-
-  /**
-   * @description opens a window with suggestion to add token to user's wallet
-   * @param token token to add
-   */
-  public addToken(token: SwapToken): Promise<void> {
-    return this.provider.addToken(token);
   }
 }

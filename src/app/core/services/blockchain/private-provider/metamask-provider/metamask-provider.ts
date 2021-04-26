@@ -1,32 +1,26 @@
 /* eslint-disable consistent-return */
-import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
-import { NetworkError } from '../../../../../shared/models/errors/provider/NetworkError';
-import SwapToken from '../../../../../shared/models/tokens/SwapToken';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class MetamaskProviderService extends PrivateProvider {
+export class MetamaskProvider extends PrivateProvider {
   private isEnabled: boolean = false;
 
   private readonly _metaMask: any;
-
-  private readonly _web3: Web3;
 
   private selectedAddress: string;
 
   private selectedChain: string;
 
-  public onAddressChanges: BehaviorSubject<string>;
+  public readonly onAddressChanges: BehaviorSubject<string>;
 
-  public onNetworkChanges: BehaviorSubject<IBlockchain>;
+  public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
 
   get isInstalled(): boolean {
     return !!this._metaMask;
@@ -36,17 +30,14 @@ export class MetamaskProviderService extends PrivateProvider {
     return this.isEnabled && !!this._metaMask?.selectedAddress;
   }
 
-  get web3(): Web3 {
-    if (this.isActive) {
-      return this._web3;
-    }
-  }
-
-  constructor() {
+  constructor(
+    web3: Web3,
+    chainChange: BehaviorSubject<IBlockchain>,
+    accountChange: BehaviorSubject<string>
+  ) {
     super();
-
-    this.onNetworkChanges = new BehaviorSubject<IBlockchain>(undefined);
-    this.onAddressChanges = new BehaviorSubject<string>(undefined);
+    this.onAddressChanges = accountChange;
+    this.onNetworkChanges = chainChange;
 
     const { ethereum } = window as any;
     if (!ethereum) {
@@ -54,24 +45,22 @@ export class MetamaskProviderService extends PrivateProvider {
       return;
     }
 
-    const web3 = new Web3(ethereum);
+    web3.setProvider(ethereum);
+    this._metaMask = ethereum;
     if ((web3.currentProvider as any)?.isMetaMask) {
-      this._metaMask = ethereum;
-      this._web3 = web3;
-
       this._metaMask.request({ method: 'eth_chainId' }).then((chain: string) => {
         this.selectedChain = chain;
-        this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
+        chainChange.next(BlockchainsInfo.getBlockchainById(chain));
       });
       this._metaMask.request({ method: 'eth_accounts' }).then((accounts: string) => {
         [this.selectedAddress] = accounts;
-        this.onAddressChanges.next(this.selectedAddress);
+        accountChange.next(this.selectedAddress);
       });
 
       this._metaMask.on('chainChanged', (chain: string) => {
         this.selectedChain = chain;
         if (this.isEnabled) {
-          this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
+          chainChange.next(BlockchainsInfo.getBlockchainById(chain));
           console.info('Chain changed', chain);
         }
       });
@@ -79,7 +68,7 @@ export class MetamaskProviderService extends PrivateProvider {
       this._metaMask.on('accountsChanged', (accounts: string[]) => {
         [this.selectedAddress] = accounts;
         if (this.isEnabled) {
-          this.onAddressChanges.next(this.selectedAddress);
+          accountChange.next(this.selectedAddress);
           console.info('Selected account changed to', accounts[0]);
         }
       });

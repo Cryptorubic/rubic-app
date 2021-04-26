@@ -4,6 +4,7 @@ import { List } from 'immutable';
 import { HttpClient } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 import { catchError, flatMap, map } from 'rxjs/operators';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeTransaction } from './BridgeTransaction';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
@@ -56,11 +57,12 @@ export class BridgeService {
     private web3Private: Web3PrivateService,
     private backendApiService: BridgeApiService,
     private rubicBridgeService: RubicBridgeService,
-    private useTestingMode: UseTestingModeService
+    private useTestingMode: UseTestingModeService,
+    private readonly providerConnector: ProviderConnectorService
   ) {
     this.getTokensList();
     this.updateTransactionsList();
-    this.walletAddress = web3Private.onAddressChanges;
+    this.walletAddress = this.providerConnector.$addressChange;
 
     this.walletAddress.subscribe(() => {
       this.updateTransactionsList();
@@ -173,7 +175,7 @@ export class BridgeService {
     toAddress: string,
     onTransactionHash?: (hash: string) => void
   ): Observable<string> {
-    if (!this.web3Private.isProviderActive) {
+    if (!this.providerConnector.isProviderActive) {
       return throwError(new MetamaskError());
     }
 
@@ -182,8 +184,8 @@ export class BridgeService {
     }
 
     if (
-      this.web3Private.network?.name !== fromNetwork &&
-      (this.web3Private.network?.name !== `${fromNetwork}_TESTNET` ||
+      this.providerConnector.network?.name !== fromNetwork &&
+      (this.providerConnector.network?.name !== `${fromNetwork}_TESTNET` ||
         !this.useTestingMode.isTestingMode.getValue())
     ) {
       return throwError(new NetworkError(fromNetwork));

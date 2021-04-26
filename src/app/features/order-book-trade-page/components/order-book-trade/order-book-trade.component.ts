@@ -9,6 +9,7 @@ import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MatDialog } from '@angular/material/dialog';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
@@ -114,7 +115,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private orderBookApiService: OrderBookApiService,
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private readonly providerConnector: ProviderConnectorService
   ) {}
 
   ngOnInit(): void {
@@ -129,7 +131,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     const uniqueLink = this.route.snapshot.params.unique_link;
     this.setTradeData(uniqueLink);
 
-    this.onAddressChanges = this.web3PrivateService.onAddressChanges;
+    this.onAddressChanges = this.providerConnector.$addressChange;
   }
 
   ngOnDestroy(): void {
@@ -137,7 +139,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   }
 
   private checkMetamaskSettings() {
-    if (!this.web3PrivateService.isProviderActive) {
+    if (!this.providerConnector.isProviderActive) {
       throw new MetamaskError();
     }
 
