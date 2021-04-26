@@ -81,8 +81,8 @@ export class WalletLinkProvider extends PrivateProvider {
     }
   }
 
-  public deActivate(): void {
-    this.wallet.disconnect();
+  public async deActivate(): Promise<void> {
+    this.wallet.close();
     this.onAddressChanges.next(undefined);
     this.onNetworkChanges.next(undefined);
     this.isEnabled = false;
