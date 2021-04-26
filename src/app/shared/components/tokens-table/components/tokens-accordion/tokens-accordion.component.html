@@ -14,7 +14,10 @@
     >
       {{ data.status }}
     </span>
-    <span class="tokens-accordion__header-data" [ngClass]="{ 'tokens-accordion__header-data_inactive': data.opened }">
+    <span
+      class="tokens-accordion__header-data"
+      [ngClass]="{ 'tokens-accordion__header-data_inactive': data.opened }"
+    >
       <span
         class="tokens-accordion__column-name"
         *ngIf="selectedOption && selectedOption !== 'Status'"
@@ -46,7 +49,9 @@
         <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
           <div>{{ data.token.base.amountTotal.dp(8) }} {{ data.token.base.symbol }}</div>
           <span>
-            {{ data.token.base.amountTotal.div(data.token.quote.amountTotal).dp(8) | bigNumberFormat }}
+            {{
+              data.token.base.amountTotal.div(data.token.quote.amountTotal).dp(8) | bigNumberFormat
+            }}
             <span>{{ data.token.base.symbol }} / 1</span>
             {{ data.token.quote.symbol }}
           </span>
@@ -60,7 +65,10 @@
             1
             <span>
               {{ data.token.base.symbol }} /
-              {{ data.token.quote.amountTotal.div(data.token.base.amountTotal).dp(8) | bigNumberFormat }}
+              {{
+                data.token.quote.amountTotal.div(data.token.base.amountTotal).dp(8)
+                  | bigNumberFormat
+              }}
             </span>
             {{ data.token.quote.symbol }}
           </span>
@@ -77,8 +85,9 @@
       </div>
     </span>
     <span
-      class="tokens-accordion__toggler" 
-      [ngClass]="{ 'tokens-accordion__toggler_opened': data.opened }"></span>
+      class="tokens-accordion__toggler"
+      [ngClass]="{ 'tokens-accordion__toggler_opened': data.opened }"
+    ></span>
   </div>
   <div
     class="tokens-accordion__content"
@@ -111,7 +120,9 @@
       <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
         <div>{{ data.token.base.amountTotal.dp(8) }} {{ data.token.base.symbol }}</div>
         <span>
-          {{ data.token.base.amountTotal.div(data.token.quote.amountTotal).dp(8) | bigNumberFormat }}
+          {{
+            data.token.base.amountTotal.div(data.token.quote.amountTotal).dp(8) | bigNumberFormat
+          }}
           <span>{{ data.token.base.symbol }} / 1</span>
           {{ data.token.quote.symbol }}
         </span>
@@ -126,7 +137,9 @@
           1
           <span>
             {{ data.token.base.symbol }} /
-            {{ data.token.quote.amountTotal.div(data.token.base.amountTotal).dp(8) | bigNumberFormat }}
+            {{
+              data.token.quote.amountTotal.div(data.token.base.amountTotal).dp(8) | bigNumberFormat
+            }}
           </span>
           {{ data.token.quote.symbol }}
         </span>
@@ -137,11 +150,7 @@
       <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.network' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
         <div>
-          <img
-            class="tokens-accordion__image"
-            [src]="chainIconPath"
-            alt="{{ data.blockchain }}"
-          />
+          <img class="tokens-accordion__image" [src]="chainIconPath" alt="{{ data.blockchain }}" />
           <span>{{ data.blockchain }}</span>
         </div>
       </div>
@@ -154,6 +163,15 @@
           {{ data.expirationDate | date: 'd' }}d: {{ data.expirationDate | date: 'h' }}h:
           {{ data.expirationDate | date: 'm' }}m
         </div>
+      </div>
+    </div>
+
+    <div class="tokens-accordion__item">
+      <div class="tokens-accordion__item-name">{{ 'Link' | translate }}</div>
+      <div class="tokens-accordion__item-value tokens-accordion__item-value_link">
+        <a routerLink="/trade/{{ data.uniqueLink }}">
+          {{ linkToTrade }}
+        </a>
       </div>
     </div>
   </div>

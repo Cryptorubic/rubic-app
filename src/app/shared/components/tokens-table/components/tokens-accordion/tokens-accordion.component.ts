@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnInit, Inject } from '@angular/core';
+import { WINDOW } from 'src/app/core/models/window';
 import { TokensTableData } from '../../models/tokens-table-data';
 
 @Component({
@@ -7,12 +8,18 @@ import { TokensTableData } from '../../models/tokens-table-data';
   styleUrls: ['./tokens-accordion.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokensAccordionComponent {
+export class TokensAccordionComponent implements OnInit {
   @Input() data: TokensTableData;
 
   @Input() chainIconPath: string;
 
   @Input() selectedOption: string;
 
-  constructor() {}
+  public linkToTrade;
+
+  constructor(@Inject(WINDOW) private readonly window: Window) {}
+
+  ngOnInit(): void {
+    this.linkToTrade = `${this.window.location.host}/trade/${this.data.uniqueLink}`;
+  }
 }

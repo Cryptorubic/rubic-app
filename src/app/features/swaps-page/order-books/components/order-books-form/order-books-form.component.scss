@@ -222,3 +222,18 @@
     margin-top: 22px;
   }
 }
+
+@include b($tablet) {
+  .main-section__tokens-form {
+    padding: 20px 13px;
+    box-shadow: $shadow-block;
+  }
+}
+
+@include b($mobile-sm) {
+  .order-book-form {
+    &__main-section {
+      padding: 27px 10px 29px;
+    }
+  }
+}

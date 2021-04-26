@@ -230,7 +230,7 @@ export class OrderBookTradeService {
         value: web3Public.isNativeAddress(tradeData.token[tokenPart].address) ? value : undefined
       }
     );
-    this.orderBookApiService.contributeBotNotification(
+    this.orderBookApiService.notifyOrderBooksBotOnContribute(
       tradeData.token[tokenPart],
       amount,
       tradeData.uniqueLink,
@@ -259,7 +259,7 @@ export class OrderBookTradeService {
         onTransactionHash
       }
     );
-    this.orderBookApiService.withdrawBotNotification(
+    this.orderBookApiService.notifyOrderBooksBotOnWithdraw(
       tradeData.token[tokenPart],
       tradeData.uniqueLink,
       receipt.from,

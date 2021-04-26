@@ -24,9 +24,14 @@ $expired-yellow: #afae05;
 $cancelled-red: #b12424;
 $done-grey: #7c7c7c;
 
+$text-gray: #a8a8a8;
+
 // ***** breakpoints *****
 $desktop: 1240;
 $laptop: 960;
 $tablet: 768;
 $mobile-md: 636;
 $mobile-sm: 401;
+
+// ***** shadows *****
+$shadow-block: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);

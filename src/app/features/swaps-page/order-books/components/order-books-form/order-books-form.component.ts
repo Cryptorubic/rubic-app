@@ -19,6 +19,8 @@ import { NetworkErrorComponent } from '../../../../bridge-page/components/networ
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { OrderBooksFormService } from './services/order-books-form.service';
 import { TokenPart } from '../../../../../shared/models/order-book/tokens';
+import { TotalSupplyOverflowError } from '../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
+import { TotalSupplyOverflowErrorComponent } from '../../../../../shared/components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 
 enum TRADE_STATUS {
   STARTED = 'STARTED',
@@ -72,10 +74,10 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   set tradeParameters(value) {
     const tokensParametersAreTheSame =
-      this._tradeParameters.fromToken?.address === value.fromToken?.address &&
-      this._tradeParameters.fromAmount === value.fromAmount &&
-      this._tradeParameters.toToken?.address === value.toToken?.address &&
-      this._tradeParameters.toAmount === value.toAmount;
+      this._tradeParameters?.fromToken?.address === value.fromToken?.address &&
+      this._tradeParameters?.fromAmount === value.fromAmount &&
+      this._tradeParameters?.toToken?.address === value.toToken?.address &&
+      this._tradeParameters?.toAmount === value.toAmount;
 
     this._tradeParameters = value;
 
@@ -357,6 +359,13 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
             title: 'Error',
             descriptionComponentClass: NetworkErrorComponent,
             descriptionComponentInputs: { networkError: err }
+          };
+        }
+        if (err instanceof TotalSupplyOverflowError) {
+          data = {
+            title: 'Error',
+            descriptionComponentClass: TotalSupplyOverflowErrorComponent,
+            descriptionComponentInputs: { totalSupplyOverflowError: err }
           };
         }
         this.dialog.open(MessageBoxComponent, {

@@ -6,6 +6,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { HttpClientModule } from '@angular/common/http';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { BridgePageRoutingModule } from './bridge-page-routing.module';
 import { BridgeComponent } from './components/bridge/bridge.component';
 import { BridgeInProgressModalComponent } from './components/bridge-in-progress-modal/bridge-in-progress-modal.component';
@@ -17,6 +20,7 @@ import { BridgeService } from './services/bridge.service';
 import { AdvertModalComponent } from './components/ad-modal/advert-modal.component';
 import { RubicBridgeService } from './services/rubic-bridge-service/rubic-bridge.service';
 import { HighGasPriceModalComponent } from './components/high-gas-price-modal/high-gas-price-modal.component';
+import { BridgeSectionComponent } from './components/bridge-section/bridge-section.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +31,8 @@ import { HighGasPriceModalComponent } from './components/high-gas-price-modal/hi
     BridgeTableComponent,
     NetworkErrorComponent,
     AdvertModalComponent,
-    HighGasPriceModalComponent
+    HighGasPriceModalComponent,
+    BridgeSectionComponent
   ],
   imports: [
     CommonModule,
@@ -36,8 +41,12 @@ import { HighGasPriceModalComponent } from './components/high-gas-price-modal/hi
     TranslateModule,
     MatDialogModule,
     HttpClientModule,
-    InlineSVGModule.forRoot()
+    InlineSVGModule.forRoot(),
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
+  exports: [MatFormFieldModule, MatInputModule],
   providers: [BridgeService, RubicBridgeService]
 })
 export class BridgePageModule {}

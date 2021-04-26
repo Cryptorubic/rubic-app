@@ -13,6 +13,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { InlineSVGModule } from 'ng-inline-svg';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -20,7 +22,6 @@ import { MessageBoxComponent } from './components/message-box/message-box.compon
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
-import { BlockchainsInputComponent } from './components/blockchains-input/blockchains-input.component';
 import { CollaborationsComponent } from './components/collaborations/collaborations.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
@@ -50,6 +51,9 @@ import { TokensAccordionComponent } from './components/tokens-table/components/t
 import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
 import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
+import { CheckboxComponent } from './components/checkbox/checkbox.component';
+import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
+import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +73,6 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainsInputComponent,
     BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,
@@ -89,7 +92,10 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     TokensMobileHeaderComponent,
     TokensAccordionComponent,
     CustomTokenFormComponent,
-    WarningDisclaimerComponent
+    WarningDisclaimerComponent,
+    BlockchainSelectComponent,
+    CheckboxComponent,
+    TotalSupplyOverflowErrorComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -107,7 +113,10 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     ScrollingModule,
     MatTooltipModule,
     MatSelectModule,
-    InlineSVGModule.forRoot()
+    InlineSVGModule.forRoot(),
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule
   ],
   exports: [
     FooterComponent,
@@ -126,7 +135,6 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainsInputComponent,
     BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,
@@ -144,7 +152,9 @@ import { WarningDisclaimerComponent } from './components/warning-disclaimer/warn
     DisclaimerTextComponent,
     TokensTableComponent,
     CustomTokenFormComponent,
-    WarningDisclaimerComponent
+    WarningDisclaimerComponent,
+    BlockchainSelectComponent,
+    CheckboxComponent
   ]
 })
 export class SharedModule {}

@@ -1,4 +1,6 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { OrderBooksFormService } from '../services/order-books-form.service';
 
 import { OrderBooksFormOptionsComponent } from './order-books-form-options.component';
 
@@ -8,6 +10,8 @@ describe('OrderBooksFormOptionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientModule],
+      providers: [OrderBooksFormService],
       declarations: [OrderBooksFormOptionsComponent]
     }).compileComponents();
   });

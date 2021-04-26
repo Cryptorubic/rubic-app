@@ -84,3 +84,27 @@
     }
   }
 }
+
+@include b($mobile-md) {
+  .collaborations {
+    &__title {
+      font-size: 20px;
+    }
+
+    &__content {
+      grid-gap: 0;
+    }
+
+    &__item {
+      margin: 0 30px 60px 30px;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .collaborations {
+    &__item {
+      margin: 0 15px 60px 15px;
+    }
+  }
+}

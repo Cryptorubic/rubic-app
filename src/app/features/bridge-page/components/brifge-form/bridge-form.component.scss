@@ -1,11 +1,11 @@
-@import '../../../../../scss/mixins';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 .index-start-form__wrapper {
   clear: both;
 }
 
 .cross-chain-form {
-
   background-color: white;
 
   &,
@@ -120,7 +120,6 @@
   }
 
   &__advanced-section {
-
     max-height: 0;
     padding: 0 20px;
     overflow: hidden;
@@ -162,7 +161,7 @@
 
     border-radius: 5px;
 
-    box-shadow: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: $shadow-block;
 
     &:first-child {
       margin-right: 7px;
@@ -187,6 +186,18 @@
 
   &__blockchain {
     margin-bottom: 10px;
+
+    input {
+      width: 100%;
+      min-height: 52px;
+      padding-left: 10px;
+
+      font-size: 18px;
+      font-family: $ubuntu-font;
+
+      background-color: $grey-background;
+      border: 0;
+    }
   }
 
   &__address {
@@ -204,7 +215,6 @@
   }
 
   &__token {
-
     margin-bottom: 0;
 
     > * {
@@ -512,6 +522,54 @@
 
     &__scanner-link-box {
       margin-top: 7px;
+    }
+  }
+}
+
+::ng-deep {
+  .mat-form-field {
+    display: block !important;
+
+    background-color: $grey-background;
+  }
+
+  .mat-form-field-appearance-legacy {
+    .mat-form-field-infix {
+      padding: 0;
+    }
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-underline {
+      display: none;
+    }
+  }
+
+  .mat-form-field-infix {
+    border-top: 0;
+  }
+
+  .mat-form-field-flex {
+    align-items: center !important;
+    padding-left: 10px;
+
+    img {
+      display: block;
+    }
+  }
+
+  .mat-option {
+    img {
+      margin-right: 10px;
+
+      vertical-align: middle;
+    }
+
+    &.mat-active,
+    &:hover {
+      background-color: #fffbcd !important;
     }
   }
 }

@@ -1,0 +1,182 @@
+.iframe {
+  height: 100%;
+
+  background: transparent !important;
+
+  &::before {
+    position: absolute;
+    z-index: -1;
+
+    width: 100%;
+    height: 100%;
+
+    background-image: url('/assets/images/background.png');
+    opacity: 0.25;
+
+    content: '';
+  }
+
+  app-footer,
+  app-collaborations,
+  app-volume-block,
+  app-disclaimer-text,
+  app-header-navigation,
+  app-custom-token-form,
+  app-header-language-dropdown,
+  .main-page__intro,
+  .trades-form__tabs-blockchains li:last-child,
+  .trades-form__tabs-modes,
+  .main-page__title,
+  .instant-trade-form__to-section .selection-block:not(.selection-block_best),
+  .instant-trade-button:not(.instant-trade-button_best),
+  .user-profile__sublist .user-profile__sublist-item:first-child,
+  .user-profile__menu,
+  .selection-block__scanner,
+  .selection-block__header,
+  .instant-trade-button__best-rate,
+  .checkbox-optimization,
+  #livechat-compact-container,
+  .checkbox-optimisation,
+  .display-none,
+  #chat-widget-container {
+    display: none !important;
+  }
+
+  .instant-trade-button {
+    top: 0 !important;
+  }
+
+  .tokens-form__input::placeholder {
+    font-size: 14px;;
+  }
+
+  app-header {
+    position: relative;
+
+    display: block;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .instant-trade-form__from-section {
+    margin-top: 0 !important;
+  }
+
+  .arrow-button_big {
+    top: 0 !important;
+  }
+
+  .tab_blockchain {
+    min-width: 160px !important;
+  }
+
+  .header {
+    position: absolute !important;
+    top: 20px !important;
+    right: 0 !important;
+    left: auto !important;
+
+    box-sizing: border-box;
+
+    width: calc(100% - 390px);
+    height: 52px !important;
+    padding: 0 !important;
+
+    background-color: transparent !important;
+  }
+
+  .user-profile__account {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  .login-button,
+  .user-profile__account,
+  .language-dropdown,
+  .user-profile__menu {
+    background-color: white;
+  }
+
+  .main-page {
+    margin-top: 0 !important;
+    padding-top: 20px !important;
+  }
+
+  app-header-logotype {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    height: 52px;
+    margin: 0 auto !important;
+    margin-top: 10px;
+  }
+
+  .header__container {
+    background-color: transparent !important;
+  }
+
+  app-login-button {
+    min-width: 182px;
+  }
+
+  app-header-language-dropdown {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    padding-left: 30px;
+
+    background-color: white;
+  }
+
+  app-user-profile,
+  app-login-button {
+    display: flex !important;
+    align-items: center;
+    height: 52px;
+    padding-right: 30px;
+
+    background-color: white;
+  }
+
+  .user-profile__text {
+    padding-left: 15px !important;
+  }
+
+  .user-profile__sublist .user-profile__sublist-item:last-child {
+    margin-top: 7px;
+  }
+
+  .logotype {
+    margin-left: auto;
+    padding-top: 15px;
+    padding-right: 30px;
+    padding-left: 20px;
+
+    background: white;
+
+    img {
+      height: 30px;
+    }
+  }
+
+  .user-profile__blockchain-icon {
+    position: relative !important;
+    right: -1px;
+    left: auto !important;
+  }
+
+  .user-profile__menu,
+  .language-dropdown,
+  .user-profile__blockchain-icon {
+    border: none !important;
+  }
+
+  .user-profile__menu-icon {
+    transform: rotate(90deg);
+  }
+}
+
+html {
+  height: 100%;
+}

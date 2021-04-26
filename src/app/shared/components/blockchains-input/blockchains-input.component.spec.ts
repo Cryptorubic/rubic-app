@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
 import { BlockchainsInputComponent } from './blockchains-input.component';
 
@@ -17,6 +18,7 @@ describe('BlockchainsInputComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BlockchainsInputComponent);
     component = fixture.componentInstance;
+    component.selectedBlockchain = { img: '' } as any;
     fixture.detectChanges();
   });
 

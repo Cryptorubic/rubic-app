@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 
 import { NetworkErrorComponent } from './network-error.component';
 
@@ -9,6 +11,7 @@ describe('NetworkErrorComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [TranslateModule.forRoot()],
         declarations: [NetworkErrorComponent]
       }).compileComponents();
     })
@@ -17,6 +20,7 @@ describe('NetworkErrorComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkErrorComponent);
     component = fixture.componentInstance;
+    component.networkError = new NetworkError('ETH');
     fixture.detectChanges();
   });
 

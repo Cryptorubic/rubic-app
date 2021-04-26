@@ -43,13 +43,23 @@
               <img src="./assets/images/contacts/discord.svg" alt="discord" />
             </a>
           </span>
+          <span>
+            <a href="https://coinmarketcap.com/currencies/rubic/" target="_blank">
+              <img src="./assets/images/contacts/coinmarket.svg" alt="coinmarket" />
+            </a>
+          </span>
+          <span>
+            <a href="https://www.coingecko.com/en/coins/rubic" target="_blank">
+              <img src="./assets/images/contacts/coingecko.svg" alt="coingecko" />
+            </a>
+          </span>
         </div>
       </div>
     </div>
   </div>
   <div class="copyright">
     <div>
-      © {{ 'common.copyright' | translate }} Rubic 2021,
+      <span (click)="useTestingMode()">© {{ 'Copyright' | translate }} Rubic 2021, </span>
       <a
         href="https://rubic.finance/assets/pdf/Rubic%20Privacy%20Policy.pdf"
         target="_blank"

@@ -1,7 +1,41 @@
-@import '../../../../../../scss/mixins';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 .tokens-accordion {
   position: relative;
+
+  @include b($mobile-md) {
+    .tokens-accordion {
+      &__header {
+        padding-left: 15px;
+      }
+
+      &__item {
+        padding: 9px 15px;
+      }
+    }
+  }
+
+  @include b($mobile-sm) {
+    .tokens-accordion {
+      &__header {
+        font-size: 12px;
+      }
+
+      &__item {
+        height: auto;
+        min-height: 55px;
+
+        font-size: 14px;
+
+        &-value_network {
+          img {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  }
 
   &__header {
     display: flex;
@@ -85,12 +119,12 @@
 
     &::before {
       position: relative;
-      top: -2px;
+      top: -1px;
 
       display: inline-block;
       min-width: 8px;
       height: 8px;
-      margin-right: 10px;
+      margin-right: 3px;
 
       border-radius: 50%;
 
@@ -121,7 +155,7 @@
 
   &__content {
 
-    max-height: 360px;
+    max-height: 385px;
     overflow: hidden;
 
     background-color: white;
@@ -192,6 +226,26 @@
         width: fit-content;
         margin: 0 auto;
       }
+    }
+
+    &_link {
+      color: $main-green;
+      font-weight: 500;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .tokens-accordion {
+    &__header {
+      padding-left: 15px;
+      font-size: 12px;
+    }
+
+    &__item {
+      padding: 9px 15px;
+      min-height: 55px;
+      height: auto;
     }
   }
 }

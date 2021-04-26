@@ -6,7 +6,7 @@ import {
   EventEmitter,
   ViewChild
 } from '@angular/core';
-import { MatSort, MatSortHeaderIntl, Sort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
@@ -29,7 +29,7 @@ export class TokensTableComponent {
   @Input() set tableData(data: OrderBookTradeData[]) {
     const newData = this.prepareData(data);
     this.tokensTableData = newData;
-    this.sotredTableData = newData;
+    this.sortedTableData = newData;
   }
 
   @Input() public displayedColumns: string[];
@@ -42,8 +42,8 @@ export class TokensTableComponent {
 
   @Input() public hasData: boolean;
 
-  public get hasVisibledData(): boolean {
-    return this.sotredTableData.length > 0;
+  public get hasVisibleData(): boolean {
+    return this.sortedTableData.length > 0;
   }
 
   @Output() public refreshTableEvent: EventEmitter<void>;
@@ -54,20 +54,17 @@ export class TokensTableComponent {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  public sotredTableData: TokensTableData[];
+  public sortedTableData: TokensTableData[];
 
   public $isMobile: Observable<boolean>;
 
-  private tableSorting: Sort;
+  public tableSorting: Sort;
 
   public readonly sortableColumnNames: any;
 
   public readonly selectableColumns: string[];
 
-  constructor(
-    private readonly headerStore: HeaderStore,
-    private readonly sortHeader: MatSortHeaderIntl
-  ) {
+  constructor(private readonly headerStore: HeaderStore) {
     this.refreshTableEvent = new EventEmitter<void>();
     this.selectTokenEvent = new EventEmitter<TokenValueType>();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
@@ -123,11 +120,11 @@ export class TokensTableComponent {
     this.tableSorting = sort;
     const data = this.tokensTableData.slice();
     if (!sort.active || sort.direction === '') {
-      this.sotredTableData = data;
+      this.sortedTableData = data;
       return;
     }
 
-    this.sotredTableData = data.sort((a, b) => {
+    this.sortedTableData = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case 'expires':

@@ -1,7 +1,7 @@
 {
   "volume": {
-    "instantTradesVolume": "$3,674,807",
-    "bridgeVolume": "$2,267,083"
+    "instantTradesVolume": "$6,159,752",
+    "bridgeVolume": "$4,863,101"
   },
   "team": [
     {
@@ -135,27 +135,12 @@
           "url": "https://t.me/Guilhemw"
         }
       ]
-    },
-    {
-      "img": "GeorgeStefan.png",
-      "name": "George Stefan",
-      "role": "SMM",
-      "links": [
-        {
-          "icon": "Telegram.svg",
-          "url": "https://teleg.run/GeorgeDLT"
-        }
-      ]
     }
   ],
   "collaborations": [
     {
       "img": "Binance.svg",
       "url": "https://coinmarketcap.com/ru/headlines/news/binance-smart-chain-bags-yet-another-defi-integration/"
-    },
-    {
-      "img": "Cryptogeek.svg",
-      "url": "https://cryptogeek.info/en/exchanges/rubic"
     },
     {
       "img": "Polygon.svg",
@@ -180,6 +165,18 @@
     {
       "img": "DashNext.png",
       "url": "https://dashnext.org/"
+    },
+    {
+      "img": "Gate.svg",
+      "url": "https://www.gate.io/"
+    },
+    {
+      "img": "Pancake.svg",
+      "url": "https://exchange.pancakeswap.finance/#/swap?outputCurrency=0x8E3BCC334657560253B83f08331d85267316e08a"
+    },
+    {
+      "img": "Cryptokek.svg",
+      "url": "https://cryptokek.com/"
     }
   ]
 }
