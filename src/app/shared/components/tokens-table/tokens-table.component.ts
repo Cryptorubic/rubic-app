@@ -7,7 +7,6 @@ import {
   ViewChild
 } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
-import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
