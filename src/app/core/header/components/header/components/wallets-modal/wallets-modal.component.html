@@ -1,0 +1,17 @@
+<ng-container #modal>
+  <div class="modal">
+    <button (click)="close()" class="modal__close" >
+      <div [inlineSVG]="'assets/images/icons/cross.svg'"></div>
+    </button>
+    <div class="modal__content">
+      <header class="modal__header">
+        <div class="modal__title">Connect wallet</div>
+      </header>
+      <main class="modal__body">
+        <button class="modal__provider-button" *ngFor="let provider of providers" (click)="connectProvider(provider.value)">{{ provider.name }}
+          <span class="modal__provider-icon"><img src="{{ provider.img }}" alt="{{provider.name}} provider"></span>
+        </button>
+      </main>
+    </div>
+  </div>
+</ng-container>

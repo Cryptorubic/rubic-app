@@ -25,6 +25,8 @@ export class AuthService {
 
   private readonly USER_IS_IN_SESSION_CODE = '1000';
 
+  private authWithoutBackend: boolean;
+
   get user(): UserInterface {
     return this.$currentUser.getValue();
   }
@@ -34,20 +36,25 @@ export class AuthService {
     private readonly web3Service: Web3PrivateService,
     private readonly providerConnector: ProviderConnectorService
   ) {
+    this.authWithoutBackend = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
     this.web3Service.address = undefined;
-    // this.providerConnector.$addressChange.subscribe(address => {
-    //   if (this.isAuthProcess) {
-    //     return;
-    //   }
-    //   // user inited, account not authorized on backend or authorized other account
-    //   if (address && this.user?.address !== address) {
-    //     /* this.$currentUser.next(null);
-    //     this.signIn(); */
-    //     window.location.reload();
-    //     // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
-    //   }
-    // });
+    this.providerConnector.$addressChange.subscribe(address => {
+      if (this.isAuthProcess) {
+        return;
+      }
+      // user inited, account not authorized on backend or authorized other account
+      if (!this.authWithoutBackend && address && this.user && this.user?.address !== address) {
+        /* this.$currentUser.next(null);
+        this.signIn(); */
+        window.location.reload();
+
+        // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
+      }
+      if (this.authWithoutBackend) {
+        this.$currentUser.next({ address });
+      }
+    });
   }
 
   /**
@@ -108,10 +115,16 @@ export class AuthService {
   }
 
   public async signinWithotuBackend(): Promise<void> {
-    await this.providerConnector.activate();
-    this.web3Service.address = this.providerConnector.address;
-    this.$currentUser.next({ address: this.providerConnector.address });
-    this.isAuthProcess = false;
+    this.authWithoutBackend = true;
+    try {
+      await this.providerConnector.activate();
+      this.web3Service.address = this.providerConnector.address;
+      this.$currentUser.next({ address: this.providerConnector.address });
+      this.isAuthProcess = false;
+    } catch (error) {
+      console.error(error);
+      this.$currentUser.next(null);
+    }
   }
 
   /**

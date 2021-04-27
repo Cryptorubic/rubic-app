@@ -10,6 +10,7 @@ import { HeaderModule } from './header/header.module';
 import { SharedModule } from '../shared/shared.module';
 import { configLoader, httpLoaderFactory } from './app.loaders';
 import { ContentLoaderService } from './services/content-loader/content-loader.service';
+import { WalletsModalComponent } from './header/components/header/components/wallets-modal/wallets-modal.component';
 
 @NgModule({
   declarations: [MaintenanceComponent],
@@ -22,6 +23,7 @@ import { ContentLoaderService } from './services/content-loader/content-loader.s
       multi: true
     }
   ],
+  entryComponents: [WalletsModalComponent],
   imports: [
     CommonModule,
     HeaderModule,

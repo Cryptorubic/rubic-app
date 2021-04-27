@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
@@ -50,6 +51,7 @@ export class ProviderConnectorService {
   }
 
   public deActivate(): void {
+    localStorage.removeItem('provider');
     return this.provider.deActivate();
   }
 
@@ -64,27 +66,9 @@ export class ProviderConnectorService {
   constructor(private readonly web3private: Web3PrivateService) {
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
     this.$addressChangeSubject = new BehaviorSubject<string>(null);
-    let provider = 'link';
-    switch (provider) {
-      case 'link': {
-        this.provider = new WalletLinkProvider(
-          this.web3private.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject
-        );
-        break;
-      }
-      case 'metamask': {
-        this.provider = new MetamaskProvider(
-          this.web3private.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject
-        );
-        break;
-      }
-      default: {
-        break;
-      }
+    const provider = localStorage.getItem('provider') as WALLET_NAME;
+    if (provider) {
+      this.connectProvider(provider);
     }
   }
 
@@ -94,5 +78,35 @@ export class ProviderConnectorService {
    */
   public addToken(token: SwapToken): Promise<void> {
     return this.provider.addToken(token);
+  }
+
+  public async connectProvider(provider: WALLET_NAME) {
+    switch (provider) {
+      case WALLET_NAME.WALLET_LINK: {
+        this.provider = new WalletLinkProvider(
+          this.web3private.web3,
+          this.$networkChangeSubject,
+          this.$addressChangeSubject
+        );
+        break;
+      }
+      case WALLET_NAME.METAMASK: {
+        this.provider = new MetamaskProvider(
+          this.web3private.web3,
+          this.$networkChangeSubject,
+          this.$addressChangeSubject
+        );
+        break;
+      }
+      default: {
+        this.provider = new MetamaskProvider(
+          this.web3private.web3,
+          this.$networkChangeSubject,
+          this.$addressChangeSubject
+        );
+      }
+    }
+    localStorage.setItem('provider', provider);
+    // await this.activate();
   }
 }
