@@ -1,9 +1,6 @@
 import { Component, ChangeDetectionStrategy, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
 
 export interface WalletProvider {
   name: string;

@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { MatDialog } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
 import { RubicError } from '../../../../../../shared/models/errors/RubicError';
 import { MessageBoxComponent } from '../../../../../../shared/components/message-box/message-box.component';
 import { WalletsModalComponent } from '../wallets-modal/wallets-modal.component';
