@@ -12,6 +12,7 @@ import { NetworkError } from '../../../../shared/models/errors/provider/NetworkE
 import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { BridgeTableTrade } from '../../models/BridgeTableTrade';
+import { TRADE_STATUS } from '../../../../core/services/backend/bridge-api/models/TRADE_STATUS';
 
 interface ITableTransactionWithState extends BridgeTableTrade {
   opened: boolean;
@@ -51,6 +52,8 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
   };
 
   public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
+  public TRADE_STATUS = TRADE_STATUS;
 
   public SORT_FIELD = SORT_FIELD;
 
@@ -224,7 +227,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
 
   public depositPolygonBridgeTransaction(transaction: BridgeTableTrade): void {
     if (
-      transaction.status !== 'Waiting for deposit' ||
+      transaction.status !== TRADE_STATUS.WAITING_FOR_DEPOSIT ||
       transaction.fromBlockchain !== BLOCKCHAIN_NAME.POLYGON
     ) {
       return;

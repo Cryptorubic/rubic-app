@@ -18,6 +18,7 @@ import { UseTestingModeService } from '../../../../../core/services/use-testing-
 import { MetamaskProviderService } from '../../../../../core/services/blockchain/private-provider/metamask-provider/metamask-provider.service';
 import { BridgeApiService } from '../../../../../core/services/backend/bridge-api/bridge-api.service';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { TRADE_STATUS } from '../../../../../core/services/backend/bridge-api/models/TRADE_STATUS';
 
 interface PolygonGraphToken {
   rootToken: string;
@@ -231,7 +232,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
-    const onTradeTransactionHashFactory = (status: string) => {
+    const onTradeTransactionHashFactory = (status: TRADE_STATUS) => {
       return async (hash: string) => {
         if (bridgeTrade.onTransactionHash) {
           bridgeTrade.onTransactionHash(hash);
@@ -247,7 +248,9 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      const onTradeTransactionHash = onTradeTransactionHashFactory('DepositInProgress');
+      const onTradeTransactionHash = onTradeTransactionHashFactory(
+        TRADE_STATUS.DEPOSIT_IN_PROGRESS
+      );
       if (token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
         return this.depositEther(maticPOSClient, userAddress, amountInWei, onTradeTransactionHash);
       }
@@ -261,7 +264,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
       );
     }
 
-    const onTradeTransactionHash = onTradeTransactionHashFactory('WithdrawInProgress');
+    const onTradeTransactionHash = onTradeTransactionHashFactory(TRADE_STATUS.WITHDRAW_IN_PROGRESS);
     return this.burnERC20(
       maticPOSClient,
       userAddress,
@@ -343,7 +346,11 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
       if (onTransactionHash) {
         onTransactionHash(hash);
       }
-      await this.bridgeApiService.patchPolygonTransaction(burnTransactionHash, 'DepositInProgress');
+      await this.bridgeApiService.patchPolygonTransaction(
+        burnTransactionHash,
+        hash,
+        TRADE_STATUS.DEPOSIT_IN_PROGRESS
+      );
       updateTransactionsList();
     };
 
@@ -352,6 +359,11 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
         from: userAddress,
         onTransactionHash: onTradeTransactionHash
       });
+      await this.bridgeApiService.patchPolygonTransaction(
+        burnTransactionHash,
+        receipt.transactionHash,
+        TRADE_STATUS.COMPLETED
+      );
       return receipt.transactionHash;
     });
   }

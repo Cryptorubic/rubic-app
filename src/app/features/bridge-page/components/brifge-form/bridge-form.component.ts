@@ -72,16 +72,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   public readonly BRBC_ADDRESS = '0x8E3BCC334657560253B83f08331d85267316e08a';
 
-  public fromBlockchainsList: BridgeBlockchain[] = [
-    this.BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM],
-    this.BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]
-  ];
-
-  public toBlockchainsList: BridgeBlockchain[] = Object.values(this.BLOCKCHAINS);
+  public blockchainsList: BridgeBlockchain[] = Object.values(this.BLOCKCHAINS);
 
   private _fromBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
 
-  private _toBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+  private _toBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.POLYGON];
 
   private _tokens: List<BridgeToken> = List([]);
 
@@ -293,7 +288,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     if (!this.queryParamsService.currentQueryParams?.chain) {
       this.queryParamsService.setQueryParam('chain', this.fromBlockchain.key);
     } else {
-      this.fromBlockchain = this.fromBlockchainsList.find(
+      this.fromBlockchain = this.blockchainsList.find(
         blockchain => blockchain.key === this.queryParamsService.currentQueryParams?.chain
       );
     }

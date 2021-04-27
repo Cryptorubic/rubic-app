@@ -262,10 +262,8 @@ export class BridgeService implements OnDestroy {
     }
 
     return this.polygonBridgeProviderService
-      .depositTradeAfterCheckpoint(
-        burnTransactionHash,
-        onTransactionHash,
-        this.updateTransactionsList
+      .depositTradeAfterCheckpoint(burnTransactionHash, onTransactionHash, () =>
+        this.updateTransactionsList()
       )
       .pipe(
         tap(() => this.updateTransactionsList()),

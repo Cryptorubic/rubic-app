@@ -1,4 +1,5 @@
 import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TRADE_STATUS } from '../../../core/services/backend/bridge-api/models/TRADE_STATUS';
 
 export type BlockchainApi = 'ETH' | 'BSC' | 'POL';
 
@@ -20,7 +21,7 @@ export interface BridgeTableTradeApi {
 }
 
 export interface BridgeTableTrade {
-  status: string;
+  status: TRADE_STATUS;
   statusCode: 0 | 1 | 2;
   fromBlockchain: BLOCKCHAIN_NAME;
   toBlockchain: BLOCKCHAIN_NAME;

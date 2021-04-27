@@ -23,9 +23,10 @@ export class HttpService {
     });
   }
 
-  public patch(url: string, data?: {}, path?: string): Observable<any> {
+  public patch(url: string, data?: {}, params?: {}, path?: string): Observable<any> {
     return this.http.request<any>('patch', (path || SERVER_REST_URL) + (url || ''), {
-      body: data
+      body: data,
+      params
     });
   }
 

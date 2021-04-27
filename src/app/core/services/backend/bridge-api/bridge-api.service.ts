@@ -9,15 +9,24 @@ import {
   BridgeTableTrade,
   BridgeTableTradeApi
 } from '../../../../features/bridge-page/models/BridgeTableTrade';
+import { TRADE_STATUS } from './models/TRADE_STATUS';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BridgeApiService {
-  private readonly transactionBlockchain = {
+  private readonly tradeBlockchain = {
     ETH: BLOCKCHAIN_NAME.ETHEREUM,
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     POL: BLOCKCHAIN_NAME.POLYGON
+  };
+
+  private readonly tradeStatus = {
+    'Deposit in progress': TRADE_STATUS.DEPOSIT_IN_PROGRESS,
+    'Withdraw in progress': TRADE_STATUS.WITHDRAW_IN_PROGRESS,
+    'Waiting for deposit': TRADE_STATUS.WAITING_FOR_DEPOSIT,
+    Completed: TRADE_STATUS.COMPLETED,
+    Cancelled: TRADE_STATUS.CANCELLED
   };
 
   constructor(private httpService: HttpService, private httpClient: HttpClient) {}
@@ -39,11 +48,11 @@ export class BridgeApiService {
   }
 
   private parseBridgeTableTrade(trade: BridgeTableTradeApi): BridgeTableTrade {
-    const fromBlockchain = this.transactionBlockchain[trade.fromNetwork];
-    const toBlockchain = this.transactionBlockchain[trade.toNetwork];
+    const fromBlockchain = this.tradeBlockchain[trade.fromNetwork];
+    const toBlockchain = this.tradeBlockchain[trade.toNetwork];
 
     return {
-      status: trade.status,
+      status: this.tradeStatus[trade.status],
       statusCode: trade.code,
       fromBlockchain,
       toBlockchain,
@@ -111,7 +120,7 @@ export class BridgeApiService {
 
   public postPolygonTransaction(
     bridgeTrade: BridgeTrade,
-    status: string,
+    status: TRADE_STATUS,
     transactionHash: string,
     userAddress: string
   ): Promise<void> {
@@ -144,17 +153,27 @@ export class BridgeApiService {
     });
   }
 
-  public patchPolygonTransaction(transactionHash: string, status: string): Promise<void> {
+  public patchPolygonTransaction(
+    burnTransactionHash: string,
+    newTransactionHash: string,
+    status: TRADE_STATUS
+  ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.httpService.patch(`bridge/transactions/${transactionHash}`, { status }).subscribe(
-        () => {
-          resolve();
-        },
-        error => {
+      this.httpService
+        .patch(
+          'bridge/transactions',
+          {
+            second_transaction_id: newTransactionHash,
+            status
+          },
+          {
+            transaction_id: burnTransactionHash
+          }
+        )
+        .subscribe(resolve, error => {
           console.error(error);
           reject(error);
-        }
-      );
+        });
     });
   }
 
