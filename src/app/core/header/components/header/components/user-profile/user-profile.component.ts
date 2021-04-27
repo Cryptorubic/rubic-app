@@ -72,7 +72,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
   public useTestingMode(): void {
     this.clicks++;
     const neededClicksAmount = 5;
-    if (this.clicks === neededClicksAmount) {
+    if (this.clicks >= neededClicksAmount) {
       this.clicks = 0;
       (window as any).useTestingMode();
     }
