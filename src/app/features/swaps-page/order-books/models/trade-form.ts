@@ -1,5 +1,5 @@
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { OrderBookTokenPart } from 'src/app/shared/models/order-book/tokens';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export interface OrderBookFormToken extends SwapToken {
@@ -9,7 +9,7 @@ export interface OrderBookFormToken extends SwapToken {
 }
 
 type OrderBookFormTokens = {
-  [tokenPart in TokenPart]: OrderBookFormToken;
+  [tokenPart in OrderBookTokenPart]: OrderBookFormToken;
 };
 
 export interface OrderBookTradeForm {

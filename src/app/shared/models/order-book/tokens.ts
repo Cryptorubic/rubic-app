@@ -1,6 +1,6 @@
-export type TokenPart = 'base' | 'quote';
+export type OrderBookTokenPart = 'from' | 'to';
 
 export interface TokenValueType {
   value: string;
-  tokenType: TokenPart;
+  tokenType: OrderBookTokenPart;
 }

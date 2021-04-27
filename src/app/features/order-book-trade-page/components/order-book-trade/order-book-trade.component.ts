@@ -20,7 +20,7 @@ import { MessageBoxComponent } from '../../../../shared/components/message-box/m
 import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
-import { TokenPart } from '../../../../shared/models/order-book/tokens';
+import { OrderBookTokenPart } from '../../../../shared/models/order-book/tokens';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -176,17 +176,17 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
           this.tokens = tokens;
 
           const foundBaseToken = this.tokens.find(
-            t => t.address.toLowerCase() === this.tradeData.token.base.address.toLowerCase()
+            t => t.address.toLowerCase() === this.tradeData.token.from.address.toLowerCase()
           );
           if (foundBaseToken) {
-            this.tradeData.token.base = { ...this.tradeData.token.base, ...foundBaseToken };
+            this.tradeData.token.from = { ...this.tradeData.token.from, ...foundBaseToken };
           }
 
           const foundQuoteToken = this.tokens.find(
-            t => t.address.toLowerCase() === this.tradeData.token.quote.address.toLowerCase()
+            t => t.address.toLowerCase() === this.tradeData.token.to.address.toLowerCase()
           );
           if (foundQuoteToken) {
-            this.tradeData.token.quote = { ...this.tradeData.token.quote, ...foundQuoteToken };
+            this.tradeData.token.to = { ...this.tradeData.token.to, ...foundQuoteToken };
           }
         });
       },
@@ -222,39 +222,39 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   }
 
   private calculateRate(): void {
-    this.baseToQuoteRate = this.tradeData.token.base.amountTotal.div(
-      this.tradeData.token.quote.amountTotal
+    this.baseToQuoteRate = this.tradeData.token.from.amountTotal.div(
+      this.tradeData.token.to.amountTotal
     );
 
-    this.quoteToBaseRate = this.tradeData.token.quote.amountTotal.div(
-      this.tradeData.token.base.amountTotal
+    this.quoteToBaseRate = this.tradeData.token.to.amountTotal.div(
+      this.tradeData.token.from.amountTotal
     );
   }
 
   public getRate(): string {
     return !this.isRevertedRate
       ? `${this.baseToQuoteRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.base.symbol} 
-         / 1 ${this.tradeData.token.quote.symbol}`
-      : `1 ${this.tradeData.token.base.symbol} / 
+         ${this.tradeData.token.from.symbol} 
+         / 1 ${this.tradeData.token.to.symbol}`
+      : `1 ${this.tradeData.token.from.symbol} / 
          ${this.quoteToBaseRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.quote.symbol}`;
+         ${this.tradeData.token.to.symbol}`;
   }
 
-  public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
-    if (tokenPart === 'base') {
+  public calculateAmountToGet(value: string, tokenPart: OrderBookTokenPart): void {
+    if (tokenPart === 'from') {
       this.quoteTokenAmountToGet = new BigNumber(value)
         .times(this.quoteToBaseRate)
         .div(100)
-        .times(100 - this.tradeData.token.quote.brokerPercent)
-        .dp(this.tradeData.token.quote.decimals)
+        .times(100 - this.tradeData.token.to.brokerPercent)
+        .dp(this.tradeData.token.to.decimals)
         .toFormat(BIG_NUMBER_FORMAT);
     } else {
       this.baseTokenAmountToGet = new BigNumber(value)
         .times(this.baseToQuoteRate)
         .div(100)
-        .times(100 - this.tradeData.token.base.brokerPercent)
-        .dp(this.tradeData.token.base.decimals)
+        .times(100 - this.tradeData.token.from.brokerPercent)
+        .dp(this.tradeData.token.from.decimals)
         .toFormat(BIG_NUMBER_FORMAT);
     }
   }

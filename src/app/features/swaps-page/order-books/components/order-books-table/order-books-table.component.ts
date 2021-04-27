@@ -56,12 +56,12 @@ export class OrderBooksTableComponent implements AfterViewInit {
 
   public selectToken(tokenData: TokenValueType): void {
     if (tokenData.value) {
-      if (tokenData.tokenType === 'base') {
+      if (tokenData.tokenType === 'from') {
         this.orderBooksTableService.setBaseTokenFilter(tokenData.value);
       } else {
         this.orderBooksTableService.setQuoteTokenFilter(tokenData.value);
       }
-    } else if (tokenData.tokenType === 'base') {
+    } else if (tokenData.tokenType === 'from') {
       this.orderBooksTableService.setBaseTokenFilter(null);
     } else {
       this.orderBooksTableService.setQuoteTokenFilter(null);

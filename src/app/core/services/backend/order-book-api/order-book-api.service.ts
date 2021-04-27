@@ -8,7 +8,7 @@ import {
   OrderBookTradeData,
   ORDER_BOOK_TRADE_STATUS
 } from 'src/app/features/order-book-trade-page/models/trade-data';
-import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { OrderBookTokenPart } from 'src/app/shared/models/order-book/tokens';
 import * as moment from 'moment';
 import { HttpService } from '../../http/http.service';
 import { TokensService } from '../tokens-service/tokens.service';
@@ -91,8 +91,8 @@ export class OrderBookApiService {
       uniqueLink,
 
       token: {
-        base: undefined,
-        quote: undefined
+        from: undefined,
+        to: undefined
       },
       blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.network],
       expirationDate: moment.utc(tradeApi.stop_date),
@@ -101,14 +101,14 @@ export class OrderBookApiService {
       brokerAddress: tradeApi.broker_fee_address,
       status: ORDER_BOOK_TRADE_STATUS[tradeApi.state]
     } as OrderBookTradeData;
-    await this.setTokensData('base', tradeApi, tradeData);
-    await this.setTokensData('quote', tradeApi, tradeData);
+    await this.setTokensData('from', tradeApi, tradeData);
+    await this.setTokensData('to', tradeApi, tradeData);
 
     return tradeData;
   }
 
   private async setTokensData(
-    tokenPart: TokenPart,
+    tokenPart: OrderBookTokenPart,
     tradeApi: OrderBookTradeApi,
     tradeData: OrderBookTradeData
   ): Promise<void> {
@@ -159,10 +159,10 @@ export class OrderBookApiService {
       link: `${
         window.location.origin === this.PROD_ORIGIN ? this.PROD_ORIGIN : this.TEST_ORIGIN
       }/trades/public-v3/${uniqueLink}`,
-      amountFrom: tradeForm.token.base.amount,
-      amountTo: tradeForm.token.quote.amount,
-      symbolFrom: tradeForm.token.base.symbol,
-      symbolTo: tradeForm.token.quote.symbol
+      amountFrom: tradeForm.token.from.amount,
+      amountTo: tradeForm.token.to.amount,
+      symbolFrom: tradeForm.token.from.symbol,
+      symbolTo: tradeForm.token.to.symbol
     };
 
     this.httpService.post(`${environment.orderBooksBotUrl}/create`, tradeBot).subscribe();

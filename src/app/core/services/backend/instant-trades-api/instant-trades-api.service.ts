@@ -9,6 +9,8 @@ import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTrade from '../../../../features/swaps-page/instant-trades/models/InstantTrade';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
+import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -60,37 +62,30 @@ export class InstantTradesApiService {
       hash: tradeApi.hash,
       provider: tradeApi.contract.name,
       token: {
-        base: {
-          name: tradeApi.from_token.name,
-          symbol: tradeApi.from_token.symbol,
+        from: {
+          ...tradeApi.from_token,
           blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.from_token.blockchain_network],
-          address: tradeApi.from_token.address,
-          decimals: tradeApi.from_token.decimals,
-          image: tradeApi.from_token.image,
-          rank: tradeApi.from_token.rank,
           price: tradeApi.from_token.usd_price
         },
-        quote: {
-          name: tradeApi.to_token.name,
-          symbol: tradeApi.to_token.symbol,
+        to: {
+          ...tradeApi.to_token,
           blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.to_token.blockchain_network],
-          address: tradeApi.to_token.address,
-          decimals: tradeApi.to_token.decimals,
-          image: tradeApi.to_token.image,
-          rank: tradeApi.to_token.rank,
           price: tradeApi.to_token.usd_price
         }
       },
       blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title],
-      fromAmount: new BigNumber(tradeApi.from_amount)
-        .dividedBy(10 ** tradeApi.from_token.decimals)
-        .precision(6),
-      toAmount: new BigNumber(tradeApi.to_amount)
-        .dividedBy(10 ** tradeApi.to_token.decimals)
-        .precision(6),
       status: tradeApi.status,
       date: moment(tradeApi.status_udated_at)
     } as InstantTradesTradeData;
+
+    tradeData.fromAmount = Web3PublicService.tokenWeiToAmount(
+      tradeData.token.from,
+      tradeApi.from_amount
+    );
+    tradeData.toAmount = Web3PublicService.tokenWeiToAmount(
+      tradeData.token.from,
+      tradeApi.to_amount
+    );
 
     return tradeData;
   }

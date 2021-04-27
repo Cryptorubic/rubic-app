@@ -38,8 +38,8 @@ export class OrderBookCommonService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.base.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.base,
+    tradeData.token.from.amountContributed = Web3PublicService.tokenWeiToAmount(
+      tradeData.token.from,
       baseContributed
     );
 
@@ -51,8 +51,8 @@ export class OrderBookCommonService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.quote.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.quote,
+    tradeData.token.to.amountContributed = Web3PublicService.tokenWeiToAmount(
+      tradeData.token.to,
       quoteContributed
     );
 

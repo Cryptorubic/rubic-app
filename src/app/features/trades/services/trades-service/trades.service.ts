@@ -55,13 +55,13 @@ export class TradesService extends TokensTableService {
     const filterQuoteValue = this.$filterQuoteValue.value?.toLowerCase();
     if (filterBaseValue) {
       const filteredData = this.$visibleTableData.value.filter(
-        row => row.token.base.symbol.toLowerCase() === filterBaseValue
+        row => row.token.from.symbol.toLowerCase() === filterBaseValue
       );
       this.$visibleTableData.next(filteredData);
     }
     if (filterQuoteValue) {
       const filteredData = this.$visibleTableData.value.filter(
-        row => row.token.quote.symbol.toLowerCase() === filterQuoteValue
+        row => row.token.to.symbol.toLowerCase() === filterQuoteValue
       );
       this.$visibleTableData.next(filteredData);
     }

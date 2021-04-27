@@ -7,7 +7,7 @@ import { TransactionReceipt } from 'web3-eth';
 import * as moment from 'moment';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../models/trade-data';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
-import { TokenPart } from '../../../shared/models/order-book/tokens';
+import { OrderBookTokenPart } from '../../../shared/models/order-book/tokens';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
 import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
 import { ContractParameters } from '../../../core/services/order-book-common/models/ContractParameters';
@@ -104,7 +104,7 @@ export class OrderBookTradeService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.base.investorsNumber = baseInvestors.length;
+    tradeData.token.from.investorsNumber = baseInvestors.length;
 
     const quoteInvestors: string[] = await web3Public.callContractMethod(
       contractAddress,
@@ -114,21 +114,21 @@ export class OrderBookTradeService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.quote.investorsNumber = quoteInvestors.length;
+    tradeData.token.to.investorsNumber = quoteInvestors.length;
 
     return tradeData;
   }
 
   public async setAllowance(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    await this.setAllowanceToToken(tradeData, 'base');
-    await this.setAllowanceToToken(tradeData, 'quote');
+    await this.setAllowanceToToken(tradeData, 'from');
+    await this.setAllowanceToToken(tradeData, 'to');
 
     return tradeData;
   }
 
   public async setAllowanceToToken(
     tradeData: OrderBookTradeData,
-    tokenPart: TokenPart
+    tokenPart: OrderBookTokenPart
   ): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
 
@@ -143,7 +143,7 @@ export class OrderBookTradeService {
 
   private async getAllowance(
     tradeData: OrderBookTradeData,
-    tokenPart: TokenPart
+    tokenPart: OrderBookTokenPart
   ): Promise<BigNumber> {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress } = this.getContractParameters(tradeData);
@@ -166,7 +166,7 @@ export class OrderBookTradeService {
 
   public async makeApprove(
     tradeData: OrderBookTradeData,
-    tokenPart: TokenPart,
+    tokenPart: OrderBookTokenPart,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
     this.checkSettings(tradeData);
@@ -187,7 +187,7 @@ export class OrderBookTradeService {
 
   public async checkApproveAndMakeContribute(
     tradeData: OrderBookTradeData,
-    tokenPart: TokenPart,
+    tokenPart: OrderBookTokenPart,
     amount: string,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
@@ -210,7 +210,7 @@ export class OrderBookTradeService {
 
   private async makeContribute(
     tradeData: OrderBookTradeData,
-    tokenPart: TokenPart,
+    tokenPart: OrderBookTokenPart,
     amount: string,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
@@ -241,7 +241,7 @@ export class OrderBookTradeService {
 
   public async makeWithdraw(
     tradeData: OrderBookTradeData,
-    tokenPart: TokenPart,
+    tokenPart: OrderBookTokenPart,
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
     this.checkSettings(tradeData);

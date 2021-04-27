@@ -100,10 +100,10 @@
           </div>
           <div class="token-cell__info">
             <img
-              [src]="element.token.base.image || '/assets/images/icons/coins/empty.svg'"
-              [alt]="element.token.base.symbol"
+              [src]="element.token.from.image || '/assets/images/icons/coins/empty.svg'"
+              [alt]="element.token.from.symbol"
             />
-            {{ element.token.base.symbol }}
+            {{ element.token.from.symbol }}
           </div>
         </div>
       </td>
@@ -120,10 +120,10 @@
           <div class="token-cell__amount">{{ element.toAmount }}</div>
           <div class="token-cell__info">
             <img
-              [src]="element.token.quote.image || '/assets/images/icons/coins/empty.svg'"
-              [alt]="element.token.quote.symbol"
+              [src]="element.token.to.image || '/assets/images/icons/coins/empty.svg'"
+              [alt]="element.token.to.symbol"
             />
-            {{ element.token.quote.symbol }}
+            {{ element.token.to.symbol }}
           </div>
         </div>
       </td>

@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
 export enum INTSTANT_TRADES_TRADE_STATUS {
@@ -9,8 +8,10 @@ export enum INTSTANT_TRADES_TRADE_STATUS {
   PENDING = 'Pending'
 }
 
+export type InstantTradesTokenPart = 'from' | 'to';
+
 type InstantTradesDataTokens = {
-  [tokenPart in TokenPart]: SwapToken;
+  [tokenPart in InstantTradesTokenPart]: SwapToken;
 };
 
 export interface InstantTradesTradeData {
@@ -20,8 +21,8 @@ export interface InstantTradesTradeData {
   token: InstantTradesDataTokens;
   blockchain: BLOCKCHAIN_NAME;
 
-  fromAmount: BigNumber;
-  toAmount: BigNumber;
+  fromAmount?: BigNumber;
+  toAmount?: BigNumber;
   status: INTSTANT_TRADES_TRADE_STATUS;
   date: moment.Moment;
 }

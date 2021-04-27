@@ -22,8 +22,8 @@ import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BI
 export class OrderBooksFormService implements OnDestroy {
   private readonly _tradeForm = new BehaviorSubject<OrderBookTradeForm>({
     token: {
-      base: {} as OrderBookFormToken,
-      quote: {} as OrderBookFormToken
+      from: {} as OrderBookFormToken,
+      to: {} as OrderBookFormToken
     }
   } as OrderBookTradeForm);
 
@@ -70,9 +70,7 @@ export class OrderBooksFormService implements OnDestroy {
       throw new AccountError();
     }
 
-    if (
-      tradeForm.token.base.address.toLowerCase() === tradeForm.token.quote.address.toLowerCase()
-    ) {
+    if (tradeForm.token.from.address.toLowerCase() === tradeForm.token.to.address.toLowerCase()) {
       throw new SameTokensError();
     }
 
@@ -84,7 +82,7 @@ export class OrderBooksFormService implements OnDestroy {
     }
 
     const web3Public: Web3Public = this.web3PublicService[tradeForm.blockchain];
-    const baseToken = tradeForm.token.base;
+    const baseToken = tradeForm.token.from;
     const baseTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
       baseToken,
       (await web3Public.getTokenInfo(baseToken.address)).totalSupply
@@ -95,7 +93,7 @@ export class OrderBooksFormService implements OnDestroy {
         baseTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
       );
     }
-    const quoteToken = tradeForm.token.quote;
+    const quoteToken = tradeForm.token.to;
     const quoteTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
       quoteToken,
       (await web3Public.getTokenInfo(quoteToken.address)).totalSupply
@@ -178,34 +176,34 @@ export class OrderBooksFormService implements OnDestroy {
     return {
       memo: '',
       contract_address: ORDER_BOOK_CONTRACT.ADDRESSES[2][tradeForm.blockchain],
-      base_address: tradeForm.token.base.address,
-      quote_address: tradeForm.token.quote.address,
+      base_address: tradeForm.token.from.address,
+      quote_address: tradeForm.token.to.address,
       base_limit: Web3PublicService.tokenAmountToWei(
-        tradeForm.token.base,
-        tradeForm.token.base.amount
+        tradeForm.token.from,
+        tradeForm.token.from.amount
       ),
       quote_limit: Web3PublicService.tokenAmountToWei(
-        tradeForm.token.quote,
-        tradeForm.token.quote.amount
+        tradeForm.token.to,
+        tradeForm.token.to.amount
       ),
       stop_date: tradeForm.stopDate,
       public: tradeForm.isPublic,
       min_base_wei: Web3PublicService.tokenAmountToWei(
-        tradeForm.token.base,
-        tradeForm.token.base.minContribution
+        tradeForm.token.from,
+        tradeForm.token.from.minContribution
       ),
       min_quote_wei: Web3PublicService.tokenAmountToWei(
-        tradeForm.token.quote,
-        tradeForm.token.quote.minContribution
+        tradeForm.token.to,
+        tradeForm.token.to.minContribution
       ),
       base_amount_contributed: '0',
       quote_amount_contributed: '0',
       broker_fee: tradeForm.isWithBrokerFee,
       broker_fee_address: tradeForm.isWithBrokerFee ? tradeForm.brokerAddress : EMPTY_ADDRESS,
-      broker_fee_base: parseFloat(tradeForm.token.base.brokerPercent),
-      broker_fee_quote: parseFloat(tradeForm.token.quote.brokerPercent),
+      broker_fee_base: parseFloat(tradeForm.token.from.brokerPercent),
+      broker_fee_quote: parseFloat(tradeForm.token.to.brokerPercent),
 
-      name: `${tradeForm.token.base.symbol} <> ${tradeForm.token.quote.symbol}`,
+      name: `${tradeForm.token.from.symbol} <> ${tradeForm.token.to.symbol}`,
       network: TO_BACKEND_BLOCKCHAINS[tradeForm.blockchain],
       state: 'ACTIVE',
       contract_state: 'ACTIVE',

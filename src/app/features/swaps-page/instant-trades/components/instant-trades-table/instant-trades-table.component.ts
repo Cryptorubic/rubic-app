@@ -49,12 +49,12 @@ export class InstantTradesTableComponent {
 
   public selectToken(tokenData: TokenValueType): void {
     if (tokenData.value) {
-      if (tokenData.tokenType === 'base') {
+      if (tokenData.tokenType === 'from') {
         this.instantTradesTableService.setBaseTokenFilter(tokenData.value);
       } else {
         this.instantTradesTableService.setQuoteTokenFilter(tokenData.value);
       }
-    } else if (tokenData.tokenType === 'base') {
+    } else if (tokenData.tokenType === 'from') {
       this.instantTradesTableService.setBaseTokenFilter(null);
     } else {
       this.instantTradesTableService.setQuoteTokenFilter(null);
@@ -62,7 +62,7 @@ export class InstantTradesTableComponent {
     this.instantTradesTableService.filterTable();
   }
 
-  public refreshOrderBooks(): void {
+  public refreshInstantTrades(): void {
     this.instantTradesTableService.setTableLoadingStatus(true);
     this.fetchSwaps();
   }

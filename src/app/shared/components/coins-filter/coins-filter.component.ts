@@ -13,7 +13,7 @@ import { List } from 'immutable';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
-import { TokenPart, TokenValueType } from 'src/app/shared/models/order-book/tokens';
+import { OrderBookTokenPart, TokenValueType } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
 @Component({
@@ -63,15 +63,15 @@ export class CoinsFilterComponent {
     this.tokensHostWidth = '150px';
     this.$filteredFromOptions = this.tokensFromInput.valueChanges.pipe(
       startWith(''),
-      map(value => this.filter(value, 'base'))
+      map(value => this.filter(value, 'from'))
     );
     this.$filteredToOptions = this.tokensToInput.valueChanges.pipe(
       startWith(''),
-      map(value => this.filter(value, 'quote'))
+      map(value => this.filter(value, 'to'))
     );
   }
 
-  private filter(value: string, tokenType: TokenPart): SwapToken[] {
+  private filter(value: string, tokenType: OrderBookTokenPart): SwapToken[] {
     if (this.isTokenSelected) {
       this.selectTokenEvent.emit({ value: null, tokenType });
     }
@@ -94,12 +94,12 @@ export class CoinsFilterComponent {
       .toArray();
 
     if (filterOptions.length <= 5) {
-      if (tokenType === 'base') {
+      if (tokenType === 'from') {
         this.virtualScrollBaseHeight = `${filterOptions.length * 48}px`;
       } else {
         this.virtualScrollQuoteHeight = `${filterOptions.length * 48}px`;
       }
-    } else if (tokenType === 'base') {
+    } else if (tokenType === 'from') {
       this.virtualScrollBaseHeight = '240px';
     } else {
       this.virtualScrollQuoteHeight = '240px';
@@ -108,7 +108,7 @@ export class CoinsFilterComponent {
     return filterOptions;
   }
 
-  public selectToken(value: any, tokenType: TokenPart): void {
+  public selectToken(value: any, tokenType: OrderBookTokenPart): void {
     this.isTokenSelected = true;
     this.selectTokenEvent.emit({ value: value.option.value, tokenType });
   }
@@ -118,7 +118,7 @@ export class CoinsFilterComponent {
     const oldQuoteValue = this.tokensToInput.value;
     this.tokensToInput.setValue(oldBaseValue);
     this.tokensFromInput.setValue(oldQuoteValue);
-    this.selectTokenEvent.emit({ value: oldBaseValue, tokenType: 'quote' });
-    this.selectTokenEvent.emit({ value: oldQuoteValue, tokenType: 'base' });
+    this.selectTokenEvent.emit({ value: oldBaseValue, tokenType: 'to' });
+    this.selectTokenEvent.emit({ value: oldQuoteValue, tokenType: 'from' });
   }
 }

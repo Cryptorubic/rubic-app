@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { NgModel } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { Subscription } from 'rxjs';
-import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { OrderBookTokenPart } from 'src/app/shared/models/order-book/tokens';
 import BigNumber from 'bignumber.js';
 import { OrderBooksFormService } from '../services/order-books-form.service';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
@@ -149,12 +149,12 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
       isPublic: true,
       isWithBrokerFee: false,
       token: {
-        base: {
-          ...this.tradeForm.token.base,
+        from: {
+          ...this.tradeForm.token.from,
           ...this.defaultTokenOptions
         },
-        quote: {
-          ...this.tradeForm.token.quote,
+        to: {
+          ...this.tradeForm.token.to,
           ...this.defaultTokenOptions
         }
       }
@@ -227,7 +227,10 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
     };
   }
 
-  public onMinContributeChange(tokenPart: TokenPart, minContributionAsString: string): void {
+  public onMinContributeChange(
+    tokenPart: OrderBookTokenPart,
+    minContributionAsString: string
+  ): void {
     const minContribution = minContributionAsString.split(',').join('');
     this.tradeForm = {
       ...this.tradeForm,
@@ -255,7 +258,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
     };
   }
 
-  public onBrokerPercentChange(tokenPart: TokenPart, brokerPercent): void {
+  public onBrokerPercentChange(tokenPart: OrderBookTokenPart, brokerPercent): void {
     this.tradeForm = {
       ...this.tradeForm,
       token: {
@@ -268,7 +271,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
     };
   }
 
-  public getBrokerPercent(tokenPart: TokenPart): string {
+  public getBrokerPercent(tokenPart: OrderBookTokenPart): string {
     const { brokerPercent } = this.tradeForm.token[tokenPart];
     return brokerPercent
       ? new BigNumber(this.tradeForm.token[tokenPart].amount)

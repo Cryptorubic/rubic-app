@@ -39,12 +39,12 @@ export class TradesTableComponent {
 
   public selectToken(tokenData: TokenValueType): void {
     if (tokenData.value) {
-      if (tokenData.tokenType === 'base') {
+      if (tokenData.tokenType === 'from') {
         this.tradesService.setBaseTokenFilter(tokenData.value);
       } else {
         this.tradesService.setQuoteTokenFilter(tokenData.value);
       }
-    } else if (tokenData.tokenType === 'base') {
+    } else if (tokenData.tokenType === 'from') {
       this.tradesService.setBaseTokenFilter(null);
     } else {
       this.tradesService.setQuoteTokenFilter(null);

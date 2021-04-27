@@ -18,7 +18,7 @@ import { OrderBookTradeForm } from '../../models/trade-form';
 import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { OrderBooksFormService } from './services/order-books-form.service';
-import { TokenPart } from '../../../../../shared/models/order-book/tokens';
+import { OrderBookTokenPart } from '../../../../../shared/models/order-book/tokens';
 import { TotalSupplyOverflowError } from '../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { TotalSupplyOverflowErrorComponent } from '../../../../../shared/components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 
@@ -90,13 +90,13 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this.tradeForm = {
       ...this.tradeForm,
       token: {
-        base: {
-          ...this.tradeForm.token.base,
+        from: {
+          ...this.tradeForm.token.from,
           ...this._tradeParameters.fromToken,
           amount: this._tradeParameters.fromAmount
         },
-        quote: {
-          ...this.tradeForm.token.quote,
+        to: {
+          ...this.tradeForm.token.to,
           ...this._tradeParameters.toToken,
           amount: this._tradeParameters.toAmount
         }
@@ -170,10 +170,10 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this._tradeForm = {
       ...value,
       areAmountsAndTokensSet: !!(
-        value.token.base?.address &&
-        new BigNumber(value.token.base?.amount).isGreaterThan(0) &&
-        value.token.quote?.address &&
-        new BigNumber(value.token.quote?.amount).isGreaterThan(0)
+        value.token.from?.address &&
+        new BigNumber(value.token.from?.amount).isGreaterThan(0) &&
+        value.token.to?.address &&
+        new BigNumber(value.token.to?.amount).isGreaterThan(0)
       ),
       areOptionsValid: false
     };
@@ -264,8 +264,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  public setIsCustomTokenFormOpened(tokenPart: TokenPart, isOpened: boolean): void {
-    if (tokenPart === 'base') {
+  public setIsCustomTokenFormOpened(tokenPart: OrderBookTokenPart, isOpened: boolean): void {
+    if (tokenPart === 'from') {
       this.tradeParameters = {
         ...this.tradeParameters,
         isCustomFromTokenFormOpened: isOpened
@@ -278,8 +278,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public setCustomTokenAddress(tokenPart: TokenPart, address: string): void {
-    if (tokenPart === 'base') {
+  public setCustomTokenAddress(tokenPart: OrderBookTokenPart, address: string): void {
+    if (tokenPart === 'from') {
       this.tradeParameters = {
         ...this.tradeParameters,
         customFromTokenAddress: address
@@ -292,7 +292,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public updateCustomToken(tokenPart: TokenPart, tokenBody: Token): void {
+  public updateCustomToken(tokenPart: OrderBookTokenPart, tokenBody: Token): void {
     const token = this.tokens.find(
       t => t.address.toLowerCase() === tokenBody.address.toLowerCase()
     );
@@ -301,8 +301,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       : { ...this.customToken[tokenPart], ...tokenBody };
   }
 
-  public addCustomToken(tokenPart: TokenPart): void {
-    if (tokenPart === 'base') {
+  public addCustomToken(tokenPart: OrderBookTokenPart): void {
+    if (tokenPart === 'from') {
       this.baseToken = { ...this.customToken.base };
     } else {
       this.quoteToken = { ...this.customToken.quote };
@@ -321,18 +321,16 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   private calculateTokensRate(): void {
     if (
       !(
-        this.baseToken?.price && new BigNumber(this.tradeForm.token.base?.amount).isGreaterThan(0)
+        this.baseToken?.price && new BigNumber(this.tradeForm.token.from?.amount).isGreaterThan(0)
       ) ||
-      !(
-        this.quoteToken?.price && new BigNumber(this.tradeForm.token.quote?.amount).isGreaterThan(0)
-      )
+      !(this.quoteToken?.price && new BigNumber(this.tradeForm.token.to?.amount).isGreaterThan(0))
     ) {
       this.tokensRate = null;
       return;
     }
 
-    const baseRate = new BigNumber(this.tradeForm.token.base.amount).times(this.baseToken.price);
-    const quoteRate = new BigNumber(this.tradeForm.token.quote.amount).times(this.quoteToken.price);
+    const baseRate = new BigNumber(this.tradeForm.token.from.amount).times(this.baseToken.price);
+    const quoteRate = new BigNumber(this.tradeForm.token.to.amount).times(this.quoteToken.price);
     this.tokensRate = quoteRate.minus(baseRate).div(baseRate).times(100);
   }
 
