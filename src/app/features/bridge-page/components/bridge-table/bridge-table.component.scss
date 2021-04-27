@@ -1,3 +1,5 @@
+@import '/src/scss/vars';
+
 .bridge-results {
   &__header {
     margin-bottom: 30px;
@@ -16,10 +18,7 @@
   &__spinner {
     cursor: pointer;
 
-    animation-iteration-count: 1;
-
     &_rotating {
-
       transition: 1s;
       animation-name: rotate;
       animation-duration: 1s;
@@ -99,6 +98,10 @@
     font-weight: normal;
     font-size: 15px;
   }
+
+  &__row {
+    height: 73px;
+  }
 }
 
 .bridge-list {
@@ -136,13 +139,15 @@
         margin: initial;
       }
 
-      br {
-        display: none;
-      }
-
       span:first-child {
         margin-right: 12px;
       }
+    }
+
+    .data__receive-button {
+      left: 0;
+
+      margin-top: 0;
     }
 
     &__header {
@@ -200,7 +205,7 @@
     }
 
     &__content {
-      max-height: 300px;
+      max-height: 342px;
       overflow: hidden;
 
       transition: max-height 0.7s ease;
@@ -218,8 +223,7 @@
         display: grid;
         grid-template-columns: 1fr 1.8fr;
         align-items: center;
-        height: 55px;
-        padding-top: 2px;
+        height: 56px;
 
         border-top: 1px solid #e8e8e8;
 
@@ -240,9 +244,6 @@
     color: black;
 
     &::before {
-      position: relative;
-      top: -2px;
-
       display: inline-block;
       min-width: 8px;
       height: 8px;
@@ -273,6 +274,24 @@
         box-shadow: 0 0 6px #f4bb2b;
       }
     }
+
+    &_waiting-for-deposit {
+      color: #e6ae1f;
+      font-weight: bold;
+    }
+  }
+
+  &__receive-button-container {
+    width: 100%;
+  }
+
+  &__receive-button {
+    position: relative;
+    left: 20px;
+
+    display: block;
+
+    margin-top: 7px;
   }
 
   &__network {
@@ -287,6 +306,7 @@
 
   &__amount-inner {
     display: flex;
+    align-items: center;
   }
 
   &__amount-number {

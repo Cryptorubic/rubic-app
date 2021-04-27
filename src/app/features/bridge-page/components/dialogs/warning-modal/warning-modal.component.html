@@ -1,8 +1,7 @@
 <app-modal (onCloseEvent)="onCancel.emit()">
   <div class="high-gas-price-modal">
     <p class="high-gas-price-modal__description">
-      Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take
-      up to 4 hours.<br />Would you like to continue now?
+      {{ warningText }}<br />Would you like to continue now?
     </p>
 
     <div class="high-gas-price-modal__buttons buttons">
