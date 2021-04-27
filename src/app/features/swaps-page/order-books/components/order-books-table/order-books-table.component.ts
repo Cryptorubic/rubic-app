@@ -32,7 +32,7 @@ export class OrderBooksTableComponent implements AfterViewInit {
   ) {
     this.$tableLoading = this.orderBooksTableService.getTableLoadingStatus();
     this.orderBooksTableService.setTableLoadingStatus(true);
-    this.fetchSwaps();
+    this.fetchPublicSwaps();
     this.$dataSource = this.orderBooksTableService.getTableData().pipe(
       map(trade => ({
         ...trade,
@@ -71,10 +71,10 @@ export class OrderBooksTableComponent implements AfterViewInit {
 
   public refreshOrderBooks(): void {
     this.orderBooksTableService.setTableLoadingStatus(true);
-    this.fetchSwaps();
+    this.fetchPublicSwaps();
   }
 
-  private fetchSwaps(): void {
+  private fetchPublicSwaps(): void {
     this.orderBookApi.fetchPublicSwaps().subscribe(
       async tradeData => {
         this.orderBooksTableService.setTableData(await Promise.all(tradeData));
