@@ -43,8 +43,17 @@ export class BridgeApiService {
     const fromBlockchain = this.tradeBlockchain[trade.fromNetwork];
     const toBlockchain = this.tradeBlockchain[trade.toNetwork];
 
+    let { status } = trade;
+    if (fromBlockchain === BLOCKCHAIN_NAME.POLYGON) {
+      if (status === 'Withdraw in progress') {
+        status = 'Deposit in progress';
+      } else if (status === 'Waiting for deposit') {
+        status = 'Waiting for receiving';
+      }
+    }
+
     return {
-      status: trade.status,
+      status,
       statusCode: trade.code,
       fromBlockchain,
       toBlockchain,

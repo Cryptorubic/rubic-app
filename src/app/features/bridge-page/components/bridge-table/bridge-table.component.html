@@ -86,18 +86,18 @@
               </span>
 
               <div
-                class="data__deposit-button-container"
+                class="data__receive-button-container"
                 *ngIf="
-                  tx.status === WAITING_FOR_DEPOSIT_STATUS &&
+                  tx.status === WAITING_FOR_RECEIVING_STATUS &&
                   tx.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
                 "
               >
-                <app-deposit-button
-                  class="data__deposit-button"
+                <app-receive-button
+                  class="data__receive-button"
                   [animate]="tx.inProgress"
                   (onClick)="depositPolygonBridgeTransaction(tx)"
                 >
-                </app-deposit-button>
+                </app-receive-button>
               </div>
             </td>
 
@@ -162,7 +162,7 @@
                   data__status_yellow: tx.statusCode === 1,
                   data__status_red: tx.statusCode === 0,
                   'data__status_waiting-for-deposit':
-                    tx.status === WAITING_FOR_DEPOSIT_STATUS &&
+                    tx.status === WAITING_FOR_RECEIVING_STATUS &&
                     tx.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
                 }"
               >
@@ -287,17 +287,17 @@
               <div
                 class="content__item"
                 *ngIf="
-                  tx.status === WAITING_FOR_DEPOSIT_STATUS &&
+                  tx.status === WAITING_FOR_RECEIVING_STATUS &&
                   tx.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
                 "
               >
                 <div class="content__item-name">Deposit</div>
-                <app-deposit-button
-                  class="data__deposit-button"
+                <app-receive-button
+                  class="data__receive-button"
                   [animate]="tx.inProgress"
                   (onClick)="depositPolygonBridgeTransaction(tx)"
                 >
-                </app-deposit-button>
+                </app-receive-button>
               </div>
             </div>
           </div>

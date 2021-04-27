@@ -23,7 +23,7 @@ import { BinanceBridgeProviderService } from './services/blockchain-bridge-provi
 import { PanamaBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/panama-bridge-provider/panama-bridge-provider.service';
 import { RubicBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/rubic-bridge-provider/rubic-bridge-provider.service';
 import { PolygonBridgeProviderService } from './services/blockchain-bridge-provider/polygon-bridge-provider/polygon-bridge-provider.service';
-import { DepositButtonComponent } from './components/bridge-table/deposit-button/deposit-button.component';
+import { ReceiveButtonComponent } from './components/bridge-table/deposit-button/receive-button.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +34,7 @@ import { DepositButtonComponent } from './components/bridge-table/deposit-button
     BridgeTableComponent,
     AdvertModalComponent,
     WarningModalComponent,
-    DepositButtonComponent,
+    ReceiveButtonComponent,
     BridgeSectionComponent
   ],
   imports: [

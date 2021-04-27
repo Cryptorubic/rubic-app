@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DepositButtonComponent } from './deposit-button.component';
+import { ReceiveButtonComponent } from './receive-button.component';
 
 describe('DepositButtonComponent', () => {
-  let component: DepositButtonComponent;
-  let fixture: ComponentFixture<DepositButtonComponent>;
+  let component: ReceiveButtonComponent;
+  let fixture: ComponentFixture<ReceiveButtonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DepositButtonComponent]
+      declarations: [ReceiveButtonComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DepositButtonComponent);
+    fixture = TestBed.createComponent(ReceiveButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
