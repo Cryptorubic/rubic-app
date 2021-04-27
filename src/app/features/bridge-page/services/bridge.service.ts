@@ -1,9 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, defer, Observable, Subscription, throwError } from 'rxjs';
 import { List } from 'immutable';
-import { catchError, first, tap } from 'rxjs/operators';
+import { catchError, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { flatMap } from 'rxjs/internal/operators';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeToken } from '../models/BridgeToken';
 import { TokensService } from '../../../core/services/backend/tokens-service/tokens.service';
@@ -230,7 +229,7 @@ export class BridgeService implements OnDestroy {
         bridgeTrade.amount
       );
     }).pipe(
-      flatMap(() => {
+      mergeMap(() => {
         return this.bridgeProvider
           .createTrade(bridgeTrade, () => this.updateTransactionsList())
           .pipe(
