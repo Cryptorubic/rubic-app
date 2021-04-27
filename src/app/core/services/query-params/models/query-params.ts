@@ -1,7 +1,9 @@
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+
 export interface QueryParams {
   from?: string;
   to?: string;
-  chain?: string;
+  chain?: BLOCKCHAIN_NAME;
   amount?: string;
   iframe?: string;
   hidden?: string;

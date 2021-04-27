@@ -19,12 +19,12 @@ import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-
 import { MessageBoxComponent } from '../../../../../shared/components/message-box/message-box.component';
 import { RubicError } from '../../../../../shared/models/errors/RubicError';
 import { NetworkError } from '../../../../../shared/models/errors/provider/NetworkError';
-import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
 import ADDRESS_TYPE from '../../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
 import { Token } from '../../../../../shared/models/tokens/Token';
+import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
 
 interface TradeProviderInfo {
   label: string;
@@ -290,7 +290,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       default:
-        console.log(`Blockchain ${this.blockchain} was not found.`);
+        console.debug(`Blockchain ${this.blockchain} was not found.`);
     }
   }
 

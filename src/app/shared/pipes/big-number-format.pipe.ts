@@ -12,7 +12,7 @@ export class BigNumberFormat implements PipeTransform {
     if (typeof value === 'string') {
       const [integerPart, decimalPart] = value.split('.');
       return (
-        new BigNumber(integerPart).toFormat(BIG_NUMBER_FORMAT) +
+        new BigNumber(integerPart.split(',').join('')).toFormat(BIG_NUMBER_FORMAT) +
         (value.includes('.') ? '.' : '') +
         (decimalPart || '')
       );
