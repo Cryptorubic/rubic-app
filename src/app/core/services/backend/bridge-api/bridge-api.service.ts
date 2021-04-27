@@ -21,14 +21,6 @@ export class BridgeApiService {
     POL: BLOCKCHAIN_NAME.POLYGON
   };
 
-  private readonly tradeStatus = {
-    'Deposit in progress': TRADE_STATUS.DEPOSIT_IN_PROGRESS,
-    'Withdraw in progress': TRADE_STATUS.WITHDRAW_IN_PROGRESS,
-    'Waiting for deposit': TRADE_STATUS.WAITING_FOR_DEPOSIT,
-    Completed: TRADE_STATUS.COMPLETED,
-    Cancelled: TRADE_STATUS.CANCELLED
-  };
-
   constructor(private httpService: HttpService, private httpClient: HttpClient) {}
 
   public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
@@ -52,7 +44,7 @@ export class BridgeApiService {
     const toBlockchain = this.tradeBlockchain[trade.toNetwork];
 
     return {
-      status: this.tradeStatus[trade.status],
+      status: trade.status,
       statusCode: trade.code,
       fromBlockchain,
       toBlockchain,

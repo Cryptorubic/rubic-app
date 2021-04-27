@@ -57,6 +57,8 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
 
   public SORT_FIELD = SORT_FIELD;
 
+  public readonly WAITING_FOR_DEPOSIT_STATUS = 'Waiting for deposit';
+
   public transactions: List<ITableTransactionWithState>;
 
   /**
@@ -228,7 +230,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
 
   public depositPolygonBridgeTransaction(transaction: BridgeTableTrade): void {
     if (
-      transaction.status !== TRADE_STATUS.WAITING_FOR_DEPOSIT ||
+      transaction.status !== this.WAITING_FOR_DEPOSIT_STATUS ||
       transaction.fromBlockchain !== BLOCKCHAIN_NAME.POLYGON
     ) {
       return;
