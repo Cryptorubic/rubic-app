@@ -129,9 +129,9 @@
     </div>
   </div>
   <div class="tokens-table__text tokens-table__text_without-data" *ngIf="hasData === false">
-    There are no trades
+    {{ 'tradesTable.noTrades' | translate }}
   </div>
   <div class="tokens-table__text" *ngIf="hasData && sortedTableData.length === 0">
-    There are no trades with selected parameters
+    {{ 'tradesTable.noTradesWithSelected' | translate }}
   </div>
 </div>

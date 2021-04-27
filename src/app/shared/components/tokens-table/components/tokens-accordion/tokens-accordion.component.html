@@ -116,7 +116,7 @@
     </div>
 
     <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">Spent</div>
+      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.spent' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
         <div>{{ data.token.base.amountTotal.dp(8) }} {{ data.token.base.symbol }}</div>
         <span>
@@ -130,7 +130,9 @@
     </div>
 
     <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">Expected</div>
+      <div class="tokens-accordion__item-name">
+        {{ 'tradesTable.columns.expected' | translate }}
+      </div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
         <div>{{ data.token.quote.amountTotal.dp(8) }} {{ data.token.quote.symbol }}</div>
         <span>
@@ -157,7 +159,9 @@
     </div>
 
     <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.expiresIn' | translate }}</div>
+      <div class="tokens-accordion__item-name">
+        {{ 'tradesTable.columns.expiresIn' | translate }}
+      </div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
         <div>
           {{ data.expirationDate | date: 'd' }}d: {{ data.expirationDate | date: 'h' }}h:

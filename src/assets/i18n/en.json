@@ -1,17 +1,23 @@
 {
   "common": {
+    "from": "From",
+    "to": "To",
     "yes": "Yes",
     "no": "No",
     "any": "Any",
     "error": "Error",
     "have": "You have",
-    "want": "You want to get",
+    "get": "You get",
     "confirm": "Confirm",
     "copy": "Copy",
     "accept": "Accept",
     "copyright": "Copyright",
     "privacyPolicy": "Privacy policy",
-    "close": "Close"
+    "close": "Close",
+    "advancedOptions": "Advanced Options",
+    "send": "send",
+    "left": "left",
+    "checkOnExplorer": "Check on Explorer"
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
@@ -231,16 +237,28 @@
     "title": "Create your cross-chain swap",
     "swapToggleText": "Use our swaps",
     "progressMessage": "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
-    "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains."
+    "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
+    "tableTitle": "Your cross-chain swaps",
+    "whatIs": "What is Binance Smart Chain?",
+    "assistanceOf": "With the assistance of"
   },
   "instantTrades": {
     "title": "Instant Trades",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
     "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
-    "bestRate": "Best Rate"
+    "bestRate": "Best Rate",
+    "gasFee": "Estimated gas fee"
   },
   "orderBook": {
-    "title": "Order Book"
+    "title": "Order Book",
+    "closingTime": "Closing time (utc)",
+    "tradeListed": "Trade will be listed on the main page",
+    "specifyTokens": "Please specify tokens and required amounts to see the advanced options",
+    "minContribution": "Minimum contribution in",
+    "brokerFee": "Broker Fee",
+    "specifyForBorker": "You can specify % for Broker",
+    "yourRate": "Your rate is ",
+    "coingeckoRate": " than coingecko rate"
   },
   "bridge": {
     "title": "Cross-Chain Swaps"
@@ -260,9 +278,13 @@
       "send": "Send",
       "expiresIn": "Expires in",
       "volume": "Volume",
-      "network": "Network"
+      "network": "Network",
+      "spent": "Spent",
+      "expected": "Expected"
     },
     "noData": "You have no swaps yet",
+    "noTrades": "There are no trades",
+    "noTradesWithSelected": "There are no trades with selected parameters",
     "showData": "Show data",
     "sortBy": "Sort by"
   },
@@ -277,6 +299,7 @@
     "disclaimerTitle": "Token safety alert!",
     "disclaimerText": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform.",
     "accumulatedTransactionsVolume": "Accumulated Transactions Volume",
+    "collaborations": "Software Integrations And Collaborations With",
     "listingRequest": {
       "title": "Listing request",
       "description": "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:",
@@ -289,6 +312,58 @@
         "logo": "Link to logo in PNG and SVG",
         "why": "Why you have chosen Rubic.exchange?"
       }
+    }
+  },
+  "tradePage": {
+    "sent": "sent",
+    "left": "left",
+    "investors": "Number of investors",
+    "getBefore": "You will get",
+    "getAfter": "after the trade is complete",
+    "find": "Fill all",
+    "limit": "Min contribution limit:",
+    "fee": "Broker's fee:",
+    "Withdraw": "Withdraw",
+    "rate": "Rate:",
+    "closingDate": "Closing date",
+    "closingTime": "Closing Time",
+    "link": "Link To Deal",
+    "copied": "Сopied",
+    "publicDeal": "Public Deal",
+    "brokerAddress": "Broker Address",
+    "notExist": "Such trade doesn't exist."
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+  },
+  "adModal": {
+    "text": "Binance Smart Chain Wrapped Rubic is live now!",
+    "button": "Add BRBC to the wallet"
+  },
+  "gasPriceModal": {
+    "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
+  },
+  "cancelModal": {
+    "text": "The trade was cancelled",
+    "link": "Check transaction on scanner"
+  },
+  "operationModal": {
+    "progress": {
+      "text": "Operation is in progress <br /> Please wait until it is completed"
+    },
+    "success": {
+      "text": "The operation is successful! <br /> This page will be updated automatically <br />",
+      "link": "Check transaction on scanner"
+    }
+  },
+  "tradeModal": {
+    "progress": {
+      "text": "Trade is in progress <br />  Please wait until it is completed"
+    },
+    "success": {
+      "text": "Successful swap!",
+      "link": "Check transaction on explorer"
     }
   }
 }

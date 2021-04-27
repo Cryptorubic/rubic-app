@@ -2,7 +2,7 @@
   <div class="order-book__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
       [warningText]="'Unknown token. Please check it before trading.'"
-      [tooltipText]=" 'tradesFrom.unknownTokenWarning' | translate"
+      [tooltipText]="'tradesFrom.unknownTokenWarning' | translate"
     ></app-warning-disclaimer>
   </div>
 
@@ -49,7 +49,7 @@
         <div class="main-section__tokens-form tokens-form">
           <div class="tokens-form__header tokens-form-header">
             <span class="tokens-form-header__label">
-              {{ 'common.want' | translate }}
+              {{ 'common.get' | translate }}
             </span>
 
             <div class="tokens-form-header__rate tokens-rate" *ngIf="tokensRate">
@@ -64,18 +64,18 @@
                   <img
                     src="/assets/images/icons/info.svg"
                     [matTooltip]="
-                      'Your rate is ' +
+                      ('orderBook.yourRate' | translate) +
                       (tokensRate.abs().toFixed(2) | number) +
                       '% ' +
                       (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') +
-                      ' than coingecko rate'
+                      ('orderBook.coingeckoRate' | translate)
                     "
                     [alt]="
-                      'Your rate is ' +
+                      ('orderBook.yourRate' | translate) +
                       (tokensRate.abs().toFixed(2) | number) +
                       '% ' +
                       (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') +
-                      ' than coingecko rate'
+                      ('orderBook.coingeckoRate' | translate)
                     "
                   />
                 </div>

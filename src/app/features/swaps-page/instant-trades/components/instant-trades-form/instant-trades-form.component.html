@@ -25,7 +25,7 @@
       [ngClass]="{ 'instant-trade-form__from-section_lowered': trades.length === 2 }"
     >
       <div class="selection-block__header">
-        <div class="selection-block__label">you have</div>
+        <div class="selection-block__label">{{ 'common.have' | translate }}</div>
 
         <div *ngIf="fromToken?.address" class="selection-block__scanner">
           <app-scanner-link
@@ -94,7 +94,7 @@
           }"
         >
           <div class="selection-block__header" *ngIf="index === 0">
-            <div class="selection-block__label">you get</div>
+            <div class="selection-block__label">{{ 'common.get' | translate }}</div>
 
             <div *ngIf="toToken?.address" class="selection-block__scanner">
               <app-scanner-link
@@ -128,28 +128,15 @@
               "
             >
               <span class="gas-fee__text"
-                >Estimated gas fee:
+                >{{ 'instantTrades.gasFee' | translate }}
                 {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
-                ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$ <<<<<<< HEAD
+                ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
                 <img
                   src="/assets/images/icons/info.svg"
                   matTooltip="{{ 'instantTrades.gasFeeMessage' | translate }}"
                   alt="{{ 'instantTrades.gasFeeMessage' | translate }}"
                 />
-                ======= >>>>>>> develop
               </span>
-
-              <img
-                src="/assets/images/icons/info.svg"
-                matTooltip="{{
-                  'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
-                    | translate
-                }}"
-                alt="{{
-                  'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
-                    | translate
-                }}"
-              />
             </div>
 
             <div class="selection-block__warning">

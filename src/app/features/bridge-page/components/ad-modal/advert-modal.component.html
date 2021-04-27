@@ -1,7 +1,7 @@
 <ng-template #modal>
   <div class="advert">
     <button (click)="close()" class="advert__close">
-      <img class="advert__close-icon" src="assets/images/icons/cross-w.svg" alt="">
+      <img class="advert__close-icon" src="assets/images/icons/cross-w.svg" alt="" />
     </button>
     <div class="advert__content">
       <header class="advert__header">
@@ -9,14 +9,16 @@
           class="advert__rubic-logo"
           [inlineSVG]="'assets/images/rubic-logo.svg?_=2'"
           removeSVGAttributes="fill"
-          ></div>
+        ></div>
       </header>
       <main class="advert__body">
-        <h4 class="advert__description">Binance Smart Chain Wrapped Rubic is live now!</h4>
-        <img src="assets/images/bridge/ad-modal.svg" alt="" class="advert__image">
+        <h4 class="advert__description">{{ 'adModal.text' | translate }}</h4>
+        <img src="assets/images/bridge/ad-modal.svg" alt="" class="advert__image" />
       </main>
       <footer class="advert__footer">
-        <button (click)="addToken()" class="advert__button">Add BRBC to the wallet</button>
+        <button (click)="addToken()" class="advert__button">
+          {{ 'adModal.button' | translate }}
+        </button>
       </footer>
     </div>
   </div>

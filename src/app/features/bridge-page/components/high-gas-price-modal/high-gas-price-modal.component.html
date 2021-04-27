@@ -1,19 +1,18 @@
 <app-modal (onCloseEvent)="onCancel.emit()">
   <div class="high-gas-price-modal">
     <p class="high-gas-price-modal__description">
-      Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take
-      up to 4 hours.<br />Would you like to continue now?
+      {{ 'gasPriceModal.text' | translate }}
     </p>
 
     <div class="high-gas-price-modal__buttons buttons">
       <button class="buttons__button buttons__button_cancel" (click)="onCancel.emit()">
         <img src="assets/images/icons/arrow/arrow-right-white.svg" alt="" />
-        Cancel
+        {{ 'common.cancel' | translate }}
       </button>
 
       <button class="buttons__button buttons__button_confirm" (click)="onConfirm.emit()">
         <img src="assets/images/icons/arrow/arrow-right-white.svg" alt="" />
-        Confirm
+        {{ 'common.confirm' | translate }}
       </button>
     </div>
   </div>

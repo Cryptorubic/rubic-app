@@ -1,6 +1,6 @@
 <div class="bridge-results">
   <div class="bridge-results__header">
-    <span>Your cross-chain swaps</span>
+    <span>{{ 'bridgePage.tableTitle' | translate }}</span>
     <img
       [ngClass]="{
         'bridge-results__spinner_rotating': updateProcess === 'process' || updateProcess === 'stop',
@@ -111,9 +111,7 @@
             </td>
 
             <td class="data__date">
-              <div>
-                {{ tx.updateTime.split(' ')[0] }} {{ tx.updateTime.split(' ')[1] }}
-              </div>
+              <div>{{ tx.updateTime.split(' ')[0] }} {{ tx.updateTime.split(' ')[1] }}</div>
             </td>
           </tr>
         </tbody>
@@ -229,7 +227,7 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">{{ 'tradesTable.columns.get' | translate}}</div>
+                <div class="content__item-name">{{ 'tradesTable.columns.get' | translate }}</div>
                 <div class="data__amount">
                   <div class="data__amount-inner">
                     <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
@@ -240,7 +238,7 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">{{ 'tradesTable.columns.send' | translate}}</div>
+                <div class="content__item-name">{{ 'tradesTable.columns.send' | translate }}</div>
                 <div class="data__amount">
                   <div class="data__amount-inner">
                     <div class="data__amount-number">{{ tx.actualToAmount }}</div>
@@ -251,7 +249,9 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">{{ 'tradesTable.columns.expiresDate' | translate}}</div>
+                <div class="content__item-name">
+                  {{ 'tradesTable.columns.expiresDate' | translate }}
+                </div>
                 <div class="data__date">
                   <div>
                     <span>{{ tx.updateTime.split(' ')[0] }}</span>
@@ -273,7 +273,9 @@
       ></app-white-button>
     </div>
 
-    <div *ngIf="!transactions.size" class="bridge-results__no-swaps">{{ 'tradesTable.noData' | translate }}</div>
+    <div *ngIf="!transactions.size" class="bridge-results__no-swaps">
+      {{ 'tradesTable.noData' | translate }}
+    </div>
   </ng-template>
 
   <app-spinner *ngIf="!transactions" class="bridge-results__init-animation"></app-spinner>
