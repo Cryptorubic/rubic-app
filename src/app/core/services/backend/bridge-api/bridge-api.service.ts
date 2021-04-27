@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';
@@ -21,7 +20,7 @@ export class BridgeApiService {
     POL: BLOCKCHAIN_NAME.POLYGON
   };
 
-  constructor(private httpService: HttpService, private httpClient: HttpClient) {}
+  constructor(private httpService: HttpService) {}
 
   public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
     return new Promise<BridgeTableTrade[]>((resolve, reject) => {
@@ -190,7 +189,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpClient.post(environment.bridgeBotUrl, body).subscribe(
+      this.httpService.post(environment.bridgeBotUrl, body).subscribe(
         () => {
           resolve();
         },
