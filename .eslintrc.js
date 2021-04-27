@@ -36,14 +36,6 @@ module.exports = {
         complexity: ['error', 20],
         eqeqeq: ['error', 'always'],
         'no-magic-numbers': 'off',
-        '@typescript-eslint/no-magic-numbers': [
-          'warn',
-          {
-            ignore: [-1, 0, 1, 2, 10, 100, 1000],
-            detectObjects: true,
-            ignoreReadonlyClassProperties: true
-          }
-        ],
         '@typescript-eslint/naming-convention': [
           'error',
           {

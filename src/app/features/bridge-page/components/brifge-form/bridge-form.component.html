@@ -301,7 +301,10 @@
 
 <warning-modal
   *ngIf="isPolygonToEthTradeModalShown"
-  warningText="Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Deposit' button will appear in the corresponding line of the swaps' list under the form."
+  [warningText]="
+    'Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes' +
+    ' and then deposit second time &ndash; \'Deposit\' button will appear in the corresponding line of the swaps list under the form.'
+  "
   (onCancel)="isPolygonToEthTradeModalShown = false"
   (onConfirm)="onPolygonToEthTradeConfirm()"
 ></warning-modal>
