@@ -2,7 +2,7 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import date from 'date-and-time';
 import { BridgeService } from 'src/app/features/bridge-page/services/bridge.service';
-import { first } from 'rxjs/operators';
+import { finalize, first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -144,6 +144,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
         this.updateProcess = 'stop';
         setTimeout(() => {
           this.updateProcess = '';
+          // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1200);
       });
     }
@@ -233,31 +234,25 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.transactions = this.transactions.map(tx => {
-      if (tx.transactionHash === transaction.transactionHash) {
-        return {
-          ...tx,
-          inProgress: true
-        };
-      }
-      return tx;
-    });
-
     const burnTransactionHash = transaction.transactionHash;
+    this.setTransactionInProgress(burnTransactionHash, true);
     const onTransactionHash = () => {
       this.tradeInProgress = true;
     };
-
     this.bridgeService
       .depositPolygonTradeAfterCheckpoint(burnTransactionHash, onTransactionHash)
-      .pipe(first())
+      .pipe(
+        first(),
+        finalize(() => {
+          this.tradeInProgress = false;
+          this.setTransactionInProgress(burnTransactionHash, false);
+        })
+      )
       .subscribe(
         (res: string) => {
           this.tradeSuccessId = res;
-          this.tradeInProgress = false;
         },
         err => {
-          this.tradeInProgress = false;
           if (!(err instanceof RubicError)) {
             err = new RubicError();
           }
@@ -278,6 +273,20 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
           });
         }
       );
+  }
+
+  private setTransactionInProgress(transactionHash: string, inProgress: boolean): void {
+    this.transactions = this.transactions.map(tx => {
+      if (tx.transactionHash === transactionHash) {
+        return {
+          ...tx,
+          inProgress
+        };
+      }
+      return tx;
+    });
+    const end = this.transactionPages * TRANSACTION_PAGE_SIZE;
+    this.visibleTransactions = this.transactions.slice(0, end);
   }
 
   @HostListener('window:resize', ['$event'])
