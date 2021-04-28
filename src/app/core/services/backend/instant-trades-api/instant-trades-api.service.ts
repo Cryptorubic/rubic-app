@@ -4,12 +4,12 @@ import { map } from 'rxjs/operators';
 import { InstantTradesTradeData } from 'src/app/features/swaps-page/models/trade-data';
 import * as moment from 'moment';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import BigNumber from 'bignumber.js';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTrade from '../../../../features/swaps-page/instant-trades/models/InstantTrade';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
+import { instantTradesApiRoutes } from './types/trade-routes';
 
 @Injectable({
   providedIn: 'root'
@@ -39,16 +39,15 @@ export class InstantTradesApiService {
   }
 
   public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
-    console.log(tradeInfo);
-    return this.httpService.post('instant_trades/', tradeInfo);
+    return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo);
   }
 
   public patchTrade(hash: string): Observable<InstantTradesResponseApi> {
-    return this.httpService.patch('instant_trades/', {}, hash);
+    return this.httpService.patch(instantTradesApiRoutes.editData, {}, hash);
   }
 
   public fetchSwaps(): Observable<InstantTradesTradeData[]> {
-    return this.httpService.get('instant_trades/').pipe(
+    return this.httpService.get(instantTradesApiRoutes.getData).pipe(
       map((swaps: InstantTradesResponseApi[]) => {
         return swaps.map(swap => {
           return this.tradeApiToTradeData(swap);
