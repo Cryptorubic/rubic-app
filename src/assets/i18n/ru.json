@@ -1,5 +1,7 @@
 {
   "common": {
+    "from": "Откуда",
+    "to": "Куда",
     "yes": "Да",
     "no": "Нет",
     "any": "Все",
@@ -7,11 +9,15 @@
     "have": "У вас есть",
     "want": "Вы хотите получить",
     "confirm": "Confirm",
-    "copy": "Copy",
-    "accept": "Accept",
+    "copy": "Копировать",
+    "accept": "Принять",
     "copyright": "Авторские права",
     "privacyPolicy": "Политика конфиденциальности",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "advancedOptions": "Дополнительные Опции",
+    "send": "Отправить",
+    "left": "Left",
+    "checkOnExplorer": "Check on Explorer"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -229,18 +235,32 @@
   },
   "bridgePage": {
     "title": "Создайте свой кросс-чейн обмен",
-    "swapToggleText": "Совершите сделку",
+    "swapToggleText": "Использования наших свопов",
     "progressMessage": "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
-    "successMessage": "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами."
+    "successMessage": "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами.",
+    "tableTitle": "Ваши кросс-чейн обмены",
+    "whatIs": "Что такое Binance Smart Chain?",
+    "assistanceOf": "С помощью"
   },
   "instantTrades": {
     "title": "Мгновенные сделки",
     "gasFeeMessage": "Приблизительный размер платы за газ. Для завершения сделки потребуется предоставить больше газа в Метамаске, дополнительный газ будет возвращен вам после завершения сделки.",
-    "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
-    "bestRate": "Лучший курс"
+    "notSupportedToken": "Пожалуйста, убедитесь, что выбранный токен поддерживается на указанном DEX, и повторите попытку позже.",
+    "bestRate": "Лучший курс",
+    "gasFee": "Приблизительный газ:"
   },
   "orderBook": {
-    "title": "Order Book"
+    "title": "Order Book",
+    "closingTime": "Время закрытия сделки (UTC)",
+    "tradeListed": "Торговля будет видна на главной странице",
+    "specifyTokens": "Пожалуйста, укажите токены и необходимые суммы, чтобы увидеть дополнительные опции",
+    "minContribution": "Минимальный взнос в",
+    "brokerFee": "Брокерская комиссия",
+    "specifyForBorker": "Вы можете указать % для Брокера",
+    "yourRate": "Ваш курс на ",
+    "higher": "выше",
+    "lower": "ниже",
+    "coingeckoRate": " чем курс coingecko"
   },
   "bridge": {
     "title": "Кросс-чейн обмены"
@@ -260,9 +280,13 @@
       "send": "Send",
       "expiresIn": "Истекает через",
       "volume": "Объем",
-      "network": "Сеть"
+      "network": "Сеть",
+      "spent": "Spent",
+      "expected": "Expected"
     },
     "noData": "У вас еще нет кросс-чейн обменов",
+    "noTrades": "There are no trades",
+    "noTradesWithSelected": "There are no trades with selected parameters",
     "showData": "Show data",
     "sortBy": "Sort by"
   },
@@ -275,11 +299,12 @@
       "afterText": ""
     },
     "disclaimerTitle": "Предупреждение о безопасности токенов!",
-    "disclaimerText": "Пожалуйста, будьте очень осторожны во время всего торгового процесса, так как он сопряжен с высокими системными рисками, такими как большой уровень волатильности, хакерские атаки и временные риски, связанные с необходимостью ждать завершения сделки другой стороной.",
+    "disclaimerText": "Пожалуйста, будьте очень осторожны во время всего торгового процесса, так как он сопряжен с высокими системными рисками, такими как большой уровень волатильности, хакерские атаки и временные риски, связанные с необходимостью ждать завершения сделки другой стороной. <br /> Любой желающий может создать любой токен на существующих блокчейнах и назвать его по своему усмотрению. Это позволяет создавать поддельные версии существующих токенов или токенов для проектов, которые не имеют токенов. Пожалуйста, будьте осторожны и проведите свое исследование, прежде чем взаимодействовать с любым токеном. Взаимодействуйте с токенами на свой страх и риск и обратите внимание, что владельцы не несут ответственности за законность токенов, представленных на торговой платформе Rubic.",
     "accumulatedTransactionsVolume": "Накопленный Объем Операций",
     "listingRequest": {
       "title": "Запрос на листинг",
       "description": "Если вы хотите, чтобы ваш проект был добавлен на платформу Rubic, пожалуйста, отправьте электронное письмо по адресу <a href='mailto:support@rubic.finance'>support@rubic.finance</a> со следующей информацией:",
+      "collaborations": "Наши партнеры и коллаборации ",
       "information": {
         "projectName": "Название проекта",
         "projectDescription": "Описание проекта",
@@ -288,6 +313,60 @@
         "onepager": "Whitepaper/Onepager",
         "logo": "Ссылка на логотип в PNG и SVG",
         "why": "Почему вы выбрали Rubic.exchange?"
+      }
+    }
+  },
+  "tradePage": {
+    "sent": "Sent",
+    "left": "Left",
+    "investors": "Number of investors",
+    "getBefore": "Вы получите",
+    "getAfter": "после завершения сделки",
+    "find": "Fill all",
+    "limit": "Лимит минимального взноса:",
+    "fee": "Брокерская комиссия:",
+    "Withdraw": "Withdraw",
+    "rate": "Rate:",
+    "closingDate": "Дата закрытия сделки",
+    "closingTime": "Время закрытия сделки",
+    "link": "Link To Deal",
+    "copied": "Скопировано",
+    "publicDeal": "Публичная сделка",
+    "brokerAddress": "Broker Address",
+    "notExist": "Такой сделки не существует"
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+  },
+  "modals": {
+    "adModal": {
+      "text": "Binance Smart Chain Wrapped Rubic уже на плафторме!",
+      "button": "Добавьте BRBC в кошелек"
+    },
+    "gasPriceModal": {
+      "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
+    },
+    "cancelModal": {
+      "text": "The trade was cancelled",
+      "link": "Check transaction on scanner"
+    },
+    "operationModal": {
+      "progress": {
+        "text": "Operation is in progress <br /> Please wait until it is completed"
+      },
+      "success": {
+        "text": "The operation is successful! <br /> This page will be updated automatically <br />",
+        "link": "Check transaction on scanner"
+      }
+    },
+    "tradeModal": {
+      "progress": {
+        "text": "Trade is in progress <br />  Please wait until it is completed"
+      },
+      "success": {
+        "text": "Successful swap!",
+        "link": "Check transaction on explorer"
       }
     }
   }
