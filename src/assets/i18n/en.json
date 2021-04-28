@@ -15,8 +15,8 @@
     "privacyPolicy": "Privacy policy",
     "close": "Close",
     "advancedOptions": "Advanced Options",
-    "send": "send",
-    "left": "left",
+    "send": "Send",
+    "left": "Left",
     "checkOnExplorer": "Check on Explorer"
   },
   "errors": {
@@ -315,8 +315,8 @@
     }
   },
   "tradePage": {
-    "sent": "sent",
-    "left": "left",
+    "sent": "Sent",
+    "left": "Left",
     "investors": "Number of investors",
     "getBefore": "You will get",
     "getAfter": "after the trade is complete",
