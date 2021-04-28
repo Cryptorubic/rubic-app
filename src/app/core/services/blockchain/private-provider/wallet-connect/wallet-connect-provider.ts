@@ -76,8 +76,7 @@ export class WalletConnectProvider extends PrivateProvider {
     try {
       const [address] = await this.core.enable();
       this.isEnabled = true;
-      // TODO fix.
-      const chain = BlockchainsInfo.getBlockchainById(1);
+      const chain = this.network;
       this.onNetworkChanges.next(chain);
       this.onAddressChanges.next(address);
       this.selectedAddress = address;
