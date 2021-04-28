@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js';
 import InstantTradeService from 'src/app/features/swaps-page/instant-trades/services/InstantTradeService';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Observable, Subscription } from 'rxjs';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { DOCUMENT } from '@angular/common';
@@ -76,6 +76,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private _tokensSubscription$: Subscription;
 
   public blockchain: BLOCKCHAIN_NAME;
+
+  private firstBlockhainEmitment = true;
 
   public TRADE_STATUS = TRADE_STATUS;
 
@@ -227,10 +229,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  private firstBlockhainEmitment = true;
-
-  private matDialogRef: MatDialogRef<MessageBoxComponent>;
-
   constructor(
     private tradeTypeService: TradeTypeService,
     private tradeParametersService: TradeParametersService,
@@ -291,7 +289,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           }
         ];
         break;
-      case BLOCKCHAIN_NAME.MATIC:
+      case BLOCKCHAIN_NAME.POLYGON:
         this._instantTradeServices = [this.quickSwapService];
         this.trades = [
           {
@@ -321,6 +319,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       .subscribe(blockchain => this.setupBlockchain(blockchain));
   }
 
+  ngOnDestroy() {
+    this._tokensSubscription$.unsubscribe();
+    this._blockchainSubscription$.unsubscribe();
+    this.queryParamsService.clearCurrentParams();
+  }
 
   private setupTokens(tokens: List<SwapToken>): void {
     this.tokens = tokens;
@@ -332,6 +335,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private setupBlockchain(blockchain: BLOCKCHAIN_NAME): void {
     if (blockchain) {
+      debugger;
       const queryChain = this.queryParamsService.currentQueryParams?.chain;
       const queryChainValue = Object.values(BLOCKCHAIN_NAME).find(el => el === queryChain);
       this.blockchain = this.firstBlockhainEmitment && queryChain ? queryChainValue : blockchain;

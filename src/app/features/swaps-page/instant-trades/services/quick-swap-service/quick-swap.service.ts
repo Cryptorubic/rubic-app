@@ -33,13 +33,13 @@ export class QuickSwapService extends UniswapAbstract {
     this.tokensToEthEstimatedGas = tokensToEthEstimatedGas;
     this.ethToTokensEstimatedGas = ethToTokensEstimatedGas;
     this.web3Private = web3Private;
-    this.web3Public = web3Public[BLOCKCHAIN_NAME.MATIC];
-    this.blockchain = BLOCKCHAIN_NAME.MATIC;
+    this.web3Public = web3Public[BLOCKCHAIN_NAME.POLYGON];
+    this.blockchain = BLOCKCHAIN_NAME.POLYGON;
     this.shouldCalculateGas = false;
 
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
-        this.web3Public = web3Public[BLOCKCHAIN_NAME.MATIC];
+        this.web3Public = web3Public[BLOCKCHAIN_NAME.POLYGON];
       }
     });
   }
