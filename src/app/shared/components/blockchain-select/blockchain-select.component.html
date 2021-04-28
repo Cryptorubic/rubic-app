@@ -6,7 +6,7 @@
   >
     <mat-select-trigger>
       <img [src]="'./assets/images/icons/coins/' + selectedBlockchain.img" [alt]="" />
-      {{ selectedBlockchain.label }}
+      {{ selectedBlockchain.name }}
     </mat-select-trigger>
     <mat-option *ngFor="let blockchain of blockchains" [value]="blockchain">
       <img
@@ -15,7 +15,7 @@
         height="23"
         [alt]="blockchain.label"
       />
-      {{ blockchain.shortLabel }}
+      {{ blockchain.name }}
     </mat-option>
   </mat-select>
 </mat-form-field>

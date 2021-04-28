@@ -45,15 +45,15 @@
   "Use custom token": "Use custom token",
   "Token Contract Address": "Token Contract Address",
   "Choose Token": "Choose Token",
-  "Enter Amount": "Enter Amount",
+  "Enter amount": "Enter amount",
 
   "Error": "Error",
   "Please choose main net network in Metamask.": "Please choose the corresponding Network of the tokens you want to trade. Please see the FAQ section if you're still having problems.",
   "Close": "Close",
   "Cancel": "Cancel",
   "Order Book": "Order Book",
-  "SEND": "Send",
-  "GET": "Get",
+  "Send": "Send",
+  "Get": "Get",
   "Volume": "Volume",
   "Chain": "Chain",
   "Expires in": "Expires in",
@@ -220,7 +220,7 @@
   "Check on Explorer": "Check on Explorer",
   "Number of investors": "Number of investors",
 
-  "You will get {amount} {token} after the trade is complete": "You will get {{ amount }} {{ token }} after the trade is complete",
+  "You will get {amount} {token} after the trade is completed": "You will get {{ amount }} {{ token }} after the trade is completed",
   "Fill all": "Fill all",
   "Min Contribution Limit:": "Min Contribution Limit:",
   "Only Owner can contribute": "Only Owner can contribute",
@@ -273,8 +273,8 @@
   "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
   "Please try again later or try using another device. If you’re still having problems, please reach out to our <a href='mailto:support@rubic.finance' target='_blank'>Customer Support</a>.",
 
-  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
-  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
+  "You accepted the transaction and the exchange has started. Please wait until the trade is completed.":
+  "You accepted the transaction and the exchange has started. Please wait until the trade is completed.",
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
 

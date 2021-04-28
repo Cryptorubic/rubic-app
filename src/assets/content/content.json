@@ -1,7 +1,7 @@
 {
   "volume": {
-    "instantTradesVolume": "$5,371,919",
-    "bridgeVolume": "$3,388,302"
+    "instantTradesVolume": "$6,159,752",
+    "bridgeVolume": "$4,863,101"
   },
   "team": [
     {
@@ -163,7 +163,7 @@
       "url": "https://app.uniswap.org/#/swap?inputCurrency=0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3"
     },
     {
-      "img": "DashNext.png",
+      "img": "DashNext.svg",
       "url": "https://dashnext.org/"
     },
     {
