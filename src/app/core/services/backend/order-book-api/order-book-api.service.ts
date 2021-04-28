@@ -8,7 +8,7 @@ import {
   OrderBookTradeData,
   ORDER_BOOK_TRADE_STATUS
 } from 'src/app/features/order-book-trade-page/models/trade-data';
-import { OrderBookTokenPart } from 'src/app/shared/models/order-book/tokens';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import * as moment from 'moment';
 import { HttpService } from '../../http/http.service';
 import { TokensService } from '../tokens-service/tokens.service';
@@ -120,7 +120,7 @@ export class OrderBookApiService {
   }
 
   private async setTokensData(
-    tokenPart: OrderBookTokenPart,
+    tokenPart: TokenPart,
     tradeApi: OrderBookTradeApi,
     tradeData: OrderBookTradeData
   ): Promise<void> {

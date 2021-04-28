@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { OrderBookTokenPart } from 'src/app/shared/models/order-book/tokens';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import * as moment from 'moment';
@@ -18,7 +18,7 @@ export interface OrderBookDataToken extends SwapToken {
 }
 
 type OrderBookDataTokens = {
-  [tokenPart in OrderBookTokenPart]: OrderBookDataToken;
+  [tokenPart in TokenPart]: OrderBookDataToken;
 };
 
 export enum ORDER_BOOK_TRADE_STATUS {

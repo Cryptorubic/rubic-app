@@ -17,7 +17,7 @@ import {
 } from '../../../../models/trade-data';
 import ADDRESS_TYPE from '../../../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TX_STATUS } from '../../../../models/TX_STATUS';
-import { OrderBookTokenPart } from '../../../../../../shared/models/order-book/tokens';
+import { TokenPart } from '../../../../../../shared/models/order-book/tokens';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import { RubicError } from '../../../../../../shared/models/errors/RubicError';
 import { OrderBookTradeService } from '../../../../services/order-book-trade.service';
@@ -40,7 +40,7 @@ type Statuses = {
 export class TokenFormComponent implements OnInit, OnChanges {
   @Input() tradeData: OrderBookTradeData;
 
-  @Input() tokenPart: OrderBookTokenPart;
+  @Input() tokenPart: TokenPart;
 
   @Input() oppositeTokenToGet: string;
 

@@ -1,5 +1,5 @@
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { OrderBookTokenPart } from 'src/app/shared/models/order-book/tokens';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
@@ -9,7 +9,7 @@ export interface OrderBookTableToken extends SwapToken {
 }
 
 export type OrderBookTableTokens = {
-  [tokenPart in OrderBookTokenPart]: OrderBookTableToken;
+  [tokenPart in TokenPart]: OrderBookTableToken;
 };
 
 export interface OrderBookTradeTableRow {

@@ -18,7 +18,7 @@ import { NetworkErrorComponent } from 'src/app/shared/components/network-error/n
 import { OrderBookTradeForm } from '../../models/trade-form';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { OrderBooksFormService } from './services/order-books-form.service';
-import { OrderBookTokenPart } from '../../../../../shared/models/order-book/tokens';
+import { TokenPart } from '../../../../../shared/models/order-book/tokens';
 import { TotalSupplyOverflowError } from '../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { TotalSupplyOverflowErrorComponent } from '../../../../../shared/components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 
@@ -264,7 +264,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  public setIsCustomTokenFormOpened(tokenPart: OrderBookTokenPart, isOpened: boolean): void {
+  public setIsCustomTokenFormOpened(tokenPart: TokenPart, isOpened: boolean): void {
     if (tokenPart === 'from') {
       this.tradeParameters = {
         ...this.tradeParameters,
@@ -278,7 +278,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public setCustomTokenAddress(tokenPart: OrderBookTokenPart, address: string): void {
+  public setCustomTokenAddress(tokenPart: TokenPart, address: string): void {
     if (tokenPart === 'from') {
       this.tradeParameters = {
         ...this.tradeParameters,
@@ -292,7 +292,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public updateCustomToken(tokenPart: OrderBookTokenPart, tokenBody: Token): void {
+  public updateCustomToken(tokenPart: TokenPart, tokenBody: Token): void {
     const token = this.tokens.find(
       t => t.address.toLowerCase() === tokenBody.address.toLowerCase()
     );
@@ -301,7 +301,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       : { ...this.customToken[tokenPart], ...tokenBody };
   }
 
-  public addCustomToken(tokenPart: OrderBookTokenPart): void {
+  public addCustomToken(tokenPart: TokenPart): void {
     if (tokenPart === 'from') {
       this.baseToken = { ...this.customToken.base };
     } else {

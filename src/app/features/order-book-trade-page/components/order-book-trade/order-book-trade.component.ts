@@ -20,7 +20,7 @@ import { MessageBoxComponent } from '../../../../shared/components/message-box/m
 import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
-import { OrderBookTokenPart } from '../../../../shared/models/order-book/tokens';
+import { TokenPart } from '../../../../shared/models/order-book/tokens';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -240,7 +240,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
          ${this.tradeData.token.to.symbol}`;
   }
 
-  public calculateAmountToGet(value: string, tokenPart: OrderBookTokenPart): void {
+  public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
     if (tokenPart === 'from') {
       this.quoteTokenAmountToGet = new BigNumber(value)
         .times(this.quoteToBaseRate)

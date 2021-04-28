@@ -13,7 +13,7 @@ import { List } from 'immutable';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
-import { OrderBookTokenPart, TokenValueType } from 'src/app/shared/models/order-book/tokens';
+import { TokenPart, TokenValueType } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
 @Component({
@@ -71,7 +71,7 @@ export class CoinsFilterComponent {
     );
   }
 
-  private filter(value: string, tokenType: OrderBookTokenPart): SwapToken[] {
+  private filter(value: string, tokenType: TokenPart): SwapToken[] {
     if (this.isTokenSelected) {
       this.selectTokenEvent.emit({ value: null, tokenType });
     }
@@ -108,7 +108,7 @@ export class CoinsFilterComponent {
     return filterOptions;
   }
 
-  public selectToken(value: any, tokenType: OrderBookTokenPart): void {
+  public selectToken(value: any, tokenType: TokenPart): void {
     this.isTokenSelected = true;
     this.selectTokenEvent.emit({ value: value.option.value, tokenType });
   }

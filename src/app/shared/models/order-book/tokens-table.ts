@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OrderBookTradeTableRow } from 'src/app/features/swaps-page/order-books/models/trade-table';
-import { OrderBookTokenPart } from './tokens';
+import { TokenPart } from './tokens';
 
 export abstract class TokensTableService {
   protected readonly $dataSource: BehaviorSubject<OrderBookTradeTableRow[]>;
@@ -52,7 +52,7 @@ export abstract class TokensTableService {
     this.$filterQuoteValue.next(value);
   }
 
-  public filterByToken(token: any, tokenType: OrderBookTokenPart): void {
+  public filterByToken(token: any, tokenType: TokenPart): void {
     const filterValue = token.option.value.toLowerCase();
     if (filterValue.length < 2) {
       this.$visibleTableData.next(this.$dataSource.value);
