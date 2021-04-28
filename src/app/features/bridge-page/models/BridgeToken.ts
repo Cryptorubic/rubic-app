@@ -1,16 +1,28 @@
-export interface BridgeToken {
+import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+
+interface BlockchainToken {
+  address: string;
   name: string;
   symbol: string;
-  ethSymbol: string;
-  bscSymbol: string;
-  icon: string;
+  decimals: number;
+
   minAmount: number;
   maxAmount: number;
-  bscContractAddress: string;
-  bscContractDecimal: number;
-  ethContractAddress: string;
-  ethContractDecimal: string;
-  ethToBscFee?: number;
-  bscToEthFee?: number;
+}
+
+export type BlockchainsTokens = {
+  [blockchain in BLOCKCHAIN_NAME]: BlockchainToken;
+};
+
+export interface BridgeToken {
+  symbol: string;
+  image: string;
+  rank: number;
+
+  blockchainToken: BlockchainsTokens;
+
+  fromEthFee?: number;
+  toEthFee?: number;
+
   used_in_iframe?: boolean;
 }

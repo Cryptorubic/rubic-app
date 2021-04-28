@@ -17,8 +17,8 @@ import { Web3PublicService } from '../../blockchain/web3-public-service/web3-pub
 import { OrderBookTradeApi } from './types/trade-api';
 import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/models/trade-form';
 import { OrderBookCommonService } from '../../order-book-common/order-book-common.service';
-import { FROM_BACKEND_BLOCKCHAINS } from '../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { environment } from '../../../../../environments/environment';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface PublicSwapsResponse extends OrderBookTradeApi {
   memo_contract: string;
@@ -85,6 +85,18 @@ export class OrderBookApiService {
     tradeApi: OrderBookTradeApi | PublicSwapsResponse,
     uniqueLink: string
   ): Promise<OrderBookTradeData> {
+    let blockchain;
+    switch (tradeApi.network) {
+      case 1:
+        blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+        break;
+      case 22:
+        blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+        break;
+      default:
+        blockchain = BLOCKCHAIN_NAME.POLYGON;
+    }
+
     const tradeData = {
       memo: (<OrderBookTradeApi>tradeApi).memo ?? (<PublicSwapsResponse>tradeApi).memo_contract,
       contractAddress: tradeApi.contract_address,
@@ -94,7 +106,7 @@ export class OrderBookApiService {
         from: undefined,
         to: undefined
       },
-      blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.network],
+      blockchain,
       expirationDate: moment.utc(tradeApi.stop_date),
       isPublic: tradeApi.public,
       isWithBrokerFee: tradeApi.broker_fee,

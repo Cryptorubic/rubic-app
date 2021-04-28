@@ -2,7 +2,7 @@ import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TokensService } from '../backend/tokens-service/tokens.service';
@@ -11,6 +11,7 @@ import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { TradeParametersService } from '../swaps/trade-parameters-service/trade-parameters.service';
 import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
 import { QueryParams } from './models/query-params';
+import { BridgeToken } from '../../../features/bridge-page/models/BridgeToken';
 
 type DefaultQueryParams = {
   [BLOCKCHAIN_NAME.ETHEREUM]: QueryParams;
@@ -22,11 +23,23 @@ type DefaultQueryParams = {
   providedIn: 'root'
 })
 export class QueryParamsService {
+  private readonly $isIframeSubject: BehaviorSubject<boolean>;
+
   public currentQueryParams: QueryParams;
 
   public defaultQueryParams: DefaultQueryParams;
 
   private $tokens: Observable<List<SwapToken>>;
+
+  private $hiddenNetworksSubject: BehaviorSubject<string[]>;
+
+  public get $isIframe(): Observable<boolean> {
+    return this.$isIframeSubject.asObservable();
+  }
+
+  public get $hiddenNetworks(): Observable<string[]> {
+    return this.$hiddenNetworksSubject.asObservable();
+  }
 
   constructor(
     private readonly route: Router,
@@ -37,6 +50,8 @@ export class QueryParamsService {
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router
   ) {
+    this.$isIframeSubject = new BehaviorSubject<boolean>(false);
+    this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([BLOCKCHAIN_NAME.POLYGON]);
     this.$tokens = this.tokensService.tokens.asObservable();
     this.defaultQueryParams = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -107,7 +122,13 @@ export class QueryParamsService {
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams) {
       if (queryParams.iframe === 'true') {
+        this.$isIframeSubject.next(true);
         this.document.body.classList.add('iframe');
+      } else {
+        this.$isIframeSubject.next(false);
+      }
+      if (queryParams.hidden) {
+        this.$hiddenNetworksSubject.next(queryParams.hidden.split(','));
       }
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
@@ -121,8 +142,7 @@ export class QueryParamsService {
 
   public isAddress(token: string): boolean {
     const web3Public: Web3Public = this.web3Public[this.currentQueryParams.chain];
-    const isCorrect = web3Public.isAddressCorrect(token);
-    return isCorrect;
+    return web3Public.isAddressCorrect(token);
   }
 
   public setQueryParam(key: keyof QueryParams, value: any): void {
@@ -146,7 +166,7 @@ export class QueryParamsService {
     const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
     const similarTokens = tokens.filter(token =>
       isBridge
-        ? (token as SwapToken)[`${this.currentQueryParams.chain.toLowerCase()}Symbol`] ===
+        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.chain].symbol ===
           queryParam
         : (token as SwapToken).symbol === queryParam &&
           token.blockchain === this.currentQueryParams.chain
@@ -166,7 +186,8 @@ export class QueryParamsService {
     const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
     const searchingToken = tokens.find(token =>
       isBridge
-        ? token.address === queryParam
+        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.chain].address ===
+          queryParam
         : token.address === queryParam && token.blockchain === this.currentQueryParams.chain
     );
 
@@ -200,7 +221,7 @@ export class QueryParamsService {
 
   private setDefaultParams(queryParams: QueryParams): QueryParams {
     const chain =
-      queryParams.chain !== BLOCKCHAIN_NAME.MATIC ? queryParams.chain : BLOCKCHAIN_NAME.ETHEREUM;
+      queryParams.chain !== BLOCKCHAIN_NAME.POLYGON ? queryParams.chain : BLOCKCHAIN_NAME.ETHEREUM;
     return queryParams.from || queryParams.to
       ? {
           ...queryParams,
@@ -216,6 +237,7 @@ export class QueryParamsService {
 
   public clearCurrentParams() {
     this.currentQueryParams = {
+      ...this.currentQueryParams,
       from: null,
       to: null,
       amount: null,

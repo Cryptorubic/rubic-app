@@ -1,0 +1,42 @@
+.receive-button {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 121px;
+  height: 28px;
+
+  color: white;
+
+  font-size: 15px;
+  font-family: inherit;
+
+  background: #4aa956;
+  border-radius: 4px;
+  cursor: pointer;
+
+  transition: transform 0.1s ease-in-out;
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+
+    &:active {
+      transform: none;
+    }
+  }
+
+  img {
+    position: relative;
+    top: 1%;
+
+    width: 7px;
+    margin-right: 4px;
+  }
+}

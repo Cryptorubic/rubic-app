@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HighGasPriceModalComponent } from './high-gas-price-modal.component';
+import { ReceiveButtonComponent } from './receive-button.component';
 
-describe('HighGasPriceModalComponent', () => {
-  let component: HighGasPriceModalComponent;
-  let fixture: ComponentFixture<HighGasPriceModalComponent>;
+describe('DepositButtonComponent', () => {
+  let component: ReceiveButtonComponent;
+  let fixture: ComponentFixture<ReceiveButtonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HighGasPriceModalComponent]
+      declarations: [ReceiveButtonComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HighGasPriceModalComponent);
+    fixture = TestBed.createComponent(ReceiveButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

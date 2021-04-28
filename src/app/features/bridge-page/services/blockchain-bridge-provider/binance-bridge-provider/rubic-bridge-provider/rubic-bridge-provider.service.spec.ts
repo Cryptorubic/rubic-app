@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RubicBridgeService } from './rubic-bridge.service';
+import { RubicBridgeProviderService } from './rubic-bridge-provider.service';
 
 describe('RubicBridgeService', () => {
-  let service: RubicBridgeService;
+  let service: RubicBridgeProviderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RubicBridgeService]
+      providers: [RubicBridgeProviderService]
     });
-    service = TestBed.inject(RubicBridgeService);
+    service = TestBed.inject(RubicBridgeProviderService);
   });
 
   it('should be created', () => {

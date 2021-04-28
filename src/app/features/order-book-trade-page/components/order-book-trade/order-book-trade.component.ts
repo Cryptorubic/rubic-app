@@ -15,7 +15,6 @@ import { MetamaskError } from '../../../../shared/models/errors/provider/Metamas
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
-import { NetworkErrorComponent } from '../../../bridge-page/components/network-error/network-error.component';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
@@ -48,7 +47,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
       imagePath: 'assets/images/icons/coins/bnb.svg'
     },
     {
-      name: BLOCKCHAIN_NAME.MATIC,
+      name: BLOCKCHAIN_NAME.POLYGON,
       label: 'Polygon',
       imagePath: 'assets/images/icons/coins/polygon.svg'
     }
@@ -211,7 +210,6 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     this.tradeData = { ...(await this.orderBookTradeService.setAmountContributed(this.tradeData)) };
     this.tradeData = { ...(await this.orderBookTradeService.setInvestorsNumber(this.tradeData)) };
 
-    // eslint-disable-next-line no-magic-numbers
     setTimeout(() => this.setDynamicData(), 10000);
   }
 
