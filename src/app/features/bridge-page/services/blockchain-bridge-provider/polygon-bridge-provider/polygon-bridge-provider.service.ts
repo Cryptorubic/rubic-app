@@ -264,7 +264,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
       );
     }
 
-    const onTradeTransactionHash = onTradeTransactionHashFactory(TRADE_STATUS.WITHDRAW_IN_PROGRESS);
+    const onTradeTransactionHash = onTradeTransactionHashFactory(TRADE_STATUS.DEPOSIT_IN_PROGRESS);
     return this.burnERC20(
       maticPOSClient,
       userAddress,
@@ -349,7 +349,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
       await this.bridgeApiService.patchPolygonTransaction(
         burnTransactionHash,
         hash,
-        TRADE_STATUS.DEPOSIT_IN_PROGRESS
+        TRADE_STATUS.WITHDRAW_IN_PROGRESS
       );
       updateTransactionsList();
     };

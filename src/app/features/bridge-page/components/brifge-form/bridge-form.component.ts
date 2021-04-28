@@ -77,7 +77,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   private _fromBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
 
-  private _toBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.POLYGON];
+  private _toBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
 
   private _tokens: List<BridgeToken> = List([]);
 

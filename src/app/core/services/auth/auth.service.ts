@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { finalize, map } from 'rxjs/operators';
+import { take, map, finalize } from 'rxjs/operators';
 import { HeaderStore } from '../../header/services/header.store';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { HttpService } from '../http/http.service';
+import { QueryParamsService } from '../query-params/query-params.service';
 import { UserInterface } from './models/user.interface';
 import { URLS } from './models/user.service.api';
 
@@ -52,7 +53,8 @@ export class AuthService {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService,
-    private readonly web3Service: Web3PrivateService
+    private readonly web3Service: Web3PrivateService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
     this.web3Service.onAddressChanges.subscribe(address => {
@@ -64,7 +66,13 @@ export class AuthService {
       if (user !== undefined && (user === null || user?.address !== address) && address) {
         /* this.$currentUser.next(null);
         this.signIn(); */
-        window.location.reload();
+        this.queryParamsService.$isIframe.pipe(take(1)).subscribe(isIframe => {
+          if (isIframe) {
+            this.$currentUser.next({ address });
+          } else {
+            window.location.reload();
+          }
+        });
         // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
       }
     });

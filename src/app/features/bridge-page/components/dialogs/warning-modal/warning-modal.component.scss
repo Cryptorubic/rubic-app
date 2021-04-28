@@ -21,33 +21,7 @@
   display: flex;
   justify-content: space-between;
 
-  &__button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    height: 50px;
-    padding: 0 20px;
-
-    font-size: 18px;
-    font-family: inherit;
-
-    cursor: pointer;
-
-    img {
-      margin-right: 7px;
-    }
-
-    &_cancel {
-      color: white;
-
-      background: grey;
-    }
-
-    &_confirm {
-      color: white;
-
-      background: $main-green;
-    }
+  app-primary-button {
+    width: 120px;
   }
 }

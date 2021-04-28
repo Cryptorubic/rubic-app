@@ -304,18 +304,18 @@ export class BridgeService implements OnDestroy {
           if (!this._isTestingMode) {
             fromSymbol = this._swapTokens
               .filter(token => token.blockchain === fromBlockchain)
-              .find(token => token.address.toLowerCase() === fromSymbol.toLowerCase()).symbol;
+              .find(token => token.address.toLowerCase() === fromSymbol.toLowerCase())?.symbol;
             toSymbol = this._swapTokens
               .filter(token => token.blockchain === toBlockchain)
-              .find(token => token.address.toLowerCase() === toSymbol.toLowerCase()).symbol;
+              .find(token => token.address.toLowerCase() === toSymbol.toLowerCase())?.symbol;
           } else {
             const testBridgeToken = bridgeTestTokens[BLOCKCHAIN_NAME.POLYGON].find(
               token =>
                 token.blockchainToken[fromBlockchain].address.toLowerCase() ===
                 transaction.fromSymbol.toLowerCase()
             );
-            fromSymbol = testBridgeToken.blockchainToken[fromBlockchain].symbol;
-            toSymbol = testBridgeToken.blockchainToken[toBlockchain].symbol;
+            fromSymbol = testBridgeToken?.blockchainToken[fromBlockchain].symbol;
+            toSymbol = testBridgeToken?.blockchainToken[toBlockchain].symbol;
           }
         }
 

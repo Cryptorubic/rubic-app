@@ -4,7 +4,7 @@
       *ngIf="($currentBlockchain | async)?.imagePath"
       class="user-profile__blockchain-icon"
     >
-      <img [src]="($currentBlockchain | async)?.imagePath" alt="($currentBlockchain | async)?.name">
+      <img (click)="useTestingMode()" [src]="($currentBlockchain | async)?.imagePath" alt="($currentBlockchain | async)?.name">
     </div>
     <span
       class="user-profile__text"
