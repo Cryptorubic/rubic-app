@@ -16,7 +16,7 @@ export class WalletLinkProvider extends PrivateProvider {
 
   private readonly defaulWalletParams: WalletLinkOptions;
 
-  private readonly wallet: CoinbaseProvider;
+  private readonly core: CoinbaseProvider;
 
   private selectedAddress: string;
 
@@ -27,11 +27,11 @@ export class WalletLinkProvider extends PrivateProvider {
   public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
 
   get isInstalled(): boolean {
-    return !!this.wallet;
+    return !!this.core;
   }
 
   get isActive(): boolean {
-    return this.isEnabled && !!this.wallet?.selectedAddress;
+    return this.isEnabled && Boolean(this.core?.selectedAddress);
   }
 
   public get address(): string {
@@ -54,8 +54,8 @@ export class WalletLinkProvider extends PrivateProvider {
     const chainId = 1;
     const chain = BlockchainsInfo.getBlockchainById(chainId);
     const walletLink = new WalletLink(this.defaulWalletParams);
-    this.wallet = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
-    web3.setProvider(this.wallet);
+    this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
+    web3.setProvider(this.core);
   }
 
   protected getAddress(): string {
@@ -72,7 +72,7 @@ export class WalletLinkProvider extends PrivateProvider {
 
   public async activate(): Promise<void> {
     try {
-      const [address] = await this.wallet.send('eth_requestAccounts');
+      const [address] = await this.core.send('eth_requestAccounts');
       this.isEnabled = true;
       const chain = BlockchainsInfo.getBlockchainById(1);
       this.onNetworkChanges.next(chain);
@@ -87,7 +87,7 @@ export class WalletLinkProvider extends PrivateProvider {
   }
 
   public async deActivate(): Promise<void> {
-    this.wallet.close();
+    this.core.close();
     this.onAddressChanges.next(undefined);
     this.onNetworkChanges.next(undefined);
     this.isEnabled = false;
@@ -101,7 +101,7 @@ export class WalletLinkProvider extends PrivateProvider {
       throw new NetworkError(token.blockchain);
     }
 
-    return this.wallet.request({
+    return this.core.request({
       method: 'wallet_watchAsset',
       params: {
         type: 'ERC20',

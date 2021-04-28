@@ -12,7 +12,7 @@ import { MetamaskError } from '../../../../../shared/models/errors/provider/Meta
 export class MetamaskProvider extends PrivateProvider {
   private isEnabled: boolean = false;
 
-  private readonly _metaMask: any;
+  private readonly core: any;
 
   private selectedAddress: string;
 
@@ -23,7 +23,7 @@ export class MetamaskProvider extends PrivateProvider {
   public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
 
   get isInstalled(): boolean {
-    return !!this._metaMask;
+    return !!this.core;
   }
 
   get isActive(): boolean {
@@ -46,18 +46,18 @@ export class MetamaskProvider extends PrivateProvider {
     }
 
     web3.setProvider(ethereum);
-    this._metaMask = ethereum;
+    this.core = ethereum;
     if ((web3.currentProvider as any)?.isMetaMask) {
-      this._metaMask.request({ method: 'eth_chainId' }).then((chain: string) => {
+      this.core.request({ method: 'eth_chainId' }).then((chain: string) => {
         this.selectedChain = chain;
         chainChange.next(BlockchainsInfo.getBlockchainById(chain));
       });
-      this._metaMask.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
+      this.core.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
         [this.selectedAddress] = accounts;
         accountChange.next(this.selectedAddress);
       });
 
-      this._metaMask.on('chainChanged', (chain: string) => {
+      this.core.on('chainChanged', (chain: string) => {
         this.selectedChain = chain;
         if (this.isEnabled) {
           chainChange.next(BlockchainsInfo.getBlockchainById(chain));
@@ -65,7 +65,7 @@ export class MetamaskProvider extends PrivateProvider {
         }
       });
 
-      this._metaMask.on('accountsChanged', (accounts: string[]) => {
+      this.core.on('accountsChanged', (accounts: string[]) => {
         [this.selectedAddress] = accounts;
         this.selectedAddress = this.selectedAddress || null;
         if (this.isEnabled) {
@@ -94,7 +94,7 @@ export class MetamaskProvider extends PrivateProvider {
 
   public async activate(): Promise<void> {
     try {
-      await this._metaMask.request({ method: 'eth_requestAccounts' });
+      await this.core.request({ method: 'eth_requestAccounts' });
       this.isEnabled = true;
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.getAddress());
@@ -119,7 +119,7 @@ export class MetamaskProvider extends PrivateProvider {
       throw new NetworkError(token.blockchain);
     }
 
-    return this._metaMask.request({
+    return this.core.request({
       method: 'wallet_watchAsset',
       params: {
         type: 'ERC20',
