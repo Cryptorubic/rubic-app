@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
 import { switchMap, tap } from 'rxjs/operators';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { BlockchainBridgeProvider } from '../blockchain-bridge-provider';
 import { BlockchainsTokens, BridgeToken } from '../../../models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -15,7 +16,6 @@ import { BridgeTrade } from '../../../models/BridgeTrade';
 import networks from '../../../../../shared/constants/blockchain/networks';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { MetamaskProviderService } from '../../../../../core/services/blockchain/private-provider/metamask-provider/metamask-provider.service';
 import { BridgeApiService } from '../../../../../core/services/backend/bridge-api/bridge-api.service';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TRADE_STATUS } from '../../../../../core/services/backend/bridge-api/models/TRADE_STATUS';
@@ -54,7 +54,7 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
     private web3PrivateService: Web3PrivateService,
     private bridgeApiService: BridgeApiService,
     private useTestingModeService: UseTestingModeService,
-    private metamaskProviderService: MetamaskProviderService
+    private readonly providerConnectorService: ProviderConnectorService
   ) {
     super();
     this.web3PublicEth = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
@@ -194,13 +194,13 @@ export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
         network,
         version,
         maticProvider: maticRPC,
-        parentProvider: this.metamaskProviderService.web3
+        parentProvider: this.providerConnectorService.provider
       });
     }
     return new MaticPOSClient({
       network,
       version,
-      maticProvider: this.metamaskProviderService.web3,
+      maticProvider: this.providerConnectorService.provider,
       parentProvider: ethRPC
     });
   }

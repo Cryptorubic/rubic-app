@@ -74,7 +74,7 @@ export class AuthService {
         /* this.$currentUser.next(null);
         this.signIn(); */
         this.queryParamsService.$isIframe.pipe(take(1)).subscribe(isIframe => {
-          if (isIframe) {
+          if (isIframe || this.authWithoutBackend) {
             this.$currentUser.next({ address });
           } else {
             window.location.reload();
@@ -148,7 +148,10 @@ export class AuthService {
     );
   }
 
-  public async signinWithotuBackend(): Promise<void> {
+  /**
+   * @description Login user without backend.
+   */
+  public async loginWithoutBackend(): Promise<void> {
     this.authWithoutBackend = true;
     try {
       if (localStorage.getItem('provider')) {
@@ -165,15 +168,6 @@ export class AuthService {
   }
 
   /**
-   * @description Login user without backend.
-   */
-  public async loginWithoutBackend(): Promise<void> {
-    await this.providerConnector.activate();
-    const { address } = this.web3Service;
-    this.$currentUser.next(address ? { address } : null);
-  }
-
-  /**
    * @description Initiate authentication via metamask.
    */
   public async signIn(): Promise<void> {
@@ -185,14 +179,6 @@ export class AuthService {
     await this.sendSignedNonce(this.web3Service.address, nonce, signature);
 
     this.$currentUser.next({ address: this.web3Service.address });
-    this.isAuthProcess = false;
-  }
-
-  public async signInWithoutBackend(): Promise<void> {
-    this.isAuthProcess = true;
-    await this.providerConnector.activate();
-    const { address } = this.web3Service;
-    this.$currentUser.next({ address } || null);
     this.isAuthProcess = false;
   }
 

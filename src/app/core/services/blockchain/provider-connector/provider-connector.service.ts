@@ -106,7 +106,5 @@ export class ProviderConnectorService {
         );
       }
     }
-    localStorage.setItem('provider', provider);
-    // await this.activate();
   }
 }

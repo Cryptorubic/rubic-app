@@ -1,4 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
+import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
@@ -78,6 +79,7 @@ export class WalletLinkProvider extends PrivateProvider {
       this.onAddressChanges.next(address);
       this.selectedAddress = address;
       this.selectedChain = chain.name;
+      localStorage.setItem('provider', WALLET_NAME.WALLET_LINK);
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
       throw new MetamaskError();
