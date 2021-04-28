@@ -80,13 +80,14 @@ export class ProviderConnectorService {
     return this.provider.addToken(token);
   }
 
-  public async connectProvider(provider: WALLET_NAME) {
+  public async connectProvider(provider: WALLET_NAME, chainId?: number) {
     switch (provider) {
       case WALLET_NAME.WALLET_LINK: {
         this.provider = new WalletLinkProvider(
           this.web3private.web3,
           this.$networkChangeSubject,
-          this.$addressChangeSubject
+          this.$addressChangeSubject,
+          chainId
         );
         break;
       }

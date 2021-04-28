@@ -14,6 +14,7 @@ import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { OrderBookTradeForm } from '../../models/trade-form';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { OrderBooksFormService } from './services/order-books-form.service';
@@ -367,6 +368,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
             descriptionComponentClass: TotalSupplyOverflowErrorComponent,
             descriptionComponentInputs: { totalSupplyOverflowError: err }
           };
+        }
+        if (err instanceof HttpErrorResponse) {
+          data.descriptionText = (err as HttpErrorResponse).error.detail;
         }
         this.dialog.open(MessageBoxComponent, {
           width: '400px',

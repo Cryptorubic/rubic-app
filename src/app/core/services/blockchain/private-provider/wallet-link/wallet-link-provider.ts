@@ -41,7 +41,8 @@ export class WalletLinkProvider extends PrivateProvider {
   constructor(
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
-    accountChange: BehaviorSubject<string>
+    accountChange: BehaviorSubject<string>,
+    blockchainId?: number
   ) {
     super();
     this.defaulWalletParams = {
@@ -51,7 +52,7 @@ export class WalletLinkProvider extends PrivateProvider {
     };
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
-    const chainId = 1;
+    const chainId = blockchainId || 1;
     const chain = BlockchainsInfo.getBlockchainById(chainId);
     const walletLink = new WalletLink(this.defaulWalletParams);
     this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
