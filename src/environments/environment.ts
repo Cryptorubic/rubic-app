@@ -4,9 +4,10 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://devswaps.mywish.io/api/v1/',
-  bridgeBotUrl: 'https://devswaps.mywish.io/api/v1/bot/bridgeswaps',
-  instantTradesBotUrl: 'https://devswaps.mywish.io/api/v1/bot/instanttrades'
+  apiBaseUrl: 'https://devswaps.mywish.io/api/v1',
+  bridgeBotUrl: 'bot/bridgeswaps',
+  instantTradesBotUrl: 'bot/instanttrades',
+  orderBooksBotUrl: 'bot/orderbook'
 };
 
 /*

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { finalize, map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { take, map, finalize } from 'rxjs/operators';
 import { HeaderStore } from '../../header/services/header.store';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { HttpService } from '../http/http.service';
+import { QueryParamsService } from '../query-params/query-params.service';
 import { UserInterface } from './models/user.interface';
 import { URLS } from './models/user.service.api';
 
@@ -44,6 +44,8 @@ export class AuthService {
    */
   private readonly $currentUser: BehaviorSubject<UserInterface>;
 
+  private readonly USER_IS_IN_SESSION_CODE = '1000';
+
   get user(): UserInterface {
     return this.$currentUser.getValue();
   }
@@ -52,7 +54,7 @@ export class AuthService {
     private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService,
     private readonly web3Service: Web3PrivateService,
-    private readonly httpClient: HttpClient
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
     this.web3Service.onAddressChanges.subscribe(address => {
@@ -64,7 +66,13 @@ export class AuthService {
       if (user !== undefined && (user === null || user?.address !== address) && address) {
         /* this.$currentUser.next(null);
         this.signIn(); */
-        window.location.reload();
+        this.queryParamsService.$isIframe.pipe(take(1)).subscribe(isIframe => {
+          if (isIframe) {
+            this.$currentUser.next({ address });
+          } else {
+            window.location.reload();
+          }
+        });
         // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
       }
     });
@@ -99,7 +107,7 @@ export class AuthService {
    * @param address wallet address
    * @param nonce nonce to sign
    * @param signature signed nonce
-   * @return Authenticztion key.
+   * @return Authentication key.
    */
   private sendSignedNonce(address: string, nonce: string, signature: string): Promise<void> {
     return this.httpService
@@ -130,6 +138,15 @@ export class AuthService {
   }
 
   /**
+   * @description Login user without backend.
+   */
+  public async loginWithoutBackend(): Promise<void> {
+    await this.web3Service.activate();
+    const { address } = this.web3Service;
+    this.$currentUser.next(address ? { address } : null);
+  }
+
+  /**
    * @description Initiate authentication via metamask.
    */
   public async signIn(): Promise<void> {
@@ -140,11 +157,16 @@ export class AuthService {
 
     await this.sendSignedNonce(this.web3Service.address, nonce, signature);
 
-    this.fetchUser().subscribe(user => {
-      this.$currentUser.next(user);
-      this.isAuthProcess = false;
-    });
-    this.headerStore.setUserMenuOpeningStatus(false);
+    this.$currentUser.next({ address: this.web3Service.address });
+    this.isAuthProcess = false;
+  }
+
+  public async signInWithoutBackend(): Promise<void> {
+    this.isAuthProcess = true;
+    await this.web3Service.activate();
+    const { address } = this.web3Service;
+    this.$currentUser.next({ address } || null);
+    this.isAuthProcess = false;
   }
 
   /**

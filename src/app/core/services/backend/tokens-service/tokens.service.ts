@@ -3,39 +3,19 @@ import { BehaviorSubject } from 'rxjs';
 import { List } from 'immutable';
 import { HttpService } from '../../http/http.service';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { coingeckoTestTokens } from '../../../../../test/tokens/coingecko-tokens';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-
-interface TokensListResponse {
-  total: number;
-  tokens: BackendToken[];
-}
-
-interface BackendToken {
-  token_title: string;
-  token_short_title: string;
-  platform: string;
-  address: string;
-  decimals: number;
-  image_link: string;
-  coingecko_rank: number;
-  usd_price: number;
-}
+import { FROM_BACKEND_BLOCKCHAINS } from '../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { BackendToken } from './models/BackendToken';
+import { TokensListResponse } from './models/TokensListResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokensService {
+  public static readonly maxRankValue = 999999999;
+
   private getTokensUrl = 'coingecko_tokens/';
-
-  private readonly maxRankValue = 999999999;
-
-  private backendBlockchains = {
-    ethereum: BLOCKCHAIN_NAME.ETHEREUM,
-    'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    polygon: BLOCKCHAIN_NAME.MATIC
-  };
 
   public tokens: BehaviorSubject<List<SwapToken>> = new BehaviorSubject(List([]));
 
@@ -49,23 +29,23 @@ export class TokensService {
     });
   }
 
-  private getTokensList(): void {
-    this.httpService.get(this.getTokensUrl).subscribe(
-      (response: TokensListResponse) =>
-        this.tokens.next(List(response.tokens.map(this.parseToken.bind(this)))),
-      err => console.log(`Error retrieving tokens ${err}`)
-    );
-  }
-
-  private parseToken(token: BackendToken): SwapToken {
+  private static parseToken(token: BackendToken): SwapToken {
     return {
       ...token,
       name: token.token_title,
       symbol: token.token_short_title,
-      blockchain: this.backendBlockchains[token.platform],
+      blockchain: FROM_BACKEND_BLOCKCHAINS[token.platform],
       image: token.image_link,
-      rank: token.coingecko_rank || this.maxRankValue,
+      rank: token.coingecko_rank || TokensService.maxRankValue,
       price: token.usd_price
     };
+  }
+
+  private getTokensList(): void {
+    this.httpService.get(this.getTokensUrl).subscribe(
+      (response: TokensListResponse) =>
+        this.tokens.next(List(response.tokens.map(TokensService.parseToken.bind(this)))),
+      err => console.error('Error retrieving tokens', err)
+    );
   }
 }

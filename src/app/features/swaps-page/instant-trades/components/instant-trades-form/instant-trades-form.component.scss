@@ -170,7 +170,10 @@
   }
 }
 
-.checkbox-optimisation {
+.checkbox-optimization {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 10px;
 
   span {

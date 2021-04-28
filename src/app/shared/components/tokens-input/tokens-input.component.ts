@@ -38,7 +38,7 @@ interface TokenDropdownData extends DropdownComponentData {
   styleUrls: ['./tokens-input.component.scss']
 })
 export class TokensInputComponent implements OnChanges {
-  @Input() amountPlaceholder?: string = 'Enter Amount';
+  @Input() amountPlaceholder?: string = 'Enter amount';
 
   @Input() listDisabled?: boolean = false;
 
@@ -56,13 +56,13 @@ export class TokensInputComponent implements OnChanges {
   /**
    * How much decimal symbols will be left in {@link selectedAmount}, if it is greater than or equal to 1.
    */
-  // eslint-disable-next-line no-magic-numbers
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   @Input() selectedAmountRoundMode? = 5;
 
   /**
    * How much decimal symbols after zeroes will be left in {@link selectedAmount}, if it is less than 1.
    */
-  // eslint-disable-next-line no-magic-numbers
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   @Input() smallSelectedAmountRoundMode? = 6;
 
   get selectedAmount(): string {
@@ -70,11 +70,9 @@ export class TokensInputComponent implements OnChanges {
   }
 
   @Input() set selectedAmount(value) {
-    const selectedValue = typeof value === 'string' ? value : String(value);
-
     this._selectedAmount = value;
 
-    if (selectedValue?.includes('.')) {
+    if (this._selectedAmount?.includes('.')) {
       const startIndex = this._selectedAmount.indexOf('.') + 1;
 
       let decimalSymbols: number;
@@ -114,8 +112,7 @@ export class TokensInputComponent implements OnChanges {
 
   private _selectedAmount: string;
 
-  // eslint-disable-next-line no-magic-numbers
-  public DEFAULT_DECIMAL_LENGTH = 8;
+  public readonly DEFAULT_DECIMAL_LENGTH = 8;
 
   public readonly tokenLabelComponentClass = TokenLabelComponent;
 

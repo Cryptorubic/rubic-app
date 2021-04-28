@@ -1,0 +1,88 @@
+$main-color: #4aa956;
+
+.advert {
+  position: relative;
+
+  padding: 40px;
+
+  background-color: $main-color;
+  border-radius: 10px;
+
+  &__close-icon {
+    width: 30px;
+    height: 30px;
+
+    cursor: pointer;
+  }
+
+  &__header,
+  &__body,
+  &__footer {
+    margin-bottom: 20px;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__rubic-logo {
+    display: flex;
+    justify-content: center;
+
+    ::ng-deep svg path {
+      fill: white;
+    }
+  }
+
+  &__image {
+    width: calc(100% + 200px);
+  }
+
+  &__description {
+    margin-bottom: 60px;
+
+    color: white;
+    font-weight: 400;
+  }
+
+  &__close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+    color: white;
+
+    background-color: transparent;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__button {
+    padding: 15px 25px;
+
+    color: white;
+    font-weight: 600;
+
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 10px;
+    cursor: pointer;
+
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+::ng-deep .mat-dialog-container {
+  overflow: visible !important;
+
+  border-radius: 10px !important;
+}

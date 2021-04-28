@@ -31,7 +31,7 @@
               [selectedToken]="selectedTokenAsInputToken"
               [selectedAmount]="fromNumber"
               (tokenChanges)="onSelectedTokenChanges($event)"
-              (numberChanges)="onTokensNumberChanges($event)"
+              (numberChanges)="fromNumber = $event"
             >
             </app-tokens-input>
 
@@ -43,9 +43,11 @@
                 [href]="
                   !selectedToken
                     ? ''
-                    : selectedToken.symbol === 'ETH' && fromBlockchain.name === 'ETH'
+                    : selectedToken.symbol === 'ETH' &&
+                      fromBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM
                     ? fromBlockchain.baseUrl
-                    : fromBlockchain.scanner.baseUrl + selectedToken[fromBlockchain.addressName]
+                    : fromBlockchain.scanner.baseUrl +
+                      selectedToken.blockchainToken[fromBlockchain.key].address
                 "
                 target="_blank"
               >
@@ -54,25 +56,37 @@
               </a>
             </div>
 
-            <table class="choose-blockchains__info">
+            <table
+              class="choose-blockchains__info"
+              *ngIf="
+                fromBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
+                toBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+              "
+            >
               <tr
                 [ngClass]="{
                   'choose-blockchains__info_wrong':
                     selectedToken &&
-                    fromNumber != undefined &&
-                    fromNumber.lt(selectedToken.minAmount)
+                    fromNumber &&
+                    fromNumberAsBigNumber.lt(
+                      selectedToken.blockchainToken[fromBlockchain.key].minAmount
+                    )
                 }"
               >
                 <td>
                   {{ selectedToken ? 'Minimum amount' : '' }}
                 </td>
                 <td>
-                  {{ selectedToken ? selectedToken.minAmount : '' }}
+                  {{
+                    selectedToken ? selectedToken.blockchainToken[fromBlockchain.key].minAmount : ''
+                  }}
                   <img
                     *ngIf="
                       selectedToken &&
-                      fromNumber != undefined &&
-                      fromNumber.lt(selectedToken.minAmount)
+                      fromNumber &&
+                      fromNumberAsBigNumber.lt(
+                        selectedToken.blockchainToken[fromBlockchain.key].minAmount
+                      )
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -83,20 +97,26 @@
                 [ngClass]="{
                   'choose-blockchains__info_wrong':
                     selectedToken &&
-                    fromNumber != undefined &&
-                    fromNumber.gt(selectedToken.maxAmount)
+                    fromNumber &&
+                    fromNumberAsBigNumber.gt(
+                      selectedToken.blockchainToken[fromBlockchain.key].maxAmount
+                    )
                 }"
               >
                 <td>
                   {{ selectedToken ? 'Maximum amount' : '' }}
                 </td>
                 <td>
-                  {{ selectedToken ? selectedToken.maxAmount : '' }}
+                  {{
+                    selectedToken ? selectedToken.blockchainToken[fromBlockchain.key].maxAmount : ''
+                  }}
                   <img
                     *ngIf="
                       selectedToken &&
-                      fromNumber != undefined &&
-                      fromNumber.gt(selectedToken.maxAmount)
+                      fromNumber &&
+                      fromNumberAsBigNumber.gt(
+                        selectedToken.blockchainToken[fromBlockchain.key].maxAmount
+                      )
                     "
                     src="assets/images/icons/error-disclaimer-sign.svg"
                     alt=""
@@ -143,12 +163,16 @@
           <div class="choose-blockchains__title">You get</div>
           <div class="choose-blockchains__get">
             <span>
-              {{ this.toNumber }}
+              {{ this.toNumber | bigNumberFormat }}
             </span>
             <div class="get-token-card" *ngIf="selectedToken">
-              <img class="get-token-card__icon" [src]="selectedToken.icon" alt="Token" />
+              <img
+                class="get-token-card__icon"
+                [src]="selectedToken.image || '/assets/images/icons/coins/empty.svg'"
+                alt="Token"
+              />
               <span class="get-token-card__name">
-                {{ selectedToken[toBlockchain.symbolName] }}
+                {{ selectedToken.blockchainToken[toBlockchain.key].symbol }}
               </span>
             </div>
           </div>
@@ -161,9 +185,10 @@
               [href]="
                 !selectedToken
                   ? ''
-                  : selectedToken.symbol === 'ETH' && toBlockchain.name === 'ETH'
+                  : selectedToken.symbol === 'ETH' && toBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM
                   ? toBlockchain.baseUrl
-                  : toBlockchain.scanner.baseUrl + selectedToken[toBlockchain.addressName]
+                  : toBlockchain.scanner.baseUrl +
+                    selectedToken.blockchainToken[toBlockchain.key].address
               "
               target="_blank"
             >
@@ -173,10 +198,24 @@
           </div>
 
           <div class="choose-blockchains__address-info">
-            You will get {{ toBlockchain.label }} tokens to the provided address
+            You will get {{ toBlockchain.name }} tokens to the selected address
           </div>
-          <a class="choose-blockchains__binance" href="https://www.binance.org/" target="_blank">
-            What is Binance Smart Chain?
+
+          <a
+            class="choose-blockchains__blockchain-link"
+            [href]="
+              getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+                ? 'https://www.binance.org/'
+                : 'https://polygon.technology/'
+            "
+            target="_blank"
+          >
+            What is
+            {{
+              getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+                ? 'Binance Smart Chain'
+                : 'Polygon'
+            }}?
           </a>
         </div>
       </div>
@@ -191,16 +230,41 @@
             [disabled]="
               !selectedToken ||
               !fromNumber ||
-              fromNumber.lt(selectedToken.minAmount) ||
-              fromNumber.gt(selectedToken.maxAmount)
+              fromNumberAsBigNumber.lt(
+                selectedToken.blockchainToken[fromBlockchain.key].minAmount
+              ) ||
+              fromNumberAsBigNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
             "
             (onClick)="checkAndConfirm()"
           >
           </app-primary-button>
 
-          <a href="https://www.binance.org/" target="_blank" class="cross-chain-form__confirm-info">
+          <a
+            [href]="
+              getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+                ? 'https://www.binance.org/'
+                : 'https://polygon.technology/'
+            "
+            target="_blank"
+            class="cross-chain-form__confirm-info"
+            [ngClass]="{
+              'cross-chain-form__confirm-info_hidden':
+                selectedToken?.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]?.address ===
+                this.BRBC_ADDRESS,
+              'cross-chain-form__confirm-info_polygon':
+                getNonEthereumBlockchain() === BLOCKCHAIN_NAME.POLYGON
+            }"
+          >
             <div>With the assistance of</div>
-            <img src="assets/images/icons/collaborations/Binance.svg" alt="Binance" />
+            <img
+              [src]="
+                'assets/images/icons/collaborations/' +
+                (getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+                  ? 'Binance.svg'
+                  : 'Polygon.svg')
+              "
+              [alt]="getNonEthereumBlockchain()"
+            />
           </a>
         </div>
 
@@ -222,17 +286,28 @@
       <app-address-input
         class="advanced-section__input-wrapper"
         inputLabelText="Select custom destination address"
-        (addressEmitter)="changeWalletAddressTo($event)"
+        (addressEmitter)="changeToWalletAddress($event)"
       ></app-address-input>
     </div>
   </form>
 </div>
 
-<app-high-gas-price-modal
+<warning-modal
   *ngIf="isHighGasPriceModalShown"
-  (onCancel)="onHighGasPriceCancel()"
+  warningText="Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours."
+  (onCancel)="isHighGasPriceModalShown = false"
   (onConfirm)="onHighGasPriceConfirm()"
-></app-high-gas-price-modal>
+></warning-modal>
+
+<warning-modal
+  *ngIf="isPolygonToEthTradeModalShown"
+  [warningText]="
+    'Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes' +
+    ' and then deposit second time &ndash; \'Deposit\' button will appear in the corresponding line of the swaps list under the form.'
+  "
+  (onCancel)="isPolygonToEthTradeModalShown = false"
+  (onConfirm)="onPolygonToEthTradeConfirm()"
+></warning-modal>
 
 <app-bridge-in-progress-modal *ngIf="tradeInProgress"></app-bridge-in-progress-modal>
 

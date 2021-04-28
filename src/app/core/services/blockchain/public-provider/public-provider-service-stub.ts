@@ -17,7 +17,7 @@ export default () => {
         rpcLink: 'https://data-seed-prebsc-1-s1.binance.org:8545'
       },
       {
-        blockchainName: BLOCKCHAIN_NAME.MATIC,
+        blockchainName: BLOCKCHAIN_NAME.POLYGON,
         rpcLink: 'https://rpc-mumbai.maticvigil.com'
       }
     ],

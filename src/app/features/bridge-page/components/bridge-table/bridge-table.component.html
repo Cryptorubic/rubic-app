@@ -3,10 +3,11 @@
     <span>Your cross-chain swaps</span>
     <img
       [ngClass]="{
-        'bridge-results__spinner_rotating': updateProcess === 'process' || updateProcess === 'stop',
+        'bridge-results__spinner_rotating':
+          updateProcess === 'progress' || updateProcess === 'stop',
         'bridge-results__spinner_stop': updateProcess === 'stop'
       }"
-      (click)="onUpdate()"
+      (click)="updateTransactionsList()"
       class="bridge-results__spinner"
       src="assets/images/icons/refresh.svg"
       alt="Update"
@@ -15,119 +16,136 @@
 
   <ng-template [ngIf]="transactions">
     <div class="bridge-results__container" *ngIf="transactions.size">
-      <!-- Table is for desktop's representation -->
+      <!-- Desktop Table -->
       <table class="bridge-table" *ngIf="isDesktop">
         <thead>
           <tr>
             <th>
               <span>{{ 'Status' | translate }}</span>
               <img
-                [src]="'assets/images/bridge/' + getArrow('Status')"
+                [src]="getArrowImg(SORT_FIELD.STATUS)"
                 alt="Sort"
-                (click)="onSortClick('Status')"
+                (click)="sortTransactions(SORT_FIELD.STATUS)"
               />
             </th>
             <th>
               <span>From</span>
               <img
-                [src]="'assets/images/bridge/' + getArrow('From')"
+                [src]="getArrowImg(SORT_FIELD.FROM)"
                 alt="Sort"
-                (click)="onSortClick('From')"
+                (click)="sortTransactions(SORT_FIELD.FROM)"
               />
             </th>
             <th>
               <span>To</span>
               <img
-                [src]="'assets/images/bridge/' + getArrow('To')"
+                [src]="getArrowImg(SORT_FIELD.TO)"
                 alt="Sort"
-                (click)="onSortClick('To')"
+                (click)="sortTransactions(SORT_FIELD.TO)"
               />
             </th>
             <th>
-              <span>{{ 'SEND' | translate }}</span>
+              <span>{{ 'Send' | translate }}</span>
               <img
-                [src]="'assets/images/bridge/' + getArrow('Spent')"
+                [src]="getArrowImg(SORT_FIELD.SEND)"
                 alt="Sort"
-                (click)="onSortClick('Spent')"
+                (click)="sortTransactions(SORT_FIELD.SEND)"
               />
             </th>
             <th>
-              <span>{{ 'GET' | translate }}</span>
+              <span>{{ 'Get' | translate }}</span>
               <img
-                [src]="'assets/images/bridge/' + getArrow('Expected')"
+                [src]="getArrowImg(SORT_FIELD.GET)"
                 alt="Sort"
-                (click)="onSortClick('Expected')"
+                (click)="sortTransactions(SORT_FIELD.GET)"
               />
             </th>
             <th>
               <span>Date</span>
               <img
-                [src]="'assets/images/bridge/' + getArrow('Date')"
+                [src]="getArrowImg(SORT_FIELD.DATE)"
                 alt="Sort"
-                (click)="onSortClick('Date')"
+                (click)="sortTransactions(SORT_FIELD.DATE)"
               />
             </th>
           </tr>
         </thead>
+
         <tbody>
-          <tr *ngFor="let tx of visibleTransactions">
+          <tr class="bridge-table__row" *ngFor="let tx of visibleTransactions">
             <td>
               <span
                 class="data__status"
                 [ngClass]="{
-                  data__status_green: tx.code === 2,
-                  data__status_yellow: tx.code === 1,
-                  data__status_red: tx.code === 0
+                  data__status_green: tx.statusCode === 2,
+                  data__status_yellow: tx.statusCode === 1,
+                  data__status_red: tx.statusCode === 0
                 }"
               >
                 {{ tx.status }}
               </span>
+
+              <div
+                class="data__receive-button-container"
+                *ngIf="
+                  tx.status === WAITING_FOR_RECEIVING_STATUS &&
+                  tx.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
+                "
+              >
+                <app-receive-button
+                  class="data__receive-button"
+                  [animate]="tx.inProgress"
+                  (onClick)="depositPolygonBridgeTransaction(tx)"
+                >
+                </app-receive-button>
+              </div>
             </td>
 
             <td class="data__network">
-              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img" alt="" />
-              <span>{{ Blockchains[tx.fromNetwork].label }}</span>
+              <img
+                [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
+                alt=""
+              />
+              <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
             </td>
 
             <td class="data__network">
-              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img" alt="" />
-              <span>{{ Blockchains[tx.toNetwork].label }}</span>
+              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img" alt="" />
+              <span>{{ Blockchains[tx.toBlockchain].label }}</span>
             </td>
 
             <td class="data__amount">
               <div class="data__amount-inner">
-                <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
-                <img [src]="tx.image_link" alt="" />
-                <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                <div class="data__amount-number">{{ tx.fromAmount }}</div>
+                <img [src]="tx.tokenImage" alt="" />
+                <span>{{ tx.fromSymbol }}</span>
               </div>
             </td>
 
             <td class="data__amount">
               <div class="data__amount-inner">
-                <div class="data__amount-number">{{ tx.actualToAmount }}</div>
-                <img [src]="tx.image_link" alt="" />
-                <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                <div class="data__amount-number">{{ tx.toAmount }}</div>
+                <img [src]="tx.tokenImage" alt="" />
+                <span>{{ tx.toSymbol }}</span>
               </div>
             </td>
 
             <td class="data__date">
-              <div>
-                {{ tx.updateTime.split(' ')[0] }} {{ tx.updateTime.split(' ')[1] }}
-              </div>
+              <div>{{ tx.updateTime.split(' ')[0] }} {{ tx.updateTime.split(' ')[1] }}</div>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <!-- Accordion is for mobile and tablet's representation -->
+      <!-- Mobile Accordion -->
       <div class="bridge-list" *ngIf="!isDesktop">
         <app-dropdown-select
-          [options]="options"
-          [defaultOption]="options.indexOf(capitalize(selectedOption))"
+          [options]="sortFields"
+          [defaultOption]="selectedSortField"
           [isSortable]="true"
-          [downDirection]="sort.downDirection"
+          [downDirection]="sortOptions.downDirection"
           [minOptionWidth]="89"
-          (optionToSortBy)="onSortClick($event)"
+          (onSortBy)="sortTransactions($event)"
         ></app-dropdown-select>
 
         <div class="bridge-list__items">
@@ -140,9 +158,12 @@
               <span
                 class="data__status"
                 [ngClass]="{
-                  data__status_green: tx.code === 2,
-                  data__status_yellow: tx.code === 1,
-                  data__status_red: tx.code === 0
+                  data__status_green: tx.statusCode === 2,
+                  data__status_yellow: tx.statusCode === 1,
+                  data__status_red: tx.statusCode === 0,
+                  'data__status_waiting-for-deposit':
+                    tx.status === WAITING_FOR_RECEIVING_STATUS &&
+                    tx.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
                 }"
               >
                 {{ tx.status }}
@@ -151,47 +172,48 @@
               <div class="header__option option" [ngClass]="{ header__option_inactive: tx.opened }">
                 <span
                   class="option__name"
-                  *ngIf="selectedOption !== 'Status' && selectedOption !== 'Date'"
+                  *ngIf="
+                    selectedSortField !== SORT_FIELD.STATUS && selectedSortField !== SORT_FIELD.DATE
+                  "
                 >
-                  {{ selectedOption }}
+                  {{ selectedSortField }}
                 </span>
 
-                <div class="data__network" *ngIf="selectedOption === 'From'">
+                <div class="data__network" *ngIf="selectedSortField === SORT_FIELD.FROM">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img"
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
                     alt=""
                   />
-                  <span>{{ Blockchains[tx.fromNetwork].label }}</span>
+                  <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
                 </div>
 
-                <div class="data__network" *ngIf="selectedOption === 'To'">
+                <div class="data__network" *ngIf="selectedSortField === SORT_FIELD.TO">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img"
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img"
                     alt=""
                   />
-                  <span>{{ Blockchains[tx.toNetwork].label }}</span>
+                  <span>{{ Blockchains[tx.toBlockchain].label }}</span>
                 </div>
 
-                <div class="data__amount" *ngIf="selectedOption === 'Spent'">
+                <div class="data__amount" *ngIf="selectedSortField === SORT_FIELD.SEND">
                   <div class="data__amount-inner">
-                    <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
-                    <img [src]="tx.image_link" alt="" />
-                    <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                    <div class="data__amount-number">{{ tx.fromAmount }}</div>
+                    <img [src]="tx.tokenImage" alt="" />
+                    <span>{{ tx.fromSymbol }}</span>
                   </div>
                 </div>
 
-                <div class="data__amount" *ngIf="selectedOption === 'Expected'">
+                <div class="data__amount" *ngIf="selectedSortField === SORT_FIELD.GET">
                   <div class="data__amount-inner">
-                    <div class="data__amount-number">{{ tx.actualToAmount }}</div>
-                    <img [src]="tx.image_link" alt="" />
-                    <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                    <div class="data__amount-number">{{ tx.toAmount }}</div>
+                    <img [src]="tx.tokenImage" alt="" />
+                    <span>{{ tx.toSymbol }}</span>
                   </div>
                 </div>
 
-                <div class="data__date" *ngIf="selectedOption === 'Date'">
+                <div class="data__date" *ngIf="selectedSortField === SORT_FIELD.DATE">
                   <div>
                     <span>{{ tx.updateTime.split(' ')[0] }}</span>
-                    <br />
                     <span>{{ tx.updateTime.split(' ')[1] }}</span>
                   </div>
                 </div>
@@ -210,10 +232,10 @@
                 <div class="content__item-name">From</div>
                 <div class="data__network">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromNetwork].img"
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
                     alt=""
                   />
-                  <span>{{ Blockchains[tx.fromNetwork].label }}</span>
+                  <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
                 </div>
               </div>
 
@@ -221,31 +243,33 @@
                 <div class="content__item-name">To</div>
                 <div class="data__network">
                   <img
-                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toNetwork].img"
+                    [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img"
                     alt=""
                   />
-                  <span>{{ Blockchains[tx.toNetwork].label }}</span>
+                  <span>{{ Blockchains[tx.toBlockchain].label }}</span>
                 </div>
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">{{ 'GET' | translate}}</div>
+                <div class="content__item-name">{{ 'Get' | translate }}</div>
                 <div class="data__amount">
                   <div class="data__amount-inner">
-                    <div class="data__amount-number">{{ tx.actualFromAmount }}</div>
-                    <img [src]="tx.image_link" alt="" />
-                    <span>{{ tx[Blockchains[tx.fromNetwork].symbolPropName] }}</span>
+                    <div class="data__amount-number">
+                      {{ tx.fromAmount | bigNumberFormat }}
+                    </div>
+                    <img [src]="tx.tokenImage" alt="" />
+                    <span>{{ tx.fromSymbol }}</span>
                   </div>
                 </div>
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">{{ 'SEND' | translate}}</div>
+                <div class="content__item-name">{{ 'Send' | translate }}</div>
                 <div class="data__amount">
                   <div class="data__amount-inner">
-                    <div class="data__amount-number">{{ tx.actualToAmount }}</div>
-                    <img [src]="tx.image_link" alt="" />
-                    <span>{{ tx[Blockchains[tx.toNetwork].symbolPropName] }}</span>
+                    <div class="data__amount-number">{{ tx.toAmount | bigNumberFormat }}</div>
+                    <img [src]="tx.tokenImage" alt="" />
+                    <span>{{ tx.toSymbol }}</span>
                   </div>
                 </div>
               </div>
@@ -255,10 +279,25 @@
                 <div class="data__date">
                   <div>
                     <span>{{ tx.updateTime.split(' ')[0] }}</span>
-                    <br />
                     <span>{{ tx.updateTime.split(' ')[1] }}</span>
                   </div>
                 </div>
+              </div>
+
+              <div
+                class="content__item"
+                *ngIf="
+                  tx.status === WAITING_FOR_RECEIVING_STATUS &&
+                  tx.fromBlockchain === BLOCKCHAIN_NAME.POLYGON
+                "
+              >
+                <div class="content__item-name">Deposit</div>
+                <app-receive-button
+                  class="data__receive-button"
+                  [animate]="tx.inProgress"
+                  (onClick)="depositPolygonBridgeTransaction(tx)"
+                >
+                </app-receive-button>
               </div>
             </div>
           </div>
@@ -280,3 +319,11 @@
 
   <app-spinner *ngIf="!transactions" class="bridge-results__init-animation"></app-spinner>
 </div>
+
+<app-bridge-in-progress-modal *ngIf="tradeInProgress"></app-bridge-in-progress-modal>
+
+<app-bridge-success
+  *ngIf="tradeSuccessId"
+  [txId]="tradeSuccessId"
+  (onCloseEvent)="tradeSuccessId = undefined"
+></app-bridge-success>

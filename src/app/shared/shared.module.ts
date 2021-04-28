@@ -21,7 +21,6 @@ import { ArrowComponent } from './components/arrow/arrow.component';
 import { MessageBoxComponent } from './components/message-box/message-box.component';
 import { InfoTooltipComponent } from './components/info-tooltip/info-tooltip.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
-import { BlockchainLabelComponent } from './components/blockchains-input/blockchain-label/blockchain-label.component';
 import { CollaborationsComponent } from './components/collaborations/collaborations.component';
 import { CountdownComponent } from './components/countdown/countdown.component';
 import { DisclaimerComponent } from './components/disclaimer/disclaimer.component';
@@ -51,8 +50,10 @@ import { TokensAccordionComponent } from './components/tokens-table/components/t
 import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
 import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
+import { NetworkErrorComponent } from './components/network-error/network-error.component';
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
-import { BlockchainSelectComponent } from './components/token-input/blockchain-select.component';
+import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
+import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,6 @@ import { BlockchainSelectComponent } from './components/token-input/blockchain-s
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,
     NativeUrlPipe,
@@ -92,8 +92,10 @@ import { BlockchainSelectComponent } from './components/token-input/blockchain-s
     TokensAccordionComponent,
     CustomTokenFormComponent,
     WarningDisclaimerComponent,
+    NetworkErrorComponent,
     BlockchainSelectComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    TotalSupplyOverflowErrorComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -133,7 +135,6 @@ import { BlockchainSelectComponent } from './components/token-input/blockchain-s
     WhiteButtonComponent,
     TokenLabelComponent,
     InputDropdownComponent,
-    BlockchainLabelComponent,
     BigNumberFormat,
     ScannerLinkPipe,
     NativeUrlPipe,
@@ -151,6 +152,7 @@ import { BlockchainSelectComponent } from './components/token-input/blockchain-s
     TokensTableComponent,
     CustomTokenFormComponent,
     WarningDisclaimerComponent,
+    NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent
   ]

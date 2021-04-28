@@ -89,7 +89,7 @@ export class UniswapAbstract extends InstantTradeService {
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
-    gasOptimisation: boolean
+    gasOptimization: boolean
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -97,20 +97,18 @@ export class UniswapAbstract extends InstantTradeService {
 
     if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
       fromTokenClone.address = this.WETHAddress;
-      fromTokenClone.decimals = 18;
       estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
     }
 
     if (this.web3Public.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.WETHAddress;
-      toTokenClone.decimals = 18;
       estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
     }
 
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const { route, gasData } = await this.getToAmountAndPath(
-      gasOptimisation,
+      gasOptimization,
       amountIn,
       fromTokenClone,
       toTokenClone,
@@ -124,14 +122,14 @@ export class UniswapAbstract extends InstantTradeService {
       },
       to: {
         token: toToken,
-        amount: route.outputAbsoluteAmount.div(10 ** toTokenClone.decimals)
+        amount: route.outputAbsoluteAmount.div(10 ** toToken.decimals)
       },
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
         path: route.path,
-        gasOptimisation
+        gasOptimization
       }
     };
   }
@@ -244,24 +242,11 @@ export class UniswapAbstract extends InstantTradeService {
     await this.checkSettings(this.blockchain);
     await this.checkBalance(trade);
 
-    const fromTokenClone = { ...trade.from.token };
-    const toTokenClone = { ...trade.to.token };
-
-    if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
-      fromTokenClone.address = this.WETHAddress;
-      fromTokenClone.decimals = 18;
-    }
-
-    if (this.web3Public.isNativeAddress(toTokenClone.address)) {
-      toTokenClone.address = this.WETHAddress;
-      toTokenClone.decimals = 18;
-    }
-
-    const amountIn = trade.from.amount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
+    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     const amountOutMin = trade.to.amount
       .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
-      .multipliedBy(10 ** toTokenClone.decimals)
+      .multipliedBy(10 ** trade.to.token.decimals)
       .toFixed(0);
     const { path } = trade.options;
     const to = this.web3Private.address;

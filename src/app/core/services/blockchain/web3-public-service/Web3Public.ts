@@ -234,7 +234,7 @@ export class Web3Public {
       return this.blockchain.nativeCoin;
     }
 
-    const tokenMethods = ['decimals', 'symbol', 'name'];
+    const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'];
     const tokenFieldsPromises = tokenMethods.map((method: string) =>
       this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
     );

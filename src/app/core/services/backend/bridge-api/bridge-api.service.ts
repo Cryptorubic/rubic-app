@@ -1,33 +1,68 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
+import BigNumber from 'bignumber.js';
 import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';
-import { BridgeTransaction } from '../../../../features/bridge-page/services/BridgeTransaction';
-import { BridgeTableTransaction } from '../../../../features/bridge-page/models/BridgeTableTransaction';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BridgeTrade } from '../../../../features/bridge-page/models/BridgeTrade';
+import {
+  BridgeTableTrade,
+  BridgeTableTradeApi
+} from '../../../../features/bridge-page/models/BridgeTableTrade';
+import { TRADE_STATUS } from './models/TRADE_STATUS';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BridgeApiService {
-  constructor(private httpService: HttpService, private httpClient: HttpClient) {}
+  private readonly tradeBlockchain = {
+    ETH: BLOCKCHAIN_NAME.ETHEREUM,
+    BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    POL: BLOCKCHAIN_NAME.POLYGON
+  };
 
-  public getTransactions(walletAddress: string): Promise<BridgeTableTransaction[]> {
-    return new Promise<BridgeTableTransaction[]>((resolve, reject) => {
-      this.httpService.get('bridge/transactions', { walletAddress, t: Date.now() }).subscribe(
-        (response: BridgeTableTransaction[]) => {
-          resolve(response);
-        },
-        error => {
-          console.log(error);
-          reject(error);
-        }
-      );
+  constructor(private httpService: HttpService) {}
+
+  public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
+    return new Promise<BridgeTableTrade[]>((resolve, reject) => {
+      this.httpService
+        .get('bridge/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
+        .subscribe(
+          (tradesApi: BridgeTableTradeApi[]) => {
+            resolve(tradesApi.map(trade => this.parseBridgeTableTrade(trade)));
+          },
+          error => {
+            console.error(error);
+            reject(error);
+          }
+        );
     });
   }
 
-  public postTransaction(
+  private parseBridgeTableTrade(trade: BridgeTableTradeApi): BridgeTableTrade {
+    const fromBlockchain = this.tradeBlockchain[trade.fromNetwork];
+    const toBlockchain = this.tradeBlockchain[trade.toNetwork];
+
+    let { status } = trade;
+    if (fromBlockchain === BLOCKCHAIN_NAME.POLYGON && status === 'Waiting for deposit') {
+      status = 'Waiting for receiving';
+    }
+
+    return {
+      status,
+      statusCode: trade.code,
+      fromBlockchain,
+      toBlockchain,
+      fromAmount: new BigNumber(trade.actualFromAmount).toFixed(),
+      toAmount: new BigNumber(trade.actualToAmount).toFixed(),
+      fromSymbol: trade.ethSymbol,
+      toSymbol: trade.bscSymbol,
+      updateTime: trade.updateTime,
+      transactionHash: trade.transaction_id,
+      tokenImage: trade.image_link
+    };
+  }
+
+  public postPanamaTransaction(
     binanceTransactionId: string,
     ethSymbol: string,
     bscSymbol: string
@@ -45,7 +80,7 @@ export class BridgeApiService {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );
@@ -53,15 +88,15 @@ export class BridgeApiService {
   }
 
   public postRubicTransaction(
-    fromNetwork: BLOCKCHAIN_NAME,
-    txHash: string,
+    fromBlockchain: BLOCKCHAIN_NAME,
+    transactionHash: string,
     fromAmount: string,
     walletFromAddress: string
-  ) {
+  ): Promise<void> {
     const body = {
       type: 'swap_rbc',
-      fromNetwork: fromNetwork === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
-      transaction_id: txHash,
+      fromNetwork: fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
+      transaction_id: transactionHash,
       fromAmount,
       walletFromAddress
     };
@@ -72,30 +107,94 @@ export class BridgeApiService {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
           reject(error);
         }
       );
     });
   }
 
-  public notifyBridgeBot(tx: BridgeTransaction, walletAddress: string): Promise<void> {
+  public postPolygonTransaction(
+    bridgeTrade: BridgeTrade,
+    status: TRADE_STATUS,
+    transactionHash: string,
+    userAddress: string
+  ): Promise<void> {
     const body = {
-      binanceId: tx.binanceId,
-      walletAddress,
-      amount: tx.amount,
-      network: tx.network,
-      symbol: tx.token.symbol,
-      ethSymbol: tx.token.ethSymbol
+      type: 'polygon',
+      fromNetwork: bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.POLYGON ? 'POL' : 'ETH',
+      toNetwork: bridgeTrade.toBlockchain === BLOCKCHAIN_NAME.POLYGON ? 'POL' : 'ETH',
+      actualFromAmount: bridgeTrade.amount,
+      actualToAmount: bridgeTrade.amount,
+      ethSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].address,
+      bscSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.toBlockchain].address,
+      updateTime: new Date(),
+      status,
+      transaction_id: transactionHash,
+      walletFromAddress: userAddress,
+      walletToAddress: userAddress,
+      walletDepositAddress: '0xBbD7cBFA79faee899Eaf900F13C9065bF03B1A74'
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpClient.post(environment.bridgeBotUrl, body).subscribe(
+      this.httpService.post('bridge/transactions', body).subscribe(
         () => {
           resolve();
         },
         error => {
-          console.log(error);
+          console.error(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  public patchPolygonTransaction(
+    burnTransactionHash: string,
+    newTransactionHash: string,
+    status: TRADE_STATUS
+  ): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.httpService
+        .patch(
+          'bridge/transactions',
+          {
+            second_transaction_id: newTransactionHash,
+            status
+          },
+          {
+            transaction_id: burnTransactionHash
+          }
+        )
+        .subscribe(resolve, error => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  }
+
+  public notifyBridgeBot(
+    bridgeTrade: BridgeTrade,
+    transactionHash: string,
+    walletAddress: string
+  ): Promise<void> {
+    const body = {
+      track: transactionHash,
+      walletAddress,
+      amount: bridgeTrade.amount,
+      fromBlockchain: bridgeTrade.fromBlockchain,
+      toBlockchain: bridgeTrade.toBlockchain,
+      symbol: bridgeTrade.token.symbol,
+      ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol
+    };
+
+    return new Promise<void>((resolve, reject) => {
+      this.httpService.post(environment.bridgeBotUrl, body).subscribe(
+        () => {
+          resolve();
+        },
+        error => {
+          console.error(error);
           reject(error);
         }
       );
