@@ -15,12 +15,7 @@ export class HeaderStore {
   private readonly $isConfirmModalOpened: BehaviorSubject<boolean>;
 
   /**
-   * Determines if user account menu is active.
-   */
-  private readonly $isUserMenuOpened: BehaviorSubject<boolean>;
-
-  /**
-   * Determines if mobile navigation manu is active.
+   * Determines if mobile navigation menu is active.
    */
   private readonly $isMobileMenuOpened: BehaviorSubject<boolean>;
 
@@ -43,22 +38,8 @@ export class HeaderStore {
     const mobileWidth = 1024;
     this.mobileWidth = mobileWidth;
     this.$isConfirmModalOpened = new BehaviorSubject<boolean>(false);
-    this.$isUserMenuOpened = new BehaviorSubject<boolean>(false);
     this.$isMobileMenuOpened = new BehaviorSubject<boolean>(false);
     this.$isMobile = new BehaviorSubject<boolean>(false);
-  }
-
-  public getUserMenuOpeningStatus(): Observable<boolean> {
-    return this.$isUserMenuOpened.asObservable();
-  }
-
-  public setUserMenuOpeningStatus(value: boolean) {
-    this.$isUserMenuOpened.next(value);
-  }
-
-  public toggleMenuOpeningStatus(): void {
-    const currentValue = this.$isUserMenuOpened.value;
-    this.$isUserMenuOpened.next(!currentValue);
   }
 
   public getConfirmModalOpeningStatus(): Observable<boolean> {

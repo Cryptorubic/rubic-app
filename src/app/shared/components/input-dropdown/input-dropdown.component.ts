@@ -62,6 +62,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   @Input() fullWidth? = false;
 
   /**
+   * If true, then all components will be visible all time, despite search query.
+   */
+  @Input() withoutHiding? = false;
+
+  /**
    * Emits the event after a component was chosen.
    */
   @Output() componentChanges = new EventEmitter<DropdownComponentData>();
@@ -74,16 +79,16 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
 
   public inputQuery = '';
 
-  // eslint-disable-next-line no-magic-numbers
-  public isMobile = window.innerWidth <= 640;
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+  public readonly isMobile = window.innerWidth <= 640;
 
   constructor() {}
 
   ngOnChanges() {
     this.searchComponent(this.inputQuery);
-
     if (this.selectedComponentData) {
       this.inputQuery = this.selectedComponentData.filterParameters[this.filterBy[0]];
+      this.searchComponent(this.inputQuery);
       this.unshiftComponentToVisibleList(
         this.componentsData.find(component => component.id === this.selectedComponentData.id)
       );
@@ -107,29 +112,26 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
       queryMatch.push(
         ...this.componentsData
           .filter(
-            token =>
-              !queryMatch.includes(token) &&
-              (!query || token.filterParameters[field].toLowerCase().includes(query))
+            component =>
+              !queryMatch.includes(component) &&
+              (!query || component.filterParameters[field].toLowerCase().includes(query))
           )
           .toArray()
           .sort((a, b) => {
-            let compare: number;
             if (this.sortBy) {
               // eslint-disable-next-line
-              for (let parameter of this.sortBy) {
-                compare = a.sortParameters[parameter] - b.sortParameters[parameter];
-                if (compare) {
-                  break;
-                }
+              for (const parameter of this.sortBy) {
+                if (a.sortParameters[parameter] < b.sortParameters[parameter]) return -1;
+                if (a.sortParameters[parameter] > b.sortParameters[parameter]) return 1;
               }
             }
-            if (!compare && query) {
-              compare = a.filterParameters[field].length - b.filterParameters[field].length;
-            }
-            return compare;
+            return 0;
           })
       )
     );
+    if (this.withoutHiding) {
+      queryMatch.push(...this.componentsData.filter(component => !queryMatch.includes(component)));
+    }
 
     this.visibleComponentsData = List(queryMatch.slice(0, this.VISIBLE_COMPONENTS_NUMBER));
   }

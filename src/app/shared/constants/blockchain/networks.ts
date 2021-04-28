@@ -31,12 +31,12 @@ export default [
   },
   {
     id: 137,
-    name: BLOCKCHAIN_NAME.MATIC,
+    name: BLOCKCHAIN_NAME.POLYGON,
     scannerUrl: 'https://explorer-mainnet.maticvigil.com/',
     rpcLink: 'https://rpc-mainnet.matic.network',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.MATIC,
+      blockchainName: BLOCKCHAIN_NAME.POLYGON,
       address: '0x0000000000000000000000000000000000000000',
       name: 'Polygon',
       symbol: 'MATIC',
@@ -59,6 +59,20 @@ export default [
     }
   },
   {
+    id: 5,
+    name: BLOCKCHAIN_NAME.GOERLI_TESTNET,
+    scannerUrl: 'https://goerli.infura.io/',
+    rpcLink: 'https://goerli.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    imagePath: 'assets/images/icons/coins/goerli.png',
+    nativeCoin: {
+      blockchainName: BLOCKCHAIN_NAME.GOERLI_TESTNET,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18
+    }
+  },
+  {
     id: 97,
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
     scannerUrl: 'https://testnet.bscscan.com/',
@@ -74,12 +88,12 @@ export default [
   },
   {
     id: 80001,
-    name: BLOCKCHAIN_NAME.MATIC_TESTNET,
+    name: BLOCKCHAIN_NAME.POLYGON_TESTNET,
     scannerUrl: 'https://explorer-mumbai.maticvigil.com/',
     rpcLink: 'https://rpc-mumbai.maticvigil.com',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.MATIC_TESTNET,
+      blockchainName: BLOCKCHAIN_NAME.POLYGON_TESTNET,
       address: '0x0000000000000000000000000000000000000000',
       name: 'Polygon',
       symbol: 'MATIC',

@@ -11,16 +11,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BridgePageRoutingModule } from './bridge-page-routing.module';
 import { BridgeComponent } from './components/bridge/bridge.component';
-import { BridgeInProgressModalComponent } from './components/bridge-in-progress-modal/bridge-in-progress-modal.component';
-import { BridgeSuccessComponent } from './components/bridge-success/bridge-success.component';
-import { BridgeTableComponent } from './components/bridge-table/bridge-table.component';
-import { BridgeFormComponent } from './components/brifge-form/bridge-form.component';
-import { NetworkErrorComponent } from './components/network-error/network-error.component';
 import { BridgeService } from './services/bridge.service';
-import { AdvertModalComponent } from './components/ad-modal/advert-modal.component';
-import { RubicBridgeService } from './services/rubic-bridge-service/rubic-bridge.service';
-import { HighGasPriceModalComponent } from './components/high-gas-price-modal/high-gas-price-modal.component';
 import { BridgeSectionComponent } from './components/bridge-section/bridge-section.component';
+import { BridgeFormComponent } from './components/brifge-form/bridge-form.component';
+import { BridgeInProgressModalComponent } from './components/dialogs/bridge-in-progress-modal/bridge-in-progress-modal.component';
+import { BridgeSuccessComponent } from './components/dialogs/bridge-success/bridge-success.component';
+import { BridgeTableComponent } from './components/bridge-table/bridge-table.component';
+import { AdvertModalComponent } from './components/dialogs/advert-modal/advert-modal.component';
+import { WarningModalComponent } from './components/dialogs/warning-modal/warning-modal.component';
+import { BinanceBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/binance-bridge-provider.service';
+import { PanamaBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/panama-bridge-provider/panama-bridge-provider.service';
+import { RubicBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/rubic-bridge-provider/rubic-bridge-provider.service';
+import { PolygonBridgeProviderService } from './services/blockchain-bridge-provider/polygon-bridge-provider/polygon-bridge-provider.service';
+import { ReceiveButtonComponent } from './components/bridge-table/deposit-button/receive-button.component';
 
 @NgModule({
   declarations: [
@@ -29,9 +32,9 @@ import { BridgeSectionComponent } from './components/bridge-section/bridge-secti
     BridgeInProgressModalComponent,
     BridgeSuccessComponent,
     BridgeTableComponent,
-    NetworkErrorComponent,
     AdvertModalComponent,
-    HighGasPriceModalComponent,
+    WarningModalComponent,
+    ReceiveButtonComponent,
     BridgeSectionComponent
   ],
   imports: [
@@ -47,6 +50,12 @@ import { BridgeSectionComponent } from './components/bridge-section/bridge-secti
     MatInputModule
   ],
   exports: [MatFormFieldModule, MatInputModule],
-  providers: [BridgeService, RubicBridgeService]
+  providers: [
+    BridgeService,
+    BinanceBridgeProviderService,
+    PanamaBridgeProviderService,
+    RubicBridgeProviderService,
+    PolygonBridgeProviderService
+  ]
 })
 export class BridgePageModule {}

@@ -3,7 +3,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { TRADE_MODE } from '../../../../features/swaps-page/trades-module/models';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TradeTypeService {
   private _selectedMode = new BehaviorSubject<TRADE_MODE>(TRADE_MODE.INSTANT_TRADE);
 

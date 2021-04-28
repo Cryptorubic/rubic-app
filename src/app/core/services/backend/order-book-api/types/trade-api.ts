@@ -19,7 +19,7 @@ export interface OrderBookTradeApi {
 
   // to delete or change
   name: string; // base.token_short_title + ' <> ' + quote.token_short_title
-  network: number; // blockchain: 1 - ETH, 22 - BSC, 24 - MAT
+  network: number;
   state: string;
   contract_state: 'ACTIVE';
   contract_type: 20;

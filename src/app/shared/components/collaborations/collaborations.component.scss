@@ -15,7 +15,7 @@
   }
 
   &__description {
-    margin-bottom: 50px;
+    margin-bottom: 58px;
 
     color: black;
     font-weight: normal;
@@ -29,7 +29,7 @@
   &__content {
     display: flex;
     flex-wrap: wrap;
-    grid-gap: 0 175px;
+    grid-gap: 0 173px;
     justify-content: center;
   }
 
@@ -37,8 +37,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 120px;
-    margin-bottom: 90px;
+    width: 142px;
+    margin-bottom: 73px;
 
     cursor: pointer;
 
@@ -53,8 +53,8 @@
     }
 
     img {
-      max-width: 120px;
-      max-height: 50px;
+      width: 100%;
+      max-height: 40px;
     }
   }
 
@@ -96,7 +96,7 @@
     }
 
     &__item {
-      margin: 0 30px 60px 30px;
+      margin: 0 30px 60px;
     }
   }
 }
@@ -104,7 +104,7 @@
 @include b($mobile-sm) {
   .collaborations {
     &__item {
-      margin: 0 15px 60px 15px;
+      margin: 0 15px 60px;
     }
   }
 }

@@ -33,6 +33,9 @@ export default () => {
         id: 42
       };
     },
+    get networkName() {
+      return this.network.name;
+    },
     defaultGasLimit: '400000'
   };
 };
