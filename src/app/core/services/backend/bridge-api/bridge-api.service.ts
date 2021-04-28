@@ -9,6 +9,8 @@ import {
   BridgeTableTradeApi
 } from '../../../../features/bridge-page/models/BridgeTableTrade';
 import { TRADE_STATUS } from './models/TRADE_STATUS';
+import { BridgeToken } from '../../../../features/bridge-page/models/BridgeToken';
+import { TokensService } from '../tokens-service/tokens.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +22,7 @@ export class BridgeApiService {
     POL: BLOCKCHAIN_NAME.POLYGON
   };
 
-  constructor(private httpService: HttpService) {}
+  constructor(private httpService: HttpService, private tokensService: TokensService) {}
 
   public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
     return new Promise<BridgeTableTrade[]>((resolve, reject) => {
@@ -185,7 +187,8 @@ export class BridgeApiService {
       fromBlockchain: bridgeTrade.fromBlockchain,
       toBlockchain: bridgeTrade.toBlockchain,
       symbol: bridgeTrade.token.symbol,
-      ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol
+      ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol,
+      price: this.getTokenPrice(bridgeTrade.token)
     };
 
     return new Promise<void>((resolve, reject) => {
@@ -199,5 +202,19 @@ export class BridgeApiService {
         }
       );
     });
+  }
+
+  private getTokenPrice(bridgeToken: BridgeToken): number {
+    const backendTokens = this.tokensService.tokens.getValue();
+    const prices = Object.values(BLOCKCHAIN_NAME)
+      .map(
+        blockchain =>
+          backendTokens.find(
+            token => bridgeToken.blockchainToken[blockchain]?.address === token.address
+          )?.price
+      )
+      .filter(it => it)
+      .sort((a, b) => b - a);
+    return prices[0];
   }
 }
