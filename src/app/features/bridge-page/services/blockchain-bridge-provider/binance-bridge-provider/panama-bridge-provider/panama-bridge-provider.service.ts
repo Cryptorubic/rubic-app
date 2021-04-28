@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { flatMap } from 'rxjs/internal/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { BlockchainBridgeProvider } from '../../blockchain-bridge-provider';
 import { BlockchainsTokens, BridgeToken } from '../../../../models/BridgeToken';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
@@ -44,7 +45,8 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
   constructor(
     private httpClient: HttpClient,
     private web3PrivateService: Web3PrivateService,
-    private bridgeApiService: BridgeApiService
+    private bridgeApiService: BridgeApiService,
+    private readonly translateService: TranslateService
   ) {
     super();
   }
@@ -138,7 +140,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
       flatMap((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
           console.error(`Bridge POST error, code ${res.code}`);
-          return throwError(new OverQueryLimitError());
+          return throwError(new OverQueryLimitError(this.translateService));
         }
         const { data } = res;
         return from(
@@ -147,7 +149,7 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
       }),
       catchError(err => {
         console.error('Error bridge post:', err);
-        return throwError(err instanceof RubicError ? err : new RubicError());
+        return throwError(err instanceof RubicError ? err : new RubicError(this.translateService));
       })
     );
   }

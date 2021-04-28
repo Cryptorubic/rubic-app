@@ -5,6 +5,7 @@ import { BridgeService } from 'src/app/features/bridge-page/services/bridge.serv
 import { finalize, first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
@@ -93,7 +94,11 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
 
   public tradeSuccessId: string;
 
-  constructor(private bridgeService: BridgeService, private dialog: MatDialog) {}
+  constructor(
+    private bridgeService: BridgeService,
+    private dialog: MatDialog,
+    private readonly translateService: TranslateService
+  ) {}
 
   private static sortByDate(a: string, b: string): number {
     const date1 = new Date(date.transform(a, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
@@ -256,7 +261,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
         },
         err => {
           if (!(err instanceof RubicError)) {
-            err = new RubicError();
+            err = new RubicError(this.translateService);
           }
           let data: any = { title: 'Error', descriptionText: err.comment };
           if (err instanceof MetamaskError) {
