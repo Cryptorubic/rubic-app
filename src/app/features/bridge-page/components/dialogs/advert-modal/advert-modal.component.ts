@@ -13,7 +13,7 @@ import { MessageBoxComponent } from 'src/app/shared/components/message-box/messa
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-advert-modal',
@@ -39,6 +39,7 @@ export class AdvertModalComponent implements AfterViewInit {
     this.token = {
       address: '0x8E3BCC334657560253B83f08331d85267316e08a',
       symbol: 'BRBC',
+      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       decimals: 18,
       image: `${window.location.origin}/assets/images/icons/coins/brbc.svg`,
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,

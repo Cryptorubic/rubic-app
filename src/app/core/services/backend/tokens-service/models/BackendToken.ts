@@ -1,11 +1,10 @@
 export interface BackendToken {
-  name: string;
-  symbol: string;
-  blockchain_network: string;
+  token_title: string;
+  token_short_title: string;
+  platform: string;
   address: string;
   decimals: number;
-  image: string;
-  rank: number;
-  coingecko_id: string;
+  image_link: string;
+  coingecko_rank: number;
   usd_price: number;
 }
