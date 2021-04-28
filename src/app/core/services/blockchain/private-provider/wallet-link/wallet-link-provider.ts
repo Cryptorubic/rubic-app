@@ -2,8 +2,8 @@ import { BehaviorSubject } from 'rxjs';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { WalletlinkError } from 'src/app/shared/models/errors/provider/WalletlinkError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import WalletLink, { WalletLinkProvider as CoinbaseProvider } from 'walletlink';
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
@@ -82,7 +82,7 @@ export class WalletLinkProvider extends PrivateProvider {
       localStorage.setItem('provider', WALLET_NAME.WALLET_LINK);
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
-      throw new MetamaskError();
+      throw new WalletlinkError();
     }
   }
 
@@ -95,7 +95,7 @@ export class WalletLinkProvider extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      throw new MetamaskError();
+      throw new WalletlinkError();
     }
     if (this.getNetwork().name !== token.blockchain) {
       throw new NetworkError(token.blockchain);

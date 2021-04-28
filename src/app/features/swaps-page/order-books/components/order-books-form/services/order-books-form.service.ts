@@ -17,6 +17,7 @@ import { UseTestingModeService } from '../../../../../../core/services/use-testi
 import { SameTokensError } from '../../../../../../shared/models/errors/order-book/SameTokensError';
 import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 
 @Injectable()
 export class OrderBooksFormService implements OnDestroy {
@@ -64,7 +65,7 @@ export class OrderBooksFormService implements OnDestroy {
 
   private async checkSettings(tradeForm: OrderBookTradeForm): Promise<void> {
     if (!this.providerConnector.isProviderActive) {
-      throw new MetamaskError();
+      throw new WalletError();
     }
 
     if (!this.providerConnector.address) {

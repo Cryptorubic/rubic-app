@@ -22,6 +22,7 @@ import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMB
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
 import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -140,7 +141,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   private checkMetamaskSettings() {
     if (!this.providerConnector.isProviderActive) {
-      throw new MetamaskError();
+      throw new WalletError();
     }
 
     if (!this.web3PrivateService.address) {

@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import InstantTradeToken from '../models/InstantTradeToken';
 import InstantTrade from '../models/InstantTrade';
 import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PrivateService } from '../../../../core/services/blockchain/web3-private-service/web3-private.service';
-import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -53,7 +53,7 @@ abstract class InstantTradeService {
 
   protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
     if (!this.providerConnector.isProviderActive) {
-      throw new MetamaskError();
+      throw new WalletError();
     }
 
     if (!this.web3Private.address) {

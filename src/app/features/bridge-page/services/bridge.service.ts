@@ -4,6 +4,7 @@ import { List } from 'immutable';
 import { catchError, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeToken } from '../models/BridgeToken';
 import { TokensService } from '../../../core/services/backend/tokens-service/tokens.service';
@@ -15,7 +16,6 @@ import { BlockchainBridgeProvider } from './blockchain-bridge-provider/blockchai
 import { BinanceBridgeProviderService } from './blockchain-bridge-provider/binance-bridge-provider/binance-bridge-provider.service';
 import { RubicBridgeProviderService } from './blockchain-bridge-provider/binance-bridge-provider/rubic-bridge-provider/rubic-bridge-provider.service';
 import { PolygonBridgeProviderService } from './blockchain-bridge-provider/polygon-bridge-provider/polygon-bridge-provider.service';
-import { MetamaskError } from '../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../shared/models/errors/provider/AccountError';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
 import { BridgeTrade } from '../models/BridgeTrade';
@@ -170,7 +170,7 @@ export class BridgeService implements OnDestroy {
 
   private checkSettings(blockchain: BLOCKCHAIN_NAME): void {
     if (!this.providerConnectorService.isProviderActive) {
-      throw new MetamaskError();
+      throw new WalletError();
     }
 
     if (!this.web3PrivateService.address) {
