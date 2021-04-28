@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 
 export interface WalletProvider {
@@ -10,7 +10,8 @@ export interface WalletProvider {
 
 export enum WALLET_NAME {
   METAMASK = 'metamask',
-  WALLET_LINK = 'walletlink'
+  WALLET_LINK = 'walletlink',
+  WALLET_CONNECT = 'walletconnect'
 }
 
 @Component({
@@ -21,8 +22,6 @@ export enum WALLET_NAME {
 })
 export class WalletsModalComponent {
   @ViewChild('modal') modal: TemplateRef<any>;
-
-  private matModal: MatDialogRef<any>;
 
   public readonly providers: WalletProvider[];
 
@@ -40,6 +39,11 @@ export class WalletsModalComponent {
         name: 'Coinbase wallet',
         value: WALLET_NAME.WALLET_LINK,
         img: './assets/images/icons/wallets/coinbase.png'
+      },
+      {
+        name: 'Wallet Connect',
+        value: WALLET_NAME.WALLET_CONNECT,
+        img: './assets/images/icons/wallets/walletconnect.svg'
       }
     ];
   }

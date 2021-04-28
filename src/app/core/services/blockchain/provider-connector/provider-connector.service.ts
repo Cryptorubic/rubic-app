@@ -5,6 +5,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
+import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
 import { Web3PrivateService } from '../web3-private-service/web3-private.service';
 
@@ -93,6 +94,14 @@ export class ProviderConnectorService {
       }
       case WALLET_NAME.METAMASK: {
         this.provider = new MetamaskProvider(
+          this.web3private.web3,
+          this.$networkChangeSubject,
+          this.$addressChangeSubject
+        );
+        break;
+      }
+      case WALLET_NAME.WALLET_CONNECT: {
+        this.provider = new WalletConnectProvider(
           this.web3private.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject
