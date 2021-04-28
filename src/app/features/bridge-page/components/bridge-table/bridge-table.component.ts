@@ -1,38 +1,65 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import date from 'date-and-time';
 import { BridgeService } from 'src/app/features/bridge-page/services/bridge.service';
-import { BridgeTableTransaction } from '../../models/BridgeTableTransaction';
+import { finalize, first } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { RubicError } from '../../../../shared/models/errors/RubicError';
+import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
+import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
+import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
+import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
+import { BridgeTableTrade } from '../../models/BridgeTableTrade';
+import { TRADE_STATUS } from '../../../../core/services/backend/bridge-api/models/TRADE_STATUS';
 
-interface ITableTransactionWithState extends BridgeTableTransaction {
+interface ITableTransactionWithState extends BridgeTableTrade {
   opened: boolean;
+  inProgress?: boolean;
 }
 
 const TRANSACTION_PAGE_SIZE = 5;
+
+enum SORT_FIELD {
+  STATUS = 'Status',
+  FROM = 'From',
+  TO = 'To',
+  SEND = 'Send',
+  GET = 'Get',
+  DATE = 'Date'
+}
 
 @Component({
   selector: 'app-bridge-table',
   templateUrl: './bridge-table.component.html',
   styleUrls: ['./bridge-table.component.scss']
 })
-export class BridgeTableComponent {
+export class BridgeTableComponent implements OnInit, OnDestroy {
   public Blockchains = {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
       label: 'Ethereum',
-      img: 'eth.png',
-      symbolPropName: 'ethSymbol'
+      img: 'eth.png'
     },
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
       label: 'Binance Smart Chain',
-      img: 'bnb.svg',
-      symbolPropName: 'bscSymbol'
+      img: 'bnb.svg'
+    },
+    [BLOCKCHAIN_NAME.POLYGON]: {
+      label: 'Polygon',
+      img: 'polygon.svg'
     }
   };
 
-  /**
-   * Transactions are sorted by date first.
-   */
+  public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
+  public TRADE_STATUS = TRADE_STATUS;
+
+  public SORT_FIELD = SORT_FIELD;
+
+  public readonly WAITING_FOR_RECEIVING_STATUS = 'Waiting for receiving';
+
   public transactions: List<ITableTransactionWithState>;
 
   /**
@@ -42,34 +69,36 @@ export class BridgeTableComponent {
 
   private transactionPages = 1;
 
+  private _transactionsSubscription$: Subscription;
+
   public tableInitLoading = true;
 
   public updateProcess = '';
 
-  public sort = { fieldName: 'date', downDirection: true }; // Date is default to sort by
+  public sortOptions: {
+    field: SORT_FIELD;
+    downDirection: boolean;
+  };
 
-  public selectedOption = 'Date'; // Capitalized sort.fieldName
+  public sortFields = Object.values(SORT_FIELD);
 
-  public options = ['Status', 'From', 'To', 'Spent', 'Expected', 'Date'];
+  public selectedSortField: SORT_FIELD;
 
   public isShowMoreActive = true;
 
-  private minDesktopWidth = 1024;
+  private readonly minDesktopWidth = 1024;
 
   public isDesktop: boolean;
 
-  constructor(private bridgeService: BridgeService) {
-    bridgeService.transactions.subscribe(transactions => {
-      this.transactions = transactions.map(tx => ({ ...tx, opened: false }));
-      this.sort = { fieldName: null, downDirection: null };
-      this.onSortClick('date');
+  public tradeInProgress: boolean = false;
 
-      this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
-      this.checkIsShowMoreActive();
-    });
+  public tradeSuccessId: string;
 
-    this.checkIfDesktop();
-  }
+  constructor(
+    private bridgeService: BridgeService,
+    private dialog: MatDialog,
+    private readonly translateService: TranslateService
+  ) {}
 
   private static sortByDate(a: string, b: string): number {
     const date1 = new Date(date.transform(a, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
@@ -85,51 +114,82 @@ export class BridgeTableComponent {
     return value[0].toUpperCase() + value.slice(1);
   }
 
-  public onUpdate() {
+  ngOnInit(): void {
+    this._transactionsSubscription$ = this.bridgeService.transactions.subscribe(transactions => {
+      if (!transactions) {
+        return;
+      }
+
+      this.transactions = transactions
+        .sort((a, b) => BridgeTableComponent.sortByDate(a.updateTime, b.updateTime))
+        .map(tx => ({
+          ...tx,
+          opened: false
+        }));
+      this.visibleTransactions = this.transactions.slice(0, TRANSACTION_PAGE_SIZE);
+
+      this.sortOptions = {
+        field: null,
+        downDirection: null
+      };
+      this.sortTransactions(SORT_FIELD.DATE);
+
+      this.checkIsShowMoreActive();
+    });
+
+    this.checkIsDesktop();
+  }
+
+  ngOnDestroy() {
+    this._transactionsSubscription$.unsubscribe();
+  }
+
+  public updateTransactionsList() {
     if (!this.updateProcess) {
       this.updateProcess = 'progress';
       this.bridgeService.updateTransactionsList().finally(() => {
         this.updateProcess = 'stop';
         setTimeout(() => {
           this.updateProcess = '';
+          // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1200);
       });
     }
   }
 
-  public onSortClick(fieldName: string) {
-    fieldName = fieldName.toLowerCase();
-
-    if (fieldName === this.sort.fieldName) {
-      this.sort.downDirection = !this.sort.downDirection;
-      this.transactions = this.transactions.reverse();
+  public sortTransactions(field: SORT_FIELD) {
+    if (field === this.sortOptions.field) {
+      this.sortOptions.downDirection = !this.sortOptions.downDirection;
+      this.visibleTransactions = this.visibleTransactions.reverse();
     } else {
-      switch (fieldName) {
-        case 'status':
-          this.transactions = this.transactions.sort((a, b) => (a.status > b.status ? -1 : 1));
-          break;
-        case 'from':
-          this.transactions = this.transactions.sort((a, b) =>
-            a.fromNetwork > b.fromNetwork ? -1 : 1
+      switch (field) {
+        case SORT_FIELD.STATUS:
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
+            a.status > b.status ? -1 : 1
           );
           break;
-        case 'to':
-          this.transactions = this.transactions.sort((a, b) =>
-            a.toNetwork > b.toNetwork ? -1 : 1
+        case SORT_FIELD.FROM:
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
+            a.fromBlockchain > b.fromBlockchain ? -1 : 1
           );
           break;
-        case 'spent':
-          this.transactions = this.transactions.sort((a, b) =>
-            BridgeTableComponent.sortByNumber(a.actualFromAmount, b.actualFromAmount)
+        case SORT_FIELD.TO:
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
+            a.toBlockchain > b.toBlockchain ? -1 : 1
           );
           break;
-        case 'expected':
-          this.transactions = this.transactions.sort((a, b) =>
-            BridgeTableComponent.sortByNumber(a.actualToAmount, b.actualToAmount)
+        case SORT_FIELD.SEND:
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
+            BridgeTableComponent.sortByNumber(parseFloat(a.fromAmount), parseFloat(b.fromAmount))
           );
           break;
-        case 'date':
-          this.transactions = this.transactions.sort((a, b) =>
+        case SORT_FIELD.GET:
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
+            BridgeTableComponent.sortByNumber(parseFloat(a.toAmount), parseFloat(b.toAmount))
+          );
+          break;
+        case SORT_FIELD.DATE:
+          this.visibleTransactions = this.visibleTransactions.sort((a, b) =>
             BridgeTableComponent.sortByDate(a.updateTime, b.updateTime)
           );
           break;
@@ -137,27 +197,21 @@ export class BridgeTableComponent {
           break;
       }
 
-      this.sort.fieldName = fieldName;
-      this.sort.downDirection = true;
-      this.selectedOption = BridgeTableComponent.capitalize(this.sort.fieldName);
+      this.sortOptions = {
+        field,
+        downDirection: true
+      };
+      this.selectedSortField = field;
     }
   }
 
-  public getArrow(fieldName: string) {
-    fieldName = fieldName.toLowerCase();
-    if (fieldName !== this.sort.fieldName) {
-      return 'Arrows.svg';
+  public getArrowImg(field: SORT_FIELD) {
+    if (field !== this.sortOptions.field) {
+      return 'assets/images/bridge/Arrows.svg';
     }
-    return this.sort.downDirection ? 'Arrows-down.svg' : 'Arrows-up.svg';
-  }
-
-  public capitalize(word: string): string {
-    return word[0].toUpperCase() + word.slice(1);
-  }
-
-  @HostListener('window:resize', ['$event'])
-  private checkIfDesktop(): void {
-    this.isDesktop = window.innerWidth > this.minDesktopWidth;
+    return `assets/images/bridge/${
+      this.sortOptions.downDirection ? 'Arrows-down.svg' : 'Arrows-up.svg'
+    }`;
   }
 
   private checkIsShowMoreActive(): void {
@@ -168,6 +222,82 @@ export class BridgeTableComponent {
     this.transactionPages++;
     const end = this.transactionPages * TRANSACTION_PAGE_SIZE;
     this.visibleTransactions = this.transactions.slice(0, end);
+
+    const sortField = this.sortOptions.field;
+    this.sortOptions = {
+      field: null,
+      downDirection: null
+    };
+    this.sortTransactions(sortField);
+
     this.checkIsShowMoreActive();
+  }
+
+  public depositPolygonBridgeTransaction(transaction: BridgeTableTrade): void {
+    if (
+      transaction.status !== this.WAITING_FOR_RECEIVING_STATUS ||
+      transaction.fromBlockchain !== BLOCKCHAIN_NAME.POLYGON
+    ) {
+      return;
+    }
+
+    const burnTransactionHash = transaction.transactionHash;
+    this.setTransactionInProgress(burnTransactionHash, true);
+    const onTransactionHash = () => {
+      this.tradeInProgress = true;
+    };
+    this.bridgeService
+      .depositPolygonTradeAfterCheckpoint(burnTransactionHash, onTransactionHash)
+      .pipe(
+        first(),
+        finalize(() => {
+          this.tradeInProgress = false;
+          this.setTransactionInProgress(burnTransactionHash, false);
+        })
+      )
+      .subscribe(
+        (res: string) => {
+          this.tradeSuccessId = res;
+        },
+        err => {
+          if (!(err instanceof RubicError)) {
+            err = new RubicError(this.translateService);
+          }
+          let data: any = { title: 'Error', descriptionText: err.comment };
+          if (err instanceof MetamaskError) {
+            data.title = 'Warning';
+          }
+          if (err instanceof NetworkError) {
+            data = {
+              title: 'Error',
+              descriptionComponentClass: NetworkErrorComponent,
+              descriptionComponentInputs: { networkError: err }
+            };
+          }
+          this.dialog.open(MessageBoxComponent, {
+            width: '400px',
+            data
+          });
+        }
+      );
+  }
+
+  private setTransactionInProgress(transactionHash: string, inProgress: boolean): void {
+    this.transactions = this.transactions.map(tx => {
+      if (tx.transactionHash === transactionHash) {
+        return {
+          ...tx,
+          inProgress
+        };
+      }
+      return tx;
+    });
+    const end = this.transactionPages * TRANSACTION_PAGE_SIZE;
+    this.visibleTransactions = this.transactions.slice(0, end);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  private checkIsDesktop(): void {
+    this.isDesktop = window.innerWidth > this.minDesktopWidth;
   }
 }

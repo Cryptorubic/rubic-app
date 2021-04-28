@@ -239,7 +239,7 @@
     "progressMessage": "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
     "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
     "tableTitle": "Your cross-chain swaps",
-    "whatIs": "What is Binance Smart Chain?",
+    "whatIs": "What is ",
     "assistanceOf": "With the assistance of"
   },
   "instantTrades": {

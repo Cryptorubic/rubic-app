@@ -9,19 +9,19 @@ import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
-import { NetworkErrorComponent } from '../../../bridge-page/components/network-error/network-error.component';
 import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
-import { TranslateService } from '@ngx-translate/core';
+import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -49,7 +49,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
       imagePath: 'assets/images/icons/coins/bnb.svg'
     },
     {
-      name: BLOCKCHAIN_NAME.MATIC,
+      name: BLOCKCHAIN_NAME.POLYGON,
       label: 'Polygon',
       imagePath: 'assets/images/icons/coins/polygon.svg'
     }
@@ -213,7 +213,6 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     this.tradeData = { ...(await this.orderBookTradeService.setAmountContributed(this.tradeData)) };
     this.tradeData = { ...(await this.orderBookTradeService.setInvestorsNumber(this.tradeData)) };
 
-    // eslint-disable-next-line no-magic-numbers
     setTimeout(() => this.setDynamicData(), 10000);
   }
 

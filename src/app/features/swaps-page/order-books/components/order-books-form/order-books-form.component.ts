@@ -15,10 +15,10 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { Router } from '@angular/router';
 import { OrderBookTradeForm } from '../../models/trade-form';
-import { NetworkErrorComponent } from '../../../../bridge-page/components/network-error/network-error.component';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { OrderBooksFormService } from './services/order-books-form.service';
 import { TokenPart } from '../../../../../shared/models/order-book/tokens';
+import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
 import { TotalSupplyOverflowError } from '../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { TotalSupplyOverflowErrorComponent } from '../../../../../shared/components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 

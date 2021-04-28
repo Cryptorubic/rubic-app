@@ -42,7 +42,7 @@ export abstract class PrivateProvider {
    */
   get address(): string {
     if (!this.isActive) {
-      return undefined;
+      return null;
     }
     return this.getAddress();
   }
@@ -55,7 +55,7 @@ export abstract class PrivateProvider {
    */
   get network(): IBlockchain {
     if (!this.isActive) {
-      return undefined;
+      return null;
     }
     return this.getNetwork();
   }
