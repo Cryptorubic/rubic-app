@@ -8,7 +8,6 @@ interface InstantTradesContract {
   name: string;
   address: string;
   blockchain_network: InstantTradesBlockchainNetwork;
-  abi: object;
 }
 
 interface InstantTradesUser {
