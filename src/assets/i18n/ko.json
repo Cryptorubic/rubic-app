@@ -339,33 +339,35 @@
     "title": "Maintenance",
     "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
   },
-  "adModal": {
-    "text": "바이낸스 스마트 체인 Wrapped Rubic이 출시되었습니다!",
-    "button": "지갑에 BRBC 추가하기"
-  },
-  "gasPriceModal": {
-    "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
-  },
-  "cancelModal": {
-    "text": "The trade was cancelled",
-    "link": "Check transaction on scanner"
-  },
-  "operationModal": {
-    "progress": {
-      "text": "Operation is in progress <br /> Please wait until it is completed"
+  "modal": {
+    "adModal": {
+      "text": "바이낸스 스마트 체인 Wrapped Rubic이 출시되었습니다!",
+      "button": "지갑에 BRBC 추가하기"
     },
-    "success": {
-      "text": "The operation is successful! <br /> This page will be updated automatically <br />",
+    "gasPriceModal": {
+      "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
+    },
+    "cancelModal": {
+      "text": "The trade was cancelled",
       "link": "Check transaction on scanner"
-    }
-  },
-  "tradeModal": {
-    "progress": {
-      "text": "Trade is in progress <br />  Please wait until it is completed"
     },
-    "success": {
-      "text": "Successful swap!",
-      "link": "Check transaction on explorer"
+    "operationModal": {
+      "progress": {
+        "text": "Operation is in progress <br /> Please wait until it is completed"
+      },
+      "success": {
+        "text": "The operation is successful! <br /> This page will be updated automatically <br />",
+        "link": "Check transaction on scanner"
+      }
+    },
+    "tradeModal": {
+      "progress": {
+        "text": "Trade is in progress <br />  Please wait until it is completed"
+      },
+      "success": {
+        "text": "Successful swap!",
+        "link": "Check transaction on explorer"
+      }
     }
   }
 }
