@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://rubic.exchange/api/v1',
+  apiBaseUrl: '//api.rubic.exchange/api',
   bridgeBotUrl: 'bot/bridgeswaps',
   instantTradesBotUrl: 'bot/instanttrades',
   orderBooksBotUrl: 'bot/orderbook'
