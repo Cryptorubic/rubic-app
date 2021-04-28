@@ -1,5 +1,7 @@
 {
   "common": {
+    "from": "From",
+    "to": "To",
     "yes": "예",
     "no": "아니오",
     "any": "어떤",
@@ -11,7 +13,11 @@
     "accept": "동의하기",
     "copyright": "저작권",
     "privacyPolicy": "개인 정보 정책",
-    "close": "닫기"
+    "close": "닫기",
+    "advancedOptions": "고급 옵션",
+    "send": "Send",
+    "left": "Left",
+    "checkOnExplorer": "탐색기에서 확인하기"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -231,16 +237,28 @@
     "title": "Create your cross-chain swap",
     "swapToggleText": "당사 스왑 사용하기",
     "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
-    "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오."
+    "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
+    "tableTitle": "내 크로스-체인 스왑",
+    "whatIs": "바이낸스 스마트 체인이란 무엇인가?",
+    "assistanceOf": "지원"
   },
   "instantTrades": {
     "title": "즉시 거래",
     "gasFeeMessage": "예상 가스 수수료. 거래를 완료하려면 메타마스크에 더 많은 가스를 제공해야 하며, 거래가 완료된 후 추가 가스가 반환됩니다.",
     "notSupportedToken": "선택한 토큰이 지정된 DEX에서 지원되는지 확인하고 나중에 다시 시도하세요.",
-    "bestRate": "최적가"
+    "bestRate": "최적가",
+    "gasFee": "예상 가스 수수료"
   },
   "orderBook": {
-    "title": "오더북"
+    "title": "오더북",
+    "closingTime": "마감 시간(UTC)",
+    "tradeListed": "거래가 메인 페이지에 표시됩니다",
+    "specifyTokens": "고급 옵션을 보려면 토큰과 필요한 금액을 지정하세요.",
+    "minContribution": "최소 참여",
+    "brokerFee": "브로커 수수료",
+    "specifyForBorker": "브로커에 대해 %를 지정할 수 있습니다.",
+    "yourRate": "귀하의 비율은 coingecko 비율보다 ",
+    "coingeckoRate": " 더 높습니다"
   },
   "bridge": {
     "title": "크로스-체인 스왑"
@@ -260,9 +278,13 @@
       "send": "전송",
       "expiresIn": "만료",
       "volume": "거래량",
-      "network": "Network"
+      "network": "Network",
+      "spent": "Spent",
+      "expected": "Expected"
     },
     "noData": "You have no swaps yet",
+    "noTrades": "There are no trades",
+    "noTradesWithSelected": "There are no trades with selected parameters",
     "showData": "Show data",
     "sortBy": "Sort by"
   },
@@ -277,6 +299,7 @@
     "disclaimerTitle": "토큰 안전 경고!",
     "disclaimerText": "높은 수준의 변동성, 해커 공격 및 상대방이 거래를 완료할 때까지 기다려야 하는 시간의 위험과 같은 높은 시스템 위험을 수반하므로 거래 과정에서 각별히 주의하세요.",
     "accumulatedTransactionsVolume": "누적 거래량",
+    "collaborations": "소프트웨어 통합 및 협업",
     "listingRequest": {
       "title": "리스팅 요청",
       "description": "프로젝트가 루빅 플랫폼에 나열되기를 원한다면 Rubic 을 지원하도록 이메일을 보내주십시오.재무(<a href='mailto:support@rubic.finance'>http://support@rubic.com</a>)다음 정보와 함께:",
@@ -289,6 +312,58 @@
         "logo": "PNG 및 SVG 의 로고 링크",
         "why": "루빅을 선택한 이유.교환?"
       }
+    }
+  },
+  "tradePage": {
+    "sent": "Sent",
+    "left": "Left",
+    "investors": "Number of investors",
+    "getBefore": "You will get",
+    "getAfter": "after the trade is complete",
+    "find": "Fill all",
+    "limit": "Min contribution limit:",
+    "fee": "Broker's fee:",
+    "Withdraw": "Withdraw",
+    "rate": "Rate:",
+    "closingDate": "마감일",
+    "closingTime": "마감 시간",
+    "link": "Link To Deal",
+    "copied": "Сopied",
+    "publicDeal": "공개 거래",
+    "brokerAddress": "Broker Address",
+    "notExist": "Such trade doesn't exist."
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+  },
+  "adModal": {
+    "text": "바이낸스 스마트 체인 Wrapped Rubic이 출시되었습니다!",
+    "button": "지갑에 BRBC 추가하기"
+  },
+  "gasPriceModal": {
+    "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
+  },
+  "cancelModal": {
+    "text": "The trade was cancelled",
+    "link": "Check transaction on scanner"
+  },
+  "operationModal": {
+    "progress": {
+      "text": "Operation is in progress <br /> Please wait until it is completed"
+    },
+    "success": {
+      "text": "The operation is successful! <br /> This page will be updated automatically <br />",
+      "link": "Check transaction on scanner"
+    }
+  },
+  "tradeModal": {
+    "progress": {
+      "text": "Trade is in progress <br />  Please wait until it is completed"
+    },
+    "success": {
+      "text": "Successful swap!",
+      "link": "Check transaction on explorer"
     }
   }
 }
