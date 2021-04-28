@@ -1,10 +1,31 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { finalize, first } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { finalize, map, take } from 'rxjs/operators';
 import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { HttpService } from '../http/http.service';
-import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
+import { QueryParamsService } from '../query-params/query-params.service';
+import { UserInterface } from './models/user.interface';
+import { URLS } from './models/user.service.api';
+
+interface BackendUser {
+  isLogout?: boolean;
+  balance: number;
+  eos_balance: number;
+  visibleBalance: string;
+  contracts: number;
+  eos_address: string;
+  id: number;
+  internal_address: string;
+  internal_btc_address: string;
+  is_social: boolean;
+  lang: string;
+  memo: string;
+  use_totp: boolean;
+  username: string;
+  is_ghost?: boolean;
+  is_swaps_admin?: any;
+}
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -34,7 +55,8 @@ export class AuthService {
   constructor(
     private readonly httpService: HttpService,
     private readonly web3Service: Web3PrivateService,
-    private readonly providerConnector: ProviderConnectorService
+    private readonly providerConnector: ProviderConnectorService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.authWithoutBackend = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
@@ -44,11 +66,20 @@ export class AuthService {
         return;
       }
       // user inited, account not authorized on backend or authorized other account
-      if (!this.authWithoutBackend && address && this.user && this.user?.address !== address) {
+      if (
+        this.user !== undefined &&
+        (this.user === null || this.user?.address !== address) &&
+        address
+      ) {
         /* this.$currentUser.next(null);
         this.signIn(); */
-        window.location.reload();
-
+        this.queryParamsService.$isIframe.pipe(take(1)).subscribe(isIframe => {
+          if (isIframe) {
+            this.$currentUser.next({ address });
+          } else {
+            window.location.reload();
+          }
+        });
         // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
       }
       if (this.authWithoutBackend) {
@@ -67,10 +98,19 @@ export class AuthService {
   }
 
   /**
-   * @description Fetch authorized user address or auth message in case there's no authorized user.
+   * @description Fetch user data from backend.
    */
-  private fetchMetamaskLoginBody(): Observable<MetamaskLoginInterface> {
-    return this.httpService.get('metamask/login/', {});
+  private fetchUser(): Observable<UserInterface> {
+    return this.httpService
+      .get(URLS.PROFILE)
+      .pipe(map((user: BackendUser) => ({ address: user.username })));
+  }
+
+  /**
+   * @description Fetch metamask auth message for sign.
+   */
+  private fetchAuthNonce(): Promise<string> {
+    return this.httpService.get('get_metamask_message/').toPromise();
   }
 
   /**
@@ -82,32 +122,25 @@ export class AuthService {
    */
   private sendSignedNonce(address: string, nonce: string, signature: string): Promise<void> {
     return this.httpService
-      .post('metamask/login/', { address, message: nonce, signed_message: signature })
+      .post('metamask/', { address, message: nonce, signed_msg: signature }, URLS.HOSTS.AUTH_PATH)
       .toPromise();
   }
 
   public async loadUser() {
     this.isAuthProcess = true;
-    this.fetchMetamaskLoginBody().subscribe(
-      async metamaskLoginBody => {
-        if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
-          await this.providerConnector.activate();
-
-          const { address } = metamaskLoginBody.payload.user;
-          if (address === this.web3Service.address) {
-            this.$currentUser.next({ address });
-          } else {
-            this.signOut()
-              .pipe(
-                first(),
-                finalize(() => {
-                  this.signIn();
-                })
-              )
-              .subscribe();
-          }
+    this.fetchUser().subscribe(
+      async user => {
+        await this.providerConnector.activate();
+        if (this.web3Service.address !== user.address) {
+          this.signOut()
+            .pipe(
+              finalize(() => {
+                this.signIn();
+              })
+            )
+            .subscribe();
         } else {
-          this.$currentUser.next(null);
+          this.$currentUser.next(user);
         }
         this.isAuthProcess = false;
       },
@@ -132,12 +165,21 @@ export class AuthService {
   }
 
   /**
+   * @description Login user without backend.
+   */
+  public async loginWithoutBackend(): Promise<void> {
+    await this.providerConnector.activate();
+    const { address } = this.web3Service;
+    this.$currentUser.next(address ? { address } : null);
+  }
+
+  /**
    * @description Initiate authentication via metamask.
    */
   public async signIn(): Promise<void> {
     this.isAuthProcess = true;
     await this.providerConnector.activate();
-    const nonce = (await this.fetchMetamaskLoginBody().toPromise()).payload.message;
+    const nonce = await this.fetchAuthNonce();
     const signature = await this.web3Service.signPersonal(nonce);
 
     await this.sendSignedNonce(this.web3Service.address, nonce, signature);
@@ -146,15 +188,19 @@ export class AuthService {
     this.isAuthProcess = false;
   }
 
+  public async signInWithoutBackend(): Promise<void> {
+    this.isAuthProcess = true;
+    await this.providerConnector.activate();
+    const { address } = this.web3Service;
+    this.$currentUser.next({ address } || null);
+    this.isAuthProcess = false;
+  }
+
   /**
    * @description Logout request to backend.
    */
   public signOut(): Observable<void> {
-    if (this.authWithoutBackend) {
-      this.$currentUser.next(null);
-      return of(this.providerConnector.deActivate());
-    }
-    return this.httpService.get('metamask/logout/', {}).pipe(
+    return this.httpService.get(URLS.LOGOUT, {}, URLS.HOSTS.AUTH_PATH).pipe(
       finalize(() => {
         this.$currentUser.next(null);
         this.providerConnector.deActivate();

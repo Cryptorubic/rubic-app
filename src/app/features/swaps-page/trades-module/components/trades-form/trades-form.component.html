@@ -4,7 +4,7 @@
         <li
           class="tab tab_blockchain tab_active"
           *ngFor="let blockchain of BLOCKCHAINS"
-          [ngClass]="{ tab_active: selectedBlockchain === blockchain.name }"
+          [ngClass]="{ tab_active: selectedBlockchain === blockchain.name, 'display-none': ($hiddenNetworks | async)?.includes(blockchain.name) }"
           (click)="selectBlockchain(blockchain.name)"
         >
           <img [src]="blockchain.image" alt="" />

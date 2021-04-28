@@ -20,6 +20,8 @@ import { AuthService } from '../../../../../services/auth/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserProfileComponent implements AfterViewInit, OnDestroy {
+  private clicks: number = 0;
+
   public readonly $isConfirmModalOpened: Observable<boolean>;
 
   public readonly $isMobile: Observable<boolean>;
@@ -63,6 +65,15 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this._onNetworkChanges$.unsubscribe();
     this._onAddressChanges$.unsubscribe();
+  }
+
+  public useTestingMode(): void {
+    this.clicks++;
+    const neededClicksAmount = 5;
+    if (this.clicks >= neededClicksAmount) {
+      this.clicks = 0;
+      (window as any).useTestingMode();
+    }
   }
 
   public toggleConfirmModal(): void {

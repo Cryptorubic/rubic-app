@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
@@ -27,7 +26,7 @@ export class MetamaskProvider extends PrivateProvider {
   }
 
   get isActive(): boolean {
-    return this.isEnabled && !!this._metaMask?.selectedAddress;
+    return this.isEnabled && !!this.selectedAddress;
   }
 
   constructor(
@@ -52,7 +51,7 @@ export class MetamaskProvider extends PrivateProvider {
         this.selectedChain = chain;
         chainChange.next(BlockchainsInfo.getBlockchainById(chain));
       });
-      this._metaMask.request({ method: 'eth_accounts' }).then((accounts: string) => {
+      this._metaMask.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
         [this.selectedAddress] = accounts;
         accountChange.next(this.selectedAddress);
       });
@@ -67,6 +66,7 @@ export class MetamaskProvider extends PrivateProvider {
 
       this._metaMask.on('accountsChanged', (accounts: string[]) => {
         [this.selectedAddress] = accounts;
+        this.selectedAddress = this.selectedAddress || null;
         if (this.isEnabled) {
           accountChange.next(this.selectedAddress);
           console.info('Selected account changed to', accounts[0]);
@@ -81,12 +81,14 @@ export class MetamaskProvider extends PrivateProvider {
     if (this.isEnabled) {
       return this.selectedAddress;
     }
+    return null;
   }
 
   protected getNetwork(): IBlockchain {
     if (this.isEnabled) {
       return this.selectedChain ? BlockchainsInfo.getBlockchainById(this.selectedChain) : undefined;
     }
+    return null;
   }
 
   public async activate(): Promise<void> {
@@ -102,8 +104,8 @@ export class MetamaskProvider extends PrivateProvider {
   }
 
   public deActivate(): void {
-    this.onAddressChanges.next(undefined);
-    this.onNetworkChanges.next(undefined);
+    this.onAddressChanges.next(null);
+    this.onNetworkChanges.next(null);
     this.isEnabled = false;
   }
 
