@@ -5,15 +5,13 @@
     </p>
 
     <div class="high-gas-price-modal__buttons buttons">
-      <button class="buttons__button buttons__button_cancel" (click)="onCancel.emit()">
-        <img src="assets/images/icons/arrow/arrow-right-white.svg" alt="" />
-        Cancel
-      </button>
+      <app-primary-button
+        label="Cancel"
+        backgroundColor="grey"
+        (onClick)="onCancel.emit()"
+      ></app-primary-button>
 
-      <button class="buttons__button buttons__button_confirm" (click)="onConfirm.emit()">
-        <img src="assets/images/icons/arrow/arrow-right-white.svg" alt="" />
-        Confirm
-      </button>
+      <app-primary-button label="Confirm" (onClick)="onConfirm.emit()"></app-primary-button>
     </div>
   </div>
 </app-modal>
