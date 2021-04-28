@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { finalize, first } from 'rxjs/operators';
 import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
@@ -52,6 +52,7 @@ export class AuthService {
         // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
       }
       if (this.authWithoutBackend) {
+        this.web3Service.address = address;
         this.$currentUser.next({ address });
       }
     });
@@ -117,13 +118,16 @@ export class AuthService {
   public async signinWithotuBackend(): Promise<void> {
     this.authWithoutBackend = true;
     try {
-      await this.providerConnector.activate();
-      this.web3Service.address = this.providerConnector.address;
-      this.$currentUser.next({ address: this.providerConnector.address });
-      this.isAuthProcess = false;
+      if (localStorage.getItem('provider')) {
+        await this.providerConnector.activate();
+        this.web3Service.address = this.providerConnector.address;
+        this.$currentUser.next({ address: this.providerConnector.address });
+        this.isAuthProcess = false;
+      } else {
+        this.$currentUser.next(null);
+      }
     } catch (error) {
       console.error(error);
-      this.$currentUser.next(null);
     }
   }
 
@@ -145,7 +149,11 @@ export class AuthService {
   /**
    * @description Logout request to backend.
    */
-  public signOut(): Observable<string> {
+  public signOut(): Observable<void> {
+    if (this.authWithoutBackend) {
+      this.$currentUser.next(null);
+      return of(this.providerConnector.deActivate());
+    }
     return this.httpService.get('metamask/logout/', {}).pipe(
       finalize(() => {
         this.$currentUser.next(null);
