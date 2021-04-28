@@ -258,6 +258,8 @@
     "brokerFee": "브로커 수수료",
     "specifyForBorker": "브로커에 대해 %를 지정할 수 있습니다.",
     "yourRate": "귀하의 비율은 coingecko 비율보다 ",
+    "higher": "higher",
+    "lower": "lower",
     "coingeckoRate": " 더 높습니다"
   },
   "bridge": {

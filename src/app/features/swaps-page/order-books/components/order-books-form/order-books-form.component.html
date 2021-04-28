@@ -57,7 +57,9 @@
                 {{
                   (tokensRate.abs().toFixed(2) | number) +
                     '% ' +
-                    (tokensRate.isGreaterThan(0) ? 'higher' : 'lower')
+                    (tokensRate.isGreaterThan(0)
+                      ? ('orderBook.higher' | translate)
+                      : ('orderBook.lower' | translate))
                 }}
 
                 <div class="tokens-rate__info tokens-rate-info">

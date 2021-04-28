@@ -1,5 +1,7 @@
 {
   "common": {
+    "from": "From",
+    "to": "To",
     "yes": "是的",
     "no": "没有",
     "any": "Any",
@@ -11,7 +13,11 @@
     "accept": "接受",
     "copyright": "版权",
     "privacyPolicy": "隐私政策",
-    "close": "关闭"
+    "close": "关闭",
+    "advancedOptions": "高級選項",
+    "send": "发送",
+    "left": "离开",
+    "checkOnExplorer": "在Explorer上查看"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -231,19 +237,33 @@
     "title": "Create your cross-chain swap",
     "swapToggleText": "Use our swaps",
     "progressMessage": "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
-    "successMessage": "跨链交换的过程已经开始。请等待双方区块链完成交易。"
+    "successMessage": "跨链交换的过程已经开始。请等待双方区块链完成交易。",
+    "tableTitle": "Your cross-chain swaps",
+    "whatIs": "What is Binance Smart Chain?",
+    "assistanceOf": "With the assistance of"
   },
   "instantTrades": {
     "title": "支持即时交易",
     "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",
     "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
-    "bestRate": "Best Rate"
+    "bestRate": "Best Rate",
+    "gasFee": "gas费用估计值"
   },
   "orderBook": {
-    "title": "订单簿"
+    "title": "订单簿",
+    "closingTime": "關閉時間（UTC）",
+    "tradeListed": "交易將在主頁上列出",
+    "specifyTokens": "請指定令牌和所需金額以查看高級選項",
+    "minContribution": "最低供款",
+    "brokerFee": "中介費",
+    "specifyForBorker": "您可以為經紀人指定％",
+    "yourRate": "你的价格为 ",
+    "higher": "higher",
+    "lower": "lower",
+    "coingeckoRate": " 比 coingecko 价格"
   },
   "bridge": {
-    "title": "Cross-Chain Swaps"
+    "title": "跨鏈掉期"
   },
   "myTrades": {
     "title": "我的行业"
@@ -260,9 +280,13 @@
       "send": "发送",
       "expiresIn": "有效期",
       "volume": "体积",
-      "network": "网络"
+      "network": "网络",
+      "spent": "Spent",
+      "expected": "Expected"
     },
     "noData": "You have no swaps yet",
+    "noTrades": "There are no trades",
+    "noTradesWithSelected": "There are no trades with selected parameters",
     "showData": "Show data",
     "sortBy": "Sort by"
   },
@@ -277,6 +301,7 @@
     "disclaimerTitle": "代币安全警报!",
     "disclaimerText": "在整个交易过程中都请保持高度谨慎，交易过程涉及较高的系统风险，例如剧烈的波动、黑客攻击，以及必须等待对方完成交易所导致的相关时效性风险。",
     "accumulatedTransactionsVolume": "Accumulated Transactions Volume",
+    "collaborations": "Software Integrations And Collaborations With",
     "listingRequest": {
       "title": "上市要求",
       "description": "如果您希望您的项目在Rubic平台上列出，请发送电子邮件至support@rubic。金融(<a href='mailto:support@rubic.finance'>http://support@rubic</a>。财务/）与以下信息:",
@@ -289,6 +314,58 @@
         "logo": "链接到PNG和SVG中的徽标",
         "why": "为什么你选择Rubic。交换？"
       }
+    }
+  },
+  "tradePage": {
+    "sent": "Sent",
+    "left": "Left",
+    "investors": "Number of investors",
+    "getBefore": "交易完成后，你将获得",
+    "getAfter": "",
+    "find": "交割全部",
+    "limit": "最低出资限额",
+    "fee": "经纪商佣金：",
+    "Withdraw": "退款",
+    "rate": "价格：",
+    "closingDate": "结束日期",
+    "closingTime": "结束时间",
+    "link": "交易链接",
+    "copied": "Сopied",
+    "publicDeal": "公開交易",
+    "brokerAddress": "經紀人地址",
+    "notExist": "Such trade doesn't exist."
+  },
+  "maintenance": {
+    "title": "Maintenance",
+    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+  },
+  "adModal": {
+    "text": "Binance Smart Chain Wrapped Rubic is live now!",
+    "button": "Add BRBC to the wallet"
+  },
+  "gasPriceModal": {
+    "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
+  },
+  "cancelModal": {
+    "text": "交易已被取消",
+    "link": "Check transaction on scanner"
+  },
+  "operationModal": {
+    "progress": {
+      "text": "Operation is in progress <br /> Please wait until it is completed"
+    },
+    "success": {
+      "text": "The operation is successful! <br /> This page will be updated automatically <br />",
+      "link": "Check transaction on scanner"
+    }
+  },
+  "tradeModal": {
+    "progress": {
+      "text": "Trade is in progress <br />  Please wait until it is completed"
+    },
+    "success": {
+      "text": "Successful swap!",
+      "link": "Check transaction on explorer"
     }
   }
 }

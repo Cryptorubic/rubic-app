@@ -258,6 +258,8 @@
     "brokerFee": "Broker Fee",
     "specifyForBorker": "You can specify % for Broker",
     "yourRate": "Su tasa de intercambio es ",
+    "higher": "higher",
+    "lower": "lower",
     "coingeckoRate": " más rentable que la de coingecko"
   },
   "bridge": {

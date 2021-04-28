@@ -258,6 +258,8 @@
     "brokerFee": "Broker Fee",
     "specifyForBorker": "You can specify % for Broker",
     "yourRate": "Your rate is ",
+    "higher": "higher",
+    "lower": "lower",
     "coingeckoRate": " than coingecko rate"
   },
   "bridge": {
