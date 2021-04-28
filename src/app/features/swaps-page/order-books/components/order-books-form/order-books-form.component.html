@@ -31,12 +31,12 @@
             <app-custom-token-form
               type="from"
               [isSectionOpened]="tradeParameters?.isCustomFromTokenFormOpened"
-              (isSectionOpenedChange)="setIsCustomTokenFormOpened('base', $event)"
+              (isSectionOpenedChange)="setIsCustomTokenFormOpened('from', $event)"
               [blockchain]="blockchain"
               [tokenAddress]="tradeParameters?.customFromTokenAddress"
-              (tokenAddressChange)="setCustomTokenAddress('base', $event)"
-              (tokenIsValidated)="updateCustomToken('base', $event)"
-              (addToken)="addCustomToken('base')"
+              (tokenAddressChange)="setCustomTokenAddress('from', $event)"
+              (tokenIsValidated)="updateCustomToken('from', $event)"
+              (addToken)="addCustomToken('from')"
             ></app-custom-token-form>
           </div>
         </div>
@@ -98,12 +98,12 @@
             <app-custom-token-form
               type="to"
               [isSectionOpened]="tradeParameters?.isCustomToTokenFormOpened"
-              (isSectionOpenedChange)="setIsCustomTokenFormOpened('quote', $event)"
+              (isSectionOpenedChange)="setIsCustomTokenFormOpened('to', $event)"
               [blockchain]="blockchain"
               [tokenAddress]="tradeParameters?.customToTokenAddress"
-              (tokenAddressChange)="setCustomTokenAddress('quote', $event)"
-              (tokenIsValidated)="updateCustomToken('quote', $event)"
-              (addToken)="addCustomToken('quote')"
+              (tokenAddressChange)="setCustomTokenAddress('to', $event)"
+              (tokenIsValidated)="updateCustomToken('to', $event)"
+              (addToken)="addCustomToken('to')"
             ></app-custom-token-form>
           </div>
         </div>

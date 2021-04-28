@@ -9,7 +9,7 @@
   <mat-autocomplete
     #autoFrom="matAutocomplete"
     [panelWidth]="tokensHostWidth"
-    (optionSelected)="selectToken($event, 'base')"
+    (optionSelected)="selectToken($event, 'from')"
   >
     <cdk-virtual-scroll-viewport
       class="coins-filter-form__virtual-scroll"
@@ -49,7 +49,7 @@
   <mat-autocomplete
     #autoTo="matAutocomplete"
     [panelWidth]="tokensHostWidth"
-    (optionSelected)="selectToken($event, 'quote')"
+    (optionSelected)="selectToken($event, 'to')"
   >
     <cdk-virtual-scroll-viewport
       class="coins-filter-form__virtual-scroll"
