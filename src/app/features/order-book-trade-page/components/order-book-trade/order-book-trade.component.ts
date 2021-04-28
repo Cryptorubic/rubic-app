@@ -9,6 +9,7 @@ import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MatDialog } from '@angular/material/dialog';
+import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';

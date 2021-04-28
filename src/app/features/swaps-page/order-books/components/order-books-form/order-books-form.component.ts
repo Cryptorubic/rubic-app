@@ -14,6 +14,7 @@ import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { Router } from '@angular/router';
+import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
 import { OrderBookTradeForm } from '../../models/trade-form';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { OrderBooksFormService } from './services/order-books-form.service';
