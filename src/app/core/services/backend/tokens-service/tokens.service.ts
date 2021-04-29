@@ -12,8 +12,6 @@ import { BackendToken } from './models/BackendToken';
   providedIn: 'root'
 })
 export class TokensService {
-  public static readonly maxRankValue = 999999999;
-
   private getTokensUrl = 'tokens/';
 
   public tokens: BehaviorSubject<List<SwapToken>> = new BehaviorSubject(List([]));
@@ -36,7 +34,7 @@ export class TokensService {
       address: token.address,
       decimals: token.decimals,
       image: token.image,
-      rank: token.rank || TokensService.maxRankValue,
+      rank: token.rank,
       price: token.usd_price
     }));
   }
