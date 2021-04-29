@@ -18,7 +18,7 @@ import { OrderBookTradeApi } from './types/trade-api';
 import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/models/trade-form';
 import { OrderBookCommonService } from '../../order-book-common/order-book-common.service';
 import { environment } from '../../../../../environments/environment';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { FROM_BACKEND_BLOCKCHAINS } from '../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 interface PublicSwapsResponse extends OrderBookTradeApi {
   memo_contract: string;
@@ -51,9 +51,7 @@ export class OrderBookApiService {
 
   public getTradeData(uniqueLink: string): Observable<OrderBookTradeData> {
     return this.httpService
-      .get('get_swap3_for_unique_link/', {
-        unique_link: uniqueLink
-      })
+      .get(`get_swap3_for_unique_link/${uniqueLink}`)
       .pipe(
         switchMap((tradeApi: OrderBookTradeApi) =>
           from(this.tradeApiToTradeData(tradeApi, uniqueLink))
@@ -85,18 +83,6 @@ export class OrderBookApiService {
     tradeApi: OrderBookTradeApi | PublicSwapsResponse,
     uniqueLink: string
   ): Promise<OrderBookTradeData> {
-    let blockchain;
-    switch (tradeApi.network) {
-      case 1:
-        blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-        break;
-      case 22:
-        blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
-        break;
-      default:
-        blockchain = BLOCKCHAIN_NAME.POLYGON;
-    }
-
     const tradeData = {
       memo: (<OrderBookTradeApi>tradeApi).memo ?? (<PublicSwapsResponse>tradeApi).memo_contract,
       contractAddress: tradeApi.contract_address,
@@ -106,7 +92,7 @@ export class OrderBookApiService {
         base: undefined,
         quote: undefined
       },
-      blockchain,
+      blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.network],
       expirationDate: moment.utc(tradeApi.stop_date),
       isPublic: tradeApi.public,
       isWithBrokerFee: tradeApi.broker_fee,
