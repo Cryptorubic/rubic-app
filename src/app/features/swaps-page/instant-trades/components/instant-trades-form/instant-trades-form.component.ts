@@ -592,4 +592,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         });
       });
   }
+
+  public onCloseModal() {
+    this.calculateBestRate();
+  }
 }
