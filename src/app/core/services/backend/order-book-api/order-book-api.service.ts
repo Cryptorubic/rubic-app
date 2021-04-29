@@ -17,8 +17,8 @@ import { Web3PublicService } from '../../blockchain/web3-public-service/web3-pub
 import { OrderBookTradeApi } from './types/trade-api';
 import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/models/trade-form';
 import { OrderBookCommonService } from '../../order-book-common/order-book-common.service';
-import { environment } from '../../../../../environments/environment';
 import { FROM_BACKEND_BLOCKCHAINS } from '../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { BOT_URL } from '../constants/BOT_URL';
 
 interface PublicSwapsResponse extends OrderBookTradeApi {
   memo_contract: string;
@@ -163,7 +163,7 @@ export class OrderBookApiService {
       symbolTo: tradeForm.token.quote.symbol
     };
 
-    this.httpService.post(`${environment.orderBooksBotUrl}/create`, tradeBot).subscribe();
+    this.httpService.post(`${BOT_URL.ORDER_BOOKS}/create`, tradeBot).subscribe();
   }
 
   public notifyOrderBooksBotOnContribute(
@@ -185,7 +185,7 @@ export class OrderBookApiService {
       symbol: token.symbol
     };
 
-    this.httpService.post(`${environment.orderBooksBotUrl}/contribute`, tradeBot).subscribe();
+    this.httpService.post(`${BOT_URL.ORDER_BOOKS}/contribute`, tradeBot).subscribe();
   }
 
   public notifyOrderBooksBotOnWithdraw(
@@ -205,6 +205,6 @@ export class OrderBookApiService {
       symbol: token.symbol
     };
 
-    this.httpService.post(`${environment.orderBooksBotUrl}/contribute`, tradeBot).subscribe();
+    this.httpService.post(`${BOT_URL.ORDER_BOOKS}/contribute`, tradeBot).subscribe();
   }
 }

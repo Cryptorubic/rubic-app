@@ -1,12 +1,12 @@
 {
   "/api": {
-    "target": "https://dev2.rubic.exchange",
+    "target": "https://dev-api.rubic.exchange",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/rest-auth": {
-    "target": "https://dev2.rubic.exchange",
+    "target": "https://dev-api.rubic.exchange",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from '../../../../features/bridge-page/models/BridgeTrade';
@@ -9,6 +8,7 @@ import {
   BridgeTableTradeApi
 } from '../../../../features/bridge-page/models/BridgeTableTrade';
 import { TRADE_STATUS } from './models/TRADE_STATUS';
+import { BOT_URL } from '../constants/BOT_URL';
 
 @Injectable({
   providedIn: 'root'
@@ -189,7 +189,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post(environment.bridgeBotUrl, body).subscribe(
+      this.httpService.post(BOT_URL.BRIDGES, body).subscribe(
         () => {
           resolve();
         },

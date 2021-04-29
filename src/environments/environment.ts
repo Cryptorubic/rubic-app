@@ -4,10 +4,7 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: '//dev-api.rubic.exchange/api',
-  bridgeBotUrl: 'bot/bridgeswaps',
-  instantTradesBotUrl: 'bot/instanttrades',
-  orderBooksBotUrl: 'bot/orderbook'
+  apiBaseUrl: '//dev-api.rubic.exchange/api'
 };
 
 /*
