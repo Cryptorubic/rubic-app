@@ -160,7 +160,7 @@
             {{ toWalletAddress }}
           </a>
 
-          <div class="choose-blockchains__title">{{ 'common.get' | translate }}</div>
+          <div class="choose-blockchains__title">{{ 'common.want' | translate }}</div>
           <div class="choose-blockchains__get">
             <span>
               {{ this.toNumber | bigNumberFormat }}
@@ -198,7 +198,7 @@
           </div>
 
           <div class="choose-blockchains__address-info">
-            You will get {{ toBlockchain.name }} tokens to the selected address
+            {{ 'bridgePage.getTokens' | translate: { toBlockchainName: toBlockchain.name } }}
           </div>
 
           <a
@@ -215,7 +215,8 @@
               getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
                 ? 'Binance Smart Chain'
                 : 'Polygon'
-            }}?
+            }}
+            {{ 'bridgePage.whatIsAfter' | translate }} ?
           </a>
         </div>
       </div>

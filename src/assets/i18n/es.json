@@ -17,7 +17,14 @@
     "advancedOptions": "Opciones Avanzadas",
     "send": "Send",
     "left": "Left",
-    "checkOnExplorer": "Verifique en el Explorador"
+    "checkOnExplorer": "Verifique en el Explorador",
+    "useCustomToken": "Utiliza un token personalizado",
+    "cancel": "Cancel",
+    "add": "Add",
+    "via": "Via",
+    "contractAddress": "Token Contract Address",
+    "enterAmount": "Ingresa el monto",
+    "chooseToken": "Choose Token"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
@@ -239,15 +246,18 @@
     "progressMessage": "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
     "successMessage": "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",
     "tableTitle": "Sus intercambios entre plataformas",
-    "whatIs": "¿Qué es Binance Smart Chain? ",
-    "assistanceOf": "Con la ayuda de"
+    "whatIs": "¿Qué es ",
+    "whatIsAfter": "",
+    "assistanceOf": "Con la ayuda de",
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
   },
   "instantTrades": {
     "title": "Intercambios instantáneos",
     "gasFeeMessage": "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
     "notSupportedToken": "Por favor asegúrese que el token seleccionado sea compatible con la DEX elegida e intente nuevamente más adelante.",
     "bestRate": "Mejor Tasa",
-    "gasFee": "Costo de tarifas estimado:"
+    "gasFee": "Costo de tarifas estimado:",
+    "useOptimization": "Use Rubic optimization"
   },
   "orderBook": {
     "title": "Libro de Órdenes",

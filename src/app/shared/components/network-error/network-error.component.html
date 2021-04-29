@@ -1,1 +1,3 @@
-<span>{{ 'errors.wrongNetwork' | translate: '{ networkToChoose:"' + networkError.networkToChoose + '"}' }}</span>
+<span>{{
+  'errors.wrongNetwork' | translate: { networkToChoose: networkError.networkToChoose }
+}}</span>

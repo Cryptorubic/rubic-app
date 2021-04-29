@@ -7,7 +7,7 @@
     "any": "Any",
     "error": "Error",
     "have": "You have",
-    "get": "You get",
+    "want": "You get",
     "confirm": "Confirm",
     "copy": "Copy",
     "accept": "Accept",
@@ -17,7 +17,14 @@
     "advancedOptions": "Advanced Options",
     "send": "Send",
     "left": "Left",
-    "checkOnExplorer": "Check on Explorer"
+    "checkOnExplorer": "Check on Explorer",
+    "useCustomToken": "Use custom token",
+    "cancel": "Cancel",
+    "add": "Add",
+    "via": "Via ",
+    "contractAddress": "Token Contract Address",
+    "enterAmount": "Enter amount",
+    "chooseToken": "Choose Token"
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
@@ -240,14 +247,17 @@
     "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
     "tableTitle": "Your cross-chain swaps",
     "whatIs": "What is ",
-    "assistanceOf": "With the assistance of"
+    "whatIsAfter": "",
+    "assistanceOf": "With the assistance of",
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
   },
   "instantTrades": {
     "title": "Instant Trades",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
     "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
     "bestRate": "Best Rate",
-    "gasFee": "Estimated gas fee"
+    "gasFee": "Estimated gas fee",
+    "useOptimization": "Use Rubic optimization"
   },
   "orderBook": {
     "title": "Order Book",

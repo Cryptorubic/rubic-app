@@ -17,7 +17,14 @@
     "advancedOptions": "고급 옵션",
     "send": "Send",
     "left": "Left",
-    "checkOnExplorer": "탐색기에서 확인하기"
+    "checkOnExplorer": "탐색기에서 확인하기",
+    "useCustomToken": "맞춤형 토큰 사용",
+    "cancel": "Cancel",
+    "add": "Add",
+    "via": "Via",
+    "contractAddress": "Token Contract Address",
+    "enterAmount": "금액을 입력하세요",
+    "chooseToken": "Choose Token"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -239,15 +246,18 @@
     "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
     "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
     "tableTitle": "내 크로스-체인 스왑",
-    "whatIs": "바이낸스 스마트 체인이란 무엇인가?",
-    "assistanceOf": "지원"
+    "whatIs": "What is ",
+    "whatIsAfter": "",
+    "assistanceOf": "지원",
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
   },
   "instantTrades": {
     "title": "즉시 거래",
     "gasFeeMessage": "예상 가스 수수료. 거래를 완료하려면 메타마스크에 더 많은 가스를 제공해야 하며, 거래가 완료된 후 추가 가스가 반환됩니다.",
     "notSupportedToken": "선택한 토큰이 지정된 DEX에서 지원되는지 확인하고 나중에 다시 시도하세요.",
     "bestRate": "최적가",
-    "gasFee": "예상 가스 수수료"
+    "gasFee": "예상 가스 수수료",
+    "useOptimization": "Use Rubic optimization"
   },
   "orderBook": {
     "title": "오더북",

@@ -17,7 +17,14 @@
     "advancedOptions": "Дополнительные Опции",
     "send": "Отправить",
     "left": "Left",
-    "checkOnExplorer": "Check on Explorer"
+    "checkOnExplorer": "Check on Explorer",
+    "useCustomToken": "Использовать пользовательский токен",
+    "cancel": "Отмена",
+    "add": "Добавить",
+    "via": "Via",
+    "contractAddress": "Token Contract Address",
+    "enterAmount": "Введите количество",
+    "chooseToken": "Выберите токен"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -239,15 +246,18 @@
     "progressMessage": "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
     "successMessage": "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами.",
     "tableTitle": "Ваши кросс-чейн обмены",
-    "whatIs": "Что такое Binance Smart Chain?",
-    "assistanceOf": "С помощью"
+    "whatIs": "Что такое ",
+    "whatIsAfter": "",
+    "assistanceOf": "С помощью",
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
   },
   "instantTrades": {
     "title": "Мгновенные сделки",
     "gasFeeMessage": "Приблизительный размер платы за газ. Для завершения сделки потребуется предоставить больше газа в Метамаске, дополнительный газ будет возвращен вам после завершения сделки.",
     "notSupportedToken": "Пожалуйста, убедитесь, что выбранный токен поддерживается на указанном DEX, и повторите попытку позже.",
     "bestRate": "Лучший курс",
-    "gasFee": "Приблизительный газ:"
+    "gasFee": "Приблизительный газ:",
+    "useOptimization": "Use Rubic optimization"
   },
   "orderBook": {
     "title": "Order Book",

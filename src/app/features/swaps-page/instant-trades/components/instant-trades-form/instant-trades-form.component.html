@@ -94,7 +94,7 @@
           }"
         >
           <div class="selection-block__header" *ngIf="index === 0">
-            <div class="selection-block__label">{{ 'common.get' | translate }}</div>
+            <div class="selection-block__label">{{ 'common.want' | translate }}</div>
 
             <div *ngIf="toToken?.address" class="selection-block__scanner">
               <app-scanner-link
@@ -177,7 +177,9 @@
           <app-primary-button
             type="button"
             [label]="
-              ($isIframe | async) ? 'Swap' : 'Via ' + tradeController.tradeProviderInfo.label
+              ($isIframe | async)
+                ? 'Swap'
+                : ('common.via' | translate) + tradeController.tradeProviderInfo.label
             "
             [disabled]="
               !(

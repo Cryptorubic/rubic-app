@@ -4,7 +4,7 @@
     "to": "To",
     "yes": "是的",
     "no": "没有",
-    "any": "Any",
+    "any": "任何",
     "error": "任何",
     "have": "你有",
     "want": "你想得到",
@@ -17,7 +17,14 @@
     "advancedOptions": "高級選項",
     "send": "发送",
     "left": "离开",
-    "checkOnExplorer": "在Explorer上查看"
+    "checkOnExplorer": "在Explorer上查看",
+    "useCustomToken": "使用自定义代币",
+    "cancel": "取消",
+    "add": "添加",
+    "via": "Via",
+    "contractAddress": "代币合约地址",
+    "enterAmount": "输入金额",
+    "chooseToken": "选择币种"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -57,15 +64,15 @@
       },
       "3": {
         "title": "Pools",
-        "description": "Create pools for DEXs by having 1 token (upcoming)."
+        "description": "通过只有1个令牌为DEXs创建池子。"
       },
       "4": {
         "title": "农耕",
-        "description": "If you provide liquidity for trades, you will be rewarded by RBC tokens when the trade is executed (upcoming)."
+        "description": "如果你为交易提供流动性 当交易被执行时，你将得到Rubic代币的奖励。"
       },
       "5": {
         "title": "Limit Order",
-        "description": "设置所需的费率，当DEX之一满足这些要求时，交易将被执行"
+        "description": "设置所需的费率，当DEX之一满足这些要求时，交易将被执行。"
       }
     },
     "features": {
@@ -239,15 +246,18 @@
     "progressMessage": "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
     "successMessage": "跨链交换的过程已经开始。请等待双方区块链完成交易。",
     "tableTitle": "Your cross-chain swaps",
-    "whatIs": "What is Binance Smart Chain?",
-    "assistanceOf": "With the assistance of"
+    "whatIs": "",
+    "whatIsAfter": "是什么",
+    "assistanceOf": "With the assistance of",
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
   },
   "instantTrades": {
     "title": "支持即时交易",
     "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",
     "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
     "bestRate": "Best Rate",
-    "gasFee": "gas费用估计值"
+    "gasFee": "gas费用估计值",
+    "useOptimization": "Use Rubic optimization"
   },
   "orderBook": {
     "title": "订单簿",
@@ -317,9 +327,9 @@
     }
   },
   "tradePage": {
-    "sent": "Sent",
-    "left": "Left",
-    "investors": "Number of investors",
+    "sent": "发送",
+    "left": "左",
+    "investors": "投资者人数",
     "getBefore": "交易完成后，你将获得",
     "getAfter": "",
     "find": "交割全部",
