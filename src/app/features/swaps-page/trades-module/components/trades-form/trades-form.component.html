@@ -5,7 +5,7 @@
           class="tab tab_blockchain tab_active"
           *ngFor="let blockchain of BLOCKCHAINS"
           [ngClass]="{ tab_active: selectedBlockchain === blockchain.name, 'display-none': ($hiddenNetworks | async)?.includes(blockchain.name) }"
-          (click)="selectBlockchain(blockchain.name)"
+          (click)="this.selectedBlockchain = blockchain.name"
         >
           <img [src]="blockchain.image" alt="" />
           <span>{{ blockchain.label }}</span>
@@ -16,7 +16,7 @@
           class="tab tab_mode"
           *ngFor="let mode of MODES"
           [ngClass]="{ tab_active: selectedMode === mode.name }"
-          (click)="selectMode(mode.name)"
+          (click)="this.selectedMode = mode.name"
         >
           <span>{{ mode.label }}</span>
           <img [src]="selectedMode === mode.name ? mode.imageActive : mode.imageNotActive" alt="" />
