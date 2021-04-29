@@ -84,7 +84,7 @@
           class="selection-block"
           [ngClass]="{
             'selection-block_best':
-              (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
+              (tradeController.isBestRate && trades.length > 1) ||
               (index === 0 && !hasBestRate)
           }"
         >
@@ -175,7 +175,7 @@
           [ngClass]="{
             'instant-trade-button_second': index === 1,
             'instant-trade-button_best':
-              (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
+              (tradeController.isBestRate && trades.length > 1) ||
               (index === 0 && !hasBestRate)
           }"
         >
@@ -230,6 +230,5 @@
   *ngIf="selectedTradeState === TRADE_STATUS.COMPLETED"
   [transactionId]="transactionHash"
   [blockchainName]="blockchain"
-  (onClose)="onCloseModal()"
 >
 </app-trade-success-modal>
