@@ -594,6 +594,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public onCloseModal() {
-    this.trades = this.trades.map(trade => ({ ...trade, isBestRate: false }));
+    this.calculateTradeParameters();
   }
 }
