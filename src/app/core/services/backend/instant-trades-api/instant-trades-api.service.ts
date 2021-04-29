@@ -23,7 +23,8 @@ export class InstantTradesApiService {
       amountFrom: trade.from.amount,
       amountTo: trade.to.amount,
       symbolFrom: trade.from.token.symbol,
-      symbolTo: trade.to.token.symbol
+      symbolTo: trade.to.token.symbol,
+      tokenFromUsdPrice: trade.from.token.price
     };
 
     return this.httpService.post(BOT_URL.INSTANT_TRADES, req).toPromise();

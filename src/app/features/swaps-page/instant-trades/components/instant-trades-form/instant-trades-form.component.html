@@ -73,8 +73,16 @@
         class="arrow-button"
         [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
       >
-        <img *ngIf="trades.length === 2 && !($isIframe | async)" src="assets/images/icons/RoundArrows.svg" alt="" />
-        <img *ngIf="trades.length === 1 || ($isIframe | async)" src="assets/images/icons/revert.svg" alt="" />
+        <img
+          *ngIf="trades.length === 2 && ($isIframe | async) === false"
+          src="assets/images/icons/RoundArrows.svg"
+          alt=""
+        />
+        <img
+          *ngIf="trades.length === 1 || ($isIframe | async)"
+          src="assets/images/icons/revert.svg"
+          alt=""
+        />
       </button>
     </div>
 
@@ -84,7 +92,7 @@
           class="selection-block"
           [ngClass]="{
             'selection-block_best':
-              (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
+              (tradeController.isBestRate && trades.length > 1) ||
               (index === 0 && !hasBestRate)
           }"
         >
@@ -118,6 +126,7 @@
               class="gas-fee"
               *ngIf="
                 blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
+                blockchain !== BLOCKCHAIN_NAME.POLYGON &&
                 tradeController.trade?.gasFeeInEth &&
                 tradeController.trade?.gasFeeInUsd
               "
@@ -175,13 +184,15 @@
           [ngClass]="{
             'instant-trade-button_second': index === 1,
             'instant-trade-button_best':
-              (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
+              (tradeController.isBestRate && trades.length > 1) ||
               (index === 0 && !hasBestRate)
           }"
         >
           <app-primary-button
             type="button"
-            [label]="($isIframe | async) ? 'Swap' : ('Via ' + tradeController.tradeProviderInfo.label)"
+            [label]="
+              ($isIframe | async) ? 'Swap' : 'Via ' + tradeController.tradeProviderInfo.label
+            "
             [disabled]="
               !(
                 fromAmountAsNumber.isGreaterThan(0) &&
