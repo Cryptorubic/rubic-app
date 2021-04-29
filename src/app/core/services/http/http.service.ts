@@ -20,13 +20,16 @@ export class HttpService {
     data = data || {};
     return this.http.get<any>((path || SERVER_REST_URL) + (url || ''), {
       params: data,
-      headers
+      headers,
+      withCredentials: true
     });
   }
 
-  public patch(url: string, data?: {}, path?: string): Observable<any> {
+  public patch(url: string, data?: {}, params?: {}, path?: string): Observable<any> {
     return this.http.request<any>('patch', (path || SERVER_REST_URL) + (url || ''), {
-      body: data
+      body: data,
+      params,
+      withCredentials: true
     });
   }
 

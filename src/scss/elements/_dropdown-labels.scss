@@ -21,6 +21,9 @@
   }
 
   &_selected {
+    align-items: center;
+
+    height: 28px;
     margin: 0;
     padding: 5px 25px 5px 11px;
 
@@ -34,18 +37,11 @@
       float: unset;
 
       max-width: 28px;
-      height: 28px;
 
       vertical-align: middle;
     }
 
-    .dropdown-label__text {
-      position: relative;
-      top: 5px;
-    }
-
     &::after {
-
       position: absolute;
       top: calc(50% - 5px);
       right: 8px;

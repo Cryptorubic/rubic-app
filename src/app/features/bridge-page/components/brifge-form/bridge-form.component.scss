@@ -61,6 +61,10 @@
     font-size: 12px !important;
     text-decoration: none !important;
 
+    &_hidden {
+      visibility: hidden;
+    }
+
     &:hover {
       cursor: pointer;
 
@@ -69,11 +73,23 @@
       }
     }
 
+    &_polygon:hover {
+      img {
+        opacity: 1;
+      }
+    }
+
     img {
       width: 99px;
       height: 24px;
 
       filter: grayscale(1);
+    }
+
+    &_polygon {
+      img {
+        opacity: 0.65;
+      }
     }
 
     > div {
@@ -228,10 +244,13 @@
     justify-content: space-between;
     width: 100%;
     height: 52px;
-    padding-right: 10px;
+    padding-right: 8px;
     padding-left: 22px;
 
     background-color: #f4f4f4;
+    border-color: white;
+    border-style: solid;
+    border-width: 1px 0;
 
     > span {
       font-weight: 400;
@@ -329,7 +348,7 @@
     opacity: 0.4;
   }
 
-  &__binance {
+  &__blockchain-link {
     font-size: 14px;
 
     cursor: pointer;
@@ -374,6 +393,7 @@
 
   background-color: white;
   border: 2px solid rgb(229, 229, 229);
+  border-radius: 0 4px 4px 0;
 
   opacity: 0.8;
 
@@ -383,9 +403,6 @@
   }
 
   &__name {
-    position: relative;
-    top: 2px;
-
     color: rgb(67, 71, 108);
     font-weight: 400;
 

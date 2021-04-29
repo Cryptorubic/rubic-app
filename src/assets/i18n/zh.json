@@ -46,15 +46,15 @@
   "Use custom token":"使用自定义标记",
   "Token Contract Address":"代币合约地址",
   "Choose Token":"选择代币",
-  "Enter Amount":"输入金额",
+  "Enter amount":"输入金额",
 
   "Error":"错误",
   "Please choose main net network in Metamask.":"请在Metamask中选择主网网络",
   "Close": "关闭",
   "Cancel":"取消",
   "Order Book":"订单簿",
-  "SEND":"发送",
-  "GET": "得到",
+  "Send":"发送",
+  "Get": "得到",
   "Volume": "体积",
   "Chain":"链",
   "Expires in":"有效期",
@@ -224,7 +224,7 @@
   "Check on Explorer":"检查资源管理器",
   "Number of investors":"投资者人数",
 
-  "You will get {amount} {token} after the trade is complete":"你会得到{金额}{令牌} 交易后的{{代币}}",
+  "You will get {amount} {token} after the trade is completed":"你会得到{金额}{令牌} 交易后的{{代币}}",
   "Fill all":"全部填满",
   "Min Contribution Limit:":"最低出资限额",
   "Only Owner can contribute":"只有业主可以出资",
@@ -266,7 +266,7 @@
   "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
   "请稍后再试，或尝试使用其他设备。如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
 
-  "You accepted the transaction and the exchange has started. Please wait until the trade is complete.":
+  "You accepted the transaction and the exchange has started. Please wait until the trade is completed.":
   "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
   "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
   "跨链交换的过程已经开始。请等待双方区块链完成交易。",

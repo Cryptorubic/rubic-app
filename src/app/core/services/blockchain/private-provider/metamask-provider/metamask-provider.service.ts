@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
@@ -33,13 +32,14 @@ export class MetamaskProviderService extends PrivateProvider {
   }
 
   get isActive(): boolean {
-    return this.isEnabled && !!this._metaMask?.selectedAddress;
+    return this.isEnabled && !!this.selectedAddress;
   }
 
   get web3(): Web3 {
     if (this.isActive) {
       return this._web3;
     }
+    return null;
   }
 
   constructor() {
@@ -63,8 +63,9 @@ export class MetamaskProviderService extends PrivateProvider {
         this.selectedChain = chain;
         this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
       });
-      this._metaMask.request({ method: 'eth_accounts' }).then((accounts: string) => {
+      this._metaMask.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
         [this.selectedAddress] = accounts;
+        this.selectedAddress = this.selectedAddress || null;
         this.onAddressChanges.next(this.selectedAddress);
       });
 
@@ -78,6 +79,7 @@ export class MetamaskProviderService extends PrivateProvider {
 
       this._metaMask.on('accountsChanged', (accounts: string[]) => {
         [this.selectedAddress] = accounts;
+        this.selectedAddress = this.selectedAddress || null;
         if (this.isEnabled) {
           this.onAddressChanges.next(this.selectedAddress);
           console.info('Selected account changed to', accounts[0]);
@@ -92,12 +94,14 @@ export class MetamaskProviderService extends PrivateProvider {
     if (this.isEnabled) {
       return this.selectedAddress;
     }
+    return null;
   }
 
   protected getNetwork(): IBlockchain {
     if (this.isEnabled) {
       return this.selectedChain ? BlockchainsInfo.getBlockchainById(this.selectedChain) : undefined;
     }
+    return null;
   }
 
   public async activate(): Promise<void> {
@@ -113,8 +117,8 @@ export class MetamaskProviderService extends PrivateProvider {
   }
 
   public deActivate(): void {
-    this.onAddressChanges.next(undefined);
-    this.onNetworkChanges.next(undefined);
+    this.onAddressChanges.next(null);
+    this.onNetworkChanges.next(null);
     this.isEnabled = false;
   }
 

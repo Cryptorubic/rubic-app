@@ -1,6 +1,7 @@
 <button
   [type]="type"
   [class]="'primary-button' + className"
+  [style.backgroundColor]="backgroundColor"
   [disabled]="disabled || animate"
   (click)="onClickHandler()"
 >

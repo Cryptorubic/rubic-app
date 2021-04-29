@@ -16,6 +16,8 @@ export class PrimaryButtonComponent {
 
   @Input() disabled?: boolean = false;
 
+  @Input() backgroundColor?: string;
+
   @Output() onClick = new EventEmitter<void>();
 
   onClickHandler() {

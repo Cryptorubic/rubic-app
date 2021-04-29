@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class DropdownSelectComponent implements OnInit {
   @Input() public options: any[];
 
-  @Input() private defaultOption = 0;
+  @Input() private defaultOption: any;
 
   @Input() public isSortable = false;
 
@@ -19,27 +19,29 @@ export class DropdownSelectComponent implements OnInit {
    */
   @Input() public minOptionWidth: number; // in pixels
 
-  @Output() public optionToSortBy: EventEmitter<any> = new EventEmitter<any>();
+  @Output() public onSortBy: EventEmitter<any> = new EventEmitter<any>();
 
-  public isOptionsShown = false;
+  public areOptionsShown = false;
 
   public selectedOption: any;
 
   constructor() {}
 
   ngOnInit() {
-    this.selectedOption = this.options[this.defaultOption];
+    this.selectedOption = this.options.find(option => option === this.defaultOption);
     this.getArrow();
   }
 
   public sortByOption(option: any): void {
-    this.selectedOption = option;
-    this.isOptionsShown = false;
-    this.optionToSortBy.emit(option);
+    this.areOptionsShown = false;
+    if (option !== this.selectedOption) {
+      this.selectedOption = option;
+      this.onSortBy.emit(option);
+    }
   }
 
   public invertSort(): void {
-    this.optionToSortBy.emit(this.selectedOption);
+    this.onSortBy.emit(this.selectedOption);
   }
 
   public getArrow() {
