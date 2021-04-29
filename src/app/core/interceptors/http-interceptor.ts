@@ -14,7 +14,7 @@ export class HTTPInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (req.url.includes('rubic.exchange')) {
-      const headerName = 'X-XSRF-TOKEN';
+      const headerName = 'X-CSRFToken';
       const token = this.tokenExtractor.getToken() as string;
       if (token !== null && !req.headers.has(headerName)) {
         return next.handle(
