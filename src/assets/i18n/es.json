@@ -248,8 +248,11 @@
     "tableTitle": "Sus intercambios entre plataformas",
     "whatIs": "¿Qué es ",
     "whatIsAfter": "",
+    "checkOn": "Check on ",
     "assistanceOf": "Con la ayuda de",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
+    "minAmount": "Minimum amount ",
+    "maxAmount": "Maximum amount "
   },
   "instantTrades": {
     "title": "Intercambios instantáneos",
@@ -257,7 +260,9 @@
     "notSupportedToken": "Por favor asegúrese que el token seleccionado sea compatible con la DEX elegida e intente nuevamente más adelante.",
     "bestRate": "Mejor Tasa",
     "gasFee": "Costo de tarifas estimado:",
-    "useOptimization": "Use Rubic optimization"
+    "useOptimization": "Use Rubic optimization",
+    "notAvailableBefore": "Trading on ",
+    "notAvailableAfter": " is not available."
   },
   "orderBook": {
     "title": "Libro de Órdenes",

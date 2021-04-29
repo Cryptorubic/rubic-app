@@ -248,8 +248,11 @@
     "tableTitle": "Your cross-chain swaps",
     "whatIs": "",
     "whatIsAfter": "是什么",
+    "checkOn": "Check on ",
     "assistanceOf": "With the assistance of",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
+    "minAmount": "Minimum amount ",
+    "maxAmount": "Maximum amount "
   },
   "instantTrades": {
     "title": "支持即时交易",
@@ -257,7 +260,9 @@
     "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
     "bestRate": "Best Rate",
     "gasFee": "gas费用估计值",
-    "useOptimization": "Use Rubic optimization"
+    "useOptimization": "Use Rubic optimization",
+    "notAvailableBefore": "Trading on ",
+    "notAvailableAfter": " is not available."
   },
   "orderBook": {
     "title": "订单簿",

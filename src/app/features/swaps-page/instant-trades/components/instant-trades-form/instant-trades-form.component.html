@@ -143,7 +143,9 @@
               <app-error-disclaimer
                 *ngIf="checkIfError(index)"
                 [errorText]="
-                  'Trading on ' + tradeController.tradeProviderInfo.label + ' is not available.'
+                  ('instantTrades.notAvailableBefore' | translate) +
+                  tradeController.tradeProviderInfo.label +
+                  ('instantTrades.notAvailableAfter' | translate)
                 "
                 [tooltipText]="'instantTrades.notSupportedToken' | translate"
               >

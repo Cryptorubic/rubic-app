@@ -248,8 +248,11 @@
     "tableTitle": "내 크로스-체인 스왑",
     "whatIs": "What is ",
     "whatIsAfter": "",
+    "checkOn": "Check on ",
     "assistanceOf": "지원",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
+    "minAmount": "Minimum amount ",
+    "maxAmount": "Maximum amount "
   },
   "instantTrades": {
     "title": "즉시 거래",
@@ -257,7 +260,9 @@
     "notSupportedToken": "선택한 토큰이 지정된 DEX에서 지원되는지 확인하고 나중에 다시 시도하세요.",
     "bestRate": "최적가",
     "gasFee": "예상 가스 수수료",
-    "useOptimization": "Use Rubic optimization"
+    "useOptimization": "Use Rubic optimization",
+    "notAvailableBefore": "Trading on ",
+    "notAvailableAfter": " is not available."
   },
   "orderBook": {
     "title": "오더북",

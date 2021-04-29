@@ -248,8 +248,11 @@
     "tableTitle": "Ваши кросс-чейн обмены",
     "whatIs": "Что такое ",
     "whatIsAfter": "",
+    "checkOn": "Check on ",
     "assistanceOf": "С помощью",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
+    "minAmount": "Minimum amount ",
+    "maxAmount": "Maximum amount "
   },
   "instantTrades": {
     "title": "Мгновенные сделки",
@@ -257,7 +260,9 @@
     "notSupportedToken": "Пожалуйста, убедитесь, что выбранный токен поддерживается на указанном DEX, и повторите попытку позже.",
     "bestRate": "Лучший курс",
     "gasFee": "Приблизительный газ:",
-    "useOptimization": "Use Rubic optimization"
+    "useOptimization": "Use Rubic optimization",
+    "notAvailableBefore": "Trading on ",
+    "notAvailableAfter": " is not available."
   },
   "orderBook": {
     "title": "Order Book",
@@ -311,10 +316,10 @@
     "disclaimerTitle": "Предупреждение о безопасности токенов!",
     "disclaimerText": "Пожалуйста, будьте очень осторожны во время всего торгового процесса, так как он сопряжен с высокими системными рисками, такими как большой уровень волатильности, хакерские атаки и временные риски, связанные с необходимостью ждать завершения сделки другой стороной. <br /> Любой желающий может создать любой токен на существующих блокчейнах и назвать его по своему усмотрению. Это позволяет создавать поддельные версии существующих токенов или токенов для проектов, которые не имеют токенов. Пожалуйста, будьте осторожны и проведите свое исследование, прежде чем взаимодействовать с любым токеном. Взаимодействуйте с токенами на свой страх и риск и обратите внимание, что владельцы не несут ответственности за законность токенов, представленных на торговой платформе Rubic.",
     "accumulatedTransactionsVolume": "Накопленный Объем Операций",
+    "collaborations": "Наши партнеры и коллаборации ",
     "listingRequest": {
       "title": "Запрос на листинг",
       "description": "Если вы хотите, чтобы ваш проект был добавлен на платформу Rubic, пожалуйста, отправьте электронное письмо по адресу <a href='mailto:support@rubic.finance'>support@rubic.finance</a> со следующей информацией:",
-      "collaborations": "Наши партнеры и коллаборации ",
       "information": {
         "projectName": "Название проекта",
         "projectDescription": "Описание проекта",
