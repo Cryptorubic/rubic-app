@@ -28,13 +28,8 @@ export class TokensService {
 
   private static prepareTokens(tokens: BackendToken[]): SwapToken[] {
     return tokens.map((token: BackendToken) => ({
-      name: token.name,
-      symbol: token.symbol,
+      ...token,
       blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
-      address: token.address,
-      decimals: token.decimals,
-      image: token.image,
-      rank: token.rank,
       price: token.usd_price
     }));
   }
