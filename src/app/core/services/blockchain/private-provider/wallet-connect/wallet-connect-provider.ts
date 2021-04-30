@@ -10,9 +10,10 @@ import WalletConnect from '@walletconnect/web3-provider';
 import networks from 'src/app/shared/constants/blockchain/networks';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
+import { WalletconnectError } from '../../../../../shared/models/errors/provider/WalletconnectError';
 
 export class WalletConnectProvider extends PrivateProvider {
-  private isEnabled: boolean = false;
+  private isEnabled: boolean;
 
   private readonly core: WalletConnect;
 
@@ -42,6 +43,7 @@ export class WalletConnectProvider extends PrivateProvider {
     accountChange: BehaviorSubject<string>
   ) {
     super();
+    this.isEnabled = false;
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
 
@@ -89,7 +91,7 @@ export class WalletConnectProvider extends PrivateProvider {
   }
 
   public async deActivate(): Promise<void> {
-    this.core.close();
+    await this.core.close();
     this.onAddressChanges.next(null);
     this.onNetworkChanges.next(null);
     this.isEnabled = false;
@@ -97,7 +99,7 @@ export class WalletConnectProvider extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      throw new WalletlinkError();
+      throw new WalletconnectError();
     }
     if (this.getNetwork().name !== token.blockchain) {
       throw new NetworkError(token.blockchain);
