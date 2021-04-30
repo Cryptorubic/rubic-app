@@ -73,8 +73,16 @@
         class="arrow-button"
         [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
       >
-        <img *ngIf="trades.length === 2 && !($isIframe | async)" src="assets/images/icons/RoundArrows.svg" alt="" />
-        <img *ngIf="trades.length === 1 || ($isIframe | async)" src="assets/images/icons/revert.svg" alt="" />
+        <img
+          *ngIf="trades.length === 2 && ($isIframe | async) === false"
+          src="assets/images/icons/RoundArrows.svg"
+          alt=""
+        />
+        <img
+          *ngIf="trades.length === 1 || ($isIframe | async)"
+          src="assets/images/icons/revert.svg"
+          alt=""
+        />
       </button>
     </div>
 
@@ -141,9 +149,8 @@
               />
             </div>
 
-            <div class="selection-block__warning">
+            <div *ngIf="checkIfError(index)" class="selection-block__warning">
               <app-error-disclaimer
-                *ngIf="checkIfError(index)"
                 matTooltip="{{
                   'Please make sure that selected token is supported on the specified DEX and try again later.'
                     | translate
