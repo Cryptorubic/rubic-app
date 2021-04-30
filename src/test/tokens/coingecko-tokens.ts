@@ -21,7 +21,7 @@ const weenus = {
   decimals: WEENUS.decimals,
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 2,
+  rank: 0,
   price: 10
 };
 
@@ -33,7 +33,7 @@ const yeenus = {
   decimals: YEENUS.decimals,
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 3,
+  rank: 0,
   price: 50
 };
 
@@ -45,7 +45,7 @@ const xeenus = {
   decimals: XEENUS.decimals,
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 4,
+  rank: 0,
   price: 2
 };
 
@@ -57,7 +57,7 @@ const wsatt = {
   decimals: WSATT.decimals,
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 5,
+  rank: 0,
   price: 5
 };
 

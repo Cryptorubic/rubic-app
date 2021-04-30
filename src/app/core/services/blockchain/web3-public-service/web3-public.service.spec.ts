@@ -29,7 +29,7 @@ describe('Web3PublicService', () => {
   });
 
   function executeWeb3PublicTests(blockchainName: BLOCKCHAIN_NAME) {
-    describe('Web3Public', function () {
+    describe('Web3Public', () => {
       const aliceAddress = config.testWallet.address;
       const bobAddress = config.testReceiverAddress;
       const getWeb3Public: () => Web3Public = () => service[blockchainName];
@@ -56,8 +56,6 @@ describe('Web3PublicService', () => {
           bobAddress,
           aliceAddress
         );
-
-        console.log(allowance);
 
         expect(allowance).not.toBe(undefined);
         expect(allowance.gte(0)).toBeTruthy();
@@ -117,7 +115,7 @@ describe('Web3PublicService', () => {
           'symbol'
         );
 
-        expect(weenusSymbol === WEENUS.symbol).toBeTruthy();
+        expect(weenusSymbol).toEqual(WEENUS.symbol);
         done();
       });
 
@@ -131,8 +129,8 @@ describe('Web3PublicService', () => {
         const weenus = coingeckoTestTokens.find(t => t.address === WEENUS.address);
         const tokenInfo = await getWeb3Public().getTokenInfo(WEENUS.address);
 
-        expect(tokenInfo.symbol === weenus.symbol).toBeTruthy();
-        expect(tokenInfo.decimals === weenus.decimals).toBeTruthy();
+        expect(tokenInfo.symbol).toBe(weenus.symbol);
+        expect(tokenInfo.decimals).toBe(weenus.decimals);
 
         done();
       });

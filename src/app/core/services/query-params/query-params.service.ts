@@ -16,6 +16,7 @@ import { BridgeToken } from '../../../features/bridge-page/models/BridgeToken';
 type DefaultQueryParams = {
   [BLOCKCHAIN_NAME.ETHEREUM]: QueryParams;
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: QueryParams;
+  [BLOCKCHAIN_NAME.POLYGON]: QueryParams;
   bridge: QueryParams;
 };
 
@@ -51,7 +52,7 @@ export class QueryParamsService {
     private readonly router: Router
   ) {
     this.$isIframeSubject = new BehaviorSubject<boolean>(false);
-    this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([BLOCKCHAIN_NAME.POLYGON]);
+    this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([]);
     this.$tokens = this.tokensService.tokens.asObservable();
     this.defaultQueryParams = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -62,6 +63,11 @@ export class QueryParamsService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         from: 'BNB',
         to: 'BRBC',
+        amount: '1'
+      },
+      [BLOCKCHAIN_NAME.POLYGON]: {
+        from: 'MATIC',
+        to: 'USDT',
         amount: '1'
       },
       bridge: {
@@ -75,10 +81,11 @@ export class QueryParamsService {
   }
 
   public async setupTradeForm(cdr: ChangeDetectorRef): Promise<void> {
-    const chain =
-      this.currentQueryParams?.chain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-        ? BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-        : BLOCKCHAIN_NAME.ETHEREUM;
+    const queryChain = this.currentQueryParams?.chain;
+    const chain = Object.values(BLOCKCHAIN_NAME).includes(queryChain)
+      ? queryChain
+      : BLOCKCHAIN_NAME.ETHEREUM;
+
     const tradeParams = {
       fromToken: (this.currentQueryParams.from && (await this.getToken('from', cdr))) || undefined,
       toToken: (this.currentQueryParams.to && (await this.getToken('to', cdr))) || undefined,
@@ -220,14 +227,16 @@ export class QueryParamsService {
   }
 
   private setDefaultParams(queryParams: QueryParams): QueryParams {
-    const chain =
-      queryParams.chain !== BLOCKCHAIN_NAME.POLYGON ? queryParams.chain : BLOCKCHAIN_NAME.ETHEREUM;
+    const chain = Object.values(BLOCKCHAIN_NAME).includes(queryParams?.chain)
+      ? queryParams.chain
+      : BLOCKCHAIN_NAME.ETHEREUM;
     return queryParams.from || queryParams.to
       ? {
           ...queryParams,
           from: queryParams.from || this.defaultQueryParams[chain].from,
           to: queryParams.to || this.defaultQueryParams[chain].to,
-          amount: queryParams.amount || this.defaultQueryParams[chain].amount
+          amount: queryParams.amount || this.defaultQueryParams[chain].amount,
+          chain
         }
       : {
           ...queryParams,

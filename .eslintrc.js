@@ -26,7 +26,7 @@ module.exports = {
             vars: 'all',
             args: 'all',
             ignoreRestSiblings: false,
-            argsIgnorePattern: "^_"
+            argsIgnorePattern: '^_'
           }
         ],
         '@angular-eslint/no-output-on-prefix': 'off',
@@ -36,14 +36,6 @@ module.exports = {
         complexity: ['error', 20],
         eqeqeq: ['error', 'always'],
         'no-magic-numbers': 'off',
-        '@typescript-eslint/no-magic-numbers': [
-          'warn',
-          {
-            ignore: [-1, 0, 1, 2, 10, 100, 1000],
-            detectObjects: true,
-            ignoreReadonlyClassProperties: true
-          }
-        ],
         '@typescript-eslint/naming-convention': [
           'error',
           {
@@ -65,11 +57,7 @@ module.exports = {
         radix: ['warn', 'as-needed'],
         'no-prototype-builtins': 'off',
         'no-return-assign': 'off',
-        'no-restricted-syntax': [
-          'error',
-          'LabeledStatement',
-          'WithStatement'
-        ],
+        'no-restricted-syntax': ['error', 'LabeledStatement', 'WithStatement'],
         'no-console': [
           'warn',
           {

@@ -16,6 +16,7 @@ import { UseTestingModeService } from '../../../../../../core/services/use-testi
 import { SameTokensError } from '../../../../../../shared/models/errors/order-book/SameTokensError';
 import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
+import { TO_BACKEND_BLOCKCHAINS } from '../../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 @Injectable()
 export class OrderBooksFormService implements OnDestroy {
@@ -174,18 +175,6 @@ export class OrderBooksFormService implements OnDestroy {
   }
 
   private createTradeApiObject(tradeForm: OrderBookTradeForm): OrderBookTradeApi {
-    let network: number;
-    switch (tradeForm.blockchain) {
-      case BLOCKCHAIN_NAME.ETHEREUM:
-        network = 1;
-        break;
-      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        network = 22;
-        break;
-      default:
-        network = 24;
-    }
-
     return {
       memo: '',
       contract_address: ORDER_BOOK_CONTRACT.ADDRESSES[2][tradeForm.blockchain],
@@ -217,7 +206,7 @@ export class OrderBooksFormService implements OnDestroy {
       broker_fee_quote: parseFloat(tradeForm.token.quote.brokerPercent),
 
       name: `${tradeForm.token.base.symbol} <> ${tradeForm.token.quote.symbol}`,
-      network,
+      network: TO_BACKEND_BLOCKCHAINS[tradeForm.blockchain],
       state: 'ACTIVE',
       contract_state: 'ACTIVE',
       contract_type: 20,
