@@ -46,6 +46,13 @@
     top: 0 !important;
   }
 
+  app-root {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+  }
+
   .tokens-form__input::placeholder {
     font-size: 14px;;
   }
@@ -73,7 +80,7 @@
   .header {
     position: absolute !important;
     top: 20px !important;
-    right: 0 !important;
+    right: -590px !important;
     left: auto !important;
 
     box-sizing: border-box;
