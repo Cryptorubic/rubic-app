@@ -8,27 +8,24 @@
       <div class="alert-window-buttons text-center">
         <div class="grid-row">
           <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <button
-              class="btn btn-transparent btn-min"
-              type="button"
+            <app-primary-button
+              matDialogClose
+              [label]="'Yes' | translate"
               (click)="confirmLogout()"
               [disabled]="logoutProgress"
-            >
-              <span class="lds-ellipsis" *ngIf="logoutProgress">
-                <span class="lds-ellipsis-container">
-                  <span></span><span></span><span></span><span></span>
-                </span>
-              </span>
-              <span class="just-title">
-                &nbsp;&nbsp;&nbsp;{{ 'Yes' | translate }}&nbsp;&nbsp;&nbsp;
-              </span>
-            </button>
-            <br />
+              backgroundColor="white"
+              textColor="#4aa956"
+              [border]="true"
+              [hideArrow]="true"
+            ></app-primary-button>
           </div>
           <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <button class="btn btn-green btn-min" matDialogClose type="button">
-              <span>&nbsp;&nbsp;&nbsp;{{ 'No' | translate }}&nbsp;&nbsp;&nbsp;</span>
-            </button>
+            <app-primary-button
+              matDialogClose
+              [label]="'No' | translate"
+              (onClick)="makeApproveOrContribute()"
+              [hideArrow]="true"
+            ></app-primary-button>
           </div>
         </div>
       </div>
