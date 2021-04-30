@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from '../../../../features/bridge-page/models/BridgeTrade';
@@ -11,6 +10,7 @@ import {
 import { TRADE_STATUS } from './models/TRADE_STATUS';
 import { BridgeToken } from '../../../../features/bridge-page/models/BridgeToken';
 import { TokensService } from '../tokens-service/tokens.service';
+import { BOT_URL } from '../constants/BOT_URL';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class BridgeApiService {
   public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
     return new Promise<BridgeTableTrade[]>((resolve, reject) => {
       this.httpService
-        .get('bridge/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
+        .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
         .subscribe(
           (tradesApi: BridgeTableTradeApi[]) => {
             resolve(tradesApi.map(trade => this.parseBridgeTableTrade(trade)));
@@ -77,7 +77,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions', body).subscribe(
         () => {
           resolve();
         },
@@ -104,7 +104,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions', body).subscribe(
         () => {
           resolve();
         },
@@ -139,7 +139,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridge/transactions', body).subscribe(
+      this.httpService.post('bridges/transactions', body).subscribe(
         () => {
           resolve();
         },
@@ -159,7 +159,7 @@ export class BridgeApiService {
     return new Promise<void>((resolve, reject) => {
       this.httpService
         .patch(
-          'bridge/transactions',
+          'bridges/transactions',
           {
             second_transaction_id: newTransactionHash,
             status
@@ -192,7 +192,7 @@ export class BridgeApiService {
     };
 
     return new Promise<void>((resolve, reject) => {
-      this.httpService.post(environment.bridgeBotUrl, body).subscribe(
+      this.httpService.post(BOT_URL.BRIDGES, body).subscribe(
         () => {
           resolve();
         },
