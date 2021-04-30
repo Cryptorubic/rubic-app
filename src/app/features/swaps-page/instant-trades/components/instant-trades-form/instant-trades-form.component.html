@@ -72,20 +72,21 @@
         type="button"
         class="arrow-button"
         [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
+        aria-label="Swap tokens"
       >
         <img
           *ngIf="trades.length === 2 && ($isIframe | async) === false"
           src="assets/images/icons/RoundArrows.svg"
           width="34"
           height="30"
-          alt=""
+          alt="Swap tokens"
         />
         <img
           *ngIf="trades.length === 1 || ($isIframe | async)"
           src="assets/images/icons/revert.svg"
           width="34"
           height="30"
-          alt=""
+          alt="Swap tokens"
         />
       </button>
     </div>
