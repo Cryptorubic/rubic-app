@@ -19,6 +19,7 @@
             class="choose-blockchains__address"
             [href]="fromBlockchain.addressBaseUrl + fromWalletAddress"
             target="_blank"
+            rel="noopener"
           >
             {{ fromWalletAddress }}
           </a>
@@ -50,6 +51,7 @@
                       selectedToken.blockchainToken[fromBlockchain.key].address
                 "
                 target="_blank"
+                rel="noopener"
               >
                 Check on {{ fromBlockchain.scanner.label }}
                 <img src="assets/images/icons/link.svg" width="16" height="14" alt="link" />
@@ -156,6 +158,7 @@
             class="choose-blockchains__address"
             [href]="toBlockchain.addressBaseUrl + toWalletAddress"
             target="_blank"
+            rel="noopener"
           >
             {{ toWalletAddress }}
           </a>
@@ -191,6 +194,7 @@
                     selectedToken.blockchainToken[toBlockchain.key].address
               "
               target="_blank"
+              rel="noopener"
             >
               Check on {{ toBlockchain.scanner.label }}
               <img src="assets/images/icons/link.svg" width="16" height="14" alt="link" />
@@ -209,6 +213,7 @@
                 : 'https://polygon.technology/'
             "
             target="_blank"
+            rel="noopener"
           >
             What is
             {{
@@ -246,6 +251,7 @@
                 : 'https://polygon.technology/'
             "
             target="_blank"
+            rel="noopener"
             class="cross-chain-form__confirm-info"
             [ngClass]="{
               'cross-chain-form__confirm-info_hidden':

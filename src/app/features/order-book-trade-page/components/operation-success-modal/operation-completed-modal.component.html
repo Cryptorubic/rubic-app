@@ -4,7 +4,11 @@
     <div class="operation-modal__description">
       The operation is successful! <br />
       This page will be updated automatically <br />
-      <a target="_blank" [href]="transactionId | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION">
+      <a
+        target="_blank"
+        [href]="transactionId | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION"
+        rel="noopener"
+      >
         Check transaction on scanner
       </a>
     </div>

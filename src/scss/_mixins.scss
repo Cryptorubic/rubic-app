@@ -11,6 +11,7 @@
     font-weight: $weight;
     font-family: $font-family;
     font-style: $style;
+    font-display: optional;
 
     @if $asset-pipeline==true {
       src: font-url('#{$file-path}.woff2') format('woff2'),

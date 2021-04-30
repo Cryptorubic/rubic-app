@@ -11,6 +11,7 @@
         target="_blank"
         *ngFor="let link of content.links"
         [href]="link.url"
+        rel="noopener"
       >
         <img [src]="'assets/images/icons/social/' + link.icon" alt="" />
       </a>

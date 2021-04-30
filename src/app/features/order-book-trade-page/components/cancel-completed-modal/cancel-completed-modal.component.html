@@ -3,7 +3,11 @@
     <img class="cancel-modal__icon" src="/assets/images/icons/success.svg" alt="success" />
     <div class="cancel-modal__description">
       The trade was cancelled <br />
-      <a target="_blank" [href]="transactionId | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION">
+      <a
+        target="_blank"
+        [href]="transactionId | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION"
+        rel="noopener"
+      >
         Check transaction on scanner
       </a>
     </div>
