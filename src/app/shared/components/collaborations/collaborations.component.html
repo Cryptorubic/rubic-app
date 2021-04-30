@@ -8,7 +8,12 @@
       *ngFor="let company of collaborations"
       [href]="company.url"
     >
-      <img [src]="'assets/images/icons/collaborations/' + company.img" alt="" />
+      <img
+        [src]="'assets/images/icons/collaborations/' + company.img"
+        alt=""
+        width="142"
+        height="36"
+      />
     </a>
   </div>
 

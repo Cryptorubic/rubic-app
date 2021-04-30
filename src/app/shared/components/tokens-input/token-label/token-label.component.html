@@ -1,6 +1,11 @@
 <div class="dropdown-label" [ngClass]="{ 'dropdown-label_selected': selected }">
   <div class="dropdown-label__image-container">
-    <img [src]="token.image || '/assets/images/icons/coins/empty.svg'" alt="Token" />
+    <img
+      [src]="token.image || '/assets/images/icons/coins/empty.svg'"
+      width="28"
+      height="33"
+      alt="Token"
+    />
   </div>
 
   <div class="dropdown-label__text">

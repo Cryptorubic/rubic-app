@@ -1,22 +1,30 @@
 <div class="user-profile" [ngClass]="{ 'user-profile_mobile': $isMobile | async }">
   <div class="user-profile__account">
-    <div
-      *ngIf="($currentBlockchain | async)?.imagePath"
-      class="user-profile__blockchain-icon"
-    >
-      <img (click)="useTestingMode()" [src]="($currentBlockchain | async)?.imagePath" alt="($currentBlockchain | async)?.name">
+    <div *ngIf="($currentBlockchain | async)?.imagePath" class="user-profile__blockchain-icon">
+      <img
+        (click)="useTestingMode()"
+        [src]="($currentBlockchain | async)?.imagePath"
+        alt="($currentBlockchain | async)?.name"
+        width="34"
+        height="25"
+      />
     </div>
     <span
       class="user-profile__text"
       [ngClass]="{ 'user-profile__text_iconless': !($currentBlockchain | async)?.imagePath }"
-    >{{ ($currentUser | async)?.address }}</span>
+      >{{ ($currentUser | async)?.address }}</span
+    >
   </div>
   <ul *ngIf="$isMobile | async" class="user-profile__list">
     <li class="user-profile__item">
-      <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'My trades' | translate }}</a>
+      <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{
+        'My trades' | translate
+      }}</a>
     </li>
     <li class="user-profile__item">
-      <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
+      <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{
+        'Logout' | translate
+      }}</a>
     </li>
   </ul>
   <div *ngIf="($isMobile | async) === false" class="user-profile__menu">
@@ -28,10 +36,14 @@
     <mat-menu class="user-profile__sublist-container" #userMenu="matMenu">
       <ul class="user-profile__sublist">
         <li class="user-profile__sublist-item">
-          <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'My trades' | translate }}</a>
+          <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{
+            'My trades' | translate
+          }}</a>
         </li>
         <li class="user-profile__sublist-item">
-          <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'Logout' | translate }}</a>
+          <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{
+            'Logout' | translate
+          }}</a>
         </li>
       </ul>
     </mat-menu>

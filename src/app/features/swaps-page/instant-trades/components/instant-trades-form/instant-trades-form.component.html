@@ -76,11 +76,15 @@
         <img
           *ngIf="trades.length === 2 && ($isIframe | async) === false"
           src="assets/images/icons/RoundArrows.svg"
+          width="34"
+          height="30"
           alt=""
         />
         <img
           *ngIf="trades.length === 1 || ($isIframe | async)"
           src="assets/images/icons/revert.svg"
+          width="34"
+          height="30"
           alt=""
         />
       </button>
@@ -143,6 +147,8 @@
                   'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
                     | translate
                 }}"
+                width="19"
+                height="19"
                 alt="{{
                   'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
                     | translate
@@ -214,7 +220,7 @@
             *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState"
           >
             <span>{{ 'Best Rate' | translate }}</span>
-            <img src="assets/images/icons/BestRate.svg" alt="" />
+            <img src="assets/images/icons/BestRate.svg" width="39" height="32" alt="" />
           </div>
           <div
             *ngIf="index === 1 && blockchain === BLOCKCHAIN_NAME.ETHEREUM"
