@@ -71,7 +71,7 @@
       <button
         type="button"
         class="arrow-button"
-        [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
+        [ngClass]="{ 'arrow-button_big': trades.length === 2 || ($isIframe | async) }"
       >
         <img
           *ngIf="trades.length === 2 && ($isIframe | async) === false"
