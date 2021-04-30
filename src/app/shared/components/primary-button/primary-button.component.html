@@ -2,6 +2,9 @@
   [type]="type"
   [class]="'primary-button' + className"
   [style.backgroundColor]="backgroundColor"
+  [style.color]="textColor"
+  [style.border]="border && '1px solid'"
+  [style.borderColor]="border && borderColor"
   [disabled]="disabled || animate"
   (click)="onClickHandler()"
 >
@@ -10,6 +13,6 @@
       <span></span><span></span><span></span><span></span>
     </span>
   </span>
-  <img src="assets/images/icons/arrow/arrow-right-white.svg" alt="" class="primary-button__arrow" />
+  <img *ngIf="!hideArrow" src="assets/images/icons/arrow/arrow-right-white.svg" alt="" class="primary-button__arrow" />
   <span>{{ label | translate }}</span>
 </button>

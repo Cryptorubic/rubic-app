@@ -18,11 +18,22 @@ export class PrimaryButtonComponent {
 
   @Input() backgroundColor?: string;
 
+  @Input() textColor?: string;
+
+  @Input() hideArrow?: boolean;
+
+  @Input() border?: boolean;
+
+  @Input() borderColor?: string;
+
   @Output() onClick = new EventEmitter<void>();
 
   onClickHandler() {
     this.onClick.emit();
   }
 
-  constructor() {}
+  constructor() {
+    const rubicPrimaryColor = '#4aa956';
+    this.borderColor = rubicPrimaryColor;
+  }
 }
