@@ -54,7 +54,7 @@ export class WalletConnectProvider extends PrivateProvider {
           }
         };
       },
-      { rpc: undefined }
+      { rpc: null }
     );
     this.core = new WalletConnect(rpcParams);
     web3.setProvider(this.core as any);
@@ -90,8 +90,8 @@ export class WalletConnectProvider extends PrivateProvider {
 
   public async deActivate(): Promise<void> {
     this.core.close();
-    this.onAddressChanges.next(undefined);
-    this.onNetworkChanges.next(undefined);
+    this.onAddressChanges.next(null);
+    this.onNetworkChanges.next(null);
     this.isEnabled = false;
   }
 

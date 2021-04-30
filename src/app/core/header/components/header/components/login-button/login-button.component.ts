@@ -27,7 +27,7 @@ export class LoginButtonComponent {
   }
 
   public showModal(): void {
-    this.dialog.open(WalletsModalComponent, { width: '400px' });
+    this.dialog.open(WalletsModalComponent, { width: '420px' });
   }
 
   public async authUser(): Promise<void> {

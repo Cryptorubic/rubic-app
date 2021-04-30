@@ -3,13 +3,20 @@ $main-color: #4aa956;
 .modal {
   position: relative;
 
-  padding: 40px;
-  padding-top: 20px;
+  padding: 15px 40px 40px;
+
+  font-weight: 300;
 
   border-radius: 10px;
 
-  &__header {
-    margin-bottom: 20px;
+  &__title {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  &__header,
+  &__body {
+    margin-bottom: 30px;
   }
 
   &__body {
@@ -38,12 +45,16 @@ $main-color: #4aa956;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 20px;
+    width: 35px;
+    height: 30px;
 
     img {
-      height: 100%;
+      width: 100%;
     }
+  }
+
+  &__link {
+    color: $main-color;
   }
 
   &__provider-button {
@@ -51,10 +62,12 @@ $main-color: #4aa956;
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    height: 65px;
     padding: 10px 20px;
 
+
     color: #4aa956;
-    font-size: 16px;
+    font-size: 18px;
 
     background: transparent;
     border: 1px solid $main-color;
@@ -64,11 +77,11 @@ $main-color: #4aa956;
     transition: 0.2s ease-in-out;
 
     &:not(:last-child) {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     &:hover {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
   }
 
@@ -87,8 +100,8 @@ $main-color: #4aa956;
 
 ::ng-deep {
   .modal__close svg {
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
 
     path {
       fill: black;
