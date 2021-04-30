@@ -24,7 +24,6 @@
   app-custom-token-form,
   app-header-language-dropdown,
   .main-page__intro,
-  .trades-form__tabs-blockchains li:last-child,
   .trades-form__tabs-modes,
   .main-page__title,
   .instant-trade-form__to-section .selection-block:not(.selection-block_best),
@@ -38,6 +37,7 @@
   #livechat-compact-container,
   .checkbox-optimisation,
   .display-none,
+  app-tokens-input ~ *,
   #chat-widget-container {
     display: none !important;
   }
@@ -102,14 +102,16 @@
     padding-top: 20px !important;
   }
 
+  .instant-trade-form {
+    align-items: center !important;
+  }
+
   app-header-logotype {
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 100%;
     height: 52px;
     margin: 0 auto !important;
-    margin-top: 10px;
   }
 
   .header__container {

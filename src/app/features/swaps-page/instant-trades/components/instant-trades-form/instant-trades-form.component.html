@@ -150,9 +150,8 @@
               />
             </div>
 
-            <div class="selection-block__warning">
+            <div *ngIf="checkIfError(index)" class="selection-block__warning">
               <app-error-disclaimer
-                *ngIf="checkIfError(index)"
                 matTooltip="{{
                   'Please make sure that selected token is supported on the specified DEX and try again later.'
                     | translate
