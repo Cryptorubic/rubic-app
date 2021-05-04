@@ -1,0 +1,11 @@
+<button
+  class="refresh-button"
+  [ngClass]="{
+    'refresh-button_refreshing': refreshButtonStatus === REFRESH_BUTTON_STATUS.REFRESHING,
+    'refresh-button_waiting': refreshButtonStatus === REFRESH_BUTTON_STATUS.WAITING
+  }"
+  [disabled]="refreshButtonStatus === REFRESH_BUTTON_STATUS.REFRESHING"
+  (click)="onClick()"
+>
+  <img src="assets/images/icons/refresh.svg" alt="refresh" />
+</button>

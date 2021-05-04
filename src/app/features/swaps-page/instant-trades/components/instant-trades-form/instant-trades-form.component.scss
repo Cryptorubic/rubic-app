@@ -121,6 +121,12 @@
     text-transform: uppercase;
   }
 
+  &__refresh-button {
+    position: relative;
+    top: 2px;
+    left: 6px;
+  }
+
   &__warning {
     margin-top: 7px;
   }

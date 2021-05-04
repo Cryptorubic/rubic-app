@@ -1,0 +1,23 @@
+.refresh-button {
+  width: 15px;
+  padding: 0;
+
+  background: white;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+  }
+
+  &_refreshing {
+    img {
+      animation: 1s linear infinite refreshing;
+    }
+  }
+}
+
+@keyframes refreshing {
+  to {
+    transform: rotate(360deg);
+  }
+}

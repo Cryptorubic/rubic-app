@@ -25,6 +25,7 @@ import { MetamaskError } from '../../../../../shared/models/errors/provider/Meta
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
 import { Token } from '../../../../../shared/models/tokens/Token';
 import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
+import { REFRESH_BUTTON_STATUS } from '../../../../../shared/models/instant-trade/REFRESH_BUTTON_STATUS';
 
 interface TradeProviderInfo {
   label: string;
@@ -99,6 +100,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     to: {} as SwapToken
   };
 
+  public refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+
   public get hasBestRate(): boolean {
     return this.trades.some(provider => provider.isBestRate);
   }
@@ -165,6 +168,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         trade: null,
         tradeState: null
       }));
+      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
     }
   }
 
@@ -227,8 +231,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   private firstBlockhainEmitment = true;
-
-  private matDialogRef: MatDialogRef<MessageBoxComponent>;
 
   constructor(
     private tradeTypeService: TradeTypeService,
@@ -395,7 +397,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  private async calculateTradeParameters() {
+  public async calculateTradeParameters() {
+    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.REFRESHING;
+
     const tradeParams = {
       ...this.tradeParameters
     };
@@ -404,6 +408,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       calculationPromises.push(this.calculateProviderTrade(service, this.trades[index]))
     );
     await Promise.allSettled(calculationPromises);
+
     if (
       this.isCalculatedTradeActual(
         tradeParams.fromAmount,
@@ -420,6 +425,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ...this.tradeParameters,
         toAmount
       });
+      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;
     }
   }
 

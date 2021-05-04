@@ -73,8 +73,16 @@
         class="arrow-button"
         [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
       >
-        <img *ngIf="trades.length === 2 && !($isIframe | async)" src="assets/images/icons/RoundArrows.svg" alt="" />
-        <img *ngIf="trades.length === 1 || ($isIframe | async)" src="assets/images/icons/revert.svg" alt="" />
+        <img
+          *ngIf="trades.length === 2 && !($isIframe | async)"
+          src="assets/images/icons/RoundArrows.svg"
+          alt=""
+        />
+        <img
+          *ngIf="trades.length === 1 || ($isIframe | async)"
+          src="assets/images/icons/revert.svg"
+          alt=""
+        />
       </button>
     </div>
 
@@ -89,7 +97,14 @@
           }"
         >
           <div class="selection-block__header" *ngIf="index === 0">
-            <div class="selection-block__label">you get</div>
+            <div class="selection-block__label">
+              you get
+              <app-refresh-button
+                class="selection-block__refresh-button"
+                [refreshButtonStatus]="refreshButtonStatus"
+                (onRefreshButtonActivated)="calculateTradeParameters()"
+              ></app-refresh-button>
+            </div>
 
             <div *ngIf="toToken?.address" class="selection-block__scanner">
               <app-scanner-link
@@ -181,7 +196,9 @@
         >
           <app-primary-button
             type="button"
-            [label]="($isIframe | async) ? 'Swap' : ('Via ' + tradeController.tradeProviderInfo.label)"
+            [label]="
+              ($isIframe | async) ? 'Swap' : 'Via ' + tradeController.tradeProviderInfo.label
+            "
             [disabled]="
               !(
                 fromAmountAsNumber.isGreaterThan(0) &&
