@@ -16,13 +16,7 @@ import { MessageBoxComponent } from '../../../../shared/components/message-box/m
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
 import { BridgeTrade } from '../../models/BridgeTrade';
-
-type Blockchains = {
-  [BLOCKCHAIN_NAME.ETHEREUM]: BridgeBlockchain;
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: BridgeBlockchain;
-  [BLOCKCHAIN_NAME.POLYGON]: BridgeBlockchain;
-  [BLOCKCHAIN_NAME.TRON]: BridgeBlockchain;
-};
+import { BLOCKCHAINS } from './constants/BLOCKCHAINS';
 
 @Component({
   selector: 'app-bridge-form',
@@ -30,74 +24,23 @@ type Blockchains = {
   styleUrls: ['./bridge-form.component.scss']
 })
 export class BridgeFormComponent implements OnInit, OnDestroy {
-  public readonly BLOCKCHAINS: Blockchains = {
-    [BLOCKCHAIN_NAME.ETHEREUM]: {
-      key: BLOCKCHAIN_NAME.ETHEREUM,
-      label: 'ETH',
-      name: 'Ethereum',
-      img: 'eth.png',
-      baseUrl: 'https://etherscan.io',
-      addressBaseUrl: 'https://etherscan.io/address/',
-      scanner: {
-        label: 'Etherscan',
-        baseUrl: 'https://etherscan.io/token/'
-      }
-    },
-    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-      key: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      label: 'BSC',
-      name: 'Binance Smart Chain',
-      img: 'bnb.svg',
-      baseUrl: 'https://bscscan.com',
-      addressBaseUrl: 'https://bscscan.com/address/',
-      scanner: {
-        label: 'BSCscan',
-        baseUrl: 'https://bscscan.com/token/'
-      }
-    },
-    [BLOCKCHAIN_NAME.POLYGON]: {
-      key: BLOCKCHAIN_NAME.POLYGON,
-      label: 'POLYGON',
-      name: 'Polygon',
-      img: 'polygon.svg',
-      baseUrl: 'https://explorer-mainnet.maticvigil.com/',
-      addressBaseUrl: 'https://explorer-mainnet.maticvigil.com/address/',
-      scanner: {
-        label: 'Matic explorer',
-        baseUrl: 'https://explorer-mainnet.maticvigil.com/address/'
-      }
-    },
-    [BLOCKCHAIN_NAME.TRON]: {
-      key: BLOCKCHAIN_NAME.TRON,
-      label: 'TRON',
-      name: 'Tron',
-      img: 'tron.svg',
-      baseUrl: 'https://tronscan.org/#/',
-      addressBaseUrl: 'https://tronscan.org/#/address/',
-      scanner: {
-        label: 'Tron explorer',
-        baseUrl: 'https://tronscan.org/#/token20/'
-      }
-    }
-  };
-
-  public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
-
   public readonly BRBC_ADDRESS = '0x8E3BCC334657560253B83f08331d85267316e08a';
 
   public readonly ETHEREUM_ADDRESS_PATTERN = '^(0x)[0-9A-Fa-f]{40}$';
 
   public readonly TRON_ADDRESS_PATTERN = '^T[1-9A-HJ-NP-Za-km-z]{33}$';
 
-  public fromBlockchainsList: BridgeBlockchain[] = Object.values(this.BLOCKCHAINS).filter(
+  public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
+  public fromBlockchainsList: BridgeBlockchain[] = Object.values(BLOCKCHAINS).filter(
     b => b.key !== BLOCKCHAIN_NAME.TRON
   );
 
-  public toBlockchainsList: BridgeBlockchain[] = Object.values(this.BLOCKCHAINS);
+  public toBlockchainsList: BridgeBlockchain[] = Object.values(BLOCKCHAINS);
 
-  private _fromBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
+  private _fromBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
 
-  private _toBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+  private _toBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
 
   private _tokens: List<BridgeToken> = List([]);
 
@@ -188,7 +131,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     } else {
       this._fromBlockchain = blockchain;
       if (!this.isBlockchainsPairValid()) {
-        this._toBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
+        this._toBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
       }
       if (this.selectedToken) {
         this.selectedToken = null;
@@ -214,7 +157,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     } else {
       this._toBlockchain = blockchain;
       if (!this.isBlockchainsPairValid()) {
-        this._fromBlockchain = this.BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
+        this._fromBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
       }
       if (this.selectedToken) {
         this.selectedToken = null;
