@@ -218,6 +218,8 @@
 
   &__address {
     display: block;
+
+    height: 16px;
     margin-bottom: 26px;
 
     color: rgba(black, 0.5) !important;
@@ -226,7 +228,15 @@
     text-decoration: none !important;
 
     &:hover {
-      color: rgba(#2856fb, 0.7) !important;
+      color: rgba(40, 86, 251, 0.7) !important;
+    }
+
+    &_not-link {
+      cursor: default;
+
+      &:hover {
+        color: rgba(black, 0.5) !important;
+      }
     }
   }
 
@@ -452,7 +462,7 @@
 
     &__advanced-section {
       &_opened {
-        max-height: 125px;
+        max-height: 129px;
       }
     }
   }

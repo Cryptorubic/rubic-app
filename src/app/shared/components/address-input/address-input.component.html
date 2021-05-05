@@ -5,15 +5,17 @@
     <input
       class="address-input__input"
       [ngClass]="{
-        'address-input__input_correct': isAddressCorrect,
-        'address-input__input_incorrect': isAddressIncorrect
+        'address-input__input_correct': addressInput.value && addressInput.valid,
+        'address-input__input_incorrect': addressInput.invalid
       }"
       id="address-input__input-id"
       type="text"
-      placeholder="Enter Address"
+      placeholder="Enter address"
+      [pattern]="addressPattern"
       spellcheck="false"
       ngModel=""
-      (ngModelChange)="checkAddressCorrectness($event)"
+      (ngModelChange)="onAddressChange($event)"
+      #addressInput="ngModel"
     />
   </div>
 </div>

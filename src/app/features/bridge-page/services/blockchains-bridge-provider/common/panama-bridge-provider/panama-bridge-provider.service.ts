@@ -4,39 +4,22 @@ import { HttpClient } from '@angular/common/http';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { flatMap } from 'rxjs/internal/operators';
-import { BlockchainBridgeProvider } from '../../blockchain-bridge-provider';
-import { BlockchainsTokens, BridgeToken } from '../../../../models/BridgeToken';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BridgeApiService } from '../../../../../../core/services/backend/bridge-api/bridge-api.service';
 import { Web3PrivateService } from '../../../../../../core/services/blockchain/web3-private-service/web3-private.service';
+import { BridgeToken } from '../../../../models/BridgeToken';
+import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BridgeTrade } from '../../../../models/BridgeTrade';
 import { OverQueryLimitError } from '../../../../../../shared/models/errors/bridge/OverQueryLimitError';
 import { RubicError } from '../../../../../../shared/models/errors/RubicError';
-import { BridgeApiService } from '../../../../../../core/services/backend/bridge-api/bridge-api.service';
-import { BridgeTrade } from '../../../../models/BridgeTrade';
+import { PanamaToken } from './models/PanamaToken';
 
 interface PanamaResponse {
   code: number;
   data: any;
 }
 
-interface PanamaToken {
-  name: string;
-  symbol: string;
-  ethSymbol: string;
-  bscSymbol: string;
-  icon: string;
-  minAmount: number;
-  maxAmount: number;
-  bscContractAddress: string;
-  bscContractDecimal: number;
-  ethContractAddress: string;
-  ethContractDecimal: number;
-  ethToBscFee?: number;
-  bscToEthFee?: number;
-}
-
 @Injectable()
-export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
+export class PanamaBridgeProviderService {
   private readonly apiUrl = 'https://api.binance.org/bridge/api/v2/';
 
   private readonly PANAMA_SUCCESS_CODE = 20000;
@@ -45,43 +28,9 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
     private httpClient: HttpClient,
     private web3PrivateService: Web3PrivateService,
     private bridgeApiService: BridgeApiService
-  ) {
-    super();
-  }
+  ) {}
 
-  private static parsePanamaToken(token: PanamaToken): BridgeToken {
-    return {
-      symbol: token.symbol,
-      image: '',
-      rank: 0,
-
-      blockchainToken: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: {
-          address: token.ethContractAddress || (token.ethSymbol === 'ETH' && NATIVE_TOKEN_ADDRESS),
-          name: token.name,
-          symbol: token.ethSymbol,
-          decimals: token.ethContractDecimal,
-
-          minAmount: token.minAmount,
-          maxAmount: token.maxAmount
-        },
-        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-          address: token.bscContractAddress,
-          name: token.name,
-          symbol: token.bscSymbol,
-          decimals: token.bscContractDecimal,
-
-          minAmount: token.minAmount,
-          maxAmount: token.maxAmount
-        }
-      } as BlockchainsTokens,
-
-      fromEthFee: token.ethToBscFee,
-      toEthFee: token.bscToEthFee
-    };
-  }
-
-  public getTokensList(): Observable<List<BridgeToken>> {
+  public getTokensList(): Observable<List<PanamaToken>> {
     return this.httpClient.get(`${this.apiUrl}tokens`).pipe(
       map((response: PanamaResponse) => {
         if (response.code !== this.PANAMA_SUCCESS_CODE) {
@@ -89,9 +38,9 @@ export class PanamaBridgeProviderService extends BlockchainBridgeProvider {
           return List([]);
         }
         return List(
-          response.data.tokens
-            .filter(token => token.ethContractAddress || token.ethSymbol === 'ETH')
-            .map(token => PanamaBridgeProviderService.parsePanamaToken(token))
+          response.data.tokens.filter(
+            token => token.ethContractAddress || token.ethSymbol === 'ETH'
+          )
         );
       })
     );

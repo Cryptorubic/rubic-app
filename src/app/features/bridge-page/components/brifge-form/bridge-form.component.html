@@ -10,7 +10,7 @@
           <div class="choose-blockchains__blockchain form-field">
             <app-blockchain-select
               [selectedBlockchain]="fromBlockchain"
-              [blockchains]="blockchainsList"
+              [blockchains]="fromBlockchainsList"
               (blockchainChanges)="fromBlockchain = $event"
             ></app-blockchain-select>
           </div>
@@ -131,6 +131,7 @@
         <button
           class="choose-blockchains__revert-button"
           type="button"
+          *ngIf="toBlockchain.key !== BLOCKCHAIN_NAME.TRON"
           (click)="revertBlockchains()"
         >
           <img
@@ -147,18 +148,26 @@
           <div class="choose-blockchains__blockchain form-field">
             <app-blockchain-select
               [selectedBlockchain]="toBlockchain"
-              [blockchains]="blockchainsList"
+              [blockchains]="toBlockchainsList"
               (blockchainChanges)="toBlockchain = $event"
             ></app-blockchain-select>
           </div>
 
           <a
             class="choose-blockchains__address"
+            *ngIf="toWalletAddress"
             [href]="toBlockchain.addressBaseUrl + toWalletAddress"
             target="_blank"
           >
             {{ toWalletAddress }}
           </a>
+
+          <div
+            class="choose-blockchains__address choose-blockchains__address_not-link"
+            *ngIf="!toWalletAddress"
+          >
+            {{ 'Enter destination address' }}
+          </div>
 
           <div class="choose-blockchains__title">You get</div>
           <div class="choose-blockchains__get">
@@ -204,17 +213,21 @@
           <a
             class="choose-blockchains__blockchain-link"
             [href]="
-              getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+              isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
                 ? 'https://www.binance.org/'
-                : 'https://polygon.technology/'
+                : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
+                ? 'https://polygon.technology/'
+                : 'https://tron.network/'
             "
             target="_blank"
           >
             What is
             {{
-              getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+              isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
                 ? 'Binance Smart Chain'
-                : 'Polygon'
+                : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
+                ? 'Polygon'
+                : 'Tron'
             }}?
           </a>
         </div>
@@ -233,7 +246,10 @@
               fromNumberAsBigNumber.lt(
                 selectedToken.blockchainToken[fromBlockchain.key].minAmount
               ) ||
-              fromNumberAsBigNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
+              fromNumberAsBigNumber.gt(
+                selectedToken.blockchainToken[fromBlockchain.key].maxAmount
+              ) ||
+              !isToWalletAddressCorrect()
             "
             (onClick)="checkAndConfirm()"
           >
@@ -241,7 +257,8 @@
 
           <a
             [href]="
-              getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+              isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) ||
+              isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
                 ? 'https://www.binance.org/'
                 : 'https://polygon.technology/'
             "
@@ -251,19 +268,21 @@
               'cross-chain-form__confirm-info_hidden':
                 selectedToken?.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]?.address ===
                 this.BRBC_ADDRESS,
-              'cross-chain-form__confirm-info_polygon':
-                getNonEthereumBlockchain() === BLOCKCHAIN_NAME.POLYGON
+              'cross-chain-form__confirm-info_polygon': isBlockchainSelected(
+                BLOCKCHAIN_NAME.POLYGON
+              )
             }"
           >
             <div>With the assistance of</div>
             <img
               [src]="
                 'assets/images/icons/collaborations/' +
-                (getNonEthereumBlockchain() === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+                (isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) ||
+                isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
                   ? 'Binance.svg'
                   : 'Polygon.svg')
               "
-              [alt]="getNonEthereumBlockchain()"
+              alt="blockchain"
             />
           </a>
         </div>
@@ -281,12 +300,15 @@
 
     <div
       class="cross-chain-form__advanced-section advanced-section"
-      [ngClass]="{ 'cross-chain-form__advanced-section_opened': isAdvancedSectionShown }"
+      [ngClass]="{
+        'cross-chain-form__advanced-section_opened': isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
+      }"
     >
       <app-address-input
         class="advanced-section__input-wrapper"
-        inputLabelText="Select custom destination address"
-        (addressEmitter)="changeToWalletAddress($event)"
+        [addressPattern]="TRON_ADDRESS_PATTERN"
+        inputLabelText="Select destination address"
+        (addressValidated)="toWalletAddress = $event"
       ></app-address-input>
     </div>
   </form>
@@ -303,7 +325,7 @@
   *ngIf="isPolygonToEthTradeModalShown"
   [warningText]="
     'Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes' +
-    ' and then deposit second time &ndash; \'Deposit\' button will appear in the corresponding line of the swaps list under the form.'
+    ' and then deposit second time &ndash; \'Receive\' button will appear in the corresponding line of the swaps list under the form.'
   "
   (onCancel)="isPolygonToEthTradeModalShown = false"
   (onConfirm)="onPolygonToEthTradeConfirm()"

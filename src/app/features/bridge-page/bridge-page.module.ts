@@ -19,11 +19,14 @@ import { BridgeSuccessComponent } from './components/dialogs/bridge-success/brid
 import { BridgeTableComponent } from './components/bridge-table/bridge-table.component';
 import { AdvertModalComponent } from './components/dialogs/advert-modal/advert-modal.component';
 import { WarningModalComponent } from './components/dialogs/warning-modal/warning-modal.component';
-import { BinanceBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/binance-bridge-provider.service';
-import { PanamaBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/panama-bridge-provider/panama-bridge-provider.service';
-import { RubicBridgeProviderService } from './services/blockchain-bridge-provider/binance-bridge-provider/rubic-bridge-provider/rubic-bridge-provider.service';
-import { PolygonBridgeProviderService } from './services/blockchain-bridge-provider/polygon-bridge-provider/polygon-bridge-provider.service';
+import { EthereumBinanceBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
+import { EthereumBinancePanamaBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-binance-bridge-provider/panama-bridge-provider/ethereum-binance-panama-bridge-provider.service';
+import { EthereumBinanceRubicBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
+import { EthereumPolygonBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-polygon-bridge-provider/ethereum-polygon-bridge-provider.service';
 import { ReceiveButtonComponent } from './components/bridge-table/deposit-button/receive-button.component';
+import { EthereumTronBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
+import { BinanceTronBridgeProviderService } from './services/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
+import { PanamaBridgeProviderService } from './services/blockchains-bridge-provider/common/panama-bridge-provider/panama-bridge-provider.service';
 
 @NgModule({
   declarations: [
@@ -52,10 +55,13 @@ import { ReceiveButtonComponent } from './components/bridge-table/deposit-button
   exports: [MatFormFieldModule, MatInputModule],
   providers: [
     BridgeService,
-    BinanceBridgeProviderService,
     PanamaBridgeProviderService,
-    RubicBridgeProviderService,
-    PolygonBridgeProviderService
+    EthereumBinanceBridgeProviderService,
+    EthereumBinancePanamaBridgeProviderService,
+    EthereumBinanceRubicBridgeProviderService,
+    EthereumPolygonBridgeProviderService,
+    EthereumTronBridgeProviderService,
+    BinanceTronBridgeProviderService
   ]
 })
 export class BridgePageModule {}

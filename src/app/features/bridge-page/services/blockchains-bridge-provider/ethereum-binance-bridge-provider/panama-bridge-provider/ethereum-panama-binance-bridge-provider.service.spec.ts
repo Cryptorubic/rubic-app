@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BinanceBridgeProviderService } from './binance-bridge-provider.service';
+import { EthereumBinancePanamaBridgeProviderService } from './ethereum-binance-panama-bridge-provider.service';
 
 describe('BinanceBridgeProviderService', () => {
-  let service: BinanceBridgeProviderService;
+  let service: EthereumBinancePanamaBridgeProviderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BinanceBridgeProviderService);
+    service = TestBed.inject(EthereumBinancePanamaBridgeProviderService);
   });
 
   it('should be created', () => {

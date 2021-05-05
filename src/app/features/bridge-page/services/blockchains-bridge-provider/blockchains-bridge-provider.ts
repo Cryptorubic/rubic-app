@@ -5,7 +5,7 @@ import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
 import { BridgeTrade } from '../../models/BridgeTrade';
 
-export abstract class BlockchainBridgeProvider {
+export abstract class BlockchainsBridgeProvider {
   public abstract getTokensList(swapTokens: List<SwapToken>): Observable<List<BridgeToken>>;
 
   public abstract getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number>;
