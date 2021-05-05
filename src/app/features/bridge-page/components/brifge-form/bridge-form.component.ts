@@ -139,6 +139,12 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.setBlockchainsToService();
     }
     this.queryParamsService.setQueryParam('chain', this._fromBlockchain.key);
+
+    if (this._toBlockchain.key === BLOCKCHAIN_NAME.TRON) {
+      this.toWalletAddress = '';
+    } else {
+      this.toWalletAddress = this.fromWalletAddress;
+    }
   }
 
   get toBlockchain() {
@@ -146,13 +152,18 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   }
 
   set toBlockchain(blockchain) {
-    if (blockchain.key === BLOCKCHAIN_NAME.TRON) {
-      this.toWalletAddress = '';
-    } else {
-      this.toWalletAddress = this.fromWalletAddress;
+    if (
+      this._toBlockchain.key === BLOCKCHAIN_NAME.TRON &&
+      blockchain.key !== BLOCKCHAIN_NAME.TRON
+    ) {
+      if (blockchain.key !== BLOCKCHAIN_NAME.ETHEREUM) {
+        this._fromBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
+      } else {
+        this._fromBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+      }
     }
 
-    if (blockchain === this._fromBlockchain && this._toBlockchain.key !== BLOCKCHAIN_NAME.TRON) {
+    if (blockchain === this._fromBlockchain) {
       this.revertBlockchains();
     } else {
       this._toBlockchain = blockchain;
@@ -165,6 +176,12 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.setBlockchainsToService();
     }
     this.queryParamsService.setQueryParam('chain', this._fromBlockchain.key);
+
+    if (this._toBlockchain.key === BLOCKCHAIN_NAME.TRON) {
+      this.toWalletAddress = '';
+    } else {
+      this.toWalletAddress = this.fromWalletAddress;
+    }
   }
 
   set fromNumber(fromNumber: string) {

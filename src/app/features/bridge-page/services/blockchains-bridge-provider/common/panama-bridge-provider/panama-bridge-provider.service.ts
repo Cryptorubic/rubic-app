@@ -80,10 +80,10 @@ export class PanamaBridgeProviderService {
       toAddressLabel: '',
       toNetwork: bridgeTrade.toBlockchain,
       walletAddress: this.web3PrivateService.address,
-      walletNetwork: bridgeTrade.toBlockchain
+      walletNetwork: bridgeTrade.fromBlockchain
     };
 
-    return this.httpClient.post(`${this.apiUrl}swaps/`, body).pipe(
+    return this.httpClient.post(`${this.apiUrl}swaps`, body).pipe(
       flatMap((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
           console.error(`Bridge POST error, code ${res.code}`);

@@ -6,7 +6,7 @@
       class="address-input__input"
       [ngClass]="{
         'address-input__input_correct': addressInput.value && addressInput.valid,
-        'address-input__input_incorrect': addressInput.invalid
+        'address-input__input_incorrect': !addressInput.value || addressInput.invalid
       }"
       id="address-input__input-id"
       type="text"
