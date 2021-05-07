@@ -4,13 +4,12 @@
       {{ walletAddress }}
     </a>
 
-    <img
-      src="assets/images/icons/edit-icon.svg"
+    <div
+      inlineSVG="assets/images/icons/edit-icon.svg"
       class="wallet-address__edit-button"
       [hidden]="!isWithEditing"
       (click)="isEditingSectionOpened = !isEditingSectionOpened"
-      alt="Edit"
-    />
+    ></div>
   </div>
 
   <div class="wallet-address-container__editing-form editing-form" *ngIf="isEditingSectionOpened">
@@ -28,7 +27,7 @@
       #walletAddressInputModel="ngModel"
     />
     <app-primary-button
-      label="Add"
+      label="Set"
       [disabled]="!walletAddressInputModel.value || !walletAddressInputModel.valid"
       (onClick)="onAddWalletAddress(walletAddressInputModel.value)"
     ></app-primary-button>

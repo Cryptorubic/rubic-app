@@ -7,9 +7,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class WalletAddressFormComponent {
   @Input() set walletAddress(value: string) {
-    if (!value) {
-      this.isEditingSectionOpened = true;
-    }
+    this.isEditingSectionOpened = !value;
     this._walletAddress = value;
   }
 
@@ -24,6 +22,8 @@ export class WalletAddressFormComponent {
   @Input() set isWithEditing(value: boolean) {
     if (!value) {
       this.isEditingSectionOpened = false;
+    } else {
+      this.isEditingSectionOpened = !this._walletAddress;
     }
     this._isWithEditing = value;
   }

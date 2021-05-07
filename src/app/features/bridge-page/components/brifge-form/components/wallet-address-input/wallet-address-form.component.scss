@@ -28,8 +28,19 @@
 
   &__edit-button {
     width: 20px;
+    height: 20px;
 
     cursor: pointer;
+
+    ::ng-deep svg path {
+      fill: #808080;
+    }
+
+    &:hover {
+      ::ng-deep svg path {
+        fill: $main-green;
+      }
+    }
   }
 }
 
@@ -44,12 +55,16 @@
     padding: 11px 10px 11px 14px;
 
     color: $dark;
-    font-size: 18px;
+    font-size: 15px;
 
     font-family: $ubuntu-font;
 
     background: $grey-background;
     border: 1px solid white;
+
+    &::placeholder {
+      font-size: 18px;
+    }
 
     &_incorrect {
       border: 1px solid $error-red;
@@ -57,14 +72,6 @@
       &:focus {
         box-shadow: 0 0 2px $error-red;
       }
-    }
-  }
-}
-
-@include b($desktop) {
-  .editing-form {
-    &__input {
-      font-size: 14px;
     }
   }
 }
