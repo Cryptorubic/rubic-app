@@ -68,8 +68,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   public toWalletAddress: string;
 
-  public isAdvancedSectionShown = false;
-
   private tokensSubscription$: Subscription;
 
   private addressSubscription$: Subscription;

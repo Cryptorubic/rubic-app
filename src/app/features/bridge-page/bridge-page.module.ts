@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 import { BridgePageRoutingModule } from './bridge-page-routing.module';
 import { BridgeComponent } from './components/bridge/bridge.component';
 import { BridgeService } from './services/bridge.service';
@@ -27,6 +28,7 @@ import { ReceiveButtonComponent } from './components/bridge-table/deposit-button
 import { EthereumTronBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
 import { BinanceTronBridgeProviderService } from './services/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { PanamaBridgeProviderService } from './services/blockchains-bridge-provider/common/panama-bridge-provider/panama-bridge-provider.service';
+import { WalletAddressFormComponent } from './components/brifge-form/components/wallet-address-input/wallet-address-form.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,8 @@ import { PanamaBridgeProviderService } from './services/blockchains-bridge-provi
     AdvertModalComponent,
     WarningModalComponent,
     ReceiveButtonComponent,
-    BridgeSectionComponent
+    BridgeSectionComponent,
+    WalletAddressFormComponent
   ],
   imports: [
     CommonModule,
@@ -50,7 +53,8 @@ import { PanamaBridgeProviderService } from './services/blockchains-bridge-provi
     InlineSVGModule.forRoot(),
     MatAutocompleteModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    FormsModule
   ],
   exports: [MatFormFieldModule, MatInputModule],
   providers: [

@@ -1,0 +1,36 @@
+<div class="wallet-address-container">
+  <div class="wallet-address-container__wallet-address wallet-address" *ngIf="walletAddress">
+    <a class="wallet-address__address" [href]="walletAddressLink" target="_blank">
+      {{ walletAddress }}
+    </a>
+
+    <img
+      src="assets/images/icons/edit-icon.svg"
+      class="wallet-address__edit-button"
+      [hidden]="!isWithEditing"
+      (click)="isEditingSectionOpened = !isEditingSectionOpened"
+      alt="Edit"
+    />
+  </div>
+
+  <div class="wallet-address-container__editing-form editing-form" *ngIf="isEditingSectionOpened">
+    <input
+      type="text"
+      class="editing-form__input"
+      [ngClass]="{
+        'editing-form__input_incorrect': walletAddressInputModel.invalid
+      }"
+      id="wallet-address-input-id"
+      placeholder="Enter wallet address"
+      [pattern]="walletAddressPattern"
+      spellcheck="false"
+      ngModel=""
+      #walletAddressInputModel="ngModel"
+    />
+    <app-primary-button
+      label="Add"
+      [disabled]="!walletAddressInputModel.value || !walletAddressInputModel.valid"
+      (onClick)="onAddWalletAddress(walletAddressInputModel.value)"
+    ></app-primary-button>
+  </div>
+</div>

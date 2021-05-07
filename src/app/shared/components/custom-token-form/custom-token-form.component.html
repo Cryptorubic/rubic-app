@@ -14,7 +14,7 @@
       type="text"
       class="form__input"
       [id]="type + '-custom-token'"
-      placeholder="Token Contract Address"
+      placeholder="Token contract address"
       pattern="0x[A-Fa-f0-9]{40}"
       appTokenAddress
       [blockchain]="blockchain"
@@ -24,13 +24,12 @@
       [ngClass]="{
         form__input_invalid: customTokenModel.value && customTokenModel.invalid
       }"
-      #customTokenInput
     />
     <app-primary-button
       label="Add"
       [animate]="customTokenModel.pending"
       [disabled]="!customTokenModel.valid"
-      (onClick)="onAddToken()"
+      (onClick)="addToken.emit()"
     ></app-primary-button>
   </div>
 </div>
