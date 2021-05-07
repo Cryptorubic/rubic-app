@@ -119,8 +119,8 @@ export class PanamaBridgeProviderService {
       }
       await this.bridgeApiService.postPanamaTransaction(
         binanceId,
-        token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol,
-        token.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].symbol
+        token.blockchainToken[bridgeTrade.fromBlockchain].symbol,
+        token.blockchainToken[bridgeTrade.toBlockchain].symbol
       );
       updateTransactionsList();
     };
