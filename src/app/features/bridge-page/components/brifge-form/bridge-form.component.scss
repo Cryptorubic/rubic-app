@@ -105,8 +105,11 @@
   align-items: center;
 
   &__box {
+    display: flex;
     flex: 1;
+    flex-direction: column;
     align-self: stretch;
+
     padding: 20px;
 
     border-radius: 5px;
@@ -132,6 +135,10 @@
     text-transform: uppercase;
 
     opacity: 0.85;
+
+    &_second {
+      margin-top: auto;
+    }
   }
 
   &__blockchain {
@@ -153,7 +160,7 @@
   &__wallet-address-form {
     display: block;
 
-    margin-bottom: 26px;
+    margin-bottom: 20px;
   }
 
   &__token {
@@ -229,6 +236,10 @@
     font-size: 14px;
 
     border-collapse: collapse;
+
+    &_invisible {
+      visibility: hidden;
+    }
 
     td {
       opacity: 0.5;
@@ -337,7 +348,7 @@
   }
 }
 
-@include b(1150) {
+@include b(1220) {
   .cross-chain-form {
     &__main-section {
       flex-direction: column;

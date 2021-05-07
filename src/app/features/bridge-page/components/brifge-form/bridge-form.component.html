@@ -22,7 +22,7 @@
             [isWithEditing]="false"
           ></app-wallet-address-form>
 
-          <div class="choose-blockchains__title">You have</div>
+          <div class="choose-blockchains__title choose-blockchains__title_second">You have</div>
           <div class="choose-blockchains__token form-field">
             <app-tokens-input
               class="choose-token__wrapper"
@@ -57,7 +57,9 @@
 
             <table
               class="choose-blockchains__info"
-              *ngIf="!isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)"
+              [ngClass]="{
+                'choose-blockchains__info_invisible': isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
+              }"
             >
               <tr
                 [ngClass]="{
@@ -220,7 +222,7 @@
                 ? 'Binance Smart Chain'
                 : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
                 ? 'Polygon'
-                : 'Tron'
+                : 'TRON'
             }}?
           </a>
         </div>

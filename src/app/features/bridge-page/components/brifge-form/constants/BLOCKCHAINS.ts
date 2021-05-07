@@ -48,7 +48,7 @@ export const BLOCKCHAINS: Blockchains = {
   [BLOCKCHAIN_NAME.TRON]: {
     key: BLOCKCHAIN_NAME.TRON,
     label: 'TRON',
-    name: 'Tron',
+    name: 'TRON',
     img: 'tron.svg',
     baseUrl: 'https://tronscan.org/#/',
     addressBaseUrl: 'https://tronscan.org/#/address/',
