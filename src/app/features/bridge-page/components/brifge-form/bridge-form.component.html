@@ -58,10 +58,7 @@
 
             <table
               class="choose-blockchains__info"
-              *ngIf="
-                fromBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
-                toBlockchain.key === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-              "
+              *ngIf="!isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)"
             >
               <tr
                 [ngClass]="{
