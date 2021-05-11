@@ -35,15 +35,15 @@ export class InstantTradesApiService {
       tokenFromUsdPrice: trade.from.token.price
     };
 
-    return this.httpService.post(this.BOT_URL.INSTANT_TRADES, req).toPromise();
+    return this.httpService.post(BOT_URL.INSTANT_TRADES, req).toPromise();
   }
 
   public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
     return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo);
   }
 
-  public patchTrade(hash: string): Observable<InstantTradesResponseApi> {
-    return this.httpService.patch(instantTradesApiRoutes.editData, {}, hash);
+  public patchTrade(hash: string, status): Observable<InstantTradesResponseApi> {
+    return this.httpService.patch(instantTradesApiRoutes.editData, { status }, hash);
   }
 
   public fetchSwaps(): Observable<InstantTradesTradeData[]> {

@@ -26,6 +26,8 @@ import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-
 import { Token } from '../../../../../shared/models/tokens/Token';
 import { QuickSwapService } from '../../services/quick-swap-service/quick-swap.service';
 import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
+import { INTSTANT_TRADES_TRADE_STATUS } from '../../../models/trade-data';
+import { PROVIDERS } from '../../models/providers.enum';
 
 interface TradeProviderInfo {
   label: string;
@@ -564,6 +566,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.trades[selectedServiceIndex].tradeState = state;
       this.selectedTradeState = state;
     };
+
+    let currentHash;
+
     this._instantTradeServices[selectedServiceIndex]
       .createTrade(this.trades[selectedServiceIndex].trade, {
         onApprove: () => {
@@ -573,14 +578,31 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         onConfirm: hash => {
           this.waitingForProvider = false;
           setTradeState(TRADE_STATUS.TX_IN_PROGRESS);
+          currentHash = hash;
 
-          const tradeInfo = {
-            hash,
-            network: this.blockchain,
-            provider: this.trades[selectedServiceIndex].tradeProviderInfo.label
-          };
+          let tradeInfo;
+          if (this.trades[selectedServiceIndex].tradeProviderInfo.label === PROVIDERS.ONEINCH) {
+            tradeInfo = {
+              currentHash,
+              network: this.blockchain,
+              provider: this.trades[selectedServiceIndex].tradeProviderInfo.label.toLowerCase(),
+              from_token: this.tradeParameters.fromToken.address,
+              to_token: this.tradeParameters.toToken.address,
+              from_amount: this.trades[selectedServiceIndex].trade.from.amount,
+              to_amount: this.trades[selectedServiceIndex].trade.to.amount
+            };
+          } else {
+            tradeInfo = {
+              currentHash,
+              provider: this.trades[selectedServiceIndex].tradeProviderInfo.label.toLowerCase(),
+              network: this.blockchain
+            };
+          }
 
-          this.instantTradesApiService.createTrade(tradeInfo);
+          this.instantTradesApiService.createTrade(tradeInfo).subscribe(
+            res => res,
+            err => console.error(err)
+          );
         }
       })
       .then(receipt => {
@@ -593,6 +615,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           trade: this.trades[selectedServiceIndex].trade,
           txHash: receipt.transactionHash
         });
+
+        this.instantTradesApiService.patchTrade(
+          receipt.transactionHash,
+          INTSTANT_TRADES_TRADE_STATUS.COMPLETED.toLowerCase()
+        );
       })
       .catch((err: RubicError) => {
         this.waitingForProvider = false;
@@ -611,6 +638,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           width: '400px',
           data
         });
+
+        this.instantTradesApiService.patchTrade(
+          currentHash,
+          INTSTANT_TRADES_TRADE_STATUS.REJECTED.toLowerCase()
+        );
       });
   }
 
