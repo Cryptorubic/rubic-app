@@ -173,18 +173,6 @@ export class OrderBooksFormService implements OnDestroy {
   }
 
   private createTradeApiObject(tradeForm: OrderBookTradeForm): OrderBookTradeApi {
-    let network: number;
-    switch (tradeForm.blockchain) {
-      case BLOCKCHAIN_NAME.ETHEREUM:
-        network = 1;
-        break;
-      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        network = 22;
-        break;
-      default:
-        network = 24;
-    }
-
     return {
       memo: '',
       contract_address: ORDER_BOOK_CONTRACT.ADDRESSES[2][tradeForm.blockchain],

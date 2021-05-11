@@ -121,8 +121,8 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
             if (this.sortBy) {
               // eslint-disable-next-line
               for (const parameter of this.sortBy) {
-                if (a.sortParameters[parameter] < b.sortParameters[parameter]) return -1;
-                if (a.sortParameters[parameter] > b.sortParameters[parameter]) return 1;
+                if (a.sortParameters[parameter] > b.sortParameters[parameter]) return -1;
+                if (a.sortParameters[parameter] < b.sortParameters[parameter]) return 1;
               }
             }
             return 0;

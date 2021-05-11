@@ -7,6 +7,7 @@ import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BA
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTrade from '../../../../features/swaps-page/instant-trades/models/InstantTrade';
+import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { instantTradesApiRoutes } from './types/trade-routes';
@@ -15,8 +16,6 @@ import { instantTradesApiRoutes } from './types/trade-routes';
   providedIn: 'root'
 })
 export class InstantTradesApiService {
-  private readonly botUrl = 'bot/instanttrades';
-
   constructor(private httpService: HttpService) {}
 
   public notifyInstantTradesBot(body: {
@@ -32,10 +31,11 @@ export class InstantTradesApiService {
       amountFrom: trade.from.amount,
       amountTo: trade.to.amount,
       symbolFrom: trade.from.token.symbol,
-      symbolTo: trade.to.token.symbol
+      symbolTo: trade.to.token.symbol,
+      tokenFromUsdPrice: trade.from.token.price
     };
 
-    return this.httpService.post(this.botUrl, req).toPromise();
+    return this.httpService.post(this.BOT_URL.INSTANT_TRADES, req).toPromise();
   }
 
   public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
