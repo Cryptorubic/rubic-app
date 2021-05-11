@@ -93,7 +93,8 @@
           [ngClass]="{
             'selection-block_best':
               (tradeController.isBestRate && trades.length > 1) ||
-              (index === 0 && !hasBestRate)
+              (index === 0 && !hasBestRate && !checkIfError(index)) ||
+              (index !== 0 && !checkIfError(index) && checkIfError(index - 1))
           }"
         >
           <div class="selection-block__header" *ngIf="index === 0">
@@ -184,7 +185,8 @@
             'instant-trade-button_second': index === 1,
             'instant-trade-button_best':
               (tradeController.isBestRate && trades.length > 1) ||
-              (index === 0 && !hasBestRate)
+              (index === 0 && !hasBestRate && !checkIfError(index)) ||
+              (index !== 0 && !checkIfError(index) && checkIfError(index - 1))
           }"
         >
           <app-primary-button
