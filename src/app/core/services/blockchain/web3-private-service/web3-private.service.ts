@@ -72,7 +72,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log(`Tokens transfer error. ${err}`);
+          console.error(`Tokens transfer error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -102,7 +102,7 @@ export class Web3PrivateService {
         .send({ from: this.address, ...(this.defaultMockGas && { gas: this.defaultMockGas }) })
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
-          console.log(`Tokens transfer error. ${err}`);
+          console.error(`Tokens transfer error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -152,7 +152,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))
         .on('error', err => {
-          console.log(`Tokens transfer error. ${err}`);
+          console.error(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
             reject(new UserRejectError());
@@ -188,7 +188,7 @@ export class Web3PrivateService {
         })
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
-          console.log(`Tokens transfer error. ${err}`);
+          console.error(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
             reject(new UserRejectError());
@@ -228,7 +228,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log(`Tokens approve error. ${err}`);
+          console.error(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -271,7 +271,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', err => {
-          console.log(`Method execution error. ${err}`);
+          console.error(`Method execution error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {
@@ -305,7 +305,7 @@ export class Web3PrivateService {
         })
         .on('transactionHash', resolve)
         .on('error', err => {
-          console.log(`Tokens approve error. ${err}`);
+          console.error(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {

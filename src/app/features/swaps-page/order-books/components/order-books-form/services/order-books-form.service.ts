@@ -6,7 +6,6 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
@@ -18,6 +17,7 @@ import { SameTokensError } from '../../../../../../shared/models/errors/order-bo
 import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
+import { TO_BACKEND_BLOCKCHAINS } from '../../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 @Injectable()
 export class OrderBooksFormService implements OnDestroy {
@@ -220,7 +220,7 @@ export class OrderBooksFormService implements OnDestroy {
       broker_fee_quote: parseFloat(tradeForm.token.quote.brokerPercent),
 
       name: `${tradeForm.token.base.symbol} <> ${tradeForm.token.quote.symbol}`,
-      network,
+      network: TO_BACKEND_BLOCKCHAINS[tradeForm.blockchain],
       state: 'ACTIVE',
       contract_state: 'ACTIVE',
       contract_type: 20,

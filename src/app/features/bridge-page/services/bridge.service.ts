@@ -149,7 +149,7 @@ export class BridgeService implements OnDestroy {
             item.address.toLowerCase()
         );
       token.image = ethToken?.image || '/assets/images/icons/coins/empty.svg';
-      token.rank = ethToken?.rank || TokensService.maxRankValue;
+      token.rank = ethToken?.rank;
       return token;
     });
   }
