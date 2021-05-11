@@ -1,0 +1,86 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+.cross-chain-swaps {
+  max-width: 1180px;
+  height: 100%;
+  margin: 85px auto 0;
+
+  &__intro {
+    margin-bottom: 60px;
+    padding-top: 40px;
+
+    color: rgba(black, 0.4);
+
+    font-weight: normal;
+    font-size: 22px;
+    line-height: 40px;
+
+    .app-index__intro_bold {
+      font-weight: 700;
+    }
+
+    .app-index__intro_green {
+      color: #4aa956;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 30px;
+
+  color: #110931;
+
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 32px;
+}
+
+.swaps-link {
+  &:hover {
+    &__arrow-button {
+      transform: scale(1.2);
+    }
+  }
+
+  &__text {
+    margin-right: 10px;
+
+    color: $main-green;
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  &__arrow-button {
+    position: relative;
+    top: -2px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+
+    background-color: white;
+    border-radius: 50%;
+
+    transition: transform 0.2s linear;
+  }
+}
+
+@include b(1240) {
+  .cross-chain-swaps {
+    padding: 0 2vw;
+  }
+}
+
+@include b(600) {
+  .cross-chain-swaps {
+    &__header {
+      flex-direction: column;
+    }
+  }
+}

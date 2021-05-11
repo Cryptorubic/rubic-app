@@ -12,12 +12,18 @@
 
     vertical-align: middle;
 
-    img {
-      display: inline-block;
-      height: 23px;
-      margin-right: 10px;
+    mat-select-trigger {
+      display: flex;
+      align-items: center;
 
-      vertical-align: text-top;
+      color: $dark;
+      line-height: normal;
+
+      img {
+        display: inline-block;
+        height: 23px;
+        margin-right: 12px;
+      }
     }
   }
 
@@ -50,14 +56,17 @@
   }
 
   .mat-option {
-    img {
-      margin-right: 10px;
-
-      vertical-align: middle;
-    }
-
     &-text {
+      display: flex !important;
+      align-items: center;
+
       font-family: $ubuntu-font;
+
+      img {
+        margin-right: 12px;
+
+        vertical-align: middle;
+      }
     }
 
     &.mat-active,
