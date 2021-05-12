@@ -8,7 +8,7 @@
     "error": "Ошибка",
     "have": "У вас есть",
     "want": "Вы хотите получить",
-    "confirm": "Confirm",
+    "confirm": "Подтвердить",
     "copy": "Копировать",
     "accept": "Принять",
     "copyright": "Авторские права",
@@ -16,12 +16,12 @@
     "close": "Закрыть",
     "advancedOptions": "Дополнительные Опции",
     "send": "Отправить",
-    "left": "Left",
-    "checkOnExplorer": "Check on Explorer",
+    "left": "Осталось",
+    "checkOnExplorer": "Проверить в Explorer",
     "useCustomToken": "Использовать пользовательский токен",
     "cancel": "Отмена",
     "add": "Добавить",
-    "via": "Via",
+    "via": "Через",
     "contractAddress": "Token Contract Address",
     "enterAmount": "Введите количество",
     "chooseToken": "Выберите токен"
@@ -33,8 +33,8 @@
     "OverQueryLimit": "Вы пытались совершить слишком много сделок за короткий промежуток времени. Пожалуйста, подождите и повторите попытку позже, если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
     "userReject": "Вы отказались от исполнения сделки. Пожалуйста, сначала подтвердите сделку, чтобы её завершить.",
     "undefined": "Пожалуйста, повторите попытку позже или попробуйте использовать другое устройство. Если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
-    "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
-    "sameTokens": "You can't choose the same token on both sides, please choose different tokens."
+    "insufficientFunds": "У вас недостаточно {{ tokenSymbol }}. Ваш баланс {{balance}} {{tokenSymbol}}, но требуется {{requiredBalance}} {{tokenSymbol}}.",
+    "sameTokens": "Один и тот же токен не может быть выбран в обоих блоках, пожалуйста, выберете разные токены."
   },
   "navigation": {
     "about": "О компании",
@@ -42,7 +42,7 @@
     "features": "Функции",
     "team": "Команда",
     "project": "Проект",
-    "login": "Connect Wallet",
+    "login": "Подключить кошелек",
     "myTrades": "Мои сделки",
     "logout": "Выйти",
     "logoutMessage": "Вы действительно хотите выйти?"
@@ -76,9 +76,9 @@
       }
     },
     "features": {
-      "title": "Rubic DEX features",
+      "title": "Особенности Rubic DEX",
       "data": {
-        "0": "Multichain: ETH, BSC, Polygon",
+        "0": "Мультичейн: ETH, BSC, Polygon",
         "1": "Возможность проводить краудсейлы",
         "2": "% дохода платформы можно регулировать",
         "3": "Мгновенные сделки",
@@ -86,43 +86,43 @@
         "5": "Поддержка брокеров",
         "6": "Нет ограничений по объему",
         "7": "Нет необходимости листить токен",
-        "8": "Stops scams and rugpulls from happening"
+        "8": "Предотвратить мошенничество"
       }
     },
     "contract": {
       "title": "Rubic контракт"
     },
     "roadmap": {
-      "title": "Roadmap",
+      "title": "Путь",
       "data": {
         "q1": {
           "title": "Q1 2021",
           "data": {
-            "0": "Blockchains & DEXes integrations",
-            "1": "Binance Smart Chain instant trades",
-            "2": "Paraswap integration",
-            "3": "Cross chain solutions for ETH and BSC",
-            "4": "Mobile support"
+            "0": "Блокчейн & DEXes интеграции",
+            "1": "Binance Smart Chain мгновенные продажи",
+            "2": "Интеграция Paraswap",
+            "3": "Кроссчейн решения для ETH and BSC",
+            "4": "Мобильная поддержка"
           }
         },
         "q2": {
           "title": "Q2 2021",
           "data": {
-            "0": "Layer 2 Solutions integration",
-            "1": "Anonymizer for DEX on L1"
+            "0": "Интеграция Layer 2 Solutions",
+            "1": "Anonymizer для DEX на L1"
           }
         },
         "q3": {
           "title": "Q3 2021",
           "data": {
-            "0": "Polkadot integration"
+            "0": "Интеграция Polkadot"
           }
         },
         "q4": {
           "title": "Q4 2021",
           "data": {
-            "0": "Own AMM DEX on L2",
-            "1": "Anonymizer for Own Dex on L2"
+            "0": "Own AMM DEX на L2",
+            "1": "Anonymizer для Own Dex на L2"
           }
         }
       }
@@ -191,40 +191,40 @@
         "answer": "Да, вы можете отменить сделку в любое время до того, как вторая сторона завершит сделку. Если вы отмените сделку, вы можете вернуть свои токены."
       },
       "14": {
-        "title": "How to add Binance Smart Chain and Polygon networks to MetaMask?",
-        "answer": "<a href='/assets/book.pdf' target='_blank'>Please click here for more details.</a>"
+        "title": "Как добавить сети Binance Smart Chain и Polygon в MetaMask?",
+        "answer": "<a href='/assets/book.pdf' target='_blank'>Пожалуйста, нажмите для более подробной информации.</a>"
       },
       "15": {
-        "title": "How to use cross-chain bridge?",
-        "answer": "<strong>Step 1.</strong> Install MetaMask wallet (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) and connect it to Rubic.exchange. \n\n<strong>Step 2.</strong> Choose your exchange destination (from Ethereum to Binance or vice-versa). You can switch your destination by clicking on the swap arrows button. \n\n<strong>Step 3.</strong> Currently, users are able to swap 25 ERC20 tokens with their corresponding BEP20 version, and vice-versa (and the list keeps getting updated). The list of tokens:\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>Step 4.</strong> Enter the number of tokens you want to swap (check below the minimum and maximum amount of tokens that you’re able to exchange). Proceed next if you are satisfied with the returning amount of tokens (this includes the Binance fee).\n\n<strong>Step 5.</strong> You can view tokens' contracts by clicking on 'Check on Etherscan/BSCscan'.\n\n<strong>Step 6.</strong>  Click Create Swap, followed by MetaMask's trade confirmation. \n\n<strong>Step 7.</strong> Please wait until the transaction will be recorded in the blockchain. Once your transaction is accepted you will be notified. You can find the transaction details in the table. Please wait until the Binance will process it as well."
+        "title": "Как использовать кроссчейн мост?",
+        "answer": "<strong>Шаг 1.</strong> Установите кошелек MetaMask (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>)  и подключите его к Rubic.exchange. \n\n<strong>Шаг 2.</strong>Выберите конечную валюту (из Ethereum в Binance или наоборот). Вы можете менять направление транзакций с помощью нажатия на кнопку со стрелками. \n\n<strong>Шаг 3.</strong> В настоящий момент, пользователи могут обменивать 25 ERC20 tokens с соответствующими им BEP20 версиями и наоборот (список продолжает обновляться). Перечень токенов:\nUSDT в BUSDT-T (Tether)\nETH в ETH (Ethereum)\nBBTC в BTCB (Bitcoin)\nBBCH в BCH (Bitcoin Cash)\nBDOT в DOT (Polkadot)\nBFIL в FIL (Filecoin)\nSNX в SNX (Synthetix Network Token)\nDAI в DAI (Dai Stablecoin)\nBAND в BAND (BandToken)\nBAT в BATBasic (Attention Token)\nLINK в LINK (ChainLink)\nUNI в UNI (Uniswap)\nYFII в YFII (DFI.Money)\nYFI в YFI (yearn.finance)\nBUSD в BUSD (Binance USD)\nCOMP в COMP (Compound)\nMKR в MKR (Maker)\nTCT в TCTToken (Club Token)\nIOTX в IOTX (IoTeX)\nBEL в BEL (Bella Protocol)\nELF в ELF (aelf)\nPAX в PAX (Paxos Standard)\nUSDC в USDC (USD Coin)\nINJ в INJ (Injective Protocol)\nSXP в SX (Swipe)\n\n<strong>Шаг 4.</strong> Введите количество токенов, которые вы хотите поменять (предварительно проверьте минимальное и максимальное количество токенов, которое вы можете обменять). Приступайте к следующим шагам, если вы удовлетворены количеством токенов после конвертации (оно включает в себя комиссию Binance).\n\n<strong>Шаг 5.</strong>Вы можете просмотреть токен-контракт, нажав на кнопку 'Проверить Etherscan/BSCscan'.\n\n<strong>Шаг 6.</strong>  Нажмите “Обменять” и подтвердите сделку на MetaMask. \n\n<strong>Шаг 7.</strong> Пожалуйста, подождите пока транзакция будет записана блокчейном. Вас проинформируют сразу, как ваша транзакция будет подтверждена. Вы можете найти детальную информацию о транзакции в таблице. Пожалуйста, подождите пока транзакция будет также обработана Binance."
       },
       "16": {
-        "title": "I'm not able to use cross-chain swaps, it appears I have exceeded the limit. What should I do?",
-        "answer": "Please wait and try again later, as currently there is a limit of 3 cross-chain swaps in 30 minutes. This will soon improve."
+        "title": "Я не могу использовать кроссчейн обмен, потому что я исчерпал лимит. Что мне делать?",
+        "answer": "Пожалуйста, повторите позже. На данный момент существует ограничение: только 3 кроссчейн обмена в течение 30 минут. Скоро мы улучшим нашу систему."
       },
       "17": {
-        "title": "How long does it take to complete a cross-chain swap?",
-        "answer": "It usually varies, and this does not depend on us, but on the two blockchains.\nAs estimations we have 2 minutes for initialization, then 4 minutes for feedback waiting, and another couple of  minutes for deposit. \n\nThe current average time is approximately 10 minutes."
+        "title": "как долго осуществляется кроссчейн обмен?",
+        "answer": "По-разному, и это зависит не от нас, а от двух блокчейнов s.\\nОбычно две минуты отводятся на установку связи, 4 минуты на ожидание ответа и еще пару минут на совершение депозита. В среднем процесс занимает 10 минут."
       },
       "18": {
-        "title": "What are the benefits of Uniswap integration?",
-        "answer": "Users will be able to choose the suitable DEX protocol in order to get the best tokens rates with the lowest gas prices."
+        "title": "Какие есть плюсы у интеграции с Uniswap?",
+        "answer": "Пользователи смогут выбирать подходящий DEX протокол для того, чтобы обменять токены по самому выгодному курсу с низкой стоимостью GAS."
       },
       "19": {
-        "title": "Why do we need to make a choice between 1inch and Uniswap?",
-        "answer": "The gas fees and price rates of these protocols are different, therefore the opportunity of having more options empowers the users to better trading decisions."
+        "title": "Почему нам нужно выбирать между 1inch и Uniswap?",
+        "answer": "GAS и тарифная ставка этих двух протоколов различаются, а наличие альтернатив позволяет пользователям совершать более выгодный трейдинг."
       },
       "20": {
-        "title": "Is the token approval included in the gas fee?",
-        "answer": "Token approval is not included in the gas fee. Please note that it is required to approve a token just once, while the first use. Here is how it can look like:\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
+        "title": "Подтверждение токена включено в GAS?",
+        "answer": "Нет, подтверждение не включено в стоимость GAS. Имейте в виду, что подтверждать токен необходимо лишь один раз - во время первого использования. Вот как это может выглядеть:\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
       },
       "21": {
-        "title": "What should I do when I see the message:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trading on Uniswap is not available</span></div>?",
-        "answer": "If you get this message please try the next methods:\n1. Reload the page\n2. Clear website cache\n3. Log out and then log in into MetaMask\nIf it still not working please contact our support team."
+        "title": "Что мне следует делать, когда я вижу следующее сообщение:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Торговля на Uniswap недоступна</span></div>?",
+        "answer": "Если вы видите данное сообщение, попробуйте следующие решения:\n1. Перезагрузите страницу\n2. Очистите кэш сайта\n3. Перезайдите в свой аккаунт MetaMask\nЕсли ничего из вышеперечисленного не помогло, пожалуйста, обратитесь в нашу службу поддержки."
       },
       "22": {
-        "title": "What should I do if Uniswap doesn’t display the rates?",
-        "answer": "In order to see the Uniswap rates you will need to login with your MetaMask account, once logged in refresh the page as well."
+        "title": "Что мне делать, если Uniswap не показывает курс?",
+        "answer": "Чтобы увидеть курсы Uniswap вам нужно подключиться к своему аккаунту в  MetaMask, после чего перезагрузить страницу."
       },
       "23": {
         "title": "Зачем нужны Limit Orders?",
@@ -284,26 +284,26 @@
     "title": "Мои сделки"
   },
   "tradesForm": {
-    "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."
+    "unknownTokenWarning": "Пожалуйста, убедитесь, что представлен правильный проект. Если нет, есть вероятность невозможности осуществления его продажи позже. Ответственность за сделку вы берете на себя."
   },
   "tradesTable": {
     "columns": {
       "status": "Статус",
       "from": "Откуда",
       "to": "Куда",
-      "get": "Get",
-      "send": "Send",
+      "get": "Получить",
+      "send": "Отправить",
       "expiresIn": "Истекает через",
       "volume": "Объем",
       "network": "Сеть",
-      "spent": "Spent",
-      "expected": "Expected"
+      "spent": "Потратить",
+      "expected": "Ожидаемый"
     },
     "noData": "У вас еще нет кросс-чейн обменов",
-    "noTrades": "There are no trades",
-    "noTradesWithSelected": "There are no trades with selected parameters",
-    "showData": "Show data",
-    "sortBy": "Sort by"
+    "noTrades": "Сделок нет",
+    "noTradesWithSelected": "С текущими параметрами сделок не существует",
+    "showData": "Показать данные",
+    "sortBy": "Сортировать"
   },
   "tradesPage": {
     "createTrade": "Создайте свою Сделку",
@@ -332,27 +332,27 @@
     }
   },
   "tradePage": {
-    "sent": "Sent",
-    "left": "Left",
-    "investors": "Number of investors",
+    "sent": "Отправлено",
+    "left": "Осталось",
+    "investors": "Количество инвесторов",
     "getBefore": "Вы получите",
     "getAfter": "после завершения сделки",
-    "find": "Fill all",
+    "find": "Заполните все",
     "limit": "Лимит минимального взноса:",
     "fee": "Брокерская комиссия:",
-    "Withdraw": "Withdraw",
-    "rate": "Rate:",
+    "Withdraw": "Вывести",
+    "rate": "Курс:",
     "closingDate": "Дата закрытия сделки",
     "closingTime": "Время закрытия сделки",
-    "link": "Link To Deal",
+    "link": "Ссылка на сделку",
     "copied": "Скопировано",
     "publicDeal": "Публичная сделка",
-    "brokerAddress": "Broker Address",
+    "brokerAddress": "Брокерский адрес",
     "notExist": "Такой сделки не существует"
   },
   "maintenance": {
-    "title": "Maintenance",
-    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+    "title": "Поддержка",
+    "text": "У нас возникли проблемы с сервером, пожалуйста, не используйте платформу до последующего уведомления. Спасибо."
   },
   "modals": {
     "adModal": {
@@ -360,28 +360,28 @@
       "button": "Добавьте BRBC в кошелек"
     },
     "gasPriceModal": {
-      "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
+      "text": "Сейчас стоимость GAS в сети (Ethereum) высокая. Длительность обмена увеличена и может занять до 4 часов.<br />Хотите продолжить сейчас?"
     },
     "cancelModal": {
-      "text": "The trade was cancelled",
-      "link": "Check transaction on scanner"
+      "text": "Сделка была отменена",
+      "link": "Проверьте транзакцию на сканере"
     },
     "operationModal": {
       "progress": {
-        "text": "Operation is in progress <br /> Please wait until it is completed"
+        "text": "Операция в процессе <br /> Пожалуйста, дождитесь окончания операции"
       },
       "success": {
-        "text": "The operation is successful! <br /> This page will be updated automatically <br />",
-        "link": "Check transaction on scanner"
+        "text": "Операция прошла успешно! <br /> Страница обновится автоматически <br />",
+        "link": "Проверьте транзакцию на сканере"
       }
     },
     "tradeModal": {
       "progress": {
-        "text": "Trade is in progress <br />  Please wait until it is completed"
+        "text": "Сделка в процессе <br />  Пожалуйста, дождитесь окончания сделки"
       },
       "success": {
-        "text": "Successful swap!",
-        "link": "Check transaction on explorer"
+        "text": "Успешный обмен!",
+        "link": "Проверьте транзакцию в Explorer"
       }
     }
   }
