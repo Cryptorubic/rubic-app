@@ -250,7 +250,7 @@
     "whatIsAfter": "是什么",
     "checkOn": "Check on ",
     "assistanceOf": "在...的協助下",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
+    "getTokens": "您將獲得 {{ toBlockchainName }} 個令牌到所選地址",
     "minAmount": "Minimum amount ",
     "maxAmount": "Maximum amount "
   },
@@ -260,7 +260,7 @@
     "notSupportedToken": "請確保指定的DEX支持所選令牌，然後重試.",
     "bestRate": "最優惠的價格",
     "gasFee": "gas费用估计值",
-    "useOptimization": "Use Rubic optimization",
+    "useOptimization": "使用Rubic優化",
     "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " is not available."
   },
