@@ -17,6 +17,10 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
 
   public readonly displayedColumns: string[];
 
+  public readonly displayedMobileItems: string[];
+
+  public readonly mobileSortItems: string[];
+
   public readonly columnsSizes: string[];
 
   public readonly $tableLoading: Observable<boolean>;
@@ -32,6 +36,8 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
     this.instantTradesTableService.setTableLoadingStatus(true);
     this.$dataSource = this.instantTradesTableService.getTableData();
     this.displayedColumns = ['Status', 'Network', 'From', 'To', 'Provider', 'Date'];
+    this.displayedMobileItems = ['Network', 'From', 'To', 'Provider', 'Date'];
+    this.mobileSortItems = ['Date', 'Status'];
     this.columnsSizes = ['15%', '9%', '23%', '23%', '15%', '15%'];
     this.$hasData = this.instantTradesTableService.hasData();
   }

@@ -4,7 +4,8 @@ import {
   Input,
   Output,
   EventEmitter,
-  ViewChild
+  ViewChild,
+  OnInit
 } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -30,6 +31,10 @@ export class TokensTableComponent {
     this.tokensTableData = newData;
     this.sortedTableData = newData;
   }
+
+  @Input() public displayedMobileItems: string[];
+
+  @Input() public mobileSortItems: string[];
 
   @Input() public displayedColumns: string[];
 
@@ -69,6 +74,8 @@ export class TokensTableComponent {
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.tableSorting = { active: 'Expires in', direction: 'asc' };
     this.selectedColumn = 'Expires in';
+    this.displayedMobileItems = ['Expires in', 'Status'];
+    this.mobileSortItems = ['From', 'To', 'Spent', 'Expected', 'Expires in'];
   }
 
   /**

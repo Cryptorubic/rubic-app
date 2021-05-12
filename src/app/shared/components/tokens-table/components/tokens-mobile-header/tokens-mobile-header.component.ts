@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter,
+  Input,
+  OnInit
+} from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { Sort } from '@angular/material/sort';
 
@@ -11,7 +18,7 @@ import { Sort } from '@angular/material/sort';
 export class TokensMobileHeaderComponent {
   public sortingOptions: string[];
 
-  public selectionOptions: string[];
+  @Input() public selectionOptions: string[];
 
   @Input() public sortingValue: Sort;
 
@@ -21,7 +28,7 @@ export class TokensMobileHeaderComponent {
 
   @Input() public selectedValue: string;
 
-  private readonly sortableColumns: string[];
+  @Input() public readonly sortableColumns: string[];
 
   @Input() set sortingColumns(columns: string[]) {
     this.sortingOptions = columns.reduce((acc, column: string) => {
@@ -33,7 +40,6 @@ export class TokensMobileHeaderComponent {
     this.sortEvent = new EventEmitter<Sort>();
     this.selectEvent = new EventEmitter<string>();
     this.sortableColumns = ['Expires in', 'Status'];
-    this.selectionOptions = ['From', 'To', 'Spent', 'Expected', 'Expires in'];
   }
 
   public sortTable(tableColumn: MatSelectChange): void {
