@@ -1,7 +1,7 @@
 {
   "common": {
-    "from": "From",
-    "to": "To",
+    "from": "에서",
+    "to": "에",
     "yes": "예",
     "no": "아니오",
     "any": "어떤",
@@ -15,8 +15,8 @@
     "privacyPolicy": "개인 정보 정책",
     "close": "닫기",
     "advancedOptions": "고급 옵션",
-    "send": "Send",
-    "left": "Left",
+    "send": "보내다",
+    "left": "왼쪽",
     "checkOnExplorer": "탐색기에서 확인하기",
     "useCustomToken": "맞춤형 토큰 사용",
     "cancel": "Cancel",
@@ -28,13 +28,13 @@
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
-    "noMetamaskInstalled": "Please make sure that you have metamask plugin installed and unlocked.\nYou can download it on <a href='https://www.metamask.io' target='_blank'>metamask.io</a>.",
+    "noMetamaskInstalled": "메타 마스크 플러그인이 설치 및 잠금 해제되어 있는지 확인하십시오.\n<a href='https://www.metamask.io' target='_blank'>metamask.io</a> 에서 다운로드 할 수 있습니다.",
     "wrongNetwork": "잘못된 네트워크를 선택했습니다. 메타 마스크에서 {{ networkToChoose }}를 선택하십시오.",
     "OverQueryLimit": "당신은 시간의 짧은 기간에 너무 많은 거래를 실행하려고했습니다. 당신은 여전히 문제가있는 경우, 기다려 나중에 다시 시도하시기 <a href='mailto:support@rubic.finance' target='_blank'>바랍니다 우리의 고객 지원에 문의하시기 바랍니다</a>.",
     "userReject": "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
     "undefined": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우 <a href='mailto:support@rubic.finance' target='_blank'>고객 지원에 문의하십시오</a>.",
-    "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
-    "sameTokens": "You can't choose the same token on both sides, please choose different tokens."
+    "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
+    "sameTokens": "양쪽에서 동일한 토큰을 선택할 수 없습니다. 다른 토큰을 선택하십시오."
   },
   "navigation": {
     "about": "소개",
@@ -76,9 +76,9 @@
       }
     },
     "features": {
-      "title": "Rubic DEX features",
+      "title": "Rubic DEX 기능",
       "data": {
-        "0": "Multichain: ETH, BSC, Polygon",
+        "0": "멀티 체인: ETH, BSC, Polygon",
         "1": "크라우드 세일 능력",
         "2": "플랫폼 수익의 %를 규제 할 수 있습니다.",
         "3": "즉시 거래",
@@ -86,7 +86,7 @@
         "5": "브로커 지원",
         "6": "볼륨 제한 없음",
         "7": "토큰을 나열 할 필요가 없습니다.",
-        "8": "Stops scams and rugpulls from happening"
+        "8": "사기 및 러그 풀이 발생하지 않도록 방지"
       }
     },
     "contract": {
@@ -195,8 +195,8 @@
         "answer": "<a href='/assets/book.pdf' target='_blank'>자세한 내용은 여기를 클릭하십시오.</a>"
       },
       "15": {
-        "title": "크로스 체인 브리지는 어떻게 사용하나요?",
-        "answer": "<strong>1 단계.</strong> MetaMask 지갑 (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) 을 설치하고 Rubic.exchange에 연결합니다.\n\n<strong>2 단계.</strong> 교환 대상을 선택합니다 (이더 리움에서 바이 낸스로 또는 그 반대로). 스왑 화살표 버튼을 클릭하여 목적지를 변경할 수 있습니다.\n\n<strong>3 단계.</strong> 현재 사용자는 25 개의 ERC20 토큰을 해당 BEP20 버전과 교환 할 수 있으며 그 반대도 가능합니다 (목록은 계속 업데이트됩니다). 토큰 목록 :\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>4 단계.</strong> 교환 할 토큰 수를 입력합니다 (교환 할 수있는 최소 및 최대 토큰 수 아래에 확인). 반환되는 토큰 양에 만족하면 다음으로 진행하십시오 (바이 낸스 수수료 포함).\n\n<strong>5 단계.</strong> 'Etherscan / BSCscan에서 확인'을 클릭하면 토큰의 계약을 볼 수 있습니다.\n\n<strong>6 단계.</strong> Create Swap을 클릭 한 다음 MetaMask의 거래 확인을 클릭합니다.\n\n<strong>7 단계.</strong> 거래가 블록 체인에 기록 될 때까지 기다리십시오. 거래가 수락되면 알림이 전송됩니다. 테이블에서 거래 세부 정보를 찾을 수 있습니다. 바이 낸스가 처리 할 때까지 기다려주세요."
+        "title": "교차 체인 브리지를 사용하는 방법?",
+        "answer": "<strong>1 단계.</strong> MetaMask 지갑 (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) 을 설치하고 Rubic.exchange에 연결합니다.\n\n<strong>2 단계.</strong> 단계. 교환 대상을 선택합니다 (이더 리움에서 바이 낸스로 또는 그 반대로). 스왑 화살표 버튼을 클릭하여 목적지를 변경할 수 있습니다.\n\n<strong>3 단계.</strong> 단계. 현재 사용자는 25 개의 ERC20 토큰을 해당 BEP20 버전과 교환 할 수 있으며 그 반대도 가능합니다 (목록은 계속 업데이트됩니다). 토큰 목록 :\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>4 단계.</strong>  단계. 교환 할 토큰 수를 입력합니다 (교환 할 수있는 최소 및 최대 토큰 수 아래에 확인). 반환되는 토큰 양에 만족하면 다음으로 진행하십시오 (바이 낸스 수수료 포함).\n\n<strong>5 단계.</strong> 단계. 'Etherscan / BSCscan에서 확인'을 클릭하면 토큰의 계약을 볼 수 있습니다.'\n\n<strong>6 단계.</strong> 단계. Create Swap을 클릭 한 다음 MetaMask의 거래 확인을 클릭합니다.\n\n<strong>7 단계.</strong> 거래가 블록 체인에 기록 될 때까지 기다리십시오. 거래가 수락되면 알림이 전송됩니다. 테이블에서 거래 세부 정보를 찾을 수 있습니다. 바이 낸스가 처리 할 때까지 기다려주세요."
       },
       "16": {
         "title": "거래가 블록 체인에 기록 될 때까지 기다리십시오. 거래가 수락되면 알림이 전송됩니다. 테이블에서 거래 세부 정보를 찾을 수 있습니다. 바이 낸스가 처리 할 때까지 기다려주세요?",
@@ -241,7 +241,7 @@
     }
   },
   "bridgePage": {
-    "title": "Create your cross-chain swap",
+    "title": "교차 체인 스왑 만들기",
     "swapToggleText": "당사 스왑 사용하기",
     "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
     "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
@@ -281,29 +281,29 @@
     "title": "크로스-체인 스왑"
   },
   "myTrades": {
-    "title": "My trades"
+    "title": "내 거래"
   },
   "tradesForm": {
-    "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."
+    "unknownTokenWarning": "올바른 프로젝트인지 확인하십시오. 그렇지 않은 경우 나중에 판매하지 못할 수 있습니다. 자신의 위험에 따라 거래하십시오."
   },
   "tradesTable": {
     "columns": {
       "status": "상태",
-      "from": "From",
-      "to": "To",
-      "get": "Get",
+      "from": "에서",
+      "to": "에",
+      "get": "가져 오기",
       "send": "전송",
       "expiresIn": "만료",
       "volume": "거래량",
-      "network": "Network",
-      "spent": "Spent",
-      "expected": "Expected"
+      "network": "회로망",
+      "spent": "지출",
+      "expected": "예상"
     },
-    "noData": "You have no swaps yet",
-    "noTrades": "There are no trades",
-    "noTradesWithSelected": "There are no trades with selected parameters",
-    "showData": "Show data",
-    "sortBy": "Sort by"
+    "noData": "아직 스왑이 없습니다",
+    "noTrades": "거래가 없습니다",
+    "noTradesWithSelected": "선택한 매개 변수를 사용한 거래가 없습니다.",
+    "showData": "데이터 표시",
+    "sortBy": "정렬 기준"
   },
   "tradesPage": {
     "createTrade": "거래 생성",
@@ -332,27 +332,27 @@
     }
   },
   "tradePage": {
-    "sent": "Sent",
-    "left": "Left",
-    "investors": "Number of investors",
-    "getBefore": "You will get",
-    "getAfter": "after the trade is complete",
-    "find": "Fill all",
-    "limit": "Min contribution limit:",
-    "fee": "Broker's fee:",
-    "Withdraw": "Withdraw",
-    "rate": "Rate:",
+    "sent": "보냄",
+    "left": "왼쪽",
+    "investors": "투자자 수",
+    "getBefore": "당신은 얻을 것이다",
+    "getAfter": "거래가 완료된 후",
+    "find": "모두 채우기",
+    "limit": "최소 기부 한도:",
+    "fee": "브로커 수수료:",
+    "Withdraw": "빼다",
+    "rate": "율:",
     "closingDate": "마감일",
     "closingTime": "마감 시간",
-    "link": "Link To Deal",
+    "link": "거래 링크",
     "copied": "Сopied",
     "publicDeal": "공개 거래",
-    "brokerAddress": "Broker Address",
-    "notExist": "Such trade doesn't exist."
+    "brokerAddress": "브로커 주소",
+    "notExist": "그러한 거래는 존재하지 않습니다."
   },
   "maintenance": {
-    "title": "Maintenance",
-    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+    "title": "유지",
+    "text": "서버 문제가 발생했습니다. 추후 공지가있을 때까지 지금 플랫폼을 사용하지 마십시오. 감사합니다."
   },
   "modal": {
     "adModal": {
@@ -360,28 +360,28 @@
       "button": "지갑에 BRBC 추가하기"
     },
     "gasPriceModal": {
-      "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
+      "text": "현재 대상 네트워크 (이더 리움)의 가스 가격이 높습니다. 스왑 기간이 연장되며 최대 4 시간이 소요될 수 있습니다. <br /> 지금 계속 하시겠습니까?"
     },
     "cancelModal": {
-      "text": "The trade was cancelled",
-      "link": "Check transaction on scanner"
+      "text": "거래가 취소되었습니다",
+      "link": "스캐너에서 거래 확인"
     },
     "operationModal": {
       "progress": {
-        "text": "Operation is in progress <br /> Please wait until it is completed"
+        "text": "작업이 진행 중입니다. <br /> 완료 될 때까지 기다리십시오."
       },
       "success": {
-        "text": "The operation is successful! <br /> This page will be updated automatically <br />",
-        "link": "Check transaction on scanner"
+        "text": "작업이 성공했습니다! <br />이 페이지는 자동으로 업데이트됩니다. <br />",
+        "link": "스캐너에서 거래 확인"
       }
     },
     "tradeModal": {
       "progress": {
-        "text": "Trade is in progress <br />  Please wait until it is completed"
+        "text": "거래가 진행 중입니다. <br /> 완료 될 때까지 기다려주세요."
       },
       "success": {
-        "text": "Successful swap!",
-        "link": "Check transaction on explorer"
+        "text": "성공적인 스왑!",
+        "link": "탐색기에서 거래 확인"
       }
     }
   }
