@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InstantTradesTradeData } from 'src/app/features/swaps-page/models/trade-data';
-import * as moment from 'moment';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -52,7 +51,7 @@ export class InstantTradesApiService {
    * @param hash hash of transaction what we want to update
    * @param status status of trade what we want to set
    */
-  public patchTrade(hash: string, status): Observable<InstantTradesResponseApi> {
+  public patchTrade(hash: string, status: string): Observable<InstantTradesResponseApi> {
     return this.httpService.patch(instantTradesApiRoutes.editData, { status }, hash);
   }
 
@@ -61,13 +60,13 @@ export class InstantTradesApiService {
    * @return list of trades
    */
   public fetchSwaps(): Observable<InstantTradesTradeData[]> {
-    return this.httpService.get(instantTradesApiRoutes.getData).pipe(
-      map((swaps: InstantTradesResponseApi[]) => {
-        return swaps.map(swap => {
-          return this.tradeApiToTradeData(swap);
-        });
-      })
-    );
+    return this.httpService
+      .get(instantTradesApiRoutes.getData)
+      .pipe(
+        map((swaps: InstantTradesResponseApi[]) =>
+          swaps.map(swap => this.tradeApiToTradeData(swap))
+        )
+      );
   }
 
   /**
@@ -92,7 +91,7 @@ export class InstantTradesApiService {
       },
       blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title],
       status: tradeApi.status,
-      date: moment(tradeApi.status_updated_at)
+      date: new Date(tradeApi.status_updated_at)
     } as InstantTradesTradeData;
 
     tradeData.fromAmount = Web3PublicService.tokenWeiToAmount(

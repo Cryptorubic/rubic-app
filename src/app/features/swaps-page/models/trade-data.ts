@@ -23,5 +23,5 @@ export interface InstantTradesTradeData {
   fromAmount?: BigNumber;
   toAmount?: BigNumber;
   status: INTSTANT_TRADES_TRADE_STATUS;
-  date: moment.Moment;
+  date: Date;
 }

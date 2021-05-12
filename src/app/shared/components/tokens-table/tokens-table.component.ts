@@ -126,7 +126,7 @@ export class TokensTableComponent {
     this.sortedTableData = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
-        case 'expires':
+        case 'Expires in':
           return this.compareNumbers(
             a.expirationDate.toDate().getTime(),
             b.expirationDate.toDate().getTime(),
@@ -136,6 +136,8 @@ export class TokensTableComponent {
           return this.compareStrings(a.blockchain, b.blockchain, isAsc);
         case 'status':
           return this.compareStrings(a.status, b.status, isAsc);
+        case 'Date':
+          return this.compareNumbers(a.date.getTime(), b.date.getTime(), isAsc);
         default:
           return 0;
       }

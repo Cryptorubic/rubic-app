@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
@@ -12,7 +12,7 @@ import { InstantTradesTableService } from './services/instant-trades-table.servi
   templateUrl: './instant-trades-table.component.html',
   styleUrls: ['./instant-trades-table.component.scss']
 })
-export class InstantTradesTableComponent implements AfterViewInit {
+export class InstantTradesTableComponent implements AfterViewInit, OnInit {
   public readonly $dataSource: Observable<InstantTradesTradeData[]>;
 
   public readonly displayedColumns: string[];
@@ -30,7 +30,6 @@ export class InstantTradesTableComponent implements AfterViewInit {
   ) {
     this.$tableLoading = this.instantTradesTableService.getTableLoadingStatus();
     this.instantTradesTableService.setTableLoadingStatus(true);
-    this.fetchSwaps();
     this.$dataSource = this.instantTradesTableService.getTableData();
     this.displayedColumns = ['Status', 'Network', 'From', 'To', 'Provider', 'Date'];
     this.columnsSizes = ['15%', '9%', '23%', '23%', '15%', '15%'];
@@ -44,6 +43,10 @@ export class InstantTradesTableComponent implements AfterViewInit {
       this.instantTradesTableService.setToTokenFilter(null);
       this.instantTradesTableService.filterTable();
     });
+  }
+
+  public ngOnInit(): void {
+    this.fetchSwaps();
   }
 
   public selectToken(tokenData: TokenValueType): void {

@@ -2,6 +2,8 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { TokenValueType } from 'src/app/shared/models/order-book/tokens';
+import * as moment from 'moment';
+import { map } from 'rxjs/operators';
 import { TradesService } from '../../services/trades-service/trades.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainsInfo } from '../../../../core/services/blockchain/blockchain-info';
@@ -27,7 +29,14 @@ export class TradesTableComponent {
     this.$tableLoading = this.tradesService.getTableLoadingStatus();
     this.tradesService.setTableLoadingStatus(true);
     this.fetchSwaps();
-    this.$dataSource = this.tradesService.getTableData();
+    this.$dataSource = this.tradesService.getTableData().pipe(
+      map(trades =>
+        trades.map(trade => ({
+          ...trade,
+          expiresIn: moment.duration(trade.expirationDate.diff(moment().utc()))
+        }))
+      )
+    );
     this.displayedColumns = ['Status', 'Tokens', 'Amount', 'Network', 'Expires in'];
     this.columnsSizes = ['10%', '15%', '50%', '10%', '15%'];
     this.$hasData = this.tradesService.hasData();
