@@ -138,6 +138,10 @@ export class TokensTableComponent {
           return this.compareStrings(a.status, b.status, isAsc);
         case 'Date':
           return this.compareNumbers(a.date.getTime(), b.date.getTime(), isAsc);
+        case 'From':
+          return this.compareNumbers(a.token.from.price, b.token.from.price, isAsc);
+        case 'To':
+          return this.compareNumbers(a.token.to.price, b.token.to.price, isAsc);
         default:
           return 0;
       }
