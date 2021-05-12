@@ -188,7 +188,6 @@ export class BridgeApiService {
       fromBlockchain: bridgeTrade.fromBlockchain,
       toBlockchain: bridgeTrade.toBlockchain,
       symbol: bridgeTrade.token.symbol,
-      ethSymbol: bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol,
       price: this.getTokenPrice(bridgeTrade.token)
     };
 
