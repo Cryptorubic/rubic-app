@@ -46,6 +46,10 @@
   }
 }
 
+app-swap-provider:not(:last-child) {
+  margin-bottom: 20px;
+}
+
 .arrow-button {
   position: relative;
   top: 25px;
@@ -145,31 +149,6 @@
   }
 }
 
-.instant-trade-button {
-  position: relative;
-  top: 22px;
-
-  &_second {
-    top: 1px;
-  }
-
-  &__best-rate {
-    position: absolute;
-    top: -40px;
-    right: -10px;
-
-    img {
-      position: relative;
-      top: 20px;
-    }
-
-    span {
-      color: rgba(black, 0.5);
-      font-size: 14px;
-    }
-  }
-}
-
 .checkbox-optimization {
   display: flex;
   align-items: center;
@@ -237,7 +216,8 @@ app-tooltip {
       }
 
       &__to-section {
-        display: block;
+        display: flex;
+        flex-direction: column;
 
         .instant-trade-button:nth-child(2) {
           margin-bottom: 22px;

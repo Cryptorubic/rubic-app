@@ -11,9 +11,17 @@ import { OneInchEthService } from './services/one-inch-service/one-inch-eth-serv
 import { OneInchBscService } from './services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
 import { PancakeSwapService } from './services/pancake-swap-service/pancake-swap.service';
 import { QuickSwapService } from './services/quick-swap-service/quick-swap.service';
+import { TokensSwapInputComponent } from './components/instant-trades-form/components/tokens-swap-input/tokens-swap-input.component';
+import { IframeTokensSwapInputComponent } from './components/instant-trades-form/components/iframe-tokens-swap-input/iframe-tokens-swap-input.component';
 
 @NgModule({
-  declarations: [InstantTradesComponent, InstantTradesFormComponent, InstantTradesTableComponent],
+  declarations: [
+    InstantTradesComponent,
+    InstantTradesFormComponent,
+    InstantTradesTableComponent,
+    TokensSwapInputComponent,
+    IframeTokensSwapInputComponent
+  ],
   imports: [CommonModule, TradesModule, SharedModule, MatTooltipModule],
   exports: [InstantTradesComponent],
   providers: [
