@@ -4,7 +4,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import BigNumber from 'bignumber.js';
 import { OrderBookDataToken } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { OrderBookTradeService } from 'src/app/features/order-book-trade-page/services/order-book-trade.service';
-import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BigNumberFormat } from 'src/app/shared/pipes/big-number-format.pipe';
 
@@ -42,10 +41,10 @@ describe('TokenFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TokenFormComponent);
     component = fixture.componentInstance;
-    component.tokenPart = 'base';
+    component.tokenPart = 'from';
     component.tradeData = {
       token: {
-        base: mockToken
+        from: mockToken
       } as any
     } as any;
     fixture.detectChanges();

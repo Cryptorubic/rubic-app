@@ -170,7 +170,7 @@ export class TokensTableComponent {
    * @returns Converted table data.
    */
   private prepareData(data: OrderBookTradeData[]): TokensTableData[] {
-    return data.map((trade: OrderBookTradeData) => ({
+    return data.map(trade => ({
       ...trade,
       opened: false
     }));

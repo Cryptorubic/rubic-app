@@ -7,7 +7,7 @@
     <div class="trade-container__header header">
       <div class="header__row header-row">
         <span class="header-row__tokens-names">{{
-          tradeData.token.base.symbol + ' <> ' + tradeData.token.quote.symbol
+          tradeData.token.from.symbol + ' <> ' + tradeData.token.to.symbol
         }}</span>
       </div>
 
@@ -44,18 +44,18 @@
       <div class="tokens-swap__block-container">
         <app-token-form
           [tradeData]="tradeData"
-          tokenPart="base"
-          [oppositeTokenToGet]="quoteTokenAmountToGet + ' ' + tradeData.token.quote.symbol"
-          (amountToContributeChanges)="calculateAmountToGet($event, 'base')"
+          tokenPart="from"
+          [oppositeTokenToGet]="toTokenAmountToGet + ' ' + tradeData.token.from.symbol"
+          (amountToContributeChanges)="calculateAmountToGet($event, 'from')"
         ></app-token-form>
       </div>
 
       <div class="tokens-swap__block-container">
         <app-token-form
           [tradeData]="tradeData"
-          tokenPart="quote"
-          [oppositeTokenToGet]="baseTokenAmountToGet + ' ' + tradeData.token.base.symbol"
-          (amountToContributeChanges)="calculateAmountToGet($event, 'quote')"
+          tokenPart="to"
+          [oppositeTokenToGet]="fromTokenAmountToGet + ' ' + tradeData.token.to.symbol"
+          (amountToContributeChanges)="calculateAmountToGet($event, 'to')"
         ></app-token-form>
       </div>
     </div>

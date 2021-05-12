@@ -96,7 +96,7 @@ export class OrderBookTradeService {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
-    const baseInvestors: string[] = await web3Public.callContractMethod(
+    const fromInvestors: string[] = await web3Public.callContractMethod(
       contractAddress,
       contractAbi,
       'baseInvestors',
@@ -104,9 +104,9 @@ export class OrderBookTradeService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.from.investorsNumber = baseInvestors.length;
+    tradeData.token.from.investorsNumber = fromInvestors.length;
 
-    const quoteInvestors: string[] = await web3Public.callContractMethod(
+    const toInvestors: string[] = await web3Public.callContractMethod(
       contractAddress,
       contractAbi,
       'quoteInvestors',
@@ -114,7 +114,7 @@ export class OrderBookTradeService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.to.investorsNumber = quoteInvestors.length;
+    tradeData.token.to.investorsNumber = toInvestors.length;
 
     return tradeData;
   }

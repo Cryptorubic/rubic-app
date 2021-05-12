@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
@@ -12,7 +12,7 @@ import { InstantTradesTableService } from './services/instant-trades-table.servi
   templateUrl: './instant-trades-table.component.html',
   styleUrls: ['./instant-trades-table.component.scss']
 })
-export class InstantTradesTableComponent {
+export class InstantTradesTableComponent implements AfterViewInit {
   public readonly $dataSource: Observable<InstantTradesTradeData[]>;
 
   public readonly displayedColumns: string[];
@@ -40,8 +40,8 @@ export class InstantTradesTableComponent {
   public ngAfterViewInit(): void {
     this.tradeTypeService.getBlockchain().subscribe((mode: BLOCKCHAIN_NAME) => {
       this.instantTradesTableService.setBlockchain(mode);
-      this.instantTradesTableService.setBaseTokenFilter(null);
-      this.instantTradesTableService.setQuoteTokenFilter(null);
+      this.instantTradesTableService.setFromTokenFilter(null);
+      this.instantTradesTableService.setToTokenFilter(null);
       this.instantTradesTableService.filterTable();
     });
   }
@@ -49,14 +49,14 @@ export class InstantTradesTableComponent {
   public selectToken(tokenData: TokenValueType): void {
     if (tokenData.value) {
       if (tokenData.tokenType === 'from') {
-        this.instantTradesTableService.setBaseTokenFilter(tokenData.value);
+        this.instantTradesTableService.setFromTokenFilter(tokenData.value);
       } else {
-        this.instantTradesTableService.setQuoteTokenFilter(tokenData.value);
+        this.instantTradesTableService.setToTokenFilter(tokenData.value);
       }
     } else if (tokenData.tokenType === 'from') {
-      this.instantTradesTableService.setBaseTokenFilter(null);
+      this.instantTradesTableService.setFromTokenFilter(null);
     } else {
-      this.instantTradesTableService.setQuoteTokenFilter(null);
+      this.instantTradesTableService.setToTokenFilter(null);
     }
     this.instantTradesTableService.filterTable();
   }

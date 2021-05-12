@@ -51,17 +51,17 @@ export class TradesService extends TokensTableService {
   }
 
   public filterTable(): void {
-    const filterBaseValue = this.$filterBaseValue.value?.toLowerCase();
-    const filterQuoteValue = this.$filterQuoteValue.value?.toLowerCase();
-    if (filterBaseValue) {
+    const filterFromValue = this.$filterFromValue.value?.toLowerCase();
+    const filterToValue = this.$filterToValue.value?.toLowerCase();
+    if (filterFromValue) {
       const filteredData = this.$visibleTableData.value.filter(
-        row => row.token.from.symbol.toLowerCase() === filterBaseValue
+        row => row.token.from.symbol.toLowerCase() === filterFromValue
       );
       this.$visibleTableData.next(filteredData);
     }
-    if (filterQuoteValue) {
+    if (filterToValue) {
       const filteredData = this.$visibleTableData.value.filter(
-        row => row.token.to.symbol.toLowerCase() === filterQuoteValue
+        row => row.token.to.symbol.toLowerCase() === filterToValue
       );
       this.$visibleTableData.next(filteredData);
     }

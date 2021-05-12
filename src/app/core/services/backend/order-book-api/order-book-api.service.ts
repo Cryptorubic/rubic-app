@@ -110,9 +110,11 @@ export class OrderBookApiService {
     tradeApi: OrderBookTradeApi,
     tradeData: OrderBookTradeData
   ): Promise<void> {
+    const tokenPartApi = tokenPart === 'from' ? 'base' : 'quote';
+
     tradeData.token[tokenPart] = {
       blockchain: tradeData.blockchain,
-      address: tradeApi[`${tokenPart}_address`]
+      address: tradeApi[`${tokenPartApi}_address`]
     } as OrderBookDataToken;
 
     const foundToken = this._tokens.find(
@@ -134,13 +136,13 @@ export class OrderBookApiService {
       ...tradeData.token[tokenPart],
       amountTotal: Web3PublicService.tokenWeiToAmount(
         tradeData.token[tokenPart],
-        tradeApi[`${tokenPart}_limit`]
+        tradeApi[`${tokenPartApi}_limit`]
       ),
       minContribution: Web3PublicService.tokenWeiToAmount(
         tradeData.token[tokenPart],
-        tradeApi[`min_${tokenPart}_wei`]
+        tradeApi[`min_${tokenPartApi}_wei`]
       ),
-      brokerPercent: tradeApi[`broker_fee_${tokenPart}`]
+      brokerPercent: tradeApi[`broker_fee_${tokenPartApi}`]
     };
   }
 

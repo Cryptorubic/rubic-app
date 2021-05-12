@@ -8,16 +8,16 @@ export abstract class TokensTableService {
 
   protected readonly $visibleTableData: BehaviorSubject<OrderBookTradeTableRow[]>;
 
-  protected readonly $filterBaseValue: BehaviorSubject<any>;
+  protected readonly $filterFromValue: BehaviorSubject<any>;
 
-  protected readonly $filterQuoteValue: BehaviorSubject<any>;
+  protected readonly $filterToValue: BehaviorSubject<any>;
 
   protected readonly $tableLoadingStatus: BehaviorSubject<boolean>;
 
   constructor() {
     this.$tableLoadingStatus = new BehaviorSubject<boolean>(false);
-    this.$filterBaseValue = new BehaviorSubject<any>(null);
-    this.$filterQuoteValue = new BehaviorSubject<any>(null);
+    this.$filterFromValue = new BehaviorSubject<any>(null);
+    this.$filterToValue = new BehaviorSubject<any>(null);
     this.$dataSource = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
     this.$visibleTableData = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
   }
@@ -36,20 +36,20 @@ export abstract class TokensTableService {
     this.$tableLoadingStatus.next(false);
   }
 
-  public getBaseTokenFilter(): Observable<any> {
-    return this.$filterBaseValue.asObservable();
+  public getFromTokenFilter(): Observable<any> {
+    return this.$filterFromValue.asObservable();
   }
 
-  public setBaseTokenFilter(value: any): void {
-    this.$filterBaseValue.next(value);
+  public setFromTokenFilter(value: any): void {
+    this.$filterFromValue.next(value);
   }
 
-  public getQuoteTokenFilter(): Observable<any> {
-    return this.$filterQuoteValue.asObservable();
+  public getToTokenFilter(): Observable<any> {
+    return this.$filterToValue.asObservable();
   }
 
-  public setQuoteTokenFilter(value: any): void {
-    this.$filterQuoteValue.next(value);
+  public setToTokenFilter(value: any): void {
+    this.$filterToValue.next(value);
   }
 
   public filterByToken(token: any, tokenType: TokenPart): void {

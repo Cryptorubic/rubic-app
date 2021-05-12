@@ -68,15 +68,15 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public blockchain: Blockchain;
 
-  private baseToQuoteRate: BigNumber;
+  private fromTokenToToTokenRate: BigNumber;
 
-  private quoteToBaseRate: BigNumber;
+  private toTokenToFromTokenRate: BigNumber;
 
   public isRevertedRate = false;
 
-  public baseTokenAmountToGet: string;
+  public fromTokenAmountToGet: string;
 
-  public quoteTokenAmountToGet: string;
+  public toTokenAmountToGet: string;
 
   private _tokens: List<SwapToken>;
 
@@ -175,18 +175,18 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
         this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
           this.tokens = tokens;
 
-          const foundBaseToken = this.tokens.find(
+          const foundFromToken = this.tokens.find(
             t => t.address.toLowerCase() === this.tradeData.token.from.address.toLowerCase()
           );
-          if (foundBaseToken) {
-            this.tradeData.token.from = { ...this.tradeData.token.from, ...foundBaseToken };
+          if (foundFromToken) {
+            this.tradeData.token.from = { ...this.tradeData.token.from, ...foundFromToken };
           }
 
-          const foundQuoteToken = this.tokens.find(
+          const foundToToken = this.tokens.find(
             t => t.address.toLowerCase() === this.tradeData.token.to.address.toLowerCase()
           );
-          if (foundQuoteToken) {
-            this.tradeData.token.to = { ...this.tradeData.token.to, ...foundQuoteToken };
+          if (foundToToken) {
+            this.tradeData.token.to = { ...this.tradeData.token.to, ...foundToToken };
           }
         });
       },
@@ -221,36 +221,36 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   }
 
   private calculateRate(): void {
-    this.baseToQuoteRate = this.tradeData.token.from.amountTotal.div(
+    this.fromTokenToToTokenRate = this.tradeData.token.from.amountTotal.div(
       this.tradeData.token.to.amountTotal
     );
 
-    this.quoteToBaseRate = this.tradeData.token.to.amountTotal.div(
+    this.toTokenToFromTokenRate = this.tradeData.token.to.amountTotal.div(
       this.tradeData.token.from.amountTotal
     );
   }
 
   public getRate(): string {
     return !this.isRevertedRate
-      ? `${this.baseToQuoteRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
+      ? `${this.fromTokenToToTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
          ${this.tradeData.token.from.symbol} 
          / 1 ${this.tradeData.token.to.symbol}`
       : `1 ${this.tradeData.token.from.symbol} / 
-         ${this.quoteToBaseRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
+         ${this.toTokenToFromTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
          ${this.tradeData.token.to.symbol}`;
   }
 
   public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
     if (tokenPart === 'from') {
-      this.quoteTokenAmountToGet = new BigNumber(value)
-        .times(this.quoteToBaseRate)
+      this.toTokenAmountToGet = new BigNumber(value)
+        .times(this.toTokenToFromTokenRate)
         .div(100)
         .times(100 - this.tradeData.token.to.brokerPercent)
         .dp(this.tradeData.token.to.decimals)
         .toFormat(BIG_NUMBER_FORMAT);
     } else {
-      this.baseTokenAmountToGet = new BigNumber(value)
-        .times(this.baseToQuoteRate)
+      this.fromTokenAmountToGet = new BigNumber(value)
+        .times(this.fromTokenToToTokenRate)
         .div(100)
         .times(100 - this.tradeData.token.from.brokerPercent)
         .dp(this.tradeData.token.from.decimals)

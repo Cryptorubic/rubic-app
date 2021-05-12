@@ -82,26 +82,27 @@ export class OrderBooksFormService implements OnDestroy {
     }
 
     const web3Public: Web3Public = this.web3PublicService[tradeForm.blockchain];
-    const baseToken = tradeForm.token.from;
-    const baseTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
-      baseToken,
-      (await web3Public.getTokenInfo(baseToken.address)).totalSupply
+    const fromToken = tradeForm.token.from;
+    const fromTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
+      fromToken,
+      (await web3Public.getTokenInfo(fromToken.address)).totalSupply
     );
-    if (!baseTokenTotalSupply.isNaN() && baseTokenTotalSupply.lt(baseToken.amount)) {
+    if (!fromTokenTotalSupply.isNaN() && fromTokenTotalSupply.lt(fromToken.amount)) {
       throw new TotalSupplyOverflowError(
-        baseToken.symbol,
-        baseTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
+        fromToken.symbol,
+        fromTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
       );
     }
-    const quoteToken = tradeForm.token.to;
-    const quoteTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
-      quoteToken,
-      (await web3Public.getTokenInfo(quoteToken.address)).totalSupply
+
+    const toToken = tradeForm.token.to;
+    const toTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
+      toToken,
+      (await web3Public.getTokenInfo(toToken.address)).totalSupply
     );
-    if (!quoteTokenTotalSupply.isNaN() && quoteTokenTotalSupply.lt(quoteToken.amount)) {
+    if (!toTokenTotalSupply.isNaN() && toTokenTotalSupply.lt(toToken.amount)) {
       throw new TotalSupplyOverflowError(
-        quoteToken.symbol,
-        quoteTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
+        toToken.symbol,
+        toTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
       );
     }
   }
