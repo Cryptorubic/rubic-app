@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
 import { switchMap, tap } from 'rxjs/operators';
-import { BlockchainBridgeProvider } from '../blockchain-bridge-provider';
+import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import { BlockchainsTokens, BridgeToken } from '../../../models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
@@ -33,7 +33,7 @@ interface PolygonGraphResponse {
 }
 
 @Injectable()
-export class PolygonBridgeProviderService extends BlockchainBridgeProvider {
+export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvider {
   private readonly polygonGraphApiUrl =
     'https://api.thegraph.com/subgraphs/name/maticnetwork/mainnet-root-subgraphs';
 

@@ -19,7 +19,8 @@ export class BridgeApiService {
   private readonly tradeBlockchain = {
     ETH: BLOCKCHAIN_NAME.ETHEREUM,
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    POL: BLOCKCHAIN_NAME.POLYGON
+    POL: BLOCKCHAIN_NAME.POLYGON,
+    TRX: BLOCKCHAIN_NAME.TRON
   };
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}

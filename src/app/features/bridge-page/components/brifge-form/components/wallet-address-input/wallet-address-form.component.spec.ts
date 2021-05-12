@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { AddressInputComponent } from './address-input.component';
+import { WalletAddressFormComponent } from './wallet-address-form.component';
 
 describe('AddressInputComponent', () => {
-  let component: AddressInputComponent;
-  let fixture: ComponentFixture<AddressInputComponent>;
+  let component: WalletAddressFormComponent;
+  let fixture: ComponentFixture<WalletAddressFormComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [AddressInputComponent]
+        declarations: [WalletAddressFormComponent]
       }).compileComponents();
     })
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddressInputComponent);
+    fixture = TestBed.createComponent(WalletAddressFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

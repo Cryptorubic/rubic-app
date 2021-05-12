@@ -30,16 +30,16 @@
     flex: 1;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
 
   &__confirm-section {
     position: relative;
-    top: 35px;
+    top: 23px;
 
     display: flex;
     flex-direction: column;
     width: 85%;
-    margin-top: auto;
   }
 
   &__confirm-container {
@@ -96,72 +96,6 @@
       margin-bottom: 10px;
     }
   }
-
-  &__advanced-options {
-    position: relative;
-    bottom: 12px;
-    left: 2.5%;
-
-    width: 156px;
-    margin-top: auto;
-    padding: 0;
-
-    color: #4aa956;
-    font-weight: bold;
-
-    font-size: inherit;
-    font-family: inherit;
-    text-align: left;
-
-    background: white;
-    border: none;
-
-    cursor: pointer;
-
-    img {
-      position: relative;
-      top: -1px;
-      left: 3px;
-
-      width: 12px;
-
-      transition: transform 0.7s ease;
-    }
-
-    &_opened {
-      img {
-        transform: rotateX(180deg);
-      }
-    }
-  }
-
-  &__advanced-section {
-    max-height: 0;
-    padding: 0 20px;
-    overflow: hidden;
-
-    border-top: 2px solid white;
-
-    opacity: 0;
-
-    transition: all 0.7s ease;
-
-    &_opened {
-      max-height: 96px;
-      padding: 20px;
-
-      border-color: #e5e5e5;
-      opacity: 1;
-    }
-  }
-
-  .advanced-section {
-    display: flex;
-
-    &__input-wrapper {
-      width: 100%;
-    }
-  }
 }
 
 .choose-blockchains {
@@ -171,8 +105,11 @@
   align-items: center;
 
   &__box {
+    display: flex;
     flex: 1;
+    flex-direction: column;
     align-self: stretch;
+
     padding: 20px;
 
     border-radius: 5px;
@@ -198,6 +135,10 @@
     text-transform: uppercase;
 
     opacity: 0.85;
+
+    &_second {
+      margin-top: auto;
+    }
   }
 
   &__blockchain {
@@ -216,18 +157,10 @@
     }
   }
 
-  &__address {
+  &__wallet-address-form {
     display: block;
-    margin-bottom: 26px;
 
-    color: rgba(black, 0.5) !important;
-    font-size: 16px;
-    line-height: 16px;
-    text-decoration: none !important;
-
-    &:hover {
-      color: rgba(#2856fb, 0.7) !important;
-    }
+    margin-bottom: 20px;
   }
 
   &__token {
@@ -303,6 +236,10 @@
     font-size: 14px;
 
     border-collapse: collapse;
+
+    &_invisible {
+      visibility: hidden;
+    }
 
     td {
       opacity: 0.5;
@@ -411,7 +348,7 @@
   }
 }
 
-@include b(1150) {
+@include b(1220) {
   .cross-chain-form {
     &__main-section {
       flex-direction: column;
@@ -421,7 +358,7 @@
       left: 0;
 
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: flex-end;
       margin-top: 17px;
     }
 
@@ -442,18 +379,6 @@
 
     &__confirm-info {
       margin-top: 0;
-    }
-
-    &__advanced-options {
-      left: 22px;
-
-      order: -1;
-    }
-
-    &__advanced-section {
-      &_opened {
-        max-height: 125px;
-      }
     }
   }
 }
@@ -488,23 +413,6 @@
     &__confirm-info {
       position: relative;
       left: 15px;
-    }
-
-    &__advanced-options {
-      position: absolute;
-      right: 4px;
-      bottom: 11px;
-      left: initial;
-
-      order: 2;
-    }
-
-    &__advanced-section {
-      padding: 0 7px;
-
-      &_opened {
-        padding: 20px 7px;
-      }
     }
   }
 

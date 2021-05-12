@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PolygonBridgeProviderService } from './polygon-bridge-provider.service';
+import { EthereumPolygonBridgeProviderService } from './ethereum-polygon-bridge-provider.service';
 
 describe('MaticBridgeProviderService', () => {
-  let service: PolygonBridgeProviderService;
+  let service: EthereumPolygonBridgeProviderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PolygonBridgeProviderService);
+    service = TestBed.inject(EthereumPolygonBridgeProviderService);
   });
 
   it('should be created', () => {
