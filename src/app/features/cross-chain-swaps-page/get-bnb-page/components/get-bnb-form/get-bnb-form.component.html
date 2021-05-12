@@ -23,13 +23,12 @@
 
       <div class="swap-box__title">You have</div>
 
-      <div class="swap-box__token token">
-        <span class="token__amount">0.1</span>
-
-        <div class="token__card token-card">
-          <img class="token-card__icon" src="/assets/images/icons/coins/eth.png" alt="Token" />
-          <span class="token-card__name">ETH</span>
-        </div>
+      <div class="swap-box__token-form">
+        <app-tokens-input
+          [inputDisabled]="true"
+          [selectedAmount]="'0.1'"
+          [tokensList]="fromTokensList"
+        ></app-tokens-input>
       </div>
 
       <div class="swap-box__scanner-link-container">

@@ -146,7 +146,7 @@
 
   width: 100%;
   height: 52px;
-  padding: 0 8px 0 22px;
+  padding-left: 14px;
 
   background-color: #f4f4f4;
   border-color: white;
@@ -155,7 +155,7 @@
 
   &__amount {
     font-weight: 400;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 52px;
 
     opacity: 0.6;
@@ -185,6 +185,14 @@
 
     font-size: 16px;
     line-height: 40px;
+  }
+}
+
+@include b($desktop) {
+  .token {
+    &__amount {
+      font-size: 16px;
+    }
   }
 }
 
@@ -254,19 +262,32 @@
   }
 }
 
-
-@include b(440) {
+@include b($mobile-md) {
   .swap-box {
     &__address {
       font-size: 14px;
     }
   }
+
+  .token {
+    &__amount {
+      font-size: 14px;
+    }
+  }
 }
 
-@include b(390) {
+@include b($mobile-sm) {
   .swap-box {
     &__address {
       font-size: 13px;
+    }
+  }
+
+  .token {
+    padding-left: 11px;
+
+    &__amount {
+      font-size: 12px;
     }
   }
 }
