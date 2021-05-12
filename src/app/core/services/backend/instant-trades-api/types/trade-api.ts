@@ -10,10 +10,6 @@ interface InstantTradesContract {
   blockchain_network: InstantTradesBlockchainNetwork;
 }
 
-interface InstantTradesUser {
-  username: 'string';
-}
-
 interface InstantTradesTokenApi extends InputToken {
   blockchain_network: string;
   coingecko_id: string;
@@ -29,7 +25,7 @@ export interface InstantTradesRequestApi {
 export interface InstantTradesResponseApi {
   hash: string;
   contract: InstantTradesContract;
-  user: InstantTradesUser;
+  user: { username: string };
   from_token: InstantTradesTokenApi;
   to_token: InstantTradesTokenApi;
   from_amount: string;
@@ -37,5 +33,5 @@ export interface InstantTradesResponseApi {
   gas_price: string;
   gas_limit: string;
   status: string;
-  status_udated_at: string;
+  status_updated_at: string;
 }

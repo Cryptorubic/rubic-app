@@ -38,14 +38,28 @@ export class InstantTradesApiService {
     return this.httpService.post(BOT_URL.INSTANT_TRADES, req).toPromise();
   }
 
+  /**
+   * @description send request to server for add trade
+   * @param tradeInfo data body for request
+   * @return instant trade object
+   */
   public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
     return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo);
   }
 
+  /**
+   * @description update status of trade
+   * @param hash hash of transaction what we want to update
+   * @param status status of trade what we want to set
+   */
   public patchTrade(hash: string, status): Observable<InstantTradesResponseApi> {
     return this.httpService.patch(instantTradesApiRoutes.editData, { status }, hash);
   }
 
+  /**
+   * @description get list of trades from server
+   * @return list of trades
+   */
   public fetchSwaps(): Observable<InstantTradesTradeData[]> {
     return this.httpService.get(instantTradesApiRoutes.getData).pipe(
       map((swaps: InstantTradesResponseApi[]) => {
@@ -56,6 +70,10 @@ export class InstantTradesApiService {
     );
   }
 
+  /**
+   * @description transform data structure to our format
+   * @param tradeApi data from server
+   */
   public tradeApiToTradeData(tradeApi: InstantTradesResponseApi): InstantTradesTradeData {
     const tradeData = {
       hash: tradeApi.hash,
@@ -74,7 +92,7 @@ export class InstantTradesApiService {
       },
       blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title],
       status: tradeApi.status,
-      date: moment(tradeApi.status_udated_at)
+      date: moment(tradeApi.status_updated_at)
     } as InstantTradesTradeData;
 
     tradeData.fromAmount = Web3PublicService.tokenWeiToAmount(

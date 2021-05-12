@@ -55,7 +55,9 @@ $primary-color: #4aa956;
 
   &__cell {
     &_datetime {
+      flex-direction: column;
       white-space: nowrap;
+      align-items: start;
     }
   }
 

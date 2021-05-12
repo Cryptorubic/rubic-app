@@ -173,8 +173,8 @@
       </th>
       <td *matCellDef="let element" class="centered-child">
         <div class="tokens-table__cell tokens-table__cell_datetime">
-          {{ element.date.format('DD-MM-YYYY') }} <br />
-          {{ element.date.format('HH:MM:SS') }}
+          <div>{{ element.date.format('DD-MM-YYYY') }}</div>
+          <div>{{ element.date.format('HH:MM:SS') }}</div>
         </div>
       </td>
     </ng-container>

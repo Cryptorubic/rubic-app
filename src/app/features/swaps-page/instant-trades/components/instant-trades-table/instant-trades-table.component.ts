@@ -21,7 +21,7 @@ export class InstantTradesTableComponent {
 
   public readonly $tableLoading: Observable<boolean>;
 
-  public $hasData: Observable<boolean>;
+  public readonly $hasData: Observable<boolean>;
 
   constructor(
     private readonly instantTradesTableService: InstantTradesTableService,
@@ -43,7 +43,6 @@ export class InstantTradesTableComponent {
       this.instantTradesTableService.setBaseTokenFilter(null);
       this.instantTradesTableService.setQuoteTokenFilter(null);
       this.instantTradesTableService.filterTable();
-      this.$hasData = this.instantTradesTableService.hasData();
     });
   }
 
