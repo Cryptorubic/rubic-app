@@ -106,10 +106,23 @@
     font-size: 14px;
   }
 
-  img {
-    max-width: 18px;
-    max-height: 18px;
+  &__icon {
+    display: flex;
+    align-items: center;
+
     margin-left: 10px;
+
+    ::ng-deep svg {
+      max-width: 20px;
+      max-height: 20px;
+    }
+
+    &_active {
+      ::ng-deep svg path {
+        fill: $main-green;
+        fill-opacity: 1;
+      }
+    }
   }
 
   &:hover {
@@ -123,12 +136,12 @@
 
     opacity: unset;
 
-    span {
-      font-weight: bold;
-    }
-
     &:hover {
       box-shadow: unset;
+    }
+
+    span {
+      font-weight: bold;
     }
   }
 }

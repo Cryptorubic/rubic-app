@@ -15,37 +15,21 @@
   </div>
 
   <ul class="cross-chain-swaps__tabs">
-    <li
-      class="tabs__tab tab"
-      routerLink="bridge"
-      routerLinkActive="tab_active"
-      #bridgeLinkActive="routerLinkActive"
-    >
+    <li class="tabs__tab tab" routerLink="bridge" routerLinkActive="tab_active">
       <span>Bridge</span>
-      <img
-        [src]="
-          'assets/images/icons/cross-chain-swaps/bridge' +
-          (bridgeLinkActive.isActive ? '' : '_inactive') +
-          '.svg'
-        "
-        alt="Bridge"
-      />
+      <div
+        class="tab__icon"
+        routerLinkActive="tab__icon_active"
+        inlineSVG="assets/images/icons/cross-chain-swaps/bridge.svg"
+      ></div>
     </li>
-    <li
-      class="tabs__tab tab"
-      routerLink="get-bnb"
-      routerLinkActive="tab_active"
-      #getBnbLinkActive="routerLinkActive"
-    >
+    <li class="tabs__tab tab" routerLink="get-bnb" routerLinkActive="tab_active">
       <span>Get BNB</span>
-      <img
-        [src]="
-          'assets/images/icons/cross-chain-swaps/get-bnb' +
-          (getBnbLinkActive.isActive ? '' : '_inactive') +
-          '.svg'
-        "
-        alt="Get BNB"
-      />
+      <div
+        class="tab__icon"
+        routerLinkActive="tab__icon_active"
+        inlineSVG="assets/images/icons/cross-chain-swaps/get-bnb.svg"
+      ></div>
     </li>
   </ul>
 
