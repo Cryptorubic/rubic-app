@@ -1,15 +1,15 @@
 {
   "common": {
-    "from": "From",
-    "to": "To",
+    "from": "從",
+    "to": "至",
     "yes": "是的",
     "no": "没有",
     "any": "任何",
     "error": "任何",
     "have": "你有",
     "want": "你想得到",
-    "confirm": "Confirm",
-    "copy": "Copy",
+    "confirm": "確認",
+    "copy": "複製",
     "accept": "接受",
     "copyright": "版权",
     "privacyPolicy": "隐私政策",
@@ -28,21 +28,21 @@
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
-    "noMetamaskInstalled": "Please make sure that you have metamask plugin installed and unlocked.\nYou can download it on <a href='https://www.metamask.io' target='_blank'>metamask.io</a>.",
+    "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它 <a href='https://www.metamask.io' target='_blank'>metamask.io</a>.",
     "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
     "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
     "undefined": "请稍后再试，或尝试使用其他设备。如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
-    "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
-    "sameTokens": "You can't choose the same token on both sides, please choose different tokens."
+    "insufficientFunds": "你没有足够的 {{ tokenSymbol }}. 您的余额是 {{balance}} {{tokenSymbol}}, 但 {{requiredBalance}} {{tokenSymbol}} 是必需的。",
+    "sameTokens": "兩邊不能選擇相同的令牌，請選擇不同的令牌."
   },
   "navigation": {
     "about": "关于",
     "faq": "常见问题解答",
     "features": "特点",
     "team": "團隊",
-    "project": "Project",
-    "login": "Connect Wallet",
+    "project": "項目",
+    "login": "連接錢包",
     "myTrades": "我的行业",
     "logout": "注销",
     "logoutMessage": "你真的想注销吗？"
@@ -52,31 +52,31 @@
     "benefits": {
       "0": {
         "title": "P2P贸易",
-        "description": "Create your trade, choose your own terms, make it public or private, all done in a decentralized manner."
+        "description": "創建您的交易，選擇自己的條款，將其公開或私有，所有這些都是以分散的方式完成的."
       },
       "1": {
         "title": "即时交易",
-        "description": "Execute instant trades using our external DEXes, while getting the best rates."
+        "description": "使用我們的外部DEX執行即時交易，同時獲得最優惠的價格。"
       },
       "2": {
         "title": "多链支持",
-        "description": "Live: Ethereum, Binance Smart Chain & Polygon (more to come)."
+        "description": "直播：以太坊，Binance智能鍊和多邊形（以後還會有更多）。"
       },
       "3": {
         "title": "Pools",
-        "description": "通过只有1个令牌为DEXs创建池子。"
+        "description": "通過擁有1個令牌（即將到來）為DEX創建 pools 。"
       },
       "4": {
         "title": "农耕",
-        "description": "如果你为交易提供流动性 当交易被执行时，你将得到Rubic代币的奖励。"
+        "description": "如果您提供交易的流動性，則在執行交易時（即將發生）您將獲得RBC代幣的獎勵。"
       },
       "5": {
         "title": "Limit Order",
-        "description": "设置所需的费率，当DEX之一满足这些要求时，交易将被执行。"
+        "description": "设置所需的费率，当DEX之一满足这些要求时，交易将被执行"
       }
     },
     "features": {
-      "title": "Rubic DEX features",
+      "title": "Rubic DEX功能",
       "data": {
         "0": "Multichain: ETH, BSC, Polygon",
         "1": "做众包销售的能力",
@@ -86,7 +86,7 @@
         "5": "经纪人支持",
         "6": "没有数量限制",
         "7": "不需要列出令牌",
-        "8": "Stops scams and rugpulls from happening"
+        "8": "阻止騙局和拉扯的發生"
       }
     },
     "contract": {
@@ -241,15 +241,15 @@
     }
   },
   "bridgePage": {
-    "title": "Create your cross-chain swap",
-    "swapToggleText": "Use our swaps",
+    "title": "創建跨鏈交換",
+    "swapToggleText": "使用我們的掉期",
     "progressMessage": "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
     "successMessage": "跨链交换的过程已经开始。请等待双方区块链完成交易。",
-    "tableTitle": "Your cross-chain swaps",
-    "whatIs": "",
+    "tableTitle": "您的跨鏈互換",
+    "whatIs": "什麼是幣安智能鏈？",
     "whatIsAfter": "是什么",
     "checkOn": "Check on ",
-    "assistanceOf": "With the assistance of",
+    "assistanceOf": "在...的協助下",
     "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
     "minAmount": "Minimum amount ",
     "maxAmount": "Maximum amount "
@@ -257,8 +257,8 @@
   "instantTrades": {
     "title": "支持即时交易",
     "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",
-    "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
-    "bestRate": "Best Rate",
+    "notSupportedToken": "請確保指定的DEX支持所選令牌，然後重試.",
+    "bestRate": "最優惠的價格",
     "gasFee": "gas费用估计值",
     "useOptimization": "Use Rubic optimization",
     "notAvailableBefore": "Trading on ",
@@ -273,8 +273,8 @@
     "brokerFee": "中介費",
     "specifyForBorker": "您可以為經紀人指定％",
     "yourRate": "你的价格为 ",
-    "higher": "higher",
-    "lower": "lower",
+    "higher": "更高",
+    "lower": "降低",
     "coingeckoRate": " 比 coingecko 价格"
   },
   "bridge": {
@@ -284,26 +284,26 @@
     "title": "我的行业"
   },
   "tradesForm": {
-    "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."
+    "unknownTokenWarning": "請檢查它是否代表正確的項目。 如果不是，您可能以後將無法出售。 交易風險自負。"
   },
   "tradesTable": {
     "columns": {
       "status": "状态",
-      "from": "From",
-      "to": "To",
+      "from": "從",
+      "to": "至",
       "get": "获得",
       "send": "发送",
       "expiresIn": "有效期",
       "volume": "体积",
       "network": "网络",
-      "spent": "Spent",
-      "expected": "Expected"
+      "spent": "花費",
+      "expected": "預期的"
     },
-    "noData": "You have no swaps yet",
-    "noTrades": "There are no trades",
-    "noTradesWithSelected": "There are no trades with selected parameters",
-    "showData": "Show data",
-    "sortBy": "Sort by"
+    "noData": "您還沒有掉期",
+    "noTrades": "沒有交易",
+    "noTradesWithSelected": "沒有選擇參數的交易",
+    "showData": "顯示資料",
+    "sortBy": "排序方式"
   },
   "tradesPage": {
     "createTrade": "创造你的贸易",
@@ -315,8 +315,8 @@
     },
     "disclaimerTitle": "代币安全警报!",
     "disclaimerText": "在整个交易过程中都请保持高度谨慎，交易过程涉及较高的系统风险，例如剧烈的波动、黑客攻击，以及必须等待对方完成交易所导致的相关时效性风险。",
-    "accumulatedTransactionsVolume": "Accumulated Transactions Volume",
-    "collaborations": "Software Integrations And Collaborations With",
+    "accumulatedTransactionsVolume": "累計交易量",
+    "collaborations": "與軟件的集成和協作",
     "listingRequest": {
       "title": "上市要求",
       "description": "如果您希望您的项目在Rubic平台上列出，请发送电子邮件至support@rubic。金融(<a href='mailto:support@rubic.finance'>http://support@rubic</a>。财务/）与以下信息:",
@@ -324,7 +324,7 @@
         "projectName": "项目名称",
         "projectDescription": "项目描述",
         "links": "链接到项目和社交媒体",
-        "contractAddress": "Contract address",
+        "contractAddress": "合約地址",
         "onepager": "合同地址",
         "logo": "链接到PNG和SVG中的徽标",
         "why": "为什么你选择Rubic。交换？"
@@ -345,43 +345,43 @@
     "closingDate": "结束日期",
     "closingTime": "结束时间",
     "link": "交易链接",
-    "copied": "Сopied",
+    "copied": "影射",
     "publicDeal": "公開交易",
     "brokerAddress": "經紀人地址",
-    "notExist": "Such trade doesn't exist."
+    "notExist": "這樣的貿易不存在。"
   },
   "maintenance": {
-    "title": "Maintenance",
-    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+    "title": "維護",
+    "text": "我們遇到服務器問題，請暫時不要使用該平台，除非另行通知。 謝謝你。"
   },
   "modals": {
     "adModal": {
-      "text": "Binance Smart Chain Wrapped Rubic is live now!",
-      "button": "Add BRBC to the wallet"
+      "text": "Binance Smart Chain Wrapped Rubic現已上線！",
+      "button": "添加 BRBC 到錢包"
     },
     "gasPriceModal": {
-      "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
+      "text": "Gas price 在目標網絡中 (Ethereum) 現在很高。 交換時間會延長，最多可能需要4個小時。<br />您想現在繼續嗎?"
     },
     "cancelModal": {
       "text": "交易已被取消",
-      "link": "Check transaction on scanner"
+      "link": "在掃描儀上檢查交易"
     },
     "operationModal": {
       "progress": {
-        "text": "Operation is in progress <br /> Please wait until it is completed"
+        "text": "操作正在進行中<br />請等待直到完成"
       },
       "success": {
-        "text": "The operation is successful! <br /> This page will be updated automatically <br />",
-        "link": "Check transaction on scanner"
+        "text": "操作成功！ <br />此頁面將自動更新<br />",
+        "link": "在掃描儀上檢查交易"
       }
     },
     "tradeModal": {
       "progress": {
-        "text": "Trade is in progress <br />  Please wait until it is completed"
+        "text": "交易正在進行中<br />請等待直到交易完成"
       },
       "success": {
-        "text": "Successful swap!",
-        "link": "Check transaction on explorer"
+        "text": "交換成功！",
+        "link": "在資源管理器上檢查交易"
       }
     }
   }
