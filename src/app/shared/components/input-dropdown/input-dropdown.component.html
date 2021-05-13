@@ -3,8 +3,9 @@
     class="input-dropdown__choose-button"
     type="button"
     [ngClass]="{
-      'input-dropdown__choose-button_active': isOpenList,
-      'input-dropdown__choose-button_with-text': !selectedComponentData
+      'input-dropdown__choose-button_active': isOpenList && !disabled,
+      'input-dropdown__choose-button_with-text': !selectedComponentData,
+      'input-dropdown__choose-button_disabled': disabled
     }"
     (click)="toggleListOpen(true)"
     [disabled]="disabled"

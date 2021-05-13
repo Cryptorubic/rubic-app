@@ -28,6 +28,18 @@
     &_with-text {
       padding: 10px 11px;
     }
+
+    &_disabled {
+      cursor: default;
+
+      ::ng-deep .dropdown-label {
+        padding-right: 11px;
+
+        &::after {
+          content: unset;
+        }
+      }
+    }
   }
 
   &__search-input {

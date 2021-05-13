@@ -30,9 +30,11 @@ export class QueryParamsService {
 
   public defaultQueryParams: DefaultQueryParams;
 
-  private $tokens: Observable<List<SwapToken>>;
+  private readonly $tokens: Observable<List<SwapToken>>;
 
-  private $hiddenNetworksSubject: BehaviorSubject<string[]>;
+  private readonly $hiddenNetworksSubject: BehaviorSubject<string[]>;
+
+  private readonly $tokensSelectionDisabledSubject: BehaviorSubject<boolean>;
 
   public get $isIframe(): Observable<boolean> {
     return this.$isIframeSubject.asObservable();
@@ -40,6 +42,10 @@ export class QueryParamsService {
 
   public get $hiddenNetworks(): Observable<string[]> {
     return this.$hiddenNetworksSubject.asObservable();
+  }
+
+  public get $tokensSelectionDisabled(): Observable<boolean> {
+    return this.$tokensSelectionDisabledSubject.asObservable();
   }
 
   constructor(
@@ -52,6 +58,7 @@ export class QueryParamsService {
     private readonly router: Router
   ) {
     this.$isIframeSubject = new BehaviorSubject<boolean>(false);
+    this.$tokensSelectionDisabledSubject = new BehaviorSubject<boolean>(false);
     this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([]);
     this.$tokens = this.tokensService.tokens.asObservable();
     this.defaultQueryParams = {
@@ -74,6 +81,10 @@ export class QueryParamsService {
         chain: BLOCKCHAIN_NAME.ETHEREUM
       }
     };
+  }
+
+  private static isHEXColor(color: string): boolean {
+    return /^[A-F0-9]+$/i.test(color);
   }
 
   public initiateTradesParams(params: QueryParams): void {
@@ -136,6 +147,15 @@ export class QueryParamsService {
       }
       if (queryParams.hidden) {
         this.$hiddenNetworksSubject.next(queryParams.hidden.split(','));
+      }
+      if (queryParams.background) {
+        const color = queryParams.background;
+        this.document.body.style.background = QueryParamsService.isHEXColor(color)
+          ? `#${color}`
+          : color;
+      }
+      if (queryParams.hideSelection) {
+        this.$tokensSelectionDisabledSubject.next(queryParams.hideSelection === 'true');
       }
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;

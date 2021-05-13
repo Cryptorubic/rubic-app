@@ -7,4 +7,6 @@ export interface QueryParams {
   amount?: string;
   iframe?: string;
   hidden?: string;
+  hideSelection?: string;
+  background?: string;
 }

@@ -84,6 +84,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     return this.queryParamsService.$isIframe;
   }
 
+  public $tokensSelectionDisabled: Observable<boolean>;
+
   get tokens(): List<SwapToken> {
     return this._tokens;
   }
@@ -213,7 +215,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.$tokensSelectionDisabled = this.queryParamsService.$tokensSelectionDisabled;
+  }
 
   private initInstantTradeProviders() {
     switch (this.blockchain) {

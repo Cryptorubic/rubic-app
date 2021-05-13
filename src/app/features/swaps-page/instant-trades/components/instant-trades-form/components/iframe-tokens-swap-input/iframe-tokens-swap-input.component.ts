@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { InstantTradeSwapInput } from '../../../../models/instant-trade-input';
 import { InstantTradeProviderController } from '../../../../models/instant-trades-provider-controller';
@@ -10,6 +10,8 @@ import { BLOCKCHAIN_NAME } from '../../../../../../../shared/models/blockchain/B
   styleUrls: ['./iframe-tokens-swap-input.component.scss']
 })
 export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
+  @Input() public disableSelection: boolean;
+
   public get tradeController(): InstantTradeProviderController {
     return this.trades[this.index];
   }
@@ -25,5 +27,6 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
 
   constructor() {
     super();
+    this.disableSelection = false;
   }
 }
