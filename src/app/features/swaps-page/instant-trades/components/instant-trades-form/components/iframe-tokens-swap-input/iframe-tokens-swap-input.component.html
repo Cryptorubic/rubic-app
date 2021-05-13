@@ -1,0 +1,69 @@
+<div class="selection-block selection-block_best">
+  <div class="selection-block__input-container">
+    <app-tokens-input
+      class="instant-trade-form__tokens-input"
+      [inputDisabled]="true"
+      [tokensList]="availableToTokens"
+      [selectedToken]="toToken"
+      [selectedAmount]="getToAmount(index)"
+      [withRoundMode]="true"
+      (tokenChanges)="tokenChange($event)"
+      [amountPlaceholder]="'You get'"
+    >
+    </app-tokens-input>
+
+    <div class="gas-fee" *ngIf="gasFeeDisplayCondition">
+      <span class="gas-fee__text">
+        Estimated gas fee:
+        {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
+        ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
+      </span>
+
+      <img
+        src="/assets/images/icons/info.svg"
+        matTooltip="{{
+          'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
+            | translate
+        }}"
+        alt="{{
+          'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
+            | translate
+        }}"
+      />
+    </div>
+
+    <div *ngIf="checkIfError(index)" class="selection-block__warning">
+      <app-error-disclaimer
+        matTooltip="{{
+          'Please make sure that selected token is supported on the specified DEX and try again later.'
+            | translate
+        }}"
+        [errorText]="'Trading is not available.'"
+      >
+      </app-error-disclaimer>
+    </div>
+  </div>
+</div>
+<div class="instant-trade-form__to-section">
+  <div class="instant-trade-button instant-trade-button_best">
+    <app-primary-button
+      type="button"
+      [label]="'Swap'"
+      [disabled]="
+            !(
+              fromAmountAsNumber.isGreaterThan(0) &&
+              tradeParameters.toToken &&
+              tradeParameters.fromToken
+            ) ||
+            !tradeController?.trade ||
+            shouldAnimateButton(index) ||
+            (selectedTradeState &&
+              selectedTradeState !== INSTANT_TRADES_STATUS.ERROR &&
+              selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED)
+          "
+      [animate]="shouldAnimateButton(index)"
+      (onClick)="createTrade(index)"
+    >
+    </app-primary-button>
+  </div>
+</div>

@@ -1,0 +1,104 @@
+<div
+  class="selection-block"
+  [ngClass]="{'selection-block_best': tradeController.isBestRate && trades.length > 1}"
+>
+  <div class="selection-block__input-container">
+    <app-tokens-input
+      class="instant-trade-form__tokens-input"
+      [inputDisabled]="true"
+      [tokensList]="availableToTokens"
+      [selectedToken]="toToken"
+      [selectedAmount]="getToAmount(index)"
+      [withRoundMode]="true"
+      (tokenChanges)="tokenChange($event)"
+      [amountPlaceholder]="''"
+    >
+    </app-tokens-input>
+
+    <div class="gas-fee" *ngIf="gasFeeDisplayCondition">
+      <span class="gas-fee__text">
+        Estimated gas fee:
+        {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
+        ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
+      </span>
+
+      <img
+        src="/assets/images/icons/info.svg"
+        matTooltip="{{
+          'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
+            | translate
+        }}"
+        alt="{{
+          'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
+            | translate
+        }}"
+      />
+    </div>
+
+    <div *ngIf="checkIfError(index)" class="selection-block__warning">
+      <app-error-disclaimer
+        matTooltip="{{
+          'Please make sure that selected token is supported on the specified DEX and try again later.'
+            | translate
+        }}"
+        [errorText]="'Trading on ' + tradeController.tradeProviderInfo.label + ' is not available.'"
+      >
+      </app-error-disclaimer>
+    </div>
+
+    <div class="selection-block__custom-token-section" *ngIf="index === trades.length - 1">
+      <app-custom-token-form
+        type="to"
+        [isSectionOpened]="tradeParameters.isCustomToTokenFormOpened"
+        (isSectionOpenedChange)="setIsCustomTokenFormOpened($event)"
+        [blockchain]="blockchain"
+        [tokenAddress]="tradeParameters.customToTokenAddress"
+        (tokenAddressChange)="setCustomTokenAddress($event)"
+        (tokenIsValidated)="updateCustomToken($event)"
+        (addToken)="addCustomToken()"
+      ></app-custom-token-form>
+    </div>
+  </div>
+</div>
+<div class="instant-trade-form__to-section">
+  <div
+    class="instant-trade-button"
+    [ngClass]="{
+          'instant-trade-button_second': index === 1,
+          'instant-trade-button_best': tradeController.isBestRate && trades.length > 1
+    }"
+  >
+    <app-primary-button
+      type="button"
+      [label]="'Via ' + tradeController.tradeProviderInfo.label"
+      [disabled]="
+            !(
+              fromAmountAsNumber.isGreaterThan(0) &&
+              tradeParameters.toToken &&
+              tradeParameters.fromToken
+            ) ||
+            !tradeController.trade ||
+            shouldAnimateButton(index) ||
+            (selectedTradeState &&
+              selectedTradeState !== INSTANT_TRADES_STATUS.ERROR &&
+              selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED)
+          "
+      [animate]="shouldAnimateButton(index)"
+      (onClick)="createTrade(index)"
+    >
+    </app-primary-button>
+    <div
+      class="instant-trade-button__best-rate"
+      *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState"
+    >
+      <span>{{ 'Best Rate' | translate }}</span>
+      <img src="assets/images/icons/BestRate.svg" alt="" />
+    </div>
+    <div
+      *ngIf="index === trades.length - 1 && blockchain === BLOCKCHAIN_NAME.ETHEREUM"
+      class="checkbox-optimization">
+        <span>Use Rubic optimization</span>
+        <app-checkbox [(checked)]="gasOptimizationChecked"></app-checkbox>
+    </div>
+  </div>
+</div>
