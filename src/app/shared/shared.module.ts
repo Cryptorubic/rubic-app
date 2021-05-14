@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -93,7 +94,8 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent,
-    TotalSupplyOverflowErrorComponent
+    TotalSupplyOverflowErrorComponent,
+    WalletAddressFormComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -151,7 +153,8 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     WarningDisclaimerComponent,
     NetworkErrorComponent,
     BlockchainSelectComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    WalletAddressFormComponent
   ]
 })
 export class SharedModule {}

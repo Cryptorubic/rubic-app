@@ -28,7 +28,6 @@ import { ReceiveButtonComponent } from './components/bridge-table/deposit-button
 import { EthereumTronBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
 import { BinanceTronBridgeProviderService } from './services/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { PanamaBridgeProviderService } from './services/blockchains-bridge-provider/common/panama-bridge-provider/panama-bridge-provider.service';
-import { WalletAddressFormComponent } from './components/brifge-form/components/wallet-address-input/wallet-address-form.component';
 
 @NgModule({
   declarations: [
@@ -40,8 +39,7 @@ import { WalletAddressFormComponent } from './components/brifge-form/components/
     AdvertModalComponent,
     WarningModalComponent,
     ReceiveButtonComponent,
-    BridgeSectionComponent,
-    WalletAddressFormComponent
+    BridgeSectionComponent
   ],
   imports: [
     CommonModule,

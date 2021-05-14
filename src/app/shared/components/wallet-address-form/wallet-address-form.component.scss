@@ -78,7 +78,22 @@
   }
 }
 
+@include b($mobile-md) {
+  .wallet-address {
+    &__address {
+      font-size: 14px;
+    }
+  }
+}
+
+
 @include b($mobile-sm) {
+  .wallet-address {
+    &__address {
+      font-size: 13px;
+    }
+  }
+
   .editing-form {
     flex-direction: column;
 
