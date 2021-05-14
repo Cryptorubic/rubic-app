@@ -2,18 +2,18 @@ import { Injectable } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { List } from 'immutable';
-import { BlockchainBridgeProvider } from '../blockchain-bridge-provider';
-import { PanamaBridgeProviderService } from './panama-bridge-provider/panama-bridge-provider.service';
-import { RubicBridgeProviderService } from './rubic-bridge-provider/rubic-bridge-provider.service';
+import { EthereumBinancePanamaBridgeProviderService } from './panama-bridge-provider/ethereum-binance-panama-bridge-provider.service';
+import { EthereumBinanceRubicBridgeProviderService } from './rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { BridgeToken } from '../../../models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from '../../../models/BridgeTrade';
+import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 @Injectable()
-export class BinanceBridgeProviderService extends BlockchainBridgeProvider {
+export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvider {
   constructor(
-    private panamaBridgeProvider: PanamaBridgeProviderService,
-    private rubicBridgeProvider: RubicBridgeProviderService
+    private panamaBridgeProvider: EthereumBinancePanamaBridgeProviderService,
+    private rubicBridgeProvider: EthereumBinanceRubicBridgeProviderService
   ) {
     super();
   }

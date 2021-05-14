@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { List } from 'immutable';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BlockchainBridgeProvider } from '../../blockchain-bridge-provider';
+import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 import { Web3PrivateService } from '../../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { Web3PublicService } from '../../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
@@ -28,7 +28,7 @@ interface RubicTrade {
 }
 
 @Injectable()
-export class RubicBridgeProviderService extends BlockchainBridgeProvider {
+export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridgeProvider {
   private static readonly RubicMaxAmount = 50000;
 
   private readonly apiUrl = 'https://swap.rubic.exchange/api/v1/';
@@ -72,7 +72,7 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
             decimals: response.tokens[0].decimals,
 
             minAmount: response.min_swap_amount,
-            maxAmount: RubicBridgeProviderService.RubicMaxAmount
+            maxAmount: EthereumBinanceRubicBridgeProviderService.RubicMaxAmount
           },
           [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
             address: response.tokens[1].token_address,
@@ -81,7 +81,7 @@ export class RubicBridgeProviderService extends BlockchainBridgeProvider {
             decimals: response.tokens[1].decimals,
 
             minAmount: response.min_swap_amount,
-            maxAmount: RubicBridgeProviderService.RubicMaxAmount
+            maxAmount: EthereumBinanceRubicBridgeProviderService.RubicMaxAmount
           }
         } as BlockchainsTokens,
 
