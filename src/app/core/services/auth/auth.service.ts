@@ -131,7 +131,7 @@ export class AuthService {
     this.isAuthProcess = false;
   }
 
-  public async signInWithoutBackend(): Promise<void> {
+  public async iframeSignIn(): Promise<void> {
     this.isAuthProcess = true;
     const permissions = await this.web3Service.requestPermissions();
     const accountsPermission = permissions.find(
