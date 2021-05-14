@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { REFRESH_BUTTON_STATUS } from '../../models/instant-trade/REFRESH_BUTTON_STATUS';
 import Timeout = NodeJS.Timeout;
 
@@ -43,6 +43,8 @@ export class RefreshButtonComponent {
   constructor() {}
 
   public onClick(): void {
-    this.onRefreshButtonActivated.emit();
+    if (this.refreshButtonStatus !== REFRESH_BUTTON_STATUS.WAITING) {
+      this.onRefreshButtonActivated.emit();
+    }
   }
 }

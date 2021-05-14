@@ -4,7 +4,7 @@
     'refresh-button_refreshing': refreshButtonStatus === REFRESH_BUTTON_STATUS.REFRESHING,
     'refresh-button_waiting': refreshButtonStatus === REFRESH_BUTTON_STATUS.WAITING
   }"
-  [disabled]="refreshButtonStatus !== REFRESH_BUTTON_STATUS.WAITING"
+  [matTooltip]="'Price quote is auto updated.\nClick here to update manually.'"
   (click)="onClick()"
 >
   <span class="circle-container">
