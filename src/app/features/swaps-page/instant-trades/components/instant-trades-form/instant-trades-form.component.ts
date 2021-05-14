@@ -28,6 +28,9 @@ import { QuickSwapService } from '../../services/quick-swap-service/quick-swap.s
 import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../models/trade-data';
 import { PROVIDERS } from '../../models/providers.enum';
+import { TO_BACKEND_BLOCKCHAINS } from '../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 
 interface TradeProviderInfo {
   label: string;
@@ -244,7 +247,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private instantTradesApiService: InstantTradesApiService,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly queryParamsService: QueryParamsService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly web3PublicService: Web3PublicService
   ) {}
 
   private initInstantTradeProviders() {
@@ -575,15 +579,19 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           this.waitingForProvider = false;
           setTradeState(TRADE_STATUS.APPROVAL);
         },
-        onConfirm: hash => {
+        onConfirm: async hash => {
           this.waitingForProvider = false;
           setTradeState(TRADE_STATUS.TX_IN_PROGRESS);
           currentHash = hash;
 
           let tradeInfo;
-          if (this.trades[selectedServiceIndex].tradeProviderInfo.label === PROVIDERS.ONEINCH) {
+
+          if (
+            this.trades[selectedServiceIndex].tradeProviderInfo.label.toLowerCase() ===
+            PROVIDERS.ONEINCH
+          ) {
             tradeInfo = {
-              currentHash,
+              hash,
               network: this.blockchain,
               provider: this.trades[selectedServiceIndex].tradeProviderInfo.label.toLowerCase(),
               from_token: this.tradeParameters.fromToken.address,
@@ -593,21 +601,31 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             };
           } else {
             tradeInfo = {
-              currentHash,
+              hash,
               provider: this.trades[selectedServiceIndex].tradeProviderInfo.label.toLowerCase(),
-              network: this.blockchain
+              network: 'ethereum-test'
             };
           }
+          try {
+            const web3Public = this.web3PublicService[this.blockchain];
+            await web3Public.getTransactionByHash(hash, 0, 50);
 
-          this.instantTradesApiService.createTrade(tradeInfo).subscribe(
-            res => res,
-            err => console.error(err)
-          );
+            this.instantTradesApiService.createTrade(tradeInfo).subscribe();
+          } catch (err) {
+            console.error(err);
+          }
         }
       })
       .then(receipt => {
         setTradeState(TRADE_STATUS.COMPLETED);
         this.transactionHash = receipt.transactionHash;
+
+        this.instantTradesApiService
+          .patchTrade(this.transactionHash, INTSTANT_TRADES_TRADE_STATUS.COMPLETED)
+          .subscribe();
+
+        this.instantTradesApiService.fetchSwaps();
+
         this.instantTradesApiService.notifyInstantTradesBot({
           provider: this.trades[selectedServiceIndex].tradeProviderInfo.label,
           blockchain: this.blockchain,
@@ -615,11 +633,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           trade: this.trades[selectedServiceIndex].trade,
           txHash: receipt.transactionHash
         });
-
-        this.instantTradesApiService.patchTrade(
-          receipt.transactionHash,
-          INTSTANT_TRADES_TRADE_STATUS.COMPLETED.toLowerCase()
-        );
       })
       .catch((err: RubicError) => {
         this.waitingForProvider = false;
@@ -639,10 +652,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           data
         });
 
-        this.instantTradesApiService.patchTrade(
-          currentHash,
-          INTSTANT_TRADES_TRADE_STATUS.REJECTED.toLowerCase()
-        );
+        this.instantTradesApiService
+          .patchTrade(currentHash, INTSTANT_TRADES_TRADE_STATUS.REJECTED)
+          .subscribe();
       });
   }
 

@@ -4,14 +4,7 @@
     [ngClass]="{ 'tokens-accordion__header_active': data.opened }"
     (click)="data.opened = !data.opened"
   >
-    <span
-      class="tokens-accordion__status"
-      [ngClass]="{
-        'tokens-accordion__status_green': data.status === 'Active',
-        'tokens-accordion__status_yellow': data.status === 'Expired',
-        'tokens-accordion__status_red:': data.status === 'Cancelled'
-      }"
-    >
+    <span class="tokens-accordion__status" [ngClass]="tradeStatusClass">
       {{ data.status }}
     </span>
     <div
@@ -45,7 +38,7 @@
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Spent'">
+      <div class="data__amount" *ngIf="selectedOption === 'Spent' && data.token.from.amountTotal">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
           <div>{{ data.token.from.amountTotal.dp(8) }} {{ data.token.from.symbol }}</div>
           <span>
@@ -56,7 +49,7 @@
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Expected'">
+      <div class="data__amount" *ngIf="selectedOption === 'Expected' && data.token.to.amountTotal">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
           <div>{{ data.token.to.amountTotal.dp(8) }} {{ data.token.to.symbol }}</div>
           <span>
@@ -72,12 +65,32 @@
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Expires in'">
+      <div class="data__amount" *ngIf="selectedOption === 'Expires in' && data.expiresIn">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
           <div>
-<!--            {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:-->
-<!--            {{ data.expiresIn.minutes() }}m-->
+            {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:
+            {{ data.expiresIn.minutes() }}m
           </div>
+        </div>
+      </div>
+
+      <div class="data__amount" *ngIf="selectedOption === 'Date' && data.date">
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
+          <div>
+            {{ data.date | date: 'dd-MM-yyyy HH:mm:ss' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="data__network" *ngIf="selectedOption === 'Network' && data.blockchain">
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+          {{ data.blockchain }}
+        </div>
+      </div>
+
+      <div class="data__network" *ngIf="selectedOption === 'Provider' && data.provider">
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+          {{ data.provider }}
         </div>
       </div>
     </div>
@@ -112,7 +125,7 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item">
+    <div class="tokens-accordion__item" *ngIf="data.token.from.amountTotal">
       <div class="tokens-accordion__item-name">Spent</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
         <div>{{ data.token.from.amountTotal.dp(8) }} {{ data.token.from.symbol }}</div>
@@ -124,7 +137,7 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item">
+    <div class="tokens-accordion__item" *ngIf="data.token.to.amountTotal">
       <div class="tokens-accordion__item-name">Expected</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
         <div>{{ data.token.to.amountTotal.dp(8) }} {{ data.token.to.symbol }}</div>
@@ -142,19 +155,38 @@
     <div class="tokens-accordion__item">
       <div class="tokens-accordion__item-name">{{ 'Network' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
-        <div>
-          <img class="tokens-accordion__image" [src]="chainIconPath" alt="{{ data.blockchain }}" />
-          <span>{{ data.blockchain }}</span>
-        </div>
+        <img class="tokens-accordion__image" [src]="chainIconPath" alt="{{ data.blockchain }}" />
+        <span>{{ data.blockchain }}</span>
       </div>
     </div>
 
     <div class="tokens-accordion__item">
+      <div class="tokens-accordion__item-name">{{ 'Provider' | translate }}</div>
+      <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+        <img
+          class="table__image"
+          src="assets/images/icons/providers/{{ data.provider }}.svg"
+          alt="{{ data.provider }}"
+        />
+        <span>{{ data.provider }}</span>
+      </div>
+    </div>
+
+    <div class="tokens-accordion__item" *ngIf="data.expiresIn">
       <div class="tokens-accordion__item-name">{{ 'Expires in' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
         <div>
           {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:
           {{ data.expiresIn.minutes() }}m
+        </div>
+      </div>
+    </div>
+
+    <div class="tokens-accordion__item" *ngIf="data.date">
+      <div class="tokens-accordion__item-name">{{ 'Date' | translate }}</div>
+      <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
+        <div>
+          {{ data.date | date: 'dd-MM-yyyy HH:mm:ss' }}
         </div>
       </div>
     </div>

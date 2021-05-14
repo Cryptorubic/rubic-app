@@ -4,9 +4,9 @@ import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
 export enum INTSTANT_TRADES_TRADE_STATUS {
-  REJECTED = 'Rejected',
-  COMPLETED = 'Completed',
-  PENDING = 'Pending'
+  REJECTED = 'rejected',
+  COMPLETED = 'completed',
+  PENDING = 'pending'
 }
 
 type InstantTradesDataTokens = {

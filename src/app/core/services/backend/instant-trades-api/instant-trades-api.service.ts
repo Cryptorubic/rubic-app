@@ -9,7 +9,12 @@ import InstantTrade from '../../../../features/swaps-page/instant-trades/models/
 import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
-import { instantTradesApiRoutes } from './types/trade-routes';
+
+const instantTradesApiRoutes = {
+  createData: 'instant_trades/',
+  editData: 'instant_trades/',
+  getData: 'instant_trades/'
+};
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +57,8 @@ export class InstantTradesApiService {
    * @param status status of trade what we want to set
    */
   public patchTrade(hash: string, status: string): Observable<InstantTradesResponseApi> {
-    return this.httpService.patch(instantTradesApiRoutes.editData, { status }, hash);
+    const url = instantTradesApiRoutes.editData + hash;
+    return this.httpService.patch(url, { status });
   }
 
   /**

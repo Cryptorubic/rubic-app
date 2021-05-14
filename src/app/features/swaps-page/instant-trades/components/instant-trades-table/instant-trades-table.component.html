@@ -4,6 +4,8 @@
   [displayedMobileItems]="displayedMobileItems"
   [mobileSortItems]="mobileSortItems"
   [columnsSizes]="columnsSizes"
+  [selectedColumn]="'Date'"
+  [tableSorting]="{ active: 'Date', direction: 'asc' }"
   [tableLoading]="$tableLoading | async"
   (refreshTableEvent)="refreshInstantTrades()"
   [title]="'Your instant swaps' | translate"

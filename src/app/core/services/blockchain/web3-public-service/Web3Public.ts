@@ -138,9 +138,13 @@ export class Web3Public {
       : gasPrice.multipliedBy(gasLimit).div(10 ** 18);
   }
 
-  private async getTransactionByHash(hash: string, attempt?: number): Promise<Transaction> {
+  public async getTransactionByHash(
+    hash: string,
+    attempt?: number,
+    attemptsLimit?: number
+  ): Promise<Transaction> {
     attempt = attempt || 0;
-    const limit = 10;
+    const limit = attemptsLimit || 10;
     const timeout = 500;
 
     if (attempt >= limit) {

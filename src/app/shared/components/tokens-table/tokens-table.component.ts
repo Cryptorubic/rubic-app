@@ -54,7 +54,7 @@ export class TokensTableComponent {
 
   @Output() public selectTokenEvent: EventEmitter<TokenValueType>;
 
-  public selectedColumn: string;
+  @Input() public selectedColumn: string;
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -62,7 +62,7 @@ export class TokensTableComponent {
 
   public $isMobile: Observable<boolean>;
 
-  public tableSorting: Sort;
+  @Input() public tableSorting: Sort;
 
   public readonly sortableColumnNames: any;
 
@@ -74,7 +74,7 @@ export class TokensTableComponent {
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.tableSorting = { active: 'Expires in', direction: 'asc' };
     this.selectedColumn = 'Expires in';
-    this.displayedMobileItems = ['Expires in', 'Status'];
+    this.displayedMobileItems = ['From', 'To', 'Spent', 'Expected', 'Expires in'];
     this.mobileSortItems = ['From', 'To', 'Spent', 'Expected', 'Expires in'];
   }
 
