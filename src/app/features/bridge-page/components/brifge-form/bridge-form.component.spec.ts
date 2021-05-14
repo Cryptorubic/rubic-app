@@ -6,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { BridgeService } from '../../services/bridge.service';
-import { RubicBridgeService } from '../../services/rubic-bridge-service/rubic-bridge.service';
 import { BridgeFormComponent } from './bridge-form.component';
 import { SharedModule } from '../../../../shared/shared.module';
 import { backendTestTokens } from '../../../../../test/tokens/backend-tokens';
@@ -31,7 +30,6 @@ describe('BridgeFormComponent', () => {
         ],
         providers: [
           BridgeService,
-          RubicBridgeService,
           {
             provide: MatDialogRef,
             useValue: {}

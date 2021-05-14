@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
-export const SERVER_REST_URL = `/api/v1/`;
+export const SERVER_REST_URL = `${environment.apiBaseUrl}/`;
 
 @Injectable({
   providedIn: 'root'
@@ -31,9 +32,7 @@ export class HttpService {
   }
 
   public post(url: string, data?: {}, path?: string): Observable<any> {
-    return this.http.post<any>((path || SERVER_REST_URL) + (url || ''), data, {
-      withCredentials: true
-    });
+    return this.http.post<any>((path || SERVER_REST_URL) + (url || ''), data);
   }
 
   public customDelete(url: string, options?: {}): Observable<any> {

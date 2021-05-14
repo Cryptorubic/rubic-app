@@ -34,8 +34,6 @@ describe('TeamComponent', () => {
   });
 
   it('should create', () => {
-    console.log(component);
-
     expect(component).toBeTruthy();
   });
 });
