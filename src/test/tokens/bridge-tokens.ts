@@ -1,7 +1,10 @@
 import { List } from 'immutable';
-import { BlockchainsTokens, BridgeToken } from '../../app/features/bridge-page/models/BridgeToken';
-import { BLOCKCHAIN_NAME } from '../../app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_TOKEN_ADDRESS } from '../../app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import {
+  BlockchainsTokens,
+  BridgeToken
+} from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 
 const RBC: BridgeToken = {
   symbol: 'RBC',

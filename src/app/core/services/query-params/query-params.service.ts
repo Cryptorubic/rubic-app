@@ -5,13 +5,13 @@ import { List } from 'immutable';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { TradeParametersService } from '../swaps/trade-parameters-service/trade-parameters.service';
 import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
 import { QueryParams } from './models/query-params';
-import { BridgeToken } from '../../../features/bridge-page/models/BridgeToken';
 
 type DefaultQueryParams = {
   [BLOCKCHAIN_NAME.ETHEREUM]: QueryParams;

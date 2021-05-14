@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CrossChainSwapsComponent } from './cross-chain-swaps/cross-chain-swaps.component';
+import { CrossChainSwapsComponent } from './main-page/cross-chain-swaps.component';
 
 const routes: Routes = [
   {
@@ -9,8 +9,7 @@ const routes: Routes = [
     children: [
       {
         path: 'bridge',
-        loadChildren: () =>
-          import('../bridge-page/bridge-page.module').then(m => m.BridgePageModule)
+        loadChildren: () => import('./bridge-page/bridge-page.module').then(m => m.BridgePageModule)
       },
       {
         path: 'get-bnb',
