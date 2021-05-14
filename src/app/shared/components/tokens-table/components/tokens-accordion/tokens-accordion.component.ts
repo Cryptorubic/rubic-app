@@ -1,8 +1,11 @@
 import { Component, ChangeDetectionStrategy, Input, OnInit, Inject } from '@angular/core';
 import { WINDOW } from 'src/app/core/models/window';
-import { TokensTableData } from '../../models/tokens-table-data';
-import { ORDER_BOOK_TRADE_STATUS } from '../../../../../features/order-book-trade-page/models/trade-data';
+import {
+  ORDER_BOOK_TRADE_STATUS,
+  OrderBookTradeData
+} from '../../../../../features/order-book-trade-page/models/trade-data';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../../../features/swaps-page/models/trade-data';
+import { TradeData } from '../../models/tokens-table-data';
 
 @Component({
   selector: 'app-tokens-accordion',
@@ -11,7 +14,7 @@ import { INTSTANT_TRADES_TRADE_STATUS } from '../../../../../features/swaps-page
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensAccordionComponent implements OnInit {
-  @Input() data: TokensTableData;
+  @Input() data: TradeData;
 
   @Input() chainIconPath: string;
 
@@ -38,7 +41,9 @@ export class TokensAccordionComponent implements OnInit {
   constructor(@Inject(WINDOW) private readonly window: Window) {}
 
   ngOnInit(): void {
-    this.linkToTrade = `${this.window.location.host}/trade/${this.data.uniqueLink}`;
+    this.linkToTrade = `${this.window.location.host}/trade/${
+      (this.data as OrderBookTradeData).uniqueLink
+    }`;
     console.log(this.selectedOption);
   }
 }

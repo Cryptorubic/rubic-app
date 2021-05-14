@@ -1,7 +1,4 @@
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
+import { InstantTradesTradeData } from '../../../../features/swaps-page/models/trade-data';
 
-export interface TokensTableData extends OrderBookTradeData {
-  date?: Date;
-  expiresIn?: moment.Duration;
-  opened: boolean;
-}
+export type TradeData = OrderBookTradeData | InstantTradesTradeData;

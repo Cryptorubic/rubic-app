@@ -622,9 +622,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
         this.instantTradesApiService
           .patchTrade(this.transactionHash, INTSTANT_TRADES_TRADE_STATUS.COMPLETED)
-          .subscribe();
-
-        this.instantTradesApiService.fetchSwaps();
+          .subscribe(() => this.instantTradesApiService.fetchSwaps());
 
         this.instantTradesApiService.notifyInstantTradesBot({
           provider: this.trades[selectedServiceIndex].tradeProviderInfo.label,
@@ -654,7 +652,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
         this.instantTradesApiService
           .patchTrade(currentHash, INTSTANT_TRADES_TRADE_STATUS.REJECTED)
-          .subscribe();
+          .subscribe(() => this.instantTradesApiService.fetchSwaps());
       });
   }
 

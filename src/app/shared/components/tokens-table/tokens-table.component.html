@@ -31,7 +31,11 @@
         </div>
       </th>
       <td *matCellDef="let element">
-        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+        <a
+          routerLink="{{
+            tableType === 'InstantTrades' ? '/public-v3/' + element.uniqueLink : null
+          }}"
+        >
           <div class="tokens-table__cell tokens-table__cell_status">
             <span
               class="tokens-table__status"
@@ -136,16 +140,14 @@
         </div>
       </th>
       <td *matCellDef="let element">
-        <a routerLink="/public-v3/{{ element.uniqueLink }}">
-          <div class="tokens-table__cell provider-cell">
-            <img
-              class="table__image"
-              src="assets/images/icons/providers/{{ element.provider }}.svg"
-              alt="{{ element.provider }}"
-            />
-            {{ element.provider }}
-          </div>
-        </a>
+        <div class="tokens-table__cell provider-cell">
+          <img
+            class="table__image"
+            src="assets/images/icons/providers/{{ element.provider }}.svg"
+            alt="{{ element.provider }}"
+          />
+          {{ element.provider }}
+        </div>
       </td>
     </ng-container>
     <!-- Expires in column  -->

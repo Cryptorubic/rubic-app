@@ -17,7 +17,7 @@ export interface OrderBookDataToken extends SwapToken {
   brokerPercent: number;
 }
 
-type OrderBookDataTokens = {
+export type OrderBookDataTokens = {
   [tokenPart in TokenPart]: OrderBookDataToken;
 };
 
@@ -42,5 +42,8 @@ export interface OrderBookTradeData {
   isPublic: boolean;
   isWithBrokerFee: boolean;
   brokerAddress: string;
-  uniqieLink?: string;
+
+  date?: Date;
+  expiresIn?: moment.Duration;
+  opened?: boolean;
 }

@@ -4,8 +4,7 @@ import {
   Input,
   Output,
   EventEmitter,
-  ViewChild,
-  OnInit
+  ViewChild
 } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -15,7 +14,7 @@ import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/model
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 import { TokenValueType } from '../../models/order-book/tokens';
 import { SortingResult } from './models/sorting-result';
-import { TokensTableData } from './models/tokens-table-data';
+import { TradeData } from './models/tokens-table-data';
 
 @Component({
   selector: 'app-tokens-table',
@@ -24,7 +23,7 @@ import { TokensTableData } from './models/tokens-table-data';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensTableComponent {
-  private tokensTableData: TokensTableData[];
+  private tokensTableData: TradeData[];
 
   @Input() set tableData(data: OrderBookTradeData[]) {
     const newData = this.prepareData(data);
@@ -46,6 +45,8 @@ export class TokensTableComponent {
 
   @Input() public hasData: boolean;
 
+  @Input() public tableType: string;
+
   public get hasVisibleData(): boolean {
     return this.sortedTableData.length > 0;
   }
@@ -58,7 +59,7 @@ export class TokensTableComponent {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  public sortedTableData: TokensTableData[];
+  public sortedTableData: TradeData[];
 
   public $isMobile: Observable<boolean>;
 
@@ -135,8 +136,8 @@ export class TokensTableComponent {
       switch (sort.active) {
         case 'Expires in':
           return this.compareNumbers(
-            a.expirationDate.toDate().getTime(),
-            b.expirationDate.toDate().getTime(),
+            (a as OrderBookTradeData).expirationDate.toDate().getTime(),
+            (b as OrderBookTradeData).expirationDate.toDate().getTime(),
             isAsc
           );
         case 'network':
@@ -182,8 +183,8 @@ export class TokensTableComponent {
    * @param data Order book trade data.
    * @returns Converted table data.
    */
-  private prepareData(data: OrderBookTradeData[]): TokensTableData[] {
-    return data.map(trade => ({
+  private prepareData(data: TradeData[]): TradeData[] {
+    return data.map((trade: TradeData) => ({
       ...trade,
       opened: false
     }));
