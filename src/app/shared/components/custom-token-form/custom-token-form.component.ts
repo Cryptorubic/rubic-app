@@ -55,9 +55,4 @@ export class CustomTokenFormComponent {
   private _tokenAddress: string;
 
   constructor() {}
-
-  public onAddToken() {
-    // event.preventDefault();
-    this.addToken.emit();
-  }
 }
