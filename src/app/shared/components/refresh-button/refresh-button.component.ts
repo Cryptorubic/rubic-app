@@ -8,18 +8,22 @@ import Timeout = NodeJS.Timeout;
   styleUrls: ['./refresh-button.component.scss']
 })
 export class RefreshButtonComponent {
-  private readonly REFRESHING_TIMEOUT = 60000;
+  /**
+   * Timeout before next refreshing in seconds
+   */
+  @Input() readonly refreshTimeout = 20;
 
   @Input() set refreshButtonStatus(status) {
     this._refreshButtonStatus = status;
-    if (status === REFRESH_BUTTON_STATUS.STAYING || status === REFRESH_BUTTON_STATUS.REFRESHING) {
+
+    if (status !== REFRESH_BUTTON_STATUS.WAITING) {
       if (this._lastRefreshButtonTimeoutId) {
         clearInterval(this._lastRefreshButtonTimeoutId);
       }
-    } else if (status === REFRESH_BUTTON_STATUS.WAITING) {
+    } else {
       this._lastRefreshButtonTimeoutId = setTimeout(
         () => this.onRefreshButtonActivated.emit(),
-        this.REFRESHING_TIMEOUT
+        this.refreshTimeout * 1000
       );
     }
   }

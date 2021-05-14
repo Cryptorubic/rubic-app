@@ -4,8 +4,26 @@
     'refresh-button_refreshing': refreshButtonStatus === REFRESH_BUTTON_STATUS.REFRESHING,
     'refresh-button_waiting': refreshButtonStatus === REFRESH_BUTTON_STATUS.WAITING
   }"
-  [disabled]="refreshButtonStatus === REFRESH_BUTTON_STATUS.REFRESHING"
+  [disabled]="refreshButtonStatus !== REFRESH_BUTTON_STATUS.WAITING"
   (click)="onClick()"
 >
-  <img src="assets/images/icons/refresh.svg" alt="refresh" />
+  <span class="circle-container">
+    <span class="circle-container__half circle-container__half_left">
+      <span class="fill" [ngStyle]="{ 'animation-duration': refreshTimeout / 2 + 's' }"></span>
+    </span>
+    <span class="circle-container__half circle-container__half_right">
+      <span
+        class="fill"
+        [ngStyle]="{
+          'animation-duration': refreshTimeout / 2 + 's',
+          'animation-delay': refreshTimeout / 2 + 's'
+        }"
+      ></span>
+    </span>
+
+    <span class="circle-container__center"></span>
+
+    <span class="circle-container__dot circle-container__dot_left"></span>
+    <span class="circle-container__dot circle-container__dot_right"></span>
+  </span>
 </button>
