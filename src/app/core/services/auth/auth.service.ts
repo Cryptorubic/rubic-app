@@ -17,7 +17,7 @@ export class AuthService {
   /**
    * Is auth process going in.
    */
-  private isAuthProcess: boolean = false;
+  private isAuthProcess: boolean;
 
   /**
    * Current user data.
@@ -36,6 +36,7 @@ export class AuthService {
     private readonly web3Service: Web3PrivateService,
     private readonly queryParamsService: QueryParamsService
   ) {
+    this.isAuthProcess = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
     this.web3Service.onAddressChanges.subscribe(address => {
       if (this.isAuthProcess) {
@@ -116,15 +117,6 @@ export class AuthService {
   }
 
   /**
-   * @description Login user without backend.
-   */
-  public async loginWithoutBackend(): Promise<void> {
-    await this.web3Service.activate();
-    const { address } = this.web3Service;
-    this.$currentUser.next(address ? { address } : null);
-  }
-
-  /**
    * @description Initiate authentication via metamask.
    */
   public async signIn(): Promise<void> {
@@ -141,9 +133,17 @@ export class AuthService {
 
   public async signInWithoutBackend(): Promise<void> {
     this.isAuthProcess = true;
-    await this.web3Service.activate();
-    const { address } = this.web3Service;
-    this.$currentUser.next({ address } || null);
+    const permissions = await this.web3Service.requestPermissions();
+    const accountsPermission = permissions.find(
+      permission => permission.parentCapability === 'eth_accounts'
+    );
+    if (accountsPermission) {
+      await this.web3Service.activate();
+      const { address } = this.web3Service;
+      this.$currentUser.next({ address } || null);
+    } else {
+      this.$currentUser.next(null);
+    }
     this.isAuthProcess = false;
   }
 

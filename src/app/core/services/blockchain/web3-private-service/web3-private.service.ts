@@ -50,6 +50,10 @@ export class Web3PrivateService {
     return this.provider.activate();
   }
 
+  public async requestPermissions(): Promise<any[]> {
+    return this.provider.requestPermissions();
+  }
+
   public deActivate(): void {
     return this.provider.deActivate();
   }
