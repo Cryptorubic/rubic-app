@@ -1,5 +1,6 @@
 <mat-form-field>
   <mat-select
+    [disabled]="disabled"
     [disableRipple]="true"
     [(ngModel)]="selectedBlockchain"
     (selectionChange)="onBlockchainChanges($event.value)"

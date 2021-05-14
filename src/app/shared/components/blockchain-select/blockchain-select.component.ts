@@ -1,6 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
 
 @Component({
@@ -9,15 +7,11 @@ import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge
   styleUrls: ['./blockchain-select.component.scss']
 })
 export class BlockchainSelectComponent {
-  @ViewChild(MatAutocompleteTrigger) _auto: MatAutocompleteTrigger;
-
-  public blockchainControl = new FormControl();
-
-  public isPanelOpen: boolean = false;
-
   @Input() selectedBlockchain: BridgeBlockchain;
 
   @Input() blockchains: BridgeBlockchain[];
+
+  @Input() disabled? = false;
 
   @Output() blockchainChanges = new EventEmitter<BridgeBlockchain>();
 

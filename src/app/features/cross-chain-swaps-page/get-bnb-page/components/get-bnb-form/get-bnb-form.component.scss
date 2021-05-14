@@ -1,35 +1,3 @@
 @import 'src/app/features/cross-chain-swaps-page/common/styles/form';
 @import 'src/scss/mixins';
 @import 'src/scss/vars';
-
-.blockchain-chosen {
-  height: 52px;
-  padding: 0 14px;
-
-  background: $grey-background;
-
-  &__card-container {
-    display: table-cell;
-
-    height: 52px;
-
-    vertical-align: middle;
-  }
-}
-
-.blockchain-card {
-  display: flex;
-  align-items: center;
-
-  &__icon {
-    height: 23px;
-    margin-right: 12px;
-
-    vertical-align: sub;
-  }
-
-  &__name {
-    color: $dark;
-    font-size: 18px;
-  }
-}

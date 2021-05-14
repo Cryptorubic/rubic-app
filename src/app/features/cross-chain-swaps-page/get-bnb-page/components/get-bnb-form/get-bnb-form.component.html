@@ -4,25 +4,18 @@
     <div class="swap-section__box swap-box">
       <div class="swap-box__title">From</div>
 
-      <div class="swap-box__blockchain-section blockchain-chosen">
-        <div class="blockchain-chosen__card-container">
-          <div class="blockchain-chosen__card blockchain-card">
-            <img
-              class="blockchain-card__icon"
-              src="/assets/images/icons/coins/eth.png"
-              alt="Blockchain"
-            />
-            <span class="blockchain-card__name">Ethereum</span>
-          </div>
-        </div>
+      <div class="swap-box__blockchain-section form-field">
+        <app-blockchain-select
+          [selectedBlockchain]="fromBlockchain"
+          [blockchains]="blockchainsList"
+          [disabled]="true"
+        ></app-blockchain-select>
       </div>
 
       <app-wallet-address-form
         class="swap-box__wallet-address-section"
-        [walletAddress]="'0xf5bc251be64ec007933460bfe36bef481352981c'"
-        [walletAddressLink]="
-          'https://etherscan.io/address/0xf5bc251be64ec007933460bfe36bef481352981c'
-        "
+        [walletAddress]="walletAddress"
+        [walletAddressLink]="fromBlockchain.addressBaseUrl + walletAddress"
         [isWithEditing]="false"
       ></app-wallet-address-form>
 
@@ -52,25 +45,18 @@
     <div class="swap-section__box swap-box">
       <div class="swap-box__title">To</div>
 
-      <div class="swap-box__blockchain-section blockchain-chosen">
-        <div class="blockchain-chosen__card-container">
-          <div class="blockchain-chosen__card blockchain-card">
-            <img
-              class="blockchain-card__icon"
-              src="/assets/images/icons/coins/bnb.svg"
-              alt="Blockchain"
-            />
-            <span class="blockchain-card__name">Binance Smart Chain</span>
-          </div>
-        </div>
+      <div class="swap-box__blockchain-section form-field">
+        <app-blockchain-select
+          [selectedBlockchain]="toBlockchain"
+          [blockchains]="blockchainsList"
+          [disabled]="true"
+        ></app-blockchain-select>
       </div>
 
       <app-wallet-address-form
         class="swap-box__wallet-address-section"
-        [walletAddress]="'0xf5bc251be64ec007933460bfe36bef481352981c'"
-        [walletAddressLink]="
-          'https://bscscan.com/address/0xf5bc251be64ec007933460bfe36bef481352981c'
-        "
+        [walletAddress]="walletAddress"
+        [walletAddressLink]="toBlockchain.addressBaseUrl + walletAddress"
         [isWithEditing]="false"
       ></app-wallet-address-form>
 

@@ -82,4 +82,8 @@
   .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
     color: black;
   }
+
+  .mat-select-disabled .mat-select-arrow {
+    visibility: hidden;
+  }
 }

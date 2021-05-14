@@ -12,10 +12,10 @@ import { MessageBoxComponent } from 'src/app/shared/components/message-box/messa
 import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
 import InputToken from 'src/app/shared/models/tokens/InputToken';
+import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BridgeTrade } from '../../models/BridgeTrade';
-import { BLOCKCHAINS } from './constants/BLOCKCHAINS';
 import { BridgeService } from '../../services/bridge.service';
 
 @Component({
