@@ -43,7 +43,7 @@ export class RefreshButtonComponent {
   constructor() {}
 
   public onClick(): void {
-    if (this.refreshButtonStatus !== REFRESH_BUTTON_STATUS.WAITING) {
+    if (this.refreshButtonStatus === REFRESH_BUTTON_STATUS.WAITING) {
       this.onRefreshButtonActivated.emit();
     }
   }

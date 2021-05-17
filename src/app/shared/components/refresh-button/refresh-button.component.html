@@ -7,7 +7,10 @@
   [matTooltip]="'Price quote is auto updated.\nClick here to update manually.'"
   (click)="onClick()"
 >
-  <span class="circle-container">
+  <span
+    class="refresh-button__circle-container circle-container"
+    *ngIf="refreshButtonStatus !== REFRESH_BUTTON_STATUS.REFRESHING"
+  >
     <span class="circle-container__half circle-container__half_left">
       <span class="fill" [ngStyle]="{ 'animation-duration': refreshTimeout / 2 + 's' }"></span>
     </span>
@@ -20,10 +23,13 @@
         }"
       ></span>
     </span>
-
     <span class="circle-container__center"></span>
-
-    <span class="circle-container__dot circle-container__dot_left"></span>
-    <span class="circle-container__dot circle-container__dot_right"></span>
   </span>
+
+  <img
+    class="refresh-button__circle-arrows"
+    *ngIf="refreshButtonStatus === REFRESH_BUTTON_STATUS.REFRESHING"
+    src="/assets/images/icons/circle-arrows-green.svg"
+    alt="arrows"
+  />
 </button>

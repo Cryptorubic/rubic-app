@@ -5,13 +5,13 @@
   align-items: center;
   justify-content: center;
 
-  width: 26px;
+  width: 24px;
   height: 22px;
   padding: 0;
 
   background: white;
   border-radius: 4px;
-  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   cursor: pointer;
 
   &_waiting {
@@ -24,18 +24,18 @@
 
   &_refreshing {
     .circle-container {
-      animation: 1s linear infinite refreshing;
-
       .fill {
         transform: rotate(180deg);
 
         animation: none;
       }
-
-      &__dot {
-        display: block !important;
-      }
     }
+  }
+
+  &__circle-arrows {
+    width: 18px;
+
+    animation: 1s linear infinite refreshing;
   }
 
   span {
@@ -90,28 +90,6 @@
 
     background: white;
     border-radius: 50%;
-  }
-
-  &__dot {
-    position: absolute;
-    top: 6px;
-    left: -4px;
-
-    display: none !important;
-
-    width: 3px;
-    height: 3px;
-
-    background: $main-green;
-    border-radius: 50%;
-
-    &_left {
-      left: -4px;
-    }
-
-    &_right {
-      left: 15px;
-    }
   }
 }
 
