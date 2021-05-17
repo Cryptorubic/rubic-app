@@ -139,7 +139,7 @@ export class QueryParamsService {
       }
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
-      if (hasParams && route !== 'bridge') {
+      if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
       } else if (hasParams) {
         this.initiateBridgeParams(queryParams);

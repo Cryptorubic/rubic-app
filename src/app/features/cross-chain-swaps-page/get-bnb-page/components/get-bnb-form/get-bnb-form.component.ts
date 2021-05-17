@@ -7,6 +7,8 @@ import { TokensService } from 'src/app/core/services/backend/tokens-service/toke
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import InputToken from 'src/app/shared/models/tokens/InputToken';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 
 @Component({
   selector: 'app-get-bnb-form',
@@ -18,11 +20,17 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
+  public ADDRESS_TYPE = ADDRESS_TYPE;
+
+  public NATIVE_TOKEN_ADDRESS = NATIVE_TOKEN_ADDRESS;
+
   public blockchainsList = Object.values(BLOCKCHAINS);
 
   public fromBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
 
   public toBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+
+  public selectedFromToken: SwapToken;
 
   public fromTokensList: List<SwapToken>;
 
@@ -56,5 +64,16 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._tokensSubscription$.unsubscribe();
     this._walletAddressSubscription$.unsubscribe();
+  }
+
+  public onSelectedFromTokenChanges(inputToken: InputToken | null): void {
+    if (inputToken) {
+      this.selectedFromToken = this.fromTokensList.find(
+        token =>
+          token.blockchain === this.fromBlockchain.key && token.address === inputToken.address
+      );
+    } else {
+      this.selectedFromToken = null;
+    }
   }
 }

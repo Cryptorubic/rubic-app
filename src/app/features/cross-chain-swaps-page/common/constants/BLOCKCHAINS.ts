@@ -16,10 +16,7 @@ export const BLOCKCHAINS: Blockchains = {
     img: 'eth.png',
     baseUrl: 'https://etherscan.io',
     addressBaseUrl: 'https://etherscan.io/address/',
-    scanner: {
-      label: 'Etherscan',
-      baseUrl: 'https://etherscan.io/token/'
-    }
+    scannerLabel: 'Etherscan'
   },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
     key: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -28,10 +25,7 @@ export const BLOCKCHAINS: Blockchains = {
     img: 'bnb.svg',
     baseUrl: 'https://bscscan.com',
     addressBaseUrl: 'https://bscscan.com/address/',
-    scanner: {
-      label: 'BSCscan',
-      baseUrl: 'https://bscscan.com/token/'
-    }
+    scannerLabel: 'BSCscan'
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
     key: BLOCKCHAIN_NAME.POLYGON,
@@ -40,10 +34,7 @@ export const BLOCKCHAINS: Blockchains = {
     img: 'polygon.svg',
     baseUrl: 'https://explorer-mainnet.maticvigil.com/',
     addressBaseUrl: 'https://explorer-mainnet.maticvigil.com/address/',
-    scanner: {
-      label: 'Matic explorer',
-      baseUrl: 'https://explorer-mainnet.maticvigil.com/address/'
-    }
+    scannerLabel: 'Matic explorer'
   },
   [BLOCKCHAIN_NAME.TRON]: {
     key: BLOCKCHAIN_NAME.TRON,
@@ -52,9 +43,6 @@ export const BLOCKCHAINS: Blockchains = {
     img: 'tron.svg',
     baseUrl: 'https://tronscan.org/#/',
     addressBaseUrl: 'https://tronscan.org/#/address/',
-    scanner: {
-      label: 'Tron explorer',
-      baseUrl: 'https://tronscan.org/#/token20/'
-    }
+    scannerLabel: 'Tron explorer'
   }
 };

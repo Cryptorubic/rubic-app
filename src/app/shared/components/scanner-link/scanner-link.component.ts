@@ -14,5 +14,7 @@ export class ScannerLinkComponent {
 
   @Input() addressType: ADDRESS_TYPE;
 
+  @Input() scannerLabel? = 'Explorer';
+
   constructor() {}
 }

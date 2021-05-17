@@ -24,16 +24,24 @@
       <div class="swap-box__token-section form-field">
         <app-tokens-input
           [inputDisabled]="true"
+          [selectedToken]="selectedFromToken"
           [selectedAmount]="'0.1'"
           [tokensList]="fromTokensList"
+          (tokenChanges)="onSelectedFromTokenChanges($event)"
         ></app-tokens-input>
       </div>
 
-      <div class="swap-box__scanner-link-container">
-        <a href="https://etherscan.io" target="_blank">
-          Check on Etherscan
-          <img src="assets/images/icons/link.svg" alt="link" />
-        </a>
+      <div
+        class="swap-box__scanner-link-container"
+        [ngClass]="{ 'swap-box__scanner-link-container_hidden': !selectedFromToken }"
+      >
+        <app-scanner-link
+          [address]="selectedFromToken?.address"
+          [blockchainName]="fromBlockchain.key"
+          [addressType]="ADDRESS_TYPE.TOKEN"
+          [scannerLabel]="fromBlockchain.scannerLabel"
+        >
+        </app-scanner-link>
       </div>
 
       <div class="swap-box__description">
@@ -72,10 +80,13 @@
       </div>
 
       <div class="swap-box__scanner-link-container">
-        <a href="https://bscscan.com" target="_blank">
-          Check on BSCscan
-          <img src="assets/images/icons/link.svg" alt="link" />
-        </a>
+        <app-scanner-link
+          [address]="NATIVE_TOKEN_ADDRESS"
+          [blockchainName]="toBlockchain.key"
+          [addressType]="ADDRESS_TYPE.TOKEN"
+          [scannerLabel]="toBlockchain.scannerLabel"
+        >
+        </app-scanner-link>
       </div>
 
       <div class="swap-box__description">

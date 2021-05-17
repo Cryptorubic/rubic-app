@@ -13,6 +13,7 @@ import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskErr
 import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
 import InputToken from 'src/app/shared/models/tokens/InputToken';
 import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BridgeTrade } from '../../models/BridgeTrade';
@@ -31,6 +32,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public readonly TRON_ADDRESS_PATTERN = '^T[1-9A-HJ-NP-Za-km-z]{33}$';
 
   public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
+  public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public fromBlockchainsList: BridgeBlockchain[] = Object.values(BLOCKCHAINS).filter(
     b => b.key !== BLOCKCHAIN_NAME.TRON

@@ -7,8 +7,5 @@ export interface BridgeBlockchain {
   img: string;
   baseUrl: string;
   addressBaseUrl: string;
-  scanner: {
-    label: string;
-    baseUrl: string;
-  };
+  scannerLabel: string;
 }
