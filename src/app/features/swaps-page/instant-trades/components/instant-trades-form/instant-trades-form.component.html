@@ -97,7 +97,14 @@
           }"
         >
           <div class="selection-block__header" *ngIf="index === 0">
-            <div class="selection-block__label">you get</div>
+            <div class="selection-block__label">
+              you get
+              <app-refresh-button
+                class="selection-block__refresh-button"
+                [refreshButtonStatus]="refreshButtonStatus"
+                (onRefreshButtonActivated)="calculateTradeParameters()"
+              ></app-refresh-button>
+            </div>
 
             <div *ngIf="toToken?.address" class="selection-block__scanner">
               <app-scanner-link
@@ -132,7 +139,7 @@
               "
             >
               <span class="gas-fee__text"
-                >Estimated gas fee:
+              >Estimated gas fee:
                 {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
                 ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
               </span>
@@ -213,7 +220,7 @@
             *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState"
           >
             <span>{{ 'Best Rate' | translate }}</span>
-            <img src="assets/images/icons/BestRate.svg" alt="" />
+            <img src="assets/images/icons/BestRate.svg" alt=""/>
           </div>
           <div
             *ngIf="index === 1 && blockchain === BLOCKCHAIN_NAME.ETHEREUM"
