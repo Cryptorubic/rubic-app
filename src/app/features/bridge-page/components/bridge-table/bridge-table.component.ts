@@ -48,6 +48,10 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
     [BLOCKCHAIN_NAME.POLYGON]: {
       label: 'Polygon',
       img: 'polygon.svg'
+    },
+    [BLOCKCHAIN_NAME.TRON]: {
+      label: 'TRON',
+      img: 'tron.svg'
     }
   };
 
