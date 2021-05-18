@@ -54,6 +54,7 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
 import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
+import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     BlockchainSelectComponent,
     CheckboxComponent,
     TotalSupplyOverflowErrorComponent,
+    RefreshButtonComponent,
     WalletAddressFormComponent
   ],
   entryComponents: [MessageBoxComponent],
@@ -154,6 +156,7 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent,
+    RefreshButtonComponent,
     WalletAddressFormComponent
   ]
 })
