@@ -29,11 +29,12 @@ import { NetworkErrorComponent } from '../../../../../shared/components/network-
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../models/trade-data';
 import { PROVIDERS } from '../../models/providers.enum';
 import { TO_BACKEND_BLOCKCHAINS } from '../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
+import { InstantTradesFormService } from './services/instant-trades-form.service';
 
 interface TradeProviderInfo {
   label: string;
+  value: PROVIDERS;
 }
 
 interface InstantTradeParameters {
@@ -248,7 +249,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly web3PublicService: Web3PublicService
+    private readonly web3PublicService: Web3PublicService,
+    private readonly instantTradesFormService: InstantTradesFormService
   ) {}
 
   private initInstantTradeProviders() {
@@ -260,7 +262,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: '1inch'
+              label: '1inch',
+              value: PROVIDERS.ONEINCH
             },
             isBestRate: false
           },
@@ -268,7 +271,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: 'Uniswap'
+              label: 'Uniswap',
+              value: PROVIDERS.UNISWAP
             },
             isBestRate: false
           }
@@ -281,7 +285,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: '1inch'
+              label: '1inch',
+              value: PROVIDERS.ONEINCH
             },
             isBestRate: false
           },
@@ -289,7 +294,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: 'Pancakeswap'
+              label: 'Pancakeswap',
+              value: PROVIDERS.PANCAKESWAP
             },
             isBestRate: false
           }
@@ -302,7 +308,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: 'Quickswap'
+              label: 'Quickswap',
+              value: PROVIDERS.QUICKSWAP
             },
             isBestRate: false
           }
@@ -586,31 +593,31 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
           let tradeInfo;
 
-          if (
-            this.trades[selectedServiceIndex].tradeProviderInfo.label.toLowerCase() ===
-            PROVIDERS.ONEINCH
-          ) {
+          if (this.trades[selectedServiceIndex].tradeProviderInfo.value === PROVIDERS.ONEINCH) {
             tradeInfo = {
               hash,
-              network: this.blockchain,
-              provider: this.trades[selectedServiceIndex].tradeProviderInfo.label.toLowerCase(),
+              network: TO_BACKEND_BLOCKCHAINS[this.blockchain],
+              provider: this.trades[selectedServiceIndex].tradeProviderInfo.value,
               from_token: this.tradeParameters.fromToken.address,
               to_token: this.tradeParameters.toToken.address,
-              from_amount: this.trades[selectedServiceIndex].trade.from.amount,
-              to_amount: this.trades[selectedServiceIndex].trade.to.amount
+              from_amount: Web3PublicService.tokenAmountToWei(
+                this.tradeParameters.fromToken,
+                this.trades[selectedServiceIndex].trade.from.amount
+              ),
+              to_amount: Web3PublicService.tokenAmountToWei(
+                this.tradeParameters.toToken,
+                this.trades[selectedServiceIndex].trade.to.amount
+              )
             };
           } else {
             tradeInfo = {
               hash,
-              provider: this.trades[selectedServiceIndex].tradeProviderInfo.label.toLowerCase(),
-              network: 'ethereum-test'
+              provider: this.trades[selectedServiceIndex].tradeProviderInfo.value,
+              network: TO_BACKEND_BLOCKCHAINS[this.blockchain]
             };
           }
           try {
-            const web3Public = this.web3PublicService[this.blockchain];
-            await web3Public.getTransactionByHash(hash, 0, 50);
-
-            this.instantTradesApiService.createTrade(tradeInfo).subscribe();
+            await this.instantTradesFormService.createTrade(tradeInfo, this.blockchain);
           } catch (err) {
             console.error(err);
           }
@@ -620,9 +627,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         setTradeState(TRADE_STATUS.COMPLETED);
         this.transactionHash = receipt.transactionHash;
 
-        this.instantTradesApiService
-          .patchTrade(this.transactionHash, INTSTANT_TRADES_TRADE_STATUS.COMPLETED)
-          .subscribe(() => this.instantTradesApiService.fetchSwaps());
+        this.instantTradesFormService.updateTrade(
+          receipt.transactionHash,
+          INTSTANT_TRADES_TRADE_STATUS.COMPLETED
+        );
 
         this.instantTradesApiService.notifyInstantTradesBot({
           provider: this.trades[selectedServiceIndex].tradeProviderInfo.label,
@@ -650,9 +658,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           data
         });
 
-        this.instantTradesApiService
-          .patchTrade(currentHash, INTSTANT_TRADES_TRADE_STATUS.REJECTED)
-          .subscribe(() => this.instantTradesApiService.fetchSwaps());
+        this.instantTradesFormService.updateTrade(
+          currentHash,
+          INTSTANT_TRADES_TRADE_STATUS.REJECTED
+        );
       });
   }
 

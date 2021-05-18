@@ -32,9 +32,8 @@
       </th>
       <td *matCellDef="let element">
         <a
-          routerLink="{{
-            tableType === 'InstantTrades' ? '/public-v3/' + element.uniqueLink : null
-          }}"
+          [class.link-disable]="tableType === 'InstantTrades'"
+          routerLink="{{ tableType === 'OrderBooks' ? ['/public-v3', element.uniqueLink] : [] }}"
         >
           <div class="tokens-table__cell tokens-table__cell_status">
             <span
@@ -79,7 +78,11 @@
         </div>
       </th>
       <td *matCellDef="let element" class="centered-child">
-        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+        <a
+          (click)="this.refreshTable()"
+          [class.link-disable]="tableType === 'InstantTrades'"
+          routerLink="{{ tableType === 'OrderBooks' ? ['/public-v3', element.uniqueLink] : [] }}"
+        >
           <div class="tokens-table__cell">
             <img
               class="table__image"
@@ -99,15 +102,15 @@
       </th>
       <td *matCellDef="let element">
         <div class="tokens-table__cell tokens-table__cell_token token-cell">
-          <div class="token-cell__amount">
-            {{ element.fromAmount.dp(5) }}
-          </div>
           <div class="token-cell__info">
             <img
               [src]="element.token.from.image || '/assets/images/icons/coins/empty.svg'"
               [alt]="element.token.from.symbol"
             />
             {{ element.token.from.symbol }}
+          </div>
+          <div class="token-cell__amount">
+            {{ element.fromAmount.dp(5).toString(10) }}
           </div>
         </div>
       </td>
@@ -121,7 +124,6 @@
       </th>
       <td *matCellDef="let element">
         <div class="tokens-table__cell tokens-table__cell_token token-cell">
-          <div class="token-cell__amount">{{ element.toAmount.dp(5) }}</div>
           <div class="token-cell__info">
             <img
               [src]="element.token.to.image || '/assets/images/icons/coins/empty.svg'"
@@ -129,6 +131,7 @@
             />
             {{ element.token.to.symbol }}
           </div>
+          <div class="token-cell__amount">{{ element.toAmount.dp(5).toString(10) }}</div>
         </div>
       </td>
     </ng-container>

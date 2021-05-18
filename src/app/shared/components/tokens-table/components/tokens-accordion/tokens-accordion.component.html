@@ -38,7 +38,12 @@
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Spent' && data.token.from.amountTotal">
+      <div
+        class="data__amount"
+        *ngIf="
+          selectedOption === 'Spent' && data.token.from.constructor.name === 'OrderBookDataToken'
+        "
+      >
         <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
           <div>{{ data.token.from.amountTotal.dp(8) }} {{ data.token.from.symbol }}</div>
           <span>
@@ -49,7 +54,12 @@
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Expected' && data.token.to.amountTotal">
+      <div
+        class="data__amount"
+        *ngIf="
+          selectedOption === 'Expected' && data.token.from.constructor.name === 'OrderBookDataToken'
+        "
+      >
         <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
           <div>{{ data.token.to.amountTotal.dp(8) }} {{ data.token.to.symbol }}</div>
           <span>
@@ -65,7 +75,7 @@
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Expires in' && data.expiresIn">
+      <div class="data__amount" *ngIf="selectedOption === 'Expires in' && isFieldIn('expiresIn')">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
           <div>
             {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:
@@ -74,7 +84,7 @@
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Date' && data.date">
+      <div class="data__amount" *ngIf="selectedOption === 'Date' && isFieldIn('date')">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
           <div>
             {{ data.date | date: 'dd-MM-yyyy HH:mm:ss' }}
@@ -88,7 +98,7 @@
         </div>
       </div>
 
-      <div class="data__network" *ngIf="selectedOption === 'Provider' && data.provider">
+      <div class="data__network" *ngIf="selectedOption === 'Provider' && isFieldIn('provider')">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
           {{ data.provider }}
         </div>
@@ -125,7 +135,10 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item" *ngIf="data.token.from.amountTotal">
+    <div
+      class="tokens-accordion__item"
+      *ngIf="data.token.from.constructor.name === 'OrderBookDataToken'"
+    >
       <div class="tokens-accordion__item-name">Spent</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
         <div>{{ data.token.from.amountTotal.dp(8) }} {{ data.token.from.symbol }}</div>
@@ -137,7 +150,10 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item" *ngIf="data.token.to.amountTotal">
+    <div
+      class="tokens-accordion__item"
+      *ngIf="data.token.from.constructor.name === 'OrderBookDataToken'"
+    >
       <div class="tokens-accordion__item-name">Expected</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
         <div>{{ data.token.to.amountTotal.dp(8) }} {{ data.token.to.symbol }}</div>
@@ -160,7 +176,7 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item">
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('provider')">
       <div class="tokens-accordion__item-name">{{ 'Provider' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
         <img
@@ -172,7 +188,7 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item" *ngIf="data.expiresIn">
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('expiresIn')">
       <div class="tokens-accordion__item-name">{{ 'Expires in' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
         <div>
@@ -182,7 +198,7 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item" *ngIf="data.date">
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('date')">
       <div class="tokens-accordion__item-name">{{ 'Date' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
         <div>
@@ -191,7 +207,7 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item">
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('uniqueLink')">
       <div class="tokens-accordion__item-name">{{ 'Link' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_link">
         <a routerLink="/trade/{{ data.uniqueLink }}">

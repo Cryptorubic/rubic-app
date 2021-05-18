@@ -1,9 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input, OnInit, Inject } from '@angular/core';
 import { WINDOW } from 'src/app/core/models/window';
-import {
-  ORDER_BOOK_TRADE_STATUS,
-  OrderBookTradeData
-} from '../../../../../features/order-book-trade-page/models/trade-data';
+import { ORDER_BOOK_TRADE_STATUS } from '../../../../../features/order-book-trade-page/models/trade-data';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../../../features/swaps-page/models/trade-data';
 import { TradeData } from '../../models/tokens-table-data';
 
@@ -14,6 +11,8 @@ import { TradeData } from '../../models/tokens-table-data';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensAccordionComponent implements OnInit {
+  @Input() typeData: string;
+
   @Input() data: TradeData;
 
   @Input() chainIconPath: string;
@@ -41,9 +40,12 @@ export class TokensAccordionComponent implements OnInit {
   constructor(@Inject(WINDOW) private readonly window: Window) {}
 
   ngOnInit(): void {
-    this.linkToTrade = `${this.window.location.host}/trade/${
-      (this.data as OrderBookTradeData).uniqueLink
-    }`;
-    console.log(this.selectedOption);
+    if ('uniqueLink' in this.data) {
+      this.linkToTrade = `${this.window.location.host}/trade/${this.data.uniqueLink}`;
+    }
+  }
+
+  public isFieldIn(fieldName: string) {
+    return fieldName in this.data;
   }
 }

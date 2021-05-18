@@ -1,4 +1,5 @@
 import InputToken from 'src/app/shared/models/tokens/InputToken';
+import { PROVIDERS } from '../../../../../features/swaps-page/instant-trades/models/providers.enum';
 
 interface InstantTradesBlockchainNetwork {
   title: string;
@@ -35,3 +36,21 @@ export interface InstantTradesResponseApi {
   status: string;
   status_updated_at: string;
 }
+
+interface InstantTradesOthersApi {
+  hash: string;
+  provider: PROVIDERS;
+  network: string;
+}
+
+interface InstantTradesOneInchApi {
+  hash: string;
+  provider: PROVIDERS;
+  network: string;
+  from_token: string;
+  to_token: string;
+  from_amount: number;
+  to_amount: number;
+}
+
+export type InstantTradesPostApi = InstantTradesOthersApi | InstantTradesOneInchApi;

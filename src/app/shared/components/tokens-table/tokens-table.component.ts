@@ -15,6 +15,7 @@ import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 import { TokenValueType } from '../../models/order-book/tokens';
 import { SortingResult } from './models/sorting-result';
 import { TradeData } from './models/tokens-table-data';
+import { InstantTradesTradeData } from '../../../features/swaps-page/models/trade-data';
 
 @Component({
   selector: 'app-tokens-table',
@@ -25,7 +26,7 @@ import { TradeData } from './models/tokens-table-data';
 export class TokensTableComponent {
   private tokensTableData: TradeData[];
 
-  @Input() set tableData(data: OrderBookTradeData[]) {
+  @Input() set tableData(data: TradeData[]) {
     const newData = this.prepareData(data);
     this.tokensTableData = newData;
     this.sortedTableData = newData;
@@ -145,7 +146,11 @@ export class TokensTableComponent {
         case 'status':
           return this.compareStrings(a.status, b.status, isAsc);
         case 'Date':
-          return this.compareNumbers(a.date.getTime(), b.date.getTime(), isAsc);
+          return this.compareNumbers(
+            (a as InstantTradesTradeData).date.getTime(),
+            (b as InstantTradesTradeData).date.getTime(),
+            isAsc
+          );
         case 'From':
           return this.compareNumbers(a.token.from.price, b.token.from.price, isAsc);
         case 'To':

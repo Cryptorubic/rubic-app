@@ -6,6 +6,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { TokenValueType } from 'src/app/shared/models/order-book/tokens';
 import { InstantTradesTradeData } from '../../../models/trade-data';
 import { InstantTradesTableService } from './services/instant-trades-table.service';
+import { InstantTradesFormService } from '../instant-trades-form/services/instant-trades-form.service';
 
 @Component({
   selector: 'app-instant-trades-table',
@@ -25,12 +26,13 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
 
   public readonly $tableLoading: Observable<boolean>;
 
-  public readonly $hasData: Observable<boolean>;
+  public $hasData: Observable<boolean>;
 
   constructor(
     private readonly instantTradesTableService: InstantTradesTableService,
     private readonly instantTradesApiService: InstantTradesApiService,
-    private readonly tradeTypeService: TradeTypeService
+    private readonly tradeTypeService: TradeTypeService,
+    private readonly instantTradesFormService: InstantTradesFormService
   ) {
     this.$tableLoading = this.instantTradesTableService.getTableLoadingStatus();
     this.instantTradesTableService.setTableLoadingStatus(true);
@@ -48,11 +50,13 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
       this.instantTradesTableService.setFromTokenFilter(null);
       this.instantTradesTableService.setToTokenFilter(null);
       this.instantTradesTableService.filterTable();
+      this.$hasData = this.instantTradesTableService.hasData();
     });
   }
 
   public ngOnInit(): void {
     this.fetchSwaps();
+    this.instantTradesFormService.onInstantTradesCreated.subscribe(() => this.fetchSwaps());
   }
 
   public selectToken(tokenData: TokenValueType): void {

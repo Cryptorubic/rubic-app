@@ -36,8 +36,7 @@ describe('TokensAccordionComponent', () => {
     expirationDate: moment(new Date()),
     isPublic: 'boolean',
     isWithBrokerFee: false,
-    brokerAddress: 'string',
-    uniqieLink: 'test'
+    brokerAddress: 'string'
   };
 
   beforeEach(async () => {

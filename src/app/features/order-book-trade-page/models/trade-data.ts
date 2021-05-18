@@ -43,7 +43,6 @@ export interface OrderBookTradeData {
   isWithBrokerFee: boolean;
   brokerAddress: string;
 
-  date?: Date;
-  expiresIn?: moment.Duration;
+  expiresIn: moment.Duration;
   opened?: boolean;
 }

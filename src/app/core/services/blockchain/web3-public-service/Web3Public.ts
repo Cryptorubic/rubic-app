@@ -141,11 +141,12 @@ export class Web3Public {
   public async getTransactionByHash(
     hash: string,
     attempt?: number,
-    attemptsLimit?: number
+    attemptsLimit?: number,
+    delay?: number
   ): Promise<Transaction> {
     attempt = attempt || 0;
     const limit = attemptsLimit || 10;
-    const timeout = 500;
+    const timeout = delay || 500;
 
     if (attempt >= limit) {
       return null;
