@@ -158,4 +158,9 @@ export class AuthService {
       })
     );
   }
+
+  public iframeSignOut(): void {
+    this.web3Service.deActivate();
+    this.$currentUser.next(null);
+  }
 }

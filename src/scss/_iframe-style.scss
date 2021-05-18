@@ -5,6 +5,70 @@
 
   background: transparent;
 
+  .chain-dropdown {
+    background: #f4f4f4 !important;
+  }
+
+  &.dark {
+    background: rgba(black, 0.65);
+
+    .chain-dropdown__icon {
+      background: #423d3d;
+    }
+
+    .chain-dropdown {
+      background: #616161 !important;
+
+      &::after {
+        border-color: white;
+      }
+    }
+
+    .iframe-profile__address {
+      color: white;
+    }
+
+    .gas-fee {
+      color: white;
+    }
+
+    .instant-trade-form {
+      background: #423d3d;
+    }
+
+    .input-dropdown__choose-button {
+      color: white;
+
+      background: #423d3d;
+    }
+
+    .dropdown-label_selected::after {
+      border-color: white;
+    }
+    
+    .tokens-form__input {
+      padding: 0 139px 0 14px;
+
+      color: white;
+
+      font-size: 22px;
+
+      font-family: 'Ubuntu Mono', monospace;
+
+      background: #616161;
+      border: none;
+
+      &::placeholder {
+        color: #c5c5c5;
+        font-size: 22px;
+      }
+    }
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
   &::before {
     position: absolute;
     z-index: -1;
@@ -25,6 +89,8 @@
   app-header-navigation,
   app-custom-token-form,
   app-header-language-dropdown,
+  app-header,
+  .trades-form__tabs,
   .main-page__intro,
   .trades-form__tabs-modes,
   .main-page__title,
@@ -36,16 +102,27 @@
   .selection-block__header,
   .instant-trade-button__best-rate,
   .checkbox-optimization,
+  .gas-fee img,
+  .selection-block__custom-token-section,
   #livechat-compact-container,
   .checkbox-optimisation,
   .display-none,
-  app-tokens-input ~ *,
   #chat-widget-container {
     display: none !important;
   }
 
   .instant-trade-button {
     top: 0 !important;
+  }
+
+  .gas-fee {
+    position: absolute;
+    bottom: -30px;
+  }
+
+  .primary-button {
+    font-size: 18px !important;
+    font-family: 'Ubuntu Mono', monospace;
   }
 
   app-root {
@@ -55,8 +132,12 @@
     height: 100%;
   }
 
-  .tokens-form__input::placeholder {
-    font-size: 14px;;
+  .tokens-form__input {
+    font-size: 22px;
+
+    &::placeholder {
+      font-size: 22px;
+    }
   }
 
   app-header {
@@ -65,6 +146,10 @@
     display: block;
     max-width: 1180px;
     margin: 0 auto;
+  }
+
+  app-iframe-tokens-swap-input .selection-block {
+    position: relative;
   }
 
   .instant-trade-form__from-section {
@@ -77,6 +162,10 @@
 
   .tab_blockchain {
     min-width: 160px !important;
+  }
+
+  .arrow-button {
+    background-color: transparent !important;
   }
 
   .header {
@@ -116,11 +205,21 @@
 
   .main-page {
     margin-top: 0 !important;
-    padding-top: 20px !important;
+    padding: 20px 0 !important;
   }
 
   .instant-trade-form {
+    position: relative;
+
     align-items: center !important;
+    padding: 40px 25px !important;
+
+    border-radius: 10px;
+  }
+
+  .trades-form__body {
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(black, 0.16);
   }
 
   app-header-logotype {

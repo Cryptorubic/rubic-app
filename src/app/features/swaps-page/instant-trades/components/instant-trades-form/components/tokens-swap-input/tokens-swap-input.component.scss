@@ -10,3 +10,53 @@
     flex: 1;
   }
 }
+
+.gas-fee {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+
+  &__text {
+    margin-right: 8px;
+
+    opacity: 0.5;
+  }
+}
+
+.selection-block__custom-token-section {
+  margin-top: 8px;
+}
+
+.checkbox-optimization {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+
+  span {
+    margin-right: 5px;
+
+    color: rgba(black, 0.5);
+    font-size: 14px;
+  }
+}
+
+.instant-trade-button {
+  position: relative;
+
+  &__best-rate {
+    position: absolute;
+    top: -40px;
+    right: -10px;
+
+    span {
+      color: rgba(0, 0, 0, 0.5);
+      font-size: 14px;
+    }
+
+    img {
+      position: relative;
+      top: 20px;
+    }
+  }
+}

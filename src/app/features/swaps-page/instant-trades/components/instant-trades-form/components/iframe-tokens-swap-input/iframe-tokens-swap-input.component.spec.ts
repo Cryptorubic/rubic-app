@@ -8,9 +8,8 @@ describe('IframeTokensSwapInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ IframeTokensSwapInputComponent ]
-    })
-    .compileComponents();
+      declarations: [IframeTokensSwapInputComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

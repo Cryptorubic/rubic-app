@@ -5,10 +5,8 @@
   &__choose-button {
     position: absolute;
     top: 50%;
-    right: 8px;
+    right: 7px;
     z-index: 2;
-
-    margin-top: -21px;
 
     padding: 0;
 
@@ -20,8 +18,9 @@
     letter-spacing: -0.43px;
 
     background: white;
-    border: 2px solid #e5e5e5;
-    border-radius: 0 4px 4px 0;
+    border-radius: 10px;
+
+    transform: translateY(-50%);
 
     cursor: pointer;
 
@@ -49,6 +48,7 @@
     z-index: 1;
 
     box-sizing: border-box;
+    height: 52px;
     padding: 11px 10px 11px 22px;
 
     color: #110931;
@@ -58,7 +58,9 @@
     line-height: 30px;
 
     background: #f4f4f4;
-    border: 1px solid white;
+    border: none;
+
+    border-radius: 10px 10px 0 0;
     opacity: 0;
 
     transition: all linear 0.2s;
@@ -112,6 +114,9 @@
   .dropdown-components {
     &__list {
       max-height: 200px;
+      margin-right: 10px;
+
+      border-radius: 0 0 10px 10px;
     }
 
     .components-list {
@@ -123,14 +128,12 @@
       list-style-type: none;
 
       background-color: white;
-      border-top: 1px solid #dedede;
-      border-bottom: 1px solid #dedede;
 
       &__item {
 
         color: black;
 
-        border: 1px solid white;
+        //border-top: 1px solid white;
 
         cursor: pointer;
 
@@ -140,7 +143,7 @@
 
         &_active {
           background-color: #fffbcd;
-          border-color: #dddab2;
+          border: none;
 
           cursor: default;
         }

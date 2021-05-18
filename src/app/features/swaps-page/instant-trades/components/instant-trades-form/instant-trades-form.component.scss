@@ -21,6 +21,13 @@
 
   padding: 27px 30px 29px;
 
+  &__iframe-logo {
+    position: absolute;
+    top: 8px;
+
+    height: 25px;
+  }
+
   &_extended {
     min-height: 237px;
   }
@@ -43,6 +50,10 @@
 
   &__to-section {
     flex: 6;
+
+    .selection-block__header {
+      margin-right: calc(100% / 3 + 20px);
+    }
   }
 }
 
@@ -64,7 +75,6 @@ app-tokens-swap-input:not(:last-child) {
   background-color: white;
   border: none;
   border-radius: 50%;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
 
   cursor: pointer;
 
@@ -146,20 +156,6 @@ app-tokens-swap-input:not(:last-child) {
     img {
       vertical-align: bottom;
     }
-  }
-}
-
-.checkbox-optimization {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-
-  span {
-    margin-right: 5px;
-
-    color: rgba(black, 0.5);
-    font-size: 14px;
   }
 }
 

@@ -10,7 +10,7 @@ import { Web3PublicService } from '../blockchain/web3-public-service/web3-public
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { TradeParametersService } from '../swaps/trade-parameters-service/trade-parameters.service';
 import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
-import { QueryParams } from './models/query-params';
+import { QueryParams as FullQueryParams } from './models/query-params';
 import { BridgeToken } from '../../../features/bridge-page/models/BridgeToken';
 
 type DefaultQueryParams = {
@@ -19,6 +19,8 @@ type DefaultQueryParams = {
   [BLOCKCHAIN_NAME.POLYGON]: QueryParams;
   bridge: QueryParams;
 };
+
+type QueryParams = Partial<FullQueryParams>;
 
 @Injectable({
   providedIn: 'root'
@@ -36,8 +38,14 @@ export class QueryParamsService {
 
   private readonly $tokensSelectionDisabledSubject: BehaviorSubject<boolean>;
 
+  private readonly $themeSubject: BehaviorSubject<string>;
+
   public get $isIframe(): Observable<boolean> {
     return this.$isIframeSubject.asObservable();
+  }
+
+  public get $theme(): Observable<string> {
+    return this.$themeSubject.asObservable();
   }
 
   public get $hiddenNetworks(): Observable<string[]> {
@@ -57,6 +65,7 @@ export class QueryParamsService {
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router
   ) {
+    this.$themeSubject = new BehaviorSubject<string>('default');
     this.$isIframeSubject = new BehaviorSubject<boolean>(false);
     this.$tokensSelectionDisabledSubject = new BehaviorSubject<boolean>(false);
     this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([]);
@@ -142,20 +151,24 @@ export class QueryParamsService {
       if (queryParams.iframe === 'true') {
         this.$isIframeSubject.next(true);
         this.document.body.classList.add('iframe');
+        if (queryParams.hidden) {
+          this.$hiddenNetworksSubject.next(queryParams.hidden.split(','));
+        }
+        if (queryParams.background) {
+          const color = queryParams.background;
+          this.document.body.style.background = QueryParamsService.isHEXColor(color)
+            ? `#${color}`
+            : color;
+        }
+        if (queryParams.hideSelection) {
+          this.$tokensSelectionDisabledSubject.next(queryParams.hideSelection === 'true');
+        }
+        if (queryParams.theme && queryParams.theme === 'dark') {
+          this.$themeSubject.next('dark');
+          this.document.body.classList.add('dark');
+        }
       } else {
         this.$isIframeSubject.next(false);
-      }
-      if (queryParams.hidden) {
-        this.$hiddenNetworksSubject.next(queryParams.hidden.split(','));
-      }
-      if (queryParams.background) {
-        const color = queryParams.background;
-        this.document.body.style.background = QueryParamsService.isHEXColor(color)
-          ? `#${color}`
-          : color;
-      }
-      if (queryParams.hideSelection) {
-        this.$tokensSelectionDisabledSubject.next(queryParams.hideSelection === 'true');
       }
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;

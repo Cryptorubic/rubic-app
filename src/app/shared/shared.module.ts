@@ -54,6 +54,7 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
 import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
+import { ShortAddressPipe } from './pipes/short-address.pipe';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent,
-    TotalSupplyOverflowErrorComponent
+    TotalSupplyOverflowErrorComponent,
+    ShortAddressPipe
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -112,7 +114,6 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     RouterModule,
     ScrollingModule,
     MatTooltipModule,
-    MatSelectModule,
     InlineSVGModule.forRoot(),
     MatFormFieldModule,
     MatInputModule,
@@ -154,7 +155,8 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     WarningDisclaimerComponent,
     NetworkErrorComponent,
     BlockchainSelectComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    ShortAddressPipe
   ]
 })
 export class SharedModule {}
