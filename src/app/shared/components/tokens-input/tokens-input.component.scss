@@ -29,6 +29,22 @@
       }
     }
   }
+
+  &__max-button {
+    position: absolute;
+    top: 0;
+    right: 120px;
+
+    height: 100%;
+
+    color: $dark;
+    text-transform: uppercase;
+
+    background: none;
+
+    cursor: pointer;
+    opacity: 0.8;
+  }
 }
 
 @include b($desktop) {
@@ -50,7 +66,6 @@
 @include b($mobile-sm) {
   .tokens-form {
     &__input {
-      padding-right: 11px;
       padding-left: 11px;
 
       font-size: 12px;

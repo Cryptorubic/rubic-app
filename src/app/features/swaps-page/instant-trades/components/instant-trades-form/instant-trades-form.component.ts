@@ -80,6 +80,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private firstBlockhainEmitment = true;
 
+  private firstTokensEmitment = true;
+
   public TRADE_STATUS = TRADE_STATUS;
 
   public ADDRESS_TYPE = ADDRESS_TYPE;
@@ -312,12 +314,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.tokens.size > 0 && this.queryParamsService.currentQueryParams) {
-      this.queryParamsService.setupTradeForm(this.cdr);
-    }
-    this._tokensSubscription$ = this.tokensService.tokens
-      .asObservable()
-      .subscribe(tokens => this.setupTokens(tokens));
+    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens =>
+      this.setupTokens(tokens)
+    );
     this._blockchainSubscription$ = this.tradeTypeService
       .getBlockchain()
       .subscribe(blockchain => this.setupBlockchain(blockchain));
@@ -332,8 +331,23 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private setupTokens(tokens: List<SwapToken>): void {
     this.tokens = tokens;
 
-    if (tokens.size > 0 && this.queryParamsService.currentQueryParams) {
-      this.queryParamsService.setupTradeForm(this.cdr);
+    if (tokens.size > 0) {
+      if (this.queryParamsService.currentQueryParams && this.firstTokensEmitment) {
+        this.firstTokensEmitment = false;
+        this.queryParamsService.setupTradeForm(this.cdr);
+      } else {
+        if (this.fromToken) {
+          const foundFromToken = this.tokens.find(
+            token => token.address === this.fromToken.address
+          );
+          this.fromToken.usersBalance = foundFromToken.usersBalance;
+        }
+
+        if (this.toToken) {
+          const foundToToken = this.tokens.find(token => token.address === this.toToken.address);
+          this.toToken.usersBalance = foundToToken.usersBalance;
+        }
+      }
     }
   }
 

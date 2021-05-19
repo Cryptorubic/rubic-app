@@ -146,8 +146,8 @@ export class TokensInputComponent implements OnChanges, OnInit {
     }
   }
 
-  public onNumberChanges(numberAsString) {
-    this._selectedAmount = numberAsString.split(',').join('');
+  public onNumberChanges(number: string | number) {
+    this._selectedAmount = number.toString().split(',').join('');
     this.numberChanges.emit(this._selectedAmount);
   }
 

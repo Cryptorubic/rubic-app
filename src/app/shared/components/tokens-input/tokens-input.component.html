@@ -18,6 +18,14 @@
     #numberInput
   />
 
+  <button
+    class="tokens-form__max-button"
+    *ngIf="!inputDisabled && selectedToken?.usersBalance !== undefined"
+    (click)="onNumberChanges(selectedToken.usersBalance)"
+  >
+    Max
+  </button>
+
   <app-input-dropdown
     [componentClass]="tokenLabelComponentClass"
     [componentsData]="tokensDropdownData"
