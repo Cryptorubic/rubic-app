@@ -11,7 +11,7 @@ import { UserRejectError } from '../../../../shared/models/errors/provider/UserR
 export class Web3PrivateService {
   private defaultMockGas: string;
 
-  private readonly privateWeb3: Web3;
+  public readonly privateWeb3: Web3;
 
   public get web3(): Web3 {
     return this.privateWeb3;

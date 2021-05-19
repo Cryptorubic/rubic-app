@@ -8,6 +8,7 @@ import { PrivateProvider } from '../private-provider';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
+import { StoreService } from '../../../store/store.service';
 
 export class MetamaskProvider extends PrivateProvider {
   private isEnabled: boolean = false;
@@ -33,7 +34,8 @@ export class MetamaskProvider extends PrivateProvider {
   constructor(
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
-    accountChange: BehaviorSubject<string>
+    accountChange: BehaviorSubject<string>,
+    public storageService: StoreService
   ) {
     super();
     this.onAddressChanges = accountChange;
@@ -98,7 +100,7 @@ export class MetamaskProvider extends PrivateProvider {
       this.isEnabled = true;
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.getAddress());
-      localStorage.setItem('provider', WALLET_NAME.METAMASK);
+      this.storageService.setItem('provider', WALLET_NAME.METAMASK);
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
       throw new MetamaskError();
