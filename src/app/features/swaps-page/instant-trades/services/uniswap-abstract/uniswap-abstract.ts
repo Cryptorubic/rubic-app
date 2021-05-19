@@ -342,7 +342,7 @@ export class UniswapAbstract extends InstantTradeService {
     const routes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort((a, b) =>
       b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
     );
-    if (shouldOptimiseGas && this.shouldCalculateGas) {
+    if (shouldOptimiseGas && this.shouldCalculateGas && toToken.price) {
       return this.getOptimalRouteAndGas(
         fromAmountAbsolute,
         toToken,

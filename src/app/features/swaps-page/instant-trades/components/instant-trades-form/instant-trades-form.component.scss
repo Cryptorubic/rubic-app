@@ -135,6 +135,12 @@ app-tokens-swap-input:not(:last-child) {
     text-transform: uppercase;
   }
 
+  &__refresh-button {
+    position: absolute;
+    top: -6px;
+    left: 62px;
+  }
+
   &__warning {
     margin-top: 7px;
   }

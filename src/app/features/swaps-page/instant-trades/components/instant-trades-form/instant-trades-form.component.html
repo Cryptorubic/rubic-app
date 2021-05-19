@@ -49,7 +49,6 @@
         (tokenChanges)="fromToken = $any($event)"
         (numberChanges)="fromAmount = $event"
         [amountPlaceholder]="($isIframe | async) ? 'You have' : 'Enter amount'"
-        [listDisabled]="($tokensSelectionDisabled | async) === true"
       >
       </app-tokens-input>
 
@@ -91,7 +90,14 @@
 
     <div class="instant-trade-form__to-section">
       <div class="selection-block__header">
-        <div class="selection-block__label">you get</div>
+        <div class="selection-block__label">
+          you get
+          <app-refresh-button
+            class="selection-block__refresh-button"
+            [refreshButtonStatus]="refreshButtonStatus"
+            (onRefreshButtonActivated)="calculateTradeParameters()"
+          ></app-refresh-button>
+        </div>
 
         <div *ngIf="toToken?.address" class="selection-block__scanner">
           <app-scanner-link

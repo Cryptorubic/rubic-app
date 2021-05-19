@@ -48,12 +48,13 @@ import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer
 import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
 import { TokensAccordionComponent } from './components/tokens-table/components/tokens-accordion/tokens-accordion.component';
 import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
-import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
+import { CustomTokenFormComponent } from './components/custom-token-form/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
 import { NetworkErrorComponent } from './components/network-error/network-error.component';
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
 import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
+import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 import { ShortAddressPipe } from './pipes/short-address.pipe';
 
 @NgModule({
@@ -97,6 +98,7 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     BlockchainSelectComponent,
     CheckboxComponent,
     TotalSupplyOverflowErrorComponent,
+    RefreshButtonComponent,
     ShortAddressPipe
   ],
   entryComponents: [MessageBoxComponent],
@@ -114,6 +116,7 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     RouterModule,
     ScrollingModule,
     MatTooltipModule,
+    MatSelectModule,
     InlineSVGModule.forRoot(),
     MatFormFieldModule,
     MatInputModule,
@@ -156,7 +159,8 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent,
-    ShortAddressPipe
+    ShortAddressPipe,
+    RefreshButtonComponent
   ]
 })
 export class SharedModule {}

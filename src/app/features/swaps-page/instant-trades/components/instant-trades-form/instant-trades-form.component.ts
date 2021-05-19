@@ -28,6 +28,7 @@ import { NetworkErrorComponent } from '../../../../../shared/components/network-
 import { INSTANT_TRADES_STATUS } from '../../models/instant-trades-trade-status';
 import { InstantTradeParameters } from '../../models/instant-trades-parametres';
 import { InstantTradeProviderController } from '../../models/instant-trades-provider-controller';
+import { REFRESH_BUTTON_STATUS } from '../../../../../shared/models/instant-trade/REFRESH_BUTTON_STATUS';
 
 @Component({
   selector: 'app-instant-trades-form',
@@ -75,6 +76,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     from: {} as SwapToken,
     to: {} as SwapToken
   };
+
+  public refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
 
   public get hasBestRate(): boolean {
     return this.trades.some(provider => provider.isBestRate);
@@ -144,6 +147,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         trade: null,
         tradeState: null
       }));
+      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
     }
   }
 
@@ -188,6 +192,10 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       fromAmount: value
     };
     this.queryParamsService.setQueryParam('amount', value);
+  }
+
+  get fromAmountAsNumber(): BigNumber {
+    return new BigNumber(this.tradeParameters.fromAmount);
   }
 
   get gasOptimizationChecked(): boolean {
@@ -375,7 +383,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     return this.trades[providerIndex].tradeState === INSTANT_TRADES_STATUS.ERROR;
   }
 
-  private async calculateTradeParameters() {
+  public async calculateTradeParameters() {
+    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.REFRESHING;
+
     const tradeParams = {
       ...this.tradeParameters
     };
@@ -383,6 +393,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       return this.calculateProviderTrade(provider, this.trades[index]);
     });
     await Promise.allSettled(calculationPromises);
+
     if (
       this.isCalculatedTradeActual(
         tradeParams.fromAmount,
