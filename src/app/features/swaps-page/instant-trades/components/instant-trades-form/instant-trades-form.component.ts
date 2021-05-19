@@ -411,6 +411,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         toAmount
       });
     }
+    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;
   }
 
   private async calculateProviderTrade(
