@@ -15,6 +15,13 @@
   position: relative;
 }
 
+.selection-block__warning {
+  position: absolute;
+  bottom: -30px;
+
+  width: 100%;
+}
+
 .gas-fee {
   display: flex;
   align-items: center;
