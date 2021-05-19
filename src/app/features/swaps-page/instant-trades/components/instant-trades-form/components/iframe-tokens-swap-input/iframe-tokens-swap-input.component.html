@@ -51,7 +51,7 @@
       type="button"
       [label]="isLoggedIn ? 'Swap' : 'Connect Wallet'"
       [disabled]="
-            !(
+            (!(
               fromAmountAsNumber.isGreaterThan(0) &&
               tradeParameters.toToken &&
               tradeParameters.fromToken
@@ -60,7 +60,8 @@
             shouldAnimateButton(index) ||
             (selectedTradeState &&
               selectedTradeState !== INSTANT_TRADES_STATUS.ERROR &&
-              selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED)
+              selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED)) &&
+              isLoggedIn
           "
       [animate]="shouldAnimateButton(index)"
       (onClick)="isLoggedIn ? createTrade(index) : login()"
