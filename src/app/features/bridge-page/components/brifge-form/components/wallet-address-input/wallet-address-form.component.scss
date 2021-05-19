@@ -1,0 +1,90 @@
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
+
+.wallet-address-container {
+  &__wallet-address {
+    margin-bottom: 9px;
+  }
+}
+
+.wallet-address {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 20px;
+
+  &__address {
+    position: relative;
+    left: 2px;
+
+    color: rgba(black, 0.5) !important;
+    font-size: 16px;
+    line-height: 16px;
+    text-decoration: none !important;
+
+    &:hover {
+      color: rgba(40, 86, 251, 0.7) !important;
+    }
+  }
+
+  &__edit-button {
+    width: 20px;
+    height: 20px;
+
+    cursor: pointer;
+
+    ::ng-deep svg path {
+      fill: #808080;
+    }
+
+    &:hover {
+      ::ng-deep svg path {
+        fill: $main-green;
+      }
+    }
+  }
+}
+
+.editing-form {
+  display: flex;
+  grid-gap: 10px;
+
+  &__input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 52px;
+    padding: 11px 10px 11px 14px;
+
+    color: $dark;
+    font-size: 15px;
+
+    font-family: $ubuntu-font;
+
+    background: $grey-background;
+    border: 1px solid white;
+
+    &::placeholder {
+      font-size: 18px;
+    }
+
+    &_incorrect {
+      border: 1px solid $error-red;
+
+      &:focus {
+        box-shadow: 0 0 2px $error-red;
+      }
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .editing-form {
+    flex-direction: column;
+
+    &__input {
+      padding-right: 8px;
+      padding-left: 8px;
+    }
+  }
+}

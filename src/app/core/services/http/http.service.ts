@@ -20,23 +20,19 @@ export class HttpService {
     data = data || {};
     return this.http.get<any>((path || SERVER_REST_URL) + (url || ''), {
       params: data,
-      headers,
-      withCredentials: true
+      headers
     });
   }
 
   public patch(url: string, data?: {}, params?: {}, path?: string): Observable<any> {
     return this.http.request<any>('patch', (path || SERVER_REST_URL) + (url || ''), {
       body: data,
-      params,
-      withCredentials: true
+      params
     });
   }
 
   public post(url: string, data?: {}, path?: string): Observable<any> {
-    return this.http.post<any>((path || SERVER_REST_URL) + (url || ''), data, {
-      withCredentials: true
-    });
+    return this.http.post<any>((path || SERVER_REST_URL) + (url || ''), data);
   }
 
   public customDelete(url: string, options?: {}): Observable<any> {
