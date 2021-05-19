@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild
@@ -28,6 +29,8 @@ interface TokenDropdownData extends DropdownComponentData {
     name: string;
   };
   sortParameters: {
+    customRank?: number;
+    usersBalance?: number;
     rank: number;
   };
 }
@@ -37,7 +40,7 @@ interface TokenDropdownData extends DropdownComponentData {
   templateUrl: './tokens-input.component.html',
   styleUrls: ['./tokens-input.component.scss']
 })
-export class TokensInputComponent implements OnChanges {
+export class TokensInputComponent implements OnChanges, OnInit {
   @Input() amountPlaceholder?: string = 'Enter amount';
 
   @Input() listDisabled?: boolean = false;
@@ -73,34 +76,7 @@ export class TokensInputComponent implements OnChanges {
     this._selectedAmount = value;
 
     if (this._selectedAmount?.includes('.')) {
-      const startIndex = this._selectedAmount.indexOf('.') + 1;
-
-      let decimalSymbols: number;
-      if (this.withRoundMode) {
-        if (new BigNumber(this._selectedAmount).isGreaterThanOrEqualTo(1)) {
-          decimalSymbols = this.selectedAmountRoundMode;
-        } else {
-          let zerosAmount = 0;
-          for (let i = startIndex; i < this._selectedAmount.length; ++i) {
-            if (this._selectedAmount[i] === '0') {
-              zerosAmount++;
-            } else {
-              break;
-            }
-          }
-          decimalSymbols = zerosAmount + this.smallSelectedAmountRoundMode;
-        }
-        decimalSymbols = Math.min(decimalSymbols, this.selectedToken.decimals);
-      } else {
-        decimalSymbols = this.selectedToken?.decimals
-          ? this.selectedToken.decimals
-          : this.DEFAULT_DECIMAL_LENGTH;
-      }
-
-      this._selectedAmount = this._selectedAmount.slice(0, startIndex + decimalSymbols);
-      if (this.withRoundMode && new BigNumber(this._selectedAmount).isEqualTo(0)) {
-        this._selectedAmount = '0';
-      }
+      this.setSelectedAmountDecimals();
     }
   }
 
@@ -110,9 +86,11 @@ export class TokensInputComponent implements OnChanges {
 
   @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<TokenDropdownData>;
 
-  private _selectedAmount: string;
-
   public readonly DEFAULT_DECIMAL_LENGTH = 8;
+
+  public readonly VISIBLE_TOKENS_NUMBER = 10;
+
+  private _selectedAmount: string;
 
   public readonly tokenLabelComponentClass = TokenLabelComponent;
 
@@ -120,17 +98,51 @@ export class TokensInputComponent implements OnChanges {
 
   public selectedTokenDropdownData: TokenDropdownData;
 
-  public tokensFilterOrder = ['symbol', 'name'];
+  public tokensFilterOrder: string[];
 
-  public tokensSortOrder = ['rank'];
-
-  public VISIBLE_TOKENS_NUMBER = 10;
+  public tokensSortOrder: string[];
 
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.tokensList || changes.selectedToken) {
       this.setTokensInputData();
+    }
+  }
+
+  ngOnInit() {
+    this.tokensFilterOrder = ['symbol', 'name'];
+    this.tokensSortOrder = ['customRank', 'usersBalance', 'rank'];
+  }
+
+  private setSelectedAmountDecimals() {
+    const startIndex = this._selectedAmount.indexOf('.') + 1;
+
+    let decimalSymbols: number;
+    if (this.withRoundMode) {
+      if (new BigNumber(this._selectedAmount).isGreaterThanOrEqualTo(1)) {
+        decimalSymbols = this.selectedAmountRoundMode;
+      } else {
+        let zerosAmount = 0;
+        for (let i = startIndex; i < this._selectedAmount.length; ++i) {
+          if (this._selectedAmount[i] === '0') {
+            zerosAmount++;
+          } else {
+            break;
+          }
+        }
+        decimalSymbols = zerosAmount + this.smallSelectedAmountRoundMode;
+      }
+      decimalSymbols = Math.min(decimalSymbols, this.selectedToken.decimals);
+    } else {
+      decimalSymbols = this.selectedToken?.decimals
+        ? this.selectedToken.decimals
+        : this.DEFAULT_DECIMAL_LENGTH;
+    }
+
+    this._selectedAmount = this._selectedAmount.slice(0, startIndex + decimalSymbols);
+    if (this.withRoundMode && new BigNumber(this._selectedAmount).isEqualTo(0)) {
+      this._selectedAmount = '0';
     }
   }
 
@@ -154,19 +166,16 @@ export class TokensInputComponent implements OnChanges {
     this.tokensDropdownData = this.tokensList.map(token => ({
       inputs: { token },
       id: token.address,
-      filterParameters: { symbol: token.symbol, name: token.name },
-      sortParameters: { rank: token.rank }
+      filterParameters: { ...token },
+      sortParameters: { ...token }
     }));
 
     if (this.selectedToken) {
       this.selectedTokenDropdownData = {
         inputs: { token: this.selectedToken, selected: true },
         id: this.selectedToken.address,
-        filterParameters: {
-          symbol: this.selectedToken.symbol,
-          name: this.selectedToken.name
-        },
-        sortParameters: { rank: this.selectedToken.rank }
+        filterParameters: { ...this.selectedToken },
+        sortParameters: { ...this.selectedToken }
       };
     } else {
       this.selectedTokenDropdownData = null;

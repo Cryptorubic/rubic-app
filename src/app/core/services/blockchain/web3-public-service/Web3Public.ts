@@ -1,13 +1,17 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { Transaction } from 'web3-core';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { Token } from 'src/app/shared/models/tokens/Token';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
-import { Token } from '../../../../shared/models/tokens/Token';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export class Web3Public {
   constructor(private web3: Web3, private blockchain: IBlockchain) {}
+
+  public get batchRequest() {
+    return new this.web3.BatchRequest();
+  }
 
   /**
    * @description gets information about token through ERC-20 token contract
@@ -42,6 +46,17 @@ export class Web3Public {
 
     const balance = await contract.methods.balanceOf(address).call();
     return new BigNumber(balance);
+  }
+
+  /**
+   * @description gets function of ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   * @param address wallet address whose balance you want to find out
+   * @return account tokens balance as integer (multiplied to 10 ** decimals)
+   */
+  public getTokenBalanceFunction(address: string, tokenAddress: string) {
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
+    return contract.methods.balanceOf(address).call;
   }
 
   /**

@@ -5,5 +5,7 @@ export default interface InputToken {
   image: string;
   decimals: number;
   min?: number;
-  rank?: number;
+  rank: number;
+  customRank?: number;
+  usersBalance?: number;
 }
