@@ -22,9 +22,9 @@
     "cancel": "Cancel",
     "add": "Add",
     "via": "Via",
-    "contractAddress": "Token Contract Address",
+    "contractAddress": "Dirección del contrato de token",
     "enterAmount": "Ingresa el monto",
-    "chooseToken": "Choose Token"
+    "chooseToken": "Elija Token"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
@@ -248,11 +248,11 @@
     "tableTitle": "Sus intercambios entre plataformas",
     "whatIs": "¿Qué es ",
     "whatIsAfter": "",
-    "checkOn": "Check on ",
+    "checkOn": "Verificar ",
     "assistanceOf": "Con la ayuda de",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
-    "minAmount": "Minimum amount ",
-    "maxAmount": "Maximum amount "
+    "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada",
+    "minAmount": "Monto minimo ",
+    "maxAmount": "Importe máximo "
   },
   "instantTrades": {
     "title": "Intercambios instantáneos",
@@ -260,9 +260,9 @@
     "notSupportedToken": "Por favor asegúrese que el token seleccionado sea compatible con la DEX elegida e intente nuevamente más adelante.",
     "bestRate": "Mejor Tasa",
     "gasFee": "Costo de tarifas estimado:",
-    "useOptimization": "Use Rubic optimization",
-    "notAvailableBefore": "Trading on ",
-    "notAvailableAfter": " is not available."
+    "useOptimization": "Utilice la optimización de Rubic",
+    "notAvailableBefore": "Negociando en ",
+    "notAvailableAfter": " no está disponible."
   },
   "orderBook": {
     "title": "Libro de Órdenes",
@@ -345,7 +345,7 @@
     "closingDate": "Fecha límite",
     "closingTime": "Hora límite",
     "link": "Link To Deal",
-    "copied": "Сopied",
+    "copied": "Copiado",
     "publicDeal": "Intercambio Público",
     "brokerAddress": "Broker Address",
     "notExist": "Such trade doesn't exist."

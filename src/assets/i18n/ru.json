@@ -22,7 +22,7 @@
     "cancel": "Отмена",
     "add": "Добавить",
     "via": "Через",
-    "contractAddress": "Token Contract Address",
+    "contractAddress": "Адрес контракта Токена",
     "enterAmount": "Введите количество",
     "chooseToken": "Выберите токен"
   },
@@ -250,9 +250,9 @@
     "whatIsAfter": "",
     "checkOn": "Check on ",
     "assistanceOf": "С помощью",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
-    "minAmount": "Minimum amount ",
-    "maxAmount": "Maximum amount "
+    "getTokens": "Вы получите {{ toBlockchainName }} токены на выбранный адрес",
+    "minAmount": "Минимальная сумма ",
+    "maxAmount": "Максимальная сумма "
   },
   "instantTrades": {
     "title": "Мгновенные сделки",
@@ -260,9 +260,9 @@
     "notSupportedToken": "Пожалуйста, убедитесь, что выбранный токен поддерживается на указанном DEX, и повторите попытку позже.",
     "bestRate": "Лучший курс",
     "gasFee": "Приблизительный газ:",
-    "useOptimization": "Use Rubic optimization",
-    "notAvailableBefore": "Trading on ",
-    "notAvailableAfter": " is not available."
+    "useOptimization": "Использовать оптимизацию Rubic",
+    "notAvailableBefore": "Торговля на ",
+    "notAvailableAfter": " недоступно."
   },
   "orderBook": {
     "title": "Order Book",

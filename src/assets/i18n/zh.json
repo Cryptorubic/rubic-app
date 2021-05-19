@@ -21,7 +21,7 @@
     "useCustomToken": "使用自定义代币",
     "cancel": "取消",
     "add": "添加",
-    "via": "Via",
+    "via": "通過",
     "contractAddress": "代币合约地址",
     "enterAmount": "输入金额",
     "chooseToken": "选择币种"
@@ -248,11 +248,11 @@
     "tableTitle": "您的跨鏈互換",
     "whatIs": "什麼是幣安智能鏈？",
     "whatIsAfter": "是什么",
-    "checkOn": "Check on ",
+    "checkOn": "檢查 ",
     "assistanceOf": "在...的協助下",
     "getTokens": "您將獲得 {{ toBlockchainName }} 個令牌到所選地址",
-    "minAmount": "Minimum amount ",
-    "maxAmount": "Maximum amount "
+    "minAmount": "最低金額 ",
+    "maxAmount": "最高金額 "
   },
   "instantTrades": {
     "title": "支持即时交易",
@@ -261,8 +261,8 @@
     "bestRate": "最優惠的價格",
     "gasFee": "gas费用估计值",
     "useOptimization": "使用Rubic優化",
-    "notAvailableBefore": "Trading on ",
-    "notAvailableAfter": " is not available."
+    "notAvailableBefore": "交易 ",
+    "notAvailableAfter": " 不可用。"
   },
   "orderBook": {
     "title": "订单簿",

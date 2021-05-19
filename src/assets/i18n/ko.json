@@ -19,12 +19,12 @@
     "left": "왼쪽",
     "checkOnExplorer": "탐색기에서 확인하기",
     "useCustomToken": "맞춤형 토큰 사용",
-    "cancel": "Cancel",
-    "add": "Add",
-    "via": "Via",
-    "contractAddress": "Token Contract Address",
+    "cancel": "취소",
+    "add": "더하다",
+    "via": "통하다",
+    "contractAddress": "토큰 계약 주소",
     "enterAmount": "금액을 입력하세요",
-    "chooseToken": "Choose Token"
+    "chooseToken": "토큰 선택"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -246,13 +246,13 @@
     "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
     "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
     "tableTitle": "내 크로스-체인 스왑",
-    "whatIs": "What is ",
+    "whatIs": "뭐가 ",
     "whatIsAfter": "",
-    "checkOn": "Check on ",
+    "checkOn": "확인하다 ",
     "assistanceOf": "지원",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
-    "minAmount": "Minimum amount ",
-    "maxAmount": "Maximum amount "
+    "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다",
+    "minAmount": "-최소 금액 ",
+    "maxAmount": "최대 금액 "
   },
   "instantTrades": {
     "title": "즉시 거래",
@@ -260,9 +260,9 @@
     "notSupportedToken": "선택한 토큰이 지정된 DEX에서 지원되는지 확인하고 나중에 다시 시도하세요.",
     "bestRate": "최적가",
     "gasFee": "예상 가스 수수료",
-    "useOptimization": "Use Rubic optimization",
-    "notAvailableBefore": "Trading on ",
-    "notAvailableAfter": " is not available."
+    "useOptimization": "Rubic 최적화 사용",
+    "notAvailableBefore": "거래 ",
+    "notAvailableAfter": " 사용할 수 없습니다."
   },
   "orderBook": {
     "title": "오더북",
