@@ -13,8 +13,7 @@ export class UseTestingModeService {
         this.isTestingMode.next(true);
       }
       this.zone.run(() => {
-        setTimeout(() => this.appRef.tick(), 500);
-        setTimeout(() => this.appRef.tick(), 2000);
+        setTimeout(() => this.appRef.tick(), 1000);
       });
     };
   }

@@ -4,7 +4,7 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { TRADE_MODE } from '../../models';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
-import { BLOCKCHAINS } from '../../../../../shared/models/blockchain/BLOCKCHAINS';
+import { BLOCKCHAINS } from '../../../instant-trades/models/BLOCKCHAINS';
 
 interface Mode {
   name: TRADE_MODE;
