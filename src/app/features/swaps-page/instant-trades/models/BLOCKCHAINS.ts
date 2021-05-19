@@ -12,7 +12,7 @@ export const BLOCKCHAINS = [
     name: BLOCKCHAIN_NAME.ETHEREUM,
     code: 22,
     label: 'Ethereum',
-    image: 'assets/images/icons/coins/eth.png'
+    image: 'assets/images/icons/coins/eth-contrast.svg'
   },
   {
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -24,6 +24,6 @@ export const BLOCKCHAINS = [
     name: BLOCKCHAIN_NAME.POLYGON,
     code: 22,
     label: 'Polygon',
-    image: 'assets/images/icons/coins/polygon.svg'
+    image: 'assets/images/icons/coins/polygon-contrast.svg'
   }
 ] as Blockchain[];

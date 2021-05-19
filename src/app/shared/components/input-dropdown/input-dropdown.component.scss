@@ -60,7 +60,7 @@
     background: #f4f4f4;
     border: none;
 
-    border-radius: 10px 10px 0 0;
+    border-radius: 10px;
     opacity: 0;
 
     transition: all linear 0.2s;
@@ -68,8 +68,6 @@
 
   &__choose-button_active + &__search-input {
     z-index: 4;
-
-    border-left: 1px solid #d8d8d8;
 
     opacity: 1;
   }
@@ -115,7 +113,8 @@
     padding: 10px 0;
 
     background: white;
-    border-radius: 0 0 10px 10px;
+    border-radius: 10px;
+    box-shadow: $main-shadow;
 
     &__list {
       max-height: 200px;

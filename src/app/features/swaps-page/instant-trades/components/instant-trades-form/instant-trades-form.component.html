@@ -49,6 +49,8 @@
         (tokenChanges)="fromToken = $any($event)"
         (numberChanges)="fromAmount = $event"
         [amountPlaceholder]="($isIframe | async) ? 'You have' : 'Enter amount'"
+        [fullWidth]="true"
+        [listDisabled]="$tokensSelectionDisabled | async"
       >
       </app-tokens-input>
 
@@ -141,7 +143,7 @@
         [waitingForProvider]="waitingForProvider"
         (tokenChangeEvent)="toToken = $any($event)"
         (createTradeEvent)="createTrade($event)"
-        [disableSelection]="($tokensSelectionDisabled | async) === true"
+        [disableSelection]="$tokensSelectionDisabled | async"
       ></app-iframe-tokens-swap-input>
     </div>
   </form>

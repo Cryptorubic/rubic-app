@@ -3,7 +3,6 @@ import {
   Blockchain,
   BLOCKCHAINS
 } from 'src/app/features/swaps-page/instant-trades/models/BLOCKCHAINS';
-import { take } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
 import { BLOCKCHAIN_NAME } from '../../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TradeTypeService } from '../../../../../../../core/services/swaps/trade-type-service/trade-type.service';
@@ -32,14 +31,11 @@ export class ChainDropdownComponent {
     this.BLOCKCHAINS = BLOCKCHAINS.filter((blockchain: Blockchain) => {
       return !hiddenBlockchains.includes(blockchain.name);
     });
-    this.tradeTypeService
-      .getBlockchain()
-      .pipe(take(1))
-      .subscribe((blockchainName: BLOCKCHAIN_NAME) => {
-        this.selectedBlockchain = BLOCKCHAINS.find(
-          (blockchain: Blockchain) => blockchain.name === blockchainName
-        );
-      });
+    this.tradeTypeService.getBlockchain().subscribe((blockchainName: BLOCKCHAIN_NAME) => {
+      this.selectedBlockchain = BLOCKCHAINS.find(
+        (blockchain: Blockchain) => blockchain.name === blockchainName
+      );
+    });
   }
 
   public onBlockchainChanges(blockchain: Blockchain) {

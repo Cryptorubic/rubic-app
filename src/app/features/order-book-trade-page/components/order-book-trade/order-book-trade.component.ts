@@ -40,7 +40,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     {
       name: BLOCKCHAIN_NAME.ETHEREUM,
       label: 'Ethereum',
-      imagePath: 'assets/images/icons/coins/eth.png'
+      imagePath: 'assets/images/icons/coins/eth-contrast.svg'
     },
     {
       name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -233,9 +233,9 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   public getRate(): string {
     return !this.isRevertedRate
       ? `${this.baseToQuoteRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.base.symbol} 
+         ${this.tradeData.token.base.symbol}
          / 1 ${this.tradeData.token.quote.symbol}`
-      : `1 ${this.tradeData.token.base.symbol} / 
+      : `1 ${this.tradeData.token.base.symbol} /
          ${this.quoteToBaseRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
          ${this.tradeData.token.quote.symbol}`;
   }
