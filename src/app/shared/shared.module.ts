@@ -34,7 +34,6 @@ import { WhiteButtonComponent } from './components/white-button/white-button.com
 import { BigNumberFormat } from './pipes/big-number-format.pipe';
 import { NativeUrlPipe } from './pipes/native-url.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
-import { AddressInputComponent } from './components/address-input/address-input.component';
 import { ErrorDisclaimerComponent } from './components/warning-label/error-disclaimer.component';
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
 import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
@@ -78,7 +77,6 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     BigNumberFormat,
     ScannerLinkPipe,
     NativeUrlPipe,
-    AddressInputComponent,
     ErrorDisclaimerComponent,
     TokenAddressDirective,
     NumberPrecisionDirective,
@@ -142,7 +140,6 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     BigNumberFormat,
     ScannerLinkPipe,
     NativeUrlPipe,
-    AddressInputComponent,
     ErrorDisclaimerComponent,
     TokenAddressDirective,
     TranslateModule,
