@@ -100,7 +100,7 @@
     width: 30px;
     margin-top: -15px;
 
-    background: #f4f4f4;
+    background: transparent;
     opacity: 1;
   }
 
@@ -112,22 +112,37 @@
   }
 
   .dropdown-components {
+    padding: 10px 0;
+
+    background: white;
+    border-radius: 0 0 10px 10px;
+
     &__list {
       max-height: 200px;
       margin-right: 10px;
-
-      border-radius: 0 0 10px 10px;
     }
 
     .components-list {
       margin: 0;
 
       padding: 0;
-      overflow: auto;
+      overflow-y: auto;
 
       list-style-type: none;
 
-      background-color: white;
+      &::-webkit-scrollbar {
+        width: 7px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: white;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: lightgrey;
+        border-radius: 7px;
+      }
+
 
       &__item {
 
@@ -137,15 +152,26 @@
 
         cursor: pointer;
 
+        ::ng-deep .dropdown-label {
+          padding: 10px;
+        }
+
         &:hover {
-          background-color: #fffbcd;
+          ::ng-deep .dropdown-label {
+            .dropdown-label__text {
+              color: $main-green;
+            }
+          }
         }
 
         &_active {
-          background-color: #fffbcd;
-          border: none;
-
           cursor: default;
+
+          ::ng-deep .dropdown-label {
+            .dropdown-label__text {
+              color: $main-green;
+            }
+          }
         }
       }
     }

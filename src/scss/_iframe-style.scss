@@ -12,6 +12,34 @@
   &.dark {
     background: rgba(black, 0.65);
 
+    .components-list {
+      &::-webkit-scrollbar-track {
+        background: #423d3d !important;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: #616161 !important;
+      }
+    }
+
+    .input-dropdown__close-button img {
+      filter: grayscale(1) invert(1);
+    }
+
+    .input-dropdown__search-input {
+      color: white;
+
+      background: #616161;
+    }
+
+    .dropdown-components {
+      background: #423d3d !important;
+
+      .dropdown-label__text {
+        color: white;
+      }
+    }
+
     .chain-dropdown__icon {
       background: #423d3d;
     }
