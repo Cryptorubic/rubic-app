@@ -141,9 +141,9 @@ export class TokensTableComponent {
             (b as OrderBookTradeData).expirationDate.toDate().getTime(),
             isAsc
           );
-        case 'network':
+        case 'Network':
           return this.compareStrings(a.blockchain, b.blockchain, isAsc);
-        case 'status':
+        case 'Status':
           return this.compareStrings(a.status, b.status, isAsc);
         case 'Date':
           return this.compareNumbers(

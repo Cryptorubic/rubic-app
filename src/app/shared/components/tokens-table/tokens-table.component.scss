@@ -183,6 +183,10 @@ $primary-color: #4aa956;
     justify-content: center;
   }
 
+  .mat-header-row {
+    cursor: pointer;
+  }
+
   .mat-sort-header-content {
     margin-left: 18px;
   }

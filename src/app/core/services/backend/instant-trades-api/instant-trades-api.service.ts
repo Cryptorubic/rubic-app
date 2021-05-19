@@ -9,6 +9,7 @@ import InstantTrade from '../../../../features/swaps-page/instant-trades/models/
 import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
+import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 
 const instantTradesApiRoutes = {
   createData: 'instant_trades/',
@@ -20,7 +21,14 @@ const instantTradesApiRoutes = {
   providedIn: 'root'
 })
 export class InstantTradesApiService {
-  constructor(private httpService: HttpService) {}
+  private isTestingMode: boolean;
+
+  constructor(
+    private httpService: HttpService,
+    private useTestingModeService: UseTestingModeService
+  ) {
+    this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
+  }
 
   public notifyInstantTradesBot(body: {
     provider: string;
@@ -48,6 +56,7 @@ export class InstantTradesApiService {
    * @return instant trade object
    */
   public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
+    if (this.isTestingMode) tradeInfo.network = 'ethereum-test';
     return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo);
   }
 
@@ -80,7 +89,7 @@ export class InstantTradesApiService {
    * @param tradeApi data from server
    */
   public tradeApiToTradeData(tradeApi: InstantTradesResponseApi): InstantTradesTradeData {
-    const tradeData = {
+    const tradeData = ({
       hash: tradeApi.hash,
       provider: tradeApi.contract.name,
       token: {
@@ -98,7 +107,7 @@ export class InstantTradesApiService {
       blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title],
       status: tradeApi.status,
       date: new Date(tradeApi.status_updated_at)
-    } as InstantTradesTradeData;
+    } as unknown) as InstantTradesTradeData;
 
     tradeData.fromAmount = Web3PublicService.tokenWeiToAmount(
       tradeData.token.from,
