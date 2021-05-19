@@ -16,10 +16,15 @@
       position: relative;
     }
 
+    .modal__wrapper,
     .dialog-block__content {
       color: white;
 
       background: #616161;
+    }
+
+    .trade-modal__description {
+      color: white;
     }
 
     .chain-dropdown-panel {
