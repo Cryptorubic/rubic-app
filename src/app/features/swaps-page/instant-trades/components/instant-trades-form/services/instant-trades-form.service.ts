@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { Web3PublicService } from '../../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { InstantTradesApiService } from '../../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 import { InstantTradesPostApi } from '../../../../../../core/services/backend/instant-trades-api/types/trade-api';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../../models/trade-data';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

@@ -1,11 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  Output,
-  EventEmitter,
-  Input,
-  OnInit
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { Sort } from '@angular/material/sort';
 
