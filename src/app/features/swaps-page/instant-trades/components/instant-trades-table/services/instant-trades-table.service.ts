@@ -35,8 +35,4 @@ export class InstantTradesTableService extends TokensTableService {
       this.$visibleTableData.next(filteredData);
     }
   }
-
-  public hasData(): Observable<boolean> {
-    return this.$dataSource.pipe(map(data => data.length > 0));
-  }
 }
