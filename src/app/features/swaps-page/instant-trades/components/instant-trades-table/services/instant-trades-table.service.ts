@@ -22,12 +22,6 @@ export class InstantTradesTableService extends TokensTableService {
   public filterTable(): void {
     const filterFromValue = this.$filterFromValue.value?.toLowerCase();
     const filterToValue = this.$filterToValue.value?.toLowerCase();
-    const blockChain = this.$blockchainMode.value;
-    this.$visibleTableData.next(
-      this.$dataSource.value.filter(
-        trade => trade.blockchain === blockChain && trade.token.from.blockchain
-      )
-    );
     if (filterFromValue) {
       const filteredData = this.$visibleTableData.value.filter(
         row => row.token.from.symbol.toLowerCase() === filterFromValue
@@ -43,8 +37,6 @@ export class InstantTradesTableService extends TokensTableService {
   }
 
   public hasData(): Observable<boolean> {
-    return this.$dataSource.pipe(
-      map(data => data.filter(d => d.blockchain === this.$blockchainMode.getValue()).length > 0)
-    );
+    return this.$dataSource.pipe(map(data => data.length > 0));
   }
 }

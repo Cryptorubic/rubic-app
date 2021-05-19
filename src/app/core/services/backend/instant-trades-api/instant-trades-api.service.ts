@@ -104,7 +104,8 @@ export class InstantTradesApiService {
           price: tradeApi.to_token.usd_price
         }
       },
-      blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title],
+      blockchain:
+        FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title] || 'ETH_TESTNET',
       status: tradeApi.status,
       date: new Date(tradeApi.status_updated_at)
     } as unknown) as InstantTradesTradeData;
