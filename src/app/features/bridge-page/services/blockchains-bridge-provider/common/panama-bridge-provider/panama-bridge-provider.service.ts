@@ -4,13 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { flatMap } from 'rxjs/internal/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { BridgeApiService } from '../../../../../../core/services/backend/bridge-api/bridge-api.service';
 import { Web3PrivateService } from '../../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeToken } from '../../../../models/BridgeToken';
-import { TranslateService } from '@ngx-translate/core';
-import { BlockchainBridgeProvider } from '../../blockchain-bridge-provider';
-import { BlockchainsTokens, BridgeToken } from '../../../../models/BridgeToken';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from '../../../../models/BridgeTrade';
 import { OverQueryLimitError } from '../../../../../../shared/models/errors/bridge/OverQueryLimitError';
@@ -31,19 +28,9 @@ export class PanamaBridgeProviderService {
   constructor(
     private httpClient: HttpClient,
     private web3PrivateService: Web3PrivateService,
-    private bridgeApiService: BridgeApiService
-  ) {}
     private bridgeApiService: BridgeApiService,
     private readonly translateService: TranslateService
-  ) {
-    super();
-  }
-
-  private static parsePanamaToken(token: PanamaToken): BridgeToken {
-    return {
-      symbol: token.symbol,
-      image: '',
-      rank: 0,
+  ) {}
 
   public getTokensList(): Observable<List<PanamaToken>> {
     return this.httpClient.get(`${this.apiUrl}tokens`).pipe(

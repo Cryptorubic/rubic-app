@@ -6,6 +6,6 @@ export class AccountError extends RubicError {
 
   constructor(protected readonly translateService: TranslateService) {
     super(translateService);
-    this.comment = this.translateService.instant('errors.noMetamaskAccess')
+    this.comment = this.translateService.instant('errors.noMetamaskAccess');
   }
 }
