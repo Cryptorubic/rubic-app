@@ -1,23 +1,23 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { BridgeInProgressModalComponent } from './bridge-in-progress-modal.component';
+import { TradeInProgressModalComponent } from 'src/app/features/cross-chain-swaps-page/common/modals/trade-in-progress/trade-in-progress-modal.component';
 
 describe('BridgeInProgressModalComponent', () => {
-  let component: BridgeInProgressModalComponent;
-  let fixture: ComponentFixture<BridgeInProgressModalComponent>;
+  let component: TradeInProgressModalComponent;
+  let fixture: ComponentFixture<TradeInProgressModalComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [TranslateModule.forRoot()],
-        declarations: [BridgeInProgressModalComponent]
+        declarations: [TradeInProgressModalComponent]
       }).compileComponents();
     })
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BridgeInProgressModalComponent);
+    fixture = TestBed.createComponent(TradeInProgressModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

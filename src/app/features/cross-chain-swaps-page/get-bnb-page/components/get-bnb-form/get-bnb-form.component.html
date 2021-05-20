@@ -105,8 +105,23 @@
       class="cross-chain-form__confirm-button"
       type="button"
       label="Get BNB"
-      [animate]="getBnbTrade.status === GET_BNB_TRADE_STATUS.CALCULATION"
+      [disabled]="!getBnbTrade.fromToken"
+      [animate]="
+        getBnbTrade.status === GET_BNB_TRADE_STATUS.CALCULATION ||
+        getBnbTrade.status === GET_BNB_TRADE_STATUS.TX_IN_PROGRESS
+      "
+      (onClick)="createTrade()"
     >
     </app-primary-button>
   </div>
 </form>
+
+<app-trade-in-progress-modal
+  *ngIf="getBnbTrade.status === GET_BNB_TRADE_STATUS.TX_IN_PROGRESS"
+></app-trade-in-progress-modal>
+
+<app-trade-success-modal
+  *ngIf="getBnbTrade.status === GET_BNB_TRADE_STATUS.COMPLETED"
+  [txId]="tradeSuccessId"
+  (onCloseEvent)="tradeSuccessId = null"
+></app-trade-success-modal>

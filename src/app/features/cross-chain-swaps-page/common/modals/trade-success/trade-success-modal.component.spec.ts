@@ -1,23 +1,23 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { BridgeSuccessComponent } from './bridge-success.component';
+import { TradeSuccessModalComponent } from 'src/app/features/cross-chain-swaps-page/common/modals/trade-success/trade-success-modal.component';
 
 describe('BridgeSuccessComponent', () => {
-  let component: BridgeSuccessComponent;
-  let fixture: ComponentFixture<BridgeSuccessComponent>;
+  let component: TradeSuccessModalComponent;
+  let fixture: ComponentFixture<TradeSuccessModalComponent>;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [TranslateModule.forRoot()],
-        declarations: [BridgeSuccessComponent]
+        declarations: [TradeSuccessModalComponent]
       }).compileComponents();
     })
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BridgeSuccessComponent);
+    fixture = TestBed.createComponent(TradeSuccessModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

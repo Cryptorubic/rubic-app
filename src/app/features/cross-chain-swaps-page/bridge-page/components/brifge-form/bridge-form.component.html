@@ -264,10 +264,10 @@
   (onConfirm)="onPolygonToEthTradeConfirm()"
 ></warning-modal>
 
-<app-bridge-in-progress-modal *ngIf="tradeInProgress"></app-bridge-in-progress-modal>
+<app-trade-in-progress-modal *ngIf="tradeInProgress"></app-trade-in-progress-modal>
 
-<app-bridge-success
+<app-trade-success-modal
   *ngIf="tradeSuccessId"
   [txId]="tradeSuccessId"
-  (onCloseEvent)="tradeSuccessId = undefined"
-></app-bridge-success>
+  (onCloseEvent)="tradeSuccessId = null"
+></app-trade-success-modal>

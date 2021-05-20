@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-bridge-success',
-  templateUrl: './bridge-success.component.html',
-  styleUrls: ['./bridge-success.component.scss']
+  selector: 'app-trade-success-modal',
+  templateUrl: './trade-success-modal.component.html',
+  styleUrls: ['./trade-success-modal.component.scss']
 })
-export class BridgeSuccessComponent {
+export class TradeSuccessModalComponent {
   @Input() txId: string;
 
   @Output() onCloseEvent: EventEmitter<void> = new EventEmitter<void>();

@@ -1,6 +1,6 @@
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { ETH, WEENUS, WSATT, XEENUS, YEENUS } from './eth-tokens';
-import { BLOCKCHAIN_NAME } from '../../app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import SwapToken from '../../app/shared/models/tokens/SwapToken';
 
 const eth: SwapToken = {
   name: 'Ethereum',
@@ -8,7 +8,7 @@ const eth: SwapToken = {
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: ETH.address,
   decimals: ETH.decimals,
-  image: 'https://devswaps.mywish.io/media/token_images/cg_logo_eth_ethereum_uibu3ky.png',
+  image: 'http://dev-api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
   rank: 1,
   price: 1705
 };
@@ -61,4 +61,26 @@ const wsatt = {
   price: 5
 };
 
-export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt];
+const rbc = {
+  name: 'Rubic',
+  symbol: 'RBC',
+  blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+  address: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
+  decimals: 18,
+  image: 'http://dev-api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
+  rank: 6,
+  price: 6
+};
+
+const bnb = {
+  name: 'Binance Coin',
+  symbol: 'BNB',
+  blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+  address: '0x0000000000000000000000000000000000000000',
+  decimals: 18,
+  image: 'http://dev-api.rubic.exchange/media/token_images/cg_logo_bnb_binance-coin-logo.png',
+  rank: 1,
+  price: 1
+};
+
+export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt, rbc, bnb];

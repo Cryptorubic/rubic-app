@@ -10,16 +10,15 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { CrossChainSwapsPageModule } from 'src/app/features/cross-chain-swaps-page/cross-chain-swaps-page.module';
 import { BridgePageRoutingModule } from './bridge-page-routing.module';
 import { BridgeComponent } from './components/bridge/bridge.component';
 import { BridgeService } from './services/bridge.service';
 import { BridgeSectionComponent } from './components/bridge-section/bridge-section.component';
 import { BridgeFormComponent } from './components/brifge-form/bridge-form.component';
-import { BridgeInProgressModalComponent } from './components/dialogs/bridge-in-progress-modal/bridge-in-progress-modal.component';
-import { BridgeSuccessComponent } from './components/dialogs/bridge-success/bridge-success.component';
 import { BridgeTableComponent } from './components/bridge-table/bridge-table.component';
-import { AdvertModalComponent } from './components/dialogs/advert-modal/advert-modal.component';
-import { WarningModalComponent } from './components/dialogs/warning-modal/warning-modal.component';
+import { AdvertModalComponent } from './components/modals/advert-modal/advert-modal.component';
+import { WarningModalComponent } from './components/modals/warning-modal/warning-modal.component';
 import { EthereumBinanceBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
 import { EthereumBinancePanamaBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-binance-bridge-provider/panama-bridge-provider/ethereum-binance-panama-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
@@ -33,8 +32,6 @@ import { PanamaBridgeProviderService } from './services/blockchains-bridge-provi
   declarations: [
     BridgeFormComponent,
     BridgeComponent,
-    BridgeInProgressModalComponent,
-    BridgeSuccessComponent,
     BridgeTableComponent,
     AdvertModalComponent,
     WarningModalComponent,
@@ -52,7 +49,8 @@ import { PanamaBridgeProviderService } from './services/blockchains-bridge-provi
     MatAutocompleteModule,
     MatFormFieldModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    CrossChainSwapsPageModule
   ],
   exports: [MatFormFieldModule, MatInputModule],
   providers: [

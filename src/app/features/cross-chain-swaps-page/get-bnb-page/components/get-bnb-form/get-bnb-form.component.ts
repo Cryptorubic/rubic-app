@@ -14,6 +14,8 @@ import {
   GET_BNB_TRADE_STATUS,
   GetBnbTrade
 } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbTrade';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
 
 @Component({
   selector: 'app-get-bnb-form',
@@ -21,7 +23,9 @@ import {
   styleUrls: ['./get-bnb-form.component.scss']
 })
 export class GetBnbFormComponent implements OnInit, OnDestroy {
-  private readonly RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
+  private readonly RBC_ETHEREUM_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
+
+  private readonly RBC_KOVAN_ADDRESS = '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9';
 
   public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
@@ -39,6 +43,8 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   public getBnbTrade: GetBnbTrade;
 
+  public tradeSuccessId: string;
+
   public fromTokensList: List<SwapToken>;
 
   private _tokensSubscription$: Subscription;
@@ -47,11 +53,25 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   private _walletAddressSubscription$: Subscription;
 
+  private isTestingMode: boolean;
+
   constructor(
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
-    private getBnbService: GetBnbService
-  ) {}
+    private getBnbService: GetBnbService,
+    useTestingModeService: UseTestingModeService
+  ) {
+    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      this.isTestingMode = isTestingMode;
+      this.fromTokensList = List(
+        coingeckoTestTokens.filter(
+          token =>
+            token.blockchain === BLOCKCHAIN_NAME.ETHEREUM &&
+            (token.address === NATIVE_TOKEN_ADDRESS || token.address === this.RBC_KOVAN_ADDRESS)
+        )
+      );
+    });
+  }
 
   ngOnInit() {
     this.getBnbTrade = {
@@ -63,7 +83,9 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
       this.fromTokensList = tokens.filter(
         token =>
           token.blockchain === BLOCKCHAIN_NAME.ETHEREUM &&
-          (token.address === NATIVE_TOKEN_ADDRESS || token.address === this.RBC_ADDRESS)
+          (token.address === NATIVE_TOKEN_ADDRESS ||
+            token.address === this.RBC_ETHEREUM_ADDRESS ||
+            (this.isTestingMode && token.address === this.RBC_KOVAN_ADDRESS))
       );
 
       this.getBnbTrade.toToken = tokens.find(
@@ -113,5 +135,21 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
         toAmount: ''
       };
     }
+  }
+
+  public createTrade() {
+    this.getBnbTrade.status = GET_BNB_TRADE_STATUS.CALCULATION;
+    this.getBnbService
+      .createTrade(this.getBnbTrade, () => {
+        this.getBnbTrade.status = GET_BNB_TRADE_STATUS.TX_IN_PROGRESS;
+      })
+      .then(transactionHash => {
+        this.getBnbTrade.status = GET_BNB_TRADE_STATUS.COMPLETED;
+        this.tradeSuccessId = transactionHash;
+      })
+      .catch(err => {
+        console.debug(err);
+        this.getBnbTrade.status = GET_BNB_TRADE_STATUS.WAITING;
+      });
   }
 }
