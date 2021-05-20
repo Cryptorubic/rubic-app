@@ -165,42 +165,41 @@
       }
 
       &::after {
-        position: absolute;
-        bottom: -69.5px;
-        left: calc((100% - 100vw) / 2 - 8px);
 
-        width: 100vw;
-        height: 2px;
+        position: absolute;
+        top: 0;
+        left: 50%;
+
+        width: 2px;
+        height: 100%;
 
         background-color: #4aa956;
 
         content: '';
-
-        @include b(1100) {
-          position: absolute;
-          top: 0;
-          left: 1px;
-
-          width: 2px;
-          height: 100%;
-        }
       }
 
       &-item {
         position: relative;
 
-        width: 223px;
+        width: 40%;
         height: 326px;
         padding: 25px 20px;
 
         background-color: #fafafa;
         border-radius: 5px;
+        margin-left: calc(50% + 59px);
+        margin-bottom: 20px;
 
-        @include b(1100) {
-          width: auto;
-          max-width: 100%;
-          margin-bottom: 15px;
-          margin-left: 60px;
+        &.left {
+          margin-left: 0;
+
+          &::after {
+            left: calc(100% + 26px);
+          }
+
+          &::before {
+            left: calc(100% + 50px);
+          }
         }
 
         &::after {
@@ -212,23 +211,15 @@
           border: 1px dashed #4aa956;
 
           content: '';
+          top: 0;
+          left: -30px;
 
-          @include b(1100) {
-            position: absolute;
-            top: 0;
-            left: -30px;
-
-            height: 50px;
-
-            border: 1px dashed #4aa956;
-            transform: rotate(90deg);
-          }
+          transform: rotate(90deg);
         }
 
         &::before {
           position: absolute;
           bottom: -75px;
-          left: 14.5px;
 
           width: 15px;
           height: 15px;
@@ -237,16 +228,8 @@
 
           content: '';
 
-          @include b(1100) {
-            position: absolute;
-            top: 18px;
-            left: -65px;
-
-            width: 15px;
-            height: 15px;
-
-            background-color: #4aa956;
-          }
+          top: 18px;
+          left: -65px;
         }
       }
     }
