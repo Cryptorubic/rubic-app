@@ -38,6 +38,10 @@ export class WalletLinkProvider extends PrivateProvider {
     return this.selectedAddress;
   }
 
+  public get name(): WALLET_NAME {
+    return WALLET_NAME.WALLET_LINK;
+  }
+
   constructor(
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
@@ -80,7 +84,6 @@ export class WalletLinkProvider extends PrivateProvider {
       this.onAddressChanges.next(address);
       this.selectedAddress = address;
       this.selectedChain = chain.name;
-      localStorage.setItem('provider', WALLET_NAME.WALLET_LINK);
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
       throw new WalletlinkError();

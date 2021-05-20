@@ -12,7 +12,7 @@ export class UseTestingModeService {
   constructor(private readonly providerService: ProviderConnectorService) {
     window['useTestingMode'] = async () => {
       if (!this.isTestingMode.getValue()) {
-        if (localStorage.getItem('provider') === WALLET_NAME.WALLET_LINK) {
+        if (providerService.provider.name === WALLET_NAME.WALLET_LINK) {
           await this.providerService.connectProvider(WALLET_NAME.WALLET_LINK, 42);
           await this.providerService.activate();
         }

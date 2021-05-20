@@ -1,6 +1,7 @@
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
+import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/wallets-modal.component';
 
 export abstract class PrivateProvider {
   /**
@@ -17,6 +18,11 @@ export abstract class PrivateProvider {
    * @description is the blockchain provider activated
    */
   abstract get isActive(): boolean;
+
+  /**
+   * @description Current provider name.
+   */
+  abstract get name(): WALLET_NAME;
 
   /**
    * @description current selected wallet address

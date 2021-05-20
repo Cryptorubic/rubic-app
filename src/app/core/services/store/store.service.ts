@@ -34,7 +34,7 @@ export class StoreService {
     this.$dataSubject.next(newData);
   }
 
-  public setItem(key: any, value: any): void {
+  public setItem(key: keyof Store, value: any): void {
     const newData = {
       ...this.$dataSubject.value,
       [key]: value
@@ -42,6 +42,10 @@ export class StoreService {
     const jsonData = JSON.stringify(newData);
     localStorage.setItem(this.storageKey, jsonData);
     this.$dataSubject.next(newData);
+  }
+
+  public getItem(key: keyof Store): any {
+    return this.$dataSubject.value[key];
   }
 
   public fetchData(): void {

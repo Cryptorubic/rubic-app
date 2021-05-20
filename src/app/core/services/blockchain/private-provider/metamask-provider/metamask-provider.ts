@@ -31,11 +31,14 @@ export class MetamaskProvider extends PrivateProvider {
     return this.isEnabled && !!this.selectedAddress;
   }
 
+  public get name(): WALLET_NAME {
+    return WALLET_NAME.METAMASK;
+  }
+
   constructor(
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
-    accountChange: BehaviorSubject<string>,
-    public storageService: StoreService
+    accountChange: BehaviorSubject<string>
   ) {
     super();
     this.onAddressChanges = accountChange;
@@ -100,7 +103,6 @@ export class MetamaskProvider extends PrivateProvider {
       this.isEnabled = true;
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.getAddress());
-      this.storageService.setItem('provider', WALLET_NAME.METAMASK);
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
       throw new MetamaskError();

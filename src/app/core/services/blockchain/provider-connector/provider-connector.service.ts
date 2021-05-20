@@ -8,14 +8,15 @@ import { MetamaskProvider } from '../private-provider/metamask-provider/metamask
 import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
 import { Web3PrivateService } from '../web3-private-service/web3-private.service';
+import { StoreService } from '../../store/store.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProviderConnectorService {
-  private $networkChangeSubject: BehaviorSubject<IBlockchain>;
+  private readonly $networkChangeSubject: BehaviorSubject<IBlockchain>;
 
-  private $addressChangeSubject: BehaviorSubject<string>;
+  private readonly $addressChangeSubject: BehaviorSubject<string>;
 
   private privateProvider: any;
 
@@ -48,11 +49,12 @@ export class ProviderConnectorService {
   }
 
   public async activate(): Promise<void> {
+    this.storage.setItem('provider', this.provider.name);
     return this.provider.activate();
   }
 
   public deActivate(): void {
-    localStorage.removeItem('provider');
+    this.storage.deleteItem('provider');
     return this.provider.deActivate();
   }
 
@@ -64,10 +66,13 @@ export class ProviderConnectorService {
     return this.$addressChangeSubject.asObservable();
   }
 
-  constructor(private readonly web3private: Web3PrivateService) {
+  constructor(
+    private readonly web3private: Web3PrivateService,
+    private readonly storage: StoreService
+  ) {
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
     this.$addressChangeSubject = new BehaviorSubject<string>(null);
-    const provider = localStorage.getItem('provider') as WALLET_NAME;
+    const provider = this.storage.getItem('provider') as WALLET_NAME;
     if (provider) {
       this.connectProvider(provider);
     }

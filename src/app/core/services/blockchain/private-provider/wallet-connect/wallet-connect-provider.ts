@@ -74,6 +74,10 @@ export class WalletConnectProvider extends PrivateProvider {
     );
   }
 
+  public get name(): WALLET_NAME {
+    return WALLET_NAME.WALLET_CONNECT;
+  }
+
   public async activate(): Promise<void> {
     try {
       const [address] = await this.core.enable();
@@ -83,7 +87,6 @@ export class WalletConnectProvider extends PrivateProvider {
       this.onAddressChanges.next(address);
       this.selectedAddress = address;
       this.selectedChain = chain.name;
-      localStorage.setItem('provider', WALLET_NAME.WALLET_CONNECT);
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
       throw new WalletlinkError();
