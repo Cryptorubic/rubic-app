@@ -74,6 +74,7 @@ export class InstantTradesApiService {
    * @description get list of trades from server
    * @return list of trades
    */
+  // TODO: use AuthService to get user wallet address instead of Web3Private after Coinbase realease
   public fetchSwaps(): Observable<InstantTradesTradeData[]> {
     return this.httpService
       .get(instantTradesApiRoutes.getData)

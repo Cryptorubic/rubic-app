@@ -31,19 +31,16 @@
         </div>
       </th>
       <td *matCellDef="let element">
-        <div
-          class="tokens-table__cell tokens-table__cell_status"
-          wrapLink
-          [isWrapLink]="tableType === 'OrderBooks'"
-          href="/public-v3/{{ element.uniqueLink }}"
-        >
-          <span
-            class="tokens-table__status"
-            *ngIf="element.status"
-            [ngClass]="getClassName(element.status)"
-          ></span>
-          {{ element.status }}
-        </div>
+        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+          <div class="tokens-table__cell tokens-table__cell_status">
+            <span
+              class="tokens-table__status"
+              *ngIf="element.status"
+              [ngClass]="getClassName(element.status)"
+            ></span>
+            {{ element.status }}
+          </div>
+        </a>
       </td>
     </ng-container>
     <!-- Tokens icons column  -->
@@ -78,18 +75,15 @@
         </div>
       </th>
       <td *matCellDef="let element" class="centered-child">
-        <div
-          class="tokens-table__cell"
-          wrapLink
-          [isWrapLink]="tableType === 'OrderBooks'"
-          href="/public-v3/{{ element.uniqueLink }}"
-        >
-          <img
-            class="table__image"
-            [src]="getChainIcon(element.blockchain)"
-            alt="{{ element.blockchain }}"
-          />
-        </div>
+        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+          <div>
+            <img
+              class="table__image"
+              [src]="getChainIcon(element.blockchain)"
+              alt="{{ element.blockchain }}"
+            />
+          </div>
+        </a>
       </td>
     </ng-container>
     <!-- From  -->
@@ -100,18 +94,20 @@
         </div>
       </th>
       <td *matCellDef="let element">
-        <div class="tokens-table__cell tokens-table__cell_token token-cell">
-          <div class="token-cell__info">
-            <img
-              [src]="element.token.from.image || '/assets/images/icons/coins/empty.svg'"
-              [alt]="element.token.from.symbol"
-            />
-            {{ element.token.from.symbol }}
+        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+          <div class="tokens-table__cell tokens-table__cell_token token-cell">
+            <div class="token-cell__info">
+              <img
+                [src]="element.token.from.image || '/assets/images/icons/coins/empty.svg'"
+                [alt]="element.token.from.symbol"
+              />
+              {{ element.token.from.symbol }}
+            </div>
+            <div class="token-cell__amount">
+              {{ element.fromAmount.dp(5).toString(10) }}
+            </div>
           </div>
-          <div class="token-cell__amount">
-            {{ element.fromAmount.dp(5).toString(10) }}
-          </div>
-        </div>
+        </a>
       </td>
     </ng-container>
     <!-- To  -->
@@ -122,16 +118,18 @@
         </div>
       </th>
       <td *matCellDef="let element">
-        <div class="tokens-table__cell tokens-table__cell_token token-cell">
-          <div class="token-cell__info">
-            <img
-              [src]="element.token.to.image || '/assets/images/icons/coins/empty.svg'"
-              [alt]="element.token.to.symbol"
-            />
-            {{ element.token.to.symbol }}
+        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+          <div class="tokens-table__cell tokens-table__cell_token token-cell">
+            <div class="token-cell__info">
+              <img
+                [src]="element.token.to.image || '/assets/images/icons/coins/empty.svg'"
+                [alt]="element.token.to.symbol"
+              />
+              {{ element.token.to.symbol }}
+            </div>
+            <div class="token-cell__amount">{{ element.toAmount.dp(5).toString(10) }}</div>
           </div>
-          <div class="token-cell__amount">{{ element.toAmount.dp(5).toString(10) }}</div>
-        </div>
+        </a>
       </td>
     </ng-container>
     <!-- Provider -->
@@ -142,14 +140,16 @@
         </div>
       </th>
       <td *matCellDef="let element">
-        <div class="tokens-table__cell provider-cell">
-          <img
-            class="table__image"
-            src="assets/images/icons/providers/{{ element.provider }}.svg"
-            alt="{{ element.provider }}"
-          />
-          {{ element.provider }}
-        </div>
+        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+          <div class="tokens-table__cell provider-cell">
+            <img
+              class="table__image"
+              src="assets/images/icons/providers/{{ element.provider }}.svg"
+              alt="{{ element.provider }}"
+            />
+            {{ element.provider }}
+          </div>
+        </a>
       </td>
     </ng-container>
     <!-- Expires in column  -->
@@ -176,10 +176,12 @@
         </div>
       </th>
       <td *matCellDef="let element" class="centered-child">
-        <div class="tokens-table__cell tokens-table__cell_datetime">
-          <div>{{ element.date | date: 'dd-MM-yyyy' }}</div>
-          <div>{{ element.date | date: 'HH:mm:ss' }}</div>
-        </div>
+        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+          <div class="tokens-table__cell tokens-table__cell_datetime">
+            <div>{{ element.date | date: 'dd-MM-yyyy' }}</div>
+            <div>{{ element.date | date: 'HH:mm:ss' }}</div>
+          </div>
+        </a>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

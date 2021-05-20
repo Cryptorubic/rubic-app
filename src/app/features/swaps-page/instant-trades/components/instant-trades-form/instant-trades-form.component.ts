@@ -668,10 +668,12 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           data
         });
 
-        this.instantTradesFormService.updateTrade(
-          currentHash,
-          INTSTANT_TRADES_TRADE_STATUS.REJECTED
-        );
+        if (currentHash) {
+          this.instantTradesFormService.updateTrade(
+            currentHash,
+            INTSTANT_TRADES_TRADE_STATUS.REJECTED
+          );
+        }
       })
       .finally(() => {
         this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;
