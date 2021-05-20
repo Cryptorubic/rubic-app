@@ -107,7 +107,12 @@ export class TokensService {
     if (this.userAddress && this.tokens.getValue().size) {
       const tokens = this.tokens.getValue();
       const updatedTokens = [];
-      const blockchains: BLOCKCHAIN_NAME[] = [...tokens.map(token => token.blockchain).toSet()];
+      const blockchains: BLOCKCHAIN_NAME[] = [
+        ...tokens
+          .filter(token => token.blockchain)
+          .map(token => token.blockchain)
+          .toSet()
+      ];
       const balancePromises = [];
 
       blockchains.forEach(blockchain => {

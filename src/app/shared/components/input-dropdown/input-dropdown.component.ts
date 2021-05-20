@@ -71,7 +71,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    */
   @Output() componentChanges = new EventEmitter<DropdownComponentData>();
 
+  @Output() tokenLabelContainerWidth = new EventEmitter<number>();
+
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
+
+  @ViewChild('chooseButton') chooseButton: ElementRef;
 
   public visibleComponentsData = this.componentsData.slice(0, this.VISIBLE_COMPONENTS_NUMBER);
 
@@ -91,6 +95,9 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
       this.unshiftComponentToVisibleList(
         this.componentsData.find(component => component.id === this.selectedComponentData.id)
       );
+      setTimeout(() => {
+        this.tokenLabelContainerWidth.emit(this.chooseButton.nativeElement.offsetWidth);
+      });
     }
   }
 
@@ -138,6 +145,9 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
     this.toggleListOpen(false);
 
     this.componentChanges.emit(component);
+    setTimeout(() => {
+      this.tokenLabelContainerWidth.emit(this.chooseButton.nativeElement.offsetWidth);
+    });
   }
 
   public clearSearch() {

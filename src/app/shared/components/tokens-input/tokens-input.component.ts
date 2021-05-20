@@ -84,7 +84,7 @@ export class TokensInputComponent implements OnChanges, OnInit {
 
   @Output() tokenChanges = new EventEmitter<InputToken | null>();
 
-  @ViewChild('app-input-dropdown') inputDropdown: InputDropdownComponent<TokenDropdownData>;
+  @ViewChild('appInputDropdown') inputDropdown: InputDropdownComponent<TokenDropdownData>;
 
   public readonly DEFAULT_DECIMAL_LENGTH = 8;
 
@@ -101,6 +101,10 @@ export class TokensInputComponent implements OnChanges, OnInit {
   public tokensFilterOrder: string[];
 
   public tokensSortOrder: string[];
+
+  public maxButtonPositionRight: number;
+
+  public inputPaddingRight: number;
 
   constructor() {}
 
@@ -180,5 +184,10 @@ export class TokensInputComponent implements OnChanges, OnInit {
     } else {
       this.selectedTokenDropdownData = null;
     }
+  }
+
+  public resetInputElementsPositions(inputDropdownWidth: number): void {
+    this.maxButtonPositionRight = inputDropdownWidth + 9;
+    this.inputPaddingRight = this.maxButtonPositionRight + 43;
   }
 }
