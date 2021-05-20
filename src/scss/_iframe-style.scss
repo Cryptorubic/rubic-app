@@ -1,4 +1,5 @@
 @import 'mixins';
+@import 'vars';
 
 .iframe {
   height: 100%;
@@ -7,6 +8,10 @@
 
   .chain-dropdown {
     background: #f4f4f4 !important;
+
+    @include b($laptop) {
+      margin-right: 0 !important;
+    }
   }
 
   &.dark {
@@ -104,8 +109,6 @@
 
       color: white;
 
-      font-size: 22px;
-
       font-family: 'Ubuntu Mono', monospace;
 
       background: #616161;
@@ -113,7 +116,6 @@
 
       &::placeholder {
         color: #c5c5c5;
-        font-size: 22px;
       }
     }
 
@@ -186,10 +188,10 @@
   }
 
   .tokens-form__input {
-    font-size: 22px;
+    font-size: 22px !important;
 
     &::placeholder {
-      font-size: 22px;
+      font-size: 22px !important;
     }
   }
 
@@ -207,6 +209,10 @@
 
   .instant-trade-form__from-section {
     margin-top: 0 !important;
+
+    @include b($laptop) {
+      flex: 2;
+    }
   }
 
   .arrow-button_big {
@@ -259,6 +265,10 @@
   .main-page {
     margin-top: 0 !important;
     padding: 20px 0 !important;
+
+    @include b($desktop) {
+      padding: 20px 2vw !important;
+    }
   }
 
   .instant-trade-form {
@@ -267,7 +277,62 @@
     align-items: center !important;
     padding: 40px 25px !important;
 
-    border-radius: 10px;
+    border-radius: 10px !important;
+
+    @include b($laptop) {
+      display: flex !important;
+      flex-wrap: wrap;
+
+      app-chain-dropdown {
+        order: 2;
+        margin-left: 25px;
+      }
+
+      > *:not(:last-child) {
+        margin-bottom: 20px;
+      }
+
+      > .instant-trade-form__to-section {
+        flex: 100% !important;
+        order: 3;
+      }
+    }
+
+    @include b($tablet) {
+      .instant-trade-form__from-section,
+      .instant-trade-form__to-section {
+        padding: 0 !important;
+
+        box-shadow: none !important;
+      }
+    }
+
+    @include b($mobile-sm-plus) {
+      app-chain-dropdown {
+        flex: 100% !important;
+        order: 1;
+        margin-left: 0 !important;
+      }
+
+      .instant-trade-form__from-section {
+        order: 2;
+      }
+
+      .selection-block.selection-block_best {
+        flex: 100% !important;
+        margin-right: 0 !important;
+        margin-bottom: 20px !important;
+      }
+
+      app-iframe-tokens-swap-input {
+        flex-wrap: wrap;
+      }
+
+      app-primary-button {
+        display: block;
+        margin-top: 30px;
+      }
+    }
   }
 
   .trades-form__body {
