@@ -1,19 +1,15 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import BigNumber from 'bignumber.js';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
-import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
 import InputToken from 'src/app/shared/models/tokens/InputToken';
 import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
+import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BridgeTrade } from '../../models/BridgeTrade';
@@ -234,6 +230,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     private bridgeService: BridgeService,
     private dialog: MatDialog,
     private queryParamsService: QueryParamsService,
+    private errorsService: ErrorsService,
     private readonly cdr: ChangeDetectorRef
   ) {}
 
@@ -432,24 +429,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         err => {
           this.tradeInProgress = false;
           this.buttonAnimation = false;
-          if (!(err instanceof RubicError)) {
-            err = new RubicError();
-          }
-          let data: any = { title: 'Error', descriptionText: err.comment };
-          if (err instanceof MetamaskError) {
-            data.title = 'Warning';
-          }
-          if (err instanceof NetworkError) {
-            data = {
-              title: 'Error',
-              descriptionComponentClass: NetworkErrorComponent,
-              descriptionComponentInputs: { networkError: err }
-            };
-          }
-          this.dialog.open(MessageBoxComponent, {
-            width: '400px',
-            data
-          });
+          this.errorsService.showErrorDialog(err, this.dialog);
         }
       );
   }

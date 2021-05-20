@@ -16,6 +16,8 @@ import {
 } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbTrade';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
+import { MatDialog } from '@angular/material/dialog';
+import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 
 @Component({
   selector: 'app-get-bnb-form',
@@ -59,6 +61,8 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private getBnbService: GetBnbService,
+    private dialog: MatDialog,
+    private errorsService: ErrorsService,
     useTestingModeService: UseTestingModeService
   ) {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
@@ -125,6 +129,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
         err => {
           console.debug(err);
           this.getBnbTrade.status = GET_BNB_TRADE_STATUS.WAITING;
+          this.errorsService.showErrorDialog(err, this.dialog);
         }
       );
     } else {
@@ -150,6 +155,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
       .catch(err => {
         console.debug(err);
         this.getBnbTrade.status = GET_BNB_TRADE_STATUS.WAITING;
+        this.errorsService.showErrorDialog(err, this.dialog);
       });
   }
 }
