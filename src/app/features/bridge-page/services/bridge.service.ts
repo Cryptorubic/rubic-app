@@ -11,10 +11,10 @@ import SwapToken from '../../../shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../core/services/use-testing-mode/use-testing-mode.service';
 import { bridgeTestTokens } from '../../../../test/tokens/bridge-tokens';
-import { BlockchainBridgeProvider } from './blockchain-bridge-provider/blockchain-bridge-provider';
-import { BinanceBridgeProviderService } from './blockchain-bridge-provider/binance-bridge-provider/binance-bridge-provider.service';
-import { RubicBridgeProviderService } from './blockchain-bridge-provider/binance-bridge-provider/rubic-bridge-provider/rubic-bridge-provider.service';
-import { PolygonBridgeProviderService } from './blockchain-bridge-provider/polygon-bridge-provider/polygon-bridge-provider.service';
+import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockchains-bridge-provider';
+import { EthereumBinanceBridgeProviderService } from './blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
+import { EthereumBinanceRubicBridgeProviderService } from './blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
+import { EthereumPolygonBridgeProviderService } from './blockchains-bridge-provider/ethereum-polygon-bridge-provider/ethereum-polygon-bridge-provider.service';
 import { MetamaskError } from '../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../shared/models/errors/provider/AccountError';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
@@ -26,14 +26,16 @@ import { Web3PublicService } from '../../../core/services/blockchain/web3-public
 import { Web3Public } from '../../../core/services/blockchain/web3-public-service/Web3Public';
 import { BridgeTableTrade } from '../models/BridgeTableTrade';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { EthereumTronBridgeProviderService } from './blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
+import { BinanceTronBridgeProviderService } from './blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
   private readonly USER_REJECT_ERROR_CODE = 4001;
 
-  private bridgeProvider: BlockchainBridgeProvider;
+  private bridgeProvider: BlockchainsBridgeProvider;
 
-  private selectedBlockchain: BLOCKCHAIN_NAME;
+  private selectedBlockchains: [BLOCKCHAIN_NAME, BLOCKCHAIN_NAME];
 
   private _tokens: BehaviorSubject<List<BridgeToken>> = new BehaviorSubject(List([]));
 
@@ -44,8 +46,14 @@ export class BridgeService implements OnDestroy {
   private _swapTokensSubscription$: Subscription;
 
   private _blockchainTokens = {
-    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: List([]),
-    [BLOCKCHAIN_NAME.POLYGON]: List([])
+    [BLOCKCHAIN_NAME.ETHEREUM]: {
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: List([]),
+      [BLOCKCHAIN_NAME.POLYGON]: List([]),
+      [BLOCKCHAIN_NAME.TRON]: List([])
+    },
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+      [BLOCKCHAIN_NAME.TRON]: List([])
+    }
   };
 
   private _transactions: BehaviorSubject<List<BridgeTableTrade>> = new BehaviorSubject(null);
@@ -64,9 +72,11 @@ export class BridgeService implements OnDestroy {
 
   constructor(
     private bridgeApiService: BridgeApiService,
-    private binanceBridgeProviderService: BinanceBridgeProviderService,
-    private rubicBridgeProviderService: RubicBridgeProviderService,
-    private polygonBridgeProviderService: PolygonBridgeProviderService,
+    private ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
+    private rubicBridgeProviderService: EthereumBinanceRubicBridgeProviderService,
+    private ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
+    private ethereumTronBridgeProviderService: EthereumTronBridgeProviderService,
+    private binanceTronBridgeProviderService: BinanceTronBridgeProviderService,
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
@@ -100,41 +110,68 @@ export class BridgeService implements OnDestroy {
     this._useTestingModeSubscription$.unsubscribe();
   }
 
-  public async setNonEthereumBlockchain(nonEthereumBlockchain: BLOCKCHAIN_NAME): Promise<void> {
+  public async setBlockchains(
+    fromBlockchain: BLOCKCHAIN_NAME,
+    toBlockchain: BLOCKCHAIN_NAME
+  ): Promise<void> {
     this._tokens.next(List([]));
 
-    this.selectedBlockchain = nonEthereumBlockchain;
-    if (this.selectedBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-      this.bridgeProvider = this.binanceBridgeProviderService;
+    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM || toBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+      const nonEthereumBlockchain =
+        fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM ? fromBlockchain : toBlockchain;
+      this.selectedBlockchains = [BLOCKCHAIN_NAME.ETHEREUM, nonEthereumBlockchain];
+
+      switch (nonEthereumBlockchain) {
+        case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
+          this.bridgeProvider = this.ethereumBinanceBridgeProviderService;
+          break;
+        case BLOCKCHAIN_NAME.POLYGON:
+          this.bridgeProvider = this.ethereumPolygonBridgeProviderService;
+          break;
+        default:
+          this.bridgeProvider = this.ethereumTronBridgeProviderService;
+      }
     } else {
-      this.bridgeProvider = this.polygonBridgeProviderService;
+      this.selectedBlockchains = [
+        BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        fromBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? fromBlockchain : toBlockchain
+      ];
+
+      this.bridgeProvider = this.binanceTronBridgeProviderService;
     }
 
     this.setTokens();
   }
 
   private setTokens(): void {
-    if (!this._swapTokens.size || !this.selectedBlockchain) {
+    if (!this._swapTokens.size || !this.selectedBlockchains) {
       this._tokens.next(List([]));
       return;
     }
+
+    const firstBlockchain = this.selectedBlockchains[0];
+    const secondBlockchain = this.selectedBlockchains[1];
     if (this._isTestingMode) {
-      this._tokens.next(bridgeTestTokens[this.selectedBlockchain]);
+      this._tokens.next(bridgeTestTokens[secondBlockchain]);
       return;
     }
-    if (this._blockchainTokens[this.selectedBlockchain]?.size) {
-      this._tokens.next(this._blockchainTokens[this.selectedBlockchain]);
+    if (this._blockchainTokens[firstBlockchain][secondBlockchain]?.size) {
+      this._tokens.next(this._blockchainTokens[firstBlockchain][secondBlockchain]);
       return;
     }
 
-    const blockchain = this.selectedBlockchain;
     this.bridgeProvider
       .getTokensList(this._swapTokens)
       .pipe(first())
       .subscribe(tokensList => {
-        this._blockchainTokens[blockchain] = this.getTokensWithImagesAndRanks(tokensList);
-        if (this.selectedBlockchain === blockchain) {
-          this._tokens.next(this._blockchainTokens[this.selectedBlockchain]);
+        this._blockchainTokens[firstBlockchain][
+          secondBlockchain
+        ] = this.getTokensWithImagesAndRanks(tokensList);
+        if (
+          this.selectedBlockchains[0] === firstBlockchain &&
+          this.selectedBlockchains[1] === secondBlockchain
+        ) {
+          this._tokens.next(this._blockchainTokens[firstBlockchain][secondBlockchain]);
         }
       });
   }
@@ -142,25 +179,19 @@ export class BridgeService implements OnDestroy {
   private getTokensWithImagesAndRanks(tokens: List<BridgeToken>): List<BridgeToken> {
     return tokens.map(token => {
       const ethToken = this._swapTokens
-        .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
+        .filter(item => item.image)
         .find(
           item =>
-            token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() ===
+            token.blockchainToken[item.blockchain]?.address.toLowerCase() ===
             item.address.toLowerCase()
         );
       token.image = ethToken?.image || '/assets/images/icons/coins/empty.svg';
-      token.rank = ethToken?.rank || TokensService.maxRankValue;
+      token.rank = ethToken?.rank;
       return token;
     });
   }
 
-  public getFee(tokenEthAddress: string, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
-    const token = this._tokens
-      .getValue()
-      .find(t => t.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address === tokenEthAddress);
-    if (!token) {
-      throw new Error('No such token');
-    }
+  public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
     return this.bridgeProvider.getFee(token, toBlockchain);
   }
 
@@ -267,7 +298,7 @@ export class BridgeService implements OnDestroy {
       return throwError(err);
     }
 
-    return this.polygonBridgeProviderService
+    return this.ethereumPolygonBridgeProviderService
       .depositTradeAfterCheckpoint(burnTransactionHash, onTransactionHash, () =>
         this.updateTransactionsList()
       )

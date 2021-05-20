@@ -19,7 +19,7 @@ export interface OrderBookTradeApi {
 
   // to delete or change
   name: string; // base.token_short_title + ' <> ' + quote.token_short_title
-  network: number;
+  network: string;
   state: string;
   contract_state: 'ACTIVE';
   contract_type: 20;

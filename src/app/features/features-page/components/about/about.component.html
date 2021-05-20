@@ -35,7 +35,7 @@
       <span class="span-title-section">{{ 'aboutPage.contract.title' | translate }}</span>
       <img
         [src]="
-          ($isMobile | async)
+          isMobile
             ? 'assets/images/about/mobile-instruction.svg'
             : 'assets/images/about/desktop-instruction.svg'
         "

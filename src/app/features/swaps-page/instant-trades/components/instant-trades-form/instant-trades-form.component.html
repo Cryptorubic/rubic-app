@@ -68,10 +68,10 @@
       <button
         type="button"
         class="arrow-button"
-        [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
+        [ngClass]="{ 'arrow-button_big': trades.length === 2 || ($isIframe | async) }"
       >
         <img
-          *ngIf="trades.length === 2 && !($isIframe | async)"
+          *ngIf="trades.length === 2 && ($isIframe | async) === false"
           src="assets/images/icons/RoundArrows.svg"
           alt=""
         />
@@ -89,12 +89,19 @@
           class="selection-block"
           [ngClass]="{
             'selection-block_best':
-              (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
+              (tradeController.isBestRate && trades.length > 1) ||
               (index === 0 && !hasBestRate)
           }"
         >
           <div class="selection-block__header" *ngIf="index === 0">
-            <div class="selection-block__label">{{ 'common.want' | translate }}</div>
+            <div class="selection-block__label">
+              {{ 'common.want' | translate }}
+              <app-refresh-button
+                class="selection-block__refresh-button"
+                [refreshButtonStatus]="refreshButtonStatus"
+                (onRefreshButtonActivated)="calculateTradeParameters()"
+              ></app-refresh-button>
+            </div>
 
             <div *ngIf="toToken?.address" class="selection-block__scanner">
               <app-scanner-link
@@ -123,6 +130,7 @@
               class="gas-fee"
               *ngIf="
                 blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
+                blockchain !== BLOCKCHAIN_NAME.POLYGON &&
                 tradeController.trade?.gasFeeInEth &&
                 tradeController.trade?.gasFeeInUsd
               "
@@ -139,9 +147,13 @@
               </span>
             </div>
 
-            <div class="selection-block__warning">
+            <div *ngIf="checkIfError(index)" class="selection-block__warning">
               <app-error-disclaimer
                 *ngIf="checkIfError(index)"
+                matTooltip="{{
+                  'Please make sure that selected token is supported on the specified DEX and try again later.'
+                    | translate
+                }}"
                 [errorText]="
                   ('instantTrades.notAvailableBefore' | translate) +
                   tradeController.tradeProviderInfo.label +
@@ -172,7 +184,7 @@
           [ngClass]="{
             'instant-trade-button_second': index === 1,
             'instant-trade-button_best':
-              (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
+              (tradeController.isBestRate && trades.length > 1) ||
               (index === 0 && !hasBestRate)
           }"
         >

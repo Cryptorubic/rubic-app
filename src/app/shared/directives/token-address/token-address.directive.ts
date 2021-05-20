@@ -38,7 +38,7 @@ export class TokenAddressDirective {
           resolve(null);
         })
         .catch(err => {
-          console.log(err);
+          console.error(err);
           resolve({ tokenInfoError: err });
         });
     });

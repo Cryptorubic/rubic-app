@@ -48,7 +48,7 @@
 
 .arrow-button {
   position: relative;
-  top: 4px;
+  top: 25px;
 
   display: flex;
   align-items: center;
@@ -121,6 +121,12 @@
     text-transform: uppercase;
   }
 
+  &__refresh-button {
+    position: absolute;
+    top: -6px;
+    left: 62px;
+  }
+
   &__warning {
     margin-top: 7px;
   }
@@ -177,7 +183,6 @@
   margin-top: 10px;
 
   span {
-
     margin-right: 5px;
 
     color: rgba(black, 0.5);
@@ -243,7 +248,7 @@ app-tooltip {
         .instant-trade-button:nth-child(2) {
           margin-bottom: 22px;
         }
-      } 
+      }
 
       &_from-section_lowered {
         margin-bottom: 0;
@@ -261,6 +266,10 @@ app-tooltip {
 
   .instant-trade-form {
     display: block;
+  }
+
+  .gas-fee {
+    margin-bottom: 30px;
   }
 }
 

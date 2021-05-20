@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js';
 import InstantTradeService from 'src/app/features/swaps-page/instant-trades/services/InstantTradeService';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Observable, Subscription } from 'rxjs';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { DOCUMENT } from '@angular/common';
@@ -24,7 +24,9 @@ import { InstantTradesApiService } from '../../../../../core/services/backend/in
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
 import { Token } from '../../../../../shared/models/tokens/Token';
+import { QuickSwapService } from '../../services/quick-swap-service/quick-swap.service';
 import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
+import { REFRESH_BUTTON_STATUS } from '../../../../../shared/models/instant-trade/REFRESH_BUTTON_STATUS';
 
 interface TradeProviderInfo {
   label: string;
@@ -76,6 +78,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public blockchain: BLOCKCHAIN_NAME;
 
+  private firstBlockhainEmitment = true;
+
   public TRADE_STATUS = TRADE_STATUS;
 
   public ADDRESS_TYPE = ADDRESS_TYPE;
@@ -98,6 +102,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     from: {} as SwapToken,
     to: {} as SwapToken
   };
+
+  public refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
 
   public get hasBestRate(): boolean {
     return this.trades.some(provider => provider.isBestRate);
@@ -165,6 +171,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         trade: null,
         tradeState: null
       }));
+      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
     }
   }
 
@@ -226,10 +233,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  private firstBlockhainEmitment = true;
-
-  private matDialogRef: MatDialogRef<MessageBoxComponent>;
-
   constructor(
     private tradeTypeService: TradeTypeService,
     private tradeParametersService: TradeParametersService,
@@ -238,6 +241,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private oneInchEthService: OneInchEthService,
     private onInchBscService: OneInchBscService,
     private pancakeSwapService: PancakeSwapService,
+    private quickSwapService: QuickSwapService,
     private dialog: MatDialog,
     private instantTradesApiService: InstantTradesApiService,
     @Inject(DOCUMENT) private readonly document: Document,
@@ -284,6 +288,19 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             tradeState: null,
             tradeProviderInfo: {
               label: 'Pancakeswap'
+            },
+            isBestRate: false
+          }
+        ];
+        break;
+      case BLOCKCHAIN_NAME.POLYGON:
+        this._instantTradeServices = [this.quickSwapService];
+        this.trades = [
+          {
+            trade: null,
+            tradeState: null,
+            tradeProviderInfo: {
+              label: 'Quickswap'
             },
             isBestRate: false
           }
@@ -395,7 +412,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  private async calculateTradeParameters() {
+  public async calculateTradeParameters() {
+    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.REFRESHING;
+
     const tradeParams = {
       ...this.tradeParameters
     };
@@ -404,6 +423,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       calculationPromises.push(this.calculateProviderTrade(service, this.trades[index]))
     );
     await Promise.allSettled(calculationPromises);
+
     if (
       this.isCalculatedTradeActual(
         tradeParams.fromAmount,
@@ -420,6 +440,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ...this.tradeParameters,
         toAmount
       });
+      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;
     }
   }
 
@@ -546,6 +567,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
+    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+
     this.waitingForProvider = true;
     const setTradeState = (state: TRADE_STATUS) => {
       this.trades[selectedServiceIndex].tradeState = state;
@@ -590,10 +613,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           width: '400px',
           data
         });
+      })
+      .finally(() => {
+        this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;
       });
   }
 
   public onCloseModal() {
-    this.trades = this.trades.map(trade => ({ ...trade, isBestRate: false }));
+    this.calculateTradeParameters();
   }
 }

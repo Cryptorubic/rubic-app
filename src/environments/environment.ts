@@ -4,10 +4,7 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://devswaps.mywish.io/api/v1',
-  bridgeBotUrl: 'bot/bridgeswaps',
-  instantTradesBotUrl: 'bot/instanttrades',
-  orderBooksBotUrl: 'bot/orderbook'
+  apiBaseUrl: '//dev-api.rubic.exchange/api'
 };
 
 /*

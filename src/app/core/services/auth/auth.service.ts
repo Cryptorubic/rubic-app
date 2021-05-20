@@ -1,31 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { take, map, finalize } from 'rxjs/operators';
+import { take, finalize, first } from 'rxjs/operators';
 import { HeaderStore } from '../../header/services/header.store';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { HttpService } from '../http/http.service';
+import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
 import { QueryParamsService } from '../query-params/query-params.service';
-import { UserInterface } from './models/user.interface';
-import { URLS } from './models/user.service.api';
-
-interface BackendUser {
-  isLogout?: boolean;
-  balance: number;
-  eos_balance: number;
-  visibleBalance: string;
-  contracts: number;
-  eos_address: string;
-  id: number;
-  internal_address: string;
-  internal_btc_address: string;
-  is_social: boolean;
-  lang: string;
-  memo: string;
-  use_totp: boolean;
-  username: string;
-  is_ghost?: boolean;
-  is_swaps_admin?: any;
-}
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -87,19 +67,10 @@ export class AuthService {
   }
 
   /**
-   * @description Fetch user data from backend.
+   * @description Fetch authorized user address or auth message in case there's no authorized user.
    */
-  private fetchUser(): Observable<UserInterface> {
-    return this.httpService
-      .get(URLS.PROFILE)
-      .pipe(map((user: BackendUser) => ({ address: user.username })));
-  }
-
-  /**
-   * @description Fetch metamask auth message for sign.
-   */
-  private fetchAuthNonce(): Promise<string> {
-    return this.httpService.get('get_metamask_message/').toPromise();
+  private fetchMetamaskLoginBody(): Observable<MetamaskLoginInterface> {
+    return this.httpService.get('metamask/login/', {});
   }
 
   /**
@@ -111,25 +82,32 @@ export class AuthService {
    */
   private sendSignedNonce(address: string, nonce: string, signature: string): Promise<void> {
     return this.httpService
-      .post('metamask/', { address, message: nonce, signed_msg: signature }, URLS.HOSTS.AUTH_PATH)
+      .post('metamask/login/', { address, message: nonce, signed_message: signature })
       .toPromise();
   }
 
   public async loadUser() {
     this.isAuthProcess = true;
-    this.fetchUser().subscribe(
-      async user => {
-        await this.web3Service.activate();
-        if (this.web3Service.address !== user.address) {
-          this.signOut()
-            .pipe(
-              finalize(() => {
-                this.signIn();
-              })
-            )
-            .subscribe();
+    this.fetchMetamaskLoginBody().subscribe(
+      async metamaskLoginBody => {
+        if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
+          await this.web3Service.activate();
+
+          const { address } = metamaskLoginBody.payload.user;
+          if (address === this.web3Service.address) {
+            this.$currentUser.next({ address });
+          } else {
+            this.signOut()
+              .pipe(
+                first(),
+                finalize(() => {
+                  this.signIn();
+                })
+              )
+              .subscribe();
+          }
         } else {
-          this.$currentUser.next(user);
+          this.$currentUser.next(null);
         }
         this.isAuthProcess = false;
       },
@@ -152,7 +130,7 @@ export class AuthService {
   public async signIn(): Promise<void> {
     this.isAuthProcess = true;
     await this.web3Service.activate();
-    const nonce = await this.fetchAuthNonce();
+    const nonce = (await this.fetchMetamaskLoginBody().toPromise()).payload.message;
     const signature = await this.web3Service.signPersonal(nonce);
 
     await this.sendSignedNonce(this.web3Service.address, nonce, signature);
@@ -173,7 +151,7 @@ export class AuthService {
    * @description Logout request to backend.
    */
   public signOut(): Observable<string> {
-    return this.httpService.get(URLS.LOGOUT, {}, URLS.HOSTS.AUTH_PATH).pipe(
+    return this.httpService.post('metamask/logout/', {}).pipe(
       finalize(() => {
         this.$currentUser.next(null);
         this.web3Service.deActivate();
