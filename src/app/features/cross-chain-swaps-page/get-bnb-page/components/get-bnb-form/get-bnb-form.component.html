@@ -6,8 +6,8 @@
 
       <div class="swap-box__blockchain-section form-field">
         <app-blockchain-select
-          [selectedBlockchain]="fromBlockchain"
           [blockchains]="blockchainsList"
+          [selectedBlockchain]="fromBlockchain"
           [disabled]="true"
         ></app-blockchain-select>
       </div>
@@ -24,19 +24,20 @@
       <div class="swap-box__token-section form-field">
         <app-tokens-input
           [inputDisabled]="true"
-          [selectedToken]="selectedFromToken"
-          [selectedAmount]="'0.1'"
+          amountPlaceholder=""
           [tokensList]="fromTokensList"
+          [selectedToken]="getBnbTrade.fromToken"
+          [selectedAmount]="getBnbTrade.fromAmount"
           (tokenChanges)="onSelectedFromTokenChanges($event)"
         ></app-tokens-input>
       </div>
 
       <div
         class="swap-box__scanner-link-container"
-        [ngClass]="{ 'swap-box__scanner-link-container_hidden': !selectedFromToken }"
+        [ngClass]="{ 'swap-box__scanner-link-container_hidden': !getBnbTrade.fromToken }"
       >
         <app-scanner-link
-          [address]="selectedFromToken?.address"
+          [address]="getBnbTrade.fromToken?.address"
           [blockchainName]="fromBlockchain.key"
           [addressType]="ADDRESS_TYPE.TOKEN"
           [scannerLabel]="fromBlockchain.scannerLabel"
@@ -55,8 +56,8 @@
 
       <div class="swap-box__blockchain-section form-field">
         <app-blockchain-select
-          [selectedBlockchain]="toBlockchain"
           [blockchains]="blockchainsList"
+          [selectedBlockchain]="toBlockchain"
           [disabled]="true"
         ></app-blockchain-select>
       </div>
@@ -71,11 +72,11 @@
       <div class="swap-box__title swap-box__title_second">You get</div>
 
       <div class="swap-box__token-section token-chosen">
-        <span class="token-chosen__amount">0.1</span>
+        <span class="token-chosen__amount">{{ getBnbTrade.toAmount | bigNumberFormat }}</span>
 
         <div class="token-chosen__card token-card">
-          <img class="token-card__icon" src="/assets/images/icons/coins/bnb.svg" alt="Token" />
-          <span class="token-card__name">BNB</span>
+          <img class="token-card__icon" [src]="getBnbTrade.toToken?.image" alt="Token" />
+          <span class="token-card__name">{{ getBnbTrade.toToken?.symbol }}</span>
         </div>
       </div>
 
@@ -100,7 +101,12 @@
   </div>
 
   <div class="cross-chain-form__confirm-section confirm-section">
-    <app-primary-button type="button" class="cross-chain-form__confirm-button" label="Get BNB">
+    <app-primary-button
+      class="cross-chain-form__confirm-button"
+      type="button"
+      label="Get BNB"
+      [animate]="getBnbTrade.status === GET_BNB_TRADE_STATUS.CALCULATION"
+    >
     </app-primary-button>
   </div>
 </form>
