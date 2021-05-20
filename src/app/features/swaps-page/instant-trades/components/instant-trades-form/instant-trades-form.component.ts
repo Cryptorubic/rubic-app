@@ -580,6 +580,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
+    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+
     this.waitingForProvider = true;
     const setTradeState = (state: TRADE_STATUS) => {
       this.trades[selectedServiceIndex].tradeState = state;
@@ -670,6 +672,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           currentHash,
           INTSTANT_TRADES_TRADE_STATUS.REJECTED
         );
+      })
+      .finally(() => {
+        this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;
       });
   }
 
