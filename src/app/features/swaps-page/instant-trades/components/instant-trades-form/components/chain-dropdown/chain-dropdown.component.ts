@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   Blockchain,
   BLOCKCHAINS
@@ -16,7 +16,9 @@ import { QueryParamsService } from '../../../../../../../core/services/query-par
 export class ChainDropdownComponent {
   public selectedBlockchain: Blockchain;
 
-  @Output() blockchainChanges = new EventEmitter<Blockchain>();
+  @Input() public disabled: boolean;
+
+  @Output() public blockchainChanges = new EventEmitter<Blockchain>();
 
   public readonly BLOCKCHAINS;
 

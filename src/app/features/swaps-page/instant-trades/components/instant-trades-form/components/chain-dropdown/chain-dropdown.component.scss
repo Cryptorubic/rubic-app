@@ -10,12 +10,6 @@
   border-radius: 10px;
   cursor: pointer;
 
-  &::after {
-    @include dropdown-arrow(5px, bottom, 2px);
-
-    right: 11px;
-  }
-
   .mat-form-field-wrapper {
     padding: 0;
   }
@@ -65,11 +59,31 @@
     }
   }
 
+  .mat-select-disabled {
+    .mat-select-trigger {
+      &::after {
+        content: none;
+      }
+    }
+
+    .chain-dropdown__icon {
+      width: 50px;
+
+      border-radius: 10px;
+    }
+  }
+
   div.mat-select-trigger {
     display: block;
     min-width: 72px;
     height: 50px;
     padding: 6px;
+
+    &::after {
+      @include dropdown-arrow(5px, bottom, 2px);
+
+      right: 11px;
+    }
   }
 
   div.mat-select-value {

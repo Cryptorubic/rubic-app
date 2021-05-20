@@ -24,7 +24,7 @@
     (submit)="$event.preventDefault()"
   >
     <img *ngIf="$isIframe | async" class="instant-trade-form__iframe-logo" alt="Rubic logotype" src="assets/images/rubic-logo.svg?_=2">
-    <app-chain-dropdown *ngIf="$isIframe | async"></app-chain-dropdown>
+    <app-chain-dropdown [disabled]="$tokensSelectionDisabled | async" *ngIf="$isIframe | async"></app-chain-dropdown>
     <div
       class="instant-trade-form__from-section selection-block"
       [ngClass]="{ 'instant-trade-form__from-section_lowered': trades.length === 2 }"

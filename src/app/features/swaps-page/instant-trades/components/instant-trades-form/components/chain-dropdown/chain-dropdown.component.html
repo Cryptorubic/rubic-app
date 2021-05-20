@@ -1,10 +1,11 @@
-<div class="chain-dropdown" mat-select-trigger>
+<div class="chain-dropdown">
   <mat-select
     [disableRipple]="true"
     [(ngModel)]="selectedBlockchain"
     (selectionChange)="onBlockchainChanges($event.value)"
     panelClass="chain-dropdown-panel"
     class="chain-dropdown__list"
+    [disabled]="disabled"
   >
     <mat-select-trigger>
      <div class='chain-dropdown__icon'>
