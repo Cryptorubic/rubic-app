@@ -31,19 +31,19 @@
         </div>
       </th>
       <td *matCellDef="let element">
-        <a
-          [class.link-disable]="tableType === 'InstantTrades'"
-          routerLink="{{ tableType === 'OrderBooks' ? ['/public-v3', element.uniqueLink] : [] }}"
+        <div
+          class="tokens-table__cell tokens-table__cell_status"
+          wrapLink
+          [isWrapLink]="tableType === 'OrderBooks'"
+          href="/public-v3/{{ element.uniqueLink }}"
         >
-          <div class="tokens-table__cell tokens-table__cell_status">
-            <span
-              class="tokens-table__status"
-              *ngIf="element.status"
-              [ngClass]="getClassName(element.status)"
-            ></span>
-            {{ element.status }}
-          </div>
-        </a>
+          <span
+            class="tokens-table__status"
+            *ngIf="element.status"
+            [ngClass]="getClassName(element.status)"
+          ></span>
+          {{ element.status }}
+        </div>
       </td>
     </ng-container>
     <!-- Tokens icons column  -->
@@ -78,19 +78,18 @@
         </div>
       </th>
       <td *matCellDef="let element" class="centered-child">
-        <a
-          (click)="this.refreshTable()"
-          [class.link-disable]="tableType === 'InstantTrades'"
-          routerLink="{{ tableType === 'OrderBooks' ? ['/public-v3', element.uniqueLink] : [] }}"
+        <div
+          class="tokens-table__cell"
+          wrapLink
+          [isWrapLink]="tableType === 'OrderBooks'"
+          href="/public-v3/{{ element.uniqueLink }}"
         >
-          <div class="tokens-table__cell">
-            <img
-              class="table__image"
-              [src]="getChainIcon(element.blockchain)"
-              alt="{{ element.blockchain }}"
-            />
-          </div>
-        </a>
+          <img
+            class="table__image"
+            [src]="getChainIcon(element.blockchain)"
+            alt="{{ element.blockchain }}"
+          />
+        </div>
       </td>
     </ng-container>
     <!-- From  -->

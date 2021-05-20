@@ -54,6 +54,7 @@ import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
 import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
+import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
     BlockchainSelectComponent,
     CheckboxComponent,
     TotalSupplyOverflowErrorComponent,
-    RefreshButtonComponent
+    RefreshButtonComponent,
+    WrapLinkDirective
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
