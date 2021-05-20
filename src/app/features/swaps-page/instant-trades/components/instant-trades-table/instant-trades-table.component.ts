@@ -7,6 +7,7 @@ import { TokenValueType } from 'src/app/shared/models/order-book/tokens';
 import { InstantTradesTradeData } from '../../../models/trade-data';
 import { InstantTradesTableService } from './services/instant-trades-table.service';
 import { InstantTradesFormService } from '../instant-trades-form/services/instant-trades-form.service';
+import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 
 @Component({
   selector: 'app-instant-trades-table',
@@ -32,7 +33,8 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
     private readonly instantTradesTableService: InstantTradesTableService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly tradeTypeService: TradeTypeService,
-    private readonly instantTradesFormService: InstantTradesFormService
+    private readonly instantTradesFormService: InstantTradesFormService,
+    private readonly web3PrivateService: Web3PrivateService
   ) {
     this.$tableLoading = this.instantTradesTableService.getTableLoadingStatus();
     this.instantTradesTableService.setTableLoadingStatus(true);
@@ -57,6 +59,7 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
   public ngOnInit(): void {
     this.fetchSwaps();
     this.instantTradesFormService.onInstantTradesCreated.subscribe(() => this.fetchSwaps());
+    this.web3PrivateService.onAddressChanges.subscribe(() => this.fetchSwaps());
   }
 
   public selectToken(tokenData: TokenValueType): void {

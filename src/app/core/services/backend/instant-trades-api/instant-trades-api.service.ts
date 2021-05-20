@@ -10,6 +10,7 @@ import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
+import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 
 const instantTradesApiRoutes = {
   createData: 'instant_trades/',
@@ -23,11 +24,15 @@ const instantTradesApiRoutes = {
 export class InstantTradesApiService {
   private isTestingMode: boolean;
 
+  private walletAddress: string;
+
   constructor(
     private httpService: HttpService,
-    private useTestingModeService: UseTestingModeService
+    private useTestingModeService: UseTestingModeService,
+    private web3PrivateService: Web3PrivateService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
+    this.web3PrivateService.onAddressChanges.subscribe(res => (this.walletAddress = res));
   }
 
   public notifyInstantTradesBot(body: {
@@ -77,7 +82,7 @@ export class InstantTradesApiService {
   // TODO: use AuthService to get user wallet address instead of Web3Private after Coinbase realease
   public fetchSwaps(): Observable<InstantTradesTradeData[]> {
     return this.httpService
-      .get(instantTradesApiRoutes.getData)
+      .get(instantTradesApiRoutes.getData, { user: this.web3PrivateService.address })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
           swaps.map(swap => this.tradeApiToTradeData(swap))

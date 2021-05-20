@@ -55,6 +55,7 @@ import { BlockchainSelectComponent } from './components/blockchain-select/blockc
 import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
+import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
     CheckboxComponent,
     TotalSupplyOverflowErrorComponent,
     RefreshButtonComponent,
-    WrapLinkDirective
+    WrapLinkDirective,
+    SafetyLinkDirective
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -157,6 +159,7 @@ import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
     BlockchainSelectComponent,
     CheckboxComponent,
     RefreshButtonComponent
-  ]
+  ],
+  providers: [ScannerLinkPipe]
 })
 export class SharedModule {}

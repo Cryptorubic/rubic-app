@@ -16,6 +16,7 @@ import { TokenValueType } from '../../models/order-book/tokens';
 import { SortingResult } from './models/sorting-result';
 import { TradeData } from './models/tokens-table-data';
 import { InstantTradesTradeData } from '../../../features/swaps-page/models/trade-data';
+import { ScannerLinkPipe } from '../../pipes/scanner-link.pipe';
 
 @Component({
   selector: 'app-tokens-table',
@@ -70,7 +71,7 @@ export class TokensTableComponent {
 
   public readonly selectableColumns: string[];
 
-  constructor(private readonly headerStore: HeaderStore) {
+  constructor(private readonly headerStore: HeaderStore, private scannerLinkPipe: ScannerLinkPipe) {
     this.refreshTableEvent = new EventEmitter<void>();
     this.selectTokenEvent = new EventEmitter<TokenValueType>();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
@@ -152,13 +153,29 @@ export class TokensTableComponent {
             isAsc
           );
         case 'From':
-          return this.compareNumbers(a.token.from.price, b.token.from.price, isAsc);
+          return this.compareNumbers(
+            'fromAmount' in a ? a.fromAmount.multipliedBy(a.token.from.price).toNumber() : 0,
+            'fromAmount' in b ? b.fromAmount.multipliedBy(b.token.from.price).toNumber() : 0,
+            isAsc
+          );
         case 'To':
-          return this.compareNumbers(a.token.to.price, b.token.to.price, isAsc);
+          return this.compareNumbers(
+            'fromAmount' in a ? a.fromAmount.multipliedBy(a.token.from.price).toNumber() : 0,
+            'fromAmount' in b ? b.fromAmount.multipliedBy(b.token.from.price).toNumber() : 0,
+            isAsc
+          );
         default:
           return 0;
       }
     });
+  }
+
+  public getLink(part) {
+    if (this.tableType === 'OrderBooks') {
+      return `/public-v3/${part.route}`;
+    }
+
+    return this.scannerLinkPipe.transform(part.hash, part.chain, part.type);
   }
 
   /**
