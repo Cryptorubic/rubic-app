@@ -59,35 +59,39 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   public loadRubicTokenInfo(): Observable<BridgeToken> {
     return this.httpClient.get(`${this.apiUrl}dex/Rubic/`).pipe(
-      map((response: any) => ({
-        symbol: 'RBC',
-        image: '',
-        rank: 0,
+      map((response: any) => {
+        const ethToken = response.tokens.find(token => token.symbol === 'RBC');
+        const bscToken = response.tokens.find(token => token.symbol === 'BRBC');
+        return {
+          symbol: 'RBC',
+          image: '',
+          rank: 0,
 
-        blockchainToken: {
-          [BLOCKCHAIN_NAME.ETHEREUM]: {
-            address: response.tokens[0].token_address,
-            name: 'Rubic',
-            symbol: response.tokens[0].symbol,
-            decimals: response.tokens[0].decimals,
+          blockchainToken: {
+            [BLOCKCHAIN_NAME.ETHEREUM]: {
+              address: ethToken.token_address,
+              name: 'Rubic',
+              symbol: ethToken.symbol,
+              decimals: ethToken.decimals,
 
-            minAmount: response.min_swap_amount,
-            maxAmount: EthereumBinanceRubicBridgeProviderService.RubicMaxAmount
-          },
-          [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-            address: response.tokens[1].token_address,
-            name: 'Rubic',
-            symbol: response.tokens[1].symbol,
-            decimals: response.tokens[1].decimals,
+              minAmount: response.min_swap_amount,
+              maxAmount: EthereumBinanceRubicBridgeProviderService.RubicMaxAmount
+            },
+            [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+              address: bscToken.token_address,
+              name: 'Rubic',
+              symbol: bscToken.symbol,
+              decimals: bscToken.decimals,
 
-            minAmount: response.min_swap_amount,
-            maxAmount: EthereumBinanceRubicBridgeProviderService.RubicMaxAmount
-          }
-        } as BlockchainsTokens,
+              minAmount: response.min_swap_amount,
+              maxAmount: EthereumBinanceRubicBridgeProviderService.RubicMaxAmount
+            }
+          } as BlockchainsTokens,
 
-        fromEthFee: response.tokens[1].fee,
-        toEthFee: response.tokens[0].fee
-      }))
+          fromEthFee: bscToken.fee,
+          toEthFee: ethToken.fee
+        };
+      })
     );
   }
 
