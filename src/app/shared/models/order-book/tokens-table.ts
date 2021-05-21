@@ -1,6 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { OrderBookTradeTableRow } from 'src/app/features/swaps-page/order-books/models/trade-table';
 import { TokenPart } from './tokens';
 import { TradeData } from '../../components/tokens-table/models/tokens-table-data';
 

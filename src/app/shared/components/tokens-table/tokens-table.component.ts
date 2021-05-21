@@ -4,9 +4,7 @@ import {
   Input,
   Output,
   EventEmitter,
-  ViewChild,
-  OnInit,
-  AfterViewInit
+  ViewChild
 } from '@angular/core';
 import { MatSort, MatSortable, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -30,6 +28,7 @@ export class TokensTableComponent {
   private tokensTableData: TradeData[];
 
   @Input() set tableData(data: TradeData[]) {
+    this.isSortInitialization = false;
     const newData = this.prepareData(data);
     this.tokensTableData = newData;
     this.sortedTableData = newData;
@@ -62,18 +61,11 @@ export class TokensTableComponent {
   @Input() public selectedColumn: string;
 
   @ViewChild(MatSort) set sort(sort: MatSort) {
-    if (!sort) {
-      return;
+    // @TODO: fix sort table
+    if (!this.isSortInitialization && sort) {
+      this.sortData(this.tableSorting);
+      this.isSortInitialization = true;
     }
-    this.sortData(this.tableSorting);
-    if (!this.isSortInitialization) {
-      this.sortData({
-        active: this.tableSorting.active,
-        direction: this.tableSorting.direction
-      });
-    }
-
-    this.isSortInitialization = true;
   }
 
   private isSortInitialization = false;
@@ -97,10 +89,6 @@ export class TokensTableComponent {
     this.displayedMobileItems = ['From', 'To', 'Spent', 'Expected', 'Expires in'];
     this.mobileSortItems = ['From', 'To', 'Spent', 'Expected', 'Expires in'];
   }
-
-  // public ngAfterViewInit() {
-  //   this.sortData(this.tableSorting);
-  // }
 
   /**
    * @description Get class name for cell with status.

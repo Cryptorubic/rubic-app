@@ -31,7 +31,17 @@
         </div>
       </th>
       <td *matCellDef="let element">
-        <a routerLink="/public-v3/{{ element.uniqueLink }}">
+        <a
+          safetyLink
+          [link]="
+            getLink({
+              route: element.uniqueLink,
+              hash: element.hash,
+              chain: element.blockchain,
+              type: 'TRANSACTION'
+            })
+          "
+        >
           <div class="tokens-table__cell tokens-table__cell_status">
             <span
               class="tokens-table__status"
@@ -114,14 +124,6 @@
               type: 'TRANSACTION'
             })
           "
-          [routerLink]="
-            getLink({
-              route: element.uniqueLink,
-              hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
-            })
-          "
         >
           <div class="tokens-table__cell tokens-table__cell_token token-cell">
             <div class="token-cell__info">
@@ -149,14 +151,6 @@
         <a
           safetyLink
           [link]="
-            getLink({
-              route: element.uniqueLink,
-              hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
-            })
-          "
-          [routerLink]="
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
@@ -196,14 +190,6 @@
               type: 'TRANSACTION'
             })
           "
-          [routerLink]="
-            getLink({
-              route: element.uniqueLink,
-              hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
-            })
-          "
         >
           <div class="tokens-table__cell provider-cell">
             <img
@@ -234,14 +220,6 @@
               type: 'TRANSACTION'
             })
           "
-          [routerLink]="
-            getLink({
-              route: element.uniqueLink,
-              hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
-            })
-          "
         >
           <div class="tokens-table__cell tokens-table__cell_datetime">
             {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h:
@@ -261,14 +239,6 @@
         <a
           safetyLink
           [link]="
-            getLink({
-              route: element.uniqueLink,
-              hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
-            })
-          "
-          [routerLink]="
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
