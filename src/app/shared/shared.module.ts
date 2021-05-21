@@ -160,7 +160,8 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     CheckboxComponent,
     RefreshButtonComponent,
     WalletAddressFormComponent,
-    RefreshButtonComponent
+    RefreshButtonComponent,
+    ShortAddressPipe
   ]
 })
 export class SharedModule {}

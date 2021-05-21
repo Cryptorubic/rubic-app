@@ -23,10 +23,11 @@
 
       <div class="swap-box__token-section form-field">
         <app-tokens-input
-          [inputDisabled]="true"
+          [amountInputDisabled]="true"
           amountPlaceholder=""
           [tokensList]="fromTokensList"
           [selectedToken]="getBnbTrade.fromToken"
+          [tokensInputDisabled]="true"
           [selectedAmount]="getBnbTrade.fromToken?.fromAmount"
           (tokenChanges)="onSelectedFromTokenChanges($event)"
         ></app-tokens-input>
@@ -49,17 +50,19 @@
         <span class="fee-info__fee-amount"
           >Provider fee:
           {{ getBnbTrade.fromToken.fee + ' ' + getBnbTrade.fromToken.symbol }} &asymp;
-          {{ getFeePrice(getBnbTrade.fromToken.fromAmount, getBnbTrade.fromToken.price) }}&#36;
+          {{
+            getFeePrice(getBnbTrade.fromToken.fee, getBnbTrade.fromToken.price).dp(4).toFixed()
+          }}&#36;
         </span>
 
         <button
           class="fee-info__switch-button"
           type="button"
-          *ngIf="getBnbTrade.fromToken.symbol === 'ETH' && getFeesDifference() > 0"
+          *ngIf="getBnbTrade.fromToken.symbol === 'ETH' && getFeesDifference()?.gt(0)"
           (click)="switchToRbc()"
         >
           <img alt="" src="assets/images/icons/arrow/arrow-right-white.svg" />Switch to RBC to save
-          {{ getFeesDifference() }}&#36;
+          {{ getFeesDifference().dp(4).toFixed() }}&#36;
         </button>
       </div>
 

@@ -19,6 +19,7 @@ import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-get-bnb-form',
@@ -79,6 +80,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
             (token.address === NATIVE_TOKEN_ADDRESS || token.address === this.RBC_KOVAN_ADDRESS)
         )
       );
+      this.setGetBnbTokens();
     });
   }
 
@@ -154,15 +156,15 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getFeePrice(amount: string, price: number): number {
-    return parseFloat(amount) * price;
+  public getFeePrice(amount: string, price: number): BigNumber {
+    return new BigNumber(amount).multipliedBy(price);
   }
 
-  public getFeesDifference(): number {
+  public getFeesDifference(): BigNumber {
     if (this.getBnbTokens.ETH?.fee && this.getBnbTokens.RBC?.fee) {
       const ethFee = this.getFeePrice(this.getBnbTokens.ETH.fee, this.getBnbTokens.ETH.price);
       const rbcFee = this.getFeePrice(this.getBnbTokens.RBC.fee, this.getBnbTokens.RBC.price);
-      return ethFee - rbcFee;
+      return ethFee.minus(rbcFee);
     }
     return undefined;
   }
