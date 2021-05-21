@@ -28,6 +28,11 @@ import { NetworkErrorComponent } from '../../../../../shared/components/network-
 import { INSTANT_TRADES_STATUS } from '../../models/instant-trades-trade-status';
 import { InstantTradeParameters } from '../../models/instant-trades-parametres';
 import { InstantTradeProviderController } from '../../models/instant-trades-provider-controller';
+import { INTSTANT_TRADES_TRADE_STATUS } from '../../../models/trade-data';
+import { PROVIDERS } from '../../models/providers.enum';
+import { TO_BACKEND_BLOCKCHAINS } from '../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
+import { InstantTradesFormService } from './services/instant-trades-form.service';
 import { REFRESH_BUTTON_STATUS } from '../../../../../shared/models/instant-trade/REFRESH_BUTTON_STATUS';
 
 @Component({
@@ -222,7 +227,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private instantTradesApiService: InstantTradesApiService,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly queryParamsService: QueryParamsService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly web3PublicService: Web3PublicService,
+    private readonly instantTradesFormService: InstantTradesFormService
   ) {
     this.$tokensSelectionDisabled = this.queryParamsService.$tokensSelectionDisabled;
   }
@@ -236,7 +243,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: '1inch'
+              label: '1inch',
+              value: PROVIDERS.ONEINCH
             },
             isBestRate: false
           },
@@ -244,7 +252,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: 'Uniswap'
+              label: 'Uniswap',
+              value: PROVIDERS.UNISWAP
             },
             isBestRate: false
           }
@@ -257,7 +266,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: '1inch'
+              label: '1inch',
+              value: PROVIDERS.ONEINCH
             },
             isBestRate: false
           },
@@ -265,7 +275,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: 'Pancakeswap'
+              label: 'Pancakeswap',
+              value: PROVIDERS.PANCAKESWAP
             },
             isBestRate: false
           }
@@ -278,7 +289,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
             trade: null,
             tradeState: null,
             tradeProviderInfo: {
-              label: 'Quickswap'
+              label: 'Quickswap',
+              value: PROVIDERS.QUICKSWAP
             },
             isBestRate: false
           }
@@ -565,20 +577,61 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.trades[selectedServiceIndex].tradeState = state;
       this.selectedTradeState = state;
     };
+
+    let currentHash;
+
     this._instantTradeServices[selectedServiceIndex]
       .createTrade(this.trades[selectedServiceIndex].trade, {
         onApprove: () => {
           this.waitingForProvider = false;
           setTradeState(INSTANT_TRADES_STATUS.APPROVAL);
         },
-        onConfirm: () => {
+        onConfirm: async hash => {
           this.waitingForProvider = false;
           setTradeState(INSTANT_TRADES_STATUS.TX_IN_PROGRESS);
+          currentHash = hash;
+
+          let tradeInfo;
+
+          if (this.trades[selectedServiceIndex].tradeProviderInfo.value === PROVIDERS.ONEINCH) {
+            tradeInfo = {
+              hash,
+              network: TO_BACKEND_BLOCKCHAINS[this.blockchain],
+              provider: this.trades[selectedServiceIndex].tradeProviderInfo.value,
+              from_token: this.tradeParameters.fromToken.address,
+              to_token: this.tradeParameters.toToken.address,
+              from_amount: Web3PublicService.tokenAmountToWei(
+                this.tradeParameters.fromToken,
+                this.trades[selectedServiceIndex].trade.from.amount
+              ),
+              to_amount: Web3PublicService.tokenAmountToWei(
+                this.tradeParameters.toToken,
+                this.trades[selectedServiceIndex].trade.to.amount
+              )
+            };
+          } else {
+            tradeInfo = {
+              hash,
+              provider: this.trades[selectedServiceIndex].tradeProviderInfo.value,
+              network: TO_BACKEND_BLOCKCHAINS[this.blockchain]
+            };
+          }
+          try {
+            await this.instantTradesFormService.createTrade(tradeInfo, this.blockchain);
+          } catch (err) {
+            console.error(err);
+          }
         }
       })
       .then(receipt => {
         setTradeState(INSTANT_TRADES_STATUS.COMPLETED);
         this.transactionHash = receipt.transactionHash;
+
+        this.instantTradesFormService.updateTrade(
+          receipt.transactionHash,
+          INTSTANT_TRADES_TRADE_STATUS.COMPLETED
+        );
+
         this.instantTradesApiService.notifyInstantTradesBot({
           provider: this.trades[selectedServiceIndex].tradeProviderInfo.label,
           blockchain: this.blockchain,
@@ -604,6 +657,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           width: '400px',
           data
         });
+
+        if (currentHash) {
+          this.instantTradesFormService.updateTrade(
+            currentHash,
+            INTSTANT_TRADES_TRADE_STATUS.REJECTED
+          );
+        }
       })
       .finally(() => {
         this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;

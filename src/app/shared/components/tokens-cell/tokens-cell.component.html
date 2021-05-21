@@ -2,18 +2,18 @@
   <div class="tokens-cell__token-from">
     <img
       class="tokens-cell__token-icon"
-      [src]="token.base.image || '/assets/images/icons/coins/empty.svg'"
-      [alt]="token.base.symbol"
+      [src]="token.from.image || '/assets/images/icons/coins/empty.svg'"
+      [alt]="token.from.symbol"
     />
-    {{ token.base.symbol }}
+    {{ token.from.symbol }}
   </div>
   <div class="tokens-cell__separator"></div>
   <div class="tokens-cell__token-to">
     <img
       class="tokens-cell__token-icon"
-      [src]="token.quote.image || '/assets/images/icons/coins/empty.svg'"
-      [alt]="token.quote.symbol"
+      [src]="token.to.image || '/assets/images/icons/coins/empty.svg'"
+      [alt]="token.to.symbol"
     />
-    {{ token.quote.symbol }}
+    {{ token.to.symbol }}
   </div>
 </div>

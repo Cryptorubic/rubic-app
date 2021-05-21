@@ -30,7 +30,7 @@ export class OrderBookCommonService {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
-    const baseContributed: string = await web3Public.callContractMethod(
+    const fromTokensContributed: string = await web3Public.callContractMethod(
       contractAddress,
       contractAbi,
       'baseRaised',
@@ -38,12 +38,12 @@ export class OrderBookCommonService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.base.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.base,
-      baseContributed
+    tradeData.token.from.amountContributed = Web3PublicService.tokenWeiToAmount(
+      tradeData.token.from,
+      fromTokensContributed
     );
 
-    const quoteContributed: string = await web3Public.callContractMethod(
+    const toTokensContributed: string = await web3Public.callContractMethod(
       contractAddress,
       contractAbi,
       'quoteRaised',
@@ -51,9 +51,9 @@ export class OrderBookCommonService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.quote.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.quote,
-      quoteContributed
+    tradeData.token.to.amountContributed = Web3PublicService.tokenWeiToAmount(
+      tradeData.token.to,
+      toTokensContributed
     );
 
     return tradeData;
