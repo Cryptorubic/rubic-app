@@ -5,12 +5,13 @@ import { List } from 'immutable';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { skip, take } from 'rxjs/operators';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { TradeParametersService } from '../swaps/trade-parameters-service/trade-parameters.service';
 import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
-import { QueryParams as FullQueryParams } from './models/query-params';
+import { QueryParams } from './models/query-params';
 import { BridgeToken } from '../../../features/bridge-page/models/BridgeToken';
 
 type DefaultQueryParams = {
@@ -19,8 +20,6 @@ type DefaultQueryParams = {
   [BLOCKCHAIN_NAME.POLYGON]: QueryParams;
   bridge: QueryParams;
 };
-
-type QueryParams = Partial<FullQueryParams>;
 
 @Injectable({
   providedIn: 'root'
@@ -101,7 +100,7 @@ export class QueryParamsService {
   }
 
   public async setupTradeForm(cdr: ChangeDetectorRef): Promise<void> {
-    const queryChain = this.currentQueryParams?.chain;
+    const queryChain = this.currentQueryParams?.chain as BLOCKCHAIN_NAME;
     const chain = Object.values(BLOCKCHAIN_NAME).includes(queryChain)
       ? queryChain
       : BLOCKCHAIN_NAME.ETHEREUM;
@@ -153,6 +152,36 @@ export class QueryParamsService {
         this.document.body.classList.add('iframe');
         if (queryParams.hidden) {
           this.$hiddenNetworksSubject.next(queryParams.hidden.split(','));
+        }
+        const hasTopTokens = Object.values(BLOCKCHAIN_NAME).some(
+          blockchain => `topTokens[${blockchain}]` in queryParams
+        );
+        if (hasTopTokens) {
+          const topTokens = Object.entries(queryParams).reduce(
+            (acc: [string, string], curr: [string, string]) => {
+              const [key, value] = curr;
+              const newKey = key.substring('keyTokens'.length + 1, key.length - 1);
+              return key.includes('topTokens') ? { ...acc, [newKey]: value.split(',') } : acc;
+            },
+            {} as any
+          );
+          this.tokensService.tokens.pipe(skip(1), take(1)).subscribe(tokens => {
+            const rankedTokens = tokens.map((token: SwapToken) => {
+              const currentBlockchainTop = topTokens[token.blockchain];
+              const isTop =
+                currentBlockchainTop?.length > 0 &&
+                currentBlockchainTop.some(topToken => {
+                  return topToken === token.symbol;
+                });
+              return isTop
+                ? {
+                    ...token,
+                    rank: 3
+                  }
+                : token;
+            });
+            this.tokensService.tokens.next(rankedTokens);
+          });
         }
         if (queryParams.background) {
           const color = queryParams.background;
@@ -260,7 +289,7 @@ export class QueryParamsService {
   }
 
   private setDefaultParams(queryParams: QueryParams): QueryParams {
-    const chain = Object.values(BLOCKCHAIN_NAME).includes(queryParams?.chain)
+    const chain = Object.values(BLOCKCHAIN_NAME).includes(queryParams?.chain as BLOCKCHAIN_NAME)
       ? queryParams.chain
       : BLOCKCHAIN_NAME.ETHEREUM;
     return queryParams.from || queryParams.to
