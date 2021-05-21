@@ -35,39 +35,6 @@ import { Web3PublicService } from '../../../../../core/services/blockchain/web3-
 import { InstantTradesFormService } from './services/instant-trades-form.service';
 import { REFRESH_BUTTON_STATUS } from '../../../../../shared/models/instant-trade/REFRESH_BUTTON_STATUS';
 
-interface TradeProviderInfo {
-  label: string;
-  value: PROVIDERS;
-}
-
-interface InstantTradeParameters {
-  fromAmount: string;
-  fromToken: SwapToken;
-  toToken: SwapToken;
-
-  isCustomFromTokenFormOpened: boolean;
-  isCustomToTokenFormOpened: boolean;
-  customFromTokenAddress: string;
-  customToTokenAddress: string;
-
-  gasOptimizationChecked: boolean;
-}
-
-interface InstantTradeProviderController {
-  trade: InstantTrade;
-  tradeState: TRADE_STATUS;
-  tradeProviderInfo: TradeProviderInfo;
-  isBestRate: boolean;
-}
-
-enum TRADE_STATUS {
-  CALCULATION = 'CALCULATION',
-  APPROVAL = 'APPROVAL',
-  TX_IN_PROGRESS = 'TX_IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  ERROR = 'ERROR'
-}
-
 @Component({
   selector: 'app-instant-trades-form',
   templateUrl: './instant-trades-form.component.html',
@@ -262,8 +229,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private readonly queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly web3PublicService: Web3PublicService,
-    private readonly instantTradesFormService: InstantTradesFormService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly instantTradesFormService: InstantTradesFormService
   ) {
     this.$tokensSelectionDisabled = this.queryParamsService.$tokensSelectionDisabled;
   }

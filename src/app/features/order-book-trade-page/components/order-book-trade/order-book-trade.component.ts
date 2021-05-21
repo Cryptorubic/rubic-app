@@ -21,7 +21,6 @@ import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
-import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
