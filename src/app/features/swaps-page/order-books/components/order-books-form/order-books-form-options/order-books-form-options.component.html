@@ -99,50 +99,50 @@
     >
       <div class="form-section__block form-section-block">
         <div class="form-section-block__input-container input-container">
-          <label class="input-container__label" for="min-base-contribute-input-id">
-            Minimum contribution in {{ tradeForm.token.base.symbol }}
+          <label class="input-container__label" for="from-min-contribute-input-id">
+            Minimum contribution in {{ tradeForm.token.from.symbol }}
           </label>
 
           <input
             class="input-container__input input-container__input_min-contribute input-container__input_validated"
-            id="min-base-contribute-input-id"
+            id="from-min-contribute-input-id"
             placeholder="Enter amount"
             appNumberPrecision
-            [inputElement]="baseMinContributeInput"
-            [decimalLength]="tradeForm.token.base.decimals"
-            [maxValue]="tradeForm.token.base.amount"
-            [ngModel]="tradeForm.token.base.minContribution | bigNumberFormat"
-            (ngModelChange)="onMinContributeChange('base', $event)"
-            #baseMinContribute="ngModel"
+            [inputElement]="fromMinContributeInput"
+            [decimalLength]="tradeForm.token.from.decimals"
+            [maxValue]="tradeForm.token.from.amount"
+            [ngModel]="tradeForm.token.from.minContribution | bigNumberFormat"
+            (ngModelChange)="onMinContributeChange('from', $event)"
+            #fromMinContributeModel="ngModel"
             [ngClass]="{
-              'input-container__input_invalid': baseMinContribute.invalid
+              'input-container__input_invalid': fromMinContributeModel.invalid
             }"
-            #baseMinContributeInput
+            #fromMinContributeInput
           />
         </div>
       </div>
 
       <div class="form-section__block form-section-block">
         <div class="form-section-block__input-container input-container">
-          <label class="input-container__label" for="min-quote-contribute-input-id">
-            Minimum contribution in {{ tradeForm.token.quote.symbol }}
+          <label class="input-container__label" for="to-min-contribute-input-id">
+            Minimum contribution in {{ tradeForm.token.to.symbol }}
           </label>
 
           <input
             class="input-container__input input-container__input_min-contribute input-container__input_validated"
-            id="min-quote-contribute-input-id"
+            id="to-min-contribute-input-id"
             placeholder="Enter amount"
             appNumberPrecision
-            [inputElement]="quoteMinContributeInput"
-            [decimalLength]="tradeForm.token.quote.decimals"
-            [maxValue]="tradeForm.token.quote.amount"
-            [ngModel]="tradeForm.token.quote.minContribution | bigNumberFormat"
-            (ngModelChange)="onMinContributeChange('quote', $event)"
-            #quoteMinContribute="ngModel"
+            [inputElement]="toMinContributeInput"
+            [decimalLength]="tradeForm.token.to.decimals"
+            [maxValue]="tradeForm.token.to.amount"
+            [ngModel]="tradeForm.token.to.minContribution | bigNumberFormat"
+            (ngModelChange)="onMinContributeChange('to', $event)"
+            #toMinContributeModel="ngModel"
             [ngClass]="{
-              'input-container__input_invalid': quoteMinContribute.invalid
+              'input-container__input_invalid': toMinContributeModel.invalid
             }"
-            #quoteMinContributeInput
+            #toMinContributeInput
           />
         </div>
       </div>
@@ -206,9 +206,10 @@
               pattern="0x[0-9a-fA-F]{40}"
               [ngModel]="tradeForm.brokerAddress"
               (ngModelChange)="onBrokerAddressChange($event)"
-              #brokerAddress="ngModel"
+              #brokerAddressModel="ngModel"
               [ngClass]="{
-                'input-container__input_invalid': !brokerAddress.value || brokerAddress.invalid
+                'input-container__input_invalid':
+                  !brokerAddressModel.value || brokerAddressModel.invalid
               }"
             />
           </div>
@@ -218,32 +219,32 @@
           <div
             class="form-section-block__input-container input-container input-container_broker-percent"
           >
-            <label class="input-container__label" for="broker-percent-base-input-id">
-              Specify % for {{ tradeForm.token.base.symbol }}
+            <label class="input-container__label" for="from-broker-percent-input-id">
+              Specify % for {{ tradeForm.token.from.symbol }}
             </label>
 
             <input
               class="input-container__input input-container__input_broker-percent input-container__input_validated"
-              id="broker-percent-base-input-id"
+              id="from-broker-percent-input-id"
               appNumberPrecision
-              [inputElement]="baseBrokerInput"
+              [inputElement]="fromBrokerPercentInput"
               integerLength="2"
               decimalLength="2"
               maxValue="50"
-              [ngModel]="tradeForm.token.base.brokerPercent"
-              (ngModelChange)="onBrokerPercentChange('base', $event)"
-              #baseBrokerPercent="ngModel"
+              [ngModel]="tradeForm.token.from.brokerPercent"
+              (ngModelChange)="onBrokerPercentChange('from', $event)"
+              #fromBrokerPercentModel="ngModel"
               [ngClass]="{
-                'input-container__input_invalid': baseBrokerPercent.invalid
+                'input-container__input_invalid': fromBrokerPercentModel.invalid
               }"
-              #baseBrokerInput
+              #fromBrokerPercentInput
             />
 
             <span class="input-container__percent-sign">%</span>
 
             <span class="input-container__calculation">
               You will get: <br />
-              {{ getBrokerPercent('base') }} {{ tradeForm.token.base.name }}
+              {{ getBrokerPercent('from') }} {{ tradeForm.token.from.name }}
             </span>
           </div>
         </div>
@@ -252,32 +253,32 @@
           <div
             class="form-section-block__input-container input-container input-container_broker-percent"
           >
-            <label class="input-container__label" for="broker-percent-quote-input-id">
-              Specify % for {{ tradeForm.token.quote.symbol }}
+            <label class="input-container__label" for="to-broker-percent-input-id">
+              Specify % for {{ tradeForm.token.to.symbol }}
             </label>
 
             <input
               class="input-container__input input-container__input_broker-percent input-container__input_validated"
-              id="broker-percent-quote-input-id"
+              id="to-broker-percent-input-id"
               appNumberPrecision
-              [inputElement]="quoteBrokerInput"
+              [inputElement]="toBrokerPercentInput"
               integerLength="2"
               decimalLength="2"
               maxValue="50"
-              [ngModel]="tradeForm.token.quote.brokerPercent"
-              (ngModelChange)="onBrokerPercentChange('quote', $event)"
-              #quoteBrokerPercent="ngModel"
+              [ngModel]="tradeForm.token.to.brokerPercent"
+              (ngModelChange)="onBrokerPercentChange('to', $event)"
+              #toBrokerPercentModel="ngModel"
               [ngClass]="{
-                'input-container__input_invalid': quoteBrokerPercent.invalid
+                'input-container__input_invalid': toBrokerPercentModel.invalid
               }"
-              #quoteBrokerInput
+              #toBrokerPercentInput
             />
 
             <span class="input-container__percent-sign">%</span>
 
             <span class="input-container__calculation">
               You will get: <br />
-              {{ getBrokerPercent('quote') }} {{ tradeForm.token.quote.name }}
+              {{ getBrokerPercent('to') }} {{ tradeForm.token.to.name }}
             </span>
           </div>
         </div>

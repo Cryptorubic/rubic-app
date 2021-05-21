@@ -42,8 +42,6 @@ export class HeaderComponent {
     const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
     if (!isIframe) {
       this.authService.loadUser();
-    } else {
-      this.authService.loginWithoutBackend();
     }
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;

@@ -53,6 +53,10 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
 import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
+import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
+import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
+import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
+import { ShortAddressPipe } from './pipes/short-address.pipe';
 
 @NgModule({
   declarations: [
@@ -93,7 +97,11 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent,
-    TotalSupplyOverflowErrorComponent
+    TotalSupplyOverflowErrorComponent,
+    RefreshButtonComponent,
+    WrapLinkDirective,
+    SafetyLinkDirective,
+    ShortAddressPipe
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -151,7 +159,10 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     WarningDisclaimerComponent,
     NetworkErrorComponent,
     BlockchainSelectComponent,
-    CheckboxComponent
-  ]
+    CheckboxComponent,
+    ShortAddressPipe,
+    RefreshButtonComponent
+  ],
+  providers: [ScannerLinkPipe]
 })
 export class SharedModule {}

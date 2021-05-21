@@ -55,7 +55,9 @@ $primary-color: #4aa956;
 
   &__cell {
     &_datetime {
+      flex-direction: column;
       white-space: nowrap;
+      align-items: start;
     }
   }
 
@@ -67,22 +69,58 @@ $primary-color: #4aa956;
 
     border-radius: 50%;
 
+    &_completed,
     &_active {
       background-color: $active-green;
+      box-shadow: 0 0 6px #65f7b0;
     }
 
+    &_pending,
     &_expired {
-      background: $expired-yellow;
+      background-color: $expired-yellow;
+      box-shadow: 0 0 6px #f4bb2b;
     }
 
+    &_rejected,
     &_cancelled {
-      background: $cancelled-red;
+      background-color: $cancelled-red;
+      box-shadow: 0 0 6px #ee4256;
     }
 
     &_done {
       background: $done-grey;
     }
   }
+}
+
+.token-cell {
+  &__amount {
+    padding-left: 3px;
+    font-weight: bold;
+  }
+
+  &__info {
+    margin-right: 10px;
+    padding-left: 5px;
+
+    img {
+      margin-right: 5px;
+    }
+  }
+}
+
+.provider-cell {
+  text-transform: capitalize;
+  justify-content: flex-start!important;
+
+  img {
+    margin-right: 7px;
+  }
+}
+
+.link-disable {
+  pointer-events: none;
+  cursor: default;
 }
 
 @keyframes spin {
@@ -108,10 +146,19 @@ $primary-color: #4aa956;
 
   .tokens-table .table tr td .tokens-table__cell.tokens-table__cell_status {
     justify-content: flex-start;
+    padding-left: 10px;
+    text-transform: capitalize;
   }
 
-  .mat-row {
-    cursor: pointer;
+  .tokens-table .table tr td .tokens-table__cell.tokens-table__cell_token {
+    flex-direction: column;
+    align-items: flex-start;
+
+    &.token-cell {
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+    }
   }
 
   .mat-option:hover:not(.mat-option-disabled) {
@@ -134,6 +181,14 @@ $primary-color: #4aa956;
 
   .mat-sort-header-container {
     justify-content: center;
+  }
+
+  .mat-header-row {
+    cursor: pointer;
+  }
+
+  .mat-sort-header-content {
+    margin-left: 18px;
   }
 }
 

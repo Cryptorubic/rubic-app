@@ -4,7 +4,7 @@
       <img src="assets/images/about/cube-img.svg" alt="cube" />
       <h3 class="h3-block-title-s1">
         {{
-          'Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, ' +
+          'Rubic is a multichain DeFi ecosystem which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, ' +
             'aiming to deliver a complete ONE-STOP decentralized platform.' | translate
         }}
       </h3>
@@ -15,11 +15,12 @@
     <div class="container">
       <div class="benefit-blocks">
         <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'P2P trade' | translate }} </span>
+          <span class="span-title-benefits cl-green">{{ 'Custom routing ' | translate }} </span>
           <p class="p-text-benefits">
             {{
-              'Create your trade, choose your own terms, make it public or private, all done in a decentralized manner.'
-                | translate
+              'Rubic created a routing solution that will allow users to trade any token. ' +
+                'The main advantage is the ability to calculate gas prices and show users ' +
+                'the best-optimized solution with paying the least amount of gas.' | translate
             }}
           </p>
         </div>
@@ -27,38 +28,48 @@
           <span class="span-title-benefits cl-green">{{ 'Instant Trade' | translate }} </span>
           <p class="p-text-benefits">
             {{
-              'Execute instant trades using our external DEXes, while getting the best rates.'
-                | translate
+              'Execute an instant trade using external DEXs (while getting best rates)' | translate
             }}
           </p>
         </div>
         <div class="benefit-blocks-item">
           <span class="span-title-benefits cl-green">{{ 'Multichain support' | translate }}</span>
           <p class="p-text-benefits">
-            {{ 'Live: Ethereum, Binance Smart Chain & Polygon (more to come)' | translate }}
-          </p>
-        </div>
-
-        <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'Pools' | translate }}</span>
-          <p class="p-text-benefits">
-            {{ 'Create pools for DEXs by having 1 token (upcoming)' | translate }}
-          </p>
-        </div>
-        <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'Farming' | translate }}</span>
-          <p class="p-text-benefits">
             {{
-              'If you provide liquidity for trades, you will be rewarded by RBC tokens when the trade is executed (upcoming)'
+              'Currently supported blockchains: Ethereum, Binance Smart Chain, Polygon & TRON)'
                 | translate
             }}
+          </p>
+        </div>
+        <div class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">{{ 'Cross-chain swaps' | translate }}</span>
+          <p class="p-text-benefits">
+            {{
+              'Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON'
+                | translate
+            }}
+          </p>
+        </div>
+        <div class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">{{ 'Faucet' | translate }}</span>
+          <p class="p-text-benefits">
+            {{
+              'Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come! '
+                | translate
+            }}
+          </p>
+        </div>
+        <div class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">{{ 'P2P Trades' | translate }} </span>
+          <p class="p-text-benefits">
+            {{ 'Create your trade and choose your own terms' | translate }}
           </p>
         </div>
         <div class="benefit-blocks-item">
           <span class="span-title-benefits cl-green">{{ 'Limit Order' | translate }}</span>
           <p class="p-text-benefits">
             {{
-              'Set the desired rate and the deal will be executed when one of the DEXs meets your requirements.'
+              'Set the desired rate and your deal will be executed automatically when one of the DEXs meets the parameters of your deal'
                 | translate
             }}
           </p>
@@ -69,22 +80,32 @@
 
   <section class="features">
     <div class="container">
-      <span class="span-title-section">{{ 'Rubic DEX features' | translate }}</span>
+      <span class="span-title-section">{{ 'Rubic s DEX Features' | translate }}</span>
       <div class="features-blocks">
         <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Multichain: ETH, BSC, Polygon' | translate }}</span>
+          <span class="icon icon__checked">{{ 'iFrame Widget ' | translate }}</span>
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">{{ 'Custom routing ' | translate }}</span>
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">{{ 'Cross-chain swaps' | translate }}</span>
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">{{
+            'Multichain Support: Ethereum, Binance Smart Chain, Polygon & TRON networks' | translate
+          }}</span>
         </div>
         <div class="features-blocks-item">
           <span class="icon icon__checked">{{ 'Ability to make crowdsales ' | translate }}</span>
         </div>
         <div class="features-blocks-item">
-          <span class="icon icon__checked">{{
-            '% of platform revenue can be regulated' | translate
-          }}</span>
+          <span class="icon icon__checked"
+            >{{ 'Percentage of platform revenue can be regulated ' | translate }}
+          </span>
         </div>
-
         <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Instant Trades' | translate }} </span>
+          <span class="icon icon__checked">{{ 'Instant Trades' | translate }}</span>
         </div>
         <div class="features-blocks-item">
           <span class="icon icon__checked">{{ 'Public/Private deals' | translate }}</span>
@@ -96,12 +117,21 @@
           <span class="icon icon__checked">{{ 'No volume limits' | translate }}</span>
         </div>
         <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'No need to list token' | translate }}</span>
+          <span class="icon icon__checked">{{ 'Custom tokens' | translate }}</span>
         </div>
         <div class="features-blocks-item">
           <span class="icon icon__checked">{{
-            'Stops scams and rugpulls from happening' | translate
+            'Stops scams and "rugpulls" from happening' | translate
           }}</span>
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">{{ 'Limit Orders for Ethereum' | translate }}</span>
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">{{ 'Creation of Custom Bridges' | translate }}</span>
+        </div>
+        <div class="features-blocks-item">
+          <span class="icon icon__checked">{{ 'BNB faucet' | translate }}</span>
         </div>
       </div>
     </div>
@@ -176,6 +206,8 @@
             <li>{{ 'Instant Trades Table' | translate }}</li>
 
             <li>{{ 'UI Simple Update' | translate }}</li>
+
+            <li>{{ 'BSC Limit Orders' | translate }}</li>
           </ul>
         </div>
         <div class="rubic-roadmap-block-item left">

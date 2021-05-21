@@ -18,23 +18,23 @@ export class OrderBooksTableService extends TokensTableService {
   }
 
   public filterTable(): void {
-    const filterBaseValue = this.$filterBaseValue.value?.toLowerCase();
-    const filterQuoteValue = this.$filterQuoteValue.value?.toLowerCase();
+    const filterFromValue = this.$filterFromValue.value?.toLowerCase();
+    const filterToValue = this.$filterToValue.value?.toLowerCase();
     const blockChain = this.$blockchainMode.value;
     this.$visibleTableData.next(
       this.$dataSource.value.filter(
-        trade => trade.blockchain === blockChain && trade.token.base.blockchain
+        trade => trade.blockchain === blockChain && trade.token.from.blockchain
       )
     );
-    if (filterBaseValue) {
+    if (filterFromValue) {
       const filteredData = this.$visibleTableData.value.filter(
-        row => row.token.base.symbol.toLowerCase() === filterBaseValue
+        row => row.token.from.symbol.toLowerCase() === filterFromValue
       );
       this.$visibleTableData.next(filteredData);
     }
-    if (filterQuoteValue) {
+    if (filterToValue) {
       const filteredData = this.$visibleTableData.value.filter(
-        row => row.token.quote.symbol.toLowerCase() === filterQuoteValue
+        row => row.token.to.symbol.toLowerCase() === filterToValue
       );
       this.$visibleTableData.next(filteredData);
     }
