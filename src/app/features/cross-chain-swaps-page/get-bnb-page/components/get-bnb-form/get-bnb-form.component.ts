@@ -160,11 +160,11 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
     return new BigNumber(amount).multipliedBy(price);
   }
 
-  public getFeesDifference(): BigNumber {
+  public getFeesDifferencePercent(): BigNumber {
     if (this.getBnbTokens.ETH?.fee && this.getBnbTokens.RBC?.fee) {
       const ethFee = this.getFeePrice(this.getBnbTokens.ETH.fee, this.getBnbTokens.ETH.price);
       const rbcFee = this.getFeePrice(this.getBnbTokens.RBC.fee, this.getBnbTokens.RBC.price);
-      return ethFee.minus(rbcFee);
+      return ethFee.minus(rbcFee).div(ethFee).multipliedBy(100);
     }
     return undefined;
   }
