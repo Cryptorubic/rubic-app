@@ -96,6 +96,8 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
           this.componentsData.find(component => component.id === this.selectedComponentData.id)
         );
       }
+    } else {
+      this.searchComponent('');
     }
   }
 
