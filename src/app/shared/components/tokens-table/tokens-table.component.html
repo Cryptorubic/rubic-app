@@ -271,7 +271,7 @@
     <div class="tokens-table__mobile-tokens-dropdown">
       <app-coins-filter (selectTokenEvent)="selectToken($event)"></app-coins-filter>
     </div>
-    <div class="tokens-table-mobile__items mobile-items">
+    <div class="tokens-table-mobile__items mobile-items" #mobileTable>
       <ng-container *ngFor="let trade of sortedTableData">
         <app-tokens-accordion
           class="mobile-items__item"

@@ -68,6 +68,14 @@ export class TokensTableComponent {
     }
   }
 
+  @ViewChild('mobileTable') set mobileTable(value) {
+    // @TODO: fix sort table
+    if (!this.isSortInitialization && value) {
+      this.sortData(this.tableSorting);
+      this.isSortInitialization = true;
+    }
+  }
+
   private isSortInitialization = false;
 
   public sortedTableData: TradeData[];
