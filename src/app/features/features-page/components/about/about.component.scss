@@ -140,25 +140,34 @@
   }
 
   .rubic-roadmap {
+    position: relative;
     margin-top: 100px;
     padding-bottom: 300px;
 
-    background-image:
-            url('/assets/images/about/roadmap-art1.svg'),
-            url('/assets/images/about/roadmap-art3.svg'),
-            url('/assets/images/about/roadmap-art2.svg'),
-            url('/assets/images/about/roadmap-art4.svg'),
-            url('/assets/images/about/roadmap-art5.svg'),
-            url('/assets/images/about/roadmap-art-footer.svg');
-    background-position:
-            0 140px,
-            right 20px top 600px,
-            0px 935px,
-            right 20px top 1350px,
-            right 0 top 2150px,
-            left 0 bottom 0;
-    background-repeat:
-            no-repeat;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+              url('/assets/images/about/roadmap-art1.svg'),
+              url('/assets/images/about/roadmap-art3.svg'),
+              url('/assets/images/about/roadmap-art2.svg'),
+              url('/assets/images/about/roadmap-art4.svg'),
+              url('/assets/images/about/roadmap-art5.svg'),
+              url('/assets/images/about/roadmap-art-footer.svg');
+      background-position:
+              0 140px,
+              right 20px top 600px,
+              0px 935px,
+              right 20px top 1350px,
+              right 0 top 2150px,
+              left 0 bottom 0;
+      background-repeat:
+              no-repeat;
+    }
 
     .container {
       max-width: 1100px;
@@ -280,9 +289,18 @@
   }
 }
 
+@include  b($laptop) {
+  .rubic-roadmap {
+    &::before {
+      opacity: 0.1;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .about-page {
     .rubic-roadmap {
+      padding-bottom: 100px;
 
       &-block {
         &::after {
