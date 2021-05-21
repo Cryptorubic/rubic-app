@@ -259,6 +259,10 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   }
 
   private initializeForm(): void {
+    if (!this.queryParamsService.currentQueryParams) {
+      this.queryParamsService.initiateBridgeParams({});
+    }
+
     if (!this.queryParamsService.currentQueryParams?.chain) {
       this.queryParamsService.setQueryParam('chain', this.fromBlockchain.key);
     } else {
