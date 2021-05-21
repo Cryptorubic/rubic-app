@@ -1,6 +1,7 @@
 import { ETH, WEENUS, WSATT, XEENUS, YEENUS } from './eth-tokens';
 import { BLOCKCHAIN_NAME } from '../../app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from '../../app/shared/models/tokens/SwapToken';
+import { TOKEN_RANK } from '../../app/shared/models/tokens/token-rank';
 
 const eth: SwapToken = {
   name: 'Ethereum',
@@ -9,7 +10,7 @@ const eth: SwapToken = {
   address: ETH.address,
   decimals: ETH.decimals,
   image: 'https://devswaps.mywish.io/media/token_images/cg_logo_eth_ethereum_uibu3ky.png',
-  rank: 1,
+  rank: TOKEN_RANK.HIGH,
   price: 1705
 };
 
@@ -21,7 +22,7 @@ const weenus = {
   decimals: WEENUS.decimals,
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 0,
+  rank: TOKEN_RANK.LOW,
   price: 10
 };
 
@@ -33,7 +34,7 @@ const yeenus = {
   decimals: YEENUS.decimals,
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 0,
+  rank: TOKEN_RANK.LOW,
   price: 50
 };
 
@@ -45,7 +46,7 @@ const xeenus = {
   decimals: XEENUS.decimals,
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 0,
+  rank: TOKEN_RANK.LOW,
   price: 2
 };
 
@@ -57,7 +58,7 @@ const wsatt = {
   decimals: WSATT.decimals,
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 0,
+  rank: TOKEN_RANK.LOW,
   price: 5
 };
 

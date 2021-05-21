@@ -13,6 +13,7 @@ import { TradeParametersService } from '../swaps/trade-parameters-service/trade-
 import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
 import { QueryParams } from './models/query-params';
 import { BridgeToken } from '../../../features/bridge-page/models/BridgeToken';
+import { TOKEN_RANK } from '../../../shared/models/tokens/token-rank';
 
 type DefaultQueryParams = {
   [BLOCKCHAIN_NAME.ETHEREUM]: QueryParams;
@@ -158,12 +159,15 @@ export class QueryParamsService {
         );
         if (hasTopTokens) {
           const topTokens = Object.entries(queryParams).reduce(
-            (acc: [string, string], curr: [string, string]) => {
+            (
+              acc: { [k in keyof Record<BLOCKCHAIN_NAME, string>]?: string[] },
+              curr: [string, string]
+            ) => {
               const [key, value] = curr;
               const newKey = key.substring('keyTokens'.length + 1, key.length - 1);
               return key.includes('topTokens') ? { ...acc, [newKey]: value.split(',') } : acc;
             },
-            {} as any
+            {}
           );
           this.tokensService.tokens.pipe(skip(1), take(1)).subscribe(tokens => {
             const rankedTokens = tokens.map((token: SwapToken) => {
@@ -176,7 +180,7 @@ export class QueryParamsService {
               return isTop
                 ? {
                     ...token,
-                    rank: 3
+                    rank: TOKEN_RANK.TOP
                   }
                 : token;
             });
