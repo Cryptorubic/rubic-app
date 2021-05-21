@@ -8,6 +8,7 @@ import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 import { BigNumberFormat } from '../../pipes/big-number-format.pipe';
 
 import { VolumeCellComponent } from './volume-cell.component';
+import { TOKEN_RANK } from '../../models/tokens/token-rank';
 
 describe('VolumeCellComponent', () => {
   let component: VolumeCellComponent;
@@ -31,7 +32,7 @@ describe('VolumeCellComponent', () => {
       minContribution: new BigNumber(1),
       name: 'Ethereum',
       price: 1705,
-      rank: 1,
+      rank: TOKEN_RANK.HIGH,
       symbol: 'ETH'
     } as OrderBookTableToken;
     fixture = TestBed.createComponent(VolumeCellComponent);

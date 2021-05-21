@@ -21,6 +21,7 @@ import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
+import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -40,7 +41,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     {
       name: BLOCKCHAIN_NAME.ETHEREUM,
       label: 'Ethereum',
-      imagePath: 'assets/images/icons/coins/eth.png'
+      imagePath: 'assets/images/icons/coins/eth-contrast.svg'
     },
     {
       name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,

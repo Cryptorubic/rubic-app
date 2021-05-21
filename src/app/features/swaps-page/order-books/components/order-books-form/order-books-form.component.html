@@ -20,6 +20,7 @@
           </div>
 
           <app-tokens-input
+            [fullWidth]="true"
             [tokensList]="availableFromTokens"
             [selectedToken]="fromToken"
             [selectedAmount]="fromAmount"
@@ -92,6 +93,7 @@
             [selectedAmount]="toAmount"
             (tokenChanges)="toToken = $any($event)"
             (numberChanges)="toAmount = $event"
+            [fullWidth]="true"
           ></app-tokens-input>
 
           <div class="tokens-form__custom-token-section">

@@ -8,7 +8,7 @@
   --green-btn-border-hover-bg: #e5f5e7;
 }
 
-// ***** typigraphy *****
+// ***** typography *****
 $main-font: 'Josefin Sans', Arial, sans-serif;
 $ubuntu-font: 'Ubuntu', Arial, sans-serif;
 
@@ -31,7 +31,9 @@ $desktop: 1240;
 $laptop: 960;
 $tablet: 768;
 $mobile-md: 636;
+$mobile-sm-plus: 560;
 $mobile-sm: 401;
 
 // ***** shadows *****
 $shadow-block: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
+$main-shadow: 0 3px 6px rgba(black, 0.16);

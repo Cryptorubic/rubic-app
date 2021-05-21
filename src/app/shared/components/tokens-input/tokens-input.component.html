@@ -17,7 +17,6 @@
     [ngClass]="{ 'tokens-form__input_invalid': numberModel.value && numberModel.invalid }"
     #numberInput
   />
-
   <app-input-dropdown
     [componentClass]="tokenLabelComponentClass"
     [componentsData]="tokensDropdownData"
@@ -28,5 +27,6 @@
     chooseComponentText="Choose Token"
     [disabled]="listDisabled"
     (componentChanges)="onTokenChanges($event)"
+    [fullWidth]="fullWidth"
   ></app-input-dropdown>
 </form>

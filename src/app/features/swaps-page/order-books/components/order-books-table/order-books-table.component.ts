@@ -79,7 +79,8 @@ export class OrderBooksTableComponent implements AfterViewInit {
   private fetchPublicSwaps(): void {
     this.orderBookApi.fetchPublicSwaps().subscribe(
       async tradeData => {
-        this.orderBooksTableService.setTableData(await Promise.all(tradeData));
+        const data = await Promise.all(tradeData);
+        this.orderBooksTableService.setTableData(data);
         this.orderBooksTableService.filterTable();
       },
       err => console.error(err),

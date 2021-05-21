@@ -4,13 +4,7 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { TRADE_MODE } from '../../models';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TradeTypeService } from '../../../../../core/services/swaps/trade-type-service/trade-type.service';
-
-interface Blockchain {
-  name: BLOCKCHAIN_NAME;
-  code: number;
-  label: string;
-  image: string;
-}
+import { BLOCKCHAINS } from '../../../instant-trades/models/BLOCKCHAINS';
 
 interface Mode {
   name: TRADE_MODE;
@@ -25,26 +19,7 @@ interface Mode {
   styleUrls: ['./trades-form.component.scss']
 })
 export class TradesFormComponent implements OnInit, OnDestroy {
-  public BLOCKCHAINS: Array<Blockchain> = [
-    {
-      name: BLOCKCHAIN_NAME.ETHEREUM,
-      code: 22,
-      label: 'Ethereum',
-      image: 'assets/images/icons/coins/eth.png'
-    },
-    {
-      name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      code: 22,
-      label: 'Binance Smart Chain',
-      image: 'assets/images/icons/coins/bnb.svg'
-    },
-    {
-      name: BLOCKCHAIN_NAME.POLYGON,
-      code: 22,
-      label: 'Polygon',
-      image: 'assets/images/icons/coins/polygon.svg'
-    }
-  ];
+  public readonly BLOCKCHAINS = BLOCKCHAINS;
 
   public MODES: Array<Mode> = [
     {

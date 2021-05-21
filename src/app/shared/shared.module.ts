@@ -56,6 +56,7 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
 import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
+import { ShortAddressPipe } from './pipes/short-address.pipe';
 
 @NgModule({
   declarations: [
@@ -99,7 +100,8 @@ import { SafetyLinkDirective } from './directives/safety-link/safety-link.direct
     TotalSupplyOverflowErrorComponent,
     RefreshButtonComponent,
     WrapLinkDirective,
-    SafetyLinkDirective
+    SafetyLinkDirective,
+    ShortAddressPipe
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -158,6 +160,7 @@ import { SafetyLinkDirective } from './directives/safety-link/safety-link.direct
     NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent,
+    ShortAddressPipe,
     RefreshButtonComponent
   ],
   providers: [ScannerLinkPipe]
