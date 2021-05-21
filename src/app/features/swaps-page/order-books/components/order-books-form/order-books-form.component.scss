@@ -153,7 +153,6 @@
   background-color: white;
   border: none;
   border-radius: 50%;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
 
   cursor: pointer;
 
@@ -226,6 +225,7 @@
 @include b($tablet) {
   .main-section__tokens-form {
     padding: 20px 13px;
+
     box-shadow: $shadow-block;
   }
 }

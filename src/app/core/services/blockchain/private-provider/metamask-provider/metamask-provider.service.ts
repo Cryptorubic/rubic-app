@@ -77,12 +77,20 @@ export class MetamaskProviderService extends PrivateProvider {
         }
       });
 
+      this._metaMask.on('disconnect', () => {
+        this.selectedChain = null;
+        this.deActivate();
+      });
+
       this._metaMask.on('accountsChanged', (accounts: string[]) => {
-        [this.selectedAddress] = accounts;
-        this.selectedAddress = this.selectedAddress || null;
+        this.selectedAddress = accounts[0] || null;
         if (this.isEnabled) {
           this.onAddressChanges.next(this.selectedAddress);
           console.info('Selected account changed to', accounts[0]);
+        }
+        if (!this.selectedAddress) {
+          this.selectedChain = null;
+          this.deActivate();
         }
       });
     } else {
@@ -104,9 +112,12 @@ export class MetamaskProviderService extends PrivateProvider {
     return null;
   }
 
-  public async activate(): Promise<void> {
+  public async activate(params?: any[]): Promise<void> {
     try {
-      await this._metaMask.request({ method: 'eth_requestAccounts' });
+      await this._metaMask.request({
+        method: 'eth_requestAccounts',
+        params
+      });
       this.isEnabled = true;
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.getAddress());
@@ -114,6 +125,18 @@ export class MetamaskProviderService extends PrivateProvider {
       console.error(`No Metamask installed. ${error}`);
       throw new MetamaskError();
     }
+  }
+
+  public async requestPermissions(): Promise<any[]> {
+    try {
+      return this._metaMask.request({
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }]
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    return null;
   }
 
   public deActivate(): void {

@@ -25,6 +25,7 @@
             [selectedAmount]="baseAmount"
             (tokenChanges)="baseToken = $any($event)"
             (numberChanges)="baseAmount = $event"
+            [fullWidth]="true"
           ></app-tokens-input>
 
           <div class="tokens-form__custom-token-section">
@@ -92,6 +93,7 @@
             [selectedAmount]="quoteAmount"
             (tokenChanges)="quoteToken = $any($event)"
             (numberChanges)="quoteAmount = $event"
+            [fullWidth]="true"
           ></app-tokens-input>
 
           <div class="tokens-form__custom-token-section">
