@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
+import { skip, take } from 'rxjs/operators';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
@@ -30,16 +31,28 @@ export class QueryParamsService {
 
   public defaultQueryParams: DefaultQueryParams;
 
-  private $tokens: Observable<List<SwapToken>>;
+  private readonly $tokens: Observable<List<SwapToken>>;
 
-  private $hiddenNetworksSubject: BehaviorSubject<string[]>;
+  private readonly $hiddenNetworksSubject: BehaviorSubject<string[]>;
+
+  private readonly $tokensSelectionDisabledSubject: BehaviorSubject<boolean>;
+
+  private readonly $themeSubject: BehaviorSubject<string>;
 
   public get $isIframe(): Observable<boolean> {
     return this.$isIframeSubject.asObservable();
   }
 
+  public get $theme(): Observable<string> {
+    return this.$themeSubject.asObservable();
+  }
+
   public get $hiddenNetworks(): Observable<string[]> {
     return this.$hiddenNetworksSubject.asObservable();
+  }
+
+  public get $tokensSelectionDisabled(): Observable<boolean> {
+    return this.$tokensSelectionDisabledSubject.asObservable();
   }
 
   constructor(
@@ -51,7 +64,9 @@ export class QueryParamsService {
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router
   ) {
+    this.$themeSubject = new BehaviorSubject<string>('default');
     this.$isIframeSubject = new BehaviorSubject<boolean>(false);
+    this.$tokensSelectionDisabledSubject = new BehaviorSubject<boolean>(false);
     this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([]);
     this.$tokens = this.tokensService.tokens.asObservable();
     this.defaultQueryParams = {
@@ -76,12 +91,16 @@ export class QueryParamsService {
     };
   }
 
+  private static isHEXColor(color: string): boolean {
+    return /^[A-F0-9]+$/i.test(color);
+  }
+
   public initiateTradesParams(params: QueryParams): void {
     this.currentQueryParams = this.setDefaultParams(params);
   }
 
   public async setupTradeForm(cdr: ChangeDetectorRef): Promise<void> {
-    const queryChain = this.currentQueryParams?.chain;
+    const queryChain = this.currentQueryParams?.chain as BLOCKCHAIN_NAME;
     const chain = Object.values(BLOCKCHAIN_NAME).includes(queryChain)
       ? queryChain
       : BLOCKCHAIN_NAME.ETHEREUM;
@@ -131,11 +150,54 @@ export class QueryParamsService {
       if (queryParams.iframe === 'true') {
         this.$isIframeSubject.next(true);
         this.document.body.classList.add('iframe');
+        if (queryParams.hidden) {
+          this.$hiddenNetworksSubject.next(queryParams.hidden.split(','));
+        }
+        const hasTopTokens = Object.values(BLOCKCHAIN_NAME).some(
+          blockchain => `topTokens[${blockchain}]` in queryParams
+        );
+        if (hasTopTokens) {
+          const topTokens = Object.entries(queryParams).reduce(
+            (acc: [string, string], curr: [string, string]) => {
+              const [key, value] = curr;
+              const newKey = key.substring('keyTokens'.length + 1, key.length - 1);
+              return key.includes('topTokens') ? { ...acc, [newKey]: value.split(',') } : acc;
+            },
+            {} as any
+          );
+          this.tokensService.tokens.pipe(skip(1), take(1)).subscribe(tokens => {
+            const rankedTokens = tokens.map((token: SwapToken) => {
+              const currentBlockchainTop = topTokens[token.blockchain];
+              const isTop =
+                currentBlockchainTop?.length > 0 &&
+                currentBlockchainTop.some(topToken => {
+                  return topToken === token.symbol;
+                });
+              return isTop
+                ? {
+                    ...token,
+                    rank: 3
+                  }
+                : token;
+            });
+            this.tokensService.tokens.next(rankedTokens);
+          });
+        }
+        if (queryParams.background) {
+          const color = queryParams.background;
+          this.document.body.style.background = QueryParamsService.isHEXColor(color)
+            ? `#${color}`
+            : color;
+        }
+        if (queryParams.hideSelection) {
+          this.$tokensSelectionDisabledSubject.next(queryParams.hideSelection === 'true');
+        }
+        if (queryParams.theme && queryParams.theme === 'dark') {
+          this.$themeSubject.next('dark');
+          this.document.body.classList.add('dark');
+        }
       } else {
         this.$isIframeSubject.next(false);
-      }
-      if (queryParams.hidden) {
-        this.$hiddenNetworksSubject.next(queryParams.hidden.split(','));
       }
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
@@ -227,7 +289,7 @@ export class QueryParamsService {
   }
 
   private setDefaultParams(queryParams: QueryParams): QueryParams {
-    const chain = Object.values(BLOCKCHAIN_NAME).includes(queryParams?.chain)
+    const chain = Object.values(BLOCKCHAIN_NAME).includes(queryParams?.chain as BLOCKCHAIN_NAME)
       ? queryParams.chain
       : BLOCKCHAIN_NAME.ETHEREUM;
     return queryParams.from || queryParams.to

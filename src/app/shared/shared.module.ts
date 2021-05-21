@@ -55,6 +55,7 @@ import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
 import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
+import { ShortAddressPipe } from './pipes/short-address.pipe';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
     CheckboxComponent,
     TotalSupplyOverflowErrorComponent,
     RefreshButtonComponent,
-    WalletAddressFormComponent
+    WalletAddressFormComponent,
+    ShortAddressPipe
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -157,7 +159,8 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
     BlockchainSelectComponent,
     CheckboxComponent,
     RefreshButtonComponent,
-    WalletAddressFormComponent
+    WalletAddressFormComponent,
+    RefreshButtonComponent
   ]
 })
 export class SharedModule {}
