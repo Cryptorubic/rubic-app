@@ -135,6 +135,37 @@
           "url": "https://t.me/Guilhemw"
         }
       ]
+    },
+    {
+      "img": "DaveHaggard.png",
+      "name": "Dave Haggard",
+      "role": "SMM"
+    },
+    {
+      "img": "CollinOBrien.png",
+      "name": "Collin O’Brien",
+      "role": "Marketing"
+    },
+    {
+      "img": "DianaKuznetsova.png",
+      "name": "Diana Kuznetsova",
+      "role": "PR and Marketing",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://teleg.run/aglaekadi"
+        }
+      ]
+    },
+    {
+      "img": "IlianaVasileva.png",
+      "name": "Iliana Vasileva",
+      "role": "customer support and Q/A"
+    },
+    {
+      "img": "SvenMichael.jpg",
+      "name": "Sven Michael",
+      "role": "Business Development"
     }
   ],
   "collaborations": [
