@@ -1,1 +1,37 @@
 @import 'src/app/features/cross-chain-swaps-page/common/styles/form';
+@import 'src/scss/vars';
+
+.swap-box {
+  &__fee-info {
+    margin-bottom: 12px;
+  }
+}
+
+.fee-info {
+  font-size: 14px;
+
+  &__fee-amount {
+    display: block;
+
+    opacity: 0.4;
+  }
+
+  &__switch-button {
+    margin-top: 7px;
+    padding: 8px 12px;
+
+    color: white;
+    font-family: inherit;
+
+    background: $main-green;
+    border-radius: 15px;
+    cursor: pointer;
+
+    opacity: 0.97;
+
+    img {
+      width: 6px;
+      margin-right: 5px;
+    }
+  }
+}

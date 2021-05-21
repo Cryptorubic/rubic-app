@@ -1,3 +1,4 @@
+import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
 export enum GET_BNB_TRADE_STATUS {
@@ -9,8 +10,6 @@ export enum GET_BNB_TRADE_STATUS {
 
 export interface GetBnbTrade {
   status: GET_BNB_TRADE_STATUS;
-  fromToken: SwapToken;
-  fromAmount: string;
+  fromToken: GetBnbToken;
   toToken: SwapToken;
-  toAmount: string;
 }

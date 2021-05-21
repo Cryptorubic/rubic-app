@@ -18,6 +18,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
+import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
 
 @Component({
   selector: 'app-get-bnb-form',
@@ -43,7 +44,11 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   public toBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
 
-  public getBnbTrade: GetBnbTrade;
+  public getBnbTrade = {} as GetBnbTrade;
+
+  public getBnbTokens: {
+    [key: string]: GetBnbToken;
+  };
 
   public tradeSuccessId: string;
 
@@ -78,11 +83,6 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getBnbTrade = {
-      fromAmount: '',
-      toAmount: ''
-    } as GetBnbTrade;
-
     this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
       this.fromTokensList = tokens.filter(
         token =>
@@ -91,6 +91,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
             token.address === this.RBC_ETHEREUM_ADDRESS ||
             (this.isTestingMode && token.address === this.RBC_KOVAN_ADDRESS))
       );
+      this.setGetBnbTokens();
 
       this.getBnbTrade.toToken = tokens.find(
         token =>
@@ -111,38 +112,66 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
     this._walletAddressSubscription$.unsubscribe();
   }
 
-  public onSelectedFromTokenChanges(inputToken: InputToken | null): void {
-    if (inputToken) {
-      this.getBnbTrade.fromToken = this.fromTokensList.find(
-        token =>
-          token.blockchain === this.fromBlockchain.key && token.address === inputToken.address
-      );
+  private setGetBnbTokens() {
+    if (!this.fromTokensList.size) return;
 
-      this.getBnbTrade.status = GET_BNB_TRADE_STATUS.CALCULATION;
-      this.getBnbService.getEstimatedAmounts(this.getBnbTrade).subscribe(
-        (trade: GetBnbTrade) => {
-          this.getBnbTrade = {
-            ...trade,
-            status: GET_BNB_TRADE_STATUS.WAITING
-          };
+    this.getBnbTrade.status = GET_BNB_TRADE_STATUS.CALCULATION;
+    this.getBnbTokens = {};
+    this.fromTokensList.forEach(swapToken => {
+      this.getBnbTokens[swapToken.symbol] = {
+        ...swapToken,
+        fromAmount: '',
+        toAmount: '',
+        fee: ''
+      };
+
+      this.getBnbService.getEstimatedAmount(swapToken).subscribe(
+        getBnbToken => {
+          this.getBnbTokens[swapToken.symbol] = getBnbToken;
+          if (this.getBnbTrade.fromToken?.symbol === swapToken.symbol) {
+            this.getBnbTrade.fromToken = getBnbToken;
+          }
         },
         err => {
           console.debug(err);
-          this.getBnbTrade.status = GET_BNB_TRADE_STATUS.WAITING;
           this.errorsService.showErrorDialog(err, this.dialog);
+        },
+        () => {
+          this.getBnbTrade.status = GET_BNB_TRADE_STATUS.WAITING;
         }
       );
+    });
+  }
+
+  public onSelectedFromTokenChanges(inputToken: InputToken | null): void {
+    if (inputToken) {
+      this.getBnbTrade.fromToken = this.getBnbTokens[inputToken.symbol];
     } else {
       this.getBnbTrade = {
         ...this.getBnbTrade,
-        fromToken: null,
-        fromAmount: '',
-        toAmount: ''
+        fromToken: null
       };
     }
   }
 
-  public createTrade() {
+  public getFeePrice(amount: string, price: number): number {
+    return parseFloat(amount) * price;
+  }
+
+  public getFeesDifference(): number {
+    if (this.getBnbTokens.ETH?.fee && this.getBnbTokens.RBC?.fee) {
+      const ethFee = this.getFeePrice(this.getBnbTokens.ETH.fee, this.getBnbTokens.ETH.price);
+      const rbcFee = this.getFeePrice(this.getBnbTokens.RBC.fee, this.getBnbTokens.RBC.price);
+      return ethFee - rbcFee;
+    }
+    return undefined;
+  }
+
+  public switchToRbc(): void {
+    this.getBnbTrade.fromToken = this.getBnbTokens.RBC;
+  }
+
+  public createTrade(): void {
     this.getBnbTrade.status = GET_BNB_TRADE_STATUS.CALCULATION;
     this.getBnbService
       .createTrade(this.getBnbTrade, () => {

@@ -26,7 +26,9 @@
 }
 
 .swap-box {
+  display: flex;
   flex: 1;
+  flex-direction: column;
   align-self: stretch;
   padding: 20px;
 
@@ -41,10 +43,6 @@
     text-transform: uppercase;
 
     opacity: 0.85;
-
-    &_second {
-      margin-top: auto;
-    }
   }
 
   &__blockchain-section {
@@ -62,6 +60,8 @@
   }
 
   &__scanner-link-container {
+    margin-bottom: 11px;
+
     font-size: 14px;
     text-align: right;
 
@@ -76,7 +76,7 @@
   }
 
   &__description {
-    margin: 11px 0 7px;
+    margin-bottom: 12px;
 
     font-size: 14px;
     line-height: 14px;
@@ -102,9 +102,7 @@
   padding: 0 8px 0 14px;
 
   background-color: #f4f4f4;
-  border-color: white;
-  border-style: solid;
-  border-width: 1px 0;
+  border: 1px solid white;
 
   &__amount {
     font-weight: 400;
@@ -192,7 +190,7 @@
   }
 }
 
-@include b($laptop) {
+@include b(1000) {
   .cross-chain-form {
     align-items: center;
 
@@ -215,12 +213,12 @@
       margin-bottom: 10px;
     }
 
-    &__scanner-link-box {
-      margin-top: 7px;
+    &__token-section {
+      margin-bottom: 7px;
     }
 
-    &__description {
-      margin-top: 7px;
+    &__scanner-link-container {
+      margin-bottom: 7px;
     }
   }
 

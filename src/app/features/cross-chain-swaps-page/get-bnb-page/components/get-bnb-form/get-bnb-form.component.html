@@ -19,7 +19,7 @@
         [isWithEditing]="false"
       ></app-wallet-address-form>
 
-      <div class="swap-box__title swap-box__title_second">You have</div>
+      <div class="swap-box__title">You have</div>
 
       <div class="swap-box__token-section form-field">
         <app-tokens-input
@@ -27,7 +27,7 @@
           amountPlaceholder=""
           [tokensList]="fromTokensList"
           [selectedToken]="getBnbTrade.fromToken"
-          [selectedAmount]="getBnbTrade.fromAmount"
+          [selectedAmount]="getBnbTrade.fromToken?.fromAmount"
           (tokenChanges)="onSelectedFromTokenChanges($event)"
         ></app-tokens-input>
       </div>
@@ -45,8 +45,26 @@
         </app-scanner-link>
       </div>
 
+      <div class="swap-box__fee-info fee-info" *ngIf="getBnbTrade.fromToken?.fee">
+        <span class="fee-info__fee-amount"
+          >Provider fee:
+          {{ getBnbTrade.fromToken.fee + ' ' + getBnbTrade.fromToken.symbol }} &asymp;
+          {{ getFeePrice(getBnbTrade.fromToken.fromAmount, getBnbTrade.fromToken.price) }}&#36;
+        </span>
+
+        <button
+          class="fee-info__switch-button"
+          type="button"
+          *ngIf="getBnbTrade.fromToken.symbol === 'ETH' && getFeesDifference() > 0"
+          (click)="switchToRbc()"
+        >
+          <img alt="" src="assets/images/icons/arrow/arrow-right-white.svg" />Switch to RBC to save
+          {{ getFeesDifference() }}&#36;
+        </button>
+      </div>
+
       <div class="swap-box__description">
-        You will get Binance Smart Chain tokens to the provided address
+        You will get Binance Smart Chain tokens to the selected address
       </div>
     </div>
 
@@ -69,10 +87,12 @@
         [isWithEditing]="false"
       ></app-wallet-address-form>
 
-      <div class="swap-box__title swap-box__title_second">You get</div>
+      <div class="swap-box__title">You get</div>
 
       <div class="swap-box__token-section token-chosen">
-        <span class="token-chosen__amount">{{ getBnbTrade.toAmount | bigNumberFormat }}</span>
+        <span class="token-chosen__amount">{{
+          getBnbTrade.fromToken?.toAmount | bigNumberFormat
+        }}</span>
 
         <div class="token-chosen__card token-card">
           <img class="token-card__icon" [src]="getBnbTrade.toToken?.image" alt="Token" />

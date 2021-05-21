@@ -13,9 +13,14 @@
 }
 
 .swap-box {
+  &__title {
+    &_second {
+      margin-top: auto;
+    }
+  }
+
   &__min-max-amounts-section {
     width: 100%;
-    margin-top: 8px;
 
     &_hidden {
       visibility: hidden;

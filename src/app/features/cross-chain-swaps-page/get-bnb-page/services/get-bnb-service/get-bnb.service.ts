@@ -13,11 +13,14 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import BigNumber from 'bignumber.js';
+import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { ABI, contractAddress } from './constants/ethContract';
 
 interface EstimatedAmountResponse {
   from_amount: number;
   to_amount: number;
+  fee_amount: number;
 }
 
 @Injectable()
@@ -37,22 +40,21 @@ export class GetBnbService {
     });
   }
 
-  public getEstimatedAmounts(trade: GetBnbTrade): Observable<GetBnbTrade> {
-    return this.httpService
-      .get(`estimate_amount/${trade.fromToken.symbol}/`, {}, this.baseApiUrl)
-      .pipe(
-        map((response: EstimatedAmountResponse) => ({
-          ...trade,
-          fromAmount: Web3PublicService.tokenWeiToAmount(
-            trade.fromToken,
-            response.from_amount.toString()
-          ).toFixed(),
-          toAmount: Web3PublicService.tokenWeiToAmount(
-            trade.toToken,
-            response.to_amount.toString()
-          ).toFixed()
-        }))
-      );
+  public getEstimatedAmount(swapToken: SwapToken): Observable<GetBnbToken> {
+    return this.httpService.get(`estimate_amount/${swapToken.symbol}/`, {}, this.baseApiUrl).pipe(
+      map((response: EstimatedAmountResponse) => ({
+        ...swapToken,
+        fromAmount: Web3PublicService.tokenWeiToAmount(
+          swapToken,
+          response.from_amount.toString()
+        ).toFixed(),
+        toAmount: Web3PublicService.tokenWeiToAmount(
+          swapToken,
+          response.to_amount.toString()
+        ).toFixed(),
+        fee: Web3PublicService.tokenWeiToAmount(swapToken, response.fee_amount.toString()).toFixed()
+      }))
+    );
   }
 
   private checkSettings() {
@@ -74,32 +76,33 @@ export class GetBnbService {
   }
 
   protected async checkBalance(trade: GetBnbTrade): Promise<void> {
-    const amountIn = Web3PublicService.tokenAmountToWei(trade.fromToken, trade.fromAmount);
+    const token = trade.fromToken;
+    const { fromAmount } = trade.fromToken;
+    const amountIn = Web3PublicService.tokenAmountToWei(token, fromAmount);
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
 
-    if (web3Public.isNativeAddress(trade.fromToken.address)) {
+    if (web3Public.isNativeAddress(token.address)) {
       const balance = await web3Public.getBalance(this.web3PrivateService.address, {
         inWei: true
       });
       if (balance.lt(amountIn)) {
         const formattedBalance = web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(
-          trade.fromToken.symbol,
-          formattedBalance,
-          trade.fromAmount.toString()
-        );
+        throw new InsufficientFundsError(token.symbol, formattedBalance, fromAmount.toString());
       }
     } else {
       const tokensBalance = await web3Public.getTokenBalance(
         this.web3PrivateService.address,
-        trade.fromToken.address
+        token.address
       );
       if (tokensBalance.lt(amountIn)) {
-        const formattedTokensBalance = tokensBalance.div(10 ** trade.fromToken.decimals).toString();
+        const formattedTokensBalance = Web3PublicService.tokenWeiToAmount(
+          token,
+          tokensBalance
+        ).toFixed();
         throw new InsufficientFundsError(
-          trade.fromToken.symbol,
+          token.symbol,
           formattedTokensBalance,
-          trade.fromAmount.toString()
+          fromAmount.toString()
         );
       }
     }
@@ -112,26 +115,28 @@ export class GetBnbService {
     this.checkSettings();
     await this.checkBalance(trade);
 
-    if (trade.fromToken.symbol === 'ETH') {
+    const token = trade.fromToken;
+    const { fromAmount } = trade.fromToken;
+    if (token.symbol === 'ETH') {
       const receipt = await this.web3PrivateService.executeContractMethod(
         contractAddress,
         ABI,
         'deposit',
         [],
         {
-          value: Web3PublicService.tokenAmountToWei(trade.fromToken, trade.fromAmount),
+          value: Web3PublicService.tokenAmountToWei(token, fromAmount),
           onTransactionHash
         }
       );
       return receipt.transactionHash;
     }
 
-    await this.provideAllowance(trade, onTransactionHash);
+    await this.provideAllowance(token, onTransactionHash);
     const receipt = await this.web3PrivateService.executeContractMethod(
       contractAddress,
       ABI,
       'depositToken',
-      [trade.fromToken.address],
+      [token.address],
       {
         onTransactionHash
       }
@@ -139,26 +144,22 @@ export class GetBnbService {
     return receipt.transactionHash;
   }
 
-  private async provideAllowance(trade: GetBnbTrade, onTransactionHash: (hash: string) => void) {
+  private async provideAllowance(
+    token: GetBnbToken,
+    onTransactionHash: (hash: string) => void
+  ): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
     const allowance = await web3Public.getAllowance(
-      trade.fromToken.address,
+      token.address,
       this.web3PrivateService.address,
       contractAddress
     );
-    const fromAmount = new BigNumber(
-      Web3PublicService.tokenAmountToWei(trade.fromToken, trade.fromAmount)
-    );
+    const fromAmount = new BigNumber(Web3PublicService.tokenAmountToWei(token, token.fromAmount));
     if (fromAmount.gt(allowance)) {
       const uintInfinity = new BigNumber(2).pow(256).minus(1);
-      await this.web3PrivateService.approveTokens(
-        trade.fromToken.address,
-        contractAddress,
-        uintInfinity,
-        {
-          onTransactionHash
-        }
-      );
+      await this.web3PrivateService.approveTokens(token.address, contractAddress, uintInfinity, {
+        onTransactionHash
+      });
     }
   }
 }
