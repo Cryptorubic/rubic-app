@@ -10,7 +10,7 @@ import { Observable, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
-import { DOCUMENT } from '@angular/common';
+import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
@@ -383,6 +383,21 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     return this.trades[providerIndex].tradeState === INSTANT_TRADES_STATUS.ERROR;
   }
 
+  public triggerRecalculateTradeParameters(): void {
+    const isIframe = new AsyncPipe(this.cdr).transform(this.$isIframe);
+    const tradeState = this.trades[this.bestProviderIndex]?.tradeState;
+    if (
+      isIframe &&
+      ((tradeState &&
+        tradeState !== INSTANT_TRADES_STATUS.ERROR &&
+        tradeState !== INSTANT_TRADES_STATUS.COMPLETED) ||
+        this.waitingForProvider)
+    ) {
+      return;
+    }
+    this.calculateTradeParameters();
+  }
+
   public async calculateTradeParameters() {
     this.refreshButtonStatus = REFRESH_BUTTON_STATUS.REFRESHING;
 
@@ -543,6 +558,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
+    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+
     this.waitingForProvider = true;
     const setTradeState = (state: INSTANT_TRADES_STATUS) => {
       this.trades[selectedServiceIndex].tradeState = state;
@@ -587,6 +604,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           width: '400px',
           data
         });
+      })
+      .finally(() => {
+        this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;
       });
   }
 

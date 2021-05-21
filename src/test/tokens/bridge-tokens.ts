@@ -5,12 +5,13 @@ import {
   BlockchainsTokens,
   BridgeToken
 } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
+import { TOKEN_RANK } from '../../app/shared/models/tokens/token-rank';
 
 const RBC: BridgeToken = {
   symbol: 'RBC',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 1,
+  rank: TOKEN_RANK.HIGH,
 
   blockchainToken: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -41,7 +42,7 @@ const ETH_POL: BridgeToken = {
   symbol: 'ETH',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 1,
+  rank: TOKEN_RANK.HIGH,
 
   blockchainToken: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -72,7 +73,7 @@ const WETH: BridgeToken = {
   symbol: 'WETH',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: 0,
+  rank: TOKEN_RANK.LOW,
 
   blockchainToken: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {

@@ -9,6 +9,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { BigNumberFormat } from 'src/app/shared/pipes/big-number-format.pipe';
 
 import { TokenFormComponent } from './token-form.component';
+import { TOKEN_RANK } from '../../../../../../shared/models/tokens/token-rank';
 
 describe('TokenFormComponent', () => {
   let component: TokenFormComponent;
@@ -27,7 +28,7 @@ describe('TokenFormComponent', () => {
     address: 'string',
     decimals: 20,
     image: 'string',
-    rank: 1,
+    rank: TOKEN_RANK.HIGH,
     price: 1
   } as OrderBookDataToken;
 
