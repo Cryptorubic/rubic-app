@@ -1,4 +1,5 @@
 import { ETH, WEENUS, WSATT, XEENUS, YEENUS } from './eth-tokens';
+import { TOKEN_RANK } from '../../app/shared/models/tokens/token-rank';
 
 const eth = {
   name: 'Ethereum',
@@ -8,7 +9,7 @@ const eth = {
   decimals: ETH.decimals,
   image: 'https://devswaps.mywish.io/media/token_images/cg_logo_eth_ethereum_uibu3ky.png',
   coingecko_id: '1',
-  rank: 1,
+  rank: TOKEN_RANK.HIGH,
   usd_price: 1705
 };
 
@@ -21,7 +22,7 @@ const weenus = {
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
   coingecko_id: '2',
-  rank: 2,
+  rank: TOKEN_RANK.POPULAR,
   usd_price: 10
 };
 
@@ -34,7 +35,7 @@ const yeenus = {
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
   coingecko_id: '3',
-  rank: 3,
+  rank: TOKEN_RANK.TOP,
   usd_price: 50
 };
 
@@ -47,7 +48,7 @@ const xeenus = {
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
   coingecko_id: '4',
-  rank: 4,
+  rank: TOKEN_RANK.POPULAR + 1,
   usd_price: 2
 };
 
@@ -60,7 +61,7 @@ const wsatt = {
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
   coingecko_id: '5',
-  rank: 5,
+  rank: TOKEN_RANK.POPULAR + 2,
   usd_price: 5
 };
 

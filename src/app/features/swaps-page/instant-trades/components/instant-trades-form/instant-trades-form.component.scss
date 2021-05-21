@@ -21,6 +21,13 @@
 
   padding: 27px 30px 29px;
 
+  &__iframe-logo {
+    position: absolute;
+    top: 8px;
+
+    height: 25px;
+  }
+
   &_extended {
     min-height: 237px;
   }
@@ -43,7 +50,15 @@
 
   &__to-section {
     flex: 6;
+
+    .selection-block__header {
+      margin-right: calc(100% / 3 + 20px);
+    }
   }
+}
+
+app-tokens-swap-input:not(:last-child) {
+  margin-bottom: 20px;
 }
 
 .arrow-button {
@@ -60,7 +75,6 @@
   background-color: white;
   border: none;
   border-radius: 50%;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.15);
 
   cursor: pointer;
 
@@ -151,45 +165,6 @@
   }
 }
 
-.instant-trade-button {
-  position: relative;
-  top: 22px;
-
-  &_second {
-    top: 1px;
-  }
-
-  &__best-rate {
-    position: absolute;
-    top: -40px;
-    right: -10px;
-
-    img {
-      position: relative;
-      top: 20px;
-    }
-
-    span {
-      color: rgba(black, 0.5);
-      font-size: 14px;
-    }
-  }
-}
-
-.checkbox-optimization {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-
-  span {
-    margin-right: 5px;
-
-    color: rgba(black, 0.5);
-    font-size: 14px;
-  }
-}
-
 app-tooltip {
   position: absolute;
   right: -88px;
@@ -243,7 +218,8 @@ app-tooltip {
       }
 
       &__to-section {
-        display: block;
+        display: flex;
+        flex-direction: column;
 
         .instant-trade-button:nth-child(2) {
           margin-bottom: 22px;
