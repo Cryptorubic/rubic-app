@@ -1,40 +1,45 @@
 import {
   Directive,
-  ElementRef,
   HostBinding,
+  HostListener,
   Inject,
   Input,
-  OnChanges,
+  OnInit,
   PLATFORM_ID
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Directive({
   selector: '[safetyLink]'
 })
-export class SafetyLinkDirective implements OnChanges {
+export class SafetyLinkDirective implements OnInit {
   @HostBinding('attr.rel') relAttr = null;
 
   @HostBinding('attr.target') targetAttr = null;
 
   @HostBinding('attr.href') hrefAttr = null;
 
-  @Input() href: string;
+  @Input() link: string;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: string, private elementRef: ElementRef) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: string, private router: Router) {}
 
-  ngOnChanges() {
-    this.hrefAttr = this.href;
-
+  ngOnInit() {
+    this.hrefAttr = this.link;
     if (this.isLinkExternal()) {
       this.relAttr = 'noopener';
       this.targetAttr = '_blank';
-    } else {
-      this.targetAttr = '_self';
+    }
+  }
+
+  @HostListener('click', ['$event'])
+  private linkClick(event: MouseEvent) {
+    if (!this.isLinkExternal()) {
+      event.preventDefault();
+      this.router.navigate([this.link]);
     }
   }
 
   private isLinkExternal() {
-    return isPlatformBrowser(this.platformId) && !this.href.includes(location.hostname);
+    return this.link.includes(location.protocol);
   }
 }

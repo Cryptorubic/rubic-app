@@ -2,11 +2,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OrderBookTradeTableRow } from 'src/app/features/swaps-page/order-books/models/trade-table';
 import { TokenPart } from './tokens';
+import { TradeData } from '../../components/tokens-table/models/tokens-table-data';
 
 export abstract class TokensTableService {
-  protected readonly $dataSource: BehaviorSubject<OrderBookTradeTableRow[]>;
+  protected readonly $dataSource: BehaviorSubject<TradeData[]>;
 
-  protected readonly $visibleTableData: BehaviorSubject<OrderBookTradeTableRow[]>;
+  protected readonly $visibleTableData: BehaviorSubject<TradeData[]>;
 
   protected readonly $filterFromValue: BehaviorSubject<any>;
 
@@ -18,8 +19,8 @@ export abstract class TokensTableService {
     this.$tableLoadingStatus = new BehaviorSubject<boolean>(false);
     this.$filterFromValue = new BehaviorSubject<any>(null);
     this.$filterToValue = new BehaviorSubject<any>(null);
-    this.$dataSource = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
-    this.$visibleTableData = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
+    this.$dataSource = new BehaviorSubject<TradeData[]>([]);
+    this.$visibleTableData = new BehaviorSubject<TradeData[]>([]);
   }
 
   public getTableData(): Observable<any> {
@@ -30,7 +31,7 @@ export abstract class TokensTableService {
     return this.$dataSource.pipe(map(data => data.length > 0));
   }
 
-  public setTableData(value: any): void {
+  public setTableData(value: TradeData[]): void {
     this.$dataSource.next(value);
     this.$visibleTableData.next(value);
     this.$tableLoadingStatus.next(false);

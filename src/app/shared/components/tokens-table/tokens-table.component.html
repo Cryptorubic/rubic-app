@@ -77,7 +77,7 @@
       <td *matCellDef="let element" class="centered-child">
         <a
           safetyLink
-          [href]="
+          [link]="
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
@@ -106,7 +106,15 @@
       <td *matCellDef="let element">
         <a
           safetyLink
-          [href]="
+          [link]="
+            getLink({
+              route: element.uniqueLink,
+              hash: element.hash,
+              chain: element.blockchain,
+              type: 'TRANSACTION'
+            })
+          "
+          [routerLink]="
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
@@ -140,7 +148,15 @@
       <td *matCellDef="let element">
         <a
           safetyLink
-          [href]="
+          [link]="
+            getLink({
+              route: element.uniqueLink,
+              hash: element.hash,
+              chain: element.blockchain,
+              type: 'TRANSACTION'
+            })
+          "
+          [routerLink]="
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
@@ -172,7 +188,15 @@
       <td *matCellDef="let element">
         <a
           safetyLink
-          [href]="
+          [link]="
+            getLink({
+              route: element.uniqueLink,
+              hash: element.hash,
+              chain: element.blockchain,
+              type: 'TRANSACTION'
+            })
+          "
+          [routerLink]="
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
@@ -202,7 +226,15 @@
       <td *matCellDef="let element" class="centered-child">
         <a
           safetyLink
-          [href]="
+          [link]="
+            getLink({
+              route: element.uniqueLink,
+              hash: element.hash,
+              chain: element.blockchain,
+              type: 'TRANSACTION'
+            })
+          "
+          [routerLink]="
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
@@ -219,16 +251,24 @@
       </td>
     </ng-container>
     <!-- Date  -->
-    <ng-container matColumnDef="Date">
+    <ng-container matColumnDef="Last update">
       <th mat-header-cell *matHeaderCellDef class="centered-child" mat-sort-header>
         <div class="tokens-table__cell">
-          {{ 'Date' | translate }}
+          {{ 'Last update' | translate }}
         </div>
       </th>
       <td *matCellDef="let element" class="centered-child">
         <a
           safetyLink
-          [href]="
+          [link]="
+            getLink({
+              route: element.uniqueLink,
+              hash: element.hash,
+              chain: element.blockchain,
+              type: 'TRANSACTION'
+            })
+          "
+          [routerLink]="
             getLink({
               route: element.uniqueLink,
               hash: element.hash,

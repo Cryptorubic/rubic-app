@@ -33,7 +33,7 @@ export default [
     id: 137,
     name: BLOCKCHAIN_NAME.POLYGON,
     scannerUrl: 'https://explorer-mainnet.maticvigil.com/',
-    rpcLink: 'https://rpc-mainnet.matic.network',
+    rpcLink: 'https://rpc-mainnet.maticvigil.com',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
       blockchainName: BLOCKCHAIN_NAME.POLYGON,

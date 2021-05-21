@@ -39,8 +39,8 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
     this.$tableLoading = this.instantTradesTableService.getTableLoadingStatus();
     this.instantTradesTableService.setTableLoadingStatus(true);
     this.$dataSource = this.instantTradesTableService.getTableData();
-    this.displayedColumns = ['Status', 'Network', 'From', 'To', 'Provider', 'Date'];
-    this.displayedMobileItems = ['Network', 'From', 'To', 'Provider', 'Date'];
+    this.displayedColumns = ['Status', 'Network', 'From', 'To', 'Provider', 'Last update'];
+    this.displayedMobileItems = ['Network', 'From', 'To', 'Provider', 'Last update'];
     this.mobileSortItems = ['Date', 'From', 'To'];
     this.columnsSizes = ['15%', '9%', '23%', '23%', '15%', '15%'];
     this.$hasData = this.instantTradesTableService.hasData();
@@ -85,7 +85,7 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
   private fetchSwaps(): void {
     this.instantTradesApiService.fetchSwaps().subscribe(
       tradeData => {
-        this.instantTradesTableService.setTableData(tradeData);
+        this.instantTradesTableService.setTableData(tradeData as InstantTradesTradeData[]);
         this.instantTradesTableService.filterTable();
       },
       err => console.error(err),

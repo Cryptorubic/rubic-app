@@ -24,15 +24,12 @@ const instantTradesApiRoutes = {
 export class InstantTradesApiService {
   private isTestingMode: boolean;
 
-  private walletAddress: string;
-
   constructor(
     private httpService: HttpService,
     private useTestingModeService: UseTestingModeService,
     private web3PrivateService: Web3PrivateService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
-    this.web3PrivateService.onAddressChanges.subscribe(res => (this.walletAddress = res));
   }
 
   public notifyInstantTradesBot(body: {

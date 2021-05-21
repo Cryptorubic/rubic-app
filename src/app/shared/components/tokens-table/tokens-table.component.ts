@@ -4,9 +4,11 @@ import {
   Input,
   Output,
   EventEmitter,
-  ViewChild
+  ViewChild,
+  OnInit,
+  AfterViewInit
 } from '@angular/core';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort, MatSortable, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -59,7 +61,22 @@ export class TokensTableComponent {
 
   @Input() public selectedColumn: string;
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) set sort(sort: MatSort) {
+    if (!sort) {
+      return;
+    }
+    this.sortData(this.tableSorting);
+    if (!this.isSortInitialization) {
+      this.sortData({
+        active: this.tableSorting.active,
+        direction: this.tableSorting.direction
+      });
+    }
+
+    this.isSortInitialization = true;
+  }
+
+  private isSortInitialization = false;
 
   public sortedTableData: TradeData[];
 
@@ -80,6 +97,10 @@ export class TokensTableComponent {
     this.displayedMobileItems = ['From', 'To', 'Spent', 'Expected', 'Expires in'];
     this.mobileSortItems = ['From', 'To', 'Spent', 'Expected', 'Expires in'];
   }
+
+  // public ngAfterViewInit() {
+  //   this.sortData(this.tableSorting);
+  // }
 
   /**
    * @description Get class name for cell with status.
@@ -134,34 +155,52 @@ export class TokensTableComponent {
     }
 
     this.sortedTableData = data.sort((a, b) => {
+      let a1;
+      let b1;
+      if (this.isOrderBook(a) && this.isOrderBook(b)) {
+        a1 = a as OrderBookTradeData;
+        b1 = b as OrderBookTradeData;
+      } else {
+        a1 = a as InstantTradesTradeData;
+        b1 = b as InstantTradesTradeData;
+      }
+
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case 'Expires in':
           return this.compareNumbers(
-            (a as OrderBookTradeData).expirationDate.toDate().getTime(),
-            (b as OrderBookTradeData).expirationDate.toDate().getTime(),
+            (a1 as OrderBookTradeData).expirationDate.toDate().getTime(),
+            (b1 as OrderBookTradeData).expirationDate.toDate().getTime(),
             isAsc
           );
         case 'Network':
-          return this.compareStrings(a.blockchain, b.blockchain, isAsc);
+          return this.compareStrings(a1.blockchain, b1.blockchain, isAsc);
         case 'Status':
-          return this.compareStrings(a.status, b.status, isAsc);
-        case 'Date':
+          return this.compareStrings(a1.status, b1.status, isAsc);
+        case 'Last update':
           return this.compareNumbers(
-            (a as InstantTradesTradeData).date.getTime(),
-            (b as InstantTradesTradeData).date.getTime(),
+            (a1 as InstantTradesTradeData).date.getTime(),
+            (b1 as InstantTradesTradeData).date.getTime(),
             isAsc
           );
         case 'From':
           return this.compareNumbers(
-            'fromAmount' in a ? a.fromAmount.multipliedBy(a.token.from.price).toNumber() : 0,
-            'fromAmount' in b ? b.fromAmount.multipliedBy(b.token.from.price).toNumber() : 0,
+            (a1 as InstantTradesTradeData).fromAmount
+              .multipliedBy(a1.token.from.price || 0)
+              .toNumber(),
+            (b1 as InstantTradesTradeData).fromAmount
+              .multipliedBy(b1.token.from.price || 0)
+              .toNumber(),
             isAsc
           );
         case 'To':
           return this.compareNumbers(
-            'fromAmount' in a ? a.fromAmount.multipliedBy(a.token.from.price).toNumber() : 0,
-            'fromAmount' in b ? b.fromAmount.multipliedBy(b.token.from.price).toNumber() : 0,
+            (a1 as InstantTradesTradeData).fromAmount
+              .multipliedBy(a1.token.from.price || 0)
+              .toNumber(),
+            (b1 as InstantTradesTradeData).fromAmount
+              .multipliedBy(b1.token.from.price || 0)
+              .toNumber(),
             isAsc
           );
         default:
@@ -174,7 +213,6 @@ export class TokensTableComponent {
     if (this.tableType === 'OrderBooks') {
       return `/public-v3/${part.route}`;
     }
-
     return this.scannerLinkPipe.transform(part.hash, part.chain, part.type);
   }
 
@@ -187,6 +225,14 @@ export class TokensTableComponent {
    */
   private compareNumbers(a: number, b: number, isAsc: boolean): SortingResult {
     return ((a < b ? -1 : 1) * (isAsc ? 1 : -1)) as SortingResult;
+  }
+
+  /**
+   * @description check type on OrderBookTradeData.
+   * @param tableData data for table.
+   */
+  private isOrderBook(tableData: TradeData): tableData is OrderBookTradeData {
+    return (tableData as OrderBookTradeData).expiresIn !== undefined;
   }
 
   /**
