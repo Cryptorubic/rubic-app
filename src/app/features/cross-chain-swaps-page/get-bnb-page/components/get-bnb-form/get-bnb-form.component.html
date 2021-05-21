@@ -47,27 +47,31 @@
       </div>
 
       <div class="swap-box__fee-info fee-info" *ngIf="getBnbTrade.fromToken?.fee">
+        <button
+          class="fee-info__switch-button"
+          type="button"
+          *ngIf="getBnbTrade.fromToken.symbol === 'ETH' && getFeesDifferencePercent()?.gt(0)"
+          (click)="switchToRbc()"
+        >
+          Use RBС for Low Fees
+        </button>
+
+        <span
+          class="fee-info__discount-info"
+          *ngIf="getBnbTrade.fromToken.symbol === 'RBC' && getFeesDifferencePercent()?.gt(0)"
+        >
+          <img alt="" src="assets/images/icons/cross-chain-swaps/tick.svg" />{{
+            getFeesDifferencePercent().toFixed(0)
+          }}% discount with RBC
+        </span>
+
         <span class="fee-info__fee-amount"
           >Provider fee:
           {{ getBnbTrade.fromToken.fee + ' ' + getBnbTrade.fromToken.symbol }} &asymp;
           {{
-            getFeePrice(getBnbTrade.fromToken.fee, getBnbTrade.fromToken.price).dp(4).toFixed()
+            getFeePrice(getBnbTrade.fromToken.fee, getBnbTrade.fromToken.price).dp(2).toFixed()
           }}&#36;
         </span>
-
-        <button
-          class="fee-info__switch-button"
-          type="button"
-          *ngIf="getBnbTrade.fromToken.symbol === 'ETH' && getFeesDifference()?.gt(0)"
-          (click)="switchToRbc()"
-        >
-          <img alt="" src="assets/images/icons/arrow/arrow-right-white.svg" />Switch to RBC to save
-          {{ getFeesDifference().dp(4).toFixed() }}&#36;
-        </button>
-      </div>
-
-      <div class="swap-box__description">
-        You will get Binance Smart Chain tokens to the selected address
       </div>
     </div>
 
@@ -98,7 +102,7 @@
         }}</span>
 
         <div class="token-chosen__card token-card">
-          <img class="token-card__icon" [src]="getBnbTrade.toToken?.image" alt="Token" />
+          <img class="token-card__icon" [src]="getBnbTrade.toToken?.image" alt="" />
           <span class="token-card__name">{{ getBnbTrade.toToken?.symbol }}</span>
         </div>
       </div>
@@ -111,10 +115,6 @@
           [scannerLabel]="toBlockchain.scannerLabel"
         >
         </app-scanner-link>
-      </div>
-
-      <div class="swap-box__description">
-        The amount received at the current exchange rate is indicated
       </div>
 
       <a class="swap-box__blockchain-link" href="https://www.binance.org/" target="_blank">

@@ -5,23 +5,31 @@
   &__fee-info {
     margin-bottom: 12px;
   }
+
+  &__blockchain-link {
+    display: flex;
+    align-items: center;
+
+    height: 31px;
+  }
 }
 
 .fee-info {
+  display: flex;
+  grid-gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 31px;
+
   font-size: 14px;
 
-  &__fee-amount {
-    display: block;
-
-    opacity: 0.4;
-  }
-
   &__switch-button {
-    margin-top: 7px;
-    padding: 8px 12px;
+    padding: 8px 14px;
 
     color: white;
     font-family: inherit;
+    text-decoration: underline;
 
     background: $main-green;
     border-radius: 15px;
@@ -33,5 +41,25 @@
       width: 6px;
       margin-right: 5px;
     }
+  }
+
+  &__discount-info {
+    display: flex;
+    align-items: center;
+
+    width: 165px;
+
+    color: $main-green;
+    font-size: 13px;
+
+    opacity: 0.85;
+
+    img {
+      margin-right: 4px;
+    }
+  }
+
+  &__fee-amount {
+    opacity: 0.4;
   }
 }
