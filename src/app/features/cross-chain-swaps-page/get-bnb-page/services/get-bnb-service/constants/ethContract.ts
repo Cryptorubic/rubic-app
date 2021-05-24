@@ -1,4 +1,6 @@
-export const contractAddress = '0x47cfa99D25b42Db96D4922DF456815B175Ea47F7';
+export const contractAddressEthereum = '0x65f6CEb94A15EA06D94aE6a264a1f7E4D32914f5';
+
+export const contractAddressKovan = '0x47cfa99D25b42Db96D4922DF456815B175Ea47F7';
 
 export const ABI = [
   {

@@ -15,7 +15,7 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import BigNumber from 'bignumber.js';
 import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { ABI, contractAddress } from './constants/ethContract';
+import { ABI, contractAddressEthereum, contractAddressKovan } from './constants/ethContract';
 
 interface EstimatedAmountResponse {
   from_amount: number;
@@ -29,14 +29,21 @@ export class GetBnbService {
 
   private isTestingMode: boolean;
 
+  private contractAddress: string;
+
   constructor(
     private httpService: HttpService,
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
     useTestingModeService: UseTestingModeService
   ) {
+    this.contractAddress = contractAddressEthereum;
+
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
+      if (isTestingMode) {
+        this.contractAddress = contractAddressKovan;
+      }
     });
   }
 
@@ -119,7 +126,7 @@ export class GetBnbService {
     const { fromAmount } = trade.fromToken;
     if (token.symbol === 'ETH') {
       const receipt = await this.web3PrivateService.executeContractMethod(
-        contractAddress,
+        this.contractAddress,
         ABI,
         'deposit',
         [],
@@ -133,7 +140,7 @@ export class GetBnbService {
 
     await this.provideAllowance(token, onTransactionHash);
     const receipt = await this.web3PrivateService.executeContractMethod(
-      contractAddress,
+      this.contractAddress,
       ABI,
       'depositToken',
       [token.address],
@@ -152,14 +159,19 @@ export class GetBnbService {
     const allowance = await web3Public.getAllowance(
       token.address,
       this.web3PrivateService.address,
-      contractAddress
+      this.contractAddress
     );
     const fromAmount = new BigNumber(Web3PublicService.tokenAmountToWei(token, token.fromAmount));
     if (fromAmount.gt(allowance)) {
       const uintInfinity = new BigNumber(2).pow(256).minus(1);
-      await this.web3PrivateService.approveTokens(token.address, contractAddress, uintInfinity, {
-        onTransactionHash
-      });
+      await this.web3PrivateService.approveTokens(
+        token.address,
+        this.contractAddress,
+        uintInfinity,
+        {
+          onTransactionHash
+        }
+      );
     }
   }
 }
