@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
+import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,34 +12,15 @@ import { UserRejectError } from '../../../../shared/models/errors/provider/UserR
 export class Web3PrivateService {
   private defaultMockGas: string;
 
-  public readonly privateWeb3: Web3;
-
-  public get web3(): Web3 {
-    return this.privateWeb3;
-  }
-
-  private accountAddress: string;
+  private readonly web3: Web3;
 
   public get address(): string {
-    return this.accountAddress;
+    return this.providerConnector.address;
   }
 
-  public set address(value: string) {
-    this.accountAddress = value;
-  }
-
-  constructor() {
-    this.privateWeb3 = new Web3();
+  constructor(private readonly providerConnector: ProviderConnectorService) {
+    this.web3 = providerConnector.web3;
     this.defaultMockGas = '400000';
-  }
-
-  /**
-   * @description Calculates an Ethereum specific signature.
-   * @param message Data to sign.
-   * @return The signature.
-   */
-  public async signPersonal(message) {
-    return this.web3.eth.personal.sign(message, this.address, undefined);
   }
 
   /**

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, first } from 'rxjs/operators';
 import { HeaderStore } from '../../header/services/header.store';
-import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
 import { QueryParamsService } from '../query-params/query-params.service';
@@ -34,7 +33,6 @@ export class AuthService {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService,
-    private readonly web3Service: Web3PrivateService,
     private readonly queryParamsService: QueryParamsService,
     private readonly providerConnectorService: ProviderConnectorService
   ) {
@@ -89,7 +87,7 @@ export class AuthService {
           await this.providerConnectorService.activate();
 
           const { address } = metamaskLoginBody.payload.user;
-          if (address === this.web3Service.address) {
+          if (address === this.providerConnectorService.address) {
             this.$currentUser.next({ address });
           } else {
             this.signOut()
@@ -122,11 +120,11 @@ export class AuthService {
     await this.providerConnectorService.activate();
     const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
     const nonce = metamaskLoginBody.payload.message;
-    const signature = await this.web3Service.signPersonal(nonce);
+    const signature = await this.providerConnectorService.signPersonal(nonce);
 
-    await this.sendSignedNonce(this.web3Service.address, nonce, signature);
+    await this.sendSignedNonce(this.providerConnectorService.address, nonce, signature);
 
-    this.$currentUser.next({ address: this.web3Service.address });
+    this.$currentUser.next({ address: this.providerConnectorService.address });
     this.isAuthProcess = false;
   }
 
@@ -136,9 +134,9 @@ export class AuthService {
     const accountsPermission = permissions.find(
       permission => permission.parentCapability === 'eth_accounts'
     );
-    if (accountsPermission.length > 0 || permissions) {
+    if (accountsPermission) {
       await this.providerConnectorService.activate();
-      const { address } = this.web3Service;
+      const { address } = this.providerConnectorService;
       this.$currentUser.next({ address } || null);
     } else {
       this.$currentUser.next(null);

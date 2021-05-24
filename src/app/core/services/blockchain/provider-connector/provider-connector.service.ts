@@ -3,11 +3,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import Web3 from 'web3';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
 import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
 import { StoreService } from '../../store/store.service';
-import { Web3PrivateService } from '../web3-private-service/web3-private.service';
 import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
 
 @Injectable({
@@ -56,10 +56,10 @@ export class ProviderConnectorService {
     return this.$addressChangeSubject.asObservable();
   }
 
-  constructor(
-    private readonly web3private: Web3PrivateService,
-    private readonly storage: StoreService
-  ) {
+  public readonly web3: Web3;
+
+  constructor(private readonly storage: StoreService) {
+    this.web3 = new Web3();
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
     this.$addressChangeSubject = new BehaviorSubject<string>(null);
     const provider = this.storage.getItem('provider') as WALLET_NAME;
@@ -68,10 +68,18 @@ export class ProviderConnectorService {
     }
   }
 
+  /**
+   * @description Calculates an Ethereum specific signature.
+   * @param message Data to sign.
+   * @return The signature.
+   */
+  public async signPersonal(message) {
+    return this.web3.eth.personal.sign(message, this.provider.getAddress(), undefined);
+  }
+
   public async activate(): Promise<void> {
     await this.provider.activate();
     this.storage.setItem('provider', this.provider.name);
-    this.web3private.address = this.provider.getAddress();
   }
 
   public async requestPermissions(): Promise<any[]> {
@@ -95,7 +103,7 @@ export class ProviderConnectorService {
     switch (provider) {
       case WALLET_NAME.WALLET_LINK: {
         this.provider = new WalletLinkProvider(
-          this.web3private.web3,
+          this.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject,
           chainId
@@ -104,7 +112,7 @@ export class ProviderConnectorService {
       }
       case WALLET_NAME.METAMASK: {
         this.provider = new MetamaskProvider(
-          this.web3private.web3,
+          this.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject
         );
@@ -112,7 +120,7 @@ export class ProviderConnectorService {
       }
       case WALLET_NAME.WALLET_CONNECT: {
         this.provider = new WalletConnectProvider(
-          this.web3private.web3,
+          this.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject
         );
@@ -120,7 +128,7 @@ export class ProviderConnectorService {
       }
       default: {
         this.provider = new MetamaskProvider(
-          this.web3private.web3,
+          this.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject
         );

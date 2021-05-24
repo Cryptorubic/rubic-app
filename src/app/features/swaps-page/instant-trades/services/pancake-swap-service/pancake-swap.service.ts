@@ -27,7 +27,7 @@ export class PancakeSwapService extends UniswapAbstract {
     providerConnectorService: ProviderConnectorService
   ) {
     super(useTestingModeService, WETH, uniSwapContracts, routingProviders, maxTransitTokens, abi);
-    this.providerConnector = providerConnectorService;
+    this.providerConnectorService = providerConnectorService;
     this.coingeckoApiService = coingeckoApiService;
     this.slippageTolerance = 0.015; // 1.5%
     this.tokensToTokensEstimatedGas = tokensToTokensEstimatedGas;

@@ -186,7 +186,7 @@ export class OneInchService extends InstantTradeService {
           toTokenAddress,
           amount: fromAmount,
           slippage: OneInchService.SLIPPAGE_PERCENT,
-          fromAddress: this.web3Private.address
+          fromAddress: this.providerConnectorService.address
         }
       })
       .toPromise()) as OneInchSwapResponse;

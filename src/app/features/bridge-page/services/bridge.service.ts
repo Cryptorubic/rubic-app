@@ -205,7 +205,7 @@ export class BridgeService implements OnDestroy {
       throw new WalletError();
     }
 
-    if (!this.web3PrivateService.address) {
+    if (!this.providerConnectorService.address) {
       throw new AccountError();
     }
 
@@ -237,11 +237,14 @@ export class BridgeService implements OnDestroy {
 
     let balance;
     if (web3Public.isNativeAddress(tokenAddress)) {
-      balance = await web3Public.getBalance(this.web3PrivateService.address, {
+      balance = await web3Public.getBalance(this.providerConnectorService.address, {
         inWei: true
       });
     } else {
-      balance = await web3Public.getTokenBalance(this.web3PrivateService.address, tokenAddress);
+      balance = await web3Public.getTokenBalance(
+        this.providerConnectorService.address,
+        tokenAddress
+      );
     }
 
     const amountInWei = amount.multipliedBy(10 ** decimals);

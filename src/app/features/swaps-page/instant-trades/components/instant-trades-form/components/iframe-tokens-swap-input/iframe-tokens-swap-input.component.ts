@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js';
 import { InstantTradeSwapInput } from '../../../../models/instant-trade-input';
 import { InstantTradeProviderController } from '../../../../models/instant-trades-provider-controller';
 import { BLOCKCHAIN_NAME } from '../../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PrivateService } from '../../../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { AuthService } from '../../../../../../../core/services/auth/auth.service';
+import { ProviderConnectorService } from '../../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 @Component({
   selector: 'app-iframe-tokens-swap-input',
@@ -19,7 +19,7 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
   }
 
   public get isLoggedIn(): boolean {
-    return Boolean(this.web3Private.address);
+    return Boolean(this.providerConnectorService.address);
   }
 
   public get gasFeeDisplayCondition(): BigNumber | undefined {
@@ -32,8 +32,8 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
   }
 
   constructor(
-    private readonly web3Private: Web3PrivateService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly providerConnectorService: ProviderConnectorService
   ) {
     super();
     this.disableSelection = false;

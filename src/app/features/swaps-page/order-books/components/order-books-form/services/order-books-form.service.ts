@@ -68,7 +68,7 @@ export class OrderBooksFormService implements OnDestroy {
       throw new MetamaskError();
     }
 
-    if (!this.web3PrivateService.address) {
+    if (!this.providerConnectorService.address) {
       throw new AccountError();
     }
 

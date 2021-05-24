@@ -18,7 +18,7 @@ abstract class InstantTradeService {
 
   protected web3Private: Web3PrivateService;
 
-  protected providerConnector: ProviderConnectorService;
+  protected providerConnectorService: ProviderConnectorService;
 
   /**
    * @description calculate instant trade parameters
@@ -52,16 +52,16 @@ abstract class InstantTradeService {
   ): Promise<TransactionReceipt>;
 
   protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
-    if (!this.providerConnector.isProviderActive) {
+    if (!this.providerConnectorService.isProviderActive) {
       throw new WalletError();
     }
 
-    if (!this.web3Private.address) {
+    if (!this.providerConnectorService.address) {
       throw new AccountError();
     }
     if (
-      this.providerConnector.networkName !== selectedBlockchain &&
-      (this.providerConnector.networkName !== `${selectedBlockchain}_TESTNET` ||
+      this.providerConnectorService.networkName !== selectedBlockchain &&
+      (this.providerConnectorService.networkName !== `${selectedBlockchain}_TESTNET` ||
         !this.isTestingMode)
     ) {
       throw new NetworkError(selectedBlockchain);
@@ -72,7 +72,7 @@ abstract class InstantTradeService {
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
-      const balance = await this.web3Public.getBalance(this.web3Private.address, {
+      const balance = await this.web3Public.getBalance(this.providerConnectorService.address, {
         inWei: true
       });
       if (balance.lt(amountIn)) {
@@ -85,7 +85,7 @@ abstract class InstantTradeService {
       }
     } else {
       const tokensBalance = await this.web3Public.getTokenBalance(
-        this.web3Private.address,
+        this.providerConnectorService.address,
         trade.from.token.address
       );
       if (tokensBalance.lt(amountIn)) {
@@ -109,7 +109,7 @@ abstract class InstantTradeService {
   ): Promise<void> {
     const allowance = await this.web3Public.getAllowance(
       tokenAddress,
-      this.web3Private.address,
+      this.providerConnectorService.address,
       targetAddress
     );
     if (value.gt(allowance)) {

@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
@@ -22,7 +23,6 @@ import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMB
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
 import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -144,7 +144,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
       throw new WalletError();
     }
 
-    if (!this.web3PrivateService.address) {
+    if (!this.providerConnector.address) {
       throw new AccountError();
     }
   }
