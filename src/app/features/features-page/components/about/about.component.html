@@ -49,7 +49,11 @@
     <div class="container">
       <span class="span-title-section">{{ 'aboutPage.roadmap.title' | translate }}</span>
       <div class="rubic-roadmap-block">
-        <div class="rubic-roadmap-block-item" *ngFor="let item of roadmap">
+        <div
+          class="rubic-roadmap-block-item"
+          *ngFor="let item of roadmap; let i = index"
+          [class.left]="i % 2 !== 0"
+        >
           <div class="span-roadmap-quarter">{{ item.quarter | translate }}</div>
           <div class="span-roadmap-month" *ngIf="item.month">{{ item.month | translate }}</div>
           <ul class="ul-roadmap-text">

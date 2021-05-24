@@ -95,35 +95,102 @@
     "roadmap": {
       "title": "Hoja de Ruta",
       "data": {
-        "q1": {
-          "title": "Q1 2021",
-          "data": {
-            "0": "Blockchains & DEXes integrations",
-            "1": "Binance Smart Chain instant trades",
-            "2": "Paraswap integration",
-            "3": "Cross chain solutions for ETH and BSC",
-            "4": "Mobile support"
-          }
+        "0": {
+          "quarter": "Q1. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "New Blockchain & DEX Integrations",
+            "Binance Smart Chain Instant Trades",
+            "Cross-chain Solutions For ETH And BSC",
+            "Mobile Support",
+            "Limit Orders For ETH",
+            "Creating BRBC And Building Rubic Bridge For RBC-BRBC",
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System"
+          ]
         },
-        "q2": {
-          "title": "Q2 2021",
-          "data": {
-            "0": "Layer 2 Solutions integration",
-            "1": "Anonymizer for DEX on L1"
-          }
+        "1": {
+          "quarter": "Q2. 2021",
+          "month": "April",
+          "done": true,
+          "data": [
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System",
+            "Cross-chain Solution For TRON"
+          ]
         },
-        "q3": {
-          "title": "Q3 2021",
-          "data": {
-            "0": "Polkadot integration"
-          }
+        "2": {
+          "quarter": "Q2. 2021",
+          "month": "May",
+          "done": true,
+          "data": [
+            "CoinGecko And Coin Market Cap API For ETH<>RBC",
+            "TRON Integration",
+            "BNB Faucet",
+            "Instant Trades Table",
+            "UI Simple Update",
+            "BSC Limit Orders"
+          ]
         },
-        "q4": {
-          "title": "Q4 2021",
-          "data": {
-            "0": "Own AMM DEX on L2",
-            "1": "Anonymizer for Own Dex on L2"
-          }
+        "3": {
+          "quarter": "Q2. 2021",
+          "month": "June",
+          "done": true,
+          "data": [
+            "UI Update stage 2",
+            "New Wallets support - Wallet Connect + WalletLink (Coinbase)",
+            "Merch Shop",
+            "CoinGecko & CMC All Pairs Reporting",
+            "FIAT Integration",
+            "Uniswap V3",
+            "New Blockchain/Bridge Integrations (Candidates: Anyswap/XDai, HECO, Moonbeam, Fantom, Avalanche, RenBTC)",
+            "MATIC Faucet",
+            "Usecase Updates"
+          ]
+        },
+        "4": {
+          "quarter": "Q3. 2021",
+          "month": "July",
+          "done": true,
+          "data": [
+            "Cross-Chain Routing",
+            "New Blockchain/Bridge Integrations",
+            "UI Update Stage 3",
+            "Commission In RBC - Stage 1"
+          ]
+        },
+        "5": {
+          "quarter": "Q3. 2021",
+          "month": "August",
+          "done": true,
+          "data": [
+            "Commission In RBC - stage 2",
+            "Anonymizer V1 - Polygon"
+          ]
+        },
+        "6": {
+          "quarter": "Q3. 2021",
+          "month": "September",
+          "done": true,
+          "data": [
+            "New Bridge Integrations",
+            "New Blockchain Integrations"
+          ]
+        },
+        "7": {
+          "quarter": "Q4. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "Staking/Farming introduction",
+            "Governance",
+            "Mobile App",
+            "API For External Usage",
+            "New Blockchain Integration (L2)"
+          ]
         }
       }
     }
