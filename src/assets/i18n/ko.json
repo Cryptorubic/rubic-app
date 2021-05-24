@@ -51,42 +51,52 @@
     "description": "Rubic은 완전한 원스톱 분산화 플랫폼을 제공하는 것을 목표로 하는 크로스 체인, P2P, 즉시 스왑 및 지정가 주문을 여러 블록체인에 제공하는 멀티체인 DeFi 생태계입니다.",
     "benefits": {
       "0": {
+        "title": "Custom routing",
+        "description": "Rubic created a routing solution that will allow users to trade any token. The main advantage is the ability to calculate gas prices and show users the best-optimized solution with paying the least amount of gas."
+      },
+      "1": {
+        "title": "Instant Trade",
+        "description": "Execute an instant trade using external DEXs (while getting best rates)."
+      },
+      "2": {
+        "title": "Multichain support",
+        "description": "Currently supported blockchains: Ethereum, Binance Smart Chain, Polygon & TRON)."
+      },
+      "3": {
+        "title": "Cross-chain swaps",
+        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON."
+      },
+      "4": {
+        "title": "Faucet",
+        "description": "Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come!"
+      },
+      "5": {
         "title": "P2P 거래",
         "description": "거래를 생성하고, 자신만의 조건을 선택하고, 공개 또는 비공개로 하는 것 모두 분산된 방식으로 수행됩니다."
       },
-      "1": {
-        "title": "즉시 거래",
-        "description": "당사의 외부 DEX를 사용하여 즉각적인 거래를 실행하고 최적가를 얻으세요."
-      },
-      "2": {
-        "title": "멀티체인 지원",
-        "description": "사용 가능: Ethereum, Binance Smart Chain & Polygon (추가 예정)."
-      },
-      "3": {
-        "title": "풀",
-        "description": "토큰 1개를 보유하여 DEX 풀 생성(예정)."
-      },
-      "4": {
-        "title": "파밍",
-        "description": "거래에 유동성을 제공하면 거래가 체결될 때 RBC 토큰으로 보상을 받게 됩니다(예정)."
-      },
-      "5": {
-        "title": "지정가 주문",
-        "description": "원하는 비율을 설정하면 DEX 중 하나가 요구 사항을 충족할 때 거래가 실행됩니다."
+      "6": {
+        "title": "Limit Order",
+        "description": "Set the desired rate and your deal will be executed automatically when one of the DEXs meets the parameters of your deal."
       }
     },
     "features": {
-      "title": "Rubic DEX 기능",
+      "title": "Rubic's DEX Features",
       "data": {
-        "0": "멀티 체인: ETH, BSC, Polygon",
-        "1": "크라우드 세일 능력",
-        "2": "플랫폼 수익의 %를 규제 할 수 있습니다.",
-        "3": "즉시 거래",
-        "4": "공개 / 비공개 거래",
-        "5": "브로커 지원",
-        "6": "볼륨 제한 없음",
-        "7": "토큰을 나열 할 필요가 없습니다.",
-        "8": "사기 및 러그 풀이 발생하지 않도록 방지"
+        "0": "iFrame Widget",
+        "1": "Custom routing",
+        "2": "크로스-체인 스왑",
+        "3": "멀티 체인: Ethereum, Binance Smart Chain, Polygon & TRON networks",
+        "4": "크라우드 세일 능력",
+        "5": "Percentage of platform revenue can be regulated",
+        "6": "즉시 거래",
+        "7": "공개 / 비공개 거래",
+        "8": "브로커 지원",
+        "9": "볼륨 제한 없음",
+        "10": "Custom tokens",
+        "11": "사기 및 러그 풀이 발생하지 않도록 방지",
+        "12": "Limit Orders for Ethereum",
+        "13": "Creation of Custom Bridges",
+        "14": "BNB faucet"
       }
     },
     "contract": {

@@ -51,42 +51,52 @@
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
     "benefits": {
       "0": {
-        "title": "Intercambio de Pares",
-        "description": "Create your trade, choose your own terms, make it public or private, all done in a decentralized manner."
+        "title": "Custom routing",
+        "description": "Rubic created a routing solution that will allow users to trade any token. The main advantage is the ability to calculate gas prices and show users the best-optimized solution with paying the least amount of gas."
       },
       "1": {
-        "title": "Intercambio Instantáneo",
-        "description": "Execute instant trades using our external DEXes, while getting the best rates."
+        "title": "Instant Trade",
+        "description": "Execute an instant trade using external DEXs (while getting best rates)."
       },
       "2": {
-        "title": "Soporte de multiplataformas",
-        "description": "Live: Ethereum, Binance Smart Chain & Polygon (more to come)."
+        "title": "Multichain support",
+        "description": "Currently supported blockchains: Ethereum, Binance Smart Chain, Polygon & TRON)."
       },
       "3": {
-        "title": "Pools",
-        "description": "Crea fondos para DEXs proveyendo un solo token (próximo)."
+        "title": "Cross-chain swaps",
+        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON."
       },
       "4": {
-        "title": "Farming",
-        "description": "If you provide liquidity for trades, you will be rewarded by RBC tokens when the trade is executed (upcoming)."
+        "title": "Faucet",
+        "description": "Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come!"
       },
       "5": {
+        "title": "P2P Trades",
+        "description": "Create your trade and choose your own terms."
+      },
+      "6": {
         "title": "Limit Order",
-        "description": "Establece tu tasa deseada y tu intercambio se ejecutará cuando una de las DEXs cumpla esos requisitos"
+        "description": "Set the desired rate and your deal will be executed automatically when one of the DEXs meets the parameters of your deal."
       }
     },
     "features": {
       "title": "Rubic DEX features",
       "data": {
-        "0": "Multicadena: ETH, BSC, Polygon",
-        "1": "Habilidad para realizar ventas masivas",
-        "2": "El % de ganancias de la plataforma puede ser regulado",
-        "3": "Intercambios instantáneos",
-        "4": "Ofertas públicas / privadas",
-        "5": "Soporte para intermediarios",
-        "6": "Sin límites de volumen",
-        "7": "No hay necesidad de alistar el token",
-        "8": "Stops scams and rugpulls from happening"
+        "0": "iFrame Widget",
+        "1": "Custom routing",
+        "2": "Intercambios entre Plataformas",
+        "3": "Soporte de multiplataformas: Ethereum, Binance Smart Chain, Polygon & TRON networks",
+        "4": "Habilidad para realizar ventas masivas",
+        "5": "Percentage of platform revenue can be regulated",
+        "6": "Intercambios instantáneos",
+        "7": "Intercambios Públicos/Privados",
+        "8": "Soporte para intermediarios",
+        "9": "Sin límites de volumen",
+        "10": "Custom tokens",
+        "11": "Stops scams and \"rugpulls\" from happening",
+        "12": "Limit Orders for Ethereum",
+        "13": "Creation of Custom Bridges",
+        "14": "BNB faucet"
       }
     },
     "contract": {

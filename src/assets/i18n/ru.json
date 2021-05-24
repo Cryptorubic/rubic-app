@@ -51,8 +51,8 @@
     "description": "Rubic-это мультичейн экосистема DeFi, которая включает в себя кросс-чейн, P2P, мгновенные обмены и лимит ордера с возможностью использовать разные блокчейны, стремясь обеспечить общую для всех универсальную децентрализованную платформу.",
     "benefits": {
       "0": {
-        "title": "P2P сделка",
-        "description": "Создайте свою сделку, выберите свои собственные условия, сделайте ее публичной или частной и все это децентрализованно."
+        "title": "Custom routing",
+        "description": "Rubic created a routing solution that will allow users to trade any token. The main advantage is the ability to calculate gas prices and show users the best-optimized solution with paying the least amount of gas."
       },
       "1": {
         "title": "Мгновенная сделка",
@@ -60,17 +60,21 @@
       },
       "2": {
         "title": "Поддержка разных блокчейнов!",
-        "description": "Уже работают: Ethereum, Binance Smart Chain & Polygon (и другие будут добавлены скоро)"
+        "description": "Уже работают: Ethereum, Binance Smart Chain, Polygon & TRON)."
       },
       "3": {
-        "title": "Пулы",
-        "description": "Создайте пулы для DEXs, имея 1 токен (Скоро)"
+        "title": "Cross-chain swaps",
+        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON."
       },
       "4": {
-        "title": "Фарминг",
-        "description": "Если вы предоставляете ликвидность для сделок, вы будете вознаграждены токенами RBC, после выполнения сделки (Скоро)"
+        "title": "Faucet",
+        "description": "Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come!"
       },
       "5": {
+        "title": "P2P сделки",
+        "description": "Создайте свою сделку, выберите свои собственные условия, сделайте ее публичной или частной и все это децентрализованно."
+      },
+      "6": {
         "title": "Лимит Ордеры",
         "description": "Установите желаемый курс, и сделка будет заключена, когда один из DEXs удовлетворит вашим требованиям."
       }
@@ -78,15 +82,21 @@
     "features": {
       "title": "Особенности Rubic DEX",
       "data": {
-        "0": "Мультичейн: ETH, BSC, Polygon",
-        "1": "Возможность проводить краудсейлы",
-        "2": "% дохода платформы можно регулировать",
-        "3": "Мгновенные сделки",
-        "4": "Публичные/Приватные сделки",
-        "5": "Поддержка брокеров",
-        "6": "Нет ограничений по объему",
-        "7": "Нет необходимости листить токен",
-        "8": "Предотвратить мошенничество"
+        "0": "iFrame Виджет",
+        "1": "Custom routing",
+        "2": "Кросс-чейн обмены",
+        "3": "Мультичейн: Ethereum, Binance Smart Chain, Polygon & TRON networks",
+        "4": "Возможность проводить краудсейлы",
+        "5": "Процент дохода платформы можно регулировать",
+        "6": "Мгновенные сделки",
+        "7": "Публичные/Приватные сделки",
+        "8": "Поддержка брокеров",
+        "9": "Нет ограничений по объему",
+        "10": "Custom tokens",
+        "11": "Stops scams and \"rugpulls\" from happening",
+        "12": "Limit Orders для Ethereum",
+        "13": "Creation of Custom Bridges",
+        "14": "BNB faucet"
       }
     },
     "contract": {

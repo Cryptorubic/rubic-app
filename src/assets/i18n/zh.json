@@ -51,42 +51,52 @@
     "description": "Rubic 是一个支持多链的 DeFi 生态系统，以成为完整的一站式去中心化平台为目标，提供多个不同区块链间的跨链P2P即时兑换功能。",
     "benefits": {
       "0": {
-        "title": "P2P贸易",
-        "description": "創建您的交易，選擇自己的條款，將其公開或私有，所有這些都是以分散的方式完成的."
+        "title": "Custom routing",
+        "description": "Rubic created a routing solution that will allow users to trade any token. The main advantage is the ability to calculate gas prices and show users the best-optimized solution with paying the least amount of gas."
       },
       "1": {
-        "title": "即时交易",
-        "description": "使用我們的外部DEX執行即時交易，同時獲得最優惠的價格。"
+        "title": "Instant Trade",
+        "description": "Execute an instant trade using external DEXs (while getting best rates)."
       },
       "2": {
-        "title": "多链支持",
-        "description": "直播：以太坊，Binance智能鍊和多邊形（以後還會有更多）。"
+        "title": "Multichain support",
+        "description": "Currently supported blockchains: Ethereum, Binance Smart Chain, Polygon & TRON)."
       },
       "3": {
-        "title": "Pools",
-        "description": "通過擁有1個令牌（即將到來）為DEX創建 pools 。"
+        "title": "Cross-chain swaps",
+        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON."
       },
       "4": {
-        "title": "农耕",
-        "description": "如果您提供交易的流動性，則在執行交易時（即將發生）您將獲得RBC代幣的獎勵。"
+        "title": "Faucet",
+        "description": "Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come!"
       },
       "5": {
+        "title": "P2P贸易",
+        "description": "创建您的贸易，并选择您的利率."
+      },
+      "6": {
         "title": "Limit Order",
-        "description": "设置所需的费率，当DEX之一满足这些要求时，交易将被执行"
+        "description": "Set the desired rate and your deal will be executed automatically when one of the DEXs meets the parameters of your deal."
       }
     },
     "features": {
       "title": "Rubic DEX功能",
       "data": {
-        "0": "Multichain: ETH, BSC, Polygon",
-        "1": "做众包销售的能力",
-        "2": "的平台收益可以被监管",
-        "3": "支持即时交易",
-        "4": "公共/私人交易",
-        "5": "经纪人支持",
-        "6": "没有数量限制",
-        "7": "不需要列出令牌",
-        "8": "阻止騙局和拉扯的發生"
+        "0": "iFrame Widget",
+        "1": "Custom routing",
+        "2": "Cross-chain swaps",
+        "3": "Multichain Support: Ethereum, Binance Smart Chain, Polygon & TRON networks",
+        "4": "做众包销售的能力",
+        "5": "%的平台收益可以被监管",
+        "6": "Instant Trades",
+        "7": "公共/私人交易",
+        "8": "经纪人支持",
+        "9": "没有数量限制",
+        "10": "Custom tokens",
+        "11": "Stops scams and \"rugpulls\" from happening",
+        "12": "Limit Orders for Ethereum",
+        "13": "Creation of Custom Bridges",
+        "14": "BNB faucet"
       }
     },
     "contract": {
