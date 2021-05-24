@@ -1,5 +1,4 @@
 import { BehaviorSubject } from 'rxjs';
-import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
@@ -10,11 +9,12 @@ import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import Web3 from 'web3';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
+import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
 
 export class WalletLinkProvider extends PrivateProvider {
-  private isEnabled: boolean = false;
+  private isEnabled: boolean;
 
-  private readonly defaulWalletParams: WalletLinkOptions;
+  private readonly defaultWalletParams: WalletLinkOptions;
 
   private readonly core: CoinbaseProvider;
 
@@ -49,7 +49,8 @@ export class WalletLinkProvider extends PrivateProvider {
     blockchainId?: number
   ) {
     super();
-    this.defaulWalletParams = {
+    this.isEnabled = false;
+    this.defaultWalletParams = {
       appName: 'Rubic',
       appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
       darkMode: false
@@ -58,7 +59,7 @@ export class WalletLinkProvider extends PrivateProvider {
     this.onNetworkChanges = chainChange;
     const chainId = blockchainId || 1;
     const chain = BlockchainsInfo.getBlockchainById(chainId);
-    const walletLink = new WalletLink(this.defaulWalletParams);
+    const walletLink = new WalletLink(this.defaultWalletParams);
     this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
     web3.setProvider(this.core);
   }

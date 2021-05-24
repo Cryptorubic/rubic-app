@@ -16,9 +16,9 @@ import { PancakeSwapService } from './services/pancake-swap-service/pancake-swap
 import { InstantTradesTableComponent } from './components/instant-trades-table/instant-trades-table.component';
 import { QuickSwapService } from './services/quick-swap-service/quick-swap.service';
 import { TokensSwapInputComponent } from './components/instant-trades-form/components/tokens-swap-input/tokens-swap-input.component';
-import { IframeTokensSwapInputComponent } from './components/instant-trades-form/components/iframe-tokens-swap-input/iframe-tokens-swap-input.component';
 import { ChainDropdownComponent } from './components/instant-trades-form/components/chain-dropdown/chain-dropdown.component';
 import { IframeProfileComponent } from './components/instant-trades-form/components/iframe-profile/iframe-profile.component';
+import { IframeTokensSwapInputComponent } from './components/instant-trades-form/components/iframe-tokens-swap-input/iframe-tokens-swap-input.component';
 
 @NgModule({
   declarations: [

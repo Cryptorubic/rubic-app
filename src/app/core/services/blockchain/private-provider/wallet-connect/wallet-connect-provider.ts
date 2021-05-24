@@ -1,5 +1,4 @@
 import { BehaviorSubject } from 'rxjs';
-import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
@@ -11,6 +10,7 @@ import networks from 'src/app/shared/constants/blockchain/networks';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
 import { WalletconnectError } from '../../../../../shared/models/errors/provider/WalletconnectError';
+import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
 
 export class WalletConnectProvider extends PrivateProvider {
   private isEnabled: boolean;

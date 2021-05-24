@@ -1,7 +1,7 @@
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
-import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/wallets-modal.component';
+import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
 
 export abstract class PrivateProvider {
   /**

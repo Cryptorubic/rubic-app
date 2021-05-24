@@ -2,18 +2,7 @@ import { Component, ChangeDetectionStrategy, TemplateRef, ViewChild } from '@ang
 import { MatDialog } from '@angular/material/dialog';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { AuthService } from '../../../../../services/auth/auth.service';
-
-export interface WalletProvider {
-  name: string;
-  value: WALLET_NAME;
-  img: string;
-}
-
-export enum WALLET_NAME {
-  METAMASK = 'metamask',
-  WALLET_LINK = 'walletlink',
-  WALLET_CONNECT = 'walletconnect'
-}
+import { WALLET_NAME, WalletProvider } from './models/providers';
 
 @Component({
   selector: 'app-wallets-modal',

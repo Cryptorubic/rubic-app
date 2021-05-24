@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { WALLET_NAME } from '../../header/components/header/components/wallets-modal/wallets-modal.component';
+import { WALLET_NAME } from '../../header/components/header/components/wallets-modal/models/providers';
 
 interface Store {
   provider: WALLET_NAME;

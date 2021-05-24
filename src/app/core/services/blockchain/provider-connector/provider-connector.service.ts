@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
@@ -9,6 +8,7 @@ import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
 import { StoreService } from '../../store/store.service';
 import { Web3PrivateService } from '../web3-private-service/web3-private.service';
+import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
 
 @Injectable({
   providedIn: 'root'

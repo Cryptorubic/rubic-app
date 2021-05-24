@@ -2,12 +2,12 @@ import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
+import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
 
 export class MetamaskProvider extends PrivateProvider {
   private isEnabled = false;

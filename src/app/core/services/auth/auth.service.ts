@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { take, finalize, first } from 'rxjs/operators';
+import { finalize, first } from 'rxjs/operators';
 import { HeaderStore } from '../../header/services/header.store';
 import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { HttpService } from '../http/http.service';
