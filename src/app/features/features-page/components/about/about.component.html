@@ -49,29 +49,11 @@
     <div class="container">
       <span class="span-title-section">{{ 'aboutPage.roadmap.title' | translate }}</span>
       <div class="rubic-roadmap-block">
-        <div class="rubic-roadmap-block-item">
-          <span class="span-roadmap-date">{{ roadmap.q1.title | translate }}</span>
+        <div class="rubic-roadmap-block-item" *ngFor="let item of roadmap">
+          <div class="span-roadmap-quarter">{{ item.quarter | translate }}</div>
+          <div class="span-roadmap-month" *ngIf="item.month">{{ item.month | translate }}</div>
           <ul class="ul-roadmap-text">
-            <li *ngFor="let featue of roadmap.q1.data">{{ featue | translate }}</li>
-          </ul>
-        </div>
-        <div class="rubic-roadmap-block-item">
-          <span class="span-roadmap-date">{{ roadmap.q2.title | translate }}</span>
-          <div class="span-roadmap-title">{{ 'May' | translate }}</div>
-          <ul class="ul-roadmap-text">
-            <li *ngFor="let featue of roadmap.q2.data">{{ featue | translate }}</li>
-          </ul>
-        </div>
-        <div class="rubic-roadmap-block-item">
-          <span class="span-roadmap-title">{{ roadmap.q3.title | translate }}</span>
-          <ul class="ul-roadmap-text">
-            <li *ngFor="let featue of roadmap.q3.data">{{ featue | translate }}</li>
-          </ul>
-        </div>
-        <div class="rubic-roadmap-block-item">
-          <span class="span-roadmap-title">{{ roadmap.q4.title | translate }}</span>
-          <ul class="ul-roadmap-text">
-            <li *ngFor="let featue of roadmap.q4.data">{{ featue | translate }}</li>
+            <li *ngFor="let feature of item.data">{{ feature | translate }}</li>
           </ul>
         </div>
       </div>

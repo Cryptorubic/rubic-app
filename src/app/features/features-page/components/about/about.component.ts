@@ -8,8 +8,10 @@ interface TitleDescription {
   description: string;
 }
 
-interface Quartal {
-  title: string;
+interface Roadmap {
+  month?: string;
+  quarter: string;
+  done: boolean;
   data: string[];
 }
 
@@ -25,12 +27,7 @@ export class AboutPageComponent {
 
   public features: string[];
 
-  public roadmap: {
-    q1: Quartal;
-    q2: Quartal;
-    q3: Quartal;
-    q4: Quartal;
-  };
+  public roadmap: Roadmap[];
 
   constructor(
     private readonly translateService: TranslateService,
@@ -47,25 +44,9 @@ export class AboutPageComponent {
           (benefit: TitleDescription) => benefit
         );
         this.features = Object.values(translations[featuresTranslateKey]);
-        const roadmapValue = translations[roadmapTranslateKey];
-        this.roadmap = {
-          q1: {
-            title: roadmapValue.q1.title,
-            data: Object.values(roadmapValue.q1.data)
-          },
-          q2: {
-            title: roadmapValue.q2.title,
-            data: Object.values(roadmapValue.q2.data)
-          },
-          q3: {
-            title: roadmapValue.q3.title,
-            data: Object.values(roadmapValue.q3.data)
-          },
-          q4: {
-            title: roadmapValue.q4.title,
-            data: Object.values(roadmapValue.q4.data)
-          }
-        };
+        this.roadmap = Object.values(translations[roadmapTranslateKey]).map(
+          (roadmap: Roadmap) => roadmap
+        );
       });
   }
 }

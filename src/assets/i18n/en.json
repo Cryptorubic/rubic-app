@@ -48,45 +48,55 @@
     "logoutMessage": "Do you really want to Log Out?"
   },
   "aboutPage": {
-    "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
+    "description": "Rubic is a multichain DeFi ecosystem which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform.",
     "benefits": {
       "0": {
-        "title": "P2P trade",
-        "description": "Create your trade, choose your own terms, make it public or private, all done in a decentralized manner."
+        "title": "Custom routing",
+        "description": "Rubic created a routing solution that will allow users to trade any token. The main advantage is the ability to calculate gas prices and show users the best-optimized solution with paying the least amount of gas."
       },
       "1": {
         "title": "Instant Trade",
-        "description": "Execute instant trades using our external DEXes, while getting the best rates."
+        "description": "Execute an instant trade using external DEXs (while getting best rates)"
       },
       "2": {
         "title": "Multichain support",
-        "description": "Live: Ethereum, Binance Smart Chain & Polygon (more to come)."
+        "description": "Currently supported blockchains: Ethereum, Binance Smart Chain, Polygon & TRON)"
       },
       "3": {
-        "title": "Pools",
-        "description": "Create pools for DEXs by having 1 token (upcoming)."
+        "title": "Cross-chain swaps",
+        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON"
       },
       "4": {
-        "title": "Farming",
-        "description": "If you provide liquidity for trades, you will be rewarded by RBC tokens when the trade is executed (upcoming)."
+        "title": "Faucet",
+        "description": "Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come!"
       },
       "5": {
+        "title": "P2P Trades",
+        "description": "Create your trade and choose your own terms"
+      },
+      "6": {
         "title": "Limit Order",
-        "description": "Set the desired rate and the deal will be executed when one of the DEXs meets your requirements."
+        "description": "Set the desired rate and your deal will be executed automatically when one of the DEXs meets the parameters of your deal"
       }
     },
     "features": {
-      "title": "Rubic DEX features",
+      "title": "Rubic's DEX Features",
       "data": {
-        "0": "Multichain: ETH, BSC, Polygon",
-        "1": "Ability to make crowdsales",
-        "2": "% of platform revenue can be regulated",
-        "3": "Instant Trades",
-        "4": "Public/Private deals",
-        "5": "Brokers support",
-        "6": "No volume limits",
-        "7": "No need to list token",
-        "8": "Stops scams and rugpulls from happening"
+        "0": "iFrame Widget",
+        "1": "Custom routing",
+        "2": "Cross-chain swaps",
+        "3": "Multichain Support: Ethereum, Binance Smart Chain, Polygon & TRON networks",
+        "4": "Ability to make crowdsales",
+        "5": "Percentage of platform revenue can be regulated",
+        "6": "Instant Trades",
+        "7": "Public/Private deals",
+        "8": "Brokers support",
+        "9": "No volume limits",
+        "10": "Custom tokens",
+        "11": "Stops scams and \"rugpulls\" from happening",
+        "12": "Limit Orders for Ethereum",
+        "13": "Creation of Custom Bridges",
+        "14": "BNB faucet"
       }
     },
     "contract": {
@@ -95,35 +105,102 @@
     "roadmap": {
       "title": "Roadmap",
       "data": {
-        "q1": {
-          "title": "Q1 2021",
-          "data": {
-            "0": "Blockchains & DEXes integrations",
-            "1": "Binance Smart Chain instant trades",
-            "2": "Paraswap integration",
-            "3": "Cross chain solutions for ETH and BSC",
-            "4": "Mobile support"
-          }
+        "0": {
+          "quarter": "Q1. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "New Blockchain & DEX Integrations",
+            "Binance Smart Chain Instant Trades",
+            "Cross-chain Solutions For ETH And BSC",
+            "Mobile Support",
+            "Limit Orders For ETH",
+            "Creating BRBC And Building Rubic Bridge For RBC-BRBC",
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System"
+          ]
         },
-        "q2": {
-          "title": "Q2 2021",
-          "data": {
-            "0": "Layer 2 Solutions integration",
-            "1": "Anonymizer for DEX on L1"
-          }
+        "1": {
+          "quarter": "Q2. 2021",
+          "month": "April",
+          "done": true,
+          "data": [
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System",
+            "Cross-chain Solution For TRON"
+          ]
         },
-        "q3": {
-          "title": "Q3 2021",
-          "data": {
-            "0": "Polkadot integration"
-          }
+        "2": {
+          "quarter": "Q2. 2021",
+          "month": "May",
+          "done": true,
+          "data": [
+            "CoinGecko And Coin Market Cap API For ETH<>RBC",
+            "TRON Integration",
+            "BNB Faucet",
+            "Instant Trades Table",
+            "UI Simple Update",
+            "BSC Limit Orders"
+          ]
         },
-        "q4": {
-          "title": "Q4 2021",
-          "data": {
-            "0": "Own AMM DEX on L2",
-            "1": "Anonymizer for Own Dex on L2"
-          }
+        "3": {
+          "quarter": "Q2. 2021",
+          "month": "June",
+          "done": true,
+          "data": [
+            "UI Update stage 2",
+            "New Wallets support - Wallet Connect + WalletLink (Coinbase)",
+            "Merch Shop",
+            "CoinGecko & CMC All Pairs Reporting",
+            "FIAT Integration",
+            "Uniswap V3",
+            "New Blockchain/Bridge Integrations (Candidates: Anyswap/XDai, HECO, Moonbeam, Fantom, Avalanche, RenBTC)",
+            "MATIC Faucet",
+            "Usecase Updates"
+          ]
+        },
+        "4": {
+          "quarter": "Q3. 2021",
+          "month": "July",
+          "done": true,
+          "data": [
+            "Cross-Chain Routing",
+            "New Blockchain/Bridge Integrations",
+            "UI Update Stage 3",
+            "Commission In RBC - Stage 1"
+          ]
+        },
+        "5": {
+          "quarter": "Q3. 2021",
+          "month": "August",
+          "done": true,
+          "data": [
+            "Commission In RBC - stage 2",
+            "Anonymizer V1 - Polygon"
+          ]
+        },
+        "6": {
+          "quarter": "Q3. 2021",
+          "month": "September",
+          "done": true,
+          "data": [
+            "New Bridge Integrations",
+            "New Blockchain Integrations"
+          ]
+        },
+        "7": {
+          "quarter": "Q4. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "Staking/Farming introduction",
+            "Governance",
+            "Mobile App",
+            "API For External Usage",
+            "New Blockchain Integration (L2)"
+          ]
         }
       }
     }
