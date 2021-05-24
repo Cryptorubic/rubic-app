@@ -10,7 +10,6 @@ import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
 
 const instantTradesApiRoutes = {
@@ -59,7 +58,9 @@ export class InstantTradesApiService {
    * @return instant trade object
    */
   public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
-    if (this.isTestingMode) tradeInfo.network = 'ethereum-test';
+    if (this.isTestingMode) {
+      tradeInfo.network = 'ethereum-test';
+    }
     return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo);
   }
 
