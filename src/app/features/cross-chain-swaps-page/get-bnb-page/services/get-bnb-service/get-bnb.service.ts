@@ -15,6 +15,7 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import BigNumber from 'bignumber.js';
 import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { GetBnbApiService } from 'src/app/core/services/backend/get-bnb-api/get-bnb-api.service';
 import { ABI, contractAddressEthereum, contractAddressKovan } from './constants/ethContract';
 
 interface EstimatedAmountResponse {
@@ -25,7 +26,7 @@ interface EstimatedAmountResponse {
 
 @Injectable()
 export class GetBnbService {
-  private readonly baseApiUrl = 'https://devbnbexchange.mywish.io/api/v1/';
+  private readonly baseApiUrl = 'https://bnbexchange.rubic.exchange/api/v1/';
 
   private isTestingMode: boolean;
 
@@ -35,6 +36,7 @@ export class GetBnbService {
     private httpService: HttpService,
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
+    private getBnbApiService: GetBnbApiService,
     useTestingModeService: UseTestingModeService
   ) {
     this.contractAddress = contractAddressEthereum;
@@ -124,6 +126,7 @@ export class GetBnbService {
 
     const token = trade.fromToken;
     const { fromAmount } = trade.fromToken;
+    let transactionHash: string;
     if (token.symbol === 'ETH') {
       const estimatedGas = '120000'; // TODO: хотфикс сломавшегося в метамаске рассчета газа
       const receipt = await this.web3PrivateService.executeContractMethod(
@@ -137,20 +140,23 @@ export class GetBnbService {
           gas: estimatedGas
         }
       );
-      return receipt.transactionHash;
+      transactionHash = receipt.transactionHash;
+    } else {
+      await this.provideAllowance(token, onTransactionHash);
+      const receipt = await this.web3PrivateService.executeContractMethod(
+        this.contractAddress,
+        ABI,
+        'depositToken',
+        [token.address],
+        {
+          onTransactionHash
+        }
+      );
+      transactionHash = receipt.transactionHash;
     }
 
-    await this.provideAllowance(token, onTransactionHash);
-    const receipt = await this.web3PrivateService.executeContractMethod(
-      this.contractAddress,
-      ABI,
-      'depositToken',
-      [token.address],
-      {
-        onTransactionHash
-      }
-    );
-    return receipt.transactionHash;
+    this.getBnbApiService.notifyGetBnbBot(trade, transactionHash, this.web3PrivateService.address);
+    return transactionHash;
   }
 
   private async provideAllowance(
