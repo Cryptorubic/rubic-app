@@ -39,12 +39,7 @@ export class HeaderComponent {
     private readonly queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef
   ) {
-    const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
-    if (isIframe) {
-      this.authService.signIn(true);
-    } else {
-      this.authService.loadUser();
-    }
+    this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
@@ -56,6 +51,15 @@ export class HeaderComponent {
         const scrolled = window.pageYOffset || document.documentElement.scrollTop;
         this.pageScrolled = scrolled > scrolledHeight;
       };
+    }
+  }
+
+  private async loadUser(): Promise<void> {
+    const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
+    if (isIframe) {
+      await this.authService.signIn(true);
+    } else {
+      await this.authService.loadUser();
     }
   }
 

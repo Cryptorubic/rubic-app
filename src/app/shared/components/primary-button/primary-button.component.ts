@@ -33,6 +33,7 @@ export class PrimaryButtonComponent {
   }
 
   constructor() {
+    this.hideArrow = true;
     const rubicPrimaryColor = '#4aa956';
     this.borderColor = rubicPrimaryColor;
   }

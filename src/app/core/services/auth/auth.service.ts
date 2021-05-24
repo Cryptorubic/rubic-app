@@ -120,7 +120,8 @@ export class AuthService {
     }
     this.isAuthProcess = true;
     await this.providerConnectorService.activate();
-    const nonce = (await this.fetchMetamaskLoginBody().toPromise()).payload.message;
+    const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
+    const nonce = metamaskLoginBody.payload.message;
     const signature = await this.web3Service.signPersonal(nonce);
 
     await this.sendSignedNonce(this.web3Service.address, nonce, signature);

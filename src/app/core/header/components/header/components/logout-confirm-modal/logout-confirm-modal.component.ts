@@ -56,7 +56,9 @@ export class LogoutConfirmModalComponent {
         this.headerStore.setConfirmModalOpeningStatus(false);
         this.logoutConfirmationModal.close();
       },
-      () => {},
+      () => {
+        this.logoutProgress = false;
+      },
       () => {
         this.logoutProgress = false;
       }
