@@ -125,16 +125,16 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     }
 
     try {
-      const ethToken =
-        swapTokens
-          .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
-          .find(swapToken => swapToken.address.toLowerCase() === ethAddress.toLowerCase()) ||
-        (await this.web3PublicEth.getTokenInfo(ethAddress));
-      const polygonToken =
-        swapTokens
-          .filter(item => item.blockchain === BLOCKCHAIN_NAME.POLYGON)
-          .find(swapToken => swapToken.address.toLowerCase() === polygonAddress.toLowerCase()) ||
-        (await this.web3PublicPolygon.getTokenInfo(polygonAddress));
+      const ethToken = swapTokens
+        .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
+        .find(swapToken => swapToken.address.toLowerCase() === ethAddress.toLowerCase());
+      const polygonToken = swapTokens
+        .filter(item => item.blockchain === BLOCKCHAIN_NAME.POLYGON)
+        .find(swapToken => swapToken.address.toLowerCase() === polygonAddress.toLowerCase());
+
+      if (!ethToken || !polygonToken) {
+        return null;
+      }
 
       return {
         symbol: ethToken.symbol,
