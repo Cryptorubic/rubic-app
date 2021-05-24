@@ -27,8 +27,8 @@ describe('TokensAccordionComponent', () => {
     owner: 'string',
 
     token: {
-      base: mockToken,
-      quote: mockToken
+      from: mockToken,
+      to: mockToken
     },
     blockchain: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
     status: ORDER_BOOK_TRADE_STATUS.ACTIVE,
@@ -36,8 +36,7 @@ describe('TokensAccordionComponent', () => {
     expirationDate: moment(new Date()),
     isPublic: 'boolean',
     isWithBrokerFee: false,
-    brokerAddress: 'string',
-    uniqieLink: 'test'
+    brokerAddress: 'string'
   };
 
   beforeEach(async () => {

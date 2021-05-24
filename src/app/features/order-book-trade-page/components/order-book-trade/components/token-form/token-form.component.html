@@ -17,33 +17,24 @@
     </div>
   </div>
 
-  <div
-    class="token-block__area area-second"
-    [ngClass]="{ 'area-second_quote': tokenPart === 'quote' }"
-  >
+  <div class="token-block__area area-second" [ngClass]="{ 'area-second_to': tokenPart === 'to' }">
     <div
       class="area-second__progress-bar"
       *ngIf="token.amountContributed"
       [style.width]="token.amountContributed.div(token.amountTotal).times(100).toFixed() + '%'"
     ></div>
 
-    <div
-      class="area-second__investors investors"
-      [ngClass]="{ investors_quote: tokenPart === 'quote' }"
-    >
+    <div class="area-second__investors investors" [ngClass]="{ investors_to: tokenPart === 'to' }">
       <span class="investors__amount">{{ token.investorsNumber }} / 10</span>
       <span class="investors__text">Number of investors</span>
     </div>
 
     <div
       class="area-second__token-info token-info"
-      [ngClass]="{ 'token-info_quote': tokenPart === 'quote' }"
+      [ngClass]="{ 'token-info_to': tokenPart === 'to' }"
     >
       <div class="token-info__text">
-        <span
-          class="token-info__title"
-          [ngClass]="{ 'token-info__title_quote': tokenPart === 'quote' }"
-        >
+        <span class="token-info__title" [ngClass]="{ 'token-info__title_to': tokenPart === 'to' }">
           {{ token.name + ' (' + token.symbol + ')' }}
         </span>
 

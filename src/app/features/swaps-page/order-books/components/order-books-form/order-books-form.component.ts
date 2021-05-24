@@ -14,12 +14,11 @@ import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
+import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
 import { OrderBookTradeForm } from '../../models/trade-form';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { OrderBooksFormService } from './services/order-books-form.service';
 import { TokenPart } from '../../../../../shared/models/order-book/tokens';
-import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
 import { TotalSupplyOverflowError } from '../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { TotalSupplyOverflowErrorComponent } from '../../../../../shared/components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
 
@@ -46,17 +45,17 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   private _tokensSubscription$: Subscription;
 
-  public availableBaseTokens = List<SwapToken>([]);
+  public availableFromTokens = List<SwapToken>([]);
 
-  public availableQuoteTokens = List<SwapToken>([]);
+  public availableToTokens = List<SwapToken>([]);
 
   private _tradeForm: OrderBookTradeForm;
 
   private _tradeFormSubscription$: Subscription;
 
   public customToken = {
-    base: {} as SwapToken,
-    quote: {} as SwapToken
+    from: {} as SwapToken,
+    to: {} as SwapToken
   };
 
   public tokensRate: BigNumber;
@@ -91,13 +90,13 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this.tradeForm = {
       ...this.tradeForm,
       token: {
-        base: {
-          ...this.tradeForm.token.base,
+        from: {
+          ...this.tradeForm.token.from,
           ...this._tradeParameters.fromToken,
           amount: this._tradeParameters.fromAmount
         },
-        quote: {
-          ...this.tradeForm.token.quote,
+        to: {
+          ...this.tradeForm.token.to,
           ...this._tradeParameters.toToken,
           amount: this._tradeParameters.toAmount
         }
@@ -113,50 +112,50 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   set tokens(value: List<SwapToken>) {
     this._tokens = value.filter(token => token.blockchain === this.blockchain);
-    this.availableQuoteTokens = this._tokens.concat();
-    this.availableBaseTokens = this._tokens.concat();
+    this.availableToTokens = this._tokens.concat();
+    this.availableFromTokens = this._tokens.concat();
   }
 
-  get baseToken(): SwapToken {
+  get fromToken(): SwapToken {
     return this.tradeParameters?.fromToken;
   }
 
-  set baseToken(value) {
+  set fromToken(value) {
     this.tradeParameters = {
       ...this.tradeParameters,
       fromToken: value
     };
-    this.availableQuoteTokens = this.tokens.filter(token => token.address !== value?.address);
+    this.availableToTokens = this.tokens.filter(token => token.address !== value?.address);
   }
 
-  get quoteToken(): SwapToken {
+  get toToken(): SwapToken {
     return this.tradeParameters?.toToken;
   }
 
-  set quoteToken(value) {
+  set toToken(value) {
     this.tradeParameters = {
       ...this.tradeParameters,
       toToken: value
     };
-    this.availableBaseTokens = this.tokens.filter(token => token.address !== value?.address);
+    this.availableFromTokens = this.tokens.filter(token => token.address !== value?.address);
   }
 
-  get baseAmount(): string {
+  get fromAmount(): string {
     return this.tradeParameters?.fromAmount;
   }
 
-  set baseAmount(value) {
+  set fromAmount(value) {
     this.tradeParameters = {
       ...this.tradeParameters,
       fromAmount: value
     };
   }
 
-  get quoteAmount(): string {
+  get toAmount(): string {
     return this.tradeParameters?.toAmount;
   }
 
-  set quoteAmount(value) {
+  set toAmount(value) {
     this.tradeParameters = {
       ...this.tradeParameters,
       toAmount: value
@@ -171,10 +170,10 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     this._tradeForm = {
       ...value,
       areAmountsAndTokensSet: !!(
-        value.token.base?.address &&
-        new BigNumber(value.token.base?.amount).isGreaterThan(0) &&
-        value.token.quote?.address &&
-        new BigNumber(value.token.quote?.amount).isGreaterThan(0)
+        value.token.from?.address &&
+        new BigNumber(value.token.from?.amount).isGreaterThan(0) &&
+        value.token.to?.address &&
+        new BigNumber(value.token.to?.amount).isGreaterThan(0)
       ),
       areOptionsValid: false
     };
@@ -219,28 +218,28 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
         toAmount: null
       };
 
-      this.baseToken = tradeParameters?.fromToken;
-      this.quoteToken = tradeParameters?.toToken;
-      this.baseAmount = tradeParameters?.fromAmount;
-      this.quoteAmount = tradeParameters?.toAmount;
+      this.fromToken = tradeParameters?.fromToken;
+      this.toToken = tradeParameters?.toToken;
+      this.fromAmount = tradeParameters?.fromAmount;
+      this.toAmount = tradeParameters?.toAmount;
     });
 
     // tokens subscription
     this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
       this.tokens = tokens;
 
-      const foundBaseToken = this.tokens.find(
-        t => t.address.toLowerCase() === this.baseToken?.address.toLowerCase()
+      const foundFromToken = this.tokens.find(
+        t => t.address.toLowerCase() === this.fromToken?.address.toLowerCase()
       );
-      if (foundBaseToken) {
-        this.baseToken = foundBaseToken;
+      if (foundFromToken) {
+        this.fromToken = foundFromToken;
       }
 
-      const foundQuoteToken = this.tokens.find(
-        t => t.address.toLowerCase() === this.quoteToken?.address.toLowerCase()
+      const foundToToken = this.tokens.find(
+        t => t.address.toLowerCase() === this.toToken?.address.toLowerCase()
       );
-      if (foundQuoteToken) {
-        this.quoteToken = foundQuoteToken;
+      if (foundToToken) {
+        this.toToken = foundToToken;
       }
     });
   }
@@ -253,8 +252,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
   public revertTokens() {
     const { fromToken, toToken, fromAmount, toAmount } = this.tradeParameters;
-    this.baseToken = toToken;
-    this.quoteToken = fromToken;
+    this.fromToken = toToken;
+    this.toToken = fromToken;
 
     this.tradeParameters = {
       ...this.tradeParameters,
@@ -266,7 +265,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   public setIsCustomTokenFormOpened(tokenPart: TokenPart, isOpened: boolean): void {
-    if (tokenPart === 'base') {
+    if (tokenPart === 'from') {
       this.tradeParameters = {
         ...this.tradeParameters,
         isCustomFromTokenFormOpened: isOpened
@@ -280,7 +279,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   public setCustomTokenAddress(tokenPart: TokenPart, address: string): void {
-    if (tokenPart === 'base') {
+    if (tokenPart === 'from') {
       this.tradeParameters = {
         ...this.tradeParameters,
         customFromTokenAddress: address
@@ -303,38 +302,38 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
   }
 
   public addCustomToken(tokenPart: TokenPart): void {
-    if (tokenPart === 'base') {
-      this.baseToken = { ...this.customToken.base };
+    if (tokenPart === 'from') {
+      this.fromToken = { ...this.customToken.from };
     } else {
-      this.quoteToken = { ...this.customToken.quote };
+      this.toToken = { ...this.customToken.to };
     }
   }
 
   public isAnyTokenCustom(): boolean {
     return (
-      (this.baseToken &&
-        !this.tokens.find(t => t.address.toLowerCase() === this.baseToken.address.toLowerCase())) ||
-      (this.quoteToken &&
-        !this.tokens.find(t => t.address.toLowerCase() === this.quoteToken.address.toLowerCase()))
+      (this.fromToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.fromToken.address.toLowerCase())) ||
+      (this.toToken &&
+        !this.tokens.find(t => t.address.toLowerCase() === this.toToken.address.toLowerCase()))
     );
   }
 
   private calculateTokensRate(): void {
     if (
       !(
-        this.baseToken?.price && new BigNumber(this.tradeForm.token.base?.amount).isGreaterThan(0)
+        this.fromToken?.price && new BigNumber(this.tradeForm.token.from?.amount).isGreaterThan(0)
       ) ||
-      !(
-        this.quoteToken?.price && new BigNumber(this.tradeForm.token.quote?.amount).isGreaterThan(0)
-      )
+      !(this.toToken?.price && new BigNumber(this.tradeForm.token.to?.amount).isGreaterThan(0))
     ) {
       this.tokensRate = null;
       return;
     }
 
-    const baseRate = new BigNumber(this.tradeForm.token.base.amount).times(this.baseToken.price);
-    const quoteRate = new BigNumber(this.tradeForm.token.quote.amount).times(this.quoteToken.price);
-    this.tokensRate = quoteRate.minus(baseRate).div(baseRate).times(100);
+    const fromTokenRate = new BigNumber(this.tradeForm.token.from.amount).times(
+      this.fromToken.price
+    );
+    const toTokenRate = new BigNumber(this.tradeForm.token.to.amount).times(this.toToken.price);
+    this.tokensRate = toTokenRate.minus(fromTokenRate).div(fromTokenRate).times(100);
   }
 
   public createTrade(): void {
@@ -368,9 +367,6 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
             descriptionComponentClass: TotalSupplyOverflowErrorComponent,
             descriptionComponentInputs: { totalSupplyOverflowError: err }
           };
-        }
-        if (err instanceof HttpErrorResponse) {
-          data.descriptionText = (err as HttpErrorResponse).error.detail;
         }
         this.dialog.open(MessageBoxComponent, {
           width: '400px',

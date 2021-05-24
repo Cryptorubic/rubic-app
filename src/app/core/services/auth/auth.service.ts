@@ -119,15 +119,6 @@ export class AuthService {
   }
 
   /**
-   * @description Login user without backend.
-   */
-  public async loginWithoutBackend(): Promise<void> {
-    await this.providerConnectorService.activate();
-    const { address } = this.web3Service;
-    this.$currentUser.next(address ? { address } : null);
-  }
-
-  /**
    * @description Initiate authentication via metamask.
    */
   public async signIn(): Promise<void> {
@@ -142,11 +133,19 @@ export class AuthService {
     this.isAuthProcess = false;
   }
 
-  public async signInWithoutBackend(): Promise<void> {
+  public async iframeSignIn(): Promise<void> {
     this.isAuthProcess = true;
-    await this.providerConnectorService.activate();
-    const { address } = this.web3Service;
-    this.$currentUser.next({ address } || null);
+    const permissions = await this.web3Service.requestPermissions();
+    const accountsPermission = permissions.find(
+      permission => permission.parentCapability === 'eth_accounts'
+    );
+    if (accountsPermission) {
+      await this.providerConnectorService.activate();
+      const { address } = this.web3Service;
+      this.$currentUser.next({ address } || null);
+    } else {
+      this.$currentUser.next(null);
+    }
     this.isAuthProcess = false;
   }
 
@@ -160,5 +159,10 @@ export class AuthService {
         this.providerConnectorService.deActivate();
       })
     );
+  }
+
+  public iframeSignOut(): void {
+    this.providerConnectorService.deActivate();
+    this.$currentUser.next(null);
   }
 }

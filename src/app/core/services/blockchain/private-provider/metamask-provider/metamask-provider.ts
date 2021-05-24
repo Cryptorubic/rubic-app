@@ -8,10 +8,9 @@ import { PrivateProvider } from '../private-provider';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
-import { StoreService } from '../../../store/store.service';
 
 export class MetamaskProvider extends PrivateProvider {
-  private isEnabled: boolean = false;
+  private isEnabled = false;
 
   private readonly core: any;
 
@@ -70,12 +69,20 @@ export class MetamaskProvider extends PrivateProvider {
         }
       });
 
+      this.core.on('disconnect', () => {
+        this.selectedChain = null;
+        this.deActivate();
+      });
+
       this.core.on('accountsChanged', (accounts: string[]) => {
-        [this.selectedAddress] = accounts;
-        this.selectedAddress = this.selectedAddress || null;
+        this.selectedAddress = accounts[0] || null;
         if (this.isEnabled) {
-          accountChange.next(this.selectedAddress);
+          this.onAddressChanges.next(this.selectedAddress);
           console.info('Selected account changed to', accounts[0]);
+        }
+        if (!this.selectedAddress) {
+          this.selectedChain = null;
+          this.deActivate();
         }
       });
     } else {
@@ -97,9 +104,12 @@ export class MetamaskProvider extends PrivateProvider {
     return null;
   }
 
-  public async activate(): Promise<void> {
+  public async activate(params?: any[]): Promise<void> {
     try {
-      await this.core.request({ method: 'eth_requestAccounts' });
+      await this.core.request({
+        method: 'eth_requestAccounts',
+        params
+      });
       this.isEnabled = true;
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.getAddress());
@@ -107,6 +117,18 @@ export class MetamaskProvider extends PrivateProvider {
       console.error(`No Metamask installed. ${error}`);
       throw new MetamaskError();
     }
+  }
+
+  public async requestPermissions(): Promise<any[]> {
+    try {
+      return this.core.request({
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }]
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    return null;
   }
 
   public deActivate(): void {

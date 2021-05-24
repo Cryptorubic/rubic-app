@@ -62,7 +62,7 @@
 
   padding: 25px 20px 20px;
 
-  &_quote {
+  &_to {
     flex-direction: row-reverse;
   }
 
@@ -81,7 +81,7 @@
   display: flex;
   flex-direction: column;
 
-  &_quote {
+  &_to {
     text-align: right;
   }
 
@@ -104,7 +104,7 @@
 
   white-space: nowrap;
 
-  &_quote {
+  &_to {
     flex-direction: row-reverse;
   }
 
@@ -123,7 +123,7 @@
 
     font-weight: 500;
 
-    &_quote {
+    &_to {
       justify-content: flex-start;
     }
   }

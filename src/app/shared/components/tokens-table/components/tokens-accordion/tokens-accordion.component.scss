@@ -116,6 +116,7 @@
 
   &__status {
     color: rgba(black, 0.5);
+    text-transform: capitalize;
 
     &::before {
       position: relative;
@@ -189,6 +190,8 @@
     align-items: center;
 
     &_network {
+      text-transform: capitalize;
+
       img {
         max-width: 22px;
         max-height: 22px;
@@ -220,8 +223,6 @@
     }
   
     &_date {
-      color: rgba(black, 0.5);
-  
       div {
         width: fit-content;
         margin: 0 auto;

@@ -40,12 +40,10 @@ export class HeaderComponent {
     private readonly cdr: ChangeDetectorRef
   ) {
     const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
-    if (!isIframe) {
-      // while testing.
-      // this.authService.loadUser();
-      this.authService.loginWithoutBackend();
+    if (isIframe) {
+      this.authService.iframeSignIn();
     } else {
-      this.authService.loginWithoutBackend();
+      this.authService.loadUser();
     }
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;

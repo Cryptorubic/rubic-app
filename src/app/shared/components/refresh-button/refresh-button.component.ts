@@ -11,7 +11,7 @@ export class RefreshButtonComponent {
   /**
    * Timeout before next refreshing in seconds
    */
-  @Input() readonly refreshTimeout = 20;
+  @Input() readonly refreshTimeout = 30;
 
   @Input() set refreshButtonStatus(status) {
     this._refreshButtonStatus = status;
