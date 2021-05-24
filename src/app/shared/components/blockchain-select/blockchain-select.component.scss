@@ -5,6 +5,7 @@
     display: block !important;
 
     background-color: $grey-background;
+    border-radius: 10px;
   }
 
   .mat-select-value {
@@ -73,6 +74,10 @@
     &:hover {
       background-color: $grey-background !important;
     }
+  }
+
+  .mat-primary {
+    border-radius: 10px !important;
   }
 
   .mat-form-field.mat-focused.mat-primary .mat-select-arrow {
