@@ -29,7 +29,7 @@ export class LoginButtonComponent {
     const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
     try {
       if (isIframe) {
-        await this.authService.signInWithoutBackend();
+        await this.authService.iframeSignIn();
       } else {
         await this.authService.signIn();
       }

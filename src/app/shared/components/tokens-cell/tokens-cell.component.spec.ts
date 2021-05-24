@@ -17,8 +17,8 @@ describe('TokensCellComponent', () => {
     fixture = TestBed.createComponent(TokensCellComponent);
     component = fixture.componentInstance;
     component.token = {
-      base: { symbol: 'test' },
-      quote: { symbol: 'test' }
+      from: { symbol: 'test' },
+      to: { symbol: 'test' }
     } as OrderBookTableTokens;
     fixture.detectChanges();
   });

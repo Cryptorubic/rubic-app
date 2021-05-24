@@ -68,6 +68,8 @@ export class TokensInputComponent implements OnChanges, OnInit {
   // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   @Input() smallSelectedAmountRoundMode? = 6;
 
+  @Input() fullWidth?: boolean;
+
   get selectedAmount(): string {
     return this._selectedAmount;
   }

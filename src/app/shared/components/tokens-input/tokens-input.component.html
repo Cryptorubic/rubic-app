@@ -43,6 +43,7 @@
     [sortBy]="tokensSortOrder"
     chooseComponentText="Choose Token"
     [disabled]="listDisabled"
+    [fullWidth]="fullWidth"
     (componentChanges)="onTokenChanges($event)"
     (tokenLabelContainerWidth)="resetInputElementsPositions($event)"
     #appInputDropdown
