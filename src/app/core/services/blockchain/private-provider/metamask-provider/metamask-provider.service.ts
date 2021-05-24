@@ -151,8 +151,8 @@ export class MetamaskProviderService extends PrivateProvider {
     if (!this.isActive) {
       throw new MetamaskError(this.translateService);
     }
-    if (this.getNetwork().name !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-      throw new NetworkError(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, this.translateService);
+    if (this.getNetwork().name !== token.blockchain) {
+      throw new NetworkError(token.blockchain, this.translateService);
     }
 
     return this._metaMask.request({

@@ -234,11 +234,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     private readonly translateService: TranslateService,
     private queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef
-  ) {
-    bridgeService.tokens.subscribe(tokens => {
-      this.tokens = tokens;
-    });
-  }
+  ) {}
 
   ngOnInit() {
     this.setBlockchainsToService();
