@@ -1,5 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
+import * as moment from 'moment';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service/trade-type.service';
 import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
@@ -31,7 +33,14 @@ export class OrderBooksTableComponent implements AfterViewInit {
     this.$tableLoading = this.orderBooksTableService.getTableLoadingStatus();
     this.orderBooksTableService.setTableLoadingStatus(true);
     this.fetchPublicSwaps();
-    this.$dataSource = this.orderBooksTableService.getTableData();
+    this.$dataSource = this.orderBooksTableService.getTableData().pipe(
+      map(trades =>
+        trades.map(trade => ({
+          ...trade,
+          expiresIn: moment.duration(trade.expirationDate.diff(moment().utc()))
+        }))
+      )
+    );
     this.displayedColumns = ['Tokens', 'Amount', 'Network', 'Expires in'];
     this.columnsSizes = ['25%', '50%', '10%', '15%'];
     this.$hasData = this.orderBooksTableService.hasData();
@@ -40,8 +49,8 @@ export class OrderBooksTableComponent implements AfterViewInit {
   public ngAfterViewInit(): void {
     this.tradeTypeService.getBlockchain().subscribe((mode: BLOCKCHAIN_NAME) => {
       this.orderBooksTableService.setBlockchain(mode);
-      this.orderBooksTableService.setBaseTokenFilter(null);
-      this.orderBooksTableService.setQuoteTokenFilter(null);
+      this.orderBooksTableService.setFromTokenFilter(null);
+      this.orderBooksTableService.setToTokenFilter(null);
       this.orderBooksTableService.filterTable();
       this.$hasData = this.orderBooksTableService.hasData();
     });
@@ -49,15 +58,15 @@ export class OrderBooksTableComponent implements AfterViewInit {
 
   public selectToken(tokenData: TokenValueType): void {
     if (tokenData.value) {
-      if (tokenData.tokenType === 'base') {
-        this.orderBooksTableService.setBaseTokenFilter(tokenData.value);
+      if (tokenData.tokenType === 'from') {
+        this.orderBooksTableService.setFromTokenFilter(tokenData.value);
       } else {
-        this.orderBooksTableService.setQuoteTokenFilter(tokenData.value);
+        this.orderBooksTableService.setToTokenFilter(tokenData.value);
       }
-    } else if (tokenData.tokenType === 'base') {
-      this.orderBooksTableService.setBaseTokenFilter(null);
+    } else if (tokenData.tokenType === 'from') {
+      this.orderBooksTableService.setFromTokenFilter(null);
     } else {
-      this.orderBooksTableService.setQuoteTokenFilter(null);
+      this.orderBooksTableService.setToTokenFilter(null);
     }
     this.orderBooksTableService.filterTable();
   }

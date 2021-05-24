@@ -1,25 +1,25 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { OrderBookTradeTableRow } from 'src/app/features/swaps-page/order-books/models/trade-table';
 import { TokenPart } from './tokens';
+import { TradeData } from '../../components/tokens-table/models/tokens-table-data';
 
 export abstract class TokensTableService {
-  protected readonly $dataSource: BehaviorSubject<OrderBookTradeTableRow[]>;
+  protected readonly $dataSource: BehaviorSubject<TradeData[]>;
 
-  protected readonly $visibleTableData: BehaviorSubject<OrderBookTradeTableRow[]>;
+  protected readonly $visibleTableData: BehaviorSubject<TradeData[]>;
 
-  protected readonly $filterBaseValue: BehaviorSubject<any>;
+  protected readonly $filterFromValue: BehaviorSubject<any>;
 
-  protected readonly $filterQuoteValue: BehaviorSubject<any>;
+  protected readonly $filterToValue: BehaviorSubject<any>;
 
   protected readonly $tableLoadingStatus: BehaviorSubject<boolean>;
 
   constructor() {
     this.$tableLoadingStatus = new BehaviorSubject<boolean>(false);
-    this.$filterBaseValue = new BehaviorSubject<any>(null);
-    this.$filterQuoteValue = new BehaviorSubject<any>(null);
-    this.$dataSource = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
-    this.$visibleTableData = new BehaviorSubject<OrderBookTradeTableRow[]>([]);
+    this.$filterFromValue = new BehaviorSubject<any>(null);
+    this.$filterToValue = new BehaviorSubject<any>(null);
+    this.$dataSource = new BehaviorSubject<TradeData[]>([]);
+    this.$visibleTableData = new BehaviorSubject<TradeData[]>([]);
   }
 
   public getTableData(): Observable<any> {
@@ -30,26 +30,26 @@ export abstract class TokensTableService {
     return this.$dataSource.pipe(map(data => data.length > 0));
   }
 
-  public setTableData(value: any): void {
+  public setTableData(value: TradeData[]): void {
     this.$dataSource.next(value);
     this.$visibleTableData.next(value);
     this.$tableLoadingStatus.next(false);
   }
 
-  public getBaseTokenFilter(): Observable<any> {
-    return this.$filterBaseValue.asObservable();
+  public getFromTokenFilter(): Observable<any> {
+    return this.$filterFromValue.asObservable();
   }
 
-  public setBaseTokenFilter(value: any): void {
-    this.$filterBaseValue.next(value);
+  public setFromTokenFilter(value: any): void {
+    this.$filterFromValue.next(value);
   }
 
-  public getQuoteTokenFilter(): Observable<any> {
-    return this.$filterQuoteValue.asObservable();
+  public getToTokenFilter(): Observable<any> {
+    return this.$filterToValue.asObservable();
   }
 
-  public setQuoteTokenFilter(value: any): void {
-    this.$filterQuoteValue.next(value);
+  public setToTokenFilter(value: any): void {
+    this.$filterToValue.next(value);
   }
 
   public filterByToken(token: any, tokenType: TokenPart): void {

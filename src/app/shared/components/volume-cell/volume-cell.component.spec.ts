@@ -38,8 +38,8 @@ describe('VolumeCellComponent', () => {
     fixture = TestBed.createComponent(VolumeCellComponent);
     component = fixture.componentInstance;
     component.token = {
-      base: orderBookTableToken,
-      quote: orderBookTableToken
+      from: orderBookTableToken,
+      to: orderBookTableToken
     } as OrderBookTableTokens;
     fixture.detectChanges();
   });

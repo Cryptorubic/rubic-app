@@ -51,7 +51,7 @@ export class AuthService {
           if (isIframe) {
             this.$currentUser.next({ address });
           } else {
-            window.location.reload();
+            // window.location.reload();
           }
         });
         // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка

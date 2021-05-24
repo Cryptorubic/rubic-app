@@ -8,9 +8,8 @@ describe('TokensSwapInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TokensSwapInputComponent ]
-    })
-    .compileComponents();
+      declarations: [TokensSwapInputComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
