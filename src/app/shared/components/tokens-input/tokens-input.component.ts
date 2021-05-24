@@ -42,7 +42,9 @@ export class TokensInputComponent implements OnChanges {
 
   @Input() listDisabled?: boolean = false;
 
-  @Input() inputDisabled?: boolean = false;
+  @Input() amountInputDisabled?: boolean = false;
+
+  @Input() tokensInputDisabled?: boolean = false;
 
   @Input() tokensList: List<InputToken> = List();
 
