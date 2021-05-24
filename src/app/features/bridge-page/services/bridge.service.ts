@@ -219,17 +219,22 @@ export class BridgeService implements OnDestroy {
   }
 
   private async checkBalance(
-    blockchain: BLOCKCHAIN_NAME,
+    fromBlockchain: BLOCKCHAIN_NAME,
+    toBlockchain: BLOCKCHAIN_NAME,
     tokenAddress: string,
     symbol: string,
     decimals: number,
     amount: BigNumber
   ): Promise<void> {
     let web3Public: Web3Public;
-    if (this._isTestingMode && blockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+    if (
+      this._isTestingMode &&
+      fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&
+      toBlockchain === BLOCKCHAIN_NAME.POLYGON
+    ) {
       web3Public = this.web3PublicService[BLOCKCHAIN_NAME.GOERLI_TESTNET];
     } else {
-      web3Public = this.web3PublicService[blockchain];
+      web3Public = this.web3PublicService[fromBlockchain];
     }
 
     let balance;
@@ -254,6 +259,7 @@ export class BridgeService implements OnDestroy {
       const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
       await this.checkBalance(
         bridgeTrade.fromBlockchain,
+        bridgeTrade.toBlockchain,
         token.address,
         token.symbol,
         token.decimals,
