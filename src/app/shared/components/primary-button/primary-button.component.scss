@@ -37,10 +37,6 @@
       transform: none;
     }
   }
-
-  &__arrow {
-    margin-right: 13px;
-  }
 }
 
 @include b($desktop) {

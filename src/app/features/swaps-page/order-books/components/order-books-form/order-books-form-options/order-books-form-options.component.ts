@@ -42,15 +42,15 @@ const MY_FORMATS = {
   ]
 })
 export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
-  @ViewChild('baseMinContribute') baseMinContribute: NgModel;
+  @ViewChild('fromMinContributeModel') fromMinContributeModel: NgModel;
 
-  @ViewChild('quoteMinContribute') quoteMinContribute: NgModel;
+  @ViewChild('toMinContributeModel') toMinContributeModel: NgModel;
 
-  @ViewChild('brokerAddress') brokerAddress: NgModel;
+  @ViewChild('brokerAddressModel') brokerAddressModel: NgModel;
 
-  @ViewChild('baseBrokerPercent') baseBrokerPercent: NgModel;
+  @ViewChild('fromBrokerPercentModel') fromBrokerPercentModel: NgModel;
 
-  @ViewChild('quoteBrokerPercent') quoteBrokerPercent: NgModel;
+  @ViewChild('toBrokerPercentModel') toBrokerPercentModel: NgModel;
 
   private _tradeForm: OrderBookTradeForm;
 
@@ -124,20 +124,20 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
   }
 
   private updateMinContributionsValidity(): void {
-    this.baseMinContribute?.control.updateValueAndValidity();
-    this.quoteMinContribute?.control.updateValueAndValidity();
+    this.fromMinContributeModel?.control.updateValueAndValidity();
+    this.toMinContributeModel?.control.updateValueAndValidity();
   }
 
   private areOptionsValid(): boolean {
     return (
       !this.areAdvancedOptionsOpened ||
-      ((!this.baseMinContribute || this.baseMinContribute.valid) &&
-        (!this.quoteMinContribute || this.quoteMinContribute.valid) &&
+      ((!this.fromMinContributeModel || this.fromMinContributeModel.valid) &&
+        (!this.toMinContributeModel || this.toMinContributeModel.valid) &&
         (!this.tradeForm.isWithBrokerFee ||
-          (this.brokerAddress?.value &&
-            this.brokerAddress?.valid &&
-            this.baseBrokerPercent?.valid &&
-            this.quoteBrokerPercent?.valid)))
+          (this.brokerAddressModel?.value &&
+            this.brokerAddressModel?.valid &&
+            this.fromBrokerPercentModel?.valid &&
+            this.toBrokerPercentModel?.valid)))
     );
   }
 
@@ -149,12 +149,12 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
       isPublic: true,
       isWithBrokerFee: false,
       token: {
-        base: {
-          ...this.tradeForm.token.base,
+        from: {
+          ...this.tradeForm.token.from,
           ...this.defaultTokenOptions
         },
-        quote: {
-          ...this.tradeForm.token.quote,
+        to: {
+          ...this.tradeForm.token.to,
           ...this.defaultTokenOptions
         }
       }

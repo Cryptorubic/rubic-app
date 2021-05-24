@@ -50,13 +50,14 @@
       <span class="span-title-section">{{ 'aboutPage.roadmap.title' | translate }}</span>
       <div class="rubic-roadmap-block">
         <div class="rubic-roadmap-block-item">
-          <span class="span-roadmap-title">{{ roadmap.q1.title | translate }}</span>
+          <span class="span-roadmap-date">{{ roadmap.q1.title | translate }}</span>
           <ul class="ul-roadmap-text">
             <li *ngFor="let featue of roadmap.q1.data">{{ featue | translate }}</li>
           </ul>
         </div>
         <div class="rubic-roadmap-block-item">
-          <span class="span-roadmap-title">{{ roadmap.q2.title | translate }}</span>
+          <span class="span-roadmap-date">{{ roadmap.q2.title | translate }}</span>
+          <div class="span-roadmap-title">{{ 'May' | translate }}</div>
           <ul class="ul-roadmap-text">
             <li *ngFor="let featue of roadmap.q2.data">{{ featue | translate }}</li>
           </ul>

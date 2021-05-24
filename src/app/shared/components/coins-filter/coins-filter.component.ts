@@ -39,9 +39,9 @@ export class CoinsFilterComponent {
 
   private isTokenSelected: boolean;
 
-  public virtualScrollBaseHeight: string;
+  public virtualScrollFromTokensHeight: string;
 
-  public virtualScrollQuoteHeight: string;
+  public virtualScrollToTokensHeight: string;
 
   @ViewChild('filterForm')
   public set tokensHeader(value: ElementRef) {
@@ -56,18 +56,18 @@ export class CoinsFilterComponent {
     private readonly tokensService: TokensService,
     private readonly cdr: ChangeDetectorRef
   ) {
-    this.virtualScrollBaseHeight = '240px';
-    this.virtualScrollQuoteHeight = '240px';
+    this.virtualScrollFromTokensHeight = '240px';
+    this.virtualScrollToTokensHeight = '240px';
     this.selectTokenEvent = new EventEmitter<TokenValueType>();
     this.options = this.tokensService.tokens.asObservable();
     this.tokensHostWidth = '150px';
     this.$filteredFromOptions = this.tokensFromInput.valueChanges.pipe(
       startWith(''),
-      map(value => this.filter(value, 'base'))
+      map(value => this.filter(value, 'from'))
     );
     this.$filteredToOptions = this.tokensToInput.valueChanges.pipe(
       startWith(''),
-      map(value => this.filter(value, 'quote'))
+      map(value => this.filter(value, 'to'))
     );
   }
 
@@ -94,15 +94,15 @@ export class CoinsFilterComponent {
       .toArray();
 
     if (filterOptions.length <= 5) {
-      if (tokenType === 'base') {
-        this.virtualScrollBaseHeight = `${filterOptions.length * 48}px`;
+      if (tokenType === 'from') {
+        this.virtualScrollFromTokensHeight = `${filterOptions.length * 48}px`;
       } else {
-        this.virtualScrollQuoteHeight = `${filterOptions.length * 48}px`;
+        this.virtualScrollToTokensHeight = `${filterOptions.length * 48}px`;
       }
-    } else if (tokenType === 'base') {
-      this.virtualScrollBaseHeight = '240px';
+    } else if (tokenType === 'from') {
+      this.virtualScrollFromTokensHeight = '240px';
     } else {
-      this.virtualScrollQuoteHeight = '240px';
+      this.virtualScrollToTokensHeight = '240px';
     }
 
     return filterOptions;
@@ -114,11 +114,11 @@ export class CoinsFilterComponent {
   }
 
   public switchTokens(): void {
-    const oldBaseValue = this.tokensFromInput.value;
-    const oldQuoteValue = this.tokensToInput.value;
-    this.tokensToInput.setValue(oldBaseValue);
-    this.tokensFromInput.setValue(oldQuoteValue);
-    this.selectTokenEvent.emit({ value: oldBaseValue, tokenType: 'quote' });
-    this.selectTokenEvent.emit({ value: oldQuoteValue, tokenType: 'base' });
+    const oldFromValue = this.tokensFromInput.value;
+    const oldToValue = this.tokensToInput.value;
+    this.tokensToInput.setValue(oldFromValue);
+    this.tokensFromInput.setValue(oldToValue);
+    this.selectTokenEvent.emit({ value: oldFromValue, tokenType: 'to' });
+    this.selectTokenEvent.emit({ value: oldToValue, tokenType: 'from' });
   }
 }

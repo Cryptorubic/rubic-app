@@ -17,23 +17,24 @@
           </div>
 
           <app-tokens-input
-            [tokensList]="availableBaseTokens"
-            [selectedToken]="baseToken"
-            [selectedAmount]="baseAmount"
-            (tokenChanges)="baseToken = $any($event)"
-            (numberChanges)="baseAmount = $event"
+            [fullWidth]="true"
+            [tokensList]="availableFromTokens"
+            [selectedToken]="fromToken"
+            [selectedAmount]="fromAmount"
+            (tokenChanges)="fromToken = $any($event)"
+            (numberChanges)="fromAmount = $event"
           ></app-tokens-input>
 
           <div class="tokens-form__custom-token-section">
             <app-custom-token-form
               type="from"
               [isSectionOpened]="tradeParameters?.isCustomFromTokenFormOpened"
-              (isSectionOpenedChange)="setIsCustomTokenFormOpened('base', $event)"
+              (isSectionOpenedChange)="setIsCustomTokenFormOpened('from', $event)"
               [blockchain]="blockchain"
               [tokenAddress]="tradeParameters?.customFromTokenAddress"
-              (tokenAddressChange)="setCustomTokenAddress('base', $event)"
-              (tokenIsValidated)="updateCustomToken('base', $event)"
-              (addToken)="addCustomToken('base')"
+              (tokenAddressChange)="setCustomTokenAddress('from', $event)"
+              (tokenIsValidated)="updateCustomToken('from', $event)"
+              (addToken)="addCustomToken('from')"
             ></app-custom-token-form>
           </div>
         </div>
@@ -86,23 +87,24 @@
           </div>
 
           <app-tokens-input
-            [tokensList]="availableQuoteTokens"
-            [selectedToken]="quoteToken"
-            [selectedAmount]="quoteAmount"
-            (tokenChanges)="quoteToken = $any($event)"
-            (numberChanges)="quoteAmount = $event"
+            [tokensList]="availableToTokens"
+            [selectedToken]="toToken"
+            [selectedAmount]="toAmount"
+            (tokenChanges)="toToken = $any($event)"
+            (numberChanges)="toAmount = $event"
+            [fullWidth]="true"
           ></app-tokens-input>
 
           <div class="tokens-form__custom-token-section">
             <app-custom-token-form
               type="to"
               [isSectionOpened]="tradeParameters?.isCustomToTokenFormOpened"
-              (isSectionOpenedChange)="setIsCustomTokenFormOpened('quote', $event)"
+              (isSectionOpenedChange)="setIsCustomTokenFormOpened('to', $event)"
               [blockchain]="blockchain"
               [tokenAddress]="tradeParameters?.customToTokenAddress"
-              (tokenAddressChange)="setCustomTokenAddress('quote', $event)"
-              (tokenIsValidated)="updateCustomToken('quote', $event)"
-              (addToken)="addCustomToken('quote')"
+              (tokenAddressChange)="setCustomTokenAddress('to', $event)"
+              (tokenIsValidated)="updateCustomToken('to', $event)"
+              (addToken)="addCustomToken('to')"
             ></app-custom-token-form>
           </div>
         </div>

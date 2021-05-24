@@ -1,1 +1,15 @@
-<p>instant-trades-table works!</p>
+<app-tokens-table
+  [tableData]="$dataSource | async"
+  [displayedColumns]="displayedColumns"
+  [displayedMobileItems]="displayedMobileItems"
+  [mobileSortItems]="mobileSortItems"
+  [columnsSizes]="columnsSizes"
+  [selectedColumn]="'Last update'"
+  [tableSorting]="{ active: 'Last update', direction: 'desc' }"
+  [tableLoading]="$tableLoading | async"
+  (refreshTableEvent)="refreshInstantTrades()"
+  [title]="'Your instant swaps' | translate"
+  (selectTokenEvent)="selectToken($event)"
+  [hasData]="$hasData | async"
+  [tableType]="'InstantTrades'"
+></app-tokens-table>

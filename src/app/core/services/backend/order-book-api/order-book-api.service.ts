@@ -89,8 +89,8 @@ export class OrderBookApiService {
       uniqueLink,
 
       token: {
-        base: undefined,
-        quote: undefined
+        from: undefined,
+        to: undefined
       },
       blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.network],
       expirationDate: moment.utc(tradeApi.stop_date),
@@ -99,8 +99,8 @@ export class OrderBookApiService {
       brokerAddress: tradeApi.broker_fee_address,
       status: ORDER_BOOK_TRADE_STATUS[tradeApi.state]
     } as OrderBookTradeData;
-    await this.setTokensData('base', tradeApi, tradeData);
-    await this.setTokensData('quote', tradeApi, tradeData);
+    await this.setTokensData('from', tradeApi, tradeData);
+    await this.setTokensData('to', tradeApi, tradeData);
 
     return tradeData;
   }
@@ -110,9 +110,11 @@ export class OrderBookApiService {
     tradeApi: OrderBookTradeApi,
     tradeData: OrderBookTradeData
   ): Promise<void> {
+    const tokenPartApi = tokenPart === 'from' ? 'base' : 'quote';
+
     tradeData.token[tokenPart] = {
       blockchain: tradeData.blockchain,
-      address: tradeApi[`${tokenPart}_address`]
+      address: tradeApi[`${tokenPartApi}_address`]
     } as OrderBookDataToken;
 
     const foundToken = this._tokens.find(
@@ -134,13 +136,13 @@ export class OrderBookApiService {
       ...tradeData.token[tokenPart],
       amountTotal: Web3PublicService.tokenWeiToAmount(
         tradeData.token[tokenPart],
-        tradeApi[`${tokenPart}_limit`]
+        tradeApi[`${tokenPartApi}_limit`]
       ),
       minContribution: Web3PublicService.tokenWeiToAmount(
         tradeData.token[tokenPart],
-        tradeApi[`min_${tokenPart}_wei`]
+        tradeApi[`min_${tokenPartApi}_wei`]
       ),
-      brokerPercent: tradeApi[`broker_fee_${tokenPart}`]
+      brokerPercent: tradeApi[`broker_fee_${tokenPartApi}`]
     };
   }
 
@@ -157,10 +159,10 @@ export class OrderBookApiService {
       link: `${
         window.location.origin === this.PROD_ORIGIN ? this.PROD_ORIGIN : this.TEST_ORIGIN
       }/trades/public-v3/${uniqueLink}`,
-      amountFrom: tradeForm.token.base.amount,
-      amountTo: tradeForm.token.quote.amount,
-      symbolFrom: tradeForm.token.base.symbol,
-      symbolTo: tradeForm.token.quote.symbol
+      amountFrom: tradeForm.token.from.amount,
+      amountTo: tradeForm.token.to.amount,
+      symbolFrom: tradeForm.token.from.symbol,
+      symbolTo: tradeForm.token.to.symbol
     };
 
     this.httpService.post(`${BOT_URL.ORDER_BOOKS}/create`, tradeBot).subscribe();
