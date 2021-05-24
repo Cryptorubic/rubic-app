@@ -33,6 +33,10 @@ const routes: Routes = [
       import('./features/swaps-page/page-module/swaps-page.module').then(m => m.SwapsPageModule)
   },
   {
+    path: 'bridge',
+    redirectTo: 'cross-chain/bridge'
+  },
+  {
     path: 'cross-chain',
     loadChildren: () =>
       import('./features/cross-chain-swaps-page/cross-chain-swaps-page.module').then(
