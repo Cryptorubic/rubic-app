@@ -184,6 +184,7 @@
     border-color: white;
     border-style: solid;
     border-width: 1px 0;
+    border-radius: 10px;
 
     > span {
       font-weight: 400;
@@ -454,6 +455,7 @@
 ::ng-deep {
   .mat-form-field {
     display: block !important;
+    border-radius: 10px;
 
     background-color: $grey-background;
   }

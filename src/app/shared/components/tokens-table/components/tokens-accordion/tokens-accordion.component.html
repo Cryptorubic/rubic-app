@@ -207,11 +207,28 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item" *ngIf="isFieldIn('uniqueLink')">
+    <div class="tokens-accordion__item">
       <div class="tokens-accordion__item-name">{{ 'Link' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_link">
-        <a routerLink="/trade/{{ data.uniqueLink }}">
-          {{ linkToTrade }}
+        <a
+          safetyLink
+          [link]="
+            getLink({
+              route: data.uniqueLink,
+              hash: data.hash,
+              chain: data.blockchain,
+              type: 'TRANSACTION'
+            })
+          "
+        >
+          {{
+            getLink({
+              route: data.uniqueLink,
+              hash: data.hash,
+              chain: data.blockchain,
+              type: 'TRANSACTION'
+            })
+          }}
         </a>
       </div>
     </div>

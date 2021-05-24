@@ -101,7 +101,7 @@ $primary-color: #4aa956;
 
   &__info {
     margin-right: 10px;
-    padding-left: 5px;
+    padding: 5px 0 5px 5px;
 
     img {
       margin-right: 5px;
@@ -156,6 +156,7 @@ $primary-color: #4aa956;
 
     &.token-cell {
       flex-direction: row;
+      flex-wrap: wrap;
       justify-content: flex-start;
       align-items: center;
     }

@@ -40,6 +40,12 @@
   }
 }
 
+@include b($tablet) {
+  .tokens-form {
+    margin-bottom: 10px;
+  }
+}
+
 @include b($mobile-md) {
   .tokens-form {
     &__input {
@@ -54,7 +60,9 @@
       padding-right: 11px;
       padding-left: 11px;
 
-      font-size: 12px;
+      &::placeholder {
+        font-size: 12px;
+      }
     }
   }
 }
