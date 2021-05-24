@@ -125,6 +125,7 @@ export class GetBnbService {
     const token = trade.fromToken;
     const { fromAmount } = trade.fromToken;
     if (token.symbol === 'ETH') {
+      const estimatedGas = '120000'; // TODO: хотфикс сломавшегося в метамаске рассчета газа
       const receipt = await this.web3PrivateService.executeContractMethod(
         this.contractAddress,
         ABI,
@@ -132,7 +133,8 @@ export class GetBnbService {
         [],
         {
           value: Web3PublicService.tokenAmountToWei(token, fromAmount),
-          onTransactionHash
+          onTransactionHash,
+          gas: estimatedGas
         }
       );
       return receipt.transactionHash;
