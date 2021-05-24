@@ -135,7 +135,7 @@ export class TokensService {
         }
 
         balancePromises.push(
-          new Promise(resolve => {
+          new Promise<void>(resolve => {
             const batch = web3Public.batchRequest;
             filteredTokens.forEach((token, index) => {
               batch.add(
@@ -151,7 +151,9 @@ export class TokensService {
                         usersBalance: balance.toNumber()
                       });
 
-                      if (index === filteredTokens.size - 1) resolve();
+                      if (index === filteredTokens.size - 1) {
+                        resolve();
+                      }
                     }
                   })
               );
