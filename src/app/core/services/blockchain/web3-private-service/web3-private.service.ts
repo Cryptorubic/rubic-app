@@ -38,8 +38,7 @@ export class Web3PrivateService {
    * @return The signature.
    */
   public async signPersonal(message) {
-    // @ts-ignore
-    return this.web3.eth.personal.sign(message, this.address);
+    return this.web3.eth.personal.sign(message, this.address, undefined);
   }
 
   /**

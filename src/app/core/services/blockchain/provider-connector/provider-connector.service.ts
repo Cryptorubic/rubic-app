@@ -7,8 +7,8 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
 import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
-import { Web3PrivateService } from '../web3-private-service/web3-private.service';
 import { StoreService } from '../../store/store.service';
+import { Web3PrivateService } from '../web3-private-service/web3-private.service';
 
 @Injectable({
   providedIn: 'root'
@@ -49,8 +49,9 @@ export class ProviderConnectorService {
   }
 
   public async activate(): Promise<void> {
+    await this.provider.activate();
     this.storage.setItem('provider', this.provider.name);
-    return this.provider.activate();
+    this.web3private.address = this.provider.getAddress();
   }
 
   public async requestPermissions(): Promise<any[]> {

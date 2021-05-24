@@ -52,7 +52,8 @@ export class WalletsModalComponent {
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
     await this.providerConnectorService.connectProvider(provider);
-    await this.authService.signIn();
+    const loginWithoutBackend = provider !== WALLET_NAME.METAMASK;
+    await this.authService.signIn(loginWithoutBackend);
     this.close();
   }
 

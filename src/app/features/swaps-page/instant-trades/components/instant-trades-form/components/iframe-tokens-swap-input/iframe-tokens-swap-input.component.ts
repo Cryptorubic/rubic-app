@@ -40,6 +40,6 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
   }
 
   public async login(): Promise<void> {
-    await this.authService.iframeSignIn();
+    await this.authService.serverlessSignIn();
   }
 }

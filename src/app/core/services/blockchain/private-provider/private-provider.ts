@@ -73,4 +73,8 @@ export abstract class PrivateProvider {
    * @param token token to add
    */
   public abstract addToken(token: SwapToken): Promise<void>;
+
+  public async requestPermissions(): Promise<any[]> {
+    return [{ parentCapability: 'eth_accounts' }];
+  }
 }

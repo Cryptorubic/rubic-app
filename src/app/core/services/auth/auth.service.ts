@@ -47,15 +47,7 @@ export class AuthService {
       const user = this.$currentUser.getValue();
       // user inited, account not authorized on backend or authorized other account
       if (user !== undefined && (user === null || user?.address !== address) && address) {
-        /* this.$currentUser.next(null);
-        this.signIn(); */
-        this.queryParamsService.$isIframe.pipe(take(1)).subscribe(isIframe => {
-          if (isIframe) {
-            this.$currentUser.next({ address });
-          } else {
-            window.location.reload();
-          }
-        });
+        this.$currentUser.next({ address });
         // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
       }
     });
@@ -121,7 +113,11 @@ export class AuthService {
   /**
    * @description Initiate authentication via metamask.
    */
-  public async signIn(): Promise<void> {
+  public async signIn(loginWithoutBackend: boolean = false): Promise<void> {
+    if (loginWithoutBackend) {
+      await this.serverlessSignIn();
+      return;
+    }
     this.isAuthProcess = true;
     await this.providerConnectorService.activate();
     const nonce = (await this.fetchMetamaskLoginBody().toPromise()).payload.message;
@@ -133,13 +129,13 @@ export class AuthService {
     this.isAuthProcess = false;
   }
 
-  public async iframeSignIn(): Promise<void> {
+  public async serverlessSignIn(): Promise<void> {
     this.isAuthProcess = true;
     const permissions = await this.providerConnectorService.requestPermissions();
     const accountsPermission = permissions.find(
       permission => permission.parentCapability === 'eth_accounts'
     );
-    if (accountsPermission) {
+    if (accountsPermission.length > 0 || permissions) {
       await this.providerConnectorService.activate();
       const { address } = this.web3Service;
       this.$currentUser.next({ address } || null);
@@ -161,7 +157,7 @@ export class AuthService {
     );
   }
 
-  public iframeSignOut(): void {
+  public serverlessSignOut(): void {
     this.providerConnectorService.deActivate();
     this.$currentUser.next(null);
   }

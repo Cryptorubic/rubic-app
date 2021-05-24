@@ -68,9 +68,7 @@ export class WalletConnectProvider extends PrivateProvider {
 
   protected getNetwork(): IBlockchain {
     return (
-      this.isEnabled &&
-      this.selectedChain &&
-      BlockchainsInfo.getBlockchainByName(this.selectedChain as BLOCKCHAIN_NAME)
+      this.isEnabled && BlockchainsInfo.getBlockchainById(this.selectedChain as BLOCKCHAIN_NAME)
     );
   }
 
@@ -82,11 +80,9 @@ export class WalletConnectProvider extends PrivateProvider {
     try {
       const [address] = await this.core.enable();
       this.isEnabled = true;
-      const chain = this.network;
-      this.onNetworkChanges.next(chain);
-      this.onAddressChanges.next(address);
       this.selectedAddress = address;
-      this.selectedChain = chain.name;
+      this.onNetworkChanges.next(this.getNetwork());
+      this.onAddressChanges.next(address);
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
       throw new WalletlinkError();

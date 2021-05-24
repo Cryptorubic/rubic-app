@@ -41,7 +41,7 @@ export class HeaderComponent {
   ) {
     const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
     if (isIframe) {
-      this.authService.iframeSignIn();
+      this.authService.signIn(true);
     } else {
       this.authService.loadUser();
     }
