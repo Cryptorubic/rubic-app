@@ -48,21 +48,6 @@ export class ProviderConnectorService {
     return this.provider.isInstalled;
   }
 
-  public async activate(): Promise<void> {
-    await this.provider.activate();
-    this.storage.setItem('provider', this.provider.name);
-    this.web3private.address = this.provider.getAddress();
-  }
-
-  public async requestPermissions(): Promise<any[]> {
-    return this.provider.requestPermissions();
-  }
-
-  public deActivate(): void {
-    this.storage.deleteItem('provider');
-    return this.provider.deActivate();
-  }
-
   public get $networkChange(): Observable<IBlockchain> {
     return this.$networkChangeSubject.asObservable();
   }
@@ -81,6 +66,21 @@ export class ProviderConnectorService {
     if (provider) {
       this.connectProvider(provider);
     }
+  }
+
+  public async activate(): Promise<void> {
+    await this.provider.activate();
+    this.storage.setItem('provider', this.provider.name);
+    this.web3private.address = this.provider.getAddress();
+  }
+
+  public async requestPermissions(): Promise<any[]> {
+    return this.provider.requestPermissions();
+  }
+
+  public deActivate(): void {
+    this.storage.deleteItem('provider');
+    return this.provider.deActivate();
   }
 
   /**
