@@ -135,7 +135,7 @@ export class AuthService {
 
   public async iframeSignIn(): Promise<void> {
     this.isAuthProcess = true;
-    const permissions = await this.web3Service.requestPermissions();
+    const permissions = await this.providerConnectorService.requestPermissions();
     const accountsPermission = permissions.find(
       permission => permission.parentCapability === 'eth_accounts'
     );

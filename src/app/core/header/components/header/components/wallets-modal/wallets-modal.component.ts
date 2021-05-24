@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { AuthService } from '../../../../../services/auth/auth.service';
 
 export interface WalletProvider {
   name: string;
@@ -27,7 +28,8 @@ export class WalletsModalComponent {
 
   constructor(
     private dialog: MatDialog,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly authService: AuthService
   ) {
     this.providers = [
       {
@@ -48,9 +50,9 @@ export class WalletsModalComponent {
     ];
   }
 
-  public async connectProvider(provider: WALLET_NAME) {
+  public async connectProvider(provider: WALLET_NAME): Promise<void> {
     await this.providerConnectorService.connectProvider(provider);
-    await this.providerConnectorService.activate();
+    await this.authService.signIn();
     this.close();
   }
 

@@ -17,6 +17,7 @@ import { UseTestingModeService } from '../../../../../../core/services/use-testi
 import { SameTokensError } from '../../../../../../shared/models/errors/order-book/SameTokensError';
 import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
+import { ProviderConnectorService } from '../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 @Injectable()
 export class OrderBooksFormService implements OnDestroy {
@@ -33,7 +34,8 @@ export class OrderBooksFormService implements OnDestroy {
     private orderBookApiService: OrderBookApiService,
     private web3PublicService: Web3PublicService,
     private web3PrivateService: Web3PrivateService,
-    private useTestingModeService: UseTestingModeService
+    private useTestingModeService: UseTestingModeService,
+    private readonly providerConnectorService: ProviderConnectorService
   ) {
     this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
@@ -62,7 +64,7 @@ export class OrderBooksFormService implements OnDestroy {
   }
 
   private async checkSettings(tradeForm: OrderBookTradeForm): Promise<void> {
-    if (!this.web3PrivateService.isProviderActive) {
+    if (!this.providerConnectorService.isProviderActive) {
       throw new MetamaskError();
     }
 
@@ -75,8 +77,8 @@ export class OrderBooksFormService implements OnDestroy {
     }
 
     if (
-      this.web3PrivateService.networkName !== tradeForm.blockchain &&
-      this.web3PrivateService.networkName !== `${tradeForm.blockchain}_TESTNET`
+      this.providerConnectorService.networkName !== tradeForm.blockchain &&
+      this.providerConnectorService.networkName !== `${tradeForm.blockchain}_TESTNET`
     ) {
       throw new NetworkError(tradeForm.blockchain);
     }

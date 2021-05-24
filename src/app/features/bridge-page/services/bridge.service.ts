@@ -161,7 +161,6 @@ export class BridgeService implements OnDestroy {
       return;
     }
 
-    const blockchain = this.selectedBlockchain;
     this.bridgeProvider
       .getTokensList(this._swapTokens)
       .pipe(first())

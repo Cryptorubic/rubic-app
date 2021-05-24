@@ -1,7 +1,7 @@
 <ng-container #modal>
   <div class="modal">
     <button (click)="close()" class="modal__close" >
-      <div [inlineSVG]="'assets/images/icons/cross-gray.svg'"></div>
+      <span [inlineSVG]="'assets/images/icons/cross-gray.svg'"></span>
     </button>
     <div class="modal__content">
       <header class="modal__header">
@@ -14,7 +14,7 @@
       </main>
       <footer class="modal__footer">
         <span>New to Ethereum? </span>
-        <a class="modal__link" href="https://ethereum.org/en/wallets/">Learn more About wallets</a>
+        <a target="_blank" class="modal__link" href="https://ethereum.org/en/wallets/">Learn more About wallets</a>
       </footer>
     </div>
   </div>

@@ -53,6 +53,10 @@ export class ProviderConnectorService {
     return this.provider.activate();
   }
 
+  public async requestPermissions(): Promise<any[]> {
+    return this.provider.requestPermissions();
+  }
+
   public deActivate(): void {
     this.storage.deleteItem('provider');
     return this.provider.deActivate();

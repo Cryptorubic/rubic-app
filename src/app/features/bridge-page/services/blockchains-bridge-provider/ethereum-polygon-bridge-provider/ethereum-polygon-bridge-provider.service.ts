@@ -5,9 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
 import { switchMap, tap } from 'rxjs/operators';
-import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { BlockchainBridgeProvider } from '../blockchain-bridge-provider';
+import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import { BlockchainsTokens, BridgeToken } from '../../../models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
@@ -17,7 +16,6 @@ import { BridgeTrade } from '../../../models/BridgeTrade';
 import networks from '../../../../../shared/constants/blockchain/networks';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { MetamaskProviderService } from '../../../../../core/services/blockchain/private-provider/metamask-provider/metamask-provider.service';
 import { BridgeApiService } from '../../../../../core/services/backend/bridge-api/bridge-api.service';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TRADE_STATUS } from '../../../../../core/services/backend/bridge-api/models/TRADE_STATUS';
@@ -70,11 +68,11 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   public getTokensList(swapTokens: List<SwapToken>): Observable<List<BridgeToken>> {
     const query = `{
       tokenMappings(
-        first: 1000, 
+        first: 1000,
         where: {
           isPOS: true,
           tokenType: "${this.ERC20_TOKEN_TYPE}"
-        } 
+        }
       ) {
         rootToken
         childToken
@@ -250,6 +248,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+      // tslint:disable-next-line:no-shadowed-variable
       const onTradeTransactionHash = onTradeTransactionHashFactory(
         TRADE_STATUS.DEPOSIT_IN_PROGRESS
       );

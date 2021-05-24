@@ -45,12 +45,12 @@ export class StoreService {
   }
 
   public getItem(key: keyof Store): any {
-    return this.$dataSubject.value[key];
+    return this.$dataSubject?.value[key];
   }
 
   public fetchData(): void {
     const data = JSON.parse(localStorage.getItem(this.storageKey));
-    this.$dataSubject.next(data);
+    this.$dataSubject.next(data || {});
   }
 
   public deleteData(): void {
