@@ -1,18 +1,18 @@
 <section class="accumulated-volume">
   <h3 class="accumulated-volume__title">
-    {{ 'Accumulated Transactions Volume' | translate }}
+    {{ 'tradesPage.accumulatedTransactionsVolume' | translate }}
   </h3>
 
   <div class="accumulated-volume__content-wrapper">
     <div class="accumulated-volume__content-item volume-block">
       <div class="volume-block__number">{{ volume.instantTradesVolume }}</div>
       <div class="volume-block__divider"></div>
-      <small class="volume-block__note">{{ 'Instant Trades' | translate}}</small>
+      <small class="volume-block__note">{{ 'instantTrades.title' | translate}}</small>
     </div>
     <div class="accumulated-volume__content-item volume-block">
       <div class="volume-block__number">{{ volume.bridgeVolume }}</div>
       <div class="volume-block__divider"></div>
-      <small class="volume-block__note">{{ 'Cross-Chain Swaps' | translate }}</small>
+      <small class="volume-block__note">{{ 'bridge.title' | translate }}</small>
     </div>
   </div>
 
