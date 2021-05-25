@@ -3,12 +3,12 @@
     class="input-dropdown__choose-button"
     type="button"
     [ngClass]="{
-      'input-dropdown__choose-button_active': isOpenList && !disabled,
+      'input-dropdown__choose-button_active': isOpenList && !chooseButtonDisabled,
       'input-dropdown__choose-button_with-text': !selectedComponentData,
-      'input-dropdown__choose-button_disabled': disabled
+      'input-dropdown__choose-button_disabled': chooseButtonDisabled
     }"
     (click)="toggleListOpen(true)"
-    [disabled]="disabled"
+    [disabled]="chooseButtonDisabled"
   >
     <span *ngIf="!selectedComponentData">
       {{ chooseComponentText | translate }}
@@ -25,13 +25,14 @@
     #searchInput
     class="input-dropdown__search-input"
     type="text"
-    placeholder="Search"
+    [placeholder]="inputDisabled ? 'Choose' : 'Search'"
     autocomplete="off"
     name="token"
     required
+    [disabled]="inputDisabled"
     [style.width]="isOpenList ? (fullWidth || isMobile ? '100%' : '50%') : 0"
     [tabindex]="!isOpenList ? '-1' : ''"
-    [ngModel]="inputQuery"
+    [ngModel]="inputDisabled ? '' : inputQuery"
     (ngModelChange)="searchComponent($event)"
     (blur)="toggleListOpen(false)"
   />

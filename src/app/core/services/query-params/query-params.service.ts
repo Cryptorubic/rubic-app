@@ -5,6 +5,7 @@ import { List } from 'immutable';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { skip, take } from 'rxjs/operators';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
@@ -12,7 +13,6 @@ import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { TradeParametersService } from '../swaps/trade-parameters-service/trade-parameters.service';
 import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
 import { QueryParams } from './models/query-params';
-import { BridgeToken } from '../../../features/bridge-page/models/BridgeToken';
 import { TOKEN_RANK } from '../../../shared/models/tokens/token-rank';
 
 type DefaultQueryParams = {
@@ -204,7 +204,7 @@ export class QueryParamsService {
       }
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
-      if (hasParams && route !== 'bridge') {
+      if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
       } else if (hasParams) {
         this.initiateBridgeParams(queryParams);
