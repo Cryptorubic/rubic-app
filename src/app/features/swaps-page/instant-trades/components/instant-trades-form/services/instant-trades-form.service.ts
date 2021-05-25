@@ -24,9 +24,11 @@ export class InstantTradesFormService implements OnDestroy {
     const web3Public = this.web3PublicService[blockchain];
     await web3Public.getTransactionByHash(data.hash, 0, 60, 1000);
 
-    return this.instantTradesApiService
-      .createTrade(data)
-      .subscribe(() => this.onInstantTradesCreated.next());
+    setTimeout(() => {
+      this.instantTradesApiService
+        .createTrade(data)
+        .subscribe(() => this.onInstantTradesCreated.next());
+    }, 500);
   }
 
   public updateTrade(hash: string, status: INTSTANT_TRADES_TRADE_STATUS) {

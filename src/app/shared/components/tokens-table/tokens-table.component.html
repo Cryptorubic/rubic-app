@@ -131,7 +131,7 @@
               {{ element.token.from.symbol }}
             </div>
             <div class="token-cell__amount">
-              {{ element.fromAmount.dp(5).toString(10) }}
+              {{ element.fromAmount.toString(10) | withRound: 5:6:element.token.from:true }}
             </div>
           </div>
         </a>
@@ -163,7 +163,9 @@
               />
               {{ element.token.to.symbol }}
             </div>
-            <div class="token-cell__amount">{{ element.toAmount.dp(5).toString(10) }}</div>
+            <div class="token-cell__amount">
+              {{ element.toAmount.toString(10) | withRound: 5:6:element.token.to:true }}
+            </div>
           </div>
         </a>
       </td>
