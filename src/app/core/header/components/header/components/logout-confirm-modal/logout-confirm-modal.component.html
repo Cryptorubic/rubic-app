@@ -2,7 +2,7 @@
   <div class="dialog-block">
     <div class="dialog-block__content">
       <div class="alert-window-title">
-        {{ 'Do you really want to Log Out?' | translate }}
+        {{ 'navigation.logoutMessage' | translate }}
       </div>
       <br /><br />
       <div class="alert-window-buttons text-center">
@@ -10,7 +10,7 @@
           <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
             <app-primary-button
               matDialogClose
-              [label]="'Yes' | translate"
+              [label]="'common.yes' | translate"
               (click)="confirmLogout()"
               [disabled]="logoutProgress"
               backgroundColor="white"
@@ -22,7 +22,7 @@
           <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
             <app-primary-button
               matDialogClose
-              [label]="'No' | translate"
+              [label]="'common.no' | translate"
               [hideArrow]="true"
             ></app-primary-button>
           </div>

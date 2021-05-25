@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-listing-request-popup',
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./listing-request-popup.component.scss']
 })
 export class ListingRequestPopupComponent {
-  constructor() {}
+  public informtation: string[];
+
+  constructor(private readonly translateService: TranslateService) {
+    this.translateService
+      .stream('tradesPage.listingRequest.information')
+      .subscribe(informtation => {
+        this.informtation = Object.values(informtation);
+      });
+  }
 }

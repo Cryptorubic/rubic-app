@@ -2,10 +2,7 @@
   <div class="instant-trade__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
       [warningText]="'Unknown token. Please check it before trading.'"
-      [tooltipText]="
-        'Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk.'
-          | translate
-      "
+      [tooltipText]="'tradesForm.unknownTokenWarning' | translate"
     ></app-warning-disclaimer>
   </div>
 
@@ -30,7 +27,7 @@
       [ngClass]="{ 'instant-trade-form__from-section_lowered': trades.length === 2 }"
     >
       <div class="selection-block__header">
-        <div class="selection-block__label">you have</div>
+        <div class="selection-block__label">{{ 'common.have' | translate }}</div>
 
         <div *ngIf="fromToken?.address" class="selection-block__scanner">
           <app-scanner-link
@@ -93,7 +90,7 @@
     <div class="instant-trade-form__to-section">
       <div class="selection-block__header">
         <div class="selection-block__label">
-          you get
+          {{ 'common.want' | translate }}
           <app-refresh-button
             class="selection-block__refresh-button"
             [refreshButtonStatus]="refreshButtonStatus"

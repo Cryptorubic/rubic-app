@@ -5,8 +5,8 @@ import {
   BridgeTableTrade,
   BridgeTableTradeApi
 } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTableTrade';
-import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
-import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
+import { BridgeTrade } from '../../../../features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
+import { BridgeToken } from '../../../../features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { HttpService } from '../../http/http.service';
 import { TRADE_STATUS } from './models/TRADE_STATUS';
 import { TokensService } from '../tokens-service/tokens.service';

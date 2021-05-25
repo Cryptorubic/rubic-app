@@ -5,7 +5,7 @@
           class="header-menu__list-item header-menu__toggle-indicator"
           [ngClass]="{ 'header-menu__togglable-indicator_opened' : false }"
           mat-button [matMenuTriggerFor]="about">
-          <a class="header-menu__link">{{ 'About' | translate }}</a>
+          <a class="header-menu__link">{{ 'navigation.about' | translate }}</a>
         </li>
         <mat-menu
           class="header-menu__sublist-container"
@@ -14,32 +14,32 @@
           (menuClose)="toggleAboutMenu()">
           <ul class="header-menu__sublist">
             <li class="header-menu__sublist-item">
-              <a routerLink="/faq" class="header-menu__sublink">{{ 'Faq' | translate }}</a>
+              <a routerLink="/faq" class="header-menu__sublink">{{ 'navigation.faq' | translate }}</a>
             </li>
             <li class="header-menu__sublist-item">
-              <a routerLink="/about" class="header-menu__sublink">{{ 'Features' | translate }}</a>
+              <a routerLink="/about" class="header-menu__sublink">{{ 'navigation.features' | translate }}</a>
             </li>
             <li class="header-menu__sublist-item">
-              <a routerLink="/team" class="header-menu__sublink">{{ 'Team' | translate }}</a>
+              <a routerLink="/team" class="header-menu__sublink">{{ 'navigation.team' | translate }}</a>
             </li>
             <li class="header-menu__sublist-item">
-              <a href="https://rubic.finance/" target="_blank" class="header-menu__sublink">{{ 'Project' | translate }}</a>
+              <a href="https://rubic.finance/" target="_blank" class="header-menu__sublink">{{ 'navigation.project' | translate }}</a>
             </li>
           </ul>
         </mat-menu>
       </ng-container>
       <ng-container #mobilePart *ngIf="$isMobile | async">
         <li class="header-menu__list-item">
-          <a routerLink="/faq" class="header-menu__link">{{ 'Faq' | translate }}</a>
+          <a routerLink="/faq" class="header-menu__link">{{ 'navigation.faq' | translate }}</a>
         </li>
         <li class="header-menu__list-item">
-          <a routerLink="/about" class="header-menu__link">{{ 'Features' | translate }}</a>
+          <a routerLink="/about" class="header-menu__link">{{ 'navigation.features' | translate }}</a>
         </li>
         <li class="header-menu__list-item">
-          <a routerLink="/team" class="header-menu__link">{{ 'Team' | translate }}</a>
+          <a routerLink="/team" class="header-menu__link">{{ 'navigation.team' | translate }}</a>
         </li>
         <li class="header-menu__list-item">
-          <a href="https://rubic.finance/" class="header-menu__link">{{ 'Project' | translate }}</a>
+          <a href="https://rubic.finance/" class="header-menu__link">{{ 'navigation.project' | translate }}</a>
         </li>
       </ng-container>
   </ul>

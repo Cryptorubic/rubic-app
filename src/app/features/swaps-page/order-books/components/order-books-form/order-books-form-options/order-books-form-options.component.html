@@ -3,7 +3,9 @@
   <div class="form-section__row form-section-row">
     <div class="form-section__block form-section-block">
       <div class="form-section-block__input-container input-container">
-        <label class="input-container__label" for="date-input-id">Closing date</label>
+        <label class="input-container__label" for="date-input-id">{{
+          'tradePage.closingDate' | translate
+        }}</label>
 
         <input
           class="input-container__input input-container__input_date"
@@ -23,7 +25,9 @@
 
     <div class="form-section__block form-section-block">
       <div class="form-section-block__input-container input-container">
-        <label class="input-container__label" for="time-input-id">Closing time (utc)</label>
+        <label class="input-container__label" for="time-input-id">{{
+          'orderBook.closingTime' | translate
+        }}</label>
 
         <input
           class="input-container__input input-container__input_time"
@@ -42,7 +46,9 @@
 
     <div class="form-section__block form-section-block form-section-block_deal">
       <div class="form-section-block__input-container input-container">
-        <label class="input-container__label" for="is-public-checkbox-id">Public deal</label>
+        <label class="input-container__label" for="is-public-checkbox-id">{{
+          'tradePage.publicDeal' | translate
+        }}</label>
         <input
           type="checkbox"
           class="input-container__checkbox input-container__checkbox_hidden"
@@ -56,7 +62,9 @@
           [ngClass]="{ 'input-checkbox_not-checked': !tradeForm.isPublic }"
           for="is-public-checkbox-id"
         >
-          <span>{{ tradeForm.isPublic ? 'Yes' : 'No' }}</span>
+          <span>{{
+            tradeForm.isPublic ? ('common.yes' | translate) : ('common.no' | translate)
+          }}</span>
 
           <span
             class="input-checkbox__image"
@@ -67,7 +75,7 @@
 
       <div class="form-section-block__description-container description-container">
         <span class="description-container__dash">&ndash;</span>
-        <span>Trade will be listed on the main page</span>
+        <span>{{ 'orderBook.tradeListed' | translate }}</span>
       </div>
     </div>
 
@@ -79,7 +87,8 @@
         }"
         (click)="areAdvancedOptionsOpened = !areAdvancedOptionsOpened"
       >
-        Advanced Options <img src="/assets/images/icons/arrow/arrow-down-green.svg" alt="" />
+        {{ 'common.advancedOptions' | translate }}
+        <img src="/assets/images/icons/arrow/arrow-down-green.svg" alt="" />
       </div>
     </div>
   </div>
@@ -88,7 +97,7 @@
     <!--second-->
     <div class="form-section__row form-section-row" *ngIf="!tradeForm.areAmountsAndTokensSet">
       <div class="form-section-row__prompt">
-        Please specify tokens and required amounts to see the advanced options
+        {{ 'orderBook.specifyTokens' | translate }}
       </div>
     </div>
 
@@ -100,7 +109,7 @@
       <div class="form-section__block form-section-block">
         <div class="form-section-block__input-container input-container">
           <label class="input-container__label" for="from-min-contribute-input-id">
-            Minimum contribution in {{ tradeForm.token.from.symbol }}
+            {{ 'orderBook.minContribution' | translate }} {{ tradeForm.token.from.symbol }}
           </label>
 
           <input
@@ -125,7 +134,7 @@
       <div class="form-section__block form-section-block">
         <div class="form-section-block__input-container input-container">
           <label class="input-container__label" for="to-min-contribute-input-id">
-            Minimum contribution in {{ tradeForm.token.to.symbol }}
+            {{ 'orderBook.minContribution' | translate }} {{ tradeForm.token.to.symbol }}
           </label>
 
           <input
@@ -156,7 +165,7 @@
       <div class="form-section__block form-section-block form-section-block_full">
         <div class="form-section-block__input-container input-container">
           <label class="input-container__label" for="is-with-broker-fee-checkbox-id">
-            Broker Fee
+            {{ 'orderBook.brokerFee' | translate }}
           </label>
 
           <input
@@ -183,7 +192,7 @@
 
         <div class="form-section-block__description-container description-container">
           <span class="description-container__dash">&ndash;</span>
-          <span>You can specify % for Broker</span>
+          <span>{{ 'orderBook.specifyForBorker' | translate }}</span>
         </div>
       </div>
 
