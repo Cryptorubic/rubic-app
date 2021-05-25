@@ -13,6 +13,7 @@ import { NetworkError } from '../../../shared/models/errors/provider/NetworkErro
 import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
 import { ContractParameters } from '../../../core/services/order-book-common/models/ContractParameters';
 import { OrderBookCommonService } from '../../../core/services/order-book-common/order-book-common.service';
+import { ErrorsService } from '../../../core/services/errors/errors.service';
 
 @Injectable()
 export class OrderBookTradeService {
@@ -21,7 +22,8 @@ export class OrderBookTradeService {
     private web3PrivateService: Web3PrivateService,
     private orderBookApiService: OrderBookApiService,
     private orderBookCommonService: OrderBookCommonService,
-    private readonly providerConnector: ProviderConnectorService
+    private readonly providerConnector: ProviderConnectorService,
+    private readonly errorsService: ErrorsService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
@@ -152,7 +154,7 @@ export class OrderBookTradeService {
 
     return web3Public.getAllowance(
       tradeData.token[tokenPart].address,
-      this.web3PrivateService.address,
+      this.providerConnector.address,
       contractAddress
     );
   }
@@ -162,7 +164,7 @@ export class OrderBookTradeService {
       this.providerConnector.networkName !== tradeData.blockchain &&
       this.providerConnector.networkName !== `${tradeData.blockchain}_TESTNET`
     ) {
-      throw new NetworkError(tradeData.blockchain);
+      this.errorsService.throw(new NetworkError(tradeData.blockchain));
     }
   }
 

@@ -2,6 +2,7 @@ import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
 import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
+import { ErrorsService } from '../../errors/errors.service';
 
 export abstract class PrivateProvider {
   /**
@@ -47,6 +48,8 @@ export abstract class PrivateProvider {
     }
     return this.getNetwork();
   }
+
+  protected constructor(protected readonly errorsService: ErrorsService) {}
 
   protected abstract getNetwork(): IBlockchain;
 

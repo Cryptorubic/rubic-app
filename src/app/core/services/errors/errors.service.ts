@@ -7,14 +7,27 @@ import { TotalSupplyOverflowErrorComponent } from 'src/app/shared/components/err
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable, throwError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorsService {
-  constructor() {}
+  constructor(private dialog: MatDialog, private readonly translateService: TranslateService) {}
 
-  public showErrorDialog(err, dialog: MatDialog) {
+  public $throw(error: Error, message?: string): Observable<never> {
+    console.error(message || error.message);
+    return throwError(error);
+  }
+
+  public throw(error: Error, message?: string): void {
+    console.error(message || error.message);
+    throw error;
+  }
+
+  public showErrorDialog(err) {
+    console.error(err);
     if (!(err instanceof RubicError)) {
       err = new RubicError();
     }
@@ -36,7 +49,7 @@ export class ErrorsService {
         descriptionComponentInputs: { totalSupplyOverflowError: err }
       };
     }
-    dialog.open(MessageBoxComponent, {
+    this.dialog.open(MessageBoxComponent, {
       width: '400px',
       data
     });

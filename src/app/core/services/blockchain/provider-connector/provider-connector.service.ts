@@ -9,6 +9,7 @@ import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
 import { StoreService } from '../../store/store.service';
 import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
+import { ErrorsService } from '../../errors/errors.service';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +59,10 @@ export class ProviderConnectorService {
 
   public readonly web3: Web3;
 
-  constructor(private readonly storage: StoreService) {
+  constructor(
+    private readonly storage: StoreService,
+    private readonly errorsService: ErrorsService
+  ) {
     this.web3 = new Web3();
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
     this.$addressChangeSubject = new BehaviorSubject<string>(null);
@@ -106,6 +110,7 @@ export class ProviderConnectorService {
           this.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject,
+          this.errorsService,
           chainId
         );
         break;
@@ -114,7 +119,8 @@ export class ProviderConnectorService {
         this.provider = new MetamaskProvider(
           this.web3,
           this.$networkChangeSubject,
-          this.$addressChangeSubject
+          this.$addressChangeSubject,
+          this.errorsService
         );
         break;
       }
@@ -122,7 +128,8 @@ export class ProviderConnectorService {
         this.provider = new WalletConnectProvider(
           this.web3,
           this.$networkChangeSubject,
-          this.$addressChangeSubject
+          this.$addressChangeSubject,
+          this.errorsService
         );
         break;
       }
@@ -130,7 +137,8 @@ export class ProviderConnectorService {
         this.provider = new MetamaskProvider(
           this.web3,
           this.$networkChangeSubject,
-          this.$addressChangeSubject
+          this.$addressChangeSubject,
+          this.errorsService
         );
       }
     }

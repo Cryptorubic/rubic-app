@@ -10,6 +10,7 @@ import Web3 from 'web3';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
+import { ErrorsService } from '../../../errors/errors.service';
 
 export class WalletLinkProvider extends PrivateProvider {
   private isEnabled: boolean;
@@ -46,9 +47,10 @@ export class WalletLinkProvider extends PrivateProvider {
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
     accountChange: BehaviorSubject<string>,
+    errorsService: ErrorsService,
     blockchainId?: number
   ) {
-    super();
+    super(errorsService);
     this.isEnabled = false;
     this.defaultWalletParams = {
       appName: 'Rubic',
@@ -86,8 +88,7 @@ export class WalletLinkProvider extends PrivateProvider {
       this.selectedAddress = address;
       this.selectedChain = chain.name;
     } catch (error) {
-      console.error(`No Metamask installed. ${error}`);
-      throw new WalletlinkError();
+      this.errorsService.throw(new WalletlinkError());
     }
   }
 
@@ -100,10 +101,10 @@ export class WalletLinkProvider extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      throw new WalletlinkError();
+      this.errorsService.throw(new WalletlinkError());
     }
     if (this.getNetwork().name !== token.blockchain) {
-      throw new NetworkError(token.blockchain);
+      this.errorsService.throw(new NetworkError(token.blockchain));
     }
 
     return this.core.request({

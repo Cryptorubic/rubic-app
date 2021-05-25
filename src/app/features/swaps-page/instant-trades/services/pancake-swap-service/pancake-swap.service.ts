@@ -16,6 +16,7 @@ import { Web3PublicService } from '../../../../../core/services/blockchain/web3-
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapAbstract } from '../uniswap-abstract/uniswap-abstract';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
 
 @Injectable()
 export class PancakeSwapService extends UniswapAbstract {
@@ -24,9 +25,18 @@ export class PancakeSwapService extends UniswapAbstract {
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
     useTestingModeService: UseTestingModeService,
-    providerConnectorService: ProviderConnectorService
+    providerConnectorService: ProviderConnectorService,
+    protected readonly errorsService: ErrorsService
   ) {
-    super(useTestingModeService, WETH, uniSwapContracts, routingProviders, maxTransitTokens, abi);
+    super(
+      useTestingModeService,
+      WETH,
+      uniSwapContracts,
+      routingProviders,
+      maxTransitTokens,
+      abi,
+      errorsService
+    );
     this.providerConnectorService = providerConnectorService;
     this.coingeckoApiService = coingeckoApiService;
     this.slippageTolerance = 0.015; // 1.5%

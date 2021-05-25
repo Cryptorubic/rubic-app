@@ -6,6 +6,7 @@ import { Web3PublicService } from '../../../../../../core/services/blockchain/we
 import { CoingeckoApiService } from '../../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
 import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
+import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
 
 @Injectable()
 export class OneInchBscService extends OneInchService {
@@ -14,9 +15,10 @@ export class OneInchBscService extends OneInchService {
     coingeckoApiService: CoingeckoApiService,
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    protected readonly errorsService: ErrorsService
   ) {
-    super(httpClient, coingeckoApiService, useTestingModeService);
+    super(httpClient, coingeckoApiService, useTestingModeService, errorsService);
 
     this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     this.apiBaseUrl = 'https://api.1inch.exchange/v3.0/56/';

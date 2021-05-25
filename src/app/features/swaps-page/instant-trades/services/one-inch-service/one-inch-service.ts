@@ -8,10 +8,11 @@ import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCH
 import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
 
 interface OneInchQuoteResponse {
-  fromToken: Object;
-  toToken: Object;
+  fromToken: object;
+  toToken: object;
   toTokenAmount: string;
   fromTokenAmount: string;
   protocols: unknown[];
@@ -55,9 +56,10 @@ export class OneInchService extends InstantTradeService {
   constructor(
     private httpClient: HttpClient,
     private coingeckoApiService: CoingeckoApiService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    protected readonly errorsService: ErrorsService
   ) {
-    super();
+    super(errorsService);
 
     useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
     setTimeout(() => this.loadSupportedTokens());
@@ -114,8 +116,7 @@ export class OneInchService extends InstantTradeService {
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      console.error(oneInchTrade);
-      throw new Error('Oneinch quote error');
+      this.errorsService.throw(new Error('Oneinch quote error'));
     }
 
     // TODO: верменный фикс, потому что rpc binance сломалось

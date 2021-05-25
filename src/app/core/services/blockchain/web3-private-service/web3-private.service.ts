@@ -14,7 +14,7 @@ export class Web3PrivateService {
 
   private readonly web3: Web3;
 
-  public get address(): string {
+  private get address(): string {
     return this.providerConnector.address;
   }
 

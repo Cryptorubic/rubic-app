@@ -10,6 +10,7 @@ import { Web3PrivateService } from '../../../../core/services/blockchain/web3-pr
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { ErrorsService } from '../../../../core/services/errors/errors.service';
 
 abstract class InstantTradeService {
   protected isTestingMode;
@@ -19,6 +20,8 @@ abstract class InstantTradeService {
   protected web3Private: Web3PrivateService;
 
   protected providerConnectorService: ProviderConnectorService;
+
+  protected constructor(protected errorsService: ErrorsService) {}
 
   /**
    * @description calculate instant trade parameters
@@ -53,18 +56,18 @@ abstract class InstantTradeService {
 
   protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
     if (!this.providerConnectorService.isProviderActive) {
-      throw new WalletError();
+      this.errorsService.throw(new WalletError());
     }
 
     if (!this.providerConnectorService.address) {
-      throw new AccountError();
+      this.errorsService.throw(new AccountError());
     }
     if (
       this.providerConnectorService.networkName !== selectedBlockchain &&
       (this.providerConnectorService.networkName !== `${selectedBlockchain}_TESTNET` ||
         !this.isTestingMode)
     ) {
-      throw new NetworkError(selectedBlockchain);
+      this.errorsService.throw(new NetworkError(selectedBlockchain));
     }
   }
 
@@ -77,10 +80,12 @@ abstract class InstantTradeService {
       });
       if (balance.lt(amountIn)) {
         const formattedBalance = this.web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedBalance,
-          trade.from.amount.toString()
+        this.errorsService.throw(
+          new InsufficientFundsError(
+            trade.from.token.symbol,
+            formattedBalance,
+            trade.from.amount.toString()
+          )
         );
       }
     } else {
@@ -92,10 +97,12 @@ abstract class InstantTradeService {
         const formattedTokensBalance = tokensBalance
           .div(10 ** trade.from.token.decimals)
           .toString();
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedTokensBalance,
-          trade.from.amount.toString()
+        this.errorsService.throw(
+          new InsufficientFundsError(
+            trade.from.token.symbol,
+            formattedTokensBalance,
+            trade.from.amount.toString()
+          )
         );
       }
     }

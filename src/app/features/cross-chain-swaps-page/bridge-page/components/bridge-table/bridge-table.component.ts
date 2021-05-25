@@ -5,14 +5,9 @@ import { finalize, first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
-import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
-import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
-import { TRADE_STATUS } from 'src/app/core/services/backend/bridge-api/models/TRADE_STATUS';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { BridgeService } from '../../services/bridge.service';
 import { BridgeTableTrade } from '../../models/BridgeTableTrade';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
 
 interface ITableTransactionWithState extends BridgeTableTrade {
   opened: boolean;
@@ -57,8 +52,6 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
 
   public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
-  public TRADE_STATUS = TRADE_STATUS;
-
   public SORT_FIELD = SORT_FIELD;
 
   public readonly WAITING_FOR_RECEIVING_STATUS = 'Waiting for receiving';
@@ -97,7 +90,11 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
 
   public tradeSuccessId: string;
 
-  constructor(private bridgeService: BridgeService, private dialog: MatDialog) {}
+  constructor(
+    private bridgeService: BridgeService,
+    private dialog: MatDialog,
+    private readonly errorsService: ErrorsService
+  ) {}
 
   private static sortByDate(a: string, b: string): number {
     const date1 = new Date(date.transform(a, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
@@ -259,24 +256,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
           this.tradeSuccessId = res;
         },
         err => {
-          if (!(err instanceof RubicError)) {
-            err = new RubicError();
-          }
-          let data: any = { title: 'Error', descriptionText: err.comment };
-          if (err instanceof MetamaskError) {
-            data.title = 'Warning';
-          }
-          if (err instanceof NetworkError) {
-            data = {
-              title: 'Error',
-              descriptionComponentClass: NetworkErrorComponent,
-              descriptionComponentInputs: { networkError: err }
-            };
-          }
-          this.dialog.open(MessageBoxComponent, {
-            width: '400px',
-            data
-          });
+          this.errorsService.showErrorDialog(err);
         }
       );
   }

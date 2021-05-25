@@ -8,6 +8,7 @@ import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
+import { ErrorsService } from '../../../errors/errors.service';
 
 export class MetamaskProvider extends PrivateProvider {
   private isEnabled = false;
@@ -37,15 +38,16 @@ export class MetamaskProvider extends PrivateProvider {
   constructor(
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
-    accountChange: BehaviorSubject<string>
+    accountChange: BehaviorSubject<string>,
+    errorsService: ErrorsService
   ) {
-    super();
+    super(errorsService);
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
 
     const { ethereum } = window as any;
     if (!ethereum) {
-      console.error('No Metamask installed.');
+      this.errorsService.throw(new MetamaskError());
       return;
     }
 
@@ -114,8 +116,7 @@ export class MetamaskProvider extends PrivateProvider {
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.getAddress());
     } catch (error) {
-      console.error(`No Metamask installed. ${error}`);
-      throw new MetamaskError();
+      this.errorsService.throw(new MetamaskError());
     }
   }
 
@@ -139,10 +140,10 @@ export class MetamaskProvider extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      throw new MetamaskError();
+      this.errorsService.throw(new MetamaskError());
     }
     if (this.getNetwork().name !== token.blockchain) {
-      throw new NetworkError(token.blockchain);
+      this.errorsService.throw(new NetworkError(token.blockchain));
     }
 
     return this.core.request({

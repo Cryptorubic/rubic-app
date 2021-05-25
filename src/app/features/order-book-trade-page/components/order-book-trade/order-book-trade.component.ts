@@ -13,16 +13,13 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
-import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
-import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
-import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
-import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
+import { ErrorsService } from '../../../../core/services/errors/errors.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -117,7 +114,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private dialog: MatDialog,
-    private readonly providerConnector: ProviderConnectorService
+    private readonly providerConnector: ProviderConnectorService,
+    private readonly errorsService: ErrorsService
   ) {}
 
   ngOnInit(): void {
@@ -141,30 +139,16 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   private checkMetamaskSettings() {
     if (!this.providerConnector.isProviderActive) {
-      throw new WalletError();
+      this.errorsService.throw(new WalletError());
     }
 
     if (!this.providerConnector.address) {
-      throw new AccountError();
+      this.errorsService.throw(new AccountError());
     }
   }
 
   private showErrorMessage(err: RubicError): void {
-    let data: any = { title: 'Error', descriptionText: err.comment };
-    if (err instanceof MetamaskError) {
-      data.title = 'Warning';
-    }
-    if (err instanceof NetworkError) {
-      data = {
-        title: 'Error',
-        descriptionComponentClass: NetworkErrorComponent,
-        descriptionComponentInputs: { networkError: err }
-      };
-    }
-    this.dialog.open(MessageBoxComponent, {
-      width: '400px',
-      data
-    });
+    this.errorsService.showErrorDialog(err);
   }
 
   private setTradeData(uniqueLink: string): void {
@@ -236,9 +220,9 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   public getRate(): string {
     return !this.isRevertedRate
       ? `${this.fromTokenToToTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.from.symbol} 
+         ${this.tradeData.token.from.symbol}
          / 1 ${this.tradeData.token.to.symbol}`
-      : `1 ${this.tradeData.token.from.symbol} / 
+      : `1 ${this.tradeData.token.from.symbol} /
          ${this.toTokenToFromTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
          ${this.tradeData.token.to.symbol}`;
   }

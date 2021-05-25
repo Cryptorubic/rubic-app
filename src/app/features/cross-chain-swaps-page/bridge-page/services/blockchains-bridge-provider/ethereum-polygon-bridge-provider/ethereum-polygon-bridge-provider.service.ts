@@ -10,31 +10,18 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { MetamaskProviderService } from 'src/app/core/services/blockchain/private-provider/metamask-provider/metamask-provider.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TRADE_STATUS } from 'src/app/core/services/backend/bridge-api/models/TRADE_STATUS';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import {
   BlockchainsTokens,
   BridgeToken
 } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
-import networks from 'src/app/shared/constants/blockchain/networks';
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
-import { BlockchainsTokens, BridgeToken } from '../../../models/BridgeToken';
-import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
-import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
-import SwapToken from '../../../../../shared/models/tokens/SwapToken';
-import { BridgeTrade } from '../../../models/BridgeTrade';
-import networks from '../../../../../shared/constants/blockchain/networks';
-import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
-import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { BridgeApiService } from '../../../../../core/services/backend/bridge-api/bridge-api.service';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { TRADE_STATUS } from '../../../../../core/services/backend/bridge-api/models/TRADE_STATUS';
+import networks from '../../../../../../shared/constants/blockchain/networks';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 interface PolygonGraphToken {
   rootToken: string;
@@ -230,7 +217,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,
           transactionHash,
-          this.web3PrivateService.address
+          this.providerConnectorService.address
         );
       })
     );
@@ -241,7 +228,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     updateTransactionsList: () => Promise<void>
   ): Observable<string> {
     const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
-    const userAddress = this.web3PrivateService.address;
+    const userAddress = this.providerConnectorService.address;
 
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
@@ -257,7 +244,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           bridgeTrade,
           status,
           hash,
-          this.web3PrivateService.address
+          this.providerConnectorService.address
         );
         updateTransactionsList();
       };
@@ -356,7 +343,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     updateTransactionsList: () => Promise<void>
   ): Observable<string> {
     const maticPOSClient = this.getMaticPOSClient(BLOCKCHAIN_NAME.ETHEREUM);
-    const userAddress = this.web3PrivateService.address;
+    const userAddress = this.providerConnectorService.address;
 
     const onTradeTransactionHash = async (hash: string) => {
       if (onTransactionHash) {

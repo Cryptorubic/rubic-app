@@ -11,6 +11,7 @@ import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
 import { WalletconnectError } from '../../../../../shared/models/errors/provider/WalletconnectError';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
+import { ErrorsService } from '../../../errors/errors.service';
 
 export class WalletConnectProvider extends PrivateProvider {
   private isEnabled: boolean;
@@ -40,9 +41,10 @@ export class WalletConnectProvider extends PrivateProvider {
   constructor(
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
-    accountChange: BehaviorSubject<string>
+    accountChange: BehaviorSubject<string>,
+    errorsService: ErrorsService
   ) {
-    super();
+    super(errorsService);
     this.isEnabled = false;
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
@@ -84,8 +86,7 @@ export class WalletConnectProvider extends PrivateProvider {
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(address);
     } catch (error) {
-      console.error(`No Metamask installed. ${error}`);
-      throw new WalletlinkError();
+      this.errorsService.throw(new WalletlinkError());
     }
   }
 
@@ -98,10 +99,10 @@ export class WalletConnectProvider extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      throw new WalletconnectError();
+      this.errorsService.throw(new WalletconnectError());
     }
     if (this.getNetwork().name !== token.blockchain) {
-      throw new NetworkError(token.blockchain);
+      this.errorsService.throw(new NetworkError(token.blockchain));
     }
 
     return this.core.request({

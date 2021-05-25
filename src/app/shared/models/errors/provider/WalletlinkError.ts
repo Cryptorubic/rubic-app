@@ -1,10 +1,11 @@
 import { RubicError } from '../RubicError';
 
 export class WalletlinkError extends RubicError {
+  public comment: string;
+
   constructor() {
     super();
-    Object.setPrototypeOf(this, WalletlinkError.prototype); // to make `instanceof WalletlinkError` work
+    this.comment = `Please make sure that you have scan qrCode`;
+    Object.setPrototypeOf(this, WalletlinkError.prototype);
   }
-
-  public comment: string = `Please make sure that you have scan qrCode`;
 }

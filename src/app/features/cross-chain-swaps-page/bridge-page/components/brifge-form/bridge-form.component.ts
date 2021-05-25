@@ -296,8 +296,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setBlockchainsToService(): void {
-    this.bridgeService.setBlockchains(this.fromBlockchain.key, this.toBlockchain.key);
+  private async setBlockchainsToService(): Promise<void> {
+    await this.bridgeService.setBlockchains(this.fromBlockchain.key, this.toBlockchain.key);
   }
 
   public isBlockchainSelected(blockchain: BLOCKCHAIN_NAME): boolean {
@@ -433,7 +433,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         err => {
           this.tradeInProgress = false;
           this.buttonAnimation = false;
-          this.errorsService.showErrorDialog(err, this.dialog);
+          this.errorsService.showErrorDialog(err);
         }
       );
   }

@@ -1,23 +1,18 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, defer, Observable, Subscription, throwError } from 'rxjs';
+import { BehaviorSubject, defer, Observable, Subscription } from 'rxjs';
 import { List } from 'immutable';
 import { catchError, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { BinanceTronBridgeProviderService } from './blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { EthereumTronBridgeProviderService } from './blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
 import { BridgeTableTrade } from '../models/BridgeTableTrade';
@@ -25,17 +20,16 @@ import { BridgeTrade } from '../models/BridgeTrade';
 import { EthereumPolygonBridgeProviderService } from './blockchains-bridge-provider/ethereum-polygon-bridge-provider/ethereum-polygon-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from './blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { EthereumBinanceBridgeProviderService } from './blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
-import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeToken } from '../models/BridgeToken';
-import { TokensService } from '../../../core/services/backend/tokens-service/tokens.service';
-import SwapToken from '../../../shared/models/tokens/SwapToken';
-import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { UseTestingModeService } from '../../../core/services/use-testing-mode/use-testing-mode.service';
-import { bridgeTestTokens } from '../../../../test/tokens/bridge-tokens';
+
 import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockchains-bridge-provider';
-import { BridgeToken } from '../models/BridgeToken';
+import { ErrorsService } from '../../../../core/services/errors/errors.service';
+import SwapToken from '../../../../shared/models/tokens/SwapToken';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { UseTestingModeService } from '../../../../core/services/use-testing-mode/use-testing-mode.service';
+import { TokensService } from '../../../../core/services/backend/tokens-service/tokens.service';
+import { bridgeTestTokens } from '../../../../../test/tokens/bridge-tokens';
+import { Web3PrivateService } from '../../../../core/services/blockchain/web3-private-service/web3-private.service';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -90,7 +84,8 @@ export class BridgeService implements OnDestroy {
     private web3PublicService: Web3PublicService,
     private authService: AuthService,
     private useTestingModeService: UseTestingModeService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly errorsService: ErrorsService
   ) {
     this._swapTokensSubscription$ = this.tokensService.tokens.subscribe(swapTokens => {
       this._swapTokens = swapTokens;
@@ -209,11 +204,11 @@ export class BridgeService implements OnDestroy {
 
   private checkSettings(blockchain: BLOCKCHAIN_NAME): void {
     if (!this.providerConnectorService.isProviderActive) {
-      throw new WalletError();
+      this.errorsService.throw(new WalletError());
     }
 
     if (!this.providerConnectorService.address) {
-      throw new AccountError();
+      this.errorsService.throw(new AccountError());
     }
 
     if (
@@ -224,7 +219,7 @@ export class BridgeService implements OnDestroy {
         blockchain !== BLOCKCHAIN_NAME.ETHEREUM ||
         this.providerConnectorService.network?.name !== BLOCKCHAIN_NAME.GOERLI_TESTNET)
     ) {
-      throw new NetworkError(blockchain);
+      this.errorsService.throw(new NetworkError(blockchain));
     }
   }
 
@@ -262,7 +257,9 @@ export class BridgeService implements OnDestroy {
     const amountInWei = amount.multipliedBy(10 ** decimals);
     if (balance.lt(amountInWei)) {
       const formattedTokensBalance = balance.div(10 ** decimals).toString();
-      throw new InsufficientFundsError(symbol, formattedTokensBalance, amount.toFixed());
+      this.errorsService.throw(
+        new InsufficientFundsError(symbol, formattedTokensBalance, amount.toFixed())
+      );
     }
   }
 
@@ -286,16 +283,14 @@ export class BridgeService implements OnDestroy {
             tap(() => this.updateTransactionsList()),
             catchError(err => {
               if (err.code === this.USER_REJECT_ERROR_CODE) {
-                return throwError(new UserRejectError());
+                return this.errorsService.$throw(new UserRejectError());
               }
-              console.debug('Bridge trade error:', err);
-              return throwError(err);
+              return this.errorsService.$throw(err, 'Bridge trade error:');
             })
           );
       }),
       catchError(err => {
-        console.debug(err);
-        return throwError(err);
+        return this.errorsService.$throw(err);
       })
     );
   }
@@ -307,7 +302,7 @@ export class BridgeService implements OnDestroy {
     try {
       this.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
     } catch (err) {
-      return throwError(err);
+      return this.errorsService.$throw(err);
     }
 
     return this.ethereumPolygonBridgeProviderService
@@ -318,10 +313,12 @@ export class BridgeService implements OnDestroy {
         tap(() => this.updateTransactionsList()),
         catchError(err => {
           if (err.code === this.USER_REJECT_ERROR_CODE) {
-            return throwError(new UserRejectError());
+            return this.errorsService.$throw(new UserRejectError());
           }
-          console.debug('Bridge trade from Polygon to Eth error', err);
-          return throwError(err);
+          return this.errorsService.$throw(
+            new UserRejectError(),
+            'Bridge trade from Polygon to Eth error'
+          );
         })
       );
   }

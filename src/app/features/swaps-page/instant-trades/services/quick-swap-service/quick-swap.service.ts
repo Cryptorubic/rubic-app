@@ -17,6 +17,7 @@ import {
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas
 } from '../uni-swap-service/uni-swap-constants';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
 
 @Injectable()
 export class QuickSwapService extends UniswapAbstract {
@@ -24,9 +25,18 @@ export class QuickSwapService extends UniswapAbstract {
     coingeckoApiService: CoingeckoApiService,
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    protected readonly errorsService: ErrorsService
   ) {
-    super(useTestingModeService, WETH, uniSwapContracts, routingProviders, maxTransitTokens, abi);
+    super(
+      useTestingModeService,
+      WETH,
+      uniSwapContracts,
+      routingProviders,
+      maxTransitTokens,
+      abi,
+      errorsService
+    );
     this.coingeckoApiService = coingeckoApiService;
     this.slippageTolerance = 0.015; // 1.5%
     this.tokensToTokensEstimatedGas = tokensToTokensEstimatedGas;

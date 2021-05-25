@@ -18,6 +18,8 @@ import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page
 import BinanceContractAbi from './abi/BinanceContractAbi';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
+import { ErrorsService } from '../../../../../../../core/services/errors/errors.service';
+import { ProviderConnectorService } from '../../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 interface RubicTrade {
   token: {
@@ -45,7 +47,9 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
     private bridgeApiService: BridgeApiService,
-    useTestingMode: UseTestingModeService
+    useTestingMode: UseTestingModeService,
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly errorsService: ErrorsService
   ) {
     super();
     useTestingMode.isTestingMode.subscribe(value => {
@@ -121,7 +125,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
           this.bridgeApiService.notifyBridgeBot(
             bridgeTrade,
             transactionHash,
-            this.web3PrivateService.address
+            this.providerConnectorService.address
           );
           subscriber.next(transactionHash);
         })
@@ -141,7 +145,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     const { token } = bridgeTrade;
 
     if (token.symbol !== 'RBC') {
-      throw new Error('Rubic bridge supports only rubic token.');
+      this.errorsService.throw(new Error('Rubic bridge supports only rubic token.'));
     }
 
     const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
@@ -177,7 +181,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
         bridgeTrade.fromBlockchain,
         hash,
         trade.amount.toFixed(),
-        this.web3PrivateService.address
+        this.providerConnectorService.address
       );
       updateTransactionsList();
     };
@@ -198,7 +202,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   private async provideAllowance(trade: RubicTrade, web3Public: Web3Public, onApprove) {
     const allowance = await web3Public.getAllowance(
       trade.token.address,
-      this.web3PrivateService.address,
+      this.providerConnectorService.address,
       trade.swapContractAddress
     );
     if (trade.amount.gt(allowance)) {

@@ -68,9 +68,10 @@ export class UniswapAbstract extends InstantTradeService {
       testnetAddresses: string[];
     },
     private maxTransitTokens: number,
-    private abi
+    private abi,
+    protected readonly errorsService
   ) {
-    super();
+    super(errorsService);
     this.isTestingMode = useTestingModeService.isTestingMode;
     this.WETHAddress = WETH.address;
     this.uniswapContractAddress = uniswapContract.address;
