@@ -34,8 +34,14 @@ const routes: Routes = [
   },
   {
     path: 'bridge',
+    redirectTo: 'cross-chain/bridge'
+  },
+  {
+    path: 'cross-chain',
     loadChildren: () =>
-      import('./features/bridge-page/bridge-page.module').then(m => m.BridgePageModule)
+      import('./features/cross-chain-swaps-page/cross-chain-swaps-page.module').then(
+        m => m.CrossChainSwapsPageModule
+      )
   },
   {
     path: 'about',

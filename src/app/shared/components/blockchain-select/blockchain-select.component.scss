@@ -5,6 +5,7 @@
     display: block !important;
 
     background-color: $grey-background;
+    border-radius: 10px;
   }
 
   .mat-select-value {
@@ -12,12 +13,18 @@
 
     vertical-align: middle;
 
-    img {
-      display: inline-block;
-      height: 23px;
-      margin-right: 10px;
+    mat-select-trigger {
+      display: flex;
+      align-items: center;
 
-      vertical-align: text-top;
+      color: $dark;
+      line-height: normal;
+
+      img {
+        display: inline-block;
+        height: 23px;
+        margin-right: 12px;
+      }
     }
   }
 
@@ -50,14 +57,17 @@
   }
 
   .mat-option {
-    img {
-      margin-right: 10px;
-
-      vertical-align: middle;
-    }
-
     &-text {
+      display: flex !important;
+      align-items: center;
+
       font-family: $ubuntu-font;
+
+      img {
+        margin-right: 12px;
+
+        vertical-align: middle;
+      }
     }
 
     &.mat-active,
@@ -66,11 +76,19 @@
     }
   }
 
+  .mat-primary {
+    border-radius: 10px !important;
+  }
+
   .mat-form-field.mat-focused.mat-primary .mat-select-arrow {
     color: $done-grey;
   }
 
   .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
     color: black;
+  }
+
+  .mat-select-disabled .mat-select-arrow {
+    visibility: hidden;
   }
 }
