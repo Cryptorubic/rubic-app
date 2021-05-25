@@ -54,7 +54,9 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    */
   @Input() chooseComponentText: string;
 
-  @Input() disabled? = false;
+  @Input() chooseButtonDisabled? = false;
+
+  @Input() inputDisabled? = false;
 
   /**
    * if true, then dropdown width will take 100% of its parent, else - 50%.
@@ -85,13 +87,17 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
   constructor() {}
 
   ngOnChanges() {
-    this.searchComponent(this.inputQuery);
-    if (this.selectedComponentData) {
-      this.inputQuery = this.selectedComponentData.filterParameters[this.filterBy[0]];
+    if (!this.inputDisabled) {
       this.searchComponent(this.inputQuery);
-      this.unshiftComponentToVisibleList(
-        this.componentsData.find(component => component.id === this.selectedComponentData.id)
-      );
+      if (this.selectedComponentData) {
+        this.inputQuery = this.selectedComponentData.filterParameters[this.filterBy[0]];
+        this.searchComponent(this.inputQuery);
+        this.unshiftComponentToVisibleList(
+          this.componentsData.find(component => component.id === this.selectedComponentData.id)
+        );
+      }
+    } else {
+      this.searchComponent('');
     }
   }
 

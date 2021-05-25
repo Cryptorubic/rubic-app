@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { HttpService } from '../../http/http.service';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BridgeTrade } from '../../../../features/bridge-page/models/BridgeTrade';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
   BridgeTableTrade,
   BridgeTableTradeApi
-} from '../../../../features/bridge-page/models/BridgeTableTrade';
+} from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTableTrade';
+import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
+import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
+import { HttpService } from '../../http/http.service';
 import { TRADE_STATUS } from './models/TRADE_STATUS';
-import { BridgeToken } from '../../../../features/bridge-page/models/BridgeToken';
 import { TokensService } from '../tokens-service/tokens.service';
 import { BOT_URL } from '../constants/BOT_URL';
 

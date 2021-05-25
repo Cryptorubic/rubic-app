@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -99,6 +100,7 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     CheckboxComponent,
     TotalSupplyOverflowErrorComponent,
     RefreshButtonComponent,
+    WalletAddressFormComponent,
     WrapLinkDirective,
     SafetyLinkDirective,
     ShortAddressPipe
@@ -160,8 +162,10 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent,
-    ShortAddressPipe,
-    RefreshButtonComponent
+    RefreshButtonComponent,
+    WalletAddressFormComponent,
+    RefreshButtonComponent,
+    ShortAddressPipe
   ],
   providers: [ScannerLinkPipe]
 })
