@@ -1,11 +1,11 @@
 <div
   class="selection-block"
-  [ngClass]="{'selection-block_best': tradeController.isBestRate && trades.length > 1}"
+  [ngClass]="{ 'selection-block_best': tradeController.isBestRate && trades.length > 1 }"
 >
   <div class="selection-block__input-container">
     <app-tokens-input
       class="instant-trade-form__tokens-input"
-      [inputDisabled]="true"
+      [amountInputDisabled]="true"
       [tokensList]="availableToTokens"
       [selectedToken]="toToken"
       [selectedAmount]="getToAmount(index)"
@@ -65,25 +65,25 @@
   <div
     class="instant-trade-button"
     [ngClass]="{
-          'instant-trade-button_second': index === 1,
-          'instant-trade-button_best': tradeController.isBestRate && trades.length > 1
+      'instant-trade-button_second': index === 1,
+      'instant-trade-button_best': tradeController.isBestRate && trades.length > 1
     }"
   >
     <app-primary-button
       type="button"
       [label]="'Via ' + tradeController.tradeProviderInfo.label"
       [disabled]="
-            !(
-              fromAmountAsNumber.isGreaterThan(0) &&
-              tradeParameters.toToken &&
-              tradeParameters.fromToken
-            ) ||
-            !tradeController.trade ||
-            shouldAnimateButton(index) ||
-            (selectedTradeState &&
-              selectedTradeState !== INSTANT_TRADES_STATUS.ERROR &&
-              selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED)
-          "
+        !(
+          fromAmountAsNumber.isGreaterThan(0) &&
+          tradeParameters.toToken &&
+          tradeParameters.fromToken
+        ) ||
+        !tradeController.trade ||
+        shouldAnimateButton(index) ||
+        (selectedTradeState &&
+          selectedTradeState !== INSTANT_TRADES_STATUS.ERROR &&
+          selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED)
+      "
       [animate]="shouldAnimateButton(index)"
       (onClick)="createTrade(index)"
     >
@@ -97,9 +97,10 @@
     </div>
     <div
       *ngIf="index === trades.length - 1 && blockchain === BLOCKCHAIN_NAME.ETHEREUM"
-      class="checkbox-optimization">
-        <span>Use Rubic optimization</span>
-        <app-checkbox [(checked)]="gasOptimizationChecked"></app-checkbox>
+      class="checkbox-optimization"
+    >
+      <span>Use Rubic optimization</span>
+      <app-checkbox [(checked)]="gasOptimizationChecked"></app-checkbox>
     </div>
   </div>
 </div>

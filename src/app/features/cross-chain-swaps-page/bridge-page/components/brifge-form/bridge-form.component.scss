@@ -1,0 +1,177 @@
+@import 'src/app/features/cross-chain-swaps-page/common/styles/form';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
+
+.swap-section {
+  position: relative;
+
+  &__revert-button {
+    position: absolute;
+    top: calc(50% - 21px);
+    left: calc(50% - 21px);
+  }
+}
+
+.swap-box {
+  &__title {
+    &_second {
+      margin-top: auto;
+    }
+  }
+
+  &__min-max-amounts-section {
+    width: 100%;
+
+    &_hidden {
+      visibility: hidden;
+    }
+  }
+}
+
+.min-max-amounts-section {
+  height: 42px;
+
+  font-size: 14px;
+
+  border-collapse: collapse;
+
+  td {
+    opacity: 0.5;
+
+    &:first-child {
+      width: 150px;
+    }
+  }
+
+  &__line {
+    &_wrong {
+      color: white;
+
+      background-color: #ff9f9f;
+
+      td {
+        opacity: 1;
+
+        &:first-child {
+          border-top-left-radius: 3px;
+          border-bottom-left-radius: 3px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+        }
+
+        img {
+          float: right;
+          margin-right: 7px;
+        }
+      }
+    }
+  }
+}
+
+.revert-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+
+  line-height: 35px;
+
+  background-color: white;
+  border: none;
+
+  border-radius: 50%;
+  box-shadow: 0 0 5px 1px #e2e2e2;
+  cursor: pointer;
+
+  transition: transform 0.2s ease-in-out;
+
+  img {
+    width: 21px;
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.confirm-section {
+  &__blockchain-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+
+    color: #a8a8a8 !important;
+
+    font-size: 12px !important;
+    text-decoration: none !important;
+
+    &:hover {
+      cursor: pointer;
+
+      img {
+        filter: grayscale(0);
+      }
+    }
+
+    &_hidden {
+      visibility: hidden;
+    }
+
+    &_polygon {
+      &:hover {
+        img {
+          opacity: 1;
+        }
+      }
+
+      img {
+        opacity: 0.65;
+      }
+    }
+
+    span {
+      margin-bottom: 10px;
+    }
+
+    img {
+      width: 99px;
+      height: 24px;
+
+      filter: grayscale(1);
+    }
+  }
+}
+
+@include b($desktop) {
+  .cross-chain-form {
+    flex-direction: column;
+    grid-gap: 17px;
+
+    &__confirm-section {
+      top: 0;
+    }
+  }
+
+  .confirm-section {
+    &__blockchain-link {
+      margin-top: 0;
+    }
+  }
+}
+
+@include b($laptop) {
+  .confirm-section {
+    &__blockchain-link {
+      margin-top: 11px;
+    }
+  }
+}

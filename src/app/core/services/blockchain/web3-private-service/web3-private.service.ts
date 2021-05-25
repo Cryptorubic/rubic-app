@@ -293,6 +293,7 @@ export class Web3PrivateService {
     options: {
       onTransactionHash?: (hash: string) => void;
       value?: BigNumber | string;
+      gas?: string;
     } = {}
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
@@ -302,7 +303,7 @@ export class Web3PrivateService {
         .send({
           from: this.address,
           ...(options.value && { value: options.value }),
-          ...(this.defaultMockGas && { gas: this.defaultMockGas })
+          ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)

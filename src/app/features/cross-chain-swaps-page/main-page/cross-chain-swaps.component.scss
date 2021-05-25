@@ -1,0 +1,174 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+.cross-chain-swaps {
+  max-width: 1180px;
+  height: 100%;
+  margin: 85px auto 0;
+
+  &__intro {
+    margin-bottom: 60px;
+    padding-top: 40px;
+
+    color: rgba(black, 0.4);
+
+    font-weight: normal;
+    font-size: 22px;
+    line-height: 40px;
+
+    .app-index__intro_bold {
+      font-weight: 700;
+    }
+
+    .app-index__intro_green {
+      color: #4aa956;
+    }
+  }
+
+  &__header {
+    margin-bottom: 20px;
+  }
+
+  &__tabs {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+
+  color: #110931;
+
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 32px;
+}
+
+.swaps-link {
+  &:hover {
+    &__arrow-button {
+      transform: scale(1.2);
+    }
+  }
+
+  &__text {
+    margin-right: 10px;
+
+    color: $main-green;
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  &__arrow-button {
+    position: relative;
+    top: -2px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+
+    background-color: white;
+    border-radius: 50%;
+
+    transition: transform 0.2s linear;
+  }
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 160px;
+  height: 47px;
+  margin-right: 5px;
+  padding: 0 15px;
+
+  background-color: white;
+  cursor: pointer;
+
+  opacity: 0.85;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  span {
+    color: $dark;
+    font-size: 14px;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+
+    margin-left: 10px;
+
+    ::ng-deep svg {
+      max-width: 20px;
+      max-height: 20px;
+    }
+
+    &_active {
+      ::ng-deep svg path {
+        fill: $main-green;
+        fill-opacity: 1;
+      }
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 2px 6px rgba(black, 0.1);
+  }
+
+  &_active {
+    height: 52px;
+
+    cursor: default;
+
+    opacity: unset;
+
+    &:hover {
+      box-shadow: unset;
+    }
+
+    span {
+      font-weight: bold;
+    }
+  }
+}
+
+@include b(1240) {
+  .cross-chain-swaps {
+    padding: 0 2vw;
+  }
+}
+
+@include b(600) {
+  .cross-chain-swaps {
+    &__header {
+      flex-direction: column;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .cross-chain-swaps {
+    &__tabs {
+      width: 100%;
+    }
+  }
+
+  .tab {
+    width: 50%;
+    min-width: auto;
+  }
+}
