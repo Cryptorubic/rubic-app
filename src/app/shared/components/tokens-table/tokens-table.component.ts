@@ -4,7 +4,8 @@ import {
   Input,
   Output,
   EventEmitter,
-  ViewChild
+  ViewChild,
+  ChangeDetectorRef
 } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -32,6 +33,7 @@ export class TokensTableComponent {
     const newData = this.prepareData(data);
     this.tokensTableData = newData;
     this.sortedTableData = newData;
+    this.cdr.detectChanges();
   }
 
   @Input() public displayedMobileItems: string[];
@@ -64,6 +66,7 @@ export class TokensTableComponent {
     // @TODO: fix sort table
     if (!this.isSortInitialization && sort) {
       this.sortData(this.tableSorting);
+      this.cdr.detectChanges();
       this.isSortInitialization = true;
     }
   }
@@ -88,7 +91,11 @@ export class TokensTableComponent {
 
   public readonly selectableColumns: string[];
 
-  constructor(private readonly headerStore: HeaderStore, private scannerLinkPipe: ScannerLinkPipe) {
+  constructor(
+    private readonly headerStore: HeaderStore,
+    private scannerLinkPipe: ScannerLinkPipe,
+    private readonly cdr: ChangeDetectorRef
+  ) {
     this.refreshTableEvent = new EventEmitter<void>();
     this.selectTokenEvent = new EventEmitter<TokenValueType>();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
@@ -143,7 +150,6 @@ export class TokensTableComponent {
    * @param sort Current sort state.
    */
   public sortData(sort: Sort): void {
-    this.tableSorting = sort;
     const data = this.tokensTableData.slice();
     if (!sort.active || sort.direction === '') {
       this.sortedTableData = data;
