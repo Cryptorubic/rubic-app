@@ -116,22 +116,32 @@
     <div class="tokens-accordion__item">
       <div class="tokens-accordion__item-name">From</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
-        <img
-          [src]="data.token.from.image || '/assets/images/icons/coins/empty.svg'"
-          [alt]="data.token.from.symbol"
-        />
-        <span>{{ data.token.from.symbol }}</span>
+        <div class="tokens-accordion__token-info">
+          <img
+            [src]="data.token.from.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.from.symbol"
+          />
+          <span>{{ data.token.from.symbol }}</span>
+        </div>
+        <div class="tokens-accordion__token-amount">
+          {{ data.fromAmount.toString(10) | withRound: 5:6:data.token.from:true }}
+        </div>
       </div>
     </div>
 
     <div class="tokens-accordion__item">
       <div class="tokens-accordion__item-name">To</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
-        <img
-          [src]="data.token.to.image || '/assets/images/icons/coins/empty.svg'"
-          [alt]="data.token.to.symbol"
-        />
-        <span>{{ data.token.to.symbol }}</span>
+        <div class="tokens-accordion__token-info">
+          <img
+            [src]="data.token.to.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.to.symbol"
+          />
+          <span>{{ data.token.to.symbol }}</span>
+        </div>
+        <div class="tokens-accordion__token-amount">
+          {{ data.toAmount.toString(10) | withRound: 5:6:data.token.from:true }}
+        </div>
       </div>
     </div>
 

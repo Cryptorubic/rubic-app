@@ -32,6 +32,10 @@
 
     opacity: 0.5;
   }
+
+  @include b($tablet) {
+    margin-bottom: 5px;
+  }
 }
 
 .selection-block__custom-token-section {

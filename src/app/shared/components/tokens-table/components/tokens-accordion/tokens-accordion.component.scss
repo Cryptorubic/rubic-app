@@ -171,7 +171,7 @@
   &__item {
     display: flex;
     box-sizing: border-box;
-    height: 55px;
+    min-height: 55px;
     padding: 5px 35px;
 
     border-top: 1px solid #e8e8e8;
@@ -189,7 +189,9 @@
     display: flex;
     align-items: center;
 
+
     &_network {
+      flex-wrap: wrap;
       text-transform: capitalize;
 
       img {
@@ -240,6 +242,16 @@
         overflow: hidden;
       }
     }
+  }
+
+  &__token-info {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+  }
+
+  &__token-amount {
+    padding: 4px 0;
   }
 }
 

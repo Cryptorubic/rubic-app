@@ -1,5 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
+import SwapToken from '../models/tokens/SwapToken';
+import InputToken from '../models/tokens/InputToken';
 
 @Pipe({
   name: 'withRound'
@@ -7,7 +9,13 @@ import BigNumber from 'bignumber.js';
 export class WithRoundPipe implements PipeTransform {
   public readonly DEFAULT_DECIMAL_LENGTH = 8;
 
-  transform(value, minRound = 5, maxRound: 6, token, roundMode: boolean) {
+  transform(
+    value: string,
+    minRound: number,
+    maxRound: number,
+    token: SwapToken | InputToken,
+    roundMode: boolean
+  ) {
     if (value?.includes('.')) {
       const startIndex = value.indexOf('.') + 1;
 
