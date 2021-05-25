@@ -329,7 +329,9 @@
     "assistanceOf": "Con la ayuda de",
     "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada",
     "minAmount": "Monto minimo ",
-    "maxAmount": "Importe máximo "
+    "maxAmount": "Importe máximo ",
+    "createBridge": "Create Bridge",
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
   },
   "instantTrades": {
     "title": "Intercambios instantáneos",
@@ -438,6 +440,9 @@
     },
     "gasPriceModal": {
       "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
+    },
+    "polygonToEthTradeModal": {
+      "text": "Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Receive' button will appear in the corresponding line of the swaps list under the form."
     },
     "cancelModal": {
       "text": "The trade was cancelled",

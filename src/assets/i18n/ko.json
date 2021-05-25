@@ -329,7 +329,9 @@
     "assistanceOf": "지원",
     "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다",
     "minAmount": "-최소 금액 ",
-    "maxAmount": "최대 금액 "
+    "maxAmount": "최대 금액 ",
+    "createBridge": "Create Bridge",
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
   },
   "instantTrades": {
     "title": "즉시 거래",
@@ -438,6 +440,9 @@
     },
     "gasPriceModal": {
       "text": "현재 대상 네트워크 (이더 리움)의 가스 가격이 높습니다. 스왑 기간이 연장되며 최대 4 시간이 소요될 수 있습니다. <br /> 지금 계속 하시겠습니까?"
+    },
+    "polygonToEthTradeModal": {
+      "text": "Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Receive' button will appear in the corresponding line of the swaps list under the form."
     },
     "cancelModal": {
       "text": "거래가 취소되었습니다",

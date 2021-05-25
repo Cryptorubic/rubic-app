@@ -329,7 +329,9 @@
     "assistanceOf": "在...的協助下",
     "getTokens": "您將獲得 {{ toBlockchainName }} 個令牌到所選地址",
     "minAmount": "最低金額 ",
-    "maxAmount": "最高金額 "
+    "maxAmount": "最高金額 ",
+    "createBridge": "Create Bridge",
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
   },
   "instantTrades": {
     "title": "支持即时交易",
@@ -438,6 +440,9 @@
     },
     "gasPriceModal": {
       "text": "Gas price 在目標網絡中 (Ethereum) 現在很高。 交換時間會延長，最多可能需要4個小時。<br />您想現在繼續嗎?"
+    },
+    "polygonToEthTradeModal": {
+      "text": "Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Receive' button will appear in the corresponding line of the swaps list under the form."
     },
     "cancelModal": {
       "text": "交易已被取消",

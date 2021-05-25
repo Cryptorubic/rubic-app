@@ -10,11 +10,10 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
-import { TRADE_STATUS } from 'src/app/core/services/backend/bridge-api/models/TRADE_STATUS';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { BridgeService } from '../../services/bridge.service';
 import { BridgeTableTrade } from '../../models/BridgeTableTrade';
-import { TRADE_STATUS } from '../../../../core/services/backend/bridge-api/models/TRADE_STATUS';
+import { TRADE_STATUS } from '../../../../../core/services/backend/bridge-api/models/TRADE_STATUS';
 
 interface ITableTransactionWithState extends BridgeTableTrade {
   opened: boolean;
