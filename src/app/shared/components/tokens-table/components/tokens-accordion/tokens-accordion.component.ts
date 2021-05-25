@@ -1,9 +1,10 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core';
 import { WINDOW } from 'src/app/core/models/window';
 import { ORDER_BOOK_TRADE_STATUS } from '../../../../../features/order-book-trade-page/models/trade-data';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../../../features/swaps-page/models/trade-data';
 import { TradeData } from '../../models/tokens-table-data';
 import { ScannerLinkPipe } from '../../../../pipes/scanner-link.pipe';
+import ADDRESS_TYPE from '../../../../models/blockchain/ADDRESS_TYPE';
 
 @Component({
   selector: 'app-tokens-accordion',
@@ -12,8 +13,6 @@ import { ScannerLinkPipe } from '../../../../pipes/scanner-link.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensAccordionComponent implements OnInit {
-  @Input() typeData: string;
-
   @Input() data: TradeData;
 
   @Input() chainIconPath: string;
@@ -56,9 +55,6 @@ export class TokensAccordionComponent implements OnInit {
   }
 
   public getLink(part) {
-    if (this.tableType === 'OrderBooks') {
-      return `/public-v3/${part.route}`;
-    }
-    return this.scannerLinkPipe.transform(part.hash, part.chain, part.type);
+    return this.scannerLinkPipe.transform(part.hash, part.chain, ADDRESS_TYPE.TRANSACTION);
   }
 }

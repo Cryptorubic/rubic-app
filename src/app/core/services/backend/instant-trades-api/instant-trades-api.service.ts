@@ -108,7 +108,8 @@ export class InstantTradesApiService {
         }
       },
       blockchain:
-        FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title] || 'ETH_TESTNET',
+        FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title] ||
+        BLOCKCHAIN_NAME.ETHEREUM,
       status: tradeApi.status,
       date: new Date(tradeApi.status_updated_at)
     } as unknown) as InstantTradesTradeData;

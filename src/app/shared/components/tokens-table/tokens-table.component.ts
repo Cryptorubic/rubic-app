@@ -1,11 +1,11 @@
 import {
-  Component,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
   Input,
   Output,
-  EventEmitter,
-  ViewChild,
-  ChangeDetectorRef
+  ViewChild
 } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -18,6 +18,7 @@ import { SortingResult } from './models/sorting-result';
 import { TradeData } from './models/tokens-table-data';
 import { InstantTradesTradeData } from '../../../features/swaps-page/models/trade-data';
 import { ScannerLinkPipe } from '../../pipes/scanner-link.pipe';
+import ADDRESS_TYPE from '../../models/blockchain/ADDRESS_TYPE';
 
 @Component({
   selector: 'app-tokens-table',
@@ -33,7 +34,6 @@ export class TokensTableComponent {
     const newData = this.prepareData(data);
     this.tokensTableData = newData;
     this.sortedTableData = newData;
-    this.cdr.detectChanges();
   }
 
   @Input() public displayedMobileItems: string[];
@@ -63,7 +63,6 @@ export class TokensTableComponent {
   @Input() public selectedColumn: string;
 
   @ViewChild(MatSort) set sort(sort: MatSort) {
-    // @TODO: fix sort table
     if (!this.isSortInitialization && sort) {
       this.sortData(this.tableSorting);
       this.cdr.detectChanges();
@@ -72,9 +71,9 @@ export class TokensTableComponent {
   }
 
   @ViewChild('mobileTable') set mobileTable(value) {
-    // @TODO: fix sort table
     if (!this.isSortInitialization && value) {
       this.sortData(this.tableSorting);
+      this.cdr.detectChanges();
       this.isSortInitialization = true;
     }
   }
@@ -212,10 +211,7 @@ export class TokensTableComponent {
   }
 
   public getLink(part) {
-    if (this.tableType === 'OrderBooks') {
-      return `/public-v3/${part.route}`;
-    }
-    return this.scannerLinkPipe.transform(part.hash, part.chain, part.type);
+    return this.scannerLinkPipe.transform(part.hash, part.chain, ADDRESS_TYPE.TRANSACTION);
   }
 
   /**

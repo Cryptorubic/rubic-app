@@ -211,25 +211,28 @@
       <div class="tokens-accordion__item-name">{{ 'Link' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_link">
         <a
-          safetyLink
-          [link]="
-            getLink({
-              route: data.uniqueLink,
-              hash: data.hash,
-              chain: data.blockchain,
-              type: 'TRANSACTION'
-            })
-          "
+          *ngIf="tableType === 'OrderBooks'; else scannerLink"
+          routerLink="/public-v3/{{ data.uniqueLink }}"
         >
-          {{
-            getLink({
-              route: data.uniqueLink,
-              hash: data.hash,
-              chain: data.blockchain,
-              type: 'TRANSACTION'
-            })
-          }}
+          /public-v3/{{ data.uniqueLink }}
         </a>
+        <ng-template #scannerLink>
+          <a
+            safetyLink
+            [link]="
+              getLink({
+                hash: data.hash,
+                chain: data.blockchain
+              })
+            "
+            >{{
+              getLink({
+                hash: data.hash,
+                chain: data.blockchain
+              })
+            }}
+          </a>
+        </ng-template>
       </div>
     </div>
   </div>
