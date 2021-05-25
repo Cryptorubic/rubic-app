@@ -39,8 +39,6 @@ export class UniswapAbstract extends InstantTradeService {
 
   protected ethToTokensEstimatedGas: BigNumber[];
 
-  protected slippageTolerance = 0.015; // 1.5%
-
   protected coingeckoApiService: CoingeckoApiService;
 
   protected blockchain: BLOCKCHAIN_NAME;
@@ -83,6 +81,10 @@ export class UniswapAbstract extends InstantTradeService {
         this.routingProviders = routingProviders.testnetAddresses;
       }
     });
+  }
+
+  public setSlippagePercent(slippagePercent: number): void {
+    this.slippagePercent = slippagePercent;
   }
 
   public async calculateTrade(
@@ -245,7 +247,7 @@ export class UniswapAbstract extends InstantTradeService {
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     const amountOutMin = trade.to.amount
-      .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
+      .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
       .multipliedBy(10 ** trade.to.token.decimals)
       .toFixed(0);
     const { path } = trade.options;
@@ -360,7 +362,7 @@ export class UniswapAbstract extends InstantTradeService {
       const gasPrice = await this.web3Public.getGasPriceInETH();
 
       const amountOutMin = route.outputAbsoluteAmount
-        .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
+        .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
         .toFixed(0);
 
       const estimatedGas = await this[gasCalculationMethodName].call(
@@ -474,7 +476,7 @@ export class UniswapAbstract extends InstantTradeService {
       profit: BigNumber;
     }>[] = routes.map(async route => {
       const amountOutMin = route.outputAbsoluteAmount
-        .multipliedBy(new BigNumber(1).minus(this.slippageTolerance))
+        .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
         .toFixed(0);
 
       const estimatedGas = await gasCalculationMethod(

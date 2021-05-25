@@ -79,12 +79,18 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public bestProviderIndex: number;
 
+  public slippagePercent = 0.001; // 0.1%
+
   public customToken = {
     from: {} as SwapToken,
     to: {} as SwapToken
   };
 
   public refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+
+  public areAdvancedOptionsOpened = false;
+
+  public areAdvancedOptionsValid = true;
 
   public get hasBestRate(): boolean {
     return this.trades.some(provider => provider.isBestRate);
@@ -301,6 +307,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       default:
         console.debug(`Blockchain ${this.blockchain} was not found.`);
     }
+    this.setSlippagePercent(this.slippagePercent);
     [this.bestProvider] = this.trades;
   }
 
@@ -348,8 +355,11 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       const queryChainValue = Object.values(BLOCKCHAIN_NAME).find(el => el === queryChain);
       this.blockchain = this.firstBlockhainEmitment && queryChain ? queryChainValue : blockchain;
       this.firstBlockhainEmitment = false;
+
       this.initInstantTradeProviders();
+
       this.tokens = this.tokensService.tokens.getValue();
+
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
       this._tradeParameters = {
         ...tradeParameters,
@@ -369,6 +379,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       }
       this.queryParamsService.setQueryParam('chain', this.blockchain);
     }
+  }
+
+  public setSlippagePercent(percent: number): void {
+    this.slippagePercent = percent;
+    this._instantTradeServices.forEach(service => {
+      service.setSlippagePercent(this.slippagePercent);
+    });
   }
 
   private isCalculatedTradeActual(

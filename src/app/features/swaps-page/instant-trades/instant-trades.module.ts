@@ -19,6 +19,7 @@ import { TokensSwapInputComponent } from './components/instant-trades-form/compo
 import { IframeTokensSwapInputComponent } from './components/instant-trades-form/components/iframe-tokens-swap-input/iframe-tokens-swap-input.component';
 import { ChainDropdownComponent } from './components/instant-trades-form/components/chain-dropdown/chain-dropdown.component';
 import { IframeProfileComponent } from './components/instant-trades-form/components/iframe-profile/iframe-profile.component';
+import { InstantTradesFormOptionsComponent } from './components/instant-trades-form/components/instant-trades-form-options/instant-trades-form-options.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { IframeProfileComponent } from './components/instant-trades-form/compone
     TokensSwapInputComponent,
     IframeTokensSwapInputComponent,
     ChainDropdownComponent,
-    IframeProfileComponent
+    IframeProfileComponent,
+    InstantTradesFormOptionsComponent
   ],
   imports: [
     CommonModule,

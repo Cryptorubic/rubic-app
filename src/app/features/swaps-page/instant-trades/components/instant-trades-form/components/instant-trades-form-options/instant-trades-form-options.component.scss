@@ -1,0 +1,81 @@
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
+
+.form-section {
+  color: $dark;
+
+  &__row {
+    padding: 20px 30px 22px;
+
+    border-top: 2px solid $grey-background;
+  }
+}
+
+.form-section-block {
+  min-height: 68px;
+}
+
+.input-container {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  text-align: center;
+
+  &_slippage-percent {
+    width: 73px;
+  }
+
+  &__label {
+    margin-bottom: 7px;
+
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  &__input {
+    height: 21px;
+    margin: 0 auto;
+    padding: 12px 14px;
+
+    color: $dark;
+    font-size: 17px;
+
+    font-family: inherit;
+    text-align: center;
+
+    background: $grey-background;
+    border: none;
+
+    &_slippage-percent {
+      width: 45px;
+    }
+
+    &_validated {
+      border: 1px solid white;
+    }
+
+    &_invalid {
+      border-color: $error-red;
+
+      &:focus {
+        box-shadow: 0 0 2px $error-red;
+      }
+    }
+  }
+
+  &__percent-sign {
+    position: absolute;
+    top: 52%;
+    right: -24.5%;
+  }
+}
+
+@include b($mobile-sm) {
+  .form-section {
+    &__row {
+      padding: 20px 10px 22px;
+    }
+  }
+}

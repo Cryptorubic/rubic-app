@@ -1,0 +1,32 @@
+<section class="form-section">
+  <div class="form-section__row form-section-row">
+    <div class="form-section__block form-section-block">
+      <div
+        class="form-section-block__input-container input-container input-container_slippage-percent"
+      >
+        <label class="input-container__label" for="slippage-input-id">Slippage</label>
+
+        <input
+          class="input-container__input input-container__input_slippage-percent input-container__input_validated"
+          id="slippage-input-id"
+          appNumberPrecision
+          [inputElement]="slippagePercentInput"
+          integerLength="2"
+          decimalLength="2"
+          minValue="0.01"
+          maxValue="50"
+          [ngModel]="(slippagePercent * 100).toString()"
+          (ngModelChange)="onSlippagePercentChange($event)"
+          #slippagePercentModel="ngModel"
+          [ngClass]="{
+            'input-container__input_invalid':
+              slippagePercentModel.value && slippagePercentModel.invalid
+          }"
+          #slippagePercentInput
+        />
+
+        <span class="input-container__percent-sign">%</span>
+      </div>
+    </div>
+  </div>
+</section>

@@ -17,6 +17,7 @@
 
 .instant-trade-form {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
 
   padding: 27px 30px 29px;
@@ -54,6 +55,12 @@
     .selection-block__header {
       margin-right: calc(100% / 3 + 20px);
     }
+  }
+
+  &__advanced-options-button {
+    position: relative;
+    top: 8px;
+    left: 4px;
   }
 }
 
@@ -180,6 +187,10 @@ app-tooltip {
   opacity: 0;
 
   transition: opacity 0.3s ease-in-out;
+}
+
+.flex-breaker {
+  flex-basis: 100%;
 }
 
 @include b($laptop) {

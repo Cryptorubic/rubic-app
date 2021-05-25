@@ -58,6 +58,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
 import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
 import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
 import { ShortAddressPipe } from './pipes/short-address.pipe';
+import { AdvancedOptionsButtonComponent } from './components/advanced-options-button/advanced-options-button.component';
 
 @NgModule({
   declarations: [
@@ -103,7 +104,8 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     WalletAddressFormComponent,
     WrapLinkDirective,
     SafetyLinkDirective,
-    ShortAddressPipe
+    ShortAddressPipe,
+    AdvancedOptionsButtonComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -165,7 +167,8 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
     RefreshButtonComponent,
     WalletAddressFormComponent,
     RefreshButtonComponent,
-    ShortAddressPipe
+    ShortAddressPipe,
+    AdvancedOptionsButtonComponent
   ],
   providers: [ScannerLinkPipe]
 })

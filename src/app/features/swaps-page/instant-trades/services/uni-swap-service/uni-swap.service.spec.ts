@@ -151,7 +151,7 @@ describe('UniSwapService', () => {
     const fromAmount = new BigNumber(2);
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
 
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
@@ -195,7 +195,7 @@ describe('UniSwapService', () => {
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {
@@ -228,7 +228,7 @@ describe('UniSwapService', () => {
     const fromAmount = new BigNumber(0.05);
     const trade = await service.calculateTrade(fromAmount, ETH, YEENUS, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {
@@ -257,7 +257,7 @@ describe('UniSwapService', () => {
     const fromAmount = new BigNumber(30);
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     let gasFee = new BigNumber(0);
@@ -311,7 +311,7 @@ describe('UniSwapService', () => {
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {

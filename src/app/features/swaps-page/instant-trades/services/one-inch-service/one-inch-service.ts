@@ -40,8 +40,6 @@ interface OneInchSwapResponse {
 }
 
 export class OneInchService extends InstantTradeService {
-  static SLIPPAGE_PERCENT = '1'; // 1%
-
   private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
   private supportedTokensAddresses: string[] = [];
@@ -79,6 +77,10 @@ export class OneInchService extends InstantTradeService {
       .get(`${this.apiBaseUrl}approve/spender`)
       .pipe(map((response: OneInchApproveResponse) => response.address))
       .toPromise();
+  }
+
+  public setSlippagePercent(slippagePercent: number): void {
+    this.slippagePercent = slippagePercent;
   }
 
   public async calculateTrade(
@@ -185,7 +187,7 @@ export class OneInchService extends InstantTradeService {
           fromTokenAddress,
           toTokenAddress,
           amount: fromAmount,
-          slippage: OneInchService.SLIPPAGE_PERCENT,
+          slippage: (this.slippagePercent * 100).toString(),
           fromAddress: this.web3Private.address
         }
       })
