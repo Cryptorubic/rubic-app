@@ -4,7 +4,19 @@
       <div
         class="form-section-block__input-container input-container input-container_slippage-percent"
       >
-        <label class="input-container__label" for="slippage-input-id">Slippage</label>
+        <label
+          class="input-container__label input-container__label_slippage-percent"
+          for="slippage-input-id"
+        >
+          Slippage
+          <img
+            src="assets/images/icons/info-empty.svg"
+            alt=""
+            [matTooltip]="
+              'Your transaction will revert if the price changes unfavorably by more than this percentage'
+            "
+          />
+        </label>
 
         <input
           class="input-container__input input-container__input_slippage-percent input-container__input_validated"
@@ -20,12 +32,32 @@
           #slippagePercentModel="ngModel"
           [ngClass]="{
             'input-container__input_invalid':
-              slippagePercentModel.value && slippagePercentModel.invalid
+              !slippagePercentModel.value || slippagePercentModel.invalid,
+            'input-container__input_warning':
+              slippagePercentModel.valid &&
+              ((slippagePercentModel.value && slippagePercent < 0.0005) ||
+                slippagePercent >= 0.0101)
           }"
           #slippagePercentInput
         />
 
         <span class="input-container__percent-sign">%</span>
+      </div>
+
+      <div
+        class="form-section-block__warning-container"
+        *ngIf="slippagePercentModel.value && slippagePercent < 0.0005"
+        [matTooltip]="'Your transaction may fail'"
+      >
+        <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="" />
+      </div>
+
+      <div
+        class="form-section-block__warning-container"
+        *ngIf="slippagePercentModel.valid && slippagePercent >= 0.0101"
+        [matTooltip]="'Your transaction may be frontrun'"
+      >
+        <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="" />
       </div>
     </div>
   </div>

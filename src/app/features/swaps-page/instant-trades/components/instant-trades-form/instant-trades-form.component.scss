@@ -205,6 +205,11 @@ app-tooltip {
     &__arrow-section {
       display: none;
     }
+
+    &__advanced-options-button {
+      top: 11px;
+      left: 0;
+    }
   }
 
   .selection-block {
@@ -253,6 +258,11 @@ app-tooltip {
 
   .instant-trade-form {
     display: block;
+
+    &__advanced-options-button {
+      top: 14px;
+      left: 7px;
+    }
   }
 
   .gas-fee {

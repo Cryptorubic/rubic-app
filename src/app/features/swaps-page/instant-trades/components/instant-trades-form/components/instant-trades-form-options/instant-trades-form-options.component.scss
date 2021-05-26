@@ -12,7 +12,20 @@
 }
 
 .form-section-block {
+  display: flex;
+  align-items: center;
+
   min-height: 68px;
+
+  &__warning-container {
+    position: relative;
+    top: 15px;
+    left: 19px;
+
+    img {
+      cursor: help;
+    }
+  }
 }
 
 .input-container {
@@ -24,7 +37,7 @@
   text-align: center;
 
   &_slippage-percent {
-    width: 73px;
+    width: 83px;
   }
 
   &__label {
@@ -32,6 +45,19 @@
 
     font-size: 13px;
     text-transform: uppercase;
+
+    &_slippage-percent {
+      position: relative;
+      left: 3px;
+
+      img {
+        position: relative;
+        top: 4px;
+        left: 3px;
+
+        cursor: help;
+      }
+    }
   }
 
   &__input {
@@ -63,12 +89,20 @@
         box-shadow: 0 0 2px $error-red;
       }
     }
+
+    &_warning {
+      border-color: #ffcb23;
+
+      &:focus {
+        box-shadow: 0 0 2px #ffcb23;
+      }
+    }
   }
 
   &__percent-sign {
     position: absolute;
-    top: 52%;
-    right: -24.5%;
+    top: 43px;
+    right: -12px;
   }
 }
 
