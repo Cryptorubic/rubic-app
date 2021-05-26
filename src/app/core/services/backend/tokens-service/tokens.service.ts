@@ -106,27 +106,27 @@ export class TokensService {
   private recalculateUsersBalance(): void {
     if (this.userAddress && this.tokens.getValue().size) {
       const tokens = this.tokens.getValue();
-      const updatedTokens = [];
       const blockchains: BLOCKCHAIN_NAME[] = [
         ...tokens
           .filter(token => token.blockchain)
           .map(token => token.blockchain)
           .toSet()
       ];
-      const balancePromises = [];
 
       blockchains.forEach(blockchain => {
         let filteredTokens = tokens.filter(token => token.blockchain === blockchain);
         const web3Public: Web3Public = this.web3PublicService[blockchain];
+        const updatedTokens = {};
+        const balancePromises = [];
 
         const nativeToken = filteredTokens.find(token => web3Public.isNativeAddress(token.address));
         if (nativeToken) {
           balancePromises.push(
             web3Public.getBalance(this.userAddress).then(balance => {
-              updatedTokens.push({
+              updatedTokens[nativeToken.address] = {
                 ...nativeToken,
                 usersBalance: balance.toNumber()
-              });
+              };
             })
           );
           filteredTokens = filteredTokens.filter(
@@ -146,10 +146,10 @@ export class TokensService {
                       console.debug(error, token);
                     } else {
                       const balance = Web3PublicService.tokenWeiToAmount(token, data);
-                      updatedTokens.push({
+                      updatedTokens[token.address] = {
                         ...token,
                         usersBalance: balance.toNumber()
-                      });
+                      };
 
                       if (index === filteredTokens.size - 1) {
                         resolve();
@@ -161,9 +161,16 @@ export class TokensService {
             batch.execute();
           })
         );
-      });
-      Promise.all(balancePromises).then(() => {
-        this.tokens.next(List(updatedTokens));
+
+        Promise.all(balancePromises).then(() => {
+          const newTokens = this.tokens.getValue().map(token => {
+            if (token.blockchain === blockchain) {
+              return updatedTokens[token.address];
+            }
+            return token;
+          });
+          this.tokens.next(newTokens);
+        });
       });
     }
   }
