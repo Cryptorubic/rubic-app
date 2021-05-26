@@ -1,10 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { Web3PublicService } from '../../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { InstantTradesApiService } from '../../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 import { InstantTradesPostApi } from '../../../../../../core/services/backend/instant-trades-api/types/trade-api';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../../models/trade-data';
-import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +23,10 @@ export class InstantTradesFormService implements OnDestroy {
 
   public async createTrade(data: InstantTradesPostApi, blockchain) {
     const web3Public = this.web3PublicService[blockchain];
-    await web3Public.getTransactionByHash(data.hash, 0, 60, 1000);
-
-    timer(1000)
+    const transaction = await web3Public.getTransactionByHash(data.hash, 0, 60, 1000);
+    const delay = transaction ? 100 : 1000;
+    // TODO: fix post request. Now delay for fix problem with finding transaction on backend
+    timer(delay)
       .pipe(switchMap(() => this.instantTradesApiService.createTrade(data)))
       .subscribe(() => this.onInstantTradesUpdated.next());
   }
