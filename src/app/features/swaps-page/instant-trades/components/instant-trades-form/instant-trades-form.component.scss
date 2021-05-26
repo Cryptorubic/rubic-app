@@ -130,15 +130,16 @@ app-tokens-swap-input:not(:last-child) {
     position: relative;
     left: 9px;
 
+    display: flex;
+    align-items: center;
+
     color: $dark;
     font-size: 13px;
     text-transform: uppercase;
   }
 
   &__refresh-button {
-    position: absolute;
-    top: -6px;
-    left: 62px;
+    margin-left: 5px;
   }
 
   &__warning {
