@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import InputToken from 'src/app/shared/models/tokens/InputToken';
 import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
@@ -229,6 +230,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   constructor(
     private bridgeService: BridgeService,
     private dialog: MatDialog,
+    private readonly translateService: TranslateService,
     private queryParamsService: QueryParamsService,
     private errorsService: ErrorsService,
     private readonly cdr: ChangeDetectorRef

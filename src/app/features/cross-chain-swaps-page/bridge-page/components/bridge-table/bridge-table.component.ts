@@ -4,15 +4,16 @@ import date from 'date-and-time';
 import { finalize, first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
-import { TRADE_STATUS } from 'src/app/core/services/backend/bridge-api/models/TRADE_STATUS';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { BridgeService } from '../../services/bridge.service';
 import { BridgeTableTrade } from '../../models/BridgeTableTrade';
+import { TRADE_STATUS } from '../../../../../core/services/backend/bridge-api/models/TRADE_STATUS';
 
 interface ITableTransactionWithState extends BridgeTableTrade {
   opened: boolean;
@@ -97,7 +98,11 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
 
   public tradeSuccessId: string;
 
-  constructor(private bridgeService: BridgeService, private dialog: MatDialog) {}
+  constructor(
+    private bridgeService: BridgeService,
+    private dialog: MatDialog,
+    private readonly translateService: TranslateService
+  ) {}
 
   private static sortByDate(a: string, b: string): number {
     const date1 = new Date(date.transform(a, 'D-M-YYYY H:m', 'YYYY/MM/DD HH:mm:ss'));
@@ -260,7 +265,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
         },
         err => {
           if (!(err instanceof RubicError)) {
-            err = new RubicError();
+            err = new RubicError(this.translateService);
           }
           let data: any = { title: 'Error', descriptionText: err.comment };
           if (err instanceof MetamaskError) {

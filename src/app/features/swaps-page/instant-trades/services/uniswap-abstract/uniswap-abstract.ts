@@ -6,6 +6,7 @@ import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCH
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface UniSwapTrade {
   amountIn: string;
@@ -66,9 +67,10 @@ export class UniswapAbstract extends InstantTradeService {
       testnetAddresses: string[];
     },
     private maxTransitTokens: number,
-    private abi
+    private abi,
+    protected translateService: TranslateService
   ) {
-    super();
+    super(translateService);
     this.isTestingMode = useTestingModeService.isTestingMode;
     this.WETHAddress = WETH.address;
     this.uniswapContractAddress = uniswapContract.address;

@@ -3,10 +3,7 @@
     <div class="container">
       <img src="assets/images/about/cube-img.svg" alt="cube" />
       <h3 class="h3-block-title-s1">
-        {{
-          'Rubic is a multichain DeFi ecosystem which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, ' +
-            'aiming to deliver a complete ONE-STOP decentralized platform.' | translate
-        }}
+        {{ 'aboutPage.description' | translate }}
       </h3>
     </div>
   </section>
@@ -14,65 +11,9 @@
   <section class="benefit">
     <div class="container">
       <div class="benefit-blocks">
-        <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'Custom routing ' | translate }} </span>
-          <p class="p-text-benefits">
-            {{
-              'Rubic created a routing solution that will allow users to trade any token. ' +
-                'The main advantage is the ability to calculate gas prices and show users ' +
-                'the best-optimized solution with paying the least amount of gas.' | translate
-            }}
-          </p>
-        </div>
-        <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'Instant Trade' | translate }} </span>
-          <p class="p-text-benefits">
-            {{
-              'Execute an instant trade using external DEXs (while getting best rates)' | translate
-            }}
-          </p>
-        </div>
-        <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'Multichain support' | translate }}</span>
-          <p class="p-text-benefits">
-            {{
-              'Currently supported blockchains: Ethereum, Binance Smart Chain, Polygon & TRON)'
-                | translate
-            }}
-          </p>
-        </div>
-        <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'Cross-chain swaps' | translate }}</span>
-          <p class="p-text-benefits">
-            {{
-              'Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON'
-                | translate
-            }}
-          </p>
-        </div>
-        <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'Faucet' | translate }}</span>
-          <p class="p-text-benefits">
-            {{
-              'Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come! '
-                | translate
-            }}
-          </p>
-        </div>
-        <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'P2P Trades' | translate }} </span>
-          <p class="p-text-benefits">
-            {{ 'Create your trade and choose your own terms' | translate }}
-          </p>
-        </div>
-        <div class="benefit-blocks-item">
-          <span class="span-title-benefits cl-green">{{ 'Limit Order' | translate }}</span>
-          <p class="p-text-benefits">
-            {{
-              'Set the desired rate and your deal will be executed automatically when one of the DEXs meets the parameters of your deal'
-                | translate
-            }}
-          </p>
+        <div *ngFor="let benefit of benefits" class="benefit-blocks-item">
+          <span class="span-title-benefits cl-green">{{ benefit.title | translate }} </span>
+          <p class="p-text-benefits">{{ benefit.description | translate }}</p>
         </div>
       </div>
     </div>
@@ -80,58 +21,10 @@
 
   <section class="features">
     <div class="container">
-      <span class="span-title-section">{{ 'Rubic s DEX Features' | translate }}</span>
+      <span class="span-title-section">{{ 'aboutPage.features.title' | translate }}</span>
       <div class="features-blocks">
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'iFrame Widget ' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Custom routing ' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Cross-chain swaps' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{
-            'Multichain Support: Ethereum, Binance Smart Chain, Polygon & TRON networks' | translate
-          }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Ability to make crowdsales ' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked"
-            >{{ 'Percentage of platform revenue can be regulated ' | translate }}
-          </span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Instant Trades' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Public/Private deals' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Brokers support' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'No volume limits' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Custom tokens' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{
-            'Stops scams and "rugpulls" from happening' | translate
-          }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Limit Orders for Ethereum' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'Creation of Custom Bridges' | translate }}</span>
-        </div>
-        <div class="features-blocks-item">
-          <span class="icon icon__checked">{{ 'BNB faucet' | translate }}</span>
+        <div *ngFor="let feature of features" class="features-blocks-item">
+          <span class="icon icon__checked">{{ feature | translate }}</span>
         </div>
       </div>
     </div>
@@ -139,10 +32,10 @@
 
   <section class="rubic-contract">
     <div class="container">
-      <span class="span-title-section">{{ 'Rubic contract' | translate }}</span>
+      <span class="span-title-section">{{ 'aboutPage.contract.title' | translate }}</span>
       <img
         [src]="
-          isMobile
+          $isMobile
             ? 'assets/images/about/mobile-instruction.svg'
             : 'assets/images/about/desktop-instruction.svg'
         "
@@ -154,138 +47,17 @@
 
   <section class="rubic-roadmap">
     <div class="container">
-      <span class="span-title-section">{{ 'Roadmap' | translate }}</span>
+      <span class="span-title-section">{{ 'aboutPage.roadmap.title' | translate }}</span>
       <div class="rubic-roadmap-block">
-        <div class="rubic-roadmap-block-item">
-          <div class="span-roadmap-date">{{ 'Q1. 2021' | translate }}</div>
+        <div
+          class="rubic-roadmap-block-item"
+          *ngFor="let item of roadmap; let i = index"
+          [class.left]="i % 2 !== 0"
+        >
+          <div class="span-roadmap-quarter">{{ item.quarter | translate }}</div>
+          <div class="span-roadmap-month" *ngIf="item.month">{{ item.month | translate }}</div>
           <ul class="ul-roadmap-text">
-            <li class="done">{{ 'New Blockchain & DEX Integrations' | translate }}</li>
-
-            <li class="done">{{ 'Binance Smart Chain Instant Trades' | translate }}</li>
-
-            <li class="done">{{ 'Cross-chain Solutions For ETH And BSC' | translate }}</li>
-
-            <li class="done">{{ 'Mobile Support' | translate }}</li>
-
-            <li class="done">{{ 'Limit Orders For ETH' | translate }}</li>
-
-            <li class="done">
-              {{ 'Creating BRBC And Building Rubic Bridge For RBC-BRBC' | translate }}
-            </li>
-
-            <li class="done">{{ 'Custom Token Support' | translate }}</li>
-
-            <li class="done">{{ 'Custom Bridges Feature' | translate }}</li>
-
-            <li class="done">{{ 'Custom Routing System' | translate }}</li>
-          </ul>
-        </div>
-        <div class="rubic-roadmap-block-item left">
-          <div class="span-roadmap-date">{{ 'Q2. 2021' | translate }}</div>
-          <div class="span-roadmap-title">{{ 'April' | translate }}</div>
-          <ul class="ul-roadmap-text">
-            <li class="done">{{ 'Custom Token Support' | translate }}</li>
-
-            <li class="done">{{ 'Custom Bridges Feature' | translate }}</li>
-
-            <li class="done">{{ 'Custom Routing System' | translate }}</li>
-
-            <li class="done">{{ 'Cross-chain Solution For TRON' | translate }}</li>
-          </ul>
-        </div>
-        <div class="rubic-roadmap-block-item">
-          <div class="span-roadmap-date">{{ 'Q2. 2021' | translate }}</div>
-          <div class="span-roadmap-title">{{ 'May' | translate }}</div>
-          <ul class="ul-roadmap-text">
-            <li>{{ 'CoinGecko And Coin Market Cap API For ETH<>RBC' | translate }}</li>
-
-            <li>{{ 'TRON Integration' | translate }}</li>
-
-            <li>{{ 'BNB Faucet' | translate }}</li>
-
-            <li>{{ 'Instant Trades Table' | translate }}</li>
-
-            <li>{{ 'UI Simple Update' | translate }}</li>
-
-            <li>{{ 'BSC Limit Orders' | translate }}</li>
-          </ul>
-        </div>
-        <div class="rubic-roadmap-block-item left">
-          <div class="span-roadmap-date">{{ 'Q2. 2021' | translate }}</div>
-          <div class="span-roadmap-title">{{ 'June' | translate }}</div>
-          <ul class="ul-roadmap-text">
-            <li>{{ 'UI Update stage&nbsp;2' | translate }}</li>
-
-            <li>
-              {{ 'New Wallets support - Wallet Connect + WalletLink (Coinbase)' | translate }}
-            </li>
-
-            <li>{{ 'Merch Shop' | translate }}</li>
-
-            <li>{{ 'CoinGecko & CMC All Pairs Reporting' | translate }}</li>
-
-            <li>{{ 'FIAT Integration' | translate }}</li>
-
-            <li>{{ 'Uniswap V3 ' | translate }}</li>
-
-            <li>
-              {{
-                'New Blockchain/Bridge Integrations (Candidates: Anyswap/XDai, HECO, Moonbeam, Fantom, Avalanche, RenBTC)'
-                  | translate
-              }}
-            </li>
-
-            <li>{{ 'MATIC Faucet' | translate }}</li>
-
-            <li>{{ 'Usecase Updates' | translate }}</li>
-          </ul>
-        </div>
-        <div class="rubic-roadmap-block-item">
-          <div class="span-roadmap-date">{{ 'Q3. 2021' | translate }}</div>
-          <div class="span-roadmap-title">{{ 'July' | translate }}</div>
-          <ul class="ul-roadmap-text">
-            <li>{{ 'Cross-Chain Routing' | translate }}</li>
-
-            <li>{{ 'New Blockchain/Bridge Integrations' | translate }}</li>
-
-            <li>{{ 'UI Update Stage 3' | translate }}</li>
-
-            <li>{{ 'Commission In RBC - Stage 1' | translate }}</li>
-          </ul>
-        </div>
-
-        <div class="rubic-roadmap-block-item left">
-          <div class="span-roadmap-date">{{ 'Q3. 2021' | translate }}</div>
-          <div class="span-roadmap-title">{{ 'August' | translate }}</div>
-          <ul class="ul-roadmap-text">
-            <li>{{ 'Commission In RBC - stage 2' | translate }}</li>
-
-            <li>{{ 'Anonymizer V1 - Polygon' | translate }}</li>
-          </ul>
-        </div>
-
-        <div class="rubic-roadmap-block-item">
-          <div class="span-roadmap-date">{{ 'Q3. 2021' | translate }}</div>
-          <div class="span-roadmap-title">{{ 'September' | translate }}</div>
-          <ul class="ul-roadmap-text">
-            <li>{{ 'New Bridge Integrations' | translate }}</li>
-
-            <li>{{ 'New Blockchain Integrations ' | translate }}</li>
-          </ul>
-        </div>
-
-        <div class="rubic-roadmap-block-item left">
-          <div class="span-roadmap-date">{{ 'Q4. 2021' | translate }}</div>
-          <ul class="ul-roadmap-text">
-            <li>{{ 'Staking/Farming introduction' | translate }}</li>
-
-            <li>{{ 'Governance ' | translate }}</li>
-
-            <li>{{ 'Mobile App ' | translate }}</li>
-
-            <li>{{ 'API For External Usage ' | translate }}</li>
-
-            <li>{{ 'New Blockchain Integration (L2) ' | translate }}</li>
+            <li *ngFor="let feature of item.data">{{ feature | translate }}</li>
           </ul>
         </div>
       </div>

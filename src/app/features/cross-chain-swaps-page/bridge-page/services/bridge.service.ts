@@ -3,6 +3,7 @@ import { BehaviorSubject, defer, Observable, Subscription, throwError } from 'rx
 import { List } from 'immutable';
 import { catchError, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
+import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
@@ -80,7 +81,8 @@ export class BridgeService implements OnDestroy {
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
     private authService: AuthService,
-    private useTestingModeService: UseTestingModeService
+    private useTestingModeService: UseTestingModeService,
+    private readonly translateService: TranslateService
   ) {
     this._swapTokensSubscription$ = this.tokensService.tokens.subscribe(swapTokens => {
       this._swapTokens = swapTokens;
@@ -199,11 +201,11 @@ export class BridgeService implements OnDestroy {
 
   private checkSettings(blockchain: BLOCKCHAIN_NAME): void {
     if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
 
     if (!this.web3PrivateService.address) {
-      throw new AccountError();
+      throw new AccountError(this.translateService);
     }
 
     if (
@@ -214,7 +216,7 @@ export class BridgeService implements OnDestroy {
         blockchain !== BLOCKCHAIN_NAME.ETHEREUM ||
         this.web3PrivateService.network?.name !== BLOCKCHAIN_NAME.GOERLI_TESTNET)
     ) {
-      throw new NetworkError(blockchain);
+      throw new NetworkError(blockchain, this.translateService);
     }
   }
 
@@ -249,7 +251,12 @@ export class BridgeService implements OnDestroy {
     const amountInWei = amount.multipliedBy(10 ** decimals);
     if (balance.lt(amountInWei)) {
       const formattedTokensBalance = balance.div(10 ** decimals).toString();
-      throw new InsufficientFundsError(symbol, formattedTokensBalance, amount.toFixed());
+      throw new InsufficientFundsError(
+        symbol,
+        formattedTokensBalance,
+        amount.toFixed(),
+        this.translateService
+      );
     }
   }
 
@@ -273,7 +280,7 @@ export class BridgeService implements OnDestroy {
             tap(() => this.updateTransactionsList()),
             catchError(err => {
               if (err.code === this.USER_REJECT_ERROR_CODE) {
-                return throwError(new UserRejectError());
+                return throwError(new UserRejectError(this.translateService));
               }
               console.debug('Bridge trade error:', err);
               return throwError(err);
@@ -305,7 +312,7 @@ export class BridgeService implements OnDestroy {
         tap(() => this.updateTransactionsList()),
         catchError(err => {
           if (err.code === this.USER_REJECT_ERROR_CODE) {
-            return throwError(new UserRejectError());
+            return throwError(new UserRejectError(this.translateService));
           }
           console.debug('Bridge trade from Polygon to Eth error', err);
           return throwError(err);

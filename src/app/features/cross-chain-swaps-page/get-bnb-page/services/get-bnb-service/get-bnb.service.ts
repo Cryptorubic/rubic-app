@@ -17,6 +17,7 @@ import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-pag
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { GetBnbApiService } from 'src/app/core/services/backend/get-bnb-api/get-bnb-api.service';
 import { ABI, contractAddressEthereum, contractAddressKovan } from './constants/ethContract';
+import { TranslateService } from '@ngx-translate/core';
 
 interface EstimatedAmountResponse {
   from_amount: number;
@@ -37,6 +38,7 @@ export class GetBnbService {
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
     private getBnbApiService: GetBnbApiService,
+    private readonly translateService: TranslateService,
     useTestingModeService: UseTestingModeService
   ) {
     this.contractAddress = contractAddressEthereum;
@@ -70,17 +72,17 @@ export class GetBnbService {
     const blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
     if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
 
     if (!this.web3PrivateService.address) {
-      throw new AccountError();
+      throw new AccountError(this.translateService);
     }
     if (
       this.web3PrivateService.networkName !== blockchain &&
       (this.web3PrivateService.networkName !== `${blockchain}_TESTNET` || !this.isTestingMode)
     ) {
-      throw new NetworkError(blockchain);
+      throw new NetworkError(blockchain, this.translateService);
     }
   }
 
@@ -96,7 +98,12 @@ export class GetBnbService {
       });
       if (balance.lt(amountIn)) {
         const formattedBalance = web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(token.symbol, formattedBalance, fromAmount.toString());
+        throw new InsufficientFundsError(
+          token.symbol,
+          formattedBalance,
+          fromAmount.toString(),
+          this.translateService
+        );
       }
     } else {
       const tokensBalance = await web3Public.getTokenBalance(
@@ -111,7 +118,8 @@ export class GetBnbService {
         throw new InsufficientFundsError(
           token.symbol,
           formattedTokensBalance,
-          fromAmount.toString()
+          fromAmount.toString(),
+          this.translateService
         );
       }
     }

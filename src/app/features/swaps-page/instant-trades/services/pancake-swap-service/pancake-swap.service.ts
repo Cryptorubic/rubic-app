@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import {
   abi,
@@ -22,9 +23,18 @@ export class PancakeSwapService extends UniswapAbstract {
     coingeckoApiService: CoingeckoApiService,
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    translateService: TranslateService
   ) {
-    super(useTestingModeService, WETH, uniSwapContracts, routingProviders, maxTransitTokens, abi);
+    super(
+      useTestingModeService,
+      WETH,
+      uniSwapContracts,
+      routingProviders,
+      maxTransitTokens,
+      abi,
+      translateService
+    );
     this.coingeckoApiService = coingeckoApiService;
     this.tokensToTokensEstimatedGas = tokensToTokensEstimatedGas;
     this.tokensToEthEstimatedGas = tokensToEthEstimatedGas;

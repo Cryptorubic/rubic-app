@@ -1,6 +1,6 @@
 <div class="bridge-results">
   <div class="bridge-results__header">
-    <span>Your cross-chain swaps</span>
+    <span>{{ 'bridgePage.tableTitle' | translate }}</span>
     <img
       [ngClass]="{
         'bridge-results__spinner_rotating':
@@ -21,7 +21,7 @@
         <thead>
           <tr>
             <th>
-              <span>{{ 'Status' | translate }}</span>
+              <span>{{ 'tradesTable.columns.status' | translate }}</span>
               <img
                 [src]="getArrowImg(SORT_FIELD.STATUS)"
                 alt="Sort"
@@ -29,7 +29,7 @@
               />
             </th>
             <th>
-              <span>From</span>
+              <span>{{ 'tradesTable.columns.from' | translate }}</span>
               <img
                 [src]="getArrowImg(SORT_FIELD.FROM)"
                 alt="Sort"
@@ -37,7 +37,7 @@
               />
             </th>
             <th>
-              <span>To</span>
+              <span>{{ 'tradesTable.columns.to' | translate }}</span>
               <img
                 [src]="getArrowImg(SORT_FIELD.TO)"
                 alt="Sort"
@@ -61,7 +61,7 @@
               />
             </th>
             <th>
-              <span>Date</span>
+              <span>{{ 'tradesTable.columns.expiresDate' | translate }}</span>
               <img
                 [src]="getArrowImg(SORT_FIELD.DATE)"
                 alt="Sort"
@@ -229,7 +229,7 @@
               [ngClass]="{ accordion__content_inactive: !tx.opened }"
             >
               <div class="content__item">
-                <div class="content__item-name">From</div>
+                <div class="content__item-name">{{ 'tradesTable.columns.from' | translate }}</div>
                 <div class="data__network">
                   <img
                     [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
@@ -240,7 +240,7 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">To</div>
+                <div class="content__item-name">{{ 'tradesTable.columns.to' | translate }}</div>
                 <div class="data__network">
                   <img
                     [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img"
@@ -275,7 +275,9 @@
               </div>
 
               <div class="content__item">
-                <div class="content__item-name">Date</div>
+                <div class="content__item-name">
+                  {{ 'tradesTable.columns.expiresDate' | translate }}
+                </div>
                 <div class="data__date">
                   <div>
                     <span>{{ tx.updateTime.split(' ')[0] }}</span>
@@ -313,7 +315,7 @@
     </div>
 
     <div *ngIf="!transactions.size" class="bridge-results__no-swaps">
-      You have no cross-chain swaps yet
+      {{ 'tradesTable.noData' | translate }}
     </div>
   </ng-template>
 

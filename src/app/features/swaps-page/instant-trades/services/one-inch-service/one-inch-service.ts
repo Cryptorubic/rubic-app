@@ -8,6 +8,7 @@ import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCH
 import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface OneInchQuoteResponse {
   fromToken: Object;
@@ -53,9 +54,10 @@ export class OneInchService extends InstantTradeService {
   constructor(
     private httpClient: HttpClient,
     private coingeckoApiService: CoingeckoApiService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    protected readonly translateService: TranslateService
   ) {
-    super();
+    super(translateService);
 
     useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
     setTimeout(() => this.loadSupportedTokens());
