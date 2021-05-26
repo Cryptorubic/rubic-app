@@ -376,7 +376,8 @@
       "volume": "体积",
       "network": "网络",
       "spent": "花費",
-      "expected": "預期的"
+      "expected": "預期的",
+      "date": "日期"
     },
     "noData": "您還沒有掉期",
     "noTrades": "沒有交易",

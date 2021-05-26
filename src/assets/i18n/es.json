@@ -376,7 +376,8 @@
       "volume": "Volumen",
       "network": "Red Principal",
       "spent": "Spent",
-      "expected": "Expected"
+      "expected": "Expected",
+      "date": "Fecha"
     },
     "noData": "You have no swaps yet",
     "noTrades": "There are no trades",
