@@ -10,6 +10,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, throwError } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+type ErrorModalTitle = 'Error' | 'Warning';
+
+interface ErrorData {
+  title: ErrorModalTitle;
+  [field: string]: any;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,7 +38,10 @@ export class ErrorsService {
     if (!(err instanceof RubicError)) {
       err = new RubicError();
     }
-    let data: any = { title: 'Error', descriptionText: err.comment };
+    let data: ErrorData = {
+      title: 'Error',
+      descriptionText: this.translateService.instant(err.translateKey) || err.message
+    };
     if (err instanceof MetamaskError) {
       data.title = 'Warning';
     }
@@ -49,6 +59,7 @@ export class ErrorsService {
         descriptionComponentInputs: { totalSupplyOverflowError: err }
       };
     }
+    data.title = this.translateService.instant(`common.${data.title}`);
     this.dialog.open(MessageBoxComponent, {
       width: '400px',
       data

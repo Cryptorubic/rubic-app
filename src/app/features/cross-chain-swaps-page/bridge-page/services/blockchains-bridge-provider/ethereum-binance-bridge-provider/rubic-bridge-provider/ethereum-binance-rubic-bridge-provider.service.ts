@@ -15,6 +15,7 @@ import {
   BridgeToken
 } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
+import { WrongToken } from 'src/app/shared/models/errors/provider/WrongToken';
 import BinanceContractAbi from './abi/BinanceContractAbi';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
@@ -145,7 +146,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     const { token } = bridgeTrade;
 
     if (token.symbol !== 'RBC') {
-      this.errorsService.throw(new Error('Rubic bridge supports only rubic token.'));
+      this.errorsService.throw(new WrongToken());
     }
 
     const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];

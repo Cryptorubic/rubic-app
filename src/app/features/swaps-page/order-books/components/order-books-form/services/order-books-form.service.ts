@@ -14,11 +14,11 @@ import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/
 import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { SameTokensError } from '../../../../../../shared/models/errors/order-book/SameTokensError';
 import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import { ProviderConnectorService } from '../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
+import SameTokensError from '../../../../../../shared/models/errors/order-book/SameTokensError';
 
 @Injectable()
 export class OrderBooksFormService implements OnDestroy {

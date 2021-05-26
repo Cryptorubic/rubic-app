@@ -24,7 +24,8 @@
     "via": "Через",
     "contractAddress": "Адрес контракта Токена",
     "enterAmount": "Введите количество",
-    "chooseToken": "Выберите токен"
+    "chooseToken": "Выберите токен",
+    "warning": "Warning"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -34,7 +35,12 @@
     "userReject": "Вы отказались от исполнения сделки. Пожалуйста, сначала подтвердите сделку, чтобы её завершить.",
     "undefined": "Пожалуйста, повторите попытку позже или попробуйте использовать другое устройство. Если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
     "insufficientFunds": "У вас недостаточно {{ tokenSymbol }}. Ваш баланс {{balance}} {{tokenSymbol}}, но требуется {{requiredBalance}} {{tokenSymbol}}.",
-    "sameTokens": "Один и тот же токен не может быть выбран в обоих блоках, пожалуйста, выберете разные токены."
+    "sameTokens": "Один и тот же токен не может быть выбран в обоих блоках, пожалуйста, выберете разные токены.",
+    "noQrCode": "Please make sure that you have scan qrCode",
+    "noWallet": "You have not connected any wallet",
+    "retrievingTokensError": "Error retrieving tokens",
+    "wrongToken": "Rubic bridge supports only rubic token.",
+    "oneInchQuote": "Oneinch quote error"
   },
   "navigation": {
     "about": "О компании",

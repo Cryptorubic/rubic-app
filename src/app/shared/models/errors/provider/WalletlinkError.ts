@@ -5,6 +5,7 @@ export class WalletlinkError extends RubicError {
 
   constructor() {
     super();
+    this.translateKey = 'errors.noQrCode';
     this.comment = `Please make sure that you have scan qrCode`;
     Object.setPrototypeOf(this, WalletlinkError.prototype);
   }

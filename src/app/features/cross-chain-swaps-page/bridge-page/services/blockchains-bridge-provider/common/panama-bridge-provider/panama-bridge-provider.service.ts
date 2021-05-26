@@ -14,6 +14,7 @@ import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page
 import { PanamaToken } from './models/PanamaToken';
 import { ErrorsService } from '../../../../../../../core/services/errors/errors.service';
 import { ProviderConnectorService } from '../../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
+import { RetrievingTokensError } from '../../../../../../../shared/models/errors/provider/RetrievingTokensError';
 
 interface PanamaResponse {
   code: number;
@@ -38,7 +39,9 @@ export class PanamaBridgeProviderService {
     return this.httpClient.get(`${this.apiUrl}tokens`).pipe(
       map((response: PanamaResponse) => {
         if (response.code !== this.PANAMA_SUCCESS_CODE) {
-          this.errorsService.throw(new Error(`Error retrieving tokens, code ${response.code}`));
+          this.errorsService.throw(
+            new RetrievingTokensError(`Error retrieving tokens, code ${response.code}`)
+          );
           return List([]);
         }
         return List(
@@ -60,7 +63,9 @@ export class PanamaBridgeProviderService {
     return this.httpClient.get(`${this.apiUrl}tokens/${token.symbol}/networks`).pipe(
       map((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
-          return this.errorsService.$throw(new Error(`Error retrieving tokens, code ${res.code}`));
+          this.errorsService.throw(
+            new RetrievingTokensError(`Error retrieving tokens, code ${res.code}`)
+          );
         }
         return res.data.networks.find(network => network.name === toBlockchain).networkFee;
       }),

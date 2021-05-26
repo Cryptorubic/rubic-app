@@ -9,6 +9,7 @@ import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { OneinchQuoteError } from '../../../../../shared/models/errors/provider/OneinchQuoteError';
 
 interface OneInchQuoteResponse {
   fromToken: object;
@@ -116,7 +117,7 @@ export class OneInchService extends InstantTradeService {
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      this.errorsService.throw(new Error('Oneinch quote error'));
+      this.errorsService.throw(new OneinchQuoteError());
     }
 
     // TODO: верменный фикс, потому что rpc binance сломалось
