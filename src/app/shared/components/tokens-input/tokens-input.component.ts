@@ -80,7 +80,7 @@ export class TokensInputComponent implements OnChanges {
       5,
       6,
       this.selectedToken,
-      this.withRoundMode
+      'toClosestValue'
     );
   }
 

@@ -25,7 +25,7 @@ export class InstantTradesFormService implements OnDestroy {
     const web3Public = this.web3PublicService[blockchain];
     const transaction = await web3Public.getTransactionByHash(data.hash, 0, 60, 1000);
     const delay = transaction ? 100 : 1000;
-    // TODO: fix post request. Now delay for fix problem with finding transaction on backend
+    // TODO: Fix post request. Have to delay request to fix problem with finding transaction on backend.
     timer(delay)
       .pipe(switchMap(() => this.instantTradesApiService.createTrade(data)))
       .subscribe(() => this.onInstantTradesUpdated.next());

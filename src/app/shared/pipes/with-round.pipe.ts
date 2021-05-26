@@ -3,6 +3,8 @@ import BigNumber from 'bignumber.js';
 import SwapToken from '../models/tokens/SwapToken';
 import InputToken from '../models/tokens/InputToken';
 
+type RoundMode = 'toClosestValue' | 'fixedValue';
+
 @Pipe({
   name: 'withRound'
 })
@@ -14,13 +16,13 @@ export class WithRoundPipe implements PipeTransform {
     minRound: number,
     maxRound: number,
     token: SwapToken | InputToken,
-    roundMode: boolean
+    roundMode: RoundMode
   ) {
     if (value?.includes('.')) {
       const startIndex = value.indexOf('.') + 1;
 
       let decimalSymbols: number;
-      if (roundMode) {
+      if (roundMode === 'toClosestValue') {
         if (new BigNumber(value).isGreaterThanOrEqualTo(1)) {
           decimalSymbols = minRound;
         } else {
@@ -40,7 +42,7 @@ export class WithRoundPipe implements PipeTransform {
       }
 
       value = value.slice(0, startIndex + decimalSymbols);
-      if (roundMode && new BigNumber(value).isEqualTo(0)) {
+      if (roundMode === 'toClosestValue' && new BigNumber(value).isEqualTo(0)) {
         value = '0';
       }
     }
