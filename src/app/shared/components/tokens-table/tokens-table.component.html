@@ -222,6 +222,9 @@
           "
         >
           <div class="tokens-table__cell tokens-table__cell_datetime">
+            <ng-container *ngIf="element.expiresIn.years()"
+              >{{ element.expiresIn.years() }}y:
+            </ng-container>
             {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h:
             {{ element.expiresIn.minutes() }}m
           </div>

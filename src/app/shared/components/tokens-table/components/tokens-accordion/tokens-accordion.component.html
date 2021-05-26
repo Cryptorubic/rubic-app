@@ -78,6 +78,9 @@
       <div class="data__amount" *ngIf="selectedOption === 'Expires in' && isFieldIn('expiresIn')">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
           <div>
+            <ng-container *ngIf="data.expiresIn.years()">
+              {{ data.expiresIn.years() }}y:
+            </ng-container>
             {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:
             {{ data.expiresIn.minutes() }}m
           </div>
@@ -154,7 +157,9 @@
       class="tokens-accordion__item"
       *ngIf="data.token.from.constructor.name === 'OrderBookDataToken'"
     >
-      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.expected' | translate }}</div>
+      <div class="tokens-accordion__item-name">
+        {{ 'tradesTable.columns.expected' | translate }}
+      </div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
         <div>{{ data.token.to.amountTotal.dp(8) }} {{ data.token.to.symbol }}</div>
         <span>
@@ -189,9 +194,14 @@
     </div>
 
     <div class="tokens-accordion__item" *ngIf="isFieldIn('expiresIn')">
-      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.expiresIn' | translate }}</div>
+      <div class="tokens-accordion__item-name">
+        {{ 'tradesTable.columns.expiresIn' | translate }}
+      </div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
         <div>
+          <ng-container *ngIf="data.expiresIn.years()">
+            {{ data.expiresIn.years() }}y:
+          </ng-container>
           {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:
           {{ data.expiresIn.minutes() }}m
         </div>
