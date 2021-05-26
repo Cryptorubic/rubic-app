@@ -113,7 +113,7 @@
     class="tokens-accordion__content"
     [ngClass]="{ 'tokens-accordion__content_inactive': !data.opened }"
   >
-    <div class="tokens-accordion__item">
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('fromAmount')">
       <div class="tokens-accordion__item-name">From</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
         <div class="tokens-accordion__token-info">
@@ -129,7 +129,7 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item">
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('toAmount')">
       <div class="tokens-accordion__item-name">To</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
         <div class="tokens-accordion__token-info">

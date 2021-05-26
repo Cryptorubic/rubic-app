@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 import { InstantTradesTradeData } from 'src/app/features/swaps-page/models/trade-data';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { HttpService } from '../../http/http.service';
@@ -59,7 +59,7 @@ export class InstantTradesApiService {
    */
   public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
     if (this.isTestingMode) tradeInfo.network = 'ethereum-test';
-    return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo);
+    return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo).pipe(delay(1000));
   }
 
   /**
