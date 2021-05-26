@@ -351,10 +351,16 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private setupBlockchain(blockchain: BLOCKCHAIN_NAME): void {
     if (blockchain) {
+      if (this.blockchain === blockchain) {
+        return;
+      }
+
       const queryChain = this.queryParamsService.currentQueryParams?.chain;
       const queryChainValue = Object.values(BLOCKCHAIN_NAME).find(el => el === queryChain);
       this.blockchain = this.firstBlockhainEmitment && queryChain ? queryChainValue : blockchain;
       this.firstBlockhainEmitment = false;
+
+      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
 
       this.initInstantTradeProviders();
 
