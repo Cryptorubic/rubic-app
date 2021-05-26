@@ -1,3 +1,6 @@
+@import "src/scss/mixins";
+@import "src/scss/vars";
+
 :host {
   display: flex;
 
@@ -8,6 +11,14 @@
 
   > *:last-child {
     flex: 1;
+  }
+
+  @include b($tablet) {
+    flex-direction: column;
+
+    > *:first-child {
+      margin-right: 0;
+    }
   }
 }
 
@@ -20,6 +31,10 @@
     margin-right: 8px;
 
     opacity: 0.5;
+  }
+
+  @include b($tablet) {
+    margin-bottom: 5px;
   }
 }
 

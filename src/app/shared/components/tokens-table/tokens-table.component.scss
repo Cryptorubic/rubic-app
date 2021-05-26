@@ -95,16 +95,14 @@ $primary-color: #4aa956;
 
 .token-cell {
   &__amount {
-    padding-left: 3px;
     font-weight: bold;
   }
 
   &__info {
     margin-right: 10px;
-    padding-left: 5px;
 
     img {
-      margin-right: 5px;
+      margin-right: 10px;
     }
   }
 }
@@ -156,6 +154,7 @@ $primary-color: #4aa956;
 
     &.token-cell {
       flex-direction: row;
+      flex-wrap: wrap;
       justify-content: flex-start;
       align-items: center;
     }

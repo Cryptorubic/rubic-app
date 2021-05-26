@@ -14,6 +14,7 @@ import { TokenLabelComponent } from './token-label/token-label.component';
 import { InputDropdownComponent } from '../input-dropdown/input-dropdown.component';
 import { DropdownComponentData } from '../input-dropdown/types';
 import InputToken from '../../models/tokens/InputToken';
+import { WithRoundPipe } from '../../pipes/with-round.pipe';
 
 interface TokenLabelData {
   token: InputTokenShort;
@@ -74,38 +75,13 @@ export class TokensInputComponent implements OnChanges {
   }
 
   @Input() set selectedAmount(value) {
-    this._selectedAmount = value;
-
-    if (this._selectedAmount?.includes('.')) {
-      const startIndex = this._selectedAmount.indexOf('.') + 1;
-
-      let decimalSymbols: number;
-      if (this.withRoundMode) {
-        if (new BigNumber(this._selectedAmount).isGreaterThanOrEqualTo(1)) {
-          decimalSymbols = this.selectedAmountRoundMode;
-        } else {
-          let zerosAmount = 0;
-          for (let i = startIndex; i < this._selectedAmount.length; ++i) {
-            if (this._selectedAmount[i] === '0') {
-              zerosAmount++;
-            } else {
-              break;
-            }
-          }
-          decimalSymbols = zerosAmount + this.smallSelectedAmountRoundMode;
-        }
-        decimalSymbols = Math.min(decimalSymbols, this.selectedToken.decimals);
-      } else {
-        decimalSymbols = this.selectedToken?.decimals
-          ? this.selectedToken.decimals
-          : this.DEFAULT_DECIMAL_LENGTH;
-      }
-
-      this._selectedAmount = this._selectedAmount.slice(0, startIndex + decimalSymbols);
-      if (this.withRoundMode && new BigNumber(this._selectedAmount).isEqualTo(0)) {
-        this._selectedAmount = '0';
-      }
-    }
+    this._selectedAmount = this.withRoundPipe.transform(
+      value,
+      5,
+      6,
+      this.selectedToken,
+      'toClosestValue'
+    );
   }
 
   @Output() numberChanges = new EventEmitter<string>();
@@ -130,7 +106,7 @@ export class TokensInputComponent implements OnChanges {
 
   public VISIBLE_TOKENS_NUMBER = 10;
 
-  constructor() {}
+  constructor(private readonly withRoundPipe: WithRoundPipe) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.tokensList || changes.selectedToken) {
