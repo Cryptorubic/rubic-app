@@ -130,9 +130,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
           )
           .toArray()
           .sort((a, b) => {
-            for (const parameter of this.sortBy) {
-              if (a.sortParameters[parameter] > b.sortParameters[parameter]) return -1;
-              if (a.sortParameters[parameter] < b.sortParameters[parameter]) return 1;
+            if (this.sortBy) {
+              for (const parameter of this.sortBy) {
+                if (a.sortParameters[parameter] > b.sortParameters[parameter]) return -1;
+                if (a.sortParameters[parameter] < b.sortParameters[parameter]) return 1;
+              }
             }
             return 0;
           })
