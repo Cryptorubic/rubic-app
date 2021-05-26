@@ -2,12 +2,12 @@
   <div class="trade-modal">
     <img class="trade-modal__icon" src="/assets/images/icons/success.svg" alt="success" />
     <div class="trade-modal__description">
-      Successful swap! <br />
+      {{ 'modals.tradeModal.success.text' | translate }} <br />
       <a
         target="_blank"
         [href]="transactionId | scannerLink: blockchainName:ADDRESS_TYPE.TRANSACTION"
       >
-        Check transaction on explorer
+        {{ 'modals.tradeModal.success.link' | translate }}
       </a>
     </div>
   </div>

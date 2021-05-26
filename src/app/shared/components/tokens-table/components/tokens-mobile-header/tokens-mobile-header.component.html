@@ -1,7 +1,7 @@
 <div class="mobile-table-header">
   <div class="mobile-table-header__select-columns-dropdown">
     <div class="mobile-table-header__dropdown-label">
-      <span>{{ 'Show data' | translate }}</span>
+      <span>{{ 'tradesTable.showData' | translate }}</span>
     </div>
     <div class="mobile-table-header__select mobile-table-header__select_rounded">
       <mat-select [(value)]="selectedValue" (selectionChange)="selectColumn($event)">
@@ -13,7 +13,7 @@
   </div>
   <div class="mobile-table-header__sort-table-dropdown">
     <div class="mobile-table-header__dropdown-label">
-      <span>{{ 'Sort by' | translate }}</span>
+      <span>{{ 'tradesTable.sortBy' | translate }}</span>
     </div>
     <div class="mobile-table-header__select">
       <mat-select [(value)]="sortingValue.active" (selectionChange)="sortTable($event)">

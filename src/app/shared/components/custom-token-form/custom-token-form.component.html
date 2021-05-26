@@ -5,7 +5,7 @@
       [for]="type + '-custom-token'"
       (click)="isSectionOpened = !isSectionOpened"
     >
-      {{ isSectionOpened ? 'Cancel' : 'Use custom token' }}
+      {{ isSectionOpened ? ('common.cancel' | translate) : ('common.useCustomToken' | translate) }}
     </label>
   </div>
 
@@ -14,7 +14,7 @@
       type="text"
       class="form__input"
       [id]="type + '-custom-token'"
-      placeholder="Token contract address"
+      placeholder="{{ 'common.contractAddress' | translate }}"
       pattern="0x[A-Fa-f0-9]{40}"
       appTokenAddress
       [blockchain]="blockchain"
@@ -26,7 +26,7 @@
       }"
     />
     <app-primary-button
-      label="Add"
+      label="{{ 'common.add' | translate }}"
       [animate]="customTokenModel.pending"
       [disabled]="!customTokenModel.valid"
       (onClick)="addToken.emit()"

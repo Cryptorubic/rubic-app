@@ -1,6 +1,3 @@
-<span>
-  {{
-    'You have selected the wrong network. Please choose { networkToChoose } from MetaMask.'
-      | translate: '{ networkToChoose:"' + networkError.networkToChoose + '"}'
-  }}
-</span>
+<span>{{
+  'errors.wrongNetwork' | translate: { networkToChoose: networkError.networkToChoose }
+}}</span>

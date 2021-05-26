@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { flatMap } from 'rxjs/internal/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -27,7 +28,8 @@ export class PanamaBridgeProviderService {
   constructor(
     private httpClient: HttpClient,
     private web3PrivateService: Web3PrivateService,
-    private bridgeApiService: BridgeApiService
+    private bridgeApiService: BridgeApiService,
+    private readonly translateService: TranslateService
   ) {}
 
   public getTokensList(): Observable<List<PanamaToken>> {
@@ -87,7 +89,7 @@ export class PanamaBridgeProviderService {
       flatMap((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
           console.error(`Bridge POST error, code ${res.code}`);
-          return throwError(new OverQueryLimitError());
+          return throwError(new OverQueryLimitError(this.translateService));
         }
         const { data } = res;
         return from(
@@ -96,7 +98,7 @@ export class PanamaBridgeProviderService {
       }),
       catchError(err => {
         console.error('Error bridge post:', err);
-        return throwError(err instanceof RubicError ? err : new RubicError());
+        return throwError(err instanceof RubicError ? err : new RubicError(this.translateService));
       })
     );
   }

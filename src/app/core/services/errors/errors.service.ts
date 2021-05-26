@@ -7,16 +7,17 @@ import { TotalSupplyOverflowErrorComponent } from 'src/app/shared/components/err
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorsService {
-  constructor() {}
+  constructor(private readonly translateService: TranslateService) {}
 
   public showErrorDialog(err, dialog: MatDialog) {
     if (!(err instanceof RubicError)) {
-      err = new RubicError();
+      err = new RubicError(this.translateService);
     }
     let data: any = { title: 'Error', descriptionText: err.comment };
     if (err instanceof MetamaskError) {

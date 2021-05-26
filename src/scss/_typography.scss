@@ -37,8 +37,8 @@
     }
   }
 
-  &-roadmap-title,
-  &-roadmap-date {
+  &-roadmap-month,
+  &-roadmap-quarter {
     margin-bottom: 5px;
 
     color: #4aa956;
@@ -47,11 +47,11 @@
     line-height: 27px;
   }
 
-  &-roadmap-title {
+  &-roadmap-month {
     margin-bottom: 20px;
   }
 
-  &-roadmap-date {
+  &-roadmap-quarter {
     position: absolute;
     left: -110px;
     color: rgba(#838383, 0.5);
