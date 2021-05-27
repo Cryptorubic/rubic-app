@@ -221,14 +221,12 @@ export class TokensTableComponent {
    * @param expiresIn expiration time object
    * @return formatted expiration time or text ('Expired' or 'More than year')
    */
-  public getExpirationDate(expirationDate, expiresIn): string {
-    const nowDate = moment.now();
-
-    if (expirationDate.isAfter(nowDate)) {
+  public getExpirationTime(expirationDate, expiresIn): string {
+    if (expirationDate.isAfter(moment.now())) {
       if (expiresIn.years() > 1) {
         return 'More than year';
       }
-      return `${expiresIn.days()}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}m`;
+      return `${expiresIn.days()}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
     }
     return 'Expired';
   }
@@ -238,7 +236,7 @@ export class TokensTableComponent {
    * @param expiresIn expiration time
    * @return full formatted time string or empty string
    */
-  public getFullExpirationDate(expiresIn): string {
+  public getFullExpirationTime(expiresIn): string {
     if (expiresIn.years() > 1) {
       return `${expiresIn.years()}y: ${expiresIn.months()}m: ${expiresIn.days()}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
     }

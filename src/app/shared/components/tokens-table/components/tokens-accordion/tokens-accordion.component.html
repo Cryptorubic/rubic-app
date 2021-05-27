@@ -78,11 +78,7 @@
       <div class="data__amount" *ngIf="selectedOption === 'Expires in' && isFieldIn('expiresIn')">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
           <div>
-            <ng-container *ngIf="data.expiresIn.years()">
-              {{ data.expiresIn.years() }}y:
-            </ng-container>
-            {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:
-            {{ data.expiresIn.minutes() }}m
+            {{ getExpirationTime(data.expirationDate, data.expiresIn) }}
           </div>
         </div>
       </div>
@@ -209,11 +205,7 @@
       </div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
         <div>
-          <ng-container *ngIf="data.expiresIn.years()">
-            {{ data.expiresIn.years() }}y:
-          </ng-container>
-          {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:
-          {{ data.expiresIn.minutes() }}m
+          {{ getExpirationTime(data.expirationDate, data.expiresIn) }}
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core';
 import { WINDOW } from 'src/app/core/models/window';
+import * as moment from 'moment';
 import { ORDER_BOOK_TRADE_STATUS } from '../../../../../features/order-book-trade-page/models/trade-data';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../../../features/swaps-page/models/trade-data';
 import { TradeData } from '../../models/tokens-table-data';
@@ -56,5 +57,15 @@ export class TokensAccordionComponent implements OnInit {
 
   public getLink(part) {
     return this.scannerLinkPipe.transform(part.hash, part.chain, ADDRESS_TYPE.TRANSACTION);
+  }
+
+  public getExpirationTime(expirationDate, expiresIn): string {
+    if (expirationDate.isAfter(moment.now())) {
+      if (expiresIn.years() > 1) {
+        return `${expiresIn.years()}y: ${expiresIn.months()}m: ${expiresIn.days()}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
+      }
+      return `${expiresIn.days()}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
+    }
+    return 'Expired';
   }
 }
