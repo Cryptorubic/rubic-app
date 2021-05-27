@@ -37,8 +37,7 @@
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -91,8 +90,7 @@
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -120,8 +118,7 @@
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -134,7 +131,9 @@
               {{ element.token.from.symbol }}
             </div>
             <div class="token-cell__amount">
-              {{ element.fromAmount.dp(5).toString(10) }}
+              {{
+                element.fromAmount.toString(10) | withRound: 5:6:element.token.from:'toClosestValue'
+              }}
             </div>
           </div>
         </a>
@@ -154,8 +153,7 @@
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -167,7 +165,9 @@
               />
               {{ element.token.to.symbol }}
             </div>
-            <div class="token-cell__amount">{{ element.toAmount.dp(5).toString(10) }}</div>
+            <div class="token-cell__amount">
+              {{ element.toAmount.toString(10) | withRound: 5:6:element.token.to:'toClosestValue' }}
+            </div>
           </div>
         </a>
       </td>
@@ -186,8 +186,7 @@
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -216,8 +215,7 @@
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -245,8 +243,7 @@
             getLink({
               route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -281,6 +278,7 @@
           [data]="trade"
           [chainIconPath]="getChainIcon(trade.blockchain)"
           [selectedOption]="selectedColumn"
+          [tableType]="tableType"
         ></app-tokens-accordion>
       </ng-container>
     </div>

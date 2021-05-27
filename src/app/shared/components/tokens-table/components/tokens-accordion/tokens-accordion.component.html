@@ -116,25 +116,35 @@
     class="tokens-accordion__content"
     [ngClass]="{ 'tokens-accordion__content_inactive': !data.opened }"
   >
-    <div class="tokens-accordion__item">
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('fromAmount')">
       <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.from' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
-        <img
-          [src]="data.token.from.image || '/assets/images/icons/coins/empty.svg'"
-          [alt]="data.token.from.symbol"
-        />
-        <span>{{ data.token.from.symbol }}</span>
+        <div class="tokens-accordion__token-info">
+          <img
+            [src]="data.token.from.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.from.symbol"
+          />
+          <span>{{ data.token.from.symbol }}</span>
+        </div>
+        <div class="tokens-accordion__token-amount">
+          {{ data.fromAmount.toString(10) | withRound: 5:6:data.token.from:'toClosestValue' }}
+        </div>
       </div>
     </div>
 
-    <div class="tokens-accordion__item">
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('toAmount')">
       <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.to' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
-        <img
-          [src]="data.token.to.image || '/assets/images/icons/coins/empty.svg'"
-          [alt]="data.token.to.symbol"
-        />
-        <span>{{ data.token.to.symbol }}</span>
+        <div class="tokens-accordion__token-info">
+          <img
+            [src]="data.token.to.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.to.symbol"
+          />
+          <span>{{ data.token.to.symbol }}</span>
+        </div>
+        <div class="tokens-accordion__token-amount">
+          {{ data.toAmount.toString(10) | withRound: 5:6:data.token.from:'toClosestValue' }}
+        </div>
       </div>
     </div>
 
@@ -217,12 +227,32 @@
       </div>
     </div>
 
-    <div class="tokens-accordion__item" *ngIf="isFieldIn('uniqueLink')">
+    <div class="tokens-accordion__item">
       <div class="tokens-accordion__item-name">{{ 'Link' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_link">
-        <a routerLink="/trade/{{ data.uniqueLink }}">
-          {{ linkToTrade }}
+        <a
+          *ngIf="tableType === 'OrderBooks'; else scannerLink"
+          routerLink="/public-v3/{{ data.uniqueLink }}"
+        >
+          /public-v3/{{ data.uniqueLink }}
         </a>
+        <ng-template #scannerLink>
+          <a
+            safetyLink
+            [link]="
+              getLink({
+                hash: data.hash,
+                chain: data.blockchain
+              })
+            "
+            >{{
+              getLink({
+                hash: data.hash,
+                chain: data.blockchain
+              })
+            }}
+          </a>
+        </ng-template>
       </div>
     </div>
   </div>
