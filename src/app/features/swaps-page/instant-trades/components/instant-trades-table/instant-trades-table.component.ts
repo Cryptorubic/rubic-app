@@ -60,7 +60,7 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
 
   public ngOnInit(): void {
     this.fetchSwaps();
-    this.instantTradesFormService.onInstantTradesCreated.subscribe(() => this.fetchSwaps());
+    this.instantTradesFormService.onInstantTradesUpdated.subscribe(() => this.fetchSwaps());
     this.providerConnectorService.$addressChange.subscribe(() => this.fetchSwaps());
   }
 
