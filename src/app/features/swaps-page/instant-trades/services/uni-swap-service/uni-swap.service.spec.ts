@@ -12,10 +12,11 @@ import { Web3PublicService } from '../../../../../core/services/blockchain/web3-
 import { Web3Public } from '../../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ETH, WEENUS, YEENUS } from '../../../../../../test/tokens/eth-tokens';
+import { UniswapAbstract } from '../uniswap-abstract/uniswap-abstract';
 
 describe('UniSwapService', () => {
   let originalTimeout: number;
-  let service: UniSwapService;
+  let service: UniswapAbstract;
   let web3Private: Web3PrivateService;
   let web3PublicEth: Web3Public;
   let uniSwapContractAddress: string;
@@ -60,7 +61,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).not.toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).not.toBeTruthy();
     done();
   });
 
@@ -73,7 +74,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).toBeTruthy();
     done();
   });
 
@@ -90,7 +91,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).toBeTruthy();
     done();
   });
 
@@ -111,7 +112,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    expect(trade.estimatedGas.eq(UniSwapService.ethToTokensEstimatedGas)).toBeTruthy();
+    expect(trade.estimatedGas.eq(service.ethToTokensEstimatedGas[0])).toBeTruthy();
     done();
   });
 
@@ -128,7 +129,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    expect(trade.estimatedGas.eq(UniSwapService.tokensToEthEstimatedGas)).not.toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToEthEstimatedGas[0])).not.toBeTruthy();
     done();
   });
 
@@ -141,7 +142,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    expect(trade.estimatedGas.eq(UniSwapService.tokensToEthEstimatedGas)).toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToEthEstimatedGas[0])).toBeTruthy();
     done();
   });
 

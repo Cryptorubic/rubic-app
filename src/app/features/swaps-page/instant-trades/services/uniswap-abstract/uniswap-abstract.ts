@@ -34,11 +34,11 @@ enum SWAP_METHOD {
 }
 
 export class UniswapAbstract extends InstantTradeService {
-  protected tokensToTokensEstimatedGas: BigNumber[];
+  public tokensToTokensEstimatedGas: BigNumber[];
 
-  protected tokensToEthEstimatedGas: BigNumber[];
+  public tokensToEthEstimatedGas: BigNumber[];
 
-  protected ethToTokensEstimatedGas: BigNumber[];
+  public ethToTokensEstimatedGas: BigNumber[];
 
   protected coingeckoApiService: CoingeckoApiService;
 

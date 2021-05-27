@@ -7,11 +7,12 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
+// import { AuthService } from 'src/app/core/services/auth/auth.service';
+import BigNumber from 'bignumber.js';
 import { HttpService } from '../../http/http.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BackendToken } from './models/BackendToken';
+import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 
 const RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
 
@@ -29,16 +30,22 @@ export class TokensService {
 
   constructor(
     private httpService: HttpService,
-    private authService: AuthService,
+    // private authService: AuthService,
     private web3PublicService: Web3PublicService,
-    useTestingModule: UseTestingModeService
+    useTestingModule: UseTestingModeService,
+    private web3PrivateService: Web3PrivateService
   ) {
     this.getTokensList();
 
-    this.authService.getCurrentUser().subscribe(user => {
-      this.userAddress = user?.address;
+    this.web3PrivateService.onAddressChanges.subscribe(address => {
+      this.userAddress = address;
       this.recalculateUsersBalance();
     });
+
+    /* this.authService.getCurrentUser().subscribe(user => {
+      this.userAddress = user?.address;
+      this.recalculateUsersBalance();
+    }); */
 
     useTestingModule.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
@@ -103,75 +110,43 @@ export class TokensService {
     });
   }
 
-  private recalculateUsersBalance(): void {
+  private async recalculateUsersBalance(): Promise<void> {
     if (this.userAddress && this.tokens.getValue().size) {
-      const tokens = this.tokens.getValue();
-      const blockchains: BLOCKCHAIN_NAME[] = [
-        ...tokens
-          .filter(token => token.blockchain)
-          .map(token => token.blockchain)
-          .toSet()
-      ];
+      const tokens = this.tokens.getValue().filter(token => token.blockchain);
+      const blockchains: BLOCKCHAIN_NAME[] = [...tokens.map(token => token.blockchain).toSet()];
+      const promises = [];
 
       blockchains.forEach(blockchain => {
-        let filteredTokens = tokens.filter(token => token.blockchain === blockchain);
-        const web3Public: Web3Public = this.web3PublicService[blockchain];
-        const updatedTokens = {};
-        const balancePromises = [];
-
-        const nativeToken = filteredTokens.find(token => web3Public.isNativeAddress(token.address));
-        if (nativeToken) {
-          balancePromises.push(
-            web3Public.getBalance(this.userAddress).then(balance => {
-              updatedTokens[nativeToken.address] = {
-                ...nativeToken,
-                usersBalance: balance.toNumber()
-              };
-            })
-          );
-          filteredTokens = filteredTokens.filter(
-            token => !web3Public.isNativeAddress(token.address)
-          );
-        }
-
-        balancePromises.push(
-          new Promise<void>(resolve => {
-            const batch = web3Public.batchRequest;
-            filteredTokens.forEach((token, index) => {
-              batch.add(
-                web3Public
-                  .getTokenBalanceFunction(this.userAddress, token.address)
-                  .request({}, (error, data) => {
-                    if (error) {
-                      console.debug(error, token);
-                    } else {
-                      const balance = Web3PublicService.tokenWeiToAmount(token, data);
-                      updatedTokens[token.address] = {
-                        ...token,
-                        usersBalance: balance.toNumber()
-                      };
-
-                      if (index === filteredTokens.size - 1) {
-                        resolve();
-                      }
-                    }
-                  })
-              );
-            });
-            batch.execute();
-          })
+        promises.push(
+          this.web3PublicService[blockchain].getTokensBalances(
+            this.userAddress,
+            tokens
+              .filter(token => token.blockchain === blockchain)
+              .map(token => token.address)
+              .toArray()
+          )
         );
-
-        Promise.all(balancePromises).then(() => {
-          const newTokens = this.tokens.getValue().map(token => {
-            if (token.blockchain === blockchain) {
-              return updatedTokens[token.address];
-            }
-            return token;
-          });
-          this.tokens.next(newTokens);
-        });
       });
+
+      const getRelativeBalance = (token: SwapToken, weiBalance: BigNumber): number =>
+        Number(weiBalance.div(10 ** token.decimals).toFixed(4));
+
+      const balances = await Promise.all(promises);
+      const tokensWithBalance: SwapToken[][] = [];
+      blockchains.forEach((blockchain, blockchainIndex) =>
+        tokensWithBalance.push(
+          tokens
+            .filter(token => token.blockchain === blockchain)
+            .map((token, tokenIndex) => ({
+              ...token,
+              usersBalance:
+                getRelativeBalance(token, balances[blockchainIndex][tokenIndex]) || undefined
+            }))
+            .toArray()
+        )
+      );
+
+      this.tokens.next(List(tokensWithBalance.flat()));
     }
   }
 }
