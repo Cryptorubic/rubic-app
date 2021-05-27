@@ -1,8 +1,10 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core';
 import { WINDOW } from 'src/app/core/models/window';
 import { ORDER_BOOK_TRADE_STATUS } from '../../../../../features/order-book-trade-page/models/trade-data';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../../../features/swaps-page/models/trade-data';
 import { TradeData } from '../../models/tokens-table-data';
+import { ScannerLinkPipe } from '../../../../pipes/scanner-link.pipe';
+import ADDRESS_TYPE from '../../../../models/blockchain/ADDRESS_TYPE';
 
 @Component({
   selector: 'app-tokens-accordion',
@@ -11,13 +13,13 @@ import { TradeData } from '../../models/tokens-table-data';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensAccordionComponent implements OnInit {
-  @Input() typeData: string;
-
   @Input() data: TradeData;
 
   @Input() chainIconPath: string;
 
   @Input() selectedOption: string;
+
+  @Input() tableType: string;
 
   public linkToTrade;
 
@@ -37,7 +39,10 @@ export class TokensAccordionComponent implements OnInit {
     }
   }
 
-  constructor(@Inject(WINDOW) private readonly window: Window) {}
+  constructor(
+    @Inject(WINDOW) private readonly window: Window,
+    private scannerLinkPipe: ScannerLinkPipe
+  ) {}
 
   ngOnInit(): void {
     if ('uniqueLink' in this.data) {
@@ -47,5 +52,9 @@ export class TokensAccordionComponent implements OnInit {
 
   public isFieldIn(fieldName: string) {
     return fieldName in this.data;
+  }
+
+  public getLink(part) {
+    return this.scannerLinkPipe.transform(part.hash, part.chain, ADDRESS_TYPE.TRANSACTION);
   }
 }

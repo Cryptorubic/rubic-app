@@ -94,7 +94,7 @@ export class InstantTradesApiService {
    * @param tradeApi data from server
    */
   public tradeApiToTradeData(tradeApi: InstantTradesResponseApi): InstantTradesTradeData {
-    const tradeData = ({
+    const tradeData = {
       hash: tradeApi.hash,
       provider: tradeApi.contract.name,
       token: {
@@ -110,10 +110,11 @@ export class InstantTradesApiService {
         }
       },
       blockchain:
-        FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title] || 'ETH_TESTNET',
+        FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title] ||
+        BLOCKCHAIN_NAME.ETHEREUM,
       status: tradeApi.status,
       date: new Date(tradeApi.status_updated_at)
-    } as unknown) as InstantTradesTradeData;
+    } as unknown as InstantTradesTradeData;
 
     tradeData.fromAmount = Web3PublicService.tokenWeiToAmount(
       tradeData.token.from,

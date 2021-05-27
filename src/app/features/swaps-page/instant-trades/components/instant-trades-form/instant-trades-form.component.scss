@@ -225,6 +225,10 @@ app-tooltip {
         .instant-trade-button:nth-child(2) {
           margin-bottom: 22px;
         }
+
+        .selection-block__header {
+          margin-right: 0;
+        }
       }
 
       &_from-section_lowered {
@@ -243,10 +247,6 @@ app-tooltip {
 
   .instant-trade-form {
     display: block;
-  }
-
-  .gas-fee {
-    margin-bottom: 30px;
   }
 }
 
