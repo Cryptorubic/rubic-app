@@ -119,6 +119,14 @@ export class AuthService {
     this.isAuthProcess = true;
     await this.providerConnectorService.activate();
     const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
+    if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
+      const { address } = metamaskLoginBody.payload.user;
+      if (address === this.providerConnectorService.address) {
+        this.$currentUser.next({ address });
+      }
+      this.isAuthProcess = false;
+      return;
+    }
     const nonce = metamaskLoginBody.payload.message;
     const signature = await this.providerConnectorService.signPersonal(nonce);
 
