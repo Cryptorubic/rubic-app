@@ -35,10 +35,8 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -89,10 +87,8 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -118,10 +114,8 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -134,7 +128,9 @@
               {{ element.token.from.symbol }}
             </div>
             <div class="token-cell__amount">
-              {{ element.fromAmount.dp(5).toString(10) }}
+              {{
+                element.fromAmount.toString(10) | withRound: 5:6:element.token.from:'toClosestValue'
+              }}
             </div>
           </div>
         </a>
@@ -152,10 +148,8 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -167,7 +161,9 @@
               />
               {{ element.token.to.symbol }}
             </div>
-            <div class="token-cell__amount">{{ element.toAmount.dp(5).toString(10) }}</div>
+            <div class="token-cell__amount">
+              {{ element.toAmount.toString(10) | withRound: 5:6:element.token.to:'toClosestValue' }}
+            </div>
           </div>
         </a>
       </td>
@@ -184,10 +180,8 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -214,16 +208,16 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
-          <div class="tokens-table__cell tokens-table__cell_datetime">
-            {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h:
-            {{ element.expiresIn.minutes() }}m
+          <div
+            class="tokens-table__cell tokens-table__cell_datetime"
+            [matTooltip]="getFullExpirationTime(element.expiresIn)"
+          >
+            {{ getExpirationTime(element.expirationDate, element.expiresIn) }}
           </div>
         </a>
       </td>
@@ -240,10 +234,8 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
-              chain: element.blockchain,
-              type: 'TRANSACTION'
+              chain: element.blockchain
             })
           "
         >
@@ -278,6 +270,7 @@
           [data]="trade"
           [chainIconPath]="getChainIcon(trade.blockchain)"
           [selectedOption]="selectedColumn"
+          [tableType]="tableType"
         ></app-tokens-accordion>
       </ng-container>
     </div>

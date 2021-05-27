@@ -45,7 +45,7 @@
         <app-token-form
           [tradeData]="tradeData"
           tokenPart="from"
-          [oppositeTokenToGet]="toTokenAmountToGet + ' ' + tradeData.token.from.symbol"
+          [oppositeTokenToGet]="toTokenAmountToGet + ' ' + tradeData.token.to.symbol"
           (amountToContributeChanges)="calculateAmountToGet($event, 'from')"
         ></app-token-form>
       </div>
@@ -54,7 +54,7 @@
         <app-token-form
           [tradeData]="tradeData"
           tokenPart="to"
-          [oppositeTokenToGet]="fromTokenAmountToGet + ' ' + tradeData.token.to.symbol"
+          [oppositeTokenToGet]="fromTokenAmountToGet + ' ' + tradeData.token.from.symbol"
           (amountToContributeChanges)="calculateAmountToGet($event, 'to')"
         ></app-token-form>
       </div>

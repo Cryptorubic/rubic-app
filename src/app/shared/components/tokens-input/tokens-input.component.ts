@@ -15,6 +15,7 @@ import { TokenLabelComponent } from './token-label/token-label.component';
 import { InputDropdownComponent } from '../input-dropdown/input-dropdown.component';
 import { DropdownComponentData } from '../input-dropdown/types';
 import InputToken from '../../models/tokens/InputToken';
+import { WithRoundPipe } from '../../pipes/with-round.pipe';
 
 interface TokenLabelData {
   token: InputTokenShort;
@@ -77,7 +78,13 @@ export class TokensInputComponent implements OnChanges, OnInit {
   }
 
   @Input() set selectedAmount(value) {
-    this._selectedAmount = value;
+    this._selectedAmount = this.withRoundPipe.transform(
+      value,
+      5,
+      6,
+      this.selectedToken,
+      'toClosestValue'
+    );
 
     if (this._selectedAmount?.includes('.')) {
       this.setSelectedAmountDecimals();
@@ -110,7 +117,7 @@ export class TokensInputComponent implements OnChanges, OnInit {
 
   public inputPaddingRight: number;
 
-  constructor() {}
+  constructor(private readonly withRoundPipe: WithRoundPipe) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.tokensList || changes.selectedToken) {

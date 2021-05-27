@@ -376,7 +376,8 @@
       "volume": "Volume",
       "network": "Network",
       "spent": "Spent",
-      "expected": "Expected"
+      "expected": "Expected",
+      "date": "Date"
     },
     "noData": "You have no swaps yet",
     "noTrades": "There are no trades",

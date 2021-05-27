@@ -73,14 +73,16 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
   ) {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
-      this.fromTokensList = List(
-        coingeckoTestTokens.filter(
-          token =>
-            token.blockchain === BLOCKCHAIN_NAME.ETHEREUM &&
-            (token.address === NATIVE_TOKEN_ADDRESS || token.address === this.RBC_KOVAN_ADDRESS)
-        )
-      );
-      this.setGetBnbTokens();
+      if (isTestingMode) {
+        this.fromTokensList = List(
+          coingeckoTestTokens.filter(
+            token =>
+              token.blockchain === BLOCKCHAIN_NAME.ETHEREUM &&
+              (token.address === NATIVE_TOKEN_ADDRESS || token.address === this.RBC_KOVAN_ADDRESS)
+          )
+        );
+        this.setGetBnbTokens();
+      }
     });
   }
 

@@ -240,6 +240,10 @@ app-tooltip {
         .instant-trade-button:nth-child(2) {
           margin-bottom: 22px;
         }
+
+        .selection-block__header {
+          margin-right: 0;
+        }
       }
 
       &_from-section_lowered {
@@ -263,10 +267,6 @@ app-tooltip {
       top: 14px;
       left: 7px;
     }
-  }
-
-  .gas-fee {
-    margin-bottom: 30px;
   }
 }
 
