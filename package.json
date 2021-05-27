@@ -7,6 +7,7 @@
     "ng": "ng",
     "postinstall": "node patch-webpack.js",
     "dev-build": "ng build",
+    "dev2-build": "ng build --configuration dev2",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
