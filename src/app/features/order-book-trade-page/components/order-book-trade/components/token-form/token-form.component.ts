@@ -205,7 +205,7 @@ export class TokenFormComponent implements OnInit, OnChanges {
       .checkApproveAndMakeContribute(
         this.tradeData,
         this.tokenPart,
-        this.amountToContribute,
+        this.amountToContribute.split(',').join(''),
         () => {
           this.setOperationInProgress('contribute');
         }
