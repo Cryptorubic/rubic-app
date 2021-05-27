@@ -10,7 +10,7 @@ import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-inf
 import { OneInchService } from '../one-inch-service';
 
 @Injectable()
-export class OneInchEthService extends OneInchService {
+export class OneInchPolService extends OneInchService {
   constructor(
     httpClient: HttpClient,
     coingeckoApiService: CoingeckoApiService,
@@ -21,7 +21,7 @@ export class OneInchEthService extends OneInchService {
   ) {
     super(httpClient, coingeckoApiService, useTestingModeService, translateService);
 
-    this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.blockchain = BLOCKCHAIN_NAME.POLYGON;
     const network = BlockchainsInfo.getBlockchainByName(this.blockchain);
     this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
     this.web3Private = web3Private;
