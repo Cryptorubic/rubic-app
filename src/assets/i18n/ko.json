@@ -37,10 +37,11 @@
     "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
     "sameTokens": "양쪽에서 동일한 토큰을 선택할 수 없습니다. 다른 토큰을 선택하십시오.",
     "noQrCode": "Please make sure that you have scan qrCode",
-    "noWallet": "You have not connected any wallet",
+    "noWallet": "You have not connect any wallet",
     "retrievingTokensError": "Error retrieving tokens",
     "wrongToken": "Rubic bridge supports only rubic token.",
-    "oneInchQuote": "Oneinch quote error"
+    "oneInchQuote": "Oneinch quote error",
+    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider."
   },
   "navigation": {
     "about": "소개",

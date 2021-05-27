@@ -37,10 +37,11 @@
     "insufficientFunds": "У вас недостаточно {{ tokenSymbol }}. Ваш баланс {{balance}} {{tokenSymbol}}, но требуется {{requiredBalance}} {{tokenSymbol}}.",
     "sameTokens": "Один и тот же токен не может быть выбран в обоих блоках, пожалуйста, выберете разные токены.",
     "noQrCode": "Please make sure that you have scan qrCode",
-    "noWallet": "You have not connected any wallet",
+    "noWallet": "You have not connect any wallet",
     "retrievingTokensError": "Error retrieving tokens",
     "wrongToken": "Rubic bridge supports only rubic token.",
-    "oneInchQuote": "Oneinch quote error"
+    "oneInchQuote": "Oneinch quote error",
+    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider."
   },
   "navigation": {
     "about": "О компании",

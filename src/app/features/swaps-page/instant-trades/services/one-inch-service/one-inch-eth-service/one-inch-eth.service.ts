@@ -7,6 +7,7 @@ import { CoingeckoApiService } from '../../../../../../core/services/external-ap
 import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
+import { ProviderConnectorService } from '../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 @Injectable()
 export class OneInchEthService extends OneInchService {
@@ -16,7 +17,8 @@ export class OneInchEthService extends OneInchService {
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
     useTestingModeService: UseTestingModeService,
-    protected readonly errorsService: ErrorsService
+    protected readonly errorsService: ErrorsService,
+    readonly providerConnectorService: ProviderConnectorService
   ) {
     super(httpClient, coingeckoApiService, useTestingModeService, errorsService);
 
@@ -24,5 +26,6 @@ export class OneInchEthService extends OneInchService {
     this.apiBaseUrl = 'https://api.1inch.exchange/v3.0/1/';
     this.web3Private = web3Private;
     this.web3Public = web3Public[this.blockchain];
+    this.providerConnectorService = providerConnectorService;
   }
 }

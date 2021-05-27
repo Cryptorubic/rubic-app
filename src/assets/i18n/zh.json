@@ -37,10 +37,11 @@
     "insufficientFunds": "你没有足够的 {{ tokenSymbol }}. 您的余额是 {{balance}} {{tokenSymbol}}, 但 {{requiredBalance}} {{tokenSymbol}} 是必需的。",
     "sameTokens": "兩邊不能選擇相同的令牌，請選擇不同的令牌.",
     "noQrCode": "Please make sure that you have scan qrCode",
-    "noWallet": "You have not connected any wallet",
+    "noWallet": "You have not connect any wallet",
     "retrievingTokensError": "Error retrieving tokens",
     "wrongToken": "Rubic bridge supports only rubic token.",
-    "oneInchQuote": "Oneinch quote error"
+    "oneInchQuote": "Oneinch quote error",
+    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider."
   },
   "navigation": {
     "about": "关于",

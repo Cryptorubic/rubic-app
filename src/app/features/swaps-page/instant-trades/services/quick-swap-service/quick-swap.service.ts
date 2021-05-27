@@ -18,6 +18,7 @@ import {
   tokensToTokensEstimatedGas
 } from '../uni-swap-service/uni-swap-constants';
 import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { ProviderConnectorService } from '../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 @Injectable()
 export class QuickSwapService extends UniswapAbstract {
@@ -26,7 +27,8 @@ export class QuickSwapService extends UniswapAbstract {
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
     useTestingModeService: UseTestingModeService,
-    protected readonly errorsService: ErrorsService
+    protected readonly errorsService: ErrorsService,
+    providerConnectorService: ProviderConnectorService
   ) {
     super(
       useTestingModeService,
@@ -46,6 +48,7 @@ export class QuickSwapService extends UniswapAbstract {
     this.web3Public = web3Public[BLOCKCHAIN_NAME.POLYGON];
     this.blockchain = BLOCKCHAIN_NAME.POLYGON;
     this.shouldCalculateGas = false;
+    this.providerConnectorService = providerConnectorService;
 
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {

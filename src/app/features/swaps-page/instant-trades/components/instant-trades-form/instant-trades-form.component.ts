@@ -15,7 +15,6 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
-import { RubicError } from '../../../../../shared/models/errors/RubicError';
 import ADDRESS_TYPE from '../../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
@@ -638,7 +637,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           txHash: receipt.transactionHash
         });
       })
-      .catch((err: RubicError) => {
+      .catch(err => {
         this.waitingForProvider = false;
         this.errorsService.showErrorDialog(err);
 

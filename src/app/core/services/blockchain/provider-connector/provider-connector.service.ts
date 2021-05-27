@@ -19,6 +19,8 @@ export class ProviderConnectorService {
 
   private readonly $addressChangeSubject: BehaviorSubject<string>;
 
+  public providerName: WALLET_NAME;
+
   private privateProvider: any;
 
   public get address(): string {
@@ -142,5 +144,6 @@ export class ProviderConnectorService {
         );
       }
     }
+    this.providerName = provider;
   }
 }

@@ -81,12 +81,13 @@ export class WalletLinkProvider extends PrivateProvider {
   public async activate(): Promise<void> {
     try {
       const [address] = await this.core.send('eth_requestAccounts');
-      this.isEnabled = true;
+
       const chain = BlockchainsInfo.getBlockchainById(1);
       this.onNetworkChanges.next(chain);
       this.onAddressChanges.next(address);
       this.selectedAddress = address;
       this.selectedChain = chain.name;
+      this.isEnabled = true;
     } catch (error) {
       this.errorsService.throw(new WalletlinkError());
     }

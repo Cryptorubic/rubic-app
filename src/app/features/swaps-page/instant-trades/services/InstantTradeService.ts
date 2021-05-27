@@ -11,6 +11,8 @@ import { AccountError } from '../../../../shared/models/errors/provider/AccountE
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ErrorsService } from '../../../../core/services/errors/errors.service';
+import { WALLET_NAME } from '../../../../core/header/components/header/components/wallets-modal/models/providers';
+import { NotSupportedNetworkError } from '../../../../shared/models/errors/provider/NotSupportedNetwork';
 
 abstract class InstantTradeService {
   protected isTestingMode;
@@ -67,7 +69,11 @@ abstract class InstantTradeService {
       (this.providerConnectorService.networkName !== `${selectedBlockchain}_TESTNET` ||
         !this.isTestingMode)
     ) {
-      this.errorsService.throw(new NetworkError(selectedBlockchain));
+      if (this.providerConnectorService.providerName === WALLET_NAME.METAMASK) {
+        this.errorsService.throw(new NetworkError(selectedBlockchain));
+      } else {
+        this.errorsService.throw(new NotSupportedNetworkError(selectedBlockchain));
+      }
     }
   }
 

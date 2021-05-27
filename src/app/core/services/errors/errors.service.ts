@@ -9,8 +9,10 @@ import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, throwError } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { NotSupportedNetworkError } from '../../../shared/models/errors/provider/NotSupportedNetwork';
+import InsufficientFundsError from '../../../shared/models/errors/instant-trade/InsufficientFundsError';
 
-type ErrorModalTitle = 'Error' | 'Warning';
+type ErrorModalTitle = 'error' | 'warning';
 
 interface ErrorData {
   title: ErrorModalTitle;
@@ -23,13 +25,13 @@ interface ErrorData {
 export class ErrorsService {
   constructor(private dialog: MatDialog, private readonly translateService: TranslateService) {}
 
-  public $throw(error: Error, message?: string): Observable<never> {
-    console.error(message || error.message);
+  public $throw(error: any, message?: string): Observable<never> {
+    console.error(message || error.message || error.comment);
     return throwError(error);
   }
 
-  public throw(error: Error, message?: string): void {
-    console.error(message || error.message);
+  public throw(error: any, message?: string): void {
+    console.error(message || error.message || error.comment);
     throw error;
   }
 
@@ -38,23 +40,34 @@ export class ErrorsService {
     if (!(err instanceof RubicError)) {
       err = new RubicError();
     }
+    const translateParams = {} as any;
+    if (err instanceof NotSupportedNetworkError) {
+      translateParams.networkToChoose = err.networkToChoose;
+    }
+    if (err instanceof InsufficientFundsError) {
+      translateParams.tokenSymbol = err.tokenSymbol;
+      translateParams.balance = err.balance;
+      translateParams.requiredBalance = err.requiredBalance;
+    }
     let data: ErrorData = {
-      title: 'Error',
-      descriptionText: this.translateService.instant(err.translateKey) || err.message
+      title: 'error',
+      descriptionText:
+        this.translateService.instant(err.translateKey, translateParams) || err.message
     };
     if (err instanceof MetamaskError) {
-      data.title = 'Warning';
+      data.title = 'warning';
     }
+
     if (err instanceof NetworkError) {
       data = {
-        title: 'Error',
+        title: 'error',
         descriptionComponentClass: NetworkErrorComponent,
         descriptionComponentInputs: { networkError: err }
       };
     }
     if (err instanceof TotalSupplyOverflowError) {
       data = {
-        title: 'Error',
+        title: 'error',
         descriptionComponentClass: TotalSupplyOverflowErrorComponent,
         descriptionComponentInputs: { totalSupplyOverflowError: err }
       };

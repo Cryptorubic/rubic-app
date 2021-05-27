@@ -31,7 +31,7 @@ export class WalletConnectProvider extends PrivateProvider {
   }
 
   get isActive(): boolean {
-    return this.isEnabled && Boolean(this.core?.selectedAddress);
+    return this.isEnabled && this.core?.accounts.length > 0;
   }
 
   public get address(): string {
@@ -83,6 +83,7 @@ export class WalletConnectProvider extends PrivateProvider {
       const [address] = await this.core.enable();
       this.isEnabled = true;
       this.selectedAddress = address;
+      this.selectedChain = String(this.core.chainId);
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(address);
     } catch (error) {

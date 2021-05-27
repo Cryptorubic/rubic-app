@@ -61,7 +61,6 @@ export class OneInchService extends InstantTradeService {
     protected readonly errorsService: ErrorsService
   ) {
     super(errorsService);
-
     useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
     setTimeout(() => this.loadSupportedTokens());
   }
