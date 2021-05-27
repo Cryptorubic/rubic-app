@@ -241,6 +241,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   }
 
   public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
+    value = value.split(',').join('');
     if (tokenPart === 'from') {
       this.toTokenAmountToGet = new BigNumber(value)
         .times(this.toTokenToFromTokenRate)
