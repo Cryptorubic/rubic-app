@@ -8,7 +8,6 @@ import {
   ViewChild
 } from '@angular/core';
 import { List } from 'immutable';
-import BigNumber from 'bignumber.js';
 import { InputTokenShort } from './types';
 import { TokenLabelComponent } from './token-label/token-label.component';
 import { InputDropdownComponent } from '../input-dropdown/input-dropdown.component';

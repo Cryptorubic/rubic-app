@@ -38,6 +38,12 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token20/',
     [ADDRESS_TYPE.TRANSACTION]: 'transaction/'
+  },
+  [BLOCKCHAIN_NAME.XDAI]: {
+    baseUrl: 'https://blockscout.com/xdai/mainnet/',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'tokens/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/'
   }
 };
 

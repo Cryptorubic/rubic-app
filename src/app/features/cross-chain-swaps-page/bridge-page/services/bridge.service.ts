@@ -28,6 +28,7 @@ import { EthereumBinanceRubicBridgeProviderService } from './blockchains-bridge-
 import { EthereumBinanceBridgeProviderService } from './blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
 import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockchains-bridge-provider';
 import { BridgeToken } from '../models/BridgeToken';
+import { EthereumXdaiBridgeProviderService } from './blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -49,7 +50,8 @@ export class BridgeService implements OnDestroy {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: List([]),
       [BLOCKCHAIN_NAME.POLYGON]: List([]),
-      [BLOCKCHAIN_NAME.TRON]: List([])
+      [BLOCKCHAIN_NAME.TRON]: List([]),
+      [BLOCKCHAIN_NAME.XDAI]: List([])
     },
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
       [BLOCKCHAIN_NAME.TRON]: List([])
@@ -77,6 +79,7 @@ export class BridgeService implements OnDestroy {
     private ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
     private ethereumTronBridgeProviderService: EthereumTronBridgeProviderService,
     private binanceTronBridgeProviderService: BinanceTronBridgeProviderService,
+    private ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
@@ -127,6 +130,9 @@ export class BridgeService implements OnDestroy {
           break;
         case BLOCKCHAIN_NAME.POLYGON:
           this.bridgeProvider = this.ethereumPolygonBridgeProviderService;
+          break;
+        case BLOCKCHAIN_NAME.XDAI:
+          this.bridgeProvider = this.ethereumXdaiBridgeProviderService;
           break;
         default:
           this.bridgeProvider = this.ethereumTronBridgeProviderService;

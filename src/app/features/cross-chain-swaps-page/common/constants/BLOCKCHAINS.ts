@@ -6,6 +6,7 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: BridgeBlockchain;
   [BLOCKCHAIN_NAME.POLYGON]: BridgeBlockchain;
   [BLOCKCHAIN_NAME.TRON]: BridgeBlockchain;
+  [BLOCKCHAIN_NAME.XDAI]: BridgeBlockchain;
 };
 
 export const BLOCKCHAINS: Blockchains = {
@@ -44,5 +45,14 @@ export const BLOCKCHAINS: Blockchains = {
     baseUrl: 'https://tronscan.org/#/',
     addressBaseUrl: 'https://tronscan.org/#/address/',
     scannerLabel: 'Tron explorer'
+  },
+  [BLOCKCHAIN_NAME.XDAI]: {
+    key: BLOCKCHAIN_NAME.XDAI,
+    label: 'XDAI',
+    name: 'XDAI',
+    img: 'xdai.svg',
+    baseUrl: 'https://blockscout.com/xdai/mainnet/',
+    addressBaseUrl: 'https://blockscout.com/xdai/mainnet/address/',
+    scannerLabel: 'xDai explorer'
   }
 };
