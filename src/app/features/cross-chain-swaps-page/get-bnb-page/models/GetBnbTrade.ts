@@ -1,5 +1,6 @@
 import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
 
 export enum GET_BNB_TRADE_STATUS {
   WAITING = 'WAITING',
@@ -12,4 +13,5 @@ export interface GetBnbTrade {
   status: GET_BNB_TRADE_STATUS;
   fromToken: GetBnbToken;
   toToken: SwapToken;
+  toBlockchain: BridgeBlockchain;
 }

@@ -20,6 +20,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
 import BigNumber from 'bignumber.js';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
+
+interface ToTokens {
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: SwapToken;
+  [BLOCKCHAIN_NAME.POLYGON]: SwapToken;
+}
 
 @Component({
   selector: 'app-get-bnb-form',
@@ -37,11 +44,14 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   public GET_BNB_TRADE_STATUS = GET_BNB_TRADE_STATUS;
 
-  public NATIVE_TOKEN_ADDRESS = NATIVE_TOKEN_ADDRESS;
-
   public blockchainsList = Object.values(BLOCKCHAINS);
 
   public fromBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
+
+  public toBlockchainsList = [
+    BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN],
+    BLOCKCHAINS[BLOCKCHAIN_NAME.POLYGON]
+  ];
 
   public toBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
 
@@ -55,6 +65,8 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   public fromTokensList: List<SwapToken>;
 
+  public toTokens = {} as ToTokens;
+
   private _tokensSubscription$: Subscription;
 
   public walletAddress: string;
@@ -66,6 +78,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
   constructor(
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
+    private web3PublicService: Web3PublicService,
     private getBnbService: GetBnbService,
     private dialog: MatDialog,
     private errorsService: ErrorsService,
@@ -97,11 +110,14 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
       );
       this.setGetBnbTokens();
 
-      this.getBnbTrade.toToken = tokens.find(
-        token =>
-          token.blockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
-          token.address === NATIVE_TOKEN_ADDRESS
-      );
+      this.toTokens = {
+        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.findNativeToken(
+          BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+          tokens
+        ),
+        [BLOCKCHAIN_NAME.POLYGON]: this.findNativeToken(BLOCKCHAIN_NAME.POLYGON, tokens)
+      };
+      this.getBnbTrade.toToken = this.toTokens[this.toBlockchain.key];
     });
 
     this._walletAddressSubscription$ = this.web3PrivateService.onAddressChanges.subscribe(
@@ -114,6 +130,14 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._tokensSubscription$.unsubscribe();
     this._walletAddressSubscription$.unsubscribe();
+  }
+
+  private findNativeToken(blockchain: BLOCKCHAIN_NAME, tokens: List<SwapToken>): SwapToken {
+    return tokens.find(
+      token =>
+        token.blockchain === blockchain &&
+        this.web3PublicService[blockchain].isNativeAddress(token.address)
+    );
   }
 
   private setGetBnbTokens() {
@@ -147,7 +171,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onSelectedFromTokenChanges(inputToken: InputToken | null): void {
+  public onFromTokenChanges(inputToken: InputToken | null): void {
     if (inputToken) {
       this.getBnbTrade.fromToken = this.getBnbTokens[inputToken.symbol];
     } else {
@@ -156,6 +180,11 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
         fromToken: null
       };
     }
+  }
+
+  public onToBlockchainChanges(blockchain: BridgeBlockchain): void {
+    this.toBlockchain = blockchain;
+    this.getBnbTrade.toToken = this.toTokens[this.toBlockchain.key];
   }
 
   public getFeePrice(amount: string, price: number): BigNumber {

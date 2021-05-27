@@ -29,7 +29,7 @@
           [selectedToken]="getBnbTrade.fromToken"
           [tokensInputDisabled]="true"
           [selectedAmount]="getBnbTrade.fromToken?.fromAmount"
-          (tokenChanges)="onSelectedFromTokenChanges($event)"
+          (tokenChanges)="onFromTokenChanges($event)"
         ></app-tokens-input>
       </div>
 
@@ -81,9 +81,9 @@
 
       <div class="swap-box__blockchain-section form-field">
         <app-blockchain-select
-          [blockchains]="blockchainsList"
+          [blockchains]="toBlockchainsList"
           [selectedBlockchain]="toBlockchain"
-          [disabled]="true"
+          (blockchainChanges)="onToBlockchainChanges($event)"
         ></app-blockchain-select>
       </div>
 
@@ -109,7 +109,7 @@
 
       <div class="swap-box__scanner-link-container">
         <app-scanner-link
-          [address]="NATIVE_TOKEN_ADDRESS"
+          [address]="getBnbTrade.toToken?.address"
           [blockchainName]="toBlockchain.key"
           [addressType]="ADDRESS_TYPE.TOKEN"
           [scannerLabel]="toBlockchain.scannerLabel"
