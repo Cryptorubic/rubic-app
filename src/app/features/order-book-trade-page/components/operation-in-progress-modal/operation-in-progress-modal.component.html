@@ -5,8 +5,9 @@
       src="/assets/images/icons/TradeInProgress.svg"
       alt="success"
     />
-    <div class="operation-modal__description">
-      {{ 'modals.operationModal.progress.text' | translate }}
-    </div>
+    <div
+      class="operation-modal__description"
+      [innerHTML]="'modals.operationModal.progress.text' | translate"
+    ></div>
   </div>
 </app-modal>

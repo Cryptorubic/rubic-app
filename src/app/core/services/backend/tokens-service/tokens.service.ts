@@ -130,7 +130,7 @@ export class TokensService {
       });
 
       const getRelativeBalance = (token: SwapToken, weiBalance: BigNumber): number =>
-        Number(weiBalance.div(10 ** token.decimals).toFixed(4));
+        Number(weiBalance.div(10 ** token.decimals).toFixed(4, 1));
 
       const balances = await Promise.all(promises);
       const tokensWithBalance: SwapToken[][] = [];
