@@ -15,6 +15,10 @@ export class InstantTradesFormOptionsComponent {
 
   @ViewChild('slippagePercentModel') slippagePercentModel: NgModel;
 
+  public get slippagePercentAsNumber(): number {
+    return parseFloat(this.slippagePercent);
+  }
+
   constructor() {}
 
   public onSlippagePercentChange(percent: string): void {

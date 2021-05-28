@@ -35,7 +35,8 @@
               !slippagePercentModel.value || slippagePercentModel.invalid,
             'input-container__input_warning':
               slippagePercentModel.valid &&
-              ((slippagePercentModel.value && slippagePercent < 0.1) || slippagePercent > 1)
+              ((slippagePercentModel.value && slippagePercentAsNumber < 0.1) ||
+                slippagePercentAsNumber > 1)
           }"
           #slippagePercentInput
         />
@@ -45,7 +46,7 @@
 
       <div
         class="form-section-block__warning-container"
-        *ngIf="slippagePercentModel.value && slippagePercent < 0.1"
+        *ngIf="slippagePercentModel.value && slippagePercentAsNumber < 0.1"
         [matTooltip]="'Your transaction may fail'"
       >
         <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="" />
@@ -53,7 +54,7 @@
 
       <div
         class="form-section-block__warning-container"
-        *ngIf="slippagePercentModel.valid && slippagePercent > 1"
+        *ngIf="slippagePercentModel.valid && slippagePercentAsNumber > 1"
         [matTooltip]="'Your transaction may be frontrun'"
       >
         <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="" />
