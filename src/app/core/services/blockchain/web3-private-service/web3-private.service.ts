@@ -109,7 +109,6 @@ export class Web3PrivateService {
         .on('receipt', resolve)
         .on('error', err => {
           console.error(`Tokens transfer error. ${err}`);
-          console.log(err);
           if (err.code === 4001) {
             reject(new UserRejectError(this.translateService));
           } else {

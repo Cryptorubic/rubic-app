@@ -69,10 +69,6 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
-    this.web3PrivateService
-      .transferTokens(tokenAddress, depositAddress, amountInWei.toFixed())
-      .then(receipt => console.log(receipt));
-
-    return of('welding');
+    this.web3PrivateService.transferTokens(tokenAddress, depositAddress, amountInWei.toFixed());
   }
 }
