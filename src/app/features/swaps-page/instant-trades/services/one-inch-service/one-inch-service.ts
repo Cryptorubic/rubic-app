@@ -2,13 +2,13 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import InstantTradeService from '../InstantTradeService';
 import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { TranslateService } from '@ngx-translate/core';
 
 interface OneInchQuoteResponse {
   fromToken: Object;

@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
+import { TranslateService } from '@ngx-translate/core';
 import InstantTradeService from '../InstantTradeService';
 import InstantTrade from '../../models/InstantTrade';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
-import { TranslateService } from '@ngx-translate/core';
 
 interface UniSwapTrade {
   amountIn: string;

@@ -7,9 +7,9 @@ import { NgModel } from '@angular/forms';
   styleUrls: ['./instant-trades-form-options.component.scss']
 })
 export class InstantTradesFormOptionsComponent {
-  @Input() public slippagePercent: number;
+  @Input() public slippagePercent: string;
 
-  @Output() private slippagePercentChange = new EventEmitter<number>();
+  @Output() private slippagePercentChange = new EventEmitter<string>();
 
   @Output() private areAdvancedOptionsValid = new EventEmitter<boolean>();
 
@@ -17,8 +17,8 @@ export class InstantTradesFormOptionsComponent {
 
   constructor() {}
 
-  public onSlippagePercentChange(percent: number): void {
-    this.slippagePercentChange.emit(percent / 100);
+  public onSlippagePercentChange(percent: string): void {
+    this.slippagePercentChange.emit(percent);
     setTimeout(() => {
       this.areAdvancedOptionsValid.emit(
         this.slippagePercentModel.value && this.slippagePercentModel.valid
