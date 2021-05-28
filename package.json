@@ -100,6 +100,6 @@
     "text2locale": "github:juliandavidmr/text2locale",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
-    "typescript": "^4.1.5"
+    "typescript": "~4.1.5"
   }
 }

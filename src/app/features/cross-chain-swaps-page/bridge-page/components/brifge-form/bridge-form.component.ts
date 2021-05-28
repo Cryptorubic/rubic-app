@@ -33,7 +33,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public fromBlockchainsList: BridgeBlockchain[] = Object.values(BLOCKCHAINS).filter(
-    b => b.key !== BLOCKCHAIN_NAME.TRON
+    b => b.key !== BLOCKCHAIN_NAME.TRON && b.key !== BLOCKCHAIN_NAME.XDAI
   );
 
   public toBlockchainsList: BridgeBlockchain[] = Object.values(BLOCKCHAINS);

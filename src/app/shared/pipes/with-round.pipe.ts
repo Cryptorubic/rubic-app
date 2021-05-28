@@ -36,7 +36,7 @@ export class WithRoundPipe implements PipeTransform {
           }
           decimalSymbols = zerosAmount + maxRound;
         }
-        decimalSymbols = Math.min(decimalSymbols, token.decimals);
+        decimalSymbols = Math.min(decimalSymbols, token?.decimals);
       } else {
         decimalSymbols = token?.decimals ? token.decimals : this.DEFAULT_DECIMAL_LENGTH;
       }

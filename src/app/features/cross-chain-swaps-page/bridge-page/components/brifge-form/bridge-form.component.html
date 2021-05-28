@@ -184,7 +184,9 @@
             ? 'https://www.binance.org/'
             : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
             ? 'https://polygon.technology/'
-            : 'https://tron.network/'
+            : isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
+            ? 'https://tron.network/'
+            : 'https://www.xdaichain.com/'
         "
         target="_blank"
       >
@@ -194,9 +196,10 @@
             ? 'Binance Smart Chain'
             : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
             ? 'Polygon'
-            : 'TRON'
-        }}
-        {{ 'bridgePage.whatIsAfter' | translate }}?
+            : isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
+            ? 'TRON'
+            : 'xDai'
+        }}{{ 'bridgePage.whatIsAfter' | translate }}?
       </a>
     </div>
   </div>
