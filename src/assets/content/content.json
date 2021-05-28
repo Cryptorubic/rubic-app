@@ -27,6 +27,17 @@
       ]
     },
     {
+      "img": "EugeneKorol.jpg",
+      "name": "Eugene Korol",
+      "role": "Product manager",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/Eugene_Korol"
+        }
+      ]
+    },
+    {
       "img": "SergeyAndreev.png",
       "name": "Sergey Andreev",
       "role": "Frontend Developer",
