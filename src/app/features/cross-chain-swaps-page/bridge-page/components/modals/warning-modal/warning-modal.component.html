@@ -1,8 +1,6 @@
 <app-modal (onCloseEvent)="onCancel.emit()">
   <div class="high-gas-price-modal">
-    <p class="high-gas-price-modal__description">
-      {{ warningText }}
-    </p>
+    <p class="high-gas-price-modal__description" [innerHTML]="warningText"></p>
 
     <div class="high-gas-price-modal__buttons buttons">
       <app-primary-button
