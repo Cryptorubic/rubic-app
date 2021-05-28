@@ -420,7 +420,7 @@
     "find": "交割全部",
     "limit": "最低出资限额",
     "fee": "经纪商佣金：",
-    "Withdraw": "退款",
+    "withdraw": "退款",
     "rate": "价格：",
     "closingDate": "结束日期",
     "closingTime": "结束时间",
