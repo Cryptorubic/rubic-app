@@ -12,6 +12,7 @@ import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { OneInchPolService } from 'src/app/features/swaps-page/instant-trades/services/one-inch-service/one-inch-pol-service/one-inch-pol.service';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
@@ -228,8 +229,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private uniSwapService: UniSwapService,
     private oneInchEthService: OneInchEthService,
-    private onInchBscService: OneInchBscService,
+    private oneInchBscService: OneInchBscService,
     private pancakeSwapService: PancakeSwapService,
+    private oneInchPolService: OneInchPolService,
     private quickSwapService: QuickSwapService,
     private dialog: MatDialog,
     private instantTradesApiService: InstantTradesApiService,
@@ -268,7 +270,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        this._instantTradeServices = [this.onInchBscService, this.pancakeSwapService];
+        this._instantTradeServices = [this.oneInchBscService, this.pancakeSwapService];
         this.trades = [
           {
             trade: null,
@@ -291,8 +293,17 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       case BLOCKCHAIN_NAME.POLYGON:
-        this._instantTradeServices = [this.quickSwapService];
+        this._instantTradeServices = [this.oneInchPolService, this.quickSwapService];
         this.trades = [
+          {
+            trade: null,
+            tradeState: null,
+            tradeProviderInfo: {
+              label: '1inch',
+              value: PROVIDERS.ONEINCH
+            },
+            isBestRate: false
+          },
           {
             trade: null,
             tradeState: null,
