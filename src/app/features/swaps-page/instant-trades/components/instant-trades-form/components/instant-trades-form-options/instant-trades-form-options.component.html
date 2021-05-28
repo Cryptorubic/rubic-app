@@ -46,7 +46,7 @@
 
       <div
         class="form-section-block__warning-container"
-        *ngIf="slippagePercentModel.value && slippagePercent < 0.0005"
+        *ngIf="slippagePercentModel.value && slippagePercent < 0.001"
         [matTooltip]="'Your transaction may fail'"
       >
         <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="" />

@@ -62,13 +62,11 @@ export class TokensInputComponent implements OnChanges, OnInit {
   /**
    * How much decimal symbols will be left in {@link selectedAmount}, if it is greater than or equal to 1.
    */
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   @Input() selectedAmountRoundMode? = 5;
 
   /**
    * How much decimal symbols after zeroes will be left in {@link selectedAmount}, if it is less than 1.
    */
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   @Input() smallSelectedAmountRoundMode? = 6;
 
   @Input() fullWidth?: boolean;
