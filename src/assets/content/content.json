@@ -1,7 +1,7 @@
 {
   "volume": {
-    "instantTradesVolume": "$8,681,331",
-    "bridgeVolume": "$7,416,259"
+    "instantTradesVolume": "$9,182,837",
+    "bridgeVolume": "$7,643,685"
   },
   "team": [
     {
@@ -23,17 +23,6 @@
         {
           "icon": "LinkedIn.svg",
           "url": "https://ru.linkedin.com/in/alexandrakorneva"
-        }
-      ]
-    },
-    {
-      "img": "VladislavGreen.png",
-      "name": "Vladislav Green",
-      "role": "Product manager",
-      "links": [
-        {
-          "icon": "Telegram.svg",
-          "url": "https://teleg.run/VladGren"
         }
       ]
     },
@@ -160,7 +149,7 @@
     {
       "img": "IlianaVasileva.png",
       "name": "Iliana Vasileva",
-      "role": "customer support and Q/A"
+      "role": "Q/A and customer support"
     },
     {
       "img": "SvenMichael.jpg",
