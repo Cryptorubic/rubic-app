@@ -2,7 +2,7 @@
   <div class="cross-chain-form__swap-section swap-section">
     <!-- From -->
     <div class="swap-section__box swap-box">
-      <div class="swap-box__title">From</div>
+      <div class="swap-box__title">{{ 'common.from' | translate }}</div>
 
       <div class="swap-box__blockchain-section form-field">
         <app-blockchain-select
@@ -19,7 +19,7 @@
         [isWithEditing]="false"
       ></app-wallet-address-form>
 
-      <div class="swap-box__title swap-box__title_second">You have</div>
+      <div class="swap-box__title swap-box__title_second">{{ 'common.have' | translate }}</div>
 
       <div class="swap-box__token-section form-field">
         <app-tokens-input
@@ -61,7 +61,7 @@
           }"
         >
           <td>
-            {{ selectedToken ? 'Minimum amount' : '' }}
+            {{ selectedToken ? ('bridgePage.minAmount' | translate) : '' }}
           </td>
           <td>
             {{ selectedToken ? selectedToken.blockchainToken[fromBlockchain.key].minAmount : '' }}
@@ -88,7 +88,7 @@
           }"
         >
           <td>
-            {{ selectedToken ? 'Maximum amount' : '' }}
+            {{ selectedToken ? ('bridgePage.maxAmount' | translate) : '' }}
           </td>
           <td>
             {{ selectedToken ? selectedToken.blockchainToken[fromBlockchain.key].maxAmount : '' }}
@@ -120,7 +120,7 @@
 
     <!-- To -->
     <div class="swap-section__box swap-box">
-      <div class="swap-box__title">To</div>
+      <div class="swap-box__title">{{ 'common.to' | translate }}</div>
 
       <div class="swap-box__blockchain-section form-field">
         <app-blockchain-select
@@ -143,7 +143,7 @@
         (walletAddressValidated)="toWalletAddress = $event"
       ></app-wallet-address-form>
 
-      <div class="swap-box__title">You get</div>
+      <div class="swap-box__title">{{ 'common.want' | translate }}</div>
 
       <div class="swap-box__token-section token-chosen">
         <span class="token-chosen__amount">{{ this.toNumber | bigNumberFormat }}</span>
@@ -174,7 +174,7 @@
       </div>
 
       <div class="swap-box__description">
-        You will get {{ toBlockchain.name }} tokens to the selected address
+        {{ 'bridgePage.getTokens' | translate: { toBlockchainName: toBlockchain.name } }}
       </div>
 
       <a
@@ -188,14 +188,15 @@
         "
         target="_blank"
       >
-        What is
+        {{ 'bridgePage.whatIs' | translate }}
         {{
           isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
             ? 'Binance Smart Chain'
             : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
             ? 'Polygon'
             : 'TRON'
-        }}?
+        }}
+        {{ 'bridgePage.whatIsAfter' | translate }}?
       </a>
     </div>
   </div>
@@ -232,7 +233,7 @@
         'cross-chain-form__confirm-info_polygon': isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
       }"
     >
-      <span>With the assistance of</span>
+      <span>{{ 'bridgePage.assistanceOf' | translate }}</span>
       <img
         [src]="
           'assets/images/icons/collaborations/' +
@@ -249,17 +250,14 @@
 
 <warning-modal
   *ngIf="isHighGasPriceModalShown"
-  warningText="Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours."
+  warningText="{{ 'modals.gasPriceModal.text' | translate }}"
   (onCancel)="isHighGasPriceModalShown = false"
   (onConfirm)="onHighGasPriceConfirm()"
 ></warning-modal>
 
 <warning-modal
   *ngIf="isPolygonToEthTradeModalShown"
-  [warningText]="
-    'Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes' +
-    ' and then deposit second time &ndash; \'Receive\' button will appear in the corresponding line of the swaps list under the form.'
-  "
+  warningText="{{ 'modals.polygonToEthTradeModal.text' | translate }}"
   (onCancel)="isPolygonToEthTradeModalShown = false"
   (onConfirm)="onPolygonToEthTradeConfirm()"
 ></warning-modal>

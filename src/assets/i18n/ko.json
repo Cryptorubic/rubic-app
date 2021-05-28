@@ -1,292 +1,471 @@
 {
-  "About": "소개",
-  "Features": "기능",
-  "Faq": "Faq",
-  "Login by MetaMask": "메타마스크로 로그인",
-  "My trades": "내 거래",
-  "Logout": "로그 아웃",
-  "Yes": "예",
-  "No": "아니오",
-  "Any": "어떤",
-
-  "Copyright": "Copyright",
-  "Privacy policy": "Privacy policy",
-  "Trades disclaimer text": "By trading on our platform you agree with the following",
-  "Terms and conditions": "terms and conditions",
-
-  "Make trades on your terms, share and generate revenue":
-  "귀하의 조건에 따라 거래하고 공유하고 수익을 창출하십시오",
-
-  "Create your Trade": "거래 생성",
-  "Listing on Uniswap": "Uniswap에 상장",
-
-  "You have": "당신의 보유량",
-  "Add": "Add",
-  "You want to get": "당신의 희망 수량",
-  "You get": "당신은 얻을 것이다",
-  "Your rate is": "귀하의 요금은",
-  "than": "보다",
-  "coinmarketcap": "coinmarketcap",
-  "rate.": "율.",
-  "Closing date": "마감일",
-  "Closing time": "마감 시간",
-  "Public deal": "공개 거래",
-  "Trade will be listed on the main page": "거래는 메인 페이지에 올라올 것입니다.",
-  "Permanent trade": "영구 무역",
-  "Lock liquidity until the trade completion": "거래 완료까지 유동성 고정",
-  "Minimum contribution in": "최소 기여",
-  "Brokerage fee": "중개 수수료",
-  "You can specify % for Broker": "브로커에 대해 %를 지정할 수 있습니다.",
-  "Enter Broker Address": "브로커 주소 입력",
-  "Specify % for": "% 지정",
-  "Close Settings": "설정 닫기",
-  "Advanced Settings": "고급 설정",
-  "Creating Trade": "무역 창출",
-  "Create Trade": "거래 생성",
-  "Use custom token": "맞춤 토큰 사용",
-  "Token Contract Address": "토큰 계약 주소",
-  "Choose Token": "토큰 선택",
-  "Enter amount": "금액을 입력하세요",
-
-  "Error": "오류",
-  "Please choose main net network in Metamask.": "Metamask에서 메인 넷 네트워크를 선택하세요.",
-  "Close": "닫기",
-  "Cancel": "취소",
-  "Order Book": "주문 대장",
-  "Send": "전송",
-  "Get": "받기",
-  "Volume": "거래량",
-  "Chain": "체인",
-  "Expires in": "만료",
-  "Status": "상태",
-  "d:h:m": "{{days}}일: {{hours}}시간: {{minutes}}분",
-  "Show more": "자세히보기",
-  "There is no matching pair, please": "일치하는 쌍이 없습니다.",
-  "create your own": "직접 만들어 봐",
-  "Network": "Network",
-  "BUTTONS": {
-    "ACCEPT": "Accept"
+  "common": {
+    "from": "에서",
+    "to": "에",
+    "yes": "예",
+    "no": "아니오",
+    "any": "어떤",
+    "error": "오류",
+    "have": "당신은",
+    "want": "당신은 얻을",
+    "confirm": "확인",
+    "copy": "부",
+    "accept": "동의하기",
+    "copyright": "저작권",
+    "privacyPolicy": "개인 정보 정책",
+    "close": "닫기",
+    "advancedOptions": "고급 옵션",
+    "send": "보내다",
+    "left": "왼쪽",
+    "checkOnExplorer": "탐색기에서 확인하기",
+    "useCustomToken": "맞춤형 토큰 사용",
+    "cancel": "취소",
+    "add": "더하다",
+    "via": "통하다",
+    "contractAddress": "토큰 계약 주소",
+    "enterAmount": "금액을 입력하세요",
+    "chooseToken": "토큰 선택"
   },
-
-  "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue.":
-  "Rubic p2p 거래는 분산형 p2p 플랫폼입니다. 사용자가 자신의 조건에 따라 거래하고 공유하고 수익을 창출하는 데 도움이 됩니다.",
-
-  "P2P trade": "P2P 거래",
-  "Create your trade and choose your rate.": "거래를 생성하고 환율을 선택하세요.",
-  "Instant Trade": "즉시 거래",
-  "You can create an instant trade using external DEX integration": "외부 DEX 통합을 사용하여 즉시 거래를 생성 할 수 있습니다.",
-  "Order": "주문",
-
-  "Set the desired rate and the deal will be executed when one of the DEX meets these requirements":
-  "원하는 요율을 설정하면 DEX 중 하나가 이러한 요구 사항을 충족 할 때 거래가 실행됩니다.",
-
-  "Farming": "징수 도급",
-
-  "If you provide liquidity for trades you will be rewarded by Rubic tokens when the trade is executed.":
-  "거래에 유동성을 제공하면 거래가 실행될 때 Rubic 토큰으로 보상을 받게됩니다.",
-
-  "Pool": "공동 계산",
-  "Create pools for DEXs by having only 1 token": "토큰을 1 개만 보유하여 DEX를위한 풀 생성",
-  "Multichain support": "멀티 체인 지원",
-  "Ethereum now, Tron and Binance Smart Chain are coming soon": "이제 Ethereum, Tron 및 Binance Smart Chain이 곧 출시됩니다",
-  "Rubic P2P trades features": "Rubic P2P 거래 기능",
-  "Option to lock liquidity until trade is closed": "거래가 마감 될 때까지 유동성을 잠글 수있는 옵션",
-  "Uniswap / curve integration (in progress)": "Uniswap / 곡선 통합 (진행 중)",
-  "No volume limits": "볼륨 제한 없음",
-  "Ability to make crowdsales": "크라우드 세일 능력",
-  "Public/Private deals": "공개 / 비공개 거래",
-  "No need to list token": "토큰을 나열 할 필요가 없습니다.",
-  "% of platform revenue can be regulated": "플랫폼 수익의 %를 규제 할 수 있습니다.",
-  "Brokers support": "브로커 지원",
-  "Rubic contract": "루빅 계약",
-  "Roadmap": "로드맵",
-  "October 2020": "2020 년 10 월",
-  "Integration with Tron, Binance Smart Chain": "Tron, Binance Smart Chain과의 통합",
-  "November 2020": "2020 년 11 월",
-  "Instant trades": "즉시 거래",
-  "January 2021": "2021 년 1 월",
-
-  "Multichain solution with the help of other projects such as Ren, PolkaDot":
-  "Ren, PolkaDot와 같은 다른 프로젝트의 도움을받는 멀티 체인 솔루션",
-
-  "February 2021": "2021 년 2 월",
-  "Anonymizer": "익명화",
-  "April 2021": "2021 년 4 월",
-  "Liquidity Pool Platform": "유동성 풀 플랫폼",
-  "FAQ": "FAQ",
-  "FAQ_QUESTIONS": [
-    {
-      "QUESTION": "Rubic p2p 거래는 무엇인가요??",
-      "ANSWER": "Rubic은 멀티체인 defi 플랫폼입니다. Rubic은 프로젝트가 탈중앙화되어 한곳에서 토큰을 생성, 관리 및 거래할 수 있도록 defi 서비스를 구성합니다. 사용자가 자신의 조건에 따라 거래하고 공유하고 수익을 창출하는 데 도움이 됩니다."
-    }, {
-      "QUESTION": "누가 우리의 서비스를 사용할 수 있나요?",
-      "ANSWER": "토큰을 만들고 관리하고 싶은 사람과 암호화폐를 가지고 있고 그것을 교환하고 싶은 사람은 모두 사용 가능합니다. KYC는 필요하지 않습니다. "
-    }, {
-      "QUESTION": "최소 및 최대 거래 규모는 어떠한가요?",
-      "ANSWER": "제한은 없습니다."
-    }, {
-      "QUESTION": "어떻게 작동하나요?",
-      "ANSWER": "거래에는 두 가지 옵션이 있습니다:\n F첫째, 자신의 조건에 따라 거래를 생성하고 다른 쪽에서 귀하의 조건에 동의하고 그 부분을 채울 때까지 기다립니다.\n 둘째, 즉각 거래를 선택하고 다른 쪽의 조건에 동의합니다. 출시 예정.\n\n코딩 기술 없이 자신만의 토큰을 만들고 상장 없이 거래할 수 있습니다."
-    }, {
-      "QUESTION": "어떤 암호화폐가 지원되나요?",
-      "ANSWER": "Rubic은 현재 거래를 위해 이더리움 기반 토큰에 대해 작동합니다. Tron, Binance Chain, BTC 블록체인이 곧 출시될 예정입니다. 그러나 토큰을 생성하고 관리하기 위해 우리는 이미 Ethereum, Tron, EOS, NEO, Waves, Binance Smart Chain Blockchains에서 지원하는 멀티체인 서비스를 제공합니다."
-    }, {
-      "QUESTION": "당신의 서비스를 사용하기 전에 토큰을 상장해야 하나요?",
-      "ANSWER": "아니요, 어느 토큰이든 거래할 수 있습니다. 그러나 저희에게 연락하시면 저희 목록에 귀하의 토큰을 추가할 것입니다."
-    }, {
-      "QUESTION": "H어떻게 시작하나요?",
-      "ANSWER": "쉽고 빠릅니다. 시작하려면 메타마스크만 있으면 됩니다.\n 원하는 조건을 입력하고 거래 생성을 클릭하세요."
-    }, {
-      "QUESTION": "– 거래를 어떻게 생성하나요?",
-      "ANSWER": "1단계. 양식을 채우고 보유한 금액을 입력하고 원하는 금액을 입력합니다.\n 2단계. 거래 완료까지 마감 날짜 및 시간, 최소 및 최대 기여, 개인 정보 보호, 중개 수수료, 유동성 잠금과 같은 고급 옵션 추가\n 3단계. 거래 세부 정보 확인\n 4단계. 거래 생성 클릭\n 5단계. 메타마스크를 사용하여 거래 확인\n 6단계. 거래에 참여합니다."
-    }, {
-      "QUESTION": "비용은 얼마인가요?",
-      "ANSWER": "현재 당사 서비스는 즉시 거래에 대한 수수료를 부과하지 않습니다. 그러나 주문 장 거래를 생성하는 데는 0.015 ETH의 수수료가 있습니다."
-    }, {
-      "QUESTION": "거래를 완료하는 데 얼마나 걸리나요?",
-      "ANSWER": "거래는 상대방이 자신의 부분을 완료하는 즉시 완료됩니다."
-    }, {
-      "QUESTION": "거래의 개인 정보 및 보안이 어떻게 보장되나요?",
-      "ANSWER": "거래는 숙련된 개발자 및 외부 감사에 의해 확인된 스마트 계약으로 보호됩니다."
-    }, {
-      "QUESTION": "하나의 거래에 몇 명이 참여할 수 있나요?",
-      "ANSWER": "양쪽 각각에 최대 10명까지 참여 가능합니다."
-    }, {
-      "QUESTION": "상대방이 거래를 완료하지 않으면 어떻게 되나요?",
-      "ANSWER": "거래가 만료되고 모든 토큰이 반환됩니다."
-    }, {
-      "QUESTION": "거래를 생성했는데 마음이 바뀌었다면 거래를 취소할 수 있나요?",
-      "ANSWER": "예, 상대방이 거래를 완료하기 전에 언제든지 거래를 취소할 수 있습니다. 거래를 취소하면 토큰을 되찾을 수 있습니다."
-    }, {
-      "QUESTION": "Binance Smart Chain 및 Polygon 네트워크를 MetaMask에 추가하는 방법은 무엇입니까?",
-      "ANSWER": "<a href='/assets/book.pdf' target='_blank'>자세한 내용은 여기를 클릭하십시오.</a>"
-    }, {
-      "QUESTION": "크로스 체인 브리지는 어떻게 사용하나요?",
-      "ANSWER": "<strong>1 단계.</strong> MetaMask 지갑 (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) 을 설치하고 Rubic.exchange에 연결합니다.\n\n<strong>2 단계.</strong> 교환 대상을 선택합니다 (이더 리움에서 바이 낸스로 또는 그 반대로). 스왑 화살표 버튼을 클릭하여 목적지를 변경할 수 있습니다.\n\n<strong>3 단계.</strong> 현재 사용자는 25 개의 ERC20 토큰을 해당 BEP20 버전과 교환 할 수 있으며 그 반대도 가능합니다 (목록은 계속 업데이트됩니다). 토큰 목록 :\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>4 단계.</strong> 교환 할 토큰 수를 입력합니다 (교환 할 수있는 최소 및 최대 토큰 수 아래에 확인). 반환되는 토큰 양에 만족하면 다음으로 진행하십시오 (바이 낸스 수수료 포함).\n\n<strong>5 단계.</strong> 'Etherscan / BSCscan에서 확인'을 클릭하면 토큰의 계약을 볼 수 있습니다.\n\n<strong>6 단계.</strong> Create Swap을 클릭 한 다음 MetaMask의 거래 확인을 클릭합니다.\n\n<strong>7 단계.</strong> 거래가 블록 체인에 기록 될 때까지 기다리십시오. 거래가 수락되면 알림이 전송됩니다. 테이블에서 거래 세부 정보를 찾을 수 있습니다. 바이 낸스가 처리 할 때까지 기다려주세요."
-    }, {
-      "QUESTION": "거래가 블록 체인에 기록 될 때까지 기다리십시오. 거래가 수락되면 알림이 전송됩니다. 테이블에서 거래 세부 정보를 찾을 수 있습니다. 바이 낸스가 처리 할 때까지 기다려주세요?",
-      "ANSWER": "현재 30 분 동안 3 개의 교차 체인 스왑이 제한되어 있으므로 잠시 기다렸다가 나중에 다시 시도하십시오. 이것은 곧 개선 될 것입니다"
-    }, {
-      "QUESTION": "크로스 체인 스왑을 완료하는 데 얼마나 걸립니까?",
-      "ANSWER": "일반적으로 다양하며 이는 우리에게 의존하지 않고 두 블록 체인에 의존합니다.\n추정에 따르면 초기화에는 2 분, 피드백 대기에는 4 분, 입금에는 몇 분이 더 소요됩니다.\n\n현재 평균 시간은 약 10 분입니다."
-    }, {
-      "QUESTION": "Uniswap 통합의 이점은 무엇입니까?",
-      "ANSWER": "사용자는 가장 낮은 가스 가격으로 최고의 토큰 요율을 얻기 위해 적합한 DEX 프로토콜을 선택할 수 있습니다."
-    }, {
-      "QUESTION": "1 인치와 Uniswap 중에서 선택해야하는 이유는 무엇입니까?",
-      "ANSWER": "이러한 프로토콜의 가스 수수료 및 가격 비율은 다르므로 더 많은 옵션을 가질 수있는 기회는 사용자가 더 나은 거래 결정을 내릴 수 있도록합니다."
-    }, {
-      "QUESTION": "토큰 승인이 가스 요금에 포함되어 있습니까?",
-      "ANSWER": "토큰 승인은 가스 요금에 포함되어 있지 않습니다. 처음 사용하는 동안 토큰을 한 번만 승인하면됩니다. 다음과 같이 보일 수 있습니다.\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
-    }, {
-      "QUESTION": "메시지가 표시되면 어떻게해야합니까.\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trading on Uniswap is not available</span></div>?",
-      "ANSWER": "이 메시지가 나타나면 다음 방법을 시도하십시오.\n1. 페이지를 새로 고침하십시오\n2. 웹 사이트 캐시를 지 웁니다\n3. 로그 아웃 한 다음 MetaMask에 로그인합니다\n그래도 작동하지 않으면 지원 팀에 문의하십시오."
-    }, {
-      "QUESTION": "Uniswap에 요금이 표시되지 않으면 어떻게해야합니까?",
-      "ANSWER": "Uniswap 요금을 확인하려면 MetaMask 계정으로 로그인해야합니다. 로그인 한 후 페이지도 새로 고칩니다."
-    }, {
-      "QUESTION": "지정가 주문의 목적은 무엇입니까?",
-      "ANSWER": "제한 주문을 통해 사용자는 원하는 비율로 토큰을 사고 팔 수 있으며 특정 조건이 충족되면 주문 장 거래가 자동으로 완료 될 수있는 기회를 제공합니다."
-    }, {
-      "QUESTION": "지정가 주문을 완료하기위한 조건은 무엇입니까?",
-      "ANSWER": "지정가 주문이 자동으로 채워지는 조건은 다음과 같습니다.\n<ul><li>주문서의 거래 율은 가스 수수료 + 플랫폼 보상을 포함하여 시장 비율과 동일합니다 (현재 0.01 ETH, 시간이 지남에 따라 변경됨).</li><li>거래는 만료되지 않습니다.</li><li>무역은 공개해야합니다.</li><li>최소 거래 규모는 0.1 ETH 또는 400 RBC입니다.</li></ul>또한 다른 사용자가 거래 매개 변수를 수락하고 거래에 참여하면 주문을 완료 할 수 있습니다."
-    }, {
-      "QUESTION": "지정가 주문 사용 방법?",
-      "ANSWER": "<strong>1 단계 :</strong> 토큰을 교환 할 블록 체인을 선택하고 주문 장을 선택합니다 (현재 제한 주문 기능은 이더 리움에서 거래를 지원하므로 이더 리움 네트워크를 선택하고 싶을 것입니다. 앞으로 더 많은 블록 체인이 지원 될 것입니다).\n\n<strong>2 단계 :</strong> 원하는 비율로 교환하려는 토큰을 선택합니다. 현재는 \"RBC-ETH\"및 \"ETH-RBC\"쌍만 사용할 수 있습니다.\n\n<strong>3 단계 :</strong> 마감 날짜 및 시간, 최소 및 최대 기여, 개인 정보 보호, 필요한 경우 중개 수수료와 같은 고급 옵션을 선택합니다.\n\n<strong>4 단계 :</strong> 메타 마스크에서 거래 생성 및 생성 거래 확인을 클릭합니다.\n\n<strong>5 단계 :</strong> 거래의 일부에 기여합니다 (토큰 승인 및 기여의 두 가지 거래가 있습니다). 거래에서 유일한 참여자가 될 계획이라면 '모두 채우기'를 선택하면 네트워크 요금이 적용됩니다.\n<a href='https://youtu.be/xiuT59ueJ8c'>비디오 튜토리얼 (이 방법은 모든 블록 체인에서 작동합니다)</a>\n\n<strong>6 단계 :</strong> 주문이 종료 될 때까지 기다립니다. 다른 사용자가 주문을 처리하거나 Uniswap의 쌍의 요금 (가스 요금 포함)이 일치하는 경우 Rubic이 자동으로 주문을 처리 할 수 \u200B\u200B있습니다.\n\n<strong>중대한:</strong>\n* 판매자는 거래의 측면을 100 % 완료해야합니다 (동영상 자습서 확인). 거래에서 유일한 판매자가 되려면 '모두 채우기'를 선택해야합니다. 이렇게하면 거래의 일부가 100 % 완료되고 다른 구매자 (또는 지정가 주문 기능)가 사용할 수있게됩니다. \n** 구매자가 주문의 일부를 채우고 자하는 경우 지정가 주문 기능은 여전히 \u200B\u200B그 일부를 수행하고 100 % 완료 될 때까지 나머지 주문을 자동으로 채 웁니다.\n*** 거래 만료일에 도달 한 경우 거래 테이블로 이동하여 '환불'버튼을 클릭하여 토큰을 되 찾을 수 있습니다 (네트워크 수수료가 적용됩니다).\n\n지정가 주문에 사용할 수있는 첫 번째 토큰 쌍은 RBC / ETH입니다. 나중에 Ethereum, Polygon 및 Binance Smart Chain과 같은 여러 블록 체인에 대한 새로운 쌍을 추가하고 지원할 계획입니다.\n\n거래는 \"CLOSING DATE\"매개 변수에 지정된 시간에 도달하면 마감됩니다."
-    }
-  ],
-
-
-  "Done": "끝난",
-  "Created": "만들어진",
-  "Active": "유효한",
-  "Postponed": "연기 됨",
-  "Waiting": "기다리는",
-  "Waiting for initialization": "초기화 대기 중",
-
-
-  "The trade was completed. If you participated in this trade, please check your wallet.":
-  "거래가 완료되었습니다. 이 거래에 참여 하셨다면 지갑을 확인하세요.",
-
-  "Expired": "만료 됨",
-  "The trade is no longer available.": "거래는 더 이상 사용할 수 없습니다.",
-  "Cancelled": "취소 된",
-  "The trade was cancelled.": "거래가 취소되었습니다.",
-  "Rate:": "율:",
-
-  "The trade's rate is {rate}% more profitable than coinmarketcap rate":
-  "거래의 이자율은 코인 시가 총액보다 {{rate}} % 더 수익성이 높습니다.",
-
-  "The trade's rate is {rate}% less profitable than coinmarketcap rate":
-  "거래의 이자율은 코인 시가 총액보다 수익성이 {{rate}} % 낮습니다.",
-
-  "Sent": "보냄",
-  "Check on Explorer": "Explorer에서 확인",
-  "Number of investors": "투자자 수",
-
-  "You will get {amount} {token} after the trade is completed": "거래 후 {{amount}} {{token}}을 받게됩니다.",
-  "Fill all": "모두 채우기",
-  "Min Contribution Limit:": "최소 기부 한도 :",
-  "Only Owner can contribute": "소유자 만 기여할 수 있습니다.",
-  "Brokers fee:": "브로커 수수료 :",
-  "Withdraw": "환불하다",
-  "Left": "왼쪽",
-
-  "Link to deal": "거래 링크",
-  "Management address": "관리 주소",
-  "Broker address": "브로커 주소",
-  "Additional comment": "추가 설명",
-  "Cancel trade": "거래 취소",
-
-  "No trades": "거래 없음",
-  "Name": "이름",
-  "Creation date": "생산 일자",
-  "Do you want to remove it?": "제거 하시겠습니까?",
-  "Do you really want to Log Out?": "정말 로그 아웃 하시겠습니까?",
-
-  "DISCLAIMERS": {
-    "START": {
-      "TITLE": "Token safety alert!",
-      "TEXT": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform."
+  "errors": {
+    "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
+    "noMetamaskInstalled": "메타 마스크 플러그인이 설치 및 잠금 해제되어 있는지 확인하십시오.\n<a href='https://www.metamask.io' target='_blank'>metamask.io</a> 에서 다운로드 할 수 있습니다.",
+    "wrongNetwork": "잘못된 네트워크를 선택했습니다. 메타 마스크에서 {{ networkToChoose }}를 선택하십시오.",
+    "OverQueryLimit": "당신은 시간의 짧은 기간에 너무 많은 거래를 실행하려고했습니다. 당신은 여전히 문제가있는 경우, 기다려 나중에 다시 시도하시기 <a href='mailto:support@rubic.finance' target='_blank'>바랍니다 우리의 고객 지원에 문의하시기 바랍니다</a>.",
+    "userReject": "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
+    "undefined": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우 <a href='mailto:support@rubic.finance' target='_blank'>고객 지원에 문의하십시오</a>.",
+    "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
+    "sameTokens": "양쪽에서 동일한 토큰을 선택할 수 없습니다. 다른 토큰을 선택하십시오."
+  },
+  "navigation": {
+    "about": "소개",
+    "faq": "FAQ",
+    "features": "기능",
+    "team": "팀",
+    "project": "프로젝트",
+    "login": "메타마스크로 로그인",
+    "myTrades": "내 거래",
+    "logout": "로그 아웃",
+    "logoutMessage": "정말 로그 아웃 하시겠습니까?"
+  },
+  "aboutPage": {
+    "description": "Rubic은 완전한 원스톱 분산화 플랫폼을 제공하는 것을 목표로 하는 크로스 체인, P2P, 즉시 스왑 및 지정가 주문을 여러 블록체인에 제공하는 멀티체인 DeFi 생태계입니다.",
+    "benefits": {
+      "0": {
+        "title": "Custom routing",
+        "description": "Rubic created a routing solution that will allow users to trade any token. The main advantage is the ability to calculate gas prices and show users the best-optimized solution with paying the least amount of gas."
+      },
+      "1": {
+        "title": "Instant Trade",
+        "description": "Execute an instant trade using external DEXs (while getting best rates)."
+      },
+      "2": {
+        "title": "Multichain support",
+        "description": "Currently supported blockchains: Ethereum, Binance Smart Chain, Polygon & TRON)."
+      },
+      "3": {
+        "title": "Cross-chain swaps",
+        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON."
+      },
+      "4": {
+        "title": "Faucet",
+        "description": "Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come!"
+      },
+      "5": {
+        "title": "P2P 거래",
+        "description": "거래를 생성하고, 자신만의 조건을 선택하고, 공개 또는 비공개로 하는 것 모두 분산된 방식으로 수행됩니다."
+      },
+      "6": {
+        "title": "Limit Order",
+        "description": "Set the desired rate and your deal will be executed automatically when one of the DEXs meets the parameters of your deal."
+      }
+    },
+    "features": {
+      "title": "Rubic's DEX Features",
+      "data": {
+        "0": "iFrame Widget",
+        "1": "Custom routing",
+        "2": "크로스-체인 스왑",
+        "3": "멀티 체인: Ethereum, Binance Smart Chain, Polygon & TRON networks",
+        "4": "크라우드 세일 능력",
+        "5": "Percentage of platform revenue can be regulated",
+        "6": "즉시 거래",
+        "7": "공개 / 비공개 거래",
+        "8": "브로커 지원",
+        "9": "볼륨 제한 없음",
+        "10": "Custom tokens",
+        "11": "사기 및 러그 풀이 발생하지 않도록 방지",
+        "12": "Limit Orders for Ethereum",
+        "13": "Creation of Custom Bridges",
+        "14": "BNB faucet"
+      }
+    },
+    "contract": {
+      "title": "루빅 계약"
+    },
+    "roadmap": {
+      "title": "로드맵",
+      "data": {
+        "0": {
+          "quarter": "Q1. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "New Blockchain & DEX Integrations",
+            "Binance Smart Chain Instant Trades",
+            "Cross-chain Solutions For ETH And BSC",
+            "Mobile Support",
+            "Limit Orders For ETH",
+            "Creating BRBC And Building Rubic Bridge For RBC-BRBC",
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System"
+          ]
+        },
+        "1": {
+          "quarter": "Q2. 2021",
+          "month": "April",
+          "done": true,
+          "data": [
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System",
+            "Cross-chain Solution For TRON"
+          ]
+        },
+        "2": {
+          "quarter": "Q2. 2021",
+          "month": "May",
+          "done": true,
+          "data": [
+            "CoinGecko And Coin Market Cap API For ETH<>RBC",
+            "TRON Integration",
+            "BNB Faucet",
+            "Instant Trades Table",
+            "UI Simple Update",
+            "BSC Limit Orders"
+          ]
+        },
+        "3": {
+          "quarter": "Q2. 2021",
+          "month": "June",
+          "done": true,
+          "data": [
+            "UI Update stage 2",
+            "New Wallets support - Wallet Connect + WalletLink (Coinbase)",
+            "Merch Shop",
+            "CoinGecko & CMC All Pairs Reporting",
+            "FIAT Integration",
+            "Uniswap V3",
+            "New Blockchain/Bridge Integrations (Candidates: Anyswap/XDai, HECO, Moonbeam, Fantom, Avalanche, RenBTC)",
+            "MATIC Faucet",
+            "Usecase Updates"
+          ]
+        },
+        "4": {
+          "quarter": "Q3. 2021",
+          "month": "July",
+          "done": true,
+          "data": [
+            "Cross-Chain Routing",
+            "New Blockchain/Bridge Integrations",
+            "UI Update Stage 3",
+            "Commission In RBC - Stage 1"
+          ]
+        },
+        "5": {
+          "quarter": "Q3. 2021",
+          "month": "August",
+          "done": true,
+          "data": [
+            "Commission In RBC - stage 2",
+            "Anonymizer V1 - Polygon"
+          ]
+        },
+        "6": {
+          "quarter": "Q3. 2021",
+          "month": "September",
+          "done": true,
+          "data": [
+            "New Bridge Integrations",
+            "New Blockchain Integrations"
+          ]
+        },
+        "7": {
+          "quarter": "Q4. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "Staking/Farming introduction",
+            "Governance",
+            "Mobile App",
+            "API For External Usage",
+            "New Blockchain Integration (L2)"
+          ]
+        }
+      }
     }
   },
-
-  "No data": "No data",
-
-  "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.":
-  "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
-  "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to www.metamask.io and follow the steps.":
-  "어떤 일이 있었습니까? : 메타마스크 추가 기능이 설치되지 않음\n이 오류는 브라우저에 메타마스크 추가 기능을 설치하지 않았기 때문에 발생합니다. 이 문제를 해결하려면 브라우저에 메타 마스크 추가 기능을 설치하고 활성화하십시오.\n<a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> 가서 단계를 따르십시오.",
-  "You have selected the wrong network. Please choose { networkToChoose } from MetaMask.":
-  "잘못된 네트워크를 선택했습니다. 메타 마스크에서 {{ networkToChoose }}를 선택하십시오.",
-  "You have attempted to execute too many trades in a short period of time. Please wait and try again later, if you still have problems please reach out to our Customer Support.":
-  "당신은 시간의 짧은 기간에 너무 많은 거래를 실행하려고했습니다. 당신은 여전히 문제가있는 경우, 기다려 나중에 다시 시도하시기 <a href='mailto:support@rubic.finance' target='_blank'>바랍니다 우리의 고객 지원에 문의하시기 바랍니다</a>.",
-  "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.":
-  "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
-  "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
-  "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우 <a href='mailto:support@rubic.finance' target='_blank'>고객 지원에 문의하십시오</a>.",
-
-  "You accepted the transaction and the exchange has started. Please wait until the trade is completed.":
-  "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
-  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
-  "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
-
-  "Listing request":
-  "리스팅 요청",
-  "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:":
-  "프로젝트가 루빅 플랫폼에 나열되기를 원한다면 Rubic 을 지원하도록 이메일을 보내주십시오.재무(<a href='mailto:support@rubic.finance'>http://support@rubic.com</a>)다음 정보와 함께:",
-  "Project name":
-  "프로젝트 이름",
-  "Project description":
-  "프로젝트 설명",
-  "Links to the project and social media":
-  "프로젝트 및 소셜 미디어에 대한 링크",
-  "Contract address":
-  "계약 주소",
-  "Whitepaper/Onepager":
-  "Whitepaper/Onepager",
-  "Link to logo in PNG and SVG":
-  "PNG 및 SVG 의 로고 링크",
-  "Why you have chosen Rubic.exchange?":
-  "루빅을 선택한 이유.교환?"
+  "teamPage": {
+    "title": "팀"
+  },
+  "faqPage": {
+    "title": "FAQ",
+    "questions": {
+      "0": {
+        "title": "Rubic p2p 거래는 무엇인가요?",
+        "answer": "Rubic은 멀티체인 defi 플랫폼입니다. Rubic은 프로젝트가 탈중앙화되어 한곳에서 토큰을 생성, 관리 및 거래할 수 있도록 defi 서비스를 구성합니다. 사용자가 자신의 조건에 따라 거래하고 공유하고 수익을 창출하는 데 도움이 됩니다."
+      },
+      "1": {
+        "title": "누가 우리의 서비스를 사용할 수 있나요?",
+        "answer": "토큰을 만들고 관리하고 싶은 사람과 암호화폐를 가지고 있고 그것을 교환하고 싶은 사람은 모두 사용 가능합니다. KYC는 필요하지 않습니다."
+      },
+      "2": {
+        "title": "최소 및 최대 거래 규모는 어떠한가요?",
+        "answer": "제한은 없습니다."
+      },
+      "3": {
+        "title": "어떻게 작동하나요?",
+        "answer": "거래에는 두 가지 옵션이 있습니다:\n F첫째, 자신의 조건에 따라 거래를 생성하고 다른 쪽에서 귀하의 조건에 동의하고 그 부분을 채울 때까지 기다립니다.\n 둘째, 즉각 거래를 선택하고 다른 쪽의 조건에 동의합니다. 출시 예정.\n\n코딩 기술 없이 자신만의 토큰을 만들고 상장 없이 거래할 수 있습니다."
+      },
+      "4": {
+        "title": "어떤 암호화폐가 지원되나요?",
+        "answer": "Rubic은 현재 거래를 위해 이더리움 기반 토큰에 대해 작동합니다. Tron, Binance Chain, BTC 블록체인이 곧 출시될 예정입니다. 그러나 토큰을 생성하고 관리하기 위해 우리는 이미 Ethereum, Tron, EOS, NEO, Waves, Binance Smart Chain Blockchains에서 지원하는 멀티체인 서비스를 제공합니다."
+      },
+      "5": {
+        "title": "당신의 서비스를 사용하기 전에 토큰을 상장해야 하나요?",
+        "answer": "아니요, 어느 토큰이든 거래할 수 있습니다. 그러나 저희에게 연락하시면 저희 목록에 귀하의 토큰을 추가할 것입니다."
+      },
+      "6": {
+        "title": "어떻게 시작하나요?",
+        "answer": "쉽고 빠릅니다. 시작하려면 메타마스크만 있으면 됩니다.\n 원하는 조건을 입력하고 거래 생성을 클릭하세요."
+      },
+      "7": {
+        "title": "거래를 어떻게 생성하나요?",
+        "answer": "1단계. 양식을 채우고 보유한 금액을 입력하고 원하는 금액을 입력합니다.\n 2단계. 거래 완료까지 마감 날짜 및 시간, 최소 및 최대 기여, 개인 정보 보호, 중개 수수료, 유동성 잠금과 같은 고급 옵션 추가\n 3단계. 거래 세부 정보 확인\n 4단계. 거래 생성 클릭\n 5단계. 메타마스크를 사용하여 거래 확인\n 6단계. 거래에 참여합니다."
+      },
+      "8": {
+        "title": "비용은 얼마인가요?",
+        "answer": "현재 당사 서비스는 즉시 거래에 대한 수수료를 부과하지 않습니다. 그러나 주문 장 거래를 생성하는 데는 0.015 ETH의 수수료가 있습니다."
+      },
+      "9": {
+        "title": "거래를 완료하는 데 얼마나 걸리나요?",
+        "answer": "거래는 상대방이 자신의 부분을 완료하는 즉시 완료됩니다."
+      },
+      "10": {
+        "title": "거래의 개인 정보 및 보안이 어떻게 보장되나요?",
+        "answer": "거래는 숙련된 개발자 및 외부 감사에 의해 확인된 스마트 계약으로 보호됩니다."
+      },
+      "11": {
+        "title": "하나의 거래에 몇 명이 참여할 수 있나요?",
+        "answer": "양쪽 각각에 최대 10명까지 참여 가능합니다."
+      },
+      "12": {
+        "title": "상대방이 거래를 완료하지 않으면 어떻게 되나요 (P2P)?",
+        "answer": "거래가 만료되고 모든 토큰이 반환됩니다."
+      },
+      "13": {
+        "title": "거래를 생성했는데 마음이 바뀌었다면 거래를 취소할 수 있나요?",
+        "answer": "예, 상대방이 거래를 완료하기 전에 언제든지 거래를 취소할 수 있습니다. 거래를 취소하면 토큰을 되찾을 수 있습니다."
+      },
+      "14": {
+        "title": "Binance Smart Chain 및 Polygon 네트워크를 MetaMask에 추가하는 방법은 무엇입니까?",
+        "answer": "<a href='/assets/book.pdf' target='_blank'>자세한 내용은 여기를 클릭하십시오.</a>"
+      },
+      "15": {
+        "title": "교차 체인 브리지를 사용하는 방법?",
+        "answer": "<strong>1 단계.</strong> MetaMask 지갑 (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) 을 설치하고 Rubic.exchange에 연결합니다.\n\n<strong>2 단계.</strong> 단계. 교환 대상을 선택합니다 (이더 리움에서 바이 낸스로 또는 그 반대로). 스왑 화살표 버튼을 클릭하여 목적지를 변경할 수 있습니다.\n\n<strong>3 단계.</strong> 단계. 현재 사용자는 25 개의 ERC20 토큰을 해당 BEP20 버전과 교환 할 수 있으며 그 반대도 가능합니다 (목록은 계속 업데이트됩니다). 토큰 목록 :\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>4 단계.</strong>  단계. 교환 할 토큰 수를 입력합니다 (교환 할 수있는 최소 및 최대 토큰 수 아래에 확인). 반환되는 토큰 양에 만족하면 다음으로 진행하십시오 (바이 낸스 수수료 포함).\n\n<strong>5 단계.</strong> 단계. 'Etherscan / BSCscan에서 확인'을 클릭하면 토큰의 계약을 볼 수 있습니다.'\n\n<strong>6 단계.</strong> 단계. Create Swap을 클릭 한 다음 MetaMask의 거래 확인을 클릭합니다.\n\n<strong>7 단계.</strong> 거래가 블록 체인에 기록 될 때까지 기다리십시오. 거래가 수락되면 알림이 전송됩니다. 테이블에서 거래 세부 정보를 찾을 수 있습니다. 바이 낸스가 처리 할 때까지 기다려주세요."
+      },
+      "16": {
+        "title": "거래가 블록 체인에 기록 될 때까지 기다리십시오. 거래가 수락되면 알림이 전송됩니다. 테이블에서 거래 세부 정보를 찾을 수 있습니다. 바이 낸스가 처리 할 때까지 기다려주세요?",
+        "answer": "현재 30 분 동안 3 개의 교차 체인 스왑이 제한되어 있으므로 잠시 기다렸다가 나중에 다시 시도하십시오. 이것은 곧 개선 될 것입니다"
+      },
+      "17": {
+        "title": "크로스 체인 스왑을 완료하는 데 얼마나 걸립니까?",
+        "answer": "일반적으로 다양하며 이는 우리에게 의존하지 않고 두 블록 체인에 의존합니다.\n추정에 따르면 초기화에는 2 분, 피드백 대기에는 4 분, 입금에는 몇 분이 더 소요됩니다.\n\n현재 평균 시간은 약 10 분입니다."
+      },
+      "18": {
+        "title": "Uniswap 통합의 이점은 무엇입니까?",
+        "answer": "사용자는 가장 낮은 가스 가격으로 최고의 토큰 요율을 얻기 위해 적합한 DEX 프로토콜을 선택할 수 있습니다."
+      },
+      "19": {
+        "title": "1 인치와 Uniswap 중에서 선택해야하는 이유는 무엇입니까?",
+        "answer": "이러한 프로토콜의 가스 수수료 및 가격 비율은 다르므로 더 많은 옵션을 가질 수있는 기회는 사용자가 더 나은 거래 결정을 내릴 수 있도록합니다."
+      },
+      "20": {
+        "title": "토큰 승인이 가스 요금에 포함되어 있습니까?",
+        "answer": "토큰 승인은 가스 요금에 포함되어 있지 않습니다. 처음 사용하는 동안 토큰을 한 번만 승인하면됩니다. 다음과 같이 보일 수 있습니다.\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
+      },
+      "21": {
+        "title": "메시지가 표시되면 어떻게해야합니까.\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trading on Uniswap is not available</span></div>?",
+        "answer": "이 메시지가 나타나면 다음 방법을 시도하십시오.\n1. 페이지를 새로 고침하십시오\n2. 웹 사이트 캐시를 지 웁니다\n3. 로그 아웃 한 다음 MetaMask에 로그인합니다\n그래도 작동하지 않으면 지원 팀에 문의하십시오."
+      },
+      "22": {
+        "title": "Uniswap에 요금이 표시되지 않으면 어떻게해야합니까?",
+        "answer": "Uniswap 요금을 확인하려면 MetaMask 계정으로 로그인해야합니다. 로그인 한 후 페이지도 새로 고칩니다."
+      },
+      "23": {
+        "title": "지정가 주문의 목적은 무엇입니까?",
+        "answer": "제한 주문을 통해 사용자는 원하는 비율로 토큰을 사고 팔 수 있으며 특정 조건이 충족되면 주문 장 거래가 자동으로 완료 될 수있는 기회를 제공합니다."
+      },
+      "24": {
+        "title": "지정가 주문을 완료하기위한 조건은 무엇입니까?",
+        "answer": "지정가 주문이 자동으로 채워지는 조건은 다음과 같습니다.\n<ul><li>주문서의 거래 율은 가스 수수료 + 플랫폼 보상을 포함하여 시장 비율과 동일합니다 (현재 0.01 ETH, 시간이 지남에 따라 변경됨).</li><li>거래는 만료되지 않습니다.</li><li>무역은 공개해야합니다.</li><li>최소 거래 규모는 0.1 ETH 또는 400 RBC입니다.</li></ul>또한 다른 사용자가 거래 매개 변수를 수락하고 거래에 참여하면 주문을 완료 할 수 있습니다."
+      },
+      "25": {
+        "title": "지정가 주문 사용 방법?",
+        "answer": "<strong>1 단계 :</strong> 토큰을 교환 할 블록 체인을 선택하고 주문 장을 선택합니다 (현재 제한 주문 기능은 이더 리움에서 거래를 지원하므로 이더 리움 네트워크를 선택하고 싶을 것입니다. 앞으로 더 많은 블록 체인이 지원 될 것입니다).\n\n<strong>2 단계 :</strong> 원하는 비율로 교환하려는 토큰을 선택합니다. 현재는 \"RBC-ETH\"및 \"ETH-RBC\"쌍만 사용할 수 있습니다.\n\n<strong>3 단계 :</strong> 마감 날짜 및 시간, 최소 및 최대 기여, 개인 정보 보호, 필요한 경우 중개 수수료와 같은 고급 옵션을 선택합니다.\n\n<strong>4 단계 :</strong> 메타 마스크에서 거래 생성 및 생성 거래 확인을 클릭합니다.\n\n<strong>5 단계 :</strong> 거래의 일부에 기여합니다 (토큰 승인 및 기여의 두 가지 거래가 있습니다). 거래에서 유일한 참여자가 될 계획이라면 '모두 채우기'를 선택하면 네트워크 요금이 적용됩니다.\n<a href='https://youtu.be/xiuT59ueJ8c'>비디오 튜토리얼 (이 방법은 모든 블록 체인에서 작동합니다)</a>\n\n<strong>6 단계 :</strong> 주문이 종료 될 때까지 기다립니다. 다른 사용자가 주문을 처리하거나 Uniswap의 쌍의 요금 (가스 요금 포함)이 일치하는 경우 Rubic이 자동으로 주문을 처리 할 수 \u200B\u200B있습니다.\n\n<strong>중대한:</strong>\n* 판매자는 거래의 측면을 100 % 완료해야합니다 (동영상 자습서 확인). 거래에서 유일한 판매자가 되려면 '모두 채우기'를 선택해야합니다. 이렇게하면 거래의 일부가 100 % 완료되고 다른 구매자 (또는 지정가 주문 기능)가 사용할 수있게됩니다. \n** 구매자가 주문의 일부를 채우고 자하는 경우 지정가 주문 기능은 여전히 \u200B\u200B그 일부를 수행하고 100 % 완료 될 때까지 나머지 주문을 자동으로 채 웁니다.\n*** 거래 만료일에 도달 한 경우 거래 테이블로 이동하여 '환불'버튼을 클릭하여 토큰을 되 찾을 수 있습니다 (네트워크 수수료가 적용됩니다).\n\n지정가 주문에 사용할 수있는 첫 번째 토큰 쌍은 RBC / ETH입니다. 나중에 Ethereum, Polygon 및 Binance Smart Chain과 같은 여러 블록 체인에 대한 새로운 쌍을 추가하고 지원할 계획입니다.\n\n거래는 \"CLOSING DATE\"매개 변수에 지정된 시간에 도달하면 마감됩니다."
+      }
+    }
+  },
+  "bridgePage": {
+    "title": "교차 체인 스왑 만들기",
+    "swapToggleText": "당사 스왑 사용하기",
+    "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
+    "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
+    "tableTitle": "내 크로스-체인 스왑",
+    "whatIs": "뭐가 ",
+    "whatIsAfter": "",
+    "checkOn": "확인하다 ",
+    "assistanceOf": "지원",
+    "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다",
+    "minAmount": "-최소 금액 ",
+    "maxAmount": "최대 금액 ",
+    "createBridge": "Create Bridge",
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
+  },
+  "instantTrades": {
+    "title": "즉시 거래",
+    "gasFeeMessage": "예상 가스 수수료. 거래를 완료하려면 메타마스크에 더 많은 가스를 제공해야 하며, 거래가 완료된 후 추가 가스가 반환됩니다.",
+    "notSupportedToken": "선택한 토큰이 지정된 DEX에서 지원되는지 확인하고 나중에 다시 시도하세요.",
+    "bestRate": "최적가",
+    "gasFee": "예상 가스 수수료",
+    "useOptimization": "Rubic 최적화 사용",
+    "notAvailableBefore": "거래 ",
+    "notAvailableAfter": " 사용할 수 없습니다."
+  },
+  "orderBook": {
+    "title": "오더북",
+    "closingTime": "마감 시간(UTC)",
+    "tradeListed": "거래가 메인 페이지에 표시됩니다",
+    "specifyTokens": "고급 옵션을 보려면 토큰과 필요한 금액을 지정하세요.",
+    "minContribution": "최소 참여",
+    "brokerFee": "브로커 수수료",
+    "specifyForBorker": "브로커에 대해 %를 지정할 수 있습니다.",
+    "yourRate": "귀하의 비율은 coingecko 비율보다 ",
+    "higher": "higher",
+    "lower": "lower",
+    "coingeckoRate": " 더 높습니다"
+  },
+  "bridge": {
+    "title": "크로스-체인 스왑"
+  },
+  "myTrades": {
+    "title": "내 거래"
+  },
+  "tradesForm": {
+    "unknownTokenWarning": "올바른 프로젝트인지 확인하십시오. 그렇지 않은 경우 나중에 판매하지 못할 수 있습니다. 자신의 위험에 따라 거래하십시오."
+  },
+  "tradesTable": {
+    "columns": {
+      "status": "상태",
+      "from": "에서",
+      "to": "에",
+      "get": "가져 오기",
+      "send": "전송",
+      "expiresIn": "만료",
+      "volume": "거래량",
+      "network": "회로망",
+      "spent": "지출",
+      "expected": "예상",
+      "date": "데이트"
+    },
+    "noData": "아직 스왑이 없습니다",
+    "noTrades": "거래가 없습니다",
+    "noTradesWithSelected": "선택한 매개 변수를 사용한 거래가 없습니다.",
+    "showData": "데이터 표시",
+    "sortBy": "정렬 기준"
+  },
+  "tradesPage": {
+    "createTrade": "거래 생성",
+    "swapToggleText": "크로스-체인 스왑",
+    "tradesDisclaimer": {
+      "beforeText": "당사 플랫폼에서 거래함으로써 귀하는 다음",
+      "termsAndConditions": "약관에",
+      "afterText": "동의합니다."
+    },
+    "disclaimerTitle": "토큰 안전 경고!",
+    "disclaimerText": "높은 수준의 변동성, 해커 공격 및 상대방이 거래를 완료할 때까지 기다려야 하는 시간의 위험과 같은 높은 시스템 위험을 수반하므로 거래 과정에서 각별히 주의하세요.",
+    "accumulatedTransactionsVolume": "누적 거래량",
+    "collaborations": "소프트웨어 통합 및 협업",
+    "listingRequest": {
+      "title": "리스팅 요청",
+      "description": "프로젝트가 루빅 플랫폼에 나열되기를 원한다면 Rubic 을 지원하도록 이메일을 보내주십시오.재무(<a href='mailto:support@rubic.finance'>http://support@rubic.com</a>)다음 정보와 함께:",
+      "information": {
+        "projectName": "프로젝트 이름",
+        "projectDescription": "프로젝트 설명",
+        "links": "프로젝트 및 소셜 미디어에 대한 링크",
+        "contractAddress": "계약 주소",
+        "onepager": "Whitepaper/Onepager",
+        "logo": "PNG 및 SVG 의 로고 링크",
+        "why": "루빅을 선택한 이유.교환?"
+      }
+    }
+  },
+  "tradePage": {
+    "sent": "보냄",
+    "left": "왼쪽",
+    "investors": "투자자 수",
+    "getBefore": "당신은 얻을 것이다",
+    "getAfter": "거래가 완료된 후",
+    "find": "모두 채우기",
+    "limit": "최소 기부 한도:",
+    "fee": "브로커 수수료:",
+    "Withdraw": "빼다",
+    "rate": "율:",
+    "closingDate": "마감일",
+    "closingTime": "마감 시간",
+    "link": "거래 링크",
+    "copied": "Сopied",
+    "publicDeal": "공개 거래",
+    "brokerAddress": "브로커 주소",
+    "notExist": "그러한 거래는 존재하지 않습니다."
+  },
+  "maintenance": {
+    "title": "유지",
+    "text": "서버 문제가 발생했습니다. 추후 공지가있을 때까지 지금 플랫폼을 사용하지 마십시오. 감사합니다."
+  },
+  "modal": {
+    "adModal": {
+      "text": "바이낸스 스마트 체인 Wrapped Rubic이 출시되었습니다!",
+      "button": "지갑에 BRBC 추가하기"
+    },
+    "gasPriceModal": {
+      "text": "현재 대상 네트워크 (이더 리움)의 가스 가격이 높습니다. 스왑 기간이 연장되며 최대 4 시간이 소요될 수 있습니다. <br /> 지금 계속 하시겠습니까?"
+    },
+    "polygonToEthTradeModal": {
+      "text": "Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Receive' button will appear in the corresponding line of the swaps list under the form."
+    },
+    "cancelModal": {
+      "text": "거래가 취소되었습니다",
+      "link": "스캐너에서 거래 확인"
+    },
+    "operationModal": {
+      "progress": {
+        "text": "작업이 진행 중입니다. <br /> 완료 될 때까지 기다리십시오."
+      },
+      "success": {
+        "text": "작업이 성공했습니다! <br />이 페이지는 자동으로 업데이트됩니다. <br />",
+        "link": "스캐너에서 거래 확인"
+      }
+    },
+    "tradeModal": {
+      "progress": {
+        "text": "거래가 진행 중입니다. <br /> 완료 될 때까지 기다려주세요."
+      },
+      "success": {
+        "text": "성공적인 스왑!",
+        "link": "탐색기에서 거래 확인"
+      }
+    }
+  }
 }

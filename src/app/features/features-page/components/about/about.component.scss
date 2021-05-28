@@ -221,7 +221,7 @@
           text-align: right;
           margin-left: 0;
 
-          .span-roadmap-date {
+          .span-roadmap-quarter {
             left: auto;
             right: -110px;
           }
@@ -289,7 +289,7 @@
   }
 }
 
-@include  b($laptop) {
+@include  b($desktop) {
   .rubic-roadmap {
     &::before {
       opacity: 0.1;
@@ -316,14 +316,14 @@
           left: 0;
         }
 
-        .span-roadmap-date,
-        .span-roadmap-title {
+        .span-roadmap-quarter,
+        .span-roadmap-month {
           position: static;
           display: inline-block;
           margin-bottom: 20px;
         }
 
-        .span-roadmap-date {
+        .span-roadmap-quarter {
           margin-right: 10px;
         }
 

@@ -12,6 +12,7 @@ import { TradeTypeService } from 'src/app/core/services/swaps/trade-type-service
 import { TradeParametersService } from 'src/app/core/services/swaps/trade-parameters-service/trade-parameters.service';
 import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { OneInchPolService } from 'src/app/features/swaps-page/instant-trades/services/one-inch-service/one-inch-pol-service/one-inch-pol.service';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
@@ -55,6 +56,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private firstBlockhainEmitment = true;
 
+  private firstTokensEmitment = true;
+
   public readonly INSTANT_TRADES_STATUS = INSTANT_TRADES_STATUS;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
@@ -77,12 +80,18 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public bestProviderIndex: number;
 
+  public slippagePercent = '1'; // 1%
+
   public customToken = {
     from: {} as SwapToken,
     to: {} as SwapToken
   };
 
   public refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+
+  public areAdvancedOptionsOpened = false;
+
+  public areAdvancedOptionsValid = true;
 
   public get hasBestRate(): boolean {
     return this.trades.some(provider => provider.isBestRate);
@@ -220,8 +229,9 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private uniSwapService: UniSwapService,
     private oneInchEthService: OneInchEthService,
-    private onInchBscService: OneInchBscService,
+    private oneInchBscService: OneInchBscService,
     private pancakeSwapService: PancakeSwapService,
+    private oneInchPolService: OneInchPolService,
     private quickSwapService: QuickSwapService,
     private dialog: MatDialog,
     private instantTradesApiService: InstantTradesApiService,
@@ -260,7 +270,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        this._instantTradeServices = [this.onInchBscService, this.pancakeSwapService];
+        this._instantTradeServices = [this.oneInchBscService, this.pancakeSwapService];
         this.trades = [
           {
             trade: null,
@@ -283,8 +293,17 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         ];
         break;
       case BLOCKCHAIN_NAME.POLYGON:
-        this._instantTradeServices = [this.quickSwapService];
+        this._instantTradeServices = [this.oneInchPolService, this.quickSwapService];
         this.trades = [
+          {
+            trade: null,
+            tradeState: null,
+            tradeProviderInfo: {
+              label: '1inch',
+              value: PROVIDERS.ONEINCH
+            },
+            isBestRate: false
+          },
           {
             trade: null,
             tradeState: null,
@@ -299,16 +318,14 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       default:
         console.debug(`Blockchain ${this.blockchain} was not found.`);
     }
+    this.setSlippagePercent(this.slippagePercent);
     [this.bestProvider] = this.trades;
   }
 
   ngOnInit() {
-    if (this.tokens.size > 0 && this.queryParamsService.currentQueryParams) {
-      this.queryParamsService.setupTradeForm(this.cdr);
-    }
-    this._tokensSubscription$ = this.tokensService.tokens
-      .asObservable()
-      .subscribe(tokens => this.setupTokens(tokens));
+    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens =>
+      this.setupTokens(tokens)
+    );
     this._blockchainSubscription$ = this.tradeTypeService
       .getBlockchain()
       .subscribe(blockchain => this.setupBlockchain(blockchain));
@@ -323,8 +340,23 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private setupTokens(tokens: List<SwapToken>): void {
     this.tokens = tokens;
 
-    if (tokens.size > 0 && this.queryParamsService.currentQueryParams) {
-      this.queryParamsService.setupTradeForm(this.cdr);
+    if (tokens.size > 0) {
+      if (this.queryParamsService.currentQueryParams && this.firstTokensEmitment) {
+        this.firstTokensEmitment = false;
+        this.queryParamsService.setupTradeForm(this.cdr);
+      } else {
+        if (this.fromToken) {
+          const foundFromToken = this.tokens.find(
+            token => token.address === this.fromToken.address
+          );
+          this.fromToken.usersBalance = foundFromToken.usersBalance;
+        }
+
+        if (this.toToken) {
+          const foundToToken = this.tokens.find(token => token.address === this.toToken.address);
+          this.toToken.usersBalance = foundToToken.usersBalance;
+        }
+      }
     }
   }
 
@@ -334,8 +366,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       const queryChainValue = Object.values(BLOCKCHAIN_NAME).find(el => el === queryChain);
       this.blockchain = this.firstBlockhainEmitment && queryChain ? queryChainValue : blockchain;
       this.firstBlockhainEmitment = false;
+
+      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+
       this.initInstantTradeProviders();
+
       this.tokens = this.tokensService.tokens.getValue();
+
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
       this._tradeParameters = {
         ...tradeParameters,
@@ -355,6 +392,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       }
       this.queryParamsService.setQueryParam('chain', this.blockchain);
     }
+  }
+
+  public setSlippagePercent(percent: string): void {
+    this.slippagePercent = percent;
+    this._instantTradeServices.forEach(service => {
+      service.setSlippagePercent(parseFloat(this.slippagePercent) / 100);
+    });
   }
 
   private isCalculatedTradeActual(

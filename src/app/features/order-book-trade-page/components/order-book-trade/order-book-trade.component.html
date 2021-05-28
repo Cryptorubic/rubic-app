@@ -17,7 +17,7 @@
         </span>
 
         <span class="header-row__tokens-rate tokens-rate">
-          <span class="tokens-rate__title">Rate:</span>
+          <span class="tokens-rate__title">{{ 'tradePage.rate' | translate }}</span>
           {{ getRate() }}
 
           <button class="tokens-rate__button" (click)="isRevertedRate = !isRevertedRate">
@@ -62,19 +62,19 @@
 
     <div class="trade-container__trade-options trade-options">
       <div class="trade-options__option trade-option">
-        <div class="trade-option__title">Closing Date</div>
+        <div class="trade-option__title">{{ 'tradePage.closingDate' | translate }}</div>
 
         <div class="trade-option__body">{{ expirationDay }}</div>
       </div>
 
       <div class="trade-options__option trade-option">
-        <div class="trade-option__title">Closing Time</div>
+        <div class="trade-option__title">{{ 'tradePage.closingTime' | translate }}</div>
 
         <div class="trade-option__body">{{ expirationTime }} UTC</div>
       </div>
 
       <div class="trade-options__option trade-option copy-link">
-        <div class="trade-option__title">Link To Deal</div>
+        <div class="trade-option__title">{{ 'tradePage.link' | translate }}</div>
 
         <div class="trade-option__body trade-option__body_copy-link">
           {{ currentUrl }}
@@ -88,13 +88,13 @@
         </div>
 
         <div class="copy-link__copied-notification" *ngIf="isCopied.linkToDeal">
-          Copied
+          {{ 'tradePage.copied' | translate }}
           <div class="triangle"></div>
         </div>
       </div>
 
       <div class="trade-options__option trade-option trade-option_public">
-        <div class="trade-option__title">Public Deal</div>
+        <div class="trade-option__title">{{ 'tradePage.publicDeal' | translate }}</div>
 
         <div
           class="trade-option__body trade-option-body-public"
@@ -115,7 +115,7 @@
         class="trade-options__option trade-option trade-option_broker copy-link"
         *ngIf="tradeData.isWithBrokerFee"
       >
-        <div class="trade-option__title">Broker Address</div>
+        <div class="trade-option__title">{{ 'tradePage.brokerAddress' | translate }}</div>
 
         <div class="trade-option__body trade-option__body_copy-link">
           <a
@@ -134,7 +134,7 @@
         </div>
 
         <div class="copy-link__copied-notification" *ngIf="isCopied.brokerAddress">
-          Copied
+          {{ 'tradePage.copied' | translate }}
           <div class="triangle"></div>
         </div>
       </div>
@@ -159,7 +159,7 @@
   </section>
 </div>
 
-<div class="no-trade" *ngIf="!doesTradeExist">Such trade doesn't exist.</div>
+<div class="no-trade" *ngIf="!doesTradeExist">{{ 'tradePage.notExist' | translate }}</div>
 
 <app-cancel-completed-modal
   *ngIf="cancelStatus === TX_STATUS.COMPLETED"

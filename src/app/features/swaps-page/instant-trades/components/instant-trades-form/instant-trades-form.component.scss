@@ -17,6 +17,7 @@
 
 .instant-trade-form {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
 
   padding: 27px 30px 29px;
@@ -54,6 +55,12 @@
     .selection-block__header {
       margin-right: calc(100% / 3 + 20px);
     }
+  }
+
+  &__advanced-options-button {
+    position: relative;
+    top: 8px;
+    left: 4px;
   }
 }
 
@@ -182,6 +189,10 @@ app-tooltip {
   transition: opacity 0.3s ease-in-out;
 }
 
+.flex-breaker {
+  flex-basis: 100%;
+}
+
 @include b($laptop) {
   .instant-trade-form {
     display: block;
@@ -193,6 +204,11 @@ app-tooltip {
 
     &__arrow-section {
       display: none;
+    }
+
+    &__advanced-options-button {
+      top: 11px;
+      left: 0;
     }
   }
 
@@ -224,6 +240,10 @@ app-tooltip {
         .instant-trade-button:nth-child(2) {
           margin-bottom: 22px;
         }
+
+        .selection-block__header {
+          margin-right: 0;
+        }
       }
 
       &_from-section_lowered {
@@ -242,10 +262,11 @@ app-tooltip {
 
   .instant-trade-form {
     display: block;
-  }
 
-  .gas-fee {
-    margin-bottom: 30px;
+    &__advanced-options-button {
+      top: 14px;
+      left: 7px;
+    }
   }
 }
 

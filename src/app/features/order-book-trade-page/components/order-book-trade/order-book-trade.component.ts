@@ -9,6 +9,7 @@ import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
@@ -114,7 +115,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private orderBookApiService: OrderBookApiService,
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private readonly translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -138,11 +140,11 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   private checkMetamaskSettings() {
     if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
 
     if (!this.web3PrivateService.address) {
-      throw new AccountError();
+      throw new AccountError(this.translateService);
     }
   }
 

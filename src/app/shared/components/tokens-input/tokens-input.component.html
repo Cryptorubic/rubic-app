@@ -1,22 +1,39 @@
 <form class="tokens-form">
-  <input
-    class="tokens-form__input"
-    type="text"
-    name="amountField"
-    autocomplete="off"
-    placeholder="{{ (amountPlaceholder | translate) || '' }}"
-    [disabled]="amountInputDisabled"
-    required
-    [tabindex]="amountInputDisabled ? '-1' : ''"
-    appNumberPrecision
-    [inputElement]="numberInput"
-    [decimalLength]="selectedToken?.decimals ? selectedToken.decimals : DEFAULT_DECIMAL_LENGTH"
-    [ngModel]="selectedAmount | bigNumberFormat"
-    (ngModelChange)="onNumberChanges($event)"
-    #numberModel="ngModel"
-    [ngClass]="{ 'tokens-form__input_invalid': numberModel.value && numberModel.invalid }"
-    #numberInput
-  />
+  <label>
+    <input
+      class="tokens-form__input"
+      [ngStyle]="{ 'padding-right': (inputPaddingRight || 0) + 'px' }"
+      type="text"
+      name="amountField"
+      autocomplete="off"
+      placeholder="{{ (amountPlaceholder | translate) || '' }}"
+      [disabled]="amountInputDisabled"
+      required
+      [tabindex]="amountInputDisabled ? '-1' : ''"
+      appNumberPrecision
+      [inputElement]="numberInput"
+      [decimalLength]="selectedToken?.decimals ? selectedToken.decimals : DEFAULT_DECIMAL_LENGTH"
+      [ngModel]="selectedAmount | bigNumberFormat"
+      (ngModelChange)="onNumberChanges($event)"
+      #numberModel="ngModel"
+      [ngClass]="{ 'tokens-form__input_invalid': numberModel.value && numberModel.invalid }"
+      #numberInput
+    />
+  </label>
+
+  <button
+    class="tokens-form__max-button"
+    *ngIf="
+      !amountInputDisabled &&
+      selectedToken?.usersBalance !== undefined &&
+      selectedToken?.usersBalance !== null
+    "
+    (click)="onNumberChanges(selectedToken.usersBalance)"
+    [ngStyle]="{ right: (maxButtonPositionRight || 0) + 'px' }"
+  >
+    Max
+  </button>
+
   <app-input-dropdown
     [componentClass]="tokenLabelComponentClass"
     [componentsData]="tokensDropdownData"
@@ -27,7 +44,9 @@
     [sortBy]="tokensSortOrder"
     chooseComponentText="Choose Token"
     [chooseButtonDisabled]="listDisabled"
-    (componentChanges)="onTokenChanges($event)"
     [fullWidth]="fullWidth"
+    (componentChanges)="onTokenChanges($event)"
+    (tokenLabelContainerWidth)="resetInputElementsPositions($event)"
+    #appInputDropdown
   ></app-input-dropdown>
 </form>

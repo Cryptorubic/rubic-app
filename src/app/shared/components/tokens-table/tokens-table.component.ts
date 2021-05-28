@@ -1,11 +1,13 @@
 import {
-  Component,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
   Input,
   Output,
-  EventEmitter,
   ViewChild
 } from '@angular/core';
+import * as moment from 'moment';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
@@ -17,6 +19,7 @@ import { SortingResult } from './models/sorting-result';
 import { TradeData } from './models/tokens-table-data';
 import { InstantTradesTradeData } from '../../../features/swaps-page/models/trade-data';
 import { ScannerLinkPipe } from '../../pipes/scanner-link.pipe';
+import ADDRESS_TYPE from '../../models/blockchain/ADDRESS_TYPE';
 
 @Component({
   selector: 'app-tokens-table',
@@ -61,17 +64,17 @@ export class TokensTableComponent {
   @Input() public selectedColumn: string;
 
   @ViewChild(MatSort) set sort(sort: MatSort) {
-    // @TODO: fix sort table
     if (!this.isSortInitialization && sort) {
       this.sortData(this.tableSorting);
+      this.cdr.detectChanges();
       this.isSortInitialization = true;
     }
   }
 
   @ViewChild('mobileTable') set mobileTable(value) {
-    // @TODO: fix sort table
     if (!this.isSortInitialization && value) {
       this.sortData(this.tableSorting);
+      this.cdr.detectChanges();
       this.isSortInitialization = true;
     }
   }
@@ -88,7 +91,11 @@ export class TokensTableComponent {
 
   public readonly selectableColumns: string[];
 
-  constructor(private readonly headerStore: HeaderStore, private scannerLinkPipe: ScannerLinkPipe) {
+  constructor(
+    private readonly headerStore: HeaderStore,
+    private scannerLinkPipe: ScannerLinkPipe,
+    private readonly cdr: ChangeDetectorRef
+  ) {
     this.refreshTableEvent = new EventEmitter<void>();
     this.selectTokenEvent = new EventEmitter<TokenValueType>();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
@@ -143,7 +150,6 @@ export class TokensTableComponent {
    * @param sort Current sort state.
    */
   public sortData(sort: Sort): void {
-    this.tableSorting = sort;
     const data = this.tokensTableData.slice();
     if (!sort.active || sort.direction === '') {
       this.sortedTableData = data;
@@ -206,10 +212,35 @@ export class TokensTableComponent {
   }
 
   public getLink(part) {
-    if (this.tableType === 'OrderBooks') {
-      return `/public-v3/${part.route}`;
+    return this.scannerLinkPipe.transform(part.hash, part.chain, ADDRESS_TYPE.TRANSACTION);
+  }
+
+  /**
+   * @description transform expiration time in formatted string or text
+   * @param expirationDate expiration date object
+   * @param expiresIn expiration time object
+   * @return formatted expiration time or text ('Expired' or 'More than year')
+   */
+  public getExpirationTime(expirationDate, expiresIn): string {
+    if (expirationDate.isAfter(moment.now())) {
+      if (expiresIn.years() > 1) {
+        return 'More than year';
+      }
+      return `${expiresIn.days()}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
     }
-    return this.scannerLinkPipe.transform(part.hash, part.chain, part.type);
+    return 'Expired';
+  }
+
+  /**
+   * @description format expiration time if expiration more than year
+   * @param expiresIn expiration time
+   * @return full formatted time string or empty string
+   */
+  public getFullExpirationTime(expiresIn): string {
+    if (expiresIn.years() > 1) {
+      return `${expiresIn.years()}y: ${expiresIn.months()}m: ${expiresIn.days()}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
+    }
+    return '';
   }
 
   /**

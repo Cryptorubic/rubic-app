@@ -2,10 +2,7 @@
   <div class="instant-trade__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
       [warningText]="'Unknown token. Please check it before trading.'"
-      [tooltipText]="
-        'Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk.'
-          | translate
-      "
+      [tooltipText]="'tradesForm.unknownTokenWarning' | translate"
     ></app-warning-disclaimer>
   </div>
 
@@ -23,14 +20,22 @@
     }"
     (submit)="$event.preventDefault()"
   >
-    <img *ngIf="$isIframe | async" class="instant-trade-form__iframe-logo" alt="Rubic logotype" src="assets/images/rubic-logo.svg?_=2">
-    <app-chain-dropdown [disabled]="$tokensSelectionDisabled | async" *ngIf="$isIframe | async"></app-chain-dropdown>
+    <img
+      *ngIf="$isIframe | async"
+      class="instant-trade-form__iframe-logo"
+      alt="Rubic logotype"
+      src="assets/images/rubic-logo.svg?_=2"
+    />
+    <app-chain-dropdown
+      [disabled]="$tokensSelectionDisabled | async"
+      *ngIf="$isIframe | async"
+    ></app-chain-dropdown>
     <div
       class="instant-trade-form__from-section selection-block"
       [ngClass]="{ 'instant-trade-form__from-section_lowered': trades.length === 2 }"
     >
       <div class="selection-block__header">
-        <div class="selection-block__label">you have</div>
+        <div class="selection-block__label">{{ 'common.have' | translate }}</div>
 
         <div *ngIf="fromToken?.address" class="selection-block__scanner">
           <app-scanner-link
@@ -93,7 +98,7 @@
     <div class="instant-trade-form__to-section">
       <div class="selection-block__header">
         <div class="selection-block__label">
-          you get
+          {{ 'common.want' | translate }}
           <app-refresh-button
             class="selection-block__refresh-button"
             [refreshButtonStatus]="refreshButtonStatus"
@@ -114,6 +119,7 @@
         <app-tokens-swap-input
           *ngIf="($isIframe | async) === false"
           [tradeController]="tradeController"
+          [areAdvancedOptionsValid]="areAdvancedOptionsValid"
           [index]="index"
           [trades]="trades"
           [toToken]="toToken"
@@ -146,7 +152,25 @@
         [disableSelection]="$tokensSelectionDisabled | async"
       ></app-iframe-tokens-swap-input>
     </div>
+
+    <div class="flex-breaker"></div>
+
+    <!-- // TODO: убрать hidden после тестирования -->
+    <div class="instant-trade-form__advanced-options-button" *ngIf="($isIframe | async) === false" hidden>
+      <app-advanced-options-button
+        [(isOpened)]="areAdvancedOptionsOpened"
+      ></app-advanced-options-button>
+    </div>
   </form>
+
+  <!-- // TODO: убрать hidden после тестирования -->
+  <app-instant-trades-form-options
+    hidden
+    *ngIf="areAdvancedOptionsOpened"
+    [slippagePercent]="slippagePercent"
+    (slippagePercentChange)="setSlippagePercent($event)"
+    (areAdvancedOptionsValid)="areAdvancedOptionsValid = $event"
+  ></app-instant-trades-form-options>
 </div>
 
 <app-trade-in-progress-modal

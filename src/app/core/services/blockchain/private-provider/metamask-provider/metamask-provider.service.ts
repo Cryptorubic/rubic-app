@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
@@ -42,7 +44,7 @@ export class MetamaskProviderService extends PrivateProvider {
     return null;
   }
 
-  constructor() {
+  constructor(private readonly translateService: TranslateService) {
     super();
 
     this.onNetworkChanges = new BehaviorSubject<IBlockchain>(undefined);
@@ -123,7 +125,7 @@ export class MetamaskProviderService extends PrivateProvider {
       this.onAddressChanges.next(this.getAddress());
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
   }
 
@@ -147,10 +149,10 @@ export class MetamaskProviderService extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
     if (this.getNetwork().name !== token.blockchain) {
-      throw new NetworkError(token.blockchain);
+      throw new NetworkError(token.blockchain, this.translateService);
     }
 
     return this._metaMask.request({

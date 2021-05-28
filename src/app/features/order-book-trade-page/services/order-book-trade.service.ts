@@ -12,6 +12,7 @@ import { NetworkError } from '../../../shared/models/errors/provider/NetworkErro
 import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
 import { ContractParameters } from '../../../core/services/order-book-common/models/ContractParameters';
 import { OrderBookCommonService } from '../../../core/services/order-book-common/order-book-common.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class OrderBookTradeService {
@@ -19,7 +20,8 @@ export class OrderBookTradeService {
     private web3PublicService: Web3PublicService,
     private web3PrivateService: Web3PrivateService,
     private orderBookApiService: OrderBookApiService,
-    private orderBookCommonService: OrderBookCommonService
+    private orderBookCommonService: OrderBookCommonService,
+    private readonly translateService: TranslateService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
@@ -160,7 +162,7 @@ export class OrderBookTradeService {
       this.web3PrivateService.networkName !== tradeData.blockchain &&
       this.web3PrivateService.networkName !== `${tradeData.blockchain}_TESTNET`
     ) {
-      throw new NetworkError(tradeData.blockchain);
+      throw new NetworkError(tradeData.blockchain, this.translateService);
     }
   }
 

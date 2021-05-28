@@ -58,13 +58,12 @@
   }
 
   &__column-name {
-    margin-right: 10px;
+    margin-right: 5px;
   }
 
   &__header-data {
     display: flex;
     align-items: center;
-    margin-right: 20px;
   }
 
   &__header-img {
@@ -84,7 +83,7 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    margin-right: 20px;
+    width: 15px;
 
     &::before,
     &::after {
@@ -172,7 +171,7 @@
   &__item {
     display: flex;
     box-sizing: border-box;
-    height: 55px;
+    min-height: 55px;
     padding: 5px 35px;
 
     border-top: 1px solid #e8e8e8;
@@ -180,6 +179,7 @@
 
   &__item-name {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     width: 15%;
     min-width: 90px;
@@ -189,13 +189,14 @@
     display: flex;
     align-items: center;
 
+
     &_network {
       text-transform: capitalize;
 
       img {
         max-width: 22px;
         max-height: 22px;
-        margin-right: 15px;
+        margin-right: 7px;
       }
     }
   
@@ -230,16 +231,35 @@
     }
 
     &_link {
+      overflow: hidden;
       color: $main-green;
       font-weight: 500;
+
+      a {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
     }
+  }
+
+  &__token-info {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+  }
+
+  &__token-amount {
+    padding: 4px 0;
   }
 }
 
 @include b($mobile-sm) {
   .tokens-accordion {
     &__header {
-      padding-left: 15px;
+      padding-left: 8px;
+      padding-right: 8px;
       font-size: 12px;
     }
 

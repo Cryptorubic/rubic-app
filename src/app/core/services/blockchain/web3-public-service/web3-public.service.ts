@@ -31,7 +31,8 @@ export class Web3PublicService {
         ...acc,
         [connection.blockchainName as BLOCKCHAIN_NAME]: new Web3Public(
           new Web3(connection.rpcLink),
-          BlockchainsInfo.getBlockchainByName(connection.blockchainName)
+          BlockchainsInfo.getBlockchainByName(connection.blockchainName),
+          useTestingModeService
         )
       }),
       {} as any
@@ -51,7 +52,8 @@ export class Web3PublicService {
 
             this[connection.blockchainName] = new Web3Public(
               new Web3(testingConnection.rpcLink),
-              BlockchainsInfo.getBlockchainByName(testingConnection.blockchainName)
+              BlockchainsInfo.getBlockchainByName(testingConnection.blockchainName),
+              useTestingModeService
             );
           }
         });
