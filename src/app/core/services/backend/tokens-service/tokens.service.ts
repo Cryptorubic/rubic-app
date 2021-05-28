@@ -50,6 +50,7 @@ export class TokensService {
     useTestingModule.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.tokens.next(List(coingeckoTestTokens));
+        this.recalculateUsersBalance();
       }
     });
   }
