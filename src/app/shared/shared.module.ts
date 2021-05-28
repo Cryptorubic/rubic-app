@@ -60,6 +60,7 @@ import { SafetyLinkDirective } from './directives/safety-link/safety-link.direct
 import { ShortAddressPipe } from './pipes/short-address.pipe';
 import { AdvancedOptionsButtonComponent } from './components/advanced-options-button/advanced-options-button.component';
 import { WithRoundPipe } from './pipes/with-round.pipe';
+import { RoundPipe } from './pipes/round.pipe';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import { WithRoundPipe } from './pipes/with-round.pipe';
     SafetyLinkDirective,
     ShortAddressPipe,
     WithRoundPipe,
-    AdvancedOptionsButtonComponent
+    AdvancedOptionsButtonComponent,
+    RoundPipe
   ],
   entryComponents: [MessageBoxComponent],
   imports: [

@@ -7,7 +7,7 @@
     <span *ngIf="!selected">
       {{ token.name }}<br />
       (<span *ngIf="token.usersBalance !== undefined"
-        >{{ token.usersBalance | number: '.2':'en' }} </span
+        >{{ token.usersBalance | round: '2':'floor' }} </span
       >{{ token.symbol }})
     </span>
 
