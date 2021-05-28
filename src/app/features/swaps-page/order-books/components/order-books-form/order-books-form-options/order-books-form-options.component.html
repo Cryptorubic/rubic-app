@@ -80,16 +80,9 @@
     </div>
 
     <div class="form-section__block form-section-block form-section-block_button">
-      <div
-        class="form-section-block__advanced-options-button"
-        [ngClass]="{
-          'form-section-block__advanced-options-button_opened': areAdvancedOptionsOpened
-        }"
-        (click)="areAdvancedOptionsOpened = !areAdvancedOptionsOpened"
-      >
-        {{ 'common.advancedOptions' | translate }}
-        <img src="/assets/images/icons/arrow/arrow-down-green.svg" alt="" />
-      </div>
+      <app-advanced-options-button
+        [(isOpened)]="areAdvancedOptionsOpened"
+      ></app-advanced-options-button>
     </div>
   </div>
 

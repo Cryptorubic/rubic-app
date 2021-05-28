@@ -56,6 +56,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   private firstBlockhainEmitment = true;
 
+  private firstTokensEmitment = true;
+
   public readonly INSTANT_TRADES_STATUS = INSTANT_TRADES_STATUS;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
@@ -78,12 +80,18 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
   public bestProviderIndex: number;
 
+  public slippagePercent = '1'; // 1%
+
   public customToken = {
     from: {} as SwapToken,
     to: {} as SwapToken
   };
 
   public refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+
+  public areAdvancedOptionsOpened = false;
+
+  public areAdvancedOptionsValid = true;
 
   public get hasBestRate(): boolean {
     return this.trades.some(provider => provider.isBestRate);
@@ -310,16 +318,14 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       default:
         console.debug(`Blockchain ${this.blockchain} was not found.`);
     }
+    this.setSlippagePercent(this.slippagePercent);
     [this.bestProvider] = this.trades;
   }
 
   ngOnInit() {
-    if (this.tokens.size > 0 && this.queryParamsService.currentQueryParams) {
-      this.queryParamsService.setupTradeForm(this.cdr);
-    }
-    this._tokensSubscription$ = this.tokensService.tokens
-      .asObservable()
-      .subscribe(tokens => this.setupTokens(tokens));
+    this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens =>
+      this.setupTokens(tokens)
+    );
     this._blockchainSubscription$ = this.tradeTypeService
       .getBlockchain()
       .subscribe(blockchain => this.setupBlockchain(blockchain));
@@ -334,8 +340,23 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   private setupTokens(tokens: List<SwapToken>): void {
     this.tokens = tokens;
 
-    if (tokens.size > 0 && this.queryParamsService.currentQueryParams) {
-      this.queryParamsService.setupTradeForm(this.cdr);
+    if (tokens.size > 0) {
+      if (this.queryParamsService.currentQueryParams && this.firstTokensEmitment) {
+        this.firstTokensEmitment = false;
+        this.queryParamsService.setupTradeForm(this.cdr);
+      } else {
+        if (this.fromToken) {
+          const foundFromToken = this.tokens.find(
+            token => token.address === this.fromToken.address
+          );
+          this.fromToken.usersBalance = foundFromToken.usersBalance;
+        }
+
+        if (this.toToken) {
+          const foundToToken = this.tokens.find(token => token.address === this.toToken.address);
+          this.toToken.usersBalance = foundToToken.usersBalance;
+        }
+      }
     }
   }
 
@@ -345,8 +366,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       const queryChainValue = Object.values(BLOCKCHAIN_NAME).find(el => el === queryChain);
       this.blockchain = this.firstBlockhainEmitment && queryChain ? queryChainValue : blockchain;
       this.firstBlockhainEmitment = false;
+
+      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+
       this.initInstantTradeProviders();
+
       this.tokens = this.tokensService.tokens.getValue();
+
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);
       this._tradeParameters = {
         ...tradeParameters,
@@ -366,6 +392,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       }
       this.queryParamsService.setQueryParam('chain', this.blockchain);
     }
+  }
+
+  public setSlippagePercent(percent: string): void {
+    this.slippagePercent = percent;
+    this._instantTradeServices.forEach(service => {
+      service.setSlippagePercent(parseFloat(this.slippagePercent) / 100);
+    });
   }
 
   private isCalculatedTradeActual(
