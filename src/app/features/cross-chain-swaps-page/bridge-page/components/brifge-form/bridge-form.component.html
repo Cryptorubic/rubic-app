@@ -14,12 +14,15 @@
 
       <app-wallet-address-form
         class="swap-box__wallet-address-section"
+        [ngClass]="{
+          'swap-box__wallet-address-section_extended': isToWalletAddressSectionOpened
+        }"
         [walletAddress]="fromWalletAddress"
         [walletAddressLink]="fromBlockchain.addressBaseUrl + fromWalletAddress"
         [isWithEditing]="false"
       ></app-wallet-address-form>
 
-      <div class="swap-box__title swap-box__title_second">{{ 'common.have' | translate }}</div>
+      <div class="swap-box__title">{{ 'common.have' | translate }}</div>
 
       <div class="swap-box__token-section form-field">
         <app-tokens-input
@@ -141,6 +144,7 @@
         "
         [isWithEditing]="toBlockchain.key === BLOCKCHAIN_NAME.TRON"
         (walletAddressValidated)="toWalletAddress = $event"
+        (onIsEditingSectionOpenedChange)="onIsToWalletAddressSectionOpenedChange($event)"
       ></app-wallet-address-form>
 
       <div class="swap-box__title">{{ 'common.want' | translate }}</div>
