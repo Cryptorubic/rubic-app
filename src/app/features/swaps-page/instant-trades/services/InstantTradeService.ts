@@ -23,11 +23,9 @@ abstract class InstantTradeService {
 
   protected providerConnectorService: ProviderConnectorService;
 
-  protected constructor(protected errorsService: ErrorsService) {}
-
   protected slippagePercent = 0.001; // 0.1%
 
-  constructor(protected readonly translateService: TranslateService) {}
+  protected constructor(protected errorsService: ErrorsService) {}
 
   /**
    * @description sets slippage percent

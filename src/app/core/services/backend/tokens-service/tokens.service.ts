@@ -7,12 +7,12 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-// import { AuthService } from 'src/app/core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { HttpService } from '../../http/http.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BackendToken } from './models/BackendToken';
 import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
+import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
 
 const RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
 
@@ -30,14 +30,14 @@ export class TokensService {
 
   constructor(
     private httpService: HttpService,
-    // private authService: AuthService,
     private web3PublicService: Web3PublicService,
     useTestingModule: UseTestingModeService,
-    private web3PrivateService: Web3PrivateService
+    private web3PrivateService: Web3PrivateService,
+    private readonly providerConnectorService: ProviderConnectorService
   ) {
     this.getTokensList();
 
-    this.web3PrivateService.onAddressChanges.subscribe(address => {
+    this.providerConnectorService.$addressChange.subscribe(address => {
       this.userAddress = address;
       this.recalculateUsersBalance();
     });

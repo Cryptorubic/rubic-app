@@ -8,6 +8,7 @@ import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOC
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
 import { ProviderConnectorService } from '../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
+import { BlockchainsInfo } from '../../../../../../core/services/blockchain/blockchain-info';
 
 @Injectable()
 export class OneInchEthService extends OneInchService {

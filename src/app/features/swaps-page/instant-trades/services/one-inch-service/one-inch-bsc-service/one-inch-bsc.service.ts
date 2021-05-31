@@ -7,6 +7,7 @@ import { CoingeckoApiService } from '../../../../../../core/services/external-ap
 import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
+import { BlockchainsInfo } from '../../../../../../core/services/blockchain/blockchain-info';
 
 @Injectable()
 export class OneInchBscService extends OneInchService {
