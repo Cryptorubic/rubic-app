@@ -13,10 +13,11 @@ import { Web3Public } from '../../../../../core/services/blockchain/web3-public-
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ETH, WEENUS, YEENUS } from '../../../../../../test/tokens/eth-tokens';
 import { ProviderConnectorService } from '../../../../../core/services/blockchain/provider-connector/provider-connector.service';
+import { UniswapAbstract } from '../uniswap-abstract/uniswap-abstract';
 
 describe('UniSwapService', () => {
   let originalTimeout: number;
-  let service: UniSwapService;
+  let service: UniswapAbstract;
   let web3Private: Web3PrivateService;
   let web3PublicEth: Web3Public;
   let uniSwapContractAddress: string;
@@ -64,7 +65,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    // expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).not.toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).not.toBeTruthy();
     done();
   });
 
@@ -77,7 +78,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    // expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).toBeTruthy();
     done();
   });
 
@@ -94,7 +95,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    // expect(trade.estimatedGas.eq(UniSwapService.tokensToTokensEstimatedGas)).toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToTokensEstimatedGas[0])).toBeTruthy();
     done();
   });
 
@@ -115,7 +116,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    // expect(trade.estimatedGas.eq(UniSwapService.ethToTokensEstimatedGas)).toBeTruthy();
+    expect(trade.estimatedGas.eq(service.ethToTokensEstimatedGas[0])).toBeTruthy();
     done();
   });
 
@@ -132,7 +133,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    // expect(trade.estimatedGas.eq(UniSwapService.tokensToEthEstimatedGas)).not.toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToEthEstimatedGas[0])).not.toBeTruthy();
     done();
   });
 
@@ -145,7 +146,7 @@ describe('UniSwapService', () => {
 
     expect(trade).toBeTruthy();
     expect(trade.to.amount.gt(0)).toBeTruthy();
-    // expect(trade.estimatedGas.eq(UniSwapService.tokensToEthEstimatedGas)).toBeTruthy();
+    expect(trade.estimatedGas.eq(service.tokensToEthEstimatedGas[0])).toBeTruthy();
     done();
   });
 
@@ -155,7 +156,7 @@ describe('UniSwapService', () => {
     const fromAmount = new BigNumber(2);
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
 
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
@@ -205,7 +206,7 @@ describe('UniSwapService', () => {
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, YEENUS, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {
@@ -244,7 +245,7 @@ describe('UniSwapService', () => {
     const fromAmount = new BigNumber(0.05);
     const trade = await service.calculateTrade(fromAmount, ETH, YEENUS, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {
@@ -279,7 +280,7 @@ describe('UniSwapService', () => {
     const fromAmount = new BigNumber(30);
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     let gasFee = new BigNumber(0);
@@ -333,7 +334,7 @@ describe('UniSwapService', () => {
 
     const trade = await service.calculateTrade(fromAmount, WEENUS, ETH, false);
     // @ts-ignore
-    const percentSlippage = service.slippageTolerance;
+    const percentSlippage = service.slippagePercent;
     const outputMinAmount = trade.to.amount.multipliedBy(new BigNumber(1).minus(percentSlippage));
 
     const callbackObject = {

@@ -25,6 +25,16 @@ abstract class InstantTradeService {
 
   protected constructor(protected errorsService: ErrorsService) {}
 
+  protected slippagePercent = 0.001; // 0.1%
+
+  constructor(protected readonly translateService: TranslateService) {}
+
+  /**
+   * @description sets slippage percent
+   * @param slippagePercent is a decimal number up to 1, that is 100%
+   */
+  public abstract setSlippagePercent(slippagePercent: number): void;
+
   /**
    * @description calculate instant trade parameters
    * @param fromAmount input amount in absolute value (no pre-multiplied by decimals)

@@ -52,6 +52,7 @@ export class TokensMobileHeaderComponent {
     } else {
       newSort.direction = 'asc';
     }
+    this.sortingValue = newSort;
     this.sortEvent.emit(newSort);
   }
 

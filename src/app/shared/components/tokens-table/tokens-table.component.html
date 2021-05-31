@@ -35,7 +35,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -88,7 +87,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -116,7 +114,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -151,7 +148,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -184,7 +180,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -213,15 +208,16 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
           "
         >
-          <div class="tokens-table__cell tokens-table__cell_datetime">
-            {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h:
-            {{ element.expiresIn.minutes() }}m
+          <div
+            class="tokens-table__cell tokens-table__cell_datetime"
+            [matTooltip]="getFullExpirationTime(element.expiresIn)"
+          >
+            {{ getExpirationTime(element.expirationDate, element.expiresIn) }}
           </div>
         </a>
       </td>
@@ -238,7 +234,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })

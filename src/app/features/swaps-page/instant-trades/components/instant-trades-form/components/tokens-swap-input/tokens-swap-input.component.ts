@@ -13,6 +13,8 @@ import { BLOCKCHAIN_NAME } from '../../../../../../../shared/models/blockchain/B
 export class TokensSwapInputComponent extends InstantTradeSwapInput {
   @Input() public tradeController: InstantTradeProviderController;
 
+  @Input() public areAdvancedOptionsValid: boolean;
+
   @Output() public customTokenFormOpeningEvent: EventEmitter<boolean>;
 
   @Output() public updateCustomTokenEvent: EventEmitter<Token>;

@@ -383,7 +383,8 @@
       "volume": "Volume",
       "network": "Network",
       "spent": "Spent",
-      "expected": "Expected"
+      "expected": "Expected",
+      "date": "Date"
     },
     "noData": "You have no swaps yet",
     "noTrades": "There are no trades",
@@ -426,7 +427,7 @@
     "find": "Fill all",
     "limit": "Min contribution limit:",
     "fee": "Broker's fee:",
-    "Withdraw": "Withdraw",
+    "withdraw": "Withdraw",
     "rate": "Rate:",
     "closingDate": "Closing date",
     "closingTime": "Closing Time",

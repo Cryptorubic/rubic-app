@@ -50,6 +50,10 @@
   }
 
   &_button {
+    position: relative;
+    top: 10px;
+    right: 10px;
+
     margin-left: auto;
   }
 
@@ -57,37 +61,6 @@
     position: relative;
     top: 10px;
     left: 3px;
-  }
-
-  &__advanced-options-button {
-    position: relative;
-    top: 10px;
-    right: 10px;
-
-    margin-left: auto;
-
-    color: $main-green;
-
-    font-weight: bold;
-    font-size: 16px;
-
-    cursor: pointer;
-
-    img {
-      position: relative;
-      top: -1px;
-      left: 3px;
-
-      width: 12px;
-
-      transition: transform 0.3s ease;
-    }
-
-    &_opened {
-      img {
-        transform: rotateX(180deg);
-      }
-    }
   }
 }
 
@@ -131,6 +104,7 @@
     color: $dark;
     font-size: 17px;
 
+    font-family: inherit;
     text-align: center;
 
     background: $grey-background;
@@ -257,11 +231,9 @@
     }
 
     &_button {
-      min-height: auto;
-    }
+      top: 0;
 
-    &__advanced-options-button {
-      top: auto;
+      min-height: auto;
     }
   }
 
@@ -287,6 +259,10 @@
 
     &_deal {
       width: 100%;
+    }
+
+    &_button {
+      left: 0;
     }
   }
 

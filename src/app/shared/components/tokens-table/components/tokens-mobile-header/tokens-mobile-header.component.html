@@ -26,9 +26,10 @@
       class="mobile-table-header__icon"
       (click)="changeDirection()"
       [ngClass]="{
-        'mobile-table-header__icon_asc' : sortingValue.direction === 'asc',
-        'mobile-table-header__icon_desc' : sortingValue.direction === 'desc'
-      }">
+        'mobile-table-header__icon_asc': sortingValue.direction === 'asc',
+        'mobile-table-header__icon_desc': sortingValue.direction === 'desc'
+      }"
+    >
       <div [inlineSVG]="'assets/images/bridge/Arrows-down-white.svg'"></div>
     </div>
   </div>

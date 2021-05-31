@@ -21,7 +21,8 @@ export class OneInchBscService extends OneInchService {
     super(httpClient, coingeckoApiService, useTestingModeService, errorsService);
 
     this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
-    this.apiBaseUrl = 'https://api.1inch.exchange/v3.0/56/';
+    const network = BlockchainsInfo.getBlockchainByName(this.blockchain);
+    this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
     this.web3Private = web3Private;
     this.web3Public = web3Public[this.blockchain];
   }

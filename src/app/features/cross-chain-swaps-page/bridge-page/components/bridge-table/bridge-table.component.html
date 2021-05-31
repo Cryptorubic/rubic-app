@@ -45,7 +45,7 @@
               />
             </th>
             <th>
-              <span>{{ 'Send' | translate }}</span>
+              <span>{{ 'tradesTable.columns.send' | translate }}</span>
               <img
                 [src]="getArrowImg(SORT_FIELD.SEND)"
                 alt="Sort"
@@ -53,7 +53,7 @@
               />
             </th>
             <th>
-              <span>{{ 'Get' | translate }}</span>
+              <span>{{ 'tradesTable.columns.get' | translate }}</span>
               <img
                 [src]="getArrowImg(SORT_FIELD.GET)"
                 alt="Sort"
@@ -61,7 +61,7 @@
               />
             </th>
             <th>
-              <span>{{ 'tradesTable.columns.expiresDate' | translate }}</span>
+              <span>{{ 'tradesTable.columns.date' | translate }}</span>
               <img
                 [src]="getArrowImg(SORT_FIELD.DATE)"
                 alt="Sort"
@@ -131,7 +131,8 @@
             </td>
 
             <td class="data__date">
-              <div>{{ tx.updateTime.split(' ')[0] }} {{ tx.updateTime.split(' ')[1] }}</div>
+              <div>{{ tx.updateTime | date: 'dd-MM-yyyy' }}</div>
+              <div>{{ tx.updateTime | date: 'HH:mm:ss' }}</div>
             </td>
           </tr>
         </tbody>
@@ -276,7 +277,7 @@
 
               <div class="content__item">
                 <div class="content__item-name">
-                  {{ 'tradesTable.columns.expiresDate' | translate }}
+                  {{ 'tradesTable.columns.date' | translate }}
                 </div>
                 <div class="data__date">
                   <div>

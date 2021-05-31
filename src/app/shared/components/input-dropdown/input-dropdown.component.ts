@@ -73,7 +73,11 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
    */
   @Output() componentChanges = new EventEmitter<DropdownComponentData>();
 
+  @Output() tokenLabelContainerWidth = new EventEmitter<number>();
+
   @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
+
+  @ViewChild('chooseButton') chooseButton: ElementRef;
 
   public visibleComponentsData = this.componentsData.slice(0, this.VISIBLE_COMPONENTS_NUMBER);
 
@@ -81,7 +85,6 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
 
   public inputQuery = '';
 
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   public readonly isMobile = window.innerWidth <= 640;
 
   constructor() {}
@@ -95,6 +98,9 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
         this.unshiftComponentToVisibleList(
           this.componentsData.find(component => component.id === this.selectedComponentData.id)
         );
+        setTimeout(() => {
+          this.tokenLabelContainerWidth.emit(this.chooseButton.nativeElement.offsetWidth);
+        });
       }
     } else {
       this.searchComponent('');
@@ -125,7 +131,6 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
           .toArray()
           .sort((a, b) => {
             if (this.sortBy) {
-              // eslint-disable-next-line
               for (const parameter of this.sortBy) {
                 if (a.sortParameters[parameter] > b.sortParameters[parameter]) return -1;
                 if (a.sortParameters[parameter] < b.sortParameters[parameter]) return 1;
@@ -148,6 +153,9 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
     this.toggleListOpen(false);
 
     this.componentChanges.emit(component);
+    setTimeout(() => {
+      this.tokenLabelContainerWidth.emit(this.chooseButton.nativeElement.offsetWidth);
+    });
   }
 
   public clearSearch() {

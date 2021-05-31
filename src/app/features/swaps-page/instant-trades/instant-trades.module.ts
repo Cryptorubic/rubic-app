@@ -5,10 +5,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { InstantTradesComponent } from './components/instant-trades/instant-trades.component';
 import { InstantTradesFormComponent } from './components/instant-trades-form/instant-trades-form.component';
 import { TradesModule } from '../trades-module/trades.module';
-import { SharedModule } from '../../../shared/shared.module';
 import { UniSwapService } from './services/uni-swap-service/uni-swap.service';
 import { OneInchEthService } from './services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from './services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
@@ -19,6 +19,8 @@ import { TokensSwapInputComponent } from './components/instant-trades-form/compo
 import { ChainDropdownComponent } from './components/instant-trades-form/components/chain-dropdown/chain-dropdown.component';
 import { IframeProfileComponent } from './components/instant-trades-form/components/iframe-profile/iframe-profile.component';
 import { IframeTokensSwapInputComponent } from './components/instant-trades-form/components/iframe-tokens-swap-input/iframe-tokens-swap-input.component';
+import { InstantTradesFormOptionsComponent } from './components/instant-trades-form/components/instant-trades-form-options/instant-trades-form-options.component';
+import { OneInchPolService } from './services/one-inch-service/one-inch-pol-service/one-inch-pol.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { IframeTokensSwapInputComponent } from './components/instant-trades-form
     TokensSwapInputComponent,
     IframeTokensSwapInputComponent,
     ChainDropdownComponent,
-    IframeProfileComponent
+    IframeProfileComponent,
+    InstantTradesFormOptionsComponent
   ],
   imports: [
     CommonModule,
@@ -46,7 +49,8 @@ import { IframeTokensSwapInputComponent } from './components/instant-trades-form
     OneInchBscService,
     OneInchEthService,
     QuickSwapService,
-    PancakeSwapService
+    PancakeSwapService,
+    OneInchPolService
   ]
 })
 export class InstantTradesModule {}
