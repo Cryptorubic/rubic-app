@@ -433,7 +433,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
           this.buttonAnimation = false;
         },
         err => {
-          console.log('errrrrororororororororororor');
           this.tradeInProgress = false;
           this.buttonAnimation = false;
           this.errorsService.showErrorDialog(err, this.dialog);

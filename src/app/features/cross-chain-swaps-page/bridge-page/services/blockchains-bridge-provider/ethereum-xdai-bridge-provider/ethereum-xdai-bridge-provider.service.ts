@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import { PanamaBridgeProviderService } from '../common/panama-bridge-provider/panama-bridge-provider.service';
 import { BlockchainsTokens, BridgeToken } from '../../../models/BridgeToken';
@@ -9,12 +9,14 @@ import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOC
 import { BridgeTrade } from '../../../models/BridgeTrade';
 import { PanamaToken } from '../common/panama-bridge-provider/models/PanamaToken';
 import { Web3PrivateService } from '../../../../../../core/services/blockchain/web3-private-service/web3-private.service';
+import { BridgeApiService } from '../../../../../../core/services/backend/bridge-api/bridge-api.service';
 
 @Injectable()
 export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider {
   constructor(
     private commonPanamaBridgeProviderService: PanamaBridgeProviderService,
-    private web3PrivateService: Web3PrivateService
+    private web3PrivateService: Web3PrivateService,
+    private bridgeApiService: BridgeApiService
   ) {
     super();
   }
@@ -62,13 +64,41 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
     return of(0);
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
+  public createTrade(
+    bridgeTrade: BridgeTrade,
+    updateTransactionsList: () => Promise<void>
+  ): Observable<string> {
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
     const depositAddress = '0x4aa42145Aa6Ebf72e164C9bBC74fbD3788045016';
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
-    this.web3PrivateService.transferTokens(tokenAddress, depositAddress, amountInWei.toFixed());
+    const onTradeTransactionHash = async hash => {
+      if (bridgeTrade.onTransactionHash) {
+        bridgeTrade.onTransactionHash(hash);
+      }
+      await this.bridgeApiService.postXDaiTransaction(
+        bridgeTrade,
+        hash,
+        this.web3PrivateService.address
+      );
+      updateTransactionsList();
+    };
+
+    return from(
+      this.web3PrivateService.transferTokens(tokenAddress, depositAddress, amountInWei.toFixed(), {
+        onTransactionHash: onTradeTransactionHash
+      })
+    ).pipe(
+      map(receipt => receipt.transactionHash),
+      tap(transactionHash => {
+        this.bridgeApiService.notifyBridgeBot(
+          bridgeTrade,
+          transactionHash,
+          this.web3PrivateService.address
+        );
+      })
+    );
   }
 }
