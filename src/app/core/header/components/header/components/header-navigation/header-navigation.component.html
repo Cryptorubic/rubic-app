@@ -9,12 +9,7 @@
       >
         <span class="header-menu__link">{{ 'navigation.about' | translate }}</span>
       </li>
-      <mat-menu
-        class="header-menu__sublist-container"
-        #about="matMenu"
-        (menuOpened)="toggleAboutMenu()"
-        (menuClose)="toggleAboutMenu()"
-      >
+      <mat-menu class="header-menu__sublist-container" #about="matMenu">
         <ul class="header-menu__sublist">
           <li class="header-menu__sublist-item">
             <span routerLink="/faq" class="header-menu__sublink">{{
