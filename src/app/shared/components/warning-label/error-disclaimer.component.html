@@ -1,7 +1,7 @@
 <div class="error-container">
   <div class="error" [ngClass]="{ 'error_with-tooltip': tooltipText }">
     <span>{{ errorText }}</span>
-    <img alt="" src="assets/images/icons/error-disclaimer-sign.svg" />
+    <img alt="" src="assets/images/icons/error-disclaimer-sign.svg" width="15" height="15" />
   </div>
 
   <app-tooltip *ngIf="tooltipText">{{ tooltipText }}</app-tooltip>

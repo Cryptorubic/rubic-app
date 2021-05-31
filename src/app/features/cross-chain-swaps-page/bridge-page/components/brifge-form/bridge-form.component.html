@@ -74,6 +74,8 @@
                 )
               "
               src="assets/images/icons/error-disclaimer-sign.svg"
+              width="15"
+              height="15"
               alt=""
             />
           </td>
@@ -101,6 +103,8 @@
                 )
               "
               src="assets/images/icons/error-disclaimer-sign.svg"
+              width="15"
+              height="15"
               alt=""
             />
           </td>
@@ -115,7 +119,7 @@
       *ngIf="toBlockchain.key !== BLOCKCHAIN_NAME.TRON"
       (click)="revertBlockchains()"
     >
-      <img src="assets/images/icons/revert.svg" alt="Revert" />
+      <img src="assets/images/icons/revert.svg" alt="Revert" width="21" height="24" />
     </button>
 
     <!-- To -->
@@ -152,6 +156,8 @@
           <img
             class="token-card__icon"
             [src]="selectedToken.image || '/assets/images/icons/coins/empty.svg'"
+            width="25"
+            height="25"
             alt="Token"
           />
           <span class="token-card__name">
@@ -242,6 +248,8 @@
             ? 'Binance.svg'
             : 'Polygon.svg')
         "
+        width="99"
+        height="24"
         alt="blockchain"
       />
     </a>

@@ -10,6 +10,8 @@
       (click)="updateTransactionsList()"
       class="bridge-results__spinner"
       src="assets/images/icons/refresh.svg"
+      width="17"
+      height="19"
       alt="Update"
     />
   </div>
@@ -104,20 +106,27 @@
             <td class="data__network">
               <img
                 [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
+                width="25"
+                height="25"
                 alt=""
               />
               <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
             </td>
 
             <td class="data__network">
-              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img" alt="" />
+              <img
+                [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img"
+                width="25"
+                width="25"
+                alt=""
+              />
               <span>{{ Blockchains[tx.toBlockchain].label }}</span>
             </td>
 
             <td class="data__amount">
               <div class="data__amount-inner">
                 <div class="data__amount-number">{{ tx.fromAmount }}</div>
-                <img [src]="tx.tokenImage" alt="" />
+                <img [src]="tx.tokenImage" width="25" height="25" alt="" />
                 <span>{{ tx.fromSymbol }}</span>
               </div>
             </td>
@@ -125,7 +134,7 @@
             <td class="data__amount">
               <div class="data__amount-inner">
                 <div class="data__amount-number">{{ tx.toAmount }}</div>
-                <img [src]="tx.tokenImage" alt="" />
+                <img [src]="tx.tokenImage" alt="" width="25" height="25" />
                 <span>{{ tx.toSymbol }}</span>
               </div>
             </td>

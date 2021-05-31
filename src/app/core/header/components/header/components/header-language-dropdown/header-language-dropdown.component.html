@@ -14,7 +14,13 @@
         (click)="setLanguage(lng.lng)"
         [ngClass]="{ 'language-dropdown__element_selected': lng.active }"
       >
-        <img class="language-dropdown__element-image" src="/assets/images/lng/{{ lng.lng }}.svg" />
+        <img
+          class="language-dropdown__element-image"
+          src="/assets/images/lng/{{ lng.lng }}.svg"
+          width="24"
+          height="24"
+          alt="{{ lng.lng }}"
+        />
         <span class="language-dropdown__element-text">{{ lng.title }}</span>
       </li>
     </ul>

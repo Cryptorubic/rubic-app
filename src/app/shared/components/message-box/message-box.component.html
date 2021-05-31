@@ -3,10 +3,15 @@
     <div class="dialog-block__content">
       <button class="dialog-closer" (click)="close()" type="button" mat-dialog-close>
         <img
-          [src]="($theme | async) === 'dark' ?
-            './assets/images/icons/cross-w.svg' :
-            './assets/images/icons/cross-blue.svg'"
-          alt="close" />
+          [src]="
+            ($theme | async) === 'dark'
+              ? './assets/images/icons/cross-w.svg'
+              : './assets/images/icons/cross-blue.svg'
+          "
+          alt="close"
+          width="30"
+          height="30"
+        />
       </button>
 
       <div class="transaction-title">{{ title | translate }}</div>
@@ -28,7 +33,11 @@
       </div>
 
       <div class="message-box-wrapper__footer">
-        <app-primary-button mat-dialog-close (onClick)="close()" label="{{ 'common.close' | translate }}"></app-primary-button>
+        <app-primary-button
+          mat-dialog-close
+          (onClick)="close()"
+          label="{{ 'common.close' | translate }}"
+        ></app-primary-button>
       </div>
     </div>
   </div>
