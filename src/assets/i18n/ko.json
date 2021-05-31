@@ -376,7 +376,8 @@
       "volume": "거래량",
       "network": "회로망",
       "spent": "지출",
-      "expected": "예상"
+      "expected": "예상",
+      "date": "데이트"
     },
     "noData": "아직 스왑이 없습니다",
     "noTrades": "거래가 없습니다",
@@ -419,7 +420,7 @@
     "find": "모두 채우기",
     "limit": "최소 기부 한도:",
     "fee": "브로커 수수료:",
-    "Withdraw": "빼다",
+    "withdraw": "빼다",
     "rate": "율:",
     "closingDate": "마감일",
     "closingTime": "마감 시간",

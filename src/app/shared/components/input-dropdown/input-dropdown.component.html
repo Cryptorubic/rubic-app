@@ -9,6 +9,7 @@
     }"
     (click)="toggleListOpen(true)"
     [disabled]="chooseButtonDisabled"
+    #chooseButton
   >
     <span *ngIf="!selectedComponentData">
       {{ chooseComponentText | translate }}
@@ -21,21 +22,23 @@
     ></ndc-dynamic>
   </button>
 
-  <input
-    #searchInput
-    class="input-dropdown__search-input"
-    type="text"
-    [placeholder]="inputDisabled ? 'Choose' : 'Search'"
-    autocomplete="off"
-    name="token"
-    required
-    [disabled]="inputDisabled"
-    [style.width]="isOpenList ? (fullWidth || isMobile ? '100%' : '50%') : 0"
-    [tabindex]="!isOpenList ? '-1' : ''"
-    [ngModel]="inputDisabled ? '' : inputQuery"
-    (ngModelChange)="searchComponent($event)"
-    (blur)="toggleListOpen(false)"
-  />
+  <label class="input-dropdown__search-input-label">
+    <input
+      #searchInput
+      class="input-dropdown__search-input"
+      type="text"
+      [placeholder]="inputDisabled ? 'Choose' : 'Search'"
+      autocomplete="off"
+      name="token"
+      required
+      [disabled]="inputDisabled"
+      [style.width]="isOpenList ? (fullWidth || isMobile ? '100%' : '50%') : 0"
+      [tabindex]="!isOpenList ? '-1' : ''"
+      [ngModel]="inputDisabled ? '' : inputQuery"
+      (ngModelChange)="searchComponent($event)"
+      (blur)="toggleListOpen(false)"
+    />
+  </label>
 
   <span class="input-dropdown__close-button" (click)="clearSearch()">
     <img src="./assets/images/icons/cross.svg" alt="Close" />

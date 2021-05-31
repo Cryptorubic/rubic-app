@@ -15,11 +15,9 @@ import { BIG_NUMBER_FORMAT } from '../../constants/formats/BIG_NUMBER_FORMAT';
   ]
 })
 export class NumberPrecisionDirective implements Validator {
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-  @Input() integerLength? = 32; // 32 is default length of integer part of token's amount
+  @Input() integerLength? = 32;
 
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-  @Input() decimalLength = 8; // 8 is default length of decimal part of token's amount
+  @Input() decimalLength = 8;
 
   @Input() minValue: string;
 
@@ -60,10 +58,7 @@ export class NumberPrecisionDirective implements Validator {
     }
 
     const [integerPart, decimalPart] = value.split('.');
-    if (
-      integerPart.length > this.integerLength ||
-      (decimalPart && decimalPart.length > this.decimalLength)
-    ) {
+    if (integerPart.length > this.integerLength || decimalPart?.length > this.decimalLength) {
       this.setLastValidValue(control);
       return this.checkOverflow(this.lastValue);
     }

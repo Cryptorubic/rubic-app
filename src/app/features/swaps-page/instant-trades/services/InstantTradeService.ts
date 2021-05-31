@@ -18,7 +18,15 @@ abstract class InstantTradeService {
 
   protected web3Private: Web3PrivateService;
 
+  protected slippagePercent = 0.001; // 0.1%
+
   constructor(protected readonly translateService: TranslateService) {}
+
+  /**
+   * @description sets slippage percent
+   * @param slippagePercent is a decimal number up to 1, that is 100%
+   */
+  public abstract setSlippagePercent(slippagePercent: number): void;
 
   /**
    * @description calculate instant trade parameters

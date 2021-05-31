@@ -84,4 +84,15 @@ const bnb = {
   price: 1
 };
 
-export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt, rbc, bnb];
+const wrbc = {
+  name: 'Wrapped Rubic',
+  symbol: 'WRBC',
+  blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+  address: '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8',
+  decimals: 18,
+  image: 'http://dev-api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
+  rank: 2,
+  price: 2
+};
+
+export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt, rbc, bnb, wrbc];

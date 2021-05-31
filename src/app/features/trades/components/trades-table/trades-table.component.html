@@ -2,6 +2,7 @@
   [tableData]="$dataSource | async"
   [displayedColumns]="displayedColumns"
   [columnsSizes]="columnsSizes"
+  [tableType]="'OrderBooks'"
   [tableLoading]="$tableLoading | async"
   (refreshTableEvent)="refreshTable()"
   [title]="'myTrades.title' | translate"

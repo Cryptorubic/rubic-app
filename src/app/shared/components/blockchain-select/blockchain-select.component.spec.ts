@@ -4,27 +4,21 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BlockchainSelectComponent } from './blockchain-select.component';
-import { BridgeBlockchain } from '../../../features/bridge-page/models/BridgeBlockchain';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
+import { BridgeBlockchain } from '../../../features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
 
 describe('BlockchainSelectComponent', () => {
   let component: BlockchainSelectComponent;
   let fixture: ComponentFixture<BlockchainSelectComponent>;
-  const blockchains = [
+  const blockchains: BridgeBlockchain[] = [
     {
-      name: BLOCKCHAIN_NAME.ETHEREUM,
-      shortLabel: 'Ethereum',
+      key: BLOCKCHAIN_NAME.ETHEREUM,
+      name: 'Ethereum',
       label: 'Ethereum',
       img: 'eth.png',
       baseUrl: 'https://etherscan.io',
       addressBaseUrl: 'https://etherscan.io/address/',
-      scanner: {
-        label: 'Etherscan',
-        baseUrl: 'https://etherscan.io/token/'
-      },
-      symbolName: 'ethSymbol',
-      decimalsName: 'ethContractDecimal',
-      addressName: 'ethContractAddress'
+      scannerLabel: 'Etherscan'
     }
   ];
   const ethereumBlockchain: BridgeBlockchain = blockchains[0];

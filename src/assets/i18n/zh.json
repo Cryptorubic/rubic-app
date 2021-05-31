@@ -376,7 +376,8 @@
       "volume": "体积",
       "network": "网络",
       "spent": "花費",
-      "expected": "預期的"
+      "expected": "預期的",
+      "date": "日期"
     },
     "noData": "您還沒有掉期",
     "noTrades": "沒有交易",
@@ -419,7 +420,7 @@
     "find": "交割全部",
     "limit": "最低出资限额",
     "fee": "经纪商佣金：",
-    "Withdraw": "退款",
+    "withdraw": "退款",
     "rate": "价格：",
     "closingDate": "结束日期",
     "closingTime": "结束时间",

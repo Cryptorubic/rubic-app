@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { List } from 'immutable';
 import { from, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { mergeMap, switchMap } from 'rxjs/operators';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import {
   OrderBookDataToken,
@@ -10,14 +10,14 @@ import {
 } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import * as moment from 'moment';
+import { OrderBookTradeForm } from 'src/app/features/swaps-page/order-books/models/trade-form';
+import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { HttpService } from '../../http/http.service';
 import { TokensService } from '../tokens-service/tokens.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { OrderBookTradeApi } from './types/trade-api';
-import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/models/trade-form';
 import { OrderBookCommonService } from '../../order-book-common/order-book-common.service';
-import { FROM_BACKEND_BLOCKCHAINS } from '../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { BOT_URL } from '../constants/BOT_URL';
 
 interface PublicSwapsResponse extends OrderBookTradeApi {
@@ -59,24 +59,26 @@ export class OrderBookApiService {
       );
   }
 
-  public fetchPublicSwaps(): Observable<Promise<OrderBookTradeData>[]> {
+  public fetchPublicSwaps(): Observable<OrderBookTradeData[]> {
     return this.httpService.get('get_public_swap3/').pipe(
-      map((swaps: OrderBookTradeApi[]) => {
-        return swaps.map(async swap => {
-          const tradeData = await this.tradeApiToTradeData(swap, swap.unique_link);
+      mergeMap((swaps: OrderBookTradeApi[]) => {
+        const promises = swaps.map(async swap => {
           try {
-            await this.setAmountContributed(tradeData);
+            const tradeData = await this.tradeApiToTradeData(swap, swap.unique_link);
+            try {
+              await this.orderBookCommonService.setAmountContributed(tradeData);
+            } catch (err) {
+              console.error(err);
+            }
+            return tradeData;
           } catch (err) {
-            console.error(err);
+            console.debug(err);
+            return null;
           }
-          return tradeData;
         });
+        return from(Promise.all(promises).then(trades => trades.filter(trade => trade !== null)));
       })
     );
-  }
-
-  public async setAmountContributed(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    return this.orderBookCommonService.setAmountContributed(tradeData);
   }
 
   public async tradeApiToTradeData(

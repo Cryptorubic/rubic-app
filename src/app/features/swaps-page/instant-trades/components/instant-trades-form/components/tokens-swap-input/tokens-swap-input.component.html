@@ -82,7 +82,8 @@
         shouldAnimateButton(index) ||
         (selectedTradeState &&
           selectedTradeState !== INSTANT_TRADES_STATUS.ERROR &&
-          selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED)
+          selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED) ||
+        !areAdvancedOptionsValid
       "
       [animate]="shouldAnimateButton(index)"
       (onClick)="createTrade(index)"
