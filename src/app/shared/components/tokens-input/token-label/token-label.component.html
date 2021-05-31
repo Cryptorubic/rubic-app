@@ -11,7 +11,9 @@
   <div class="dropdown-label__text">
     <span *ngIf="!selected">
       {{ token.name }}<br />
-      ({{ token.symbol }})
+      (<span *ngIf="token.usersBalance !== undefined"
+        >{{ token.usersBalance | round: '2':'floor' }} </span
+      >{{ token.symbol }})
     </span>
 
     <span *ngIf="selected">{{ token.symbol }}</span>

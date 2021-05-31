@@ -9,6 +9,7 @@ import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
@@ -40,7 +41,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     {
       name: BLOCKCHAIN_NAME.ETHEREUM,
       label: 'Ethereum',
-      imagePath: 'assets/images/icons/coins/eth.png'
+      imagePath: 'assets/images/icons/coins/eth-contrast.svg'
     },
     {
       name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -68,15 +69,15 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public blockchain: Blockchain;
 
-  private baseToQuoteRate: BigNumber;
+  private fromTokenToToTokenRate: BigNumber;
 
-  private quoteToBaseRate: BigNumber;
+  private toTokenToFromTokenRate: BigNumber;
 
   public isRevertedRate = false;
 
-  public baseTokenAmountToGet: string;
+  public fromTokenAmountToGet: string;
 
-  public quoteTokenAmountToGet: string;
+  public toTokenAmountToGet: string;
 
   private _tokens: List<SwapToken>;
 
@@ -114,7 +115,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private orderBookApiService: OrderBookApiService,
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private readonly translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -138,11 +140,11 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   private checkMetamaskSettings() {
     if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
 
     if (!this.web3PrivateService.address) {
-      throw new AccountError();
+      throw new AccountError(this.translateService);
     }
   }
 
@@ -175,18 +177,18 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
         this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
           this.tokens = tokens;
 
-          const foundBaseToken = this.tokens.find(
-            t => t.address.toLowerCase() === this.tradeData.token.base.address.toLowerCase()
+          const foundFromToken = this.tokens.find(
+            t => t.address.toLowerCase() === this.tradeData.token.from.address.toLowerCase()
           );
-          if (foundBaseToken) {
-            this.tradeData.token.base = { ...this.tradeData.token.base, ...foundBaseToken };
+          if (foundFromToken) {
+            this.tradeData.token.from = { ...this.tradeData.token.from, ...foundFromToken };
           }
 
-          const foundQuoteToken = this.tokens.find(
-            t => t.address.toLowerCase() === this.tradeData.token.quote.address.toLowerCase()
+          const foundToToken = this.tokens.find(
+            t => t.address.toLowerCase() === this.tradeData.token.to.address.toLowerCase()
           );
-          if (foundQuoteToken) {
-            this.tradeData.token.quote = { ...this.tradeData.token.quote, ...foundQuoteToken };
+          if (foundToToken) {
+            this.tradeData.token.to = { ...this.tradeData.token.to, ...foundToToken };
           }
         });
       },
@@ -221,39 +223,40 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   }
 
   private calculateRate(): void {
-    this.baseToQuoteRate = this.tradeData.token.base.amountTotal.div(
-      this.tradeData.token.quote.amountTotal
+    this.fromTokenToToTokenRate = this.tradeData.token.from.amountTotal.div(
+      this.tradeData.token.to.amountTotal
     );
 
-    this.quoteToBaseRate = this.tradeData.token.quote.amountTotal.div(
-      this.tradeData.token.base.amountTotal
+    this.toTokenToFromTokenRate = this.tradeData.token.to.amountTotal.div(
+      this.tradeData.token.from.amountTotal
     );
   }
 
   public getRate(): string {
     return !this.isRevertedRate
-      ? `${this.baseToQuoteRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.base.symbol} 
-         / 1 ${this.tradeData.token.quote.symbol}`
-      : `1 ${this.tradeData.token.base.symbol} / 
-         ${this.quoteToBaseRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.quote.symbol}`;
+      ? `${this.fromTokenToToTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
+         ${this.tradeData.token.from.symbol} 
+         / 1 ${this.tradeData.token.to.symbol}`
+      : `1 ${this.tradeData.token.from.symbol} / 
+         ${this.toTokenToFromTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
+         ${this.tradeData.token.to.symbol}`;
   }
 
   public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
-    if (tokenPart === 'base') {
-      this.quoteTokenAmountToGet = new BigNumber(value)
-        .times(this.quoteToBaseRate)
+    value = value.split(',').join('');
+    if (tokenPart === 'from') {
+      this.toTokenAmountToGet = new BigNumber(value)
+        .times(this.toTokenToFromTokenRate)
         .div(100)
-        .times(100 - this.tradeData.token.quote.brokerPercent)
-        .dp(this.tradeData.token.quote.decimals)
+        .times(100 - this.tradeData.token.to.brokerPercent)
+        .dp(this.tradeData.token.to.decimals)
         .toFormat(BIG_NUMBER_FORMAT);
     } else {
-      this.baseTokenAmountToGet = new BigNumber(value)
-        .times(this.baseToQuoteRate)
+      this.fromTokenAmountToGet = new BigNumber(value)
+        .times(this.fromTokenToToTokenRate)
         .div(100)
-        .times(100 - this.tradeData.token.base.brokerPercent)
-        .dp(this.tradeData.token.base.decimals)
+        .times(100 - this.tradeData.token.from.brokerPercent)
+        .dp(this.tradeData.token.from.decimals)
         .toFormat(BIG_NUMBER_FORMAT);
     }
   }

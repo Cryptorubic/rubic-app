@@ -1,5 +1,33 @@
 // ****** mixins ******
 
+@mixin dropdown-arrow($size, $direction, $thickness) {
+  position: absolute;
+  top: calc(50% - #{$size});
+
+  display: block;
+  width: $size;
+  height: $size;
+
+  border-color: rgba(0, 0, 0, 0.47);
+  border-style: solid;
+  border-width: 0 $thickness $thickness 0;
+
+  content: '';
+
+  @if $direction == bottom {
+    transform: rotate(45deg);
+  }
+  @if $direction == left {
+    transform: rotate(135deg);
+  }
+  @if $direction == top {
+    transform: rotate(225deg);
+  }
+  @if $direction == right {
+    transform: rotate(0deg);
+  }
+}
+
 @mixin font-face(
   $font-family,
   $file-path,

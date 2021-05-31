@@ -4,9 +4,9 @@
   </div>
 
   <div class="main-page__title">
-    <span class="main-page__title-text">{{ 'Create your Trade' | translate }}</span>
-    <a routerLink="/bridge" class="toggle">
-      <span class="toggle__text">Cross-chain swaps</span>
+    <span class="main-page__title-text">{{ 'tradesPage.createTrade' | translate }}</span>
+    <a routerLink="/cross-chain/bridge" class="toggle">
+      <span class="toggle__text">{{ 'tradesPage.swapToggleText' | translate }}</span>
       <div class="toggle__arrow-button">
         <img
           src="/assets/images/icons/arrow/arrow-right-green.svg"
@@ -22,8 +22,6 @@
     <app-instant-trades *ngSwitchCase="TRADE_MODE.INSTANT_TRADE"></app-instant-trades>
     <app-order-books *ngSwitchCase="TRADE_MODE.ORDER_BOOK"></app-order-books>
   </ng-container>
-
-  <app-volume-block *ngIf="selectedMode === TRADE_MODE.INSTANT_TRADE"></app-volume-block>
 
   <app-collaborations></app-collaborations>
 </div>

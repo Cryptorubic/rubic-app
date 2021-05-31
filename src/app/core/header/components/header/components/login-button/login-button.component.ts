@@ -3,8 +3,9 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { MatDialog } from '@angular/material/dialog';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { AsyncPipe } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { RubicError } from '../../../../../../shared/models/errors/RubicError';
 import { MessageBoxComponent } from '../../../../../../shared/components/message-box/message-box.component';
 
@@ -19,6 +20,7 @@ export class LoginButtonComponent {
   constructor(
     private readonly authService: AuthService,
     private dialog: MatDialog,
+    private readonly translateService: TranslateService,
     private readonly queryParamsService: QueryParamsService,
     private cdr: ChangeDetectorRef
   ) {
@@ -29,7 +31,7 @@ export class LoginButtonComponent {
     const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
     try {
       if (isIframe) {
-        await this.authService.signInWithoutBackend();
+        await this.authService.iframeSignIn();
       } else {
         await this.authService.signIn();
       }
@@ -37,8 +39,8 @@ export class LoginButtonComponent {
       if (error.code === 4001) {
         return;
       }
-      const e = error instanceof RubicError ? error : new RubicError();
-      const data: any = { title: 'Warning', descriptionText: e.comment };
+      const e = error instanceof RubicError ? error : new RubicError(this.translateService);
+      const data: any = { title: 'Warinig', descriptionText: e.comment };
       this.dialog.open(MessageBoxComponent, {
         width: '400px',
         data

@@ -12,6 +12,7 @@ import { NetworkError } from '../../../shared/models/errors/provider/NetworkErro
 import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
 import { ContractParameters } from '../../../core/services/order-book-common/models/ContractParameters';
 import { OrderBookCommonService } from '../../../core/services/order-book-common/order-book-common.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class OrderBookTradeService {
@@ -19,7 +20,8 @@ export class OrderBookTradeService {
     private web3PublicService: Web3PublicService,
     private web3PrivateService: Web3PrivateService,
     private orderBookApiService: OrderBookApiService,
-    private orderBookCommonService: OrderBookCommonService
+    private orderBookCommonService: OrderBookCommonService,
+    private readonly translateService: TranslateService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
@@ -96,7 +98,7 @@ export class OrderBookTradeService {
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
     const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
 
-    const baseInvestors: string[] = await web3Public.callContractMethod(
+    const fromInvestors: string[] = await web3Public.callContractMethod(
       contractAddress,
       contractAbi,
       'baseInvestors',
@@ -104,9 +106,9 @@ export class OrderBookTradeService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.base.investorsNumber = baseInvestors.length;
+    tradeData.token.from.investorsNumber = fromInvestors.length;
 
-    const quoteInvestors: string[] = await web3Public.callContractMethod(
+    const toInvestors: string[] = await web3Public.callContractMethod(
       contractAddress,
       contractAbi,
       'quoteInvestors',
@@ -114,14 +116,14 @@ export class OrderBookTradeService {
         methodArguments: [tradeData.memo]
       }
     );
-    tradeData.token.quote.investorsNumber = quoteInvestors.length;
+    tradeData.token.to.investorsNumber = toInvestors.length;
 
     return tradeData;
   }
 
   public async setAllowance(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    await this.setAllowanceToToken(tradeData, 'base');
-    await this.setAllowanceToToken(tradeData, 'quote');
+    await this.setAllowanceToToken(tradeData, 'from');
+    await this.setAllowanceToToken(tradeData, 'to');
 
     return tradeData;
   }
@@ -160,7 +162,7 @@ export class OrderBookTradeService {
       this.web3PrivateService.networkName !== tradeData.blockchain &&
       this.web3PrivateService.networkName !== `${tradeData.blockchain}_TESTNET`
     ) {
-      throw new NetworkError(tradeData.blockchain);
+      throw new NetworkError(tradeData.blockchain, this.translateService);
     }
   }
 

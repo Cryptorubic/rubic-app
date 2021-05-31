@@ -1,5 +1,5 @@
-@import '../../../../scss/mixins';
-@import '../../../../scss/vars';
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
 
 .tokens-form {
   position: relative;
@@ -20,6 +20,7 @@
 
     background: $grey-background;
     border: 1px solid white;
+    border-radius: 10px;
 
     &_invalid {
       border-color: $error-red;
@@ -29,6 +30,21 @@
       }
     }
   }
+
+  &__max-button {
+    position: absolute;
+    top: 0;
+
+    height: 100%;
+
+    color: $dark;
+    text-transform: uppercase;
+
+    background: none;
+
+    cursor: pointer;
+    opacity: 0.8;
+  }
 }
 
 @include b($desktop) {
@@ -36,6 +52,12 @@
     &__input {
       font-size: 16px;
     }
+  }
+}
+
+@include b($tablet) {
+  .tokens-form {
+    margin-bottom: 10px;
   }
 }
 
@@ -50,10 +72,11 @@
 @include b($mobile-sm) {
   .tokens-form {
     &__input {
-      padding-right: 11px;
       padding-left: 11px;
 
-      font-size: 12px;
+      &::placeholder {
+        font-size: 12px;
+      }
     }
   }
 }

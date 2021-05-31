@@ -1,9 +1,11 @@
-export class RubicError extends Error {
-  public comment: string =
-    'Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.';
+import { TranslateService } from '@ngx-translate/core';
 
-  constructor(message?) {
+export class RubicError extends Error {
+  public comment: string;
+
+  constructor(protected readonly translateService: TranslateService, message?: string) {
     super(message);
+    this.comment = this.translateService.instant('errors.undefined');
     Object.setPrototypeOf(this, RubicError.prototype);
   }
 }

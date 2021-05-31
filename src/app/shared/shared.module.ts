@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -34,7 +35,6 @@ import { WhiteButtonComponent } from './components/white-button/white-button.com
 import { BigNumberFormat } from './pipes/big-number-format.pipe';
 import { NativeUrlPipe } from './pipes/native-url.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
-import { AddressInputComponent } from './components/address-input/address-input.component';
 import { ErrorDisclaimerComponent } from './components/warning-label/error-disclaimer.component';
 import { TokenAddressDirective } from './directives/token-address/token-address.directive';
 import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
@@ -48,12 +48,19 @@ import { DisclaimerTextComponent } from './components/disclaimer-text/disclaimer
 import { TokensTableComponent } from './components/tokens-table/tokens-table.component';
 import { TokensAccordionComponent } from './components/tokens-table/components/tokens-accordion/tokens-accordion.component';
 import { TokensMobileHeaderComponent } from './components/tokens-table/components/tokens-mobile-header/tokens-mobile-header.component';
-import { CustomTokenFormComponent } from './components/use-custom-token/custom-token-form.component';
+import { CustomTokenFormComponent } from './components/custom-token-form/custom-token-form.component';
 import { WarningDisclaimerComponent } from './components/warning-disclaimer/warning-disclaimer.component';
 import { NetworkErrorComponent } from './components/network-error/network-error.component';
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
 import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
+import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
+import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
+import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
+import { ShortAddressPipe } from './pipes/short-address.pipe';
+import { AdvancedOptionsButtonComponent } from './components/advanced-options-button/advanced-options-button.component';
+import { WithRoundPipe } from './pipes/with-round.pipe';
+import { RoundPipe } from './pipes/round.pipe';
 
 @NgModule({
   declarations: [
@@ -76,7 +83,6 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     BigNumberFormat,
     ScannerLinkPipe,
     NativeUrlPipe,
-    AddressInputComponent,
     ErrorDisclaimerComponent,
     TokenAddressDirective,
     NumberPrecisionDirective,
@@ -95,7 +101,15 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent,
-    TotalSupplyOverflowErrorComponent
+    TotalSupplyOverflowErrorComponent,
+    RefreshButtonComponent,
+    WalletAddressFormComponent,
+    WrapLinkDirective,
+    SafetyLinkDirective,
+    ShortAddressPipe,
+    WithRoundPipe,
+    AdvancedOptionsButtonComponent,
+    RoundPipe
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -138,7 +152,6 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     BigNumberFormat,
     ScannerLinkPipe,
     NativeUrlPipe,
-    AddressInputComponent,
     ErrorDisclaimerComponent,
     TokenAddressDirective,
     TranslateModule,
@@ -154,7 +167,13 @@ import { TotalSupplyOverflowErrorComponent } from './components/errors/total-sup
     WarningDisclaimerComponent,
     NetworkErrorComponent,
     BlockchainSelectComponent,
-    CheckboxComponent
-  ]
+    CheckboxComponent,
+    RefreshButtonComponent,
+    WalletAddressFormComponent,
+    RefreshButtonComponent,
+    ShortAddressPipe,
+    AdvancedOptionsButtonComponent
+  ],
+  providers: [ScannerLinkPipe, WithRoundPipe]
 })
 export class SharedModule {}

@@ -1,0 +1,10 @@
+<div
+  class="button"
+  [ngClass]="{
+    button_opened: isOpened
+  }"
+  (click)="onButtonClicked()"
+>
+  {{ 'common.advancedOptions' | translate }}
+  <img src="/assets/images/icons/arrow/arrow-down-green.svg" alt="" />
+</div>

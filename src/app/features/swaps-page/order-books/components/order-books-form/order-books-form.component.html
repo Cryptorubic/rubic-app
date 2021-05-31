@@ -2,10 +2,7 @@
   <div class="order-book__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
       [warningText]="'Unknown token. Please check it before trading.'"
-      [tooltipText]="
-        'Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk.'
-          | translate
-      "
+      [tooltipText]="'tradesFrom.unknownTokenWarning' | translate"
     ></app-warning-disclaimer>
   </div>
 
@@ -15,28 +12,29 @@
         <div class="main-section__tokens-form tokens-form">
           <div class="tokens-form__header tokens-form-header">
             <span class="tokens-form-header__label">
-              {{ 'You have' | translate }}
+              {{ 'common.have' | translate }}
             </span>
           </div>
 
           <app-tokens-input
-            [tokensList]="availableBaseTokens"
-            [selectedToken]="baseToken"
-            [selectedAmount]="baseAmount"
-            (tokenChanges)="baseToken = $any($event)"
-            (numberChanges)="baseAmount = $event"
+            [fullWidth]="true"
+            [tokensList]="availableFromTokens"
+            [selectedToken]="fromToken"
+            [selectedAmount]="fromAmount"
+            (tokenChanges)="fromToken = $any($event)"
+            (numberChanges)="fromAmount = $event"
           ></app-tokens-input>
 
           <div class="tokens-form__custom-token-section">
             <app-custom-token-form
               type="from"
               [isSectionOpened]="tradeParameters?.isCustomFromTokenFormOpened"
-              (isSectionOpenedChange)="setIsCustomTokenFormOpened('base', $event)"
+              (isSectionOpenedChange)="setIsCustomTokenFormOpened('from', $event)"
               [blockchain]="blockchain"
               [tokenAddress]="tradeParameters?.customFromTokenAddress"
-              (tokenAddressChange)="setCustomTokenAddress('base', $event)"
-              (tokenIsValidated)="updateCustomToken('base', $event)"
-              (addToken)="addCustomToken('base')"
+              (tokenAddressChange)="setCustomTokenAddress('from', $event)"
+              (tokenIsValidated)="updateCustomToken('from', $event)"
+              (addToken)="addCustomToken('from')"
             ></app-custom-token-form>
           </div>
         </div>
@@ -52,7 +50,7 @@
         <div class="main-section__tokens-form tokens-form">
           <div class="tokens-form__header tokens-form-header">
             <span class="tokens-form-header__label">
-              {{ 'You want to get' | translate }}
+              {{ 'common.want' | translate }}
             </span>
 
             <div class="tokens-form-header__rate tokens-rate" *ngIf="tokensRate">
@@ -60,25 +58,27 @@
                 {{
                   (tokensRate.abs().toFixed(2) | number) +
                     '% ' +
-                    (tokensRate.isGreaterThan(0) ? 'higher' : 'lower')
+                    (tokensRate.isGreaterThan(0)
+                      ? ('orderBook.higher' | translate)
+                      : ('orderBook.lower' | translate))
                 }}
 
                 <div class="tokens-rate__info tokens-rate-info">
                   <img
                     src="/assets/images/icons/info.svg"
                     [matTooltip]="
-                      'Your rate is ' +
+                      ('orderBook.yourRate' | translate) +
                       (tokensRate.abs().toFixed(2) | number) +
                       '% ' +
                       (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') +
-                      ' than coingecko rate'
+                      ('orderBook.coingeckoRate' | translate)
                     "
                     [alt]="
-                      'Your rate is ' +
+                      ('orderBook.yourRate' | translate) +
                       (tokensRate.abs().toFixed(2) | number) +
                       '% ' +
                       (tokensRate.isGreaterThan(0) ? 'higher' : 'lower') +
-                      ' than coingecko rate'
+                      ('orderBook.coingeckoRate' | translate)
                     "
                   />
                 </div>
@@ -87,23 +87,24 @@
           </div>
 
           <app-tokens-input
-            [tokensList]="availableQuoteTokens"
-            [selectedToken]="quoteToken"
-            [selectedAmount]="quoteAmount"
-            (tokenChanges)="quoteToken = $any($event)"
-            (numberChanges)="quoteAmount = $event"
+            [tokensList]="availableToTokens"
+            [selectedToken]="toToken"
+            [selectedAmount]="toAmount"
+            (tokenChanges)="toToken = $any($event)"
+            (numberChanges)="toAmount = $event"
+            [fullWidth]="true"
           ></app-tokens-input>
 
           <div class="tokens-form__custom-token-section">
             <app-custom-token-form
               type="to"
               [isSectionOpened]="tradeParameters?.isCustomToTokenFormOpened"
-              (isSectionOpenedChange)="setIsCustomTokenFormOpened('quote', $event)"
+              (isSectionOpenedChange)="setIsCustomTokenFormOpened('to', $event)"
               [blockchain]="blockchain"
               [tokenAddress]="tradeParameters?.customToTokenAddress"
-              (tokenAddressChange)="setCustomTokenAddress('quote', $event)"
-              (tokenIsValidated)="updateCustomToken('quote', $event)"
-              (addToken)="addCustomToken('quote')"
+              (tokenAddressChange)="setCustomTokenAddress('to', $event)"
+              (tokenIsValidated)="updateCustomToken('to', $event)"
+              (addToken)="addCustomToken('to')"
             ></app-custom-token-form>
           </div>
         </div>

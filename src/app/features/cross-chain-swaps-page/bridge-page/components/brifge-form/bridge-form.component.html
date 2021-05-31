@@ -1,0 +1,271 @@
+<form class="cross-chain-form">
+  <div class="cross-chain-form__swap-section swap-section">
+    <!-- From -->
+    <div class="swap-section__box swap-box">
+      <div class="swap-box__title">{{ 'common.from' | translate }}</div>
+
+      <div class="swap-box__blockchain-section form-field">
+        <app-blockchain-select
+          [selectedBlockchain]="fromBlockchain"
+          [blockchains]="fromBlockchainsList"
+          (blockchainChanges)="fromBlockchain = $event"
+        ></app-blockchain-select>
+      </div>
+
+      <app-wallet-address-form
+        class="swap-box__wallet-address-section"
+        [walletAddress]="fromWalletAddress"
+        [walletAddressLink]="fromBlockchain.addressBaseUrl + fromWalletAddress"
+        [isWithEditing]="false"
+      ></app-wallet-address-form>
+
+      <div class="swap-box__title swap-box__title_second">{{ 'common.have' | translate }}</div>
+
+      <div class="swap-box__token-section form-field">
+        <app-tokens-input
+          [tokensList]="dropDownTokens"
+          [selectedToken]="selectedTokenAsInputToken"
+          [selectedAmount]="fromNumber"
+          (tokenChanges)="onSelectedTokenChanges($event)"
+          (numberChanges)="fromNumber = $event"
+        >
+        </app-tokens-input>
+      </div>
+
+      <div
+        class="swap-box__scanner-link-container"
+        [ngClass]="{ 'swap-box__scanner-link-container_hidden': !selectedToken }"
+      >
+        <app-scanner-link
+          [address]="selectedToken?.blockchainToken[fromBlockchain.key].address"
+          [blockchainName]="fromBlockchain.key"
+          [addressType]="ADDRESS_TYPE.TOKEN"
+          [scannerLabel]="fromBlockchain.scannerLabel"
+        >
+        </app-scanner-link>
+      </div>
+
+      <table
+        class="swap-box__min-max-amounts-section min-max-amounts-section"
+        [ngClass]="{
+          'swap-box__min-max-amounts-section_hidden': isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
+        }"
+      >
+        <tr
+          class="min-max-amounts-section__line"
+          [ngClass]="{
+            'min-max-amounts-section__line_wrong':
+              selectedToken &&
+              fromNumber &&
+              fromNumberAsBigNumber.lt(selectedToken.blockchainToken[fromBlockchain.key].minAmount)
+          }"
+        >
+          <td>
+            {{ selectedToken ? ('bridgePage.minAmount' | translate) : '' }}
+          </td>
+          <td>
+            {{ selectedToken ? selectedToken.blockchainToken[fromBlockchain.key].minAmount : '' }}
+            <img
+              *ngIf="
+                selectedToken &&
+                fromNumber &&
+                fromNumberAsBigNumber.lt(
+                  selectedToken.blockchainToken[fromBlockchain.key].minAmount
+                )
+              "
+              src="assets/images/icons/error-disclaimer-sign.svg"
+              alt=""
+            />
+          </td>
+        </tr>
+        <tr
+          class="min-max-amounts-section__line"
+          [ngClass]="{
+            'min-max-amounts-section__line_wrong':
+              selectedToken &&
+              fromNumber &&
+              fromNumberAsBigNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount)
+          }"
+        >
+          <td>
+            {{ selectedToken ? ('bridgePage.maxAmount' | translate) : '' }}
+          </td>
+          <td>
+            {{ selectedToken ? selectedToken.blockchainToken[fromBlockchain.key].maxAmount : '' }}
+            <img
+              *ngIf="
+                selectedToken &&
+                fromNumber &&
+                fromNumberAsBigNumber.gt(
+                  selectedToken.blockchainToken[fromBlockchain.key].maxAmount
+                )
+              "
+              src="assets/images/icons/error-disclaimer-sign.svg"
+              alt=""
+            />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Revert -->
+    <button
+      class="swap-section__revert-button revert-button"
+      type="button"
+      *ngIf="toBlockchain.key !== BLOCKCHAIN_NAME.TRON"
+      (click)="revertBlockchains()"
+    >
+      <img src="assets/images/icons/revert.svg" alt="Revert" />
+    </button>
+
+    <!-- To -->
+    <div class="swap-section__box swap-box">
+      <div class="swap-box__title">{{ 'common.to' | translate }}</div>
+
+      <div class="swap-box__blockchain-section form-field">
+        <app-blockchain-select
+          [selectedBlockchain]="toBlockchain"
+          [blockchains]="toBlockchainsList"
+          (blockchainChanges)="toBlockchain = $event"
+        ></app-blockchain-select>
+      </div>
+
+      <app-wallet-address-form
+        class="swap-box__wallet-address-section"
+        [walletAddress]="toWalletAddress"
+        [walletAddressLink]="toBlockchain.addressBaseUrl + toWalletAddress"
+        [walletAddressPattern]="
+          toBlockchain.key === BLOCKCHAIN_NAME.TRON
+            ? TRON_ADDRESS_PATTERN
+            : ETHEREUM_ADDRESS_PATTERN
+        "
+        [isWithEditing]="toBlockchain.key === BLOCKCHAIN_NAME.TRON"
+        (walletAddressValidated)="toWalletAddress = $event"
+      ></app-wallet-address-form>
+
+      <div class="swap-box__title">{{ 'common.want' | translate }}</div>
+
+      <div class="swap-box__token-section token-chosen">
+        <span class="token-chosen__amount">{{ this.toNumber | bigNumberFormat }}</span>
+
+        <div class="token-chosen__card token-card" *ngIf="selectedToken">
+          <img
+            class="token-card__icon"
+            [src]="selectedToken.image || '/assets/images/icons/coins/empty.svg'"
+            alt="Token"
+          />
+          <span class="token-card__name">
+            {{ selectedToken.blockchainToken[toBlockchain.key].symbol }}
+          </span>
+        </div>
+      </div>
+
+      <div
+        class="swap-box__scanner-link-container"
+        [ngClass]="{ 'swap-box__scanner-link-container_hidden': !selectedToken }"
+      >
+        <app-scanner-link
+          [address]="selectedToken?.blockchainToken[toBlockchain.key].address"
+          [blockchainName]="toBlockchain.key"
+          [addressType]="ADDRESS_TYPE.TOKEN"
+          [scannerLabel]="toBlockchain.scannerLabel"
+        >
+        </app-scanner-link>
+      </div>
+
+      <div class="swap-box__description">
+        {{ 'bridgePage.getTokens' | translate: { toBlockchainName: toBlockchain.name } }}
+      </div>
+
+      <a
+        class="swap-box__blockchain-link"
+        [href]="
+          isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
+            ? 'https://www.binance.org/'
+            : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
+            ? 'https://polygon.technology/'
+            : 'https://tron.network/'
+        "
+        target="_blank"
+      >
+        {{ 'bridgePage.whatIs' | translate }}
+        {{
+          isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
+            ? 'Binance Smart Chain'
+            : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
+            ? 'Polygon'
+            : 'TRON'
+        }}
+        {{ 'bridgePage.whatIsAfter' | translate }}?
+      </a>
+    </div>
+  </div>
+
+  <div class="cross-chain-form__confirm-section confirm-section">
+    <app-primary-button
+      type="button"
+      label="Create Swap"
+      [animate]="feeCalculationProgress || buttonAnimation"
+      [disabled]="
+        !selectedToken ||
+        !fromNumber ||
+        fromNumberAsBigNumber.lt(selectedToken.blockchainToken[fromBlockchain.key].minAmount) ||
+        fromNumberAsBigNumber.gt(selectedToken.blockchainToken[fromBlockchain.key].maxAmount) ||
+        !isToWalletAddressCorrect()
+      "
+      (onClick)="checkAndConfirm()"
+    >
+    </app-primary-button>
+
+    <a
+      [href]="
+        isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) ||
+        isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
+          ? 'https://www.binance.org/'
+          : 'https://polygon.technology/'
+      "
+      target="_blank"
+      class="confirm-section__blockchain-link"
+      [ngClass]="{
+        'cross-chain-form__confirm-info_hidden':
+          selectedToken?.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]?.address ===
+          this.BRBC_ADDRESS,
+        'cross-chain-form__confirm-info_polygon': isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
+      }"
+    >
+      <span>{{ 'bridgePage.assistanceOf' | translate }}</span>
+      <img
+        [src]="
+          'assets/images/icons/collaborations/' +
+          (isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) ||
+          isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
+            ? 'Binance.svg'
+            : 'Polygon.svg')
+        "
+        alt="blockchain"
+      />
+    </a>
+  </div>
+</form>
+
+<warning-modal
+  *ngIf="isHighGasPriceModalShown"
+  warningText="{{ 'modals.gasPriceModal.text' | translate }}"
+  (onCancel)="isHighGasPriceModalShown = false"
+  (onConfirm)="onHighGasPriceConfirm()"
+></warning-modal>
+
+<warning-modal
+  *ngIf="isPolygonToEthTradeModalShown"
+  warningText="{{ 'modals.polygonToEthTradeModal.text' | translate }}"
+  (onCancel)="isPolygonToEthTradeModalShown = false"
+  (onConfirm)="onPolygonToEthTradeConfirm()"
+></warning-modal>
+
+<app-trade-in-progress-modal *ngIf="tradeInProgress"></app-trade-in-progress-modal>
+
+<app-trade-success-modal
+  *ngIf="tradeSuccessId"
+  [txId]="tradeSuccessId"
+  (onCloseEvent)="tradeSuccessId = null"
+></app-trade-success-modal>

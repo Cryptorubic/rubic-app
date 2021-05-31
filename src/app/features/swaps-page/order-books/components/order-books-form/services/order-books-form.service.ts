@@ -11,9 +11,11 @@ import { AccountError } from 'src/app/shared/models/errors/provider/AccountError
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
+import { TranslateService } from '@ngx-translate/core';
+import SameTokensError from 'src/app/shared/models/errors/order-book/SameTokensError';
+import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { SameTokensError } from '../../../../../../shared/models/errors/order-book/SameTokensError';
 import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 
@@ -21,8 +23,8 @@ import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BI
 export class OrderBooksFormService implements OnDestroy {
   private readonly _tradeForm = new BehaviorSubject<OrderBookTradeForm>({
     token: {
-      base: {} as OrderBookFormToken,
-      quote: {} as OrderBookFormToken
+      from: {} as OrderBookFormToken,
+      to: {} as OrderBookFormToken
     }
   } as OrderBookTradeForm);
 
@@ -32,7 +34,8 @@ export class OrderBooksFormService implements OnDestroy {
     private orderBookApiService: OrderBookApiService,
     private web3PublicService: Web3PublicService,
     private web3PrivateService: Web3PrivateService,
-    private useTestingModeService: UseTestingModeService
+    private useTestingModeService: UseTestingModeService,
+    private readonly translateService: TranslateService
   ) {
     this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
@@ -62,47 +65,48 @@ export class OrderBooksFormService implements OnDestroy {
 
   private async checkSettings(tradeForm: OrderBookTradeForm): Promise<void> {
     if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
 
     if (!this.web3PrivateService.address) {
-      throw new AccountError();
+      throw new AccountError(this.translateService);
     }
 
-    if (
-      tradeForm.token.base.address.toLowerCase() === tradeForm.token.quote.address.toLowerCase()
-    ) {
-      throw new SameTokensError();
+    if (tradeForm.token.from.address.toLowerCase() === tradeForm.token.to.address.toLowerCase()) {
+      throw new SameTokensError(this.translateService);
     }
 
     if (
       this.web3PrivateService.networkName !== tradeForm.blockchain &&
       this.web3PrivateService.networkName !== `${tradeForm.blockchain}_TESTNET`
     ) {
-      throw new NetworkError(tradeForm.blockchain);
+      throw new NetworkError(tradeForm.blockchain, this.translateService);
     }
 
     const web3Public: Web3Public = this.web3PublicService[tradeForm.blockchain];
-    const baseToken = tradeForm.token.base;
-    const baseTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
-      baseToken,
-      (await web3Public.getTokenInfo(baseToken.address)).totalSupply
+    const fromToken = tradeForm.token.from;
+    const fromTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
+      fromToken,
+      (await web3Public.getTokenInfo(fromToken.address)).totalSupply
     );
-    if (!baseTokenTotalSupply.isNaN() && baseTokenTotalSupply.lt(baseToken.amount)) {
+    if (!fromTokenTotalSupply.isNaN() && fromTokenTotalSupply.lt(fromToken.amount)) {
       throw new TotalSupplyOverflowError(
-        baseToken.symbol,
-        baseTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
+        this.translateService,
+        fromToken.symbol,
+        fromTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
       );
     }
-    const quoteToken = tradeForm.token.quote;
-    const quoteTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
-      quoteToken,
-      (await web3Public.getTokenInfo(quoteToken.address)).totalSupply
+
+    const toToken = tradeForm.token.to;
+    const toTokenTotalSupply = Web3PublicService.tokenWeiToAmount(
+      toToken,
+      (await web3Public.getTokenInfo(toToken.address)).totalSupply
     );
-    if (!quoteTokenTotalSupply.isNaN() && quoteTokenTotalSupply.lt(quoteToken.amount)) {
+    if (!toTokenTotalSupply.isNaN() && toTokenTotalSupply.lt(toToken.amount)) {
       throw new TotalSupplyOverflowError(
-        quoteToken.symbol,
-        quoteTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
+        this.translateService,
+        toToken.symbol,
+        toTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
       );
     }
   }
@@ -174,50 +178,38 @@ export class OrderBooksFormService implements OnDestroy {
   }
 
   private createTradeApiObject(tradeForm: OrderBookTradeForm): OrderBookTradeApi {
-    let network: number;
-    switch (tradeForm.blockchain) {
-      case BLOCKCHAIN_NAME.ETHEREUM:
-        network = 1;
-        break;
-      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        network = 22;
-        break;
-      default:
-        network = 24;
-    }
-
     return {
       memo: '',
       contract_address: ORDER_BOOK_CONTRACT.ADDRESSES[2][tradeForm.blockchain],
-      base_address: tradeForm.token.base.address,
-      quote_address: tradeForm.token.quote.address,
+      base_address: tradeForm.token.from.address,
+      quote_address: tradeForm.token.to.address,
       base_limit: Web3PublicService.tokenAmountToWei(
-        tradeForm.token.base,
-        tradeForm.token.base.amount
+        tradeForm.token.from,
+        tradeForm.token.from.amount
       ),
       quote_limit: Web3PublicService.tokenAmountToWei(
-        tradeForm.token.quote,
-        tradeForm.token.quote.amount
+        tradeForm.token.to,
+        tradeForm.token.to.amount
       ),
       stop_date: tradeForm.stopDate,
       public: tradeForm.isPublic,
       min_base_wei: Web3PublicService.tokenAmountToWei(
-        tradeForm.token.base,
-        tradeForm.token.base.minContribution
+        tradeForm.token.from,
+        tradeForm.token.from.minContribution
       ),
       min_quote_wei: Web3PublicService.tokenAmountToWei(
-        tradeForm.token.quote,
-        tradeForm.token.quote.minContribution
+        tradeForm.token.to,
+        tradeForm.token.to.minContribution
       ),
       base_amount_contributed: '0',
       quote_amount_contributed: '0',
       broker_fee: tradeForm.isWithBrokerFee,
       broker_fee_address: tradeForm.isWithBrokerFee ? tradeForm.brokerAddress : EMPTY_ADDRESS,
-      broker_fee_base: parseFloat(tradeForm.token.base.brokerPercent),
-      broker_fee_quote: parseFloat(tradeForm.token.quote.brokerPercent),
+      broker_fee_base: parseFloat(tradeForm.token.from.brokerPercent),
+      broker_fee_quote: parseFloat(tradeForm.token.to.brokerPercent),
 
-      name: `${tradeForm.token.base.symbol} <> ${tradeForm.token.quote.symbol}`,
-      network,
+      name: `${tradeForm.token.from.symbol} <> ${tradeForm.token.to.symbol}`,
+      network: TO_BACKEND_BLOCKCHAINS[tradeForm.blockchain],
       state: 'ACTIVE',
       contract_state: 'ACTIVE',
       contract_type: 20,

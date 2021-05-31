@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { List } from 'immutable';
 import { from, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { mergeMap, switchMap } from 'rxjs/operators';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import {
   OrderBookDataToken,
@@ -10,15 +10,15 @@ import {
 } from 'src/app/features/order-book-trade-page/models/trade-data';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import * as moment from 'moment';
+import { OrderBookTradeForm } from 'src/app/features/swaps-page/order-books/models/trade-form';
+import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { HttpService } from '../../http/http.service';
 import { TokensService } from '../tokens-service/tokens.service';
 import { Web3Public } from '../../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { OrderBookTradeApi } from './types/trade-api';
-import { OrderBookTradeForm } from '../../../../features/swaps-page/order-books/models/trade-form';
 import { OrderBookCommonService } from '../../order-book-common/order-book-common.service';
-import { environment } from '../../../../../environments/environment';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BOT_URL } from '../constants/BOT_URL';
 
 interface PublicSwapsResponse extends OrderBookTradeApi {
   memo_contract: string;
@@ -51,9 +51,7 @@ export class OrderBookApiService {
 
   public getTradeData(uniqueLink: string): Observable<OrderBookTradeData> {
     return this.httpService
-      .get('get_swap3_for_unique_link/', {
-        unique_link: uniqueLink
-      })
+      .get(`get_swap3_for_unique_link/${uniqueLink}`)
       .pipe(
         switchMap((tradeApi: OrderBookTradeApi) =>
           from(this.tradeApiToTradeData(tradeApi, uniqueLink))
@@ -61,60 +59,50 @@ export class OrderBookApiService {
       );
   }
 
-  public fetchPublicSwaps(): Observable<Promise<OrderBookTradeData>[]> {
+  public fetchPublicSwaps(): Observable<OrderBookTradeData[]> {
     return this.httpService.get('get_public_swap3/').pipe(
-      map((swaps: OrderBookTradeApi[]) => {
-        return swaps.map(async swap => {
-          const tradeData = await this.tradeApiToTradeData(swap, swap.unique_link);
+      mergeMap((swaps: OrderBookTradeApi[]) => {
+        const promises = swaps.map(async swap => {
           try {
-            await this.setAmountContributed(tradeData);
+            const tradeData = await this.tradeApiToTradeData(swap, swap.unique_link);
+            try {
+              await this.orderBookCommonService.setAmountContributed(tradeData);
+            } catch (err) {
+              console.error(err);
+            }
+            return tradeData;
           } catch (err) {
-            console.error(err);
+            console.debug(err);
+            return null;
           }
-          return tradeData;
         });
+        return from(Promise.all(promises).then(trades => trades.filter(trade => trade !== null)));
       })
     );
-  }
-
-  public async setAmountContributed(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    return this.orderBookCommonService.setAmountContributed(tradeData);
   }
 
   public async tradeApiToTradeData(
     tradeApi: OrderBookTradeApi | PublicSwapsResponse,
     uniqueLink: string
   ): Promise<OrderBookTradeData> {
-    let blockchain;
-    switch (tradeApi.network) {
-      case 1:
-        blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-        break;
-      case 22:
-        blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
-        break;
-      default:
-        blockchain = BLOCKCHAIN_NAME.POLYGON;
-    }
-
     const tradeData = {
       memo: (<OrderBookTradeApi>tradeApi).memo ?? (<PublicSwapsResponse>tradeApi).memo_contract,
       contractAddress: tradeApi.contract_address,
       uniqueLink,
 
       token: {
-        base: undefined,
-        quote: undefined
+        from: undefined,
+        to: undefined
       },
-      blockchain,
+      blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.network],
       expirationDate: moment.utc(tradeApi.stop_date),
       isPublic: tradeApi.public,
       isWithBrokerFee: tradeApi.broker_fee,
       brokerAddress: tradeApi.broker_fee_address,
       status: ORDER_BOOK_TRADE_STATUS[tradeApi.state]
     } as OrderBookTradeData;
-    await this.setTokensData('base', tradeApi, tradeData);
-    await this.setTokensData('quote', tradeApi, tradeData);
+    await this.setTokensData('from', tradeApi, tradeData);
+    await this.setTokensData('to', tradeApi, tradeData);
 
     return tradeData;
   }
@@ -124,9 +112,11 @@ export class OrderBookApiService {
     tradeApi: OrderBookTradeApi,
     tradeData: OrderBookTradeData
   ): Promise<void> {
+    const tokenPartApi = tokenPart === 'from' ? 'base' : 'quote';
+
     tradeData.token[tokenPart] = {
       blockchain: tradeData.blockchain,
-      address: tradeApi[`${tokenPart}_address`]
+      address: tradeApi[`${tokenPartApi}_address`]
     } as OrderBookDataToken;
 
     const foundToken = this._tokens.find(
@@ -148,13 +138,13 @@ export class OrderBookApiService {
       ...tradeData.token[tokenPart],
       amountTotal: Web3PublicService.tokenWeiToAmount(
         tradeData.token[tokenPart],
-        tradeApi[`${tokenPart}_limit`]
+        tradeApi[`${tokenPartApi}_limit`]
       ),
       minContribution: Web3PublicService.tokenWeiToAmount(
         tradeData.token[tokenPart],
-        tradeApi[`min_${tokenPart}_wei`]
+        tradeApi[`min_${tokenPartApi}_wei`]
       ),
-      brokerPercent: tradeApi[`broker_fee_${tokenPart}`]
+      brokerPercent: tradeApi[`broker_fee_${tokenPartApi}`]
     };
   }
 
@@ -171,13 +161,13 @@ export class OrderBookApiService {
       link: `${
         window.location.origin === this.PROD_ORIGIN ? this.PROD_ORIGIN : this.TEST_ORIGIN
       }/trades/public-v3/${uniqueLink}`,
-      amountFrom: tradeForm.token.base.amount,
-      amountTo: tradeForm.token.quote.amount,
-      symbolFrom: tradeForm.token.base.symbol,
-      symbolTo: tradeForm.token.quote.symbol
+      amountFrom: tradeForm.token.from.amount,
+      amountTo: tradeForm.token.to.amount,
+      symbolFrom: tradeForm.token.from.symbol,
+      symbolTo: tradeForm.token.to.symbol
     };
 
-    this.httpService.post(`${environment.orderBooksBotUrl}/create`, tradeBot).subscribe();
+    this.httpService.post(`${BOT_URL.ORDER_BOOKS}/create`, tradeBot).subscribe();
   }
 
   public notifyOrderBooksBotOnContribute(
@@ -199,7 +189,7 @@ export class OrderBookApiService {
       symbol: token.symbol
     };
 
-    this.httpService.post(`${environment.orderBooksBotUrl}/contribute`, tradeBot).subscribe();
+    this.httpService.post(`${BOT_URL.ORDER_BOOKS}/contribute`, tradeBot).subscribe();
   }
 
   public notifyOrderBooksBotOnWithdraw(
@@ -219,6 +209,6 @@ export class OrderBookApiService {
       symbol: token.symbol
     };
 
-    this.httpService.post(`${environment.orderBooksBotUrl}/contribute`, tradeBot).subscribe();
+    this.httpService.post(`${BOT_URL.ORDER_BOOKS}/contribute`, tradeBot).subscribe();
   }
 }

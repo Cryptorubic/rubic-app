@@ -1,15 +1,44 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from '../models/blockchain/BLOCKCHAIN_NAME';
 import ADDRESS_TYPE from '../models/blockchain/ADDRESS_TYPE';
-import { BlockchainsInfo } from '../../core/services/blockchain/blockchain-info';
 import { Web3PublicService } from '../../core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from '../../core/services/blockchain/web3-public-service/Web3Public';
 import { UseTestingModeService } from '../../core/services/use-testing-mode/use-testing-mode.service';
 
-const urlPaths = {
-  [ADDRESS_TYPE.WALLET]: 'address/',
-  [ADDRESS_TYPE.TOKEN]: 'token/',
-  [ADDRESS_TYPE.TRANSACTION]: 'tx/'
+const blockchainsScanners = {
+  [BLOCKCHAIN_NAME.ETHEREUM]: {
+    baseUrl: 'https://etherscan.io/',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/'
+  },
+  [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
+    baseUrl: 'https://kovan.etherscan.io/'
+  },
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+    baseUrl: 'https://bscscan.com/',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/'
+  },
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: {
+    baseUrl: 'https://testnet.bscscan.com/'
+  },
+  [BLOCKCHAIN_NAME.POLYGON]: {
+    baseUrl: 'https://explorer-mainnet.maticvigil.com/',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/'
+  },
+  [BLOCKCHAIN_NAME.POLYGON_TESTNET]: {
+    baseUrl: 'https://explorer-mumbai.maticvigil.com/'
+  },
+  [BLOCKCHAIN_NAME.TRON]: {
+    baseUrl: 'https://tronscan.org/#/',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token20/',
+    [ADDRESS_TYPE.TRANSACTION]: 'transaction/'
+  }
 };
 
 const nativeCoinUrl = 'stat/supply/';
@@ -23,23 +52,13 @@ export class ScannerLinkPipe implements PipeTransform {
   }
 
   transform(address, blockchainName: BLOCKCHAIN_NAME, type: ADDRESS_TYPE) {
-    if (this.isTestingMode && !blockchainName.includes('_TESTNET')) {
-      // @ts-ignore
-      blockchainName = BlockchainsInfo.getBlockchainByName(`${blockchainName.toString()}_TESTNET`)
-        .name;
-    }
-    const web3Public: Web3Public = this.web3PublicService[blockchainName];
+    const baseUrl = !this.isTestingMode
+      ? blockchainsScanners[blockchainName].baseUrl
+      : blockchainsScanners[`${blockchainName}_TESTNET`].baseUrl;
 
-    const baseUrl = BlockchainsInfo.getBlockchainByName(blockchainName).scannerUrl;
-
-    if (web3Public.isNativeAddress(address)) {
+    if (address === NATIVE_TOKEN_ADDRESS) {
       return baseUrl + nativeCoinUrl;
     }
-
-    if (blockchainName === BLOCKCHAIN_NAME.POLYGON && type === ADDRESS_TYPE.TOKEN) {
-      return baseUrl + urlPaths[ADDRESS_TYPE.WALLET] + address;
-    }
-
-    return baseUrl + urlPaths[type] + address;
+    return baseUrl + blockchainsScanners[blockchainName][type] + address;
   }
 }

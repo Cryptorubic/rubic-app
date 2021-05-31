@@ -1,7 +1,7 @@
 {
   "volume": {
-    "instantTradesVolume": "$6,159,752",
-    "bridgeVolume": "$4,863,101"
+    "instantTradesVolume": "$9,182,837",
+    "bridgeVolume": "$7,643,685"
   },
   "team": [
     {
@@ -27,13 +27,13 @@
       ]
     },
     {
-      "img": "VladislavGreen.png",
-      "name": "Vladislav Green",
+      "img": "EugeneKorol.jpg",
+      "name": "Eugene Korol",
       "role": "Product manager",
       "links": [
         {
           "icon": "Telegram.svg",
-          "url": "https://teleg.run/VladGren"
+          "url": "https://t.me/Eugene_Korol"
         }
       ]
     },
@@ -135,6 +135,37 @@
           "url": "https://t.me/Guilhemw"
         }
       ]
+    },
+    {
+      "img": "DaveHaggard.png",
+      "name": "Dave Haggard",
+      "role": "SMM"
+    },
+    {
+      "img": "CollinOBrien.png",
+      "name": "Collin O’Brien",
+      "role": "Marketing"
+    },
+    {
+      "img": "DianaKuznetsova.png",
+      "name": "Diana Kuznetsova",
+      "role": "PR and Marketing",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://teleg.run/aglaekadi"
+        }
+      ]
+    },
+    {
+      "img": "IlianaVasileva.png",
+      "name": "Iliana Vasileva",
+      "role": "Q/A and customer support"
+    },
+    {
+      "img": "SvenMichael.jpg",
+      "name": "Sven Michael",
+      "role": "Business Development"
     }
   ],
   "collaborations": [

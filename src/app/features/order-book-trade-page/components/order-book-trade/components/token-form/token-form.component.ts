@@ -77,7 +77,7 @@ export class TokenFormComponent implements OnInit, OnChanges {
   public isOperationCompleted: boolean;
 
   get amountToContributeAsNumber(): BigNumber {
-    return new BigNumber(this.amountToContribute);
+    return new BigNumber(this.amountToContribute?.split(',').join(''));
   }
 
   constructor(private orderBookTradeService: OrderBookTradeService, private dialog: MatDialog) {}
@@ -205,7 +205,7 @@ export class TokenFormComponent implements OnInit, OnChanges {
       .checkApproveAndMakeContribute(
         this.tradeData,
         this.tokenPart,
-        this.amountToContribute,
+        this.amountToContribute.split(',').join(''),
         () => {
           this.setOperationInProgress('contribute');
         }

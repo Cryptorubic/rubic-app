@@ -1,292 +1,471 @@
 {
-  "About": "О компании",
-  "Features": "Функции",
-  "Faq": "Faq",
-  "Login by MetaMask": "Войти через MetaMask",
-  "My trades": "Мои сделки",
-  "Logout": "Выйти",
-  "Yes": "Да",
-  "No": "Нет",
-  "Any": "Все",
-
-  "Copyright": "Авторские права",
-  "Privacy policy": "Политика конфиденциальности",
-  "Trades disclaimer text": "By trading on our platform you agree with the following",
-  "Terms and conditions": "terms and conditions",
-
-  "Make trades on your terms, share and generate revenue":
-  "Торгуйте на ваших условиях, делитесь сделками и получайте доход.",
-
-  "Create your Trade": "Создайте свою Сделку",
-  "Listing on Uniswap": "Листинг на Uniswap",
-
-  "You have": "У вас есть",
-  "Add": "Добавить",
-  "You want to get": "Вы хотите получить",
-  "You get": "Вы получите",
-  "Your rate is": "Ваша ставка",
-  "than": "чем",
-  "coinmarketcap": "coinmarketcap",
-  "rate.": "ставка.",
-  "Closing date": "Дата закрытия",
-  "Closing time": "Время закрытия",
-  "Public deal": "Публичная сделка",
-  "Trade will be listed on the main page": "Сделка будет отображена на главной старнице",
-  "Permanent trade": "Постоянная сделка",
-  "Lock liquidity until the trade completion": "Заморозьте ликвидность до завершения сделки",
-  "Minimum contribution in": "Минимальный взнос в",
-  "Brokerage fee": "Брокерская комиссия",
-  "You can specify % for Broker": "Вы можете указать% для брокера",
-  "Enter Broker Address": "Введите адрес брокера",
-  "Specify % for": "Укажите % для",
-  "Close Settings": "Окончательные настройки",
-  "Advanced Settings": "Расширенные настройки",
-  "Creating Trade": "Создание сделки",
-  "Create Trade": "Создать сделку",
-  "Use custom token": "Используйте кастомный токен",
-  "Token Contract Address": "Адрес контракта токена",
-  "Choose Token": "Выберете токен",
-  "Enter amount": "Введите количество",
-
-  "No data": "Нет данных",
-
-  "Error": "Ошибка",
-  "Please choose main net network in Metamask.": "Пожалуйста, выберите соответствующую сеть токенов, которыми вы хотите торговать. Если проблема не исчезнет, обратитесь к разделу часто задаваемых вопросов.",
-  "Close": "Закрыть",
-  "Cancel": "Отмена",
-  "Order Book": "Order Book",
-  "Send": "Отправить",
-  "Get": "Получить",
-  "Volume": "Объем",
-  "Chain": "Сеть",
-  "Expires in": "Истекает через",
-  "Status": "Статус",
-  "d:h:m": "{{days}}д: {{hours}}ч: {{minutes}}м",
-  "Show more": "Показать больше",
-  "There is no matching pair, please": "Нет подходящей пары, пожалуйста",
-  "create your own": "создаqnt свою собственную",
-  "Network": "Сеть",
-  "BUTTONS": {
-    "ACCEPT": "Принять"
+  "common": {
+    "from": "Откуда",
+    "to": "Куда",
+    "yes": "Да",
+    "no": "Нет",
+    "any": "Все",
+    "error": "Ошибка",
+    "have": "У вас есть",
+    "want": "Вы хотите получить",
+    "confirm": "Подтвердить",
+    "copy": "Копировать",
+    "accept": "Принять",
+    "copyright": "Авторские права",
+    "privacyPolicy": "Политика конфиденциальности",
+    "close": "Закрыть",
+    "advancedOptions": "Дополнительные Опции",
+    "send": "Отправить",
+    "left": "Осталось",
+    "checkOnExplorer": "Проверить в Explorer",
+    "useCustomToken": "Использовать пользовательский токен",
+    "cancel": "Отмена",
+    "add": "Добавить",
+    "via": "Через",
+    "contractAddress": "Адрес контракта Токена",
+    "enterAmount": "Введите количество",
+    "chooseToken": "Выберите токен"
   },
-
-  "Rubic p2p trades is a decentralized p2p platform. It helps users to make trades on their terms, share and generate revenue.":
-  "Rubic p2p trades - это децентрализованная платформа p2p. Она помогает пользователям совершать сделки на своих условиях, делиться ими и получать доход.",
-
-  "P2P trade": "P2P сделка",
-  "Create your trade and choose your rate.": "Создайте свою сделку и выберите свой курс.",
-  "Instant Trade": "Мгновенная сделка",
-  "You can create an instant trade using external DEX integration": "Вы можете создать мгновенную сделку с помощью внешней интеграции DEX",
-  "Order": "Заказ",
-
-  "Set the desired rate and the deal will be executed when one of the DEX meets these requirements":
-  "Установите желаемый курс, и сделка будет выполнена, когда одна из DEX будет соответствовать этим требованиям.",
-
-  "Farming": "Доходное фермерство",
-
-  "If you provide liquidity for trades you will be rewarded by Rubic tokens when the trade is executed.":
-  "Если вы предоставите ликвидность для сделок, вы будете вознаграждены токенами Rubic, когда сделка будет выполнена.",
-
-  "Pool": "Пул",
-  "Create pools for DEXs by having only 1 token": "Создавайте пулы для DEX, имея только 1 токен",
-  "Multichain support": "Мультичейн поддержка",
-  "Ethereum now, Tron and Binance Smart Chain are coming soon": "Ethereum сейчас, Tron и Binance Smart Chain скоро",
-  "Rubic P2P trades features": "Rubic P2P особенности сделок",
-  "Option to lock liquidity until trade is closed": "Возможность заморозить ликвидность до закрытия сделки",
-  "Uniswap / curve integration (in progress)": "Uniswap / curve интеграция (в процессе)",
-  "No volume limits": "Нет ограничений по объему",
-  "Ability to make crowdsales": "Возможность проводить краудсейлы",
-  "Public/Private deals": "Публичные/Приватные сделки",
-  "No need to list token": "Нет необходимости листить токен",
-  "% of platform revenue can be regulated": "% дохода платформы можно регулировать",
-  "Brokers support": "Поддержка брокеров",
-  "Rubic contract": "Rubic контракт",
-  "Roadmap": "Roadmap",
-  "October 2020": "Октябрь 2020",
-  "Integration with Tron, Binance Smart Chain": "Интеграция с Tron, Binance Smart Chain",
-  "November 2020": "Ноябрь 2020",
-  "Instant trades": "Мгновенные сделки",
-  "January 2021": "Январь 2021",
-
-  "Multichain solution with the help of other projects such as Ren, PolkaDot":
-  "Мультичейн решение с помощью других проектов, таких как Ren, PolkaDot",
-
-  "February 2021": "Февраль 2021",
-  "Anonymizer": "Анонимайзер",
-  "April 2021": "April 2021",
-  "Liquidity Pool Platform": "Платформа пулов ликвидности",
-  "FAQ": "FAQ",
-  "FAQ_QUESTIONS": [
-    {
-      "QUESTION": "Что такое p2p-сделки Rubic?",
-      "ANSWER": "Rubic - это мультичейн defi платформа. Rubic организует сервисы defi, чтобы проект мог создавать, управлять токенами и торговать ими в ОДНОМ МЕСТЕ. Это помогает пользователям совершать сделки на их условиях, делиться и получать доход."
-    }, {
-      "QUESTION": "Кто может пользоваться нашим сервисом?",
-      "ANSWER": "Всем, кто хочет создавать токены и управлять ими, и всем, у кого есть криптовалюта, и кто хотел бы ее обменять. KYC не требуется. "
-    }, {
-      "QUESTION": "Каков минимальный и максимальный размер сделки?",
-      "ANSWER": "Нет никаких ограничений."
-    }, {
-      "QUESTION": "Как это работает?",
-      "ANSWER": "Есть два варианта для трейдинга:\n Сначала вы создаете сделку на своих условиях и ждете, пока другая часть согласится с вашими условиями и заполнит свою часть.\n Во-вторых, вы выбираете мгновенную торговлю и соглашаетесь с условиями другой части. Уже скоро.\n\nВы может создать свой собственный токен без навыков кодирования и торговать им без листинга."
-    }, {
-      "QUESTION": "Какие криптовалюты поддерживаются?",
-      "ANSWER": "В настоящий момент Rubic работает с токенами на основе Ethereum для торговли. Вскоре будут выпущены блокчейны Tron, Binance Chain, BTC. Однако для создания токенов и управления ими мы уже предоставляем услугу мультичейн, поддерживаемую Ethereum, Tron, EOS, NEO, Waves, Binance Smart Chain Blockchains."
-    }, {
-      "QUESTION": "Должен ли я залистить свой токен перед использованием вашего сервиса?",
-      "ANSWER": "Нет, вы можете торговать любыми токенами. Однако вы можете связаться с нами, и мы добавим ваш токен в наш список."
-    }, {
-      "QUESTION": "Как начать?",
-      "ANSWER": "Это просто и быстро. Вам нужен только MetaMask для запуска.\n FЗаполните поля желаемых условий и нажмите «Создать сделку»."
-    }, {
-      "QUESTION": "Как создать сделку?",
-      "ANSWER": "Шаг 1. Заполните форму, введите сумму, которая у вас есть, и укажите сумму, которую вы хотите получить.\n Шаг 2. Добавьте дополнительные параметры, такие как дата и время закрытия, минимальный и максимальный взнос, конфиденциальность, брокерская комиссия, блокировка ликвидности до завершения сделки \n Шаг 3. Проверьте детали сделки \n Шаг 4. Нажмите «Создать сделку» \n Шаг 5. Используйте Metamask для подтверждения вашей сделки \n Шаг 6. Внесите свой вклад в сделку."
-    }, {
-      "QUESTION": "Сколько это стоит?",
-      "ANSWER": "На данный момент мы не берем комиссию за использование Instant Trades. Но у нас есть комиссия в 0.015 ETH при создании сделки на Order Book."
-    }, {
-      "QUESTION": "Сколько времени нужно, чтобы завершить сделку?",
-      "ANSWER": "Сделка будет завершена, как только другая сторона завершит свою часть сделки."
-    }, {
-      "QUESTION": "Как обеспечивается конфиденциальность и безопасность сделки?",
-      "ANSWER": "Сделка обеспечивается смарт-контрактами, проверенными опытными разработчиками и внешним аудитом."
-    }, {
-      "QUESTION": "Сколько человек может участвовать в одной сделке?",
-      "ANSWER": "С каждой стороны могут участвовать до 10 человек"
-    }, {
-      "QUESTION": "Что будет, если вторая сторона не завершит сделку?",
-      "ANSWER": "Срок действия сделки истечет, и вы получите все свои токены обратно."
-    }, {
-      "QUESTION": "Если я заключил сделку, но передумал, могу ли я отменить сделку?",
-      "ANSWER": "Да, вы можете отменить сделку в любое время до того, как вторая сторона завершит сделку. Если вы отмените сделку, вы можете вернуть свои токены."
-    }, {
-      "QUESTION": "How to add Binance Smart Chain and Polygon networks to MetaMask?",
-      "ANSWER": "<a href='/assets/book.pdf' target='_blank'>Please click here for more details.</a>"
-    }, {
-      "QUESTION": "How to use cross-chain bridge?",
-      "ANSWER": "<strong>Step 1.</strong> Install MetaMask wallet (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) and connect it to Rubic.exchange. \n\n<strong>Step 2.</strong> Choose your exchange destination (from Ethereum to Binance or vice-versa). You can switch your destination by clicking on the swap arrows button. \n\n<strong>Step 3.</strong> Currently, users are able to swap 25 ERC20 tokens with their corresponding BEP20 version, and vice-versa (and the list keeps getting updated). The list of tokens:\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>Step 4.</strong> Enter the number of tokens you want to swap (check below the minimum and maximum amount of tokens that you’re able to exchange). Proceed next if you are satisfied with the returning amount of tokens (this includes the Binance fee).\n\n<strong>Step 5.</strong> You can view tokens' contracts by clicking on 'Check on Etherscan/BSCscan'.\n\n<strong>Step 6.</strong>  Click Create Swap, followed by MetaMask's trade confirmation. \n\n<strong>Step 7.</strong> Please wait until the transaction will be recorded in the blockchain. Once your transaction is accepted you will be notified. You can find the transaction details in the table. Please wait until the Binance will process it as well."
-    }, {
-      "QUESTION": "I'm not able to use cross-chain swaps, it appears I have exceeded the limit. What should I do?",
-      "ANSWER": "Please wait and try again later, as currently there is a limit of 3 cross-chain swaps in 30 minutes. This will soon improve."
-    }, {
-      "QUESTION": "How long does it take to complete a cross-chain swap?",
-      "ANSWER": "It usually varies, and this does not depend on us, but on the two blockchains.\nAs estimations we have 2 minutes for initialization, then 4 minutes for feedback waiting, and another couple of  minutes for deposit. \n\nThe current average time is approximately 10 minutes."
-    }, {
-      "QUESTION": "What are the benefits of Uniswap integration?",
-      "ANSWER": "Users will be able to choose the suitable DEX protocol in order to get the best tokens rates with the lowest gas prices."
-    }, {
-      "QUESTION": "Why do we need to make a choice between 1inch and Uniswap?",
-      "ANSWER": "The gas fees and price rates of these protocols are different, therefore the opportunity of having more options empowers the users to better trading decisions."
-    }, {
-      "QUESTION": "Is the token approval included in the gas fee?",
-      "ANSWER": "Token approval is not included in the gas fee. Please note that it is required to approve a token just once, while the first use. Here is how it can look like:\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
-    }, {
-      "QUESTION": "What should I do when I see the message:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trading on Uniswap is not available</span></div>?",
-      "ANSWER": "If you get this message please try the next methods:\n1. Reload the page\n2. Clear website cache\n3. Log out and then log in into MetaMask\nIf it still not working please contact our support team."
-    }, {
-      "QUESTION": "What should I do if Uniswap doesn’t display the rates?",
-      "ANSWER": "In order to see the Uniswap rates you will need to login with your MetaMask account, once logged in refresh the page as well."
-    }, {
-      "QUESTION": "Зачем нужны Limit Orders?",
-      "ANSWER": "Limit Orders позволяют пользователям покупать или продавать токен по желаемому курсу и предлагают им возможность автоматического завершения сделок на Order Books после выполнения определенных условий."
-    }, {
-      "QUESTION": "Каковы условия выполнения Limit Order?",
-      "ANSWER": "Условиями автоматического заполнения Limit Order являются:\n<ul><li>Торговый курс из Order Books совпадает с рыночным курсом, также это включает в себя плату за газ+ комиссию платформы (сейчас это 0,15 ETH, со временем это изменится).</li><li>Срок торговли не истек.</li></ul>Также Order может быть выполнен, если другие пользователи принимают торговые параметры и участвуют в торговле."
-    }, {
-      "QUESTION": "Как использовать Limit Orders?",
-      "ANSWER": "<strong>Шаг 1:</strong> Выберите блокчейн, в котором вы хотите обменять токены, и выберите Order Books (в настоящее время функция Limit Orders поддерживает сделки только на сети Ethereum, поэтому пожалуйста выберите сеть Ethereum. В ближайшем будущем будет поддерживаться больше блокчейнов).\n\n<strong>Шаг 2:</strong> Выберите токены, которые вы хотите обменять, и установите желаемый курс. В настоящее время доступны только пары “RBC-ETH” и “ETH-RBC”.\n\n<strong>Шаг 3:</strong> Выберите дополнительные параметры, такие как дата и время закрытия, минимальный и максимальный вклад, конфиденциальность, брокерская комиссия, если это необходимо.\n\n<strong>Шаг 4:</strong> Нажмите кнопку Создать сделку и Подтвердите создание транзакции в MetaMask.\n\n<strong>Шаг 5:</strong> Внесите свой вклад в вашу часть сделки (есть 2 вида транзакций: подтверждение токенов и внесения вклада). Выберите ‘Заполнить все\", если вы планируете быть единственным участником на вашей стороне сделки. За это действие будет взиматься комиссия платформы.\n<a href='https://youtu.be/xiuT59ueJ8c'>Видео туториал: (этот метод работает для любого блокчейна)</a>\n\n<strong>Шаг 6:</strong> Дождитесь закрытия вашего Ордера. Обратите внимание, что ваш заказ может быть заполнен другими пользователями или платформой автоматически, если курс пары Uniswap совпадает с ним (включая плату за газ).\n\n<strong>Важно:</strong>\n* Продавцы должны на 100% заполнить свои стороны сделки (см. видеоурок), поэтому, если вы планируете быть единственным продавцом в своей сделке, вам следует выбрать \" Заполнить все’. Таким образом, ваша часть сделки будет завершена на 100% и станет доступной для других покупателей (или функционала Limit orders).\n** Если покупатель хочет частично заполнить ваш заказ, функция Limit orders все равно выполнит свою часть и автоматически заполнит остальную часть вашего заказа до тех пор, пока он не будет заполнен на 100%.\n*** Если срок действия сделки истек, вы можете получить свои токены обратно, перейдя в таблицу сделок и нажав на кнопку \"Возврат\" (будет взиматься комиссия платформы).\n\nПервая пара токенов, доступных для Limit orders, - это RBC/ETH. Позже мы планируем добавить новые пары и поддержку нескольких блокчейнов: Ethereum, Polygon и Binance Smart Chain.\n\nОбратите внимание, что сделка будет закрыта по истечении времени, указанного в параметре “ДАТА ЗАКРЫТИЯ”.\n"
-    }
-  ],
-
-
-  "Done": "Готово",
-  "Created": "Создано",
-  "Active": "Активно",
-  "Postponed": "Отложено",
-  "Waiting": "В ожидании",
-  "Waiting for initialization": "Ожидание инициализации",
-
-
-  "The trade was completed. If you participated in this trade, please check your wallet.":
-  "Сделка была завершена. Если вы участвовали в этой сделке, проверьте свой кошелек.",
-
-  "Expired": "Окончено",
-  "The trade is no longer available.": "Сделка больше не доступна.",
-  "Cancelled": "Отменено",
-  "The trade was cancelled.": "Сделка отменена.",
-  "Rate:": "Курс:",
-
-  "The trade's rate is {rate}% more profitable than coinmarketcap rate":
-  "Курс сделки {{ rate }}% более выгодно, чем ставка Coinmarketcap",
-
-  "The trade's rate is {rate}% less profitable than coinmarketcap rate":
-  "Курс сделки {{ rate }}% менее выгодно, чем ставка Coinmarketcap",
-
-  "Sent": "Отправить",
-  "Check on Explorer": "Проверить в эксплорере",
-  "Number of investors": "Количество инвесторов",
-
-  "You will get {amount} {token} after the trade is completed": "Вы получите {{ amount }} {{ token }} после сделки",
-  "Fill all": "Заполните все поля",
-  "Min Contribution Limit:": "Минимальный лимит взноса:",
-  "Only Owner can contribute": "Только владелец может сделать взнос",
-  "Brokers fee:": "Комиссия брокера:",
-  "Withdraw": "Возврат",
-  "Left": "Осталось",
-
-  "Link to deal": "Ссылка на сделку",
-  "Management address": "Адрес управления",
-  "Broker address": "Адрес брокера",
-  "Additional comment": "Дополнительный комментарий",
-  "Cancel trade": "Отменить сделку",
-
-  "No trades": "Нет сделок",
-  "Name": "Название",
-  "Creation date": "Дата создания",
-  "Do you want to remove it?": "Вы хотите удалить?",
-  "Do you really want to Log Out?": "Вы действительно хотите выйти?",
-
-  "DISCLAIMERS": {
-    "START": {
-      "TITLE": "Token safety alert!",
-      "TEXT": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform."
+  "errors": {
+    "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
+    "noMetamaskInstalled": "Убедитесь, что у вас установлен и разблокирован плагин Metamask. Вы можете скачать его на <a href='www.metamask.io' target='_blank'>www.metamask.io</a>.",
+    "wrongNetwork": "Вы выбрали не ту сеть. Пожалуйста, выберите {{ networkToChoose }} в MetaMask.",
+    "OverQueryLimit": "Вы пытались совершить слишком много сделок за короткий промежуток времени. Пожалуйста, подождите и повторите попытку позже, если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
+    "userReject": "Вы отказались от исполнения сделки. Пожалуйста, сначала подтвердите сделку, чтобы её завершить.",
+    "undefined": "Пожалуйста, повторите попытку позже или попробуйте использовать другое устройство. Если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
+    "insufficientFunds": "У вас недостаточно {{ tokenSymbol }}. Ваш баланс {{balance}} {{tokenSymbol}}, но требуется {{requiredBalance}} {{tokenSymbol}}.",
+    "sameTokens": "Один и тот же токен не может быть выбран в обоих блоках, пожалуйста, выберете разные токены."
+  },
+  "navigation": {
+    "about": "О компании",
+    "faq": "FAQ",
+    "features": "Функции",
+    "team": "Команда",
+    "project": "Проект",
+    "login": "Подключить кошелек",
+    "myTrades": "Мои сделки",
+    "logout": "Выйти",
+    "logoutMessage": "Вы действительно хотите выйти?"
+  },
+  "aboutPage": {
+    "description": "Rubic-это мультичейн экосистема DeFi, которая включает в себя кросс-чейн, P2P, мгновенные обмены и лимит ордера с возможностью использовать разные блокчейны, стремясь обеспечить общую для всех универсальную децентрализованную платформу.",
+    "benefits": {
+      "0": {
+        "title": "Custom routing",
+        "description": "Rubic created a routing solution that will allow users to trade any token. The main advantage is the ability to calculate gas prices and show users the best-optimized solution with paying the least amount of gas."
+      },
+      "1": {
+        "title": "Мгновенная сделка",
+        "description": "Совершайте мгновенные сделки, используя наши внешние DEXы, по лучшему курсу."
+      },
+      "2": {
+        "title": "Поддержка разных блокчейнов!",
+        "description": "Уже работают: Ethereum, Binance Smart Chain, Polygon & TRON)."
+      },
+      "3": {
+        "title": "Cross-chain swaps",
+        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON."
+      },
+      "4": {
+        "title": "Faucet",
+        "description": "Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come!"
+      },
+      "5": {
+        "title": "P2P сделки",
+        "description": "Создайте свою сделку, выберите свои собственные условия, сделайте ее публичной или частной и все это децентрализованно."
+      },
+      "6": {
+        "title": "Лимит Ордеры",
+        "description": "Установите желаемый курс, и сделка будет заключена, когда один из DEXs удовлетворит вашим требованиям."
+      }
+    },
+    "features": {
+      "title": "Особенности Rubic DEX",
+      "data": {
+        "0": "iFrame Виджет",
+        "1": "Custom routing",
+        "2": "Кросс-чейн обмены",
+        "3": "Мультичейн: Ethereum, Binance Smart Chain, Polygon & TRON networks",
+        "4": "Возможность проводить краудсейлы",
+        "5": "Процент дохода платформы можно регулировать",
+        "6": "Мгновенные сделки",
+        "7": "Публичные/Приватные сделки",
+        "8": "Поддержка брокеров",
+        "9": "Нет ограничений по объему",
+        "10": "Custom tokens",
+        "11": "Stops scams and \"rugpulls\" from happening",
+        "12": "Limit Orders для Ethereum",
+        "13": "Creation of Custom Bridges",
+        "14": "BNB faucet"
+      }
+    },
+    "contract": {
+      "title": "Rubic контракт"
+    },
+    "roadmap": {
+      "title": "Путь",
+      "data": {
+        "0": {
+          "quarter": "Q1. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "New Blockchain & DEX Integrations",
+            "Binance Smart Chain Instant Trades",
+            "Cross-chain Solutions For ETH And BSC",
+            "Mobile Support",
+            "Limit Orders For ETH",
+            "Creating BRBC And Building Rubic Bridge For RBC-BRBC",
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System"
+          ]
+        },
+        "1": {
+          "quarter": "Q2. 2021",
+          "month": "April",
+          "done": true,
+          "data": [
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System",
+            "Cross-chain Solution For TRON"
+          ]
+        },
+        "2": {
+          "quarter": "Q2. 2021",
+          "month": "May",
+          "done": true,
+          "data": [
+            "CoinGecko And Coin Market Cap API For ETH<>RBC",
+            "TRON Integration",
+            "BNB Faucet",
+            "Instant Trades Table",
+            "UI Simple Update",
+            "BSC Limit Orders"
+          ]
+        },
+        "3": {
+          "quarter": "Q2. 2021",
+          "month": "June",
+          "done": true,
+          "data": [
+            "UI Update stage 2",
+            "New Wallets support - Wallet Connect + WalletLink (Coinbase)",
+            "Merch Shop",
+            "CoinGecko & CMC All Pairs Reporting",
+            "FIAT Integration",
+            "Uniswap V3",
+            "New Blockchain/Bridge Integrations (Candidates: Anyswap/XDai, HECO, Moonbeam, Fantom, Avalanche, RenBTC)",
+            "MATIC Faucet",
+            "Usecase Updates"
+          ]
+        },
+        "4": {
+          "quarter": "Q3. 2021",
+          "month": "July",
+          "done": true,
+          "data": [
+            "Cross-Chain Routing",
+            "New Blockchain/Bridge Integrations",
+            "UI Update Stage 3",
+            "Commission In RBC - Stage 1"
+          ]
+        },
+        "5": {
+          "quarter": "Q3. 2021",
+          "month": "August",
+          "done": true,
+          "data": [
+            "Commission In RBC - stage 2",
+            "Anonymizer V1 - Polygon"
+          ]
+        },
+        "6": {
+          "quarter": "Q3. 2021",
+          "month": "September",
+          "done": true,
+          "data": [
+            "New Bridge Integrations",
+            "New Blockchain Integrations"
+          ]
+        },
+        "7": {
+          "quarter": "Q4. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "Staking/Farming introduction",
+            "Governance",
+            "Mobile App",
+            "API For External Usage",
+            "New Blockchain Integration (L2)"
+          ]
+        }
+      }
     }
   },
-
-  "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.":
-  "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
-  "This error occurs because you didn’t install Metamask add-on to your browser. To solve this problem please install and activate Metamask add-on to your browser.\nPlease go to www.metamask.io and follow the steps.":
-  "Эта ошибка возникает из-за того, что вы не установили расширение Metamask в свой браузер. Чтобы решить эту проблему, пожалуйста, установите и активируйте расширение Metamask в вашем браузере.\nПожалуйста, перейдите по ссылке <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> и следуйте инструкциям.",
-  "You have selected the wrong network. Please choose { networkToChoose } from MetaMask.":
-  "Вы выбрали не ту сеть. Пожалуйста, выберите {{ networkToChoose }} в MetaMask.",
-  "You have attempted to execute too many trades in a short period of time. Please wait and try again later, if you still have problems please reach out to our Customer Support.":
-  "Вы пытались совершить слишком много сделок за короткий промежуток времени. Пожалуйста, подождите и повторите попытку позже, если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
-  "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.":
-  "Вы отказались от исполнения сделки. Пожалуйста, сначала подтвердите сделку, чтобы её завершить.",
-  "Please try again later or try using another device. If you’re still having problems, please reach out to our Customer Support.":
-  "Пожалуйста, повторите попытку позже или попробуйте использовать другое устройство. Если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
-
-  "You accepted the transaction and the exchange has started. Please wait until the trade is completed.":
-  "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
-  "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.":
-  "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами.",
-
-  "Listing request":
-  "Запрос на листинг",
-  "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:":
-  "Если вы хотите, чтобы ваш проект был добавлен на платформу Rubic, пожалуйста, отправьте электронное письмо по адресу <a href='mailto:support@rubic.finance'>support@rubic.finance</a> со следующей информацией:",
-  "Project name":
-  "Название проекта",
-  "Project description":
-  "Описание проекта",
-  "Links to the project and social media":
-  "Ссылки на проект и социальные сети",
-  "Contract address":
-  "Адрес договора",
-  "Whitepaper/Onepager":
-  "Whitepaper/Onepager",
-  "Link to logo in PNG and SVG":
-  "Ссылка на логотип в PNG и SVG",
-  "Why you have chosen Rubic.exchange?":
-  "Почему вы выбрали Rubic.exchange?"
+  "teamPage": {
+    "title": "Команда"
+  },
+  "faqPage": {
+    "title": "FAQ",
+    "questions": {
+      "0": {
+        "title": "Что такое p2p-сделки Rubic?",
+        "answer": "Rubic - это мультичейн defi платформа. Rubic организует сервисы defi, чтобы проект мог создавать, управлять токенами и торговать ими в ОДНОМ МЕСТЕ. Это помогает пользователям совершать сделки на их условиях, делиться и получать доход."
+      },
+      "1": {
+        "title": "Кто может пользоваться нашим сервисом?",
+        "answer": "Всем, кто хочет создавать токены и управлять ими, и всем, у кого есть криптовалюта, и кто хотел бы ее обменять. KYC не требуется."
+      },
+      "2": {
+        "title": "Каков минимальный и максимальный размер сделки?",
+        "answer": "Нет никаких ограничений."
+      },
+      "3": {
+        "title": "Как это работает?",
+        "answer": "Есть два варианта для трейдинга:\n Сначала вы создаете сделку на своих условиях и ждете, пока другая часть согласится с вашими условиями и заполнит свою часть.\n Во-вторых, вы выбираете мгновенную торговлю и соглашаетесь с условиями другой части. Уже скоро.\n\nВы может создать свой собственный токен без навыков кодирования и торговать им без листинга."
+      },
+      "4": {
+        "title": "Какие криптовалюты поддерживаются?",
+        "answer": "В настоящий момент Rubic работает с токенами на основе Ethereum для торговли. Вскоре будут выпущены блокчейны Tron, Binance Chain, BTC. Однако для создания токенов и управления ими мы уже предоставляем услугу мультичейн, поддерживаемую Ethereum, Tron, EOS, NEO, Waves, Binance Smart Chain Blockchains."
+      },
+      "5": {
+        "title": "Должен ли я залистить свой токен перед использованием вашего сервиса?",
+        "answer": "Нет, вы можете торговать любыми токенами. Однако вы можете связаться с нами, и мы добавим ваш токен в наш список."
+      },
+      "6": {
+        "title": "Как начать?",
+        "answer": "Это просто и быстро. Вам нужен только MetaMask для запуска.\n FЗаполните поля желаемых условий и нажмите «Создать сделку»."
+      },
+      "7": {
+        "title": "Как создать сделку?",
+        "answer": "Шаг 1. Заполните форму, введите сумму, которая у вас есть, и укажите сумму, которую вы хотите получить.\n Шаг 2. Добавьте дополнительные параметры, такие как дата и время закрытия, минимальный и максимальный взнос, конфиденциальность, брокерская комиссия, блокировка ликвидности до завершения сделки \n Шаг 3. Проверьте детали сделки \n Шаг 4. Нажмите «Создать сделку» \n Шаг 5. Используйте Metamask для подтверждения вашей сделки \n Шаг 6. Внесите свой вклад в сделку."
+      },
+      "8": {
+        "title": "Сколько это стоит?",
+        "answer": "На данный момент мы не берем комиссию за использование Instant Trades. Но у нас есть комиссия в 0.015 ETH при создании сделки на Order Book."
+      },
+      "9": {
+        "title": "Сколько времени нужно, чтобы завершить сделку?",
+        "answer": "Сделка будет завершена, как только другая сторона завершит свою часть сделки."
+      },
+      "10": {
+        "title": "Как обеспечивается конфиденциальность и безопасность сделки?",
+        "answer": "Сделка обеспечивается смарт-контрактами, проверенными опытными разработчиками и внешним аудитом."
+      },
+      "11": {
+        "title": "Сколько человек может участвовать в одной сделке?",
+        "answer": "С каждой стороны могут участвовать до 10 человек"
+      },
+      "12": {
+        "title": "Что будет, если вторая сторона не завершит сделку?",
+        "answer": "Срок действия сделки истечет, и вы получите все свои токены обратно."
+      },
+      "13": {
+        "title": "Если я заключил сделку, но передумал, могу ли я отменить сделку?",
+        "answer": "Да, вы можете отменить сделку в любое время до того, как вторая сторона завершит сделку. Если вы отмените сделку, вы можете вернуть свои токены."
+      },
+      "14": {
+        "title": "Как добавить сети Binance Smart Chain и Polygon в MetaMask?",
+        "answer": "<a href='/assets/book.pdf' target='_blank'>Пожалуйста, нажмите для более подробной информации.</a>"
+      },
+      "15": {
+        "title": "Как использовать кроссчейн мост?",
+        "answer": "<strong>Шаг 1.</strong> Установите кошелек MetaMask (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>)  и подключите его к Rubic.exchange. \n\n<strong>Шаг 2.</strong>Выберите конечную валюту (из Ethereum в Binance или наоборот). Вы можете менять направление транзакций с помощью нажатия на кнопку со стрелками. \n\n<strong>Шаг 3.</strong> В настоящий момент, пользователи могут обменивать 25 ERC20 tokens с соответствующими им BEP20 версиями и наоборот (список продолжает обновляться). Перечень токенов:\nUSDT в BUSDT-T (Tether)\nETH в ETH (Ethereum)\nBBTC в BTCB (Bitcoin)\nBBCH в BCH (Bitcoin Cash)\nBDOT в DOT (Polkadot)\nBFIL в FIL (Filecoin)\nSNX в SNX (Synthetix Network Token)\nDAI в DAI (Dai Stablecoin)\nBAND в BAND (BandToken)\nBAT в BATBasic (Attention Token)\nLINK в LINK (ChainLink)\nUNI в UNI (Uniswap)\nYFII в YFII (DFI.Money)\nYFI в YFI (yearn.finance)\nBUSD в BUSD (Binance USD)\nCOMP в COMP (Compound)\nMKR в MKR (Maker)\nTCT в TCTToken (Club Token)\nIOTX в IOTX (IoTeX)\nBEL в BEL (Bella Protocol)\nELF в ELF (aelf)\nPAX в PAX (Paxos Standard)\nUSDC в USDC (USD Coin)\nINJ в INJ (Injective Protocol)\nSXP в SX (Swipe)\n\n<strong>Шаг 4.</strong> Введите количество токенов, которые вы хотите поменять (предварительно проверьте минимальное и максимальное количество токенов, которое вы можете обменять). Приступайте к следующим шагам, если вы удовлетворены количеством токенов после конвертации (оно включает в себя комиссию Binance).\n\n<strong>Шаг 5.</strong>Вы можете просмотреть токен-контракт, нажав на кнопку 'Проверить Etherscan/BSCscan'.\n\n<strong>Шаг 6.</strong>  Нажмите “Обменять” и подтвердите сделку на MetaMask. \n\n<strong>Шаг 7.</strong> Пожалуйста, подождите пока транзакция будет записана блокчейном. Вас проинформируют сразу, как ваша транзакция будет подтверждена. Вы можете найти детальную информацию о транзакции в таблице. Пожалуйста, подождите пока транзакция будет также обработана Binance."
+      },
+      "16": {
+        "title": "Я не могу использовать кроссчейн обмен, потому что я исчерпал лимит. Что мне делать?",
+        "answer": "Пожалуйста, повторите позже. На данный момент существует ограничение: только 3 кроссчейн обмена в течение 30 минут. Скоро мы улучшим нашу систему."
+      },
+      "17": {
+        "title": "как долго осуществляется кроссчейн обмен?",
+        "answer": "По-разному, и это зависит не от нас, а от двух блокчейнов s.\\nОбычно две минуты отводятся на установку связи, 4 минуты на ожидание ответа и еще пару минут на совершение депозита. В среднем процесс занимает 10 минут."
+      },
+      "18": {
+        "title": "Какие есть плюсы у интеграции с Uniswap?",
+        "answer": "Пользователи смогут выбирать подходящий DEX протокол для того, чтобы обменять токены по самому выгодному курсу с низкой стоимостью GAS."
+      },
+      "19": {
+        "title": "Почему нам нужно выбирать между 1inch и Uniswap?",
+        "answer": "GAS и тарифная ставка этих двух протоколов различаются, а наличие альтернатив позволяет пользователям совершать более выгодный трейдинг."
+      },
+      "20": {
+        "title": "Подтверждение токена включено в GAS?",
+        "answer": "Нет, подтверждение не включено в стоимость GAS. Имейте в виду, что подтверждать токен необходимо лишь один раз - во время первого использования. Вот как это может выглядеть:\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
+      },
+      "21": {
+        "title": "Что мне следует делать, когда я вижу следующее сообщение:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Торговля на Uniswap недоступна</span></div>?",
+        "answer": "Если вы видите данное сообщение, попробуйте следующие решения:\n1. Перезагрузите страницу\n2. Очистите кэш сайта\n3. Перезайдите в свой аккаунт MetaMask\nЕсли ничего из вышеперечисленного не помогло, пожалуйста, обратитесь в нашу службу поддержки."
+      },
+      "22": {
+        "title": "Что мне делать, если Uniswap не показывает курс?",
+        "answer": "Чтобы увидеть курсы Uniswap вам нужно подключиться к своему аккаунту в  MetaMask, после чего перезагрузить страницу."
+      },
+      "23": {
+        "title": "Зачем нужны Limit Orders?",
+        "answer": "Limit Orders позволяют пользователям покупать или продавать токен по желаемому курсу и предлагают им возможность автоматического завершения сделок на Order Books после выполнения определенных условий."
+      },
+      "24": {
+        "title": "Каковы условия выполнения Limit Order?",
+        "answer": "Условиями автоматического заполнения Limit Order являются:\n<ul><li>Торговый курс из Order Books совпадает с рыночным курсом, также это включает в себя плату за газ+ комиссию платформы (сейчас это 0,15 ETH, со временем это изменится).</li><li>Срок торговли не истек.</li></ul>Также Order может быть выполнен, если другие пользователи принимают торговые параметры и участвуют в торговле."
+      },
+      "25": {
+        "title": "Как использовать Limit Orders?",
+        "answer": "<strong>Шаг 1:</strong> Выберите блокчейн, в котором вы хотите обменять токены, и выберите Order Books (в настоящее время функция Limit Orders поддерживает сделки только на сети Ethereum, поэтому пожалуйста выберите сеть Ethereum. В ближайшем будущем будет поддерживаться больше блокчейнов).\n\n<strong>Шаг 2:</strong> Выберите токены, которые вы хотите обменять, и установите желаемый курс. В настоящее время доступны только пары “RBC-ETH” и “ETH-RBC”.\n\n<strong>Шаг 3:</strong> Выберите дополнительные параметры, такие как дата и время закрытия, минимальный и максимальный вклад, конфиденциальность, брокерская комиссия, если это необходимо.\n\n<strong>Шаг 4:</strong> Нажмите кнопку Создать сделку и Подтвердите создание транзакции в MetaMask.\n\n<strong>Шаг 5:</strong> Внесите свой вклад в вашу часть сделки (есть 2 вида транзакций: подтверждение токенов и внесения вклада). Выберите ‘Заполнить все\", если вы планируете быть единственным участником на вашей стороне сделки. За это действие будет взиматься комиссия платформы.\n<a href='https://youtu.be/xiuT59ueJ8c'>Видео туториал: (этот метод работает для любого блокчейна)</a>\n\n<strong>Шаг 6:</strong> Дождитесь закрытия вашего Ордера. Обратите внимание, что ваш заказ может быть заполнен другими пользователями или платформой автоматически, если курс пары Uniswap совпадает с ним (включая плату за газ).\n\n<strong>Важно:</strong>\n* Продавцы должны на 100% заполнить свои стороны сделки (см. видеоурок), поэтому, если вы планируете быть единственным продавцом в своей сделке, вам следует выбрать \" Заполнить все’. Таким образом, ваша часть сделки будет завершена на 100% и станет доступной для других покупателей (или функционала Limit orders).\n** Если покупатель хочет частично заполнить ваш заказ, функция Limit orders все равно выполнит свою часть и автоматически заполнит остальную часть вашего заказа до тех пор, пока он не будет заполнен на 100%.\n*** Если срок действия сделки истек, вы можете получить свои токены обратно, перейдя в таблицу сделок и нажав на кнопку \"Возврат\" (будет взиматься комиссия платформы).\n\nПервая пара токенов, доступных для Limit orders, - это RBC/ETH. Позже мы планируем добавить новые пары и поддержку нескольких блокчейнов: Ethereum, Polygon и Binance Smart Chain.\n\nОбратите внимание, что сделка будет закрыта по истечении времени, указанного в параметре “ДАТА ЗАКРЫТИЯ”.\n"
+      }
+    }
+  },
+  "bridgePage": {
+    "title": "Создайте свой кросс-чейн обмен",
+    "swapToggleText": "Использования наших свопов",
+    "progressMessage": "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
+    "successMessage": "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами.",
+    "tableTitle": "Ваши кросс-чейн обмены",
+    "whatIs": "Что такое ",
+    "whatIsAfter": "",
+    "checkOn": "Check on ",
+    "assistanceOf": "С помощью",
+    "getTokens": "Вы получите {{ toBlockchainName }} токены на выбранный адрес",
+    "minAmount": "Минимальная сумма ",
+    "maxAmount": "Максимальная сумма ",
+    "createBridge": "Create Bridge",
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
+  },
+  "instantTrades": {
+    "title": "Мгновенные сделки",
+    "gasFeeMessage": "Приблизительный размер платы за газ. Для завершения сделки потребуется предоставить больше газа в Метамаске, дополнительный газ будет возвращен вам после завершения сделки.",
+    "notSupportedToken": "Пожалуйста, убедитесь, что выбранный токен поддерживается на указанном DEX, и повторите попытку позже.",
+    "bestRate": "Лучший курс",
+    "gasFee": "Приблизительный газ:",
+    "useOptimization": "Использовать оптимизацию Rubic",
+    "notAvailableBefore": "Торговля на ",
+    "notAvailableAfter": " недоступно."
+  },
+  "orderBook": {
+    "title": "Order Book",
+    "closingTime": "Время закрытия сделки (UTC)",
+    "tradeListed": "Торговля будет видна на главной странице",
+    "specifyTokens": "Пожалуйста, укажите токены и необходимые суммы, чтобы увидеть дополнительные опции",
+    "minContribution": "Минимальный взнос в",
+    "brokerFee": "Брокерская комиссия",
+    "specifyForBorker": "Вы можете указать % для Брокера",
+    "yourRate": "Ваш курс на ",
+    "higher": "выше",
+    "lower": "ниже",
+    "coingeckoRate": " чем курс coingecko"
+  },
+  "bridge": {
+    "title": "Кросс-чейн обмены"
+  },
+  "myTrades": {
+    "title": "Мои сделки"
+  },
+  "tradesForm": {
+    "unknownTokenWarning": "Пожалуйста, убедитесь, что представлен правильный проект. Если нет, есть вероятность невозможности осуществления его продажи позже. Ответственность за сделку вы берете на себя."
+  },
+  "tradesTable": {
+    "columns": {
+      "status": "Статус",
+      "from": "Откуда",
+      "to": "Куда",
+      "get": "Получить",
+      "send": "Отправить",
+      "expiresIn": "Истекает через",
+      "volume": "Объем",
+      "network": "Сеть",
+      "spent": "Потратить",
+      "expected": "Ожидаемый",
+      "date": "Дата"
+    },
+    "noData": "У вас еще нет кросс-чейн обменов",
+    "noTrades": "Сделок нет",
+    "noTradesWithSelected": "С текущими параметрами сделок не существует",
+    "showData": "Показать данные",
+    "sortBy": "Сортировать"
+  },
+  "tradesPage": {
+    "createTrade": "Создайте свою Сделку",
+    "swapToggleText": "Кросс-чейн обмены",
+    "tradesDisclaimer": {
+      "beforeText": "Используя нашу платформу , вы соглашаетесь со следующими",
+      "termsAndConditions": "условиями и положениями.",
+      "afterText": ""
+    },
+    "disclaimerTitle": "Предупреждение о безопасности токенов!",
+    "disclaimerText": "Пожалуйста, будьте очень осторожны во время всего торгового процесса, так как он сопряжен с высокими системными рисками, такими как большой уровень волатильности, хакерские атаки и временные риски, связанные с необходимостью ждать завершения сделки другой стороной. <br /> Любой желающий может создать любой токен на существующих блокчейнах и назвать его по своему усмотрению. Это позволяет создавать поддельные версии существующих токенов или токенов для проектов, которые не имеют токенов. Пожалуйста, будьте осторожны и проведите свое исследование, прежде чем взаимодействовать с любым токеном. Взаимодействуйте с токенами на свой страх и риск и обратите внимание, что владельцы не несут ответственности за законность токенов, представленных на торговой платформе Rubic.",
+    "accumulatedTransactionsVolume": "Накопленный Объем Операций",
+    "collaborations": "Наши партнеры и коллаборации ",
+    "listingRequest": {
+      "title": "Запрос на листинг",
+      "description": "Если вы хотите, чтобы ваш проект был добавлен на платформу Rubic, пожалуйста, отправьте электронное письмо по адресу <a href='mailto:support@rubic.finance'>support@rubic.finance</a> со следующей информацией:",
+      "information": {
+        "projectName": "Название проекта",
+        "projectDescription": "Описание проекта",
+        "links": "Ссылки на проект и социальные сети",
+        "contractAddress": "Адрес договора",
+        "onepager": "Whitepaper/Onepager",
+        "logo": "Ссылка на логотип в PNG и SVG",
+        "why": "Почему вы выбрали Rubic.exchange?"
+      }
+    }
+  },
+  "tradePage": {
+    "sent": "Отправлено",
+    "left": "Осталось",
+    "investors": "Количество инвесторов",
+    "getBefore": "Вы получите",
+    "getAfter": "после завершения сделки",
+    "find": "Заполните все",
+    "limit": "Лимит минимального взноса:",
+    "fee": "Брокерская комиссия:",
+    "withdraw": "Вывести",
+    "rate": "Курс:",
+    "closingDate": "Дата закрытия сделки",
+    "closingTime": "Время закрытия сделки",
+    "link": "Ссылка на сделку",
+    "copied": "Скопировано",
+    "publicDeal": "Публичная сделка",
+    "brokerAddress": "Брокерский адрес",
+    "notExist": "Такой сделки не существует"
+  },
+  "maintenance": {
+    "title": "Поддержка",
+    "text": "У нас возникли проблемы с сервером, пожалуйста, не используйте платформу до последующего уведомления. Спасибо."
+  },
+  "modals": {
+    "adModal": {
+      "text": "Binance Smart Chain Wrapped Rubic уже на плафторме!",
+      "button": "Добавьте BRBC в кошелек"
+    },
+    "gasPriceModal": {
+      "text": "Сейчас стоимость GAS в сети (Ethereum) высокая. Длительность обмена увеличена и может занять до 4 часов.<br />Хотите продолжить сейчас?"
+    },
+    "polygonToEthTradeModal": {
+      "text": "Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Receive' button will appear in the corresponding line of the swaps list under the form."
+    },
+    "cancelModal": {
+      "text": "Сделка была отменена",
+      "link": "Проверьте транзакцию на сканере"
+    },
+    "operationModal": {
+      "progress": {
+        "text": "Операция в процессе <br /> Пожалуйста, дождитесь окончания операции"
+      },
+      "success": {
+        "text": "Операция прошла успешно! <br /> Страница обновится автоматически <br />",
+        "link": "Проверьте транзакцию на сканере"
+      }
+    },
+    "tradeModal": {
+      "progress": {
+        "text": "Сделка в процессе <br />  Пожалуйста, дождитесь окончания сделки"
+      },
+      "success": {
+        "text": "Успешный обмен!",
+        "link": "Проверьте транзакцию в Explorer"
+      }
+    }
+  }
 }

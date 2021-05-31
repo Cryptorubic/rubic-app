@@ -3,47 +3,38 @@
     <div class="area-first__amount-total">{{ shortedAmountTotal }}</div>
 
     <div class="area-first__amount-sent">
-      <span class="area-first__amount-description">Sent</span>
+      <span class="area-first__amount-description">{{ 'tradePage.sent' | translate }}</span>
       <span class="area-first__amount-number">
         {{ token.amountContributed | bigNumberFormat }}
       </span>
     </div>
 
     <div class="area-first__amount-left">
-      <span class="area-first__amount-description">Left</span>
+      <span class="area-first__amount-description">{{ 'tradePage.left' | translate }}</span>
       <span class="area-first__amount-number" *ngIf="!token.amountLeft?.isNaN()">{{
         token.amountLeft | bigNumberFormat
       }}</span>
     </div>
   </div>
 
-  <div
-    class="token-block__area area-second"
-    [ngClass]="{ 'area-second_quote': tokenPart === 'quote' }"
-  >
+  <div class="token-block__area area-second" [ngClass]="{ 'area-second_to': tokenPart === 'to' }">
     <div
       class="area-second__progress-bar"
       *ngIf="token.amountContributed"
       [style.width]="token.amountContributed.div(token.amountTotal).times(100).toFixed() + '%'"
     ></div>
 
-    <div
-      class="area-second__investors investors"
-      [ngClass]="{ investors_quote: tokenPart === 'quote' }"
-    >
+    <div class="area-second__investors investors" [ngClass]="{ investors_to: tokenPart === 'to' }">
       <span class="investors__amount">{{ token.investorsNumber }} / 10</span>
-      <span class="investors__text">Number of investors</span>
+      <span class="investors__text">{{ 'tradePage.investors' | translate }}</span>
     </div>
 
     <div
       class="area-second__token-info token-info"
-      [ngClass]="{ 'token-info_quote': tokenPart === 'quote' }"
+      [ngClass]="{ 'token-info_to': tokenPart === 'to' }"
     >
       <div class="token-info__text">
-        <span
-          class="token-info__title"
-          [ngClass]="{ 'token-info__title_quote': tokenPart === 'quote' }"
-        >
+        <span class="token-info__title" [ngClass]="{ 'token-info__title_to': tokenPart === 'to' }">
           {{ token.name + ' (' + token.symbol + ')' }}
         </span>
 
@@ -115,9 +106,9 @@
         amountToContributeModel.valid
       "
     >
-      You will get
+      {{ 'tradePage.getBefore' | translate }}
       <span class="amount-to-get__number">{{ oppositeTokenToGet }}</span>
-      after the trade is completed
+      {{ 'tradePage.getAfter' | translate }}
     </div>
 
     <button
@@ -125,7 +116,7 @@
       [disabled]="!token.isApproved"
       (click)="setAmountToContribute(token.amountLeft.toFixed())"
     >
-      Fill all
+      {{ 'tradePage.find' | translate }}
     </button>
   </div>
 
@@ -138,7 +129,7 @@
         token.minContribution.isGreaterThan(0)
       "
     >
-      Min contribution limit:
+      {{ 'tradePage.limit' | translate }}
       {{ getMinContributionAsString() + ' ' + token.symbol }}
     </div>
 
@@ -146,7 +137,7 @@
       class="area-fourth__brokers-fee"
       *ngIf="tradeData.isWithBrokerFee && token.brokerPercent > 0"
     >
-      Broker's fee:
+      {{ 'tradePage.fee' | translate }}
       {{
         token.brokerPercent +
           '% (' +

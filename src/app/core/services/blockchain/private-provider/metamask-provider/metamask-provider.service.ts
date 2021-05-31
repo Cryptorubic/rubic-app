@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
@@ -42,7 +44,7 @@ export class MetamaskProviderService extends PrivateProvider {
     return null;
   }
 
-  constructor() {
+  constructor(private readonly translateService: TranslateService) {
     super();
 
     this.onNetworkChanges = new BehaviorSubject<IBlockchain>(undefined);
@@ -77,12 +79,20 @@ export class MetamaskProviderService extends PrivateProvider {
         }
       });
 
+      this._metaMask.on('disconnect', () => {
+        this.selectedChain = null;
+        this.deActivate();
+      });
+
       this._metaMask.on('accountsChanged', (accounts: string[]) => {
-        [this.selectedAddress] = accounts;
-        this.selectedAddress = this.selectedAddress || null;
+        this.selectedAddress = accounts[0] || null;
         if (this.isEnabled) {
           this.onAddressChanges.next(this.selectedAddress);
           console.info('Selected account changed to', accounts[0]);
+        }
+        if (!this.selectedAddress) {
+          this.selectedChain = null;
+          this.deActivate();
         }
       });
     } else {
@@ -104,16 +114,31 @@ export class MetamaskProviderService extends PrivateProvider {
     return null;
   }
 
-  public async activate(): Promise<void> {
+  public async activate(params?: any[]): Promise<void> {
     try {
-      await this._metaMask.request({ method: 'eth_requestAccounts' });
+      await this._metaMask.request({
+        method: 'eth_requestAccounts',
+        params
+      });
       this.isEnabled = true;
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.getAddress());
     } catch (error) {
       console.error(`No Metamask installed. ${error}`);
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
+  }
+
+  public async requestPermissions(): Promise<any[]> {
+    try {
+      return this._metaMask.request({
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }]
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    return null;
   }
 
   public deActivate(): void {
@@ -124,10 +149,10 @@ export class MetamaskProviderService extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
     if (this.getNetwork().name !== token.blockchain) {
-      throw new NetworkError(token.blockchain);
+      throw new NetworkError(token.blockchain, this.translateService);
     }
 
     return this._metaMask.request({

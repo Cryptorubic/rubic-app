@@ -12,14 +12,17 @@ $mobile-size: 600;
   @include b($mobile-size) {
     flex-direction: column;
     height: auto;
+
+    &__dropdown-label {
+      min-width: 110px;
+    }
   }
 
   &__dropdown-label {
     display: flex;
     align-items: center;
 
-    min-width: 150px;
-    padding: 10px 10px 10px 20px;
+    padding: 10px 20px 10px 20px;
 
     color: #7a7a7a;
     font-size: 14px;
@@ -51,7 +54,7 @@ $mobile-size: 600;
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    min-width: 130px;
+    min-width: 150px;
     height: 100%;
     padding: 10px 10px 10px 25px;
 
@@ -82,6 +85,8 @@ $mobile-size: 600;
 
 ::ng-deep .sorting-dropdown {
   &__icon {
+    min-width: auto;
+
     path:not(:first-child) {
       fill: #979797;
     }

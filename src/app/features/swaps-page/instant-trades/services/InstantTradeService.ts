@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
+import { TranslateService } from '@ngx-translate/core';
 import InstantTradeToken from '../models/InstantTradeToken';
 import InstantTrade from '../models/InstantTrade';
 import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
@@ -16,6 +17,16 @@ abstract class InstantTradeService {
   protected web3Public: Web3Public;
 
   protected web3Private: Web3PrivateService;
+
+  protected slippagePercent = 0.001; // 0.1%
+
+  constructor(protected readonly translateService: TranslateService) {}
+
+  /**
+   * @description sets slippage percent
+   * @param slippagePercent is a decimal number up to 1, that is 100%
+   */
+  public abstract setSlippagePercent(slippagePercent: number): void;
 
   /**
    * @description calculate instant trade parameters
@@ -50,17 +61,17 @@ abstract class InstantTradeService {
 
   protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
     if (!this.web3Private.isProviderActive) {
-      throw new MetamaskError();
+      throw new MetamaskError(this.translateService);
     }
 
     if (!this.web3Private.address) {
-      throw new AccountError();
+      throw new AccountError(this.translateService);
     }
     if (
       this.web3Private.networkName !== selectedBlockchain &&
       (this.web3Private.networkName !== `${selectedBlockchain}_TESTNET` || !this.isTestingMode)
     ) {
-      throw new NetworkError(selectedBlockchain);
+      throw new NetworkError(selectedBlockchain, this.translateService);
     }
   }
 
@@ -76,7 +87,8 @@ abstract class InstantTradeService {
         throw new InsufficientFundsError(
           trade.from.token.symbol,
           formattedBalance,
-          trade.from.amount.toString()
+          trade.from.amount.toString(),
+          this.translateService
         );
       }
     } else {
@@ -91,7 +103,8 @@ abstract class InstantTradeService {
         throw new InsufficientFundsError(
           trade.from.token.symbol,
           formattedTokensBalance,
-          trade.from.amount.toString()
+          trade.from.amount.toString(),
+          this.translateService
         );
       }
     }

@@ -2,9 +2,10 @@
   [tableData]="$dataSource | async"
   [displayedColumns]="displayedColumns"
   [columnsSizes]="columnsSizes"
+  [tableType]="'OrderBooks'"
   [tableLoading]="$tableLoading | async"
   (refreshTableEvent)="refreshTable()"
-  [title]="'My trades' | translate"
+  [title]="'myTrades.title' | translate"
   (selectTokenEvent)="selectToken($event)"
   [hasData]="$hasData | async"
 ></app-tokens-table>

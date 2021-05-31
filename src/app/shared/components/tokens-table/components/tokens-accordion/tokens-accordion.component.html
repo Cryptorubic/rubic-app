@@ -4,17 +4,10 @@
     [ngClass]="{ 'tokens-accordion__header_active': data.opened }"
     (click)="data.opened = !data.opened"
   >
-    <span
-      class="tokens-accordion__status"
-      [ngClass]="{
-        'tokens-accordion__status_green': data.status === 'Active',
-        'tokens-accordion__status_yellow': data.status === 'Expired',
-        'tokens-accordion__status_red:': data.status === 'Cancelled'
-      }"
-    >
+    <span class="tokens-accordion__status" [ngClass]="tradeStatusClass">
       {{ data.status }}
     </span>
-    <span
+    <div
       class="tokens-accordion__header-data"
       [ngClass]="{ 'tokens-accordion__header-data_inactive': data.opened }"
     >
@@ -28,62 +21,88 @@
       <div class="data__network" *ngIf="selectedOption === 'From'">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
           <img
-            [src]="data.token.base.image || '/assets/images/icons/coins/empty.svg'"
-            [alt]="data.token.base.symbol"
+            [src]="data.token.from.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.from.symbol"
           />
-          <span>{{ data.token.base.symbol }}</span>
+          <span>{{ data.token.from.symbol }}</span>
         </div>
       </div>
 
       <div class="data__network" *ngIf="selectedOption === 'To'">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
           <img
-            [src]="data.token.quote.image || '/assets/images/icons/coins/empty.svg'"
-            [alt]="data.token.quote.symbol"
+            [src]="data.token.to.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.to.symbol"
           />
-          <span>{{ data.token.quote.symbol }}</span>
+          <span>{{ data.token.to.symbol }}</span>
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Spent'">
+      <div
+        class="data__amount"
+        *ngIf="
+          selectedOption === 'Spent' && data.token.from.constructor.name === 'OrderBookDataToken'
+        "
+      >
         <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
-          <div>{{ data.token.base.amountTotal.dp(8) }} {{ data.token.base.symbol }}</div>
+          <div>{{ data.token.from.amountTotal.dp(8) }} {{ data.token.from.symbol }}</div>
           <span>
-            {{
-              data.token.base.amountTotal.div(data.token.quote.amountTotal).dp(8) | bigNumberFormat
-            }}
-            <span>{{ data.token.base.symbol }} / 1</span>
-            {{ data.token.quote.symbol }}
+            {{ data.token.from.amountTotal.div(data.token.to.amountTotal).dp(8) | bigNumberFormat }}
+            <span>{{ data.token.from.symbol }} / 1</span>
+            {{ data.token.to.symbol }}
           </span>
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Expected'">
+      <div
+        class="data__amount"
+        *ngIf="
+          selectedOption === 'Expected' && data.token.from.constructor.name === 'OrderBookDataToken'
+        "
+      >
         <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
-          <div>{{ data.token.quote.amountTotal.dp(8) }} {{ data.token.quote.symbol }}</div>
+          <div>{{ data.token.to.amountTotal.dp(8) }} {{ data.token.to.symbol }}</div>
           <span>
             1
             <span>
-              {{ data.token.base.symbol }} /
+              {{ data.token.from.symbol }} /
               {{
-                data.token.quote.amountTotal.div(data.token.base.amountTotal).dp(8)
-                  | bigNumberFormat
+                data.token.to.amountTotal.div(data.token.from.amountTotal).dp(8) | bigNumberFormat
               }}
             </span>
-            {{ data.token.quote.symbol }}
+            {{ data.token.to.symbol }}
           </span>
         </div>
       </div>
 
-      <div class="data__amount" *ngIf="selectedOption === 'Expires in'">
+      <div class="data__amount" *ngIf="selectedOption === 'Expires in' && isFieldIn('expiresIn')">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
           <div>
-            {{ data.expirationDate | date: 'd' }}d: {{ data.expirationDate | date: 'h' }}h:
-            {{ data.expirationDate | date: 'm' }}m
+            {{ getExpirationTime(data.expirationDate, data.expiresIn) }}
           </div>
         </div>
       </div>
-    </span>
+
+      <div class="data__amount" *ngIf="selectedOption === 'Last update' && isFieldIn('date')">
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
+          <div>
+            {{ data.date | date: 'dd-MM-yyyy HH:mm:ss' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="data__network" *ngIf="selectedOption === 'Network' && data.blockchain">
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+          {{ data.blockchain }}
+        </div>
+      </div>
+
+      <div class="data__network" *ngIf="selectedOption === 'Provider' && isFieldIn('provider')">
+        <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+          {{ data.provider }}
+        </div>
+      </div>
+    </div>
     <span
       class="tokens-accordion__toggler"
       [ngClass]="{ 'tokens-accordion__toggler_opened': data.opened }"
@@ -93,75 +112,109 @@
     class="tokens-accordion__content"
     [ngClass]="{ 'tokens-accordion__content_inactive': !data.opened }"
   >
-    <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">From</div>
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('fromAmount')">
+      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.from' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
-        <img
-          [src]="data.token.base.image || '/assets/images/icons/coins/empty.svg'"
-          [alt]="data.token.base.symbol"
-        />
-        <span>{{ data.token.base.symbol }}</span>
-      </div>
-    </div>
-
-    <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">To</div>
-      <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
-        <img
-          [src]="data.token.quote.image || '/assets/images/icons/coins/empty.svg'"
-          [alt]="data.token.quote.symbol"
-        />
-        <span>{{ data.token.quote.symbol }}</span>
-      </div>
-    </div>
-
-    <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">Spent</div>
-      <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
-        <div>{{ data.token.base.amountTotal.dp(8) }} {{ data.token.base.symbol }}</div>
-        <span>
-          {{
-            data.token.base.amountTotal.div(data.token.quote.amountTotal).dp(8) | bigNumberFormat
-          }}
-          <span>{{ data.token.base.symbol }} / 1</span>
-          {{ data.token.quote.symbol }}
-        </span>
-      </div>
-    </div>
-
-    <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">Expected</div>
-      <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
-        <div>{{ data.token.quote.amountTotal.dp(8) }} {{ data.token.quote.symbol }}</div>
-        <span>
-          1
-          <span>
-            {{ data.token.base.symbol }} /
-            {{
-              data.token.quote.amountTotal.div(data.token.base.amountTotal).dp(8) | bigNumberFormat
-            }}
-          </span>
-          {{ data.token.quote.symbol }}
-        </span>
-      </div>
-    </div>
-
-    <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">{{ 'Network' | translate }}</div>
-      <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
-        <div>
-          <img class="tokens-accordion__image" [src]="chainIconPath" alt="{{ data.blockchain }}" />
-          <span>{{ data.blockchain }}</span>
+        <div class="tokens-accordion__token-info">
+          <img
+            [src]="data.token.from.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.from.symbol"
+          />
+          <span>{{ data.token.from.symbol }}</span>
+        </div>
+        <div class="tokens-accordion__token-amount">
+          {{ data.fromAmount.toString(10) | withRound: 5:6:data.token.from:'toClosestValue' }}
         </div>
       </div>
     </div>
 
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('toAmount')">
+      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.to' | translate }}</div>
+      <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+        <div class="tokens-accordion__token-info">
+          <img
+            [src]="data.token.to.image || '/assets/images/icons/coins/empty.svg'"
+            [alt]="data.token.to.symbol"
+          />
+          <span>{{ data.token.to.symbol }}</span>
+        </div>
+        <div class="tokens-accordion__token-amount">
+          {{ data.toAmount.toString(10) | withRound: 5:6:data.token.from:'toClosestValue' }}
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="tokens-accordion__item"
+      *ngIf="data.token.from.constructor.name === 'OrderBookDataToken'"
+    >
+      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.spent' | translate }}</div>
+      <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
+        <div>{{ data.token.from.amountTotal.dp(8) }} {{ data.token.from.symbol }}</div>
+        <span>
+          {{ data.token.from.amountTotal.div(data.token.to.amountTotal).dp(8) | bigNumberFormat }}
+          <span>{{ data.token.from.symbol }} / 1</span>
+          {{ data.token.to.symbol }}
+        </span>
+      </div>
+    </div>
+
+    <div
+      class="tokens-accordion__item"
+      *ngIf="data.token.from.constructor.name === 'OrderBookDataToken'"
+    >
+      <div class="tokens-accordion__item-name">
+        {{ 'tradesTable.columns.expected' | translate }}
+      </div>
+      <div class="tokens-accordion__item-value tokens-accordion__item-value_amount">
+        <div>{{ data.token.to.amountTotal.dp(8) }} {{ data.token.to.symbol }}</div>
+        <span>
+          1
+          <span>
+            {{ data.token.from.symbol }} /
+            {{ data.token.to.amountTotal.div(data.token.from.amountTotal).dp(8) | bigNumberFormat }}
+          </span>
+          {{ data.token.to.symbol }}
+        </span>
+      </div>
+    </div>
+
     <div class="tokens-accordion__item">
-      <div class="tokens-accordion__item-name">{{ 'Expires in' | translate }}</div>
+      <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.network' | translate }}</div>
+      <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+        <img class="tokens-accordion__image" [src]="chainIconPath" alt="{{ data.blockchain }}" />
+        <span>{{ data.blockchain }}</span>
+      </div>
+    </div>
+
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('provider')">
+      <div class="tokens-accordion__item-name">{{ 'Provider' | translate }}</div>
+      <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
+        <img
+          class="table__image"
+          src="assets/images/icons/providers/{{ data.provider }}.svg"
+          alt="{{ data.provider }}"
+        />
+        <span>{{ data.provider }}</span>
+      </div>
+    </div>
+
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('expiresIn')">
+      <div class="tokens-accordion__item-name">
+        {{ 'tradesTable.columns.expiresIn' | translate }}
+      </div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
         <div>
-          {{ data.expirationDate | date: 'd' }}d: {{ data.expirationDate | date: 'h' }}h:
-          {{ data.expirationDate | date: 'm' }}m
+          {{ getExpirationTime(data.expirationDate, data.expiresIn) }}
+        </div>
+      </div>
+    </div>
+
+    <div class="tokens-accordion__item" *ngIf="isFieldIn('date')">
+      <div class="tokens-accordion__item-name">{{ 'Date' | translate }}</div>
+      <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
+        <div>
+          {{ data.date | date: 'dd-MM-yyyy HH:mm:ss' }}
         </div>
       </div>
     </div>
@@ -169,9 +222,29 @@
     <div class="tokens-accordion__item">
       <div class="tokens-accordion__item-name">{{ 'Link' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_link">
-        <a routerLink="/trade/{{ data.uniqueLink }}">
-          {{ linkToTrade }}
+        <a
+          *ngIf="tableType === 'OrderBooks'; else scannerLink"
+          routerLink="/public-v3/{{ data.uniqueLink }}"
+        >
+          /public-v3/{{ data.uniqueLink }}
         </a>
+        <ng-template #scannerLink>
+          <a
+            safetyLink
+            [link]="
+              getLink({
+                hash: data.hash,
+                chain: data.blockchain
+              })
+            "
+            >{{
+              getLink({
+                hash: data.hash,
+                chain: data.blockchain
+              })
+            }}
+          </a>
+        </ng-template>
       </div>
     </div>
   </div>

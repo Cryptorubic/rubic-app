@@ -2,10 +2,7 @@
   <div class="instant-trade__warning" *ngIf="isAnyTokenCustom()">
     <app-warning-disclaimer
       [warningText]="'Unknown token. Please check it before trading.'"
-      [tooltipText]="
-        'Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk.'
-          | translate
-      "
+      [tooltipText]="'tradesForm.unknownTokenWarning' | translate"
     ></app-warning-disclaimer>
   </div>
 
@@ -23,12 +20,22 @@
     }"
     (submit)="$event.preventDefault()"
   >
+    <img
+      *ngIf="$isIframe | async"
+      class="instant-trade-form__iframe-logo"
+      alt="Rubic logotype"
+      src="assets/images/rubic-logo.svg?_=2"
+    />
+    <app-chain-dropdown
+      [disabled]="$tokensSelectionDisabled | async"
+      *ngIf="$isIframe | async"
+    ></app-chain-dropdown>
     <div
       class="instant-trade-form__from-section selection-block"
       [ngClass]="{ 'instant-trade-form__from-section_lowered': trades.length === 2 }"
     >
       <div class="selection-block__header">
-        <div class="selection-block__label">you have</div>
+        <div class="selection-block__label">{{ 'common.have' | translate }}</div>
 
         <div *ngIf="fromToken?.address" class="selection-block__scanner">
           <app-scanner-link
@@ -47,6 +54,8 @@
         (tokenChanges)="fromToken = $any($event)"
         (numberChanges)="fromAmount = $event"
         [amountPlaceholder]="($isIframe | async) ? 'You have' : 'Enter amount'"
+        [fullWidth]="true"
+        [listDisabled]="$tokensSelectionDisabled | async"
       >
       </app-tokens-input>
 
@@ -71,7 +80,7 @@
       <button
         type="button"
         class="arrow-button"
-        [ngClass]="{ 'arrow-button_big': trades.length === 2 }"
+        [ngClass]="{ 'arrow-button_big': trades.length === 2 || ($isIframe | async) }"
         aria-label="Swap tokens"
       >
         <img
@@ -91,161 +100,94 @@
       </button>
     </div>
 
-    <div class="instant-trade-form__to-section grid">
+    <div class="instant-trade-form__to-section">
+      <div class="selection-block__header">
+        <div class="selection-block__label">
+          {{ 'common.want' | translate }}
+          <app-refresh-button
+            class="selection-block__refresh-button"
+            [refreshButtonStatus]="refreshButtonStatus"
+            (onRefreshButtonActivated)="triggerRecalculateTradeParameters()"
+          ></app-refresh-button>
+        </div>
+
+        <div *ngIf="toToken?.address" class="selection-block__scanner">
+          <app-scanner-link
+            [address]="toToken.address"
+            [blockchainName]="blockchain"
+            [addressType]="ADDRESS_TYPE.TOKEN"
+          >
+          </app-scanner-link>
+        </div>
+      </div>
       <ng-container *ngFor="let tradeController of trades; let index = index">
-        <div
-          class="selection-block"
-          [ngClass]="{
-            'selection-block_best':
-              (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
-              (index === 0 && !hasBestRate)
-          }"
-        >
-          <div class="selection-block__header" *ngIf="index === 0">
-            <div class="selection-block__label">you get</div>
-
-            <div *ngIf="toToken?.address" class="selection-block__scanner">
-              <app-scanner-link
-                [address]="toToken.address"
-                [blockchainName]="blockchain"
-                [addressType]="ADDRESS_TYPE.TOKEN"
-              >
-              </app-scanner-link>
-            </div>
-          </div>
-
-          <div class="selection-block__input-container">
-            <app-tokens-input
-              class="instant-trade-form__tokens-input"
-              [inputDisabled]="true"
-              [tokensList]="availableToTokens"
-              [selectedToken]="toToken"
-              [selectedAmount]="getToAmount(index)"
-              [withRoundMode]="true"
-              (tokenChanges)="toToken = $any($event)"
-              [amountPlaceholder]="($isIframe | async) ? 'You get' : ''"
-            >
-            </app-tokens-input>
-
-            <div
-              class="gas-fee"
-              *ngIf="
-                blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
-                blockchain !== BLOCKCHAIN_NAME.POLYGON &&
-                tradeController.trade?.gasFeeInEth &&
-                tradeController.trade?.gasFeeInUsd
-              "
-            >
-              <span class="gas-fee__text"
-                >Estimated gas fee:
-                {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
-                ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
-              </span>
-
-              <img
-                src="/assets/images/icons/info.svg"
-                matTooltip="{{
-                  'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
-                    | translate
-                }}"
-                width="19"
-                height="19"
-                alt="{{
-                  'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
-                    | translate
-                }}"
-              />
-            </div>
-
-            <div class="selection-block__warning">
-              <app-error-disclaimer
-                *ngIf="checkIfError(index)"
-                matTooltip="{{
-                  'Please make sure that selected token is supported on the specified DEX and try again later.'
-                    | translate
-                }}"
-                [errorText]="
-                  'Trading on ' + tradeController.tradeProviderInfo.label + ' is not available.'
-                "
-              >
-              </app-error-disclaimer>
-            </div>
-
-            <div class="selection-block__custom-token-section" *ngIf="index === trades.length - 1">
-              <app-custom-token-form
-                type="to"
-                [isSectionOpened]="tradeParameters.isCustomToTokenFormOpened"
-                (isSectionOpenedChange)="setIsCustomTokenFormOpened('to', $event)"
-                [blockchain]="blockchain"
-                [tokenAddress]="tradeParameters.customToTokenAddress"
-                (tokenAddressChange)="setCustomTokenAddress('to', $event)"
-                (tokenIsValidated)="updateCustomToken('to', $event)"
-                (addToken)="addCustomToken('to')"
-              ></app-custom-token-form>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="instant-trade-button"
-          [ngClass]="{
-            'instant-trade-button_second': index === 1,
-            'instant-trade-button_best':
-              (tradeController.isBestRate && trades.length > 1 && !selectedTradeState) ||
-              (index === 0 && !hasBestRate)
-          }"
-        >
-          <app-primary-button
-            type="button"
-            [label]="
-              ($isIframe | async) ? 'Swap' : 'Via ' + tradeController.tradeProviderInfo.label
-            "
-            [disabled]="
-              !(
-                fromAmountAsNumber.isGreaterThan(0) &&
-                tradeParameters.toToken &&
-                tradeParameters.fromToken
-              ) ||
-              !tradeController.trade ||
-              shouldAnimateButton(index) ||
-              (selectedTradeState &&
-                selectedTradeState !== TRADE_STATUS.ERROR &&
-                selectedTradeState !== TRADE_STATUS.COMPLETED)
-            "
-            [animate]="shouldAnimateButton(index)"
-            (onClick)="createTrade(index)"
-          >
-          </app-primary-button>
-          <div
-            class="instant-trade-button__best-rate"
-            *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState"
-          >
-            <span>{{ 'Best Rate' | translate }}</span>
-            <img src="assets/images/icons/BestRate.svg" width="39" height="32" alt="" />
-          </div>
-          <div
-            *ngIf="index === 1 && blockchain === BLOCKCHAIN_NAME.ETHEREUM"
-            class="checkbox-optimization"
-          >
-            <span>Use Rubic optimization</span>
-            <app-checkbox [(checked)]="gasOptimizationChecked"></app-checkbox>
-          </div>
-        </div>
+        <app-tokens-swap-input
+          *ngIf="($isIframe | async) === false"
+          [tradeController]="tradeController"
+          [areAdvancedOptionsValid]="areAdvancedOptionsValid"
+          [index]="index"
+          [trades]="trades"
+          [toToken]="toToken"
+          [hasBestRate]="hasBestRate"
+          [blockchain]="blockchain"
+          [availableToTokens]="availableToTokens"
+          [tradeParameters]="tradeParameters"
+          [selectedTradeState]="selectedTradeState"
+          [waitingForProvider]="waitingForProvider"
+          (tokenChangeEvent)="toToken = $any($event)"
+          (customTokenFormOpeningEvent)="setIsCustomTokenFormOpened('to', $event)"
+          (updateCustomTokenEvent)="updateCustomToken('to', $event)"
+          (setCustomTokenAddressEvent)="setCustomTokenAddress('to', $event)"
+          (addCustomTokenEvent)="addCustomToken('to')"
+          (createTradeEvent)="createTrade($event)"
+        ></app-tokens-swap-input>
       </ng-container>
+      <app-iframe-tokens-swap-input
+        *ngIf="$isIframe | async"
+        [index]="bestProviderIndex"
+        [trades]="trades"
+        [toToken]="toToken"
+        [blockchain]="blockchain"
+        [availableToTokens]="availableToTokens"
+        [tradeParameters]="tradeParameters"
+        [selectedTradeState]="selectedTradeState"
+        [waitingForProvider]="waitingForProvider"
+        (tokenChangeEvent)="toToken = $any($event)"
+        (createTradeEvent)="createTrade($event)"
+        [disableSelection]="$tokensSelectionDisabled | async"
+      ></app-iframe-tokens-swap-input>
+    </div>
+
+    <div class="flex-breaker"></div>
+
+    <!-- // TODO: убрать hidden после тестирования -->
+    <div class="instant-trade-form__advanced-options-button" *ngIf="($isIframe | async) === false" hidden>
+      <app-advanced-options-button
+        [(isOpened)]="areAdvancedOptionsOpened"
+      ></app-advanced-options-button>
     </div>
   </form>
+
+  <!-- // TODO: убрать hidden после тестирования -->
+  <app-instant-trades-form-options
+    hidden
+    *ngIf="areAdvancedOptionsOpened"
+    [slippagePercent]="slippagePercent"
+    (slippagePercentChange)="setSlippagePercent($event)"
+    (areAdvancedOptionsValid)="areAdvancedOptionsValid = $event"
+  ></app-instant-trades-form-options>
 </div>
 
 <app-trade-in-progress-modal
   *ngIf="
-    selectedTradeState === TRADE_STATUS.APPROVAL ||
-    selectedTradeState === TRADE_STATUS.TX_IN_PROGRESS
+    selectedTradeState === INSTANT_TRADES_STATUS.APPROVAL ||
+    selectedTradeState === INSTANT_TRADES_STATUS.TX_IN_PROGRESS
   "
 >
 </app-trade-in-progress-modal>
 
 <app-trade-success-modal
-  *ngIf="selectedTradeState === TRADE_STATUS.COMPLETED"
+  *ngIf="selectedTradeState === INSTANT_TRADES_STATUS.COMPLETED"
   [transactionId]="transactionHash"
   [blockchainName]="blockchain"
   (onClose)="onCloseModal()"

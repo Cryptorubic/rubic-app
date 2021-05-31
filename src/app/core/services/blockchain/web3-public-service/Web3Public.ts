@@ -1,13 +1,35 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { Transaction } from 'web3-core';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { Token } from 'src/app/shared/models/tokens/Token';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
-import { Token } from '../../../../shared/models/tokens/Token';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import MULTICALL_ABI from '../constants/multicall-abi';
+import { Call } from '../types/call';
+import { MULTICALL_ADDRESSES, MULTICALL_ADDRESSES_TESTNET } from '../constants/multicall-addresses';
+import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 
 export class Web3Public {
-  constructor(private web3: Web3, private blockchain: IBlockchain) {}
+  private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
+
+  constructor(
+    private web3: Web3,
+    private blockchain: IBlockchain,
+    useTestingModeService: UseTestingModeService
+  ) {
+    this.multicallAddresses = MULTICALL_ADDRESSES;
+
+    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      if (isTestingMode) {
+        this.multicallAddresses = MULTICALL_ADDRESSES_TESTNET;
+      }
+    });
+  }
+
+  public get batchRequest() {
+    return new this.web3.BatchRequest();
+  }
 
   /**
    * @description gets information about token through ERC-20 token contract
@@ -42,6 +64,17 @@ export class Web3Public {
 
     const balance = await contract.methods.balanceOf(address).call();
     return new BigNumber(balance);
+  }
+
+  /**
+   * @description gets function of ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   * @param address wallet address whose balance you want to find out
+   * @return account tokens balance as integer (multiplied to 10 ** decimals)
+   */
+  public getTokenBalanceFunction(address: string, tokenAddress: string) {
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
+    return contract.methods.balanceOf(address).call;
   }
 
   /**
@@ -138,10 +171,15 @@ export class Web3Public {
       : gasPrice.multipliedBy(gasLimit).div(10 ** 18);
   }
 
-  private async getTransactionByHash(hash: string, attempt?: number): Promise<Transaction> {
+  public async getTransactionByHash(
+    hash: string,
+    attempt?: number,
+    attemptsLimit?: number,
+    delay?: number
+  ): Promise<Transaction> {
     attempt = attempt || 0;
-    const limit = 10;
-    const timeout = 500;
+    const limit = attemptsLimit || 10;
+    const timeout = delay || 500;
 
     if (attempt >= limit) {
       return null;
@@ -184,12 +222,12 @@ export class Web3Public {
    * @description checks if address is Ether native address
    * @param address address to check
    */
-  public isNativeAddress(address: string): boolean {
+  public isNativeAddress = (address: string): boolean => {
     if (this.blockchain.name === BLOCKCHAIN_NAME.POLYGON) {
       return address.toLowerCase() === '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'.toLowerCase();
     }
     return address === '0x0000000000000000000000000000000000000000';
-  }
+  };
 
   /**
    * @description call smart-contract pure method of smart-contract and returns its output value
@@ -250,5 +288,39 @@ export class Web3Public {
     token.decimals = Number(token.decimals);
 
     return token;
+  }
+
+  public async getTokensBalances(address: string, tokenAddresses: string[]): Promise<BigNumber[]> {
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddresses[0]);
+    const indexOfNativeCoin = tokenAddresses.findIndex(this.isNativeAddress);
+    const promises = [];
+
+    if (indexOfNativeCoin !== -1) {
+      tokenAddresses.splice(indexOfNativeCoin, 1);
+      promises[1] = this.getBalance(address, { inWei: true });
+    }
+    const calls: Call[] = tokenAddresses.map(tokenAddress => ({
+      target: tokenAddress,
+      callData: contract.methods.balanceOf(address).encodeABI()
+    }));
+    promises[0] = this.multicall(calls);
+
+    const results = await Promise.all(promises);
+    const tokensBalances = results[0].map(hexBalance => new BigNumber(hexBalance));
+
+    if (indexOfNativeCoin !== -1) {
+      tokensBalances.splice(indexOfNativeCoin, 0, results[1]);
+    }
+
+    return tokensBalances;
+  }
+
+  private async multicall(calls: Call[]): Promise<string[]> {
+    const contract = new this.web3.eth.Contract(
+      MULTICALL_ABI as any[],
+      this.multicallAddresses[this.blockchain.name]
+    );
+    const result = await contract.methods.aggregate(calls).call();
+    return result.returnData;
   }
 }
