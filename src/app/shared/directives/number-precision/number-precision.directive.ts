@@ -28,7 +28,7 @@ export class NumberPrecisionDirective implements Validator {
    */
   @Input() inputElement: HTMLInputElement;
 
-  private readonly decimalNumberRegex = /^[0-9]+\.?[0-9]*$/;
+  private readonly decimalNumberRegex = /^[0-9]*\.?[0-9]*$/;
 
   private lastValue: string = '';
 
@@ -56,6 +56,10 @@ export class NumberPrecisionDirective implements Validator {
       this.setLastValidValue(control);
       return this.checkOverflow(this.lastValue);
     }
+    if (value === '.') {
+      this.setDotValue(control);
+      return this.checkOverflow(this.lastValue);
+    }
 
     const [integerPart, decimalPart] = value.split('.');
     if (integerPart.length > this.integerLength || decimalPart?.length > this.decimalLength) {
@@ -63,10 +67,15 @@ export class NumberPrecisionDirective implements Validator {
       return this.checkOverflow(this.lastValue);
     }
 
-    const newValue =
-      new BigNumber(integerPart).toFormat(BIG_NUMBER_FORMAT) +
-      (value.includes('.') ? '.' : '') +
-      (decimalPart || '');
+    let newValue;
+    if (!integerPart.length) {
+      newValue = value;
+    } else {
+      newValue =
+        new BigNumber(integerPart).toFormat(BIG_NUMBER_FORMAT) +
+        (value.includes('.') ? '.' : '') +
+        (decimalPart || '');
+    }
     this.setNewValue(control, newValue);
     return this.checkOverflow(value);
   }
@@ -74,6 +83,20 @@ export class NumberPrecisionDirective implements Validator {
   private setLastValidValue(control: AbstractControl) {
     control.setValue(this.lastValue);
     this.inputElement.setSelectionRange(this.lastCursorPosition, this.lastCursorPosition);
+  }
+
+  private setDotValue(control: AbstractControl) {
+    const value = '.';
+    if (value.length > this.lastValue.length) {
+      this.lastValue = '0.';
+      control.setValue(this.lastValue);
+      this.inputElement.setSelectionRange(2, 2);
+      this.lastCursorPosition = 2;
+    } else {
+      this.lastValue = '';
+      control.setValue(this.lastValue);
+      this.lastCursorPosition = 0;
+    }
   }
 
   private checkOverflow(value: string) {

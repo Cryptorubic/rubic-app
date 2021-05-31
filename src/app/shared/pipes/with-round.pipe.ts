@@ -21,6 +21,10 @@ export class WithRoundPipe implements PipeTransform {
     if (value?.includes('.')) {
       const startIndex = value.indexOf('.') + 1;
 
+      if (startIndex === value.length) {
+        return value;
+      }
+
       let decimalSymbols: number;
       if (roundMode === 'toClosestValue') {
         if (new BigNumber(value).isGreaterThanOrEqualTo(1)) {
@@ -44,9 +48,6 @@ export class WithRoundPipe implements PipeTransform {
       }
 
       value = value.slice(0, startIndex + decimalSymbols);
-      if (roundMode === 'toClosestValue' && new BigNumber(value).isEqualTo(0)) {
-        value = '0';
-      }
     }
 
     return value;
