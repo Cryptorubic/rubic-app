@@ -155,17 +155,14 @@
 
     <div class="flex-breaker"></div>
 
-    <!-- // TODO: убрать hidden после тестирования -->
-    <div class="instant-trade-form__advanced-options-button" *ngIf="($isIframe | async) === false" hidden>
+    <div class="instant-trade-form__advanced-options-button" *ngIf="($isIframe | async) === false">
       <app-advanced-options-button
         [(isOpened)]="areAdvancedOptionsOpened"
       ></app-advanced-options-button>
     </div>
   </form>
 
-  <!-- // TODO: убрать hidden после тестирования -->
   <app-instant-trades-form-options
-    hidden
     *ngIf="areAdvancedOptionsOpened"
     [slippagePercent]="slippagePercent"
     (slippagePercentChange)="setSlippagePercent($event)"
