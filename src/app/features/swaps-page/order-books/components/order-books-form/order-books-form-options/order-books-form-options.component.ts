@@ -141,7 +141,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
   }
 
   private setDefaultAdvancedOptions(): void {
-    if (this.tradeForm.stopDate === undefined) {
+    if (this.tradeForm.stopDate === undefined || !this.closingDate || !this.closingTime) {
       this.setClosingDate();
     }
 

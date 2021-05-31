@@ -249,14 +249,14 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
         .times(this.toTokenToFromTokenRate)
         .div(100)
         .times(100 - this.tradeData.token.to.brokerPercent)
-        .dp(this.tradeData.token.to.decimals)
+        .dp(4)
         .toFormat(BIG_NUMBER_FORMAT);
     } else {
       this.fromTokenAmountToGet = new BigNumber(value)
         .times(this.fromTokenToToTokenRate)
         .div(100)
         .times(100 - this.tradeData.token.from.brokerPercent)
-        .dp(this.tradeData.token.from.decimals)
+        .dp(4)
         .toFormat(BIG_NUMBER_FORMAT);
     }
   }
