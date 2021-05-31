@@ -103,6 +103,7 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.tradeFormSubscription$ = this.orderBookFormService.getTradeForm().subscribe(tradeForm => {
       this._tradeForm = tradeForm;
+      this.setDefaultAdvancedOptions();
 
       setTimeout(() => {
         this.updateMinContributionsValidity();
@@ -115,8 +116,6 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
         }
       });
     });
-
-    this.setAdvancedOptions();
   }
 
   ngOnDestroy(): void {
@@ -141,24 +140,35 @@ export class OrderBooksFormOptionsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private setAdvancedOptions(): void {
-    this.setClosingDate();
+  private setDefaultAdvancedOptions(): void {
+    if (this.tradeForm.stopDate === undefined) {
+      this.setClosingDate();
+    }
 
-    this.tradeForm = {
-      ...this.tradeForm,
-      isPublic: true,
-      isWithBrokerFee: false,
-      token: {
-        from: {
-          ...this.tradeForm.token.from,
-          ...this.defaultTokenOptions
-        },
-        to: {
-          ...this.tradeForm.token.to,
-          ...this.defaultTokenOptions
+    if (
+      this.tradeForm.isPublic === undefined ||
+      this.tradeForm.isWithBrokerFee === undefined ||
+      this.tradeForm.token.from?.minContribution === undefined ||
+      this.tradeForm.token.from?.brokerPercent === undefined ||
+      this.tradeForm.token.to?.minContribution === undefined ||
+      this.tradeForm.token.to?.brokerPercent === undefined
+    ) {
+      this.tradeForm = {
+        ...this.tradeForm,
+        isPublic: true,
+        isWithBrokerFee: false,
+        token: {
+          from: {
+            ...this.tradeForm.token.from,
+            ...this.defaultTokenOptions
+          },
+          to: {
+            ...this.tradeForm.token.to,
+            ...this.defaultTokenOptions
+          }
         }
-      }
-    };
+      };
+    }
   }
 
   private setClosingDate(): void {
