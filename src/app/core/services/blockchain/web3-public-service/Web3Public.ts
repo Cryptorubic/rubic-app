@@ -67,17 +67,6 @@ export class Web3Public {
   }
 
   /**
-   * @description gets function of ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param address wallet address whose balance you want to find out
-   * @return account tokens balance as integer (multiplied to 10 ** decimals)
-   */
-  public getTokenBalanceFunction(address: string, tokenAddress: string) {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
-    return contract.methods.balanceOf(address).call;
-  }
-
-  /**
    * @description predicts the volume of gas required to execute the contract method
    * @param contractAbi abi of smart-contract
    * @param contractAddress address of smart-contract
