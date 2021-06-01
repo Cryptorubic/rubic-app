@@ -120,7 +120,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     try {
-      this.checkMetamaskSettings();
+      this.checkProviderSettings();
     } catch (err) {
       this.showErrorMessage(err);
     }
@@ -137,7 +137,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     this._tokensSubscription$?.unsubscribe();
   }
 
-  private checkMetamaskSettings() {
+  private checkProviderSettings() {
     if (!this.providerConnector.isProviderActive) {
       this.errorsService.throw(new WalletError());
     }

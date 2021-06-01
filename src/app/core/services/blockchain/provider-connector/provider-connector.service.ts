@@ -68,10 +68,6 @@ export class ProviderConnectorService {
     this.web3 = new Web3();
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
     this.$addressChangeSubject = new BehaviorSubject<string>(null);
-    const provider = this.storage.getItem('provider') as WALLET_NAME;
-    if (provider) {
-      this.connectProvider(provider);
-    }
   }
 
   /**
@@ -81,6 +77,16 @@ export class ProviderConnectorService {
    */
   public async signPersonal(message) {
     return this.web3.eth.personal.sign(message, this.provider.getAddress(), undefined);
+  }
+
+  /**
+   * Setup provider based on local storage.
+   */
+  public async installProvider(): Promise<void> {
+    const provider = this.storage.getItem('provider') as WALLET_NAME;
+    if (provider) {
+      await this.connectProvider(provider);
+    }
   }
 
   public async activate(): Promise<void> {

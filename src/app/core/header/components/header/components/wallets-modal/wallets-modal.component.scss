@@ -76,11 +76,16 @@ $main-color: #4aa956;
 
     transition: 0.2s ease-in-out;
 
+    &[disabled] {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
     &:not(:last-child) {
       margin-bottom: 20px;
     }
 
-    &:hover {
+    &:not([disabled]):hover {
       transform: scale(1.03);
     }
   }

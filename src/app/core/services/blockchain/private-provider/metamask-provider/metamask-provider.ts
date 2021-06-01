@@ -50,46 +50,41 @@ export class MetamaskProvider extends PrivateProvider {
       this.errorsService.throw(new MetamaskError());
       return;
     }
-
     web3.setProvider(ethereum);
     this.core = ethereum;
-    if ((web3.currentProvider as any)?.isMetaMask) {
-      this.core.request({ method: 'eth_chainId' }).then((chain: string) => {
-        this.selectedChain = chain;
+    this.core.request({ method: 'eth_chainId' }).then((chain: string) => {
+      this.selectedChain = chain;
+      chainChange.next(BlockchainsInfo.getBlockchainById(chain));
+    });
+    this.core.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
+      [this.selectedAddress] = accounts;
+      accountChange.next(this.selectedAddress);
+    });
+
+    this.core.on('chainChanged', (chain: string) => {
+      this.selectedChain = chain;
+      if (this.isEnabled) {
         chainChange.next(BlockchainsInfo.getBlockchainById(chain));
-      });
-      this.core.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
-        [this.selectedAddress] = accounts;
-        accountChange.next(this.selectedAddress);
-      });
+        console.info('Chain changed', chain);
+      }
+    });
 
-      this.core.on('chainChanged', (chain: string) => {
-        this.selectedChain = chain;
-        if (this.isEnabled) {
-          chainChange.next(BlockchainsInfo.getBlockchainById(chain));
-          console.info('Chain changed', chain);
-        }
-      });
+    this.core.on('disconnect', () => {
+      this.selectedChain = null;
+      this.deActivate();
+    });
 
-      this.core.on('disconnect', () => {
+    this.core.on('accountsChanged', (accounts: string[]) => {
+      this.selectedAddress = accounts[0] || null;
+      if (this.isEnabled) {
+        this.onAddressChanges.next(this.selectedAddress);
+        console.info('Selected account changed to', accounts[0]);
+      }
+      if (!this.selectedAddress) {
         this.selectedChain = null;
         this.deActivate();
-      });
-
-      this.core.on('accountsChanged', (accounts: string[]) => {
-        this.selectedAddress = accounts[0] || null;
-        if (this.isEnabled) {
-          this.onAddressChanges.next(this.selectedAddress);
-          console.info('Selected account changed to', accounts[0]);
-        }
-        if (!this.selectedAddress) {
-          this.selectedChain = null;
-          this.deActivate();
-        }
-      });
-    } else {
-      console.error('Selected other provider.');
-    }
+      }
+    });
   }
 
   protected getAddress(): string {

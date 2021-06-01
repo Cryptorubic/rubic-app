@@ -5,6 +5,7 @@ import { TransactionReceipt } from 'web3-eth';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
+import { LowGasError } from '../../../../shared/models/errors/provider/LowGasError';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +55,9 @@ export class Web3PrivateService {
         .on('receipt', resolve)
         .on('error', err => {
           console.error(`Tokens transfer error. ${err}`);
+          if (err.code === -32603) {
+            reject(new LowGasError());
+          }
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {

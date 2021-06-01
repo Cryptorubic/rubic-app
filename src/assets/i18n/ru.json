@@ -41,7 +41,9 @@
     "retrievingTokensError": "Error retrieving tokens",
     "wrongToken": "Rubic bridge supports only rubic token.",
     "oneInchQuote": "Oneinch quote error",
-    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider."
+    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
+    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
+    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas"
   },
   "navigation": {
     "about": "О компании",

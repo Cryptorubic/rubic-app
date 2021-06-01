@@ -6,6 +6,10 @@ import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
 import { QueryParamsService } from '../query-params/query-params.service';
 import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
+import { ErrorsService } from '../errors/errors.service';
+import { UserRejectError } from '../../../shared/models/errors/provider/UserRejectError';
+import { StoreService } from '../store/store.service';
+import { WalletlinkError } from '../../../shared/models/errors/provider/WalletlinkError';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -34,7 +38,9 @@ export class AuthService {
     private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly errorsService: ErrorsService,
+    private readonly store: StoreService
   ) {
     this.isAuthProcess = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
@@ -81,6 +87,7 @@ export class AuthService {
 
   public async loadUser() {
     this.isAuthProcess = true;
+    await this.providerConnectorService.installProvider();
     this.fetchMetamaskLoginBody().subscribe(
       async metamaskLoginBody => {
         if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
@@ -112,28 +119,37 @@ export class AuthService {
    * @description Initiate authentication via metamask.
    */
   public async signIn(loginWithoutBackend: boolean = false): Promise<void> {
-    if (loginWithoutBackend) {
-      await this.serverlessSignIn();
-      return;
-    }
-    this.isAuthProcess = true;
-    await this.providerConnectorService.activate();
-    const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
-    if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
-      const { address } = metamaskLoginBody.payload.user;
-      if (address === this.providerConnectorService.address) {
-        this.$currentUser.next({ address });
+    try {
+      if (loginWithoutBackend) {
+        await this.serverlessSignIn();
+        return;
       }
+      this.isAuthProcess = true;
+      await this.providerConnectorService.activate();
+      const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
+      if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
+        const { address } = metamaskLoginBody.payload.user;
+        if (address === this.providerConnectorService.address) {
+          this.$currentUser.next({ address });
+        }
+        this.isAuthProcess = false;
+        return;
+      }
+      const nonce = metamaskLoginBody.payload.message;
+      const signature = await this.providerConnectorService.signPersonal(nonce);
+      await this.sendSignedNonce(this.providerConnectorService.address, nonce, signature);
+      this.$currentUser.next({ address: this.providerConnectorService.address });
       this.isAuthProcess = false;
-      return;
+    } catch (err) {
+      let error = err;
+      if (err.code === 4001 || err instanceof WalletlinkError) {
+        this.headerStore.setWalletsLoadingStatus(false);
+        error = new UserRejectError();
+      }
+      this.errorsService.throw(error);
+      this.$currentUser.next(null);
+      this.isAuthProcess = false;
     }
-    const nonce = metamaskLoginBody.payload.message;
-    const signature = await this.providerConnectorService.signPersonal(nonce);
-
-    await this.sendSignedNonce(this.providerConnectorService.address, nonce, signature);
-
-    this.$currentUser.next({ address: this.providerConnectorService.address });
-    this.isAuthProcess = false;
   }
 
   public async serverlessSignIn(): Promise<void> {
@@ -158,8 +174,9 @@ export class AuthService {
   public signOut(): Observable<string> {
     return this.httpService.post('metamask/logout/', {}).pipe(
       finalize(() => {
-        this.$currentUser.next(null);
         this.providerConnectorService.deActivate();
+        this.$currentUser.next(null);
+        this.store.clearStorage();
       })
     );
   }
@@ -167,5 +184,6 @@ export class AuthService {
   public serverlessSignOut(): void {
     this.providerConnectorService.deActivate();
     this.$currentUser.next(null);
+    this.store.clearStorage();
   }
 }

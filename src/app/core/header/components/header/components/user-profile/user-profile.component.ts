@@ -39,7 +39,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     private readonly router: Router,
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
-    private readonly providerConenctor: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService
   ) {
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.$isConfirmModalOpened = this.headerStore.getConfirmModalOpeningStatus();
@@ -49,16 +49,18 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
-    this.$currentBlockchain = this.providerConenctor.$networkChange;
+    this.$currentBlockchain = this.providerConnectorService.$networkChange;
     this.$currentUser = this.authService.getCurrentUser();
   }
 
   ngAfterViewInit(): void {
-    this._onNetworkChanges$ = this.providerConenctor.$networkChange.subscribe(() =>
+    this.cdr.detectChanges();
+    this._onNetworkChanges$ = this.providerConnectorService.$networkChange.subscribe(() =>
       this.cdr.detectChanges()
     );
-    this._onAddressChanges$ = this.providerConenctor.$addressChange.subscribe(() =>
-      this.cdr.detectChanges()
+    this._onAddressChanges$ = this.providerConnectorService.$addressChange.subscribe(() =>
+      // @TODO: Fix timeout. Address doesn't rerender sometimes.
+      setTimeout(() => this.cdr.detectChanges())
     );
   }
 
