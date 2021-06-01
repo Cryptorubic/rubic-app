@@ -11,6 +11,7 @@ import InputToken from 'src/app/shared/models/tokens/InputToken';
 import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
+
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BridgeTrade } from '../../models/BridgeTrade';
@@ -67,6 +68,39 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public fromWalletAddress: string;
 
   public toWalletAddress: string;
+
+  public BLOCKCHAIN_DATA = {
+    [BLOCKCHAIN_NAME.ETHEREUM]: {
+      link: 'https://ethereum.org/en/',
+      caption: 'Ethereum',
+      providerImg: 'Binance'
+    },
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+      link: 'https://www.binance.org/',
+      caption: 'Binance Smart Chain',
+      providerImg: 'Polygon'
+    },
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+      link: 'https://www.binance.org/',
+      caption: 'Binance Smart Chain',
+      providerImg: 'Binance'
+    },
+    [BLOCKCHAIN_NAME.POLYGON]: {
+      link: 'https://polygon.technology/',
+      caption: 'Polygon',
+      providerImg: 'Polygon'
+    },
+    [BLOCKCHAIN_NAME.TRON]: {
+      link: 'https://tron.network/',
+      caption: 'TRON',
+      providerImg: 'Binance'
+    },
+    [BLOCKCHAIN_NAME.XDAI]: {
+      link: 'https://www.xdaichain.com/',
+      caption: 'xDai',
+      providerImg: 'XDai'
+    }
+  };
 
   private tokensSubscription$: Subscription;
 
@@ -304,6 +338,10 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   public isBlockchainSelected(blockchain: BLOCKCHAIN_NAME): boolean {
     return this.fromBlockchain.key === blockchain || this.toBlockchain.key === blockchain;
+  }
+
+  public getBlockchainProviderImage() {
+    return this.BLOCKCHAIN_DATA[this.toBlockchain.key || this.fromBlockchain.key].providerImg;
   }
 
   private isBlockchainsPairValid(): boolean {

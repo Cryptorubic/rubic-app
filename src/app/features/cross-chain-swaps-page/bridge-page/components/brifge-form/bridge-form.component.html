@@ -179,27 +179,11 @@
 
       <a
         class="swap-box__blockchain-link"
-        [href]="
-          isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
-            ? 'https://www.binance.org/'
-            : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
-            ? 'https://polygon.technology/'
-            : isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
-            ? 'https://tron.network/'
-            : 'https://www.xdaichain.com/'
-        "
+        [href]="BLOCKCHAIN_DATA[toBlockchain.key]?.link"
         target="_blank"
       >
         {{ 'bridgePage.whatIs' | translate }}
-        {{
-          isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
-            ? 'Binance Smart Chain'
-            : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
-            ? 'Polygon'
-            : isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
-            ? 'TRON'
-            : 'xDai'
-        }}{{ 'bridgePage.whatIsAfter' | translate }}?
+        {{ BLOCKCHAIN_DATA[toBlockchain.key]?.caption }}{{ 'bridgePage.whatIsAfter' | translate }}?
       </a>
     </div>
   </div>
@@ -238,13 +222,7 @@
     >
       <span>{{ 'bridgePage.assistanceOf' | translate }}</span>
       <img
-        [src]="
-          'assets/images/icons/collaborations/' +
-          (isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) ||
-          isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
-            ? 'Binance.svg'
-            : 'Polygon.svg')
-        "
+        [src]="'assets/images/icons/collaborations/' + getBlockchainProviderImage() + '.svg'"
         alt="blockchain"
       />
     </a>

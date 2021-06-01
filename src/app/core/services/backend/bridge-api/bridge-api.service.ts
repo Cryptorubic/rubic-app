@@ -11,6 +11,7 @@ import { HttpService } from '../../http/http.service';
 import { TRADE_STATUS } from './models/TRADE_STATUS';
 import { TokensService } from '../tokens-service/tokens.service';
 import { BOT_URL } from '../constants/BOT_URL';
+import { ethToXDaiDepositWallet } from '../../../../shared/constants/bridge/deposit-wallets';
 
 @Injectable({
   providedIn: 'root'
@@ -194,7 +195,7 @@ export class BridgeApiService {
       transaction_id: transactionHash,
       walletFromAddress: userAddress,
       walletToAddress: userAddress,
-      walletDepositAddress: '0x4aa42145Aa6Ebf72e164C9bBC74fbD3788045016'
+      walletDepositAddress: ethToXDaiDepositWallet
     };
 
     return new Promise<void>((resolve, reject) => {

@@ -4,15 +4,44 @@ import { List } from 'immutable';
 import { map, tap } from 'rxjs/operators';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import { PanamaBridgeProviderService } from '../common/panama-bridge-provider/panama-bridge-provider.service';
-import { BlockchainsTokens, BridgeToken } from '../../../models/BridgeToken';
+import { BridgeToken } from '../../../models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from '../../../models/BridgeTrade';
-import { PanamaToken } from '../common/panama-bridge-provider/models/PanamaToken';
 import { Web3PrivateService } from '../../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from '../../../../../../core/services/backend/bridge-api/bridge-api.service';
+import { ethToXDaiDepositWallet } from '../../../../../../shared/constants/bridge/deposit-wallets';
 
 @Injectable()
 export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider {
+  private xDaiProviderTokens = [
+    {
+      symbol: 'DAI',
+      image: '',
+      rank: 0,
+
+      blockchainToken: {
+        [BLOCKCHAIN_NAME.ETHEREUM]: {
+          address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+          name: 'Dai',
+          symbol: 'DAI',
+          decimals: 18,
+
+          minAmount: 0.005,
+          maxAmount: 9999999
+        },
+        [BLOCKCHAIN_NAME.XDAI]: {
+          address: '0x44fA8E6f47987339850636F88629646662444217',
+          name: 'Dai',
+          symbol: 'DAI',
+          decimals: 18,
+
+          minAmount: 10,
+          maxAmount: 9999999
+        }
+      }
+    } as BridgeToken
+  ];
+
   constructor(
     private commonPanamaBridgeProviderService: PanamaBridgeProviderService,
     private web3PrivateService: Web3PrivateService,
@@ -21,43 +50,8 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
     super();
   }
 
-  private static parseXdaiPanamaToken(token: PanamaToken): BridgeToken {
-    return {
-      symbol: token.symbol,
-      image: '',
-      rank: 0,
-
-      blockchainToken: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: {
-          address: token.ethContractAddress,
-          name: token.name,
-          symbol: token.ethSymbol,
-          decimals: token.ethContractDecimal,
-
-          minAmount: 0.005,
-          maxAmount: 9999999
-        },
-        [BLOCKCHAIN_NAME.XDAI]: {
-          address: '0x44fA8E6f47987339850636F88629646662444217',
-          name: token.name,
-          symbol: token.ethSymbol,
-          decimals: token.ethContractDecimal,
-
-          minAmount: token.minAmount,
-          maxAmount: token.maxAmount
-        }
-      } as BlockchainsTokens
-    };
-  }
-
   getTokensList(): Observable<List<BridgeToken>> {
-    return this.commonPanamaBridgeProviderService.getTokensList().pipe(
-      map(tokens => {
-        return tokens
-          .filter(token => token.symbol === 'DAI')
-          .map(EthereumXdaiBridgeProviderService.parseXdaiPanamaToken);
-      })
-    );
+    return of(List(this.xDaiProviderTokens));
   }
 
   getFee(): Observable<number> {
@@ -70,7 +64,6 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
   ): Observable<string> {
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
-    const depositAddress = '0x4aa42145Aa6Ebf72e164C9bBC74fbD3788045016';
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
@@ -87,9 +80,14 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
     };
 
     return from(
-      this.web3PrivateService.transferTokens(tokenAddress, depositAddress, amountInWei.toFixed(), {
-        onTransactionHash: onTradeTransactionHash
-      })
+      this.web3PrivateService.transferTokens(
+        tokenAddress,
+        ethToXDaiDepositWallet,
+        amountInWei.toFixed(),
+        {
+          onTransactionHash: onTradeTransactionHash
+        }
+      )
     ).pipe(
       map(receipt => receipt.transactionHash),
       tap(transactionHash => {
