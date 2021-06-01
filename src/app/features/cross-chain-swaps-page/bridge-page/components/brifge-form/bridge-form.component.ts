@@ -12,6 +12,7 @@ import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/cons
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 
+import { TransactionReceipt } from 'web3-eth';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BridgeTrade } from '../../models/BridgeTrade';
@@ -465,8 +466,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       .createTrade(bridgeTrade)
       .pipe(first())
       .subscribe(
-        (res: string) => {
-          this.tradeSuccessId = res;
+        (res: TransactionReceipt) => {
+          this.tradeSuccessId = res.transactionHash;
           this.tradeInProgress = false;
           this.buttonAnimation = false;
         },

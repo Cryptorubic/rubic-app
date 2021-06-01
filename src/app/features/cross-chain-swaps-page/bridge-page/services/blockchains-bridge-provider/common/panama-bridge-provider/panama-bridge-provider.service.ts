@@ -12,6 +12,7 @@ import { OverQueryLimitError } from 'src/app/shared/models/errors/bridge/OverQue
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
+import { TransactionReceipt } from 'web3-eth';
 import { PanamaToken } from './models/PanamaToken';
 
 interface PanamaResponse {
@@ -71,7 +72,7 @@ export class PanamaBridgeProviderService {
   public createTrade(
     bridgeTrade: BridgeTrade,
     updateTransactionsList: () => Promise<void>
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     const body = {
       amount: bridgeTrade.amount.toFixed(),
       fromNetwork: bridgeTrade.fromBlockchain,
@@ -108,7 +109,7 @@ export class PanamaBridgeProviderService {
     bridgeTrade: BridgeTrade,
     depositAddress: string,
     updateTransactionsList: () => Promise<void>
-  ): Promise<string> {
+  ): Promise<TransactionReceipt> {
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
@@ -127,14 +128,20 @@ export class PanamaBridgeProviderService {
       updateTransactionsList();
     };
 
+    let receipt;
+
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && token.symbol === 'ETH') {
-      await this.web3PrivateService.sendTransaction(depositAddress, amountInWei.toFixed(), {
-        onTransactionHash: onTradeTransactionHash,
-        inWei: true
-      });
+      receipt = await this.web3PrivateService.sendTransaction(
+        depositAddress,
+        amountInWei.toFixed(),
+        {
+          onTransactionHash: onTradeTransactionHash,
+          inWei: true
+        }
+      );
     } else {
       const estimatedGas = '120000'; // TODO: хотфикс сломавшегося в метамаске рассчета газа. Estimated gas не подойдет, т.к. в BSC не работает rpc
-      await this.web3PrivateService.transferTokens(
+      receipt = await this.web3PrivateService.transferTokens(
         tokenAddress,
         depositAddress,
         amountInWei.toFixed(),
@@ -145,7 +152,6 @@ export class PanamaBridgeProviderService {
       );
     }
     this.bridgeApiService.notifyBridgeBot(bridgeTrade, binanceId, this.web3PrivateService.address);
-
-    return binanceId;
+    return receipt;
   }
 }

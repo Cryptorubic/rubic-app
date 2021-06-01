@@ -21,6 +21,7 @@ import {
 } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import networks from 'src/app/shared/constants/blockchain/networks';
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
+import { TransactionReceipt } from 'web3-eth';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 interface PolygonGraphToken {
@@ -211,12 +212,12 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   public createTrade(
     bridgeTrade: BridgeTrade,
     updateTransactionsList: () => Promise<void>
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     return this.createPolygonTrade(bridgeTrade, updateTransactionsList).pipe(
-      tap(transactionHash => {
+      tap(receipt => {
         this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,
-          transactionHash,
+          receipt.transactionHash,
           this.web3PrivateService.address
         );
       })
@@ -226,7 +227,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   public createPolygonTrade(
     bridgeTrade: BridgeTrade,
     updateTransactionsList: () => Promise<void>
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
     const userAddress = this.web3PrivateService.address;
 
@@ -282,13 +283,13 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     userAddress: string,
     amountInWei: BigNumber,
     onTradeTransactionHash: (hash: string) => void
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     return defer(async () => {
       const receipt = await maticPOSClient.depositEtherForUser(userAddress, amountInWei.toFixed(), {
         from: userAddress,
         onTransactionHash: onTradeTransactionHash
       });
-      return receipt.transactionHash;
+      return receipt;
     });
   }
 
@@ -299,7 +300,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     amountInWei: BigNumber,
     onApprove: (hash: string) => void,
     onTradeTransactionHash: (hash: string) => void
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     return defer(async () => {
       const allowance = await maticPOSClient.getERC20Allowance(userAddress, tokenAddress);
       if (amountInWei.gt(allowance)) {
@@ -317,7 +318,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           onTransactionHash: onTradeTransactionHash
         }
       );
-      return receipt.transactionHash;
+      return receipt;
     });
   }
 
@@ -327,13 +328,13 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     tokenAddress: string,
     amountInWei: BigNumber,
     onTradeTransactionHash: (hash: string) => void
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     return defer(async () => {
       const receipt = await maticPOSClient.burnERC20(tokenAddress, amountInWei.toFixed(), {
         from: userAddress,
         onTransactionHash: onTradeTransactionHash
       });
-      return receipt.transactionHash;
+      return receipt;
     });
   }
 
@@ -367,7 +368,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         receipt.transactionHash,
         TRADE_STATUS.COMPLETED
       );
-      return receipt.transactionHash;
+      return receipt;
     });
   }
 }

@@ -5,6 +5,7 @@ import { List } from 'immutable';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
+import { TransactionReceipt } from 'web3-eth';
 import { EthereumBinancePanamaBridgeProviderService } from './panama-bridge-provider/ethereum-binance-panama-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from './rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
@@ -38,7 +39,7 @@ export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvi
   public createTrade(
     bridgeTrade: BridgeTrade,
     updateTransactionsList: () => Promise<void>
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     if (bridgeTrade.token.symbol === 'RBC') {
       return this.rubicBridgeProvider.createTrade(bridgeTrade, updateTransactionsList);
     }

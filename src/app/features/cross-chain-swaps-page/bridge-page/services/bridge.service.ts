@@ -19,6 +19,7 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
+import { TransactionReceipt } from 'web3-eth';
 import { BinanceTronBridgeProviderService } from './blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { EthereumTronBridgeProviderService } from './blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
 import { BridgeTableTrade } from '../models/BridgeTableTrade';
@@ -266,7 +267,7 @@ export class BridgeService implements OnDestroy {
     }
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
+  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     return defer(async () => {
       this.checkSettings(bridgeTrade.fromBlockchain);
       const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];

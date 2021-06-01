@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import { map, tap } from 'rxjs/operators';
+import { TransactionReceipt } from 'web3-eth';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import { PanamaBridgeProviderService } from '../common/panama-bridge-provider/panama-bridge-provider.service';
 import { BridgeToken } from '../../../models/BridgeToken';
@@ -61,7 +62,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
   public createTrade(
     bridgeTrade: BridgeTrade,
     updateTransactionsList: () => Promise<void>
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
@@ -89,11 +90,11 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
         }
       )
     ).pipe(
-      map(receipt => receipt.transactionHash),
-      tap(transactionHash => {
+      map(receipt => receipt),
+      tap(receipt => {
         this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,
-          transactionHash,
+          receipt.transactionHash,
           this.web3PrivateService.address
         );
       })
