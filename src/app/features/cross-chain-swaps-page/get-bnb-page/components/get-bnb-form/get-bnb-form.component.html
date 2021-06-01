@@ -60,7 +60,7 @@
           class="fee-info__discount-info"
           *ngIf="getBnbTrade.fromToken.symbol === 'RBC' && getFeesDifferencePercent()?.gt(0)"
         >
-          <img alt="" src="assets/images/icons/cross-chain-swaps/tick.svg" />{{
+          <img alt="Success tick" src="assets/images/icons/cross-chain-swaps/tick.svg" />{{
             getFeesDifferencePercent().toFixed(0)
           }}% discount with RBC
         </span>
@@ -102,7 +102,7 @@
         }}</span>
 
         <div class="token-chosen__card token-card">
-          <img class="token-card__icon" [src]="getBnbTrade.toToken?.image" alt="" />
+          <img class="token-card__icon" [src]="getBnbTrade.toToken?.image" alt="Blockchain" />
           <span class="token-card__name">{{ getBnbTrade.toToken?.symbol }}</span>
         </div>
       </div>

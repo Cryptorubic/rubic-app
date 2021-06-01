@@ -1,6 +1,10 @@
 <div class="team-card" (click)="onClick()">
   <!--?v=n - is added to update images, despite chrome's cache-->
-  <img class="team-card__image" [src]="'assets/images/team/' + content.img + '?v=5'" alt="" />
+  <img
+    class="team-card__image"
+    [src]="'assets/images/team/' + content.img + '?v=5'"
+    alt="Team member"
+  />
 
   <div class="team-card__description">
     <div class="team-card__name">{{ content.name }}</div>
@@ -13,7 +17,7 @@
         [href]="link.url"
         rel="noopener"
       >
-        <img [src]="'assets/images/icons/social/' + link.icon" alt="" />
+        <img [src]="'assets/images/icons/social/' + link.icon" alt="Social network link" />
       </a>
     </div>
   </div>

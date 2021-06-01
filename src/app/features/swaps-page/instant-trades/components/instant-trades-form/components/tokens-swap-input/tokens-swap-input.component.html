@@ -91,7 +91,7 @@
       *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState"
     >
       <span>{{ 'instantTrades.bestRate' | translate }}</span>
-      <img src="assets/images/icons/BestRate.svg" width="39" height="32" alt="" />
+      <img src="assets/images/icons/BestRate.svg" width="39" height="32" alt="Best rate" />
     </div>
     <div
       *ngIf="index === trades.length - 1 && blockchain === BLOCKCHAIN_NAME.ETHEREUM"
