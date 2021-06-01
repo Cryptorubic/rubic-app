@@ -11,7 +11,7 @@
           Slippage
           <img
             src="assets/images/icons/info-empty.svg"
-            alt=""
+            alt="Info icon"
             [matTooltip]="
               'Your transaction will revert if the price changes unfavorably by more than this percentage'
             "
@@ -48,7 +48,7 @@
         *ngIf="slippagePercentModel.value && +slippagePercent < 0.1"
         [matTooltip]="'Your transaction may fail'"
       >
-        <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="" />
+        <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="Warning disclaimer" />
       </div>
 
       <div
@@ -56,7 +56,7 @@
         *ngIf="slippagePercentModel.valid && +slippagePercent > 1"
         [matTooltip]="'Your transaction may be frontrun'"
       >
-        <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="" />
+        <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="Disclaimer sign" />
       </div>
     </div>
   </div>
