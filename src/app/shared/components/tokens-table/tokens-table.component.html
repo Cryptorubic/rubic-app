@@ -128,9 +128,7 @@
               {{ element.token.from.symbol }}
             </div>
             <div class="token-cell__amount">
-              {{
-                element.fromAmount.toString(10) | withRound: 5:6:element.token.from:'toClosestValue'
-              }}
+              {{ element.fromAmount.toString(10) | withRound: element.token.from:'toClosestValue' }}
             </div>
           </div>
         </a>
@@ -162,7 +160,7 @@
               {{ element.token.to.symbol }}
             </div>
             <div class="token-cell__amount">
-              {{ element.toAmount.toString(10) | withRound: 5:6:element.token.to:'toClosestValue' }}
+              {{ element.toAmount.toString(10) | withRound: element.token.to:'toClosestValue' }}
             </div>
           </div>
         </a>

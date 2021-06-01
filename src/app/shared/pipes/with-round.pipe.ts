@@ -13,10 +13,10 @@ export class WithRoundPipe implements PipeTransform {
 
   transform(
     value: string,
-    minRound: number,
-    maxRound: number,
     token: SwapToken | InputToken,
-    roundMode: RoundMode
+    roundMode: RoundMode,
+    minRound = 5,
+    maxRound = 6
   ) {
     if (value?.includes('.')) {
       const startIndex = value.indexOf('.') + 1;

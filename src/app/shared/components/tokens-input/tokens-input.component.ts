@@ -62,12 +62,12 @@ export class TokensInputComponent implements OnChanges, OnInit {
   /**
    * How much decimal symbols will be left in {@link selectedAmount}, if it is greater than or equal to 1.
    */
-  @Input() minRound? = 5;
+  @Input() minRound?: number;
 
   /**
    * How much decimal symbols after zeroes will be left in {@link selectedAmount}, if it is less than 1.
    */
-  @Input() maxRound? = 6;
+  @Input() maxRound?: number;
 
   @Input() fullWidth?: boolean;
 
@@ -78,10 +78,10 @@ export class TokensInputComponent implements OnChanges, OnInit {
   @Input() set selectedAmount(value) {
     this._selectedAmount = this.withRoundPipe.transform(
       value,
-      this.minRound,
-      this.maxRound,
       this.selectedToken,
-      'toClosestValue'
+      'toClosestValue',
+      this.minRound,
+      this.maxRound
     );
     if (this.amountInputDisabled && new BigNumber(this._selectedAmount).eq(0)) {
       this._selectedAmount = '0';

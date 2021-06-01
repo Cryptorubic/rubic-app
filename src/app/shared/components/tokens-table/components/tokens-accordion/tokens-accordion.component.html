@@ -123,7 +123,7 @@
           <span>{{ data.token.from.symbol }}</span>
         </div>
         <div class="tokens-accordion__token-amount">
-          {{ data.fromAmount.toString(10) | withRound: 5:6:data.token.from:'toClosestValue' }}
+          {{ data.fromAmount.toString(10) | withRound: data.token.from:'toClosestValue' }}
         </div>
       </div>
     </div>
@@ -139,7 +139,7 @@
           <span>{{ data.token.to.symbol }}</span>
         </div>
         <div class="tokens-accordion__token-amount">
-          {{ data.toAmount.toString(10) | withRound: 5:6:data.token.from:'toClosestValue' }}
+          {{ data.toAmount.toString(10) | withRound: data.token.from:'toClosestValue' }}
         </div>
       </div>
     </div>
