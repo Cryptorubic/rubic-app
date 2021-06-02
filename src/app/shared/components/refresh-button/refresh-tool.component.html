@@ -36,11 +36,9 @@
 
   <button
     class="refresh-tool__button refresh-button"
-    [ngClass]="{
-      'refresh-button_refreshing': refreshStatus === REFRESH_STATUS.REFRESHING
-    }"
     aria-label="Refresh"
     (click)="onRefreshClick()"
+    #refreshButton
   >
     <img
       class="refresh-button__circle-arrows circle-arrows"

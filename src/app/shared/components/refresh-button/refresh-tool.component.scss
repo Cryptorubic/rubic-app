@@ -101,7 +101,10 @@
 .refresh-button {
   &_refreshing {
     .circle-arrows {
-      animation: 1s linear infinite refreshing;
+      animation-name: refreshing;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
     }
   }
 
@@ -121,7 +124,11 @@
 }
 
 @keyframes refreshing {
-  to {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
     transform: rotate(360deg);
   }
 }
