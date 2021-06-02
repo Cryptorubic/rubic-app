@@ -151,6 +151,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     if (
       value.fromAmount &&
       !new BigNumber(value.fromAmount).isNaN() &&
+      !new BigNumber(value.fromAmount).eq(0) &&
       value.fromToken &&
       value.toToken
     ) {
