@@ -224,7 +224,7 @@ export class TokensTableComponent {
   public getExpirationTime(expirationDate, expiresIn): string {
     const nowDate = moment.utc(moment.now());
     if (expirationDate.isAfter(nowDate)) {
-      if (expiresIn.years() > 1) {
+      if (expiresIn.years() > 0) {
         return 'More than year';
       }
       return `${expirationDate.diff(
