@@ -9,16 +9,16 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import InputToken from 'src/app/shared/models/tokens/InputToken';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
-import { GetBnbService } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/services/get-bnb-service/get-bnb.service';
+import { CryptoTapService } from 'src/app/features/cross-chain-swaps-page/crypto-tap-page/services/crypto-tap-service/crypto-tap.service';
 import {
-  GET_BNB_TRADE_STATUS,
-  GetBnbTrade
-} from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbTrade';
+  CRYPTO_TAP_TRADE_STATUS,
+  CryptoTapToken,
+  CryptoTapTrade
+} from 'src/app/features/cross-chain-swaps-page/crypto-tap-page/models/CryptoTapTrade';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
-import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
@@ -29,11 +29,11 @@ interface ToTokens {
 }
 
 @Component({
-  selector: 'app-get-bnb-form',
-  templateUrl: './get-bnb-form.component.html',
-  styleUrls: ['./get-bnb-form.component.scss']
+  selector: 'app-crypto-tap-form',
+  templateUrl: './crypto-tap-form.component.html',
+  styleUrls: ['./crypto-tap-form.component.scss']
 })
-export class GetBnbFormComponent implements OnInit, OnDestroy {
+export class CryptoTapFormComponent implements OnInit, OnDestroy {
   private readonly RBC_ETHEREUM_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
 
   private readonly RBC_KOVAN_ADDRESS = '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9';
@@ -42,7 +42,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public GET_BNB_TRADE_STATUS = GET_BNB_TRADE_STATUS;
+  public CRYPTO_TAP_TRADE_STATUS = CRYPTO_TAP_TRADE_STATUS;
 
   public blockchainsList = Object.values(BLOCKCHAINS);
 
@@ -55,10 +55,10 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   public toBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
 
-  public getBnbTrade = {} as GetBnbTrade;
+  public cryptoTapTrade = {} as CryptoTapTrade;
 
-  public getBnbTokens: {
-    [key: string]: GetBnbToken;
+  public cryptoTapTokens: {
+    [key: string]: CryptoTapToken;
   };
 
   public tradeSuccessId: string;
@@ -79,7 +79,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
-    private getBnbService: GetBnbService,
+    private cryptoTapService: CryptoTapService,
     private dialog: MatDialog,
     private errorsService: ErrorsService,
     useTestingModeService: UseTestingModeService
@@ -94,7 +94,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
               (token.address === NATIVE_TOKEN_ADDRESS || token.address === this.RBC_KOVAN_ADDRESS)
           )
         );
-        this.setGetBnbTokens();
+        this.setCryptoTapTokens();
       }
     });
   }
@@ -108,7 +108,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
             token.address === this.RBC_ETHEREUM_ADDRESS ||
             (this.isTestingMode && token.address === this.RBC_KOVAN_ADDRESS))
       );
-      this.setGetBnbTokens();
+      this.setCryptoTapTokens();
 
       this.toTokens = {
         [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.findNativeToken(
@@ -117,7 +117,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
         ),
         [BLOCKCHAIN_NAME.POLYGON]: this.findNativeToken(BLOCKCHAIN_NAME.POLYGON, tokens)
       };
-      this.getBnbTrade.toToken = this.toTokens[this.toBlockchain.key];
+      this.cryptoTapTrade.toToken = this.toTokens[this.toBlockchain.key];
     });
 
     this._walletAddressSubscription$ = this.web3PrivateService.onAddressChanges.subscribe(
@@ -140,24 +140,24 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  private setGetBnbTokens() {
+  private setCryptoTapTokens() {
     if (!this.fromTokensList.size) return;
 
-    this.getBnbTrade.status = GET_BNB_TRADE_STATUS.CALCULATION;
-    this.getBnbTokens = {};
+    this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.CALCULATION;
+    this.cryptoTapTokens = {};
     this.fromTokensList.forEach(swapToken => {
-      this.getBnbTokens[swapToken.symbol] = {
+      this.cryptoTapTokens[swapToken.symbol] = {
         ...swapToken,
         fromAmount: '',
         toAmount: '',
         fee: ''
       };
 
-      this.getBnbService.getEstimatedAmount(swapToken).subscribe(
-        getBnbToken => {
-          this.getBnbTokens[swapToken.symbol] = getBnbToken;
-          if (this.getBnbTrade.fromToken?.symbol === swapToken.symbol) {
-            this.getBnbTrade.fromToken = getBnbToken;
+      this.cryptoTapService.getEstimatedAmount(swapToken).subscribe(
+        cryptoTapToken => {
+          this.cryptoTapTokens[swapToken.symbol] = cryptoTapToken;
+          if (this.cryptoTapTrade.fromToken?.symbol === swapToken.symbol) {
+            this.cryptoTapTrade.fromToken = cryptoTapToken;
           }
         },
         err => {
@@ -165,7 +165,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
           this.errorsService.showErrorDialog(err, this.dialog);
         },
         () => {
-          this.getBnbTrade.status = GET_BNB_TRADE_STATUS.WAITING;
+          this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.WAITING;
         }
       );
     });
@@ -173,10 +173,10 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   public onFromTokenChanges(inputToken: InputToken | null): void {
     if (inputToken) {
-      this.getBnbTrade.fromToken = this.getBnbTokens[inputToken.symbol];
+      this.cryptoTapTrade.fromToken = this.cryptoTapTokens[inputToken.symbol];
     } else {
-      this.getBnbTrade = {
-        ...this.getBnbTrade,
+      this.cryptoTapTrade = {
+        ...this.cryptoTapTrade,
         fromToken: null
       };
     }
@@ -184,7 +184,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
 
   public onToBlockchainChanges(blockchain: BridgeBlockchain): void {
     this.toBlockchain = blockchain;
-    this.getBnbTrade.toToken = this.toTokens[this.toBlockchain.key];
+    this.cryptoTapTrade.toToken = this.toTokens[this.toBlockchain.key];
   }
 
   public getFeePrice(amount: string, price: number): BigNumber {
@@ -192,31 +192,31 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
   }
 
   public getFeesDifferencePercent(): BigNumber {
-    if (this.getBnbTokens.ETH?.fee && this.getBnbTokens.RBC?.fee) {
-      const ethFee = this.getFeePrice(this.getBnbTokens.ETH.fee, this.getBnbTokens.ETH.price);
-      const rbcFee = this.getFeePrice(this.getBnbTokens.RBC.fee, this.getBnbTokens.RBC.price);
+    if (this.cryptoTapTokens.ETH?.fee && this.cryptoTapTokens.RBC?.fee) {
+      const ethFee = this.getFeePrice(this.cryptoTapTokens.ETH.fee, this.cryptoTapTokens.ETH.price);
+      const rbcFee = this.getFeePrice(this.cryptoTapTokens.RBC.fee, this.cryptoTapTokens.RBC.price);
       return ethFee.minus(rbcFee).div(ethFee).multipliedBy(100);
     }
     return undefined;
   }
 
   public switchToRbc(): void {
-    this.getBnbTrade.fromToken = this.getBnbTokens.RBC;
+    this.cryptoTapTrade.fromToken = this.cryptoTapTokens.RBC;
   }
 
   public createTrade(): void {
-    this.getBnbTrade.status = GET_BNB_TRADE_STATUS.CALCULATION;
-    this.getBnbService
-      .createTrade(this.getBnbTrade, () => {
-        this.getBnbTrade.status = GET_BNB_TRADE_STATUS.TX_IN_PROGRESS;
+    this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.CALCULATION;
+    this.cryptoTapService
+      .createTrade(this.cryptoTapTrade, () => {
+        this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.TX_IN_PROGRESS;
       })
       .then(transactionHash => {
-        this.getBnbTrade.status = GET_BNB_TRADE_STATUS.COMPLETED;
+        this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.COMPLETED;
         this.tradeSuccessId = transactionHash;
       })
       .catch(err => {
         console.debug(err);
-        this.getBnbTrade.status = GET_BNB_TRADE_STATUS.WAITING;
+        this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.WAITING;
         this.errorsService.showErrorDialog(err, this.dialog);
       });
   }
