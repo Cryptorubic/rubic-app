@@ -3,6 +3,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild
@@ -15,7 +16,7 @@ import Timeout = NodeJS.Timeout;
   templateUrl: './refresh-tool.component.html',
   styleUrls: ['./refresh-tool.component.scss']
 })
-export class RefreshToolComponent implements OnInit {
+export class RefreshToolComponent implements OnInit, OnDestroy {
   /**
    * Timeout before next refreshing in seconds
    */
@@ -71,14 +72,27 @@ export class RefreshToolComponent implements OnInit {
 
   public refreshButtonStatus: 'refreshing' | 'stopped' = 'stopped';
 
+  private refreshButtonStatusListener: () => void;
+
   constructor() {}
 
   ngOnInit() {
-    this.refreshButton.nativeElement.addEventListener('animationiteration', () => {
+    this.refreshButtonStatusListener = () => {
       if (this.refreshButtonStatus === 'stopped') {
         this.refreshButton.nativeElement.classList.remove('refresh-button_refreshing');
       }
-    });
+    };
+    this.refreshButton.nativeElement.addEventListener(
+      'animationiteration',
+      this.refreshButtonStatusListener
+    );
+  }
+
+  ngOnDestroy() {
+    this.refreshButton.nativeElement.removeEventListener(
+      'animationiteration',
+      this.refreshButtonStatusListener
+    );
   }
 
   public onTimeoutClick(): void {
