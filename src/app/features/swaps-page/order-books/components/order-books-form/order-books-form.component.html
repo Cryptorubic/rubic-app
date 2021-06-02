@@ -117,7 +117,7 @@
               selectedTradeState === TRADE_STATUS.TX_IN_PROGRESS
             "
             [disabled]="!(tradeForm.areAmountsAndTokensSet && tradeForm.areOptionsValid)"
-            (click)="createTrade()"
+            (onClick)="createTrade()"
           ></app-primary-button>
         </div>
       </div>

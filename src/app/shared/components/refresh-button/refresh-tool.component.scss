@@ -1,19 +1,32 @@
 @import 'src/scss/vars';
 
-.refresh-button {
+.refresh-tool {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  grid-gap: 8px;
 
-  width: 24px;
-  height: 22px;
-  padding: 0;
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  background: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
+    width: 24px;
+    height: 22px;
+    padding: 0;
 
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+
+    transition: transform 0.1s ease-in-out;
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}
+
+.timeout-button {
   &_waiting {
     .circle-container {
       .fill {
@@ -32,14 +45,12 @@
     }
   }
 
-  &__circle-arrows {
-    width: 18px;
-
-    animation: 1s linear infinite refreshing;
-  }
-
   span {
     display: block;
+  }
+
+  &__clock {
+    width: 16px;
   }
 }
 
@@ -93,6 +104,21 @@
   }
 }
 
+.refresh-button {
+  &_refreshing {
+    .circle-arrows {
+      animation-name: refreshing;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+  }
+
+  &__circle-arrows {
+    width: 18px;
+  }
+}
+
 @keyframes waiting {
   0% {
     transform: rotate(0deg);
@@ -104,7 +130,11 @@
 }
 
 @keyframes refreshing {
-  to {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
     transform: rotate(360deg);
   }
 }

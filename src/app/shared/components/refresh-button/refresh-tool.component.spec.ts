@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RefreshButtonComponent } from './refresh-button.component';
+import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
 
 describe('RefreshButtonComponent', () => {
-  let component: RefreshButtonComponent;
-  let fixture: ComponentFixture<RefreshButtonComponent>;
+  let component: RefreshToolComponent;
+  let fixture: ComponentFixture<RefreshToolComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RefreshButtonComponent]
+      declarations: [RefreshToolComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RefreshButtonComponent);
+    fixture = TestBed.createComponent(RefreshToolComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

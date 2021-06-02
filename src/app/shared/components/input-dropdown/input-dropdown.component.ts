@@ -91,7 +91,6 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
 
   ngOnChanges() {
     if (!this.inputDisabled) {
-      this.searchComponent(this.inputQuery);
       if (this.selectedComponentData) {
         this.inputQuery = this.selectedComponentData.filterParameters[this.filterBy[0]];
         this.searchComponent(this.inputQuery);
@@ -101,6 +100,9 @@ export class InputDropdownComponent<T extends DropdownComponentData> implements 
         setTimeout(() => {
           this.tokenLabelContainerWidth.emit(this.chooseButton.nativeElement.offsetWidth);
         });
+      } else {
+        this.inputQuery = '';
+        this.searchComponent(this.inputQuery);
       }
     } else {
       this.searchComponent('');

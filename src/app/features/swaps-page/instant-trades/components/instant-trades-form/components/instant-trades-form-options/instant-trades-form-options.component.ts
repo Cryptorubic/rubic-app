@@ -7,6 +7,14 @@ import { NgModel } from '@angular/forms';
   styleUrls: ['./instant-trades-form-options.component.scss']
 })
 export class InstantTradesFormOptionsComponent {
+  public readonly MIN_SLIPPAGE_VALUE = 0.01;
+
+  public readonly MIN_RECOMMENDED_SLIPPAGE_VALUE = 0.05;
+
+  public readonly MAX_RECOMMENDED_SLIPPAGE_VALUE = 1.5;
+
+  public readonly MAX_SLIPPAGE_VALUE = 50;
+
   @Input() public slippagePercent: string;
 
   @Output() private slippagePercentChange = new EventEmitter<string>();

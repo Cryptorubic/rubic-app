@@ -62,12 +62,12 @@ export class TokensInputComponent implements OnChanges, OnInit {
   /**
    * How much decimal symbols will be left in {@link selectedAmount}, if it is greater than or equal to 1.
    */
-  @Input() selectedAmountRoundMode? = 5;
+  @Input() minRound?: number;
 
   /**
    * How much decimal symbols after zeroes will be left in {@link selectedAmount}, if it is less than 1.
    */
-  @Input() smallSelectedAmountRoundMode? = 6;
+  @Input() maxRound?: number;
 
   @Input() fullWidth?: boolean;
 
@@ -78,14 +78,13 @@ export class TokensInputComponent implements OnChanges, OnInit {
   @Input() set selectedAmount(value) {
     this._selectedAmount = this.withRoundPipe.transform(
       value,
-      5,
-      6,
       this.selectedToken,
-      'toClosestValue'
+      'toClosestValue',
+      this.minRound,
+      this.maxRound
     );
-
-    if (this._selectedAmount?.includes('.')) {
-      this.setSelectedAmountDecimals();
+    if (this.amountInputDisabled && new BigNumber(this._selectedAmount).eq(0)) {
+      this._selectedAmount = '0';
     }
   }
 
@@ -126,37 +125,6 @@ export class TokensInputComponent implements OnChanges, OnInit {
   ngOnInit() {
     this.tokensFilterOrder = ['symbol', 'name'];
     this.tokensSortOrder = ['customRank', 'usersBalance', 'rank'];
-  }
-
-  private setSelectedAmountDecimals() {
-    const startIndex = this._selectedAmount.indexOf('.') + 1;
-
-    let decimalSymbols: number;
-    if (this.withRoundMode) {
-      if (new BigNumber(this._selectedAmount).isGreaterThanOrEqualTo(1)) {
-        decimalSymbols = this.selectedAmountRoundMode;
-      } else {
-        let zerosAmount = 0;
-        for (let i = startIndex; i < this._selectedAmount.length; ++i) {
-          if (this._selectedAmount[i] === '0') {
-            zerosAmount++;
-          } else {
-            break;
-          }
-        }
-        decimalSymbols = zerosAmount + this.smallSelectedAmountRoundMode;
-      }
-      decimalSymbols = Math.min(decimalSymbols, this.selectedToken.decimals);
-    } else {
-      decimalSymbols = this.selectedToken?.decimals
-        ? this.selectedToken.decimals
-        : this.DEFAULT_DECIMAL_LENGTH;
-    }
-
-    this._selectedAmount = this._selectedAmount.slice(0, startIndex + decimalSymbols);
-    if (this.withRoundMode && new BigNumber(this._selectedAmount).isEqualTo(0)) {
-      this._selectedAmount = '0';
-    }
   }
 
   public onNumberChanges(number: string | number) {
