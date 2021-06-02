@@ -59,12 +59,12 @@ export class WalletsModalComponent {
         img: './assets/images/icons/wallets/metamask.svg',
         desktopOnly: false
       },
-      {
-        name: 'Coinbase wallet',
-        value: WALLET_NAME.WALLET_LINK,
-        img: './assets/images/icons/wallets/coinbase.png',
-        desktopOnly: true
-      },
+      // {
+      //   name: 'Coinbase wallet',
+      //   value: WALLET_NAME.WALLET_LINK,
+      //   img: './assets/images/icons/wallets/coinbase.png',
+      //   desktopOnly: true
+      // },
       {
         name: 'Wallet Connect',
         value: WALLET_NAME.WALLET_CONNECT,

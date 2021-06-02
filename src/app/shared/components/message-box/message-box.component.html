@@ -2,11 +2,7 @@
   <div class="dialog-block">
     <div class="dialog-block__content">
       <button class="dialog-closer" (click)="close()" type="button" mat-dialog-close>
-        <img
-          [src]="($theme | async) === 'dark' ?
-            './assets/images/icons/cross-w.svg' :
-            './assets/images/icons/cross-blue.svg'"
-          alt="close" />
+        <span class="close-icon" [inlineSVG]="'./assets/images/icons/cross-w.svg'"></span>
       </button>
 
       <div class="transaction-title">{{ title | translate }}</div>

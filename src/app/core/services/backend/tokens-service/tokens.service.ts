@@ -11,7 +11,6 @@ import BigNumber from 'bignumber.js';
 import { HttpService } from '../../http/http.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BackendToken } from './models/BackendToken';
-import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
 
 const RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
@@ -32,7 +31,6 @@ export class TokensService {
     private httpService: HttpService,
     private web3PublicService: Web3PublicService,
     useTestingModule: UseTestingModeService,
-    private web3PrivateService: Web3PrivateService,
     private readonly providerConnectorService: ProviderConnectorService
   ) {
     this.getTokensList();
