@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
-import { PanamaBridgeProviderService } from '../common/panama-bridge-provider/panama-bridge-provider.service';
 import { BridgeToken } from '../../../models/BridgeToken';
 import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from '../../../models/BridgeTrade';
@@ -31,9 +30,9 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
           maxAmount: 9999999
         },
         [BLOCKCHAIN_NAME.XDAI]: {
-          address: '0x44fA8E6f47987339850636F88629646662444217',
-          name: 'Dai',
-          symbol: 'DAI',
+          address: '0x0000000000000000000000000000000000000000',
+          name: 'xDai',
+          symbol: 'XDAI',
           decimals: 18,
 
           minAmount: 10,
@@ -44,7 +43,6 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
   ];
 
   constructor(
-    private commonPanamaBridgeProviderService: PanamaBridgeProviderService,
     private web3PrivateService: Web3PrivateService,
     private bridgeApiService: BridgeApiService
   ) {
@@ -90,7 +88,6 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
         }
       )
     ).pipe(
-      map(receipt => receipt),
       tap(receipt => {
         this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,

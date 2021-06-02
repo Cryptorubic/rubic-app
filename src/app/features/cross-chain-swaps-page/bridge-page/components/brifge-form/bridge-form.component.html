@@ -112,7 +112,7 @@
     <button
       class="swap-section__revert-button revert-button"
       type="button"
-      *ngIf="toBlockchain.key !== BLOCKCHAIN_NAME.TRON"
+      *ngIf="toBlockchain.key !== BLOCKCHAIN_NAME.TRON && toBlockchain.key !== BLOCKCHAIN_NAME.XDAI"
       (click)="revertBlockchains()"
     >
       <img src="assets/images/icons/revert.svg" alt="Revert" />

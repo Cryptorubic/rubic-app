@@ -79,11 +79,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
       link: 'https://www.binance.org/',
       caption: 'Binance Smart Chain',
-      providerImg: 'Polygon'
-    },
-    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-      link: 'https://www.binance.org/',
-      caption: 'Binance Smart Chain',
       providerImg: 'Binance'
     },
     [BLOCKCHAIN_NAME.POLYGON]: {
