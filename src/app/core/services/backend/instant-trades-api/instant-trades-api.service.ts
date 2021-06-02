@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { InstantTradesTradeData } from 'src/app/features/swaps-page/models/trade-data';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
@@ -10,6 +10,8 @@ import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
+import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
+import { QueryParamsService } from '../../query-params/query-params.service';
 
 const instantTradesApiRoutes = {
   createData: 'instant_trades/',
@@ -28,7 +30,7 @@ export class InstantTradesApiService {
   constructor(
     private httpService: HttpService,
     private useTestingModeService: UseTestingModeService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService,
     private queryParamsService: QueryParamsService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
@@ -94,7 +96,7 @@ export class InstantTradesApiService {
   // TODO: use AuthService to get user wallet address instead of Web3Private after Coinbase realease
   public fetchSwaps(): Observable<InstantTradesTradeData[]> {
     return this.httpService
-      .get(instantTradesApiRoutes.getData, { user: this.providerConnector.address })
+      .get(instantTradesApiRoutes.getData, { user: this.providerConnectorService.address })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
           swaps.map(swap => this.tradeApiToTradeData(swap))
