@@ -87,6 +87,8 @@ export class QueryParamsService {
         amount: '1'
       },
       bridge: {
+        from: 'ETH',
+        to: 'BSC',
         chain: BLOCKCHAIN_NAME.ETHEREUM
       }
     };
@@ -130,14 +132,15 @@ export class QueryParamsService {
 
   public initiateBridgeParams(params: QueryParams): void {
     this.currentQueryParams = {
-      from: params.from || this.defaultQueryParams.bridge.from,
+      tokenFrom: params.tokenFrom || this.defaultQueryParams.bridge.tokenFrom,
       amount: params.amount || this.defaultQueryParams.bridge.amount,
-      chain: params.chain || this.defaultQueryParams.bridge.chain
+      chainFrom: params.chainFrom || this.defaultQueryParams.bridge.chainFrom,
+      chainTo: params.chainTo || this.defaultQueryParams.bridge.chainTo
     };
   }
 
   private async getToken(
-    tokenType: 'from' | 'to',
+    tokenType: 'from' | 'to' | 'tokenFrom',
     cdr: ChangeDetectorRef
   ): Promise<SwapToken | undefined> {
     const tokenInfo = this.currentQueryParams[tokenType];
@@ -214,7 +217,10 @@ export class QueryParamsService {
   }
 
   public isAddress(token: string): boolean {
-    const web3Public: Web3Public = this.web3Public[this.currentQueryParams.chain];
+    const chain =
+      this.web3Public[this.currentQueryParams.chain] ||
+      this.web3Public[this.currentQueryParams.chainFrom];
+    const web3Public: Web3Public = this.web3Public[chain];
     return web3Public.isAddressCorrect(token);
   }
 
@@ -285,7 +291,7 @@ export class QueryParamsService {
     return customToken;
   }
 
-  private navigate(): void {
+  public navigate(): void {
     this.route.navigate([], {
       queryParams: this.currentQueryParams,
       queryParamsHandling: 'merge'
