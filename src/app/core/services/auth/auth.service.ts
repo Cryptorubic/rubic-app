@@ -131,9 +131,7 @@ export class AuthService {
       const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
       if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
         const { address } = metamaskLoginBody.payload.user;
-        if (address === this.providerConnectorService.address) {
-          this.$currentUser.next({ address });
-        }
+        this.$currentUser.next({ address });
         this.isAuthProcess = false;
         return;
       }

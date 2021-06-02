@@ -62,7 +62,7 @@ export class HeaderComponent implements AfterViewInit {
   private async loadUser(): Promise<void> {
     const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
     if (isIframe) {
-      await this.authService.signIn(true);
+      await this.authService.serverlessSignIn();
     } else {
       await this.authService.loadUser();
     }

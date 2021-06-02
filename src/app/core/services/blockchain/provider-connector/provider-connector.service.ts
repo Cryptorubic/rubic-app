@@ -10,6 +10,7 @@ import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-
 import { StoreService } from '../../store/store.service';
 import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
 import { ErrorsService } from '../../errors/errors.service';
+import { PrivateProvider } from '../private-provider/private-provider';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class ProviderConnectorService {
 
   public providerName: WALLET_NAME;
 
-  private privateProvider: any;
+  private privateProvider: PrivateProvider;
 
   public get address(): string {
     return this.provider.address;
@@ -35,11 +36,11 @@ export class ProviderConnectorService {
     return this.provider.networkName;
   }
 
-  public get provider(): any {
+  public get provider(): PrivateProvider {
     return this.privateProvider;
   }
 
-  public set provider(value: any) {
+  public set provider(value: PrivateProvider) {
     this.privateProvider = value;
   }
 
@@ -85,7 +86,7 @@ export class ProviderConnectorService {
   public async installProvider(): Promise<void> {
     const provider = this.storage.getItem('provider') as WALLET_NAME;
     if (provider) {
-      await this.connectProvider(provider);
+      this.connectProvider(provider);
     }
   }
 
@@ -111,7 +112,7 @@ export class ProviderConnectorService {
     return this.provider.addToken(token);
   }
 
-  public async connectProvider(provider: WALLET_NAME, chainId?: number) {
+  public connectProvider(provider: WALLET_NAME, chainId?: number) {
     switch (provider) {
       case WALLET_NAME.WALLET_LINK: {
         this.provider = new WalletLinkProvider(
