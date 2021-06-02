@@ -19,7 +19,7 @@ export class RefreshToolComponent implements OnInit {
   /**
    * Timeout before next refreshing in seconds
    */
-  @Input() readonly refreshTimeout = 30;
+  @Input() readonly refreshTimeout = 15;
 
   @Input() set refreshStatus(status) {
     if (status !== REFRESH_STATUS.WAITING) {
