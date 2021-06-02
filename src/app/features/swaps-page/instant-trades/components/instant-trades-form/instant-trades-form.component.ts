@@ -13,6 +13,7 @@ import { TradeParametersService } from 'src/app/core/services/swaps/trade-parame
 import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { OneInchPolService } from 'src/app/features/swaps-page/instant-trades/services/one-inch-service/one-inch-pol-service/one-inch-pol.service';
+import { REFRESH_STATUS } from 'src/app/shared/models/instant-trade/REFRESH_STATUS';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
@@ -34,7 +35,6 @@ import { PROVIDERS } from '../../models/providers.enum';
 import { TO_BACKEND_BLOCKCHAINS } from '../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { InstantTradesFormService } from './services/instant-trades-form.service';
-import { REFRESH_BUTTON_STATUS } from '../../../../../shared/models/instant-trade/REFRESH_BUTTON_STATUS';
 
 @Component({
   selector: 'app-instant-trades-form',
@@ -87,7 +87,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     to: {} as SwapToken
   };
 
-  public refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+  public refreshStatus = REFRESH_STATUS.STAYING;
 
   public areAdvancedOptionsOpened = false;
 
@@ -161,7 +161,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         trade: null,
         tradeState: null
       }));
-      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+      this.refreshStatus = REFRESH_STATUS.STAYING;
     }
   }
 
@@ -367,7 +367,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       this.blockchain = this.firstBlockhainEmitment && queryChain ? queryChainValue : blockchain;
       this.firstBlockhainEmitment = false;
 
-      this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+      this.refreshStatus = REFRESH_STATUS.STAYING;
 
       this.initInstantTradeProviders();
 
@@ -455,7 +455,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public async calculateTradeParameters() {
-    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.REFRESHING;
+    this.refreshStatus = REFRESH_STATUS.REFRESHING;
 
     const tradeParams = {
       ...this.tradeParameters
@@ -482,7 +482,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         toAmount
       });
     }
-    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;
+    this.refreshStatus = REFRESH_STATUS.WAITING;
   }
 
   private async calculateProviderTrade(
@@ -614,7 +614,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(selectedServiceIndex: number) {
-    this.refreshButtonStatus = REFRESH_BUTTON_STATUS.STAYING;
+    this.refreshStatus = REFRESH_STATUS.STAYING;
 
     this.waitingForProvider = true;
     const setTradeState = (state: INSTANT_TRADES_STATUS) => {
@@ -710,7 +710,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
         }
       })
       .finally(() => {
-        this.refreshButtonStatus = REFRESH_BUTTON_STATUS.WAITING;
+        this.refreshStatus = REFRESH_STATUS.WAITING;
       });
   }
 

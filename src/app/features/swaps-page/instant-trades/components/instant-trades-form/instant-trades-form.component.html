@@ -99,11 +99,11 @@
       <div class="selection-block__header">
         <div class="selection-block__label">
           {{ 'common.get' | translate }}
-          <app-refresh-button
+          <app-refresh-tool
             class="selection-block__refresh-button"
-            [refreshButtonStatus]="refreshButtonStatus"
-            (onRefreshButtonActivated)="triggerRecalculateTradeParameters()"
-          ></app-refresh-button>
+            [refreshStatus]="refreshStatus"
+            (onRefresh)="triggerRecalculateTradeParameters()"
+          ></app-refresh-tool>
         </div>
 
         <div *ngIf="toToken?.address" class="selection-block__scanner">
