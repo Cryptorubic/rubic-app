@@ -33,15 +33,14 @@
   <section class="rubic-contract">
     <div class="container">
       <span class="span-title-section">{{ 'aboutPage.contract.title' | translate }}</span>
-      <img
-        [src]="
-          $isMobile
-            ? 'assets/images/about/mobile-instruction.svg'
-            : 'assets/images/about/desktop-instruction.svg'
-        "
-        class="rubic-contract-image"
-        alt=""
-      />
+      <picture>
+        <source srcset="assets/images/about/desktop-instruction.svg" media="(min-width: 1150px)" />
+        <img
+          class="rubic-contract-image"
+          src="assets/images/about/mobile-instruction.svg"
+          alt="instruction"
+        />
+      </picture>
     </div>
   </section>
 

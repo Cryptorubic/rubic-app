@@ -10,6 +10,8 @@
       (click)="updateTransactionsList()"
       class="bridge-results__spinner"
       src="assets/images/icons/refresh.svg"
+      width="17"
+      height="19"
       alt="Update"
     />
   </div>
@@ -26,6 +28,8 @@
                 [src]="getArrowImg(SORT_FIELD.STATUS)"
                 alt="Sort"
                 (click)="sortTransactions(SORT_FIELD.STATUS)"
+                width="28"
+                height="28"
               />
             </th>
             <th>
@@ -34,6 +38,8 @@
                 [src]="getArrowImg(SORT_FIELD.FROM)"
                 alt="Sort"
                 (click)="sortTransactions(SORT_FIELD.FROM)"
+                width="28"
+                height="28"
               />
             </th>
             <th>
@@ -42,6 +48,8 @@
                 [src]="getArrowImg(SORT_FIELD.TO)"
                 alt="Sort"
                 (click)="sortTransactions(SORT_FIELD.TO)"
+                width="28"
+                height="28"
               />
             </th>
             <th>
@@ -50,6 +58,8 @@
                 [src]="getArrowImg(SORT_FIELD.SEND)"
                 alt="Sort"
                 (click)="sortTransactions(SORT_FIELD.SEND)"
+                width="28"
+                height="28"
               />
             </th>
             <th>
@@ -58,6 +68,8 @@
                 [src]="getArrowImg(SORT_FIELD.GET)"
                 alt="Sort"
                 (click)="sortTransactions(SORT_FIELD.GET)"
+                width="28"
+                height="28"
               />
             </th>
             <th>
@@ -66,6 +78,8 @@
                 [src]="getArrowImg(SORT_FIELD.DATE)"
                 alt="Sort"
                 (click)="sortTransactions(SORT_FIELD.DATE)"
+                width="28"
+                height="28"
               />
             </th>
           </tr>
@@ -104,20 +118,27 @@
             <td class="data__network">
               <img
                 [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
-                alt=""
+                width="25"
+                height="25"
+                [alt]="Blockchains[tx.fromBlockchain].label"
               />
               <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
             </td>
 
             <td class="data__network">
-              <img [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img" alt="" />
+              <img
+                [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img"
+                width="25"
+                width="25"
+                [alt]="Blockchains[tx.fromBlockchain].label"
+              />
               <span>{{ Blockchains[tx.toBlockchain].label }}</span>
             </td>
 
             <td class="data__amount">
               <div class="data__amount-inner">
                 <div class="data__amount-number">{{ tx.fromAmount }}</div>
-                <img [src]="tx.tokenImage" alt="" />
+                <img [src]="tx.tokenImage" width="25" height="25" [alt]="tx.fromSymbol" />
                 <span>{{ tx.fromSymbol }}</span>
               </div>
             </td>
@@ -125,7 +146,7 @@
             <td class="data__amount">
               <div class="data__amount-inner">
                 <div class="data__amount-number">{{ tx.toAmount }}</div>
-                <img [src]="tx.tokenImage" alt="" />
+                <img [src]="tx.tokenImage" [alt]="tx.toSymbol" width="25" height="25" />
                 <span>{{ tx.toSymbol }}</span>
               </div>
             </td>
@@ -183,7 +204,7 @@
                 <div class="data__network" *ngIf="selectedSortField === SORT_FIELD.FROM">
                   <img
                     [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
-                    alt=""
+                    [alt]="Blockchains[tx.fromBlockchain].label"
                   />
                   <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
                 </div>
@@ -191,7 +212,7 @@
                 <div class="data__network" *ngIf="selectedSortField === SORT_FIELD.TO">
                   <img
                     [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img"
-                    alt=""
+                    [alt]="Blockchains[tx.toBlockchain].label"
                   />
                   <span>{{ Blockchains[tx.toBlockchain].label }}</span>
                 </div>
@@ -199,7 +220,7 @@
                 <div class="data__amount" *ngIf="selectedSortField === SORT_FIELD.SEND">
                   <div class="data__amount-inner">
                     <div class="data__amount-number">{{ tx.fromAmount }}</div>
-                    <img [src]="tx.tokenImage" alt="" />
+                    <img [src]="tx.tokenImage" [alt]="tx.fromSymbol" />
                     <span>{{ tx.fromSymbol }}</span>
                   </div>
                 </div>
@@ -207,7 +228,7 @@
                 <div class="data__amount" *ngIf="selectedSortField === SORT_FIELD.GET">
                   <div class="data__amount-inner">
                     <div class="data__amount-number">{{ tx.toAmount }}</div>
-                    <img [src]="tx.tokenImage" alt="" />
+                    <img [src]="tx.tokenImage" [alt]="tx.toSymbol" />
                     <span>{{ tx.toSymbol }}</span>
                   </div>
                 </div>
@@ -234,7 +255,7 @@
                 <div class="data__network">
                   <img
                     [src]="'assets/images/icons/coins/' + Blockchains[tx.fromBlockchain].img"
-                    alt=""
+                    [alt]="Blockchains[tx.fromBlockchain].label"
                   />
                   <span>{{ Blockchains[tx.fromBlockchain].label }}</span>
                 </div>
@@ -245,7 +266,7 @@
                 <div class="data__network">
                   <img
                     [src]="'assets/images/icons/coins/' + Blockchains[tx.toBlockchain].img"
-                    alt=""
+                    [alt]="Blockchains[tx.fromBlockchain].label"
                   />
                   <span>{{ Blockchains[tx.toBlockchain].label }}</span>
                 </div>
@@ -258,7 +279,7 @@
                     <div class="data__amount-number">
                       {{ tx.fromAmount | bigNumberFormat }}
                     </div>
-                    <img [src]="tx.tokenImage" alt="" />
+                    <img [src]="tx.tokenImage" [alt]="tx.fromSymbol" />
                     <span>{{ tx.fromSymbol }}</span>
                   </div>
                 </div>
@@ -269,7 +290,7 @@
                 <div class="data__amount">
                   <div class="data__amount-inner">
                     <div class="data__amount-number">{{ tx.toAmount | bigNumberFormat }}</div>
-                    <img [src]="tx.tokenImage" alt="" />
+                    <img [src]="tx.tokenImage" [alt]="tx.toSymbol" />
                     <span>{{ tx.toSymbol }}</span>
                   </div>
                 </div>
