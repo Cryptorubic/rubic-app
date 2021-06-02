@@ -82,7 +82,7 @@
   }
 }
 
-@include b($tablet) { 
+@include b($tablet) {
   .collaborations {
     &__content {
       grid-gap: 0 65px;

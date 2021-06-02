@@ -9,8 +9,14 @@
       target="_blank"
       *ngFor="let company of collaborations"
       [href]="company.url"
+      rel="noopener"
     >
-      <img [src]="'assets/images/icons/collaborations/' + company.img" alt="" />
+      <img
+        [src]="'assets/images/icons/collaborations/' + company.img"
+        [alt]="company.title"
+        width="142"
+        height="36"
+      />
     </a>
   </div>
 

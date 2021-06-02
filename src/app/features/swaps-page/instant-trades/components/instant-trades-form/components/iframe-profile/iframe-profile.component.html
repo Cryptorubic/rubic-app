@@ -3,6 +3,13 @@
   <img
     class="iframe-profile__logout-icon"
     (click)="logout()"
-    [src]="($theme | async) === 'dark' ? 'assets/images/icons/logout-dark.svg' : 'assets/images/icons/logout-white.svg'"
-    alt="Logout">
+    [src]="
+      ($theme | async) === 'dark'
+        ? 'assets/images/icons/logout-dark.svg'
+        : 'assets/images/icons/logout-white.svg'
+    "
+    width="15"
+    height="18"
+    alt="Logout"
+  />
 </div>

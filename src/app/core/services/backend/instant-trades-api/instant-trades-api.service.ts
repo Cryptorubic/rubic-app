@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 import { InstantTradesTradeData } from 'src/app/features/swaps-page/models/trade-data';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { HttpService } from '../../http/http.service';
@@ -10,7 +10,6 @@ import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
 
 const instantTradesApiRoutes = {
   createData: 'instant_trades/',
@@ -24,12 +23,16 @@ const instantTradesApiRoutes = {
 export class InstantTradesApiService {
   private isTestingMode: boolean;
 
+  private isIframe: boolean;
+
   constructor(
     private httpService: HttpService,
     private useTestingModeService: UseTestingModeService,
-    private readonly providerConnector: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService
+    private queryParamsService: QueryParamsService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
+    this.queryParamsService.$isIframe.subscribe(res => (this.isIframe = res));
   }
 
   public notifyInstantTradesBot(body: {
@@ -57,11 +60,17 @@ export class InstantTradesApiService {
    * @param tradeInfo data body for request
    * @return instant trade object
    */
-  public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
+  public createTrade(
+    tradeInfo: InstantTradesRequestApi
+  ): Observable<InstantTradesResponseApi | null> {
+    if (this.isIframe) {
+      return of(null);
+    }
+
     if (this.isTestingMode) {
       tradeInfo.network = 'ethereum-test';
     }
-    return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo);
+    return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo).pipe(delay(1000));
   }
 
   /**
@@ -69,7 +78,11 @@ export class InstantTradesApiService {
    * @param hash hash of transaction what we want to update
    * @param status status of trade what we want to set
    */
-  public patchTrade(hash: string, status: string): Observable<InstantTradesResponseApi> {
+  public patchTrade(hash: string, status: string): Observable<InstantTradesResponseApi | null> {
+    if (this.isIframe) {
+      return of(null);
+    }
+
     const url = instantTradesApiRoutes.editData + hash;
     return this.httpService.patch(url, { status });
   }
