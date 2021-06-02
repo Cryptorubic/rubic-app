@@ -6,7 +6,8 @@ import {
   HostListener,
   TemplateRef,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  AfterViewInit
 } from '@angular/core';
 import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -21,7 +22,7 @@ import { HeaderStore } from '../../services/header.store';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent {
+export class HeaderComponent implements AfterViewInit {
   public readonly $isMobileMenuOpened: Observable<boolean>;
 
   public readonly $isMobile: Observable<boolean>;
@@ -52,6 +53,10 @@ export class HeaderComponent {
         this.pageScrolled = scrolled > scrolledHeight;
       };
     }
+  }
+
+  public ngAfterViewInit(): void {
+    this.authService.getCurrentUser().subscribe(() => this.cdr.detectChanges());
   }
 
   private async loadUser(): Promise<void> {

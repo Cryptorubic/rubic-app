@@ -59,8 +59,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
       this.cdr.detectChanges()
     );
     this._onAddressChanges$ = this.providerConnectorService.$addressChange.subscribe(() =>
-      // @TODO: Fix timeout. Address doesn't rerender sometimes.
-      setTimeout(() => this.cdr.detectChanges())
+      this.cdr.detectChanges()
     );
   }
 

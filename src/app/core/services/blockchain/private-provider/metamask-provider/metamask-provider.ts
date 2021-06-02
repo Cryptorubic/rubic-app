@@ -69,11 +69,6 @@ export class MetamaskProvider extends PrivateProvider {
       }
     });
 
-    this.core.on('disconnect', () => {
-      this.selectedChain = null;
-      this.deActivate();
-    });
-
     this.core.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { finalize, first } from 'rxjs/operators';
+import { finalize, first, mergeMap } from 'rxjs/operators';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
@@ -49,10 +49,10 @@ export class AuthService {
         return;
       }
       const user = this.$currentUser.getValue();
-      // user inited, account not authorized on backend or authorized other account
       if (user !== undefined && (user === null || user?.address !== address) && address) {
-        this.$currentUser.next({ address });
-        // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
+        this.signOut()
+          .pipe(mergeMap(() => this.signIn()))
+          .subscribe();
       }
     });
   }
@@ -87,7 +87,9 @@ export class AuthService {
 
   public async loadUser() {
     this.isAuthProcess = true;
-    await this.providerConnectorService.installProvider();
+    if (!this.providerConnectorService.provider) {
+      await this.providerConnectorService.installProvider();
+    }
     this.fetchMetamaskLoginBody().subscribe(
       async metamaskLoginBody => {
         if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
