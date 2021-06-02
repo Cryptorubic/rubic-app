@@ -85,13 +85,17 @@ export class InstantTradesTableComponent implements AfterViewInit, OnInit {
   }
 
   private fetchSwaps(): void {
-    this.instantTradesApiService.fetchSwaps().subscribe(
-      tradeData => {
-        this.instantTradesTableService.setTableData(tradeData as InstantTradesTradeData[]);
-        this.instantTradesTableService.filterTable();
-      },
-      err => console.error(err),
-      () => this.instantTradesTableService.setTableLoadingStatus(false)
-    );
+    if (this.providerConnectorService.provider) {
+      this.instantTradesApiService.fetchSwaps().subscribe(
+        tradeData => {
+          this.instantTradesTableService.setTableData(tradeData as InstantTradesTradeData[]);
+          this.instantTradesTableService.filterTable();
+        },
+        err => console.error(err),
+        () => this.instantTradesTableService.setTableLoadingStatus(false)
+      );
+    } else {
+      this.instantTradesTableService.setTableLoadingStatus(false);
+    }
   }
 }
