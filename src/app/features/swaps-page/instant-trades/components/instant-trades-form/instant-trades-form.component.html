@@ -126,7 +126,7 @@
           [hasBestRate]="hasBestRate"
           [blockchain]="blockchain"
           [availableToTokens]="availableToTokens"
-          [tradeParameters]="tradeParameters"
+          [(tradeParameters)]="tradeParameters"
           [selectedTradeState]="selectedTradeState"
           [waitingForProvider]="waitingForProvider"
           (tokenChangeEvent)="toToken = $any($event)"
