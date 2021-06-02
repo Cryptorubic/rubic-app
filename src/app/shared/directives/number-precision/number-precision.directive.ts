@@ -43,7 +43,10 @@ export class NumberPrecisionDirective implements Validator {
       return null;
     }
 
-    const value = control.value.split(',').join('');
+    let value = control.value.split(',').join('');
+    if (control.value[control.value.length - 1] === ',') {
+      value += '.';
+    }
 
     if (value === this.lastValue.split(',').join('')) {
       if (control.value !== this.lastValue) {
