@@ -16,6 +16,7 @@ import { InlineSVGModule } from 'ng-inline-svg';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
+import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -54,7 +55,6 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
 import { CheckboxComponent } from './components/checkbox/checkbox.component';
 import { BlockchainSelectComponent } from './components/blockchain-select/blockchain-select.component';
 import { TotalSupplyOverflowErrorComponent } from './components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
-import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
 import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
 import { ShortAddressPipe } from './pipes/short-address.pipe';
@@ -102,7 +102,7 @@ import { RoundPipe } from './pipes/round.pipe';
     BlockchainSelectComponent,
     CheckboxComponent,
     TotalSupplyOverflowErrorComponent,
-    RefreshButtonComponent,
+    RefreshToolComponent,
     WalletAddressFormComponent,
     WrapLinkDirective,
     SafetyLinkDirective,
@@ -168,9 +168,9 @@ import { RoundPipe } from './pipes/round.pipe';
     NetworkErrorComponent,
     BlockchainSelectComponent,
     CheckboxComponent,
-    RefreshButtonComponent,
+    RefreshToolComponent,
     WalletAddressFormComponent,
-    RefreshButtonComponent,
+    RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent
   ],

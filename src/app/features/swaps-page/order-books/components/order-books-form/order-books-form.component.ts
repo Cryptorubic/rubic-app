@@ -91,12 +91,12 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       ...this.tradeForm,
       token: {
         from: {
-          ...this.tradeForm.token.from,
+          ...(this._tradeParameters.fromToken && this.tradeForm.token.from),
           ...this._tradeParameters.fromToken,
           amount: this._tradeParameters.fromAmount
         },
         to: {
-          ...this.tradeForm.token.to,
+          ...(this._tradeParameters.toToken && this.tradeForm.token.to),
           ...this._tradeParameters.toToken,
           amount: this._tradeParameters.toAmount
         }

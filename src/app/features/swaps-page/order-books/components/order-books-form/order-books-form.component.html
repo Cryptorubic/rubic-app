@@ -42,7 +42,7 @@
 
       <div class="main-section__arrow-section" (click)="revertTokens()">
         <button type="button" class="arrow-button">
-          <img src="assets/images/icons/revert.svg" alt="" />
+          <img src="assets/images/icons/revert.svg" alt="revert" width="18" height="20" />
         </button>
       </div>
 
@@ -117,7 +117,7 @@
               selectedTradeState === TRADE_STATUS.TX_IN_PROGRESS
             "
             [disabled]="!(tradeForm.areAmountsAndTokensSet && tradeForm.areOptionsValid)"
-            (click)="createTrade()"
+            (onClick)="createTrade()"
           ></app-primary-button>
         </div>
       </div>

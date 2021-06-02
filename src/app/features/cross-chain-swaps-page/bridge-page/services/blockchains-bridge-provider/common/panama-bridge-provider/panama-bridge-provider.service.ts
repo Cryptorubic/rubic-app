@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { List } from 'immutable';
 import { HttpClient } from '@angular/common/http';
 import { from, Observable, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { flatMap } from 'rxjs/internal/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
@@ -75,7 +74,6 @@ export class PanamaBridgeProviderService {
     const body = {
       amount: bridgeTrade.amount.toFixed(),
       fromNetwork: bridgeTrade.fromBlockchain,
-      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       source: 921,
       symbol: bridgeTrade.token.symbol,
       toAddress: bridgeTrade.toAddress,
@@ -86,7 +84,7 @@ export class PanamaBridgeProviderService {
     };
 
     return this.httpClient.post(`${this.apiUrl}swaps`, body).pipe(
-      flatMap((res: PanamaResponse) => {
+      mergeMap((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
           console.error(`Bridge POST error, code ${res.code}`);
           return throwError(new OverQueryLimitError(this.translateService));
