@@ -62,6 +62,20 @@ export class WalletConnectProvider extends PrivateProvider {
     );
     this.core = new WalletConnect(rpcParams);
     web3.setProvider(this.core as any);
+    this.core.on('chainChanged', (chain: string) => {
+      this.selectedChain = chain;
+      if (this.isEnabled) {
+        chainChange.next(BlockchainsInfo.getBlockchainById(chain));
+        console.info('Chain changed', chain);
+      }
+    });
+    this.core.on('accountsChanged', (accounts: string[]) => {
+      this.selectedAddress = accounts[0] || null;
+      if (this.isEnabled) {
+        this.onAddressChanges.next(this.selectedAddress);
+        console.info('Selected account changed to', accounts[0]);
+      }
+    });
   }
 
   protected getAddress(): string {

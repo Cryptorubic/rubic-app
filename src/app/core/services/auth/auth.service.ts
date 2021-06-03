@@ -96,7 +96,12 @@ export class AuthService {
           await this.providerConnectorService.activate();
 
           const { address } = metamaskLoginBody.payload.user;
-          if (address === this.providerConnectorService.address) {
+          console.log(
+            address,
+            this.providerConnectorService.address,
+            this.providerConnectorService.address === address
+          );
+          if (address.toLowerCase() === this.providerConnectorService.address.toLowerCase()) {
             this.$currentUser.next({ address });
           } else {
             this.signOut()

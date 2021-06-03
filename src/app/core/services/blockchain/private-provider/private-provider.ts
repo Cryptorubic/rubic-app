@@ -36,7 +36,7 @@ export abstract class PrivateProvider {
     return this.getAddress();
   }
 
-  protected abstract getAddress(): string;
+  public abstract getAddress(): string;
 
   /**
    * @description current selected network
@@ -51,7 +51,7 @@ export abstract class PrivateProvider {
 
   protected constructor(protected readonly errorsService: ErrorsService) {}
 
-  protected abstract getNetwork(): IBlockchain;
+  public abstract getNetwork(): IBlockchain;
 
   /**
    * @description current selected network name
