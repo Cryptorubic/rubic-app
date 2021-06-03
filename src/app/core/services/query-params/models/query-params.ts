@@ -15,6 +15,7 @@ interface AllQueryParams {
   hideSelection: string;
   background: string;
   theme: string;
+  lang: string;
 }
 export type QueryParams = {
   [P in TopTokens | keyof AllQueryParams]?: string;

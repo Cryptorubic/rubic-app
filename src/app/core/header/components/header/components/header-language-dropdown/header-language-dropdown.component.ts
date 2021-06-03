@@ -3,6 +3,7 @@ import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
 import { languagesList } from 'src/app/core/header/models/languages-list';
+import { QueryParamsService } from '../../../../../services/query-params/query-params.service';
 
 @Component({
   selector: 'app-header-language-dropdown',
@@ -20,7 +21,8 @@ export class HeaderLanguageDropdownComponent {
   constructor(
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.languagesList = languagesList;
     translateService.onLangChange.subscribe((event: LangChangeEvent) => {
@@ -46,6 +48,8 @@ export class HeaderLanguageDropdownComponent {
     this.languagesList.sort((...params) => {
       return params.pop().active ? 1 : -1;
     });
+
+    this.queryParamsService.setQueryParam('lang', this.currentLanguage);
   }
 
   public toggleLanguageDropdown() {
@@ -54,5 +58,6 @@ export class HeaderLanguageDropdownComponent {
 
   public setLanguage(lng: string) {
     this.translateService.use(lng);
+    this.queryParamsService.setQueryParam('lang', lng);
   }
 }
