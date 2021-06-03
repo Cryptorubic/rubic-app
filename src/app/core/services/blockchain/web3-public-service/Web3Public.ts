@@ -190,7 +190,10 @@ export class Web3Public {
    * @param address address to check
    */
   public isNativeAddress(address: string): boolean {
-    if (this.blockchain.name === BLOCKCHAIN_NAME.POLYGON) {
+    if (
+      this.blockchain.name === BLOCKCHAIN_NAME.POLYGON ||
+      this.blockchain.name === BLOCKCHAIN_NAME.POLYGON_TESTNET
+    ) {
       return address.toLowerCase() === '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'.toLowerCase();
     }
     return address === '0x0000000000000000000000000000000000000000';

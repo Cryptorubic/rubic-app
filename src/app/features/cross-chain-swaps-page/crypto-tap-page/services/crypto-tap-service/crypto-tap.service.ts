@@ -19,6 +19,7 @@ import BigNumber from 'bignumber.js';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { CryptoTapApiService } from 'src/app/core/services/backend/crypto-tap-api/crypto-tap-api.service';
 import { TranslateService } from '@ngx-translate/core';
+import { TransactionReceipt } from 'web3-eth';
 import { ABI, contractAddressEthereum, contractAddressKovan } from './constants/ethContract';
 
 interface EstimatedAmountResponse {
@@ -29,7 +30,7 @@ interface EstimatedAmountResponse {
 
 @Injectable()
 export class CryptoTapService {
-  private readonly baseApiUrl = 'https://bnbexchange.rubic.exchange/api/v1/';
+  private readonly baseApiUrl = 'https://devbnbexchange.mywish.io/api/v1/';
 
   private isTestingMode: boolean;
 
@@ -53,21 +54,26 @@ export class CryptoTapService {
     });
   }
 
-  public getEstimatedAmount(swapToken: SwapToken): Observable<CryptoTapToken> {
-    return this.httpService.get(`estimate_amount/${swapToken.symbol}/`, {}, this.baseApiUrl).pipe(
-      map((response: EstimatedAmountResponse) => ({
-        ...swapToken,
-        fromAmount: Web3PublicService.tokenWeiToAmount(
-          swapToken,
-          response.from_amount.toString()
-        ).toFixed(),
-        toAmount: Web3PublicService.tokenWeiToAmount(
-          swapToken,
-          response.to_amount.toString()
-        ).toFixed(),
-        fee: Web3PublicService.tokenWeiToAmount(swapToken, response.fee_amount.toString()).toFixed()
-      }))
-    );
+  public getEstimatedAmount(fromToken: SwapToken, toToken: SwapToken): Observable<CryptoTapToken> {
+    return this.httpService
+      .get(`estimate_amount/`, { fsym: fromToken.symbol, tsym: toToken.symbol }, this.baseApiUrl)
+      .pipe(
+        map((response: EstimatedAmountResponse) => ({
+          ...fromToken,
+          fromAmount: Web3PublicService.tokenWeiToAmount(
+            fromToken,
+            response.from_amount.toString()
+          ).toFixed(),
+          toAmount: Web3PublicService.tokenWeiToAmount(
+            toToken,
+            response.to_amount.toString()
+          ).toFixed(),
+          fee: Web3PublicService.tokenWeiToAmount(
+            fromToken,
+            response.fee_amount.toString()
+          ).toFixed()
+        }))
+      );
   }
 
   private checkSettings() {
@@ -130,47 +136,48 @@ export class CryptoTapService {
   public async createTrade(
     trade: CryptoTapTrade,
     onTransactionHash: (hash: string) => void
-  ): Promise<string> {
+  ): Promise<TransactionReceipt> {
     this.checkSettings();
     await this.checkBalance(trade);
 
-    const token = trade.fromToken;
+    const { fromToken, toToken } = trade;
     const { fromAmount } = trade.fromToken;
-    let transactionHash: string;
-    if (token.symbol === 'ETH') {
-      const estimatedGas = '120000'; // TODO: хотфикс сломавшегося в метамаске рассчета газа
-      const receipt = await this.web3PrivateService.executeContractMethod(
+    const toNetwork = toToken.blockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 3;
+
+    let receipt: TransactionReceipt;
+    if (fromToken.symbol === 'ETH') {
+      const estimatedGas = '120000';
+      receipt = await this.web3PrivateService.executeContractMethod(
         this.contractAddress,
         ABI,
         'deposit',
-        [],
+        [toNetwork],
         {
-          value: Web3PublicService.tokenAmountToWei(token, fromAmount),
+          value: Web3PublicService.tokenAmountToWei(fromToken, fromAmount),
           onTransactionHash,
           gas: estimatedGas
         }
       );
-      transactionHash = receipt.transactionHash;
     } else {
-      await this.provideAllowance(token, onTransactionHash);
-      const receipt = await this.web3PrivateService.executeContractMethod(
+      await this.provideAllowance(fromToken, onTransactionHash);
+      receipt = await this.web3PrivateService.executeContractMethod(
         this.contractAddress,
         ABI,
         'depositToken',
-        [token.address],
+        [fromToken.address, toNetwork],
         {
           onTransactionHash
         }
       );
-      transactionHash = receipt.transactionHash;
     }
 
     this.cryptoTapApiService.notifyCryptoTapBot(
       trade,
-      transactionHash,
+      receipt.transactionHash,
       this.web3PrivateService.address
     );
-    return transactionHash;
+
+    return receipt;
   }
 
   private async provideAllowance(

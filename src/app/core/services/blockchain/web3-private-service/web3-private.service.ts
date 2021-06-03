@@ -5,13 +5,13 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 
 import { Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
-import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'

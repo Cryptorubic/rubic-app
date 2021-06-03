@@ -1,5 +1,4 @@
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
 
 export enum CRYPTO_TAP_TRADE_STATUS {
   WAITING = 'WAITING',
@@ -18,5 +17,4 @@ export interface CryptoTapTrade {
   status: CRYPTO_TAP_TRADE_STATUS;
   fromToken: CryptoTapToken;
   toToken: SwapToken;
-  toBlockchain: BridgeBlockchain;
 }

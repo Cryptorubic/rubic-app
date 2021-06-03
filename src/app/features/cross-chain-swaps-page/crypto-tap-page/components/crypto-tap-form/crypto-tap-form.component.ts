@@ -28,6 +28,15 @@ interface ToTokens {
   [BLOCKCHAIN_NAME.POLYGON]: SwapToken;
 }
 
+type CryptoTapBlockchainTokens = {
+  [key: string]: CryptoTapToken;
+};
+
+type CryptoTapTokens = {
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: CryptoTapBlockchainTokens;
+  [BLOCKCHAIN_NAME.POLYGON]: CryptoTapBlockchainTokens;
+};
+
 @Component({
   selector: 'app-crypto-tap-form',
   templateUrl: './crypto-tap-form.component.html',
@@ -57,9 +66,10 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   public cryptoTapTrade = {} as CryptoTapTrade;
 
-  public cryptoTapTokens: {
-    [key: string]: CryptoTapToken;
-  };
+  public cryptoTapTokens: CryptoTapTokens = {
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {},
+    [BLOCKCHAIN_NAME.POLYGON]: {}
+  } as CryptoTapTokens;
 
   public tradeSuccessId: string;
 
@@ -87,37 +97,14 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
       if (isTestingMode) {
-        this.fromTokensList = List(
-          coingeckoTestTokens.filter(
-            token =>
-              token.blockchain === BLOCKCHAIN_NAME.ETHEREUM &&
-              (token.address === NATIVE_TOKEN_ADDRESS || token.address === this.RBC_KOVAN_ADDRESS)
-          )
-        );
-        this.setCryptoTapTokens();
+        this.setTokens(List(coingeckoTestTokens));
       }
     });
   }
 
   ngOnInit() {
     this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
-      this.fromTokensList = tokens.filter(
-        token =>
-          token.blockchain === BLOCKCHAIN_NAME.ETHEREUM &&
-          (token.address === NATIVE_TOKEN_ADDRESS ||
-            token.address === this.RBC_ETHEREUM_ADDRESS ||
-            (this.isTestingMode && token.address === this.RBC_KOVAN_ADDRESS))
-      );
-      this.setCryptoTapTokens();
-
-      this.toTokens = {
-        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.findNativeToken(
-          BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-          tokens
-        ),
-        [BLOCKCHAIN_NAME.POLYGON]: this.findNativeToken(BLOCKCHAIN_NAME.POLYGON, tokens)
-      };
-      this.cryptoTapTrade.toToken = this.toTokens[this.toBlockchain.key];
+      this.setTokens(tokens);
     });
 
     this._walletAddressSubscription$ = this.web3PrivateService.onAddressChanges.subscribe(
@@ -132,6 +119,27 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     this._walletAddressSubscription$.unsubscribe();
   }
 
+  private setTokens(tokens: List<SwapToken>): void {
+    this.fromTokensList = tokens.filter(
+      token =>
+        token.blockchain === BLOCKCHAIN_NAME.ETHEREUM &&
+        (token.address === NATIVE_TOKEN_ADDRESS ||
+          token.address === this.RBC_ETHEREUM_ADDRESS ||
+          (this.isTestingMode && token.address === this.RBC_KOVAN_ADDRESS))
+    );
+
+    this.toTokens = {
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.findNativeToken(
+        BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        tokens
+      ),
+      [BLOCKCHAIN_NAME.POLYGON]: this.findNativeToken(BLOCKCHAIN_NAME.POLYGON, tokens)
+    };
+    this.cryptoTapTrade.toToken = this.toTokens[this.toBlockchain.key];
+
+    this.setCryptoTapTokens();
+  }
+
   private findNativeToken(blockchain: BLOCKCHAIN_NAME, tokens: List<SwapToken>): SwapToken {
     return tokens.find(
       token =>
@@ -141,23 +149,31 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
   }
 
   private setCryptoTapTokens() {
-    if (!this.fromTokensList.size) return;
+    if (!this.fromTokensList.size) {
+      return;
+    }
 
+    const { toToken } = this.cryptoTapTrade;
+    const toBlockchain = this.toBlockchain.key;
     this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.CALCULATION;
-    this.cryptoTapTokens = {};
-    this.fromTokensList.forEach(swapToken => {
-      this.cryptoTapTokens[swapToken.symbol] = {
-        ...swapToken,
+    this.fromTokensList.forEach((fromToken, index) => {
+      this.cryptoTapTokens[toBlockchain][fromToken.symbol] = {
+        ...fromToken,
         fromAmount: '',
         toAmount: '',
         fee: ''
       };
+      if (this.cryptoTapTrade.fromToken?.symbol === fromToken.symbol) {
+        this.cryptoTapTrade.fromToken = this.cryptoTapTokens[toBlockchain][fromToken.symbol];
+      }
 
-      this.cryptoTapService.getEstimatedAmount(swapToken).subscribe(
+      this.cryptoTapService.getEstimatedAmount(fromToken, toToken).subscribe(
         cryptoTapToken => {
-          this.cryptoTapTokens[swapToken.symbol] = cryptoTapToken;
-          if (this.cryptoTapTrade.fromToken?.symbol === swapToken.symbol) {
-            this.cryptoTapTrade.fromToken = cryptoTapToken;
+          if (this.toBlockchain.key === toBlockchain) {
+            this.cryptoTapTokens[toBlockchain][fromToken.symbol] = cryptoTapToken;
+            if (this.cryptoTapTrade.fromToken?.symbol === fromToken.symbol) {
+              this.cryptoTapTrade.fromToken = cryptoTapToken;
+            }
           }
         },
         err => {
@@ -165,7 +181,9 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
           this.errorsService.showErrorDialog(err, this.dialog);
         },
         () => {
-          this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.WAITING;
+          if (index === this.fromTokensList.size - 1 && this.toBlockchain.key === toBlockchain) {
+            this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.WAITING;
+          }
         }
       );
     });
@@ -173,7 +191,9 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   public onFromTokenChanges(inputToken: InputToken | null): void {
     if (inputToken) {
-      this.cryptoTapTrade.fromToken = this.cryptoTapTokens[inputToken.symbol];
+      this.cryptoTapTrade.fromToken = this.cryptoTapTokens[this.toBlockchain.key][
+        inputToken.symbol
+      ];
     } else {
       this.cryptoTapTrade = {
         ...this.cryptoTapTrade,
@@ -185,6 +205,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
   public onToBlockchainChanges(blockchain: BridgeBlockchain): void {
     this.toBlockchain = blockchain;
     this.cryptoTapTrade.toToken = this.toTokens[this.toBlockchain.key];
+    this.setCryptoTapTokens();
   }
 
   public getFeePrice(amount: string, price: number): BigNumber {
@@ -192,16 +213,18 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
   }
 
   public getFeesDifferencePercent(): BigNumber {
-    if (this.cryptoTapTokens.ETH?.fee && this.cryptoTapTokens.RBC?.fee) {
-      const ethFee = this.getFeePrice(this.cryptoTapTokens.ETH.fee, this.cryptoTapTokens.ETH.price);
-      const rbcFee = this.getFeePrice(this.cryptoTapTokens.RBC.fee, this.cryptoTapTokens.RBC.price);
+    const ethToken = this.cryptoTapTokens[this.toBlockchain.key].ETH;
+    const rbcToken = this.cryptoTapTokens[this.toBlockchain.key].RBC;
+    if (ethToken?.fee && rbcToken?.fee) {
+      const ethFee = this.getFeePrice(ethToken.fee, ethToken.price);
+      const rbcFee = this.getFeePrice(rbcToken.fee, rbcToken.price);
       return ethFee.minus(rbcFee).div(ethFee).multipliedBy(100);
     }
     return undefined;
   }
 
   public switchToRbc(): void {
-    this.cryptoTapTrade.fromToken = this.cryptoTapTokens.RBC;
+    this.cryptoTapTrade.fromToken = this.cryptoTapTokens[this.toBlockchain.key].RBC;
   }
 
   public createTrade(): void {
@@ -210,9 +233,9 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       .createTrade(this.cryptoTapTrade, () => {
         this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.TX_IN_PROGRESS;
       })
-      .then(transactionHash => {
+      .then(receipt => {
         this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.COMPLETED;
-        this.tradeSuccessId = transactionHash;
+        this.tradeSuccessId = receipt.transactionHash;
       })
       .catch(err => {
         console.debug(err);
