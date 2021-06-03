@@ -23,6 +23,7 @@ import networks from 'src/app/shared/constants/blockchain/networks';
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
 import { TransactionReceipt } from 'web3-eth';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
+import { BRIDGE_PROVIDER_TYPE } from '../../../models/ProviderType';
 
 interface PolygonGraphToken {
   rootToken: string;
@@ -51,6 +52,10 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   private readonly web3PublicPolygon: Web3Public;
 
   private isTestingMode = false;
+
+  public getProviderType(): BRIDGE_PROVIDER_TYPE {
+    return BRIDGE_PROVIDER_TYPE.POLYGON;
+  }
 
   constructor(
     private httpClient: HttpClient,

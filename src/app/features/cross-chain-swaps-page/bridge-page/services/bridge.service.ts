@@ -30,6 +30,7 @@ import { EthereumBinanceBridgeProviderService } from './blockchains-bridge-provi
 import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockchains-bridge-provider';
 import { BridgeToken } from '../models/BridgeToken';
 import { EthereumXdaiBridgeProviderService } from './blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
+import { BRIDGE_PROVIDER_TYPE } from '../models/ProviderType';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -71,6 +72,10 @@ export class BridgeService implements OnDestroy {
   private _useTestingModeSubscription$: Subscription;
 
   private _isTestingMode: boolean;
+
+  public getProviderType(token?: BridgeToken): BRIDGE_PROVIDER_TYPE {
+    return this.bridgeProvider.getProviderType(token);
+  }
 
   constructor(
     private bridgeApiService: BridgeApiService,

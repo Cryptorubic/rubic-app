@@ -12,6 +12,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import { PanamaBridgeProviderService } from '../common/panama-bridge-provider/panama-bridge-provider.service';
 import { PanamaToken } from '../common/panama-bridge-provider/models/PanamaToken';
+import { BRIDGE_PROVIDER_TYPE } from '../../../models/ProviderType';
 
 @Injectable()
 export class EthereumTronBridgeProviderService extends BlockchainsBridgeProvider {
@@ -46,6 +47,10 @@ export class EthereumTronBridgeProviderService extends BlockchainsBridgeProvider
         }
       } as BlockchainsTokens
     };
+  }
+
+  getProviderType(): BRIDGE_PROVIDER_TYPE {
+    return BRIDGE_PROVIDER_TYPE.PANAMA;
   }
 
   getTokensList(): Observable<List<BridgeToken>> {

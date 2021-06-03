@@ -215,24 +215,17 @@
     </app-primary-button>
 
     <a
-      [href]="
-        isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) ||
-        isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
-          ? 'https://www.binance.org/'
-          : 'https://polygon.technology/'
-      "
+      *ngIf="providerData.img"
+      [href]="providerData.href"
       target="_blank"
       class="confirm-section__blockchain-link"
       [ngClass]="{
-        'cross-chain-form__confirm-info_hidden':
-          selectedToken?.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]?.address ===
-          this.BRBC_ADDRESS,
-        'cross-chain-form__confirm-info_polygon': isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
+        'confirm-section__blockchain-link_opacity': providerData.img === 'Polygon' || providerData.img === 'XDai'
       }"
     >
       <span>{{ 'bridgePage.assistanceOf' | translate }}</span>
       <img
-        [src]="'assets/images/icons/collaborations/' + getBlockchainProviderImage() + '.svg'"
+        [src]="'assets/images/icons/collaborations/' + providerData.img + '.svg'"
         width="99"
         height="24"
         alt="blockchain"

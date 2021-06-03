@@ -17,6 +17,7 @@ import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BridgeTrade } from '../../models/BridgeTrade';
 import { BridgeService } from '../../services/bridge.service';
+import { BRIDGE_PROVIDER_TYPE } from '../../models/ProviderType';
 
 @Component({
   selector: 'app-bridge-form',
@@ -73,8 +74,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public BLOCKCHAIN_DATA = {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
       link: 'https://ethereum.org/en/',
-      caption: 'Ethereum',
-      providerImg: 'Binance'
+      caption: 'Ethereum'
     },
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
       link: 'https://www.binance.org/',
@@ -95,6 +95,29 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       link: 'https://www.xdaichain.com/',
       caption: 'xDai',
       providerImg: 'XDai'
+    }
+  };
+
+  public PROVIDERS_DATA = {
+    [BRIDGE_PROVIDER_TYPE.PANAMA]: {
+      img: 'Binance',
+      href: 'https://www.binance.org/'
+    },
+    [BRIDGE_PROVIDER_TYPE.RUBIC]: {
+      img: '',
+      href: ''
+    },
+    [BRIDGE_PROVIDER_TYPE.POLYGON]: {
+      img: 'Polygon',
+      href: 'https://polygon.technology/'
+    },
+    [BRIDGE_PROVIDER_TYPE.XDAI]: {
+      img: 'XDai',
+      href: 'https://www.xdaichain.com/'
+    },
+    [BRIDGE_PROVIDER_TYPE.EVO]: {
+      img: 'Evo',
+      href: ''
     }
   };
 
@@ -259,6 +282,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  get providerData(): { img: string; href: string } {
+    const providerType = this.bridgeService.getProviderType(this.selectedToken);
+    return this.PROVIDERS_DATA[providerType];
+  }
+
   constructor(
     private bridgeService: BridgeService,
     private dialog: MatDialog,
@@ -336,10 +364,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   public isBlockchainSelected(blockchain: BLOCKCHAIN_NAME): boolean {
     return this.fromBlockchain.key === blockchain || this.toBlockchain.key === blockchain;
-  }
-
-  public getBlockchainProviderImage() {
-    return this.BLOCKCHAIN_DATA[this.toBlockchain.key || this.fromBlockchain.key].providerImg;
   }
 
   private isBlockchainsPairValid(): boolean {

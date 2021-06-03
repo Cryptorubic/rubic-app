@@ -5,8 +5,14 @@ import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
+import { BRIDGE_PROVIDER_TYPE } from '../../models/ProviderType';
 
 export abstract class BlockchainsBridgeProvider {
+  /**
+   * @description get type of provider
+   */
+  public getProviderType?(token?: BridgeToken): BRIDGE_PROVIDER_TYPE;
+
   /**
    * @description get transformed list of bridge tokens from usually tokens
    * @param swapTokens swap list tokens
