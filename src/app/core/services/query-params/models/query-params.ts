@@ -6,9 +6,9 @@ interface AllQueryParams {
   from: string;
   to: string;
   chain: BLOCKCHAIN_NAME;
-  chainFrom: BLOCKCHAIN_NAME;
-  chainTo: BLOCKCHAIN_NAME;
-  tokenFrom: string;
+  fromBlockchain: BLOCKCHAIN_NAME;
+  toBlockchain: BLOCKCHAIN_NAME;
+  fromToken: string;
   amount: string;
   iframe: string;
   hidden: string;

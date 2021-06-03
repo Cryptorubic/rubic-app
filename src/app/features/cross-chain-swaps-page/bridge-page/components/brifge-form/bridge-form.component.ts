@@ -166,11 +166,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
     if (this._selectedToken) {
       this.queryParamsService.setQueryParam(
-        'tokenFrom',
+        'fromToken',
         this._selectedToken.blockchainToken[this.fromBlockchain.key].symbol
       );
     } else {
-      this.queryParamsService.removeQueryParam('tokenFrom');
+      this.queryParamsService.removeQueryParam('fromToken');
     }
   }
 
@@ -190,7 +190,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         this.selectedToken = null;
       }
       this.setBlockchainsToService();
-      this.queryParamsService.setQueryParam('chainFrom', this._fromBlockchain.key);
+      this.queryParamsService.setQueryParam('fromBlockchain', this._fromBlockchain.key);
     }
 
     this.setToWalletAddress();
@@ -223,7 +223,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         this.selectedToken = null;
       }
       this.setBlockchainsToService();
-      this.queryParamsService.setQueryParam('chainTo', this._toBlockchain.key);
+      this.queryParamsService.setQueryParam('toBlockchain', this._toBlockchain.key);
     }
 
     this.setToWalletAddress();
@@ -329,20 +329,20 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.queryParamsService.initiateBridgeParams({});
     }
 
-    if (!this.queryParamsService.currentQueryParams?.chainFrom) {
-      this.queryParamsService.setQueryParam('chainFrom', this.fromBlockchain.key);
+    if (!this.queryParamsService.currentQueryParams?.fromBlockchain) {
+      this.queryParamsService.setQueryParam('fromBlockchain', this.fromBlockchain.key);
     } else {
-      const chainFrom = this.fromBlockchainsList.find(blockchain => {
-        return blockchain.key === this.queryParamsService.currentQueryParams?.chainFrom;
+      const fromBlockchain = this.fromBlockchainsList.find(blockchain => {
+        return blockchain.key === this.queryParamsService.currentQueryParams?.fromBlockchain;
       });
-      this.fromBlockchain = chainFrom || BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
+      this.fromBlockchain = fromBlockchain || BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM];
     }
 
-    if (!this.queryParamsService.currentQueryParams?.chainTo) {
-      this.queryParamsService.setQueryParam('chainTo', this.toBlockchain.key);
+    if (!this.queryParamsService.currentQueryParams?.toBlockchain) {
+      this.queryParamsService.setQueryParam('toBlockchain', this.toBlockchain.key);
     } else {
       this.toBlockchain = this.toBlockchainsList.find(
-        blockchain => blockchain.key === this.queryParamsService.currentQueryParams?.chainTo
+        blockchain => blockchain.key === this.queryParamsService.currentQueryParams?.toBlockchain
       );
     }
 
@@ -350,25 +350,27 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.fromNumber = this.queryParamsService.currentQueryParams?.amount;
     }
 
-    if (this.queryParamsService.currentQueryParams?.tokenFrom) {
+    if (this.queryParamsService.currentQueryParams?.fromToken) {
       let token;
       if (
-        this.queryParamsService.isAddress(this.queryParamsService.currentQueryParams?.tokenFrom)
+        this.queryParamsService.isAddress(this.queryParamsService.currentQueryParams?.fromToken)
       ) {
         token = this.queryParamsService.searchTokenByAddress(
-          this.queryParamsService.currentQueryParams?.tokenFrom,
+          this.queryParamsService.currentQueryParams?.fromToken,
           this.cdr,
-          this.dropDownTokens,
+          this.tokens,
           true
         );
       } else {
         token = this.queryParamsService.searchTokenBySymbol(
-          this.queryParamsService.currentQueryParams?.tokenFrom,
+          this.queryParamsService.currentQueryParams?.fromToken,
           this.cdr,
-          this.dropDownTokens,
+          this.tokens,
           true
         );
       }
+
+      console.log(token);
 
       this.changeSelectedToken(token);
     }
@@ -400,13 +402,14 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.changeSelectedToken(this.selectedToken);
     }
 
-    this.queryParamsService.setQueryParam('chainFrom', this._fromBlockchain.key);
-    this.queryParamsService.setQueryParam('chainTo', this._toBlockchain.key);
+    this.queryParamsService.setQueryParam('fromBlockchain', this._fromBlockchain.key);
+    this.queryParamsService.setQueryParam('toBlockchain', this._toBlockchain.key);
   }
 
   private changeSelectedToken(token: BridgeToken): void {
     this.fee = null;
     this.selectedToken = token;
+
     if (!token) {
       return;
     }

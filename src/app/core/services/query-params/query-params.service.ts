@@ -132,15 +132,15 @@ export class QueryParamsService {
 
   public initiateBridgeParams(params: QueryParams): void {
     this.currentQueryParams = {
-      tokenFrom: params.tokenFrom || this.defaultQueryParams.bridge.tokenFrom,
+      fromToken: params.fromToken || this.defaultQueryParams.bridge.fromToken,
       amount: params.amount || this.defaultQueryParams.bridge.amount,
-      chainFrom: params.chainFrom || this.defaultQueryParams.bridge.chainFrom,
-      chainTo: params.chainTo || this.defaultQueryParams.bridge.chainTo
+      fromBlockchain: params.fromBlockchain || this.defaultQueryParams.bridge.fromBlockchain,
+      toBlockchain: params.toBlockchain || this.defaultQueryParams.bridge.toBlockchain
     };
   }
 
   private async getToken(
-    tokenType: 'from' | 'to' | 'tokenFrom',
+    tokenType: 'from' | 'to' | 'fromToken',
     cdr: ChangeDetectorRef
   ): Promise<SwapToken | undefined> {
     const tokenInfo = this.currentQueryParams[tokenType];
@@ -217,9 +217,7 @@ export class QueryParamsService {
   }
 
   public isAddress(token: string): boolean {
-    const chain =
-      this.web3Public[this.currentQueryParams.chain] ||
-      this.web3Public[this.currentQueryParams.chainFrom];
+    const chain = this.currentQueryParams.chain || this.currentQueryParams.fromBlockchain;
     const web3Public: Web3Public = this.web3Public[chain];
     return web3Public.isAddressCorrect(token);
   }
@@ -243,34 +241,35 @@ export class QueryParamsService {
     isBridge?: boolean
   ): SwapToken {
     const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
-    const similarTokens = tokens.filter(token =>
-      isBridge
-        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.chain].symbol ===
-          queryParam
+    console.log(tokens);
+    const similarTokens = tokens.filter(token => {
+      return isBridge
+        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.fromBlockchain].symbol ===
+            queryParam
         : (token as SwapToken).symbol === queryParam &&
-          token.blockchain === this.currentQueryParams.chain
-    );
+            token.blockchain === this.currentQueryParams.chain;
+    });
 
     return similarTokens.size > 1
       ? similarTokens.find(token => token.used_in_iframe)
       : similarTokens.first();
   }
 
-  public async searchTokenByAddress(
+  public searchTokenByAddress(
     queryParam: string,
     cdr: ChangeDetectorRef,
     tokensList?: List<any>,
     isBridge?: boolean
-  ): Promise<SwapToken> {
+  ): SwapToken {
     const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
     const searchingToken = tokens.find(token =>
       isBridge
-        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.chain].address ===
+        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.fromBlockchain].address ===
           queryParam
         : token.address === queryParam && token.blockchain === this.currentQueryParams.chain
     );
 
-    return searchingToken || (await this.getCustomToken(queryParam));
+    return searchingToken;
   }
 
   public async getCustomToken(address: string): Promise<SwapToken> {
