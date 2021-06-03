@@ -77,7 +77,7 @@ export class ProviderConnectorService {
    * @return The signature.
    */
   public async signPersonal(message) {
-    return this.web3.eth.personal.sign(message, this.provider.getAddress(), undefined);
+    return this.web3.eth.personal.sign(message, this.provider.address, undefined);
   }
 
   /**
