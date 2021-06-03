@@ -28,7 +28,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   public readonly $currentUser: Observable<UserInterface>;
 
-  public readonly $currentBlockchain: Observable<IBlockchain>;
+  public currentBlockchain: IBlockchain;
 
   private _onNetworkChanges$: Subscription;
 
@@ -49,15 +49,15 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
-    this.$currentBlockchain = this.providerConnectorService.$networkChange;
     this.$currentUser = this.authService.getCurrentUser();
   }
 
   ngAfterViewInit(): void {
     this.cdr.detectChanges();
-    this._onNetworkChanges$ = this.providerConnectorService.$networkChange.subscribe(() =>
-      this.cdr.detectChanges()
-    );
+    this._onNetworkChanges$ = this.providerConnectorService.$networkChange.subscribe(network => {
+      this.currentBlockchain = network;
+      this.cdr.detectChanges();
+    });
     this._onAddressChanges$ = this.providerConnectorService.$addressChange.subscribe(() =>
       this.cdr.detectChanges()
     );
