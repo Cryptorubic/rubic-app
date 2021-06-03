@@ -81,7 +81,7 @@ export class WalletsModalComponent {
     }
     this.headerStore.setWalletsLoadingStatus(true);
     try {
-      this.providerConnectorService.connectProvider(provider);
+      await this.providerConnectorService.connectProvider(provider);
     } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);
     }

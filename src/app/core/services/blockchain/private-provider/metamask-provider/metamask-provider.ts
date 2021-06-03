@@ -52,15 +52,6 @@ export class MetamaskProvider extends PrivateProvider {
     }
     web3.setProvider(ethereum);
     this.core = ethereum;
-    this.core.request({ method: 'eth_chainId' }).then((chain: string) => {
-      this.selectedChain = chain;
-      chainChange.next(BlockchainsInfo.getBlockchainById(chain));
-    });
-    this.core.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
-      [this.selectedAddress] = accounts;
-      accountChange.next(this.selectedAddress);
-    });
-
     this.core.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
@@ -68,7 +59,6 @@ export class MetamaskProvider extends PrivateProvider {
         console.info('Chain changed', chain);
       }
     });
-
     this.core.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
@@ -80,6 +70,16 @@ export class MetamaskProvider extends PrivateProvider {
         this.deActivate();
       }
     });
+  }
+
+  public async setupDefaultValues(): Promise<void> {
+    const chain = await this.core.request({ method: 'eth_chainId' });
+    const accounts = await this.core.request({ method: 'eth_accounts' });
+    this.selectedChain = chain;
+    [this.selectedAddress] = accounts;
+    this.onAddressChanges.next(this.selectedAddress);
+    this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
+    this.isEnabled = true;
   }
 
   public getAddress(): string {

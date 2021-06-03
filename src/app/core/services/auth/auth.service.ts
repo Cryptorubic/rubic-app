@@ -50,7 +50,7 @@ export class AuthService {
         return;
       }
       const user = this.$currentUser.getValue();
-      if (user !== undefined && (user === null || user?.address !== address) && address) {
+      if (user !== undefined && user !== null && user?.address !== address && address) {
         this.signOut()
           .pipe(mergeMap(() => this.signIn()))
           .subscribe();
@@ -97,11 +97,6 @@ export class AuthService {
           await this.providerConnectorService.activate();
 
           const { address } = metamaskLoginBody.payload.user;
-          console.log(
-            address,
-            this.providerConnectorService.address,
-            this.providerConnectorService.address === address
-          );
           if (address.toLowerCase() === this.providerConnectorService.address.toLowerCase()) {
             this.$currentUser.next({ address });
           } else {
@@ -134,9 +129,6 @@ export class AuthService {
       }
       this.isAuthProcess = true;
       await this.providerConnectorService.activate();
-      if (!this.providerConnectorService.provider) {
-        this.errorsService.throw(new RubicError());
-      }
       const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
       if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
         const { address } = metamaskLoginBody.payload.user;

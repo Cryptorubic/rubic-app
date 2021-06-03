@@ -86,7 +86,7 @@ export class ProviderConnectorService {
   public async installProvider(): Promise<void> {
     const provider = this.storage.getItem('provider') as WALLET_NAME;
     if (provider) {
-      this.connectProvider(provider);
+      await this.connectProvider(provider);
     }
   }
 
@@ -112,7 +112,7 @@ export class ProviderConnectorService {
     return this.provider.addToken(token);
   }
 
-  public connectProvider(provider: WALLET_NAME, chainId?: number) {
+  public async connectProvider(provider: WALLET_NAME, chainId?: number): Promise<void> {
     switch (provider) {
       case WALLET_NAME.WALLET_LINK: {
         this.provider = new WalletLinkProvider(
@@ -131,6 +131,7 @@ export class ProviderConnectorService {
           this.$addressChangeSubject,
           this.errorsService
         );
+        await (this.provider as MetamaskProvider).setupDefaultValues();
         break;
       }
       case WALLET_NAME.WALLET_CONNECT: {
@@ -149,6 +150,7 @@ export class ProviderConnectorService {
           this.$addressChangeSubject,
           this.errorsService
         ) as PrivateProvider;
+        await (this.provider as MetamaskProvider).setupDefaultValues();
       }
     }
     this.providerName = provider;
