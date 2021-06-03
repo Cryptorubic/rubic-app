@@ -75,7 +75,6 @@ export class PanamaBridgeProviderService {
     const body = {
       amount: bridgeTrade.amount.toFixed(),
       fromNetwork: bridgeTrade.fromBlockchain,
-      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       source: 921,
       symbol: bridgeTrade.token.symbol,
       toAddress: bridgeTrade.toAddress,

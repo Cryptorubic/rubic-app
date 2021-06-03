@@ -4,10 +4,10 @@
   </div>
 
   <div class="cross-chain-swaps__header header">
-    <span>{{ 'Create your cross-chain swap' | translate }}</span>
+    <span>{{ 'bridgePage.title' | translate }}</span>
 
     <a routerLink="/" class="header__swaps-link swaps-link">
-      <span class="swaps-link__text">Use our swaps</span>
+      <span class="swaps-link__text">{{ 'bridgePage.swapToggleText' | translate }}</span>
       <div class="swaps-link__arrow-button">
         <img src="assets/images/icons/arrow/arrow-right-green.svg" alt="Arrow" />
       </div>
@@ -16,7 +16,7 @@
 
   <ul class="cross-chain-swaps__tabs">
     <li class="tabs__tab tab" routerLink="bridge" routerLinkActive="tab_active">
-      <span>Bridge</span>
+      <span>{{ 'bridge.title' | translate }}</span>
       <div
         class="tab__icon"
         routerLinkActive="tab__icon_active"

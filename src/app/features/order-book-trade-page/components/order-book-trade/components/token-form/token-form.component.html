@@ -2,16 +2,14 @@
   <div class="token-block__area area-first">
     <div class="area-first__amount-total">{{ shortedAmountTotal }}</div>
 
-    <div class="area-first__amount-sent">
-      <span class="area-first__amount-description">{{ 'tradePage.sent' | translate }}</span>
-      <span class="area-first__amount-number">
+    <div class="area-fist__sent-left-amounts sent-left-amounts">
+      <span class="sent-left-amounts__label">{{ 'tradePage.sent' | translate }}</span>
+      <span class="sent-left-amounts__number">
         {{ token.amountContributed | bigNumberFormat }}
       </span>
-    </div>
 
-    <div class="area-first__amount-left">
-      <span class="area-first__amount-description">{{ 'tradePage.left' | translate }}</span>
-      <span class="area-first__amount-number" *ngIf="!token.amountLeft?.isNaN()">{{
+      <span class="sent-left-amounts__label">{{ 'tradePage.left' | translate }}</span>
+      <span class="sent-left-amounts__number" *ngIf="!token.amountLeft?.isNaN()">{{
         token.amountLeft | bigNumberFormat
       }}</span>
     </div>
@@ -49,6 +47,8 @@
       <img
         class="token-info__image"
         [src]="token.image || '/assets/images/icons/coins/empty.svg'"
+        width="28"
+        height="28"
         alt="token"
       />
     </div>
@@ -62,23 +62,25 @@
       !token.amountLeft?.isNaN()
     "
   >
-    <input
-      class="area-third__amount-input"
-      [placeholder]="token.isApproved ? 'Enter amount' : ''"
-      [disabled]="!token.isApproved"
-      appNumberPrecision
-      [inputElement]="amountToContributeInput"
-      [decimalLength]="token.decimals"
-      [minValue]="getMinContributionAsString()"
-      [maxValue]="token.amountLeft.toFixed()"
-      [ngModel]="amountToContribute"
-      (ngModelChange)="setAmountToContribute($event)"
-      #amountToContributeModel="ngModel"
-      [ngClass]="{
-        'area-third__amount-input_invalid': amountToContributeModel.invalid
-      }"
-      #amountToContributeInput
-    />
+    <label class="area-third__amount-label">
+      <input
+        class="area-third__amount-input"
+        [placeholder]="token.isApproved ? 'Enter amount' : ''"
+        [disabled]="!token.isApproved"
+        appNumberPrecision
+        [inputElement]="amountToContributeInput"
+        [decimalLength]="token.decimals"
+        [minValue]="getMinContributionAsString()"
+        [maxValue]="token.amountLeft.toFixed()"
+        [ngModel]="amountToContribute"
+        (ngModelChange)="setAmountToContribute($event)"
+        #amountToContributeModel="ngModel"
+        [ngClass]="{
+          'area-third__amount-input_invalid': amountToContributeModel.invalid
+        }"
+        #amountToContributeInput
+      />
+    </label>
 
     <div class="area-third__confirm-button">
       <app-primary-button

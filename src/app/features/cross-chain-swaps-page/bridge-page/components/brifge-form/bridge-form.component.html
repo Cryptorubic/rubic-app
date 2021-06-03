@@ -14,12 +14,15 @@
 
       <app-wallet-address-form
         class="swap-box__wallet-address-section"
+        [ngClass]="{
+          'swap-box__wallet-address-section_extended': isToWalletAddressSectionOpened
+        }"
         [walletAddress]="fromWalletAddress"
         [walletAddressLink]="fromBlockchain.addressBaseUrl + fromWalletAddress"
         [isWithEditing]="false"
       ></app-wallet-address-form>
 
-      <div class="swap-box__title swap-box__title_second">{{ 'common.have' | translate }}</div>
+      <div class="swap-box__title">{{ 'common.have' | translate }}</div>
 
       <div class="swap-box__token-section form-field">
         <app-tokens-input
@@ -74,7 +77,9 @@
                 )
               "
               src="assets/images/icons/error-disclaimer-sign.svg"
-              alt=""
+              width="15"
+              height="15"
+              alt="disclaimer"
             />
           </td>
         </tr>
@@ -101,7 +106,9 @@
                 )
               "
               src="assets/images/icons/error-disclaimer-sign.svg"
-              alt=""
+              width="15"
+              height="15"
+              alt="error disclaimer"
             />
           </td>
         </tr>
@@ -115,7 +122,7 @@
       *ngIf="toBlockchain.key !== BLOCKCHAIN_NAME.TRON && toBlockchain.key !== BLOCKCHAIN_NAME.XDAI"
       (click)="revertBlockchains()"
     >
-      <img src="assets/images/icons/revert.svg" alt="Revert" />
+      <img src="assets/images/icons/revert.svg" alt="Revert" width="21" height="24" />
     </button>
 
     <!-- To -->
@@ -141,6 +148,7 @@
         "
         [isWithEditing]="toBlockchain.key === BLOCKCHAIN_NAME.TRON"
         (walletAddressValidated)="toWalletAddress = $event"
+        (onIsEditingSectionOpenedChange)="onIsToWalletAddressSectionOpenedChange($event)"
       ></app-wallet-address-form>
 
       <div class="swap-box__title">{{ 'common.want' | translate }}</div>
@@ -152,6 +160,8 @@
           <img
             class="token-card__icon"
             [src]="selectedToken.image || '/assets/images/icons/coins/empty.svg'"
+            width="25"
+            height="25"
             alt="Token"
           />
           <span class="token-card__name">
@@ -223,6 +233,8 @@
       <span>{{ 'bridgePage.assistanceOf' | translate }}</span>
       <img
         [src]="'assets/images/icons/collaborations/' + getBlockchainProviderImage() + '.svg'"
+        width="99"
+        height="24"
         alt="blockchain"
       />
     </a>

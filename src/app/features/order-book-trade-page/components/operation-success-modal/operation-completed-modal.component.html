@@ -5,7 +5,7 @@
       class="operation-modal__description"
       [innerHTML]="'modals.operationModal.success.text' | translate"
     >
-      <a target="_blank" [href]="transactionId | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION">
+      <a target="_blank" [href]="transactionId | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION" rel="noopener">
         {{ 'modals.operationModal.success.link' | translate }}
       </a>
     </div>

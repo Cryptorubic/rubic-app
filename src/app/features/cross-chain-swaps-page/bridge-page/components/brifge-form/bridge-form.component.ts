@@ -108,6 +108,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
 
   private isFirstTokensEmit = true;
 
+  public isToWalletAddressSectionOpened = false;
+
   get tokens(): List<BridgeToken> {
     return this._tokens;
   }
@@ -398,6 +400,13 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.toWalletAddress = (window as any).tronWeb?.defaultAddress.base58;
     } else {
       this.toWalletAddress = this.fromWalletAddress;
+    }
+  }
+
+  public onIsToWalletAddressSectionOpenedChange(value: boolean): void {
+    if (this.isToWalletAddressSectionOpened !== value) {
+      this.isToWalletAddressSectionOpened = value;
+      this.cdr.detectChanges();
     }
   }
 
