@@ -181,6 +181,14 @@
     @content;
   }
 }
+/*
+  Max height mixin
+ */
+@mixin mh($height) {
+  @media screen and (max-height: $height + 'px') {
+    @content;
+  }
+}
 
 @mixin ie() {
   @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
