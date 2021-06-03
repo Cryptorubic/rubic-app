@@ -70,11 +70,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
       if (bridgeTrade.onTransactionHash) {
         bridgeTrade.onTransactionHash(hash);
       }
-      await this.bridgeApiService.postXDaiTransaction(
-        bridgeTrade,
-        hash,
-        this.web3PrivateService.address
-      );
+      await this.bridgeApiService.postXDaiTransaction(hash);
       updateTransactionsList();
     };
 
