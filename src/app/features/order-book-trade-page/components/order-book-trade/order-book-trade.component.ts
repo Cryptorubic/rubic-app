@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
 import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
@@ -69,9 +70,9 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public blockchain: Blockchain;
 
-  private fromTokenToToTokenRate: BigNumber;
+  private fromTokenToToTokenRate: string;
 
-  private toTokenToFromTokenRate: BigNumber;
+  private toTokenToFromTokenRate: string;
 
   public isRevertedRate = false;
 
@@ -116,7 +117,8 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private dialog: MatDialog,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly withRoundPipe: WithRoundPipe
   ) {}
 
   ngOnInit(): void {
@@ -223,23 +225,28 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   }
 
   private calculateRate(): void {
-    this.fromTokenToToTokenRate = this.tradeData.token.from.amountTotal.div(
-      this.tradeData.token.to.amountTotal
-    );
+    this.fromTokenToToTokenRate = new BigNumber(
+      this.withRoundPipe.transform(
+        this.tradeData.token.from.amountTotal.div(this.tradeData.token.to.amountTotal).toFixed(),
+        this.tradeData.token.from,
+        'toClosestValue'
+      )
+    ).toFormat(BIG_NUMBER_FORMAT);
 
-    this.toTokenToFromTokenRate = this.tradeData.token.to.amountTotal.div(
-      this.tradeData.token.from.amountTotal
-    );
+    this.toTokenToFromTokenRate = new BigNumber(
+      this.withRoundPipe.transform(
+        this.tradeData.token.to.amountTotal.div(this.tradeData.token.from.amountTotal).toFixed(),
+        this.tradeData.token.to,
+        'toClosestValue'
+      )
+    ).toFormat(BIG_NUMBER_FORMAT);
   }
 
   public getRate(): string {
-    return !this.isRevertedRate
-      ? `${this.fromTokenToToTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.from.symbol} 
-         / 1 ${this.tradeData.token.to.symbol}`
-      : `1 ${this.tradeData.token.from.symbol} / 
-         ${this.toTokenToFromTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.to.symbol}`;
+    if (!this.isRevertedRate) {
+      return `${this.fromTokenToToTokenRate} ${this.tradeData.token.from.symbol} / 1 ${this.tradeData.token.to.symbol}`;
+    }
+    return `1 ${this.tradeData.token.from.symbol} / ${this.toTokenToFromTokenRate} ${this.tradeData.token.to.symbol}`;
   }
 
   public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
@@ -249,14 +256,14 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
         .times(this.toTokenToFromTokenRate)
         .div(100)
         .times(100 - this.tradeData.token.to.brokerPercent)
-        .dp(this.tradeData.token.to.decimals)
+        .dp(4)
         .toFormat(BIG_NUMBER_FORMAT);
     } else {
       this.fromTokenAmountToGet = new BigNumber(value)
         .times(this.fromTokenToToTokenRate)
         .div(100)
         .times(100 - this.tradeData.token.from.brokerPercent)
-        .dp(this.tradeData.token.from.decimals)
+        .dp(4)
         .toFormat(BIG_NUMBER_FORMAT);
     }
   }

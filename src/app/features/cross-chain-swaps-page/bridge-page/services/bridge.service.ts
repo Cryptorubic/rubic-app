@@ -30,6 +30,7 @@ import { EthereumBinanceBridgeProviderService } from './blockchains-bridge-provi
 import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockchains-bridge-provider';
 import { BridgeToken } from '../models/BridgeToken';
 import { EthereumXdaiBridgeProviderService } from './blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
+import { BRIDGE_PROVIDER_TYPE } from '../models/ProviderType';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -61,9 +62,8 @@ export class BridgeService implements OnDestroy {
 
   private _transactions: BehaviorSubject<List<BridgeTableTrade>> = new BehaviorSubject(null);
 
-  public readonly transactions: Observable<
-    List<BridgeTableTrade>
-  > = this._transactions.asObservable();
+  public readonly transactions: Observable<List<BridgeTableTrade>> =
+    this._transactions.asObservable();
 
   public walletAddress: Observable<string>;
 
@@ -72,6 +72,10 @@ export class BridgeService implements OnDestroy {
   private _useTestingModeSubscription$: Subscription;
 
   private _isTestingMode: boolean;
+
+  public getProviderType(token?: BridgeToken): BRIDGE_PROVIDER_TYPE {
+    return this.bridgeProvider.getProviderType(token);
+  }
 
   constructor(
     private bridgeApiService: BridgeApiService,
@@ -171,9 +175,8 @@ export class BridgeService implements OnDestroy {
       .getTokensList(this._swapTokens)
       .pipe(first())
       .subscribe(tokensList => {
-        this._blockchainTokens[firstBlockchain][
-          secondBlockchain
-        ] = this.getTokensWithImagesAndRanks(tokensList);
+        this._blockchainTokens[firstBlockchain][secondBlockchain] =
+          this.getTokensWithImagesAndRanks(tokensList);
         if (
           this.selectedBlockchains[0] === firstBlockchain &&
           this.selectedBlockchains[1] === secondBlockchain

@@ -1,3 +1,6 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
 .scanner-text {
   margin-right: 5px;
 }
@@ -5,4 +8,10 @@
 img {
   position: relative;
   top: 1px;
+}
+
+@include b($mobile-sm) {
+  .scanner-text {
+    font-size: 14px;
+  }
 }

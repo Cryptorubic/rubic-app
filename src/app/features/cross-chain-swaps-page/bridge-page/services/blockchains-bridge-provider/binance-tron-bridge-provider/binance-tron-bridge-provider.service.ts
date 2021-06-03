@@ -12,11 +12,16 @@ import { TransactionReceipt } from 'web3-eth';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import { PanamaBridgeProviderService } from '../common/panama-bridge-provider/panama-bridge-provider.service';
 import { PanamaToken } from '../common/panama-bridge-provider/models/PanamaToken';
+import { BRIDGE_PROVIDER_TYPE } from '../../../models/ProviderType';
 
 @Injectable()
 export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider {
   constructor(private commonPanamaBridgeProviderService: PanamaBridgeProviderService) {
     super();
+  }
+
+  get providerType(): BRIDGE_PROVIDER_TYPE {
+    return BRIDGE_PROVIDER_TYPE.PANAMA;
   }
 
   private static parseUSDTPanamaToken(token: PanamaToken): BridgeToken {

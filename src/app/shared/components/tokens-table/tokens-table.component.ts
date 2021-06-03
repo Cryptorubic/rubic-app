@@ -222,11 +222,15 @@ export class TokensTableComponent {
    * @return formatted expiration time or text ('Expired' or 'More than year')
    */
   public getExpirationTime(expirationDate, expiresIn): string {
-    if (expirationDate.isAfter(moment.now())) {
-      if (expiresIn.years() > 1) {
+    const nowDate = moment.utc(moment.now());
+    if (expirationDate.isAfter(nowDate)) {
+      if (expiresIn.years() > 0) {
         return 'More than year';
       }
-      return `${expiresIn.days()}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
+      return `${expirationDate.diff(
+        nowDate,
+        'days'
+      )}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
     }
     return 'Expired';
   }

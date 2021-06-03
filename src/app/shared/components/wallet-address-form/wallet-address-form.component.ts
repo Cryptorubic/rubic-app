@@ -38,11 +38,22 @@ export class WalletAddressFormComponent {
 
   @Output() walletAddressValidated = new EventEmitter<string>();
 
+  @Output() onIsEditingSectionOpenedChange = new EventEmitter<boolean>();
+
   private _walletAddress: string;
 
   private _isWithEditing: boolean;
 
-  public isEditingSectionOpened = false;
+  public set isEditingSectionOpened(value: boolean) {
+    this._isEditingSectionOpened = value;
+    this.onIsEditingSectionOpenedChange.emit(value);
+  }
+
+  public get isEditingSectionOpened() {
+    return this._isEditingSectionOpened;
+  }
+
+  private _isEditingSectionOpened = false;
 
   constructor() {}
 

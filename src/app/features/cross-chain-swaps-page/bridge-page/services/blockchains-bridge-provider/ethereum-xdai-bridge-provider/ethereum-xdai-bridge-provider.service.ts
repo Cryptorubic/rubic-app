@@ -10,6 +10,7 @@ import { BridgeTrade } from '../../../models/BridgeTrade';
 import { Web3PrivateService } from '../../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from '../../../../../../core/services/backend/bridge-api/bridge-api.service';
 import { ethToXDaiDepositWallet } from '../../../../../../shared/constants/bridge/deposit-wallets';
+import { BRIDGE_PROVIDER_TYPE } from '../../../models/ProviderType';
 
 @Injectable()
 export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider {
@@ -41,6 +42,10 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
       }
     } as BridgeToken
   ];
+
+  getProviderType(): BRIDGE_PROVIDER_TYPE {
+    return BRIDGE_PROVIDER_TYPE.XDAI;
+  }
 
   constructor(
     private web3PrivateService: Web3PrivateService,

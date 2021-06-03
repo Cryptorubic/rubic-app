@@ -14,6 +14,13 @@
     }
   }
 
+  .modal__wrapper {
+    @include mh(300) {
+      min-height: auto !important;
+      max-height: 200px;
+    }
+  }
+
   &.dark {
     background: rgba(black, 0.65);
 
