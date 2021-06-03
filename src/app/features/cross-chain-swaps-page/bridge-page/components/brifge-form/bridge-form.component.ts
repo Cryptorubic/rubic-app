@@ -11,10 +11,13 @@ import InputToken from 'src/app/shared/models/tokens/InputToken';
 import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
+
+import { TransactionReceipt } from 'web3-eth';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BridgeTrade } from '../../models/BridgeTrade';
 import { BridgeService } from '../../services/bridge.service';
+import { BRIDGE_PROVIDER_TYPE } from '../../models/ProviderType';
 
 @Component({
   selector: 'app-bridge-form',
@@ -33,7 +36,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public fromBlockchainsList: BridgeBlockchain[] = Object.values(BLOCKCHAINS).filter(
-    b => b.key !== BLOCKCHAIN_NAME.TRON
+    b => b.key !== BLOCKCHAIN_NAME.TRON && b.key !== BLOCKCHAIN_NAME.XDAI
   );
 
   public toBlockchainsList: BridgeBlockchain[] = Object.values(BLOCKCHAINS);
@@ -67,6 +70,56 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public fromWalletAddress: string;
 
   public toWalletAddress: string;
+
+  public BLOCKCHAIN_DATA = {
+    [BLOCKCHAIN_NAME.ETHEREUM]: {
+      link: 'https://ethereum.org/en/',
+      caption: 'Ethereum'
+    },
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+      link: 'https://www.binance.org/',
+      caption: 'Binance Smart Chain',
+      providerImg: 'Binance'
+    },
+    [BLOCKCHAIN_NAME.POLYGON]: {
+      link: 'https://polygon.technology/',
+      caption: 'Polygon',
+      providerImg: 'Polygon'
+    },
+    [BLOCKCHAIN_NAME.TRON]: {
+      link: 'https://tron.network/',
+      caption: 'TRON',
+      providerImg: 'Binance'
+    },
+    [BLOCKCHAIN_NAME.XDAI]: {
+      link: 'https://www.xdaichain.com/',
+      caption: 'xDai',
+      providerImg: 'XDai'
+    }
+  };
+
+  public PROVIDERS_DATA = {
+    [BRIDGE_PROVIDER_TYPE.PANAMA]: {
+      img: 'Binance',
+      href: 'https://www.binance.org/'
+    },
+    [BRIDGE_PROVIDER_TYPE.RUBIC]: {
+      img: '',
+      href: ''
+    },
+    [BRIDGE_PROVIDER_TYPE.POLYGON]: {
+      img: 'Polygon',
+      href: 'https://polygon.technology/'
+    },
+    [BRIDGE_PROVIDER_TYPE.XDAI]: {
+      img: 'XDai',
+      href: 'https://www.xdaichain.com/'
+    },
+    [BRIDGE_PROVIDER_TYPE.EVO]: {
+      img: 'Evo',
+      href: ''
+    }
+  };
 
   private tokensSubscription$: Subscription;
 
@@ -227,6 +280,11 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     } else {
       this._toNumber = null;
     }
+  }
+
+  get providerData(): { img: string; href: string } {
+    const providerType = this.bridgeService.getProviderType(this.selectedToken);
+    return this.PROVIDERS_DATA[providerType];
   }
 
   constructor(
@@ -436,8 +494,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       .createTrade(bridgeTrade)
       .pipe(first())
       .subscribe(
-        (res: string) => {
-          this.tradeSuccessId = res;
+        (res: TransactionReceipt) => {
+          this.tradeSuccessId = res.transactionHash;
           this.tradeInProgress = false;
           this.buttonAnimation = false;
         },

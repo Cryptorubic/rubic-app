@@ -8,40 +8,52 @@ import { UseTestingModeService } from '../../core/services/use-testing-mode/use-
 const blockchainsScanners = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     baseUrl: 'https://etherscan.io/',
+    nativeCoinUrl: 'stat/supply/',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/'
   },
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
-    baseUrl: 'https://kovan.etherscan.io/'
+    baseUrl: 'https://kovan.etherscan.io/',
+    nativeCoinUrl: 'stat/supply/'
   },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
     baseUrl: 'https://bscscan.com/',
+    nativeCoinUrl: 'stat/supply/',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/'
   },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: {
-    baseUrl: 'https://testnet.bscscan.com/'
+    baseUrl: 'https://testnet.bscscan.com/',
+    nativeCoinUrl: 'stat/supply/'
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
     baseUrl: 'https://explorer-mainnet.maticvigil.com/',
+    nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/'
   },
   [BLOCKCHAIN_NAME.POLYGON_TESTNET]: {
-    baseUrl: 'https://explorer-mumbai.maticvigil.com/'
+    baseUrl: 'https://explorer-mumbai.maticvigil.com/',
+    nativeCoinUrl: ''
   },
   [BLOCKCHAIN_NAME.TRON]: {
     baseUrl: 'https://tronscan.org/#/',
+    nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token20/',
     [ADDRESS_TYPE.TRANSACTION]: 'transaction/'
+  },
+  [BLOCKCHAIN_NAME.XDAI]: {
+    baseUrl: 'https://blockscout.com/xdai/mainnet/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'tokens/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/'
   }
 };
-
-const nativeCoinUrl = 'stat/supply/';
 
 @Pipe({ name: 'scannerLink' })
 export class ScannerLinkPipe implements PipeTransform {
@@ -57,7 +69,7 @@ export class ScannerLinkPipe implements PipeTransform {
       : blockchainsScanners[`${blockchainName}_TESTNET`].baseUrl;
 
     if (address === NATIVE_TOKEN_ADDRESS) {
-      return baseUrl + nativeCoinUrl;
+      return baseUrl + blockchainsScanners[blockchainName].nativeCoinUrl;
     }
     return baseUrl + blockchainsScanners[blockchainName][type] + address;
   }

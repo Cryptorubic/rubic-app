@@ -19,6 +19,7 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
+import { TransactionReceipt } from 'web3-eth';
 import { BinanceTronBridgeProviderService } from './blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { EthereumTronBridgeProviderService } from './blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
 import { BridgeTableTrade } from '../models/BridgeTableTrade';
@@ -28,6 +29,8 @@ import { EthereumBinanceRubicBridgeProviderService } from './blockchains-bridge-
 import { EthereumBinanceBridgeProviderService } from './blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
 import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockchains-bridge-provider';
 import { BridgeToken } from '../models/BridgeToken';
+import { EthereumXdaiBridgeProviderService } from './blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
+import { BRIDGE_PROVIDER_TYPE } from '../models/ProviderType';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -49,7 +52,8 @@ export class BridgeService implements OnDestroy {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: List([]),
       [BLOCKCHAIN_NAME.POLYGON]: List([]),
-      [BLOCKCHAIN_NAME.TRON]: List([])
+      [BLOCKCHAIN_NAME.TRON]: List([]),
+      [BLOCKCHAIN_NAME.XDAI]: List([])
     },
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
       [BLOCKCHAIN_NAME.TRON]: List([])
@@ -58,9 +62,8 @@ export class BridgeService implements OnDestroy {
 
   private _transactions: BehaviorSubject<List<BridgeTableTrade>> = new BehaviorSubject(null);
 
-  public readonly transactions: Observable<
-    List<BridgeTableTrade>
-  > = this._transactions.asObservable();
+  public readonly transactions: Observable<List<BridgeTableTrade>> =
+    this._transactions.asObservable();
 
   public walletAddress: Observable<string>;
 
@@ -70,6 +73,10 @@ export class BridgeService implements OnDestroy {
 
   private _isTestingMode: boolean;
 
+  public getProviderType(token?: BridgeToken): BRIDGE_PROVIDER_TYPE {
+    return this.bridgeProvider.getProviderType(token);
+  }
+
   constructor(
     private bridgeApiService: BridgeApiService,
     private ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
@@ -77,6 +84,7 @@ export class BridgeService implements OnDestroy {
     private ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
     private ethereumTronBridgeProviderService: EthereumTronBridgeProviderService,
     private binanceTronBridgeProviderService: BinanceTronBridgeProviderService,
+    private ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
@@ -128,6 +136,9 @@ export class BridgeService implements OnDestroy {
         case BLOCKCHAIN_NAME.POLYGON:
           this.bridgeProvider = this.ethereumPolygonBridgeProviderService;
           break;
+        case BLOCKCHAIN_NAME.XDAI:
+          this.bridgeProvider = this.ethereumXdaiBridgeProviderService;
+          break;
         default:
           this.bridgeProvider = this.ethereumTronBridgeProviderService;
       }
@@ -164,9 +175,8 @@ export class BridgeService implements OnDestroy {
       .getTokensList(this._swapTokens)
       .pipe(first())
       .subscribe(tokensList => {
-        this._blockchainTokens[firstBlockchain][
-          secondBlockchain
-        ] = this.getTokensWithImagesAndRanks(tokensList);
+        this._blockchainTokens[firstBlockchain][secondBlockchain] =
+          this.getTokensWithImagesAndRanks(tokensList);
         if (
           this.selectedBlockchains[0] === firstBlockchain &&
           this.selectedBlockchains[1] === secondBlockchain
@@ -260,7 +270,7 @@ export class BridgeService implements OnDestroy {
     }
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
+  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     return defer(async () => {
       this.checkSettings(bridgeTrade.fromBlockchain);
       const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];

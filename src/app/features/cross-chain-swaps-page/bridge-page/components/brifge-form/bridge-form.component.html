@@ -119,7 +119,7 @@
     <button
       class="swap-section__revert-button revert-button"
       type="button"
-      *ngIf="toBlockchain.key !== BLOCKCHAIN_NAME.TRON"
+      *ngIf="toBlockchain.key !== BLOCKCHAIN_NAME.TRON && toBlockchain.key !== BLOCKCHAIN_NAME.XDAI"
       (click)="revertBlockchains()"
     >
       <img src="assets/images/icons/revert.svg" alt="Revert" width="21" height="24" />
@@ -189,24 +189,11 @@
 
       <a
         class="swap-box__blockchain-link"
-        [href]="
-          isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
-            ? 'https://www.binance.org/'
-            : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
-            ? 'https://polygon.technology/'
-            : 'https://tron.network/'
-        "
+        [href]="BLOCKCHAIN_DATA[toBlockchain.key]?.link"
         target="_blank"
       >
         {{ 'bridgePage.whatIs' | translate }}
-        {{
-          isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
-            ? 'Binance Smart Chain'
-            : isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
-            ? 'Polygon'
-            : 'TRON'
-        }}
-        {{ 'bridgePage.whatIsAfter' | translate }}?
+        {{ BLOCKCHAIN_DATA[toBlockchain.key]?.caption }}{{ 'bridgePage.whatIsAfter' | translate }}?
       </a>
     </div>
   </div>
@@ -228,30 +215,17 @@
     </app-primary-button>
 
     <a
-      [href]="
-        isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) ||
-        isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
-          ? 'https://www.binance.org/'
-          : 'https://polygon.technology/'
-      "
+      *ngIf="providerData.img"
+      [href]="providerData.href"
       target="_blank"
       class="confirm-section__blockchain-link"
       [ngClass]="{
-        'cross-chain-form__confirm-info_hidden':
-          selectedToken?.blockchainToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]?.address ===
-          this.BRBC_ADDRESS,
-        'cross-chain-form__confirm-info_polygon': isBlockchainSelected(BLOCKCHAIN_NAME.POLYGON)
+        'confirm-section__blockchain-link_opacity': providerData.img === 'Polygon' || providerData.img === 'XDai'
       }"
     >
       <span>{{ 'bridgePage.assistanceOf' | translate }}</span>
       <img
-        [src]="
-          'assets/images/icons/collaborations/' +
-          (isBlockchainSelected(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) ||
-          isBlockchainSelected(BLOCKCHAIN_NAME.TRON)
-            ? 'Binance.svg'
-            : 'Polygon.svg')
-        "
+        [src]="'assets/images/icons/collaborations/' + providerData.img + '.svg'"
         width="99"
         height="24"
         alt="blockchain"
