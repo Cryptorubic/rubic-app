@@ -78,11 +78,11 @@ export class WalletConnectProvider extends PrivateProvider {
     });
   }
 
-  protected getAddress(): string {
+  public getAddress(): string {
     return this.isEnabled && this.selectedAddress;
   }
 
-  protected getNetwork(): IBlockchain {
+  public getNetwork(): IBlockchain {
     return (
       this.isEnabled && BlockchainsInfo.getBlockchainById(this.selectedChain as BLOCKCHAIN_NAME)
     );

@@ -82,14 +82,14 @@ export class MetamaskProvider extends PrivateProvider {
     });
   }
 
-  protected getAddress(): string {
+  public getAddress(): string {
     if (this.isEnabled) {
       return this.selectedAddress;
     }
     return null;
   }
 
-  protected getNetwork(): IBlockchain {
+  public getNetwork(): IBlockchain {
     if (this.isEnabled) {
       return this.selectedChain ? BlockchainsInfo.getBlockchainById(this.selectedChain) : undefined;
     }

@@ -66,11 +66,11 @@ export class WalletLinkProvider extends PrivateProvider {
     web3.setProvider(this.core);
   }
 
-  protected getAddress(): string {
+  public getAddress(): string {
     return this.isEnabled && this.selectedAddress;
   }
 
-  protected getNetwork(): IBlockchain {
+  public getNetwork(): IBlockchain {
     return (
       this.isEnabled &&
       this.selectedChain &&

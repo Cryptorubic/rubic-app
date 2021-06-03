@@ -148,7 +148,7 @@ export class ProviderConnectorService {
           this.$networkChangeSubject,
           this.$addressChangeSubject,
           this.errorsService
-        );
+        ) as PrivateProvider;
       }
     }
     this.providerName = provider;

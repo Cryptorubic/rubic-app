@@ -10,6 +10,7 @@ import { ErrorsService } from '../errors/errors.service';
 import { UserRejectError } from '../../../shared/models/errors/provider/UserRejectError';
 import { StoreService } from '../store/store.service';
 import { WalletlinkError } from '../../../shared/models/errors/provider/WalletlinkError';
+import { RubicError } from '../../../shared/models/errors/RubicError';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -133,6 +134,9 @@ export class AuthService {
       }
       this.isAuthProcess = true;
       await this.providerConnectorService.activate();
+      if (!this.providerConnectorService.provider) {
+        this.errorsService.throw(new RubicError());
+      }
       const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
       if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
         const { address } = metamaskLoginBody.payload.user;
