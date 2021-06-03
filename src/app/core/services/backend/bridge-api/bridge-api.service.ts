@@ -21,7 +21,8 @@ export class BridgeApiService {
     ETH: BLOCKCHAIN_NAME.ETHEREUM,
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     POL: BLOCKCHAIN_NAME.POLYGON,
-    TRX: BLOCKCHAIN_NAME.TRON
+    TRX: BLOCKCHAIN_NAME.TRON,
+    XDAI: BLOCKCHAIN_NAME.XDAI
   };
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
@@ -45,7 +46,7 @@ export class BridgeApiService {
   private parseBridgeTableTrade(trade: BridgeTableTradeApi): BridgeTableTrade {
     const fromBlockchain = this.tradeBlockchain[trade.fromNetwork];
     const toBlockchain = this.tradeBlockchain[trade.toNetwork];
-
+    console.log(toBlockchain);
     let { status } = trade;
     if (fromBlockchain === BLOCKCHAIN_NAME.POLYGON && status === 'Waiting for deposit') {
       status = 'Waiting for receiving';
@@ -177,25 +178,11 @@ export class BridgeApiService {
     });
   }
 
-  public postXDaiTransaction(
-    bridgeTrade: BridgeTrade,
-    transactionHash: string,
-    userAddress: string
-  ): Promise<void> {
+  public postXDaiTransaction(transactionHash: string): Promise<void> {
     const body = {
-      type: 'xdai',
-      fromNetwork: BLOCKCHAIN_NAME.ETHEREUM,
-      toNetwork: BLOCKCHAIN_NAME.XDAI,
-      actualFromAmount: bridgeTrade.amount,
-      actualToAmount: bridgeTrade.amount,
-      ethSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].address,
-      bscSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.toBlockchain].address,
-      updateTime: new Date(),
-      status: TRADE_STATUS.DEPOSIT_IN_PROGRESS,
-      transaction_id: transactionHash,
-      walletFromAddress: userAddress,
-      walletToAddress: userAddress,
-      walletDepositAddress: ethToXDaiDepositWallet
+      type: BLOCKCHAIN_NAME.XDAI.toLowerCase(),
+      fromNetwork: BLOCKCHAIN_NAME.ETHEREUM.toLowerCase(),
+      transaction_id: transactionHash
     };
 
     return new Promise<void>((resolve, reject) => {
