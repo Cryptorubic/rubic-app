@@ -19,6 +19,7 @@ import { TransactionReceipt } from 'web3-eth';
 import BinanceContractAbi from './abi/BinanceContractAbi';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
+import { BRIDGE_PROVIDER_TYPE } from '../../../../models/ProviderType';
 
 interface RubicTrade {
   token: {
@@ -55,6 +56,10 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
         this.BinanceSmartContractAddress = '0x17caca02ddf472f62bfed5165facf7a6b5c72926';
       }
     });
+  }
+
+  getProviderType(): BRIDGE_PROVIDER_TYPE {
+    return BRIDGE_PROVIDER_TYPE.RUBIC;
   }
 
   public getTokensList(): Observable<List<BridgeToken>> {
