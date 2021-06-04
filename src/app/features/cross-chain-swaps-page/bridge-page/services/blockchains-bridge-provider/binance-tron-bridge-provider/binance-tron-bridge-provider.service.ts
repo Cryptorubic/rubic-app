@@ -20,7 +20,7 @@ export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider 
     super();
   }
 
-  get providerType(): BRIDGE_PROVIDER_TYPE {
+  getProviderType(): BRIDGE_PROVIDER_TYPE {
     return BRIDGE_PROVIDER_TYPE.PANAMA;
   }
 

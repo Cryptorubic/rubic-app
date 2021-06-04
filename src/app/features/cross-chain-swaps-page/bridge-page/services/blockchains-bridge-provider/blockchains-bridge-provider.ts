@@ -11,7 +11,7 @@ export abstract class BlockchainsBridgeProvider {
   /**
    * @description get type of provider
    */
-  public getProviderType?(token?: BridgeToken): BRIDGE_PROVIDER_TYPE;
+  public abstract getProviderType?(token?: BridgeToken): BRIDGE_PROVIDER_TYPE;
 
   /**
    * @description get transformed list of bridge tokens from usually tokens
