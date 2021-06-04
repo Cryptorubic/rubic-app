@@ -22,22 +22,22 @@ export class AppComponent {
     private readonly activatedRoute: ActivatedRoute,
     private router: Router
   ) {
-    this.activatedRoute.queryParams.subscribe((queryParams: QueryParams) =>
-      this.queryParamsService.setupQueryParams(queryParams)
-    );
-    this.setupLanguage();
+    this.activatedRoute.queryParams.subscribe((queryParams: QueryParams) => {
+      this.queryParamsService.setupQueryParams(queryParams);
+      this.setupLanguage(queryParams.lang);
+    });
     this.healthcheckService
       .healthCheck()
       .then(isAvailable => (this.isBackendAvailable = isAvailable));
   }
 
-  private setupLanguage(): void {
+  private setupLanguage(queryParamLang): void {
     const supportedLanguages = ['en', 'ko', 'ru', 'zh', 'es'];
     let userRegionLanguage = navigator.language?.split('-')[0];
     userRegionLanguage = supportedLanguages.includes(userRegionLanguage)
       ? userRegionLanguage
       : 'en';
-    const lng = this.cookieService.get('lng') || userRegionLanguage;
+    const lng = queryParamLang || this.cookieService.get('lng') || userRegionLanguage;
     this.translateService.setDefaultLang(lng);
     this.translateService.use(lng);
     this.router.navigate([], {

@@ -154,13 +154,6 @@ export class QueryParamsService {
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams) {
-      if (queryParams.lang) {
-        const lang = languagesList.find(item => item.lng === queryParams.lang);
-
-        if (lang) {
-          this.translateService.use(queryParams.lang);
-        }
-      }
       if (queryParams.iframe === 'true') {
         this.$isIframeSubject.next(true);
         this.document.body.classList.add('iframe');
