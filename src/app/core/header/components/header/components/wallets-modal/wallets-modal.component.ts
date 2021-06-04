@@ -68,7 +68,7 @@ export class WalletsModalComponent {
       //   desktopOnly: true
       // },
       {
-        name: 'Wallet Connect',
+        name: 'WalletConnect',
         value: WALLET_NAME.WALLET_CONNECT,
         img: './assets/images/icons/wallets/walletconnect.svg',
         desktopOnly: true
