@@ -7,6 +7,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { skip, take } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
@@ -14,6 +15,7 @@ import { TradeParametersService } from '../swaps/trade-parameters-service/trade-
 import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
 import { QueryParams } from './models/query-params';
 import { TOKEN_RANK } from '../../../shared/models/tokens/token-rank';
+import { languagesList } from '../../header/models/languages-list';
 
 type DefaultQueryParams = {
   [BLOCKCHAIN_NAME.ETHEREUM]: QueryParams;
@@ -63,7 +65,8 @@ export class QueryParamsService {
     private readonly tradeTypeService: TradeTypeService,
     private readonly web3Public: Web3PublicService,
     @Inject(DOCUMENT) private document: Document,
-    private readonly router: Router
+    private readonly router: Router,
+    private translateService: TranslateService
   ) {
     this.$themeSubject = new BehaviorSubject<string>('default');
     this.$isIframeSubject = new BehaviorSubject<boolean>(false);
@@ -151,6 +154,13 @@ export class QueryParamsService {
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams) {
+      if (queryParams.lang) {
+        const lang = languagesList.find(item => item.lng === queryParams.lang);
+
+        if (lang) {
+          this.translateService.use(queryParams.lang);
+        }
+      }
       if (queryParams.iframe === 'true') {
         this.$isIframeSubject.next(true);
         this.document.body.classList.add('iframe');
