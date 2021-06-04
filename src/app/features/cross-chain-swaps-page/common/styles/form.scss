@@ -190,7 +190,7 @@
   }
 }
 
-@include b(1000) {
+@include b($laptop) {
   .cross-chain-form {
     align-items: center;
 

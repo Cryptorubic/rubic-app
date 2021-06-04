@@ -25,8 +25,8 @@
           [inputElement]="slippagePercentInput"
           integerLength="2"
           decimalLength="2"
-          minValue="0.01"
-          maxValue="50"
+          [minValue]="MIN_SLIPPAGE_VALUE.toString()"
+          [maxValue]="MAX_SLIPPAGE_VALUE.toString()"
           [ngModel]="slippagePercent"
           (ngModelChange)="onSlippagePercentChange($event)"
           #slippagePercentModel="ngModel"
@@ -35,7 +35,9 @@
               !slippagePercentModel.value || slippagePercentModel.invalid,
             'input-container__input_warning':
               slippagePercentModel.valid &&
-              ((slippagePercentModel.value && +slippagePercent < 0.1) || +slippagePercent > 1)
+              slippagePercentModel.value &&
+              (+slippagePercent < MIN_RECOMMENDED_SLIPPAGE_VALUE ||
+                +slippagePercent > MAX_RECOMMENDED_SLIPPAGE_VALUE)
           }"
           #slippagePercentInput
         />
@@ -45,7 +47,11 @@
 
       <div
         class="form-section-block__warning-container"
-        *ngIf="slippagePercentModel.value && +slippagePercent < 0.1"
+        *ngIf="
+          slippagePercentModel.valid &&
+          slippagePercentModel.value &&
+          +slippagePercent < MIN_RECOMMENDED_SLIPPAGE_VALUE
+        "
         [matTooltip]="'Your transaction may fail'"
       >
         <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="Warning disclaimer" />
@@ -53,7 +59,11 @@
 
       <div
         class="form-section-block__warning-container"
-        *ngIf="slippagePercentModel.valid && +slippagePercent > 1"
+        *ngIf="
+          slippagePercentModel.valid &&
+          slippagePercentModel.value &&
+          +slippagePercent > MAX_RECOMMENDED_SLIPPAGE_VALUE
+        "
         [matTooltip]="'Your transaction may be frontrun'"
       >
         <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="Disclaimer sign" />

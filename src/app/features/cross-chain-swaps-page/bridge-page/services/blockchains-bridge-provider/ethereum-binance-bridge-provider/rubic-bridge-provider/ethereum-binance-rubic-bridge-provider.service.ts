@@ -16,11 +16,13 @@ import {
 } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
 import { WrongToken } from 'src/app/shared/models/errors/provider/WrongToken';
+import { TransactionReceipt } from 'web3-eth';
 import BinanceContractAbi from './abi/BinanceContractAbi';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 import { ErrorsService } from '../../../../../../../core/services/errors/errors.service';
 import { ProviderConnectorService } from '../../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
+import { BRIDGE_PROVIDER_TYPE } from '../../../../models/ProviderType';
 
 interface RubicTrade {
   token: {
@@ -59,6 +61,10 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
         this.BinanceSmartContractAddress = '0x17caca02ddf472f62bfed5165facf7a6b5c72926';
       }
     });
+  }
+
+  getProviderType(): BRIDGE_PROVIDER_TYPE {
+    return BRIDGE_PROVIDER_TYPE.RUBIC;
   }
 
   public getTokensList(): Observable<List<BridgeToken>> {
@@ -119,16 +125,16 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   public createTrade(
     bridgeTrade: BridgeTrade,
     updateTransactionsList: () => Promise<void>
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     return new Observable(subscriber => {
       this.createRubicTrade(bridgeTrade, updateTransactionsList)
-        .then(transactionHash => {
+        .then(receipt => {
           this.bridgeApiService.notifyBridgeBot(
             bridgeTrade,
-            transactionHash,
+            receipt.transactionHash,
             this.providerConnectorService.address
           );
-          subscriber.next(transactionHash);
+          subscriber.next(receipt);
         })
         .catch(err => {
           subscriber.error(err);
@@ -142,7 +148,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   private async createRubicTrade(
     bridgeTrade: BridgeTrade,
     updateTransactionsList: () => Promise<void>
-  ): Promise<string> {
+  ): Promise<TransactionReceipt> {
     const { token } = bridgeTrade;
 
     if (token.symbol !== 'RBC') {
@@ -197,7 +203,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       }
     );
 
-    return receipt.transactionHash;
+    return receipt;
   }
 
   private async provideAllowance(trade: RubicTrade, web3Public: Web3Public, onApprove) {

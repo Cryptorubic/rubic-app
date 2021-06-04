@@ -27,6 +27,7 @@ import { ReceiveButtonComponent } from './components/bridge-table/deposit-button
 import { EthereumTronBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
 import { BinanceTronBridgeProviderService } from './services/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { PanamaBridgeProviderService } from './services/blockchains-bridge-provider/common/panama-bridge-provider/panama-bridge-provider.service';
+import { EthereumXdaiBridgeProviderService } from './services/blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { PanamaBridgeProviderService } from './services/blockchains-bridge-provi
     EthereumBinanceRubicBridgeProviderService,
     EthereumPolygonBridgeProviderService,
     EthereumTronBridgeProviderService,
+    EthereumXdaiBridgeProviderService,
     BinanceTronBridgeProviderService
   ]
 })

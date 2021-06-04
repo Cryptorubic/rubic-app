@@ -3,16 +3,25 @@ import { BehaviorSubject, defer, Observable, Subscription } from 'rxjs';
 import { List } from 'immutable';
 import { catchError, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
+import { TranslateService } from '@ngx-translate/core';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
+import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
+import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
+import { TransactionReceipt } from 'web3-eth';
 import { BinanceTronBridgeProviderService } from './blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { EthereumTronBridgeProviderService } from './blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
 import { BridgeTableTrade } from '../models/BridgeTableTrade';
@@ -20,16 +29,10 @@ import { BridgeTrade } from '../models/BridgeTrade';
 import { EthereumPolygonBridgeProviderService } from './blockchains-bridge-provider/ethereum-polygon-bridge-provider/ethereum-polygon-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from './blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { EthereumBinanceBridgeProviderService } from './blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
-import { BridgeToken } from '../models/BridgeToken';
-
 import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockchains-bridge-provider';
-import { ErrorsService } from '../../../../core/services/errors/errors.service';
-import SwapToken from '../../../../shared/models/tokens/SwapToken';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { UseTestingModeService } from '../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { TokensService } from '../../../../core/services/backend/tokens-service/tokens.service';
-import { bridgeTestTokens } from '../../../../../test/tokens/bridge-tokens';
-import { Web3PrivateService } from '../../../../core/services/blockchain/web3-private-service/web3-private.service';
+import { BridgeToken } from '../models/BridgeToken';
+import { EthereumXdaiBridgeProviderService } from './blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
+import { BRIDGE_PROVIDER_TYPE } from '../models/ProviderType';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -51,7 +54,8 @@ export class BridgeService implements OnDestroy {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: List([]),
       [BLOCKCHAIN_NAME.POLYGON]: List([]),
-      [BLOCKCHAIN_NAME.TRON]: List([])
+      [BLOCKCHAIN_NAME.TRON]: List([]),
+      [BLOCKCHAIN_NAME.XDAI]: List([])
     },
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
       [BLOCKCHAIN_NAME.TRON]: List([])
@@ -60,9 +64,8 @@ export class BridgeService implements OnDestroy {
 
   private _transactions: BehaviorSubject<List<BridgeTableTrade>> = new BehaviorSubject(null);
 
-  public readonly transactions: Observable<
-    List<BridgeTableTrade>
-  > = this._transactions.asObservable();
+  public readonly transactions: Observable<List<BridgeTableTrade>> =
+    this._transactions.asObservable();
 
   public walletAddress: Observable<string>;
 
@@ -72,6 +75,10 @@ export class BridgeService implements OnDestroy {
 
   private _isTestingMode: boolean;
 
+  public getProviderType(token?: BridgeToken): BRIDGE_PROVIDER_TYPE {
+    return this.bridgeProvider.getProviderType(token);
+  }
+
   constructor(
     private bridgeApiService: BridgeApiService,
     private ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
@@ -79,6 +86,7 @@ export class BridgeService implements OnDestroy {
     private ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
     private ethereumTronBridgeProviderService: EthereumTronBridgeProviderService,
     private binanceTronBridgeProviderService: BinanceTronBridgeProviderService,
+    private ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
@@ -131,6 +139,9 @@ export class BridgeService implements OnDestroy {
         case BLOCKCHAIN_NAME.POLYGON:
           this.bridgeProvider = this.ethereumPolygonBridgeProviderService;
           break;
+        case BLOCKCHAIN_NAME.XDAI:
+          this.bridgeProvider = this.ethereumXdaiBridgeProviderService;
+          break;
         default:
           this.bridgeProvider = this.ethereumTronBridgeProviderService;
       }
@@ -167,9 +178,8 @@ export class BridgeService implements OnDestroy {
       .getTokensList(this._swapTokens)
       .pipe(first())
       .subscribe(tokensList => {
-        this._blockchainTokens[firstBlockchain][
-          secondBlockchain
-        ] = this.getTokensWithImagesAndRanks(tokensList);
+        this._blockchainTokens[firstBlockchain][secondBlockchain] =
+          this.getTokensWithImagesAndRanks(tokensList);
         if (
           this.selectedBlockchains[0] === firstBlockchain &&
           this.selectedBlockchains[1] === secondBlockchain
@@ -263,7 +273,7 @@ export class BridgeService implements OnDestroy {
     }
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<string> {
+  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     return defer(async () => {
       this.checkSettings(bridgeTrade.fromBlockchain);
       const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];

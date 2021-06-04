@@ -1,0 +1,51 @@
+<div class="refresh-tool">
+  <button
+    class="refresh-tool__button timeout-button"
+    aria-label="Stop auto refreshing"
+    [ngClass]="{
+      'timeout-button_refreshing': refreshStatus === REFRESH_STATUS.REFRESHING,
+      'timeout-button_waiting': refreshStatus === REFRESH_STATUS.WAITING
+    }"
+    (click)="onTimeoutClick()"
+  >
+    <span class="timeout-button__circle-container circle-container" *ngIf="isWithAutoRefresh">
+      <span class="circle-container__half circle-container__half_left">
+        <span class="fill" [ngStyle]="{ 'animation-duration': refreshTimeout / 2 + 's' }"></span>
+      </span>
+      <span class="circle-container__half circle-container__half_right">
+        <span
+          class="fill"
+          [ngStyle]="{
+            'animation-duration': refreshTimeout / 2 + 's',
+            'animation-delay': refreshTimeout / 2 + 's'
+          }"
+        ></span>
+      </span>
+      <span class="circle-container__center"></span>
+    </span>
+
+    <img
+      class="timeout-button__clock"
+      *ngIf="!isWithAutoRefresh"
+      src="/assets/images/icons/clock.svg"
+      width="16"
+      height="16"
+      alt="clock"
+    />
+  </button>
+
+  <button
+    class="refresh-tool__button refresh-button"
+    aria-label="Refresh"
+    (click)="onRefreshClick()"
+    #refreshButton
+  >
+    <img
+      class="refresh-button__circle-arrows circle-arrows"
+      src="/assets/images/icons/circle-arrows-green.svg"
+      width="18"
+      height="18"
+      alt="arrows"
+    />
+  </button>
+</div>

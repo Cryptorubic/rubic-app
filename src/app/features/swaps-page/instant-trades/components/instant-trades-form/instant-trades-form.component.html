@@ -103,12 +103,12 @@
     <div class="instant-trade-form__to-section">
       <div class="selection-block__header">
         <div class="selection-block__label">
-          {{ 'common.want' | translate }}
-          <app-refresh-button
+          {{ 'common.get' | translate }}
+          <app-refresh-tool
             class="selection-block__refresh-button"
-            [refreshButtonStatus]="refreshButtonStatus"
-            (onRefreshButtonActivated)="triggerRecalculateTradeParameters()"
-          ></app-refresh-button>
+            [refreshStatus]="refreshStatus"
+            (onRefresh)="triggerRecalculateTradeParameters()"
+          ></app-refresh-tool>
         </div>
 
         <div *ngIf="toToken?.address" class="selection-block__scanner">
@@ -131,7 +131,7 @@
           [hasBestRate]="hasBestRate"
           [blockchain]="blockchain"
           [availableToTokens]="availableToTokens"
-          [tradeParameters]="tradeParameters"
+          [(tradeParameters)]="tradeParameters"
           [selectedTradeState]="selectedTradeState"
           [waitingForProvider]="waitingForProvider"
           (tokenChangeEvent)="toToken = $any($event)"
@@ -160,17 +160,14 @@
 
     <div class="flex-breaker"></div>
 
-    <!-- // TODO: убрать hidden после тестирования -->
-    <div class="instant-trade-form__advanced-options-button" *ngIf="($isIframe | async) === false" hidden>
+    <div class="instant-trade-form__advanced-options-button" *ngIf="($isIframe | async) === false">
       <app-advanced-options-button
         [(isOpened)]="areAdvancedOptionsOpened"
       ></app-advanced-options-button>
     </div>
   </form>
 
-  <!-- // TODO: убрать hidden после тестирования -->
   <app-instant-trades-form-options
-    hidden
     *ngIf="areAdvancedOptionsOpened"
     [slippagePercent]="slippagePercent"
     (slippagePercentChange)="setSlippagePercent($event)"

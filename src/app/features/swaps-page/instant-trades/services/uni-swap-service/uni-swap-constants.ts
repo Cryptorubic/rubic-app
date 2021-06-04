@@ -23,13 +23,25 @@ export const routingProviders = {
   ]
 };
 
-export const maxTransitTokens = 1;
+export const maxTransitTokens = 2;
 
-export const tokensToTokensEstimatedGas = [new BigNumber(120_000), new BigNumber(220_000)];
+export const tokensToTokensEstimatedGas = [
+  new BigNumber(120_000),
+  new BigNumber(220_000),
+  new BigNumber(300_000)
+];
 
-export const tokensToEthEstimatedGas = [new BigNumber(150_000), new BigNumber(240_000)];
+export const tokensToEthEstimatedGas = [
+  new BigNumber(150_000),
+  new BigNumber(240_000),
+  new BigNumber(320_000)
+];
 
-export const ethToTokensEstimatedGas = [new BigNumber(150_000), new BigNumber(240_000)];
+export const ethToTokensEstimatedGas = [
+  new BigNumber(150_000),
+  new BigNumber(240_000),
+  new BigNumber(320_000)
+];
 
 export const abi = [
   {

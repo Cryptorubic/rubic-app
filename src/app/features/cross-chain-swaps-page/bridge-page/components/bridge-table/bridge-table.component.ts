@@ -47,6 +47,10 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
     [BLOCKCHAIN_NAME.TRON]: {
       label: 'TRON',
       img: 'tron.svg'
+    },
+    [BLOCKCHAIN_NAME.XDAI]: {
+      label: 'XDAI',
+      img: 'xdai.svg'
     }
   };
 
