@@ -9,9 +9,11 @@ import {
   BridgeToken
 } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
+import { TransactionReceipt } from 'web3-eth';
 import { PanamaToken } from '../../common/panama-bridge-provider/models/PanamaToken';
 import { PanamaBridgeProviderService } from '../../common/panama-bridge-provider/panama-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
+import { BRIDGE_PROVIDER_TYPE } from '../../../../models/ProviderType';
 
 @Injectable()
 export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridgeProvider {
@@ -51,6 +53,10 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
     };
   }
 
+  getProviderType(): BRIDGE_PROVIDER_TYPE {
+    return BRIDGE_PROVIDER_TYPE.PANAMA;
+  }
+
   public getTokensList(): Observable<List<BridgeToken>> {
     return this.panamaBridgeProvider
       .getTokensList()
@@ -64,7 +70,7 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
   public createTrade(
     bridgeTrade: BridgeTrade,
     updateTransactionsList: () => Promise<void>
-  ): Observable<string> {
+  ): Observable<TransactionReceipt> {
     return this.panamaBridgeProvider.createTrade(bridgeTrade, updateTransactionsList);
   }
 }

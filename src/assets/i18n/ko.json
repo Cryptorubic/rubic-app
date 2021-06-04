@@ -332,7 +332,9 @@
     "minAmount": "-최소 금액 ",
     "maxAmount": "최대 금액 ",
     "createBridge": "Create Bridge",
-    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
+    "getBNB": "Get BNB",
+    "bridge": "Bridge"
   },
   "instantTrades": {
     "title": "즉시 거래",
