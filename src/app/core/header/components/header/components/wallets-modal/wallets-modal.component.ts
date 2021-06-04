@@ -2,13 +2,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
+  Renderer2,
   TemplateRef,
   ViewChild
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { Observable } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { AuthService } from '../../../../../services/auth/auth.service';
 import { WALLET_NAME, WalletProvider } from './models/providers';
 import { HeaderStore } from '../../../../services/header.store';
@@ -48,7 +50,7 @@ export class WalletsModalComponent {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef // @Inject(DOCUMENT) private readonly document: Document, // private readonly renderer: Renderer2
   ) {
     this.$walletsLoading = this.headerStore.getWalletsLoadingStatus();
     this.$mobileDisplayStatus = this.headerStore.getMobileDisplayStatus();
@@ -69,16 +71,23 @@ export class WalletsModalComponent {
         name: 'Wallet Connect',
         value: WALLET_NAME.WALLET_CONNECT,
         img: './assets/images/icons/wallets/walletconnect.svg',
-        desktopOnly: false
+        desktopOnly: true
       }
     ];
   }
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
-    if (this.isMobile && provider === WALLET_NAME.METAMASK && !window.ethereum) {
-      this.setupMetamaskDeepLinking();
-      return;
-    }
+    // @TODO Uncomment when fix mobile wallets.
+    // if (this.isMobile && provider === WALLET_NAME.METAMASK && !window.ethereum) {
+    //   this.setupMetamaskDeepLinking();
+    //   return;
+    // }
+    // if (
+    //   provider ===
+    //   WALLET_NAME.WALLET_CONNECT /** && /iPad|iPhone|iPod/.test(navigator.platform) * */
+    // ) {
+    //   setTimeout(() => this.setupIosWalletsModal(), 500);
+    // }
     this.headerStore.setWalletsLoadingStatus(true);
     try {
       await this.providerConnectorService.connectProvider(provider);
@@ -94,4 +103,20 @@ export class WalletsModalComponent {
     this.headerStore.setWalletsLoadingStatus(false);
     this.dialog.closeAll();
   }
+
+  // @TODO Uncomment when fix mobile wallets.
+  // private setupIosWalletsModal(): void {
+  //   const walletElements = this.document.querySelectorAll(
+  //     '#walletconnect-wrapper .walletconnect-connect__button__icon_anchor'
+  //   );
+  //   walletElements.forEach(el => {
+  //     const wallet = el.querySelector('.walletconnect-connect__button__text').textContent;
+  //     const deepLink =
+  // tslint:disable-next-line:max-line-length
+  //       'trust://wc?uri=wc%3Abbce77de-1fad-4bf3-a489-1734ad0ee5ed%401%3Fbridge%3Dhttps%253A%252F%252Fbridge.walletconnect.org%26key%3D4e5cb09af0367885cb93c836d826d2bfffa3845dad12531ccd770985b3f1d076';
+  //     if (wallet === 'Trust') {
+  //       this.renderer.setAttribute(el, 'href', deepLink);
+  //     }
+  //   });
+  // }
 }

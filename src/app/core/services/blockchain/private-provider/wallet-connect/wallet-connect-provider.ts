@@ -49,18 +49,32 @@ export class WalletConnectProvider extends PrivateProvider {
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
 
-    const rpcParams = networks.reduce(
-      (prev, cur) => {
-        return {
-          rpc: {
-            ...prev.rpc,
-            [cur.id]: cur.rpcLink
-          }
-        };
-      },
-      { rpc: null }
-    );
-    this.core = new WalletConnect(rpcParams);
+    const rpcParams = networks.reduce((prev, cur) => {
+      return {
+        ...prev,
+        [cur.id]: cur.rpcLink
+      };
+    }, {});
+    this.core = new WalletConnect({
+      infuraId: 'ecf1e6d0427b458b89760012a8500abf',
+      rpc: rpcParams,
+      bridge: 'https://bridge.walletconnect.org',
+      qrcodeModalOptions: {
+        mobileLinks: [
+          'metamask',
+          'trust',
+          'bitpay',
+          'Argent',
+          'Crypto.com',
+          'Ledger',
+          '1inch',
+          'coin98',
+          'Huobi',
+          'BitKeep',
+          'PlasmaPay'
+        ]
+      }
+    });
     web3.setProvider(this.core as any);
     this.core.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
