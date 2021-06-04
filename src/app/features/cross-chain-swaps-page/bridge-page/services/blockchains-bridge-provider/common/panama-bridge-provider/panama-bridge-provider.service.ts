@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { List } from 'immutable';
 import { HttpClient } from '@angular/common/http';
-import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
 import { from, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { flatMap } from 'rxjs/internal/operators';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -136,7 +132,7 @@ export class PanamaBridgeProviderService {
         token.blockchainToken[bridgeTrade.fromBlockchain].symbol,
         token.blockchainToken[bridgeTrade.toBlockchain].symbol
       );
-      updateTransactionsList();
+      await updateTransactionsList();
     };
 
     let receipt;
@@ -162,7 +158,11 @@ export class PanamaBridgeProviderService {
         }
       );
     }
-    this.bridgeApiService.notifyBridgeBot(bridgeTrade, binanceId, this.web3PrivateService.address);
+    this.bridgeApiService.notifyBridgeBot(
+      bridgeTrade,
+      binanceId,
+      this.providerConnectorService.address
+    );
     return receipt;
   }
 }

@@ -11,6 +11,7 @@ import { Web3PrivateService } from '../../../../../../core/services/blockchain/w
 import { BridgeApiService } from '../../../../../../core/services/backend/bridge-api/bridge-api.service';
 import { ethToXDaiDepositWallet } from '../../../../../../shared/constants/bridge/deposit-wallets';
 import { BRIDGE_PROVIDER_TYPE } from '../../../models/ProviderType';
+import { ProviderConnectorService } from '../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 @Injectable()
 export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider {
@@ -49,7 +50,8 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
 
   constructor(
     private web3PrivateService: Web3PrivateService,
-    private bridgeApiService: BridgeApiService
+    private bridgeApiService: BridgeApiService,
+    private readonly providerConnectorService: ProviderConnectorService
   ) {
     super();
   }
@@ -76,7 +78,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
         bridgeTrade.onTransactionHash(hash);
       }
       await this.bridgeApiService.postXDaiTransaction(hash);
-      updateTransactionsList();
+      await updateTransactionsList();
     };
 
     return from(
@@ -93,7 +95,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
         this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,
           receipt.transactionHash,
-          this.web3PrivateService.address
+          this.providerConnectorService.address
         );
       })
     );
