@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import BigNumber from 'bignumber.js';
-import { MatDialog } from '@angular/material/dialog';
 import {
   ORDER_BOOK_TRADE_STATUS,
   OrderBookDataToken,
@@ -21,10 +20,7 @@ import { TokenPart } from '../../../../../../shared/models/order-book/tokens';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import { RubicError } from '../../../../../../shared/models/errors/RubicError';
 import { OrderBookTradeService } from '../../../../services/order-book-trade.service';
-import { NetworkError } from '../../../../../../shared/models/errors/provider/NetworkError';
-import { MessageBoxComponent } from '../../../../../../shared/components/message-box/message-box.component';
-import { MetamaskError } from '../../../../../../shared/models/errors/provider/MetamaskError';
-import { NetworkErrorComponent } from '../../../../../../shared/components/network-error/network-error.component';
+import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
 
 type Operation = 'approve' | 'contribute' | 'withdraw';
 
@@ -80,7 +76,10 @@ export class TokenFormComponent implements OnInit, OnChanges {
     return new BigNumber(this.amountToContribute?.split(',').join(''));
   }
 
-  constructor(private orderBookTradeService: OrderBookTradeService, private dialog: MatDialog) {}
+  constructor(
+    private orderBookTradeService: OrderBookTradeService,
+    private readonly errorsService: ErrorsService
+  ) {}
 
   ngOnInit(): void {
     this.token = this.tradeData.token[this.tokenPart];
@@ -156,21 +155,7 @@ export class TokenFormComponent implements OnInit, OnChanges {
   }
 
   private showErrorMessage(err: RubicError): void {
-    let data: any = { title: 'Error', descriptionText: err.comment };
-    if (err instanceof MetamaskError) {
-      data.title = 'Warning';
-    }
-    if (err instanceof NetworkError) {
-      data = {
-        title: 'Error',
-        descriptionComponentClass: NetworkErrorComponent,
-        descriptionComponentInputs: { networkError: err }
-      };
-    }
-    this.dialog.open(MessageBoxComponent, {
-      width: '400px',
-      data
-    });
+    this.errorsService.showErrorDialog(err);
   }
 
   public makeApproveOrContribute(): void {

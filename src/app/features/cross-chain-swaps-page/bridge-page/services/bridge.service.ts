@@ -1,9 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, defer, Observable, Subscription, throwError } from 'rxjs';
+import { BehaviorSubject, defer, Observable, Subscription } from 'rxjs';
 import { List } from 'immutable';
 import { catchError, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
@@ -12,13 +11,14 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { TransactionReceipt } from 'web3-eth';
 import { BinanceTronBridgeProviderService } from './blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { EthereumTronBridgeProviderService } from './blockchains-bridge-provider/ethereum-tron-bridge-provider/ethereum-tron-bridge-provider.service';
@@ -31,6 +31,7 @@ import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockch
 import { BridgeToken } from '../models/BridgeToken';
 import { EthereumXdaiBridgeProviderService } from './blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BRIDGE_PROVIDER_TYPE } from '../models/ProviderType';
+import { ErrorsService } from '../../../../core/services/errors/errors.service';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -90,7 +91,8 @@ export class BridgeService implements OnDestroy {
     private web3PublicService: Web3PublicService,
     private authService: AuthService,
     private useTestingModeService: UseTestingModeService,
-    private readonly translateService: TranslateService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly errorsService: ErrorsService
   ) {
     this._swapTokensSubscription$ = this.tokensService.tokens.subscribe(swapTokens => {
       this._swapTokens = swapTokens;
@@ -98,7 +100,7 @@ export class BridgeService implements OnDestroy {
       this.setTokens();
     });
 
-    this.walletAddress = this.web3PrivateService.onAddressChanges;
+    this.walletAddress = this.providerConnectorService.$addressChange;
 
     this._currentUserSubscription$ = this.authService.getCurrentUser().subscribe(() => {
       this.updateTransactionsList();
@@ -131,7 +133,8 @@ export class BridgeService implements OnDestroy {
 
       switch (nonEthereumBlockchain) {
         case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-          this.bridgeProvider = this.ethereumBinanceBridgeProviderService;
+          this.bridgeProvider = this
+            .ethereumBinanceBridgeProviderService as BlockchainsBridgeProvider;
           break;
         case BLOCKCHAIN_NAME.POLYGON:
           this.bridgeProvider = this.ethereumPolygonBridgeProviderService;
@@ -210,23 +213,23 @@ export class BridgeService implements OnDestroy {
   }
 
   private checkSettings(blockchain: BLOCKCHAIN_NAME): void {
-    if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError(this.translateService);
+    if (!this.providerConnectorService.isProviderActive) {
+      this.errorsService.throw(new WalletError());
     }
 
-    if (!this.web3PrivateService.address) {
-      throw new AccountError(this.translateService);
+    if (!this.providerConnectorService.address) {
+      this.errorsService.throw(new AccountError());
     }
 
     if (
-      this.web3PrivateService.network?.name !== blockchain &&
+      this.providerConnectorService.network?.name !== blockchain &&
       (!this.useTestingModeService.isTestingMode.getValue() ||
-        this.web3PrivateService.network?.name !== `${blockchain}_TESTNET`) &&
+        this.providerConnectorService.network?.name !== `${blockchain}_TESTNET`) &&
       (!this.useTestingModeService.isTestingMode.getValue() ||
         blockchain !== BLOCKCHAIN_NAME.ETHEREUM ||
-        this.web3PrivateService.network?.name !== BLOCKCHAIN_NAME.GOERLI_TESTNET)
+        this.providerConnectorService.network?.name !== BLOCKCHAIN_NAME.GOERLI_TESTNET)
     ) {
-      throw new NetworkError(blockchain, this.translateService);
+      this.errorsService.throw(new NetworkError(blockchain));
     }
   }
 
@@ -251,21 +254,21 @@ export class BridgeService implements OnDestroy {
 
     let balance;
     if (web3Public.isNativeAddress(tokenAddress)) {
-      balance = await web3Public.getBalance(this.web3PrivateService.address, {
+      balance = await web3Public.getBalance(this.providerConnectorService.address, {
         inWei: true
       });
     } else {
-      balance = await web3Public.getTokenBalance(this.web3PrivateService.address, tokenAddress);
+      balance = await web3Public.getTokenBalance(
+        this.providerConnectorService.address,
+        tokenAddress
+      );
     }
 
     const amountInWei = amount.multipliedBy(10 ** decimals);
     if (balance.lt(amountInWei)) {
       const formattedTokensBalance = balance.div(10 ** decimals).toString();
-      throw new InsufficientFundsError(
-        symbol,
-        formattedTokensBalance,
-        amount.toFixed(),
-        this.translateService
+      this.errorsService.throw(
+        new InsufficientFundsError(symbol, formattedTokensBalance, amount.toFixed())
       );
     }
   }
@@ -290,16 +293,14 @@ export class BridgeService implements OnDestroy {
             tap(() => this.updateTransactionsList()),
             catchError(err => {
               if (err.code === this.USER_REJECT_ERROR_CODE) {
-                return throwError(new UserRejectError(this.translateService));
+                return this.errorsService.$throw(new UserRejectError());
               }
-              console.debug('Bridge trade error:', err);
-              return throwError(err);
+              return this.errorsService.$throw(err, 'Bridge trade error:');
             })
           );
       }),
       catchError(err => {
-        console.debug(err);
-        return throwError(err);
+        return this.errorsService.$throw(err);
       })
     );
   }
@@ -311,7 +312,7 @@ export class BridgeService implements OnDestroy {
     try {
       this.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
     } catch (err) {
-      return throwError(err);
+      return this.errorsService.$throw(err);
     }
 
     return this.ethereumPolygonBridgeProviderService
@@ -322,10 +323,12 @@ export class BridgeService implements OnDestroy {
         tap(() => this.updateTransactionsList()),
         catchError(err => {
           if (err.code === this.USER_REJECT_ERROR_CODE) {
-            return throwError(new UserRejectError(this.translateService));
+            return this.errorsService.$throw(new UserRejectError());
           }
-          console.debug('Bridge trade from Polygon to Eth error', err);
-          return throwError(err);
+          return this.errorsService.$throw(
+            new UserRejectError(),
+            'Bridge trade from Polygon to Eth error'
+          );
         })
       );
   }

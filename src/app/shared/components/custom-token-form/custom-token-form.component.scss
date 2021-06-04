@@ -44,6 +44,7 @@
 
     background: $grey-background;
     border: 1px solid white;
+    border-radius: 10px;
 
     &_invalid {
       border: 1px solid $error-red;

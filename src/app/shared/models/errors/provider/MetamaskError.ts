@@ -1,10 +1,11 @@
-import { TranslateService } from '@ngx-translate/core';
 import { RubicError } from '../RubicError';
 
 export class MetamaskError extends RubicError {
-  constructor(protected readonly translateService: TranslateService) {
-    super(translateService);
-    Object.setPrototypeOf(this, MetamaskError.prototype); // to make `instanceof MetamaskError` work
-    this.comment = this.translateService.instant('errors.noMetamaskInstalled');
+  constructor() {
+    super();
+    Object.setPrototypeOf(this, MetamaskError.prototype);
+    this.translateKey = 'errors.noMetamaskInstalled';
+    this.comment =
+      'Please make sure that you have metamask plugin installed and unlocked. You can download it on <a href="https://www.metamask.io" target="_blank">metamask.io</a>.';
   }
 }

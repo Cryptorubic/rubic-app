@@ -78,6 +78,17 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   }
 }
 
+.walletconnect-modal__base {
+  a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+    color: inherit;
+
+    &:hover,
+    &:focus {
+      color: inherit;
+    }
+  }
+}
+
 .mat-tooltip {
   white-space: pre-line;
   text-align: center;

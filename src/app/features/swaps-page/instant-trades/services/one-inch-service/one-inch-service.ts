@@ -9,10 +9,12 @@ import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCH
 import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { OneinchQuoteError } from '../../../../../shared/models/errors/provider/OneinchQuoteError';
 
 interface OneInchQuoteResponse {
-  fromToken: Object;
-  toToken: Object;
+  fromToken: object;
+  toToken: object;
   toTokenAmount: string;
   fromTokenAmount: string;
   protocols: unknown[];
@@ -55,10 +57,9 @@ export class OneInchService extends InstantTradeService {
     private httpClient: HttpClient,
     private coingeckoApiService: CoingeckoApiService,
     useTestingModeService: UseTestingModeService,
-    protected readonly translateService: TranslateService
+    protected readonly errorsService: ErrorsService
   ) {
-    super(translateService);
-
+    super(errorsService);
     useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
     setTimeout(() => this.loadSupportedTokens());
   }
@@ -118,8 +119,7 @@ export class OneInchService extends InstantTradeService {
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      console.error(oneInchTrade);
-      throw new Error('Oneinch quote error');
+      this.errorsService.throw(new OneinchQuoteError());
     }
 
     // TODO: верменный фикс, потому что rpc binance сломалось
@@ -190,7 +190,7 @@ export class OneInchService extends InstantTradeService {
           toTokenAddress,
           amount: fromAmount,
           slippage: (this.slippagePercent * 100).toString(),
-          fromAddress: this.web3Private.address
+          fromAddress: this.providerConnectorService.address
         }
       })
       .toPromise()) as OneInchSwapResponse;

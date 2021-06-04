@@ -20,6 +20,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
 import BigNumber from 'bignumber.js';
+import { ProviderConnectorService } from '../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 @Component({
   selector: 'app-get-bnb-form',
@@ -69,7 +70,8 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
     private getBnbService: GetBnbService,
     private dialog: MatDialog,
     private errorsService: ErrorsService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    private readonly providerConnectorService: ProviderConnectorService
   ) {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
@@ -104,7 +106,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
       );
     });
 
-    this._walletAddressSubscription$ = this.web3PrivateService.onAddressChanges.subscribe(
+    this._walletAddressSubscription$ = this.providerConnectorService.$addressChange.subscribe(
       address => {
         this.walletAddress = address;
       }
@@ -117,8 +119,9 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
   }
 
   private setGetBnbTokens() {
-    if (!this.fromTokensList.size) return;
-
+    if (!this.fromTokensList.size) {
+      return;
+    }
     this.getBnbTrade.status = GET_BNB_TRADE_STATUS.CALCULATION;
     this.getBnbTokens = {};
     this.fromTokensList.forEach(swapToken => {
@@ -137,8 +140,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
           }
         },
         err => {
-          console.debug(err);
-          this.errorsService.showErrorDialog(err, this.dialog);
+          this.errorsService.showErrorDialog(err);
         },
         () => {
           this.getBnbTrade.status = GET_BNB_TRADE_STATUS.WAITING;
@@ -186,9 +188,8 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
         this.tradeSuccessId = transactionHash;
       })
       .catch(err => {
-        console.debug(err);
         this.getBnbTrade.status = GET_BNB_TRADE_STATUS.WAITING;
-        this.errorsService.showErrorDialog(err, this.dialog);
+        this.errorsService.showErrorDialog(err);
       });
   }
 }
