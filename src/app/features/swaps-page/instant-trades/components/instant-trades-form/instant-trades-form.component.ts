@@ -14,34 +14,23 @@ import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { OneInchPolService } from 'src/app/features/swaps-page/instant-trades/services/one-inch-service/one-inch-pol-service/one-inch-pol.service';
 import { REFRESH_STATUS } from 'src/app/shared/models/instant-trade/REFRESH_STATUS';
-import { ErrorsService } from 'src/app/core/services/errors/errors.service';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
-import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
-import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
-import { MessageBoxComponent } from '../../../../../shared/components/message-box/message-box.component';
-import { RubicError } from '../../../../../shared/models/errors/RubicError';
-import { NetworkError } from '../../../../../shared/models/errors/provider/NetworkError';
 import ADDRESS_TYPE from '../../../../../shared/models/blockchain/ADDRESS_TYPE';
-import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
-import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
-import { Token } from '../../../../../shared/models/tokens/Token';
 import { QuickSwapService } from '../../services/quick-swap-service/quick-swap.service';
-import { NetworkErrorComponent } from '../../../../../shared/components/network-error/network-error.component';
 import { INSTANT_TRADES_STATUS } from '../../models/instant-trades-trade-status';
 import { InstantTradeParameters } from '../../models/instant-trades-parametres';
 import { InstantTradeProviderController } from '../../models/instant-trades-provider-controller';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../models/trade-data';
 import { PROVIDERS } from '../../models/providers.enum';
-import { TO_BACKEND_BLOCKCHAINS } from '../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { InstantTradesFormService } from './services/instant-trades-form.service';
-import { REFRESH_BUTTON_STATUS } from '../../../../../shared/models/instant-trade/REFRESH_BUTTON_STATUS';
 import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
+import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
+import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
+import { TO_BACKEND_BLOCKCHAINS } from '../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 @Component({
   selector: 'app-instant-trades-form',
@@ -247,9 +236,8 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private readonly queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly web3PublicService: Web3PublicService,
-    private readonly instantTradesFormService: InstantTradesFormService,
-    private errorsService: ErrorsService
-    private readonly instantTradesFormService: InstantTradesFormService,
+    private errorsService: ErrorsService,
+    private readonly instantTradesFormService: InstantTradesFormService
   ) {
     this.$tokensSelectionDisabled = this.queryParamsService.$tokensSelectionDisabled;
   }
@@ -694,13 +682,13 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
           txHash: receipt.transactionHash
         });
       })
-      .catch((err: RubicError) => {
+      .catch(err => {
         this.selectedTradeState = INSTANT_TRADES_STATUS.ERROR;
         this.trades[selectedServiceIndex].tradeState = INSTANT_TRADES_STATUS.COMPLETED;
         this.errorsService.showErrorDialog(err);
 
         this.waitingForProvider = false;
-        this.errorsService.showErrorDialog(err, this.dialog);
+        this.errorsService.showErrorDialog(err);
 
         if (currentHash) {
           this.instantTradesFormService.updateTrade(

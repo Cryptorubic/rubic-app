@@ -3,7 +3,6 @@ import { BehaviorSubject, defer, Observable, Subscription } from 'rxjs';
 import { List } from 'immutable';
 import { catchError, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
@@ -12,7 +11,6 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
@@ -33,6 +31,7 @@ import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockch
 import { BridgeToken } from '../models/BridgeToken';
 import { EthereumXdaiBridgeProviderService } from './blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BRIDGE_PROVIDER_TYPE } from '../models/ProviderType';
+import { ErrorsService } from '../../../../core/services/errors/errors.service';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -134,7 +133,8 @@ export class BridgeService implements OnDestroy {
 
       switch (nonEthereumBlockchain) {
         case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-          this.bridgeProvider = this.ethereumBinanceBridgeProviderService;
+          this.bridgeProvider = this
+            .ethereumBinanceBridgeProviderService as BlockchainsBridgeProvider;
           break;
         case BLOCKCHAIN_NAME.POLYGON:
           this.bridgeProvider = this.ethereumPolygonBridgeProviderService;

@@ -15,11 +15,8 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
-import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
-import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
-import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
@@ -120,7 +117,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private web3PrivateService: Web3PrivateService,
     private dialog: MatDialog,
     private readonly translateService: TranslateService,
-    private readonly withRoundPipe: WithRoundPipe
+    private readonly withRoundPipe: WithRoundPipe,
     private readonly providerConnector: ProviderConnectorService,
     private readonly errorsService: ErrorsService
   ) {}
