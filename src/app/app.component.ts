@@ -40,10 +40,5 @@ export class AppComponent {
     const lng = queryParamLang || this.cookieService.get('lng') || userRegionLanguage;
     this.translateService.setDefaultLang(lng);
     this.translateService.use(lng);
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: { lang: lng },
-      queryParamsHandling: 'merge'
-    });
   }
 }
