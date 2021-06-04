@@ -20,7 +20,8 @@
     </a>
   </div>
 
-  <button class="collaborations__listing-request" (click)="openListingRequestPopup()">
-    {{ 'tradesPage.listingRequest.title' | translate }}
-  </button>
+  <app-primary-button
+    (onClick)="openListingRequestPopup()"
+    [label]="'tradesPage.listingRequest.title' | translate"
+  ></app-primary-button>
 </div>

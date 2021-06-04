@@ -11,16 +11,11 @@ import { TradeParametersService } from 'src/app/core/services/swaps/trade-parame
 import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
 import { MatDialog } from '@angular/material/dialog';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { Router } from '@angular/router';
-import { NetworkErrorComponent } from 'src/app/shared/components/network-error/network-error.component';
 import { OrderBookTradeForm } from '../../models/trade-form';
-import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { OrderBooksFormService } from './services/order-books-form.service';
 import { TokenPart } from '../../../../../shared/models/order-book/tokens';
-import { TotalSupplyOverflowError } from '../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
-import { TotalSupplyOverflowErrorComponent } from '../../../../../shared/components/errors/total-supply-overflow-error/total-supply-overflow-error.component';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
 
 enum TRADE_STATUS {
   STARTED = 'STARTED',
@@ -85,7 +80,9 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       ...this._tradeParameters
     });
 
-    if (tokensParametersAreTheSame) return;
+    if (tokensParametersAreTheSame) {
+      return;
+    }
 
     this.tradeForm = {
       ...this.tradeForm,
@@ -187,7 +184,8 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     private tradeParametersService: TradeParametersService,
     private orderBookFormService: OrderBooksFormService,
     private changeDetectionRef: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private readonly errorsService: ErrorsService
   ) {}
 
   ngOnInit(): void {
@@ -350,28 +348,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
       })
       .catch((err: RubicError) => {
         this.selectedTradeState = TRADE_STATUS.ERROR;
-        let data: any = { title: 'Error', descriptionText: err.comment };
-        if (err instanceof MetamaskError) {
-          data.title = 'Warning';
-        }
-        if (err instanceof NetworkError) {
-          data = {
-            title: 'Error',
-            descriptionComponentClass: NetworkErrorComponent,
-            descriptionComponentInputs: { networkError: err }
-          };
-        }
-        if (err instanceof TotalSupplyOverflowError) {
-          data = {
-            title: 'Error',
-            descriptionComponentClass: TotalSupplyOverflowErrorComponent,
-            descriptionComponentInputs: { totalSupplyOverflowError: err }
-          };
-        }
-        this.dialog.open(MessageBoxComponent, {
-          width: '400px',
-          data
-        });
+        this.errorsService.showErrorDialog(err);
       });
   }
 

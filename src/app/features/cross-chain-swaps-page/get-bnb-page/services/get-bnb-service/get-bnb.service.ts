@@ -17,7 +17,8 @@ import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-pag
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { GetBnbApiService } from 'src/app/core/services/backend/get-bnb-api/get-bnb-api.service';
 import { ABI, contractAddressEthereum, contractAddressKovan } from './constants/ethContract';
-import { TranslateService } from '@ngx-translate/core';
+import { ProviderConnectorService } from '../../../../../core/services/blockchain/provider-connector/provider-connector.service';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
 
 interface EstimatedAmountResponse {
   from_amount: number;
@@ -38,8 +39,9 @@ export class GetBnbService {
     private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
     private getBnbApiService: GetBnbApiService,
-    private readonly translateService: TranslateService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly errorService: ErrorsService
   ) {
     this.contractAddress = contractAddressEthereum;
 
@@ -71,18 +73,18 @@ export class GetBnbService {
   private checkSettings() {
     const blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
-    if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError(this.translateService);
+    if (!this.providerConnectorService.isProviderActive) {
+      this.errorService.throw(new MetamaskError());
     }
 
-    if (!this.web3PrivateService.address) {
-      throw new AccountError(this.translateService);
+    if (!this.providerConnectorService.address) {
+      this.errorService.throw(new AccountError());
     }
     if (
-      this.web3PrivateService.networkName !== blockchain &&
-      (this.web3PrivateService.networkName !== `${blockchain}_TESTNET` || !this.isTestingMode)
+      this.providerConnectorService.networkName !== blockchain &&
+      (this.providerConnectorService.networkName !== `${blockchain}_TESTNET` || !this.isTestingMode)
     ) {
-      throw new NetworkError(blockchain, this.translateService);
+      this.errorService.throw(new NetworkError(blockchain));
     }
   }
 
@@ -93,21 +95,18 @@ export class GetBnbService {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
 
     if (web3Public.isNativeAddress(token.address)) {
-      const balance = await web3Public.getBalance(this.web3PrivateService.address, {
+      const balance = await web3Public.getBalance(this.providerConnectorService.address, {
         inWei: true
       });
       if (balance.lt(amountIn)) {
         const formattedBalance = web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(
-          token.symbol,
-          formattedBalance,
-          fromAmount.toString(),
-          this.translateService
+        this.errorService.throw(
+          new InsufficientFundsError(token.symbol, formattedBalance, fromAmount.toString())
         );
       }
     } else {
       const tokensBalance = await web3Public.getTokenBalance(
-        this.web3PrivateService.address,
+        this.providerConnectorService.address,
         token.address
       );
       if (tokensBalance.lt(amountIn)) {
@@ -115,11 +114,8 @@ export class GetBnbService {
           token,
           tokensBalance
         ).toFixed();
-        throw new InsufficientFundsError(
-          token.symbol,
-          formattedTokensBalance,
-          fromAmount.toString(),
-          this.translateService
+        this.errorService.throw(
+          new InsufficientFundsError(token.symbol, formattedTokensBalance, fromAmount.toString())
         );
       }
     }
@@ -163,7 +159,11 @@ export class GetBnbService {
       transactionHash = receipt.transactionHash;
     }
 
-    this.getBnbApiService.notifyGetBnbBot(trade, transactionHash, this.web3PrivateService.address);
+    this.getBnbApiService.notifyGetBnbBot(
+      trade,
+      transactionHash,
+      this.providerConnectorService.address
+    );
     return transactionHash;
   }
 
@@ -174,7 +174,7 @@ export class GetBnbService {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
     const allowance = await web3Public.getAllowance(
       token.address,
-      this.web3PrivateService.address,
+      this.providerConnectorService.address,
       this.contractAddress
     );
     const fromAmount = new BigNumber(Web3PublicService.tokenAmountToWei(token, token.fromAmount));

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import {
   abi,
@@ -16,6 +16,7 @@ import { Web3PublicService } from '../../../../../core/services/blockchain/web3-
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapAbstract } from '../uniswap-abstract/uniswap-abstract';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
 
 @Injectable()
 export class UniSwapService extends UniswapAbstract {
@@ -24,7 +25,8 @@ export class UniSwapService extends UniswapAbstract {
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
     useTestingModeService: UseTestingModeService,
-    translateService: TranslateService
+    providerConnectorService: ProviderConnectorService,
+    protected readonly errorsService: ErrorsService
   ) {
     super(
       useTestingModeService,
@@ -33,8 +35,9 @@ export class UniSwapService extends UniswapAbstract {
       routingProviders,
       maxTransitTokens,
       abi,
-      translateService
+      errorsService
     );
+    this.providerConnectorService = providerConnectorService;
     this.coingeckoApiService = coingeckoApiService;
     this.tokensToTokensEstimatedGas = tokensToTokensEstimatedGas;
     this.tokensToEthEstimatedGas = tokensToEthEstimatedGas;

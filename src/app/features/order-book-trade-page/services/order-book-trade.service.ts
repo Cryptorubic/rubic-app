@@ -5,6 +5,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import * as moment from 'moment';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../models/trade-data';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { TokenPart } from '../../../shared/models/order-book/tokens';
@@ -12,7 +13,7 @@ import { NetworkError } from '../../../shared/models/errors/provider/NetworkErro
 import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
 import { ContractParameters } from '../../../core/services/order-book-common/models/ContractParameters';
 import { OrderBookCommonService } from '../../../core/services/order-book-common/order-book-common.service';
-import { TranslateService } from '@ngx-translate/core';
+import { ErrorsService } from '../../../core/services/errors/errors.service';
 
 @Injectable()
 export class OrderBookTradeService {
@@ -21,7 +22,8 @@ export class OrderBookTradeService {
     private web3PrivateService: Web3PrivateService,
     private orderBookApiService: OrderBookApiService,
     private orderBookCommonService: OrderBookCommonService,
-    private readonly translateService: TranslateService
+    private readonly providerConnector: ProviderConnectorService,
+    private readonly errorsService: ErrorsService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
@@ -152,17 +154,17 @@ export class OrderBookTradeService {
 
     return web3Public.getAllowance(
       tradeData.token[tokenPart].address,
-      this.web3PrivateService.address,
+      this.providerConnector.address,
       contractAddress
     );
   }
 
   private checkSettings(tradeData: OrderBookTradeData): void {
     if (
-      this.web3PrivateService.networkName !== tradeData.blockchain &&
-      this.web3PrivateService.networkName !== `${tradeData.blockchain}_TESTNET`
+      this.providerConnector.networkName !== tradeData.blockchain &&
+      this.providerConnector.networkName !== `${tradeData.blockchain}_TESTNET`
     ) {
-      throw new NetworkError(tradeData.blockchain, this.translateService);
+      this.errorsService.throw(new NetworkError(tradeData.blockchain));
     }
   }
 

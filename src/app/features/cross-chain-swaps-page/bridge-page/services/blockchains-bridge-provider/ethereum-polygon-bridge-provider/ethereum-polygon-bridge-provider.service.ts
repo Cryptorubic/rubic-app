@@ -10,19 +10,19 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { MetamaskProviderService } from 'src/app/core/services/blockchain/private-provider/metamask-provider/metamask-provider.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TRADE_STATUS } from 'src/app/core/services/backend/bridge-api/models/TRADE_STATUS';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import {
   BlockchainsTokens,
   BridgeToken
 } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
-import networks from 'src/app/shared/constants/blockchain/networks';
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { TransactionReceipt } from 'web3-eth';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
+import networks from '../../../../../../shared/constants/blockchain/networks';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BRIDGE_PROVIDER_TYPE } from '../../../models/ProviderType';
 
 interface PolygonGraphToken {
@@ -63,7 +63,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     private web3PrivateService: Web3PrivateService,
     private bridgeApiService: BridgeApiService,
     private useTestingModeService: UseTestingModeService,
-    private metamaskProviderService: MetamaskProviderService
+    private readonly providerConnectorService: ProviderConnectorService
   ) {
     super();
     this.web3PublicEth = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
@@ -77,11 +77,11 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   public getTokensList(swapTokens: List<SwapToken>): Observable<List<BridgeToken>> {
     const query = `{
       tokenMappings(
-        first: 1000, 
+        first: 1000,
         where: {
           isPOS: true,
           tokenType: "${this.ERC20_TOKEN_TYPE}"
-        } 
+        }
       ) {
         rootToken
         childToken
@@ -203,13 +203,13 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         network,
         version,
         maticProvider: maticRPC,
-        parentProvider: this.metamaskProviderService.web3
+        parentProvider: this.providerConnectorService.provider
       });
     }
     return new MaticPOSClient({
       network,
       version,
-      maticProvider: this.metamaskProviderService.web3,
+      maticProvider: this.providerConnectorService.provider,
       parentProvider: ethRPC
     });
   }
@@ -223,7 +223,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,
           receipt.transactionHash,
-          this.web3PrivateService.address
+          this.providerConnectorService.address
         );
       })
     );
@@ -234,7 +234,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     updateTransactionsList: () => Promise<void>
   ): Observable<TransactionReceipt> {
     const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
-    const userAddress = this.web3PrivateService.address;
+    const userAddress = this.providerConnectorService.address;
 
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
@@ -250,7 +250,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           bridgeTrade,
           status,
           hash,
-          this.web3PrivateService.address
+          this.providerConnectorService.address
         );
         updateTransactionsList();
       };
@@ -349,7 +349,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     updateTransactionsList: () => Promise<void>
   ): Observable<string> {
     const maticPOSClient = this.getMaticPOSClient(BLOCKCHAIN_NAME.ETHEREUM);
-    const userAddress = this.web3PrivateService.address;
+    const userAddress = this.providerConnectorService.address;
 
     const onTradeTransactionHash = async (hash: string) => {
       if (onTransactionHash) {

@@ -25,7 +25,8 @@
     "via": "Через",
     "contractAddress": "Адрес контракта Токена",
     "enterAmount": "Введите количество",
-    "chooseToken": "Выберите токен"
+    "chooseToken": "Выберите токен",
+    "warning": "Warning"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -35,7 +36,15 @@
     "userReject": "Вы отказались от исполнения сделки. Пожалуйста, сначала подтвердите сделку, чтобы её завершить.",
     "undefined": "Пожалуйста, повторите попытку позже или попробуйте использовать другое устройство. Если у вас все равно вознинет ошибка обратитесь в нашу <a href='mailto:support@rubic.finance' target='_blank'>Службу Поддержки</a>.",
     "insufficientFunds": "У вас недостаточно {{ tokenSymbol }}. Ваш баланс {{balance}} {{tokenSymbol}}, но требуется {{requiredBalance}} {{tokenSymbol}}.",
-    "sameTokens": "Один и тот же токен не может быть выбран в обоих блоках, пожалуйста, выберете разные токены."
+    "sameTokens": "Один и тот же токен не может быть выбран в обоих блоках, пожалуйста, выберете разные токены.",
+    "noQrCode": "Please make sure that you have scan qrCode",
+    "noWallet": "You have not connect any wallet",
+    "retrievingTokensError": "Error retrieving tokens",
+    "wrongToken": "Rubic bridge supports only rubic token.",
+    "oneInchQuote": "Oneinch quote error",
+    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
+    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
+    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas"
   },
   "navigation": {
     "about": "О компании",
@@ -341,7 +350,7 @@
     "gasFeeMessage": "Приблизительный размер платы за газ. Для завершения сделки потребуется предоставить больше газа в Метамаске, дополнительный газ будет возвращен вам после завершения сделки.",
     "notSupportedToken": "Пожалуйста, убедитесь, что выбранный токен поддерживается на указанном DEX, и повторите попытку позже.",
     "bestRate": "Лучший курс",
-    "gasFee": "Приблизительный газ:",
+    "gasFee": "Приблизительный газ",
     "useOptimization": "Использовать оптимизацию Rubic",
     "notAvailableBefore": "Торговля на ",
     "notAvailableAfter": " недоступно."

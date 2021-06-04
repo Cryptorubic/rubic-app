@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-
-import { Observable } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-import { MetamaskProviderService } from '../private-provider/metamask-provider/metamask-provider.service';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
-import SwapToken from '../../../../shared/models/tokens/SwapToken';
+import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
+import { LowGasError } from '../../../../shared/models/errors/provider/LowGasError';
 
 @Injectable({
   providedIn: 'root'
@@ -19,63 +13,15 @@ import SwapToken from '../../../../shared/models/tokens/SwapToken';
 export class Web3PrivateService {
   private defaultMockGas: string;
 
-  private get web3(): Web3 {
-    return this.provider.web3;
+  private readonly web3: Web3;
+
+  private get address(): string {
+    return this.providerConnector.address;
   }
 
-  public readonly onAddressChanges: Observable<string>;
-
-  public readonly onNetworkChanges: Observable<IBlockchain>;
-
-  public get address(): string {
-    return this.provider.address;
-  }
-
-  public get network(): IBlockchain {
-    return this.provider.network;
-  }
-
-  public get networkName(): BLOCKCHAIN_NAME {
-    return this.provider.networkName;
-  }
-
-  public get isProviderActive(): boolean {
-    return this.provider.isActive;
-  }
-
-  public get isProviderInstalled(): boolean {
-    return this.provider.isInstalled;
-  }
-
-  public async activate(): Promise<void> {
-    return this.provider.activate();
-  }
-
-  public async requestPermissions(): Promise<any[]> {
-    return this.provider.requestPermissions();
-  }
-
-  public deActivate(): void {
-    return this.provider.deActivate();
-  }
-
-  constructor(
-    private readonly provider: MetamaskProviderService,
-    private readonly translateService: TranslateService
-  ) {
-    this.onAddressChanges = provider.onAddressChanges.asObservable();
-    this.onNetworkChanges = provider.onNetworkChanges.asObservable();
-    this.defaultMockGas = provider.defaultGasLimit;
-  }
-
-  /**
-   * @description Calculates an Ethereum specific signature.
-   * @param message Data to sign.
-   * @return The signature.
-   */
-  public async signPersonal(message) {
-    // @ts-ignore
-    return this.web3.eth.personal.sign(message, this.address);
+  constructor(private readonly providerConnector: ProviderConnectorService) {
+    this.web3 = providerConnector.web3;
+    this.defaultMockGas = '400000';
   }
 
   /**
@@ -109,8 +55,11 @@ export class Web3PrivateService {
         .on('receipt', resolve)
         .on('error', err => {
           console.error(`Tokens transfer error. ${err}`);
+          if (err.code === -32603) {
+            reject(new LowGasError());
+          }
           if (err.code === 4001) {
-            reject(new UserRejectError(this.translateService));
+            reject(new UserRejectError());
           } else {
             reject(err);
           }
@@ -140,7 +89,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.error(`Tokens transfer error. ${err}`);
           if (err.code === 4001) {
-            reject(new UserRejectError(this.translateService));
+            reject(new UserRejectError());
           } else {
             reject(err);
           }
@@ -191,7 +140,7 @@ export class Web3PrivateService {
           console.error(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
-            reject(new UserRejectError(this.translateService));
+            reject(new UserRejectError());
           } else {
             reject(err);
           }
@@ -227,7 +176,7 @@ export class Web3PrivateService {
           console.error(`Tokens transfer error. ${err}`);
           // @ts-ignore
           if (err.code === 4001) {
-            reject(new UserRejectError(this.translateService));
+            reject(new UserRejectError());
           } else {
             reject(err);
           }
@@ -266,7 +215,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.error(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
-            reject(new UserRejectError(this.translateService));
+            reject(new UserRejectError());
           } else {
             reject(err);
           }
@@ -310,7 +259,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.error(`Method execution error. ${err}`);
           if (err.code === 4001) {
-            reject(new UserRejectError(this.translateService));
+            reject(new UserRejectError());
           } else {
             reject(err);
           }
@@ -344,7 +293,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.error(`Tokens approve error. ${err}`);
           if (err.code === 4001) {
-            reject(new UserRejectError(this.translateService));
+            reject(new UserRejectError());
           } else {
             reject(err);
           }
@@ -375,13 +324,5 @@ export class Web3PrivateService {
    */
   private weiToEth(value: string | BigNumber): string {
     return this.web3.utils.fromWei(value.toString(), 'ether');
-  }
-
-  /**
-   * @description opens a window with suggestion to add token to user's wallet
-   * @param token token to add
-   */
-  public addToken(token: SwapToken): Promise<void> {
-    return this.provider.addToken(token);
   }
 }
