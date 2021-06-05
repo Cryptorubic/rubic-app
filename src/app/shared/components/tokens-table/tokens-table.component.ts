@@ -7,6 +7,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
+import * as moment from 'moment';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
@@ -212,6 +213,38 @@ export class TokensTableComponent {
 
   public getLink(part) {
     return this.scannerLinkPipe.transform(part.hash, part.chain, ADDRESS_TYPE.TRANSACTION);
+  }
+
+  /**
+   * @description transform expiration time in formatted string or text
+   * @param expirationDate expiration date object
+   * @param expiresIn expiration time object
+   * @return formatted expiration time or text ('Expired' or 'More than year')
+   */
+  public getExpirationTime(expirationDate, expiresIn): string {
+    const nowDate = moment.utc(moment.now());
+    if (expirationDate.isAfter(nowDate)) {
+      if (expiresIn.years() > 0) {
+        return 'More than year';
+      }
+      return `${expirationDate.diff(
+        nowDate,
+        'days'
+      )}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
+    }
+    return 'Expired';
+  }
+
+  /**
+   * @description format expiration time if expiration more than year
+   * @param expiresIn expiration time
+   * @return full formatted time string or empty string
+   */
+  public getFullExpirationTime(expiresIn): string {
+    if (expiresIn.years() > 1) {
+      return `${expiresIn.years()}y: ${expiresIn.months()}m: ${expiresIn.days()}d: ${expiresIn.hours()}h: ${expiresIn.minutes()}min`;
+    }
+    return '';
   }
 
   /**

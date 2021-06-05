@@ -11,6 +11,7 @@ import { HttpService } from '../../http/http.service';
 import { TRADE_STATUS } from './models/TRADE_STATUS';
 import { TokensService } from '../tokens-service/tokens.service';
 import { BOT_URL } from '../constants/BOT_URL';
+import { ethToXDaiDepositWallet } from '../../../../shared/constants/bridge/deposit-wallets';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class BridgeApiService {
     ETH: BLOCKCHAIN_NAME.ETHEREUM,
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     POL: BLOCKCHAIN_NAME.POLYGON,
-    TRX: BLOCKCHAIN_NAME.TRON
+    TRX: BLOCKCHAIN_NAME.TRON,
+    XDAI: BLOCKCHAIN_NAME.XDAI
   };
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
@@ -173,6 +175,26 @@ export class BridgeApiService {
           console.error(error);
           reject(error);
         });
+    });
+  }
+
+  public postXDaiTransaction(transactionHash: string): Promise<void> {
+    const body = {
+      type: 'xdai',
+      fromNetwork: BLOCKCHAIN_NAME.ETHEREUM.toLowerCase(),
+      transaction_id: transactionHash
+    };
+
+    return new Promise<void>((resolve, reject) => {
+      this.httpService.post('bridges/transactions', body).subscribe(
+        () => {
+          resolve();
+        },
+        error => {
+          console.error(error);
+          reject(error);
+        }
+      );
     });
   }
 

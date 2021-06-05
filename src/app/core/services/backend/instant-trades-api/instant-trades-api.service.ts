@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { InstantTradesTradeData } from 'src/app/features/swaps-page/models/trade-data';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
@@ -10,7 +10,8 @@ import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-import { Web3PrivateService } from '../../blockchain/web3-private-service/web3-private.service';
+import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
+import { QueryParamsService } from '../../query-params/query-params.service';
 
 const instantTradesApiRoutes = {
   createData: 'instant_trades/',
@@ -24,12 +25,16 @@ const instantTradesApiRoutes = {
 export class InstantTradesApiService {
   private isTestingMode: boolean;
 
+  private isIframe: boolean;
+
   constructor(
     private httpService: HttpService,
     private useTestingModeService: UseTestingModeService,
-    private web3PrivateService: Web3PrivateService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private queryParamsService: QueryParamsService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
+    this.queryParamsService.$isIframe.subscribe(res => (this.isIframe = res));
   }
 
   public notifyInstantTradesBot(body: {
@@ -57,8 +62,16 @@ export class InstantTradesApiService {
    * @param tradeInfo data body for request
    * @return instant trade object
    */
-  public createTrade(tradeInfo: InstantTradesRequestApi): Observable<InstantTradesResponseApi> {
-    if (this.isTestingMode) tradeInfo.network = 'ethereum-test';
+  public createTrade(
+    tradeInfo: InstantTradesRequestApi
+  ): Observable<InstantTradesResponseApi | null> {
+    if (this.isIframe) {
+      return of(null);
+    }
+
+    if (this.isTestingMode) {
+      tradeInfo.network = 'ethereum-test';
+    }
     return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo).pipe(delay(1000));
   }
 
@@ -67,7 +80,11 @@ export class InstantTradesApiService {
    * @param hash hash of transaction what we want to update
    * @param status status of trade what we want to set
    */
-  public patchTrade(hash: string, status: string): Observable<InstantTradesResponseApi> {
+  public patchTrade(hash: string, status: string): Observable<InstantTradesResponseApi | null> {
+    if (this.isIframe) {
+      return of(null);
+    }
+
     const url = instantTradesApiRoutes.editData + hash;
     return this.httpService.patch(url, { status });
   }
@@ -79,7 +96,7 @@ export class InstantTradesApiService {
   // TODO: use AuthService to get user wallet address instead of Web3Private after Coinbase realease
   public fetchSwaps(): Observable<InstantTradesTradeData[]> {
     return this.httpService
-      .get(instantTradesApiRoutes.getData, { user: this.web3PrivateService.address })
+      .get(instantTradesApiRoutes.getData, { user: this.providerConnectorService.address })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
           swaps.map(swap => this.tradeApiToTradeData(swap))
@@ -92,7 +109,7 @@ export class InstantTradesApiService {
    * @param tradeApi data from server
    */
   public tradeApiToTradeData(tradeApi: InstantTradesResponseApi): InstantTradesTradeData {
-    const tradeData = ({
+    const tradeData = {
       hash: tradeApi.hash,
       provider: tradeApi.contract.name,
       token: {
@@ -112,7 +129,7 @@ export class InstantTradesApiService {
         BLOCKCHAIN_NAME.ETHEREUM,
       status: tradeApi.status,
       date: new Date(tradeApi.status_updated_at)
-    } as unknown) as InstantTradesTradeData;
+    } as unknown as InstantTradesTradeData;
 
     tradeData.fromAmount = Web3PublicService.tokenWeiToAmount(
       tradeData.token.from,

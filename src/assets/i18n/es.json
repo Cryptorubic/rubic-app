@@ -7,6 +7,7 @@
     "any": "Cualquiera",
     "error": "Error",
     "have": "Tienes",
+    "get": "Usted obtiene",
     "want": "Quieres recibir",
     "confirm": "Confirmar",
     "copy": "Dupdo",
@@ -24,7 +25,8 @@
     "via": "Via",
     "contractAddress": "Dirección del contrato de token",
     "enterAmount": "Ingresa el monto",
-    "chooseToken": "Elija Token"
+    "chooseToken": "Elija Token",
+    "warning": "Warning"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
@@ -34,7 +36,15 @@
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
     "undefined": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al <a href='mailto:support@rubic.finance' target='_blank'>Soporte al Consumidor</a>.",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
-    "sameTokens": "You can't choose the same token on both sides, please choose different tokens."
+    "sameTokens": "You can't choose the same token on both sides, please choose different tokens.",
+    "noQrCode": "Please make sure that you have scan qrCode",
+    "noWallet": "You have not connect any wallet",
+    "retrievingTokensError": "Error retrieving tokens",
+    "wrongToken": "Rubic bridge supports only rubic token.",
+    "oneInchQuote": "Oneinch quote error",
+    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
+    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
+    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas"
   },
   "navigation": {
     "about": "Información",
@@ -331,7 +341,9 @@
     "minAmount": "Monto minimo ",
     "maxAmount": "Importe máximo ",
     "createBridge": "Create Bridge",
-    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
+    "getBNB": "Get BNB",
+    "bridge": "Bridge"
   },
   "instantTrades": {
     "title": "Intercambios instantáneos",
@@ -376,7 +388,8 @@
       "volume": "Volumen",
       "network": "Red Principal",
       "spent": "Spent",
-      "expected": "Expected"
+      "expected": "Expected",
+      "date": "Fecha"
     },
     "noData": "You have no swaps yet",
     "noTrades": "There are no trades",
@@ -419,7 +432,7 @@
     "find": "Fill all",
     "limit": "Min contribution limit:",
     "fee": "Broker's fee:",
-    "Withdraw": "Withdraw",
+    "withdraw": "Withdraw",
     "rate": "Rate:",
     "closingDate": "Fecha límite",
     "closingTime": "Hora límite",

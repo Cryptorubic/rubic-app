@@ -18,31 +18,28 @@
 
     <div class="gas-fee" *ngIf="gasFeeDisplayCondition">
       <span class="gas-fee__text">
-        Estimated gas fee:
+        {{ 'instantTrades.gasFee' | translate }}:
         {{ tradeController.trade.gasFeeInEth.toFixed(3) }}
         ETH ≈ {{ tradeController.trade.gasFeeInUsd.toFixed(1) }}$
       </span>
 
       <img
         src="/assets/images/icons/info.svg"
-        matTooltip="{{
-          'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
-            | translate
-        }}"
-        alt="{{
-          'Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.'
-            | translate
-        }}"
+        matTooltip="{{ 'instantTrades.gasFee' | translate }}"
+        alt="{{ 'instantTrades.gasFee' | translate }}"
+        width="19"
+        height="19"
       />
     </div>
 
     <div *ngIf="checkIfError(index)" class="selection-block__warning">
       <app-error-disclaimer
-        matTooltip="{{
-          'Please make sure that selected token is supported on the specified DEX and try again later.'
-            | translate
-        }}"
-        [errorText]="'Trading on ' + tradeController.tradeProviderInfo.label + ' is not available.'"
+        matTooltip="{{ 'instantTrades.notSupportedToken' | translate }}"
+        [errorText]="
+          ('instantTrades.notAvailableBefore' | translate) +
+          tradeController.tradeProviderInfo.label +
+          ('instantTrades.notAvailableAfter' | translate)
+        "
       >
       </app-error-disclaimer>
     </div>
@@ -71,7 +68,7 @@
   >
     <app-primary-button
       type="button"
-      [label]="'Via ' + tradeController.tradeProviderInfo.label"
+      [label]="('common.via' | translate) + tradeController.tradeProviderInfo.label"
       [disabled]="
         !(
           fromAmountAsNumber.isGreaterThan(0) &&
@@ -82,7 +79,8 @@
         shouldAnimateButton(index) ||
         (selectedTradeState &&
           selectedTradeState !== INSTANT_TRADES_STATUS.ERROR &&
-          selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED)
+          selectedTradeState !== INSTANT_TRADES_STATUS.COMPLETED) ||
+        !areAdvancedOptionsValid
       "
       [animate]="shouldAnimateButton(index)"
       (onClick)="createTrade(index)"
@@ -92,14 +90,14 @@
       class="instant-trade-button__best-rate"
       *ngIf="tradeController.isBestRate && trades.length > 1 && !selectedTradeState"
     >
-      <span>{{ 'Best Rate' | translate }}</span>
-      <img src="assets/images/icons/BestRate.svg" alt="" />
+      <span>{{ 'instantTrades.bestRate' | translate }}</span>
+      <img src="assets/images/icons/BestRate.svg" width="39" height="32" alt="Best rate" />
     </div>
     <div
       *ngIf="index === trades.length - 1 && blockchain === BLOCKCHAIN_NAME.ETHEREUM"
       class="checkbox-optimization"
     >
-      <span>Use Rubic optimization</span>
+      <span>{{ 'instantTrades.useOptimization' | translate }}</span>
       <app-checkbox [(checked)]="gasOptimizationChecked"></app-checkbox>
     </div>
   </div>

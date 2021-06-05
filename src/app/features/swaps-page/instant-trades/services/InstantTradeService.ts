@@ -1,15 +1,18 @@
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { TranslateService } from '@ngx-translate/core';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import InstantTradeToken from '../models/InstantTradeToken';
 import InstantTrade from '../models/InstantTrade';
 import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PrivateService } from '../../../../core/services/blockchain/web3-private-service/web3-private.service';
-import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { ErrorsService } from '../../../../core/services/errors/errors.service';
+import { WALLET_NAME } from '../../../../core/header/components/header/components/wallets-modal/models/providers';
+import { NotSupportedNetworkError } from '../../../../shared/models/errors/provider/NotSupportedNetwork';
 
 abstract class InstantTradeService {
   protected isTestingMode;
@@ -18,7 +21,17 @@ abstract class InstantTradeService {
 
   protected web3Private: Web3PrivateService;
 
-  constructor(protected readonly translateService: TranslateService) {}
+  protected providerConnectorService: ProviderConnectorService;
+
+  protected slippagePercent = 0.001; // 0.1%
+
+  protected constructor(protected errorsService: ErrorsService) {}
+
+  /**
+   * @description sets slippage percent
+   * @param slippagePercent is a decimal number up to 1, that is 100%
+   */
+  public abstract setSlippagePercent(slippagePercent: number): void;
 
   /**
    * @description calculate instant trade parameters
@@ -52,18 +65,23 @@ abstract class InstantTradeService {
   ): Promise<TransactionReceipt>;
 
   protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
-    if (!this.web3Private.isProviderActive) {
-      throw new MetamaskError(this.translateService);
+    if (!this.providerConnectorService.isProviderActive) {
+      this.errorsService.throw(new WalletError());
     }
 
-    if (!this.web3Private.address) {
-      throw new AccountError(this.translateService);
+    if (!this.providerConnectorService.address) {
+      this.errorsService.throw(new AccountError());
     }
     if (
-      this.web3Private.networkName !== selectedBlockchain &&
-      (this.web3Private.networkName !== `${selectedBlockchain}_TESTNET` || !this.isTestingMode)
+      this.providerConnectorService.networkName !== selectedBlockchain &&
+      (this.providerConnectorService.networkName !== `${selectedBlockchain}_TESTNET` ||
+        !this.isTestingMode)
     ) {
-      throw new NetworkError(selectedBlockchain, this.translateService);
+      if (this.providerConnectorService.providerName === WALLET_NAME.METAMASK) {
+        this.errorsService.throw(new NetworkError(selectedBlockchain));
+      } else {
+        this.errorsService.throw(new NotSupportedNetworkError(selectedBlockchain));
+      }
     }
   }
 
@@ -71,32 +89,34 @@ abstract class InstantTradeService {
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
-      const balance = await this.web3Public.getBalance(this.web3Private.address, {
+      const balance = await this.web3Public.getBalance(this.providerConnectorService.address, {
         inWei: true
       });
       if (balance.lt(amountIn)) {
         const formattedBalance = this.web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedBalance,
-          trade.from.amount.toString(),
-          this.translateService
+        this.errorsService.throw(
+          new InsufficientFundsError(
+            trade.from.token.symbol,
+            formattedBalance,
+            trade.from.amount.toString()
+          )
         );
       }
     } else {
       const tokensBalance = await this.web3Public.getTokenBalance(
-        this.web3Private.address,
+        this.providerConnectorService.address,
         trade.from.token.address
       );
       if (tokensBalance.lt(amountIn)) {
         const formattedTokensBalance = tokensBalance
           .div(10 ** trade.from.token.decimals)
           .toString();
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedTokensBalance,
-          trade.from.amount.toString(),
-          this.translateService
+        this.errorsService.throw(
+          new InsufficientFundsError(
+            trade.from.token.symbol,
+            formattedTokensBalance,
+            trade.from.amount.toString()
+          )
         );
       }
     }
@@ -110,7 +130,7 @@ abstract class InstantTradeService {
   ): Promise<void> {
     const allowance = await this.web3Public.getAllowance(
       tokenAddress,
-      this.web3Private.address,
+      this.providerConnectorService.address,
       targetAddress
     );
     if (value.gt(allowance)) {

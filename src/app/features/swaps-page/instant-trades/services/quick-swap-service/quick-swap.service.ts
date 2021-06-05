@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { Web3PrivateService } from '../../../../../core/services/blockchain/web3-private-service/web3-private.service';
 import {
   abi,
@@ -18,6 +17,8 @@ import {
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas
 } from '../uni-swap-service/uni-swap-constants';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { ProviderConnectorService } from '../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 @Injectable()
 export class QuickSwapService extends UniswapAbstract {
@@ -26,7 +27,8 @@ export class QuickSwapService extends UniswapAbstract {
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
     useTestingModeService: UseTestingModeService,
-    translateService: TranslateService
+    protected readonly errorsService: ErrorsService,
+    providerConnectorService: ProviderConnectorService
   ) {
     super(
       useTestingModeService,
@@ -35,10 +37,9 @@ export class QuickSwapService extends UniswapAbstract {
       routingProviders,
       maxTransitTokens,
       abi,
-      translateService
+      errorsService
     );
     this.coingeckoApiService = coingeckoApiService;
-    this.slippageTolerance = 0.015; // 1.5%
     this.tokensToTokensEstimatedGas = tokensToTokensEstimatedGas;
     this.tokensToEthEstimatedGas = tokensToEthEstimatedGas;
     this.ethToTokensEstimatedGas = ethToTokensEstimatedGas;
@@ -46,6 +47,7 @@ export class QuickSwapService extends UniswapAbstract {
     this.web3Public = web3Public[BLOCKCHAIN_NAME.POLYGON];
     this.blockchain = BLOCKCHAIN_NAME.POLYGON;
     this.shouldCalculateGas = false;
+    this.providerConnectorService = providerConnectorService;
 
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {

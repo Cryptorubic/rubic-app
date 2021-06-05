@@ -57,7 +57,6 @@ export class QueryParamsService {
   }
 
   constructor(
-    private readonly route: Router,
     private readonly tradeParametersService: TradeParametersService,
     private readonly tokensService: TokensService,
     private readonly tradeTypeService: TradeTypeService,
@@ -286,7 +285,7 @@ export class QueryParamsService {
   }
 
   private navigate(): void {
-    this.route.navigate([], {
+    this.router.navigate([], {
       queryParams: this.currentQueryParams,
       queryParamsHandling: 'merge'
     });

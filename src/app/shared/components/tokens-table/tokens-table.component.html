@@ -6,7 +6,13 @@
       [ngClass]="{ 'tokens-table__refresh-button_animated': tableLoading }"
       (click)="refreshTable()"
     >
-      <img class="arrow" src="./assets/images/icons/refresh.svg" alt="arrow" />
+      <img
+        class="arrow"
+        src="./assets/images/icons/refresh.svg"
+        width="17"
+        height="19"
+        alt="arrow"
+      />
     </button>
   </div>
   <!-- Desktop presentation -->
@@ -35,7 +41,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -88,7 +93,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -99,6 +103,8 @@
               class="table__image"
               [src]="getChainIcon(element.blockchain)"
               alt="{{ element.blockchain }}"
+              width="25"
+              height="25"
             />
           </div>
         </a>
@@ -116,7 +122,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -127,13 +132,13 @@
               <img
                 [src]="element.token.from.image || '/assets/images/icons/coins/empty.svg'"
                 [alt]="element.token.from.symbol"
+                width="25"
+                height="25"
               />
               {{ element.token.from.symbol }}
             </div>
             <div class="token-cell__amount">
-              {{
-                element.fromAmount.toString(10) | withRound: 5:6:element.token.from:'toClosestValue'
-              }}
+              {{ element.fromAmount.toString(10) | withRound: element.token.from:'toClosestValue' }}
             </div>
           </div>
         </a>
@@ -151,7 +156,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -162,11 +166,13 @@
               <img
                 [src]="element.token.to.image || '/assets/images/icons/coins/empty.svg'"
                 [alt]="element.token.to.symbol"
+                width="25"
+                height="25"
               />
               {{ element.token.to.symbol }}
             </div>
             <div class="token-cell__amount">
-              {{ element.toAmount.toString(10) | withRound: 5:6:element.token.to:'toClosestValue' }}
+              {{ element.toAmount.toString(10) | withRound: element.token.to:'toClosestValue' }}
             </div>
           </div>
         </a>
@@ -184,7 +190,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
@@ -195,6 +200,8 @@
               class="table__image"
               src="assets/images/icons/providers/{{ element.provider }}.svg"
               alt="{{ element.provider }}"
+              width="25"
+              height="25"
             />
             {{ element.provider }}
           </div>
@@ -213,15 +220,16 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })
           "
         >
-          <div class="tokens-table__cell tokens-table__cell_datetime">
-            {{ element.expiresIn.days() }}d: {{ element.expiresIn.hours() }}h:
-            {{ element.expiresIn.minutes() }}m
+          <div
+            class="tokens-table__cell tokens-table__cell_datetime"
+            [matTooltip]="getFullExpirationTime(element.expiresIn)"
+          >
+            {{ getExpirationTime(element.expirationDate, element.expiresIn) }}
           </div>
         </a>
       </td>
@@ -238,7 +246,6 @@
           safetyLink
           [link]="
             getLink({
-              route: element.uniqueLink,
               hash: element.hash,
               chain: element.blockchain
             })

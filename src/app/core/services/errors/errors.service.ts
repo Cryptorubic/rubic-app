@@ -7,37 +7,73 @@ import { TotalSupplyOverflowErrorComponent } from 'src/app/shared/components/err
 import { MessageBoxComponent } from 'src/app/shared/components/message-box/message-box.component';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable, throwError } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { NotSupportedNetworkError } from '../../../shared/models/errors/provider/NotSupportedNetwork';
+import InsufficientFundsError from '../../../shared/models/errors/instant-trade/InsufficientFundsError';
+
+type ErrorModalTitle = 'error' | 'warning';
+
+interface ErrorData {
+  title: ErrorModalTitle;
+  [field: string]: any;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorsService {
-  constructor(private readonly translateService: TranslateService) {}
+  constructor(private dialog: MatDialog, private readonly translateService: TranslateService) {}
 
-  public showErrorDialog(err, dialog: MatDialog) {
+  public $throw(error: any, message?: string): Observable<never> {
+    console.error(message || error.message || error.comment);
+    return throwError(error);
+  }
+
+  public throw(error: any, message?: string): void {
+    console.error(message || error.message || error.comment);
+    throw error;
+  }
+
+  public showErrorDialog(err) {
+    console.error(err);
     if (!(err instanceof RubicError)) {
-      err = new RubicError(this.translateService);
+      err = new RubicError();
     }
-    let data: any = { title: 'Error', descriptionText: err.comment };
+    const translateParams = {} as any;
+    if (err instanceof NotSupportedNetworkError) {
+      translateParams.networkToChoose = err.networkToChoose;
+    }
+    if (err instanceof InsufficientFundsError) {
+      translateParams.tokenSymbol = err.tokenSymbol;
+      translateParams.balance = err.balance;
+      translateParams.requiredBalance = err.requiredBalance;
+    }
+    let data: ErrorData = {
+      title: 'error',
+      descriptionText:
+        this.translateService.instant(err.translateKey, translateParams) || err.message
+    };
     if (err instanceof MetamaskError) {
-      data.title = 'Warning';
+      data.title = 'warning';
     }
+
     if (err instanceof NetworkError) {
       data = {
-        title: 'Error',
+        title: 'error',
         descriptionComponentClass: NetworkErrorComponent,
         descriptionComponentInputs: { networkError: err }
       };
     }
     if (err instanceof TotalSupplyOverflowError) {
       data = {
-        title: 'Error',
+        title: 'error',
         descriptionComponentClass: TotalSupplyOverflowErrorComponent,
         descriptionComponentInputs: { totalSupplyOverflowError: err }
       };
     }
-    dialog.open(MessageBoxComponent, {
+    data.title = this.translateService.instant(`common.${data.title}`);
+    this.dialog.open(MessageBoxComponent, {
       width: '400px',
       data
     });

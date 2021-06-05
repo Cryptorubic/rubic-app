@@ -1,14 +1,17 @@
 <div class="user-profile" [ngClass]="{ 'user-profile_mobile': $isMobile | async }">
   <div class="user-profile__account">
-    <div
-      *ngIf="($currentBlockchain | async)?.imagePath"
-      class="user-profile__blockchain-icon"
-    >
-      <img (click)="useTestingMode()" [src]="($currentBlockchain | async)?.imagePath" alt="($currentBlockchain | async)?.name">
+    <div *ngIf="currentBlockchain?.imagePath" class="user-profile__blockchain-icon">
+      <img
+        (click)="useTestingMode()"
+        [src]="currentBlockchain?.imagePath"
+        alt="($currentBlockchain | async)?.name"
+        width="34"
+        height="25"
+      />
     </div>
     <span
       class="user-profile__text"
-      [ngClass]="{ 'user-profile__text_iconless': !($currentBlockchain | async)?.imagePath }"
+      [ngClass]="{ 'user-profile__text_iconless': !currentBlockchain?.imagePath }"
     >{{ ($currentUser | async)?.address | shortAddress: 5:3  }}</span>
   </div>
   <ul *ngIf="$isMobile | async" class="user-profile__list">

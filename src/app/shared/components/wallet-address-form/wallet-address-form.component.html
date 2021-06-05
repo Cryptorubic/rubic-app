@@ -13,19 +13,21 @@
   </div>
 
   <div class="wallet-address-container__editing-form editing-form" *ngIf="isEditingSectionOpened">
-    <input
-      type="text"
-      class="editing-form__input"
-      [ngClass]="{
-        'editing-form__input_incorrect': walletAddressInputModel.invalid
-      }"
-      id="wallet-address-input-id"
-      placeholder="Enter wallet address"
-      [pattern]="walletAddressPattern"
-      spellcheck="false"
-      ngModel=""
-      #walletAddressInputModel="ngModel"
-    />
+    <label class="editing-form__label">
+      <input
+        type="text"
+        class="editing-form__input"
+        [ngClass]="{
+          'editing-form__input_incorrect': walletAddressInputModel.invalid
+        }"
+        id="wallet-address-input-id"
+        placeholder="Enter wallet address"
+        [pattern]="walletAddressPattern"
+        spellcheck="false"
+        ngModel=""
+        #walletAddressInputModel="ngModel"
+      />
+    </label>
     <app-primary-button
       label="Set"
       [disabled]="!walletAddressInputModel.value || !walletAddressInputModel.valid"

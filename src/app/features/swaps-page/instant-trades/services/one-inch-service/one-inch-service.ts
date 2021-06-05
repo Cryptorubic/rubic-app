@@ -2,17 +2,19 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import InstantTradeService from '../InstantTradeService';
 import { CoingeckoApiService } from '../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { TranslateService } from '@ngx-translate/core';
+import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { OneinchQuoteError } from '../../../../../shared/models/errors/provider/OneinchQuoteError';
 
 interface OneInchQuoteResponse {
-  fromToken: Object;
-  toToken: Object;
+  fromToken: object;
+  toToken: object;
   toTokenAmount: string;
   fromTokenAmount: string;
   protocols: unknown[];
@@ -41,8 +43,6 @@ interface OneInchSwapResponse {
 }
 
 export class OneInchService extends InstantTradeService {
-  static SLIPPAGE_PERCENT = '1'; // 1%
-
   private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
   private supportedTokensAddresses: string[] = [];
@@ -57,10 +57,9 @@ export class OneInchService extends InstantTradeService {
     private httpClient: HttpClient,
     private coingeckoApiService: CoingeckoApiService,
     useTestingModeService: UseTestingModeService,
-    protected readonly translateService: TranslateService
+    protected readonly errorsService: ErrorsService
   ) {
-    super(translateService);
-
+    super(errorsService);
     useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
     setTimeout(() => this.loadSupportedTokens());
   }
@@ -81,6 +80,10 @@ export class OneInchService extends InstantTradeService {
       .get(`${this.apiBaseUrl}approve/spender`)
       .pipe(map((response: OneInchApproveResponse) => response.address))
       .toPromise();
+  }
+
+  public setSlippagePercent(slippagePercent: number): void {
+    this.slippagePercent = slippagePercent;
   }
 
   public async calculateTrade(
@@ -116,8 +119,7 @@ export class OneInchService extends InstantTradeService {
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      console.error(oneInchTrade);
-      throw new Error('Oneinch quote error');
+      this.errorsService.throw(new OneinchQuoteError());
     }
 
     // TODO: верменный фикс, потому что rpc binance сломалось
@@ -187,8 +189,8 @@ export class OneInchService extends InstantTradeService {
           fromTokenAddress,
           toTokenAddress,
           amount: fromAmount,
-          slippage: OneInchService.SLIPPAGE_PERCENT,
-          fromAddress: this.web3Private.address
+          slippage: (this.slippagePercent * 100).toString(),
+          fromAddress: this.providerConnectorService.address
         }
       })
       .toPromise()) as OneInchSwapResponse;

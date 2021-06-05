@@ -7,7 +7,8 @@
     "any": "어떤",
     "error": "오류",
     "have": "당신은",
-    "want": "당신은 얻을",
+    "get": "당신은 얻을",
+    "want": "당신은 얻고 싶어",
     "confirm": "확인",
     "copy": "부",
     "accept": "동의하기",
@@ -24,7 +25,8 @@
     "via": "통하다",
     "contractAddress": "토큰 계약 주소",
     "enterAmount": "금액을 입력하세요",
-    "chooseToken": "토큰 선택"
+    "chooseToken": "토큰 선택",
+    "warning": "Warning"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -34,7 +36,15 @@
     "userReject": "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
     "undefined": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우 <a href='mailto:support@rubic.finance' target='_blank'>고객 지원에 문의하십시오</a>.",
     "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
-    "sameTokens": "양쪽에서 동일한 토큰을 선택할 수 없습니다. 다른 토큰을 선택하십시오."
+    "sameTokens": "양쪽에서 동일한 토큰을 선택할 수 없습니다. 다른 토큰을 선택하십시오.",
+    "noQrCode": "Please make sure that you have scan qrCode",
+    "noWallet": "You have not connect any wallet",
+    "retrievingTokensError": "Error retrieving tokens",
+    "wrongToken": "Rubic bridge supports only rubic token.",
+    "oneInchQuote": "Oneinch quote error",
+    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
+    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
+    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas"
   },
   "navigation": {
     "about": "소개",
@@ -331,7 +341,9 @@
     "minAmount": "-최소 금액 ",
     "maxAmount": "최대 금액 ",
     "createBridge": "Create Bridge",
-    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
+    "getBNB": "Get BNB",
+    "bridge": "Bridge"
   },
   "instantTrades": {
     "title": "즉시 거래",
@@ -376,7 +388,8 @@
       "volume": "거래량",
       "network": "회로망",
       "spent": "지출",
-      "expected": "예상"
+      "expected": "예상",
+      "date": "데이트"
     },
     "noData": "아직 스왑이 없습니다",
     "noTrades": "거래가 없습니다",
@@ -419,7 +432,7 @@
     "find": "모두 채우기",
     "limit": "최소 기부 한도:",
     "fee": "브로커 수수료:",
-    "Withdraw": "빼다",
+    "withdraw": "빼다",
     "rate": "율:",
     "closingDate": "마감일",
     "closingTime": "마감 시간",

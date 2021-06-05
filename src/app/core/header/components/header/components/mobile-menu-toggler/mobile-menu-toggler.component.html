@@ -3,6 +3,7 @@
   type="button"
   (click)="toggleMenu()"
   [ngClass]="{ 'navbar-toggler_opened': $isMobileMenuOpened | async }"
+  aria-label="Open menu"
 >
   <span class="navbar-toggler__icon-bar"></span>
   <span class="navbar-toggler__icon-bar"></span>

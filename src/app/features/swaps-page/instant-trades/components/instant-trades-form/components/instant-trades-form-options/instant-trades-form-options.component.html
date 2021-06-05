@@ -1,0 +1,73 @@
+<section class="form-section">
+  <div class="form-section__row form-section-row">
+    <div class="form-section__block form-section-block">
+      <div
+        class="form-section-block__input-container input-container input-container_slippage-percent"
+      >
+        <label
+          class="input-container__label input-container__label_slippage-percent"
+          for="slippage-input-id"
+        >
+          Slippage
+          <img
+            src="assets/images/icons/info-empty.svg"
+            alt="Info icon"
+            [matTooltip]="
+              'Your transaction will revert if the price changes unfavorably by more than this percentage'
+            "
+          />
+        </label>
+
+        <input
+          class="input-container__input input-container__input_slippage-percent input-container__input_validated"
+          id="slippage-input-id"
+          appNumberPrecision
+          [inputElement]="slippagePercentInput"
+          integerLength="2"
+          decimalLength="2"
+          [minValue]="MIN_SLIPPAGE_VALUE.toString()"
+          [maxValue]="MAX_SLIPPAGE_VALUE.toString()"
+          [ngModel]="slippagePercent"
+          (ngModelChange)="onSlippagePercentChange($event)"
+          #slippagePercentModel="ngModel"
+          [ngClass]="{
+            'input-container__input_invalid':
+              !slippagePercentModel.value || slippagePercentModel.invalid,
+            'input-container__input_warning':
+              slippagePercentModel.valid &&
+              slippagePercentModel.value &&
+              (+slippagePercent < MIN_RECOMMENDED_SLIPPAGE_VALUE ||
+                +slippagePercent > MAX_RECOMMENDED_SLIPPAGE_VALUE)
+          }"
+          #slippagePercentInput
+        />
+
+        <span class="input-container__percent-sign">%</span>
+      </div>
+
+      <div
+        class="form-section-block__warning-container"
+        *ngIf="
+          slippagePercentModel.valid &&
+          slippagePercentModel.value &&
+          +slippagePercent < MIN_RECOMMENDED_SLIPPAGE_VALUE
+        "
+        [matTooltip]="'Your transaction may fail'"
+      >
+        <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="Warning disclaimer" />
+      </div>
+
+      <div
+        class="form-section-block__warning-container"
+        *ngIf="
+          slippagePercentModel.valid &&
+          slippagePercentModel.value &&
+          +slippagePercent > MAX_RECOMMENDED_SLIPPAGE_VALUE
+        "
+        [matTooltip]="'Your transaction may be frontrun'"
+      >
+        <img src="assets/images/icons/warning-disclaimer-sign.svg" alt="Disclaimer sign" />
+      </div>
+    </div>
+  </div>
+</section>

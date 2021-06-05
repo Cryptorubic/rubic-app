@@ -1,30 +1,14 @@
-import Web3 from 'web3';
-
-import { BehaviorSubject } from 'rxjs';
 import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
+import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
+import { ErrorsService } from '../../errors/errors.service';
 
 export abstract class PrivateProvider {
   /**
    * @description default value for transactions gasLimit. Required for tests provider stub
    */
   public readonly defaultGasLimit: string | undefined = undefined;
-
-  /**
-   * @description observable address of the selected wallet
-   */
-  public abstract readonly onAddressChanges: BehaviorSubject<string>;
-
-  /**
-   * @description observable value of the network id and name
-   */
-  public abstract readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
-
-  /**
-   * @description an instance of web3 to access the blockchain
-   */
-  abstract get web3(): Web3;
 
   /**
    * @description is the blockchain provider installed
@@ -37,6 +21,11 @@ export abstract class PrivateProvider {
   abstract get isActive(): boolean;
 
   /**
+   * @description Current provider name.
+   */
+  abstract get name(): WALLET_NAME;
+
+  /**
    * @description current selected wallet address
    * @return current selected wallet address or undefined if isActive is false
    */
@@ -47,7 +36,7 @@ export abstract class PrivateProvider {
     return this.getAddress();
   }
 
-  protected abstract getAddress(): string;
+  public abstract getAddress(): string;
 
   /**
    * @description current selected network
@@ -60,7 +49,9 @@ export abstract class PrivateProvider {
     return this.getNetwork();
   }
 
-  protected abstract getNetwork(): IBlockchain;
+  protected constructor(protected readonly errorsService: ErrorsService) {}
+
+  public abstract getNetwork(): IBlockchain;
 
   /**
    * @description current selected network name
@@ -85,4 +76,8 @@ export abstract class PrivateProvider {
    * @param token token to add
    */
   public abstract addToken(token: SwapToken): Promise<void>;
+
+  public async requestPermissions(): Promise<any[]> {
+    return [{ parentCapability: 'eth_accounts' }];
+  }
 }

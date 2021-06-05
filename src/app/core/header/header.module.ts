@@ -16,6 +16,8 @@ import { LogoutConfirmModalComponent } from './components/header/components/logo
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
+import { WalletsModalComponent } from './components/header/components/wallets-modal/wallets-modal.component';
+import { InlineSVGModule } from 'ng-inline-svg';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import { HeaderComponent } from './components/header/header.component';
     UserProfileComponent,
     LogoutConfirmModalComponent,
     HeaderNavigationComponent,
-    MobileMenuTogglerComponent
+    MobileMenuTogglerComponent,
+    WalletsModalComponent
   ],
   imports: [
     CommonModule,
@@ -37,7 +40,8 @@ import { HeaderComponent } from './components/header/header.component';
     MatDialogModule,
     MatMenuModule,
     A11yModule,
-    OverlayModule
+    OverlayModule,
+    InlineSVGModule.forRoot()
   ],
   exports: [HeaderComponent]
 })

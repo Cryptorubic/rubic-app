@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import BigNumber from 'bignumber.js';
+import { InstantTradeParameters } from 'src/app/features/swaps-page/instant-trades/models/instant-trades-parametres';
 import { InstantTradeSwapInput } from '../../../../models/instant-trade-input';
 import { InstantTradeProviderController } from '../../../../models/instant-trades-provider-controller';
 import { Token } from '../../../../../../../shared/models/tokens/Token';
@@ -13,6 +14,8 @@ import { BLOCKCHAIN_NAME } from '../../../../../../../shared/models/blockchain/B
 export class TokensSwapInputComponent extends InstantTradeSwapInput {
   @Input() public tradeController: InstantTradeProviderController;
 
+  @Input() public areAdvancedOptionsValid: boolean;
+
   @Output() public customTokenFormOpeningEvent: EventEmitter<boolean>;
 
   @Output() public updateCustomTokenEvent: EventEmitter<Token>;
@@ -20,6 +23,8 @@ export class TokensSwapInputComponent extends InstantTradeSwapInput {
   @Output() public setCustomTokenAddressEvent: EventEmitter<string>;
 
   @Output() public addCustomTokenEvent: EventEmitter<void>;
+
+  @Output() public tradeParametersChange: EventEmitter<InstantTradeParameters>;
 
   get gasFeeDisplayCondition(): BigNumber | undefined {
     return (
@@ -36,6 +41,7 @@ export class TokensSwapInputComponent extends InstantTradeSwapInput {
     this.updateCustomTokenEvent = new EventEmitter<Token>();
     this.setCustomTokenAddressEvent = new EventEmitter<string>();
     this.addCustomTokenEvent = new EventEmitter<void>();
+    this.tradeParametersChange = new EventEmitter<InstantTradeParameters>();
   }
 
   public setIsCustomTokenFormOpened(isOpened: boolean): void {
@@ -63,5 +69,6 @@ export class TokensSwapInputComponent extends InstantTradeSwapInput {
       ...this.tradeParameters,
       gasOptimizationChecked: value
     };
+    this.tradeParametersChange.emit(this.tradeParameters);
   }
 }

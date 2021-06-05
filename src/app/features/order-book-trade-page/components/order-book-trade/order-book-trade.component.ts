@@ -10,18 +10,18 @@ import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
-import { MetamaskError } from '../../../../shared/models/errors/provider/MetamaskError';
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
-import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
-import { MessageBoxComponent } from '../../../../shared/components/message-box/message-box.component';
 import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
-import { NetworkErrorComponent } from '../../../../shared/components/network-error/network-error.component';
+import { ErrorsService } from '../../../../core/services/errors/errors.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -69,9 +69,9 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
 
   public blockchain: Blockchain;
 
-  private fromTokenToToTokenRate: BigNumber;
+  private fromTokenToToTokenRate: string;
 
-  private toTokenToFromTokenRate: BigNumber;
+  private toTokenToFromTokenRate: string;
 
   public isRevertedRate = false;
 
@@ -116,12 +116,15 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private tokensService: TokensService,
     private web3PrivateService: Web3PrivateService,
     private dialog: MatDialog,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly withRoundPipe: WithRoundPipe,
+    private readonly providerConnector: ProviderConnectorService,
+    private readonly errorsService: ErrorsService
   ) {}
 
   ngOnInit(): void {
     try {
-      this.checkMetamaskSettings();
+      this.checkProviderSettings();
     } catch (err) {
       this.showErrorMessage(err);
     }
@@ -131,39 +134,25 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     const uniqueLink = this.route.snapshot.params.unique_link;
     this.setTradeData(uniqueLink);
 
-    this.onAddressChanges = this.web3PrivateService.onAddressChanges;
+    this.onAddressChanges = this.providerConnector.$addressChange;
   }
 
   ngOnDestroy(): void {
     this._tokensSubscription$?.unsubscribe();
   }
 
-  private checkMetamaskSettings() {
-    if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError(this.translateService);
+  private checkProviderSettings() {
+    if (!this.providerConnector.isProviderActive) {
+      this.errorsService.throw(new WalletError());
     }
 
-    if (!this.web3PrivateService.address) {
-      throw new AccountError(this.translateService);
+    if (!this.providerConnector.address) {
+      this.errorsService.throw(new AccountError());
     }
   }
 
   private showErrorMessage(err: RubicError): void {
-    let data: any = { title: 'Error', descriptionText: err.comment };
-    if (err instanceof MetamaskError) {
-      data.title = 'Warning';
-    }
-    if (err instanceof NetworkError) {
-      data = {
-        title: 'Error',
-        descriptionComponentClass: NetworkErrorComponent,
-        descriptionComponentInputs: { networkError: err }
-      };
-    }
-    this.dialog.open(MessageBoxComponent, {
-      width: '400px',
-      data
-    });
+    this.errorsService.showErrorDialog(err);
   }
 
   private setTradeData(uniqueLink: string): void {
@@ -223,23 +212,28 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   }
 
   private calculateRate(): void {
-    this.fromTokenToToTokenRate = this.tradeData.token.from.amountTotal.div(
-      this.tradeData.token.to.amountTotal
-    );
+    this.fromTokenToToTokenRate = new BigNumber(
+      this.withRoundPipe.transform(
+        this.tradeData.token.from.amountTotal.div(this.tradeData.token.to.amountTotal).toFixed(),
+        this.tradeData.token.from,
+        'toClosestValue'
+      )
+    ).toFormat(BIG_NUMBER_FORMAT);
 
-    this.toTokenToFromTokenRate = this.tradeData.token.to.amountTotal.div(
-      this.tradeData.token.from.amountTotal
-    );
+    this.toTokenToFromTokenRate = new BigNumber(
+      this.withRoundPipe.transform(
+        this.tradeData.token.to.amountTotal.div(this.tradeData.token.from.amountTotal).toFixed(),
+        this.tradeData.token.to,
+        'toClosestValue'
+      )
+    ).toFormat(BIG_NUMBER_FORMAT);
   }
 
   public getRate(): string {
-    return !this.isRevertedRate
-      ? `${this.fromTokenToToTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.from.symbol} 
-         / 1 ${this.tradeData.token.to.symbol}`
-      : `1 ${this.tradeData.token.from.symbol} / 
-         ${this.toTokenToFromTokenRate.dp(8).toFormat(BIG_NUMBER_FORMAT)}
-         ${this.tradeData.token.to.symbol}`;
+    if (!this.isRevertedRate) {
+      return `${this.fromTokenToToTokenRate} ${this.tradeData.token.from.symbol} / 1 ${this.tradeData.token.to.symbol}`;
+    }
+    return `1 ${this.tradeData.token.from.symbol} / ${this.toTokenToFromTokenRate} ${this.tradeData.token.to.symbol}`;
   }
 
   public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
@@ -249,14 +243,14 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
         .times(this.toTokenToFromTokenRate)
         .div(100)
         .times(100 - this.tradeData.token.to.brokerPercent)
-        .dp(this.tradeData.token.to.decimals)
+        .dp(4)
         .toFormat(BIG_NUMBER_FORMAT);
     } else {
       this.fromTokenAmountToGet = new BigNumber(value)
         .times(this.fromTokenToToTokenRate)
         .div(100)
         .times(100 - this.tradeData.token.from.brokerPercent)
-        .dp(this.tradeData.token.from.decimals)
+        .dp(4)
         .toFormat(BIG_NUMBER_FORMAT);
     }
   }

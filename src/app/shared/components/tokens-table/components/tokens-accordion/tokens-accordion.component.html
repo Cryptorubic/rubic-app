@@ -23,6 +23,8 @@
           <img
             [src]="data.token.from.image || '/assets/images/icons/coins/empty.svg'"
             [alt]="data.token.from.symbol"
+            width="22"
+            height="22"
           />
           <span>{{ data.token.from.symbol }}</span>
         </div>
@@ -33,6 +35,8 @@
           <img
             [src]="data.token.to.image || '/assets/images/icons/coins/empty.svg'"
             [alt]="data.token.to.symbol"
+            width="22"
+            height="22"
           />
           <span>{{ data.token.to.symbol }}</span>
         </div>
@@ -78,8 +82,7 @@
       <div class="data__amount" *ngIf="selectedOption === 'Expires in' && isFieldIn('expiresIn')">
         <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
           <div>
-            {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:
-            {{ data.expiresIn.minutes() }}m
+            {{ getExpirationTime(data.expirationDate, data.expiresIn) }}
           </div>
         </div>
       </div>
@@ -120,11 +123,13 @@
           <img
             [src]="data.token.from.image || '/assets/images/icons/coins/empty.svg'"
             [alt]="data.token.from.symbol"
+            width="22"
+            height="22"
           />
           <span>{{ data.token.from.symbol }}</span>
         </div>
         <div class="tokens-accordion__token-amount">
-          {{ data.fromAmount.toString(10) | withRound: 5:6:data.token.from:'toClosestValue' }}
+          {{ data.fromAmount.toString(10) | withRound: data.token.from:'toClosestValue' }}
         </div>
       </div>
     </div>
@@ -136,11 +141,13 @@
           <img
             [src]="data.token.to.image || '/assets/images/icons/coins/empty.svg'"
             [alt]="data.token.to.symbol"
+            width="22"
+            height="22"
           />
           <span>{{ data.token.to.symbol }}</span>
         </div>
         <div class="tokens-accordion__token-amount">
-          {{ data.toAmount.toString(10) | withRound: 5:6:data.token.from:'toClosestValue' }}
+          {{ data.toAmount.toString(10) | withRound: data.token.from:'toClosestValue' }}
         </div>
       </div>
     </div>
@@ -183,7 +190,13 @@
     <div class="tokens-accordion__item">
       <div class="tokens-accordion__item-name">{{ 'tradesTable.columns.network' | translate }}</div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_network">
-        <img class="tokens-accordion__image" [src]="chainIconPath" alt="{{ data.blockchain }}" />
+        <img
+          class="tokens-accordion__image"
+          [src]="chainIconPath"
+          alt="{{ data.blockchain }}"
+          width="22"
+          height="22"
+        />
         <span>{{ data.blockchain }}</span>
       </div>
     </div>
@@ -195,6 +208,8 @@
           class="table__image"
           src="assets/images/icons/providers/{{ data.provider }}.svg"
           alt="{{ data.provider }}"
+          width="25"
+          height="25"
         />
         <span>{{ data.provider }}</span>
       </div>
@@ -206,8 +221,7 @@
       </div>
       <div class="tokens-accordion__item-value tokens-accordion__item-value_date">
         <div>
-          {{ data.expiresIn.days() }}d: {{ data.expiresIn.hours() }}h:
-          {{ data.expiresIn.minutes() }}m
+          {{ getExpirationTime(data.expirationDate, data.expiresIn) }}
         </div>
       </div>
     </div>

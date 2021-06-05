@@ -7,6 +7,7 @@
     "any": "任何",
     "error": "任何",
     "have": "你有",
+    "get": "你得到",
     "want": "你想得到",
     "confirm": "確認",
     "copy": "複製",
@@ -24,7 +25,8 @@
     "via": "通過",
     "contractAddress": "代币合约地址",
     "enterAmount": "输入金额",
-    "chooseToken": "选择币种"
+    "chooseToken": "选择币种",
+    "warning": "Warning"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -34,7 +36,15 @@
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
     "undefined": "请稍后再试，或尝试使用其他设备。如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
     "insufficientFunds": "你没有足够的 {{ tokenSymbol }}. 您的余额是 {{balance}} {{tokenSymbol}}, 但 {{requiredBalance}} {{tokenSymbol}} 是必需的。",
-    "sameTokens": "兩邊不能選擇相同的令牌，請選擇不同的令牌."
+    "sameTokens": "兩邊不能選擇相同的令牌，請選擇不同的令牌.",
+    "noQrCode": "Please make sure that you have scan qrCode",
+    "noWallet": "You have not connect any wallet",
+    "retrievingTokensError": "Error retrieving tokens",
+    "wrongToken": "Rubic bridge supports only rubic token.",
+    "oneInchQuote": "Oneinch quote error",
+    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
+    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
+    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas"
   },
   "navigation": {
     "about": "关于",
@@ -331,7 +341,9 @@
     "minAmount": "最低金額 ",
     "maxAmount": "最高金額 ",
     "createBridge": "Create Bridge",
-    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
+    "getBNB": "Get BNB",
+    "bridge": "Bridge"
   },
   "instantTrades": {
     "title": "支持即时交易",
@@ -376,7 +388,8 @@
       "volume": "体积",
       "network": "网络",
       "spent": "花費",
-      "expected": "預期的"
+      "expected": "預期的",
+      "date": "日期"
     },
     "noData": "您還沒有掉期",
     "noTrades": "沒有交易",
@@ -419,7 +432,7 @@
     "find": "交割全部",
     "limit": "最低出资限额",
     "fee": "经纪商佣金：",
-    "Withdraw": "退款",
+    "withdraw": "退款",
     "rate": "价格：",
     "closingDate": "结束日期",
     "closingTime": "结束时间",

@@ -1,9 +1,11 @@
 <app-modal>
   <div class="operation-modal">
     <img class="operation-modal__icon" src="/assets/images/icons/success.svg" alt="success" />
-    <div class="operation-modal__description">
-      {{ 'modals.operationModal.success.text' | translate }}
-      <a target="_blank" [href]="transactionId | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION">
+    <div
+      class="operation-modal__description"
+      [innerHTML]="'modals.operationModal.success.text' | translate"
+    >
+      <a target="_blank" [href]="transactionId | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION" rel="noopener">
         {{ 'modals.operationModal.success.link' | translate }}
       </a>
     </div>

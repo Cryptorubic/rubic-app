@@ -20,8 +20,16 @@
     }"
     (submit)="$event.preventDefault()"
   >
-    <img *ngIf="$isIframe | async" class="instant-trade-form__iframe-logo" alt="Rubic logotype" src="assets/images/rubic-logo.svg?_=2">
-    <app-chain-dropdown [disabled]="$tokensSelectionDisabled | async" *ngIf="$isIframe | async"></app-chain-dropdown>
+    <img
+      *ngIf="$isIframe | async"
+      class="instant-trade-form__iframe-logo"
+      alt="Rubic logotype"
+      src="assets/images/rubic-logo.svg?_=2"
+    />
+    <app-chain-dropdown
+      [disabled]="$tokensSelectionDisabled | async"
+      *ngIf="$isIframe | async"
+    ></app-chain-dropdown>
     <div
       class="instant-trade-form__from-section selection-block"
       [ngClass]="{ 'instant-trade-form__from-section_lowered': trades.length === 2 }"
@@ -73,16 +81,21 @@
         type="button"
         class="arrow-button"
         [ngClass]="{ 'arrow-button_big': trades.length === 2 || ($isIframe | async) }"
+        aria-label="Swap tokens"
       >
         <img
           *ngIf="trades.length === 2 && ($isIframe | async) === false"
           src="assets/images/icons/RoundArrows.svg"
-          alt=""
+          width="34"
+          height="30"
+          alt="Swap tokens"
         />
         <img
           *ngIf="trades.length === 1 || ($isIframe | async)"
           src="assets/images/icons/revert.svg"
-          alt=""
+          width="34"
+          height="30"
+          alt="Swap tokens"
         />
       </button>
     </div>
@@ -90,12 +103,12 @@
     <div class="instant-trade-form__to-section">
       <div class="selection-block__header">
         <div class="selection-block__label">
-          {{ 'common.want' | translate }}
-          <app-refresh-button
+          {{ 'common.get' | translate }}
+          <app-refresh-tool
             class="selection-block__refresh-button"
-            [refreshButtonStatus]="refreshButtonStatus"
-            (onRefreshButtonActivated)="triggerRecalculateTradeParameters()"
-          ></app-refresh-button>
+            [refreshStatus]="refreshStatus"
+            (onRefresh)="triggerRecalculateTradeParameters()"
+          ></app-refresh-tool>
         </div>
 
         <div *ngIf="toToken?.address" class="selection-block__scanner">
@@ -111,13 +124,14 @@
         <app-tokens-swap-input
           *ngIf="($isIframe | async) === false"
           [tradeController]="tradeController"
+          [areAdvancedOptionsValid]="areAdvancedOptionsValid"
           [index]="index"
           [trades]="trades"
           [toToken]="toToken"
           [hasBestRate]="hasBestRate"
           [blockchain]="blockchain"
           [availableToTokens]="availableToTokens"
-          [tradeParameters]="tradeParameters"
+          [(tradeParameters)]="tradeParameters"
           [selectedTradeState]="selectedTradeState"
           [waitingForProvider]="waitingForProvider"
           (tokenChangeEvent)="toToken = $any($event)"
@@ -143,7 +157,22 @@
         [disableSelection]="$tokensSelectionDisabled | async"
       ></app-iframe-tokens-swap-input>
     </div>
+
+    <div class="flex-breaker"></div>
+
+    <div class="instant-trade-form__advanced-options-button" *ngIf="($isIframe | async) === false">
+      <app-advanced-options-button
+        [(isOpened)]="areAdvancedOptionsOpened"
+      ></app-advanced-options-button>
+    </div>
   </form>
+
+  <app-instant-trades-form-options
+    *ngIf="areAdvancedOptionsOpened"
+    [slippagePercent]="slippagePercent"
+    (slippagePercentChange)="setSlippagePercent($event)"
+    (areAdvancedOptionsValid)="areAdvancedOptionsValid = $event"
+  ></app-instant-trades-form-options>
 </div>
 
 <app-trade-in-progress-modal

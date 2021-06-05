@@ -14,8 +14,21 @@
     }
   }
 
+  .modal__wrapper {
+    @include mh(300) {
+      min-height: auto !important;
+      max-height: 200px;
+    }
+  }
+
   &.dark {
     background: rgba(black, 0.65);
+
+    app-message-box .close-icon svg {
+      path {
+        fill: white !important;
+      }
+    }
 
     &.noscroll {
       position: relative;
