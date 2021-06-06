@@ -203,13 +203,13 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         network,
         version,
         maticProvider: maticRPC,
-        parentProvider: this.providerConnectorService.provider
+        parentProvider: this.providerConnectorService.web3
       });
     }
     return new MaticPOSClient({
       network,
       version,
-      maticProvider: this.providerConnectorService.provider,
+      maticProvider: this.providerConnectorService.web3,
       parentProvider: ethRPC
     });
   }
@@ -252,7 +252,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           hash,
           this.providerConnectorService.address
         );
-        updateTransactionsList();
+        await updateTransactionsList();
       };
     };
 
