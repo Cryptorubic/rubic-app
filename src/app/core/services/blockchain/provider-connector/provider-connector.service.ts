@@ -45,11 +45,11 @@ export class ProviderConnectorService {
   }
 
   public get isProviderActive(): boolean {
-    return this.provider.isActive;
+    return Boolean(this.provider?.isActive);
   }
 
   public get isProviderInstalled(): boolean {
-    return this.provider.isInstalled;
+    return Boolean(this.provider?.isInstalled);
   }
 
   public get $networkChange(): Observable<IBlockchain> {
