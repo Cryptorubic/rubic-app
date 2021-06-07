@@ -37,8 +37,8 @@ export default [
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
       blockchainName: BLOCKCHAIN_NAME.POLYGON,
-      address: '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',
-      name: 'Polygon',
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'Matic Network',
       symbol: 'MATIC',
       decimals: 18
     }
