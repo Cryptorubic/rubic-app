@@ -301,6 +301,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     this.tokensSubscription$ = this.bridgeService.tokens.subscribe(tokens => {
       this.tokens = tokens;
       if (tokens.size > 0 && this.isFirstTokensEmit) {
+        console.log(this.tokens);
         this.isFirstTokensEmit = false;
         this.initializeForm();
       }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -11,7 +11,7 @@ import { QueryParamsService } from './core/services/query-params/query-params.se
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public isBackendAvailable: boolean;
 
   constructor(
@@ -19,10 +19,11 @@ export class AppComponent {
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly activatedRoute: ActivatedRoute,
-    private router: Router
-  ) {
-    this.activatedRoute.queryParams.subscribe((queryParams: QueryParams) => {
+    private readonly route: ActivatedRoute
+  ) {}
+
+  public ngOnInit() {
+    this.route.queryParams.subscribe((queryParams: QueryParams) => {
       this.queryParamsService.setupQueryParams(queryParams);
       this.setupLanguage(queryParams.lang);
     });

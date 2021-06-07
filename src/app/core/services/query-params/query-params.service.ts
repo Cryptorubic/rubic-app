@@ -1,12 +1,12 @@
 import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Inject, Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
-import { skip, take } from 'rxjs/operators';
+import { filter, first, skip, take } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
@@ -66,6 +66,7 @@ export class QueryParamsService {
     private readonly web3Public: Web3PublicService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
+    private readonly aRoute: ActivatedRoute,
     private translateService: TranslateService
   ) {
     this.$themeSubject = new BehaviorSubject<string>('default');
@@ -142,6 +143,12 @@ export class QueryParamsService {
     };
   }
 
+  public initiateCommonParams(params: QueryParams): void {
+    this.currentQueryParams = {
+      lang: params.lang || this.translateService.currentLang
+    };
+  }
+
   private async getToken(
     tokenType: 'from' | 'to' | 'fromToken',
     cdr: ChangeDetectorRef
@@ -213,8 +220,10 @@ export class QueryParamsService {
       const hasParams = Object.keys(queryParams).length !== 0;
       if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
-      } else if (hasParams) {
+      } else if (hasParams && route === 'cross-chain/bridge') {
         this.initiateBridgeParams(queryParams);
+      } else {
+        this.initiateCommonParams(queryParams);
       }
     }
   }
@@ -294,10 +303,17 @@ export class QueryParamsService {
   }
 
   public navigate(): void {
-    this.route.navigate([], {
-      queryParams: this.currentQueryParams,
-      queryParamsHandling: 'merge'
-    });
+    this.route.events
+      .pipe(
+        filter(e => e instanceof NavigationEnd),
+        first()
+      )
+      .subscribe(() => {
+        this.route.navigate([], {
+          queryParams: this.currentQueryParams,
+          queryParamsHandling: 'merge'
+        });
+      });
   }
 
   private setDefaultParams(queryParams: QueryParams): QueryParams {
