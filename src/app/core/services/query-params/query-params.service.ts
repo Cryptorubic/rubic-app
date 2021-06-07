@@ -1,6 +1,6 @@
 import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Inject, Injectable } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -143,9 +143,9 @@ export class QueryParamsService {
     };
   }
 
-  public initiateCommonParams(params: QueryParams): void {
+  public initiateCommonParams(): void {
     this.currentQueryParams = {
-      lang: params.lang || this.translateService.currentLang
+      lang: this.translateService.currentLang
     };
   }
 
@@ -161,6 +161,16 @@ export class QueryParamsService {
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams) {
+      // if (queryParams.lang) {
+      //   if (languagesList.find(lang => lang.lng === queryParams.lang)) {
+      //     this.translateService.use(queryParams.lang);
+      //   }
+      // } else {
+      //   this.currentQueryParams = {
+      //     lang: this.translateService.currentLang
+      //   };
+      // }
+
       if (queryParams.iframe === 'true') {
         this.$isIframeSubject.next(true);
         this.document.body.classList.add('iframe');
@@ -222,8 +232,6 @@ export class QueryParamsService {
         this.initiateTradesParams(queryParams);
       } else if (hasParams && route === 'cross-chain/bridge') {
         this.initiateBridgeParams(queryParams);
-      } else {
-        this.initiateCommonParams(queryParams);
       }
     }
   }
@@ -303,17 +311,11 @@ export class QueryParamsService {
   }
 
   public navigate(): void {
-    this.route.events
-      .pipe(
-        filter(e => e instanceof NavigationEnd),
-        first()
-      )
-      .subscribe(() => {
-        this.route.navigate([], {
-          queryParams: this.currentQueryParams,
-          queryParamsHandling: 'merge'
-        });
-      });
+    this.route.navigate([], {
+      queryParams: this.currentQueryParams,
+      queryParamsHandling: 'merge',
+      relativeTo: this.aRoute
+    });
   }
 
   private setDefaultParams(queryParams: QueryParams): QueryParams {

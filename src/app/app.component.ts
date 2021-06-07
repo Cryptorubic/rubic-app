@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
+import { filter, first } from 'rxjs/operators';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
@@ -19,7 +20,8 @@ export class AppComponent implements OnInit {
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) {}
 
   public ngOnInit() {
@@ -38,8 +40,24 @@ export class AppComponent implements OnInit {
     userRegionLanguage = supportedLanguages.includes(userRegionLanguage)
       ? userRegionLanguage
       : 'en';
-    const lng = queryParamLang || this.cookieService.get('lng') || userRegionLanguage;
+    let lng;
+    if (queryParamLang && supportedLanguages.includes(queryParamLang)) {
+      lng = queryParamLang;
+    } else {
+      lng = this.cookieService.get('lng') || userRegionLanguage;
+    }
     this.translateService.setDefaultLang(lng);
     this.translateService.use(lng);
+    this.router.events
+      .pipe(
+        filter(e => e instanceof NavigationEnd),
+        first()
+      )
+      .subscribe(() => {
+        this.router.navigate([], {
+          queryParams: { lang: lng },
+          queryParamsHandling: 'merge'
+        });
+      });
   }
 }
