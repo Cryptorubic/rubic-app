@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { NewUiComponent } from 'src/app/features/new-ui/new-ui/new-ui.component';
 
 export const PROJECT_PARTS = {
   TEST: {
@@ -31,6 +32,10 @@ const routes: Routes = [
     path: '',
     loadChildren: () =>
       import('./features/swaps-page/page-module/swaps-page.module').then(m => m.SwapsPageModule)
+  },
+  {
+    path: 'new-ui',
+    loadChildren: () => import('./features/new-ui/new-ui.module').then(m => m.NewUiModule)
   },
   {
     path: 'bridge',

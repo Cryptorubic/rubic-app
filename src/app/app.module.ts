@@ -4,6 +4,7 @@ import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { DynamicModule } from 'ng-dynamic-component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
@@ -20,6 +21,9 @@ import { TotalSupplyOverflowErrorComponent } from './shared/components/errors/to
   imports: [
     CoreModule,
     SharedModule,
+    TuiRootModule,
+    TuiNotificationsModule,
+    TuiDialogModule,
     HttpClientXsrfModule.withOptions({
       cookieName: 'csrftoken',
       headerName: 'X-CSRFToken'

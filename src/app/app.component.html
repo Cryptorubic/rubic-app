@@ -1,8 +1,25 @@
-<ng-template [ngIf]="isBackendAvailable">
-  <app-header></app-header>
-  <router-outlet></router-outlet>
-</ng-template>
+<tui-root>
 
-<app-maintenance *ngIf="isBackendAvailable === false"></app-maintenance>
+  <ng-template [ngIf]="isBackendAvailable">
+    <app-header></app-header>
+    <router-outlet></router-outlet>
+  </ng-template>
 
-<app-spinner *ngIf="isBackendAvailable === undefined"></app-spinner>
+  <ng-container ngProjectAs="tuiOverDialogs">
+    <app-maintenance *ngIf="isBackendAvailable === false"></app-maintenance>
+    <app-spinner *ngIf="isBackendAvailable === undefined"></app-spinner>
+  </ng-container>
+
+  <ng-container ngProjectAs="tuiOverNotifications">
+    <!-- Content over notifications -->
+  </ng-container>
+
+  <ng-container ngProjectAs="tuiOverPortals">
+    <!-- Content over dropdowns -->
+  </ng-container>
+
+  <ng-container ngProjectAs="tuiOverHints">
+    <!-- Content over hints -->
+  </ng-container>
+
+</tui-root>
