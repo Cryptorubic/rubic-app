@@ -1,12 +1,12 @@
 import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Inject, Injectable } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
-import { filter, first, skip, take } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
@@ -91,9 +91,8 @@ export class QueryParamsService {
         amount: '1'
       },
       bridge: {
-        from: 'ETH',
-        to: 'BSC',
-        chain: BLOCKCHAIN_NAME.ETHEREUM
+        fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+        toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
       }
     };
   }
@@ -136,16 +135,8 @@ export class QueryParamsService {
 
   public initiateBridgeParams(params: QueryParams): void {
     this.currentQueryParams = {
-      fromToken: params.fromToken || this.defaultQueryParams.bridge.fromToken,
-      amount: params.amount || this.defaultQueryParams.bridge.amount,
       fromBlockchain: params.fromBlockchain || this.defaultQueryParams.bridge.fromBlockchain,
       toBlockchain: params.toBlockchain || this.defaultQueryParams.bridge.toBlockchain
-    };
-  }
-
-  public initiateCommonParams(): void {
-    this.currentQueryParams = {
-      lang: this.translateService.currentLang
     };
   }
 
@@ -161,16 +152,6 @@ export class QueryParamsService {
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams) {
-      // if (queryParams.lang) {
-      //   if (languagesList.find(lang => lang.lng === queryParams.lang)) {
-      //     this.translateService.use(queryParams.lang);
-      //   }
-      // } else {
-      //   this.currentQueryParams = {
-      //     lang: this.translateService.currentLang
-      //   };
-      // }
-
       if (queryParams.iframe === 'true') {
         this.$isIframeSubject.next(true);
         this.document.body.classList.add('iframe');
@@ -336,13 +317,24 @@ export class QueryParamsService {
         };
   }
 
-  public clearCurrentParams() {
+  public clearTradesParams() {
     this.currentQueryParams = {
       ...this.currentQueryParams,
       from: null,
       to: null,
       amount: null,
       chain: null
+    };
+    this.navigate();
+  }
+
+  public clearBridgeParams() {
+    this.currentQueryParams = {
+      ...this.currentQueryParams,
+      fromBlockchain: null,
+      toBlockchain: null,
+      fromToken: null,
+      amount: null
     };
     this.navigate();
   }

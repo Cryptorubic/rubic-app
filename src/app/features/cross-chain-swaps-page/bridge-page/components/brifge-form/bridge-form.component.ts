@@ -192,7 +192,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       this.setBlockchainsToService();
       this.queryParamsService.setQueryParam('fromBlockchain', this._fromBlockchain.key);
     }
-
     this.setToWalletAddress();
   }
 
@@ -301,7 +300,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     this.tokensSubscription$ = this.bridgeService.tokens.subscribe(tokens => {
       this.tokens = tokens;
       if (tokens.size > 0 && this.isFirstTokensEmit) {
-        console.log(this.tokens);
         this.isFirstTokensEmit = false;
         this.initializeForm();
       }
@@ -318,14 +316,10 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.tokensSubscription$.unsubscribe();
     this.addressSubscription$.unsubscribe();
-    this.queryParamsService.clearCurrentParams();
+    this.queryParamsService.clearBridgeParams();
   }
 
   private initializeForm(): void {
-    if (this.queryParamsService.currentQueryParams?.chain) {
-      this.queryParamsService.removeQueryParam('chain');
-    }
-
     if (!this.queryParamsService.currentQueryParams) {
       this.queryParamsService.initiateBridgeParams({});
     }
