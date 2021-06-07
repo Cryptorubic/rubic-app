@@ -235,7 +235,35 @@
 }
 
 .area-fifth {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 310px;
+  height: 82px;
+  margin: 0 auto;
+  padding: 15px 20px 19px 19px;
 
+  &__connect-wallet-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+
+    color: #4aa956;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 14px;
+    letter-spacing: 2px;
+
+    background: transparent;
+    border: 1px solid #4aa956;
+    border-radius: 10px;
+
+    cursor: pointer;
+  }
+}
+
+.area-sixth {
   background: $grey-background;
   border-top: 15px solid $grey-background;
 

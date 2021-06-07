@@ -47,8 +47,8 @@
       <img
         class="token-info__image"
         [src]="token.image || '/assets/images/icons/coins/empty.svg'"
-        width="28"
-        height="28"
+        width="50"
+        height="50"
         alt="token"
       />
     </div>
@@ -58,6 +58,7 @@
     class="token-block__area area-third"
     *ngIf="
       tradeData.status === TRADE_STATUS.ACTIVE &&
+      walletAddress &&
       token.isApproved !== undefined &&
       !token.amountLeft?.isNaN()
     "
@@ -122,7 +123,10 @@
     </button>
   </div>
 
-  <div class="token-block__area area-fourth">
+  <div
+    class="token-block__area area-fourth"
+    *ngIf="tradeData.status === TRADE_STATUS.ACTIVE && walletAddress"
+  >
     <div
       class="area-fourth__min-contribution"
       *ngIf="
@@ -154,6 +158,15 @@
 
   <div
     class="token-block__area area-fifth"
+    *ngIf="tradeData.status === TRADE_STATUS.ACTIVE && !walletAddress"
+  >
+    <button class="area-fifth__connect-wallet-button" (click)="onConnectWallet()">
+      {{ 'navigation.login' | translate }}
+    </button>
+  </div>
+
+  <div
+    class="token-block__area area-sixth"
     *ngIf="
       (tradeData.status === TRADE_STATUS.ACTIVE || tradeData.status === TRADE_STATUS.EXPIRED) &&
       token.amountContributed?.isGreaterThan(0)

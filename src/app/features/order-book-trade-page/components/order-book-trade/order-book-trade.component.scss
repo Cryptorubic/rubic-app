@@ -1,13 +1,6 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
-.trade {
-  @include b($desktop) {
-    padding: 0 2vw;
-    overflow: hidden;
-  }
-}
-
 .spinner-container {
   display: flex;
   align-items: center;
@@ -20,10 +13,6 @@
 .trade-container {
   max-width: 1180px;
   margin: 140px auto 80px;
-
-  @include b($mobile-md) {
-    margin-top: 90px;
-  }
 
   &__header {
     margin-bottom: 15px;
@@ -45,19 +34,10 @@
   grid-gap: 30px;
   align-items: center;
 
-  @include b($mobile-md) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   &__tokens-names {
     color: $dark;
     font-weight: bold;
     font-size: 25px;
-
-    @include b($mobile-md) {
-      margin-left: 0;
-    }
   }
 
   &__state {
@@ -67,10 +47,6 @@
     font-weight: bold;
 
     font-size: 24px;
-
-    @include b($mobile-md) {
-      margin-left: 15px;
-    }
 
     &::before {
       position: relative;
@@ -165,16 +141,12 @@
   grid-template-columns: 1fr 1fr;
 
   color: $dark;
-
-  @include b($tablet) {
-    display: flex;
-    flex-direction: column;
-  }
 }
 
 .trade-options {
   display: flex;
   flex-wrap: wrap;
+  grid-row-gap: 15px;
   grid-column-gap: 50px;
   align-items: center;
 
@@ -183,11 +155,6 @@
   color: $dark;
 
   background: white;
-
-  @include b($mobile-md) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 
   &__break {
     flex-basis: 100%;
@@ -204,41 +171,23 @@
 
   width: fit-content;
 
-  @include b($mobile-md) {
-    margin-bottom: 15px;
-  }
-
   &_public {
     flex-direction: row;
     grid-gap: 15px;
 
     margin-left: auto;
-
-    @include b($laptop) {
-      margin-top: 15px;
-      margin-left: 0;
-    }
-
-    @include b($mobile-md) {
-      margin-bottom: 0;
-      margin-left: 0;
-    }
   }
 
   &_broker {
     justify-content: center;
 
     height: 50px;
-    margin-top: 35px;
+    margin-top: 5px;
   }
 
   &_cancel {
-    margin-top: 35px;
+    margin-top: 5px;
     margin-left: auto;
-
-    @include b($mobile-md) {
-      margin-left: 0;
-    }
 
     app-primary-button {
       width: 160px;
@@ -260,10 +209,6 @@
 
     &_copy-link {
       color: $main-green;
-
-      @include b($mobile-md) {
-        font-size: 16px;
-      }
     }
 
     &_button {
@@ -321,10 +266,6 @@
 .copy-link {
   position: relative;
 
-  @include b($mobile-md) {
-    align-items: flex-start;
-  }
-
   &__copied-notification {
     position: absolute;
     top: -7px;
@@ -358,4 +299,73 @@
   font-weight: bold;
 
   font-size: 24px;
+}
+
+@include b($desktop) {
+  .trade {
+    padding: 0 2vw;
+    overflow: hidden;
+  }
+}
+
+@include b($laptop) {
+  .trade-option {
+    &_public {
+      margin-top: 15px;
+      margin-left: 0;
+    }
+  }
+}
+
+@include b($tablet) {
+  .tokens-swap {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 15px;
+  }
+}
+
+@include b($mobile-md) {
+  .trade-container {
+    margin-top: 90px;
+  }
+
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+
+    &__tokens-names {
+      margin-left: 0;
+    }
+
+    &__state {
+      margin-left: 15px;
+    }
+  }
+
+  .trade-options {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .trade-option {
+    &_public {
+      margin-bottom: 0;
+      margin-left: 0;
+    }
+
+    &_cancel {
+      margin-left: 0;
+    }
+
+    &__body {
+      &_copy-link {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .copy-link {
+    align-items: flex-start;
+  }
 }
