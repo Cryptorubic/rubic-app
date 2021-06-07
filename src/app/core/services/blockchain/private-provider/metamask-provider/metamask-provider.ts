@@ -79,7 +79,6 @@ export class MetamaskProvider extends PrivateProvider {
     [this.selectedAddress] = accounts;
     this.onAddressChanges.next(this.selectedAddress);
     this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
-    this.isEnabled = true;
   }
 
   public getAddress(): string {
