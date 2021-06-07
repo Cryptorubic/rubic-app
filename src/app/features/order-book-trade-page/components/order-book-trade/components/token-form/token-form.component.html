@@ -44,13 +44,14 @@
         </app-scanner-link>
       </div>
 
-      <img
-        class="token-info__image"
-        [src]="token.image || '/assets/images/icons/coins/empty.svg'"
-        width="50"
-        height="50"
-        alt="token"
-      />
+      <div class="token-info__image-container">
+        <img
+          [src]="token.image || '/assets/images/icons/coins/empty.svg'"
+          width="50"
+          height="50"
+          alt="token"
+        />
+      </div>
     </div>
   </div>
 
@@ -169,6 +170,7 @@
     class="token-block__area area-sixth"
     *ngIf="
       (tradeData.status === TRADE_STATUS.ACTIVE || tradeData.status === TRADE_STATUS.EXPIRED) &&
+      walletAddress &&
       token.amountContributed?.isGreaterThan(0)
     "
   >

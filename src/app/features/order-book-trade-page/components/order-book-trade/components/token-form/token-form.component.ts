@@ -106,10 +106,11 @@ export class TokenFormComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     this.token = this.tradeData.token[this.tokenPart];
     this.token.amountLeft = null;
-
     if (this.token) {
       this.setAmountLeft();
     }
+
+    this.updateAmountToContributeModel();
   }
 
   ngOnDestroy(): void {
