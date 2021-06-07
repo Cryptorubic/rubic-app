@@ -49,7 +49,13 @@ export class AuthService {
         return;
       }
       const user = this.$currentUser.getValue();
-      if (user !== undefined && user !== null && user?.address !== address && address) {
+      if (
+        user !== undefined &&
+        user !== null &&
+        user?.address !== null &&
+        address &&
+        user?.address !== address
+      ) {
         this.signOut()
           .pipe(mergeMap(() => this.signIn()))
           .subscribe();
