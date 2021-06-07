@@ -21,7 +21,7 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
 
   public get isLoggedIn(): boolean {
     return Boolean(
-      this.providerConnectorService?.provider && this.providerConnectorService.address
+      this.providerConnectorService?.provider && this.providerConnectorService?.address
     );
   }
 
