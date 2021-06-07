@@ -9,7 +9,7 @@ import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, throwError } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { NotSupportedNetworkError } from '../../../shared/models/errors/provider/NotSupportedNetwork';
+import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
 import InsufficientFundsError from '../../../shared/models/errors/instant-trade/InsufficientFundsError';
 
 type ErrorModalTitle = 'error' | 'warning';
@@ -26,18 +26,18 @@ export class ErrorsService {
   constructor(private dialog: MatDialog, private readonly translateService: TranslateService) {}
 
   public $throw(error: any, message?: string): Observable<never> {
-    console.error(message || error.message || error.comment);
+    console.debug(message || error.message || error.comment);
     return throwError(error);
   }
 
   public throw(error: any, message?: string): void {
-    console.error(message || error.message || error.comment);
+    console.debug(message || error.message || error.comment);
     throw error;
   }
 
   public showErrorDialog(err) {
-    console.error(err);
     if (!(err instanceof RubicError)) {
+      console.debug(err);
       err = new RubicError();
     }
     const translateParams = {} as any;

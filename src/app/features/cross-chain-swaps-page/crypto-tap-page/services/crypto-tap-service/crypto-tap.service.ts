@@ -20,9 +20,9 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { CryptoTapApiService } from 'src/app/core/services/backend/crypto-tap-api/crypto-tap-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TransactionReceipt } from 'web3-eth';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 import { ABI, contractAddressEthereum, contractAddressKovan } from './constants/ethContract';
-import { ProviderConnectorService } from '../../../../../core/services/blockchain/provider-connector/provider-connector.service';
-import { ErrorsService } from '../../../../../core/services/errors/errors.service';
 
 interface EstimatedAmountResponse {
   from_amount: number;
@@ -44,9 +44,9 @@ export class CryptoTapService {
     private web3PublicService: Web3PublicService,
     private cryptoTapApiService: CryptoTapApiService,
     private readonly translateService: TranslateService,
-    useTestingModeService: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    useTestingModeService: UseTestingModeService
   ) {
     this.contractAddress = contractAddressEthereum;
 

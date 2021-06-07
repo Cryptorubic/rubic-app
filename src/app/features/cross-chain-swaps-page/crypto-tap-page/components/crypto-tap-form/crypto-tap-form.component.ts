@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { Subscription } from 'rxjs';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -22,6 +21,7 @@ import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 
 interface ToTokens {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: SwapToken;
@@ -87,11 +87,11 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private tokensService: TokensService,
-    private web3PrivateService: Web3PrivateService,
     private web3PublicService: Web3PublicService,
     private cryptoTapService: CryptoTapService,
     private dialog: MatDialog,
     private errorsService: ErrorsService,
+    private providerConnectorService: ProviderConnectorService,
     useTestingModeService: UseTestingModeService
   ) {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
@@ -107,7 +107,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       this.setTokens(tokens);
     });
 
-    this._walletAddressSubscription$ = this.web3PrivateService.onAddressChanges.subscribe(
+    this._walletAddressSubscription$ = this.providerConnectorService.$addressChange.subscribe(
       address => {
         this.walletAddress = address;
       }
@@ -177,8 +177,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
           }
         },
         err => {
-          console.debug(err);
-          this.errorsService.showErrorDialog(err, this.dialog);
+          this.errorsService.showErrorDialog(err);
         },
         () => {
           if (index === this.fromTokensList.size - 1 && this.toBlockchain.key === toBlockchain) {
@@ -191,9 +190,8 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   public onFromTokenChanges(inputToken: InputToken | null): void {
     if (inputToken) {
-      this.cryptoTapTrade.fromToken = this.cryptoTapTokens[this.toBlockchain.key][
-        inputToken.symbol
-      ];
+      this.cryptoTapTrade.fromToken =
+        this.cryptoTapTokens[this.toBlockchain.key][inputToken.symbol];
     } else {
       this.cryptoTapTrade = {
         ...this.cryptoTapTrade,
@@ -238,9 +236,8 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
         this.tradeSuccessId = receipt.transactionHash;
       })
       .catch(err => {
-        console.debug(err);
         this.cryptoTapTrade.status = CRYPTO_TAP_TRADE_STATUS.WAITING;
-        this.errorsService.showErrorDialog(err, this.dialog);
+        this.errorsService.showErrorDialog(err);
       });
   }
 }
