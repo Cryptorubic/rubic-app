@@ -154,6 +154,7 @@ export class AuthService {
 
   public async serverlessSignIn(): Promise<void> {
     this.isAuthProcess = true;
+    await this.providerConnectorService.installProvider();
     await this.providerConnectorService.activate();
     const permissions = await this.providerConnectorService.requestPermissions();
     const accountsPermission = permissions.find(
