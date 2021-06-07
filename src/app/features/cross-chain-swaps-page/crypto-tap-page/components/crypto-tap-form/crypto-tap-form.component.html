@@ -2,7 +2,7 @@
   <div class="cross-chain-form__swap-section swap-section">
     <!-- From -->
     <div class="swap-section__box swap-box">
-      <div class="swap-box__title">From</div>
+      <div class="swap-box__title">{{ 'common.from' | translate }}</div>
 
       <div class="swap-box__blockchain-section form-field">
         <app-blockchain-select
@@ -19,7 +19,7 @@
         [isWithEditing]="false"
       ></app-wallet-address-form>
 
-      <div class="swap-box__title">You have</div>
+      <div class="swap-box__title">{{ 'common.have' | translate }}</div>
 
       <div class="swap-box__token-section form-field">
         <app-tokens-input
@@ -79,7 +79,7 @@
 
     <!-- To -->
     <div class="swap-section__box swap-box">
-      <div class="swap-box__title">To</div>
+      <div class="swap-box__title">{{ 'common.to' | translate }}</div>
 
       <div class="swap-box__blockchain-section form-field">
         <app-blockchain-select
@@ -96,7 +96,7 @@
         [isWithEditing]="false"
       ></app-wallet-address-form>
 
-      <div class="swap-box__title">You get</div>
+      <div class="swap-box__title">{{ 'common.get' | translate }}</div>
 
       <div class="swap-box__token-section token-chosen">
         <span class="token-chosen__amount">{{
@@ -120,7 +120,8 @@
       </div>
 
       <a class="swap-box__blockchain-link" href="https://www.binance.org/" target="_blank">
-        What is Binance Smart Chain?
+        {{ 'bridgePage.whatIs' | translate }}
+        {{ BLOCKCHAINS_DATA[toBlockchain.key]?.caption }}{{ 'bridgePage.whatIsAfter' | translate }}
       </a>
     </div>
   </div>

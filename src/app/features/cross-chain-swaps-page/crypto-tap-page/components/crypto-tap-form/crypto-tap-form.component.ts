@@ -22,6 +22,7 @@ import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { BLOCKCHAINS_DATA } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS_DATA';
 
 interface ToTokens {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: SwapToken;
@@ -52,6 +53,8 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public CRYPTO_TAP_TRADE_STATUS = CRYPTO_TAP_TRADE_STATUS;
+
+  public BLOCKCHAINS_DATA = BLOCKCHAINS_DATA;
 
   public blockchainsList = Object.values(BLOCKCHAINS);
 
