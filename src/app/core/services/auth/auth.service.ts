@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, first, mergeMap } from 'rxjs/operators';
+import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
+import { WalletlinkError } from 'src/app/shared/models/errors/provider/WalletlinkError';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
 import { QueryParamsService } from '../query-params/query-params.service';
 import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
 import { ErrorsService } from '../errors/errors.service';
-import { UserRejectError } from '../../../shared/models/errors/provider/UserRejectError';
 import { StoreService } from '../store/store.service';
-import { WalletlinkError } from '../../../shared/models/errors/provider/WalletlinkError';
-import { RubicError } from '../../../shared/models/errors/RubicError';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -155,6 +154,7 @@ export class AuthService {
 
   public async serverlessSignIn(): Promise<void> {
     this.isAuthProcess = true;
+    await this.providerConnectorService.activate();
     const permissions = await this.providerConnectorService.requestPermissions();
     const accountsPermission = permissions.find(
       permission => permission.parentCapability === 'eth_accounts'

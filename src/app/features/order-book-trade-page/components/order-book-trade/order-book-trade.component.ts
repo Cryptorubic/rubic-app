@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
@@ -36,7 +36,7 @@ type CopiedType = 'linkToDeal' | 'brokerAddress';
   templateUrl: './order-book-trade.component.html',
   styleUrls: ['./order-book-trade.component.scss']
 })
-export class OrderBookTradeComponent implements OnInit, OnDestroy {
+export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
   private readonly BLOCKCHAINS: Array<Blockchain> = [
     {
       name: BLOCKCHAIN_NAME.ETHEREUM,
@@ -122,7 +122,7 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
     private readonly errorsService: ErrorsService
   ) {}
 
-  ngOnInit(): void {
+  public ngAfterViewInit(): void {
     try {
       this.checkProviderSettings();
     } catch (err) {
