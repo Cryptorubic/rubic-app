@@ -77,11 +77,11 @@ export class WalletsModalComponent {
   }
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
+    if (this.isMobile && provider === WALLET_NAME.METAMASK && !window.ethereum) {
+      this.setupMetamaskDeepLinking();
+      return;
+    }
     // @TODO Uncomment when fix mobile wallets.
-    // if (this.isMobile && provider === WALLET_NAME.METAMASK && !window.ethereum) {
-    //   this.setupMetamaskDeepLinking();
-    //   return;
-    // }
     // if (
     //   provider ===
     //   WALLET_NAME.WALLET_CONNECT /** && /iPad|iPhone|iPod/.test(navigator.platform) * */

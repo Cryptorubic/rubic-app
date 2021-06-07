@@ -1,5 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { CookieService } from 'ngx-cookie-service';
+import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '../../header/components/header/components/wallets-modal/models/providers';
 
 interface Store {
@@ -18,10 +21,15 @@ export class StoreService {
     return this.$dataSubject.asObservable();
   }
 
-  constructor() {
+  public isIframe: boolean;
+
+  constructor(
+    private readonly queryParamsService: QueryParamsService,
+    private readonly cookieService: CookieService,
+    @Inject(DOCUMENT) private document: Document
+  ) {
     this.storageKey = 'rubicData';
     this.$dataSubject = new BehaviorSubject<Store>(null);
-    this.fetchData();
   }
 
   public setData(data: Partial<Store>): void {
@@ -30,7 +38,11 @@ export class StoreService {
       ...data
     };
     const jsonData = JSON.stringify(newData);
-    localStorage.setItem(this.storageKey, jsonData);
+    if (!this.isIframe) {
+      localStorage.setItem(this.storageKey, jsonData);
+    } else {
+      this.document.cookie = `${this.storageKey}=${jsonData}`;
+    }
     this.$dataSubject.next(newData);
   }
 
@@ -40,7 +52,11 @@ export class StoreService {
       [key]: value
     };
     const jsonData = JSON.stringify(newData);
-    localStorage.setItem(this.storageKey, jsonData);
+    if (!this.isIframe) {
+      localStorage.setItem(this.storageKey, jsonData);
+    } else {
+      this.document.cookie = `${this.storageKey}=${jsonData}`;
+    }
     this.$dataSubject.next(newData);
   }
 
@@ -48,13 +64,21 @@ export class StoreService {
     return this.$dataSubject?.value[key];
   }
 
-  public fetchData(): void {
-    const data = JSON.parse(localStorage.getItem(this.storageKey));
+  public fetchData(isIframe: boolean): void {
+    this.isIframe = isIframe;
+    const cookie = this.cookieService.get(this.storageKey);
+    const data = JSON.parse(
+      this.isIframe && cookie ? cookie : localStorage.getItem(this.storageKey)
+    );
     this.$dataSubject.next(data || {});
   }
 
   public deleteData(): void {
-    localStorage.removeItem(this.storageKey);
+    if (!this.isIframe) {
+      localStorage.removeItem(this.storageKey);
+    } else {
+      this.cookieService.delete(this.storageKey);
+    }
     this.$dataSubject.next(null);
   }
 
@@ -64,7 +88,11 @@ export class StoreService {
       [key]: undefined
     };
     const jsonData = JSON.stringify(newData);
-    localStorage.setItem(this.storageKey, jsonData);
+    if (!this.isIframe) {
+      localStorage.setItem(this.storageKey, jsonData);
+    } else {
+      this.cookieService.set(this.storageKey, jsonData);
+    }
     this.$dataSubject.next(newData);
   }
 
