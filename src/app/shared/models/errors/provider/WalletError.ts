@@ -4,6 +4,6 @@ export class WalletError extends RubicError {
   constructor() {
     super();
     this.translateKey = 'errors.noWallet';
-    this.comment = 'You have not connect any wallet';
+    this.comment = 'You have not connected any wallet';
   }
 }

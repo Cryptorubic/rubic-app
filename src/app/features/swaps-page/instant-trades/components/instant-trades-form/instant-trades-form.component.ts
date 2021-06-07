@@ -685,8 +685,6 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
       .catch(err => {
         this.selectedTradeState = INSTANT_TRADES_STATUS.ERROR;
         this.trades[selectedServiceIndex].tradeState = INSTANT_TRADES_STATUS.COMPLETED;
-        this.errorsService.showErrorDialog(err);
-
         this.waitingForProvider = false;
         this.errorsService.showErrorDialog(err);
 

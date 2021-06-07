@@ -19,7 +19,9 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
   }
 
   public get isLoggedIn(): boolean {
-    return Boolean(this.providerConnectorService?.address);
+    return Boolean(
+      this.providerConnectorService?.provider && this.providerConnectorService.address
+    );
   }
 
   public get gasFeeDisplayCondition(): BigNumber | undefined {
