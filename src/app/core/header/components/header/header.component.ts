@@ -14,6 +14,7 @@ import { UserInterface } from 'src/app/core/services/auth/models/user.interface'
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { StoreService } from 'src/app/core/services/store/store.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -38,7 +39,8 @@ export class HeaderComponent implements AfterViewInit {
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly storeService: StoreService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
@@ -61,9 +63,8 @@ export class HeaderComponent implements AfterViewInit {
 
   private async loadUser(): Promise<void> {
     const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
-    if (isIframe) {
-      await this.authService.serverlessSignIn();
-    } else {
+    this.storeService.fetchData(isIframe);
+    if (!isIframe) {
       await this.authService.loadUser();
     }
   }

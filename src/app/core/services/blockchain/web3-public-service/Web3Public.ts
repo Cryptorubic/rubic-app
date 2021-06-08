@@ -37,9 +37,8 @@ export class Web3Public {
    * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
    */
-  public getTokenInfo: (
-    tokenAddress: string
-  ) => Promise<Token> = this.getTokenInfoCachingDecorator();
+  public getTokenInfo: (tokenAddress: string) => Promise<Token> =
+    this.getTokenInfoCachingDecorator();
 
   /**
    * @description gets account balance in Eth units
@@ -212,12 +211,6 @@ export class Web3Public {
    * @param address address to check
    */
   public isNativeAddress = (address: string): boolean => {
-    if (
-      this.blockchain.name === BLOCKCHAIN_NAME.POLYGON ||
-      this.blockchain.name === BLOCKCHAIN_NAME.POLYGON_TESTNET
-    ) {
-      return address.toLowerCase() === '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'.toLowerCase();
-    }
     return address === '0x0000000000000000000000000000000000000000';
   };
 

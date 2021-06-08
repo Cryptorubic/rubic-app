@@ -38,7 +38,7 @@
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
     "sameTokens": "You can't choose the same token on both sides, please choose different tokens.",
     "noQrCode": "Please make sure that you have scan qrCode",
-    "noWallet": "You have not connect any wallet",
+    "noWallet": "You have not connected any wallet",
     "retrievingTokensError": "Error retrieving tokens",
     "wrongToken": "Rubic bridge supports only rubic token.",
     "oneInchQuote": "Oneinch quote error",

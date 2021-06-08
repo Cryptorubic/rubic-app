@@ -24,8 +24,8 @@ export class ProviderConnectorService {
 
   private privateProvider: PrivateProvider;
 
-  public get address(): string {
-    return this.provider.address;
+  public get address(): string | undefined {
+    return this.provider?.address;
   }
 
   public get network(): IBlockchain {
@@ -45,11 +45,11 @@ export class ProviderConnectorService {
   }
 
   public get isProviderActive(): boolean {
-    return this.provider.isActive;
+    return Boolean(this.provider?.isActive);
   }
 
   public get isProviderInstalled(): boolean {
-    return this.provider.isInstalled;
+    return Boolean(this.provider?.isInstalled);
   }
 
   public get $networkChange(): Observable<IBlockchain> {
@@ -124,16 +124,6 @@ export class ProviderConnectorService {
         );
         break;
       }
-      case WALLET_NAME.METAMASK: {
-        this.provider = new MetamaskProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorsService
-        );
-        await (this.provider as MetamaskProvider).setupDefaultValues();
-        break;
-      }
       case WALLET_NAME.WALLET_CONNECT: {
         this.provider = new WalletConnectProvider(
           this.web3,
@@ -143,6 +133,7 @@ export class ProviderConnectorService {
         );
         break;
       }
+      case WALLET_NAME.METAMASK:
       default: {
         this.provider = new MetamaskProvider(
           this.web3,
@@ -154,5 +145,15 @@ export class ProviderConnectorService {
       }
     }
     this.providerName = provider;
+  }
+
+  public async connectDefaultProvider(): Promise<void> {
+    this.provider = new MetamaskProvider(
+      this.web3,
+      this.$networkChangeSubject,
+      this.$addressChangeSubject,
+      this.errorsService
+    ) as PrivateProvider;
+    this.providerName = WALLET_NAME.METAMASK;
   }
 }

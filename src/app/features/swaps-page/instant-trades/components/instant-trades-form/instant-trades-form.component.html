@@ -13,10 +13,10 @@
         trades.length === 2 &&
         (tradeParameters.isCustomFromTokenFormOpened || tradeParameters.isCustomToTokenFormOpened),
       'instant-trade-form_not-extended':
-        (trades[0].trade?.gasFeeInEth && trades[0].trade?.gasFeeInUsd) ||
+        (trades[0]?.trade?.gasFeeInEth && trades[0]?.trade?.gasFeeInUsd) ||
         checkIfError(0) ||
         (trades.length > 1 &&
-          ((trades[1].trade?.gasFeeInEth && trades[1].trade?.gasFeeInUsd) || checkIfError(1)))
+          ((trades[1]?.trade?.gasFeeInEth && trades[1]?.trade?.gasFeeInUsd) || checkIfError(1)))
     }"
     (submit)="$event.preventDefault()"
   >
