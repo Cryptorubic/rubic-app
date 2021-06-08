@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { TokensSelectService } from '../../tokens-select/services/tokens-select.service';
 
 @Component({
   selector: 'app-new-ui',
@@ -9,9 +10,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 export class NewUiComponent {
   readonly avatarUrl = './assets/images/rubic-logo-main.svg';
 
-  constructor() {}
+  constructor(private tokensSelectService: TokensSelectService) {}
 
   onClick(event: MouseEvent) {
     console.log('click', event);
+  }
+
+  openTokensSelect() {
+    this.tokensSelectService.showDialog();
   }
 }

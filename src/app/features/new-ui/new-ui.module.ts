@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TuiAvatarModule } from '@taiga-ui/kit';
 import { TuiButtonModule } from '@taiga-ui/core';
 import { NewUiComponent } from './new-ui/new-ui.component';
+import { TokensSelectModule } from '../tokens-select/tokens-select.module';
 
 const routes: Routes = [{ path: '', component: NewUiComponent }];
 
@@ -15,7 +16,8 @@ const routes: Routes = [{ path: '', component: NewUiComponent }];
     CommonModule,
     SharedModule,
     TuiAvatarModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TokensSelectModule
   ],
   exports: [RouterModule]
 })
