@@ -242,7 +242,6 @@ export class QueryParamsService {
     isBridge?: boolean
   ): SwapToken {
     const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
-    console.log(tokens);
     const similarTokens = tokens.filter(token => {
       return isBridge
         ? (token as BridgeToken).blockchainToken[this.currentQueryParams.fromBlockchain].symbol ===

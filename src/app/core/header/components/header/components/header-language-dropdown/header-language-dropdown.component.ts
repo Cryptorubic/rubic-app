@@ -3,6 +3,7 @@ import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
 import { languagesList } from 'src/app/core/header/models/languages-list';
+import { Router } from '@angular/router';
 import { QueryParamsService } from '../../../../../services/query-params/query-params.service';
 
 @Component({
@@ -22,14 +23,12 @@ export class HeaderLanguageDropdownComponent {
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly router: Router
   ) {
     this.languagesList = languagesList;
     translateService.onLangChange.subscribe((event: LangChangeEvent) => {
       this.setActiveLanguage(event);
-    });
-    this.setActiveLanguage({
-      lang: translateService.currentLang
     });
   }
 
@@ -48,8 +47,6 @@ export class HeaderLanguageDropdownComponent {
     this.languagesList.sort((...params) => {
       return params.pop().active ? 1 : -1;
     });
-
-    this.queryParamsService.setQueryParam('lang', this.currentLanguage);
   }
 
   public toggleLanguageDropdown() {
@@ -59,5 +56,6 @@ export class HeaderLanguageDropdownComponent {
   public setLanguage(lng: string) {
     this.translateService.use(lng);
     this.queryParamsService.setQueryParam('lang', lng);
+    this.router.navigate([], { queryParams: { lang: lng } });
   }
 }
