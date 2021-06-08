@@ -1,9 +1,10 @@
-import { TranslateService } from '@ngx-translate/core';
 import { RubicError } from '../RubicError';
 
 export class UserRejectError extends RubicError {
-  constructor(protected readonly translateService: TranslateService) {
-    super(translateService);
-    this.comment = this.translateService.instant('errors.userReject');
+  constructor() {
+    super();
+    this.translateKey = 'errors.userReject';
+    this.comment =
+      'You rejected the execution of the transaction. Please confirm it first in order to complete the trade.';
   }
 }

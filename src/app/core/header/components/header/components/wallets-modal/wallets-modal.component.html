@@ -1,0 +1,21 @@
+<ng-container #modal>
+  <div class="modal">
+    <button (click)="close()" class="modal__close" >
+      <span [inlineSVG]="'assets/images/icons/cross-gray.svg'"></span>
+    </button>
+    <div class="modal__content">
+      <header class="modal__header">
+        <div class="modal__title">Connect wallet</div>
+      </header>
+      <main class="modal__body">
+        <button [disabled]="($walletsLoading | async) ? 'disabled' : false" class="modal__provider-button" *ngFor="let provider of providers" (click)="connectProvider(provider.value)">{{ provider.name }}
+          <span class="modal__provider-icon"><img src="{{ provider.img }}" alt="{{provider.name}} provider"></span>
+        </button>
+      </main>
+      <footer class="modal__footer">
+        <span>New to Ethereum? </span>
+        <a target="_blank" class="modal__link" href="https://ethereum.org/en/wallets/">Learn more about wallets</a>
+      </footer>
+    </div>
+  </div>
+</ng-container>

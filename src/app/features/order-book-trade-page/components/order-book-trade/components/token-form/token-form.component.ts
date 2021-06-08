@@ -5,11 +5,19 @@ import {
   Output,
   ViewChild,
   EventEmitter,
-  OnChanges
+  OnChanges,
+  OnDestroy
 } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import BigNumber from 'bignumber.js';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { ErrorsService } from 'src/app/core/services/errors/errors.service';
+import { Subscription } from 'rxjs';
+import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 import {
   ORDER_BOOK_TRADE_STATUS,
   OrderBookDataToken,
@@ -17,14 +25,7 @@ import {
 } from '../../../../models/trade-data';
 import ADDRESS_TYPE from '../../../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TX_STATUS } from '../../../../models/TX_STATUS';
-import { TokenPart } from '../../../../../../shared/models/order-book/tokens';
-import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
-import { RubicError } from '../../../../../../shared/models/errors/RubicError';
 import { OrderBookTradeService } from '../../../../services/order-book-trade.service';
-import { NetworkError } from '../../../../../../shared/models/errors/provider/NetworkError';
-import { MessageBoxComponent } from '../../../../../../shared/components/message-box/message-box.component';
-import { MetamaskError } from '../../../../../../shared/models/errors/provider/MetamaskError';
-import { NetworkErrorComponent } from '../../../../../../shared/components/network-error/network-error.component';
 
 type Operation = 'approve' | 'contribute' | 'withdraw';
 
@@ -37,20 +38,20 @@ type Statuses = {
   templateUrl: './token-form.component.html',
   styleUrls: ['./token-form.component.scss']
 })
-export class TokenFormComponent implements OnInit, OnChanges {
+export class TokenFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() tradeData: OrderBookTradeData;
 
   @Input() tokenPart: TokenPart;
 
   @Input() oppositeTokenToGet: string;
 
-  @Output() amountToContributeChanges = new EventEmitter<string>();
+  @Output() amountToContributeChange = new EventEmitter<string>();
+
+  @ViewChild('amountToContributeModel') amountToContributeModel: NgModel;
 
   private readonly BILLION = 1e9;
 
   private readonly MILLION = 1e6;
-
-  @ViewChild('amountToContributeModel') amountToContributeModel: NgModel;
 
   public TRADE_STATUS = ORDER_BOOK_TRADE_STATUS;
 
@@ -63,6 +64,10 @@ export class TokenFormComponent implements OnInit, OnChanges {
   public shortedAmountTotal: string;
 
   public amountToContribute: string;
+
+  public walletAddress: string;
+
+  private _userSubscription$: Subscription;
 
   public operationStatus: Statuses = {
     approve: TX_STATUS.NONE,
@@ -80,22 +85,36 @@ export class TokenFormComponent implements OnInit, OnChanges {
     return new BigNumber(this.amountToContribute?.split(',').join(''));
   }
 
-  constructor(private orderBookTradeService: OrderBookTradeService, private dialog: MatDialog) {}
+  constructor(
+    private readonly orderBookTradeService: OrderBookTradeService,
+    private readonly errorsService: ErrorsService,
+    private readonly authService: AuthService,
+    private readonly dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.token = this.tradeData.token[this.tokenPart];
 
     this.setShortedAmountTotal();
     this.setAmountLeft();
+
+    this._userSubscription$ = this.authService.getCurrentUser().subscribe(async user => {
+      this.walletAddress = user?.address;
+    });
   }
 
   ngOnChanges(): void {
     this.token = this.tradeData.token[this.tokenPart];
     this.token.amountLeft = null;
-
     if (this.token) {
       this.setAmountLeft();
     }
+
+    this.updateAmountToContributeModel();
+  }
+
+  ngOnDestroy(): void {
+    this._userSubscription$.unsubscribe();
   }
 
   private setShortedAmountTotal(): void {
@@ -118,7 +137,7 @@ export class TokenFormComponent implements OnInit, OnChanges {
 
   public setAmountToContribute(value: string): void {
     this.amountToContribute = value;
-    this.amountToContributeChanges.emit(value);
+    this.amountToContributeChange.emit(value);
   }
 
   public getMinContributionAsString(): string {
@@ -134,6 +153,10 @@ export class TokenFormComponent implements OnInit, OnChanges {
 
   private updateAmountToContributeModel(): void {
     this.amountToContributeModel?.control.updateValueAndValidity();
+  }
+
+  public onConnectWallet(): void {
+    this.dialog.open(WalletsModalComponent, { width: '420px' });
   }
 
   private setOperationInProgress(operation: Operation): void {
@@ -152,25 +175,7 @@ export class TokenFormComponent implements OnInit, OnChanges {
   private setOperationError(operation: Operation, err: RubicError): void {
     this.operationStatus[operation] = TX_STATUS.ERROR;
     this.isOperationInProgress = false;
-    this.showErrorMessage(err);
-  }
-
-  private showErrorMessage(err: RubicError): void {
-    let data: any = { title: 'Error', descriptionText: err.comment };
-    if (err instanceof MetamaskError) {
-      data.title = 'Warning';
-    }
-    if (err instanceof NetworkError) {
-      data = {
-        title: 'Error',
-        descriptionComponentClass: NetworkErrorComponent,
-        descriptionComponentInputs: { networkError: err }
-      };
-    }
-    this.dialog.open(MessageBoxComponent, {
-      width: '400px',
-      data
-    });
+    this.errorsService.showErrorDialog(err);
   }
 
   public makeApproveOrContribute(): void {

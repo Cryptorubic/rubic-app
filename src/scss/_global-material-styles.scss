@@ -12,6 +12,10 @@
   }
 }
 
+.cdk-overlay-dark-backdrop {
+  background: rgba(0, 0, 0, 0.65) !important;
+}
+
 .mat-button-focus-overlay {
   background: none !important;
 }

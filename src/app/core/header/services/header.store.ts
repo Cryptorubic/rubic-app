@@ -30,11 +30,17 @@ export class HeaderStore {
   public logoutConfirmationModal: MatDialogRef<any>;
 
   /**
+   * Should wallets buttons be disabled or not.
+   */
+  public $walletsLoadingStatusSubject: BehaviorSubject<boolean>;
+
+  /**
    * Maximum size of mobile device.
    */
   public readonly mobileWidth: number;
 
   constructor() {
+    this.$walletsLoadingStatusSubject = new BehaviorSubject<boolean>(false);
     const mobileWidth = 1024;
     this.mobileWidth = mobileWidth;
     this.$isConfirmModalOpened = new BehaviorSubject<boolean>(false);
@@ -48,6 +54,14 @@ export class HeaderStore {
 
   public setConfirmModalOpeningStatus(value: boolean): void {
     this.$isConfirmModalOpened.next(value);
+  }
+
+  public getWalletsLoadingStatus(): Observable<boolean> {
+    return this.$walletsLoadingStatusSubject.asObservable();
+  }
+
+  public setWalletsLoadingStatus(status: boolean): void {
+    return this.$walletsLoadingStatusSubject.next(status);
   }
 
   public toggleConfirmModalOpeningStatus(): void {

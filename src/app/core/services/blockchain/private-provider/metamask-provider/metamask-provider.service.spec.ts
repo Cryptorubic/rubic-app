@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MetamaskProviderService } from './metamask-provider.service';
+import { MetamaskProvider } from './metamask-provider';
 
 describe('ProviderService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: MetamaskProviderService = TestBed.get(MetamaskProviderService);
+    const service: MetamaskProvider = TestBed.get(MetamaskProvider);
 
     expect(service).toBeTruthy();
   });

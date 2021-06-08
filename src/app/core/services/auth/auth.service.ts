@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { take, finalize, first } from 'rxjs/operators';
+import { finalize, first, mergeMap } from 'rxjs/operators';
+import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
+import { WalletlinkError } from 'src/app/shared/models/errors/provider/WalletlinkError';
 import { HeaderStore } from '../../header/services/header.store';
-import { Web3PrivateService } from '../blockchain/web3-private-service/web3-private.service';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
 import { QueryParamsService } from '../query-params/query-params.service';
+import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
+import { ErrorsService } from '../errors/errors.service';
+import { StoreService } from '../store/store.service';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -33,28 +37,28 @@ export class AuthService {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService,
-    private readonly web3Service: Web3PrivateService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly errorsService: ErrorsService,
+    private readonly store: StoreService
   ) {
     this.isAuthProcess = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
-    this.web3Service.onAddressChanges.subscribe(address => {
+    this.providerConnectorService.$addressChange.subscribe(address => {
       if (this.isAuthProcess) {
         return;
       }
       const user = this.$currentUser.getValue();
-      // user inited, account not authorized on backend or authorized other account
-      if (user !== undefined && (user === null || user?.address !== address) && address) {
-        /* this.$currentUser.next(null);
-        this.signIn(); */
-        this.queryParamsService.$isIframe.pipe(take(1)).subscribe(isIframe => {
-          if (isIframe) {
-            this.$currentUser.next({ address });
-          } else {
-            // window.location.reload();
-          }
-        });
-        // TODO: надо продумать модальные окна на кейсы, когда юзер сменил адрес в метамаске но не подписал nonce с бэка
+      if (
+        user !== undefined &&
+        user !== null &&
+        user?.address !== null &&
+        address &&
+        user?.address !== address
+      ) {
+        this.signOut()
+          .pipe(mergeMap(() => this.signIn()))
+          .subscribe();
       }
     });
   }
@@ -89,13 +93,16 @@ export class AuthService {
 
   public async loadUser() {
     this.isAuthProcess = true;
+    if (!this.providerConnectorService.provider) {
+      await this.providerConnectorService.installProvider();
+    }
     this.fetchMetamaskLoginBody().subscribe(
       async metamaskLoginBody => {
         if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
-          await this.web3Service.activate();
+          await this.providerConnectorService.activate();
 
           const { address } = metamaskLoginBody.payload.user;
-          if (address === this.web3Service.address) {
+          if (address.toLowerCase() === this.providerConnectorService.address.toLowerCase()) {
             this.$currentUser.next({ address });
           } else {
             this.signOut()
@@ -119,27 +126,53 @@ export class AuthService {
   /**
    * @description Initiate authentication via metamask.
    */
-  public async signIn(): Promise<void> {
-    this.isAuthProcess = true;
-    await this.web3Service.activate();
-    const nonce = (await this.fetchMetamaskLoginBody().toPromise()).payload.message;
-    const signature = await this.web3Service.signPersonal(nonce);
+  public async signIn(loginWithoutBackend: boolean = false): Promise<void> {
+    try {
+      if (loginWithoutBackend) {
+        await this.serverlessSignIn();
+        return;
+      }
 
-    await this.sendSignedNonce(this.web3Service.address, nonce, signature);
+      this.isAuthProcess = true;
+      await this.providerConnectorService.activate();
 
-    this.$currentUser.next({ address: this.web3Service.address });
-    this.isAuthProcess = false;
+      const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
+      if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
+        const { address } = metamaskLoginBody.payload.user;
+        this.$currentUser.next({ address });
+        this.isAuthProcess = false;
+        return;
+      }
+      const nonce = metamaskLoginBody.payload.message;
+      const signature = await this.providerConnectorService.signPersonal(nonce);
+      await this.sendSignedNonce(this.providerConnectorService.address, nonce, signature);
+
+      this.$currentUser.next({ address: this.providerConnectorService.address });
+      this.isAuthProcess = false;
+    } catch (err) {
+      this.$currentUser.next(null);
+      this.isAuthProcess = false;
+      this.providerConnectorService.deActivate();
+
+      let error = err;
+      if (err.code === 4001 || err instanceof WalletlinkError) {
+        this.headerStore.setWalletsLoadingStatus(false);
+        error = new UserRejectError();
+      }
+      this.errorsService.throw(error);
+    }
   }
 
-  public async iframeSignIn(): Promise<void> {
+  public async serverlessSignIn(): Promise<void> {
     this.isAuthProcess = true;
-    const permissions = await this.web3Service.requestPermissions();
+    await this.providerConnectorService.connectDefaultProvider();
+    const permissions = await this.providerConnectorService.requestPermissions();
     const accountsPermission = permissions.find(
       permission => permission.parentCapability === 'eth_accounts'
     );
     if (accountsPermission) {
-      await this.web3Service.activate();
-      const { address } = this.web3Service;
+      await this.providerConnectorService.activate();
+      const { address } = this.providerConnectorService;
       this.$currentUser.next({ address } || null);
     } else {
       this.$currentUser.next(null);
@@ -153,14 +186,16 @@ export class AuthService {
   public signOut(): Observable<string> {
     return this.httpService.post('metamask/logout/', {}).pipe(
       finalize(() => {
+        this.providerConnectorService.deActivate();
         this.$currentUser.next(null);
-        this.web3Service.deActivate();
+        this.store.clearStorage();
       })
     );
   }
 
-  public iframeSignOut(): void {
-    this.web3Service.deActivate();
+  public serverlessSignOut(): void {
+    this.providerConnectorService.deActivate();
     this.$currentUser.next(null);
+    this.store.clearStorage();
   }
 }

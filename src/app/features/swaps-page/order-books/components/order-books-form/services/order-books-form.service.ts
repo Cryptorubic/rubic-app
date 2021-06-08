@@ -6,18 +6,19 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
-import { TranslateService } from '@ngx-translate/core';
-import SameTokensError from 'src/app/shared/models/errors/order-book/SameTokensError';
 import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { TotalSupplyOverflowError } from 'src/app/shared/models/errors/order-book/TotalSupplyOverflowError';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { ErrorsService } from 'src/app/core/services/errors/errors.service';
+import SameTokensError from 'src/app/shared/models/errors/order-book/SameTokensError';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
-import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
-import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 
 @Injectable()
 export class OrderBooksFormService implements OnDestroy {
@@ -35,7 +36,8 @@ export class OrderBooksFormService implements OnDestroy {
     private web3PublicService: Web3PublicService,
     private web3PrivateService: Web3PrivateService,
     private useTestingModeService: UseTestingModeService,
-    private readonly translateService: TranslateService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly errorsService: ErrorsService
   ) {
     this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
@@ -64,23 +66,23 @@ export class OrderBooksFormService implements OnDestroy {
   }
 
   private async checkSettings(tradeForm: OrderBookTradeForm): Promise<void> {
-    if (!this.web3PrivateService.isProviderActive) {
-      throw new MetamaskError(this.translateService);
+    if (!this.providerConnectorService.isProviderActive) {
+      this.errorsService.throw(new WalletError());
     }
 
-    if (!this.web3PrivateService.address) {
-      throw new AccountError(this.translateService);
+    if (!this.providerConnectorService.address) {
+      this.errorsService.throw(new AccountError());
     }
 
     if (tradeForm.token.from.address.toLowerCase() === tradeForm.token.to.address.toLowerCase()) {
-      throw new SameTokensError(this.translateService);
+      this.errorsService.throw(new SameTokensError());
     }
 
     if (
-      this.web3PrivateService.networkName !== tradeForm.blockchain &&
-      this.web3PrivateService.networkName !== `${tradeForm.blockchain}_TESTNET`
+      this.providerConnectorService.networkName !== tradeForm.blockchain &&
+      this.providerConnectorService.networkName !== `${tradeForm.blockchain}_TESTNET`
     ) {
-      throw new NetworkError(tradeForm.blockchain, this.translateService);
+      this.errorsService.throw(new NetworkError(tradeForm.blockchain));
     }
 
     const web3Public: Web3Public = this.web3PublicService[tradeForm.blockchain];
@@ -90,10 +92,11 @@ export class OrderBooksFormService implements OnDestroy {
       (await web3Public.getTokenInfo(fromToken.address)).totalSupply
     );
     if (!fromTokenTotalSupply.isNaN() && fromTokenTotalSupply.lt(fromToken.amount)) {
-      throw new TotalSupplyOverflowError(
-        this.translateService,
-        fromToken.symbol,
-        fromTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
+      this.errorsService.throw(
+        new TotalSupplyOverflowError(
+          fromToken.symbol,
+          fromTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
+        )
       );
     }
 
@@ -103,10 +106,8 @@ export class OrderBooksFormService implements OnDestroy {
       (await web3Public.getTokenInfo(toToken.address)).totalSupply
     );
     if (!toTokenTotalSupply.isNaN() && toTokenTotalSupply.lt(toToken.amount)) {
-      throw new TotalSupplyOverflowError(
-        this.translateService,
-        toToken.symbol,
-        toTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT)
+      this.errorsService.throw(
+        new TotalSupplyOverflowError(toToken.symbol, toTokenTotalSupply.toFormat(BIG_NUMBER_FORMAT))
       );
     }
   }

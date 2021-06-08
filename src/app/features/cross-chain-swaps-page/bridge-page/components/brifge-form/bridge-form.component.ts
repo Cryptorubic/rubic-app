@@ -11,8 +11,8 @@ import InputToken from 'src/app/shared/models/tokens/InputToken';
 import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
-
 import { TransactionReceipt } from 'web3-eth';
+import { BLOCKCHAINS_DATA } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS_DATA';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeBlockchain } from '../../models/BridgeBlockchain';
 import { BridgeTrade } from '../../models/BridgeTrade';
@@ -34,6 +34,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
   public ADDRESS_TYPE = ADDRESS_TYPE;
+
+  public BLOCKCHAINS_DATA = BLOCKCHAINS_DATA;
 
   public fromBlockchainsList: BridgeBlockchain[] = Object.values(BLOCKCHAINS).filter(
     b => b.key !== BLOCKCHAIN_NAME.TRON && b.key !== BLOCKCHAIN_NAME.XDAI
@@ -70,33 +72,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
   public fromWalletAddress: string;
 
   public toWalletAddress: string;
-
-  public BLOCKCHAIN_DATA = {
-    [BLOCKCHAIN_NAME.ETHEREUM]: {
-      link: 'https://ethereum.org/en/',
-      caption: 'Ethereum'
-    },
-    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-      link: 'https://www.binance.org/',
-      caption: 'Binance Smart Chain',
-      providerImg: 'Binance'
-    },
-    [BLOCKCHAIN_NAME.POLYGON]: {
-      link: 'https://polygon.technology/',
-      caption: 'Polygon',
-      providerImg: 'Polygon'
-    },
-    [BLOCKCHAIN_NAME.TRON]: {
-      link: 'https://tron.network/',
-      caption: 'TRON',
-      providerImg: 'Binance'
-    },
-    [BLOCKCHAIN_NAME.XDAI]: {
-      link: 'https://www.xdaichain.com/',
-      caption: 'xDai',
-      providerImg: 'XDai'
-    }
-  };
 
   public PROVIDERS_DATA = {
     [BRIDGE_PROVIDER_TYPE.PANAMA]: {
@@ -371,8 +346,8 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setBlockchainsToService(): void {
-    this.bridgeService.setBlockchains(this.fromBlockchain.key, this.toBlockchain.key);
+  private async setBlockchainsToService(): Promise<void> {
+    await this.bridgeService.setBlockchains(this.fromBlockchain.key, this.toBlockchain.key);
   }
 
   public isBlockchainSelected(blockchain: BLOCKCHAIN_NAME): boolean {
@@ -518,7 +493,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         err => {
           this.tradeInProgress = false;
           this.buttonAnimation = false;
-          this.errorsService.showErrorDialog(err, this.dialog);
+          this.errorsService.showErrorDialog(err);
         }
       );
   }

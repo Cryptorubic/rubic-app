@@ -1,13 +1,9 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { MatDialog } from '@angular/material/dialog';
-import { AsyncPipe } from '@angular/common';
-import { TranslateService } from '@ngx-translate/core';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { RubicError } from '../../../../../../shared/models/errors/RubicError';
-import { MessageBoxComponent } from '../../../../../../shared/components/message-box/message-box.component';
+import { WalletsModalComponent } from '../wallets-modal/wallets-modal.component';
 
 @Component({
   selector: 'app-login-button',
@@ -17,34 +13,11 @@ import { MessageBoxComponent } from '../../../../../../shared/components/message
 export class LoginButtonComponent {
   public $currentUser: Observable<UserInterface>;
 
-  constructor(
-    private readonly authService: AuthService,
-    private dialog: MatDialog,
-    private readonly translateService: TranslateService,
-    private readonly queryParamsService: QueryParamsService,
-    private cdr: ChangeDetectorRef
-  ) {
+  constructor(private readonly authService: AuthService, private dialog: MatDialog) {
     this.$currentUser = this.authService.getCurrentUser();
   }
 
-  public async authUser(): Promise<void> {
-    const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
-    try {
-      if (isIframe) {
-        await this.authService.iframeSignIn();
-      } else {
-        await this.authService.signIn();
-      }
-    } catch (error) {
-      if (error.code === 4001) {
-        return;
-      }
-      const e = error instanceof RubicError ? error : new RubicError(this.translateService);
-      const data: any = { title: 'Warinig', descriptionText: e.comment };
-      this.dialog.open(MessageBoxComponent, {
-        width: '400px',
-        data
-      });
-    }
+  public showModal(): void {
+    this.dialog.open(WalletsModalComponent, { width: '420px' });
   }
 }

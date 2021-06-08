@@ -16,3 +16,12 @@
 .dialog-block {
   border-radius: 10px;
 }
+
+::ng-deep .close-icon svg {
+  width: 25px;
+  height: 25px;
+
+  path {
+    fill: black !important;
+  }
+}

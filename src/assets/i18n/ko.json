@@ -25,7 +25,8 @@
     "via": "통하다",
     "contractAddress": "토큰 계약 주소",
     "enterAmount": "금액을 입력하세요",
-    "chooseToken": "토큰 선택"
+    "chooseToken": "토큰 선택",
+    "warning": "Warning"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -35,7 +36,15 @@
     "userReject": "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
     "undefined": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우 <a href='mailto:support@rubic.finance' target='_blank'>고객 지원에 문의하십시오</a>.",
     "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
-    "sameTokens": "양쪽에서 동일한 토큰을 선택할 수 없습니다. 다른 토큰을 선택하십시오."
+    "sameTokens": "양쪽에서 동일한 토큰을 선택할 수 없습니다. 다른 토큰을 선택하십시오.",
+    "noQrCode": "Please make sure that you have scan qrCode",
+    "noWallet": "You have not connected any wallet",
+    "retrievingTokensError": "Error retrieving tokens",
+    "wrongToken": "Rubic bridge supports only rubic token.",
+    "oneInchQuote": "Oneinch quote error",
+    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
+    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
+    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas"
   },
   "navigation": {
     "about": "소개",
@@ -325,14 +334,16 @@
     "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
     "tableTitle": "내 크로스-체인 스왑",
     "whatIs": "뭐가 ",
-    "whatIsAfter": "",
+    "whatIsAfter": "?",
     "checkOn": "확인하다 ",
     "assistanceOf": "지원",
     "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다",
     "minAmount": "-최소 금액 ",
     "maxAmount": "최대 금액 ",
     "createBridge": "Create Bridge",
-    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us."
+    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
+    "cryptoTap": "Crypto Tap",
+    "bridge": "Bridge"
   },
   "instantTrades": {
     "title": "즉시 거래",

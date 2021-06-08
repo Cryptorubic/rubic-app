@@ -234,10 +234,7 @@
                 </div>
 
                 <div class="data__date" *ngIf="selectedSortField === SORT_FIELD.DATE">
-                  <div>
-                    <span>{{ tx.updateTime.split(' ')[0] }}</span>
-                    <span>{{ tx.updateTime.split(' ')[1] }}</span>
-                  </div>
+                  {{ tx.updateTime | date: 'dd-MM-yyyy HH:mm:ss' }}
                 </div>
               </div>
 
@@ -301,10 +298,7 @@
                   {{ 'tradesTable.columns.date' | translate }}
                 </div>
                 <div class="data__date">
-                  <div>
-                    <span>{{ tx.updateTime.split(' ')[0] }}</span>
-                    <span>{{ tx.updateTime.split(' ')[1] }}</span>
-                  </div>
+                  {{ tx.updateTime | date: 'dd-MM-yyyy HH:mm:ss' }}
                 </div>
               </div>
 

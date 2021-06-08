@@ -5,14 +5,15 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import * as moment from 'moment';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
+import { ContractParameters } from 'src/app/core/services/order-book-common/models/ContractParameters';
+import { OrderBookCommonService } from 'src/app/core/services/order-book-common/order-book-common.service';
+import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../models/trade-data';
-import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
-import { TokenPart } from '../../../shared/models/order-book/tokens';
-import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
-import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
-import { ContractParameters } from '../../../core/services/order-book-common/models/ContractParameters';
-import { OrderBookCommonService } from '../../../core/services/order-book-common/order-book-common.service';
-import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class OrderBookTradeService {
@@ -21,7 +22,8 @@ export class OrderBookTradeService {
     private web3PrivateService: Web3PrivateService,
     private orderBookApiService: OrderBookApiService,
     private orderBookCommonService: OrderBookCommonService,
-    private readonly translateService: TranslateService
+    private readonly providerConnector: ProviderConnectorService,
+    private readonly errorsService: ErrorsService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {
@@ -152,17 +154,17 @@ export class OrderBookTradeService {
 
     return web3Public.getAllowance(
       tradeData.token[tokenPart].address,
-      this.web3PrivateService.address,
+      this.providerConnector.address,
       contractAddress
     );
   }
 
   private checkSettings(tradeData: OrderBookTradeData): void {
     if (
-      this.web3PrivateService.networkName !== tradeData.blockchain &&
-      this.web3PrivateService.networkName !== `${tradeData.blockchain}_TESTNET`
+      this.providerConnector.networkName !== tradeData.blockchain &&
+      this.providerConnector.networkName !== `${tradeData.blockchain}_TESTNET`
     ) {
-      throw new NetworkError(tradeData.blockchain, this.translateService);
+      this.errorsService.throw(new NetworkError(tradeData.blockchain));
     }
   }
 
@@ -175,7 +177,6 @@ export class OrderBookTradeService {
 
     const { contractAddress } = this.getContractParameters(tradeData);
 
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     const amountToApprove = new BigNumber(2).pow(256).minus(1);
     return this.web3PrivateService.approveTokens(
       tradeData.token[tokenPart].address,
@@ -230,6 +231,7 @@ export class OrderBookTradeService {
         value: web3Public.isNativeAddress(tradeData.token[tokenPart].address) ? value : undefined
       }
     );
+
     this.orderBookApiService.notifyOrderBooksBotOnContribute(
       tradeData.token[tokenPart],
       amount,

@@ -6,13 +6,15 @@ import {
   HostListener,
   TemplateRef,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  AfterViewInit
 } from '@angular/core';
 import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { StoreService } from 'src/app/core/services/store/store.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -21,7 +23,7 @@ import { HeaderStore } from '../../services/header.store';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent {
+export class HeaderComponent implements AfterViewInit {
   public readonly $isMobileMenuOpened: Observable<boolean>;
 
   public readonly $isMobile: Observable<boolean>;
@@ -37,12 +39,10 @@ export class HeaderComponent {
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly storeService: StoreService
   ) {
-    const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
-    if (!isIframe) {
-      this.authService.loadUser();
-    }
+    this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
@@ -54,6 +54,18 @@ export class HeaderComponent {
         const scrolled = window.pageYOffset || document.documentElement.scrollTop;
         this.pageScrolled = scrolled > scrolledHeight;
       };
+    }
+  }
+
+  public ngAfterViewInit(): void {
+    this.authService.getCurrentUser().subscribe(() => this.cdr.detectChanges());
+  }
+
+  private async loadUser(): Promise<void> {
+    const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.$isIframe);
+    this.storeService.fetchData(isIframe);
+    if (!isIframe) {
+      await this.authService.loadUser();
     }
   }
 

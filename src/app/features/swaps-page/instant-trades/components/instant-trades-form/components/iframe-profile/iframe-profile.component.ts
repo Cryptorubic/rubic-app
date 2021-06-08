@@ -24,6 +24,6 @@ export class IframeProfileComponent {
   }
 
   public logout(): void {
-    this.authService.iframeSignOut();
+    this.authService.serverlessSignOut();
   }
 }
