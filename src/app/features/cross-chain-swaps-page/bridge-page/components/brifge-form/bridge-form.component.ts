@@ -340,8 +340,6 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
         );
       }
 
-      console.log(token);
-
       this.changeSelectedToken(token);
     }
   }

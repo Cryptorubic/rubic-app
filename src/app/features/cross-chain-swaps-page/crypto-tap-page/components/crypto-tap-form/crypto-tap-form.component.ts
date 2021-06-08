@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
 import { Subscription } from 'rxjs';
 import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
@@ -23,6 +23,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { BLOCKCHAINS_DATA } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS_DATA';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 
 interface ToTokens {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: SwapToken;
@@ -88,6 +89,8 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   private isTestingMode: boolean;
 
+  private isFirstTokensEmit = true;
+
   constructor(
     private tokensService: TokensService,
     private web3PublicService: Web3PublicService,
@@ -95,7 +98,9 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private errorsService: ErrorsService,
     private providerConnectorService: ProviderConnectorService,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    private queryParamsService: QueryParamsService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
@@ -108,6 +113,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
       this.setTokens(tokens);
+      this.initializeForm();
     });
 
     this._walletAddressSubscription$ = this.providerConnectorService.$addressChange.subscribe(
@@ -120,6 +126,32 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._tokensSubscription$.unsubscribe();
     this._walletAddressSubscription$.unsubscribe();
+  }
+
+  private initializeForm(): void {
+    if (!this.queryParamsService.currentQueryParams) {
+      this.queryParamsService.initiateCryptoTapParams({});
+    }
+
+    if (!this.queryParamsService.currentQueryParams?.toBlockchain) {
+      this.queryParamsService.setQueryParam('toBlockchain', this.toBlockchain.key);
+    } else {
+      const fromBlockchain = this.toBlockchainsList.find(blockchain => {
+        return blockchain.key === this.queryParamsService.currentQueryParams?.toBlockchain;
+      });
+      this.toBlockchain = fromBlockchain || this.toBlockchainsList[0];
+      this.queryParamsService.setQueryParam(
+        'toBlockchain',
+        fromBlockchain?.key || this.toBlockchainsList[0].key
+      );
+    }
+
+    if (this.queryParamsService.currentQueryParams?.fromToken && this.fromTokensList.size > 0) {
+      const fromToken = this.fromTokensList.find(
+        token => token.symbol === this.queryParamsService.currentQueryParams.fromToken
+      );
+      this.onFromTokenChanges(fromToken);
+    }
   }
 
   private setTokens(tokens: List<SwapToken>): void {
@@ -195,11 +227,13 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     if (inputToken) {
       this.cryptoTapTrade.fromToken =
         this.cryptoTapTokens[this.toBlockchain.key][inputToken.symbol];
+      this.queryParamsService.setQueryParam('fromToken', inputToken?.symbol);
     } else {
       this.cryptoTapTrade = {
         ...this.cryptoTapTrade,
-        fromToken: null
+        fromToken: this.cryptoTapTokens[this.toBlockchain.key]['RBC']
       };
+      this.queryParamsService.setQueryParam('fromToken', 'RBC');
     }
   }
 
@@ -207,6 +241,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     this.toBlockchain = blockchain;
     this.cryptoTapTrade.toToken = this.toTokens[this.toBlockchain.key];
     this.setCryptoTapTokens();
+    this.queryParamsService.setQueryParam('toBlockchain', blockchain.key);
   }
 
   public getFeePrice(amount: string, price: number): BigNumber {

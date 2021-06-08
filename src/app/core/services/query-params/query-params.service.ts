@@ -22,6 +22,7 @@ type DefaultQueryParams = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: QueryParams;
   [BLOCKCHAIN_NAME.POLYGON]: QueryParams;
   bridge: QueryParams;
+  cryptoTap: QueryParams;
 };
 
 @Injectable({
@@ -92,6 +93,10 @@ export class QueryParamsService {
       bridge: {
         fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
         toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+      },
+      cryptoTap: {
+        toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        fromToken: 'RBC'
       }
     };
   }
@@ -136,6 +141,13 @@ export class QueryParamsService {
     this.currentQueryParams = {
       fromBlockchain: params.fromBlockchain || this.defaultQueryParams.bridge.fromBlockchain,
       toBlockchain: params.toBlockchain || this.defaultQueryParams.bridge.toBlockchain
+    };
+  }
+
+  public initiateCryptoTapParams(params: QueryParams): void {
+    this.currentQueryParams = {
+      toBlockchain: params.toBlockchain || this.defaultQueryParams.cryptoTap.fromBlockchain,
+      fromToken: params.fromToken || this.defaultQueryParams.cryptoTap.fromToken
     };
   }
 
@@ -212,6 +224,8 @@ export class QueryParamsService {
         this.initiateTradesParams(queryParams);
       } else if (hasParams && route === 'cross-chain/bridge') {
         this.initiateBridgeParams(queryParams);
+      } else if (hasParams && route === 'cross-chain/crypto-tap') {
+        this.initiateCryptoTapParams(queryParams);
       }
     }
   }
