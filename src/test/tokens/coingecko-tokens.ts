@@ -96,10 +96,10 @@ const wrbc = {
 };
 
 const matic = {
-  name: 'Matic',
+  name: 'Matic Network',
   symbol: 'MATIC',
   blockchain: BLOCKCHAIN_NAME.POLYGON,
-  address: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
+  address: '0x0000000000000000000000000000000000000000',
   decimals: 18,
   image: 'http://dev-api.rubic.exchange/media/token_images/MATIC_logo.png',
   rank: 1,
