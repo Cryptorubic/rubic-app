@@ -13,7 +13,13 @@ import { OrderBookApiService } from 'src/app/core/services/backend/order-book-ap
 import { ContractParameters } from 'src/app/core/services/order-book-common/models/ContractParameters';
 import { OrderBookCommonService } from 'src/app/core/services/order-book-common/order-book-common.service';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
-import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../models/trade-data';
+import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import {
+  ORDER_BOOK_TRADE_STATUS,
+  OrderBookDataToken,
+  OrderBookTradeData
+} from '../models/trade-data';
 
 @Injectable()
 export class OrderBookTradeService {
@@ -188,6 +194,26 @@ export class OrderBookTradeService {
     );
   }
 
+  private async checkBalance(token: OrderBookDataToken, amount: string): Promise<void> {
+    const web3Public: Web3Public = this.web3PublicService[token.blockchain];
+    let balance: BigNumber;
+    if (web3Public.isNativeAddress(token.address)) {
+      balance = await web3Public.getBalance(this.providerConnector.address, { inWei: true });
+    } else {
+      balance = await web3Public.getTokenBalance(this.providerConnector.address, token.address);
+    }
+
+    const amountInWei = Web3PublicService.tokenAmountToWei(token, amount);
+    if (balance.lt(amountInWei)) {
+      const formattedTokensBalance = Web3PublicService.tokenWeiToAmount(token, balance).toFormat(
+        BIG_NUMBER_FORMAT
+      );
+      this.errorsService.throw(
+        new InsufficientFundsError(token.symbol, formattedTokensBalance, amount)
+      );
+    }
+  }
+
   public async checkApproveAndMakeContribute(
     tradeData: OrderBookTradeData,
     tokenPart: TokenPart,
@@ -195,6 +221,7 @@ export class OrderBookTradeService {
     onTransactionHash: (hash: string) => void
   ): Promise<TransactionReceipt> {
     this.checkSettings(tradeData);
+    await this.checkBalance(tradeData.token[tokenPart], amount);
 
     const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
 
