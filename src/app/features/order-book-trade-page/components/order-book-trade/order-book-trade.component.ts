@@ -223,19 +223,25 @@ export class OrderBookTradeComponent implements OnInit, OnDestroy {
   public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
     value = value.split(',').join('');
     if (tokenPart === 'from') {
-      this.toTokenAmountToGet = new BigNumber(value)
-        .times(this.toTokenToFromTokenRate.split(',').join(''))
-        .div(100)
-        .times(100 - this.tradeData.token.to.brokerPercent)
-        .dp(4)
-        .toFormat(BIG_NUMBER_FORMAT);
+      this.toTokenAmountToGet = this.withRoundPipe.transform(
+        new BigNumber(value)
+          .times(this.toTokenToFromTokenRate.split(',').join(''))
+          .div(100)
+          .times(100 - this.tradeData.token.to.brokerPercent)
+          .toFormat(BIG_NUMBER_FORMAT),
+        null,
+        'toClosestValue'
+      );
     } else {
-      this.fromTokenAmountToGet = new BigNumber(value)
-        .times(this.fromTokenToToTokenRate.split(',').join(''))
-        .div(100)
-        .times(100 - this.tradeData.token.from.brokerPercent)
-        .dp(4)
-        .toFormat(BIG_NUMBER_FORMAT);
+      this.fromTokenAmountToGet = this.withRoundPipe.transform(
+        new BigNumber(value)
+          .times(this.fromTokenToToTokenRate.split(',').join(''))
+          .div(100)
+          .times(100 - this.tradeData.token.from.brokerPercent)
+          .toFormat(BIG_NUMBER_FORMAT),
+        null,
+        'toClosestValue'
+      );
     }
   }
 
