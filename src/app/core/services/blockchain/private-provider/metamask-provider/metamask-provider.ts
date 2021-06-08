@@ -77,8 +77,6 @@ export class MetamaskProvider extends PrivateProvider {
     const accounts = await this.core.request({ method: 'eth_accounts' });
     this.selectedChain = chain;
     [this.selectedAddress] = accounts;
-    this.onAddressChanges.next(this.selectedAddress);
-    this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
   }
 
   public getAddress(): string {
