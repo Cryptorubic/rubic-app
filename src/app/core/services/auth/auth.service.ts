@@ -132,8 +132,10 @@ export class AuthService {
         await this.serverlessSignIn();
         return;
       }
+
       this.isAuthProcess = true;
       await this.providerConnectorService.activate();
+
       const metamaskLoginBody = await this.fetchMetamaskLoginBody().toPromise();
       if (metamaskLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
         const { address } = metamaskLoginBody.payload.user;
@@ -144,17 +146,20 @@ export class AuthService {
       const nonce = metamaskLoginBody.payload.message;
       const signature = await this.providerConnectorService.signPersonal(nonce);
       await this.sendSignedNonce(this.providerConnectorService.address, nonce, signature);
+
       this.$currentUser.next({ address: this.providerConnectorService.address });
       this.isAuthProcess = false;
     } catch (err) {
+      this.$currentUser.next(null);
+      this.isAuthProcess = false;
+      this.providerConnectorService.deActivate();
+
       let error = err;
       if (err.code === 4001 || err instanceof WalletlinkError) {
         this.headerStore.setWalletsLoadingStatus(false);
         error = new UserRejectError();
       }
       this.errorsService.throw(error);
-      this.$currentUser.next(null);
-      this.isAuthProcess = false;
     }
   }
 

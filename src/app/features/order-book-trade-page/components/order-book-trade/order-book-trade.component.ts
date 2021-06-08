@@ -1,27 +1,23 @@
-import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { List } from 'immutable';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
-import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { ErrorsService } from 'src/app/core/services/errors/errors.service';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
+import { Subscription } from 'rxjs';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { List } from 'immutable';
+import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { OrderBookTradeService } from '../../services/order-book-trade.service';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
-import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
-import { RubicError } from '../../../../shared/models/errors/RubicError';
 import { TX_STATUS } from '../../models/TX_STATUS';
-import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
-import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
-import { TokenPart } from '../../../../shared/models/order-book/tokens';
-import { ErrorsService } from '../../../../core/services/errors/errors.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -36,7 +32,7 @@ type CopiedType = 'linkToDeal' | 'brokerAddress';
   templateUrl: './order-book-trade.component.html',
   styleUrls: ['./order-book-trade.component.scss']
 })
-export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
+export class OrderBookTradeComponent implements OnInit, OnDestroy {
   private readonly BLOCKCHAINS: Array<Blockchain> = [
     {
       name: BLOCKCHAIN_NAME.ETHEREUM,
@@ -98,7 +94,9 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
     brokerAddress: false
   };
 
-  public onAddressChanges: Observable<string>;
+  public walletAddress: string;
+
+  private _userSubscription$: Subscription;
 
   get tokens(): List<SwapToken> {
     return this._tokens;
@@ -109,50 +107,34 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
   }
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private orderBookTradeService: OrderBookTradeService,
-    private orderBookApiService: OrderBookApiService,
-    private tokensService: TokensService,
-    private web3PrivateService: Web3PrivateService,
-    private dialog: MatDialog,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly orderBookTradeService: OrderBookTradeService,
+    private readonly orderBookApiService: OrderBookApiService,
+    private readonly tokensService: TokensService,
+    private readonly dialog: MatDialog,
     private readonly translateService: TranslateService,
     private readonly withRoundPipe: WithRoundPipe,
-    private readonly providerConnector: ProviderConnectorService,
+    private readonly authService: AuthService,
     private readonly errorsService: ErrorsService
   ) {}
 
-  public ngAfterViewInit(): void {
-    try {
-      this.checkProviderSettings();
-    } catch (err) {
-      this.showErrorMessage(err);
-    }
-
+  ngOnInit(): void {
     this.currentUrl = `https://rubic.exchange${this.router.url}`;
 
     const uniqueLink = this.route.snapshot.params.unique_link;
     this.setTradeData(uniqueLink);
 
-    this.onAddressChanges = this.providerConnector.$addressChange;
+    this._userSubscription$ = this.authService.getCurrentUser().subscribe(async user => {
+      this.walletAddress = user?.address;
+      if (this.walletAddress && this.tradeData) {
+        this.tradeData = { ...(await this.orderBookTradeService.setAllowance(this.tradeData)) };
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this._tokensSubscription$?.unsubscribe();
-  }
-
-  private checkProviderSettings() {
-    if (!this.providerConnector.isProviderActive) {
-      this.errorsService.throw(new WalletError());
-    }
-
-    if (!this.providerConnector.address) {
-      this.errorsService.throw(new AccountError());
-    }
-  }
-
-  private showErrorMessage(err: RubicError): void {
-    this.errorsService.showErrorDialog(err);
   }
 
   private setTradeData(uniqueLink: string): void {
@@ -162,7 +144,6 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
         this.setStaticTradeData();
         this.setDynamicData();
 
-        // tokens subscription
         this._tokensSubscription$ = this.tokensService.tokens.subscribe(tokens => {
           this.tokens = tokens;
 
@@ -198,9 +179,12 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
 
   private async setDynamicData(): Promise<void> {
     this.tradeData = { ...(await this.orderBookTradeService.setStatus(this.tradeData)) };
-    this.tradeData = { ...(await this.orderBookTradeService.setAllowance(this.tradeData)) };
     this.tradeData = { ...(await this.orderBookTradeService.setAmountContributed(this.tradeData)) };
     this.tradeData = { ...(await this.orderBookTradeService.setInvestorsNumber(this.tradeData)) };
+
+    if (this.walletAddress) {
+      this.tradeData = { ...(await this.orderBookTradeService.setAllowance(this.tradeData)) };
+    }
 
     setTimeout(() => this.setDynamicData(), 10000);
   }
@@ -239,19 +223,25 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
   public calculateAmountToGet(value: string, tokenPart: TokenPart): void {
     value = value.split(',').join('');
     if (tokenPart === 'from') {
-      this.toTokenAmountToGet = new BigNumber(value)
-        .times(this.toTokenToFromTokenRate)
-        .div(100)
-        .times(100 - this.tradeData.token.to.brokerPercent)
-        .dp(4)
-        .toFormat(BIG_NUMBER_FORMAT);
+      this.toTokenAmountToGet = this.withRoundPipe.transform(
+        new BigNumber(value)
+          .times(this.toTokenToFromTokenRate.split(',').join(''))
+          .div(100)
+          .times(100 - this.tradeData.token.to.brokerPercent)
+          .toFormat(BIG_NUMBER_FORMAT),
+        null,
+        'toClosestValue'
+      );
     } else {
-      this.fromTokenAmountToGet = new BigNumber(value)
-        .times(this.fromTokenToToTokenRate)
-        .div(100)
-        .times(100 - this.tradeData.token.from.brokerPercent)
-        .dp(4)
-        .toFormat(BIG_NUMBER_FORMAT);
+      this.fromTokenAmountToGet = this.withRoundPipe.transform(
+        new BigNumber(value)
+          .times(this.fromTokenToToTokenRate.split(',').join(''))
+          .div(100)
+          .times(100 - this.tradeData.token.from.brokerPercent)
+          .toFormat(BIG_NUMBER_FORMAT),
+        null,
+        'toClosestValue'
+      );
     }
   }
 
@@ -275,7 +265,7 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
       })
       .catch(err => {
         this.cancelStatus = TX_STATUS.ERROR;
-        this.showErrorMessage(err);
+        this.errorsService.showErrorDialog(err);
       });
   }
 }
