@@ -49,7 +49,13 @@ export class AuthService {
         return;
       }
       const user = this.$currentUser.getValue();
-      if (user !== undefined && user !== null && user?.address !== address && address) {
+      if (
+        user !== undefined &&
+        user !== null &&
+        user?.address !== null &&
+        address &&
+        user?.address !== address
+      ) {
         this.signOut()
           .pipe(mergeMap(() => this.signIn()))
           .subscribe();
@@ -154,8 +160,7 @@ export class AuthService {
 
   public async serverlessSignIn(): Promise<void> {
     this.isAuthProcess = true;
-    await this.providerConnectorService.installProvider();
-    await this.providerConnectorService.activate();
+    await this.providerConnectorService.connectDefaultProvider();
     const permissions = await this.providerConnectorService.requestPermissions();
     const accountsPermission = permissions.find(
       permission => permission.parentCapability === 'eth_accounts'
