@@ -1,0 +1,29 @@
+:host {
+  --tui-height-s: 35px;
+  --tui-primary: transparent;
+  --tui-primary-hover: white;
+  --tui-primary-active: #4AA956;
+
+  [tuiIconButton] {
+    border: 1px solid white;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &._hovered {
+      svg {
+        fill: var(--tui-primary-active);
+      }
+    }
+
+    &._pressed {
+      border: none;
+
+      svg {
+        fill: white;
+      }
+    }
+  }
+}

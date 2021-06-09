@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ButtonCircleSize, ButtonCircleType } from 'src/app/shared/models/components/button-circle';
+import { ButtonCircleSize } from 'src/app/shared/models/components/button-circle';
 
 @Component({
   selector: 'app-rubic-button-circle',
@@ -11,8 +11,6 @@ export class RubicButtonCircleComponent implements OnInit {
 
   @Input() altText: string;
 
-  @Input() type: ButtonCircleType;
-
   @Input() icon: string;
 
   @Input() disabled: boolean;
@@ -21,5 +19,7 @@ export class RubicButtonCircleComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.icon);
+  }
 }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 import { TuiAvatarModule } from '@taiga-ui/kit';
-import { TuiButtonModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
 import { NewUiComponent } from './new-ui/new-ui.component';
 
 const routes: Routes = [{ path: '', component: NewUiComponent }];
@@ -15,7 +15,8 @@ const routes: Routes = [{ path: '', component: NewUiComponent }];
     CommonModule,
     SharedModule,
     TuiAvatarModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiSvgModule
   ],
   exports: [RouterModule]
 })

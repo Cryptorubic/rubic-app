@@ -17,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
-import { TuiButtonModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -134,7 +134,8 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiSvgModule
   ],
   exports: [
     FooterComponent,

@@ -4,14 +4,18 @@
   <!-- Button example -->
   <section>
     <h2>Button example</h2>
-    <button tuiButton type="button" class="tui-space_right-3 tui-space_bottom-3">
+    <button tuiIconButton type="button" class="tui-space_right-3 tui-space_bottom-3">
       Button example
     </button>
   </section>
 
   <section>
     <h2>Circle button</h2>
-    <app-rubic-button-circle></app-rubic-button-circle>
+    <app-rubic-button-circle
+      [size]="'s'"
+      [icon]="'https://ng-web-apis.github.io/dist/assets/images/web-api.svg'"
+    >
+    </app-rubic-button-circle>
   </section>
 
   <section>
