@@ -1,25 +1,35 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ButtonCircleSize } from 'src/app/shared/models/components/button-circle';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
+import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
 
 @Component({
   selector: 'app-rubic-button-circle',
   templateUrl: './rubic-button-circle.component.html',
-  styleUrls: ['./rubic-button-circle.component.scss']
+  styleUrls: ['./rubic-button-circle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicButtonCircleComponent implements OnInit {
-  @Input() size: ButtonCircleSize;
+  @Input() size: TuiSizeXS | TuiSizeXL;
 
   @Input() altText: string;
 
-  @Input() icon: string;
+  @Input() iconUrl: string;
 
-  @Input() disabled: boolean;
+  @Input() disabled: boolean = false;
 
-  @Output() onClick: EventEmitter<Event> = new EventEmitter();
+  @Output() onClickEmit: EventEmitter<Event> = new EventEmitter();
 
   constructor() {}
 
-  ngOnInit(): void {
-    console.log(this.icon);
+  ngOnInit(): void {}
+
+  onClick(event: MouseEvent) {
+    this.onClickEmit.emit(event);
   }
 }
