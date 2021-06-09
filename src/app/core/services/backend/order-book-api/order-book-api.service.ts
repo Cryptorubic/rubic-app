@@ -7,10 +7,10 @@ import {
   OrderBookDataToken,
   OrderBookTradeData,
   ORDER_BOOK_TRADE_STATUS
-} from 'src/app/features/order-book-trade-page/models/trade-data';
+} from 'src/app/features/order-book-trade-page-old/models/trade-data';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
 import * as moment from 'moment';
-import { OrderBookTradeForm } from 'src/app/features/swaps-page/order-books/models/trade-form';
+import { OrderBookTradeForm } from 'src/app/features/swaps-page-old/order-books/models/trade-form';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { HttpService } from '../../http/http.service';
 import { TokensService } from '../tokens-service/tokens.service';

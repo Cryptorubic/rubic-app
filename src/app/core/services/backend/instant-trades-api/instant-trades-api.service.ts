@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
-import { InstantTradesTradeData } from 'src/app/features/swaps-page/models/trade-data';
+import { InstantTradesTradeData } from 'src/app/features/swaps-page-old/models/trade-data';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { HttpService } from '../../http/http.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import InstantTrade from '../../../../features/swaps-page/instant-trades/models/InstantTrade';
+import InstantTrade from '../../../../features/swaps-page-old/instant-trades/models/InstantTrade';
 import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
@@ -90,8 +90,8 @@ export class InstantTradesApiService {
   }
 
   /**
-   * @description get list of trades from server
-   * @return list of trades
+   * @description get list of trades-old from server
+   * @return list of trades-old
    */
   // TODO: use AuthService to get user wallet address instead of Web3Private after Coinbase realease
   public fetchSwaps(): Observable<InstantTradesTradeData[]> {

@@ -2,16 +2,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Inject,
-  Renderer2,
   TemplateRef,
   ViewChild
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { Observable } from 'rxjs';
-import { AsyncPipe, DOCUMENT } from '@angular/common';
-import { AuthService } from '../../../../../services/auth/auth.service';
+import { AsyncPipe } from '@angular/common';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WALLET_NAME, WalletProvider } from './models/providers';
 import { HeaderStore } from '../../../../services/header.store';
 
@@ -61,12 +59,12 @@ export class WalletsModalComponent {
         img: './assets/images/icons/wallets/metamask.svg',
         desktopOnly: false
       },
-      // {
-      //   name: 'Coinbase wallet',
-      //   value: WALLET_NAME.WALLET_LINK,
-      //   img: './assets/images/icons/wallets/coinbase.png',
-      //   desktopOnly: true
-      // },
+      {
+        name: 'Coinbase wallet',
+        value: WALLET_NAME.WALLET_LINK,
+        img: './assets/images/icons/wallets/coinbase.png',
+        desktopOnly: true
+      },
       {
         name: 'WalletConnect',
         value: WALLET_NAME.WALLET_CONNECT,

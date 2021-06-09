@@ -9,7 +9,7 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 export class HeaderLogotypeComponent {
   @Input() public logoImagePath: string = 'assets/images/rubic-logo.svg?_=2';
 
-  @Input() public logoRouterLink: string = '/trades';
+  @Input() public logoRouterLink: string = '/trades-old';
 
   constructor() {}
 }
