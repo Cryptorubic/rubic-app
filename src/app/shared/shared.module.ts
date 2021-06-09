@@ -62,7 +62,8 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
 import { AdvancedOptionsButtonComponent } from './components/advanced-options-button/advanced-options-button.component';
 import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
-import { IconButtonComponent } from './components/icon-button/icon-button.component';
+import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
+import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +113,8 @@ import { IconButtonComponent } from './components/icon-button/icon-button.compon
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
     RoundPipe,
-    IconButtonComponent
+    IconButtonComponent,
+    CrossButtonComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -177,7 +179,8 @@ import { IconButtonComponent } from './components/icon-button/icon-button.compon
     RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
-    IconButtonComponent
+    IconButtonComponent,
+    CrossButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
