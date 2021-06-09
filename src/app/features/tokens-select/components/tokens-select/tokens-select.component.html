@@ -1,4 +1,11 @@
-<section>
-  <h2>Select a token</h2>
-  <app-cross-button (crossButtonClick)="close()"></app-cross-button>
+<section class="tokens-select">
+  <header class="tokens-select__header">
+    <h1>Select a token</h1>
+    <app-cross-button (crossButtonClick)="close()"></app-cross-button>
+  </header>
+  <app-tokens-search-bar></app-tokens-search-bar>
+  <div class="tokens-select__content">
+    <app-blockchains-aside></app-blockchains-aside>
+    <app-tokens-list></app-tokens-list>
+  </div>
 </section>

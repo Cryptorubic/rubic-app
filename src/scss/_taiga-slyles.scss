@@ -17,3 +17,11 @@ tui-wrapper[data-appearance='custom'] {
     background: rgba(white, 0.3);
   }
 }
+
+tui-dialog {
+  overflow: hidden;
+
+  &::after {
+    box-shadow: unset !important;
+  }
+}

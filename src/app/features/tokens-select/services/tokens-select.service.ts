@@ -12,7 +12,7 @@ export class TokensSelectService {
 
   showDialog() {
     this.dialogService
-      .open(new PolymorpheusComponent(TokensSelectComponent, this.injector))
+      .open(new PolymorpheusComponent(TokensSelectComponent, this.injector), { size: 's' })
       .subscribe();
   }
 }

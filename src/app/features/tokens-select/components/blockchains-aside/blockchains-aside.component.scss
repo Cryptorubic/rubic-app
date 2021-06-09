@@ -1,0 +1,16 @@
+.blockchain-aside {
+  position: relative;
+  left: -24px;
+
+  width: 75px;
+  height: calc(100% + 24px);
+  padding-top: 14px;
+
+  background: rgba(170, 170, 170, 0.13);
+  border-radius: 0 10px 0 10px;
+  box-shadow: inset -2px 2px 3px 2px rgba(0, 0, 0, 0.1);
+
+  &__blockchains-list {
+
+  }
+}

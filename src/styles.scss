@@ -25,6 +25,8 @@
 @import 'scss/taiga-slyles';
 
 * {
+  box-sizing: border-box;
+
   appearance: none;
   -webkit-tap-highlight-color: transparent;
 

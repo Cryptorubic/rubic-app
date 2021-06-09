@@ -1,15 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-blockchains-aside',
   templateUrl: './blockchains-aside.component.html',
-  styleUrls: ['./blockchains-aside.component.scss']
+  styleUrls: ['./blockchains-aside.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BlockchainsAsideComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class BlockchainsAsideComponent {
+  constructor() {}
 }
