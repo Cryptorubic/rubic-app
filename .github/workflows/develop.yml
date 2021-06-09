@@ -78,4 +78,4 @@ jobs:
         run : npm run build
 
       - name: Deploy on dev server
-        run : sshpass -p ${{ secrets.SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzhP -O --delete dist/rubic/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/../frontend/swaps-old
+        run : sshpass -p ${{ secrets.SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzhP -O --delete dist/rubic/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/../frontend/swaps

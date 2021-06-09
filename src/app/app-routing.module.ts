@@ -1,31 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-export const PROJECT_PARTS = {
-  TEST: {
-    '^/.+$': 'devswaps.mywish.io'
-  },
-  PROD: {
-    '^/$': 'swaps-old.network',
-    '^/.+$': 'trades-old.swaps-old.network',
-    from: 'swaps-old.network'
-  },
-  LOCAL: {
-    '^/.+$': 'local.devswaps.mywish.io'
-  }
-};
-
-let currMode = 'PROD';
-Object.entries(PROJECT_PARTS).forEach(([projectPartName, projectPartValue]: [string, any]) => {
-  Object.entries(projectPartValue).forEach(([, hostName]: [string, string]) => {
-    if (location.hostname === hostName) {
-      currMode = projectPartName;
-    }
-  });
-});
-
-export const MODE = currMode;
-
 const routes: Routes = [
   {
     path: '',

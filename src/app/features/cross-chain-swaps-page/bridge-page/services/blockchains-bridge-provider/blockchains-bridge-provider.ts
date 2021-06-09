@@ -31,7 +31,7 @@ export abstract class BlockchainsBridgeProvider {
   /**
    * @description create trade between different networks
    * @param bridgeTrade object with data for trade
-   * @param updateTransactionsList callback function for update list of bridge trades-old
+   * @param updateTransactionsList callback function for update list of bridge trades
    * @return observable transaction receipt object
    */
   public abstract createTrade(
