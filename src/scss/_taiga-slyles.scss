@@ -1,6 +1,6 @@
 @import './vars';
 
-tui-wrapper[data-appearance='custom'] {
+tui-wrapper[data-appearance='custom-icon-button'] {
   color: $main-green;
 
   background: white;
@@ -11,10 +11,6 @@ tui-wrapper[data-appearance='custom'] {
 
   &[data-state='pressed'] {
     background: $text-gray;
-  }
-
-  &[data-state='disabled'] {
-    background: rgba(white, 0.3);
   }
 
   img {

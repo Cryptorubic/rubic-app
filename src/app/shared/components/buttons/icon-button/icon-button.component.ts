@@ -9,12 +9,18 @@ import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from 
 export class IconButtonComponent {
   public _disabled: boolean;
 
+  public _border: boolean;
+
   @Input() icon: string;
 
   @Input() scale: number = 1;
 
   @Input('disabled') set setDisabled(disabled: boolean | '') {
     this._disabled = disabled === '' || disabled;
+  }
+
+  @Input('border') set setBorder(border: boolean | '') {
+    this._border = border === '' || border;
   }
 
   @Output()
