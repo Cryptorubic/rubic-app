@@ -17,7 +17,7 @@ import {
 export class DropdownSelectorComponent {
   @Input() dropdownButtonTemplate: TemplateRef<any>;
 
-  @Input() dropdownListTemplate: QueryList<TemplateRef<any>>;
+  @Input() dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
 
   @Output() optionChange = new EventEmitter<number>();
 

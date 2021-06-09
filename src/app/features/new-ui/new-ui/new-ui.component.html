@@ -1,14 +1,33 @@
-<div class='wrapper'>
+<div class="wrapper">
   <h1>New UI components page</h1>
 
   <!-- Button example -->
   <section>
     <h2>Button example</h2>
-    <button
-      tuiButton
-      type="button"
-      class="tui-space_right-3 tui-space_bottom-3"
-    >Button example</button>
+    <button tuiButton type="button" class="tui-space_right-3 tui-space_bottom-3">
+      Button example
+    </button>
+  </section>
+
+  <!--  Dropdown Selector example-->
+  <section>
+    <h2>Dropdown Selector example</h2>
+
+    <app-dropdown-selector
+      [dropdownButtonTemplate]="dropdownButtonTemplate"
+      [dropdownOptionsTemplates]="dropdownOptionsTemplates"
+      (optionChange)="onOptionChange($event)"
+    ></app-dropdown-selector>
+
+    <ng-template #dropdownButtonTemplate>
+      <button tuiButton>chosen option</button>
+    </ng-template>
+
+    <ng-template #dropdownOptionTemplate *ngFor="let option of options">
+      <span>
+        {{ option }}
+      </span>
+    </ng-template>
   </section>
 
   <section>

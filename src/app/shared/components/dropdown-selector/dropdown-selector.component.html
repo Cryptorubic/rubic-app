@@ -4,12 +4,12 @@
 <ng-template #content let-activeZone>
   <tui-data-list class="data-list" tuiDataListDropdownManager [tuiActiveZoneParent]="activeZone">
     <button
-      class="data-list__item"
+      class="data-list__option"
       tuiOption
-      *ngFor="let item of dropdownListTemplate; index as index"
+      *ngFor="let option of dropdownOptionsTemplates; index as index"
       (click)="onOptionClick(index)"
     >
-      <ng-container *ngTemplateOutlet="item"></ng-container>
+      <ng-container *ngTemplateOutlet="option"></ng-container>
     </button>
   </tui-data-list>
 </ng-template>
