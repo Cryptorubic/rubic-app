@@ -1,0 +1,19 @@
+@import './vars';
+
+tui-wrapper[data-appearance='custom'] {
+  color: $main-green;
+
+  background: white;
+
+  &[data-state='hovered'] {
+    background: $grey-background;
+  }
+
+  &[data-state='pressed'] {
+    background: $text-gray;
+  }
+
+  &[data-state='disabled'] {
+    background: rgba(white, 0.3);
+  }
+}

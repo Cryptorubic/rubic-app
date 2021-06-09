@@ -17,6 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
+import { TuiButtonModule } from '@taiga-ui/core';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -61,6 +62,7 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
 import { AdvancedOptionsButtonComponent } from './components/advanced-options-button/advanced-options-button.component';
 import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
+import { IconButtonComponent } from './components/icon-button/icon-button.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +111,8 @@ import { RoundPipe } from './pipes/round.pipe';
     ShortAddressPipe,
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
-    RoundPipe
+    RoundPipe,
+    IconButtonComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -130,7 +133,8 @@ import { RoundPipe } from './pipes/round.pipe';
     InlineSVGModule.forRoot(),
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    TuiButtonModule
   ],
   exports: [
     FooterComponent,
@@ -172,7 +176,8 @@ import { RoundPipe } from './pipes/round.pipe';
     WalletAddressFormComponent,
     RefreshToolComponent,
     ShortAddressPipe,
-    AdvancedOptionsButtonComponent
+    AdvancedOptionsButtonComponent,
+    IconButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
