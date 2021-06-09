@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TuiScrollbarModule } from '@taiga-ui/core';
+import { TuiScrollbarModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiInputModule } from '@taiga-ui/kit';
+import { FormsModule } from '@angular/forms';
 import { TokensSelectComponent } from './components/tokens-select/tokens-select.component';
 import { TokensSelectService } from './services/tokens-select.service';
 import { BlockchainsAsideComponent } from './components/blockchains-aside/blockchains-aside.component';
@@ -17,7 +19,15 @@ import { SharedModule } from '../../shared/shared.module';
     TokensListComponent,
     TokensListElementComponent
   ],
-  imports: [CommonModule, SharedModule, TuiScrollbarModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    TuiScrollbarModule,
+    TuiInputModule,
+    FormsModule,
+    TuiTextfieldControllerModule,
+    TuiSvgModule
+  ],
   providers: [TokensSelectService],
   entryComponents: [TokensSelectComponent]
 })
