@@ -2,7 +2,9 @@
 
   <ng-template [ngIf]="isBackendAvailable">
     <app-header></app-header>
-    <router-outlet></router-outlet>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
   </ng-template>
 
   <ng-container ngProjectAs="tuiOverDialogs">
