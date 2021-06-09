@@ -32,7 +32,7 @@ interface EstimatedAmountResponse {
 
 @Injectable()
 export class CryptoTapService {
-  private readonly baseApiUrl = 'https://devbnbexchange.mywish.io/api/v1/';
+  private readonly baseApiUrl = 'https://exchanger.rubic.exchange/api/v1/';
 
   private isTestingMode: boolean;
 

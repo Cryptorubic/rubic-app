@@ -1,4 +1,4 @@
-export const contractAddressEthereum = '0x65f6CEb94A15EA06D94aE6a264a1f7E4D32914f5';
+export const contractAddressEthereum = '0x8eDe575dbaDf66A29843608883B81F265d398c26';
 
 export const contractAddressKovan = '0x61386c9764bb2341b5bb7b22599348317eAd6dDb';
 
