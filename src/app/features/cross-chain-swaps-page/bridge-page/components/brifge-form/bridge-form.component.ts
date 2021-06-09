@@ -212,6 +212,13 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
       }
     }
 
+    if (
+      this._toBlockchain.key === BLOCKCHAIN_NAME.XDAI &&
+      blockchain.key !== BLOCKCHAIN_NAME.XDAI
+    ) {
+      this._fromBlockchain = BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+    }
+
     if (blockchain === this._fromBlockchain) {
       this.revertBlockchains();
     } else {
