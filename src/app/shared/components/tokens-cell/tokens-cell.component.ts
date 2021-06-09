@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { OrderBookTableTokens } from 'src/app/features/swaps-page/order-books/models/trade-table';
+import { OrderBookTableTokens } from 'src/app/features/swaps-page-old/order-books/models/trade-table';
 
 @Component({
   selector: 'app-tokens-cell',

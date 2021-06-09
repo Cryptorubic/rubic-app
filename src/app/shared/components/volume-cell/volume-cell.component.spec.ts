@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import {
   OrderBookTableToken,
   OrderBookTableTokens
-} from 'src/app/features/swaps-page/order-books/models/trade-table';
+} from 'src/app/features/swaps-page-old/order-books/models/trade-table';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 import { BigNumberFormat } from '../../pipes/big-number-format.pipe';
 
