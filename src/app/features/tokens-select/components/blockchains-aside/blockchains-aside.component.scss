@@ -7,10 +7,16 @@
   padding-top: 14px;
 
   background: rgba(170, 170, 170, 0.13);
-  border-radius: 0 10px 0 10px;
+  border-radius: 0 10px;
   box-shadow: inset -2px 2px 3px 2px rgba(0, 0, 0, 0.1);
 
   &__blockchains-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
+    li:not(:last-child) {
+      margin-bottom: 14px;
+    }
   }
 }

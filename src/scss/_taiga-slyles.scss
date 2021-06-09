@@ -16,6 +16,11 @@ tui-wrapper[data-appearance='custom'] {
   &[data-state='disabled'] {
     background: rgba(white, 0.3);
   }
+
+  img {
+    max-width: 27px;
+    max-height: 27px;
+  }
 }
 
 tui-dialog {
