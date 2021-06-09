@@ -1,28 +1,17 @@
-<div class="language-dropdown" mat-button [matMenuTriggerFor]="languages">
-  <img
-    class="language-dropdown__icon"
-    src="/assets/images/icons/language-change.svg"
-    width="22"
-    height="21"
-    alt="Change language"
-  />
-  <mat-menu class="language-dropdown__sublist-container" #languages="matMenu">
-    <ul class="language-dropdown__sublist">
-      <li
-        *ngFor="let lng of languagesList"
-        class="language-dropdown__element"
-        (click)="setLanguage(lng.lng)"
-        [ngClass]="{ 'language-dropdown__element_selected': lng.active }"
-      >
-        <img
-          class="language-dropdown__element-image"
-          src="/assets/images/lng/{{ lng.lng }}.svg"
-          width="24"
-          height="24"
-          alt="{{ lng.lng }}"
-        />
-        <span class="language-dropdown__element-text">{{ lng.title }}</span>
-      </li>
-    </ul>
-  </mat-menu>
-</div>
+<app-dropdown-selector
+  [dropdownButtonTemplate]="dropdownButtonTemplate"
+  [dropdownListTemplate]="dropdownListTemplate"
+  (optionChange)="onLangChange($event)"
+></app-dropdown-selector>
+
+<ng-template #dropdownButtonTemplate>
+  <button class="dropdown-button">
+    {{ currentLanguage }}
+  </button>
+</ng-template>
+
+<ng-template #dropdownItemTemplate *ngFor="let language of filteredLanguageList">
+  <span class="dropdown-item">
+    {{ language.title }}
+  </span>
+</ng-template>

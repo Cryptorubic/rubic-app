@@ -17,7 +17,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
-import { TuiButtonModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiDropdownModule,
+  TuiHostedDropdownModule
+} from '@taiga-ui/core';
+import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -64,6 +70,7 @@ import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
 import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
 import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
+import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
 
 @NgModule({
   declarations: [
@@ -114,7 +121,8 @@ import { CrossButtonComponent } from './components/buttons/cross-button/cross-bu
     AdvancedOptionsButtonComponent,
     RoundPipe,
     IconButtonComponent,
-    CrossButtonComponent
+    CrossButtonComponent,
+    DropdownSelectorComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -136,7 +144,11 @@ import { CrossButtonComponent } from './components/buttons/cross-button/cross-bu
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    TuiButtonModule
+    TuiHostedDropdownModule,
+    TuiButtonModule,
+    TuiDataListModule,
+    TuiActiveZoneModule,
+    TuiDropdownModule
   ],
   exports: [
     FooterComponent,
@@ -180,7 +192,8 @@ import { CrossButtonComponent } from './components/buttons/cross-button/cross-bu
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
     IconButtonComponent,
-    CrossButtonComponent
+    CrossButtonComponent,
+    DropdownSelectorComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

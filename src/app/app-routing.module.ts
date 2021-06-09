@@ -1,41 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { NewUiComponent } from 'src/app/features/new-ui/new-ui/new-ui.component';
-
-export const PROJECT_PARTS = {
-  TEST: {
-    '^/.+$': 'devswaps.mywish.io'
-  },
-  PROD: {
-    '^/$': 'swaps.network',
-    '^/.+$': 'trades.swaps.network',
-    from: 'swaps.network'
-  },
-  LOCAL: {
-    '^/.+$': 'local.devswaps.mywish.io'
-  }
-};
-
-let currMode = 'PROD';
-Object.entries(PROJECT_PARTS).forEach(([projectPartName, projectPartValue]: [string, any]) => {
-  Object.entries(projectPartValue).forEach(([, hostName]: [string, string]) => {
-    if (location.hostname === hostName) {
-      currMode = projectPartName;
-    }
-  });
-});
-
-export const MODE = currMode;
 
 const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./features/swaps-page/page-module/swaps-page.module').then(m => m.SwapsPageModule)
-  },
-  {
-    path: 'new-ui',
-    loadChildren: () => import('./features/new-ui/new-ui.module').then(m => m.NewUiModule)
+      import('./features/swaps-page-old/page-module/swaps-page.module').then(m => m.SwapsPageModule)
   },
   {
     path: 'bridge',
@@ -51,45 +21,55 @@ const routes: Routes = [
   {
     path: 'about',
     loadChildren: () =>
-      import('./features/features-page/features-page.module').then(m => m.FeaturesPageModule)
+      import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule)
   },
   {
     path: 'team',
-    loadChildren: () => import('./features/team-page/team-page.module').then(m => m.TeamPageModule)
+    loadChildren: () =>
+      import('./features/team-page-old/team-page.module').then(m => m.TeamPageModule)
   },
   {
     path: 'public-v3/:unique_link',
     redirectTo: '/trade/:unique_link'
   },
   {
-    path: 'trades/public-v3/:unique_link',
+    path: 'trades-old/public-v3/:unique_link',
     redirectTo: '/trade/:unique_link'
   },
   {
     path: 'trade/:unique_link',
     loadChildren: () =>
-      import('./features/order-book-trade-page/order-book-trade-page.module').then(
+      import('./features/order-book-trade-page-old/order-book-trade-page.module').then(
         m => m.OrderBookTradePageModule
       )
   },
   {
     path: 'contracts',
-    redirectTo: '/trades/contracts'
+    redirectTo: '/trades-old/contracts'
   },
   {
-    path: 'trades',
-    loadChildren: () => import('./features/trades/trades.module').then(m => m.TradesModule)
+    path: 'trades-old',
+    loadChildren: () => import('./features/trades-old/trades.module').then(m => m.TradesModule)
   },
   {
     path: 'faq',
-    loadChildren: () => import('./features/faq-page/faq-page.module').then(m => m.FaqPageModule)
+    loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
   },
   {
     path: 'token-sale',
     loadChildren: () =>
-      import('./features/token-sale-page/token-sale-page/token-sale-page.module').then(
+      import('./features/token-sale-page-old/token-sale-page/token-sale-page.module').then(
         m => m.TokenSalePageModule
       )
+  },
+  // New routes
+  {
+    path: 'swaps',
+    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
+  },
+  {
+    path: 'new-ui',
+    loadChildren: () => import('./features/new-ui/new-ui.module').then(m => m.NewUiModule)
   }
 ];
 

@@ -12,12 +12,12 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { OrderBookTradeData } from 'src/app/features/order-book-trade-page/models/trade-data';
+import { OrderBookTradeData } from 'src/app/features/order-book-trade-page-old/models/trade-data';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 import { TokenValueType } from '../../models/order-book/tokens';
 import { SortingResult } from './models/sorting-result';
 import { TradeData } from './models/tokens-table-data';
-import { InstantTradesTradeData } from '../../../features/swaps-page/models/trade-data';
+import { InstantTradesTradeData } from '../../../features/swaps-page-old/models/trade-data';
 import { ScannerLinkPipe } from '../../pipes/scanner-link.pipe';
 import ADDRESS_TYPE from '../../models/blockchain/ADDRESS_TYPE';
 

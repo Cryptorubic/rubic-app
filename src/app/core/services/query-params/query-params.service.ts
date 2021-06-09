@@ -11,8 +11,8 @@ import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
-import { TradeParametersService } from '../swaps/trade-parameters-service/trade-parameters.service';
-import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
+import { TradeParametersService } from '../swaps-old/trade-parameters-service/trade-parameters.service';
+import { TradeTypeService } from '../swaps-old/trade-type-service/trade-type.service';
 import { QueryParams } from './models/query-params';
 
 type DefaultQueryParams = {

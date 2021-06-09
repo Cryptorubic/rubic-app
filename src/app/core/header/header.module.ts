@@ -8,6 +8,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { InlineSVGModule } from 'ng-inline-svg';
+import { TuiDataListModule } from '@taiga-ui/core';
 import { HeaderLanguageDropdownComponent } from './components/header/components/header-language-dropdown/header-language-dropdown.component';
 import { HeaderLogotypeComponent } from './components/header/components/header-logotype/header-logotype.component';
 import { HeaderNavigationComponent } from './components/header/components/header-navigation/header-navigation.component';
@@ -17,7 +19,6 @@ import { MobileMenuTogglerComponent } from './components/header/components/mobil
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
 import { WalletsModalComponent } from './components/header/components/wallets-modal/wallets-modal.component';
-import { InlineSVGModule } from 'ng-inline-svg';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { InlineSVGModule } from 'ng-inline-svg';
     MatMenuModule,
     A11yModule,
     OverlayModule,
-    InlineSVGModule.forRoot()
+    InlineSVGModule.forRoot(),
+    TuiDataListModule
   ],
   exports: [HeaderComponent]
 })
