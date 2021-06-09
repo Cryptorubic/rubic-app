@@ -93,3 +93,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   white-space: pre-line;
   text-align: center;
 }
+
+tui-dropdown-box {
+  border: none !important;
+  border-radius: 18px !important;
+}
