@@ -13,4 +13,8 @@ export class TokensListComponent {
   @Output() tokenSelect = new EventEmitter<TokenAmount>();
 
   constructor() {}
+
+  onTokenSelect(token: TokenAmount) {
+    this.tokenSelect.emit(token);
+  }
 }

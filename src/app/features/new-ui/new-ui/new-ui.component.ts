@@ -17,6 +17,10 @@ export class NewUiComponent {
   }
 
   openTokensSelect() {
-    this.tokensSelectService.showDialog().subscribe(token => alert(`${token.symbol} selected`));
+    this.tokensSelectService
+      .showDialog()
+      .subscribe(token =>
+        alert(`Token ${token.symbol} in ${token.blockchain} blockchain selected`)
+      );
   }
 }

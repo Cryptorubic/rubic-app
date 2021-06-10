@@ -1,12 +1,30 @@
+@import 'src/scss/vars';
+
 :host {
   width: 100%;
 }
 
 .tokens-list {
+  position: relative;
+  left: -12px;
+
+  width: 280px;
+  margin-right: 0;
   padding-top: 15px;
 
-  &__item:not(:last-child) {
-    margin-bottom: 15px;
+  &__item {
+    padding: 5px 10px;
+
+    cursor: pointer;
+
+    &:not(:last-child) {
+      margin-bottom: 15px;
+    }
+
+    &:hover {
+      background-color: rgba($main-green, 0.15);
+      border-radius: 15px;
+    }
   }
 }
 

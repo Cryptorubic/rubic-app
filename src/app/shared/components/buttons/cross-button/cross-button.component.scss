@@ -7,11 +7,11 @@
     transition: transform 0.2s ease-in-out;
 
     &:hover {
-      transform: rotate(180deg) scale(1.2);
+      transform: scale(1.2);
     }
 
     &:active {
-      transform: rotate(180deg) scale(0.9);
+      transform: scale(0.9);
     }
   }
 }

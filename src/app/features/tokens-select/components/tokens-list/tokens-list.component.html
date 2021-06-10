@@ -1,6 +1,6 @@
 <ng-container>
   <ul class="tokens-list" *ngIf="tokens.length; else emptyListMessage">
-    <li *ngFor="let token of tokens" class="tokens-list__item">
+    <li *ngFor="let token of tokens" class="tokens-list__item" (click)="onTokenSelect(token)">
       <app-tokens-list-element [token]="token"></app-tokens-list-element>
     </li>
   </ul>
