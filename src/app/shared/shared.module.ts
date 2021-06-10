@@ -71,6 +71,7 @@ import { RoundPipe } from './pipes/round.pipe';
 import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
 import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
+import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 
 @NgModule({
   declarations: [
@@ -122,7 +123,8 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
     RoundPipe,
     IconButtonComponent,
     CrossButtonComponent,
-    DropdownSelectorComponent
+    DropdownSelectorComponent,
+    ShortenAmountPipe
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -194,7 +196,8 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
     IconButtonComponent,
     CrossButtonComponent,
     DropdownSelectorComponent,
-    RoundPipe
+    RoundPipe,
+    ShortenAmountPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

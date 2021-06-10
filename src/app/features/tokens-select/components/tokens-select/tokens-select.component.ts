@@ -17,7 +17,7 @@ const mockTokens: TokenAmount[] = [
     name: 'Ethereum',
     symbol: 'ETH',
     decimals: 18,
-    amount: new BigNumber(1.23456)
+    amount: new BigNumber(12345678999999.23456)
   },
   {
     image: 'http://api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
@@ -29,7 +29,7 @@ const mockTokens: TokenAmount[] = [
     name: 'Weenus',
     symbol: 'WEENUS',
     decimals: 18,
-    amount: new BigNumber(123456.123456)
+    amount: new BigNumber(123456789.123456)
   },
   {
     image: 'http://api.rubic.exchange/media/token_images/cg_logo_USDT_Tether-logo_gx5smb6.png',
@@ -41,7 +41,7 @@ const mockTokens: TokenAmount[] = [
     name: 'Yeenus',
     symbol: 'YEENUS',
     decimals: 18,
-    amount: new BigNumber(123456.1234)
+    amount: new BigNumber(123456789999.123456)
   },
   {
     image:
@@ -54,7 +54,7 @@ const mockTokens: TokenAmount[] = [
     name: 'Yeenus',
     symbol: 'XEENUS',
     decimals: 18,
-    amount: new BigNumber(123456.1234)
+    amount: new BigNumber(1234567899998.1234)
   },
   {
     image:

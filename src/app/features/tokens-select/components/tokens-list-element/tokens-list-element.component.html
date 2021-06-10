@@ -6,5 +6,7 @@
     <span>{{token.symbol}}</span>
     <small>{{token.name}}</small>
   </div>
-  <div class="token-card__amount">{{token.amount.toNumber() | round: '4':'floor'}}</div>
+  <div class="token-card__amount">
+    {{token.amount.toNumber() | round: '4':'floor' | bigNumberFormat | shortenAmount:12}}
+  </div>
 </div>
