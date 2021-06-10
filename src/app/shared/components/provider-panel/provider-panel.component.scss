@@ -1,17 +1,18 @@
 $border-radius: 14px;
 $green: rgb(74, 169, 96);
 $default-transition: 0.2s ease-in-out;
+$white: white;
 
 .provider-panel {
-  &__wrapper {
+  &__content {
     position: relative;
 
     box-sizing: border-box;
     min-width: 500px;
     padding: 20px;
 
-    background: white;
-    border: 1px solid white;
+    background: $white;
+    border: 1px solid $white;
     border-left-width: 5px;
     border-radius: $border-radius;
 
@@ -19,13 +20,34 @@ $default-transition: 0.2s ease-in-out;
 
     transition: $default-transition;
 
-    &:not(&_loading):hover {
+    &:not(&_loading) {
+      cursor: pointer;
+    }
+
+    &:not(&_loading):not(&_selected):hover {
       border: 1px solid $green;
       border-left-width: 5px;
 
       .provider-panel__best-rate {
         border-top-color: $green;
         border-right-color: $green;
+      }
+    }
+    
+    &_selected {
+      color: $white;
+
+      background-color: $green;
+      border-color: $green;
+
+      .provider-panel__right {
+        color: $white;
+      }
+
+      .provider-panel__hint {
+        ::ng-deep svg path {
+          fill: white;
+        }
       }
     }
 
@@ -48,9 +70,17 @@ $default-transition: 0.2s ease-in-out;
     width: 28px;
     height: 28px;
 
-    background: white;
+    background: $white;
     border-radius: 100%;
     box-shadow: 0 3px 6px rgba(black, 0.16);
+
+    &_selected {
+      background-color: $green;
+
+      ::ng-deep svg path {
+        fill: $white;
+      }
+    }
   }
 
   &__provider-name {
@@ -105,6 +135,19 @@ $default-transition: 0.2s ease-in-out;
     letter-spacing: 0.1em;
   }
 
+  &__token-gas-fee {
+    display: flex;
+    align-items: center;
+  }
+
+  &__hint {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+
+
+  }
+
   &__collapse-toggle {
     position: absolute;
     bottom: 0;
@@ -115,8 +158,6 @@ $default-transition: 0.2s ease-in-out;
     height: 25px;
     
     transform: translateX(-50%);
-
-    cursor: pointer;
 
     ::ng-deep svg path {
       fill: $green;

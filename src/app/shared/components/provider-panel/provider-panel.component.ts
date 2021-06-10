@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-trades/models/instant-trades-trade-status';
 import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models/providers.enum';
 import BigNumber from 'bignumber.js';
@@ -27,6 +34,7 @@ export interface ProviderControllerData {
     value: PROVIDERS;
   };
   isBestRate: boolean;
+  isSelected: boolean;
 }
 
 interface ProviderData {
@@ -50,8 +58,14 @@ interface ProviderData {
    * Amount of predicted gas fee in Ether.
    */
   gasFeeInEth: BigNumber;
-
+  /**
+   * Is provider has best rate.
+   */
   isBestRate: boolean;
+  /**
+   * Is provider active.
+   */
+  isActive: boolean;
 }
 
 @Component({
@@ -61,23 +75,50 @@ interface ProviderData {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProviderPanelComponent implements OnInit {
+  /**
+   * Setup provider data.
+   * @param data provider controller data.
+   */
   @Input() public set providerControllerData(data: ProviderControllerData) {
     if (data) {
       this.setupProviderData(data);
     }
   }
 
+  /**
+   * Provider selection event.
+   */
+  @Output() public selectProvider: EventEmitter<void>;
+
+  /**
+   * Provider data.
+   */
   public providerData: ProviderData;
 
+  /**
+   * Does current provider loading.
+   */
   public loading: boolean;
 
+  /**
+   * Does current provider collapsed.
+   */
   public collapsed: boolean;
 
+  /**
+   * Does current have errors.
+   */
   public hasError: boolean;
+
+  /**
+   * Does current provider selected.
+   */
+  public active: boolean;
 
   constructor() {
     this.loading = false;
     this.collapsed = true;
+    this.selectProvider = new EventEmitter<void>();
   }
 
   public ngOnInit(): void {
@@ -86,10 +127,27 @@ export class ProviderPanelComponent implements OnInit {
     }
   }
 
+  /**
+   * Emit provider selection event to parent component.
+   */
+  public activateProvider(): void {
+    if (!this.loading) {
+      this.collapsePanel();
+      this.selectProvider.emit();
+    }
+  }
+
+  /**
+   * @description Toggle provider panel collapse status.
+   */
   public collapsePanel(): void {
     this.collapsed = !this.collapsed;
   }
 
+  /**
+   * @description Transform input controller data to comfortable.
+   * @param data Provider controller data.
+   */
   private setupProviderData(data: ProviderControllerData): void {
     this.calculateState(data.tradeState);
     this.providerData = {
@@ -98,10 +156,15 @@ export class ProviderPanelComponent implements OnInit {
       estimatedGas: data.trade.estimatedGas,
       gasFeeInEth: data.trade.gasFeeInEth,
       gasFeeInUsd: data.trade.gasFeeInUsd,
-      isBestRate: data.isBestRate
+      isBestRate: data.isBestRate,
+      isActive: data.isSelected
     };
   }
 
+  /**
+   * @desc Calculate provider state based on controller status.
+   * @param state Instant trade status.
+   */
   private calculateState(state: INSTANT_TRADES_STATUS): void {
     switch (state) {
       case INSTANT_TRADES_STATUS.ERROR: {

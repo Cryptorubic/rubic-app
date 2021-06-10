@@ -1,13 +1,20 @@
 <div class='provider-panel'>
   <div
-    class='provider-panel__wrapper'
+    class='provider-panel__content'
     [ngClass]='{
-    "provider-panel__wrapper_best-rate": providerData.isBestRate,
-     "provider-panel__wrapper_loading": loading }'
+    "provider-panel__content_best-rate": providerData.isBestRate,
+    "provider-panel__content_loading": loading,
+    "provider-panel__content_selected": providerData.isActive
+    }'
+    (click)='activateProvider()'
   >
     <div class='provider-panel__provider-name'>{{ 'Via ' + providerData.name }}</div>
-    <div *ngIf='providerData.isBestRate' class='provider-panel__best-rate'>
-      <img src='assets/images/icons/Best-rate.svg' alt='Best rate provider'>
+    <div
+      *ngIf='providerData.isBestRate'
+      class='provider-panel__best-rate'
+      [ngClass]='{ "provider-panel__best-rate_selected": providerData.isActive }'
+    >
+      <div [inlineSVG]='"assets/images/icons/Best-rate.svg"'></div>
     </div>
     <div class='provider-panel__body'>
       <div class='provider-panel__left'>
@@ -32,16 +39,20 @@
           [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
         >
           {{ 'instantTrades.gasFee' | translate }} {{ providerData.gasFeeInEth}} ≈ {{ providerData.gasFeeInUsd}}$
-          <tui-tooltip
-            [content]="'instantTrades.gasFeeMessage' | translate"
-            [showDelay]='200'
-            direction="left"
-          ></tui-tooltip>
+          <div
+            class='provider-panel__hint'
+            [inlineSVG]='"/assets/images/icons/hint.svg"'
+            [tuiHint]="'instantTrades.gasFeeMessage' | translate"
+          ></div>
+<!--          <tui-tooltip-->
+<!--            [content]="-->
+<!--            [showDelay]='200'-->
+<!--            direction="left"-->
+<!--          ></tui-tooltip>-->
         </div>
       </div>
       <div
         *ngIf='!loading'
-        (click)='collapsePanel()'
         class='provider-panel__collapse-toggle'
         [ngClass]='{ "provider-panel__collapse-toggle_collapsed": collapsed }'
       >

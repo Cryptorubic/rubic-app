@@ -23,7 +23,8 @@ import {
   TuiDropdownModule,
   TuiHostedDropdownModule,
   TuiSvgModule,
-  TuiTooltipModule
+  TuiTooltipModule,
+  TuiHintModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { FooterComponent } from './components/footer/footer.component';
@@ -146,8 +147,7 @@ import { ProviderPanelComponent } from './components/provider-panel/provider-pan
     MatSelectModule,
     TuiSvgModule,
     TuiTooltipModule,
-    MatSelectModule,
-    TuiHostedDropdownModule,
+    TuiHintModule,
     TuiButtonModule,
     TuiDataListModule,
     TuiActiveZoneModule,
