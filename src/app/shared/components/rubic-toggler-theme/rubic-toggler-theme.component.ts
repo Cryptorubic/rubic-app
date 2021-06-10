@@ -8,10 +8,14 @@ import { FormControl, FormGroup } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicTogglerThemeComponent {
+  get isDark(): boolean {
+    return this.themeForm.get('themeControl').value;
+  }
+
   @Output() onClickEmit: EventEmitter<MouseEvent> = new EventEmitter();
 
   public themeForm = new FormGroup({
-    themeToggle: new FormControl(true)
+    themeControl: new FormControl(true)
   });
 
   onClick(event: MouseEvent) {

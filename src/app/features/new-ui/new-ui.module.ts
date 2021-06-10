@@ -7,6 +7,7 @@ import { TuiButtonModule, TuiHintModule, TuiSvgModule, TuiTooltipModule } from '
 
 import { InstantTradeModule } from 'src/app/features/instant-trade/instant-trade.module';
 import { BridgeModule } from 'src/app/features/bridge/bridge.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NewUiComponent } from './new-ui/new-ui.component';
 
 const routes: Routes = [{ path: '', component: NewUiComponent }];
@@ -23,7 +24,9 @@ const routes: Routes = [{ path: '', component: NewUiComponent }];
     BridgeModule,
     TuiSvgModule,
     TuiTooltipModule,
-    TuiHintModule
+    TuiHintModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   exports: [RouterModule]
 })
