@@ -24,7 +24,8 @@ import {
   TuiDropdownModule,
   TuiSvgModule,
   TuiTooltipModule,
-  TuiHintModule
+  TuiHintModule,
+  TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { FooterComponent } from './components/footer/footer.component';
@@ -154,7 +155,8 @@ import { AmountInputComponent } from './components/amount-input/amount-input.com
     TuiButtonModule,
     TuiDataListModule,
     TuiActiveZoneModule,
-    TuiDropdownModule
+    TuiDropdownModule,
+    TuiHostedDropdownModule
   ],
   exports: [
     FooterComponent,
