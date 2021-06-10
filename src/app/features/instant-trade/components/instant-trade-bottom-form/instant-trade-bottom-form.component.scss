@@ -1,0 +1,37 @@
+$green: rgb(74, 169, 86);
+
+.instant-trade-bottom-form {
+  padding: 15px 20px 30px;
+
+  background-color: rgba(#fcfcfc, 0.9);
+  border-radius: 0 0 14px 14px;
+
+  &__provider-item:not(:last-child) {
+    margin-bottom: 15px;
+  }
+  
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    margin: 0;
+
+    font-weight: 300;
+    font-size: 16px;
+    font-family: 'SF Pro Display', sans-serif;
+  }
+
+  &__analytics {
+    span {
+      margin-left: 10px;
+
+      color: $green;
+      font-weight: 500;
+      font-size: 16px;
+      font-family: 'SF Pro Display', sans-serif;
+    }
+  }
+}

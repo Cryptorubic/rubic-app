@@ -17,7 +17,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
-import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
+import { TuiInputModule } from '@taiga-ui/kit';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiDropdownModule,
+  TuiSvgModule,
+  TuiTooltipModule,
+  TuiHintModule,
+  TuiHostedDropdownModule
+} from '@taiga-ui/core';
+import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -62,6 +72,9 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
 import { AdvancedOptionsButtonComponent } from './components/advanced-options-button/advanced-options-button.component';
 import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
+import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
+import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
+import { AmountInputComponent } from './components/amount-input/amount-input.component';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
 
 @NgModule({
@@ -112,6 +125,10 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
     RoundPipe,
+    ProviderPanelComponent,
+    DropdownSelectorComponent,
+    AmountInputComponent
+    RoundPipe,
     RubicButtonCircleComponent
   ],
   entryComponents: [MessageBoxComponent],
@@ -134,8 +151,15 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    TuiSvgModule,
+    TuiTooltipModule,
+    TuiHintModule,
+    TuiInputModule,
     TuiButtonModule,
-    TuiSvgModule
+    TuiDataListModule,
+    TuiActiveZoneModule,
+    TuiDropdownModule,
+    TuiHostedDropdownModule
   ],
   exports: [
     FooterComponent,
@@ -179,6 +203,10 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
     RubicButtonCircleComponent
+    AdvancedOptionsButtonComponent,
+    ProviderPanelComponent,
+    AmountInputComponent,
+    DropdownSelectorComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

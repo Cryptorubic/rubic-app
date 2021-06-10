@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { OrderBookTableTokens } from 'src/app/features/swaps-page/order-books/models/trade-table';
+import { OrderBookTableTokens } from 'src/app/features/swaps-page-old/order-books/models/trade-table';
 
 import { TokensCellComponent } from './tokens-cell.component';
 

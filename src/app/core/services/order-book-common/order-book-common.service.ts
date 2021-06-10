@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { OrderBookTradeData } from '../../../features/order-book-trade-page/models/trade-data';
+import { OrderBookTradeData } from '../../../features/order-book-trade-page-old/models/trade-data';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { ORDER_BOOK_CONTRACT } from '../../../shared/constants/order-book/smart-contract';

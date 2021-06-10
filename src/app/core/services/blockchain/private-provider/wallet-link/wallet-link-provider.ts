@@ -59,7 +59,7 @@ export class WalletLinkProvider extends PrivateProvider {
     };
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
-    const chainId = blockchainId || 1;
+    const chainId = blockchainId || 42;
     const chain = BlockchainsInfo.getBlockchainById(chainId);
     const walletLink = new WalletLink(this.defaultWalletParams);
     this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
@@ -82,7 +82,7 @@ export class WalletLinkProvider extends PrivateProvider {
     try {
       const [address] = await this.core.send('eth_requestAccounts');
 
-      const chain = BlockchainsInfo.getBlockchainById(1);
+      const chain = BlockchainsInfo.getBlockchainById(42);
       this.onNetworkChanges.next(chain);
       this.onAddressChanges.next(address);
       this.selectedAddress = address;

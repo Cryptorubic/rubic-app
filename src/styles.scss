@@ -45,6 +45,11 @@ html {
   background-color: #f4f4f4;
 }
 
+main.main-content {
+  max-width: 1440px;
+  margin: 84px auto 0;
+}
+
 .noscroll {
   position: fixed;
   right: 0;
@@ -92,4 +97,9 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 .mat-tooltip {
   white-space: pre-line;
   text-align: center;
+}
+
+tui-dropdown-box {
+  border: none !important;
+  border-radius: 18px !important;
 }
