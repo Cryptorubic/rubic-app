@@ -17,9 +17,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
-import { TuiButtonModule, TuiHintModule, TuiSvgModule } from '@taiga-ui/core';
-import { TuiToggleModule } from '@taiga-ui/kit';
-import { TuiInputModule } from '@taiga-ui/kit';
+import { TuiToggleModule, TuiInputModule } from '@taiga-ui/kit';
+
 import {
   TuiButtonModule,
   TuiDataListModule,
@@ -132,9 +131,9 @@ import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rub
     RoundPipe,
     ProviderPanelComponent,
     DropdownSelectorComponent,
-    AmountInputComponent
+    AmountInputComponent,
     RoundPipe,
-    RubicButtonCircleComponent
+    RubicButtonCircleComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
@@ -168,7 +167,7 @@ import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rub
     TuiDataListModule,
     TuiActiveZoneModule,
     TuiDropdownModule,
-    TuiHostedDropdownModule
+    TuiHostedDropdownModule,
     TuiSvgModule,
     TuiHintModule,
     TuiToggleModule
@@ -214,11 +213,11 @@ import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rub
     RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
-    RubicButtonCircleComponent
+    RubicButtonCircleComponent,
     AdvancedOptionsButtonComponent,
     ProviderPanelComponent,
     AmountInputComponent,
-    DropdownSelectorComponent
+    DropdownSelectorComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,

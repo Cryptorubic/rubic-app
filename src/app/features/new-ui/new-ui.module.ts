@@ -4,7 +4,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 import { TuiAvatarModule } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiHintModule, TuiSvgModule, TuiTooltipModule } from '@taiga-ui/core';
-import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
+
 import { InstantTradeModule } from 'src/app/features/instant-trade/instant-trade.module';
 import { BridgeModule } from 'src/app/features/bridge/bridge.module';
 import { NewUiComponent } from './new-ui/new-ui.component';
@@ -20,7 +20,7 @@ const routes: Routes = [{ path: '', component: NewUiComponent }];
     TuiAvatarModule,
     TuiButtonModule,
     InstantTradeModule,
-    BridgeModule
+    BridgeModule,
     TuiSvgModule,
     TuiTooltipModule,
     TuiHintModule
