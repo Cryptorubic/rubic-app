@@ -45,6 +45,11 @@ html {
   background-color: #f4f4f4;
 }
 
+main.main-content {
+  max-width: 1440px;
+  margin: 84px auto 0;
+}
+
 .noscroll {
   position: fixed;
   right: 0;

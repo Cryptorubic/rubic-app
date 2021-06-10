@@ -5,6 +5,7 @@ import {
   TemplateRef,
   ViewChildren
 } from '@angular/core';
+import { NewUiDataService } from 'src/app/features/new-ui/new-ui-data.service';
 
 @Component({
   selector: 'app-new-ui',
@@ -19,7 +20,7 @@ export class NewUiComponent {
 
   public options = ['first', 'second', 'third'];
 
-  constructor() {}
+  constructor(public readonly store: NewUiDataService) {}
 
   onClick(event: MouseEvent) {
     console.log('click', event);

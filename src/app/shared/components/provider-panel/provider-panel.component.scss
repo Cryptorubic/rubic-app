@@ -1,0 +1,174 @@
+$border-radius: 14px;
+$green: rgb(74, 169, 96);
+$default-transition: 0.2s ease-in-out;
+$white: white;
+
+.provider-panel {
+  &__content {
+    position: relative;
+
+    box-sizing: border-box;
+    min-width: 500px;
+    padding: 20px;
+
+    background: $white;
+    border: 1px solid $white;
+    border-left-width: 5px;
+    border-radius: $border-radius;
+
+    transition: $default-transition;
+
+    &:not(&_loading) {
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 10px 10px 10px rgba(58, 95, 69, 0.1), -15px -15px 20px rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    &:not(&_loading):not(&_selected):hover {
+      border: 1px solid $green;
+      border-left-width: 5px;
+
+      .provider-panel__best-rate {
+        border-top-color: $green;
+        border-right-color: $green;
+      }
+    }
+    
+    &_selected {
+      color: $white;
+
+      background-color: $green;
+      border-color: $green;
+
+      .provider-panel__right {
+        color: $white;
+      }
+
+      .provider-panel__hint {
+        ::ng-deep svg path {
+          fill: white;
+        }
+      }
+    }
+
+    &_best-rate {
+      border-left-color: $green;
+      border-left-width: 5px;
+    }
+  }
+
+  &__best-rate {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+
+    width: 28px;
+    height: 28px;
+
+    background: $white;
+    border-radius: 100%;
+    box-shadow: 0 3px 6px rgba(black, 0.16);
+
+    &_selected {
+      background-color: $green;
+
+      ::ng-deep svg path {
+        fill: $white;
+      }
+    }
+  }
+
+  &__provider-name {
+    position: absolute;
+    top: -5px;
+    left: 25px;
+
+    padding: 2px 6px;
+
+    color: rgb(128, 128, 128);
+    font-weight: 300;
+    font-size: 14px;
+
+    background: #f3f9f3;
+    border-radius: 3px;
+  }
+
+  &__body {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__left {
+    display: flex;
+    flex: 4;
+    align-items: center;
+  }
+
+  &__right {
+    display: flex;
+    flex: 6;
+    flex-direction: column;
+    align-items: flex-end;
+
+    color: rgba(144, 144, 144, 0.6);
+    font-size: 14px;
+  }
+
+  &__amount {
+    font-weight: 100;
+    font-size: 24px;
+    letter-spacing: 2px;
+  }
+
+  &__currency {
+    margin-left: 10px;
+  }
+
+  &__token-usd-price {
+    margin-bottom: 10px;
+
+    letter-spacing: 0.1em;
+  }
+
+  &__token-gas-fee {
+    display: flex;
+    align-items: center;
+  }
+
+  &__hint {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+
+
+  }
+
+  &__collapse-toggle {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    
+    flex: 100%;
+    justify-content: center;
+    height: 25px;
+    
+    transform: translateX(-50%);
+
+    ::ng-deep svg path {
+      fill: $green;
+    }
+
+    &_collapsed {
+      ::ng-deep svg {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}

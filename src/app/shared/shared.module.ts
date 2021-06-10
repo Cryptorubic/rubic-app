@@ -17,10 +17,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
+import { TuiInputModule } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
+  TuiSvgModule,
+  TuiTooltipModule,
+  TuiHintModule,
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -69,6 +73,8 @@ import { AdvancedOptionsButtonComponent } from './components/advanced-options-bu
 import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
+import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
+import { AmountInputComponent } from './components/amount-input/amount-input.component';
 
 @NgModule({
   declarations: [
@@ -118,7 +124,9 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
     RoundPipe,
-    DropdownSelectorComponent
+    ProviderPanelComponent,
+    DropdownSelectorComponent,
+    AmountInputComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -140,11 +148,15 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    TuiHostedDropdownModule,
+    TuiSvgModule,
+    TuiTooltipModule,
+    TuiHintModule,
+    TuiInputModule,
     TuiButtonModule,
     TuiDataListModule,
     TuiActiveZoneModule,
-    TuiDropdownModule
+    TuiDropdownModule,
+    TuiHostedDropdownModule
   ],
   exports: [
     FooterComponent,
@@ -187,6 +199,8 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
     RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
+    ProviderPanelComponent,
+    AmountInputComponent,
     DropdownSelectorComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]

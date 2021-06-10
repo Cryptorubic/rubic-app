@@ -1,0 +1,63 @@
+<div class='provider-panel'>
+  <div
+    class='provider-panel__content'
+    [ngClass]='{
+    "provider-panel__content_best-rate": providerData.isBestRate,
+    "provider-panel__content_loading": loading,
+    "provider-panel__content_selected": providerData.isActive
+    }'
+    (click)='activateProvider()'
+  >
+    <div class='provider-panel__provider-name'>{{ 'Via ' + providerData.name }}</div>
+    <div
+      *ngIf='providerData.isBestRate'
+      class='provider-panel__best-rate'
+      [ngClass]='{ "provider-panel__best-rate_selected": providerData.isActive }'
+    >
+      <div [inlineSVG]='"assets/images/icons/Best-rate.svg"'></div>
+    </div>
+    <div class='provider-panel__body'>
+      <div class='provider-panel__left'>
+        <div
+          class='provider-panel__amount'
+          [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
+        >
+          {{ providerData.amount }}
+        </div>
+      </div>
+      <div class='provider-panel__right'>
+        <div
+          *ngIf='!collapsed'
+          class='provider-panel__token-usd-price'
+          [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
+        >
+          {{ providerData.gasFeeInUsd}}
+          <span class='provider-panel__currency'>USD</span>
+        </div>
+        <div
+          class='provider-panel__token-gas-fee'
+          [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
+        >
+          {{ 'instantTrades.gasFee' | translate }} {{ providerData.gasFeeInEth}} ≈ {{ providerData.gasFeeInUsd}}$
+          <div
+            class='provider-panel__hint'
+            [inlineSVG]='"/assets/images/icons/hint.svg"'
+            [tuiHint]="'instantTrades.gasFeeMessage' | translate"
+          ></div>
+<!--          <tui-tooltip-->
+<!--            [content]="-->
+<!--            [showDelay]='200'-->
+<!--            direction="left"-->
+<!--          ></tui-tooltip>-->
+        </div>
+      </div>
+      <div
+        *ngIf='!loading'
+        class='provider-panel__collapse-toggle'
+        [ngClass]='{ "provider-panel__collapse-toggle_collapsed": collapsed }'
+      >
+        <tui-svg class="icon" src="tuiIconChevronUpLarge"></tui-svg>
+      </div>
+    </div>
+  </div>
+</div>
