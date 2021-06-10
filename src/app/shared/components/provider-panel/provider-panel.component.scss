@@ -16,12 +16,14 @@ $white: white;
     border-left-width: 5px;
     border-radius: $border-radius;
 
-    box-shadow: 10px 10px 10px rgba(58, 95, 69, 0.1), -15px -15px 20px rgba(255, 255, 255, 0.2);
-
     transition: $default-transition;
 
     &:not(&_loading) {
       cursor: pointer;
+
+      &:hover {
+        box-shadow: 10px 10px 10px rgba(58, 95, 69, 0.1), -15px -15px 20px rgba(255, 255, 255, 0.2);
+      }
     }
 
     &:not(&_loading):not(&_selected):hover {
@@ -141,9 +143,9 @@ $white: white;
   }
 
   &__hint {
-    margin-left: 10px;
     display: flex;
     align-items: center;
+    margin-left: 10px;
 
 
   }

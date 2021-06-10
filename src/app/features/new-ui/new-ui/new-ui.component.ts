@@ -5,9 +5,7 @@ import {
   TemplateRef,
   ViewChildren
 } from '@angular/core';
-import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
-import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
-import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
+import { NewUiDataService } from 'src/app/features/new-ui/new-ui-data.service';
 
 @Component({
   selector: 'app-new-ui',
@@ -20,19 +18,9 @@ export class NewUiComponent {
 
   readonly avatarUrl = './assets/images/rubic-logo-main.svg';
 
-  public providerControllers: ProviderControllerData[];
-
-  public instantTrade: InstantTrade;
-
-  public instantTradeTokens: BlockchainToken[];
-
-  public defaultITToken: BlockchainToken;
-
-  public defaultProvider: any;
-
   public options = ['first', 'second', 'third'];
 
-  constructor() {}
+  constructor(public readonly store: NewUiDataService) {}
 
   onClick(event: MouseEvent) {
     console.log('click', event);

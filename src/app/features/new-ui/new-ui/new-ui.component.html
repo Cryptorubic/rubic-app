@@ -34,12 +34,27 @@
     <h2>Provider panel</h2>
     <div>
       <h3>Default</h3>
-      <app-provider-panel [providerControllerData]="providerControllers[0]" (selectProvider)='selectProvider(0)'></app-provider-panel>
+      <app-provider-panel [providerControllerData]="store.providerControllers[0]" (selectProvider)="store.selectProvider(0)"></app-provider-panel>
       <h3>Loading</h3>
-      <app-provider-panel [providerControllerData]="providerControllers[1]" (selectProvider)='selectProvider(1)'></app-provider-panel>
+      <app-provider-panel [providerControllerData]="store.providerControllers[1]" (selectProvider)="store.selectProvider(1)"></app-provider-panel>
       <h3>Best</h3>
-      <app-provider-panel [providerControllerData]="providerControllers[2]" (selectProvider)='selectProvider(2)'></app-provider-panel>
+      <app-provider-panel [providerControllerData]="store.providerControllers[2]" (selectProvider)="store.selectProvider(2)"></app-provider-panel>
     </div>
+  </section>
+
+  <section>
+    <h2>Instant Trade bottom form</h2>
+    <app-instant-trade-bottom-form></app-instant-trade-bottom-form>
+  </section>
+
+  <section>
+    <h2>Bridge bottom form</h2>
+    <app-bridge-bottom-form></app-bridge-bottom-form>
+  </section>
+
+  <section>
+    <h2>Bottom form loading</h2>
+    <app-amount-input [loading]="true"></app-amount-input>
   </section>
 
   <section>

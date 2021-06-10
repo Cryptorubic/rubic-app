@@ -17,11 +17,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
+import { TuiInputModule } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
-  TuiHostedDropdownModule,
   TuiSvgModule,
   TuiTooltipModule,
   TuiHintModule
@@ -73,6 +73,7 @@ import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
+import { AmountInputComponent } from './components/amount-input/amount-input.component';
 
 @NgModule({
   declarations: [
@@ -123,7 +124,8 @@ import { ProviderPanelComponent } from './components/provider-panel/provider-pan
     AdvancedOptionsButtonComponent,
     RoundPipe,
     ProviderPanelComponent,
-    DropdownSelectorComponent
+    DropdownSelectorComponent,
+    AmountInputComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -148,6 +150,7 @@ import { ProviderPanelComponent } from './components/provider-panel/provider-pan
     TuiSvgModule,
     TuiTooltipModule,
     TuiHintModule,
+    TuiInputModule,
     TuiButtonModule,
     TuiDataListModule,
     TuiActiveZoneModule,
@@ -195,6 +198,7 @@ import { ProviderPanelComponent } from './components/provider-panel/provider-pan
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
     ProviderPanelComponent,
+    AmountInputComponent,
     DropdownSelectorComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
