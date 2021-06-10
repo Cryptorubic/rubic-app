@@ -1,0 +1,11 @@
+<button
+  tuiButton
+  [shape]="'rounded'"
+  type="button"
+  [size]="size"
+  [appearance]="appearance"
+  [disabled]="disabled"
+>
+  <img class="icon" *ngIf="iconUrl" [src]="iconUrl" altText="altText" width="18" height="18" />
+  {{ buttonText }}
+</button>

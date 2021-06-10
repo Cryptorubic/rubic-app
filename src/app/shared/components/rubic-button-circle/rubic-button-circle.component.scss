@@ -1,6 +1,7 @@
 @import 'src/scss/vars';
 
 :host {
+  --tui-height-l: 50px;
   --tui-height-s: 35px;
   --tui-primary-hover: $rubic-base-01;
   --tui-primary-active: $rubic-primary;
@@ -26,10 +27,6 @@
       border-color: $rubic-primary;
     }
 
-    &._focus-visible {
-      outline: none;
-    }
-
     &._pressed {
       background-color: $rubic-primary;
       border-color: $rubic-primary;
@@ -52,5 +49,5 @@
 }
 
 .button-circle-tooltip {
-  font-size: $rubic-tooltip;
+  font-size: $rubic-font-size-01;
 }

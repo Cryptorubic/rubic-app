@@ -6,7 +6,7 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
+import { TuiDirection, TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
 
 @Component({
   selector: 'app-rubic-button-circle',
@@ -14,7 +14,7 @@ import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
   styleUrls: ['./rubic-button-circle.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RubicButtonCircleComponent implements OnInit {
+export class RubicButtonCircleComponent {
   @Input() size: TuiSizeXS | TuiSizeXL;
 
   @Input() altText: string;
@@ -23,11 +23,11 @@ export class RubicButtonCircleComponent implements OnInit {
 
   @Input() disabled: boolean = false;
 
+  @Input() hintDirection: TuiDirection = 'bottom-left';
+
   @Output() onClickEmit: EventEmitter<Event> = new EventEmitter();
 
   constructor() {}
-
-  ngOnInit(): void {}
 
   onClick(event: MouseEvent) {
     this.onClickEmit.emit(event);

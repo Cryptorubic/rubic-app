@@ -4,14 +4,63 @@
   <!-- Button example -->
   <section>
     <h2>Button example</h2>
-    <button tuiIconButton type="button" class="tui-space_right-3 tui-space_bottom-3">
-      Button example
-    </button>
+    <div class="tui-space_bottom-5">
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'Connect wallet'"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'Connect wallet'"
+        [appearance]="'flat'"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'Connect wallet'"
+        [disabled]="true"
+      ></app-rubic-button>
+    </div>
+
+    <div>
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'RBC'"
+        [size]="'s'"
+        [iconUrl]="'assets/images/icons/eth-logo.svg'"
+        [altText]="'RBC'"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'RBC'"
+        [size]="'s'"
+        [iconUrl]="'assets/images/icons/eth-logo.svg'"
+        [altText]="'RBC'"
+        [disabled]="true"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'Select token'"
+        [size]="'s'"
+        [altText]="'RBC'"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        [buttonText]="'Select token'"
+        [size]="'s'"
+        [altText]="'RBC'"
+        [disabled]="true"
+      ></app-rubic-button>
+    </div>
   </section>
 
   <section>
     <h2>Circle button</h2>
     <app-rubic-button-circle
+      class="tui-space_right-10"
       [size]="'s'"
       [iconUrl]="'assets/images/icons/coins/polygon.svg'"
       [altText]="'Polygon'"
@@ -19,10 +68,28 @@
     </app-rubic-button-circle>
 
     <app-rubic-button-circle
+      class="tui-space_right-10"
       [size]="'s'"
       [iconUrl]="'assets/images/icons/coins/polygon.svg'"
       [altText]="'Polygon'"
       [disabled]="true"
+    >
+    </app-rubic-button-circle>
+
+    <app-rubic-button-circle
+      class="tui-space_right-10"
+      [size]="'s'"
+      [iconUrl]="'assets/images/icons/setting.svg'"
+      [hintDirection]="'top-left'"
+      [altText]="'Settings'"
+    >
+    </app-rubic-button-circle>
+
+    <app-rubic-button-circle
+      [size]="'l'"
+      [iconUrl]="'assets/images/icons/reload.svg'"
+      [altText]="'Reload'"
+      [hintDirection]="'top-left'"
     >
     </app-rubic-button-circle>
   </section>

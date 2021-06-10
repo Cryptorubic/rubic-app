@@ -63,6 +63,8 @@ import { AdvancedOptionsButtonComponent } from './components/advanced-options-bu
 import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
+import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
+import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +114,9 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
     RoundPipe,
-    RubicButtonCircleComponent
+    RubicButtonCircleComponent,
+    RubicButtonComponent,
+    RubicSwitcherComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -179,7 +183,8 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
     RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
-    RubicButtonCircleComponent
+    RubicButtonCircleComponent,
+    RubicButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
