@@ -1,24 +1,5 @@
 @import './vars';
 
-tui-wrapper[data-appearance='custom-icon-button'] {
-  color: $main-green;
-
-  background: white;
-
-  &[data-state='hovered'] {
-    background: $grey-background;
-  }
-
-  &[data-state='pressed'] {
-    background: $text-gray;
-  }
-
-  img {
-    max-width: 27px;
-    max-height: 27px;
-  }
-}
-
 tui-dialog {
   overflow: hidden;
 
