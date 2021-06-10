@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  ViewChildren,
+  QueryList,
+  TemplateRef
+} from '@angular/core';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
@@ -11,11 +18,15 @@ import { languagesList } from 'src/app/core/header/models/languages-list';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderLanguageDropdownComponent {
-  public isLanguageslistOpened: boolean;
+  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
 
   public readonly languagesList: LanguageListElement[];
 
   public currentLanguage: string;
+
+  get filteredLanguageList(): LanguageListElement[] {
+    return this.languagesList.filter(language => !language.active);
+  }
 
   constructor(
     private readonly translateService: TranslateService,
@@ -43,16 +54,10 @@ export class HeaderLanguageDropdownComponent {
     this.languagesList.filter(lang => {
       return lang.lng === this.currentLanguage;
     })[0].active = true;
-    this.languagesList.sort((...params) => {
-      return params.pop().active ? 1 : -1;
-    });
   }
 
-  public toggleLanguageDropdown() {
-    this.isLanguageslistOpened = !this.isLanguageslistOpened;
-  }
-
-  public setLanguage(lng: string) {
-    this.translateService.use(lng);
+  public onLangChange(filteredLanguageIndex: number) {
+    const language = this.filteredLanguageList[filteredLanguageIndex];
+    this.translateService.use(language.lng);
   }
 }

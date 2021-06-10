@@ -19,6 +19,17 @@ import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-add
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
 import { TuiButtonModule, TuiHintModule, TuiSvgModule } from '@taiga-ui/core';
 import { TuiToggleModule } from '@taiga-ui/kit';
+import { TuiInputModule } from '@taiga-ui/kit';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiDropdownModule,
+  TuiSvgModule,
+  TuiTooltipModule,
+  TuiHintModule,
+  TuiHostedDropdownModule
+} from '@taiga-ui/core';
+import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -63,6 +74,9 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
 import { AdvancedOptionsButtonComponent } from './components/advanced-options-button/advanced-options-button.component';
 import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
+import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
+import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
+import { AmountInputComponent } from './components/amount-input/amount-input.component';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
@@ -116,6 +130,11 @@ import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rub
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
     RoundPipe,
+    ProviderPanelComponent,
+    DropdownSelectorComponent,
+    AmountInputComponent
+    RoundPipe,
+    RubicButtonCircleComponent
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
@@ -141,7 +160,15 @@ import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rub
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    TuiSvgModule,
+    TuiTooltipModule,
+    TuiHintModule,
+    TuiInputModule,
     TuiButtonModule,
+    TuiDataListModule,
+    TuiActiveZoneModule,
+    TuiDropdownModule,
+    TuiHostedDropdownModule
     TuiSvgModule,
     TuiHintModule,
     TuiToggleModule
@@ -187,6 +214,11 @@ import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rub
     RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
+    RubicButtonCircleComponent
+    AdvancedOptionsButtonComponent,
+    ProviderPanelComponent,
+    AmountInputComponent,
+    DropdownSelectorComponent
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,

@@ -1,0 +1,21 @@
+<div class='instant-trade-bottom-form'>
+  <header class='instant-trade-bottom-form__header'>
+    <h4 class='instant-trade-bottom-form__title'>Instant trade swaps</h4>
+    <a href='https://www.youtube.com/watch?v=dQw4w9WgXcQ' class='instant-trade-bottom-form__analytics'>
+      <img src='assets/images/icons/analytic.svg' alt='Analytic'>
+      <span>Analytic</span>
+    </a>
+  </header>
+  <main class='instant-trade-bottom-form__body'>
+    <div
+      class='instant-trade-bottom-form__provider-item'
+      *ngFor='let provider of store.providerControllers; let i = index'
+    >
+      <app-provider-panel
+        [providerControllerData]='provider'
+        (selectProvider)='store.selectProvider(i)'
+      ></app-provider-panel>
+    </div>
+  </main>
+  <footer class='instant-trade-bottom-form__footer'></footer>
+</div>

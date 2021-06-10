@@ -1,5 +1,5 @@
 import InputToken from 'src/app/shared/models/tokens/InputToken';
-import { PROVIDERS } from '../../../../../features/swaps-page/instant-trades/models/providers.enum';
+import { PROVIDERS } from '../../../../../features/swaps-page-old/instant-trades/models/providers.enum';
 
 interface InstantTradesBlockchainNetwork {
   title: string;

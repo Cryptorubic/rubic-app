@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import BigNumber from 'bignumber.js';
 import * as moment from 'moment';
-import { ORDER_BOOK_TRADE_STATUS } from 'src/app/features/order-book-trade-page/models/trade-data';
+import { ORDER_BOOK_TRADE_STATUS } from 'src/app/features/order-book-trade-page-old/models/trade-data';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BigNumberFormat } from 'src/app/shared/pipes/big-number-format.pipe';
 
