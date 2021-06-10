@@ -173,6 +173,10 @@ export class TokensSelectComponent implements OnInit {
       return tokens.sort(comparator);
     }
 
+    if (query.startsWith('0x')) {
+      return tokens.filter(token => token.address.toLowerCase().includes(query)).sort(comparator);
+    }
+
     const sybmolMatchingTokens = tokens
       .filter(token => token.symbol.toLowerCase().includes(query))
       .sort(comparator);
