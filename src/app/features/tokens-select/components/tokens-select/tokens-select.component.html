@@ -5,7 +5,7 @@
   </header>
   <app-tokens-search-bar></app-tokens-search-bar>
   <div class="tokens-select__content">
-    <app-blockchains-aside></app-blockchains-aside>
-    <app-tokens-list [tokens]="tokens$ | async"></app-tokens-list>
+    <app-blockchains-aside [(blockchain)]="blockchain"></app-blockchains-aside>
+    <app-tokens-list [tokens]="tokensToShow$ | async"></app-tokens-list>
   </div>
 </section>

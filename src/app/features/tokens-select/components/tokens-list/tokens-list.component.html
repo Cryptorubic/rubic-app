@@ -1,7 +1,10 @@
 <section>
-  <ul class="tokens-list">
+  <ul class="tokens-list" *ngIf="tokens.length; else emptyListMessage">
     <li *ngFor="let token of tokens" class="tokens-list__item">
       <app-tokens-list-element [token]="token"></app-tokens-list-element>
     </li>
   </ul>
+  <ng-template #emptyListMessage>
+    <span class="nothing-to-show-message">Nothing to show</span>
+  </ng-template>
 </section>

@@ -9,3 +9,16 @@
     margin-bottom: 15px;
   }
 }
+
+.nothing-to-show-message {
+  position: relative;
+  top: 20px;
+  left: -10px;
+
+  display: block;
+
+  font-size: 16px;
+  text-align: center;
+
+  opacity: 0.6;
+}
