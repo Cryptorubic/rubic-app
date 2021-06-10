@@ -1,0 +1,11 @@
+:host {
+  width: 100%;
+}
+
+.tokens-list {
+  padding-top: 15px;
+
+  &__item:not(:last-child) {
+    margin-bottom: 15px;
+  }
+}

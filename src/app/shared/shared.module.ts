@@ -193,7 +193,8 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
     AdvancedOptionsButtonComponent,
     IconButtonComponent,
     CrossButtonComponent,
-    DropdownSelectorComponent
+    DropdownSelectorComponent,
+    RoundPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

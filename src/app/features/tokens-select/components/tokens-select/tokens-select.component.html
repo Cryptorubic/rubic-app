@@ -6,6 +6,6 @@
   <app-tokens-search-bar></app-tokens-search-bar>
   <div class="tokens-select__content">
     <app-blockchains-aside></app-blockchains-aside>
-    <app-tokens-list></app-tokens-list>
+    <app-tokens-list [tokens]="tokens$ | async"></app-tokens-list>
   </div>
 </section>
