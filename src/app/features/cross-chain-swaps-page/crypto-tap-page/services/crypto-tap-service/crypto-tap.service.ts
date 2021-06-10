@@ -8,7 +8,6 @@ import {
 } from 'src/app/features/cross-chain-swaps-page/crypto-tap-page/models/CryptoTapTrade';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
@@ -22,6 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { ABI, contractAddressEthereum, contractAddressKovan } from './constants/ethContract';
 
 interface EstimatedAmountResponse {
@@ -84,7 +84,7 @@ export class CryptoTapService {
     const blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
     if (!this.providerConnectorService.isProviderActive) {
-      this.errorService.throw(new MetamaskError());
+      this.errorService.throw(new WalletError());
     }
 
     if (!this.providerConnectorService.address) {
