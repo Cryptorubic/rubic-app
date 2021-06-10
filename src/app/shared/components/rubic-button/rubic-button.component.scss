@@ -22,6 +22,7 @@
       --tui-link-hover: #{$rubic-primary};
 
       background-color: $rubic-base-01;
+      box-shadow: $rubic-shadow-button-hover;
     }
 
     &._pressed {
@@ -31,6 +32,7 @@
       --tui-link: #{$rubic-base-01};
 
       background-color: $rubic-primary;
+      box-shadow: $rubic-shadow-button-active;
 
       .icon {
         filter: brightness(10);

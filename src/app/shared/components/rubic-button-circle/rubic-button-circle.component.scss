@@ -20,6 +20,7 @@
 
     &._hovered {
       background-color: $rubic-base-01;
+      box-shadow: $rubic-shadow-button-hover;
     }
 
     &._focused {
@@ -30,6 +31,7 @@
     &._pressed {
       background-color: $rubic-primary;
       border-color: $rubic-primary;
+      box-shadow: $rubic-shadow-button-active;
 
       img {
         filter: brightness(10);

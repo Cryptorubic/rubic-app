@@ -1,0 +1,14 @@
+:host {
+  .theme-toggle {
+    &[data-tui-host-size='l'] {
+      width: 50px;
+      height: 50px;
+    }
+
+    ::ng-deep {
+      .toggle {
+        display: none;
+      }
+    }
+  }
+}

@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
 import { TuiButtonModule, TuiHintModule, TuiSvgModule } from '@taiga-ui/core';
+import { TuiToggleModule } from '@taiga-ui/kit';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -65,6 +66,7 @@ import { RoundPipe } from './pipes/round.pipe';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
+import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rubic-toggler-theme.component';
 
 @NgModule({
   declarations: [
@@ -116,7 +118,8 @@ import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switch
     RoundPipe,
     RubicButtonCircleComponent,
     RubicButtonComponent,
-    RubicSwitcherComponent
+    RubicSwitcherComponent,
+    RubicTogglerThemeComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -140,7 +143,8 @@ import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switch
     MatSelectModule,
     TuiButtonModule,
     TuiSvgModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiToggleModule
   ],
   exports: [
     FooterComponent,
@@ -185,7 +189,8 @@ import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switch
     AdvancedOptionsButtonComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
-    RubicSwitcherComponent
+    RubicSwitcherComponent,
+    RubicTogglerThemeComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

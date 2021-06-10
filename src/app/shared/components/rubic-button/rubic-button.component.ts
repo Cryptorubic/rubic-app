@@ -1,11 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { TuiAppearance } from '@taiga-ui/core';
 import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
 
 @Component({
   selector: 'app-rubic-button',
   templateUrl: './rubic-button.component.html',
-  styleUrls: ['./rubic-button.component.scss']
+  styleUrls: ['./rubic-button.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicButtonComponent {
   @Input() buttonText: string;
