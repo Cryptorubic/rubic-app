@@ -1,5 +1,8 @@
 :host {
   --tui-primary: #4aa956;
-  --tui-text-font: 'Ubuntu', Arial, sans-serif;
+  --tui-font-text-s: normal 15px/20px var(--tui-font-text);
+}
 
+.placeholder {
+  font-size: 15px;
 }

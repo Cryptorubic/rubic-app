@@ -2,9 +2,9 @@
   [ngModel]="query"
   (ngModelChange)="onQueryChanges($event)"
   iconAlign="left"
-  icon="tuiIconSearch"
+  [icon]="tuiIconSearch"
   tuiTextfieldSize="s"
 >
-  Search name or paste address
+  <span class="placeholder">Search name or paste address</span>
 </tui-input>
 

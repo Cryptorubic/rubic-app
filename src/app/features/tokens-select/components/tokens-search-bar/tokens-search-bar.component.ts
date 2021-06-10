@@ -20,6 +20,8 @@ export class TokensSearchBarComponent {
 
   @Output() queryChange = new EventEmitter<string>();
 
+  public tuiIconSearch = tuiIconSearch;
+
   constructor(@Inject(TuiSvgService) tuiSvgService: TuiSvgService) {
     tuiSvgService.define({ tuiIconSearch });
   }
