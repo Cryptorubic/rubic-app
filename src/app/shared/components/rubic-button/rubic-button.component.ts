@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TuiAppearance } from '@taiga-ui/core';
 import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
 
@@ -7,7 +7,7 @@ import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
   templateUrl: './rubic-button.component.html',
   styleUrls: ['./rubic-button.component.scss']
 })
-export class RubicButtonComponent implements OnInit {
+export class RubicButtonComponent {
   @Input() buttonText: string;
 
   @Input() disabled: boolean = false;
@@ -20,9 +20,11 @@ export class RubicButtonComponent implements OnInit {
 
   @Input() altText: string;
 
+  @Output() onClickEmit: EventEmitter<MouseEvent> = new EventEmitter();
+
   constructor() {}
 
-  ngOnInit(): void {
-    console.log(this.size);
+  onClick(event: MouseEvent) {
+    this.onClickEmit.emit(event);
   }
 }

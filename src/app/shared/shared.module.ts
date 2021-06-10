@@ -184,7 +184,8 @@ import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switch
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
     RubicButtonCircleComponent,
-    RubicButtonComponent
+    RubicButtonComponent,
+    RubicSwitcherComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

@@ -25,7 +25,7 @@ export class RubicButtonCircleComponent {
 
   @Input() hintDirection: TuiDirection = 'bottom-left';
 
-  @Output() onClickEmit: EventEmitter<Event> = new EventEmitter();
+  @Output() onClickEmit: EventEmitter<MouseEvent> = new EventEmitter();
 
   constructor() {}
 
