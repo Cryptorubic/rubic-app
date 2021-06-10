@@ -3,9 +3,10 @@
     <h1>Select a token</h1>
     <app-cross-button (crossButtonClick)="close()"></app-cross-button>
   </header>
-  <app-tokens-search-bar></app-tokens-search-bar>
+  <app-tokens-search-bar [(query)]="query"></app-tokens-search-bar>
   <div class="tokens-select__content">
     <app-blockchains-aside [(blockchain)]="blockchain"></app-blockchains-aside>
-    <app-tokens-list [tokens]="tokensToShow$ | async"></app-tokens-list>
+    <app-tokens-list [tokens]="tokensToShow$ | async" *ngIf="!customToken"></app-tokens-list>
+    <app-custom-token *ngIf="customToken" [token]="customToken"></app-custom-token>
   </div>
 </section>

@@ -1,0 +1,12 @@
+:host {
+  width: 100%;
+}
+
+.custom-token {
+  padding-top: 22px;
+
+  &__button {
+    width: 100%;
+    margin-top: 15px;
+  }
+}

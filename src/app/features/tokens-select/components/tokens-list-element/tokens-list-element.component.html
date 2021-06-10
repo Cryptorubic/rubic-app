@@ -6,7 +6,7 @@
     <span>{{token.symbol}}</span>
     <small>{{token.name}}</small>
   </div>
-  <div class="token-card__amount">
+  <div class="token-card__amount" *ngIf="!token.amount.isEqualTo(0)">
     {{token.amount.toNumber() | round: '4':'floor' | bigNumberFormat | shortenAmount:12}}
   </div>
 </div>
