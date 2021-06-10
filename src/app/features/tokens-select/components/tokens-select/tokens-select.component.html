@@ -7,6 +7,6 @@
   <div class="tokens-select__content">
     <app-blockchains-aside [(blockchain)]="blockchain"></app-blockchains-aside>
     <app-tokens-list [tokens]="tokensToShow$ | async" *ngIf="!customToken"></app-tokens-list>
-    <app-custom-token *ngIf="customToken" [token]="customToken"></app-custom-token>
+    <app-custom-token *ngIf="customToken" [token]="customToken" (tokenSelected)="onTokenSelect($event)"></app-custom-token>
   </div>
 </section>

@@ -1,0 +1,11 @@
+<ng-container>
+  <span>Are you sure you want to import {{token.symbol}} token? Use it at your own risk.</span>
+  <div class="buttons-container">
+    <button tuiButton size="m" (click)="onDecline()">
+      Cancel
+    </button>
+    <button tuiButton size="m" (click)="onAccept()" appearance="secondary">
+      Ok
+    </button>
+  </div>
+</ng-container>

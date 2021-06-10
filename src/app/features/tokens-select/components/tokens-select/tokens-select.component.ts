@@ -142,6 +142,10 @@ export class TokensSelectComponent implements OnInit {
     this.context.completeWith(null);
   }
 
+  onTokenSelect(token: TokenAmount) {
+    this.context.completeWith(token);
+  }
+
   private updateTokensList(): void {
     this.customToken = null;
     this.allTokens$.subscribe(tokens => {

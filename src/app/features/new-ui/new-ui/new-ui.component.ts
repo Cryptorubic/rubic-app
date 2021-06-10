@@ -17,6 +17,6 @@ export class NewUiComponent {
   }
 
   openTokensSelect() {
-    this.tokensSelectService.showDialog();
+    this.tokensSelectService.showDialog().subscribe(token => alert(`${token.symbol} selected`));
   }
 }

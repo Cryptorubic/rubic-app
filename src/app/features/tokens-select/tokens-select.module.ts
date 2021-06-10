@@ -16,6 +16,7 @@ import { TokensListComponent } from './components/tokens-list/tokens-list.compon
 import { TokensListElementComponent } from './components/tokens-list-element/tokens-list-element.component';
 import { SharedModule } from '../../shared/shared.module';
 import { CustomTokenComponent } from './components/custom-token/custom-token.component';
+import { CustomTokenWarningModalComponent } from './components/custom-token-warning-modal/custom-token-warning-modal.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { CustomTokenComponent } from './components/custom-token/custom-token.com
     TokensSearchBarComponent,
     TokensListComponent,
     TokensListElementComponent,
-    CustomTokenComponent
+    CustomTokenComponent,
+    CustomTokenWarningModalComponent
   ],
   imports: [
     CommonModule,
@@ -37,6 +39,6 @@ import { CustomTokenComponent } from './components/custom-token/custom-token.com
     TuiButtonModule
   ],
   providers: [TokensSelectService],
-  entryComponents: [TokensSelectComponent]
+  entryComponents: [TokensSelectComponent, CustomTokenWarningModalComponent]
 })
 export class TokensSelectModule {}
