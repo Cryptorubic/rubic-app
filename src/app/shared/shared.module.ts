@@ -73,6 +73,8 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
 import { AdvancedOptionsButtonComponent } from './components/advanced-options-button/advanced-options-button.component';
 import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
+import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
+import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
 import { AmountInputComponent } from './components/amount-input/amount-input.component';
@@ -80,6 +82,7 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rubic-toggler-theme.component';
+import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 
 @NgModule({
   declarations: [
@@ -137,7 +140,10 @@ import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rub
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
-    RubicTogglerThemeComponent
+    RubicTogglerThemeComponent,
+    IconButtonComponent,
+    CrossButtonComponent,
+    ShortenAmountPipe
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -221,7 +227,11 @@ import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rub
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
-    RubicTogglerThemeComponent
+    RubicTogglerThemeComponent,
+    IconButtonComponent,
+    CrossButtonComponent,
+    RoundPipe,
+    ShortenAmountPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
