@@ -4,13 +4,13 @@ import { BIG_NUMBER_FORMAT } from '../constants/formats/BIG_NUMBER_FORMAT';
 
 @Pipe({ name: 'bigNumberFormat' })
 export class BigNumberFormat implements PipeTransform {
-  transform(value: BigNumber | string | number) {
-    if (!value) {
-      return '';
+  transform(value: BigNumber | string | number, dp = -1) {
+    if (typeof value === 'number') {
+      value = value.toString();
     }
 
-    if (typeof value === 'number') {
-      return new BigNumber(value).toFormat(BIG_NUMBER_FORMAT);
+    if (!value) {
+      return '';
     }
 
     if (typeof value === 'string') {
@@ -18,10 +18,13 @@ export class BigNumberFormat implements PipeTransform {
       return (
         new BigNumber(integerPart.split(',').join('')).toFormat(BIG_NUMBER_FORMAT) +
         (value.includes('.') ? '.' : '') +
-        (decimalPart || '')
+        (decimalPart?.slice(0, dp === -1 ? decimalPart.length : dp + 1) || '')
       );
     }
 
+    if (dp !== -1) {
+      value = value.dp(dp);
+    }
     return value.toFormat(BIG_NUMBER_FORMAT);
   }
 }
