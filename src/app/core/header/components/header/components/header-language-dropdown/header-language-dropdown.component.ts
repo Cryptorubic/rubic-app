@@ -18,7 +18,7 @@ import { languagesList } from 'src/app/core/header/models/languages-list';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderLanguageDropdownComponent {
-  @ViewChildren('dropdownItemTemplate') dropdownListTemplate: QueryList<TemplateRef<any>>;
+  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
 
   public readonly languagesList: LanguageListElement[];
 

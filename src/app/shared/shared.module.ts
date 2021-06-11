@@ -17,10 +17,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
+import { TuiToggleModule, TuiInputModule } from '@taiga-ui/kit';
+
 import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
+  TuiSvgModule,
+  TuiTooltipModule,
+  TuiHintModule,
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -71,6 +76,12 @@ import { RoundPipe } from './pipes/round.pipe';
 import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
 import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
+import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
+import { AmountInputComponent } from './components/amount-input/amount-input.component';
+import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
+import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
+import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
+import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 
 @NgModule({
@@ -121,9 +132,17 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
     RoundPipe,
+    ProviderPanelComponent,
+    DropdownSelectorComponent,
+    AmountInputComponent,
+    RoundPipe,
+    RubicButtonCircleComponent,
+    RubicButtonCircleComponent,
+    RubicButtonComponent,
+    RubicSwitcherComponent,
+    RubicTogglerThemeComponent,
     IconButtonComponent,
     CrossButtonComponent,
-    DropdownSelectorComponent,
     ShortenAmountPipe
   ],
   entryComponents: [MessageBoxComponent],
@@ -146,11 +165,18 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    TuiHostedDropdownModule,
+    TuiSvgModule,
+    TuiTooltipModule,
+    TuiHintModule,
+    TuiInputModule,
     TuiButtonModule,
     TuiDataListModule,
     TuiActiveZoneModule,
-    TuiDropdownModule
+    TuiDropdownModule,
+    TuiHostedDropdownModule,
+    TuiSvgModule,
+    TuiHintModule,
+    TuiToggleModule
   ],
   exports: [
     FooterComponent,
@@ -193,9 +219,17 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
+    RubicButtonCircleComponent,
+    AdvancedOptionsButtonComponent,
+    ProviderPanelComponent,
+    AmountInputComponent,
+    DropdownSelectorComponent,
+    RubicButtonCircleComponent,
+    RubicButtonComponent,
+    RubicSwitcherComponent,
+    RubicTogglerThemeComponent,
     IconButtonComponent,
     CrossButtonComponent,
-    DropdownSelectorComponent,
     RoundPipe,
     ShortenAmountPipe
   ],

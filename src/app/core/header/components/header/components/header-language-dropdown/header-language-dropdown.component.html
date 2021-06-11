@@ -1,6 +1,6 @@
 <app-dropdown-selector
   [dropdownButtonTemplate]="dropdownButtonTemplate"
-  [dropdownListTemplate]="dropdownListTemplate"
+  [dropdownOptionsTemplates]="dropdownOptionsTemplates"
   (optionChange)="onLangChange($event)"
 ></app-dropdown-selector>
 
@@ -10,8 +10,8 @@
   </button>
 </ng-template>
 
-<ng-template #dropdownItemTemplate *ngFor="let language of filteredLanguageList">
-  <span class="dropdown-item">
+<ng-template #dropdownOptionTemplate *ngFor="let language of filteredLanguageList">
+  <span class="dropdown-option">
     {{ language.title }}
   </span>
 </ng-template>

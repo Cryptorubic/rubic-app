@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 import { TuiAvatarModule } from '@taiga-ui/kit';
-import { TuiButtonModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiSvgModule, TuiTooltipModule } from '@taiga-ui/core';
+
+import { InstantTradeModule } from 'src/app/features/instant-trade/instant-trade.module';
+import { BridgeModule } from 'src/app/features/bridge/bridge.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NewUiComponent } from './new-ui/new-ui.component';
 import { TokensSelectModule } from '../tokens-select/tokens-select.module';
 
@@ -17,6 +21,13 @@ const routes: Routes = [{ path: '', component: NewUiComponent }];
     SharedModule,
     TuiAvatarModule,
     TuiButtonModule,
+    InstantTradeModule,
+    BridgeModule,
+    TuiSvgModule,
+    TuiTooltipModule,
+    TuiHintModule,
+    FormsModule,
+    ReactiveFormsModule,
     TokensSelectModule
   ],
   exports: [RouterModule]

@@ -1,0 +1,62 @@
+@import 'src/scss/vars';
+
+:host {
+  --tui-primary: $rubic-base-01;
+  --tui-secondary: $rubic-base-01;
+  --tui-primary-hover: #{$rubic-base-01};
+  --tui-secondary-hover: #{$rubic-base-01};
+  --tui-primary-active: #{$rubic-primary};
+  --tui-secondary-active: #{$rubic-primary};
+
+  .theme-toggle {
+    border: 1px solid $rubic-base-01;
+
+    transition: 0.3s;
+
+    &[data-tui-host-size='l'] {
+      width: 50px;
+      height: 50px;
+    }
+
+    ::ng-deep tui-wrapper {
+      background-image: url('/assets/img/icons/day.svg');
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+
+    &_night {
+      ::ng-deep tui-wrapper {
+        background-image: url('/assets/img/icons/night.svg');
+      }
+    }
+
+    ::ng-deep {
+      .toggle {
+        display: none;
+      }
+    }
+
+    &._hovered {
+      background-color: $rubic-base-01;
+    }
+
+    &._pressed {
+      border-color: $rubic-primary;
+      background-color: $rubic-primary;
+
+      ::ng-deep tui-wrapper {
+        background-image: url('/assets/img/icons/day-light.svg');
+      }
+
+      &.theme-toggle_night {
+        ::ng-deep tui-wrapper {
+          background-image: url('/assets/img/icons/night-light.svg');
+        }
+      }
+    }
+
+    &._focused {
+      border-color: $rubic-primary;
+    }
+  }
+}

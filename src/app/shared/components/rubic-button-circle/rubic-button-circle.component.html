@@ -1,0 +1,19 @@
+<button
+  tuiIconButton
+  shape="rounded"
+  [size]="size"
+  tuiDescribedBy="buttonCircle"
+  tuiHintId="buttonCircle"
+  tuiHintMode="onDark"
+  tuiHintDirection="bottom-left"
+  [tuiHint]="tooltip"
+  [disabled]="disabled"
+>
+  <img [src]="iconUrl" [alt]="altText" />
+</button>
+
+<ng-template #tooltip>
+  <div class="button-circle-tooltip">
+    {{ altText }}
+  </div>
+</ng-template>
