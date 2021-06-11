@@ -1,17 +1,19 @@
-$main-color: #4aa956;
+@import 'src/scss/vars';
 
 .modal {
   position: relative;
-
-  padding: 15px 40px 40px;
 
   font-weight: 300;
 
   border-radius: 10px;
 
   &__title {
-    font-size: 22px;
-    text-align: center;
+    margin-top: 0;
+
+    color: #808080;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 29px;
   }
 
   &__header,
@@ -19,19 +21,14 @@ $main-color: #4aa956;
     margin-bottom: 30px;
   }
 
+  &__footer {
+    text-align: center;
+  }
+
   &__body {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  &__rubic-logo {
-    display: flex;
-    justify-content: center;
-
-    ::ng-deep svg path {
-      fill: white;
-    }
   }
 
   &__description {
@@ -54,7 +51,7 @@ $main-color: #4aa956;
   }
 
   &__link {
-    color: $main-color;
+    color: $main-green;
   }
 
   &__provider-button {
@@ -70,7 +67,7 @@ $main-color: #4aa956;
     font-size: 18px;
 
     background: transparent;
-    border: 1px solid $main-color;
+    border: 1px solid $main-green;
     border-radius: 10px;
     cursor: pointer;
 
@@ -92,30 +89,7 @@ $main-color: #4aa956;
 
   &__close {
     position: absolute;
-    top: 15px;
-    right: 15px;
-
-    color: white;
-
-    background-color: transparent;
-
-    cursor: pointer;
-  }
-}
-
-::ng-deep {
-  .modal__close svg {
-    width: 15px;
-    height: 15px;
-
-    path {
-      fill: black;
-    }
-  }
-
-  .mat-dialog-container {
-    overflow: visible !important;
-
-    border-radius: 10px !important;
+    top: 0;
+    right: 0;
   }
 }
