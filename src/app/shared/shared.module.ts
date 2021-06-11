@@ -17,11 +17,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
+import { TuiToggleModule, TuiInputModule } from '@taiga-ui/kit';
+
 import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
   TuiHintModule,
+  TuiSvgModule,
+  TuiTooltipModule,
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -72,6 +76,12 @@ import { RoundPipe } from './pipes/round.pipe';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
 import { TokenAmountInputComponent } from './components/token-amount-input/token-amount-input.component';
 import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
+import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
+import { AmountInputComponent } from './components/amount-input/amount-input.component';
+import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
+import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
+import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
+import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rubic-toggler-theme.component';
 
 @NgModule({
   declarations: [
@@ -123,7 +133,13 @@ import { TokenAmountDirective } from './directives/token-amount/token-amount.dir
     RoundPipe,
     DropdownSelectorComponent,
     TokenAmountInputComponent,
-    TokenAmountDirective
+    TokenAmountDirective,
+    ProviderPanelComponent,
+    AmountInputComponent,
+    RubicButtonCircleComponent,
+    RubicButtonComponent,
+    RubicSwitcherComponent,
+    RubicTogglerThemeComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -144,13 +160,16 @@ import { TokenAmountDirective } from './directives/token-amount/token-amount.dir
     InlineSVGModule.forRoot(),
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
-    TuiHostedDropdownModule,
+    TuiSvgModule,
+    TuiTooltipModule,
+    TuiHintModule,
+    TuiInputModule,
     TuiButtonModule,
     TuiDataListModule,
     TuiActiveZoneModule,
     TuiDropdownModule,
-    TuiHintModule
+    TuiHostedDropdownModule,
+    TuiToggleModule
   ],
   exports: [
     FooterComponent,
@@ -190,11 +209,16 @@ import { TokenAmountDirective } from './directives/token-amount/token-amount.dir
     CheckboxComponent,
     RefreshToolComponent,
     WalletAddressFormComponent,
-    RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
+    TokenAmountInputComponent,
+    ProviderPanelComponent,
+    AmountInputComponent,
     DropdownSelectorComponent,
-    TokenAmountInputComponent
+    RubicButtonCircleComponent,
+    RubicButtonComponent,
+    RubicSwitcherComponent,
+    RubicTogglerThemeComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

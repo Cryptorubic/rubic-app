@@ -1,0 +1,51 @@
+.bottom-amount {
+  box-sizing: border-box;
+  width: 540px;
+  padding: 15px 20px 25px;
+
+  background-color: rgba(#fcfcfc, 0.9);
+  border-radius: 0 0 14px 14px;
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__usd-container {
+    display: flex;
+    width: 50%;
+    margin-bottom: 10px;
+    margin-left: auto;
+
+    color: rgba(144, 144, 144, 0.6);
+    font-weight: 400;
+    font-size: 14px;
+    font-family: 'SF Pro Display', sans-serif;
+
+    span {
+      margin-left: 10px;
+    }
+  }
+
+  &__usd,
+  &__tokens {
+    width: 100%;
+    padding: 0;
+
+    letter-spacing: 0.1em;
+
+    background: none;
+    border: none;
+  }
+
+  &__usd {
+    text-align: right;
+  }
+
+  &__tokens {
+    font-weight: 100;
+    font-size: 30px;
+    font-family: 'SF Pro Display', sans-serif;
+    text-align: left;
+  }
+}

@@ -10,6 +10,7 @@ import {
 import { IToken } from 'src/app/shared/models/tokens/IToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NewUiDataService } from 'src/app/features/new-ui/new-ui-data.service';
 
 @Component({
   selector: 'app-new-ui',
@@ -36,7 +37,7 @@ export class NewUiComponent implements OnInit {
     usedInIframe: true
   };
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(private readonly cdr: ChangeDetectorRef, public readonly store: NewUiDataService) {}
 
   ngOnInit(): void {
     // mock http requests

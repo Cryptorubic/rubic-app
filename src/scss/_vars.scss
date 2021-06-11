@@ -39,3 +39,21 @@ $mobile-sm: 401;
 // ***** shadows *****
 $shadow-block: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
 $main-shadow: 0 3px 6px rgba(black, 0.16);
+
+// new colors
+$rubic-base-01: #fff;
+$rubic-base-02: #000;
+$rubic-primary: #4aa956;
+$rubic-secondary: #f4f5f4;
+$rubic-disable: #e1e1e1;
+
+// text colors
+$rubic-text-color-main: #283125;
+$rubic-text-disable: #909090;
+
+// font-sizes
+$rubic-font-size-01: 16px;
+
+// shadows
+$rubic-shadow-button-hover: 0 3px 1px -2px rgb(0, 0, 0, 0.2), 0 2px 2px 0 rgb(0, 0, 0, 0.14), 0 1px 5px 0 rgb(0, 0, 0, 0.12);
+$rubic-shadow-button-active: 0 5px 5px -3px rgb(0, 0, 0, 0.2), 0 8px 10px 1px rgb(0, 0, 0, 0.14), 0 3px 14px 2px rgb(0, 0, 0, 0.12);

@@ -63,6 +63,11 @@ button {
   cursor: pointer;
 }
 
+main.main-content {
+  max-width: 1440px;
+  margin: 84px auto 0;
+}
+
 .noscroll {
   position: fixed;
   right: 0;
