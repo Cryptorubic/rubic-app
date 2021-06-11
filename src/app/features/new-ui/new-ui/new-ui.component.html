@@ -4,9 +4,112 @@
   <!-- Button example -->
   <section>
     <h2>Button example</h2>
-    <button tuiButton type="button" class="tui-space_right-3 tui-space_bottom-3">
-      Button example
-    </button>
+    <div class="tui-space_bottom-5">
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'Connect wallet'"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'Connect wallet'"
+        [appearance]="'flat'"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'Connect wallet'"
+        [disabled]="true"
+      ></app-rubic-button>
+    </div>
+
+    <div class="tui-space_bottom-5">
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'RBC'"
+        [size]="'s'"
+        [iconUrl]="'assets/images/icons/eth-logo.svg'"
+        [altText]="'RBC'"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'RBC'"
+        [size]="'s'"
+        [iconUrl]="'assets/images/icons/eth-logo.svg'"
+        [altText]="'RBC'"
+        [disabled]="true"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        [buttonText]="'Select token'"
+        [size]="'s'"
+        [altText]="'RBC'"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        [buttonText]="'Select token'"
+        [size]="'s'"
+        [altText]="'RBC'"
+        [disabled]="true"
+      ></app-rubic-button>
+    </div>
+
+    <div>
+      <app-rubic-button
+        [fullWidth]="true"
+        [buttonText]="'Connect wallet'"
+        [altText]="'RBC'"
+      ></app-rubic-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Circle button</h2>
+    <app-rubic-button-circle
+      class="tui-space_right-10"
+      [size]="'s'"
+      [iconUrl]="'assets/images/icons/coins/polygon.svg'"
+      [altText]="'Polygon'"
+    >
+    </app-rubic-button-circle>
+
+    <app-rubic-button-circle
+      class="tui-space_right-10"
+      [size]="'s'"
+      [iconUrl]="'assets/images/icons/coins/polygon.svg'"
+      [altText]="'Polygon'"
+      [disabled]="true"
+    >
+    </app-rubic-button-circle>
+
+    <app-rubic-button-circle
+      class="tui-space_right-10"
+      [size]="'s'"
+      [iconUrl]="'assets/images/icons/setting.svg'"
+      [hintDirection]="'top-left'"
+      [altText]="'Settings'"
+    >
+    </app-rubic-button-circle>
+
+    <app-rubic-button-circle
+      [size]="'l'"
+      [iconUrl]="'assets/images/icons/reload.svg'"
+      [altText]="'Reload'"
+      [hintDirection]="'top-left'"
+    >
+    </app-rubic-button-circle>
+  </section>
+
+  <section>
+    <h2>Switcher</h2>
+    <app-rubic-switcher></app-rubic-switcher>
+  </section>
+
+  <section>
+    <h2>Theme toggle</h2>
+    <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </section>
 
   <!--  Dropdown Selector example-->
@@ -34,11 +137,20 @@
     <h2>Provider panel</h2>
     <div>
       <h3>Default</h3>
-      <app-provider-panel [providerControllerData]="store.providerControllers[0]" (selectProvider)="store.selectProvider(0)"></app-provider-panel>
+      <app-provider-panel
+        [providerControllerData]="store.providerControllers[0]"
+        (selectProvider)="store.selectProvider(0)"
+      ></app-provider-panel>
       <h3>Loading</h3>
-      <app-provider-panel [providerControllerData]="store.providerControllers[1]" (selectProvider)="store.selectProvider(1)"></app-provider-panel>
+      <app-provider-panel
+        [providerControllerData]="store.providerControllers[1]"
+        (selectProvider)="store.selectProvider(1)"
+      ></app-provider-panel>
       <h3>Best</h3>
-      <app-provider-panel [providerControllerData]="store.providerControllers[2]" (selectProvider)="store.selectProvider(2)"></app-provider-panel>
+      <app-provider-panel
+        [providerControllerData]="store.providerControllers[2]"
+        (selectProvider)="store.selectProvider(2)"
+      ></app-provider-panel>
     </div>
   </section>
 

@@ -17,7 +17,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
-import { TuiInputModule } from '@taiga-ui/kit';
+import { TuiToggleModule, TuiInputModule } from '@taiga-ui/kit';
+
 import {
   TuiButtonModule,
   TuiDataListModule,
@@ -75,6 +76,10 @@ import { RoundPipe } from './pipes/round.pipe';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
 import { AmountInputComponent } from './components/amount-input/amount-input.component';
+import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
+import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
+import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
+import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rubic-toggler-theme.component';
 
 @NgModule({
   declarations: [
@@ -126,7 +131,13 @@ import { AmountInputComponent } from './components/amount-input/amount-input.com
     RoundPipe,
     ProviderPanelComponent,
     DropdownSelectorComponent,
-    AmountInputComponent
+    AmountInputComponent,
+    RoundPipe,
+    RubicButtonCircleComponent,
+    RubicButtonCircleComponent,
+    RubicButtonComponent,
+    RubicSwitcherComponent,
+    RubicTogglerThemeComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -156,7 +167,10 @@ import { AmountInputComponent } from './components/amount-input/amount-input.com
     TuiDataListModule,
     TuiActiveZoneModule,
     TuiDropdownModule,
-    TuiHostedDropdownModule
+    TuiHostedDropdownModule,
+    TuiSvgModule,
+    TuiHintModule,
+    TuiToggleModule
   ],
   exports: [
     FooterComponent,
@@ -199,9 +213,15 @@ import { AmountInputComponent } from './components/amount-input/amount-input.com
     RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
+    RubicButtonCircleComponent,
+    AdvancedOptionsButtonComponent,
     ProviderPanelComponent,
     AmountInputComponent,
-    DropdownSelectorComponent
+    DropdownSelectorComponent,
+    RubicButtonCircleComponent,
+    RubicButtonComponent,
+    RubicSwitcherComponent,
+    RubicTogglerThemeComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
