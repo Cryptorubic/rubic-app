@@ -11,7 +11,11 @@ import { IToken } from 'src/app/shared/models/tokens/IToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { NewUiDataService } from 'src/app/features/new-ui/new-ui-data.service';
+import { of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { TokensSelectService } from '../../tokens-select/services/tokens-select.service';
+import { ErrorsService } from '../../../core/errors/errors.service';
+import { RubicError } from '../../../shared/models/errors/RubicError';
 
 @Component({
   selector: 'app-new-ui',
@@ -45,7 +49,8 @@ export class NewUiComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     public readonly store: NewUiDataService,
-    private tokensSelectService: TokensSelectService
+    private readonly tokensSelectService: TokensSelectService,
+    private readonly errorsService: ErrorsService
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +59,7 @@ export class NewUiComponent implements OnInit {
       this.cdr.markForCheck();
       this.ethToken = {
         ...this.ethToken,
+        // @ts-ignore
         userBalance: 2000.343443
       };
       this.tokenAmountFrom = '123.32';
@@ -80,5 +86,10 @@ export class NewUiComponent implements OnInit {
   onTokenAmountFromChange(amount: string): void {
     this.tokenAmountFrom = amount;
     console.log('token amount from', amount);
+  }
+
+  handleError() {
+    const source = throwError(new RubicError());
+    source.pipe(catchError(this.errorsService.catch$)).subscribe();
   }
 }
