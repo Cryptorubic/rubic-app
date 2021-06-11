@@ -1,4 +1,14 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef
+} from '@angular/core';
 import { IToken } from 'src/app/shared/models/tokens/IToken';
 import BigNumber from 'bignumber.js';
 import { FormControl, Validators } from '@angular/forms';
@@ -6,9 +16,10 @@ import { FormControl, Validators } from '@angular/forms';
 @Component({
   selector: 'app-token-amount-input',
   templateUrl: './token-amount-input.component.html',
-  styleUrls: ['./token-amount-input.component.scss']
+  styleUrls: ['./token-amount-input.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokenAmountInputComponent implements OnInit {
+export class TokenAmountInputComponent implements OnInit, OnChanges {
   @Input() placeholder = '0.0';
 
   @Input() token?: IToken;
@@ -25,14 +36,29 @@ export class TokenAmountInputComponent implements OnInit {
 
   public amountControl: FormControl;
 
-  constructor() {}
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.setAmountFormControl();
+    this.amountControl = new FormControl(this.amount);
+    this.setAmountControlValidators();
   }
 
-  private setAmountFormControl(): void {
-    this.amountControl = new FormControl(this.amount);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.amount) {
+      this.amountControl?.setValue(this.amount);
+      this.cdr.markForCheck();
+    }
+    if (changes.minAmount || changes.maxAmount) {
+      this.setAmountControlValidators();
+      this.cdr.markForCheck();
+    }
+  }
+
+  private setAmountControlValidators(): void {
+    if (!this.amountControl) {
+      return;
+    }
+
     const validators = [];
     if (this.minAmount !== undefined) {
       validators.push(Validators.min(this.minAmount));

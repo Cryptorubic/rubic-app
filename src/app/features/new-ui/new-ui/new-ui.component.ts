@@ -25,7 +25,11 @@ export class NewUiComponent implements OnInit {
 
   public readonly options = ['first', 'second', 'third'];
 
-  public readonly ethToken: IToken = {
+  public tokenAmountFrom = '';
+
+  public minTokenAmount = 100;
+
+  public ethToken: IToken = {
     blockchain: BLOCKCHAIN_NAME.ETHEREUM,
     address: NATIVE_TOKEN_ADDRESS,
     name: 'Ethereum',
@@ -43,8 +47,13 @@ export class NewUiComponent implements OnInit {
     // mock http requests
     setTimeout(() => {
       this.cdr.markForCheck();
-      this.ethToken.userBalance = 2000.343443;
-    }, 1500);
+      this.ethToken = {
+        ...this.ethToken,
+        userBalance: 2000.343443
+      };
+      this.tokenAmountFrom = '123.32';
+      this.minTokenAmount = 50;
+    }, 3000);
   }
 
   onClick(event: MouseEvent) {
@@ -53,5 +62,10 @@ export class NewUiComponent implements OnInit {
 
   onOptionChange(optionIndex: number): void {
     console.log('chosen option: ', this.options[optionIndex]);
+  }
+
+  onTokenAmountFromChange(amount: string): void {
+    this.tokenAmountFrom = amount;
+    console.log('token amount from', amount);
   }
 }

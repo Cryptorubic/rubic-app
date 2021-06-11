@@ -138,8 +138,10 @@
     <h2>Token Amount Input example</h2>
 
     <app-token-amount-input
+      [amount]="tokenAmountFrom"
+      (amountChange)="onTokenAmountFromChange($event)"
       [token]="ethToken"
-      [minAmount]="50"
+      [minAmount]="minTokenAmount"
       [maxAmount]="50000"
     ></app-token-amount-input>
   </section>
