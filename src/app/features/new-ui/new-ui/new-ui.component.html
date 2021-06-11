@@ -30,6 +30,17 @@
     </ng-template>
   </section>
 
+  <!--  Token Amount Input example-->
+  <section class="token-amount-input-example">
+    <h2>Token Amount Input example</h2>
+
+    <app-token-amount-input
+      [token]="ethToken"
+      [minAmount]="50"
+      [maxAmount]="50000"
+    ></app-token-amount-input>
+  </section>
+
   <section>
     <h2>Another component</h2>
     <span>...</span>

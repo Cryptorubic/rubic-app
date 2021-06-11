@@ -21,6 +21,7 @@ import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
+  TuiHintModule,
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -69,6 +70,8 @@ import { AdvancedOptionsButtonComponent } from './components/advanced-options-bu
 import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
+import { TokenAmountInputComponent } from './components/token-amount-input/token-amount-input.component';
+import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
 
 @NgModule({
   declarations: [
@@ -118,7 +121,9 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
     RoundPipe,
-    DropdownSelectorComponent
+    DropdownSelectorComponent,
+    TokenAmountInputComponent,
+    TokenAmountDirective
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -144,7 +149,8 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
     TuiButtonModule,
     TuiDataListModule,
     TuiActiveZoneModule,
-    TuiDropdownModule
+    TuiDropdownModule,
+    TuiHintModule
   ],
   exports: [
     FooterComponent,
@@ -187,7 +193,8 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
     RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
-    DropdownSelectorComponent
+    DropdownSelectorComponent,
+    TokenAmountInputComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

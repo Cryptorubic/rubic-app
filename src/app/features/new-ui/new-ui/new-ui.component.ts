@@ -1,10 +1,15 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  OnInit,
   QueryList,
   TemplateRef,
   ViewChildren
 } from '@angular/core';
+import { IToken } from 'src/app/shared/models/tokens/IToken';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 @Component({
   selector: 'app-new-ui',
@@ -12,14 +17,34 @@ import {
   styleUrls: ['./new-ui.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewUiComponent {
+export class NewUiComponent implements OnInit {
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
 
-  readonly avatarUrl = './assets/images/rubic-logo-main.svg';
+  public readonly avatarUrl = './assets/images/rubic-logo-main.svg';
 
-  public options = ['first', 'second', 'third'];
+  public readonly options = ['first', 'second', 'third'];
 
-  constructor() {}
+  public readonly ethToken: IToken = {
+    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    address: NATIVE_TOKEN_ADDRESS,
+    name: 'Ethereum',
+    symbol: 'ETH',
+    decimals: 18,
+    image: 'http://dev-api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_4jp3DKD.png',
+    rank: 1.0,
+    price: 2543.11,
+    usedInIframe: true
+  };
+
+  constructor(private readonly cdr: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+    // mock http requests
+    setTimeout(() => {
+      this.cdr.markForCheck();
+      this.ethToken.userBalance = 2000.343443;
+    }, 1500);
+  }
 
   onClick(event: MouseEvent) {
     console.log('click', event);

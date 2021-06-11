@@ -22,6 +22,8 @@
 @import 'scss/iframe-style';
 
 * {
+  box-sizing: border-box;
+
   appearance: none;
   -webkit-tap-highlight-color: transparent;
 
@@ -43,6 +45,22 @@ body {
 
 html {
   background-color: #f4f4f4;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  margin: 0;
+
+  appearance: none;
+}
+
+input[type=number] {
+  /* stylelint-disable */
+  -moz-appearance: textfield;
+}
+
+button {
+  cursor: pointer;
 }
 
 .noscroll {
