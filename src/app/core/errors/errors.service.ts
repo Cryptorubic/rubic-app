@@ -8,6 +8,8 @@ import { Observable, EMPTY } from 'rxjs';
 import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { RubicError } from '../../shared/models/errors/RubicError';
 import { RubicErrorComponent } from './components/rubic-error/rubic-error.component';
+import { NotSupportedNetworkError } from '../../shared/models/errors/provider/NotSupportedNetwork';
+import { NotSupportedNetworkErrorComponent } from './components/not-supported-network-error/not-supported-network-error.component';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +27,8 @@ export class ErrorsService {
       'An unknown error occurred';
     const options = {
       label: 'Error',
-      status: TuiNotification.Error
+      status: TuiNotification.Error,
+      data: {}
     };
     const setPolyContent = (Component: Type<object>) => {
       errorContent = new PolymorpheusComponent(Component, this.injector);
@@ -34,6 +37,10 @@ export class ErrorsService {
     switch (error.constructor) {
       case RubicError:
         setPolyContent(RubicErrorComponent);
+        break;
+      case NotSupportedNetworkError:
+        setPolyContent(NotSupportedNetworkErrorComponent);
+        options.data = { networkToChoose: (<NotSupportedNetworkError>error).networkToChoose };
         break;
       default:
         console.error(error);

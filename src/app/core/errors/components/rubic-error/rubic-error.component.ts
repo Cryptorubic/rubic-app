@@ -7,8 +7,5 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicErrorComponent {
-  public text =
-    'Please try again later or try using another device. If you’re still having problems, please reach out to our';
-
   constructor() {}
 }

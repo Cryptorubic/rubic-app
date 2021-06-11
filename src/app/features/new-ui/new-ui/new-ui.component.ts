@@ -16,6 +16,7 @@ import { catchError } from 'rxjs/operators';
 import { TokensSelectService } from '../../tokens-select/services/tokens-select.service';
 import { ErrorsService } from '../../../core/errors/errors.service';
 import { RubicError } from '../../../shared/models/errors/RubicError';
+import { NotSupportedNetworkError } from '../../../shared/models/errors/provider/NotSupportedNetwork';
 
 @Component({
   selector: 'app-new-ui',
@@ -89,7 +90,7 @@ export class NewUiComponent implements OnInit {
   }
 
   handleError() {
-    const source = throwError(new RubicError());
+    const source = throwError(new NotSupportedNetworkError('Ethereum'));
     source.pipe(catchError(this.errorsService.catch$)).subscribe();
   }
 }
