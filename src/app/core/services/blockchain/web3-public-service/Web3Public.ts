@@ -9,6 +9,7 @@ import { Call } from '../types/call';
 import { MULTICALL_ADDRESSES, MULTICALL_ADDRESSES_TESTNET } from '../constants/multicall-addresses';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BlockchainToken } from '../../../../shared/models/tokens/BlockchainToken';
+import { BlockchainTokenExtended } from '../../../../shared/models/tokens/BlockchainTokenExtended';
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
@@ -37,7 +38,7 @@ export class Web3Public {
    * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
    */
-  public getTokenInfo: (tokenAddress: string) => Promise<BlockchainToken> =
+  public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
     this.getTokenInfoCachingDecorator();
 
   /**
@@ -243,10 +244,12 @@ export class Web3Public {
     });
   }
 
-  private getTokenInfoCachingDecorator(): (tokenAddress: string) => Promise<BlockchainToken> {
-    const tokensCache: { [address: string]: BlockchainToken } = {};
+  private getTokenInfoCachingDecorator(): (
+    tokenAddress: string
+  ) => Promise<BlockchainTokenExtended> {
+    const tokensCache: { [address: string]: BlockchainTokenExtended } = {};
 
-    return async (tokenAddress: string): Promise<BlockchainToken> => {
+    return async (tokenAddress: string): Promise<BlockchainTokenExtended> => {
       if (!tokensCache[tokenAddress]) {
         tokensCache[tokenAddress] = await this.callForTokenInfo(tokenAddress);
       }
@@ -255,7 +258,7 @@ export class Web3Public {
     };
   }
 
-  private async callForTokenInfo(tokenAddress: string): Promise<BlockchainToken> {
+  private async callForTokenInfo(tokenAddress: string): Promise<BlockchainTokenExtended> {
     if (this.isNativeAddress(tokenAddress)) {
       return {
         ...this.blockchain.nativeCoin,
@@ -263,14 +266,14 @@ export class Web3Public {
       };
     }
 
-    const tokenMethods = ['decimals', 'symbol', 'name'];
+    const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'];
     const tokenFieldsPromises = tokenMethods.map((method: string) =>
       this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
     );
-    const token: BlockchainToken = {
+    const token: BlockchainTokenExtended = {
       blockchain: this.blockchain.name,
       address: tokenAddress
-    } as BlockchainToken;
+    } as BlockchainTokenExtended;
 
     (await Promise.all(tokenFieldsPromises)).forEach(
       (elem, index) => (token[tokenMethods[index]] = elem)

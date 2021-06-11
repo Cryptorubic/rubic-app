@@ -5,12 +5,7 @@
 }
 
 .tokens-list {
-  position: relative;
-  left: -12px;
-
-  width: 280px;
-  margin-right: 0;
-  padding-top: 15px;
+  padding-right: 15px;
 
   &__item {
     padding: 5px 10px;
@@ -39,4 +34,21 @@
   text-align: center;
 
   opacity: 0.6;
+}
+
+.tokens-container {
+  position: relative;
+  left: -12px;
+
+  width: 290px;
+  margin-right: 0;
+  padding-top: 15px;
+}
+
+.tokens-scrollbar {
+  height: 100%;
+}
+
+::ng-deep div.content {
+  height: 100% !important;
 }

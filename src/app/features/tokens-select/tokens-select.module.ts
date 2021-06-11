@@ -8,6 +8,7 @@ import {
 } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { TokensSelectComponent } from './components/tokens-select/tokens-select.component';
 import { TokensSelectService } from './services/tokens-select.service';
 import { BlockchainsAsideComponent } from './components/blockchains-aside/blockchains-aside.component';
@@ -36,7 +37,8 @@ import { CustomTokenWarningModalComponent } from './components/custom-token-warn
     FormsModule,
     TuiTextfieldControllerModule,
     TuiSvgModule,
-    TuiButtonModule
+    TuiButtonModule,
+    ScrollingModule
   ],
   providers: [TokensSelectService],
   entryComponents: [TokensSelectComponent, CustomTokenWarningModalComponent]
