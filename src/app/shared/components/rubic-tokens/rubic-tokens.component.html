@@ -1,0 +1,18 @@
+<div class="tokens">
+  <div class="tokens__container">
+    Token
+    <app-rubic-button
+      [size]="'s'"
+      [buttonText]="selectedToken.symbol"
+      [iconUrl]="selectedToken.imgUrl"
+    ></app-rubic-button>
+    <a [href]="'https://etherscan.io/token/0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3'">
+      <img
+        [src]="'assets/img/icons/scanner.svg'"
+        rel="noopener"
+        target="_blank"
+        alt="Go to the scanner"
+      />
+    </a>
+  </div>
+</div>

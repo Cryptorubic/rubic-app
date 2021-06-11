@@ -3,10 +3,20 @@
 
   <!-- Button example -->
   <section>
-    <section>
-      <h2>Blockchains</h2>
-      <app-rubic-blockchains [blockchainsList]="blockchainsList"></app-rubic-blockchains>
-    </section>
+    <h2>Blockchains</h2>
+    <app-rubic-blockchains [blockchainsList]="blockchainsList"></app-rubic-blockchains>
+
+    <h2>Tokens</h2>
+    <app-rubic-tokens></app-rubic-tokens>
+
+    <h2>Blockchains and tokens</h2>
+    <div class="form-panel">
+      <app-rubic-blockchains
+        class="form-panel__blockchains"
+        [blockchainsList]="blockchainsList"
+      ></app-rubic-blockchains>
+      <app-rubic-tokens class="form-panel__tokens"></app-rubic-tokens>
+    </div>
 
     <h2>Button example</h2>
     <div class="tui-space_bottom-5">

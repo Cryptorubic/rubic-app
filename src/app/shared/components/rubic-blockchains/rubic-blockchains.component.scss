@@ -2,15 +2,13 @@
 
 .blockchains {
   display: flex;
+  grid-gap: 5px;
   align-items: center;
   padding: 15px 20px;
+  height: 100%;
 
   background-color: $rubic-base-03;
   border-top-left-radius: 14px;
-
-  &__blockchain {
-    margin-right: 5px;
-  }
 
   &__list {
     &-item {

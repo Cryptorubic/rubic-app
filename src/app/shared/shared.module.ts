@@ -81,6 +81,7 @@ import { RubicButtonComponent } from './components/rubic-button/rubic-button.com
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { RubicBlockchainsComponent } from './components/rubic-blockchains/rubic-blockchains.component';
+import { RubicTokensComponent } from './components/rubic-tokens/rubic-tokens.component';
 
 @NgModule({
   declarations: [
@@ -139,7 +140,8 @@ import { RubicBlockchainsComponent } from './components/rubic-blockchains/rubic-
     RubicButtonComponent,
     RubicSwitcherComponent,
     RubicTogglerThemeComponent,
-    RubicBlockchainsComponent
+    RubicBlockchainsComponent,
+    RubicTokensComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -224,7 +226,8 @@ import { RubicBlockchainsComponent } from './components/rubic-blockchains/rubic-
     RubicButtonComponent,
     RubicSwitcherComponent,
     RubicTogglerThemeComponent,
-    RubicBlockchainsComponent
+    RubicBlockchainsComponent,
+    RubicTokensComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
