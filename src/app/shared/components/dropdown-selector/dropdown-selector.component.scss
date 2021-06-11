@@ -23,11 +23,15 @@
       color: white;
 
       background: #4aa956;
+
+      ::ng-deep .template-blockchains__icon {
+        filter: brightness(10);
+      }
     }
 
     ::ng-deep {
       > * {
-        display: block;
+        display: flex;
         width: 100%;
       }
     }

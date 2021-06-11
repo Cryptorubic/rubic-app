@@ -14,8 +14,10 @@
     transition: 0.3s;
 
     img {
-      width: 18px;
-      height: 18px;
+      width: auto;
+      max-width: 18px;
+      height: auto;
+      max-height: 15px;
     }
 
     &._hovered {

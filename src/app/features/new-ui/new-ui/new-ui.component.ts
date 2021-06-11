@@ -18,6 +18,14 @@ export class NewUiComponent {
 
   readonly avatarUrl = './assets/images/rubic-logo-main.svg';
 
+  public blockchainsList = [
+    { name: 'Binance Smart Chain', chainImg: 'assets/images/icons/coins/bnb.svg' },
+    { name: 'Polygon', chainImg: 'assets/images/icons/coins/polygon.svg' },
+    { name: 'Ethereum', chainImg: 'assets/images/icons/eth-logo.svg' },
+    { name: 'xDai', chainImg: 'assets/images/icons/coins/xdai.svg' },
+    { name: 'Kovan', chainImg: 'assets/images/icons/coins/kovan.png' }
+  ];
+
   public options = ['first', 'second', 'third'];
 
   constructor(public readonly store: NewUiDataService) {}

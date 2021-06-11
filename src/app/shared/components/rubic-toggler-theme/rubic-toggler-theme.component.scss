@@ -38,11 +38,14 @@
 
     &._hovered {
       background-color: $rubic-base-01;
+      box-shadow: $rubic-shadow-button-hover;
+
     }
 
     &._pressed {
       border-color: $rubic-primary;
       background-color: $rubic-primary;
+      box-shadow: $rubic-shadow-button-active;
 
       ::ng-deep tui-wrapper {
         background-image: url('/assets/img/icons/day-light.svg');
