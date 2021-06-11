@@ -20,7 +20,7 @@ import { TokenPart } from '../../../../../../shared/models/order-book/tokens';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import { RubicError } from '../../../../../../shared/models/errors/RubicError';
 import { OrderBookTradeService } from '../../../../services/order-book-trade.service';
-import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../../core/services/errors-old/errors-old.service';
 
 type Operation = 'approve' | 'contribute' | 'withdraw';
 
@@ -78,7 +78,7 @@ export class TokenFormComponent implements OnInit, OnChanges {
 
   constructor(
     private orderBookTradeService: OrderBookTradeService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsOldService
   ) {}
 
   ngOnInit(): void {

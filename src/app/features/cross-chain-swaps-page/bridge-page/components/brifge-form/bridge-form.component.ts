@@ -10,7 +10,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import InputToken from 'src/app/shared/models/tokens/InputToken';
 import { BLOCKCHAINS } from 'src/app/features/cross-chain-swaps-page/common/constants/BLOCKCHAINS';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
-import { ErrorsService } from 'src/app/core/services/errors/errors.service';
+import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeToken } from '../../models/BridgeToken';
@@ -292,7 +292,7 @@ export class BridgeFormComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private readonly translateService: TranslateService,
     private queryParamsService: QueryParamsService,
-    private errorsService: ErrorsService,
+    private errorsService: ErrorsOldService,
     private readonly cdr: ChangeDetectorRef
   ) {}
 

@@ -17,7 +17,7 @@ import {
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
 import { MatDialog } from '@angular/material/dialog';
-import { ErrorsService } from 'src/app/core/services/errors/errors.service';
+import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 import { GetBnbToken } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbToken';
 import BigNumber from 'bignumber.js';
 import { ProviderConnectorService } from '../../../../../core/services/blockchain/provider-connector/provider-connector.service';
@@ -69,7 +69,7 @@ export class GetBnbFormComponent implements OnInit, OnDestroy {
     private web3PrivateService: Web3PrivateService,
     private getBnbService: GetBnbService,
     private dialog: MatDialog,
-    private errorsService: ErrorsService,
+    private errorsService: ErrorsOldService,
     useTestingModeService: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService
   ) {

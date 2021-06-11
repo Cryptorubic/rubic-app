@@ -8,7 +8,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { TranslateService } from '@ngx-translate/core';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { OneInchService } from '../one-inch-service';
-import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../../core/services/errors-old/errors-old.service';
 import { ProviderConnectorService } from '../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class OneInchPolService extends OneInchService {
     web3Public: Web3PublicService,
     useTestingModeService: UseTestingModeService,
     protected readonly translateService: TranslateService,
-    protected readonly errorsService: ErrorsService,
+    protected readonly errorsService: ErrorsOldService,
     protected readonly providerConnectorService: ProviderConnectorService
   ) {
     super(httpClient, coingeckoApiService, useTestingModeService, errorsService);

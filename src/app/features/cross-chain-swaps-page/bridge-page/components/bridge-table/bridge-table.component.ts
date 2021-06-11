@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeService } from '../../services/bridge.service';
 import { BridgeTableTrade } from '../../models/BridgeTableTrade';
-import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../core/services/errors-old/errors-old.service';
 
 interface ITableTransactionWithState extends BridgeTableTrade {
   opened: boolean;
@@ -97,7 +97,7 @@ export class BridgeTableComponent implements OnInit, OnDestroy {
   constructor(
     private bridgeService: BridgeService,
     private dialog: MatDialog,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsOldService
   ) {}
 
   private static sortByDate(a: string, b: string): number {

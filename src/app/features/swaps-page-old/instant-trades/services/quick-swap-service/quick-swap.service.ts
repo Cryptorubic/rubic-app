@@ -17,7 +17,7 @@ import {
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas
 } from '../uni-swap-service/uni-swap-constants';
-import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../core/services/errors-old/errors-old.service';
 import { ProviderConnectorService } from '../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class QuickSwapService extends UniswapAbstract {
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
     useTestingModeService: UseTestingModeService,
-    protected readonly errorsService: ErrorsService,
+    protected readonly errorsService: ErrorsOldService,
     providerConnectorService: ProviderConnectorService
   ) {
     super(
