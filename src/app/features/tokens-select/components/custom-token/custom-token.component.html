@@ -1,6 +1,10 @@
 <div class="custom-token">
   <app-tokens-list-element [token]="token"></app-tokens-list-element>
-  <button tuiButton size="s" class="custom-token__button" (click)="onImportClick()">
-    Import {{token.symbol}}
-  </button>
+  <app-rubic-button
+    class="custom-token__button"
+    [buttonText]="'Import ' + token.symbol"
+    appearance="secondary"
+    fullWidth="true"
+    (click)="onImportClick()"
+  ></app-rubic-button>
 </div>

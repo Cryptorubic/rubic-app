@@ -5,8 +5,7 @@
 .custom-token {
   padding-top: 22px;
 
-  &__button {
-    width: 100%;
+  &__button ::ng-deep button {
     margin-top: 15px;
   }
 }

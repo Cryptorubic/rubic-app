@@ -79,4 +79,33 @@
       width: 100%;
     }
   }
+
+  [tuiButton][bordered=true] {
+    box-shadow: $rubic-shadow-button-hover;
+  }
+
+
+  ::ng-deep tui-wrapper[data-appearance='secondary'] {
+    color: white;
+
+    background-color: $main-green;
+
+    &[data-state='hovered'] {
+      box-shadow: $rubic-shadow-button-hover;
+    }
+
+    &[data-state='pressed'] {
+      color: $main-green;
+
+      background-color: white !important;
+      box-shadow: $rubic-shadow-button-active;
+    }
+
+    &[data-state='disabled'] {
+      color: rgba($rubic-text-disable, 0.6);
+
+      background-color: rgba($main-green, 0.6);
+      border: 0;
+    }
+  }
 }
