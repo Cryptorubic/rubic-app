@@ -1,0 +1,9 @@
+<button
+  tuiIconButton
+  [style.transform]="'scale(' + scale + ')'"
+  [ngClass]="{bordered: _border}"
+  [disabled]="_disabled"
+  (click)="onClick()"
+>
+  <img [src]="icon" alt=""/>
+</button>

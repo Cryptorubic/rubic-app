@@ -1,0 +1,54 @@
+@import 'src/scss/vars';
+
+:host {
+  width: 100%;
+}
+
+.tokens-list {
+  padding-right: 15px;
+
+  &__item {
+    padding: 5px 10px;
+
+    cursor: pointer;
+
+    &:not(:last-child) {
+      margin-bottom: 15px;
+    }
+
+    &:hover {
+      background-color: rgba($main-green, 0.15);
+      border-radius: 15px;
+    }
+  }
+}
+
+.nothing-to-show-message {
+  position: relative;
+  top: 20px;
+  left: -10px;
+
+  display: block;
+
+  font-size: 16px;
+  text-align: center;
+
+  opacity: 0.6;
+}
+
+.tokens-container {
+  position: relative;
+  left: -12px;
+
+  width: 290px;
+  margin-right: 0;
+  padding-top: 15px;
+}
+
+.tokens-scrollbar {
+  height: 100%;
+}
+
+::ng-deep div.content {
+  height: 100% !important;
+}

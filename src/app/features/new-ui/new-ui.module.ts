@@ -9,6 +9,7 @@ import { InstantTradeModule } from 'src/app/features/instant-trade/instant-trade
 import { BridgeModule } from 'src/app/features/bridge/bridge.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NewUiComponent } from './new-ui/new-ui.component';
+import { TokensSelectModule } from '../tokens-select/tokens-select.module';
 
 const routes: Routes = [{ path: '', component: NewUiComponent }];
 
@@ -26,7 +27,8 @@ const routes: Routes = [{ path: '', component: NewUiComponent }];
     TuiTooltipModule,
     TuiHintModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TokensSelectModule
   ],
   exports: [RouterModule]
 })
