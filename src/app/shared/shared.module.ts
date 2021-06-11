@@ -23,9 +23,9 @@ import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
+  TuiHintModule,
   TuiSvgModule,
   TuiTooltipModule,
-  TuiHintModule,
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -76,6 +76,8 @@ import { RoundPipe } from './pipes/round.pipe';
 import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
 import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
+import { TokenAmountInputComponent } from './components/token-amount-input/token-amount-input.component';
+import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
 import { AmountInputComponent } from './components/amount-input/amount-input.component';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
@@ -132,11 +134,11 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
     RoundPipe,
-    ProviderPanelComponent,
     DropdownSelectorComponent,
+    TokenAmountInputComponent,
+    TokenAmountDirective,
+    ProviderPanelComponent,
     AmountInputComponent,
-    RoundPipe,
-    RubicButtonCircleComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
@@ -164,7 +166,6 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     InlineSVGModule.forRoot(),
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     TuiSvgModule,
     TuiTooltipModule,
     TuiHintModule,
@@ -174,8 +175,6 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     TuiActiveZoneModule,
     TuiDropdownModule,
     TuiHostedDropdownModule,
-    TuiSvgModule,
-    TuiHintModule,
     TuiToggleModule
   ],
   exports: [
@@ -216,11 +215,9 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     CheckboxComponent,
     RefreshToolComponent,
     WalletAddressFormComponent,
-    RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
-    RubicButtonCircleComponent,
-    AdvancedOptionsButtonComponent,
+    TokenAmountInputComponent,
     ProviderPanelComponent,
     AmountInputComponent,
     DropdownSelectorComponent,
