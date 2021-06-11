@@ -28,6 +28,8 @@ export class RubicButtonComponent {
 
   @Input() altText: string;
 
+  @Input() fullWidth: boolean;
+
   @Output() onClickEmit: EventEmitter<MouseEvent> = new EventEmitter();
 
   constructor() {}

@@ -9,12 +9,15 @@
   [tuiButton] {
     --tui-primary-text: #{$rubic-text-color-main};
     --tui-link: #{$rubic-primary};
-    font-weight: normal;
     font-size: $rubic-font-size-01;
 
     border: 1px solid transparent;
 
     transition: 0.3s;
+
+    &.full-width {
+      width: 100%;
+    }
 
     &._hovered {
       --tui-secondary-hover: #{$rubic-base-01};
@@ -70,6 +73,10 @@
       margin-right: 10px;
 
       transition: 0.3s;
+    }
+
+    &.full-width {
+      width: 100%;
     }
   }
 }

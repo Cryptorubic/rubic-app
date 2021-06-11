@@ -4,6 +4,7 @@
   type="button"
   [size]="size"
   [appearance]="appearance"
+  [ngClass]="{ 'full-width': fullWidth }"
   [disabled]="disabled"
 >
   <img class="icon" *ngIf="iconUrl" [src]="iconUrl" altText="altText" width="18" height="18" />
