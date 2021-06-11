@@ -1,0 +1,84 @@
+$green: rgb(74, 169, 86);
+
+.settings {
+  width: 235px;
+  padding: 20px;
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__hint {
+    height: 15px;
+    margin-right: auto;
+    margin-left: 6px;
+    cursor: pointer;
+  }
+
+  &__button-auto {
+    box-sizing: border-box;
+    height: 35px;
+    margin-right: 10px;
+    padding: 8px 15px;
+
+    background: none;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 10px 10px 30px 0 rgba(58, 95, 69, 0.1), -15px -15px 80px 0 rgba(255, 255, 255, 1), 4px 4px 20px 0 rgba(255, 255, 255, 0.5) inset;
+
+    cursor: pointer;
+
+    &:hover,
+    &_active {
+      color: white;
+
+      background: $green;
+    }
+  }
+
+  &__form-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 12px;
+
+    h4 {
+      font-family: 'SF Pro Display', sans-serif;
+    }
+
+    label {
+      font-weight: 300;
+      font-size: 16px;
+      font-family: 'SF Pro Display', sans-serif;
+    }
+
+    &_united {
+      flex-wrap: nowrap;
+    }
+
+    &_united {
+      tui-input-number {
+        width: 100%;
+      }
+    }
+
+    &_small-input {
+      ::ng-deep tui-wrapper[data-appearance='textfield'] {
+        width: 80px;
+      }
+    }
+  }
+
+  ::ng-deep tui-wrapper[data-appearance='textfield'] {
+    border-radius: 100px;
+    box-shadow: none;
+
+    input,
+    input::placeholder {
+      text-align: right;
+    }
+  }
+
+}

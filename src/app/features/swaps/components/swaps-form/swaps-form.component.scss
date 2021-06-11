@@ -1,0 +1,28 @@
+.swaps-form {
+  width: 610px;
+  min-height: 200px;
+  padding: 30px 40px;
+
+  background-color: rgba(white, 0.5);
+  border-radius: 19px;
+  backdrop-filter: blur(50px);
+
+  &__header {
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    margin: 0;
+
+    font-weight: 100;
+    font-size: 24px;
+    font-family: 'SF Pro Display', sans-serif;
+  }
+
+  &__settings {
+    margin-left: auto;
+
+    cursor: pointer;
+  }
+}

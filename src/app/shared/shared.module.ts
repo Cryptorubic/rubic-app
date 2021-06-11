@@ -17,7 +17,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
-import { TuiToggleModule, TuiInputModule, TuiTabsModule, TuiInputCountModule, TuiDataListWrapperModule } from '@taiga-ui/kit';
+import {
+  TuiToggleModule,
+  TuiInputModule,
+  TuiTabsModule,
+  TuiInputCountModule,
+  TuiDataListWrapperModule
+} from '@taiga-ui/kit';
 
 import {
   TuiButtonModule,
@@ -29,6 +35,7 @@ import {
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
+import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -79,7 +86,6 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
 import { TokenAmountInputComponent } from './components/token-amount-input/token-amount-input.component';
 import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
-import { AmountInputComponent } from './components/amount-input/amount-input.component';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
@@ -89,7 +95,7 @@ import { RubicTokensComponent } from './components/rubic-tokens/rubic-tokens.com
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicHeaderComponent } from './components/rubic-header/rubic-header.component';
 import { RubicLanguageSelectComponent } from './components/rubic-language-select/rubic-language-select.component';
-import { RubicSelectWalletComponent} from './components/rubic-select-wallet/rubic-select-wallet.component';
+import { RubicSelectWalletComponent } from './components/rubic-select-wallet/rubic-select-wallet.component';
 import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component';
 
 @NgModule({
