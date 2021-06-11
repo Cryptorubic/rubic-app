@@ -1,0 +1,15 @@
+<aside class="blockchain-aside">
+  <tui-scrollbar class="blockchain-aside__scroll">
+    <ul class="blockchain-aside__blockchains-list">
+      <li *ngFor="let blockchainName of blockchains">
+        <app-icon-button
+          [icon]="blockchainImages[blockchainName]"
+          [disabled]="blockchain === blockchainName"
+          [border]="blockchain === blockchainName"
+          (iconButtonClick)="onBlockchainSelect(blockchainName)"
+        >
+        </app-icon-button>
+      </li>
+    </ul>
+  </tui-scrollbar>
+</aside>

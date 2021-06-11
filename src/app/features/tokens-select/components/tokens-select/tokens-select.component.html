@@ -1,0 +1,20 @@
+<section class="tokens-select">
+  <header class="tokens-select__header">
+    <h1>Select a token</h1>
+    <app-cross-button (crossButtonClick)="close()"></app-cross-button>
+  </header>
+  <app-tokens-search-bar [(query)]="query"></app-tokens-search-bar>
+  <div class="tokens-select__content">
+    <app-blockchains-aside [(blockchain)]="blockchain"></app-blockchains-aside>
+    <app-tokens-list
+      *ngIf="!customToken"
+      [tokens]="tokensToShow$ | async"
+      (tokenSelect)="onTokenSelect($event)"
+    ></app-tokens-list>
+    <app-custom-token
+      *ngIf="customToken"
+      [token]="customToken"
+      (tokenSelected)="onTokenSelect($event)"
+    ></app-custom-token>
+  </div>
+</section>

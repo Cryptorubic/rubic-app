@@ -1,0 +1,26 @@
+@import 'src/scss/vars';
+
+:host {
+  --tui-primary-text: #{$main-green};
+  --tui-primary: white;
+
+  ::ng-deep tui-wrapper {
+    &[data-state='hovered'] {
+      background: $grey-background;
+    }
+
+    &[data-state='pressed'] {
+      background: $text-gray;
+    }
+
+    img {
+      max-width: 27px;
+      max-height: 27px;
+    }
+  }
+
+}
+
+.bordered {
+  border: 2px solid $main-green;
+}

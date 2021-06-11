@@ -2,13 +2,14 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { Transaction } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { Token } from 'src/app/shared/models/tokens/Token';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
 import { MULTICALL_ADDRESSES, MULTICALL_ADDRESSES_TESTNET } from '../constants/multicall-addresses';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
+import { BlockchainToken } from '../../../../shared/models/tokens/BlockchainToken';
+import { BlockchainTokenExtended } from '../../../../shared/models/tokens/BlockchainTokenExtended';
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
@@ -37,9 +38,8 @@ export class Web3Public {
    * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
    */
-  public getTokenInfo: (
-    tokenAddress: string
-  ) => Promise<Token> = this.getTokenInfoCachingDecorator();
+  public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
+    this.getTokenInfoCachingDecorator();
 
   /**
    * @description gets account balance in Eth units
@@ -244,10 +244,12 @@ export class Web3Public {
     });
   }
 
-  private getTokenInfoCachingDecorator(): (tokenAddress: string) => Promise<Token> {
-    const tokensCache: { [address: string]: Token } = {};
+  private getTokenInfoCachingDecorator(): (
+    tokenAddress: string
+  ) => Promise<BlockchainTokenExtended> {
+    const tokensCache: { [address: string]: BlockchainTokenExtended } = {};
 
-    return async (tokenAddress: string): Promise<Token> => {
+    return async (tokenAddress: string): Promise<BlockchainTokenExtended> => {
       if (!tokensCache[tokenAddress]) {
         tokensCache[tokenAddress] = await this.callForTokenInfo(tokenAddress);
       }
@@ -256,19 +258,22 @@ export class Web3Public {
     };
   }
 
-  private async callForTokenInfo(tokenAddress: string): Promise<Token> {
+  private async callForTokenInfo(tokenAddress: string): Promise<BlockchainTokenExtended> {
     if (this.isNativeAddress(tokenAddress)) {
-      return this.blockchain.nativeCoin;
+      return {
+        ...this.blockchain.nativeCoin,
+        blockchain: this.blockchain.name
+      };
     }
 
     const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'];
     const tokenFieldsPromises = tokenMethods.map((method: string) =>
       this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
     );
-    const token: Token = {
-      blockchainName: this.blockchain.name,
+    const token: BlockchainTokenExtended = {
+      blockchain: this.blockchain.name,
       address: tokenAddress
-    } as Token;
+    } as BlockchainTokenExtended;
 
     (await Promise.all(tokenFieldsPromises)).forEach(
       (elem, index) => (token[tokenMethods[index]] = elem)

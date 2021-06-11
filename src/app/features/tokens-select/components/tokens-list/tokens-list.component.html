@@ -1,0 +1,18 @@
+<ng-container>
+  <tui-scrollbar *ngIf="tokens.length; else emptyListMessage" class="tokens-scrollbar tokens-container">
+    <cdk-virtual-scroll-viewport
+      tuiScrollable
+      itemSize="10"
+      class="tokens-scrollbar tui-zero-scrollbar"
+    >
+    <ul class="tokens-list">
+      <li *ngFor="let token of tokens" class="tokens-list__item" (click)="onTokenSelect(token)">
+        <app-tokens-list-element [token]="token"></app-tokens-list-element>
+      </li>
+    </ul>
+    </cdk-virtual-scroll-viewport>
+  </tui-scrollbar>
+  <ng-template #emptyListMessage>
+    <span class="nothing-to-show-message">Nothing to show</span>
+  </ng-template>
+</ng-container>

@@ -43,6 +43,34 @@ export default [
       decimals: 18
     }
   },
+  {
+    id: 100,
+    name: BLOCKCHAIN_NAME.XDAI,
+    scannerUrl: 'https://blockscout.com/xdai/mainnet',
+    rpcLink: 'https://rpc.xdaichain.com/',
+    imagePath: 'assets/images/icons/coins/xdai.svg',
+    nativeCoin: {
+      blockchainName: BLOCKCHAIN_NAME.XDAI,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'xDai',
+      symbol: 'XDAI',
+      decimals: 18
+    }
+  },
+  {
+    id: NaN,
+    name: BLOCKCHAIN_NAME.TRON,
+    scannerUrl: '',
+    rpcLink: '',
+    imagePath: 'assets/images/icons/coins/tron.svg',
+    nativeCoin: {
+      blockchainName: BLOCKCHAIN_NAME.TRON,
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'Tron',
+      symbol: 'TRON',
+      decimals: 18
+    }
+  },
   // Testnets
   {
     id: 42,

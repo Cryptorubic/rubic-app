@@ -73,6 +73,8 @@ import { ShortAddressPipe } from './pipes/short-address.pipe';
 import { AdvancedOptionsButtonComponent } from './components/advanced-options-button/advanced-options-button.component';
 import { WithRoundPipe } from './pipes/with-round.pipe';
 import { RoundPipe } from './pipes/round.pipe';
+import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
+import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
 import { AmountInputComponent } from './components/amount-input/amount-input.component';
@@ -82,6 +84,7 @@ import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switch
 import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { RubicBlockchainsComponent } from './components/rubic-blockchains/rubic-blockchains.component';
 import { RubicTokensComponent } from './components/rubic-tokens/rubic-tokens.component';
+import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 
 @NgModule({
   declarations: [
@@ -139,6 +142,10 @@ import { RubicTokensComponent } from './components/rubic-tokens/rubic-tokens.com
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
+    RubicTogglerThemeComponent,
+    IconButtonComponent,
+    CrossButtonComponent,
+    ShortenAmountPipe
     RubicTogglerThemeComponent,
     RubicBlockchainsComponent,
     RubicTokensComponent
@@ -225,6 +232,11 @@ import { RubicTokensComponent } from './components/rubic-tokens/rubic-tokens.com
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
+    RubicTogglerThemeComponent,
+    IconButtonComponent,
+    CrossButtonComponent,
+    RoundPipe,
+    ShortenAmountPipe
     RubicTogglerThemeComponent,
     RubicBlockchainsComponent,
     RubicTokensComponent

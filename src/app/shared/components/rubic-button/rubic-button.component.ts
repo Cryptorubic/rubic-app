@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TuiAppearance } from '@taiga-ui/core';
 import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
 
@@ -16,6 +9,8 @@ import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicButtonComponent {
+  public _border: boolean;
+
   @Input() buttonText: string;
 
   @Input() disabled: boolean = false;
@@ -29,6 +24,10 @@ export class RubicButtonComponent {
   @Input() altText: string;
 
   @Input() fullWidth: boolean;
+
+  @Input('bordered') set setBorder(border: boolean | '') {
+    this._border = border === '' || border;
+  }
 
   @Output() onClickEmit: EventEmitter<MouseEvent> = new EventEmitter();
 

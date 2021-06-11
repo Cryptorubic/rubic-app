@@ -22,13 +22,25 @@
     <div class="tui-space_bottom-5">
       <app-rubic-button
         class="tui-space_right-10"
-        [buttonText]="'Connect wallet'"
+        buttonText="Primary"
       ></app-rubic-button>
 
       <app-rubic-button
         class="tui-space_right-10"
-        [buttonText]="'Connect wallet'"
+        buttonText="Flat"
         [appearance]="'flat'"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        buttonText="Secondary"
+        appearance="secondary"
+      ></app-rubic-button>
+
+      <app-rubic-button
+        class="tui-space_right-10"
+        buttonText="Bordered"
+        bordered
       ></app-rubic-button>
 
       <app-rubic-button
@@ -182,6 +194,19 @@
   <section>
     <h2>Bottom form loading</h2>
     <app-amount-input [loading]="true"></app-amount-input>
+  </section>
+
+  <!-- tokens select example -->
+  <section>
+    <h2>Tokens select example</h2>
+    <button
+      tuiButton
+      type="button"
+      class="tui-space_right-3 tui-space_bottom-3"
+      (click)="openTokensSelect()"
+    >
+      Open tokens select
+    </button>
   </section>
 
   <section>

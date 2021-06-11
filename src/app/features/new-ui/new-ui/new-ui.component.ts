@@ -6,6 +6,7 @@ import {
   ViewChildren
 } from '@angular/core';
 import { NewUiDataService } from 'src/app/features/new-ui/new-ui-data.service';
+import { TokensSelectService } from '../../tokens-select/services/tokens-select.service';
 
 @Component({
   selector: 'app-new-ui',
@@ -28,10 +29,21 @@ export class NewUiComponent {
 
   public options = ['first', 'second', 'third'];
 
-  constructor(public readonly store: NewUiDataService) {}
+  constructor(
+    public readonly store: NewUiDataService,
+    private tokensSelectService: TokensSelectService
+  ) {}
 
   onClick(event: MouseEvent) {
     console.log('click', event);
+  }
+
+  openTokensSelect() {
+    this.tokensSelectService
+      .showDialog()
+      .subscribe(token =>
+        alert(`Token ${token.symbol} in ${token.blockchain} blockchain selected`)
+      );
   }
 
   onOptionChange(optionIndex: number): void {

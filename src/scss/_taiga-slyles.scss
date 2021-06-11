@@ -1,0 +1,7 @@
+tui-dialog {
+  overflow: hidden;
+
+  &::after {
+    box-shadow: unset !important;
+  }
+}

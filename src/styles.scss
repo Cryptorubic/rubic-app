@@ -22,7 +22,12 @@
 @import 'scss/iframe-style';
 @import 'scss/new-ui';
 
+/* TaigaUI custom styles */
+@import 'scss/taiga-slyles';
+
 * {
+  box-sizing: border-box;
+
   appearance: none;
   -webkit-tap-highlight-color: transparent;
 
