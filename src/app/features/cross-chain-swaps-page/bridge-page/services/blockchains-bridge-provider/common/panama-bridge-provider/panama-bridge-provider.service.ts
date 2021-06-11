@@ -12,7 +12,7 @@ import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page
 import { BridgeTrade } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
 import { TransactionReceipt } from 'web3-eth';
 import { PanamaToken } from './models/PanamaToken';
-import { ErrorsService } from '../../../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../../../core/services/errors-old/errors-old.service';
 import { ProviderConnectorService } from '../../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 import { RetrievingTokensError } from '../../../../../../../shared/models/errors/provider/RetrievingTokensError';
 
@@ -31,7 +31,7 @@ export class PanamaBridgeProviderService {
     private httpClient: HttpClient,
     private web3PrivateService: Web3PrivateService,
     private bridgeApiService: BridgeApiService,
-    private readonly errorsService: ErrorsService,
+    private readonly errorsService: ErrorsOldService,
     private readonly providerConnectorService: ProviderConnectorService
   ) {}
 

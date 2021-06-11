@@ -13,7 +13,7 @@ import { NetworkError } from '../../../shared/models/errors/provider/NetworkErro
 import { OrderBookApiService } from '../../../core/services/backend/order-book-api/order-book-api.service';
 import { ContractParameters } from '../../../core/services/order-book-common/models/ContractParameters';
 import { OrderBookCommonService } from '../../../core/services/order-book-common/order-book-common.service';
-import { ErrorsService } from '../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../core/services/errors-old/errors-old.service';
 
 @Injectable()
 export class OrderBookTradeService {
@@ -23,7 +23,7 @@ export class OrderBookTradeService {
     private orderBookApiService: OrderBookApiService,
     private orderBookCommonService: OrderBookCommonService,
     private readonly providerConnector: ProviderConnectorService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsOldService
   ) {}
 
   private getContractParameters(tradeData: OrderBookTradeData): ContractParameters {

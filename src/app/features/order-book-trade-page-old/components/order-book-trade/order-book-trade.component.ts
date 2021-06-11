@@ -21,7 +21,7 @@ import { TX_STATUS } from '../../models/TX_STATUS';
 import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TokenPart } from '../../../../shared/models/order-book/tokens';
-import { ErrorsService } from '../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../core/services/errors-old/errors-old.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -119,7 +119,7 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
     private readonly translateService: TranslateService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly providerConnector: ProviderConnectorService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsOldService
   ) {}
 
   public ngAfterViewInit(): void {
