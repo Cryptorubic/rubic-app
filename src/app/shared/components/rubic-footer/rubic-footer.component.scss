@@ -5,6 +5,9 @@
   flex-direction: column;
   align-items: center;
 
+  font-weight: 300;
+  font-family: $sf-pro-font;
+
   &__nav {
     display: flex;
     grid-gap: 21px;

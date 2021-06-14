@@ -1,5 +1,4 @@
 @import 'src/scss/vars';
-
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -130,6 +129,12 @@ section {
 .footer {
   display: block;
   margin: 69px auto 60px;
+}
+
+.button-reloading {
+  img {
+    animation: spin 0.9s linear infinite;
+  }
 }
 
 @keyframes spin {
