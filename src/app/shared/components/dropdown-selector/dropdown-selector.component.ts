@@ -21,6 +21,8 @@ export class DropdownSelectorComponent {
 
   @Output() optionChange = new EventEmitter<number>();
 
+  @Output() opened = new EventEmitter<boolean>();
+
   public open = false;
 
   constructor() {}
@@ -28,5 +30,9 @@ export class DropdownSelectorComponent {
   public onOptionClick(optionIndex: number): void {
     this.open = false;
     this.optionChange.emit(optionIndex);
+  }
+
+  public openChange(opened) {
+    this.opened.emit(opened);
   }
 }

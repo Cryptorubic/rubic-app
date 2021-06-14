@@ -1,0 +1,78 @@
+@import 'src/scss/vars';
+
+.rubic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 24px 0;
+
+  &__main,
+  &__nav,
+  &__profile {
+    display: flex;
+    align-items: center;
+  }
+
+  &__nav,
+  &__profile {
+    grid-gap: 10px;
+  }
+
+  &__logo {
+    margin-right: 54px;
+
+    transition: 0.3s ease-in-out opacity;
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    &:active {
+      opacity: 1;
+    }
+  }
+
+  &__menu {
+    display: inline-flex;
+  }
+
+  &__nav {
+    margin-right: -12%;
+  }
+}
+
+
+.button-link {
+  display: inline-block;
+  padding: 14px 20px;
+
+  font-size: $rubic-font-size-01;
+  text-decoration: none;
+
+  border: 1px solid transparent;
+  border-radius: 175px;
+
+  transition: 0.3s all ease-in-out;
+
+  &:hover,
+  &_active {
+    background-color: $rubic-base-01;
+    box-shadow: $rubic-shadow-button-hover;
+  }
+
+  &:active {
+    background-color: $rubic-primary;
+    box-shadow: $rubic-shadow-button-active;
+  }
+
+  &:focus {
+    background-color: $rubic-base-01;
+    border-color: $rubic-primary;
+  }
+
+  &_disabled {
+    color: $rubic-text-disable !important;
+
+    pointer-events: none;
+  }
+}

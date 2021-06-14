@@ -1,12 +1,6 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, Input, Output } from '@angular/core';
 import { TuiDirection, TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
+import { TuiAppearance } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-rubic-button-circle',
@@ -21,7 +15,9 @@ export class RubicButtonCircleComponent {
 
   @Input() iconUrl: string;
 
-  @Input() disabled: boolean = false;
+  @Input() disabled = false;
+
+  @Input() appearance: TuiAppearance | string = 'primary';
 
   @Input() hintDirection: TuiDirection = 'bottom-left';
 

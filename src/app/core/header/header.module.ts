@@ -45,6 +45,6 @@ import { WalletsModalComponent } from './components/header/components/wallets-mo
     InlineSVGModule.forRoot(),
     TuiDataListModule
   ],
-  exports: [HeaderComponent]
+  exports: [HeaderComponent, HeaderLanguageDropdownComponent]
 })
 export class HeaderModule {}

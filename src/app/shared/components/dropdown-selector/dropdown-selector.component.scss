@@ -1,3 +1,5 @@
+@import 'src/scss/vars';
+
 .data-list {
   padding: 6px;
 
@@ -22,10 +24,17 @@
     &:active {
       color: white;
 
-      background: #4aa956;
+      background: $rubic-primary;
 
-      ::ng-deep .template-blockchains__icon {
-        filter: brightness(10);
+      ::ng-deep {
+        .template-blockchains__icon {
+          filter: brightness(10);
+        }
+
+        a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+          color: $rubic-base-01;
+          text-decoration: none;
+        }
       }
     }
 
@@ -33,6 +42,11 @@
       > * {
         display: flex;
         width: 100%;
+      }
+
+      a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+        color: $rubic-base-02;
+        text-decoration: none;
       }
     }
   }

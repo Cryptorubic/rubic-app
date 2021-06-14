@@ -6,10 +6,12 @@
   tuiHintId="buttonCircle"
   tuiHintMode="onDark"
   tuiHintDirection="bottom-left"
+  [appearance]="appearance"
   [tuiHint]="tooltip"
   [disabled]="disabled"
 >
-  <img [src]="iconUrl" width="18" height="15px" [alt]="altText" />
+  <ng-content></ng-content>
+<!--  <img [src]="iconUrl" width="18" height="15px" [alt]="altText" />-->
 </button>
 
 <ng-template #tooltip>

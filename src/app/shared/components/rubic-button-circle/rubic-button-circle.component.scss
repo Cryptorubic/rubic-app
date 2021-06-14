@@ -4,14 +4,19 @@
   --tui-height-l: 50px;
   --tui-height-s: 35px;
   --tui-primary-hover: $rubic-base-01;
+  --tui-secondary-hover: $rubic-base-01;
   --tui-primary-active: $rubic-primary;
+  --tui-secondary-active: $rubic-primary;
   --tui-disabled-opacity: 1;
 
   [tuiIconButton] {
     --tui-primary: transparent;
-    border: 1px solid white;
 
     transition: 0.3s;
+
+    &[data-appearance='primary'] {
+      border: 1px solid white;
+    }
 
     img {
       width: auto;

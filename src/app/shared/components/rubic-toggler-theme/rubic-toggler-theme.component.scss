@@ -11,7 +11,7 @@
   .theme-toggle {
     border: 1px solid $rubic-base-01;
 
-    transition: 0.3s;
+    transition: 0.3s filter ease-in-out;
 
     &[data-tui-host-size='l'] {
       width: 50px;
