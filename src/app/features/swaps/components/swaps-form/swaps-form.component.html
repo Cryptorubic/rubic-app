@@ -6,20 +6,38 @@
     </div>
   </header>
   <main class="swaps-form__content">
-    <app-token-amount-input
-      [maxAmount]="50000"
-    ></app-token-amount-input>
+    <div class="swaps-form__top-part">
+      <app-rubic-blockchains
+        class="form-panel__blockchains"
+        [blockchainsList]="blockchainsList"
+      ></app-rubic-blockchains>
+      <app-rubic-tokens class="form-panel__tokens"></app-rubic-tokens>
+    </div>
+    <app-token-amount-input></app-token-amount-input>
+    <div class="swaps-form__delimiter">
+      <app-rubic-switcher></app-rubic-switcher>
+    </div>
+    <div class="swaps-form__top-part">
+      <app-rubic-blockchains
+        class="form-panel__blockchains"
+        [blockchainsList]="blockchainsList"
+      ></app-rubic-blockchains>
+      <app-rubic-tokens class="form-panel__tokens"></app-rubic-tokens>
+    </div>
     <ng-container *ngIf="isInstantTrade">
       <app-instant-trade-bottom-form
-
       ></app-instant-trade-bottom-form>
     </ng-container>
     <app-bridge-bottom-form
       *ngIf="!isInstantTrade"></app-bridge-bottom-form>
   </main>
   <footer class="swaps-form__footer">
-    <app-swaps-button></app-swaps-button>
-    You will get Binance Smart Chain tokens to the selected address
-    What is Binance Smart Chain?
+    <div class="swaps-form__button">
+      <app-swaps-button></app-swaps-button>
+    </div>
+    <div class="swaps-form__terms-and-conditions">
+      You will get Binance Smart Chain tokens to the selected address
+      <a href="">What is Binance Smart Chain?</a>
+    </div>
   </footer>
 </div>

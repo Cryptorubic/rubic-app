@@ -1,3 +1,5 @@
+@import 'src/scss/vars';
+
 .swaps-form {
   width: 610px;
   min-height: 200px;
@@ -10,6 +12,7 @@
   &__header {
     display: flex;
     align-items: center;
+    margin-bottom: 20px;
   }
 
   &__title {
@@ -17,12 +20,56 @@
 
     font-weight: 100;
     font-size: 24px;
-    font-family: 'SF Pro Display', sans-serif;
+  }
+
+  &__content {
+    margin-bottom: 15px;
   }
 
   &__settings {
     margin-left: auto;
 
     cursor: pointer;
+  }
+
+  &__top-part {
+    display: flex;
+
+    > *:first-child {
+      flex-grow: 1;
+
+      border-right: 2px solid $rubic-base-01;
+    }
+  }
+  
+  &__delimiter {
+    position: relative;
+
+    margin-bottom: 15px;
+    
+    > * {
+      position: absolute;
+      top: 7.5px;
+      left: 50%;
+
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  &__button {
+    margin-bottom: 15px;
+  }
+
+  &__terms-and-conditions {
+    font-weight: 300;
+    font-size: 14px;
+    text-align: center;
+
+    a {
+      display: block;
+
+      color: $rubic-primary;
+      font-weight: 400;
+    }
   }
 }

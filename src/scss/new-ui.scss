@@ -1,6 +1,9 @@
 @import 'src/scss/vars';
 
 html {
+  --tui-primary: #{$rubic-primary} !important;
+  --tui-primary-hover: #{$rubic-primary} !important;
+
   box-sizing: border-box;
 }
 
@@ -8,14 +11,4 @@ html {
 *::before,
 *::after {
   box-sizing: inherit;
-}
-
-.form-panel {
-  display: flex;
-
-  &__blockchains {
-    flex-grow: 1;
-
-    border-right: 2px solid $rubic-base-01;
-  }
 }

@@ -6,10 +6,11 @@
   height: 42px;
   
   background-color: $rubic-secondary;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 5px solid #fcfcfc;
   border-radius: 67px;
 
   cursor: pointer;
+  box-sizing: content-box;
 
   img {
     margin: auto;

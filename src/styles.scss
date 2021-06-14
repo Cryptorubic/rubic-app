@@ -41,7 +41,10 @@ body {
   margin: 0;
   padding: 0;
 
-  font-family: 'Ubuntu', 'Josefin Sans', Arial, sans-serif;
+  main {
+    font-family: $sf-pro-font;
+  }
+
 
   background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
 }

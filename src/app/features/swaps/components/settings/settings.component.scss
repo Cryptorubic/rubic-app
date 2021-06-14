@@ -44,21 +44,14 @@ $green: rgb(74, 169, 86);
     width: 100%;
     margin-bottom: 12px;
 
-    h4 {
-      font-family: 'SF Pro Display', sans-serif;
-    }
-
     label {
       font-weight: 300;
       font-size: 16px;
-      font-family: 'SF Pro Display', sans-serif;
     }
 
     &_united {
       flex-wrap: nowrap;
-    }
 
-    &_united {
       tui-input-number {
         width: 100%;
       }

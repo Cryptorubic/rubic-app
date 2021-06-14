@@ -2,6 +2,8 @@
 
 .tokens {
   height: 100%;
+  display: flex;
+  align-items: center;
   padding: 15px 20px;
 
   font-size: $rubic-font-size-01;
