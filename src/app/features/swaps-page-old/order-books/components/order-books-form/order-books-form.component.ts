@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 import { OrderBookTradeForm } from '../../models/trade-form';
 import { OrderBooksFormService } from './services/order-books-form.service';
 import { TokenPart } from '../../../../../shared/models/order-book/tokens';
-import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../core/services/errors-old/errors-old.service';
 
 enum TRADE_STATUS {
   STARTED = 'STARTED',
@@ -185,7 +185,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
     private orderBookFormService: OrderBooksFormService,
     private changeDetectionRef: ChangeDetectorRef,
     private dialog: MatDialog,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsOldService
   ) {}
 
   ngOnInit(): void {

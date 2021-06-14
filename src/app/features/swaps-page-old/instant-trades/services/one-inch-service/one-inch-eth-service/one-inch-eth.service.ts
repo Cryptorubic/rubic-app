@@ -6,7 +6,7 @@ import { Web3PublicService } from '../../../../../../core/services/blockchain/we
 import { CoingeckoApiService } from '../../../../../../core/services/external-api/coingecko-api/coingecko-api.service';
 import { BLOCKCHAIN_NAME } from '../../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../../core/services/errors-old/errors-old.service';
 import { ProviderConnectorService } from '../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 import { BlockchainsInfo } from '../../../../../../core/services/blockchain/blockchain-info';
 
@@ -18,7 +18,7 @@ export class OneInchEthService extends OneInchService {
     web3Private: Web3PrivateService,
     web3Public: Web3PublicService,
     useTestingModeService: UseTestingModeService,
-    protected readonly errorsService: ErrorsService,
+    protected readonly errorsService: ErrorsOldService,
     readonly providerConnectorService: ProviderConnectorService
   ) {
     super(httpClient, coingeckoApiService, useTestingModeService, errorsService);

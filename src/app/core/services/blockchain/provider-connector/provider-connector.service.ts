@@ -9,7 +9,7 @@ import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
 import { StoreService } from '../../store/store.service';
 import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
-import { ErrorsService } from '../../errors/errors.service';
+import { ErrorsOldService } from '../../errors-old/errors-old.service';
 import { PrivateProvider } from '../private-provider/private-provider';
 
 @Injectable({
@@ -64,7 +64,7 @@ export class ProviderConnectorService {
 
   constructor(
     private readonly storage: StoreService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsOldService
   ) {
     this.web3 = new Web3();
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);

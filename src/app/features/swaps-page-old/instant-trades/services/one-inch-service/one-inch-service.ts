@@ -9,7 +9,7 @@ import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCH
 import InstantTradeToken from '../../models/InstantTradeToken';
 import InstantTrade from '../../models/InstantTrade';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../core/services/errors-old/errors-old.service';
 import { OneinchQuoteError } from '../../../../../shared/models/errors/provider/OneinchQuoteError';
 
 interface OneInchQuoteResponse {
@@ -57,7 +57,7 @@ export class OneInchService extends InstantTradeService {
     private httpClient: HttpClient,
     private coingeckoApiService: CoingeckoApiService,
     useTestingModeService: UseTestingModeService,
-    protected readonly errorsService: ErrorsService
+    protected readonly errorsService: ErrorsOldService
   ) {
     super(errorsService);
     useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));

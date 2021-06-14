@@ -8,7 +8,7 @@ import { BlockchainsInfo } from '../../blockchain-info';
 import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
-import { ErrorsService } from '../../../errors/errors.service';
+import { ErrorsOldService } from '../../../errors-old/errors-old.service';
 
 export class MetamaskProvider extends PrivateProvider {
   private isEnabled = false;
@@ -39,7 +39,7 @@ export class MetamaskProvider extends PrivateProvider {
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
     accountChange: BehaviorSubject<string>,
-    errorsService: ErrorsService
+    errorsService: ErrorsOldService
   ) {
     super(errorsService);
     this.onAddressChanges = accountChange;

@@ -23,9 +23,9 @@ import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
+  TuiHintModule,
   TuiSvgModule,
   TuiTooltipModule,
-  TuiHintModule,
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -76,6 +76,8 @@ import { RoundPipe } from './pipes/round.pipe';
 import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
 import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
+import { TokenAmountInputComponent } from './components/token-amount-input/token-amount-input.component';
+import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
 import { AmountInputComponent } from './components/amount-input/amount-input.component';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
@@ -141,6 +143,9 @@ import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component
     RoundPipe,
     ProviderPanelComponent,
     DropdownSelectorComponent,
+    TokenAmountInputComponent,
+    TokenAmountDirective,
+    ProviderPanelComponent,
     AmountInputComponent,
     RoundPipe,
     RubicButtonCircleComponent,
@@ -188,6 +193,7 @@ import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component
     TuiActiveZoneModule,
     TuiDropdownModule,
     TuiHostedDropdownModule,
+    TuiToggleModule,
     TuiSvgModule,
     TuiHintModule,
     TuiToggleModule,
