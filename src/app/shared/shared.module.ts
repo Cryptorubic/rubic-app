@@ -17,7 +17,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
-import { TuiToggleModule, TuiInputModule, TuiTabsModule, TuiInputCountModule, TuiDataListWrapperModule } from '@taiga-ui/kit';
+import {
+  TuiToggleModule,
+  TuiInputModule,
+  TuiTabsModule,
+  TuiInputCountModule,
+  TuiDataListWrapperModule
+} from '@taiga-ui/kit';
 
 import {
   TuiButtonModule,
@@ -87,8 +93,10 @@ import { RubicTokensComponent } from './components/rubic-tokens/rubic-tokens.com
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicHeaderComponent } from './components/rubic-header/rubic-header.component';
 import { RubicLanguageSelectComponent } from './components/rubic-language-select/rubic-language-select.component';
-import { RubicSelectWalletComponent} from './components/rubic-select-wallet/rubic-select-wallet.component';
+import { RubicSelectWalletComponent } from './components/rubic-select-wallet/rubic-select-wallet.component';
 import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component';
+import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
+import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.component';
 
 @NgModule({
   declarations: [
@@ -157,7 +165,9 @@ import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component
     RubicHeaderComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
-    RubicMenuComponent
+    RubicMenuComponent,
+    RubicVolumeComponent,
+    RubicFooterComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -252,7 +262,12 @@ import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component
     RubicTogglerThemeComponent,
     RubicBlockchainsComponent,
     RubicTokensComponent,
-    RubicHeaderComponent
+    RubicHeaderComponent,
+    RubicMenuComponent,
+    RubicLanguageSelectComponent,
+    RubicSelectWalletComponent,
+    RubicVolumeComponent,
+    RubicFooterComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

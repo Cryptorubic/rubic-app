@@ -6,7 +6,6 @@
   align-items: center;
 
   max-width: 1440px;
-  margin: 100px auto 0;
 
   background: rgba(white, 0.3);
   border-radius: 10px;
@@ -112,4 +111,9 @@ section {
 
 ::ng-deep .tooltip .text {
   font-size: $rubic-font-size-01;
+}
+
+.footer {
+  display: block;
+  margin: 69px auto 60px;
 }
