@@ -1,12 +1,6 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, Input, Output } from '@angular/core';
 import { TuiDirection, TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
+import { TuiAppearance } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-rubic-button-circle',
@@ -17,19 +11,23 @@ import { TuiDirection, TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
 export class RubicButtonCircleComponent {
   @Input() size: TuiSizeXS | TuiSizeXL;
 
-  @Input() altText: string;
+  @Input() _disabled = false;
 
-  @Input() iconUrl: string;
+  @Input() appearance: TuiAppearance | string = 'primary';
 
-  @Input() disabled: boolean = false;
+  @Input() hint: string;
 
   @Input() hintDirection: TuiDirection = 'bottom-left';
 
-  @Output() onClickEmit: EventEmitter<MouseEvent> = new EventEmitter();
+  @Output() clickEmit: EventEmitter<MouseEvent> = new EventEmitter();
+
+  @Input('disabled') set disabled(disabled: boolean | '') {
+    this._disabled = disabled === '' || disabled;
+  }
 
   constructor() {}
 
   onClick(event: MouseEvent) {
-    this.onClickEmit.emit(event);
+    this.clickEmit.emit(event);
   }
 }

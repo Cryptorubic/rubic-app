@@ -1,0 +1,21 @@
+@import 'src/scss/vars';
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+.form-panel {
+  display: flex;
+
+  &__blockchains {
+    flex-grow: 1;
+
+    border-right: 2px solid $rubic-base-01;
+  }
+}

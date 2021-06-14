@@ -2,9 +2,9 @@
   <app-tokens-list-element [token]="token"></app-tokens-list-element>
   <app-rubic-button
     class="custom-token__button"
-    [buttonText]="'Import ' + token.symbol"
     appearance="secondary"
-    fullWidth="true"
-    (click)="onImportClick()"
-  ></app-rubic-button>
+    fullWidth
+    (click)="onImportClick()">
+    Import {{ token.symbol }}
+  </app-rubic-button>
 </div>

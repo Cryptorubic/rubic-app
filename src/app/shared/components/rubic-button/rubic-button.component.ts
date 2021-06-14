@@ -11,29 +11,25 @@ import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
 export class RubicButtonComponent {
   public _border: boolean;
 
-  @Input() buttonText: string;
+  @Input() _fullWidth: boolean;
 
-  @Input() disabled: boolean = false;
+  @Input() _disabled = false;
 
   @Input() appearance: TuiAppearance | string = 'primary';
 
   @Input() size: TuiSizeXS | TuiSizeXL = 'l';
 
-  @Input() iconUrl: string;
-
-  @Input() altText: string;
-
-  @Input() fullWidth: boolean;
-
   @Input('bordered') set setBorder(border: boolean | '') {
     this._border = border === '' || border;
   }
 
-  @Output() onClickEmit: EventEmitter<MouseEvent> = new EventEmitter();
+  @Input('fullWidth') set fullWidth(fullWidth: boolean | '') {
+    this._fullWidth = fullWidth === '' || fullWidth;
+  }
+
+  @Input('disabled') set disabled(disabled: boolean | '') {
+    this._disabled = disabled === '' || disabled;
+  }
 
   constructor() {}
-
-  onClick(event: MouseEvent) {
-    this.onClickEmit.emit(event);
-  }
 }

@@ -11,7 +11,7 @@
   .theme-toggle {
     border: 1px solid $rubic-base-01;
 
-    transition: 0.3s;
+    transition: 0.3s filter ease-in-out;
 
     &[data-tui-host-size='l'] {
       width: 50px;
@@ -38,11 +38,14 @@
 
     &._hovered {
       background-color: $rubic-base-01;
+      box-shadow: $rubic-shadow-button-hover;
+
     }
 
     &._pressed {
       border-color: $rubic-primary;
       background-color: $rubic-primary;
+      box-shadow: $rubic-shadow-button-active;
 
       ::ng-deep tui-wrapper {
         background-image: url('/assets/img/icons/day-light.svg');

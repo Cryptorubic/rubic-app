@@ -1,4 +1,4 @@
-<tui-hosted-dropdown [content]="content" [(open)]="open">
+<tui-hosted-dropdown [content]="content" [(open)]="open" (openChange)="this.openChange($event)">
   <ng-container *ngTemplateOutlet="dropdownButtonTemplate"></ng-container>
 </tui-hosted-dropdown>
 <ng-template #content let-activeZone>

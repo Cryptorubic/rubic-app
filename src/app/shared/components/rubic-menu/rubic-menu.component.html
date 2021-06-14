@@ -1,0 +1,21 @@
+<app-dropdown-selector
+  (opened)="getDropdownStatus($event)"
+  [dropdownButtonTemplate]="dropdownButtonTemplate"
+  [dropdownOptionsTemplates]="dropdownOptionsTemplates"
+></app-dropdown-selector>
+
+<ng-template #dropdownButtonTemplate>
+  <app-rubic-button-circle [size]="'l'" appearance="flat">
+    <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">
+      <div class="burger-menu__line"></div>
+      <div class="burger-menu__line"></div>
+      <div class="burger-menu__line"></div>
+    </div>
+  </app-rubic-button-circle>
+</ng-template>
+
+<ng-template #dropdownOptionTemplate *ngFor="let item of menuItems">
+  <a [routerLink]="[item.link]">
+    {{ item.title }}
+  </a>
+</ng-template>
