@@ -37,6 +37,7 @@
     "@maticnetwork/maticjs": "^2.0.40",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
+    "@taiga-ui/addon-table": "^2.11.2",
     "@taiga-ui/cdk": "^2.10.1",
     "@taiga-ui/core": "^2.10.1",
     "@taiga-ui/icons": "^2.10.1",
