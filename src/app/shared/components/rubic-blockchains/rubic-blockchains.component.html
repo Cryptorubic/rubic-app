@@ -15,9 +15,9 @@
       *ngFor="let blockchain of blockchainsList | slice: 1:4"
       class="blockchains__list-item"
       [size]="'s'"
-      [iconUrl]="blockchain.chainImg"
-      [altText]="'Polygon'"
+      [hint]="blockchain.name"
     >
+      <img [src]="blockchain.chainImg" alt>
     </app-rubic-button-circle>
 
     <app-dropdown-selector
@@ -30,8 +30,8 @@
       <app-rubic-button-circle
         class="blockchains__list-item"
         [size]="'s'"
-        [iconUrl]="'assets/img/icons/dropdown.svg'"
       >
+        <img src="assets/img/icons/dropdown.svg" width="18px" height="18px" alt="Dropdown">
       </app-rubic-button-circle>
     </ng-template>
 

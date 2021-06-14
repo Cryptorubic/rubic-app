@@ -11,21 +11,23 @@ import { TuiAppearance } from '@taiga-ui/core';
 export class RubicButtonCircleComponent {
   @Input() size: TuiSizeXS | TuiSizeXL;
 
-  @Input() altText: string;
-
-  @Input() iconUrl: string;
-
-  @Input() disabled = false;
+  @Input() _disabled = false;
 
   @Input() appearance: TuiAppearance | string = 'primary';
 
+  @Input() hint: string;
+
   @Input() hintDirection: TuiDirection = 'bottom-left';
 
-  @Output() onClickEmit: EventEmitter<MouseEvent> = new EventEmitter();
+  @Output() clickEmit: EventEmitter<MouseEvent> = new EventEmitter();
+
+  @Input('disabled') set disabled(disabled: boolean | '') {
+    this._disabled = disabled === '' || disabled;
+  }
 
   constructor() {}
 
   onClick(event: MouseEvent) {
-    this.onClickEmit.emit(event);
+    this.clickEmit.emit(event);
   }
 }

@@ -37,7 +37,7 @@
       background-color: $rubic-primary;
       box-shadow: $rubic-shadow-button-active;
 
-      .icon {
+      ::ng-deep img {
         filter: brightness(10);
       }
     }
@@ -65,7 +65,7 @@
       }
     }
 
-    .icon {
+    ::ng-deep img {
       width: 100%;
       max-width: 18px;
       height: auto;

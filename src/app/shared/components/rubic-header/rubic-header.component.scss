@@ -57,16 +57,21 @@
   &:hover,
   &_active {
     background-color: $rubic-base-01;
+  }
+
+  &:hover {
     box-shadow: $rubic-shadow-button-hover;
   }
 
-  &:active {
+  &:active,
+  &_active:active {
+    color: $rubic-base-01 !important;
+
     background-color: $rubic-primary;
     box-shadow: $rubic-shadow-button-active;
   }
 
   &:focus {
-    background-color: $rubic-base-01;
     border-color: $rubic-primary;
   }
 

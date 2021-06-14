@@ -109,3 +109,7 @@ section {
     }
   }
 }
+
+::ng-deep .tooltip .text {
+  font-size: $rubic-font-size-01;
+}

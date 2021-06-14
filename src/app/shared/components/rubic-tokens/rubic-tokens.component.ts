@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TokensSelectService } from '../../../features/tokens-select/services/tokens-select.service';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -11,5 +12,13 @@ export class RubicTokensComponent {
     imgUrl: 'assets/images/icons/eth-logo.svg'
   };
 
-  constructor() {}
+  constructor(private tokensSelectService: TokensSelectService) {}
+
+  openTokensSelect() {
+    this.tokensSelectService
+      .showDialog()
+      .subscribe(token =>
+        alert(`Token ${token.symbol} in ${token.blockchain} blockchain selected`)
+      );
+  }
 }

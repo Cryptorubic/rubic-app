@@ -18,8 +18,8 @@
       border: 1px solid white;
     }
 
-    img {
-      width: auto;
+    ::ng-deep img {
+      width: 100px;
       max-width: 18px;
       height: auto;
       max-height: 15px;
@@ -40,7 +40,7 @@
       border-color: $rubic-primary;
       box-shadow: $rubic-shadow-button-active;
 
-      img {
+      ::ng-deep img {
         filter: brightness(10);
       }
     }
@@ -50,13 +50,9 @@
       border-color: rgba($rubic-disable, 0.6);
       filter: saturate(0);
 
-      img {
+      ::ng-deep img {
         filter: brightness(2);
       }
     }
   }
-}
-
-.button-circle-tooltip {
-  font-size: $rubic-font-size-01;
 }
