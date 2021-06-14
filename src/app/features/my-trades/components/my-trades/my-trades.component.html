@@ -1,70 +1,139 @@
 <main class="main-content">
-  <table tuiTable class="my-trades-table" [columns]="columns">
-    <thead>
-      <tr tuiThGroup>
-        <th tuiTh [resizable]="true" *ngFor="let column of columns">{{ column }}</th>
-      </tr>
-    </thead>
+  <div class="my-trades">
+    <div class="my-trades__title">My trades</div>
 
-    <tbody tuiTbody [data]="data">
-      <tr *ngFor="let trade of tableTrades" tuiTr>
-        <td *tuiCell="'Status'" tuiTd>
-          <div
-            class="status-circle"
-            [ngClass]="{
-              'status-circle_green': trade.status === 'Completed',
-              'status-circle_yellow':
-                trade.status === 'Waiting for deposit' ||
-                trade.status === 'Waiting for receiving' ||
-                trade.status === 'Deposit in progress' ||
-                trade.status === 'Withdraw in progress',
-              'status-circle_red': trade.status === 'Cancelled'
-            }"
-          >
-            <div class="status-circle__inner"></div>
-          </div>
-          {{ trade.status }}
-        </td>
+    <tui-loader [overlay]="true" [showLoader]="loading$ | async">
+      <div
+        class="my-trades__table-container table-container"
+        *tuiLet="visibleData$ | async as data"
+      >
+        <div
+          class="table-container__no-trades-text"
+          *ngIf="(loading$ | async) === false && !data.length"
+        >
+          You have no trades yet
+        </div>
 
-        <td *tuiCell="'From'" tuiTd>
-          <div class="blockchain-img-container">
-            <img [src]="BLOCKCHAINS[trade.fromToken.blockchain].img" alt="from blockchain" />
-          </div>
-          {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
-        </td>
+        <table
+          tuiTable
+          *ngIf="data.length"
+          class="table-container__table table"
+          [columns]="columns"
+          [sorter]="sorter$ | async"
+          [direction]="direction$ | async"
+          (sorterChange)="sorter$.next($event)"
+          (directionChange)="direction$.next($event)"
+        >
+          <thead>
+            <tr tuiThGroup>
+              <th
+                tuiTh
+                [resizable]="true"
+                *ngFor="let column of columns"
+                [sorter]="sorters[column]"
+              >
+                <span class="title">{{ column }}</span>
 
-        <td *tuiCell="'To'" tuiTd>
-          <div class="blockchain-img-container">
-            <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
-          </div>
-          {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
-        </td>
+                <div
+                  class="sort-arrow"
+                  [ngClass]="{
+                    'sort-arrow_green':
+                      sorter$.getValue() === sorters[column] && direction$.getValue() === -1
+                  }"
+                  [inlineSVG]="'assets/images/icons/my-trades/arrow-up.svg'"
+                ></div>
+                <div
+                  class="sort-arrow"
+                  [ngClass]="{
+                    'sort-arrow_green':
+                      sorter$.getValue() === sorters[column] && direction$.getValue() === 1
+                  }"
+                  [inlineSVG]="'assets/images/icons/my-trades/arrow-down.svg'"
+                ></div>
+              </th>
+            </tr>
+          </thead>
 
-        <td *tuiCell="'Sent'" tuiTd class="token">
-          <span>{{ trade.fromToken.amount }}</span>
-          <div class="token-info">
-            <div class="token-info__img-container">
-              <img [src]="trade.fromToken.image" alt="from token" />
-            </div>
-            {{ trade.fromToken.symbol }}
-          </div>
-        </td>
+          <tbody tuiTbody [data]="data">
+            <ng-container *ngFor="let item of data">
+              <tr tuiTr *tuiLet="getTableTrade(item) as trade">
+                <td *tuiCell="'Status'" tuiTd>
+                  <div
+                    class="status-circle"
+                    [ngClass]="{
+                      'status-circle_green': trade.status === 'Completed',
+                      'status-circle_yellow':
+                        trade.status === 'Waiting for deposit' ||
+                        trade.status === 'Waiting for receiving' ||
+                        trade.status === 'Deposit in progress' ||
+                        trade.status === 'Withdraw in progress',
+                      'status-circle_red': trade.status === 'Cancelled'
+                    }"
+                  >
+                    <div class="status-circle__inner"></div>
+                  </div>
+                  {{ trade.status }}
+                </td>
 
-        <td *tuiCell="'Expected'" tuiTd class="token">
-          <span>{{ trade.toToken.amount }}</span>
-          <div class="token-info">
-            <div class="token-info__img-container">
-              <img [src]="trade.toToken.image" alt="to token" />
-            </div>
-            {{ trade.toToken.symbol }}
-          </div>
-        </td>
+                <td *tuiCell="'From'" tuiTd>
+                  <div class="blockchain-img-container">
+                    <img
+                      [src]="BLOCKCHAINS[trade.fromToken.blockchain].img"
+                      alt="from blockchain"
+                    />
+                  </div>
+                  {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
+                </td>
 
-        <td *tuiCell="'Date'" tuiTd class="date">
-          <span>{{ trade.date | date: 'shortDate' }}</span>
-          <span>{{ trade.date | date: 'shortTime' }} {{ trade.date | date: 'ZZZZ' }}</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+                <td *tuiCell="'To'" tuiTd>
+                  <div class="blockchain-img-container">
+                    <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
+                  </div>
+                  {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
+                </td>
+
+                <td *tuiCell="'Sent'" tuiTd class="token">
+                  <span>{{ trade.fromToken.amount }}</span>
+                  <div class="token-info">
+                    <div class="token-info__img-container">
+                      <img [src]="trade.fromToken.image" alt="from token" />
+                    </div>
+                    {{ trade.fromToken.symbol }}
+                  </div>
+                </td>
+
+                <td *tuiCell="'Expected'" tuiTd class="token">
+                  <span>{{ trade.toToken.amount }}</span>
+                  <div class="token-info">
+                    <div class="token-info__img-container">
+                      <img [src]="trade.toToken.image" alt="to token" />
+                    </div>
+                    {{ trade.toToken.symbol }}
+                  </div>
+                </td>
+
+                <td *tuiCell="'Date'" tuiTd class="date">
+                  <span>{{ trade.date | date: 'shortDate' }}</span>
+                  <span>{{ trade.date | date: 'shortTime' }} {{ trade.date | date: 'ZZZZ' }}</span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+
+          <tfoot>
+            <tr>
+              <td [colSpan]="columns.length">
+                <tui-table-pagination
+                  class="tui-space_top-2"
+                  [total]="total$ | async"
+                  (pageChange)="page$.next($event)"
+                  (sizeChange)="size$.next($event)"
+                ></tui-table-pagination>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </tui-loader>
+  </div>
 </main>

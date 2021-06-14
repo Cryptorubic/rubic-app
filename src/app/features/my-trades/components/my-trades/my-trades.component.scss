@@ -1,18 +1,71 @@
 @import 'src/scss/vars';
 
-.my-trades-table {
-  margin: 0 auto;
+.main-content {
+  padding: 40px 20px;
+}
 
-  font-weight: 300;
+.my-trades {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 42px;
+
+  max-width: 1240px;
+  min-height: 77vh;
+  margin: 0 auto;
+  padding: 30px 35px 40px;
+
   font-family: $sf-pro-font;
 
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 19px;
+  box-shadow: -30px -30px 80px rgba(255, 255, 255, 0.3),
+    30px 30px 80px rgba(139, 85, 116, 0.1),
+    inset 4px 4px 20px rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(24px);
+
+  &__title {
+    color: #283125;
+    font-weight: 200;
+    font-size: 24px;
+    line-height: 29px;
+  }
+
+  &__table-container {
+    width: 100%;
+  }
+}
+
+.table-container {
+  &__no-trades-text {
+    font-weight: 200;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  &__table {
+    width: 100%;
+  }
+}
+
+.table {
+  font-weight: 300;
+
   border-radius: 14px;
-  box-shadow: -30px -30px 80px #fff,
+  box-shadow: -30px -30px 80px #fff0,
     30px 30px 80px rgba(84, 129, 90, 0.15),
     inset 4px 4px 50px rgba(255, 255, 255, 0.6);
 
+  thead {
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    box-shadow: -30px -30px 80px #fff0,
+      30px 30px 80px rgba(84, 129, 90, 0.15),
+      inset 4px 4px 50px rgba(255, 255, 255, 0.6);
+  }
+
   th,
   td {
+    color: #808080;
     font-weight: inherit;
     font-family: inherit;
 
@@ -33,7 +86,7 @@
     font-size: 18px;
     line-height: 21px;
 
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
 
     &:first-child {
       border-top-left-radius: 14px;
@@ -42,86 +95,141 @@
     &:last-child {
       border-top-right-radius: 14px;
     }
+
+    ::ng-deep {
+      .sort {
+        color: inherit;
+        font-weight: inherit;
+
+        &_sorted {
+          font-weight: 500;
+        }
+      }
+
+      .arrow {
+        display: none;
+      }
+    }
+
+    .title {
+      margin-right: 10px;
+    }
+
+    .sort-arrow {
+      ::ng-deep {
+        svg path {
+          opacity: 0.3;
+
+          fill: #808080;
+        }
+      }
+
+      &_green {
+        ::ng-deep {
+          svg path {
+            opacity: 1;
+
+            fill: $main-green;
+          }
+        }
+      }
+    }
   }
 
-  tr {
-    &:last-child {
-      td {
-        border-bottom-width: 0;
+  td {
+    padding: 13px 27px;
 
-        &:first-child {
-          border-bottom-left-radius: 14px;
+    font-size: 16px;
+    line-height: 19px;
+
+    background: rgba(255, 255, 255, 0.5);
+    border-bottom-width: 1px;
+
+    ::ng-deep {
+      .wrapper {
+        display: flex;
+        grid-gap: 12px;
+        align-items: center;
+      }
+    }
+
+    .status-circle {
+      display: flex;
+
+      width: 20px;
+      min-width: 20px;
+      height: 20px;
+
+      border-radius: 50%;
+
+      &_green {
+        background: rgba(74, 169, 86, 0.3);
+
+        .status-circle__inner {
+          background: rgb(74, 169, 86);
         }
+      }
 
-        &:last-child {
-          border-bottom-right-radius: 14px;
+      &_yellow {
+        background: rgba(255, 203, 17, 0.3);
+
+        .status-circle__inner {
+          background: rgb(255, 203, 17);
+        }
+      }
+
+      &_red {
+        background: rgba(216, 33, 34, 0.3);
+
+        .status-circle__inner {
+          background: rgb(216, 33, 34);
+        }
+      }
+
+      &__inner {
+        width: 10px;
+        height: 10px;
+        margin: auto;
+
+        border-radius: 50%;
+      }
+    }
+
+    .blockchain-img-container {
+      display: flex;
+
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        margin: auto;
+      }
+    }
+
+    &.token,
+    &.date {
+      ::ng-deep {
+        .wrapper {
+          flex-direction: column;
+          align-items: flex-start;
         }
       }
     }
 
-    td {
-      padding: 13px 27px;
+    .token-info {
+      display: flex;
+      grid-gap: 8px;
+      align-items: center;
 
-      font-size: 16px;
-      line-height: 19px;
-
-      background: transparent;
-      border-bottom-width: 1px;
-
-      ::ng-deep {
-        .wrapper {
-          display: flex;
-          grid-gap: 10px;
-          align-items: center;
-        }
-      }
-
-      .status-circle {
-        display: flex;
-
-        width: 20px;
-        height: 20px;
-
-        border-radius: 50%;
-
-        &_green {
-          background: rgba(74, 169, 86, 0.3);
-
-          .status-circle__inner {
-            background: rgb(74, 169, 86);
-          }
-        }
-
-        &_yellow {
-          background: rgba(255, 203, 17, 0.3);
-
-          .status-circle__inner {
-            background: rgb(255, 203, 17);
-          }
-        }
-
-        &_red {
-          background: rgba(216, 33, 34, 0.3);
-
-          .status-circle__inner {
-            background: rgb(216, 33, 34);
-          }
-        }
-
-        &__inner {
-          width: 10px;
-          height: 10px;
-          margin: auto;
-
-          border-radius: 50%;
-        }
-      }
-
-      .blockchain-img-container {
+      &__img-container {
         display: flex;
 
         width: 18px;
-        height: 18px;
+        min-width: 18px;
+        height: 17px;
 
         img {
           max-width: 100%;
@@ -129,35 +237,45 @@
           margin: auto;
         }
       }
+    }
+  }
 
-      &.token,
-      &.date {
-        ::ng-deep {
-          .wrapper {
-            flex-direction: column;
-            align-items: flex-start;
+  tfoot {
+    tr {
+      &:last-child {
+        td {
+          &:first-child {
+            border-bottom-left-radius: 14px;
+          }
+
+          &:last-child {
+            border-bottom-right-radius: 14px;
           }
         }
       }
+    }
+  }
+}
 
-      .token-info {
-        display: flex;
-        grid-gap: 6px;
-        align-items: center;
+tui-loader {
+  ::ng-deep {
+    .loader {
+      stroke: $main-green;
+    }
+  }
+}
 
-        &__img-container {
-          display: flex;
+tui-table-pagination {
+  ::ng-deep {
+    span {
+      font-weight: 400;
+      font-size: 14px;
+      font-family: $sf-pro-font;
+      word-spacing: 0.1em;
+    }
 
-          width: 18px;
-          height: 17px;
-
-          img {
-            max-width: 100%;
-            max-height: 100%;
-            margin: auto;
-          }
-        }
-      }
+    button {
+      color: $main-green;
     }
   }
 }
