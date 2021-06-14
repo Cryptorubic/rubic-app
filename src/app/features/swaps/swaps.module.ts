@@ -25,10 +25,16 @@ import {
 import { InlineSVGModule } from 'ng-inline-svg';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SwapsService } from './services/swaps-service/swaps.service';
+import { SwapsButtonComponent } from './components/swaps-button/swaps-button.component';
 
 @NgModule({
   providers: [SwapsService],
-  declarations: [SwapsFormComponent, SettingsContainerComponent, SettingsComponent],
+  declarations: [
+    SwapsFormComponent,
+    SettingsContainerComponent,
+    SettingsComponent,
+    SwapsButtonComponent
+  ],
   exports: [SettingsContainerComponent],
   imports: [
     CommonModule,
