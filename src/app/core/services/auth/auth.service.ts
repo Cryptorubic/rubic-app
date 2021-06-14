@@ -8,7 +8,7 @@ import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
 import { QueryParamsService } from '../query-params/query-params.service';
 import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
-import { ErrorsService } from '../errors/errors.service';
+import { ErrorsOldService } from '../errors-old/errors-old.service';
 import { StoreService } from '../store/store.service';
 
 /**
@@ -39,7 +39,7 @@ export class AuthService {
     private readonly httpService: HttpService,
     private readonly queryParamsService: QueryParamsService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsService,
+    private readonly errorsService: ErrorsOldService,
     private readonly store: StoreService
   ) {
     this.isAuthProcess = false;

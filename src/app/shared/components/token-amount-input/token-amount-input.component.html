@@ -1,0 +1,49 @@
+<div class="token-input-container">
+  <div class="amount-input-container">
+    <label class="amount-input-container__label">
+      <input
+        class="amount-input-container__input"
+        name="token-amount"
+        [placeholder]="placeholder"
+        appTokenAmount
+        [formControl]="amountControl"
+        [decimals]="token?.decimals || DEFAULT_DECIMALS"
+        (amountChange)="onAmountChange($event)"
+      />
+    </label>
+
+    <div
+      class="amount-input-container__user-balance-container user-balance-container"
+      *ngIf="token?.userBalance"
+    >
+      <span class="user-balance-container__balance"
+        >You have {{ token?.userBalance | bigNumberFormat: 4 }}</span
+      >
+      <button class="user-balance-container__max-button" (click)="onUserBalanceMaxButtonClick()">
+        MAX
+      </button>
+    </div>
+  </div>
+
+  <div class="token-input-container__right-side right-side">
+    <div class="right-side__usd-price-container usd-price-container">
+      <span
+        class="usd-price-container__price"
+        [tuiHint]="usdPriceTooltip"
+        tuiHintDirection="top"
+        tuiHintMode="onDark"
+        >{{ getUsdPrice() | bigNumberFormat: 2 }}</span
+      >
+      <ng-template #usdPriceTooltip>
+        {{ getUsdPrice() | bigNumberFormat: 2 }}
+      </ng-template>
+      USD
+    </div>
+
+    <div class="right-side__error-info">
+      <span *ngIf="amountControl.errors?.min">Min {{ minAmount }}</span>
+
+      <span *ngIf="amountControl.errors?.max">Max {{ maxAmount }}</span>
+    </div>
+  </div>
+</div>

@@ -26,7 +26,7 @@ import { InstantTradeProviderController } from '../../models/instant-trades-prov
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../models/trade-data';
 import { PROVIDERS } from '../../models/providers.enum';
 import { InstantTradesFormService } from './services/instant-trades-form.service';
-import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../core/services/errors-old/errors-old.service';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
 import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
@@ -236,7 +236,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
     private readonly queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly web3PublicService: Web3PublicService,
-    private errorsService: ErrorsService,
+    private errorsService: ErrorsOldService,
     private readonly instantTradesFormService: InstantTradesFormService
   ) {
     this.$tokensSelectionDisabled = this.queryParamsService.$tokensSelectionDisabled;

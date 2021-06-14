@@ -31,7 +31,7 @@ import { BlockchainsBridgeProvider } from './blockchains-bridge-provider/blockch
 import { BridgeToken } from '../models/BridgeToken';
 import { EthereumXdaiBridgeProviderService } from './blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BRIDGE_PROVIDER_TYPE } from '../models/ProviderType';
-import { ErrorsService } from '../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../core/services/errors-old/errors-old.service';
 
 @Injectable()
 export class BridgeService implements OnDestroy {
@@ -92,7 +92,7 @@ export class BridgeService implements OnDestroy {
     private authService: AuthService,
     private useTestingModeService: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsOldService
   ) {
     this._swapTokensSubscription$ = this.tokensService.tokens.subscribe(swapTokens => {
       this._swapTokens = swapTokens;

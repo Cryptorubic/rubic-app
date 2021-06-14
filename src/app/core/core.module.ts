@@ -12,6 +12,7 @@ import { configLoader, httpLoaderFactory } from './app.loaders';
 import { ContentLoaderService } from './services/content-loader/content-loader.service';
 import { HTTPInterceptor } from './interceptors/http-interceptor';
 import { WalletsModalComponent } from './header/components/header/components/wallets-modal/wallets-modal.component';
+import { ErrorsModule } from './errors/errors.module';
 
 @NgModule({
   declarations: [MaintenanceComponent],
@@ -33,6 +34,7 @@ import { WalletsModalComponent } from './header/components/header/components/wal
   imports: [
     CommonModule,
     HeaderModule,
+    ErrorsModule,
     SharedModule,
     TranslateModule.forRoot({
       loader: {

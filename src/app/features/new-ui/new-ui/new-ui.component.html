@@ -151,6 +151,19 @@
     </ng-template>
   </section>
 
+  <!--  Token Amount Input example-->
+  <section class="token-amount-input-example">
+    <h2>Token Amount Input example</h2>
+
+    <app-token-amount-input
+      [amount]="tokenAmountFrom"
+      (amountChange)="onTokenAmountFromChange($event)"
+      [token]="ethToken"
+      [minAmount]="minTokenAmount"
+      [maxAmount]="50000"
+    ></app-token-amount-input>
+  </section>
+
   <section>
     <h2>Provider panel</h2>
     <div>
@@ -201,8 +214,8 @@
   </section>
 
   <section>
-    <h2>Another component</h2>
-    <span>...</span>
+    <h2>Handle error</h2>
+    <button tuiButton (click)="handleError()">Throw error</button>
   </section>
 </div>
 

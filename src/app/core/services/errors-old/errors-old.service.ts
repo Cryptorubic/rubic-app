@@ -22,7 +22,7 @@ interface ErrorData {
 @Injectable({
   providedIn: 'root'
 })
-export class ErrorsService {
+export class ErrorsOldService {
   constructor(private dialog: MatDialog, private readonly translateService: TranslateService) {}
 
   public $throw(error: any, message?: string): Observable<never> {
