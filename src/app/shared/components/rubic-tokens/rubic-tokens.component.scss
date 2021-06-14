@@ -1,0 +1,21 @@
+@import 'src/scss/vars';
+
+.tokens {
+  height: 100%;
+  padding: 15px 20px;
+
+  font-size: $rubic-font-size-01;
+
+  background-color: $rubic-base-03;
+  border-top-right-radius: 14px;
+
+  &__container {
+    display: flex;
+    grid-gap: 10px;
+    align-items: center;
+
+    img {
+      display: block;
+    }
+  }
+}

@@ -1,0 +1,56 @@
+@import 'src/scss/vars';
+
+.blockchains {
+  display: flex;
+  grid-gap: 5px;
+  align-items: center;
+  height: 100%;
+  padding: 15px 20px;
+
+  background-color: $rubic-base-03;
+  border-top-left-radius: 14px;
+
+  &__list {
+    &-item {
+      margin-right: 5px;
+    }
+  }
+}
+
+.blockchain {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+
+  font-weight: 500;
+
+  font-size: $rubic-font-size-01;
+
+  border: 1px solid $rubic-primary;
+  border-radius: 175px;
+
+  &__icon {
+    width: 100%;
+    max-width: 18px;
+    height: auto;
+    max-height: 18px;
+    margin-right: 10px;
+  }
+}
+
+.template-blockchains {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 106px;
+
+  &__icon {
+    width: auto;
+    max-width: 18px;
+    height: auto;
+    max-height: 20px;
+    margin-right: 20px;
+
+    transition: 0.3s ease-in-out;
+  }
+}

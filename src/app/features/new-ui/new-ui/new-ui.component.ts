@@ -31,6 +31,14 @@ export class NewUiComponent implements OnInit {
 
   public readonly options = ['first', 'second', 'third'];
 
+  public blockchainsList = [
+    { name: 'Binance Smart Chain', chainImg: 'assets/images/icons/coins/bnb.svg' },
+    { name: 'Polygon', chainImg: 'assets/images/icons/coins/polygon.svg' },
+    { name: 'Ethereum', chainImg: 'assets/images/icons/eth-logo.svg' },
+    { name: 'xDai', chainImg: 'assets/images/icons/coins/xdai.svg' },
+    { name: 'Kovan', chainImg: 'assets/images/icons/coins/kovan.png' }
+  ];
+
   public tokenAmountFrom = '';
 
   public minTokenAmount = 100;

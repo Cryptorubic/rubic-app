@@ -1,79 +1,86 @@
+<app-rubic-header></app-rubic-header>
+
 <div class="wrapper">
   <h1>New UI components page</h1>
 
-  <!-- Button example -->
   <section>
+    <h2>Blockchains and tokens</h2>
+    <div class="form-panel">
+      <app-rubic-blockchains
+        class="form-panel__blockchains"
+        [blockchainsList]="blockchainsList"
+      ></app-rubic-blockchains>
+      <app-rubic-tokens class="form-panel__tokens"></app-rubic-tokens>
+    </div>
+
     <h2>Button example</h2>
+
     <div class="tui-space_bottom-5">
       <app-rubic-button
-        class="tui-space_right-10"
-        buttonText="Primary"
-      ></app-rubic-button>
+        class="tui-space_right-10">
+        Primary
+      </app-rubic-button>
 
       <app-rubic-button
         class="tui-space_right-10"
-        buttonText="Flat"
-        [appearance]="'flat'"
-      ></app-rubic-button>
+        appearance="flat">
+        Flat
+      </app-rubic-button>
 
       <app-rubic-button
         class="tui-space_right-10"
-        buttonText="Secondary"
-        appearance="secondary"
-      ></app-rubic-button>
+        appearance="secondary">
+        Secondary
+      </app-rubic-button>
 
       <app-rubic-button
         class="tui-space_right-10"
-        buttonText="Bordered"
-        bordered
-      ></app-rubic-button>
+        bordered>
+        Bordered
+      </app-rubic-button>
 
       <app-rubic-button
         class="tui-space_right-10"
-        [buttonText]="'Connect wallet'"
-        [disabled]="true"
-      ></app-rubic-button>
+        disabled>
+        Disabled
+      </app-rubic-button>
     </div>
 
     <div class="tui-space_bottom-5">
       <app-rubic-button
         class="tui-space_right-10"
-        [buttonText]="'RBC'"
-        [size]="'s'"
-        [iconUrl]="'assets/images/icons/eth-logo.svg'"
-        [altText]="'RBC'"
-      ></app-rubic-button>
+        size="s">
+        <img src="assets/images/icons/eth-logo.svg" width="18" height="18">
+        RBC
+      </app-rubic-button>
 
       <app-rubic-button
         class="tui-space_right-10"
-        [buttonText]="'RBC'"
-        [size]="'s'"
-        [iconUrl]="'assets/images/icons/eth-logo.svg'"
-        [altText]="'RBC'"
-        [disabled]="true"
-      ></app-rubic-button>
+        size="s"
+        disabled>
+        <img src="assets/images/icons/eth-logo.svg" width="18" height="18">
+        RBC
+      </app-rubic-button>
 
       <app-rubic-button
         class="tui-space_right-10"
-        [buttonText]="'Select token'"
-        [size]="'s'"
-        [altText]="'RBC'"
-      ></app-rubic-button>
+        size="s">
+        Select token
+      </app-rubic-button>
 
       <app-rubic-button
-        [buttonText]="'Select token'"
-        [size]="'s'"
-        [altText]="'RBC'"
-        [disabled]="true"
-      ></app-rubic-button>
+        class="tui-space_right-10"
+        size="s"
+        disabled>
+        Select token
+      </app-rubic-button>
     </div>
 
     <div>
       <app-rubic-button
-        [fullWidth]="true"
-        [buttonText]="'Connect wallet'"
-        [altText]="'RBC'"
-      ></app-rubic-button>
+        fullWidth>
+        Connect wallet
+      </app-rubic-button>
     </div>
   </section>
 
@@ -81,36 +88,35 @@
     <h2>Circle button</h2>
     <app-rubic-button-circle
       class="tui-space_right-10"
-      [size]="'s'"
-      [iconUrl]="'assets/images/icons/coins/polygon.svg'"
-      [altText]="'Polygon'"
+      size="s"
+      hint="Polygon"
     >
+      <img src="assets/images/icons/coins/polygon.svg" width="18" height="18" alt="Polygon">
     </app-rubic-button-circle>
 
     <app-rubic-button-circle
       class="tui-space_right-10"
-      [size]="'s'"
-      [iconUrl]="'assets/images/icons/coins/polygon.svg'"
-      [altText]="'Polygon'"
+      size="s"
       [disabled]="true"
     >
+      <img src="assets/images/icons/coins/polygon.svg" width="18" height="18" alt="Polygon">
     </app-rubic-button-circle>
 
     <app-rubic-button-circle
       class="tui-space_right-10"
-      [size]="'s'"
-      [iconUrl]="'assets/images/icons/setting.svg'"
-      [hintDirection]="'top-left'"
-      [altText]="'Settings'"
+      size="s"
+      hint="Settings"
+      hintDirection="top-left"
     >
+      <img src="assets/images/icons/setting.svg" width="18" height="18" alt="Settings">
     </app-rubic-button-circle>
 
     <app-rubic-button-circle
-      [size]="'l'"
-      [iconUrl]="'assets/images/icons/reload.svg'"
-      [altText]="'Reload'"
-      [hintDirection]="'top-left'"
+      size="l"
+      hint="Reload"
+      hintDirection="top-left"
     >
+      <img src="assets/images/icons/reload.svg" width="18" height="18" alt="Reload">
     </app-rubic-button-circle>
   </section>
 

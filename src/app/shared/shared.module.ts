@@ -17,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { WalletAddressFormComponent } from 'src/app/shared/components/wallet-address-form/wallet-address-form.component';
 import { RefreshToolComponent } from 'src/app/shared/components/refresh-button/refresh-tool.component';
-import { TuiToggleModule, TuiInputModule } from '@taiga-ui/kit';
+import { TuiToggleModule, TuiInputModule, TuiTabsModule, TuiInputCountModule, TuiDataListWrapperModule } from '@taiga-ui/kit';
 
 import {
   TuiButtonModule,
@@ -84,7 +84,13 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rubic-toggler-theme.component';
+import { RubicBlockchainsComponent } from './components/rubic-blockchains/rubic-blockchains.component';
+import { RubicTokensComponent } from './components/rubic-tokens/rubic-tokens.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
+import { RubicHeaderComponent } from './components/rubic-header/rubic-header.component';
+import { RubicLanguageSelectComponent } from './components/rubic-language-select/rubic-language-select.component';
+import { RubicSelectWalletComponent} from './components/rubic-select-wallet/rubic-select-wallet.component';
+import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +114,7 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     ScannerLinkPipe,
     NativeUrlPipe,
     ErrorDisclaimerComponent,
+    TokenAddressDirective,
     TokenAddressDirective,
     NumberPrecisionDirective,
     ScannerLinkComponent,
@@ -134,18 +141,28 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     WithRoundPipe,
     AdvancedOptionsButtonComponent,
     RoundPipe,
+    ProviderPanelComponent,
     DropdownSelectorComponent,
     TokenAmountInputComponent,
     TokenAmountDirective,
     ProviderPanelComponent,
     AmountInputComponent,
+    RoundPipe,
+    RubicButtonCircleComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
     RubicTogglerThemeComponent,
     IconButtonComponent,
     CrossButtonComponent,
-    ShortenAmountPipe
+    ShortenAmountPipe,
+    RubicTogglerThemeComponent,
+    RubicBlockchainsComponent,
+    RubicTokensComponent,
+    RubicHeaderComponent,
+    RubicLanguageSelectComponent,
+    RubicSelectWalletComponent,
+    RubicMenuComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -166,6 +183,7 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     InlineSVGModule.forRoot(),
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     TuiSvgModule,
     TuiTooltipModule,
     TuiHintModule,
@@ -175,7 +193,13 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     TuiActiveZoneModule,
     TuiDropdownModule,
     TuiHostedDropdownModule,
-    TuiToggleModule
+    TuiToggleModule,
+    TuiSvgModule,
+    TuiHintModule,
+    TuiToggleModule,
+    TuiTabsModule,
+    TuiInputCountModule,
+    TuiDataListWrapperModule
   ],
   exports: [
     FooterComponent,
@@ -215,9 +239,11 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     CheckboxComponent,
     RefreshToolComponent,
     WalletAddressFormComponent,
+    RefreshToolComponent,
     ShortAddressPipe,
     AdvancedOptionsButtonComponent,
-    TokenAmountInputComponent,
+    RubicButtonCircleComponent,
+    AdvancedOptionsButtonComponent,
     ProviderPanelComponent,
     AmountInputComponent,
     DropdownSelectorComponent,
@@ -228,7 +254,11 @@ import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
     IconButtonComponent,
     CrossButtonComponent,
     RoundPipe,
-    ShortenAmountPipe
+    ShortenAmountPipe,
+    RubicTogglerThemeComponent,
+    RubicBlockchainsComponent,
+    RubicTokensComponent,
+    RubicHeaderComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

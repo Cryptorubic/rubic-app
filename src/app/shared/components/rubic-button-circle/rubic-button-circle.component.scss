@@ -4,18 +4,25 @@
   --tui-height-l: 50px;
   --tui-height-s: 35px;
   --tui-primary-hover: $rubic-base-01;
+  --tui-secondary-hover: $rubic-base-01;
   --tui-primary-active: $rubic-primary;
+  --tui-secondary-active: $rubic-primary;
   --tui-disabled-opacity: 1;
 
   [tuiIconButton] {
     --tui-primary: transparent;
-    border: 1px solid white;
 
     transition: 0.3s;
 
-    img {
-      width: 18px;
-      height: 18px;
+    &[data-appearance='primary'] {
+      border: 1px solid white;
+    }
+
+    ::ng-deep img {
+      width: 100px;
+      max-width: 18px;
+      height: auto;
+      max-height: 15px;
     }
 
     &._hovered {
@@ -33,7 +40,7 @@
       border-color: $rubic-primary;
       box-shadow: $rubic-shadow-button-active;
 
-      img {
+      ::ng-deep img {
         filter: brightness(10);
       }
     }
@@ -43,13 +50,9 @@
       border-color: rgba($rubic-disable, 0.6);
       filter: saturate(0);
 
-      img {
+      ::ng-deep img {
         filter: brightness(2);
       }
     }
   }
-}
-
-.button-circle-tooltip {
-  font-size: $rubic-font-size-01;
 }
