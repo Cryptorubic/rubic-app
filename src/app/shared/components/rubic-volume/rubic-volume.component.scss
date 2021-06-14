@@ -1,0 +1,32 @@
+@import 'src/scss/vars';
+
+.rubic-volume {
+  display: block;
+  padding: 29px 43px;
+
+  color: $rubic-base-05;
+
+  background: $rubic-base-01;
+  border-radius: 19px;
+
+  backdrop-filter: blur(20px);
+
+  &__title {
+    margin-bottom: 20px;
+
+    font-size: $rubic-font-size-02;
+  }
+
+  &__values {
+    display: flex;
+    grid-gap: 60px;
+  }
+
+  &__value {
+    margin-bottom: 5px;
+
+    font-weight: 100;
+    font-size: 48px;
+    line-height: 48px;
+  }
+}

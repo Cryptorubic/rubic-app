@@ -1,0 +1,32 @@
+@import 'src/scss/vars';
+
+.rubic-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__nav {
+    display: flex;
+    grid-gap: 21px;
+    align-items: center;
+    margin-bottom: 26px;
+  }
+
+  &__link {
+    img {
+      display: block;
+      width: auto;
+      max-width: 22px;
+      height: auto;
+    }
+  }
+
+  &__copyright {
+    color: $rubic-base-07;
+    font-size: $rubic-font-size-01;
+  }
+
+  &__policy {
+    color: $rubic-primary;
+  }
+}
