@@ -5,6 +5,7 @@
   padding: 29px 43px;
 
   color: $rubic-base-05;
+  font-family: $sf-pro-font;
 
   background: $rubic-base-01;
   border-radius: 19px;
@@ -28,5 +29,10 @@
     font-weight: 100;
     font-size: 48px;
     line-height: 48px;
+  }
+
+  &__label {
+    color: $rubic-base-06;
+    font-size: $rubic-font-size-main;
   }
 }
