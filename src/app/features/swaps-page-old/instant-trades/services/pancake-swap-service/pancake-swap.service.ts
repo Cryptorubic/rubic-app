@@ -16,7 +16,7 @@ import { Web3PublicService } from '../../../../../core/services/blockchain/web3-
 import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapAbstract } from '../uniswap-abstract/uniswap-abstract';
-import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../core/services/errors-old/errors-old.service';
 
 @Injectable()
 export class PancakeSwapService extends UniswapAbstract {
@@ -26,7 +26,7 @@ export class PancakeSwapService extends UniswapAbstract {
     web3Public: Web3PublicService,
     useTestingModeService: UseTestingModeService,
     providerConnectorService: ProviderConnectorService,
-    protected readonly errorsService: ErrorsService
+    protected readonly errorsService: ErrorsOldService
   ) {
     super(
       useTestingModeService,

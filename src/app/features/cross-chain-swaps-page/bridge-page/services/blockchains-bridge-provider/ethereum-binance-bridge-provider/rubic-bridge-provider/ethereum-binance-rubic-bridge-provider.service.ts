@@ -20,7 +20,7 @@ import { TransactionReceipt } from 'web3-eth';
 import BinanceContractAbi from './abi/BinanceContractAbi';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
-import { ErrorsService } from '../../../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../../../core/services/errors-old/errors-old.service';
 import { ProviderConnectorService } from '../../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 import { BRIDGE_PROVIDER_TYPE } from '../../../../models/ProviderType';
 
@@ -52,7 +52,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     private bridgeApiService: BridgeApiService,
     useTestingMode: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsOldService
   ) {
     super();
     useTestingMode.isTestingMode.subscribe(value => {

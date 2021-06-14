@@ -34,7 +34,7 @@
     "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
     "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
-    "undefined": "请稍后再试，或尝试使用其他设备。如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
+    "rubicError": "请稍后再试，或尝试使用其他设备。如果您仍有问题",
     "insufficientFunds": "你没有足够的 {{ tokenSymbol }}. 您的余额是 {{balance}} {{tokenSymbol}}, 但 {{requiredBalance}} {{tokenSymbol}} 是必需的。",
     "sameTokens": "兩邊不能選擇相同的令牌，請選擇不同的令牌.",
     "noQrCode": "Please make sure that you have scan qrCode",

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BridgeService } from './bridge.service';
+import { ErrorsOldService } from './errors-old.service';
 
-describe('BridgeService', () => {
-  let service: BridgeService;
+describe('ErrorsService', () => {
+  let service: ErrorsOldService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BridgeService);
+    service = TestBed.inject(ErrorsOldService);
   });
 
   it('should be created', () => {

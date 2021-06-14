@@ -10,7 +10,7 @@ import { Web3PrivateService } from '../../../../core/services/blockchain/web3-pr
 import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
 import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ErrorsService } from '../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../core/services/errors-old/errors-old.service';
 import { WALLET_NAME } from '../../../../core/header/components/header/components/wallets-modal/models/providers';
 import { NotSupportedNetworkError } from '../../../../shared/models/errors/provider/NotSupportedNetwork';
 
@@ -25,7 +25,7 @@ abstract class InstantTradeService {
 
   protected slippagePercent = 0.001; // 0.1%
 
-  protected constructor(protected errorsService: ErrorsService) {}
+  protected constructor(protected errorsService: ErrorsOldService) {}
 
   /**
    * @description sets slippage percent

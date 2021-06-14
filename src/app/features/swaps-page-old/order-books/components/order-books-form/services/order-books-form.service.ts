@@ -17,7 +17,7 @@ import { UseTestingModeService } from '../../../../../../core/services/use-testi
 import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import { ProviderConnectorService } from '../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
-import { ErrorsService } from '../../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../../core/services/errors-old/errors-old.service';
 import SameTokensError from '../../../../../../shared/models/errors/order-book/SameTokensError';
 
 @Injectable()
@@ -37,7 +37,7 @@ export class OrderBooksFormService implements OnDestroy {
     private web3PrivateService: Web3PrivateService,
     private useTestingModeService: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsOldService
   ) {
     this._useTestingModeSubscription$ = useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {

@@ -34,7 +34,7 @@
     "wrongNetwork": "You have selected the wrong network. Please choose {{ networkToChoose }} from MetaMask.",
     "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our <a href='mailto:support@rubic.finance' target='_blank'>Customer Support</a>.",
     "userReject": "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.",
-    "undefined": "Please try again later or try using another device. If you’re still having problems, please reach out to our <a href='mailto:support@rubic.finance' target='_blank'>Customer Support</a>.",
+    "rubicError": "Please try again later or try using another device. If you’re still having problems, please reach out to our",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
     "sameTokens": "You can't choose the same token on both sides, please choose different tokens.",
     "noQrCode": "Please make sure that you have scan qrCode",

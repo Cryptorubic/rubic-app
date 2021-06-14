@@ -18,7 +18,7 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { GetBnbApiService } from 'src/app/core/services/backend/get-bnb-api/get-bnb-api.service';
 import { ABI, contractAddressEthereum, contractAddressKovan } from './constants/ethContract';
 import { ProviderConnectorService } from '../../../../../core/services/blockchain/provider-connector/provider-connector.service';
-import { ErrorsService } from '../../../../../core/services/errors/errors.service';
+import { ErrorsOldService } from '../../../../../core/services/errors-old/errors-old.service';
 
 interface EstimatedAmountResponse {
   from_amount: number;
@@ -41,7 +41,7 @@ export class GetBnbService {
     private getBnbApiService: GetBnbApiService,
     useTestingModeService: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsOldService
   ) {
     this.contractAddress = contractAddressEthereum;
 
