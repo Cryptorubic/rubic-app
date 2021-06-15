@@ -50,6 +50,8 @@ $rubic-base-04: #4b604f;
 $rubic-base-05: #639d6a;
 $rubic-base-06: #5c7d60;
 $rubic-base-07: #e0e2e0;
+$rubic-base-08: #fcfcfd;
+$rubic-base-09: #9db8a1;
 
 $rubic-primary: #4aa956;
 $rubic-secondary: #f4f5f4;
@@ -64,6 +66,6 @@ $rubic-font-size-main: 14px;
 $rubic-font-size-01: 16px;
 $rubic-font-size-02: 18px;
 
-// shadows
-$rubic-shadow-button-hover: 0 3px 1px -2px rgb(0, 0, 0, 0.2), 0 2px 2px 0 rgb(0, 0, 0, 0.14), 0 1px 5px 0 rgb(0, 0, 0, 0.12);
-$rubic-shadow-button-active: 0 5px 5px -3px rgb(0, 0, 0, 0.2), 0 8px 10px 1px rgb(0, 0, 0, 0.14), 0 3px 14px 2px rgb(0, 0, 0, 0.12);
+// shadowsbox-shadow
+$rubic-shadow-button-hover: -5px -5px 15px rgba(255, 255, 255, 0.5), 5px 5px 15px rgba(59, 130, 67, 0.5);
+$rubic-shadow-button-active:-5px -5px 30px rgba(172, 219, 178, 0.5), 5px 5px 30px rgba(59, 130, 67, 0.5);

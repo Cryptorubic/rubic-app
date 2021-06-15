@@ -1,0 +1,31 @@
+@import 'src/scss/vars';
+
+.banner {
+  position: relative;
+
+  padding: 12px 20px 10px;
+
+  color: $rubic-primary;
+  font-weight: 500;
+  font-size: $rubic-font-size-01;
+  text-align: center;
+
+  background-color: $rubic-base-08;
+  border-radius: 0px 0px 20px 20px;
+
+  &__image {
+    margin-right: 15px;
+
+    vertical-align: bottom;
+  }
+
+  &__link {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+
+    color: $rubic-base-09 !important;
+
+    transform: translateY(-50%);
+  }
+}
