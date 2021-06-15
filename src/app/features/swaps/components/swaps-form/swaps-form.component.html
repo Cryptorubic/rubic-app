@@ -9,9 +9,10 @@
     <div class="swaps-form__top-part">
       <app-rubic-blockchains
         class="form-panel__blockchains"
+        blockchainType="from"
         [blockchainsList]="blockchainsList"
       ></app-rubic-blockchains>
-      <app-rubic-tokens class="form-panel__tokens"></app-rubic-tokens>
+      <app-rubic-tokens class="form-panel__tokens" tokenType="from"></app-rubic-tokens>
     </div>
     <app-token-amount-input></app-token-amount-input>
     <div class="swaps-form__delimiter">
@@ -20,9 +21,10 @@
     <div class="swaps-form__top-part">
       <app-rubic-blockchains
         class="form-panel__blockchains"
+        blockchainType="to"
         [blockchainsList]="blockchainsList"
       ></app-rubic-blockchains>
-      <app-rubic-tokens class="form-panel__tokens"></app-rubic-tokens>
+      <app-rubic-tokens class="form-panel__tokens" tokenType="to"></app-rubic-tokens>
     </div>
     <ng-container *ngIf="isInstantTrade">
       <app-instant-trade-bottom-form

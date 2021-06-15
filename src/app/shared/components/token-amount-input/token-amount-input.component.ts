@@ -12,6 +12,7 @@ import {
 import { IToken } from 'src/app/shared/models/tokens/IToken';
 import BigNumber from 'bignumber.js';
 import { FormControl, Validators } from '@angular/forms';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -36,7 +37,7 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
 
   public amountControl: FormControl;
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(private readonly cdr: ChangeDetectorRef, private swapFormService: SwapFormService) {}
 
   ngOnInit(): void {
     this.amountControl = new FormControl(this.amount);
@@ -72,6 +73,7 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
   public onAmountChange(newAmount: string): void {
     this.amount = newAmount;
     this.amountChange.emit(this.amount);
+    this.swapFormService.commonTrade.get('fromAmount').setValue(newAmount);
   }
 
   public onUserBalanceMaxButtonClick(): void {

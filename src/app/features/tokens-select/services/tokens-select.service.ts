@@ -12,10 +12,15 @@ export class TokensSelectService {
     @Inject(Injector) private injector: Injector
   ) {}
 
-  showDialog(): Observable<TokenAmount> {
+  showDialog(tokenType: 'from' | 'to'): Observable<TokenAmount> {
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
-      { size: 's' }
+      {
+        size: 's',
+        data: {
+          tokenType
+        }
+      }
     );
   }
 }
