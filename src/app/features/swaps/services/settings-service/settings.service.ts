@@ -6,9 +6,7 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
 import { SettingsItComponent } from 'src/app/features/swaps/components/settings-it/settings-it.component';
 import { SettingsBridgeComponent } from 'src/app/features/swaps/components/settings-bridge/settings-bridge.component';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SettingsService {
   public settings: {
     [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormGroup;
