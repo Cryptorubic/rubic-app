@@ -2,8 +2,8 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Inject, Injectable, Injector } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { TokensSelectComponent } from '../components/tokens-select/tokens-select.component';
-import { TokenAmount } from '../../../shared/models/tokens/TokenAmount';
 
 @Injectable()
 export class TokensSelectService {
@@ -12,10 +12,15 @@ export class TokensSelectService {
     @Inject(Injector) private injector: Injector
   ) {}
 
-  showDialog(): Observable<TokenAmount> {
+  showDialog(tokenType: 'from' | 'to'): Observable<TokenAmount> {
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
-      { size: 's' }
+      {
+        size: 's',
+        data: {
+          tokenType
+        }
+      }
     );
   }
 }

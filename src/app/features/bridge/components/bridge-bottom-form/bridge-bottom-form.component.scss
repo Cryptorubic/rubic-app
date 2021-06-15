@@ -1,0 +1,16 @@
+
+.bridge-bottom-form {
+  display: flex;
+  flex-direction: column;
+
+  &__analytics {
+    margin: 20px auto 0;
+
+    span {
+      margin-left: 10px;
+
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+}

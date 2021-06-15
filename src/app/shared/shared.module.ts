@@ -35,6 +35,7 @@ import {
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
+import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -85,7 +86,6 @@ import { DropdownSelectorComponent } from './components/dropdown-selector/dropdo
 import { TokenAmountInputComponent } from './components/token-amount-input/token-amount-input.component';
 import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
-import { AmountInputComponent } from './components/amount-input/amount-input.component';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
@@ -274,6 +274,8 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     RubicSelectWalletComponent,
     RubicVolumeComponent,
     RubicFooterComponent,
+    TokenAmountInputComponent,
+    RubicHeaderComponent,
     TokenAmountInputComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]

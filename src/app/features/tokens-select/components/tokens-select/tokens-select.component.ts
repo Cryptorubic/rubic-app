@@ -3,12 +3,14 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  Input,
   OnInit
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
 import { Web3PublicService } from '../../../../core/services/blockchain/web3-public-service/web3-public.service';
@@ -197,6 +199,8 @@ const mockTokens: TokenAmount[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensSelectComponent implements OnInit {
+  @Input() public tokenType: 'from' | 'to';
+
   public customToken: TokenAmount;
 
   public allTokens$: Observable<TokenAmount[]> = of(mockTokens);
@@ -229,7 +233,8 @@ export class TokensSelectComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<TokenAmount>,
     private cdr: ChangeDetectorRef,
     private web3PublicService: Web3PublicService,
-    private authService: AuthService
+    private authService: AuthService,
+    private readonly swapFormService: SwapFormService
   ) {}
 
   ngOnInit() {
@@ -241,6 +246,8 @@ export class TokensSelectComponent implements OnInit {
   }
 
   onTokenSelect(token: TokenAmount) {
+    const controlName = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+    this.swapFormService.commonTrade.get(controlName).setValue(token);
     this.context.completeWith(token);
   }
 

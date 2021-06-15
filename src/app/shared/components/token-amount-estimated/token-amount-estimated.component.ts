@@ -4,8 +4,8 @@ import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-amount-input',
-  templateUrl: './amount-input.component.html',
-  styleUrls: ['./amount-input.component.scss']
+  templateUrl: './token-amount-estimated.component.html',
+  styleUrls: ['./token-amount-estimated.component.scss']
 })
 export class AmountInputComponent {
   @Input() public loading: boolean;
