@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { IToken } from 'src/app/shared/models/tokens/IToken';
 import { SwapProvider } from '../swap-provider';
 import { BridgesSwapProviderService } from '../../../bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { InstantTradesSwapProviderService } from '../../../instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
-import { IToken } from '../../../../shared/models/tokens/IToken';
 import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SwapsService {
   private _swapProvider: SwapProvider;
 

@@ -3,7 +3,6 @@
 
 .about-page {
   font-weight: normal;
-  font-family: $ubuntu-font;
 
   background-color: white;
 
@@ -141,32 +140,35 @@
 
   .rubic-roadmap {
     position: relative;
+
     margin-top: 100px;
     padding-bottom: 300px;
 
     &::before {
-      content: "";
       position: absolute;
       top: 0;
       left: 0;
+
       width: 100%;
       height: 100%;
+
       background-image:
-              url('/assets/images/about/roadmap-art1.svg'),
-              url('/assets/images/about/roadmap-art3.svg'),
-              url('/assets/images/about/roadmap-art2.svg'),
-              url('/assets/images/about/roadmap-art4.svg'),
-              url('/assets/images/about/roadmap-art5.svg'),
-              url('/assets/images/about/roadmap-art-footer.svg');
+        url('/assets/images/about/roadmap-art1.svg'),
+        url('/assets/images/about/roadmap-art3.svg'),
+        url('/assets/images/about/roadmap-art2.svg'),
+        url('/assets/images/about/roadmap-art4.svg'),
+        url('/assets/images/about/roadmap-art5.svg'),
+        url('/assets/images/about/roadmap-art-footer.svg');
+      background-repeat: no-repeat;
       background-position:
-              0 140px,
-              right 20px top 600px,
-              0px 935px,
-              right 20px top 1350px,
-              right 0 top 2150px,
-              left 0 bottom 0;
-      background-repeat:
-              no-repeat;
+        0 140px,
+        right 20px top 600px,
+        0px 935px,
+        right 20px top 1350px,
+        right 0 top 2150px,
+        left 0 bottom 0;
+
+      content: '';
     }
 
     .container {
@@ -180,8 +182,6 @@
       flex-direction: column;
       justify-content: space-between;
       margin-top: 50px;
-
-      font-family: $main-font;
 
       @include b(1100) {
         flex-direction: column;
@@ -202,28 +202,30 @@
       }
 
       &-item {
-        box-sizing: border-box;
         position: relative;
 
+        box-sizing: border-box;
+
         width: 50%;
-        padding-left: 30px;
+        margin-bottom: 105px;
 
         margin-left: auto;
-        margin-bottom: 105px;
+        padding-left: 30px;
 
         &:last-child {
           margin-bottom: 0;
         }
 
         &.left {
-          padding-left: 0;
-          padding-right: 30px;
-          text-align: right;
           margin-left: 0;
+          padding-right: 30px;
+          padding-left: 0;
+
+          text-align: right;
 
           .span-roadmap-quarter {
-            left: auto;
             right: -110px;
+            left: auto;
           }
 
           &::after {
@@ -231,8 +233,8 @@
           }
 
           &::before {
-            left: auto;
             right: -13px;
+            left: auto;
           }
 
           .ul-roadmap-text {
@@ -248,9 +250,9 @@
               &::after {
                 display: inline-block;
                 flex-shrink: 0;
-                margin-left: 10px;
                 width: 24px;
                 height: 24px;
+                margin-left: 10px;
 
                 color: #4aa956;
                 font-weight: bold;
@@ -261,9 +263,11 @@
 
               &.done {
                 &::after {
-                  content: "";
-                  background-image: url("/assets/images/icons/done.svg");
                   vertical-align: sub;
+
+                  background-image: url('/assets/images/icons/done.svg');
+
+                  content: '';
                 }
               }
             }
@@ -272,7 +276,10 @@
 
         &::before {
           position: absolute;
+
+          top: 0;
           bottom: -75px;
+          left: -13px;
 
           width: 24px;
           height: 24px;
@@ -280,9 +287,6 @@
           background-color: #4aa956;
 
           content: '';
-
-          top: 0;
-          left: -13px;
         }
       }
     }
@@ -309,8 +313,8 @@
       }
 
       &-block-item {
-        padding-left: 40px;
         width: 100%;
+        padding-left: 40px;
 
         &::before {
           left: 0;
@@ -319,6 +323,7 @@
         .span-roadmap-quarter,
         .span-roadmap-month {
           position: static;
+
           display: inline-block;
           margin-bottom: 20px;
         }
@@ -328,13 +333,14 @@
         }
 
         &.left {
-          padding-left: 40px;
-          text-align: left;
           margin-left: auto;
+          padding-left: 40px;
+
+          text-align: left;
 
           &::before {
-            left: 0;
             right: auto;
+            left: 0;
           }
 
           .ul-roadmap-text {
