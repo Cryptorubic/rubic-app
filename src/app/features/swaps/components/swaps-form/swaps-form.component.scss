@@ -22,7 +22,7 @@
   }
 
   &__title {
-    margin: 0;
+    margin: 0 5px 0 0;
 
     font-weight: 100;
     font-size: 24px;
@@ -77,5 +77,21 @@
       color: $rubic-primary;
       font-weight: 400;
     }
+  }
+}
+
+.swaps-volume {
+  display: block;
+  margin-top: 35px;
+}
+
+.swaps-footer {
+  display: block;
+  margin-top: 65px;
+}
+
+.button-reloading {
+  img {
+    animation: spin 0.9s linear 2s;
   }
 }

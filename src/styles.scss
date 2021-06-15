@@ -45,9 +45,9 @@ html {
     margin: 0;
     padding: 0;
 
-    main {
-      font-family: $sf-pro-font;
-    }
+  main {
+    font-family: $sf-pro-font;
+  }
 
     background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
   }
@@ -71,8 +71,8 @@ button {
 
 main.main-content {
   max-width: 1440px;
-  margin: 84px auto 0 auto;
-  padding-bottom: 50px;
+  margin: 0 auto;
+  padding-bottom: 60px;
   display: flex;
   justify-content: center;
 }

@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 30px 24px 0;
+  padding: 30px 30px 24px;
 
   &__main,
   &__nav,
@@ -75,4 +75,9 @@
 
     pointer-events: none;
   }
+}
+
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):hover,
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
+  text-decoration: none;
 }

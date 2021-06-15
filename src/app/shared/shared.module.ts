@@ -209,7 +209,7 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     TuiToggleModule,
     TuiTabsModule,
     TuiInputCountModule,
-    TuiDataListWrapperModule
+    TuiDataListWrapperModule,
   ],
   exports: [
     FooterComponent,
