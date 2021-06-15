@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { List } from 'immutable';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -23,7 +23,11 @@ const BRBC_ADDRESS = '0x8e3bcc334657560253b83f08331d85267316e08a';
 export class TokensService {
   private readonly getTokensUrl = 'tokens/';
 
-  public readonly tokens: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
+  private readonly _tokens: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
+
+  get tokens(): Observable<List<TokenAmount>> {
+    return this._tokens.asObservable();
+  }
 
   private userAddress: string;
 
@@ -54,12 +58,14 @@ export class TokensService {
   }
 
   private static prepareTokens(tokens: BackendToken[]): IToken[] {
-    return tokens.map((token: BackendToken) => ({
-      ...token,
-      blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
-      price: token.usd_price,
-      usedInIframe: token.used_in_iframe
-    }));
+    return tokens
+      .map((token: BackendToken) => ({
+        ...token,
+        blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
+        price: token.usd_price,
+        usedInIframe: token.used_in_iframe
+      }))
+      .filter(token => token.address && token.blockchain);
   }
 
   private getTokensList(): void {
@@ -107,7 +113,7 @@ export class TokensService {
   }
 
   private async recalculateUsersBalance(
-    tokens: List<IToken> = this.tokens.getValue()
+    tokens: List<IToken> = this._tokens.getValue()
   ): Promise<void> {
     if (this.userAddress && tokens.size) {
       const blockchains: BLOCKCHAIN_NAME[] = [...tokens.map(token => token.blockchain).toSet()];
@@ -142,7 +148,7 @@ export class TokensService {
         )
       );
 
-      this.tokens.next(List(tokensWithBalance.flat()));
+      this._tokens.next(List(tokensWithBalance.flat()));
     }
   }
 }
