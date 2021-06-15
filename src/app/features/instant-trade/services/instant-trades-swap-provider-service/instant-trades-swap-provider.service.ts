@@ -22,6 +22,7 @@ export class InstantTradesSwapProviderService extends SwapProvider {
           BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
           BLOCKCHAIN_NAME.POLYGON
         ];
+
         supportedBlockchains.forEach(
           blockchain =>
             (supportedTokensInfo[blockchain][blockchain] = tokens.filter(

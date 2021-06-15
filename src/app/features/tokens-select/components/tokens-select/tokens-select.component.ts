@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -17,180 +17,7 @@ import { Web3PublicService } from '../../../../core/services/blockchain/web3-pub
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { BlockchainToken } from '../../../../shared/models/tokens/BlockchainToken';
 import { AuthService } from '../../../../core/services/auth/auth.service';
-
-const mockTokens: TokenAmount[] = [
-  {
-    image: 'http://api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
-    rank: 1,
-    price: 2600,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x0000000000000000000000000000000000000000',
-    name: 'Ethereum',
-    symbol: 'ETH',
-    decimals: 18,
-    amount: new BigNumber(12345678999999.23456)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
-    rank: 0.5,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x1000000000000000000000000000000000000000',
-    name: 'Weenus',
-    symbol: 'WEENUS',
-    decimals: 18,
-    amount: new BigNumber(123456789.123456)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/cg_logo_USDT_Tether-logo_gx5smb6.png',
-    rank: 0.4,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x2000000000000000000000000000000000000000',
-    name: 'DaiToken',
-    symbol: 'DAI',
-    decimals: 18,
-    amount: new BigNumber(123456789999.123456)
-  },
-  {
-    image:
-      'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-    rank: 0.3,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x3000000000000000000000000000000000000000',
-    name: 'noname',
-    symbol: 'USDT',
-    decimals: 18,
-    amount: new BigNumber(1234567899998.1234)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
-    rank: 1,
-    price: 2600,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x4000000000000000000000000000000000000000',
-    name: 'Ethereum',
-    symbol: 'ETH',
-    decimals: 18,
-    amount: new BigNumber(12345678999999.23456)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
-    rank: 0.5,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x5000000000000000000000000000000000000000',
-    name: 'Weenus',
-    symbol: 'WEENUS',
-    decimals: 18,
-    amount: new BigNumber(123456789.123456)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/cg_logo_USDT_Tether-logo_gx5smb6.png',
-    rank: 0.4,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x6000000000000000000000000000000000000000',
-    name: 'DaiToken',
-    symbol: 'DAI',
-    decimals: 18,
-    amount: new BigNumber(123456789999.123456)
-  },
-  {
-    image:
-      'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-    rank: 0.3,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x7000000000000000000000000000000000000000',
-    name: 'noname',
-    symbol: 'USDT',
-    decimals: 18,
-    amount: new BigNumber(1234567899998.1234)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
-    rank: 1,
-    price: 2600,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x1100000000000000000000000000000000000000',
-    name: 'Ethereum',
-    symbol: 'ETH',
-    decimals: 18,
-    amount: new BigNumber(12345678999999.23456)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
-    rank: 0.5,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x1200000000000000000000000000000000000000',
-    name: 'Weenus',
-    symbol: 'WEENUS',
-    decimals: 18,
-    amount: new BigNumber(123456789.123456)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/cg_logo_USDT_Tether-logo_gx5smb6.png',
-    rank: 0.4,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x1300000000000000000000000000000000000000',
-    name: 'DaiToken',
-    symbol: 'DAI',
-    decimals: 18,
-    amount: new BigNumber(123456789999.123456)
-  },
-  {
-    image:
-      'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-    rank: 0.3,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x1400000000000000000000000000000000000000',
-    name: 'noname',
-    symbol: 'USDT',
-    decimals: 18,
-    amount: new BigNumber(1234567899998.1234)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/cg_logo_bnb_binance-coin-logo_ij3DxE0.png',
-    rank: 0.5,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    address: '0x8000000000000000000000000000000000000000',
-    name: 'BNB',
-    symbol: 'BNB',
-    decimals: 18,
-    amount: new BigNumber(0)
-  },
-  {
-    image: 'http://api.rubic.exchange/media/token_images/MATIC_logo.webp',
-    rank: 0.5,
-    price: 200,
-    usedInIframe: true,
-    blockchain: BLOCKCHAIN_NAME.POLYGON,
-    address: '0x9000000000000000000000000000000000000000',
-    name: 'Matic',
-    symbol: 'MATIC',
-    decimals: 18,
-    amount: new BigNumber(123456.1234)
-  }
-];
+import { AvailableTokenAmount } from '../../../../shared/models/tokens/AvailableTokenAmount';
 
 @Component({
   selector: 'app-tokens-select',
@@ -199,13 +26,11 @@ const mockTokens: TokenAmount[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensSelectComponent implements OnInit {
-  @Input() public tokenType: 'from' | 'to';
+  @Input() public tokens: Observable<AvailableTokenAmount[]>;
 
   public customToken: TokenAmount;
 
-  public allTokens$: Observable<TokenAmount[]> = of(mockTokens);
-
-  public tokensToShow$ = new BehaviorSubject<TokenAmount[]>([]);
+  public tokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
 
   private _blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
@@ -246,14 +71,12 @@ export class TokensSelectComponent implements OnInit {
   }
 
   onTokenSelect(token: TokenAmount) {
-    const controlName = this.tokenType === 'from' ? 'fromToken' : 'toToken';
-    this.swapFormService.commonTrade.get(controlName).setValue(token);
     this.context.completeWith(token);
   }
 
   private updateTokensList(): void {
     this.customToken = null;
-    this.allTokens$.subscribe(tokens => {
+    this.tokens.subscribe(tokens => {
       const currentBlockchainTokens = tokens.filter(token => token.blockchain === this.blockchain);
       const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
       this.tokensToShow$.next(sortedAndFilteredTokens);
@@ -264,8 +87,8 @@ export class TokensSelectComponent implements OnInit {
     });
   }
 
-  private filterAndSortTokens(tokens: TokenAmount[]): TokenAmount[] {
-    const comparator = (a: TokenAmount, b: TokenAmount) => {
+  private filterAndSortTokens(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
+    const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
       const amountsDelta = b.amount
         .multipliedBy(b.price)
         .minus(a.amount.multipliedBy(a.price))
