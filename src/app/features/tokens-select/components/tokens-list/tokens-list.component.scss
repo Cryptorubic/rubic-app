@@ -10,6 +10,8 @@
   &__item {
     padding: 5px 10px;
 
+    border-radius: 15px;
+
     cursor: pointer;
 
     &:not(:last-child) {
@@ -18,7 +20,15 @@
 
     &:hover {
       background-color: rgba($main-green, 0.15);
-      border-radius: 15px;
+    }
+
+    &_disabled {
+      cursor: default;
+      opacity: 0.4;
+
+      &:hover {
+        background-color: unset;
+      }
     }
   }
 }

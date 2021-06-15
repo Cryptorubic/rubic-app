@@ -11,6 +11,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
 import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/custom-token-warning-modal.component';
+import { AvailableTokenAmount } from '../../../../shared/models/tokens/AvailableTokenAmount';
 
 @Component({
   selector: 'app-custom-token',
@@ -19,9 +20,9 @@ import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomTokenComponent {
-  @Input() token: TokenAmount;
+  @Input() token: AvailableTokenAmount;
 
-  @Output() tokenSelected = new EventEmitter<TokenAmount>();
+  @Output() tokenSelected = new EventEmitter<AvailableTokenAmount>();
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,

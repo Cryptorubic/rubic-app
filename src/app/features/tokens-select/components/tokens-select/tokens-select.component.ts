@@ -3,16 +3,13 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Input,
   OnInit
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
 import { Web3PublicService } from '../../../../core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
 import { BlockchainToken } from '../../../../shared/models/tokens/BlockchainToken';
@@ -26,9 +23,9 @@ import { AvailableTokenAmount } from '../../../../shared/models/tokens/Available
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensSelectComponent implements OnInit {
-  @Input() public tokens: Observable<AvailableTokenAmount[]>;
+  public tokens: Observable<AvailableTokenAmount[]>;
 
-  public customToken: TokenAmount;
+  public customToken: AvailableTokenAmount;
 
   public tokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
 
@@ -55,12 +52,17 @@ export class TokensSelectComponent implements OnInit {
   }
 
   constructor(
-    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<TokenAmount>,
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<
+      AvailableTokenAmount,
+      { tokens: Observable<AvailableTokenAmount[]> }
+    >,
     private cdr: ChangeDetectorRef,
     private web3PublicService: Web3PublicService,
-    private authService: AuthService,
-    private readonly swapFormService: SwapFormService
-  ) {}
+    private authService: AuthService
+  ) {
+    this.tokens = context.data.tokens;
+  }
 
   ngOnInit() {
     this.updateTokensList();
@@ -70,7 +72,7 @@ export class TokensSelectComponent implements OnInit {
     this.context.completeWith(null);
   }
 
-  onTokenSelect(token: TokenAmount) {
+  onTokenSelect(token: AvailableTokenAmount) {
     this.context.completeWith(token);
   }
 
@@ -93,7 +95,7 @@ export class TokensSelectComponent implements OnInit {
         .multipliedBy(b.price)
         .minus(a.amount.multipliedBy(a.price))
         .toNumber();
-      return amountsDelta || b.rank - a.rank;
+      return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
 
     const query = this.query.toLowerCase();
@@ -142,7 +144,8 @@ export class TokensSelectComponent implements OnInit {
           image: 'assets/images/icons/coins/default-token-ico.webp',
           amount,
           price: 0,
-          usedInIframe: true
+          usedInIframe: true,
+          available: true
         };
 
         this.cdr.detectChanges();
