@@ -4,14 +4,13 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import {
   BridgeTableTrade,
   BridgeTableTradeApi
-} from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTableTrade';
-import { BridgeTrade } from '../../../../features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
-import { BridgeToken } from '../../../../features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
+} from 'src/app/features/bridge/models/BridgeTableTrade';
+import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
+import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { HttpService } from '../../http/http.service';
 import { TRADE_STATUS } from './models/TRADE_STATUS';
 import { TokensService } from '../tokens-service/tokens.service';
 import { BOT_URL } from '../constants/BOT_URL';
-import { ethToXDaiDepositWallet } from '../../../../shared/constants/bridge/deposit-wallets';
 
 @Injectable({
   providedIn: 'root'
