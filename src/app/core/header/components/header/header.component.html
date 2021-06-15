@@ -1,29 +1,27 @@
-<ng-container #mobileHeader *ngIf="$isMobile | async; else desktopHeader">
-  <header class="header">
-    <div class="header__container app-content-block">
-      <app-header-logotype></app-header-logotype>
-      <app-header-language-dropdown></app-header-language-dropdown>
-      <app-mobile-menu-toggler></app-mobile-menu-toggler>
-    </div>
-    <div
-      class="header__mobile-container"
-      [ngClass]="{ 'header__mobile-container_opened': $isMobileMenuOpened | async }"
-    >
-      <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
-      <app-user-profile *ngIf="($currentUser | async)?.address"></app-user-profile>
-      <app-header-navigation></app-header-navigation>
-    </div>
-  </header>
-</ng-container>
-<ng-template #desktopHeader>
-  <header class="header" [ngClass]="{ header_scrolled: pageScrolled }">
-    <div class="header__container app-content-block">
-      <app-header-logotype></app-header-logotype>
-      <app-header-navigation></app-header-navigation>
-      <app-header-language-dropdown></app-header-language-dropdown>
-      <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
-      <app-user-profile *ngIf="($currentUser | async)?.address"></app-user-profile>
-    </div>
-  </header>
-</ng-template>
-<app-logout-confirm-modal></app-logout-confirm-modal>
+<header class="rubic-header">
+  <div class="rubic-header__main">
+    <a class="rubic-header__logo" routerLink="/">
+      <img src="assets/img/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39">
+    </a>
+
+    <app-rubic-menu class="rubic-header__menu"></app-rubic-menu>
+  </div>
+
+  <nav class="rubic-header__nav">
+    <a class="button-link button-link_active" href="#">Swaps</a>
+    <a class="button-link button-link_disabled" href="#">Order book</a>
+  </nav>
+
+
+  <div class="rubic-header__profile">
+    <a class="button-link" href="#">My orders</a>
+    <app-rubic-button style="display: none;">Connect Wallet</app-rubic-button>
+
+    <app-rubic-language-select></app-rubic-language-select>
+
+    <app-rubic-select-wallet></app-rubic-select-wallet>
+
+    <!--    <app-rubic-toggler-theme></app-rubic-toggler-theme>-->
+  </div>
+</header>
+

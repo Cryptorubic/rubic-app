@@ -1,4 +1,8 @@
 @import 'src/scss/vars';
+:host {
+  font-family: $sf-pro-font;
+}
+
 
 .blockchains {
   display: flex;
