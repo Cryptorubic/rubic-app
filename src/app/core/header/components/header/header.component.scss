@@ -1,83 +1,83 @@
-@import '../../../../../scss/mixins';
+@import 'src/scss/vars';
 
-$mobile-width: 1024;
+.rubic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 24px 0;
 
-.header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 10;
-
-  padding-top: 20px;
-  padding-bottom: 20px;
-
-  background-color: white;
-
-  transition: all linear 0.2s;
-
-  @include b($mobile-width) {
-    padding: 0;
-  }
-
-  &__mobile-language {
-    margin-right: 10px;
-  }
-
-  &_scrolled {
-    z-index: 10;
-
-    padding-top: 13px;
-    padding-bottom: 10px;
-
-    background-color: white;
-  }  
-
-  &__container {
-    position: relative;
-    z-index: 1;
-
+  &__main,
+  &__nav,
+  &__profile {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+  }
 
-    background: white;
+  &__nav,
+  &__profile {
+    grid-gap: 10px;
+  }
 
-    @include b($mobile-width) {
-      position: relative;
+  &__logo {
+    margin-right: 54px;
 
-      height: 65px;
-      padding-top: 12px;
-      padding-bottom: 11px;
+    transition: 0.3s ease-in-out opacity;
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    &:active {
+      opacity: 1;
     }
   }
 
-  app-header-language-dropdown {
-    @include b($mobile-width) {
-      margin-right: 10px;
-      margin-left: auto;
-    }
+  &__menu {
+    display: inline-flex;
   }
 
-  app-header-navigation {
-    margin-right: 40px;
-    margin-left: auto;
+  &__nav {
+    margin-right: -12%;
+  }
+}
+
+
+.button-link {
+  display: inline-block;
+  padding: 14px 20px;
+
+  font-size: $rubic-font-size-01;
+  text-decoration: none;
+
+  border: 1px solid transparent;
+  border-radius: 175px;
+
+  transition: 0.3s all ease-in-out;
+
+  &:hover,
+  &_active {
+    background-color: $rubic-base-01;
   }
 
-  &__mobile-container {
-    position: absolute;
+  &:hover {
+    box-shadow: $rubic-shadow-button-hover;
+  }
 
-    width: 100%;
-    padding: 15px 0;
+  &:active,
+  &_active:active {
+    color: $rubic-base-01 !important;
 
-    background: white;
-    box-shadow: inset 0 7px 9px -7px rgb(0 0 0 / 10%);
-    transform: translateY(-100%);
+    background-color: $rubic-primary;
+    box-shadow: $rubic-shadow-button-active;
+  }
 
-    transition: all linear 0.2s;
+  &:focus {
+    border-color: $rubic-primary;
+  }
 
-    &_opened {
-      transform: translateY(0);
-    }
+  &_disabled {
+    color: $rubic-text-disable !important;
+
+    pointer-events: none;
   }
 }

@@ -83,7 +83,7 @@ import { IconButtonComponent } from './components/buttons/icon-button/icon-butto
 import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
 import { TokenAmountInputComponent } from './components/token-amount-input/token-amount-input.component';
-import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
+import { TokenAmountDirective} from './directives/token-amount/token-amount.directive';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
 import { AmountInputComponent } from './components/amount-input/amount-input.component';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
@@ -97,6 +97,8 @@ import { RubicHeaderComponent } from './components/rubic-header/rubic-header.com
 import { RubicLanguageSelectComponent } from './components/rubic-language-select/rubic-language-select.component';
 import { RubicSelectWalletComponent } from './components/rubic-select-wallet/rubic-select-wallet.component';
 import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component';
+import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
+import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.component';
 
 @NgModule({
   declarations: [
@@ -168,7 +170,9 @@ import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component
     RubicHeaderComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
-    RubicMenuComponent
+    RubicMenuComponent,
+    RubicVolumeComponent,
+    RubicFooterComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -265,6 +269,11 @@ import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component
     RubicBlockchainsComponent,
     RubicTokensComponent,
     RubicHeaderComponent,
+    RubicMenuComponent,
+    RubicLanguageSelectComponent,
+    RubicSelectWalletComponent,
+    RubicVolumeComponent,
+    RubicFooterComponent,
     TokenAmountInputComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
