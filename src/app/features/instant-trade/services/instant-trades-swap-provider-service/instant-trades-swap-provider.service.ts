@@ -4,7 +4,9 @@ import { SupportedTokensInfo } from '../../../swaps/models/SupportedTokensInfo';
 import { SwapProvider } from '../../../swaps/services/swap-provider';
 import { SWAP_PROVIDER_TYPE } from '../../../swaps/models/SwapProviderType';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InstantTradesSwapProviderService extends SwapProvider {
   TYPE: SWAP_PROVIDER_TYPE.INSTANT_TRADE;
 

@@ -3,11 +3,17 @@
 .swaps-form {
   width: 610px;
   min-height: 200px;
+  margin-bottom: 35px;
   padding: 30px 40px;
 
   background-color: rgba(white, 0.5);
   border-radius: 19px;
   backdrop-filter: blur(50px);
+
+  ~ *:not(:last-child) {
+    display: block;
+    margin-bottom: 35px;
+  }
 
   &__header {
     display: flex;

@@ -13,7 +13,7 @@ import {
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { SettingsComponent } from 'src/app/features/swaps/components/settings/settings.component';
+import { SettingsItComponent } from 'src/app/features/swaps/components/settings-it/settings-it.component';
 import { SettingsContainerComponent } from 'src/app/features/swaps/components/settings-container/settings-container.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
@@ -25,16 +25,16 @@ import {
 import { InlineSVGModule } from 'ng-inline-svg';
 import { TokensSelectModule } from 'src/app/features/tokens-select/tokens-select.module';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
-import { SwapsService } from './services/swaps-service/swaps.service';
 import { SwapsButtonComponent } from './components/swaps-button/swaps-button.component';
+import { SettingsBridgeComponent } from './components/settings-bridge/settings-bridge.component';
 
 @NgModule({
-  providers: [SwapsService],
   declarations: [
     SwapsFormComponent,
     SettingsContainerComponent,
-    SettingsComponent,
-    SwapsButtonComponent
+    SettingsItComponent,
+    SwapsButtonComponent,
+    SettingsBridgeComponent
   ],
   exports: [SettingsContainerComponent],
   imports: [
@@ -57,6 +57,6 @@ import { SwapsButtonComponent } from './components/swaps-button/swaps-button.com
     TuiHintModule,
     TokensSelectModule
   ],
-  entryComponents: [SettingsComponent]
+  entryComponents: [SettingsItComponent, SettingsBridgeComponent]
 })
 export class SwapsModule {}

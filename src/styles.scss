@@ -36,20 +36,21 @@
   }
 }
 
-body {
-  min-width: 320px;
-  margin: 0;
-  padding: 0;
-
-  main {
-    font-family: $sf-pro-font;
-  }
-
-  background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
-}
-
 html {
   background-color: #f4f4f4;
+
+  body {
+    min-width: 320px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+
+    main {
+      font-family: $sf-pro-font;
+    }
+
+    background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
+  }
 }
 
 input::-webkit-outer-spin-button,
@@ -70,7 +71,8 @@ button {
 
 main.main-content {
   max-width: 1440px;
-  margin: 84px auto 0;
+  margin: 84px auto 0 auto;
+  padding-bottom: 50px;
   display: flex;
   justify-content: center;
 }
