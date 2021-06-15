@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  SimpleChanges,
+  OnChanges,
+  ChangeDetectorRef
+} from '@angular/core';
 import { AvailableTokenAmount } from '../../../../shared/models/tokens/AvailableTokenAmount';
 
 @Component({
@@ -7,14 +16,33 @@ import { AvailableTokenAmount } from '../../../../shared/models/tokens/Available
   styleUrls: ['./tokens-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokensListComponent {
+export class TokensListComponent implements OnChanges {
   @Input() tokens: AvailableTokenAmount[] = [];
 
   @Output() tokenSelect = new EventEmitter<AvailableTokenAmount>();
 
-  constructor() {}
+  public hintsShown: boolean[];
 
-  onTokenSelect(token: AvailableTokenAmount) {
-    this.tokenSelect.emit(token);
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      JSON.stringify(changes.tokens.currentValue) !== JSON.stringify(changes.tokens.previousValue)
+    ) {
+      const tokensNumber = changes.tokens.currentValue.length;
+      this.hintsShown = Array(tokensNumber).fill(false);
+    }
+  }
+
+  onTokenSelect(token: AvailableTokenAmount, index: number) {
+    if (token.available) {
+      this.tokenSelect.emit(token);
+    } else {
+      this.hintsShown[index] = true;
+      setTimeout(() => {
+        this.hintsShown[index] = false;
+        this.cdr.detectChanges();
+      }, 1500);
+    }
   }
 }
