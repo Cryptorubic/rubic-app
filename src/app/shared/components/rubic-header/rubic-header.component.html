@@ -1,7 +1,7 @@
 <header class="rubic-header">
   <div class="rubic-header__main">
     <a class="rubic-header__logo" routerLink="/">
-      <img src="assets/img/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39">
+      <img src="assets/img/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
     </a>
 
     <app-rubic-menu class="rubic-header__menu"></app-rubic-menu>
@@ -12,15 +12,14 @@
     <a class="button-link button-link_disabled" href="#">Order book</a>
   </nav>
 
-
   <div class="rubic-header__profile">
-    <a class="button-link" href="#">My orders</a>
-    <app-rubic-button style="display: none;">Connect Wallet</app-rubic-button>
+    <a class="button-link" routerLink="/new-ui/my-trades">My trades</a>
+    <app-rubic-button style="display: none">Connect Wallet</app-rubic-button>
 
     <app-rubic-language-select></app-rubic-language-select>
 
     <app-rubic-select-wallet></app-rubic-select-wallet>
 
-<!--    <app-rubic-toggler-theme></app-rubic-toggler-theme>-->
+    <!--<app-rubic-toggler-theme></app-rubic-toggler-theme>-->
   </div>
 </header>
