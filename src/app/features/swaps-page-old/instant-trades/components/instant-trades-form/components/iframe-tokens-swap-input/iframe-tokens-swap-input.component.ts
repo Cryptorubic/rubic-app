@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
 import { InstantTradeProviderController } from '../../../../models/instant-trades-provider-controller';
 import { InstantTradeSwapInput } from '../../../../models/instant-trade-input';
 
@@ -21,7 +20,7 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
 
   public get isLoggedIn(): boolean {
     return Boolean(
-      this.providerConnectorService?.provider && this.providerConnectorService.address
+      this.providerConnectorService?.provider && this.providerConnectorService?.address
     );
   }
 
@@ -43,7 +42,6 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
   }
 
   public async login(): Promise<void> {
-    await this.providerConnectorService.connectProvider(WALLET_NAME.METAMASK);
     await this.authService.serverlessSignIn();
   }
 }

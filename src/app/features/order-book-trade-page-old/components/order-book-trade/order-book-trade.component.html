@@ -46,7 +46,7 @@
           [tradeData]="tradeData"
           tokenPart="from"
           [oppositeTokenToGet]="toTokenAmountToGet + ' ' + tradeData.token.to.symbol"
-          (amountToContributeChanges)="calculateAmountToGet($event, 'from')"
+          (amountToContributeChange)="calculateAmountToGet($event, 'from')"
         ></app-token-form>
       </div>
 
@@ -55,7 +55,7 @@
           [tradeData]="tradeData"
           tokenPart="to"
           [oppositeTokenToGet]="fromTokenAmountToGet + ' ' + tradeData.token.from.symbol"
-          (amountToContributeChanges)="calculateAmountToGet($event, 'to')"
+          (amountToContributeChange)="calculateAmountToGet($event, 'to')"
         ></app-token-form>
       </div>
     </div>
@@ -147,9 +147,9 @@
         <app-primary-button
           label="Cancel trade"
           [animate]="cancelStatus === TX_STATUS.STARTED || cancelStatus === TX_STATUS.IN_PROGRESS"
-          [disabled]="(onAddressChanges | async)?.toLowerCase() !== tradeData.owner.toLowerCase()"
+          [disabled]="walletAddress?.toLowerCase() !== tradeData.owner.toLowerCase()"
           [title]="
-            (onAddressChanges | async)?.toLowerCase() !== tradeData.owner.toLowerCase()
+            walletAddress?.toLowerCase() !== tradeData.owner.toLowerCase()
               ? 'You are not the owner'
               : ''
           "

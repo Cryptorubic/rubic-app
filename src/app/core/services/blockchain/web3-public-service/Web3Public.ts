@@ -2,14 +2,13 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { Transaction } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { Token } from 'src/app/shared/models/tokens/Token';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
 import { MULTICALL_ADDRESSES, MULTICALL_ADDRESSES_TESTNET } from '../constants/multicall-addresses';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-import { BlockchainToken } from '../../../../shared/models/tokens/BlockchainToken';
-import { BlockchainTokenExtended } from '../../../../shared/models/tokens/BlockchainTokenExtended';
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
@@ -38,7 +37,7 @@ export class Web3Public {
    * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
    */
-  public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
+  public getTokenInfo: (tokenAddress: string) => Promise<Token> =
     this.getTokenInfoCachingDecorator();
 
   /**
@@ -212,9 +211,6 @@ export class Web3Public {
    * @param address address to check
    */
   public isNativeAddress = (address: string): boolean => {
-    if (this.blockchain.name === BLOCKCHAIN_NAME.POLYGON) {
-      return address.toLowerCase() === '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'.toLowerCase();
-    }
     return address === '0x0000000000000000000000000000000000000000';
   };
 
@@ -244,12 +240,10 @@ export class Web3Public {
     });
   }
 
-  private getTokenInfoCachingDecorator(): (
-    tokenAddress: string
-  ) => Promise<BlockchainTokenExtended> {
-    const tokensCache: { [address: string]: BlockchainTokenExtended } = {};
+  private getTokenInfoCachingDecorator(): (tokenAddress: string) => Promise<Token> {
+    const tokensCache: { [address: string]: Token } = {};
 
-    return async (tokenAddress: string): Promise<BlockchainTokenExtended> => {
+    return async (tokenAddress: string): Promise<Token> => {
       if (!tokensCache[tokenAddress]) {
         tokensCache[tokenAddress] = await this.callForTokenInfo(tokenAddress);
       }
@@ -258,22 +252,19 @@ export class Web3Public {
     };
   }
 
-  private async callForTokenInfo(tokenAddress: string): Promise<BlockchainTokenExtended> {
+  private async callForTokenInfo(tokenAddress: string): Promise<Token> {
     if (this.isNativeAddress(tokenAddress)) {
-      return {
-        ...this.blockchain.nativeCoin,
-        blockchain: this.blockchain.name
-      };
+      return this.blockchain.nativeCoin;
     }
 
     const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'];
     const tokenFieldsPromises = tokenMethods.map((method: string) =>
       this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
     );
-    const token: BlockchainTokenExtended = {
-      blockchain: this.blockchain.name,
+    const token: Token = {
+      blockchainName: this.blockchain.name,
       address: tokenAddress
-    } as BlockchainTokenExtended;
+    } as Token;
 
     (await Promise.all(tokenFieldsPromises)).forEach(
       (elem, index) => (token[tokenMethods[index]] = elem)

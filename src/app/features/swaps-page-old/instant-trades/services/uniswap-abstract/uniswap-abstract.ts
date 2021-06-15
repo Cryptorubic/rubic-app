@@ -358,7 +358,7 @@ export class UniswapAbstract extends InstantTradeService {
     const route = routes[0];
 
     if (this.shouldCalculateGas) {
-      const to = this.providerConnectorService.address;
+      const to = this.providerConnectorService?.address;
       const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
       const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
       const gasPrice = await this.web3Public.getGasPriceInETH();
@@ -466,7 +466,7 @@ export class UniswapAbstract extends InstantTradeService {
       deadline: number
     ) => Promise<BigNumber>
   ): Promise<{ route: UniswapRoute; gasData: Gas }> {
-    const to = this.providerConnectorService.address;
+    const to = this.providerConnectorService?.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
 
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();

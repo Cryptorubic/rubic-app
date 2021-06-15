@@ -38,7 +38,7 @@ export default [
     nativeCoin: {
       blockchainName: BLOCKCHAIN_NAME.POLYGON,
       address: '0x0000000000000000000000000000000000000000',
-      name: 'Polygon',
+      name: 'Matic Network',
       symbol: 'MATIC',
       decimals: 18
     }
