@@ -82,7 +82,7 @@ export class NewUiComponent implements OnInit {
 
   openTokensSelect() {
     this.tokensSelectService
-      .showDialog()
+      .showDialog('from')
       .subscribe(token =>
         alert(`Token ${token.symbol} in ${token.blockchain} blockchain selected`)
       );

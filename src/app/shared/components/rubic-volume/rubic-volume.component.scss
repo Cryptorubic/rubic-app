@@ -15,6 +15,7 @@
   &__title {
     margin-bottom: 20px;
 
+    font-weight: 300;
     font-size: $rubic-font-size-02;
   }
 
@@ -33,6 +34,7 @@
 
   &__label {
     color: $rubic-base-06;
+    font-weight: 400;
     font-size: $rubic-font-size-main;
   }
 }
