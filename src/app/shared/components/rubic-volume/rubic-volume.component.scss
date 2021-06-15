@@ -4,7 +4,6 @@
   display: block;
   padding: 29px 43px;
 
-
   color: $rubic-base-05;
   font-family: $sf-pro-font;
 
@@ -16,6 +15,7 @@
   &__title {
     margin-bottom: 20px;
 
+    font-weight: 300;
     font-size: $rubic-font-size-02;
   }
 
@@ -34,6 +34,7 @@
 
   &__label {
     color: $rubic-base-06;
+    font-weight: 400;
     font-size: $rubic-font-size-main;
   }
 }
