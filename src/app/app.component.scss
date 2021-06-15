@@ -5,3 +5,10 @@ app-spinner {
 
   display: block;
 }
+
+::ng-deep {
+  app-my-trades {
+    display: block;
+    width: 100%;
+  }
+}
