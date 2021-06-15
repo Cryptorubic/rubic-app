@@ -9,10 +9,10 @@ import {
   SimpleChanges,
   ChangeDetectorRef
 } from '@angular/core';
-import { IToken } from 'src/app/shared/models/tokens/IToken';
 import BigNumber from 'bignumber.js';
 import { FormControl, Validators } from '@angular/forms';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -23,7 +23,7 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 export class TokenAmountInputComponent implements OnInit, OnChanges {
   @Input() placeholder = '0.0';
 
-  @Input() token?: IToken;
+  @Input() token?: TokenAmount;
 
   @Input() amount = '';
 
@@ -77,6 +77,7 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
   }
 
   public onUserBalanceMaxButtonClick(): void {
+    // @ts-ignore TODO
     this.amount = this.token.userBalance.toString();
     this.amountChange.emit(this.amount);
   }

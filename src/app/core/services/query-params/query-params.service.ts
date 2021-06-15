@@ -68,7 +68,8 @@ export class QueryParamsService {
     this.$isIframeSubject = new BehaviorSubject<boolean>(false);
     this.$tokensSelectionDisabledSubject = new BehaviorSubject<boolean>(false);
     this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([]);
-    this.$tokens = this.tokensService.tokens.asObservable();
+    // @ts-ignore TODO
+    this.$tokens = this.tokensService.tokens;
     this.defaultQueryParams = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         from: 'ETH',
@@ -183,6 +184,7 @@ export class QueryParamsService {
                   }
                 : token;
             });
+            // @ts-ignore TODO
             this.tokensService.tokens.next(rankedTokens);
           });
         }

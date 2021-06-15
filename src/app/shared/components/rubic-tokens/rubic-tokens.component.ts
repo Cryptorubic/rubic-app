@@ -16,6 +16,7 @@ export class RubicTokensComponent {
 
   openTokensSelect() {
     this.tokensSelectService
+      // @ts-ignore TODO
       .showDialog(this.tokenType)
       .subscribe(token => (this.selectedToken = token));
   }

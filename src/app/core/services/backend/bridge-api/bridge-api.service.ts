@@ -227,6 +227,7 @@ export class BridgeApiService {
   }
 
   private getTokenPrice(bridgeToken: BridgeToken): number {
+    // @ts-ignore TODO
     const backendTokens = this.tokensService.tokens.getValue();
     const prices = Object.values(BLOCKCHAIN_NAME)
       .map(
