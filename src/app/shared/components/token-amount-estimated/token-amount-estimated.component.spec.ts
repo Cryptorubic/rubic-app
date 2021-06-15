@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AmountInputComponent } from './amount-input.component';
+import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 
 describe('AmountInputComponent', () => {
   let component: AmountInputComponent;
@@ -8,9 +8,8 @@ describe('AmountInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AmountInputComponent ]
-    })
-    .compileComponents();
+      declarations: [AmountInputComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

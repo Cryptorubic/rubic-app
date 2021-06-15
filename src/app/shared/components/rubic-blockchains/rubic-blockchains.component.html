@@ -16,6 +16,7 @@
       class="blockchains__list-item"
       [size]="'s'"
       [hint]="blockchain.name"
+      (click)="selectBlockchain(blockchain.id)"
     >
       <img [src]="blockchain.chainImg" alt>
     </app-rubic-button-circle>
@@ -23,7 +24,7 @@
     <app-dropdown-selector
       [dropdownButtonTemplate]="dropdownButtonTemplate"
       [dropdownOptionsTemplates]="dropdownOptionsTemplates"
-      (optionChange)="onOptionChange($event)"
+      (optionChange)="selectBlockchain($event)"
     ></app-dropdown-selector>
 
     <ng-template #dropdownButtonTemplate>

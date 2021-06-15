@@ -1,9 +1,15 @@
 <div class="tokens">
   <div class="tokens__container">
-    Token
     <app-rubic-button [size]="'s'" (click)="openTokensSelect()">
-      <img [src]="selectedToken.imgUrl" width="18px" height="18px" [alt]="selectedToken.symbol">
-      {{ selectedToken.symbol }}
+      <ng-container *ngIf="selectedToken">
+        <img
+          [src]="selectedToken.imgUrl"
+          width="18px"
+          height="18px"
+          [alt]="selectedToken.symbol">
+        {{ selectedToken.symbol }}
+      </ng-container>
+      <span *ngIf="!selectedToken">Select token</span>
     </app-rubic-button>
     <a [href]="'https://etherscan.io/token/0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3'">
       <img

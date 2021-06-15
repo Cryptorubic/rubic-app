@@ -41,10 +41,11 @@ body {
   margin: 0;
   padding: 0;
 
-  font-family: 'Ubuntu', 'Josefin Sans', Arial, sans-serif;
+  main {
+    font-family: $sf-pro-font;
+  }
 
-  background-image: url('./assets/images/bg.jpg');
-  background-size: cover;
+  background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
 }
 
 html {
@@ -69,7 +70,9 @@ button {
 
 main.main-content {
   max-width: 1440px;
-  margin: 24px auto 0;
+  margin: 84px auto 0;
+  display: flex;
+  justify-content: center;
 }
 
 .noscroll {
