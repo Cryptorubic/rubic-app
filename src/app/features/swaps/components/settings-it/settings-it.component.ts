@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss'],
+  selector: 'app-settings-it',
+  templateUrl: './settings-it.component.html',
+  styleUrls: ['./settings-it.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingsComponent {
+export class SettingsItComponent {
   private readonly defaultSlippage = 0.1;
 
   public get autoSlippage(): boolean {

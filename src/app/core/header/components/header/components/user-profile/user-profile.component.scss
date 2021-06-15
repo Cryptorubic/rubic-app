@@ -1,164 +1,32 @@
-@import '../../../../../../../scss/mixins';
-
-$mobile-width: 1024;
-$main-color: #4aa956;
+@import 'src/scss/vars';
 
 .user-profile {
-  position: relative;
-
-  display: inline-block;
   display: flex;
-  height: 35px;
-  margin-left: 15px;
-  padding: 0;
+  align-items: center;
+  height: 50px;
+  padding: 13px 21px;
 
-  line-height: 13px;
+  background-color: $rubic-base-01;
+  border-radius: 50px;
 
-  visibility: visible;
-
-  @include b($mobile-width) {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-end;
-    box-sizing: border-box;
-    width: 100%;
-    height: inherit;
-    margin: 0;
-    margin-bottom: 30px;
-  }
-
-  &__list {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    margin: 0;
-    padding: 0;
-
-    list-style: none;
-  }
-
-  &__sublist {
-    margin: 0;
-    padding: 0;
-  }
-
-  &__sublist-link {
-    display: inline-block;
-    padding: 9px 25px;
-
-    color: black;
-    font-weight: bold;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-decoration: none;
-    vertical-align: middle;
+  &:hover {
+    box-shadow: $rubic-shadow-button-hover;
 
     cursor: pointer;
-
-    @include b($mobile-width) {
-      padding: 15px;
-    }
   }
 
-  &__element-text {
-    position: relative;
-
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 2px;
+  img {
+    margin-right: 10px;
   }
 
-  &__menu {
-    width: 35px;
-    margin-left: 15px;
-
-    border: 1px solid $main-color;
-    border-radius: 10px;
-  }
-
-  &__menu-icon {
+  &__dropdown-nav {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    height: 100%;
-    height: 35px;
-    padding: 7px;
-
-    cursor: pointer;
-
-    > span {
-      display: block;
-      width: 4px;
-      height: 4px;
-
-      background-color: $main-color;
-      border-radius: 4px;
-    }
+    flex-direction: column;
   }
 
-  &__account {
-    position: relative;
+  &__address {
+    margin-right: 11px;
 
-    border: 1px solid $main-color;
-    border-radius: 10px;
-
-    @include b($mobile-width) {
-      margin-right: 15px;
-      margin-left: auto;
-    }
+    font-size: $rubic-font-size-01;
   }
-
-  &__blockchain-icon {
-    position: absolute;
-    top: -1px;
-    left: -1px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    width: 35px;
-    height: calc(100% + 2px);
-    padding: 4px;
-
-    border: 1px solid $main-color;
-    border-radius: 10px;
-
-    img {
-      max-height: 100%;
-    }
-  }
-
-  &__text {
-    display: inline-block;
-    max-width: 100px;
-    padding: 9px 10px 9px 10px + 33px;
-    overflow: hidden;
-
-    font-weight: 700;
-    font-size: 12px;
-    line-height: 15px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-overflow: ellipsis;
-
-    @include b($mobile-width) {
-      box-sizing: border-box;
-      max-width: 250px;
-    }
-
-    &_iconless {
-      padding-left: 20px;
-    }
-  }
-}
-
-::ng-deep .mat-menu-panel.user-profile__sublist-container {
-  margin-top: 10px;
-
-  border-radius: 10px;
-  box-shadow: 0 2px 15px rgba(black, 0.1);
 }

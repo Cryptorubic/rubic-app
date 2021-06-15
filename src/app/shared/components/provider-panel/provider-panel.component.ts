@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-trades/models/instant-trades-trade-status';
 import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models/providers.enum';
 import BigNumber from 'bignumber.js';
@@ -35,6 +28,7 @@ export interface ProviderControllerData {
   };
   isBestRate: boolean;
   isSelected: boolean;
+  isCollapsed: boolean;
 }
 
 interface ProviderData {
@@ -66,6 +60,10 @@ interface ProviderData {
    * Is provider active.
    */
   isActive: boolean;
+  /**
+   * Is provider collapsed.
+   */
+  isCollapsed: boolean;
 }
 
 @Component({
@@ -74,7 +72,7 @@ interface ProviderData {
   styleUrls: ['./provider-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProviderPanelComponent implements OnInit {
+export class ProviderPanelComponent {
   /**
    * Setup provider data.
    * @param data provider controller data.
@@ -84,6 +82,11 @@ export class ProviderPanelComponent implements OnInit {
       this.setupProviderData(data);
     }
   }
+
+  /**
+   * Provider selection event.
+   */
+  @Output() public collapseProvider: EventEmitter<boolean>;
 
   /**
    * Provider selection event.
@@ -101,11 +104,6 @@ export class ProviderPanelComponent implements OnInit {
   public loading: boolean;
 
   /**
-   * Does current provider collapsed.
-   */
-  public collapsed: boolean;
-
-  /**
    * Does current have errors.
    */
   public hasError: boolean;
@@ -117,14 +115,8 @@ export class ProviderPanelComponent implements OnInit {
 
   constructor() {
     this.loading = false;
-    this.collapsed = true;
+    this.collapseProvider = new EventEmitter<boolean>();
     this.selectProvider = new EventEmitter<void>();
-  }
-
-  public ngOnInit(): void {
-    if (this.providerData.isBestRate) {
-      this.collapsed = false;
-    }
   }
 
   /**
@@ -132,16 +124,9 @@ export class ProviderPanelComponent implements OnInit {
    */
   public activateProvider(): void {
     if (!this.loading) {
-      this.collapsePanel();
+      this.collapseProvider.emit(!this.providerData.isCollapsed);
       this.selectProvider.emit();
     }
-  }
-
-  /**
-   * @description Toggle provider panel collapse status.
-   */
-  public collapsePanel(): void {
-    this.collapsed = !this.collapsed;
   }
 
   /**
@@ -157,7 +142,8 @@ export class ProviderPanelComponent implements OnInit {
       gasFeeInEth: data.trade.gasFeeInEth,
       gasFeeInUsd: data.trade.gasFeeInUsd,
       isBestRate: data.isBestRate,
-      isActive: data.isSelected
+      isActive: data.isSelected,
+      isCollapsed: data.isCollapsed
     };
   }
 

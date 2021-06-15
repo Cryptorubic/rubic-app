@@ -7,7 +7,9 @@ import { SWAP_PROVIDER_TYPE } from '../../../swaps/models/SwapProviderType';
 import { TokensService } from '../../../../core/services/backend/tokens-service/tokens.service';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InstantTradesSwapProviderService extends SwapProvider {
   TYPE: SWAP_PROVIDER_TYPE.INSTANT_TRADE;
 

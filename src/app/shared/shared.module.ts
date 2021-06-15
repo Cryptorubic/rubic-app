@@ -36,6 +36,7 @@ import {
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
+import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -83,8 +84,7 @@ import { RoundPipe } from './pipes/round.pipe';
 import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
 import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
-import { TokenAmountInputComponent } from './components/token-amount-input/token-amount-input.component';
-import { TokenAmountDirective} from './directives/token-amount/token-amount.directive';
+import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
@@ -209,7 +209,7 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     TuiToggleModule,
     TuiTabsModule,
     TuiInputCountModule,
-    TuiDataListWrapperModule
+    TuiDataListWrapperModule,
   ],
   exports: [
     FooterComponent,
@@ -274,7 +274,6 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     RubicSelectWalletComponent,
     RubicVolumeComponent,
     RubicFooterComponent,
-    TokenAmountInputComponent,
     RubicHeaderComponent,
     TokenAmountInputComponent
   ],
