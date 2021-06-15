@@ -3,7 +3,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   AfterViewInit,
-  OnDestroy
+  OnDestroy,
+  ViewChildren,
+  QueryList,
+  TemplateRef
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
@@ -20,19 +23,6 @@ import { AuthService } from '../../../../../services/auth/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserProfileComponent implements AfterViewInit, OnDestroy {
-  private clicks: number = 0;
-
-  public readonly $isConfirmModalOpened: Observable<boolean>;
-
-  public readonly $isMobile: Observable<boolean>;
-
-  public readonly $currentUser: Observable<UserInterface>;
-
-  public currentBlockchain: IBlockchain;
-
-  private _onNetworkChanges$: Subscription;
-
-  private _onAddressChanges$: Subscription;
 
   constructor(
     private readonly headerStore: HeaderStore,
@@ -51,6 +41,25 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     });
     this.$currentUser = this.authService.getCurrentUser();
   }
+  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
+
+  private clicks = 0;
+
+  public readonly $isConfirmModalOpened: Observable<boolean>;
+
+  public readonly $isMobile: Observable<boolean>;
+
+  public readonly $currentUser: Observable<UserInterface>;
+
+  public currentBlockchain: IBlockchain;
+
+  public dropdownIsOpened = false;
+
+  private _onNetworkChanges$: Subscription;
+
+  private _onAddressChanges$: Subscription;
+
+  public drowdownItems = [{ title: 'My trades' }, { title: 'Log out' }];
 
   ngAfterViewInit(): void {
     this.cdr.detectChanges();
@@ -79,5 +88,9 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   public toggleConfirmModal(): void {
     this.headerStore.toggleConfirmModalOpeningStatus();
+  }
+
+  public getDropdownStatus(status) {
+    this.dropdownIsOpened = status;
   }
 }
