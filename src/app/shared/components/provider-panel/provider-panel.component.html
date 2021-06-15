@@ -27,7 +27,7 @@
       </div>
       <div class='provider-panel__right'>
         <div
-          *ngIf='!collapsed'
+          *ngIf='!providerData.isCollapsed'
           class='provider-panel__token-usd-price'
           [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
         >
@@ -54,7 +54,7 @@
       <div
         *ngIf='!loading'
         class='provider-panel__collapse-toggle'
-        [ngClass]='{ "provider-panel__collapse-toggle_collapsed": collapsed }'
+        [ngClass]='{ "provider-panel__collapse-toggle_collapsed": providerData.isCollapsed }'
       >
         <tui-svg class="icon" src="tuiIconChevronUpLarge"></tui-svg>
       </div>

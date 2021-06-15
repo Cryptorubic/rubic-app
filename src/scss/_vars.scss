@@ -11,8 +11,6 @@
 }
 
 // ***** typography *****
-$main-font: 'Josefin Sans', Arial, sans-serif;
-$ubuntu-font: 'Ubuntu', Arial, sans-serif;
 $sf-pro-font: SF-Pro, sans-serif;
 $roboto-font: Roboto, sans-serif;
 
@@ -45,7 +43,7 @@ $main-shadow: 0 3px 6px rgba(black, 0.16);
 // new colors
 $rubic-base-01: #fff;
 $rubic-base-02: #000;
-$rubic-base-03: #e9f7e4;
+$rubic-base-03: rgba(250, 250, 250, 0.9);
 $rubic-base-04: #4b604f;
 $rubic-base-05: #639d6a;
 $rubic-base-06: #5c7d60;
