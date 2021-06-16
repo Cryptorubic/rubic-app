@@ -13,17 +13,21 @@ import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
   styleUrls: ['./rubic-tokens.component.scss']
 })
 export class RubicTokensComponent {
+  @Input() loading: boolean;
 
-  constructor(
-    private tokensSelectService: TokensSelectService,
-    private readonly swapFormService: SwapFormService
-  ) {}
   @Input() tokenType: 'from' | 'to';
+
+  @Input() tokens: AvailableTokenAmount[];
 
   public selectedToken: IToken;
 
+  constructor(
+    private tokensSelectService: TokensSelectService,
+    private swapFormService: SwapFormService
+  ) {}
+
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  public tokens: AvailableTokenAmount[] = [
+  public testTokens: AvailableTokenAmount[] = [
     {
       image: 'http://api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
       rank: 1,

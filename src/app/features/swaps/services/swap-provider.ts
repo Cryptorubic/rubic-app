@@ -8,14 +8,16 @@ export abstract class SwapProvider {
 
   public TYPE: SWAP_PROVIDER_TYPE;
 
-  protected getSupportedTokensInfoTemplate(): SupportedTokensInfo {
+  public getSupportedTokensInfoTemplate(): SupportedTokensInfo {
     const supportedBlockchains = Object.values(BLOCKCHAIN_NAME);
 
     const arrayToObject = (array: any[], value: any) =>
       array.reduce((acc, elem) => {
-        acc[elem] = {
-          ...value
-        };
+        if (Array.isArray(value)) {
+          acc[elem] = [...value];
+        } else {
+          acc[elem] = { ...value };
+        }
         return acc;
       }, {});
 
