@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BlockchainSelectComponent } from './blockchain-select.component';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
-import { BridgeBlockchain } from '../../../features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
+import { BridgeBlockchain } from '../../../features/cross-chain-swaps-page-old/bridge-page/models/BridgeBlockchain';
 
 describe('BlockchainSelectComponent', () => {
   let component: BlockchainSelectComponent;

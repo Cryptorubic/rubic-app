@@ -24,6 +24,10 @@ import {
 } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { TokensSelectModule } from 'src/app/features/tokens-select/tokens-select.module';
+import { BridgesSwapProviderService } from 'src/app/features/bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
+import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
+import { InstantTradesSwapProviderService } from 'src/app/features/instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SwapsButtonComponent } from './components/swaps-button/swaps-button.component';
 import { SettingsBridgeComponent } from './components/settings-bridge/settings-bridge.component';
@@ -57,6 +61,12 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     TuiHintModule,
     TokensSelectModule
   ],
-  entryComponents: [SettingsItComponent, SettingsBridgeComponent]
+  entryComponents: [SettingsItComponent, SettingsBridgeComponent],
+  providers: [
+    SwapsService,
+    InstantTradesSwapProviderService,
+    BridgesSwapProviderService,
+    SettingsService
+  ]
 })
 export class SwapsModule {}

@@ -7,9 +7,7 @@ import { SupportedTokensInfo } from '../../../swaps/models/SupportedTokensInfo';
 import { SwapProvider } from '../../../swaps/services/swap-provider';
 import { SWAP_PROVIDER_TYPE } from '../../../swaps/models/SwapProviderType';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class InstantTradesSwapProviderService extends SwapProvider {
   TYPE: SWAP_PROVIDER_TYPE.INSTANT_TRADE;
 
@@ -24,6 +22,7 @@ export class InstantTradesSwapProviderService extends SwapProvider {
           BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
           BLOCKCHAIN_NAME.POLYGON
         ];
+
         supportedBlockchains.forEach(
           blockchain =>
             (supportedTokensInfo[blockchain][blockchain] = tokens.filter(
