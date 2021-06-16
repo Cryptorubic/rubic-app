@@ -37,6 +37,7 @@ import {
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
+import { SwapsButtonComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -103,6 +104,7 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
 
 @NgModule({
   declarations: [
+    SwapsButtonComponent,
     FooterComponent,
     SpinnerComponent,
     ArrowComponent,
@@ -278,7 +280,8 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicFooterComponent,
     RubicHeaderComponent,
     TokenAmountInputComponent,
-    RubicBannerComponent
+    RubicBannerComponent,
+    SwapsButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

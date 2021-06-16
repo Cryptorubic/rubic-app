@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-swaps-form',
@@ -9,11 +10,23 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
 })
 export class SwapsFormComponent {
   public blockchainsList = [
-    { name: 'Binance Smart Chain', chainImg: 'assets/images/icons/coins/bnb.svg', id: 2 },
-    { name: 'Polygon', chainImg: 'assets/images/icons/coins/polygon.svg', id: 3 },
-    { name: 'Ethereum', chainImg: 'assets/images/icons/eth-logo.svg', id: 4 },
-    { name: 'xDai', chainImg: 'assets/images/icons/coins/xdai.svg', id: 5 },
-    { name: 'Kovan', chainImg: 'assets/images/icons/coins/kovan.png', id: 6 }
+    {
+      name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      chainImg: 'assets/images/icons/coins/bnb.svg',
+      id: 56
+    },
+    {
+      name: BLOCKCHAIN_NAME.POLYGON,
+      chainImg: 'assets/images/icons/coins/polygon.svg',
+      id: 137
+    },
+    { name: BLOCKCHAIN_NAME.ETHEREUM, chainImg: 'assets/images/icons/eth-logo.svg', id: 1 },
+    { name: BLOCKCHAIN_NAME.XDAI, chainImg: 'assets/images/icons/coins/xdai.svg', id: 100 },
+    {
+      name: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
+      chainImg: 'assets/images/icons/coins/kovan.png',
+      id: 42
+    }
   ];
 
   get isInstantTrade(): boolean {
