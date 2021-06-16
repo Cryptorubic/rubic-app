@@ -35,7 +35,6 @@ export class SwapsFormComponent {
   ];
 
   get isInstantTrade(): boolean {
-    this.cdr.markForCheck();
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
 

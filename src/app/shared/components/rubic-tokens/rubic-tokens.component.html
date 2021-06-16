@@ -2,7 +2,7 @@
   <div class="tokens__container">
     <app-rubic-button [size]="'s'" [loading]="loading" (click)="openTokensSelect()">
       <ng-container *ngIf="selectedToken">
-        <div [tuiHint]="tooltip">
+        <div class="tokens__inner" [tuiHint]="tooltip">
           <img
             [src]="selectedToken.image || 'assets/images/icons/coins/empty.svg'"
             width="18px"

@@ -26,8 +26,7 @@ export class SwapsService {
   }
 
   get swapMode(): SWAP_PROVIDER_TYPE | null {
-    // return this._swapProvider?.TYPE || SWAP_PROVIDER_TYPE.BRIDGE;
-    return SWAP_PROVIDER_TYPE.BRIDGE;
+    return this._swapProvider?.TYPE;
   }
 
   constructor(

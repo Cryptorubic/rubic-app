@@ -15,7 +15,7 @@ import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-t
 })
 export class InstantTradeBottomFormComponent {
   public get allowAnalyse(): boolean {
-    return Boolean(this.swapFormService.commonTrade.get('fromToken').value);
+    return Boolean(this.swapFormService.commonTrade.controls.input.value.fromToken);
   }
 
   public providerControllers: ProviderControllerData[];
@@ -26,23 +26,23 @@ export class InstantTradeBottomFormComponent {
     private readonly cdr: ChangeDetectorRef
   ) {
     const formValue = this.swapFormService.commonTrade.value;
-    this.initiateProviders(formValue.toBlockchain);
+    this.initiateProviders(formValue.input.toBlockchain);
     if (
-      formValue.fromToken &&
-      formValue.toToken &&
-      formValue.fromBlockchain &&
-      formValue.fromAmount &&
-      formValue.toBlockchain
+      formValue.input.fromToken &&
+      formValue.input.toToken &&
+      formValue.input.fromBlockchain &&
+      formValue.input.fromAmount &&
+      formValue.input.toBlockchain
     ) {
       this.calculateTrades();
     }
     this.swapFormService.commonTrade.valueChanges.subscribe(form => {
       if (
-        form.fromToken &&
-        form.toToken &&
-        form.fromBlockchain &&
-        form.fromAmount &&
-        form.toBlockchain
+        form.input.fromToken &&
+        form.input.toToken &&
+        form.input.fromBlockchain &&
+        form.input.fromAmount &&
+        form.input.toBlockchain
       ) {
         this.calculateTrades();
       }

@@ -25,7 +25,8 @@ export class InstantTradeService {
   }
 
   public async calculateTrades(): Promise<any> {
-    const { fromAmount, fromToken, toToken } = this.swapFormService.commonTrade.value;
+    const { fromAmount, fromToken, toToken } =
+      this.swapFormService.commonTrade.controls.input.value;
     const providersDataPromises = Object.values(
       this.blockchainsProviders[this.currentBlockchain]
     ).map(async provider =>

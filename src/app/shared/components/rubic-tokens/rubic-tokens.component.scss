@@ -11,6 +11,10 @@
   background-color: $rubic-base-03;
   border-top-right-radius: 14px;
 
+  &__inner {
+    display: flex;
+  }
+
   &__clear-container {
     display: flex;
     align-items: center;
