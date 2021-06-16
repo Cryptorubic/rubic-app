@@ -4,6 +4,8 @@ import BigNumber from 'bignumber.js';
 import { SwapForm } from '../../models/SwapForm';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IToken } from '../../../../shared/models/tokens/IToken';
+import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,18 @@ import { IToken } from '../../../../shared/models/tokens/IToken';
 export class SwapFormService {
   public commonTrade: FormGroup<SwapForm>;
 
+  private readonly instantTradeProviders: BehaviorSubject<ProviderControllerData[]>;
+
+  public setItProviders(providers) {
+    this.instantTradeProviders.next(providers as any);
+  }
+
+  public get itProviders(): Observable<ProviderControllerData[]> {
+    return this.instantTradeProviders.asObservable();
+  }
+
   constructor() {
+    this.instantTradeProviders = new BehaviorSubject([]);
     this.commonTrade = new FormGroup<SwapForm>({
       input: new FormGroup({
         fromBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM),

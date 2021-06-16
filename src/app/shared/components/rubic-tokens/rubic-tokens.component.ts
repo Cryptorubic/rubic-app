@@ -21,11 +21,6 @@ export class RubicTokensComponent {
 
   public selectedToken: IToken;
 
-  constructor(
-    private tokensSelectService: TokensSelectService,
-    private swapFormService: SwapFormService
-  ) {}
-
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public testTokens: AvailableTokenAmount[] = [
     {
@@ -148,6 +143,19 @@ export class RubicTokensComponent {
       available: true
     },
     {
+      image: '',
+      rank: 1,
+      price: 2500,
+      usedInIframe: true,
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
+      name: 'Rubic',
+      symbol: 'RBC',
+      decimals: 18,
+      amount: new BigNumber(1234.412),
+      available: true
+    },
+    {
       image: 'http://api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
       rank: 0.5,
       price: 200,
@@ -216,6 +224,11 @@ export class RubicTokensComponent {
     }
   ];
 
+  constructor(
+    private tokensSelectService: TokensSelectService,
+    private readonly swapFormService: SwapFormService
+  ) {}
+
   openTokensSelect() {
     this.tokensSelectService.showDialog(of(this.tokens)).subscribe((token: IToken) => {
       if (token) {
@@ -236,6 +249,14 @@ export class RubicTokensComponent {
           });
         }
       }
+    });
+  }
+
+  clearToken() {
+    this.selectedToken = null;
+    const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+    this.swapFormService.commonTrade.get(formKey).setValue(null, {
+      emitEvent: false
     });
   }
 }

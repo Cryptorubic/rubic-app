@@ -3,6 +3,7 @@ import { Observable, Subject, zip } from 'rxjs';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { SwapProvider } from '../swap-provider';
 import { BridgesSwapProviderService } from '../../../bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { InstantTradesSwapProviderService } from '../../../instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
@@ -25,14 +26,14 @@ export class SwapsService {
   }
 
   get swapMode(): SWAP_PROVIDER_TYPE | null {
-    // return this._swapProvider?.TYPE || SWAP_PROVIDER_TYPE.BRIDGE;
-    return SWAP_PROVIDER_TYPE.BRIDGE;
+    return this._swapProvider?.TYPE;
   }
 
   constructor(
     private readonly bridgesSwapProvider: BridgesSwapProviderService,
     private readonly instantTradesSwapProvider: InstantTradesSwapProviderService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly instantTradeService: InstantTradeService
   ) {
     this._availableTokens = new Subject<SupportedTokensInfo>();
     this._bridgeTokensPairs = new Subject<BlockchainsBridgeTokens[]>();
@@ -69,7 +70,9 @@ export class SwapsService {
     });
   }
 
-  public calculateTrade(): void {}
+  public async calculateTrade(): Promise<void> {
+    await this.instantTradeService.calculateTrades();
+  }
 
   public createTrade(): void {}
 }

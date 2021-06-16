@@ -3,6 +3,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
+import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 
 @Component({
   selector: 'app-swaps-button',
@@ -16,9 +17,10 @@ export class SwapsButtonComponent {
   }
 
   constructor(
-    public authService: AuthService,
+    private readonly authService: AuthService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector
+    @Inject(Injector) private injector: Injector,
+    private readonly swapsService: SwapsService
   ) {}
 
   public async handleClick(): Promise<void> {
@@ -26,6 +28,7 @@ export class SwapsButtonComponent {
       this.showModal();
       // eslint-disable-next-line no-empty
     } else {
+      this.swapsService.createTrade();
     }
   }
 

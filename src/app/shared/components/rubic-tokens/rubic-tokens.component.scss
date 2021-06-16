@@ -11,6 +11,20 @@
   background-color: $rubic-base-03;
   border-top-right-radius: 14px;
 
+  &__inner {
+    display: flex;
+  }
+
+  &__clear-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    span {
+      margin-right: 10px;
+    }
+  }
+
   &__container {
     display: flex;
     grid-gap: 10px;
