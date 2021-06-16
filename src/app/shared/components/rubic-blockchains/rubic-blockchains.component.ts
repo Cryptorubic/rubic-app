@@ -28,7 +28,7 @@ export class RubicBlockchainsComponent {
   public selectBlockchain(blockchainId: number) {
     const controlName = this.blockchainType === 'from' ? 'fromBlockchain' : 'toBlockchain';
     const controlValue = this.blockchainsList.find(blockchain => blockchain.id === blockchainId);
-    this.selectedBlockchain = controlValue.symbol;
+    this.selectedBlockchain = controlValue.name;
     this.swapFormService.commonTrade.get(controlName).setValue(this.selectedBlockchain);
   }
 

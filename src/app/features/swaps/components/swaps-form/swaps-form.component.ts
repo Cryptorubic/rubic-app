@@ -88,7 +88,7 @@ export class SwapsFormComponent {
     const tokens: AvailableTokenAmount[] = [];
     if (!oppositeToken) {
       Object.values(this.blockchainsList).forEach(blockchainItem => {
-        const blockchain = blockchainItem.symbol;
+        const blockchain = blockchainItem.name;
 
         this._supportedTokens[oppositeBlockchain][blockchain].forEach(token => {
           tokens.push({
@@ -122,7 +122,7 @@ export class SwapsFormComponent {
         )
         .filter(tokenPair => tokenPair);
       Object.values(this.blockchainsList).forEach(blockchainItem => {
-        const blockchain = blockchainItem.symbol;
+        const blockchain = blockchainItem.name;
         if (oppositeBlockchain === blockchain) {
           return;
         }
