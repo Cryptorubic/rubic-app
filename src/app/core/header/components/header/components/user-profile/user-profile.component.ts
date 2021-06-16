@@ -23,7 +23,6 @@ import { AuthService } from '../../../../../services/auth/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserProfileComponent implements AfterViewInit, OnDestroy {
-
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -41,6 +40,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     });
     this.$currentUser = this.authService.getCurrentUser();
   }
+
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
 
   private clicks = 0;

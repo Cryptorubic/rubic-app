@@ -99,6 +99,7 @@ import { RubicSelectWalletComponent } from './components/rubic-select-wallet/rub
 import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
 import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.component';
+import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.component';
 
 @NgModule({
   declarations: [
@@ -172,7 +173,8 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     RubicSelectWalletComponent,
     RubicMenuComponent,
     RubicVolumeComponent,
-    RubicFooterComponent
+    RubicFooterComponent,
+    RubicBannerComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -209,7 +211,7 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     TuiToggleModule,
     TuiTabsModule,
     TuiInputCountModule,
-    TuiDataListWrapperModule,
+    TuiDataListWrapperModule
   ],
   exports: [
     FooterComponent,
@@ -275,7 +277,8 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     RubicVolumeComponent,
     RubicFooterComponent,
     RubicHeaderComponent,
-    TokenAmountInputComponent
+    TokenAmountInputComponent,
+    RubicBannerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
