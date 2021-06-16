@@ -10,6 +10,7 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { first, map } from 'rxjs/operators';
 import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
@@ -34,6 +35,12 @@ import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap
 @Injectable()
 export class BridgeService {
   private blockchainsProviders;
+
+  private tokens$ = new Subject<BlockchainsBridgeTokens[]>();
+
+  public get tokens(): Observable<BlockchainsBridgeTokens[]> {
+    return this.tokens$.asObservable();
+  }
 
   private bridgeProvider: BlockchainsBridgeProvider;
 
@@ -62,6 +69,7 @@ export class BridgeService {
     private readonly swapFormService: SwapFormService
   ) {
     this.setupBlockchainsProviders();
+    this.setTokens();
     tokensService.tokens.subscribe(tokens => {
       this._backendTokens = tokens;
       this.updateTransactionsList();
@@ -102,7 +110,7 @@ export class BridgeService {
     });
   }
 
-  public getTokens(): Observable<BlockchainsBridgeTokens[]> {
+  private setTokens(): void {
     const tokensObservables: Observable<BlockchainsBridgeTokens>[] = [];
 
     Object.values(BLOCKCHAIN_NAME).forEach((fromBlockchain, indexFrom) => {
@@ -117,23 +125,26 @@ export class BridgeService {
 
         const provider: BlockchainsBridgeProvider =
           this.blockchainsProviders[fromBlockchain]?.[toBlockchain];
-        const observable = provider ? provider.tokens : of(List());
 
-        tokensObservables.push(
-          observable.pipe(
-            map(bridgeTokens => {
-              return {
-                fromBlockchain,
-                toBlockchain,
-                bridgeTokens
-              };
-            })
-          )
-        );
+        if (provider) {
+          tokensObservables.push(
+            provider.tokens.pipe(
+              map(bridgeTokens => {
+                return {
+                  fromBlockchain,
+                  toBlockchain,
+                  bridgeTokens
+                };
+              })
+            )
+          );
+        }
       });
     });
 
-    return zip(...tokensObservables);
+    zip(...tokensObservables)
+      .pipe(first())
+      .subscribe(tokens => this.tokens$.next(tokens));
   }
 
   public getFee(): Observable<number | null> {

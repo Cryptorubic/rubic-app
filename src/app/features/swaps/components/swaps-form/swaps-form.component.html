@@ -1,18 +1,15 @@
 <div class="swaps-form">
   <header class="swaps-form__header">
     <h1 class="swaps-form__title">Swap</h1>
-    <app-rubic-button-circle
-      size="l"
-      appearance="flat"
-      hint="Reload"
-      hintDirection="top-left"
-    >
-      <img src="assets/images/icons/reload.svg" width="18" height="18" alt="Reload">
+    <app-rubic-button-circle size="l" appearance="flat" hint="Reload" hintDirection="top-left">
+      <img src="assets/images/icons/reload.svg" width="18" height="18" alt="Reload" />
     </app-rubic-button-circle>
+
     <div class="swaps-form__settings">
       <app-settings-container></app-settings-container>
     </div>
   </header>
+
   <main class="swaps-form__content">
     <div class="swaps-form__top-part">
       <app-rubic-blockchains
@@ -20,21 +17,38 @@
         blockchainType="from"
         [blockchainsList]="blockchainsList"
       ></app-rubic-blockchains>
-      <app-rubic-tokens class="form-panel__tokens" tokenType="from"></app-rubic-tokens>
+
+      <app-rubic-tokens
+        class="form-panel__tokens"
+        [loading]="isLoading"
+        tokenType="from"
+        [tokens]="availableTokens['from']"
+      ></app-rubic-tokens>
     </div>
+
     <app-token-amount-input></app-token-amount-input>
+
     <div class="swaps-form__delimiter">
       <app-rubic-switcher></app-rubic-switcher>
     </div>
+
     <div class="swaps-form__top-part">
       <app-rubic-blockchains
         class="form-panel__blockchains"
         blockchainType="to"
         [blockchainsList]="blockchainsList"
       ></app-rubic-blockchains>
-      <app-rubic-tokens class="form-panel__tokens" tokenType="to"></app-rubic-tokens>
+
+      <app-rubic-tokens
+        class="form-panel__tokens"
+        [loading]="isLoading"
+        tokenType="to"
+        [tokens]="availableTokens['to']"
+      ></app-rubic-tokens>
     </div>
+
     <app-instant-trade-bottom-form *ngIf="isInstantTrade"></app-instant-trade-bottom-form>
+
     <app-bridge-bottom-form *ngIf="!isInstantTrade"></app-bridge-bottom-form>
   </main>
 </div>

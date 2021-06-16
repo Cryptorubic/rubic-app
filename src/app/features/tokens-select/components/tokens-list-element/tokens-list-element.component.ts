@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 @Component({
   selector: 'app-tokens-list-element',

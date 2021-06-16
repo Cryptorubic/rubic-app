@@ -31,5 +31,7 @@ export class RubicButtonComponent {
     this._disabled = disabled === '' || disabled;
   }
 
+  @Input() loading = false;
+
   constructor() {}
 }

@@ -13,7 +13,7 @@ export class RubicBlockchainsComponent {
 
   @Input() public blockchainType: 'from' | 'to';
 
-  public selectedBlockchain = 'Ethereum';
+  public selectedBlockchain: BLOCKCHAIN_NAME;
 
   @Input() blockchainsList: Array<any>;
 
