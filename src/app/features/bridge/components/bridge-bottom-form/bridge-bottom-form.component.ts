@@ -38,6 +38,12 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public calculateTrade() {
+    const { fromBlockchain, toBlockchain, fromToken, toToken } =
+      this.swapFormService.commonTrade.value.input;
+    if (!fromBlockchain || !toBlockchain || !fromToken || !toToken) {
+      return;
+    }
+
     this.bridgeService.getFee().subscribe(fee => {
       if (fee === null) {
         this.errorsService.catch$(new RubicError());

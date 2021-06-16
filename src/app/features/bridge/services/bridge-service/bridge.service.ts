@@ -10,7 +10,7 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { first, catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { first, catchError, map, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
@@ -35,7 +35,7 @@ import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap
 export class BridgeService {
   private blockchainsProviders;
 
-  private tokens$ = new Subject<BlockchainsBridgeTokens[]>();
+  private tokens$ = new BehaviorSubject<BlockchainsBridgeTokens[]>([]);
 
   public get tokens(): Observable<BlockchainsBridgeTokens[]> {
     return this.tokens$.asObservable();
@@ -152,7 +152,7 @@ export class BridgeService {
     }
 
     return this.tokens.pipe(
-      switchMap(tokens => {
+      mergeMap(tokens => {
         const { fromBlockchain, toBlockchain, fromToken, toToken } =
           this.swapFormService.commonTrade.value.input;
         const bridgeTokensList = tokens.find(
