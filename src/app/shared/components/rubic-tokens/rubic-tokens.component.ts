@@ -13,17 +13,16 @@ import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
   styleUrls: ['./rubic-tokens.component.scss']
 })
 export class RubicTokensComponent {
-  constructor(
-    private tokensSelectService: TokensSelectService,
-    private readonly swapFormService: SwapFormService
-  ) {}
+  @Input() loading: boolean;
 
   @Input() tokenType: 'from' | 'to';
+
+  @Input() tokens: AvailableTokenAmount[];
 
   public selectedToken: IToken;
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  public tokens: AvailableTokenAmount[] = [
+  public testTokens: AvailableTokenAmount[] = [
     {
       image: 'http://api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
       rank: 1,
@@ -225,16 +224,29 @@ export class RubicTokensComponent {
     }
   ];
 
+  constructor(
+    private tokensSelectService: TokensSelectService,
+    private readonly swapFormService: SwapFormService
+  ) {}
+
   openTokensSelect() {
     this.tokensSelectService.showDialog(of(this.tokens)).subscribe((token: IToken) => {
       if (token) {
         this.selectedToken = token;
         if (this.tokenType === 'from') {
-          this.swapFormService.commonTrade.get('fromBlockchain').setValue(token.blockchain);
-          this.swapFormService.commonTrade.get('fromToken').setValue(token);
+          this.swapFormService.commonTrade.controls.input.patchValue({
+            fromBlockchain: token.blockchain
+          });
+          this.swapFormService.commonTrade.controls.input.patchValue({
+            fromToken: token
+          });
         } else {
-          this.swapFormService.commonTrade.get('toBlockchain').setValue(token.blockchain);
-          this.swapFormService.commonTrade.get('toToken').setValue(token);
+          this.swapFormService.commonTrade.controls.input.patchValue({
+            toBlockchain: token.blockchain
+          });
+          this.swapFormService.commonTrade.controls.input.patchValue({
+            toToken: token
+          });
         }
       }
     });

@@ -5,11 +5,13 @@
   --tui-height-s: 35px;
   --tui-primary: #{$rubic-base-01};
   --tui-primary-hover: #{$rubic-base-01};
+  --tui-focus: transparent;
 
   [tuiButton] {
     --tui-primary-text: #{$rubic-text-color-main};
     --tui-link: #{$rubic-primary};
     font-size: $rubic-font-size-01;
+    font-weight: 500;
 
     border: 1px solid transparent;
 
@@ -44,6 +46,10 @@
 
     &._focused:not(&._pressed) {
       border-color: $rubic-primary;
+    }
+
+    &._focused::after {
+      border: 0;
     }
 
     &._disabled {
@@ -108,4 +114,8 @@
       border: 0;
     }
   }
+}
+
+::ng-deep .loader {
+  stroke: #{$rubic-primary} !important;
 }
