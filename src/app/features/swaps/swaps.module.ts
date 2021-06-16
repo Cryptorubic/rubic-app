@@ -40,7 +40,7 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     SwapsButtonComponent,
     SettingsBridgeComponent
   ],
-  exports: [SettingsContainerComponent],
+  exports: [SettingsContainerComponent, SwapsButtonComponent],
   imports: [
     CommonModule,
     SwapsRoutingModule,

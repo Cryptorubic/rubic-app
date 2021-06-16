@@ -8,6 +8,10 @@ import { Component } from '@angular/core';
 export class BridgeBottomFormComponent {
   public loading: boolean;
 
+  public get allowSwap(): boolean {
+    return true;
+  }
+
   constructor() {
     this.loading = false;
   }

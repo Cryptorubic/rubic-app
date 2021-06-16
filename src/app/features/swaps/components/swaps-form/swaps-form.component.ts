@@ -17,7 +17,7 @@ export class SwapsFormComponent {
   ];
 
   get isInstantTrade(): boolean {
-    return this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE;
+    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
 
   constructor(private readonly swapsService: SwapsService) {}
