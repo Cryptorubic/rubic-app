@@ -38,7 +38,7 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     SettingsItComponent,
     SettingsBridgeComponent
   ],
-  exports: [SettingsContainerComponent, SwapsButtonComponent],
+  exports: [SettingsContainerComponent],
   imports: [
     CommonModule,
     SwapsRoutingModule,

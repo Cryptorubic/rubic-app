@@ -19,7 +19,7 @@ export class RubicBlockchainsComponent {
 
   constructor(private readonly swapFormService: SwapFormService) {
     this.selectedBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    this.swapFormService.commonTrade.valueChanges.subscribe(form => {
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
       this.selectedBlockchain =
         this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
     });
@@ -33,10 +33,8 @@ export class RubicBlockchainsComponent {
   }
 
   public getChainIcon(): string | undefined {
-    const blockchain =
-      this.blockchainType === 'from'
-        ? this.swapFormService.commonTrade.get('fromBlockchain')
-        : this.swapFormService.commonTrade.get('toBlockchain');
-    return BlockchainsInfo.getBlockchainByName(blockchain.value)?.imagePath;
+    const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
+    const blockchain = this.blockchainType === 'from' ? fromBlockchain : toBlockchain;
+    return BlockchainsInfo.getBlockchainByName(blockchain)?.imagePath;
   }
 }

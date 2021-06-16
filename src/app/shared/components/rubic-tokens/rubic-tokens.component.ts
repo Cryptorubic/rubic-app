@@ -13,11 +13,11 @@ import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
   styleUrls: ['./rubic-tokens.component.scss']
 })
 export class RubicTokensComponent {
-
   constructor(
     private tokensSelectService: TokensSelectService,
     private readonly swapFormService: SwapFormService
   ) {}
+
   @Input() tokenType: 'from' | 'to';
 
   public selectedToken: IToken;
@@ -217,11 +217,19 @@ export class RubicTokensComponent {
       if (token) {
         this.selectedToken = token;
         if (this.tokenType === 'from') {
-          this.swapFormService.commonTrade.get('fromBlockchain').setValue(token.blockchain);
-          this.swapFormService.commonTrade.get('fromToken').setValue(token);
+          this.swapFormService.commonTrade.controls.input.patchValue({
+            fromBlockchain: token.blockchain
+          });
+          this.swapFormService.commonTrade.controls.input.patchValue({
+            fromToken: token
+          });
         } else {
-          this.swapFormService.commonTrade.get('toBlockchain').setValue(token.blockchain);
-          this.swapFormService.commonTrade.get('toToken').setValue(token.blockchain);
+          this.swapFormService.commonTrade.controls.input.patchValue({
+            toBlockchain: token.blockchain
+          });
+          this.swapFormService.commonTrade.controls.input.patchValue({
+            toToken: token
+          });
         }
       }
     });

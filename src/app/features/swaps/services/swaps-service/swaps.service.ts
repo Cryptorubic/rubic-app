@@ -27,13 +27,13 @@ export class SwapsService {
     private readonly instantTradesSwapProvider: InstantTradesSwapProviderService,
     private readonly swapFormService: SwapFormService
   ) {
-    const commonForm = this.swapFormService.commonTrade;
-    if (commonForm.get('fromBlockchain').value === commonForm.get('toBlockchain').value) {
+    const commonForm = this.swapFormService.commonTrade.controls.input;
+    if (commonForm.value.fromBlockchain === commonForm.value.toBlockchain) {
       this._swapProvider = this.instantTradesSwapProvider;
     } else {
       this._swapProvider = this.bridgesSwapProvider;
     }
-    this.swapFormService.commonTrade.valueChanges.subscribe(form => {
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
       if (form.fromBlockchain === form.toBlockchain) {
         this._swapProvider = this.instantTradesSwapProvider;
       } else {
