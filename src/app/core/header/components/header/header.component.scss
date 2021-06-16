@@ -1,4 +1,5 @@
 @import '../../../../../scss/mixins';
+@import 'src/scss/vars';
 
 $mobile-width: 1024;
 
@@ -31,7 +32,7 @@ $mobile-width: 1024;
     padding-bottom: 10px;
 
     background-color: white;
-  }  
+  }
 
   &__container {
     position: relative;
@@ -61,7 +62,10 @@ $mobile-width: 1024;
 
   app-header-navigation {
     margin-right: 40px;
-    margin-left: auto;
+  }
+
+  app-header-logotype {
+    margin-right: auto;
   }
 
   &__mobile-container {
@@ -79,5 +83,22 @@ $mobile-width: 1024;
     &_opened {
       transform: translateY(0);
     }
+  }
+}
+
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn).header__link {
+  padding: 7px 9px;
+
+  color: white !important;
+  font-weight: bold;
+  font-size: 14px;
+
+
+  background-color: $main-green;
+  border-radius: 10px;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
   }
 }

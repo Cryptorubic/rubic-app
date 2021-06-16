@@ -19,6 +19,7 @@
   <header class="header" [ngClass]="{ header_scrolled: pageScrolled }">
     <div class="header__container app-content-block">
       <app-header-logotype></app-header-logotype>
+      <a class="header__link" href="https://beta.rubic.exchange/">Switch to new design</a>
       <app-header-navigation></app-header-navigation>
       <app-header-language-dropdown></app-header-language-dropdown>
       <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
