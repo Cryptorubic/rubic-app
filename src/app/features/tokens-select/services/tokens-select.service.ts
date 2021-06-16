@@ -4,6 +4,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { TokensSelectComponent } from '../components/tokens-select/tokens-select.component';
+import { AvailableTokenAmount } from '../../../shared/models/tokens/AvailableTokenAmount';
 
 @Injectable()
 export class TokensSelectService {
@@ -12,13 +13,13 @@ export class TokensSelectService {
     @Inject(Injector) private injector: Injector
   ) {}
 
-  showDialog(tokenType: 'from' | 'to'): Observable<TokenAmount> {
+  showDialog(tokens: Observable<AvailableTokenAmount[]>): Observable<TokenAmount> {
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
       {
         size: 's',
         data: {
-          tokenType
+          tokens
         }
       }
     );

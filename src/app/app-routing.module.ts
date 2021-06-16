@@ -4,8 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./features/swaps-page-old/page-module/swaps-page.module').then(m => m.SwapsPageModule)
+    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
     path: 'bridge',
@@ -14,7 +13,7 @@ const routes: Routes = [
   {
     path: 'cross-chain',
     loadChildren: () =>
-      import('./features/cross-chain-swaps-page/cross-chain-swaps-page.module').then(
+      import('./features/cross-chain-swaps-page-old/cross-chain-swaps-page.module').then(
         m => m.CrossChainSwapsPageModule
       )
   },
@@ -63,10 +62,6 @@ const routes: Routes = [
       )
   },
   // New routes
-  {
-    path: 'swaps',
-    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
-  },
   {
     path: 'new-ui',
     loadChildren: () => import('./features/new-ui/new-ui.module').then(m => m.NewUiModule)

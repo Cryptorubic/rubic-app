@@ -15,7 +15,6 @@ import { of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TokensSelectService } from '../../tokens-select/services/tokens-select.service';
 import { ErrorsService } from '../../../core/errors/errors.service';
-import { RubicError } from '../../../shared/models/errors/RubicError';
 import { NotSupportedNetworkError } from '../../../shared/models/errors/provider/NotSupportedNetwork';
 
 @Component({
@@ -82,7 +81,7 @@ export class NewUiComponent implements OnInit {
 
   openTokensSelect() {
     this.tokensSelectService
-      .showDialog('from')
+      .showDialog(of(this.store.tokens))
       .subscribe(token =>
         alert(`Token ${token.symbol} in ${token.blockchain} blockchain selected`)
       );

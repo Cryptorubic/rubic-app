@@ -369,6 +369,7 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
 
       this.initInstantTradeProviders();
 
+      // @ts-ignore TODO
       this.tokens = this.tokensService.tokens.getValue();
 
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);

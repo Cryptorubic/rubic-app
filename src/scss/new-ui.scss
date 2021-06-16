@@ -3,6 +3,7 @@
 html {
   --tui-primary: #{$rubic-primary} !important;
   --tui-primary-hover: #{$rubic-primary} !important;
+  --tui-font-text: #{$sf-pro-font} !important;
 
   box-sizing: border-box;
 }

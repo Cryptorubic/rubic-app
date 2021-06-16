@@ -11,10 +11,6 @@
       [tokens]="tokensToShow$ | async"
       (tokenSelect)="onTokenSelect($event)"
     ></app-tokens-list>
-<!--    <app-custom-tokentuiHint-->
-<!--      *ngIf="customToken"-->
-<!--      [token]="customToken"-->
-<!--      (tokenSelected)="onTokenSelect($event)"-->
-<!--    ></app-custom-tokentuiHint>-->
+    <app-custom-token  *ngIf="customToken" (tokenSelected)="onTokenSelect($event)" [token]="customToken"></app-custom-token>
   </div>
 </section>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GetBnbTrade } from 'src/app/features/cross-chain-swaps-page/get-bnb-page/models/GetBnbTrade';
+import { GetBnbTrade } from 'src/app/features/cross-chain-swaps-page-old/get-bnb-page/models/GetBnbTrade';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/BOT_URL';

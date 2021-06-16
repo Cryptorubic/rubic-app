@@ -1,0 +1,7 @@
+export enum BRIDGE_PROVIDER_TYPE {
+  PANAMA = 'PANAMA',
+  POLYGON = 'POLYGON',
+  RUBIC = 'RUBIC',
+  XDAI = 'XDAI',
+  EVO = 'EVO'
+}

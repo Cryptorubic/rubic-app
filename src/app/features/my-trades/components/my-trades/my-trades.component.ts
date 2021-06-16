@@ -84,7 +84,7 @@ export class MyTradesComponent implements OnInit {
 
   private readonly tableData$ = new Subject<TableRow[]>();
 
-  public columns: string[] = [];
+  public readonly columns: TableRowKey[] = ['Status', 'From', 'To', 'Sent', 'Expected', 'Date'];
 
   public readonly sorters: Record<TableRowKey, TuiComparator<TableRow>> = {
     Status: () => 0,
@@ -151,7 +151,6 @@ export class MyTradesComponent implements OnInit {
             Date: trade.date
           });
         });
-        this.columns = Object.keys(tableData[0]);
         this.tableData$.next(tableData);
       } else {
         this.tableData$.next([]);

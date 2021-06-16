@@ -14,10 +14,10 @@
 
     <div
       class="amount-input-container__user-balance-container user-balance-container"
-      *ngIf="token?.userBalance"
+      *ngIf="token?.amount"
     >
       <span class="user-balance-container__balance"
-        >You have {{ token?.userBalance | bigNumberFormat: 4 }}</span
+        >You have {{ token?.amount | bigNumberFormat: 4 }}</span
       >
       <button class="user-balance-container__max-button" (click)="onUserBalanceMaxButtonClick()">
         MAX

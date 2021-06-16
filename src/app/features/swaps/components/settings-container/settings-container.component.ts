@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { SettingsComponent } from 'src/app/features/swaps/components/settings/settings.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
+import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 
 @Component({
   selector: 'app-settings-container',
@@ -9,19 +10,21 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsContainerComponent implements OnInit {
-  public settingsComponent: PolymorpheusComponent<SettingsComponent, any>;
-
-  readonly items = ['Edit', 'Download', 'Rename', 'Delete'];
+  public settingsComponent: PolymorpheusComponent<any, any>;
 
   public open: boolean;
 
-  constructor() {
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly swapService: SwapsService
+  ) {
     this.open = false;
   }
 
   ngOnInit(): void {
-    this.settingsComponent = new PolymorpheusComponent(SettingsComponent);
+    this.settingsComponent = this.settingsService.getSettingsComponent();
+    this.swapService.availableTokens.subscribe(() => {
+      this.settingsComponent = this.settingsService.getSettingsComponent();
+    });
   }
-
-  public optionChange(): void {}
 }

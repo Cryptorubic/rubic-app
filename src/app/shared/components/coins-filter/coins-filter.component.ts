@@ -59,6 +59,7 @@ export class CoinsFilterComponent {
     this.virtualScrollFromTokensHeight = '240px';
     this.virtualScrollToTokensHeight = '240px';
     this.selectTokenEvent = new EventEmitter<TokenValueType>();
+    // @ts-ignore TODO
     this.options = this.tokensService.tokens.asObservable();
     this.tokensHostWidth = '150px';
     this.$filteredFromOptions = this.tokensFromInput.valueChanges.pipe(
