@@ -3,6 +3,7 @@ import { IToken } from 'src/app/shared/models/tokens/IToken';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
 import BigNumber from 'bignumber.js';
 import { of } from 'rxjs';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { AvailableTokenAmount } from '../../models/tokens/AvailableTokenAmount';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
@@ -12,20 +13,29 @@ import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
   styleUrls: ['./rubic-tokens.component.scss']
 })
 export class RubicTokensComponent {
+  @Input() loading: boolean;
+
   @Input() tokenType: 'from' | 'to';
+
+  @Input() tokens: AvailableTokenAmount[];
 
   public selectedToken: IToken;
 
-  constructor(private tokensSelectService: TokensSelectService) {}
+  constructor(
+    private tokensSelectService: TokensSelectService,
+    private swapFormService: SwapFormService
+  ) {}
 
   openTokensSelect() {
-    this.tokensSelectService
-      .showDialog(of(this.tokens))
-      .subscribe(token => (this.selectedToken = token));
+    this.tokensSelectService.showDialog(of(this.tokens)).subscribe(token => {
+      this.selectedToken = token;
+      const controlName = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+      this.swapFormService.commonTrade.get(controlName).setValue(this.selectedToken);
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  public tokens: AvailableTokenAmount[] = [
+  public testTokens: AvailableTokenAmount[] = [
     {
       image: 'http://api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
       rank: 1,

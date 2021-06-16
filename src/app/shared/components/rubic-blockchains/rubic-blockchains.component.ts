@@ -12,7 +12,7 @@ export class RubicBlockchainsComponent {
 
   @Input() public blockchainType: 'from' | 'to';
 
-  public selectedBlockchain = 'Ethereum';
+  public selectedBlockchain: BLOCKCHAIN_NAME;
 
   @Input() blockchainsList: Array<any>;
 
@@ -23,7 +23,7 @@ export class RubicBlockchainsComponent {
   public selectBlockchain(blockchainId: number) {
     const controlName = this.blockchainType === 'from' ? 'fromBlockchain' : 'toBlockchain';
     const controlValue = this.blockchainsList.find(blockchain => blockchain.id === blockchainId);
-    this.selectedBlockchain = controlValue.name;
+    this.selectedBlockchain = controlValue.symbol;
     this.swapFormService.commonTrade.get(controlName).setValue(this.selectedBlockchain);
   }
 }

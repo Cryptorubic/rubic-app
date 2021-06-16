@@ -32,7 +32,8 @@ import {
   TuiHintModule,
   TuiSvgModule,
   TuiTooltipModule,
-  TuiHostedDropdownModule
+  TuiHostedDropdownModule,
+  TuiLoaderModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
@@ -210,6 +211,7 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     TuiTabsModule,
     TuiInputCountModule,
     TuiDataListWrapperModule,
+    TuiLoaderModule
   ],
   exports: [
     FooterComponent,
