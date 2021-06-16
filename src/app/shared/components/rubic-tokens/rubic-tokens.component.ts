@@ -13,11 +13,11 @@ import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
   styleUrls: ['./rubic-tokens.component.scss']
 })
 export class RubicTokensComponent {
-
   constructor(
     private tokensSelectService: TokensSelectService,
     private readonly swapFormService: SwapFormService
   ) {}
+
   @Input() tokenType: 'from' | 'to';
 
   public selectedToken: IToken;
@@ -144,6 +144,19 @@ export class RubicTokensComponent {
       available: true
     },
     {
+      image: '',
+      rank: 1,
+      price: 2500,
+      usedInIframe: true,
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
+      name: 'Rubic',
+      symbol: 'RBC',
+      decimals: 18,
+      amount: new BigNumber(1234.412),
+      available: true
+    },
+    {
       image: 'http://api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
       rank: 0.5,
       price: 200,
@@ -221,9 +234,17 @@ export class RubicTokensComponent {
           this.swapFormService.commonTrade.get('fromToken').setValue(token);
         } else {
           this.swapFormService.commonTrade.get('toBlockchain').setValue(token.blockchain);
-          this.swapFormService.commonTrade.get('toToken').setValue(token.blockchain);
+          this.swapFormService.commonTrade.get('toToken').setValue(token);
         }
       }
+    });
+  }
+
+  clearToken() {
+    this.selectedToken = null;
+    const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+    this.swapFormService.commonTrade.get(formKey).setValue(null, {
+      emitEvent: false
     });
   }
 }

@@ -1,8 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
-import { NewUiDataService } from 'src/app/features/new-ui/new-ui-data.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { IToken } from 'src/app/shared/models/tokens/IToken';
+import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
+import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models/providers.enum';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-trades/models/instant-trades-trade-status';
 
 @Component({
   selector: 'app-instant-trade-bottom-form',
@@ -18,10 +21,119 @@ export class InstantTradeBottomFormComponent {
   public providerControllers: ProviderControllerData[];
 
   constructor(
-    public readonly store: NewUiDataService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly instantTradeService: InstantTradeService,
+    private readonly cdr: ChangeDetectorRef
   ) {
-    this.providerControllers = [store.providerControllers[0], store.providerControllers[2]];
+    const formValue = this.swapFormService.commonTrade.value;
+    this.initiateProviders(formValue.toBlockchain);
+    if (
+      formValue.fromToken &&
+      formValue.toToken &&
+      formValue.fromBlockchain &&
+      formValue.fromAmount &&
+      formValue.toBlockchain
+    ) {
+      this.calculateTrades();
+    }
+    this.swapFormService.commonTrade.valueChanges.subscribe(form => {
+      if (
+        form.fromToken &&
+        form.toToken &&
+        form.fromBlockchain &&
+        form.fromAmount &&
+        form.toBlockchain
+      ) {
+        this.calculateTrades();
+      }
+    });
+  }
+
+  public async calculateTrades(): Promise<void> {
+    const tradeData = (await this.instantTradeService.calculateTrades()) as any[];
+    this.providerControllers = this.providerControllers.map((controller, index) => ({
+      ...controller,
+      trade: tradeData[index].value,
+      tradeState: INSTANT_TRADES_STATUS.APPROVAL
+    }));
+    this.cdr.detectChanges();
+  }
+
+  private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
+    switch (blockchain) {
+      case BLOCKCHAIN_NAME.ETHEREUM:
+        this.providerControllers = [
+          {
+            trade: null,
+            tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+            tradeProviderInfo: {
+              label: '1inch',
+              value: PROVIDERS.ONEINCH
+            },
+            isBestRate: false,
+            isSelected: false,
+            isCollapsed: false
+          }
+          // {
+          //   trade: null,
+          //   tradeState: null,
+          //   tradeProviderInfo: {
+          //     label: 'Uniswap',
+          //     value: PROVIDERS.UNISWAP
+          //   },
+          //   isBestRate: false
+          // }
+        ];
+        break;
+      // case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
+      //   this._instantTradeServices = [this.oneInchBscService, this.pancakeSwapService];
+      //   this.trades = [
+      //     {
+      //       trade: null,
+      //       tradeState: null,
+      //       tradeProviderInfo: {
+      //         label: '1inch',
+      //         value: PROVIDERS.ONEINCH
+      //       },
+      //       isBestRate: false
+      //     },
+      //     {
+      //       trade: null,
+      //       tradeState: null,
+      //       tradeProviderInfo: {
+      //         label: 'Pancakeswap',
+      //         value: PROVIDERS.PANCAKESWAP
+      //       },
+      //       isBestRate: false
+      //     }
+      //   ];
+      //   break;
+      // case BLOCKCHAIN_NAME.POLYGON:
+      //   this._instantTradeServices = [this.oneInchPolService, this.quickSwapService];
+      //   this.trades = [
+      //     {
+      //       trade: null,
+      //       tradeState: null,
+      //       tradeProviderInfo: {
+      //         label: '1inch',
+      //         value: PROVIDERS.ONEINCH
+      //       },
+      //       isBestRate: false
+      //     },
+      //     {
+      //       trade: null,
+      //       tradeState: null,
+      //       tradeProviderInfo: {
+      //         label: 'Quickswap',
+      //         value: PROVIDERS.QUICKSWAP
+      //       },
+      //       isBestRate: false
+      //     }
+      //   ];
+      //   break;
+      default:
+      // console.debug(`Blockchain ${this.blockchain} was not found.`);
+    }
   }
 
   public collapseProvider(providerNumber: number, isCollapsed: boolean): void {
