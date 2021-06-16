@@ -9,6 +9,8 @@
   background-color: $rubic-base-01;
   border-radius: 50px;
 
+  transition: 0.3s ease-in-out;
+
   &:hover {
     box-shadow: $rubic-shadow-button-hover;
 

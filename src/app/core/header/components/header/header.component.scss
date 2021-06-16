@@ -1,6 +1,8 @@
 @import 'src/scss/vars';
 
 .rubic-header {
+  position: relative;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -35,7 +37,15 @@
   &__menu {
     display: inline-flex;
   }
+
+  &__nav {
+    position: absolute;
+    left: 50%;
+
+    transform: translateX(-50%);
+  }
 }
+
 
 .button-link {
   display: inline-block;
