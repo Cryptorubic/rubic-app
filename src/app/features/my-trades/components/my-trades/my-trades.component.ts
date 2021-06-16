@@ -7,6 +7,10 @@ import { BehaviorSubject, combineLatest, Subject, timer } from 'rxjs';
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
+import { InstantTradesApiService } from '../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
+import { TradeData } from '../../../../shared/components/tokens-table/models/tokens-table-data';
+import { InstantTradesTradeData } from '../../../swaps-page-old/models/trade-data';
+import { InstantTradesResponseApi } from '../../../../core/services/backend/instant-trades-api/types/trade-api';
 
 interface TableToken extends BlockchainToken {
   image: string;
@@ -131,31 +135,54 @@ export class MyTradesComponent implements OnInit {
     startWith(1)
   );
 
-  constructor() {}
+  constructor(private instantTradesApiService: InstantTradesApiService) {}
 
   ngOnInit(): void {
     // mock request
-    timer(1500).subscribe(() => {
-      if (this.tableTrades.length) {
-        for (let i = 0; i < 20; ++i) {
-          this.tableTrades.push(this.tableTrades[i % 3]);
+    // timer(1500).subscribe(() => {
+    //   if (this.tableTrades.length) {
+    //     for (let i = 0; i < 20; ++i) {
+    //       this.tableTrades.push(this.tableTrades[i % 3]);
+    //     }
+    //     const tableData = [];
+    //     this.tableTrades.forEach(trade => {
+    //       tableData.push({
+    //         Status: trade.status,
+    //         From: trade.fromToken.blockchain,
+    //         To: trade.toToken.blockchain,
+    //         Sent: trade.fromToken.amount,
+    //         Expected: trade.toToken.amount,
+    //         Date: trade.date
+    //       });
+    //     });
+    //     console.log(tableData);
+    //     this.tableData$.next(tableData);
+    //   } else {
+    //     this.tableData$.next([]);
+    //   }
+    // });
+
+    this.instantTradesApiService
+      .fetchSwaps()
+      .pipe(map((trades: InstantTradesTradeData[]) => trades.map(trade => this.prepareData(trade))))
+      .subscribe(data => {
+        if (data.length > 0) {
+          this.tableData$.next(data);
+        } else {
+          this.tableData$.next([]);
         }
-        const tableData = [];
-        this.tableTrades.forEach(trade => {
-          tableData.push({
-            Status: trade.status,
-            From: trade.fromToken.blockchain,
-            To: trade.toToken.blockchain,
-            Sent: trade.fromToken.amount,
-            Expected: trade.toToken.amount,
-            Date: trade.date
-          });
-        });
-        this.tableData$.next(tableData);
-      } else {
-        this.tableData$.next([]);
-      }
-    });
+      });
+  }
+
+  public prepareData(trade: InstantTradesTradeData) {
+    return {
+      Status: trade.status,
+      From: trade.token.from.blockchain,
+      To: trade.token.to.blockchain,
+      Sent: 4234,
+      Expected: 324,
+      Date: new Date()
+    };
   }
 
   private getTableRowKey(

@@ -13,7 +13,7 @@
   </nav>
 
   <div class="rubic-header__profile">
-    <a class="button-link" routerLink="/new-ui/my-trades" routerLinkActive="button-link_active">My trades</a>
+    <a class="button-link" routerLink="my-trades" routerLinkActive="button-link_active">My trades</a>
 
     <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
     <app-user-profile *ngIf="($currentUser | async)?.address"></app-user-profile>

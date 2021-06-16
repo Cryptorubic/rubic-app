@@ -67,7 +67,7 @@ const routes: Routes = [
     loadChildren: () => import('./features/new-ui/new-ui.module').then(m => m.NewUiModule)
   },
   {
-    path: 'new-ui/my-trades',
+    path: 'my-trades',
     loadChildren: () => import('./features/my-trades/my-trades.module').then(m => m.MyTradesModule)
   }
 ];
