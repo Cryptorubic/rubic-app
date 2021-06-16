@@ -1,18 +1,53 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { BridgeService } from '../../services/bridge-service/bridge.service';
+import { ErrorsService } from '../../../../core/errors/errors.service';
+import { RubicError } from '../../../../shared/models/errors/RubicError';
+import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 
 @Component({
   selector: 'app-bridge-bottom-form',
   templateUrl: './bridge-bottom-form.component.html',
   styleUrls: ['./bridge-bottom-form.component.scss']
 })
-export class BridgeBottomFormComponent {
+export class BridgeBottomFormComponent implements OnInit, OnDestroy {
+  private formSubscription$: Subscription;
+
   public loading: boolean;
 
   public get allowSwap(): boolean {
     return true;
   }
 
-  constructor() {
+  constructor(
+    private bridgeService: BridgeService,
+    private errorsService: ErrorsService,
+    private swapFormService: SwapFormService
+  ) {
     this.loading = false;
+  }
+
+  ngOnInit() {
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(() =>
+      this.calculateTrade()
+    );
+  }
+
+  ngOnDestroy() {
+    this.formSubscription$.unsubscribe();
+  }
+
+  public calculateTrade() {
+    this.bridgeService.getFee().subscribe(fee => {
+      if (fee === null) {
+        this.errorsService.catch$(new RubicError());
+        return;
+      }
+
+      const { fromAmount } = this.swapFormService.commonTrade.value.input;
+      this.swapFormService.commonTrade.controls.output.patchValue({
+        toAmount: fromAmount.minus(fee)
+      });
+    });
   }
 }

@@ -1,26 +1,34 @@
-import { Component, Input } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import BigNumber from 'bignumber.js';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { SwapFormService } from '../../../features/swaps/services/swaps-form-service/swap-form.service';
 
 @Component({
   selector: 'app-amount-input',
   templateUrl: './token-amount-estimated.component.html',
-  styleUrls: ['./token-amount-estimated.component.scss']
+  styleUrls: ['./token-amount-estimated.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AmountInputComponent {
+export class AmountInputComponent implements OnInit, OnDestroy {
   @Input() public loading: boolean;
 
   @Input() public disabled: boolean;
 
-  public readonly form: FormGroup;
+  public usd: string;
 
-  constructor() {
-    this.loading = true;
-    this.disabled = false;
-    const value = new BigNumber('53123.1235956').toString(10);
-    this.form = new FormGroup({
-      usd: new FormControl('33.12'),
-      tokens: new FormControl(value)
+  public tokensAmount: string;
+
+  public formSubscription$: Subscription;
+
+  constructor(private swapFormService: SwapFormService) {}
+
+  ngOnInit() {
+    this.swapFormService.commonTrade.controls.output.valueChanges.subscribe(value => {
+      this.tokensAmount = value.toAmount.toFixed();
+      this.usd = value.toToken.price && value.toAmount.multipliedBy(value.toToken.price).toFixed(2);
     });
+  }
+
+  ngOnDestroy() {
+    this.formSubscription$.unsubscribe();
   }
 }
