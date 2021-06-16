@@ -30,7 +30,7 @@
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
-    "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它 <a href='https://www.metamask.io' target='_blank'>metamask.io</a>.",
+    "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它",
     "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
     "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
