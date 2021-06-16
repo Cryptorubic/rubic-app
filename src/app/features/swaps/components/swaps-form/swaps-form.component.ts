@@ -14,30 +14,23 @@ import { combineLatest } from 'rxjs';
   styleUrls: ['./swaps-form.component.scss']
 })
 export class SwapsFormComponent {
-  public readonly blockchainsList = [
+  public blockchainsList = [
     {
-      name: 'Binance Smart Chain',
-      symbol: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       chainImg: 'assets/images/icons/coins/bnb.svg',
-      id: 2
+      id: 56
     },
     {
-      name: 'Polygon',
-      symbol: BLOCKCHAIN_NAME.POLYGON,
+      name: BLOCKCHAIN_NAME.POLYGON,
       chainImg: 'assets/images/icons/coins/polygon.svg',
-      id: 3
+      id: 137
     },
+    { name: BLOCKCHAIN_NAME.ETHEREUM, chainImg: 'assets/images/icons/eth-logo.svg', id: 1 },
+    { name: BLOCKCHAIN_NAME.XDAI, chainImg: 'assets/images/icons/coins/xdai.svg', id: 100 },
     {
-      name: 'Ethereum',
-      symbol: BLOCKCHAIN_NAME.ETHEREUM,
-      chainImg: 'assets/images/icons/eth-logo.svg',
-      id: 4
-    },
-    {
-      name: 'xDai',
-      symbol: BLOCKCHAIN_NAME.XDAI,
-      chainImg: 'assets/images/icons/coins/xdai.svg',
-      id: 5
+      name: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
+      chainImg: 'assets/images/icons/coins/kovan.png',
+      id: 42
     }
   ];
 

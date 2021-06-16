@@ -26,14 +26,6 @@ export class RubicTokensComponent {
     private swapFormService: SwapFormService
   ) {}
 
-  openTokensSelect() {
-    this.tokensSelectService.showDialog(of(this.tokens)).subscribe(token => {
-      this.selectedToken = token;
-      const controlName = this.tokenType === 'from' ? 'fromToken' : 'toToken';
-      this.swapFormService.commonTrade.get(controlName).setValue(this.selectedToken);
-    });
-  }
-
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public testTokens: AvailableTokenAmount[] = [
     {
@@ -223,4 +215,19 @@ export class RubicTokensComponent {
       available: true
     }
   ];
+
+  openTokensSelect() {
+    this.tokensSelectService.showDialog(of(this.tokens)).subscribe((token: IToken) => {
+      if (token) {
+        this.selectedToken = token;
+        if (this.tokenType === 'from') {
+          this.swapFormService.commonTrade.get('fromBlockchain').setValue(token.blockchain);
+          this.swapFormService.commonTrade.get('fromToken').setValue(token);
+        } else {
+          this.swapFormService.commonTrade.get('toBlockchain').setValue(token.blockchain);
+          this.swapFormService.commonTrade.get('toToken').setValue(token.blockchain);
+        }
+      }
+    });
+  }
 }

@@ -53,6 +53,12 @@ export class SwapsService {
       this._bridgeTokensPairs.next(bridgeTokensPairs);
     });
 
+    const commonForm = this.swapFormService.commonTrade;
+    if (commonForm.get('fromBlockchain').value === commonForm.get('toBlockchain').value) {
+      this._swapProvider = this.instantTradesSwapProvider;
+    } else {
+      this._swapProvider = this.bridgesSwapProvider;
+    }
     this.swapFormService.commonTrade.valueChanges.subscribe(form => {
       if (form.fromBlockchain === form.toBlockchain) {
         this._swapProvider = this.instantTradesSwapProvider;

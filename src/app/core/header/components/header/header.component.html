@@ -8,12 +8,12 @@
   </div>
 
   <nav class="rubic-header__nav">
-    <a class="button-link button-link_active" href="#">Swaps</a>
+    <a class="button-link" routerLink="/" routerLinkActive="button-link_active">Swaps</a>
     <a class="button-link button-link_disabled" href="#">Order book</a>
   </nav>
 
   <div class="rubic-header__profile">
-    <a class="button-link" routerLink="/new-ui/my-trades">My trades</a>
+    <a class="button-link" routerLink="/new-ui/my-trades" routerLinkActive="button-link_active">My trades</a>
 
     <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
     <app-user-profile *ngIf="($currentUser | async)?.address"></app-user-profile>

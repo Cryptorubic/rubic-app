@@ -1,6 +1,7 @@
 import { Component, Input, QueryList, TemplateRef, ViewChildren } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 
 @Component({
   selector: 'app-rubic-blockchains',
@@ -18,6 +19,10 @@ export class RubicBlockchainsComponent {
 
   constructor(private readonly swapFormService: SwapFormService) {
     this.selectedBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.swapFormService.commonTrade.valueChanges.subscribe(form => {
+      this.selectedBlockchain =
+        this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
+    });
   }
 
   public selectBlockchain(blockchainId: number) {
@@ -25,5 +30,13 @@ export class RubicBlockchainsComponent {
     const controlValue = this.blockchainsList.find(blockchain => blockchain.id === blockchainId);
     this.selectedBlockchain = controlValue.symbol;
     this.swapFormService.commonTrade.get(controlName).setValue(this.selectedBlockchain);
+  }
+
+  public getChainIcon(): string | undefined {
+    const blockchain =
+      this.blockchainType === 'from'
+        ? this.swapFormService.commonTrade.get('fromBlockchain')
+        : this.swapFormService.commonTrade.get('toBlockchain');
+    return BlockchainsInfo.getBlockchainByName(blockchain.value)?.imagePath;
   }
 }
