@@ -80,10 +80,11 @@ export class SwapsFormComponent {
 
   public setAvailableTokens(tokenType: 'from' | 'to'): void {
     const oppositeBlockchainName = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
-    const oppositeBlockchain = this.swapsFormService.commonTrade.get(oppositeBlockchainName).value;
+    const oppositeBlockchain =
+      this.swapsFormService.commonTrade.controls.input.value[oppositeBlockchainName];
 
     const oppositeTokenName = tokenType === 'from' ? 'toToken' : 'fromToken';
-    const oppositeToken = this.swapsFormService.commonTrade.get(oppositeTokenName).value;
+    const oppositeToken = this.swapsFormService.commonTrade.controls.input.value[oppositeTokenName];
 
     const tokens: AvailableTokenAmount[] = [];
     if (!oppositeToken) {

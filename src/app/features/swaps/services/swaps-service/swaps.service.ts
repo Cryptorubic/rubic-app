@@ -25,7 +25,8 @@ export class SwapsService {
   }
 
   get swapMode(): SWAP_PROVIDER_TYPE | null {
-    return this._swapProvider?.TYPE;
+    // return this._swapProvider?.TYPE || SWAP_PROVIDER_TYPE.BRIDGE;
+    return SWAP_PROVIDER_TYPE.BRIDGE;
   }
 
   constructor(
@@ -53,13 +54,13 @@ export class SwapsService {
       this._bridgeTokensPairs.next(bridgeTokensPairs);
     });
 
-    const commonForm = this.swapFormService.commonTrade;
-    if (commonForm.get('fromBlockchain').value === commonForm.get('toBlockchain').value) {
+    const commonForm = this.swapFormService.commonTrade.controls.input;
+    if (commonForm.value.fromBlockchain === commonForm.value.toBlockchain) {
       this._swapProvider = this.instantTradesSwapProvider;
     } else {
       this._swapProvider = this.bridgesSwapProvider;
     }
-    this.swapFormService.commonTrade.valueChanges.subscribe(form => {
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
       if (form.fromBlockchain === form.toBlockchain) {
         this._swapProvider = this.instantTradesSwapProvider;
       } else {

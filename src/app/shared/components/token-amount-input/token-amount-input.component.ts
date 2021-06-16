@@ -73,7 +73,7 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
   public onAmountChange(newAmount: string): void {
     this.amount = newAmount;
     this.amountChange.emit(this.amount);
-    this.swapFormService.commonTrade.get('fromAmount').setValue(newAmount);
+    this.swapFormService.commonTrade.controls.input.patchValue({ fromAmount: newAmount });
   }
 
   public onUserBalanceMaxButtonClick(): void {
