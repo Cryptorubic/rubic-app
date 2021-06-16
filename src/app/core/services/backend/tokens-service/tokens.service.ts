@@ -6,12 +6,12 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import BigNumber from 'bignumber.js';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { IToken } from 'src/app/shared/models/tokens/IToken';
 import { HttpService } from '../../http/http.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BackendToken } from './models/BackendToken';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
-import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
-import { IToken } from '../../../../shared/models/tokens/IToken';
 
 const RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
 
@@ -57,15 +57,18 @@ export class TokensService {
     });
   }
 
-  private static prepareTokens(tokens: BackendToken[]): IToken[] {
-    return tokens
-      .map((token: BackendToken) => ({
-        ...token,
-        blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
-        price: token.usd_price,
-        usedInIframe: token.used_in_iframe
-      }))
-      .filter(token => token.address && token.blockchain);
+  private static prepareTokens(tokens: BackendToken[]): List<TokenAmount> {
+    return List(
+      tokens
+        .map((token: BackendToken) => ({
+          ...token,
+          blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
+          price: token.usd_price,
+          usedInIframe: token.used_in_iframe,
+          amount: new BigNumber(0)
+        }))
+        .filter(token => token.address && token.blockchain)
+    );
   }
 
   private getTokensList(): void {
@@ -73,13 +76,15 @@ export class TokensService {
       (tokens: BackendToken[]) => {
         let parsedTokens = TokensService.prepareTokens(tokens);
         parsedTokens = this.setCustomRanks(parsedTokens);
+        this._tokens.next(parsedTokens);
+
         this.recalculateUsersBalance(List(parsedTokens));
       },
       err => console.error('Error retrieving tokens', err)
     );
   }
 
-  private setCustomRanks(tokens: IToken[]): IToken[] {
+  private setCustomRanks(tokens: List<TokenAmount>): List<TokenAmount> {
     return tokens.map(token => {
       if (token.blockchain === BLOCKCHAIN_NAME.ETHEREUM) {
         if (token.address === RBC_ADDRESS) {

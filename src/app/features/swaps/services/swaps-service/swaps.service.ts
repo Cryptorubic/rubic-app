@@ -6,9 +6,7 @@ import { BridgesSwapProviderService } from '../../../bridge/services/bridges-swa
 import { InstantTradesSwapProviderService } from '../../../instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
 import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SwapsService {
   private _swapProvider: SwapProvider;
 

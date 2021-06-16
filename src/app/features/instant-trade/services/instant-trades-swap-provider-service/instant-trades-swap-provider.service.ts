@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SupportedTokensInfo } from '../../../swaps/models/SupportedTokensInfo';
 import { SwapProvider } from '../../../swaps/services/swap-provider';
 import { SWAP_PROVIDER_TYPE } from '../../../swaps/models/SwapProviderType';
-import { TokensService } from '../../../../core/services/backend/tokens-service/tokens.service';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class InstantTradesSwapProviderService extends SwapProvider {
   TYPE: SWAP_PROVIDER_TYPE.INSTANT_TRADE;
 

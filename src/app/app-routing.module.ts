@@ -13,7 +13,7 @@ const routes: Routes = [
   {
     path: 'cross-chain',
     loadChildren: () =>
-      import('./features/cross-chain-swaps-page/cross-chain-swaps-page.module').then(
+      import('./features/cross-chain-swaps-page-old/cross-chain-swaps-page.module').then(
         m => m.CrossChainSwapsPageModule
       )
   },
