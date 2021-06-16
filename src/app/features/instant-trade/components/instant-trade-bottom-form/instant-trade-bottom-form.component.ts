@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
 import { NewUiDataService } from 'src/app/features/new-ui/new-ui-data.service';
-import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models/providers.enum';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { IToken } from 'src/app/shared/models/tokens/IToken';
 
 @Component({
   selector: 'app-instant-trade-bottom-form',
@@ -10,9 +11,16 @@ import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstantTradeBottomFormComponent {
+  public get allowAnalyse(): boolean {
+    return Boolean(this.swapFormService.commonTrade.get('fromToken').value);
+  }
+
   public providerControllers: ProviderControllerData[];
 
-  constructor(public readonly store: NewUiDataService) {
+  constructor(
+    public readonly store: NewUiDataService,
+    private readonly swapFormService: SwapFormService
+  ) {
     this.providerControllers = [store.providerControllers[0], store.providerControllers[2]];
   }
 
@@ -116,4 +124,8 @@ export class InstantTradeBottomFormComponent {
   //   this.setSlippagePercent(this.slippagePercent);
   //   [this.bestProvider] = this.trades;
   // }
+  public getAnalytic() {
+    const token = this.swapFormService.commonTrade.get('fromToken').value as IToken;
+    window.open(`https://keks.app/t/${token.address}`, '_blank').focus();
+  }
 }

@@ -37,6 +37,7 @@ import {
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
+import { SwapsButtonComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -99,9 +100,11 @@ import { RubicSelectWalletComponent } from './components/rubic-select-wallet/rub
 import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
 import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.component';
+import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.component';
 
 @NgModule({
   declarations: [
+    SwapsButtonComponent,
     FooterComponent,
     SpinnerComponent,
     ArrowComponent,
@@ -172,7 +175,8 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     RubicSelectWalletComponent,
     RubicMenuComponent,
     RubicVolumeComponent,
-    RubicFooterComponent
+    RubicFooterComponent,
+    RubicBannerComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -209,7 +213,7 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     TuiToggleModule,
     TuiTabsModule,
     TuiInputCountModule,
-    TuiDataListWrapperModule,
+    TuiDataListWrapperModule
   ],
   exports: [
     FooterComponent,
@@ -275,7 +279,9 @@ import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.com
     RubicVolumeComponent,
     RubicFooterComponent,
     RubicHeaderComponent,
-    TokenAmountInputComponent
+    TokenAmountInputComponent,
+    RubicBannerComponent,
+    SwapsButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

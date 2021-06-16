@@ -3,6 +3,7 @@ import { IToken } from 'src/app/shared/models/tokens/IToken';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
 import BigNumber from 'bignumber.js';
 import { of } from 'rxjs';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { AvailableTokenAmount } from '../../models/tokens/AvailableTokenAmount';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
@@ -12,17 +13,14 @@ import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
   styleUrls: ['./rubic-tokens.component.scss']
 })
 export class RubicTokensComponent {
+
+  constructor(
+    private tokensSelectService: TokensSelectService,
+    private readonly swapFormService: SwapFormService
+  ) {}
   @Input() tokenType: 'from' | 'to';
 
   public selectedToken: IToken;
-
-  constructor(private tokensSelectService: TokensSelectService) {}
-
-  openTokensSelect() {
-    this.tokensSelectService
-      .showDialog(of(this.tokens))
-      .subscribe(token => (this.selectedToken = token));
-  }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public tokens: AvailableTokenAmount[] = [
@@ -213,4 +211,19 @@ export class RubicTokensComponent {
       available: true
     }
   ];
+
+  openTokensSelect() {
+    this.tokensSelectService.showDialog(of(this.tokens)).subscribe((token: IToken) => {
+      if (token) {
+        this.selectedToken = token;
+        if (this.tokenType === 'from') {
+          this.swapFormService.commonTrade.get('fromBlockchain').setValue(token.blockchain);
+          this.swapFormService.commonTrade.get('fromToken').setValue(token);
+        } else {
+          this.swapFormService.commonTrade.get('toBlockchain').setValue(token.blockchain);
+          this.swapFormService.commonTrade.get('toToken').setValue(token.blockchain);
+        }
+      }
+    });
+  }
 }

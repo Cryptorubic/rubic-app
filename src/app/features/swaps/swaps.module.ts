@@ -29,7 +29,6 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
 import { InstantTradesSwapProviderService } from 'src/app/features/instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
-import { SwapsButtonComponent } from './components/swaps-button/swaps-button.component';
 import { SettingsBridgeComponent } from './components/settings-bridge/settings-bridge.component';
 
 @NgModule({
@@ -37,7 +36,6 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     SwapsFormComponent,
     SettingsContainerComponent,
     SettingsItComponent,
-    SwapsButtonComponent,
     SettingsBridgeComponent
   ],
   exports: [SettingsContainerComponent, SwapsButtonComponent],

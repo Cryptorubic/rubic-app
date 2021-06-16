@@ -34,12 +34,8 @@
       ></app-rubic-blockchains>
       <app-rubic-tokens class="form-panel__tokens" tokenType="to"></app-rubic-tokens>
     </div>
-    <ng-container *ngIf="isInstantTrade">
-      <app-instant-trade-bottom-form
-      ></app-instant-trade-bottom-form>
-    </ng-container>
-    <app-bridge-bottom-form
-      *ngIf="!isInstantTrade"></app-bridge-bottom-form>
+    <app-instant-trade-bottom-form *ngIf="isInstantTrade"></app-instant-trade-bottom-form>
+    <app-bridge-bottom-form *ngIf="!isInstantTrade"></app-bridge-bottom-form>
   </main>
 </div>
 
