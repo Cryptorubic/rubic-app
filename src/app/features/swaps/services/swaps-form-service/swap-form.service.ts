@@ -9,8 +9,8 @@ export class SwapFormService {
 
   constructor() {
     this.commonTrade = new FormGroup({
-      fromBlockchain: new FormControl(),
-      toBlockchain: new FormControl(),
+      fromBlockchain: new FormControl('Ethereum'),
+      toBlockchain: new FormControl('Ethereum'),
       fromToken: new FormControl(),
       toToken: new FormControl(),
       fromAmount: new FormControl()
