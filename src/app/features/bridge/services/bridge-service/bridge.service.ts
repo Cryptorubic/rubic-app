@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
+import { BehaviorSubject, defer, Observable, of, Subject, throwError, zip } from 'rxjs';
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
@@ -10,8 +10,7 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { first, map } from 'rxjs/operators';
-import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { first, catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
@@ -152,7 +151,7 @@ export class BridgeService {
       return of(null);
     }
 
-    return this.getTokens().pipe(
+    return this.tokens.pipe(
       switchMap(tokens => {
         const { fromBlockchain, toBlockchain, fromToken, toToken } =
           this.swapFormService.commonTrade.value.input;
