@@ -6,6 +6,7 @@ import { TuiLoaderModule } from '@taiga-ui/core';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { MyTradesComponent } from './components/my-trades/my-trades.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [MyTradesComponent],
@@ -16,7 +17,8 @@ import { MyTradesComponent } from './components/my-trades/my-trades.component';
     TuiLoaderModule,
     TuiLetModule,
     TuiTablePaginationModule,
-    InlineSVGModule
+    InlineSVGModule,
+    SharedModule
   ]
 })
 export class MyTradesModule {}

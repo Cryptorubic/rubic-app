@@ -51,18 +51,20 @@
                 <div
                   class="status-circle"
                   [ngClass]="{
-                    'status-circle_green': trade.status === 'Completed',
+                    'status-circle_green': trade.status === 'completed',
                     'status-circle_yellow':
                       trade.status === 'Waiting for deposit' ||
                       trade.status === 'Waiting for receiving' ||
                       trade.status === 'Deposit in progress' ||
-                      trade.status === 'Withdraw in progress',
-                    'status-circle_red': trade.status === 'Cancelled'
+                      trade.status === 'Withdraw in progress' ||
+                      trade.status === 'pending',
+                    'status-circle_red': trade.status === 'cancelled' ||
+                      trade.status === 'rejected'
                   }"
                 >
                   <div class="status-circle__inner"></div>
                 </div>
-                {{ trade.status }}
+                <span class="status__text">{{ trade.status }}</span>
               </td>
 
               <td *tuiCell="'From'" tuiTd>
@@ -100,8 +102,8 @@
               </td>
 
               <td *tuiCell="'Date'" tuiTd class="date">
-                <span>{{ trade.date | date: 'shortDate' }}</span>
-                <span>{{ trade.date | date: 'shortTime' }} {{ trade.date | date: 'ZZZZ' }}</span>
+                <span>{{ trade.date | date: 'dd.MM.yyyy' }}</span>
+                <span>{{ trade.date | date: 'HH:mm' }}</span>
               </td>
             </tr>
           </ng-container>

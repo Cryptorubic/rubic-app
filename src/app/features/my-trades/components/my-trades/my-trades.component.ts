@@ -3,14 +3,15 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BLOCKCHAINS';
-import { BehaviorSubject, combineLatest, Subject, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
 import { InstantTradesApiService } from '../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
-import { TradeData } from '../../../../shared/components/tokens-table/models/tokens-table-data';
 import { InstantTradesTradeData } from '../../../swaps-page-old/models/trade-data';
-import { InstantTradesResponseApi } from '../../../../core/services/backend/instant-trades-api/types/trade-api';
+import SwapToken from '../../../../shared/models/tokens/SwapToken';
+import { BridgeApiService } from '../../../../core/services/backend/bridge-api/bridge-api.service';
+import { BridgeService } from '../../../cross-chain-swaps-page-old/bridge-page/services/bridge.service';
 
 interface TableToken extends BlockchainToken {
   image: string;
@@ -65,26 +66,7 @@ const bscToken: TableToken = {
 export class MyTradesComponent implements OnInit {
   public BLOCKCHAINS = BLOCKCHAINS;
 
-  private readonly tableTrades: TableTrade[] = [
-    {
-      status: 'Waiting for deposit',
-      fromToken: bscToken,
-      toToken: ethToken,
-      date: new Date(Date.now())
-    },
-    {
-      status: 'Completed',
-      fromToken: ethToken,
-      toToken: bscToken,
-      date: new Date(Date.now() - 60000)
-    },
-    {
-      status: 'Cancelled',
-      fromToken: ethToken,
-      toToken: bscToken,
-      date: new Date(Date.now() - 3600000)
-    }
-  ];
+  private tableTrades: TableTrade[];
 
   private readonly tableData$ = new Subject<TableRow[]>();
 
@@ -135,53 +117,51 @@ export class MyTradesComponent implements OnInit {
     startWith(1)
   );
 
-  constructor(private instantTradesApiService: InstantTradesApiService) {}
+  constructor(
+    private instantTradesApiService: InstantTradesApiService,
+    private bridgeApiService: BridgeApiService,
+  ) {}
 
   ngOnInit(): void {
-    // mock request
-    // timer(1500).subscribe(() => {
-    //   if (this.tableTrades.length) {
-    //     for (let i = 0; i < 20; ++i) {
-    //       this.tableTrades.push(this.tableTrades[i % 3]);
-    //     }
-    //     const tableData = [];
-    //     this.tableTrades.forEach(trade => {
-    //       tableData.push({
-    //         Status: trade.status,
-    //         From: trade.fromToken.blockchain,
-    //         To: trade.toToken.blockchain,
-    //         Sent: trade.fromToken.amount,
-    //         Expected: trade.toToken.amount,
-    //         Date: trade.date
-    //       });
-    //     });
-    //     console.log(tableData);
-    //     this.tableData$.next(tableData);
-    //   } else {
-    //     this.tableData$.next([]);
-    //   }
-    // });
-
     this.instantTradesApiService
       .fetchSwaps()
       .pipe(map((trades: InstantTradesTradeData[]) => trades.map(trade => this.prepareData(trade))))
       .subscribe(data => {
-        if (data.length > 0) {
-          this.tableData$.next(data);
-        } else {
-          this.tableData$.next([]);
-        }
+        this.tableTrades = data;
+        const tableData = [];
+        this.tableTrades.forEach(trade => {
+          tableData.push({
+            Status: trade.status,
+            From: trade.fromToken.blockchain,
+            To: trade.toToken.blockchain,
+            Sent: trade.fromToken.amount,
+            Expected: trade.toToken.amount,
+            Date: trade.date
+          });
+        });
+        this.tableData$.next(tableData);
       });
   }
 
-  public prepareData(trade: InstantTradesTradeData) {
+  public prepareData(trade: InstantTradesTradeData): TableTrade {
+    const data = {
+      status: trade.status,
+      fromToken: this.transformToTableToken(trade.token.from, trade.fromAmount, trade.blockchain),
+      toToken: this.transformToTableToken(trade.token.to, trade.toAmount, trade.blockchain),
+      date: trade.date
+    };
+    return data;
+  }
+
+  public transformToTableToken(token: SwapToken, amount?, blockchain?): TableToken {
     return {
-      Status: trade.status,
-      From: trade.token.from.blockchain,
-      To: trade.token.to.blockchain,
-      Sent: 4234,
-      Expected: 324,
-      Date: new Date()
+      image: token.image,
+      amount,
+      blockchain,
+      address: token.address,
+      name: token.name,
+      symbol: token.symbol,
+      decimals: token.decimals
     };
   }
 
@@ -213,7 +193,12 @@ export class MyTradesComponent implements OnInit {
     return (a, b) => direction * defaultSort(a[key], b[key]);
   }
 
-  public getTableTrade(tableRow: any): TableTrade {
+  public getTableTrade(tableRow: TableRow): TableTrade {
+    console.log(tableRow);
+    if (!this.tableTrades.find(trade => trade.date === tableRow.Date)) {
+      console.log(tableRow);
+      console.log(this.tableTrades);
+    }
     return this.tableTrades.find(trade => trade.date === tableRow.Date);
   }
 }
