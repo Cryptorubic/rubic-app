@@ -1,11 +1,8 @@
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import {
-  BlockchainsTokens,
-  BridgeToken
-} from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
-import { TOKEN_RANK } from '../../app/shared/models/tokens/token-rank';
+import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
+import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 
 const RBC: BridgeToken = {
   symbol: 'RBC',

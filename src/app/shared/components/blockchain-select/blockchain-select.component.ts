@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeBlockchain';
+import { BridgeBlockchain } from 'src/app/features/bridge/models/BridgeBlockchain';
 
 @Component({
   selector: 'app-blockchain-select',

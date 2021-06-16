@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
-import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
+import { AvailableTokenAmount } from '../../../../shared/models/tokens/AvailableTokenAmount';
 
 @Component({
   selector: 'app-tokens-list',
@@ -8,13 +8,13 @@ import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListComponent {
-  @Input() tokens: TokenAmount[] = [];
+  @Input() tokens: AvailableTokenAmount[] = [];
 
-  @Output() tokenSelect = new EventEmitter<TokenAmount>();
+  @Output() tokenSelect = new EventEmitter<AvailableTokenAmount>();
 
   constructor() {}
 
-  onTokenSelect(token: TokenAmount) {
+  onTokenSelect(token: AvailableTokenAmount) {
     this.tokenSelect.emit(token);
   }
 }

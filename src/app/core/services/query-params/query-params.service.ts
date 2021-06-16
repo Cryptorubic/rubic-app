@@ -5,9 +5,9 @@ import { List } from 'immutable';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { skip, take } from 'rxjs/operators';
 import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
+import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
@@ -68,7 +68,8 @@ export class QueryParamsService {
     this.$isIframeSubject = new BehaviorSubject<boolean>(false);
     this.$tokensSelectionDisabledSubject = new BehaviorSubject<boolean>(false);
     this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([]);
-    this.$tokens = this.tokensService.tokens.asObservable();
+    // @ts-ignore TODO
+    this.$tokens = this.tokensService.tokens;
     this.defaultQueryParams = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         from: 'ETH',
@@ -183,6 +184,7 @@ export class QueryParamsService {
                   }
                 : token;
             });
+            // @ts-ignore TODO
             this.tokensService.tokens.next(rankedTokens);
           });
         }

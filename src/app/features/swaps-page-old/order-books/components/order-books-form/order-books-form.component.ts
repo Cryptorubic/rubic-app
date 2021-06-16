@@ -204,6 +204,7 @@ export class OrderBooksFormComponent implements OnInit, OnDestroy {
 
       this.tradeForm = { ...this.tradeForm, blockchain: this.blockchain };
 
+      // @ts-ignore TODO
       this.tokens = this.tokensService.tokens.getValue();
 
       const tradeParameters = this.tradeParametersService.getTradeParameters(this.blockchain);

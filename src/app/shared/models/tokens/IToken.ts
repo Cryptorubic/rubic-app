@@ -5,5 +5,4 @@ export interface IToken extends BlockchainToken {
   rank: number;
   price: number;
   usedInIframe: boolean;
-  userBalance?: number;
 }
