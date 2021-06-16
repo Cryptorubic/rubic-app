@@ -1,15 +1,17 @@
 <div class="bottom-amount">
-  <div
-    *ngIf="usd"
-    class="bottom-amount__usd-container"
-    [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton_text': loading }"
-  >
-    <span class="bottom-amount__usd">{{usd}} USD</span>
-  </div>
-  <div
-    class="bottom-amount__tokens-container"
-    [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton_text': loading }"
-  >
-    <span class="bottom-amount__tokens">{{tokensAmount}}</span>
-  </div>
+  <ng-container *ngIf="!hidden">
+    <div
+      *ngIf="usd"
+      class="bottom-amount__usd-container"
+      [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
+    >
+      <span class="bottom-amount__usd">{{usd}} USD</span>
+    </div>
+    <div
+      class="bottom-amount__tokens-container"
+      [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
+    >
+      <span class="bottom-amount__tokens">{{tokensAmount}}</span>
+    </div>
+  </ng-container>
 </div>

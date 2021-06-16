@@ -9,7 +9,14 @@
 
   <nav class="rubic-header__nav">
     <a class="button-link" routerLink="/" routerLinkActive="button-link_active">Swaps</a>
-    <a class="button-link button-link_disabled" href="#">Order book</a>
+    <a
+      class="button-link button-link_disabled"
+      href="#"
+      [tuiHint]="orderBookTooltip"
+      tuiHintId="orderBook"
+      tuiHintMode="onDark"
+      tuiHintDirection="bottom-left"
+    >Order book</a>
   </nav>
 
   <div class="rubic-header__profile">
@@ -22,3 +29,8 @@
   </div>
 </header>
 <app-logout-confirm-modal></app-logout-confirm-modal>
+
+
+<ng-template #orderBookTooltip>
+  <span>Order book is not available in beta.</span>
+</ng-template>
