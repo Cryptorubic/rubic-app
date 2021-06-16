@@ -5,6 +5,7 @@
   --tui-height-s: 35px;
   --tui-primary: #{$rubic-base-01};
   --tui-primary-hover: #{$rubic-base-01};
+  --tui-focus: transparent;
 
   [tuiButton] {
     --tui-primary-text: #{$rubic-text-color-main};
@@ -44,6 +45,10 @@
 
     &._focused:not(&._pressed) {
       border-color: $rubic-primary;
+    }
+
+    &._focused::after {
+      border: 0;
     }
 
     &._disabled {
