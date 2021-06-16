@@ -14,8 +14,6 @@ import { BridgeService } from '../bridge-service/bridge.service';
 
 @Injectable()
 export class BridgesSwapProviderService extends SwapProvider {
-  TYPE: SWAP_PROVIDER_TYPE.BRIDGE;
-
   get tokens(): Observable<SupportedTokensInfo> {
     function addToken(
       tokenAmounts: List<TokenAmount>,
@@ -64,5 +62,6 @@ export class BridgesSwapProviderService extends SwapProvider {
     private readonly tokensService: TokensService
   ) {
     super();
+    this.TYPE = SWAP_PROVIDER_TYPE.BRIDGE;
   }
 }

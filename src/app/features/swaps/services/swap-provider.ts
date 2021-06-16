@@ -6,7 +6,7 @@ import { SWAP_PROVIDER_TYPE } from '../models/SwapProviderType';
 export abstract class SwapProvider {
   public abstract tokens: Observable<SupportedTokensInfo>;
 
-  public abstract TYPE: SWAP_PROVIDER_TYPE;
+  public TYPE: SWAP_PROVIDER_TYPE;
 
   protected getSupportedTokensInfoTemplate(): SupportedTokensInfo {
     const supportedBlockchains = Object.values(BLOCKCHAIN_NAME);

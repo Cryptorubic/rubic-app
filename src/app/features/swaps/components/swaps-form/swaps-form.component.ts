@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 
@@ -17,8 +17,12 @@ export class SwapsFormComponent {
   ];
 
   get isInstantTrade(): boolean {
-    return this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE;
+    this.cdr.markForCheck();
+    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
 
-  constructor(private readonly swapsService: SwapsService) {}
+  constructor(
+    private readonly swapsService: SwapsService,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
 }
