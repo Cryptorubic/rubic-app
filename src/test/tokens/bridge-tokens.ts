@@ -3,6 +3,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
 import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BlockchainsBridgeTokens } from '../../app/features/bridge/models/BlockchainsBridgeTokens';
 
 const RBC: BridgeToken = {
   symbol: 'RBC',
@@ -97,7 +98,25 @@ const WETH: BridgeToken = {
   toEthFee: 0
 };
 
-export const bridgeTestTokens = {
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: List([RBC]),
-  [BLOCKCHAIN_NAME.POLYGON]: List([ETH_POL, WETH])
-};
+export const bridgeTestTokens: BlockchainsBridgeTokens[] = [
+  {
+    fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    bridgeTokens: List([RBC])
+  },
+  {
+    fromBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    bridgeTokens: List([RBC])
+  },
+  {
+    fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    toBlockchain: BLOCKCHAIN_NAME.POLYGON,
+    bridgeTokens: List([ETH_POL, WETH])
+  },
+  {
+    fromBlockchain: BLOCKCHAIN_NAME.POLYGON,
+    toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    bridgeTokens: List([ETH_POL, WETH])
+  }
+];
