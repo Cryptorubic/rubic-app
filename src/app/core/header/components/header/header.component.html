@@ -9,14 +9,7 @@
 
   <nav class="rubic-header__nav">
     <a class="button-link" routerLink="/" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Swaps</a>
-    <a
-      class="button-link button-link_disabled"
-      href="#"
-      [tuiHint]="orderBookTooltip"
-      tuiHintId="orderBook"
-      tuiHintMode="onDark"
-      tuiHintDirection="bottom-left"
-    >Order book</a>
+    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order book</span>
   </nav>
 
   <div class="rubic-header__profile">

@@ -1,4 +1,5 @@
 <div class="instant-trade-bottom-form">
+  <ng-container *ngIf="allowTrade">
   <header class="instant-trade-bottom-form__header">
     <h4 class="instant-trade-bottom-form__title">Instant trade swaps</h4>
     <a *ngIf="allowAnalyse" (click)="getAnalytic()" class="instant-trade-bottom-form__analytics">
@@ -20,5 +21,6 @@
   </main>
   <footer class="instant-trade-bottom-form__footer">
   </footer>
+</ng-container>
 </div>
-<app-swaps-button (click)="createTrade()"></app-swaps-button>
+<app-swaps-button [disabled]="!allowTrade" (click)="createTrade()"></app-swaps-button>
