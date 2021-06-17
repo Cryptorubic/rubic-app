@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { debounceTime } from 'rxjs/operators';
+import BigNumber from 'bignumber.js';
 import { SwapProvider } from '../swap-provider';
 import { BridgesSwapProviderService } from '../../../bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { InstantTradesSwapProviderService } from '../../../instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
@@ -14,9 +15,9 @@ import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 export class SwapsService {
   private _swapProvider: SwapProvider;
 
-  private _availableTokens;
+  private _availableTokens = new Subject<SupportedTokensInfo>();
 
-  private _bridgeTokensPairs;
+  private _bridgeTokensPairs = new BehaviorSubject<BlockchainsBridgeTokens[]>([]);
 
   get availableTokens(): Observable<SupportedTokensInfo> {
     return this._availableTokens.asObservable();
@@ -36,9 +37,6 @@ export class SwapsService {
     private readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService
   ) {
-    this._availableTokens = new Subject<SupportedTokensInfo>();
-    this._bridgeTokensPairs = new Subject<BlockchainsBridgeTokens[]>();
-
     combineLatest([this.bridgesSwapProvider.tokens, this.instantTradesSwapProvider.tokens])
       .pipe(debounceTime(0))
       .subscribe(([bridgesTokens, instantTradesTokens]) => {
@@ -73,6 +71,33 @@ export class SwapsService {
 
   public async calculateTrade(): Promise<void> {
     await this.instantTradeService.calculateTrades();
+  }
+
+  public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
+    const { fromToken, toToken, fromBlockchain, toBlockchain } =
+      this.swapFormService.commonTrade.controls.input.value;
+    if (!fromToken || !toToken || fromBlockchain === toBlockchain) {
+      return null;
+    }
+
+    return this._bridgeTokensPairs
+      .getValue()
+      .find(
+        bridgeTokensPair =>
+          bridgeTokensPair.fromBlockchain === fromBlockchain &&
+          bridgeTokensPair.toBlockchain === toBlockchain
+      )
+      .bridgeTokens.find(
+        bridgeToken =>
+          bridgeToken.blockchainToken[fromBlockchain]?.address.toLowerCase() ===
+          fromToken.address.toLowerCase()
+      ).blockchainToken[fromBlockchain][amountType];
+  }
+
+  public checkMinMax(amount: BigNumber): boolean {
+    const minAmount = this.getMinMaxAmounts('minAmount');
+    const maxAmount = this.getMinMaxAmounts('maxAmount');
+    return amount.gte(minAmount) && amount.lte(maxAmount);
   }
 
   public createTrade(): void {}

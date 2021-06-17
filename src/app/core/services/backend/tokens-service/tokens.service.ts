@@ -12,6 +12,7 @@ import { HttpService } from '../../http/http.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BackendToken } from './models/BackendToken';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
+import { coingeckoTestTokens } from '../../../../../test/tokens/coingecko-tokens';
 
 const RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
 
@@ -51,7 +52,7 @@ export class TokensService {
 
     useTestingModule.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        //  this.tokens.next(List(coingeckoTestTokens));
+        this._tokens.next(List(coingeckoTestTokens));
         this.recalculateUsersBalance();
       }
     });
