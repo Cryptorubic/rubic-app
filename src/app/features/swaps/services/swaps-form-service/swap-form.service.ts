@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { IToken } from 'src/app/shared/models/tokens/IToken';
 import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { SwapForm } from '../../models/SwapForm';
 
 @Injectable({
@@ -29,8 +29,8 @@ export class SwapFormService {
       input: new FormGroup({
         fromBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM),
         toBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM),
-        fromToken: new FormControl<IToken>(),
-        toToken: new FormControl<IToken>(),
+        fromToken: new FormControl<TokenAmount>(),
+        toToken: new FormControl<TokenAmount>(),
         fromAmount: new FormControl<BigNumber>()
       }),
       output: new FormGroup({

@@ -26,7 +26,12 @@
       ></app-rubic-tokens>
     </div>
 
-    <app-token-amount-input></app-token-amount-input>
+    <app-token-amount-input
+      [token]="selectedToken.from"
+      [minAmount]="getMinMaxAmounts('minAmount')"
+      [maxAmount]="getMinMaxAmounts('maxAmount')"
+      (amountChange)="onTokenInputAmountChange($event)"
+    ></app-token-amount-input>
 
     <div class="swaps-form__delimiter">
       <app-rubic-switcher></app-rubic-switcher>
