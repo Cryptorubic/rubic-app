@@ -4,6 +4,7 @@ import { TokensSelectService } from 'src/app/features/tokens-select/services/tok
 import BigNumber from 'bignumber.js';
 import { of } from 'rxjs';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { AvailableTokenAmount } from '../../models/tokens/AvailableTokenAmount';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
@@ -18,6 +19,8 @@ export class RubicTokensComponent {
   @Input() tokenType: 'from' | 'to';
 
   @Input() tokens: AvailableTokenAmount[];
+
+  public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public selectedToken: IToken;
 
