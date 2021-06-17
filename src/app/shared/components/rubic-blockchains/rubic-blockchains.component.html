@@ -6,7 +6,7 @@
 
   <div class="blockchains__list">
     <app-rubic-button-circle
-      *ngFor="let blockchain of blockchainsList | slice: 1:4"
+      *ngFor="let blockchain of visibleBlockchainsList | slice: 0:3"
       class="blockchains__list-item"
       [size]="'s'"
       [hint]="blockchain.name"
@@ -18,7 +18,7 @@
     <app-dropdown-selector
       [dropdownButtonTemplate]="dropdownButtonTemplate"
       [dropdownOptionsTemplates]="dropdownOptionsTemplates"
-      (optionChange)="selectBlockchain(blockchainsList[$event].symbol)"
+      (optionChange)="selectBlockchain(visibleBlockchainsList[$event].symbol)"
     ></app-dropdown-selector>
 
     <ng-template #dropdownButtonTemplate>
@@ -27,7 +27,7 @@
       </app-rubic-button-circle>
     </ng-template>
 
-    <ng-template #dropdownOptionTemplate *ngFor="let blockchain of blockchainsList">
+    <ng-template #dropdownOptionTemplate *ngFor="let blockchain of visibleBlockchainsList">
       <div class="template-blockchains">
         <img
           class="template-blockchains__icon"

@@ -1,4 +1,4 @@
-import { Component, Input, QueryList, TemplateRef, ViewChildren } from '@angular/core';
+import { Component, Input, OnInit, QueryList, TemplateRef, ViewChildren } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 
@@ -7,7 +7,7 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
   templateUrl: './rubic-blockchains.component.html',
   styleUrls: ['./rubic-blockchains.component.scss']
 })
-export class RubicBlockchainsComponent {
+export class RubicBlockchainsComponent implements OnInit {
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
 
   @Input() public blockchainType: 'from' | 'to';
@@ -16,11 +16,21 @@ export class RubicBlockchainsComponent {
 
   @Input() blockchainsList: Array<any>;
 
-  constructor(private readonly swapFormService: SwapFormService) {
+  public visibleBlockchainsList: Array<any>;
+
+  constructor(private readonly swapFormService: SwapFormService) {}
+
+  ngOnInit(): void {
     this.selectedBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.visibleBlockchainsList = this.blockchainsList.filter(
+      blockchain => blockchain.symbol !== this.selectedBlockchain
+    );
     this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
       this.selectedBlockchain =
         this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
+      this.visibleBlockchainsList = this.blockchainsList.filter(
+        blockchain => blockchain.symbol !== this.selectedBlockchain
+      );
     });
   }
 
