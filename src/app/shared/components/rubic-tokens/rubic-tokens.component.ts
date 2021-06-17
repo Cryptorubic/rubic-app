@@ -238,26 +238,31 @@ export class RubicTokensComponent {
   }
 
   openTokensSelect() {
-    this.tokensSelectService.showDialog(of(this.tokens)).subscribe((token: IToken) => {
-      if (token) {
-        this.selectedToken = token;
-        if (this.tokenType === 'from') {
-          this.swapFormService.commonTrade.controls.input.patchValue({
-            fromBlockchain: token.blockchain
-          });
-          this.swapFormService.commonTrade.controls.input.patchValue({
-            fromToken: token
-          });
-        } else {
-          this.swapFormService.commonTrade.controls.input.patchValue({
-            toBlockchain: token.blockchain
-          });
-          this.swapFormService.commonTrade.controls.input.patchValue({
-            toToken: token
-          });
+    const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
+    const enabledCustomTokenBlockchain = this.tokenType === 'from' ? toBlockchain : fromBlockchain;
+
+    this.tokensSelectService
+      .showDialog(of(this.tokens), enabledCustomTokenBlockchain)
+      .subscribe((token: IToken) => {
+        if (token) {
+          this.selectedToken = token;
+          if (this.tokenType === 'from') {
+            this.swapFormService.commonTrade.controls.input.patchValue({
+              fromBlockchain: token.blockchain
+            });
+            this.swapFormService.commonTrade.controls.input.patchValue({
+              fromToken: token
+            });
+          } else {
+            this.swapFormService.commonTrade.controls.input.patchValue({
+              toBlockchain: token.blockchain
+            });
+            this.swapFormService.commonTrade.controls.input.patchValue({
+              toToken: token
+            });
+          }
         }
-      }
-    });
+      });
   }
 
   clearToken() {

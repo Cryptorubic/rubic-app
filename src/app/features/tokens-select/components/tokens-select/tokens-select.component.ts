@@ -25,6 +25,8 @@ import { AvailableTokenAmount } from '../../../../shared/models/tokens/Available
 export class TokensSelectComponent implements OnInit {
   public tokens: Observable<AvailableTokenAmount[]>;
 
+  public enabledCustomTokenBlockchain: BLOCKCHAIN_NAME;
+
   public customToken: AvailableTokenAmount;
 
   public tokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
@@ -55,13 +57,14 @@ export class TokensSelectComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       AvailableTokenAmount,
-      { tokens: Observable<AvailableTokenAmount[]> }
+      { tokens: Observable<AvailableTokenAmount[]>; enabledCustomTokenBlockchain: BLOCKCHAIN_NAME }
     >,
     private cdr: ChangeDetectorRef,
     private web3PublicService: Web3PublicService,
     private authService: AuthService
   ) {
     this.tokens = context.data.tokens;
+    this.enabledCustomTokenBlockchain = context.data.enabledCustomTokenBlockchain;
   }
 
   ngOnInit() {
@@ -145,7 +148,9 @@ export class TokensSelectComponent implements OnInit {
           amount,
           price: 0,
           usedInIframe: true,
-          available: true
+          available:
+            !this.enabledCustomTokenBlockchain ||
+            this.blockchain === this.enabledCustomTokenBlockchain
         };
 
         this.cdr.detectChanges();

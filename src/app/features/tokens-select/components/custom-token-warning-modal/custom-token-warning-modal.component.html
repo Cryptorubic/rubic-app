@@ -1,7 +1,7 @@
 <ng-container>
   <span>Are you sure you want to import {{token.symbol}} token? Use it at your own risk.</span>
   <div class="buttons-container">
-    <app-rubic-button fullWidth="true" buttonText="Cancel" appearance="secondary" (click)="onDecline()"></app-rubic-button>
-    <app-rubic-button fullWidth="true" bordered buttonText="Ok" (click)="onAccept()"></app-rubic-button>
+    <app-rubic-button fullWidth="true" appearance="secondary" (click)="onDecline()">Cancel</app-rubic-button>
+    <app-rubic-button fullWidth="true" bordered (click)="onAccept()">Ok</app-rubic-button>
   </div>
 </ng-container>
