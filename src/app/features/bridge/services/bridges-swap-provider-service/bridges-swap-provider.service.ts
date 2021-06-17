@@ -36,7 +36,10 @@ export class BridgesSwapProviderService extends SwapProvider {
       });
     }
 
-    return combineLatest([this.bridgeService.tokens, this.tokensService.tokens.pipe(skip(1))]).pipe(
+    return combineLatest([
+      this.bridgeService.tokens.pipe(skip(1)),
+      this.tokensService.tokens.pipe(skip(1))
+    ]).pipe(
       debounceTime(0),
       map(([blockchainsBridgeTokensArray, tokenAmounts]) => {
         const supportedTokensInfo = this.getSupportedTokensInfoTemplate();
