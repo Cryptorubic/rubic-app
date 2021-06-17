@@ -26,11 +26,12 @@
     "contractAddress": "Dirección del contrato de token",
     "enterAmount": "Ingresa el monto",
     "chooseToken": "Elija Token",
-    "warning": "Warning"
+    "warning": "Warning",
+    "customerSupport": "customer support"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
-    "noMetamaskInstalled": "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> y conectar la billeta con el botón de Conectar la Billetera.",
+    "noMetamaskInstalled": "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde y conectar la billeta con el botón de Conectar la Billetera.",
     "wrongNetwork": "Has seleccionado la red principal incorrecta. Elige {{ networkToChoose }} en MetaMask.",
     "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our <a href='mailto:support@rubic.finance' target='_blank'>Customer Support</a>.",
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",

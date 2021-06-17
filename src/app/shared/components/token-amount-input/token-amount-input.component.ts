@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { FormControl, Validators } from '@angular/forms';
-import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
@@ -37,7 +36,7 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
 
   public amountControl: FormControl;
 
-  constructor(private readonly cdr: ChangeDetectorRef, private swapFormService: SwapFormService) {}
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.amountControl = new FormControl(this.amount);
@@ -73,18 +72,14 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
   public onAmountChange(newAmount: string): void {
     this.amount = newAmount;
     this.amountChange.emit(this.amount);
-    this.swapFormService.commonTrade.controls.input.patchValue({
-      fromAmount: new BigNumber(newAmount)
-    });
   }
 
   public onUserBalanceMaxButtonClick(): void {
-    // @ts-ignore TODO
-    this.amount = this.token.userBalance.toString();
+    this.amount = this.token.amount.toString();
     this.amountChange.emit(this.amount);
   }
 
-  public getUsdPrice(): string {
-    return new BigNumber(this.amount || 0).multipliedBy(this.token?.price ?? 0).toFixed();
+  public getUsdPrice(): BigNumber {
+    return new BigNumber(this.amount || 0).multipliedBy(this.token?.price ?? 0);
   }
 }

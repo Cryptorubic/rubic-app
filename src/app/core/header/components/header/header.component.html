@@ -8,7 +8,7 @@
   </div>
 
   <nav class="rubic-header__nav">
-    <a class="button-link" routerLink="/" routerLinkActive="button-link_active">Swaps</a>
+    <a class="button-link" routerLink="/" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Swaps</a>
     <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order book</span>
   </nav>
 

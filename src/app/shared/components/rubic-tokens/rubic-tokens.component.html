@@ -1,6 +1,6 @@
 <div class="tokens">
   <div class="tokens__container">
-    <app-rubic-button [size]="'s'" [loading]="loading" (click)="openTokensSelect()">
+    <app-rubic-button [size]="'s'" [loading]="loading" (onClick)="openTokensSelect()">
       <ng-container *ngIf="selectedToken">
         <div class="tokens__inner" [tuiHint]="tooltip">
           <img
@@ -15,7 +15,8 @@
       <span *ngIf="!selectedToken">Select token</span>
     </app-rubic-button>
     <a
-      [href]="'https://etherscan.io/token/0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3'"
+      [hidden]="!selectedToken"
+      [href]="selectedToken?.address | scannerLink: selectedToken?.blockchain:ADDRESS_TYPE.TOKEN"
       rel="noopener"
       target="_blank"
     >

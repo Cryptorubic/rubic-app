@@ -14,10 +14,10 @@
 
     <div
       class="amount-input-container__user-balance-container user-balance-container"
-      *ngIf="token?.amount"
+      *ngIf="token?.amount.gt(0)"
     >
       <span class="user-balance-container__balance"
-        >You have {{ token?.amount | bigNumberFormat: 4 }}</span
+        >You have {{ token?.amount | bigNumberFormat | withRound: token:'toClosestValue' }}</span
       >
       <button class="user-balance-container__max-button" (click)="onUserBalanceMaxButtonClick()">
         MAX
@@ -26,7 +26,7 @@
   </div>
 
   <div class="token-input-container__right-side right-side">
-    <div class="right-side__usd-price-container usd-price-container">
+    <div class="right-side__usd-price-container usd-price-container" *ngIf="getUsdPrice().gt(0)">
       <span
         class="usd-price-container__price"
         [tuiHint]="usdPriceTooltip"

@@ -63,7 +63,11 @@ export class ScannerLinkPipe implements PipeTransform {
     useTestingMode.isTestingMode.subscribe(value => (this.isTestingMode = value));
   }
 
-  transform(address, blockchainName: BLOCKCHAIN_NAME, type: ADDRESS_TYPE) {
+  transform(address, blockchainName: BLOCKCHAIN_NAME, type: ADDRESS_TYPE): string {
+    if (!address || !blockchainName) {
+      return '';
+    }
+
     const baseUrl = !this.isTestingMode
       ? blockchainsScanners[blockchainName].baseUrl
       : blockchainsScanners[`${blockchainName}_TESTNET`].baseUrl;

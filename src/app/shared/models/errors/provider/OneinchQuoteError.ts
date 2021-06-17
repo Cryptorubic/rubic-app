@@ -5,5 +5,6 @@ export class OneinchQuoteError extends RubicError {
     super();
     this.translateKey = 'errors.oneInchQuote';
     this.comment = 'Oneinch quote error';
+    Object.setPrototypeOf(this, OneinchQuoteError.prototype);
   }
 }

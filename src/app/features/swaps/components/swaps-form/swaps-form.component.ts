@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -7,6 +7,13 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { combineLatest } from 'rxjs';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import BigNumber from 'bignumber.js';
+
+type SelectedToken = {
+  from: TokenAmount;
+  to: TokenAmount;
+};
 
 @Component({
   selector: 'app-swaps-form',
@@ -16,21 +23,28 @@ import { combineLatest } from 'rxjs';
 export class SwapsFormComponent {
   public blockchainsList = [
     {
-      name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      symbol: BLOCKCHAIN_NAME.ETHEREUM,
+      name: 'Ethereum',
+      chainImg: 'assets/images/icons/eth-logo.svg',
+      id: 1
+    },
+    {
+      symbol: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      name: 'Binance Smart Chain',
       chainImg: 'assets/images/icons/coins/bnb.svg',
       id: 56
     },
     {
-      name: BLOCKCHAIN_NAME.POLYGON,
+      symbol: BLOCKCHAIN_NAME.POLYGON,
+      name: 'Polygon',
       chainImg: 'assets/images/icons/coins/polygon.svg',
       id: 137
     },
-    { name: BLOCKCHAIN_NAME.ETHEREUM, chainImg: 'assets/images/icons/eth-logo.svg', id: 1 },
-    { name: BLOCKCHAIN_NAME.XDAI, chainImg: 'assets/images/icons/coins/xdai.svg', id: 100 },
     {
-      name: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
-      chainImg: 'assets/images/icons/coins/kovan.png',
-      id: 42
+      symbol: BLOCKCHAIN_NAME.XDAI,
+      name: 'XDai',
+      chainImg: 'assets/images/icons/coins/xdai.svg',
+      id: 100
     }
   ];
 
@@ -50,12 +64,13 @@ export class SwapsFormComponent {
     to: []
   };
 
+  public selectedToken: SelectedToken = {} as SelectedToken;
+
   public isLoading = true;
 
   constructor(
     private readonly swapsService: SwapsService,
-    private readonly swapsFormService: SwapFormService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly swapFormService: SwapFormService
   ) {
     combineLatest([
       this.swapsService.availableTokens,
@@ -66,34 +81,47 @@ export class SwapsFormComponent {
 
       this.setAvailableTokens('from');
       this.setAvailableTokens('to');
+
+      this.updateSelectedToken('from');
+      this.updateSelectedToken('to');
+
       this.isLoading = false;
     });
 
-    this.swapsFormService.commonTrade.valueChanges.subscribe(() => {
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(formValue => {
       this.isLoading = true;
+
       this.setAvailableTokens('from');
       this.setAvailableTokens('to');
+
+      this.setNewSelectedToken('from', formValue['fromToken']);
+      this.setNewSelectedToken('to', formValue['toToken']);
+
       this.isLoading = false;
     });
   }
 
-  public setAvailableTokens(tokenType: 'from' | 'to'): void {
+  private setAvailableTokens(tokenType: 'from' | 'to'): void {
     const oppositeBlockchainName = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
     const oppositeBlockchain =
-      this.swapsFormService.commonTrade.controls.input.value[oppositeBlockchainName];
+      this.swapFormService.commonTrade.controls.input.value[oppositeBlockchainName];
 
     const oppositeTokenName = tokenType === 'from' ? 'toToken' : 'fromToken';
-    const oppositeToken = this.swapsFormService.commonTrade.controls.input.value[oppositeTokenName];
+    const oppositeToken = this.swapFormService.commonTrade.controls.input.value[oppositeTokenName];
 
     const tokens: AvailableTokenAmount[] = [];
     if (!oppositeToken) {
       Object.values(this.blockchainsList).forEach(blockchainItem => {
-        const blockchain = blockchainItem.name;
+        const blockchain = blockchainItem.symbol;
 
-        this._supportedTokens[oppositeBlockchain][blockchain].forEach(token => {
+        this._supportedTokens[blockchain][blockchain].forEach(token => {
+          const foundToken = this._supportedTokens[oppositeBlockchain][blockchain].find(
+            supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
+          );
+
           tokens.push({
             ...token,
-            available: true
+            available: !!foundToken
           });
         });
       });
@@ -122,12 +150,12 @@ export class SwapsFormComponent {
         )
         .filter(tokenPair => tokenPair);
       Object.values(this.blockchainsList).forEach(blockchainItem => {
-        const blockchain = blockchainItem.name;
+        const blockchain = blockchainItem.symbol;
         if (oppositeBlockchain === blockchain) {
           return;
         }
 
-        this._supportedTokens[oppositeBlockchain][blockchain].forEach(token => {
+        this._supportedTokens[blockchain][blockchain].forEach(token => {
           const foundTokenPair = tokensPairs.find(
             bridgeToken =>
               bridgeToken.blockchainToken[blockchain]?.address.toLowerCase() ===
@@ -143,5 +171,72 @@ export class SwapsFormComponent {
     }
 
     this.availableTokens[tokenType] = tokens;
+  }
+
+  private updateSelectedToken(tokenType: 'from' | 'to'): void {
+    if (!this.selectedToken[tokenType]) {
+      return;
+    }
+
+    const token = this.selectedToken[tokenType];
+    this.selectedToken[tokenType] = this._supportedTokens[token.blockchain][token.blockchain].find(
+      supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
+    );
+
+    const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
+    this.swapFormService.commonTrade.controls.input.patchValue({
+      [formKey]: token
+    });
+  }
+
+  private setNewSelectedToken(tokenType: 'from' | 'to', token: TokenAmount): void {
+    if (!token) {
+      this.selectedToken[tokenType] = token;
+      return;
+    }
+
+    this.selectedToken[tokenType] = this._supportedTokens[token.blockchain][token.blockchain].find(
+      supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
+    );
+
+    if (this.selectedToken[tokenType] !== token) {
+      const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
+      this.swapFormService.commonTrade.controls.input.patchValue(
+        {
+          [formKey]: token
+        },
+        {
+          emitEvent: false
+        }
+      );
+    }
+  }
+
+  public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
+    if (
+      !this.selectedToken.from ||
+      !this.selectedToken.to ||
+      this.selectedToken.from.blockchain === this.selectedToken.to.blockchain
+    ) {
+      return null;
+    }
+
+    return this._bridgeTokensPairs
+      .find(
+        bridgeTokensPair =>
+          bridgeTokensPair.fromBlockchain === this.selectedToken.from.blockchain &&
+          bridgeTokensPair.toBlockchain === this.selectedToken.to.blockchain
+      )
+      .bridgeTokens.find(
+        bridgeToken =>
+          bridgeToken.blockchainToken[this.selectedToken.from.blockchain]?.address.toLowerCase() ===
+          this.selectedToken.from.address.toLowerCase()
+      ).blockchainToken[this.selectedToken.from.blockchain][amountType];
+  }
+
+  public onTokenInputAmountChange(amount: string): void {
+    this.swapFormService.commonTrade.controls.input.patchValue({
+      fromAmount: new BigNumber(amount)
+    });
   }
 }

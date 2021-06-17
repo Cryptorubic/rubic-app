@@ -26,13 +26,14 @@
     "contractAddress": "Token Contract Address",
     "enterAmount": "Enter amount",
     "chooseToken": "Choose Token",
-    "warning": "Warning"
+    "warning": "Warning",
+    "customerSupport": "customer support"
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
-    "noMetamaskInstalled": "Please make sure that you have metamask plugin installed and unlocked.\nYou can download it on <a href='https://www.metamask.io' target='_blank'>metamask.io</a>.",
+    "noMetamaskInstalled": "Please make sure that you have metamask plugin installed and unlocked.\nYou can download it on",
     "wrongNetwork": "You have selected the wrong network. Please choose {{ networkToChoose }} from MetaMask.",
-    "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our <a href='mailto:support@rubic.finance' target='_blank'>Customer Support</a>.",
+    "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our",
     "userReject": "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.",
     "rubicError": "Please try again later or try using another device. If you’re still having problems, please reach out to our",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
