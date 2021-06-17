@@ -13,7 +13,7 @@
     <div class="bridge-bottom-form__button">
       <app-rubic-button
         [fullWidth]="true"
-        (buttonClick)="onButtonClick()"
+        (onClick)="onButtonClick()"
         [loading]="loading || tradeInProgress"
         [disabled]="disabled"
       >{{ isAuthorized ? 'Swap' : 'Connect wallet' }}</app-rubic-button>

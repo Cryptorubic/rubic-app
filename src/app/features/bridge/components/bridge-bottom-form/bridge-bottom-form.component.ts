@@ -21,6 +21,7 @@ import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { WalletsModalComponent } from '../../../../core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
+import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
 
 @Component({
   selector: 'app-bridge-bottom-form',
@@ -39,8 +40,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public tradeInProgress = false;
 
+  public minmaxError = false;
+
   get disabled(): boolean {
-    if (this.loading || this.tradeInProgress) {
+    if (this.loading || this.tradeInProgress || this.minmaxError) {
       return true;
     }
     const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
@@ -51,6 +54,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private bridgeService: BridgeService,
     private errorsService: ErrorsService,
     private swapFormService: SwapFormService,
+    private swapService: SwapsService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
@@ -106,6 +110,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         toAmount: fromAmount.minus(fee)
       });
       this.loading = false;
+      this.minmaxError = !this.swapService.checkMinMax(fromAmount);
       this.cdr.detectChanges();
     });
   }
