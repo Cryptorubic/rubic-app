@@ -48,7 +48,7 @@ export class SwapsFormComponent {
     }
   ];
 
-  get isInstantTrade(): boolean {
+  public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
 
@@ -218,25 +218,7 @@ export class SwapsFormComponent {
   }
 
   public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
-    if (
-      !this.selectedToken.from ||
-      !this.selectedToken.to ||
-      this.selectedToken.from.blockchain === this.selectedToken.to.blockchain
-    ) {
-      return null;
-    }
-
-    return this._bridgeTokensPairs
-      .find(
-        bridgeTokensPair =>
-          bridgeTokensPair.fromBlockchain === this.selectedToken.from.blockchain &&
-          bridgeTokensPair.toBlockchain === this.selectedToken.to.blockchain
-      )
-      .bridgeTokens.find(
-        bridgeToken =>
-          bridgeToken.blockchainToken[this.selectedToken.from.blockchain]?.address.toLowerCase() ===
-          this.selectedToken.from.address.toLowerCase()
-      ).blockchainToken[this.selectedToken.from.blockchain][amountType];
+    return this.swapsService.getMinMaxAmounts(amountType);
   }
 
   public onTokenInputAmountChange(amount: string): void {

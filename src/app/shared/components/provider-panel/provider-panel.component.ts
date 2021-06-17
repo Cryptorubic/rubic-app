@@ -93,6 +93,8 @@ export class ProviderPanelComponent {
    */
   @Output() public selectProvider: EventEmitter<void>;
 
+  public tradeData;
+
   /**
    * Provider data.
    */
@@ -123,7 +125,7 @@ export class ProviderPanelComponent {
    * Emit provider selection event to parent component.
    */
   public activateProvider(): void {
-    if (!this.loading) {
+    if (!this.loading && !this.hasError) {
       this.collapseProvider.emit(!this.providerData.isCollapsed);
       this.selectProvider.emit();
     }
@@ -145,6 +147,7 @@ export class ProviderPanelComponent {
       isActive: data.isSelected,
       isCollapsed: data.isCollapsed
     };
+    this.tradeData = data.trade;
   }
 
   /**
@@ -172,5 +175,9 @@ export class ProviderPanelComponent {
         break;
       }
     }
+  }
+
+  getUsdPrice(): string {
+    return this.tradeData.to.amount.multipliedBy(this.tradeData.to.token.price).toFixed(2);
   }
 }

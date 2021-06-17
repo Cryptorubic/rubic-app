@@ -26,11 +26,13 @@
     "contractAddress": "代币合约地址",
     "enterAmount": "输入金额",
     "chooseToken": "选择币种",
-    "warning": "Warning"
+    "warning": "Warning",
+    "customerSupport": "customer support",
+    "OK": "好的"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
-    "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它 <a href='https://www.metamask.io' target='_blank'>metamask.io</a>.",
+    "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它",
     "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
     "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
@@ -478,6 +480,14 @@
         "text": "交換成功！",
         "link": "在資源管理器上檢查交易"
       }
+    },
+    "confirmImportModal": {
+      "title": "請確認您的導入！",
+      "text": "該令牌未在 Rubic.exchange 上列出。\n通過將其添加為自定義代幣，您確認使用它進行交易的風險由您自己承擔。"
     }
+  },
+  "riskBanner": {
+    "text": "請注意，用戶界面目前處於測試階段，它可能仍包含影響平台功能的未檢測到的錯誤。 需要您自擔風險使用它。",
+    "link": "切換到舊設計"
   }
 }

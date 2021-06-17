@@ -34,15 +34,9 @@ export class TokensListComponent implements OnChanges {
     }
   }
 
-  onTokenSelect(token: AvailableTokenAmount, index: number) {
+  onTokenSelect(token: AvailableTokenAmount) {
     if (token.available) {
       this.tokenSelect.emit(token);
-    } else {
-      this.hintsShown[index] = true;
-      setTimeout(() => {
-        this.hintsShown[index] = false;
-        this.cdr.detectChanges();
-      }, 1500);
     }
   }
 }

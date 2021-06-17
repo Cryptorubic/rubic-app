@@ -36,6 +36,8 @@ interface RubicTrade {
 export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridgeProvider {
   private static readonly RubicMaxAmount = 50000;
 
+  private isTestingMode = false;
+
   private readonly apiUrl = 'https://swap.rubic.exchange/api/v1/';
 
   private EthereumSmartContractAddress = '0x8E3BCC334657560253B83f08331d85267316e08a';
@@ -59,6 +61,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       if (value) {
         this.EthereumSmartContractAddress = '0xd806e441b27f4f827710469b0acb4e045e62b676';
         this.BinanceSmartContractAddress = '0x17caca02ddf472f62bfed5165facf7a6b5c72926';
+        this.isTestingMode = true;
       }
     });
   }
@@ -173,6 +176,13 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     }
 
     trade.amount = bridgeTrade.amount.multipliedBy(10 ** trade.token.decimals);
+
+    if (this.isTestingMode) {
+      trade.token.address =
+        bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM
+          ? '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9'
+          : '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8';
+    }
 
     const onApprove = bridgeTrade.onTransactionHash;
     await this.provideAllowance(trade, web3Public, onApprove);

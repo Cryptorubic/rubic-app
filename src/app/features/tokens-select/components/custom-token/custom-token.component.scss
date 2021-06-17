@@ -5,7 +5,17 @@
 .custom-token {
   padding-top: 22px;
 
-  &__button ::ng-deep button {
-    margin-top: 15px;
+  &__button {
+    ::ng-deep button {
+      margin-top: 15px;
+    }
+  }
+
+
+  &_disabled {
+    ::ng-deep > div {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
   }
 }

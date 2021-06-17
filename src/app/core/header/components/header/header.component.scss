@@ -8,6 +8,11 @@
   justify-content: space-between;
   padding: 30px 30px 24px;
 
+  &__disabled-link {
+    color: #909090;
+    font-size: 16px;
+  }
+
   &__main,
   &__nav,
   &__profile {
