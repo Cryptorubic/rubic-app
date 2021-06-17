@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models/providers.enum';
 import { OneInchEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-eth-service/one-inch-eth.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
+import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import { Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +15,12 @@ export class InstantTradeService {
 
   private readonly currentBlockchain: any;
 
+  private modalShowing: Subscription;
+
   constructor(
     private readonly oneInchEthService: OneInchEthService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService
   ) {
     this.currentBlockchain = 'ETH';
     this.setBlockchainsProviders();
@@ -35,8 +40,24 @@ export class InstantTradeService {
     return Promise.allSettled(providersDataPromises);
   }
 
-  public async create(): Promise<void> {
-    return this.blockchainsProviders[this.currentBlockchain].calculateTrade();
+  public async createTrade(provider: PROVIDERS, trade): Promise<void> {
+    await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(trade, {
+      onConfirm: () => {
+        this.modalShowing = this.notificationsService
+          .show('Transaction in progress', {
+            status: TuiNotification.Info,
+            autoClose: false,
+            hasCloseButton: false
+          })
+          .subscribe();
+      }
+    });
+    this.modalShowing.unsubscribe();
+    this.notificationsService
+      .show('Transaction completed', {
+        status: TuiNotification.Success
+      })
+      .subscribe();
   }
 
   private setBlockchainsProviders(): void {

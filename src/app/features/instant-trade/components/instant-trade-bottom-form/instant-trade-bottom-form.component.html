@@ -7,15 +7,18 @@
     </a>
   </header>
   <main class="instant-trade-bottom-form__body">
-    <div class="instant-trade-bottom-form__provider-item">
+    <div
+      class="instant-trade-bottom-form__provider-item"
+      *ngFor="let provider of providerControllers; let i = index"
+    >
       <app-provider-panel
-        [providerControllerData]="providerControllers[0]"
-        (selectProvider)="selectProvider(0)"
-        (collapseProvider)="collapseProvider(0, $event)"
+        [providerControllerData]="provider"
+        (selectProvider)="selectProvider(i)"
+        (collapseProvider)="collapseProvider(i, $event)"
       ></app-provider-panel>
     </div>
   </main>
   <footer class="instant-trade-bottom-form__footer">
   </footer>
 </div>
-<app-swaps-button></app-swaps-button>
+<app-swaps-button (click)="createTrade()"></app-swaps-button>
