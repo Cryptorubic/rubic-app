@@ -1,7 +1,6 @@
 import { Component, Input, QueryList, TemplateRef, ViewChildren } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 
 @Component({
   selector: 'app-rubic-blockchains',
@@ -25,18 +24,27 @@ export class RubicBlockchainsComponent {
     });
   }
 
-  public selectBlockchain(blockchainId: number) {
-    const controlName = this.blockchainType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-    const controlValue = this.blockchainsList.find(blockchain => blockchain.id === blockchainId);
-    this.selectedBlockchain = controlValue.name;
-    this.swapFormService.commonTrade.controls.input.patchValue({
-      [controlName]: this.selectedBlockchain
-    });
+  public selectBlockchain(blockchainSymbol: number) {
+    const blockchainControlName =
+      this.blockchainType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+    const blockchainControlValue = this.blockchainsList.find(
+      blockchain => blockchain.symbol === blockchainSymbol
+    );
+    if (this.selectedBlockchain !== blockchainControlValue.symbol) {
+      this.selectedBlockchain = blockchainControlValue.symbol;
+      this.swapFormService.commonTrade.controls.input.patchValue({
+        [blockchainControlName]: this.selectedBlockchain
+      });
+
+      const tokenControlName = this.blockchainType === 'from' ? 'fromToken' : 'toToken';
+      this.swapFormService.commonTrade.controls.input.patchValue({
+        [tokenControlName]: null
+      });
+    }
   }
 
   public getChainIcon(): string | undefined {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
-    const blockchain = this.blockchainType === 'from' ? fromBlockchain : toBlockchain;
-    return BlockchainsInfo.getBlockchainByName(blockchain)?.imagePath;
+    return this.blockchainsList.find(blockchain => blockchain.symbol === this.selectedBlockchain)
+      .chainImg;
   }
 }
