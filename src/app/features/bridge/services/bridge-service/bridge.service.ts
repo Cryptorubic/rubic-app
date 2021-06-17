@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, defer, Observable, of, Subject, throwError, zip } from 'rxjs';
+import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
@@ -30,6 +30,8 @@ import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
 import { BridgeApiService } from '../../../../core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from '../../../../core/services/backend/tokens-service/tokens.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
+import { BridgeToken } from '../../models/BridgeToken';
+import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 
 @Injectable()
 export class BridgeService {
@@ -151,8 +153,22 @@ export class BridgeService {
       return of(null);
     }
 
+    return this.getCurrentBridgeToken().pipe(
+      mergeMap(bridgeToken => {
+        const { toBlockchain } = this.swapFormService.commonTrade.value.input;
+
+        if (!bridgeToken) {
+          return of(null);
+        }
+
+        return this.bridgeProvider.getFee(bridgeToken, toBlockchain);
+      })
+    );
+  }
+
+  public getCurrentBridgeToken(): Observable<BridgeToken> {
     return this.tokens.pipe(
-      mergeMap(tokens => {
+      map(tokens => {
         const { fromBlockchain, toBlockchain, fromToken, toToken } =
           this.swapFormService.commonTrade.value.input;
         const bridgeTokensList = tokens.find(
@@ -166,38 +182,52 @@ export class BridgeService {
         );
 
         if (!bridgeToken) {
-          return of(null);
+          return null;
         }
 
-        return this.bridgeProvider.getFee(bridgeToken, toBlockchain);
+        return bridgeToken;
       })
     );
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
-    return defer(async () => {
-      this.checkSettings(bridgeTrade.fromBlockchain);
-      const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-      await this.checkBalance(
-        bridgeTrade.fromBlockchain,
-        bridgeTrade.toBlockchain,
-        token.address,
-        token.symbol,
-        token.decimals,
-        bridgeTrade.amount
-      );
-    }).pipe(
-      mergeMap(() => {
-        return this.bridgeProvider
-          .createTrade(bridgeTrade, () => this.updateTransactionsList())
-          .pipe(
-            tap(() => this.updateTransactionsList()),
-            catchError(err => {
-              console.error(err);
-              return throwError(new RubicError());
-            })
+  public createTrade(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+    const { fromBlockchain, toBlockchain, fromAmount } =
+      this.swapFormService.commonTrade.value.input;
+
+    return defer(() =>
+      this.getCurrentBridgeToken().pipe(
+        map(bridgeToken => ({
+          fromBlockchain,
+          toBlockchain,
+          token: bridgeToken,
+          amount: fromAmount,
+          toAddress: bridgeTradeRequest.toAddress,
+          onTransactionHash: bridgeTradeRequest.onTransactionHash
+        })),
+        tap(async (bridgeTrade: BridgeTrade) => {
+          this.checkSettings(bridgeTrade.fromBlockchain);
+          const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+          await this.checkBalance(
+            bridgeTrade.fromBlockchain,
+            bridgeTrade.toBlockchain,
+            token.address,
+            token.symbol,
+            token.decimals,
+            bridgeTrade.amount
           );
-      })
+        }),
+        mergeMap((bridgeTrade: BridgeTrade) => {
+          return this.bridgeProvider
+            .createTrade(bridgeTrade, () => this.updateTransactionsList())
+            .pipe(
+              tap(() => this.updateTransactionsList()),
+              catchError(err => {
+                console.error(err);
+                return throwError(new RubicError());
+              })
+            );
+        })
+      )
     );
   }
 

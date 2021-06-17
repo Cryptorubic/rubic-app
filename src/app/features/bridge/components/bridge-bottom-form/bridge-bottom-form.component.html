@@ -13,7 +13,8 @@
     <div class="bridge-bottom-form__button">
       <app-rubic-button
         [fullWidth]="true"
-      >{{ allowSwap ? 'Swap' : 'Connect wallet' }}</app-rubic-button>
+        (click)="onButtonClick()"
+      >{{ isAuthorized ? 'Swap' : 'Connect wallet' }}</app-rubic-button>
     </div>
     <div class="bridge-bottom-form__terms-and-conditions">
       You will get Binance Smart Chain tokens to the selected address
