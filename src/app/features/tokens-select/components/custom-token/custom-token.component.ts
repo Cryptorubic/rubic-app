@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { TranslateService } from '@ngx-translate/core';
 import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
 import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/custom-token-warning-modal.component';
 import { AvailableTokenAmount } from '../../../../shared/models/tokens/AvailableTokenAmount';
@@ -30,7 +31,8 @@ export class CustomTokenComponent {
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector
+    @Inject(Injector) private readonly injector: Injector,
+    private translateService: TranslateService
   ) {}
 
   public onImportClick() {
@@ -38,7 +40,7 @@ export class CustomTokenComponent {
       .open(new PolymorpheusComponent(CustomTokenWarningModalComponent, this.injector), {
         data: { token: this.token },
         dismissible: true,
-        label: 'Confirm import',
+        label: this.translateService.instant('modals.confirmImportModal.title'),
         size: 's'
       })
       .subscribe((confirm: boolean) => {

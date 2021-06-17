@@ -27,7 +27,8 @@
     "enterAmount": "输入金额",
     "chooseToken": "选择币种",
     "warning": "Warning",
-    "customerSupport": "customer support"
+    "customerSupport": "customer support",
+    "OK": "好的"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -479,6 +480,14 @@
         "text": "交換成功！",
         "link": "在資源管理器上檢查交易"
       }
+    },
+    "confirmImportModal": {
+      "title": "請確認您的導入！",
+      "text": "該令牌未在 Rubic.exchange 上列出。\n通過將其添加為自定義代幣，您確認使用它進行交易的風險由您自己承擔。"
     }
+  },
+  "riskBanner": {
+    "text": "請注意，用戶界面目前處於測試階段，它可能仍包含影響平台功能的未檢測到的錯誤。 需要您自擔風險使用它。",
+    "link": "切換到舊設計"
   }
 }
