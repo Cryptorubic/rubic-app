@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, defer, Observable, of, Subject, throwError, zip } from 'rxjs';
+import { BehaviorSubject, defer, from, Observable, of, throwError, zip } from 'rxjs';
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
@@ -30,6 +30,8 @@ import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
 import { BridgeApiService } from '../../../../core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from '../../../../core/services/backend/tokens-service/tokens.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
+import { BridgeToken } from '../../models/BridgeToken';
+import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 
 @Injectable()
 export class BridgeService {
@@ -112,13 +114,9 @@ export class BridgeService {
   private setTokens(): void {
     const tokensObservables: Observable<BlockchainsBridgeTokens>[] = [];
 
-    Object.values(BLOCKCHAIN_NAME).forEach((fromBlockchain, indexFrom) => {
-      Object.values(BLOCKCHAIN_NAME).forEach((toBlockchain, indexTo) => {
-        if (
-          indexFrom >= indexTo ||
-          fromBlockchain.includes('_TESTNET') ||
-          toBlockchain.includes('_TESTNET')
-        ) {
+    Object.values(BLOCKCHAIN_NAME).forEach(fromBlockchain => {
+      Object.values(BLOCKCHAIN_NAME).forEach(toBlockchain => {
+        if (fromBlockchain.includes('_TESTNET') || toBlockchain.includes('_TESTNET')) {
           return;
         }
 
@@ -151,19 +149,9 @@ export class BridgeService {
       return of(null);
     }
 
-    return this.tokens.pipe(
-      mergeMap(tokens => {
-        const { fromBlockchain, toBlockchain, fromToken, toToken } =
-          this.swapFormService.commonTrade.value.input;
-        const bridgeTokensList = tokens.find(
-          item => item.fromBlockchain === fromBlockchain && item.toBlockchain === toBlockchain
-        );
-
-        const bridgeToken = bridgeTokensList.bridgeTokens?.find(
-          item =>
-            item.blockchainToken[fromBlockchain].address === fromToken.address &&
-            item.blockchainToken[toBlockchain].address === toToken.address
-        );
+    return this.getCurrentBridgeToken().pipe(
+      mergeMap(bridgeToken => {
+        const { toBlockchain } = this.swapFormService.commonTrade.value.input;
 
         if (!bridgeToken) {
           return of(null);
@@ -174,30 +162,72 @@ export class BridgeService {
     );
   }
 
-  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
-    return defer(async () => {
-      this.checkSettings(bridgeTrade.fromBlockchain);
-      const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-      await this.checkBalance(
-        bridgeTrade.fromBlockchain,
-        bridgeTrade.toBlockchain,
-        token.address,
-        token.symbol,
-        token.decimals,
-        bridgeTrade.amount
-      );
-    }).pipe(
-      mergeMap(() => {
-        return this.bridgeProvider
-          .createTrade(bridgeTrade, () => this.updateTransactionsList())
-          .pipe(
-            tap(() => this.updateTransactionsList()),
-            catchError(err => {
-              console.error(err);
-              return throwError(new RubicError());
-            })
-          );
+  public getCurrentBridgeToken(): Observable<BridgeToken> {
+    return this.tokens.pipe(
+      map(tokens => {
+        const { fromBlockchain, toBlockchain, fromToken, toToken } =
+          this.swapFormService.commonTrade.value.input;
+        const bridgeTokensList = tokens.find(
+          item => item.fromBlockchain === fromBlockchain && item.toBlockchain === toBlockchain
+        );
+
+        const bridgeToken = bridgeTokensList.bridgeTokens?.find(
+          item =>
+            item.blockchainToken[fromBlockchain].address.toLowerCase() ===
+              fromToken.address.toLowerCase() &&
+            item.blockchainToken[toBlockchain].address.toLowerCase() ===
+              toToken.address.toLowerCase()
+        );
+
+        if (!bridgeToken) {
+          return null;
+        }
+
+        return bridgeToken;
       })
+    );
+  }
+
+  public createTrade(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+    const { fromBlockchain, toBlockchain, fromAmount } =
+      this.swapFormService.commonTrade.value.input;
+
+    return defer(() =>
+      this.getCurrentBridgeToken().pipe(
+        map(bridgeToken => ({
+          fromBlockchain,
+          toBlockchain,
+          token: bridgeToken,
+          amount: fromAmount,
+          toAddress: bridgeTradeRequest.toAddress,
+          onTransactionHash: bridgeTradeRequest.onTransactionHash
+        })),
+        mergeMap((bridgeTrade: BridgeTrade) => {
+          this.checkSettings(bridgeTrade.fromBlockchain);
+          const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+          return from(
+            this.checkBalance(
+              bridgeTrade.fromBlockchain,
+              bridgeTrade.toBlockchain,
+              token.address,
+              token.symbol,
+              token.decimals,
+              bridgeTrade.amount
+            )
+          ).pipe(map(() => bridgeTrade));
+        }),
+        mergeMap((bridgeTrade: BridgeTrade) => {
+          return this.bridgeProvider
+            .createTrade(bridgeTrade, () => this.updateTransactionsList())
+            .pipe(
+              tap(() => this.updateTransactionsList()),
+              catchError(err => {
+                console.error(err);
+                return throwError(new RubicError());
+              })
+            );
+        })
+      )
     );
   }
 
