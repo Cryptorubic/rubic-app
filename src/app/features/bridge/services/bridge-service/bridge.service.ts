@@ -10,7 +10,7 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { first, catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, first, map, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
@@ -77,6 +77,12 @@ export class BridgeService {
     });
 
     this.subscribeToFormChanges();
+
+    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      if (isTestingMode) {
+        this.tokens$.next(bridgeTestTokens);
+      }
+    });
   }
 
   private setupBlockchainsProviders(): void {
