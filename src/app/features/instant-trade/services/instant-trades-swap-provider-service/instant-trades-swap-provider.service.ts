@@ -9,8 +9,6 @@ import { SWAP_PROVIDER_TYPE } from '../../../swaps/models/SwapProviderType';
 
 @Injectable()
 export class InstantTradesSwapProviderService extends SwapProvider {
-  TYPE: SWAP_PROVIDER_TYPE.INSTANT_TRADE;
-
   get tokens(): Observable<SupportedTokensInfo> {
     const supportedTokensInfo = this.getSupportedTokensInfoTemplate();
 
@@ -36,5 +34,6 @@ export class InstantTradesSwapProviderService extends SwapProvider {
 
   constructor(private tokensService: TokensService) {
     super();
+    this.TYPE = SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
 }

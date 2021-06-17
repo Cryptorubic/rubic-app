@@ -12,18 +12,39 @@ export class RubicBlockchainsComponent {
 
   @Input() public blockchainType: 'from' | 'to';
 
-  public selectedBlockchain = 'Ethereum';
+  public selectedBlockchain: BLOCKCHAIN_NAME;
 
   @Input() blockchainsList: Array<any>;
 
   constructor(private readonly swapFormService: SwapFormService) {
     this.selectedBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
+      this.selectedBlockchain =
+        this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
+    });
   }
 
-  public selectBlockchain(blockchainId: number) {
-    const controlName = this.blockchainType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-    const controlValue = this.blockchainsList.find(blockchain => blockchain.id === blockchainId);
-    this.selectedBlockchain = controlValue.name;
-    this.swapFormService.commonTrade.get(controlName).setValue(this.selectedBlockchain);
+  public selectBlockchain(blockchainSymbol: number) {
+    const blockchainControlName =
+      this.blockchainType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+    const blockchainControlValue = this.blockchainsList.find(
+      blockchain => blockchain.symbol === blockchainSymbol
+    );
+    if (this.selectedBlockchain !== blockchainControlValue.symbol) {
+      this.selectedBlockchain = blockchainControlValue.symbol;
+      this.swapFormService.commonTrade.controls.input.patchValue({
+        [blockchainControlName]: this.selectedBlockchain
+      });
+
+      const tokenControlName = this.blockchainType === 'from' ? 'fromToken' : 'toToken';
+      this.swapFormService.commonTrade.controls.input.patchValue({
+        [tokenControlName]: null
+      });
+    }
+  }
+
+  public getChainIcon(): string | undefined {
+    return this.blockchainsList.find(blockchain => blockchain.symbol === this.selectedBlockchain)
+      .chainImg;
   }
 }

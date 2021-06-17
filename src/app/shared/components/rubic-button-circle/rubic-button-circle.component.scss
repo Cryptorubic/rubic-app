@@ -8,6 +8,7 @@
   --tui-primary-active: $rubic-primary;
   --tui-secondary-active: $rubic-primary;
   --tui-disabled-opacity: 1;
+  --tui-focus: transparent;
 
   [tuiIconButton] {
     --tui-primary: transparent;
@@ -42,6 +43,10 @@
 
       ::ng-deep img {
         filter: brightness(10);
+      }
+
+      ::ng-deep .burger-menu__line {
+        background-color: $rubic-base-01;
       }
     }
 

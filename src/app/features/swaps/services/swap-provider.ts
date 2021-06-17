@@ -6,16 +6,18 @@ import { SWAP_PROVIDER_TYPE } from '../models/SwapProviderType';
 export abstract class SwapProvider {
   public abstract tokens: Observable<SupportedTokensInfo>;
 
-  public abstract TYPE: SWAP_PROVIDER_TYPE;
+  public TYPE: SWAP_PROVIDER_TYPE;
 
-  protected getSupportedTokensInfoTemplate(): SupportedTokensInfo {
+  public getSupportedTokensInfoTemplate(): SupportedTokensInfo {
     const supportedBlockchains = Object.values(BLOCKCHAIN_NAME);
 
     const arrayToObject = (array: any[], value: any) =>
       array.reduce((acc, elem) => {
-        acc[elem] = {
-          ...value
-        };
+        if (Array.isArray(value)) {
+          acc[elem] = [...value];
+        } else {
+          acc[elem] = { ...value };
+        }
         return acc;
       }, {});
 

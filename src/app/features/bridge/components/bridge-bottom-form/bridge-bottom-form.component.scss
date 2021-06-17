@@ -1,3 +1,4 @@
+@import 'src/scss/vars';
 
 .bridge-bottom-form {
   display: flex;
@@ -11,6 +12,31 @@
 
       font-weight: 500;
       font-size: 16px;
+    }
+  }
+
+  &__button {
+    margin-bottom: 15px;
+
+    ::ng-deep .content {
+      font-weight: 500;
+    }
+  }
+
+  &__footer {
+    padding-top: 25px;
+  }
+
+  &__terms-and-conditions {
+    font-weight: 300;
+    font-size: 14px;
+    text-align: center;
+
+    a {
+      display: block;
+
+      color: $rubic-primary;
+      font-weight: 400;
     }
   }
 }

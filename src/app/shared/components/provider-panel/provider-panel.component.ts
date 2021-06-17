@@ -137,10 +137,10 @@ export class ProviderPanelComponent {
     this.calculateState(data.tradeState);
     this.providerData = {
       name: data.tradeProviderInfo.label,
-      amount: data.trade.to.amount,
-      estimatedGas: data.trade.estimatedGas,
-      gasFeeInEth: data.trade.gasFeeInEth,
-      gasFeeInUsd: data.trade.gasFeeInUsd,
+      amount: data.trade?.to?.amount,
+      estimatedGas: data.trade?.estimatedGas,
+      gasFeeInEth: data.trade?.gasFeeInEth,
+      gasFeeInUsd: data.trade?.gasFeeInUsd,
       isBestRate: data.isBestRate,
       isActive: data.isSelected,
       isCollapsed: data.isCollapsed

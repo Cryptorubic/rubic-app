@@ -1,23 +1,33 @@
 <div class="tokens">
   <div class="tokens__container">
-    <app-rubic-button [size]="'s'" (click)="openTokensSelect()">
+    <app-rubic-button [size]="'s'" [loading]="loading" (click)="openTokensSelect()">
       <ng-container *ngIf="selectedToken">
-        <img
-          [src]="selectedToken.imgUrl"
-          width="18px"
-          height="18px"
-          [alt]="selectedToken.symbol">
-        {{ selectedToken.symbol }}
+        <div class="tokens__inner" [tuiHint]="tooltip">
+          <img
+            [src]="selectedToken.image || 'assets/images/icons/coins/empty.svg'"
+            width="18px"
+            height="18px"
+            [alt]="selectedToken.symbol"
+          />
+          {{ selectedToken.symbol }}
+        </div>
       </ng-container>
       <span *ngIf="!selectedToken">Select token</span>
     </app-rubic-button>
-    <a [href]="'https://etherscan.io/token/0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3'">
-      <img
-        [src]="'assets/img/icons/scanner.svg'"
-        rel="noopener"
-        target="_blank"
-        alt="Go to the scanner"
-      />
+    <a
+      [hidden]="!selectedToken"
+      [href]="selectedToken?.address | scannerLink: selectedToken?.blockchain:ADDRESS_TYPE.TOKEN"
+      rel="noopener"
+      target="_blank"
+    >
+      <img [src]="'assets/img/icons/scanner.svg'" alt="Go to the scanner" />
     </a>
   </div>
 </div>
+
+<ng-template #tooltip>
+  <div class="tokens__clear-container" (click)="clearToken()">
+    <span>Clear token</span>
+    <tui-svg class="icon" src="tuiIconCloseCircleLarge"></tui-svg>
+  </div>
+</ng-template>
