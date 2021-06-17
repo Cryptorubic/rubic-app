@@ -25,7 +25,9 @@ export class RubicButtonCircleComponent {
     this._disabled = disabled === '' || disabled;
   }
 
-  constructor() {}
+  constructor() {
+    this.hint = '';
+  }
 
   onClick(event: MouseEvent) {
     this.clickEmit.emit(event);

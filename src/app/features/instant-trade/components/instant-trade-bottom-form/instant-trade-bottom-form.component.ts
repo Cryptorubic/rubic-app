@@ -20,6 +20,13 @@ export class InstantTradeBottomFormComponent implements OnInit {
     return Boolean(this.swapFormService.commonTrade.controls.input.value.fromToken);
   }
 
+  public get allowTrade(): boolean {
+    const form = this.swapFormService.commonTrade.controls.input.value;
+    return Boolean(
+      form.fromBlockchain && form.fromToken && form.toBlockchain && form.toToken && form.fromAmount
+    );
+  }
+
   public providerControllers: ProviderControllerData[];
 
   private currentBlockchain: BLOCKCHAIN_NAME;
@@ -61,6 +68,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public async calculateTrades(): Promise<void> {
+    this.providerControllers = this.providerControllers.map(controller => ({
+      ...controller,
+      tradeState: INSTANT_TRADES_STATUS.CALCULATION
+    }));
     const tradeData = (await this.instantTradeService.calculateTrades()) as any[];
     this.providerControllers = this.providerControllers.map((controller, index) => ({
       ...controller,
@@ -74,9 +85,20 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public async createTrade(): Promise<void> {
-    const provider = this.providerControllers.find(el => el.isSelected);
-    if (provider) {
+    const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
+    const provider = this.providerControllers[providerIndex];
+    if (providerIndex) {
+      this.providerControllers[providerIndex] = {
+        ...this.providerControllers[providerIndex],
+        tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
+      };
+      this.cdr.detectChanges();
       await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, provider.trade);
+      this.providerControllers[providerIndex] = {
+        ...this.providerControllers[providerIndex],
+        tradeState: INSTANT_TRADES_STATUS.COMPLETED
+      };
+      this.cdr.detectChanges();
     } else {
       console.error('No provider selected');
     }
