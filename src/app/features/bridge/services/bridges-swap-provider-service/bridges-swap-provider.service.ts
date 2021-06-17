@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { debounceTime, map, skip } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -36,8 +36,8 @@ export class BridgesSwapProviderService extends SwapProvider {
       });
     }
 
-    return this.bridgeService.tokens.pipe(
-      withLatestFrom(this.tokensService.tokens),
+    return combineLatest([this.bridgeService.tokens, this.tokensService.tokens.pipe(skip(1))]).pipe(
+      debounceTime(0),
       map(([blockchainsBridgeTokensArray, tokenAmounts]) => {
         const supportedTokensInfo = this.getSupportedTokensInfoTemplate();
 

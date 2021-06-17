@@ -230,7 +230,12 @@ export class RubicTokensComponent {
   constructor(
     private tokensSelectService: TokensSelectService,
     private readonly swapFormService: SwapFormService
-  ) {}
+  ) {
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(formValue => {
+      const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+      this.selectedToken = formValue[formKey];
+    });
+  }
 
   openTokensSelect() {
     this.tokensSelectService.showDialog(of(this.tokens)).subscribe((token: IToken) => {

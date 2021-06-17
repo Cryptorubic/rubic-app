@@ -1,11 +1,7 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
-interface BlockchainToken {
-  address: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-
+interface BlockchainToken extends TokenAmount {
   minAmount: number;
   maxAmount: number;
 }

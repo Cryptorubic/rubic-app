@@ -33,11 +33,7 @@ export class RubicButtonComponent {
 
   @Input() loading = false;
 
-  @Output() buttonClick = new EventEmitter<void>();
-
-  onClick() {
-    this.buttonClick.emit();
-  }
+  @Output() onClick = new EventEmitter<void>();
 
   constructor() {}
 }
