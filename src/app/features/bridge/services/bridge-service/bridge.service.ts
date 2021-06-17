@@ -10,7 +10,7 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { first, catchError, map, mergeMap, tap, delayWhen } from 'rxjs/operators';
+import { first, catchError, map, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
@@ -114,13 +114,9 @@ export class BridgeService {
   private setTokens(): void {
     const tokensObservables: Observable<BlockchainsBridgeTokens>[] = [];
 
-    Object.values(BLOCKCHAIN_NAME).forEach((fromBlockchain, indexFrom) => {
-      Object.values(BLOCKCHAIN_NAME).forEach((toBlockchain, indexTo) => {
-        if (
-          indexFrom >= indexTo ||
-          fromBlockchain.includes('_TESTNET') ||
-          toBlockchain.includes('_TESTNET')
-        ) {
+    Object.values(BLOCKCHAIN_NAME).forEach(fromBlockchain => {
+      Object.values(BLOCKCHAIN_NAME).forEach(toBlockchain => {
+        if (fromBlockchain.includes('_TESTNET') || toBlockchain.includes('_TESTNET')) {
           return;
         }
 
@@ -177,8 +173,10 @@ export class BridgeService {
 
         const bridgeToken = bridgeTokensList.bridgeTokens?.find(
           item =>
-            item.blockchainToken[fromBlockchain].address === fromToken.address &&
-            item.blockchainToken[toBlockchain].address === toToken.address
+            item.blockchainToken[fromBlockchain].address.toLowerCase() ===
+              fromToken.address.toLowerCase() &&
+            item.blockchainToken[toBlockchain].address.toLowerCase() ===
+              toToken.address.toLowerCase()
         );
 
         if (!bridgeToken) {
