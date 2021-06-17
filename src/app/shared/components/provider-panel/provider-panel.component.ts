@@ -93,7 +93,7 @@ export class ProviderPanelComponent {
    */
   @Output() public selectProvider: EventEmitter<void>;
 
-  public token;
+  public tradeData;
 
   /**
    * Provider data.
@@ -147,7 +147,7 @@ export class ProviderPanelComponent {
       isActive: data.isSelected,
       isCollapsed: data.isCollapsed
     };
-    this.token = data.trade?.from.token;
+    this.tradeData = data.trade;
   }
 
   /**
@@ -175,5 +175,9 @@ export class ProviderPanelComponent {
         break;
       }
     }
+  }
+
+  getUsdPrice(): string {
+    return this.tradeData.to.amount.multipliedBy(this.tradeData.to.token.price).toFixed(2);
   }
 }

@@ -6,6 +6,7 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import BigNumber from 'bignumber.js';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { Subscription } from 'rxjs';
+import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class InstantTradeService {
   constructor(
     private readonly oneInchEthService: OneInchEthService,
     private readonly swapFormService: SwapFormService,
+    private readonly uniswapService: UniSwapService,
     @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService
   ) {
     this.currentBlockchain = 'ETH';
@@ -63,8 +65,8 @@ export class InstantTradeService {
   private setBlockchainsProviders(): void {
     this.swapFormService.setItProviders({
       [BLOCKCHAIN_NAME.ETHEREUM]: {
-        [PROVIDERS.ONEINCH]: this.oneInchEthService
-        // [PROVIDERS.UNISWAP]: this.ethereumPolygonBridgeProviderService
+        [PROVIDERS.ONEINCH]: this.oneInchEthService,
+        [PROVIDERS.UNISWAP]: this.uniswapService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         // [PROVIDERS.ONEINCH]: this.ethereumBinanceBridgeProviderService,

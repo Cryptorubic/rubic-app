@@ -23,7 +23,7 @@
           class='provider-panel__amount'
           [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
         >
-          {{ (providerData.amount?.toString() | withRound: token:'toClosestValue') || 'Trading is not available' }}
+          {{ (providerData.amount?.toString() | withRound: tradeData?.to?.token:'toClosestValue') || 'Trading is not available' }}
         </div>
       </div>
       <div *ngIf="providerData.estimatedGas" class='provider-panel__right'>
@@ -32,7 +32,7 @@
           class='provider-panel__token-usd-price'
           [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
         >
-          {{ providerData.gasFeeInUsd?.toFixed(2)}}
+          {{ getUsdPrice() }}
           <span class='provider-panel__currency'>USD</span>
         </div>
         <div

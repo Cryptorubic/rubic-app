@@ -5,6 +5,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SettingsItComponent } from 'src/app/features/swaps/components/settings-it/settings-it.component';
 import { SettingsBridgeComponent } from 'src/app/features/swaps/components/settings-bridge/settings-bridge.component';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 
 @Injectable()
 export class SettingsService {
@@ -17,11 +18,15 @@ export class SettingsService {
     return this.swapsService[this.swapsService.swapMode];
   }
 
-  constructor(private readonly swapsService: SwapsService) {}
+  constructor(
+    private readonly swapsService: SwapsService,
+    private readonly swapFormService: SwapFormService
+  ) {}
 
   public getSettingsComponent(): PolymorpheusComponent<any, any> {
+    const control = this.swapFormService.commonTrade.controls.input.value;
     const component =
-      this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE
+      control.fromBlockchain === control.toBlockchain
         ? SettingsItComponent
         : SettingsBridgeComponent;
     return new PolymorpheusComponent(component as any);

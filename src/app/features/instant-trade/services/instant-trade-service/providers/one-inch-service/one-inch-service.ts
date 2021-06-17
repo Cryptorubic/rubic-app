@@ -133,6 +133,7 @@ export class OneInchService extends InstantTradeService {
 
       gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
       gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
+      amountInUsd = fromAmount.multipliedBy(toToken.)
     } else {
       estimatedGas = new BigNumber(0);
       gasFeeInUsd = new BigNumber(0);
