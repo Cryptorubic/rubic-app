@@ -66,6 +66,8 @@ export class SwapsFormComponent {
 
   public selectedToken: SelectedToken = {} as SelectedToken;
 
+  public selectedFromAmount = new BigNumber(0);
+
   public isLoading = true;
 
   constructor(
@@ -88,8 +90,11 @@ export class SwapsFormComponent {
       this.isLoading = false;
     });
 
+    this.selectedFromAmount = this.swapFormService.commonTrade.controls.input.value.fromAmount;
     this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(formValue => {
       this.isLoading = true;
+
+      this.selectedFromAmount = formValue.fromAmount;
 
       this.setAvailableTokens('from');
       this.setAvailableTokens('to');

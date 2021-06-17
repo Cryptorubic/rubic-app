@@ -8,7 +8,7 @@
         appTokenAmount
         [formControl]="amountControl"
         [decimals]="token?.decimals || DEFAULT_DECIMALS"
-        (amountChange)="onAmountChange($event)"
+        (amountChange)="amountChange.emit($event)"
       />
     </label>
 

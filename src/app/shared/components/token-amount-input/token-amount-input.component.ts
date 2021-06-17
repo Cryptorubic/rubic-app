@@ -24,7 +24,11 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
 
   @Input() token?: TokenAmount;
 
-  @Input() amount = '';
+  @Input() set amount(value: BigNumber) {
+    if (value && !value.eq(this.amountControl.value)) {
+      this.amountControl.setValue(value.toFixed());
+    }
+  }
 
   @Input() minAmount?: number;
 
@@ -34,20 +38,15 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
 
   public readonly DEFAULT_DECIMALS = 8;
 
-  public amountControl: FormControl;
+  public amountControl = new FormControl('');
 
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.amountControl = new FormControl(this.amount);
     this.setAmountControlValidators();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.amount) {
-      this.amountControl?.setValue(this.amount);
-      this.cdr.markForCheck();
-    }
     if (changes.minAmount || changes.maxAmount) {
       this.setAmountControlValidators();
       this.cdr.markForCheck();
@@ -55,10 +54,6 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
   }
 
   private setAmountControlValidators(): void {
-    if (!this.amountControl) {
-      return;
-    }
-
     const validators = [];
     if (this.minAmount !== undefined) {
       validators.push(Validators.min(this.minAmount));
@@ -69,17 +64,13 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
     this.amountControl.setValidators(validators);
   }
 
-  public onAmountChange(newAmount: string): void {
-    this.amount = newAmount;
-    this.amountChange.emit(this.amount);
-  }
-
   public onUserBalanceMaxButtonClick(): void {
-    this.amount = this.token.amount.toString();
-    this.amountChange.emit(this.amount);
+    const amount = this.token.amount.toString();
+    this.amountControl.setValue(amount);
+    this.amountChange.emit(amount);
   }
 
   public getUsdPrice(): BigNumber {
-    return new BigNumber(this.amount || 0).multipliedBy(this.token?.price ?? 0);
+    return new BigNumber(this.amountControl.value || 0).multipliedBy(this.token?.price ?? 0);
   }
 }
