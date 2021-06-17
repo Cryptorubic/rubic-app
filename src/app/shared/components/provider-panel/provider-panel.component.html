@@ -4,7 +4,8 @@
     [ngClass]='{
     "provider-panel__content_best-rate": providerData.isBestRate,
     "provider-panel__content_loading": loading,
-    "provider-panel__content_selected": providerData.isActive
+    "provider-panel__content_selected": providerData.isActive,
+    "provider-panel__content_error": hasError
     }'
     (click)='activateProvider()'
   >
@@ -22,23 +23,23 @@
           class='provider-panel__amount'
           [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
         >
-          {{ providerData.amount }}
+          {{ (providerData.amount?.toString() | withRound: token:'toClosestValue') || 'Trading is not available' }}
         </div>
       </div>
-      <div class='provider-panel__right'>
+      <div *ngIf="providerData.estimatedGas" class='provider-panel__right'>
         <div
           *ngIf='!providerData.isCollapsed'
           class='provider-panel__token-usd-price'
           [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
         >
-          {{ providerData.gasFeeInUsd}}
+          {{ providerData.gasFeeInUsd?.toFixed(2)}}
           <span class='provider-panel__currency'>USD</span>
         </div>
         <div
           class='provider-panel__token-gas-fee'
           [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
         >
-          {{ 'instantTrades.gasFee' | translate }} {{ providerData.gasFeeInEth}} ≈ {{ providerData.gasFeeInUsd}}$
+          {{ 'instantTrades.gasFee' | translate }} {{ providerData.gasFeeInEth?.toFixed(5) }} ≈ {{ providerData.gasFeeInUsd?.toFixed(2)}}$
           <div
             class='provider-panel__hint'
             [inlineSVG]='"/assets/images/icons/hint.svg"'

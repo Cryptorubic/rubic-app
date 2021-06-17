@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Inject, Injector } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject, Injector, Input } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -12,6 +12,8 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapsButtonComponent {
+  @Input() disabled: boolean;
+
   public get allowSwap(): boolean {
     return Boolean(this.authService?.user);
   }
