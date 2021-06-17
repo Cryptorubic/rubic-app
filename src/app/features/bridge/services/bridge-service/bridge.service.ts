@@ -10,7 +10,7 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { first, catchError, map, mergeMap, tap } from 'rxjs/operators';
+import { first, catchError, map, mergeMap, tap, delayWhen } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
@@ -204,17 +204,19 @@ export class BridgeService {
           toAddress: bridgeTradeRequest.toAddress,
           onTransactionHash: bridgeTradeRequest.onTransactionHash
         })),
-        tap(async (bridgeTrade: BridgeTrade) => {
+        mergeMap((bridgeTrade: BridgeTrade) => {
           this.checkSettings(bridgeTrade.fromBlockchain);
           const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-          await this.checkBalance(
-            bridgeTrade.fromBlockchain,
-            bridgeTrade.toBlockchain,
-            token.address,
-            token.symbol,
-            token.decimals,
-            bridgeTrade.amount
-          );
+          return of(
+            this.checkBalance(
+              bridgeTrade.fromBlockchain,
+              bridgeTrade.toBlockchain,
+              token.address,
+              token.symbol,
+              token.decimals,
+              bridgeTrade.amount
+            )
+          ).pipe(map(() => bridgeTrade));
         }),
         mergeMap((bridgeTrade: BridgeTrade) => {
           return this.bridgeProvider

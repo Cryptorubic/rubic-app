@@ -33,11 +33,19 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private userSubscription$: Subscription;
 
-  public loading: boolean;
+  public loading = false;
 
   public isAuthorized: boolean;
 
-  public tradeInProgress: boolean;
+  public tradeInProgress = false;
+
+  get disabled(): boolean {
+    if (this.loading || this.tradeInProgress) {
+      return true;
+    }
+    const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
+    return !toAmount || toAmount.isNaN() || toAmount.eq(0);
+  }
 
   constructor(
     private bridgeService: BridgeService,
@@ -49,9 +57,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly notificationsService: TuiNotificationsService,
     @Inject(Injector) private injector: Injector,
     private translate: TranslateService
-  ) {
-    this.loading = false;
-  }
+  ) {}
 
   ngOnInit() {
     this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(() =>
