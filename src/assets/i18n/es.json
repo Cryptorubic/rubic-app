@@ -26,7 +26,8 @@
     "contractAddress": "Dirección del contrato de token",
     "enterAmount": "Ingresa el monto",
     "chooseToken": "Elija Token",
-    "warning": "Warning"
+    "warning": "Warning",
+    "customerSupport": "customer support"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",

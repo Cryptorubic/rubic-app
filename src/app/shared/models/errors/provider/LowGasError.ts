@@ -6,5 +6,6 @@ export class LowGasError extends RubicError {
     this.translateKey = 'errors.lowGas';
     this.comment =
       'Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas';
+    Object.setPrototypeOf(this, LowGasError.prototype);
   }
 }

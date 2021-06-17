@@ -26,7 +26,8 @@
     "contractAddress": "Адрес контракта Токена",
     "enterAmount": "Введите количество",
     "chooseToken": "Выберите токен",
-    "warning": "Warning"
+    "warning": "Warning",
+    "customerSupport": "customer support"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",

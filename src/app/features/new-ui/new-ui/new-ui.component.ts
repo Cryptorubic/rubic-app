@@ -15,9 +15,7 @@ import { of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TokensSelectService } from '../../tokens-select/services/tokens-select.service';
 import { ErrorsService } from '../../../core/errors/errors.service';
-import { OverQueryLimitError } from '../../../shared/models/errors/bridge/OverQueryLimitError';
-import { NotSupportedNetworkError } from '../../../shared/models/errors/provider/NotSupportedNetwork';
-import { AccountError } from '../../../shared/models/errors/provider/AccountError';
+import { WalletlinkError } from '../../../shared/models/errors/provider/WalletlinkError';
 
 @Component({
   selector: 'app-new-ui',
@@ -99,8 +97,7 @@ export class NewUiComponent implements OnInit {
   }
 
   handleError() {
-    // const source = throwError(new OverQueryLimitError());
-    this.errorsService.throw(new AccountError());
+    const source = throwError(new WalletlinkError());
     source.pipe(catchError(this.errorsService.catch$)).subscribe();
   }
 }

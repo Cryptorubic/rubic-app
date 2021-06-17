@@ -26,7 +26,8 @@
     "contractAddress": "토큰 계약 주소",
     "enterAmount": "금액을 입력하세요",
     "chooseToken": "토큰 선택",
-    "warning": "Warning"
+    "warning": "Warning",
+    "customerSupport": "customer support"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",

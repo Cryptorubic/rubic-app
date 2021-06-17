@@ -7,6 +7,7 @@ import { InsufficientFundsErrorComponent } from './components/insufficient-funds
 import { MetamaskErrorComponent } from './components/metamask-error/metamask-error.component';
 import { NetworkErrorComponent } from './components/network-error/network-error.component';
 import { TotalSupplyOverflowErrorComponent } from './components/total-supply-overflow-error/total-supply-overflow-error.component';
+import { OverQueryLimitErrorComponent } from './components/over-query-limit-error/over-query-limit-error.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { TotalSupplyOverflowErrorComponent } from './components/total-supply-ove
     InsufficientFundsErrorComponent,
     MetamaskErrorComponent,
     NetworkErrorComponent,
-    TotalSupplyOverflowErrorComponent
+    TotalSupplyOverflowErrorComponent,
+    OverQueryLimitErrorComponent
   ],
   imports: [CommonModule, TranslateModule],
   entryComponents: [
@@ -24,7 +26,8 @@ import { TotalSupplyOverflowErrorComponent } from './components/total-supply-ove
     InsufficientFundsErrorComponent,
     MetamaskErrorComponent,
     NetworkErrorComponent,
-    TotalSupplyOverflowErrorComponent
+    TotalSupplyOverflowErrorComponent,
+    OverQueryLimitErrorComponent
   ]
 })
 export class ErrorsModule {}
