@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, zip } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
+import { debounceTime } from 'rxjs/operators';
 import { SwapProvider } from '../swap-provider';
 import { BridgesSwapProviderService } from '../../../bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { InstantTradesSwapProviderService } from '../../../instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
@@ -38,19 +39,19 @@ export class SwapsService {
     this._availableTokens = new Subject<SupportedTokensInfo>();
     this._bridgeTokensPairs = new Subject<BlockchainsBridgeTokens[]>();
 
-    zip(this.bridgesSwapProvider.tokens, this.instantTradesSwapProvider.tokens).subscribe(
-      ([bridgesTokens, instantTradesTokens]) => {
-        const tokens = bridgesTokens;
-        Object.keys(bridgesTokens).forEach(fromBlockchain => {
-          Object.keys(bridgesTokens[fromBlockchain]).forEach(toBlockchain => {
+    combineLatest([this.bridgesSwapProvider.tokens, this.instantTradesSwapProvider.tokens])
+      .pipe(debounceTime(0))
+      .subscribe(([bridgesTokens, instantTradesTokens]) => {
+        const tokens = { ...bridgesTokens };
+        Object.keys(tokens).forEach(fromBlockchain => {
+          Object.keys(tokens[fromBlockchain]).forEach(toBlockchain => {
             tokens[fromBlockchain][toBlockchain] = tokens[fromBlockchain][toBlockchain].concat(
               ...instantTradesTokens[fromBlockchain][toBlockchain]
             );
           });
         });
         this._availableTokens.next(tokens);
-      }
-    );
+      });
     this.bridgesSwapProvider.bridgeTokensPairs.subscribe(bridgeTokensPairs => {
       this._bridgeTokensPairs.next(bridgeTokensPairs);
     });

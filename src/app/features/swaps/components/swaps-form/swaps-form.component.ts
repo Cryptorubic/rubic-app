@@ -81,25 +81,27 @@ export class SwapsFormComponent {
 
       this.setAvailableTokens('from');
       this.setAvailableTokens('to');
+
+      this.updateSelectedToken('from');
+      this.updateSelectedToken('to');
+
       this.isLoading = false;
     });
 
-    this.swapFormService.commonTrade.valueChanges.subscribe(() => {
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(formValue => {
       this.isLoading = true;
 
       this.setAvailableTokens('from');
       this.setAvailableTokens('to');
 
-      this.selectedToken = {
-        from: this.swapFormService.commonTrade.controls.input.value['fromToken'],
-        to: this.swapFormService.commonTrade.controls.input.value['toToken']
-      };
+      this.setNewSelectedToken('from', formValue['fromToken']);
+      this.setNewSelectedToken('to', formValue['toToken']);
 
       this.isLoading = false;
     });
   }
 
-  public setAvailableTokens(tokenType: 'from' | 'to'): void {
+  private setAvailableTokens(tokenType: 'from' | 'to'): void {
     const oppositeBlockchainName = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
     const oppositeBlockchain =
       this.swapFormService.commonTrade.controls.input.value[oppositeBlockchainName];
@@ -169,6 +171,45 @@ export class SwapsFormComponent {
     }
 
     this.availableTokens[tokenType] = tokens;
+  }
+
+  private updateSelectedToken(tokenType: 'from' | 'to'): void {
+    if (!this.selectedToken[tokenType]) {
+      return;
+    }
+
+    const token = this.selectedToken[tokenType];
+    this.selectedToken[tokenType] = this._supportedTokens[token.blockchain][token.blockchain].find(
+      supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
+    );
+
+    const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
+    this.swapFormService.commonTrade.controls.input.patchValue({
+      [formKey]: token
+    });
+  }
+
+  private setNewSelectedToken(tokenType: 'from' | 'to', token: TokenAmount): void {
+    if (!token) {
+      this.selectedToken[tokenType] = token;
+      return;
+    }
+
+    this.selectedToken[tokenType] = this._supportedTokens[token.blockchain][token.blockchain].find(
+      supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
+    );
+
+    if (this.selectedToken[tokenType] !== token) {
+      const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
+      this.swapFormService.commonTrade.controls.input.patchValue(
+        {
+          [formKey]: token
+        },
+        {
+          emitEvent: false
+        }
+      );
+    }
   }
 
   public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
