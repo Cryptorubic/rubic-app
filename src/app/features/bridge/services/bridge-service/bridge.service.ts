@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
+import { BehaviorSubject, defer, from, Observable, of, throwError, zip } from 'rxjs';
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
@@ -205,7 +205,7 @@ export class BridgeService {
         mergeMap((bridgeTrade: BridgeTrade) => {
           this.checkSettings(bridgeTrade.fromBlockchain);
           const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-          return of(
+          return from(
             this.checkBalance(
               bridgeTrade.fromBlockchain,
               bridgeTrade.toBlockchain,
