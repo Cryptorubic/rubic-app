@@ -29,7 +29,7 @@ export class BridgeApiService {
   public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
     return new Promise<BridgeTableTrade[]>((resolve, reject) => {
       this.httpService
-        .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
+        .get('bridges/transactions', { walletAddress: walletAddress?.toLowerCase(), t: Date.now() })
         .subscribe(
           (tradesApi: BridgeTableTradeApi[]) => {
             resolve(tradesApi.map(trade => this.parseBridgeTableTrade(trade)));

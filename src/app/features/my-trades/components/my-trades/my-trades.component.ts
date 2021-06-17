@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BLOCKCHAINS';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject, zip } from 'rxjs';
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
-import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
+import { debounceTime, filter, map, share, startWith, switchMap } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
 import { InstantTradesApiService } from '../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
 import { InstantTradesTradeData } from '../../../swaps-page-old/models/trade-data';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
 import { BridgeApiService } from '../../../../core/services/backend/bridge-api/bridge-api.service';
-import { BridgeService } from '../../../cross-chain-swaps-page-old/bridge-page/services/bridge.service';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { BridgeTableTrade } from '../../../bridge/models/BridgeTableTrade';
 
-interface TableToken extends BlockchainToken {
+interface TableToken {
   image: string;
   amount: number;
+  blockchain: BLOCKCHAIN_NAME;
+  symbol: string;
 }
 
 interface TableTrade {
@@ -35,28 +36,6 @@ interface TableRow {
   Expected: number;
   Date: Date;
 }
-
-// example
-const ethToken: TableToken = {
-  blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-  address: NATIVE_TOKEN_ADDRESS,
-  name: 'Ethereum',
-  symbol: 'ETH',
-  decimals: 18,
-  image: 'http://dev-api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_4jp3DKD.png',
-  amount: 50
-};
-
-const bscToken: TableToken = {
-  blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  address: NATIVE_TOKEN_ADDRESS,
-  name: 'Binance',
-  symbol: 'BNB',
-  decimals: 18,
-  image:
-    'https://dev-api.rubic.exchange/media/token_images/cg_logo_bnb_binance-coin-logo_7bZIPmd.png',
-  amount: 50
-};
 
 @Component({
   selector: 'app-my-trades',
@@ -117,51 +96,96 @@ export class MyTradesComponent implements OnInit {
     startWith(1)
   );
 
+  public walletAddress: Observable<string>;
+
   constructor(
     private instantTradesApiService: InstantTradesApiService,
     private bridgeApiService: BridgeApiService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.instantTradesApiService
-      .fetchSwaps()
-      .pipe(map((trades: InstantTradesTradeData[]) => trades.map(trade => this.prepareData(trade))))
-      .subscribe(data => {
-        this.tableTrades = data;
-        const tableData = [];
-        this.tableTrades.forEach(trade => {
-          tableData.push({
-            Status: trade.status,
-            From: trade.fromToken.blockchain,
-            To: trade.toToken.blockchain,
-            Sent: trade.fromToken.amount,
-            Expected: trade.toToken.amount,
-            Date: trade.date
-          });
+    const trades = zip(this.getBridgeTransactions(), this.getTradesTransactions());
+
+    trades.subscribe(data => {
+      const arrData = data.flat();
+      this.tableTrades = arrData;
+      const tableData = [];
+      this.tableTrades.forEach(trade => {
+        tableData.push({
+          Status: trade.status,
+          From: trade.fromToken.blockchain,
+          To: trade.toToken.blockchain,
+          Sent: trade.fromToken.amount,
+          Expected: trade.toToken.amount,
+          Date: trade.date
         });
-        this.tableData$.next(tableData);
       });
+      this.tableData$.next(tableData);
+    });
+  }
+
+  public getBridgeTransactions(): Observable<TableTrade[]> {
+    return this.authService.getCurrentUser().pipe(
+      switchMap(user => this.bridgeApiService.getTransactions(user?.address)),
+      map(transactions => transactions.map(transaction => this.prepareBridgeData(transaction)))
+    );
+  }
+
+  public getTradesTransactions(): Observable<TableTrade[]> {
+    return this.instantTradesApiService
+      .fetchSwaps()
+      .pipe(
+        map((transactions: InstantTradesTradeData[]) =>
+          transactions.map(trade => this.prepareData(trade))
+        )
+      );
   }
 
   public prepareData(trade: InstantTradesTradeData): TableTrade {
-    const data = {
-      status: trade.status,
-      fromToken: this.transformToTableToken(trade.token.from, trade.fromAmount, trade.blockchain),
-      toToken: this.transformToTableToken(trade.token.to, trade.toAmount, trade.blockchain),
+    return {
+      status: trade.status.toLowerCase(),
+      fromToken: this.transformToTableToken(
+        trade.token.from.image,
+        trade.fromAmount,
+        trade.blockchain,
+        trade.token.from.symbol
+      ),
+      toToken: this.transformToTableToken(
+        trade.token.to.image,
+        trade.fromAmount,
+        trade.blockchain,
+        trade.token.to.symbol
+      ),
       date: trade.date
     };
-    return data;
   }
 
-  public transformToTableToken(token: SwapToken, amount?, blockchain?): TableToken {
+  public prepareBridgeData(trade: BridgeTableTrade): TableTrade {
     return {
-      image: token.image,
+      status: trade.status,
+      fromToken: this.transformToTableToken(
+        trade.tokenImage,
+        trade.fromAmount,
+        trade.fromBlockchain,
+        trade.fromSymbol
+      ),
+      toToken: this.transformToTableToken(
+        trade.tokenImage,
+        trade.toAmount,
+        trade.toBlockchain,
+        trade.toSymbol
+      ),
+      date: new Date(trade.updateTime)
+    };
+  }
+
+  public transformToTableToken(image, amount, blockchain, symbol): TableToken {
+    return {
+      image,
       amount,
       blockchain,
-      address: token.address,
-      name: token.name,
-      symbol: token.symbol,
-      decimals: token.decimals
+      symbol
     };
   }
 
@@ -194,7 +218,6 @@ export class MyTradesComponent implements OnInit {
   }
 
   public getTableTrade(tableRow: TableRow): TableTrade {
-    console.log(tableRow);
     if (!this.tableTrades.find(trade => trade.date === tableRow.Date)) {
       console.log(tableRow);
       console.log(this.tableTrades);

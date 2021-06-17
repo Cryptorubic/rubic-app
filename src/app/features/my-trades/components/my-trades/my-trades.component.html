@@ -53,10 +53,10 @@
                   [ngClass]="{
                     'status-circle_green': trade.status === 'completed',
                     'status-circle_yellow':
-                      trade.status === 'Waiting for deposit' ||
-                      trade.status === 'Waiting for receiving' ||
-                      trade.status === 'Deposit in progress' ||
-                      trade.status === 'Withdraw in progress' ||
+                      trade.status === 'waiting for deposit' ||
+                      trade.status === 'waiting for receiving' ||
+                      trade.status === 'deposit in progress' ||
+                      trade.status === 'withdraw in progress' ||
                       trade.status === 'pending',
                     'status-circle_red': trade.status === 'cancelled' ||
                       trade.status === 'rejected'
