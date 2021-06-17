@@ -11,7 +11,11 @@
           [ngClass]="{'tokens-list__item_disabled': !token.available}"
           [tuiManualHint]="disabledTokenHint"
           [tuiManualHintShow]="hintsShown[i]"
-          (click)="onTokenSelect(token, i)"
+          tuiHintMode="error"
+          tuiHintDirection="bottom-right"
+          (click)="onTokenSelect(token)"
+          (mouseenter)="hintsShown[i] = !token.available && true"
+          (mouseleave)="hintsShown[i] = false"
       >
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
