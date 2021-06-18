@@ -248,16 +248,12 @@ export class RubicTokensComponent {
           this.selectedToken = token;
           if (this.tokenType === 'from') {
             this.swapFormService.commonTrade.controls.input.patchValue({
-              fromBlockchain: token.blockchain
-            });
-            this.swapFormService.commonTrade.controls.input.patchValue({
+              fromBlockchain: token.blockchain,
               fromToken: token
             });
           } else {
             this.swapFormService.commonTrade.controls.input.patchValue({
-              toBlockchain: token.blockchain
-            });
-            this.swapFormService.commonTrade.controls.input.patchValue({
+              toBlockchain: token.blockchain,
               toToken: token
             });
           }
