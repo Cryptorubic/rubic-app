@@ -63,10 +63,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
     return of(0);
   }
 
-  public createTrade(
-    bridgeTrade: BridgeTrade,
-    updateTransactionsList: () => Promise<void>
-  ): Observable<TransactionReceipt> {
+  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
@@ -77,7 +74,6 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
         bridgeTrade.onTransactionHash(hash);
       }
       await this.bridgeApiService.postXDaiTransaction(hash);
-      await updateTransactionsList();
     };
 
     return from(
