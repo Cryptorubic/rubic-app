@@ -10,8 +10,8 @@
   [tuiButton] {
     --tui-primary-text: #{$rubic-text-color-main};
     --tui-link: #{$rubic-primary};
-    font-size: $rubic-font-size-01;
     font-weight: 500;
+    font-size: $rubic-font-size-01;
 
     border: 1px solid transparent;
 
@@ -108,9 +108,9 @@
     }
 
     &[data-state='disabled'] {
-      color: rgba(white, 0.6);
+      color: rgba(white, 0.4);
 
-      background-color: rgba($main-green, 0.6);
+      background-color: rgba($main-green, 0.4);
       border: 0;
     }
   }
