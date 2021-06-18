@@ -6,7 +6,8 @@ import {
   Input,
   ChangeDetectorRef,
   OnInit,
-  Output
+  Output,
+  EventEmitter
 } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiDialogService } from '@taiga-ui/core';
