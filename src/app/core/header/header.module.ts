@@ -9,7 +9,7 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg';
-import { TuiDataListModule } from '@taiga-ui/core';
+import { TuiDataListModule, TuiHintModule } from '@taiga-ui/core';
 import { HeaderLanguageDropdownComponent } from './components/header/components/header-language-dropdown/header-language-dropdown.component';
 import { HeaderLogotypeComponent } from './components/header/components/header-logotype/header-logotype.component';
 import { HeaderNavigationComponent } from './components/header/components/header-navigation/header-navigation.component';
@@ -43,7 +43,8 @@ import { WalletsModalComponent } from './components/header/components/wallets-mo
     A11yModule,
     OverlayModule,
     InlineSVGModule.forRoot(),
-    TuiDataListModule
+    TuiDataListModule,
+    TuiHintModule
   ],
   exports: [HeaderComponent, HeaderLanguageDropdownComponent, LoginButtonComponent],
   entryComponents: [WalletsModalComponent]

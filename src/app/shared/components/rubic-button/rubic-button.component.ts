@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { TuiAppearance } from '@taiga-ui/core';
 import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
 
@@ -30,6 +30,10 @@ export class RubicButtonComponent {
   @Input('disabled') set disabled(disabled: boolean | '') {
     this._disabled = disabled === '' || disabled;
   }
+
+  @Input() loading = false;
+
+  @Output() onClick = new EventEmitter<void>();
 
   constructor() {}
 }

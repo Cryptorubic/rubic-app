@@ -1,4 +1,8 @@
 <app-rubic-button
+  (click)="handleClick()"
   [fullWidth]="true"
->{{ allowSwap ? 'Swap' : 'Connect wallet' }}</app-rubic-button>
+  [disabled]="disabled"
+>
+  {{ allowSwap ? 'Swap' : 'Connect wallet' }}
+</app-rubic-button>
 

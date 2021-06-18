@@ -5,6 +5,7 @@ import {
   TemplateRef,
   ViewChildren
 } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -18,15 +19,25 @@ export class RubicMenuComponent {
   public isOpened = false;
 
   public menuItems = [
-    { title: 'About Company', link: '#' },
-    { title: 'FAQ', link: '#' },
-    { title: 'Project', link: '#' },
-    { title: 'Team', link: '#' }
+    { title: 'About Company', link: 'about' },
+    { title: 'FAQ', link: 'faq' },
+    { title: 'Project', link: 'https://rubic.finance/' },
+    { title: 'Team', link: 'team' }
   ];
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   public getDropdownStatus(opened) {
     this.isOpened = opened;
+  }
+
+  public clickNavigate(link) {
+    if (link.includes(location.protocol)) {
+      window.open(link, '_blank');
+    } else {
+      console.log('dsf');
+      this.router.navigate([link]);
+    }
+    this.isOpened = false;
   }
 }

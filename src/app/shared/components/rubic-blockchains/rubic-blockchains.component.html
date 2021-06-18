@@ -1,42 +1,33 @@
 <div class="blockchains">
   <div class="blockchain">
-    <img
-      class="blockchain__icon"
-      src="assets/images/icons/eth-logo.svg"
-      width="18"
-      height="15"
-      alt="blockchain"
-    />
+    <img class="blockchain__icon" [src]="getChainIcon()" width="18" height="15" alt="blockchain" />
     {{ selectedBlockchain }}
   </div>
 
   <div class="blockchains__list">
     <app-rubic-button-circle
-      *ngFor="let blockchain of blockchainsList | slice: 1:4"
+      *ngFor="let blockchain of visibleBlockchainsList | slice: 0:3"
       class="blockchains__list-item"
       [size]="'s'"
       [hint]="blockchain.name"
-      (click)="selectBlockchain(blockchain.id)"
+      (click)="selectBlockchain(blockchain.symbol)"
     >
-      <img [src]="blockchain.chainImg" alt>
+      <img [src]="blockchain.chainImg" alt />
     </app-rubic-button-circle>
 
     <app-dropdown-selector
       [dropdownButtonTemplate]="dropdownButtonTemplate"
       [dropdownOptionsTemplates]="dropdownOptionsTemplates"
-      (optionChange)="selectBlockchain($event)"
+      (optionChange)="selectBlockchain(visibleBlockchainsList[$event].symbol)"
     ></app-dropdown-selector>
 
     <ng-template #dropdownButtonTemplate>
-      <app-rubic-button-circle
-        class="blockchains__list-item"
-        [size]="'s'"
-      >
-        <img src="assets/img/icons/dropdown.svg" width="18px" height="18px" alt="Dropdown">
+      <app-rubic-button-circle class="blockchains__list-item" [size]="'s'">
+        <img src="assets/img/icons/dropdown.svg" width="18px" height="18px" alt="Dropdown" />
       </app-rubic-button-circle>
     </ng-template>
 
-    <ng-template #dropdownOptionTemplate *ngFor="let blockchain of blockchainsList">
+    <ng-template #dropdownOptionTemplate *ngFor="let blockchain of visibleBlockchainsList">
       <div class="template-blockchains">
         <img
           class="template-blockchains__icon"

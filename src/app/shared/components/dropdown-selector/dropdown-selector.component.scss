@@ -47,6 +47,8 @@
       a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         color: $rubic-base-02;
         text-decoration: none;
+
+        transition: 0.35s color ease;
       }
     }
   }

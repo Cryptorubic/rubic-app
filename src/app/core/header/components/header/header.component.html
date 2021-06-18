@@ -8,8 +8,8 @@
   </div>
 
   <nav class="rubic-header__nav">
-    <a class="button-link" routerLink="/" routerLinkActive="button-link_active">Swaps</a>
-    <a class="button-link button-link_disabled" href="#">Order book</a>
+    <a class="button-link" routerLink="/" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Swaps</a>
+    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order book</span>
   </nav>
 
   <div class="rubic-header__profile">
@@ -22,3 +22,8 @@
   </div>
 </header>
 <app-logout-confirm-modal></app-logout-confirm-modal>
+
+
+<ng-template #orderBookTooltip>
+  <span>Order book is not available in beta.</span>
+</ng-template>

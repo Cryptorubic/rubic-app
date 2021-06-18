@@ -7,6 +7,8 @@ import {
 } from 'src/app/features/bridge/models/BridgeTableTrade';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { HttpService } from '../../http/http.service';
 import { TRADE_STATUS } from './models/TRADE_STATUS';
 import { TokensService } from '../tokens-service/tokens.service';
@@ -202,41 +204,38 @@ export class BridgeApiService {
     transactionHash: string,
     walletAddress: string
   ): Promise<void> {
-    const body = {
-      track: transactionHash,
-      walletAddress,
-      amount: bridgeTrade.amount,
-      fromBlockchain: bridgeTrade.fromBlockchain,
-      toBlockchain: bridgeTrade.toBlockchain,
-      symbol: bridgeTrade.token.symbol,
-      price: this.getTokenPrice(bridgeTrade.token)
-    };
-
-    return new Promise<void>((resolve, reject) => {
-      this.httpService.post(BOT_URL.BRIDGES, body).subscribe(
-        () => {
-          resolve();
-        },
-        error => {
-          console.error(error);
-          reject(error);
-        }
-      );
-    });
+    return this.getTokenPrice(bridgeTrade.token)
+      .pipe(
+        mergeMap(price => {
+          const body = {
+            track: transactionHash,
+            walletAddress,
+            amount: bridgeTrade.amount,
+            fromBlockchain: bridgeTrade.fromBlockchain,
+            toBlockchain: bridgeTrade.toBlockchain,
+            symbol: bridgeTrade.token.symbol,
+            price
+          };
+          return this.httpService.post(BOT_URL.BRIDGES, body);
+        })
+      )
+      .toPromise();
   }
 
-  private getTokenPrice(bridgeToken: BridgeToken): number {
-    // @ts-ignore TODO
-    const backendTokens = this.tokensService.tokens.getValue();
-    const prices = Object.values(BLOCKCHAIN_NAME)
-      .map(
-        blockchain =>
-          backendTokens.find(
-            token => bridgeToken.blockchainToken[blockchain]?.address === token.address
-          )?.price
-      )
-      .filter(it => it)
-      .sort((a, b) => b - a);
-    return prices[0];
+  private getTokenPrice(bridgeToken: BridgeToken): Observable<number> {
+    return this.tokensService.tokens.pipe(
+      map(backendTokens => {
+        const prices = Object.values(BLOCKCHAIN_NAME)
+          .map(
+            blockchain =>
+              backendTokens.find(
+                token => bridgeToken.blockchainToken[blockchain]?.address === token.address
+              )?.price
+          )
+          .filter(it => it)
+          .sort((a, b) => b - a);
+        return prices[0];
+      })
+    );
   }
 }

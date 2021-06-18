@@ -1,7 +1,8 @@
 <div class="instant-trade-bottom-form">
+  <ng-container *ngIf="allowTrade">
   <header class="instant-trade-bottom-form__header">
     <h4 class="instant-trade-bottom-form__title">Instant trade swaps</h4>
-    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="instant-trade-bottom-form__analytics">
+    <a *ngIf="allowAnalyse" (click)="getAnalytic()" class="instant-trade-bottom-form__analytics">
       <img src="assets/images/icons/analytic.svg" alt="Analytic">
       <span>Analytic</span>
     </a>
@@ -18,5 +19,8 @@
       ></app-provider-panel>
     </div>
   </main>
-  <footer class="instant-trade-bottom-form__footer"></footer>
+  <footer class="instant-trade-bottom-form__footer">
+  </footer>
+</ng-container>
 </div>
+<app-swaps-button [disabled]="!allowTrade" (click)="createTrade()"></app-swaps-button>

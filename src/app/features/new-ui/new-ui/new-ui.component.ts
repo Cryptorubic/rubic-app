@@ -15,7 +15,7 @@ import { of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TokensSelectService } from '../../tokens-select/services/tokens-select.service';
 import { ErrorsService } from '../../../core/errors/errors.service';
-import { NotSupportedNetworkError } from '../../../shared/models/errors/provider/NotSupportedNetwork';
+import { WalletlinkError } from '../../../shared/models/errors/provider/WalletlinkError';
 
 @Component({
   selector: 'app-new-ui',
@@ -81,7 +81,7 @@ export class NewUiComponent implements OnInit {
 
   openTokensSelect() {
     this.tokensSelectService
-      .showDialog(of(this.store.tokens))
+      .showDialog(of(this.store.tokens), BLOCKCHAIN_NAME.ETHEREUM)
       .subscribe(token =>
         alert(`Token ${token.symbol} in ${token.blockchain} blockchain selected`)
       );
@@ -97,7 +97,7 @@ export class NewUiComponent implements OnInit {
   }
 
   handleError() {
-    const source = throwError(new NotSupportedNetworkError('Ethereum'));
+    const source = throwError(new WalletlinkError());
     source.pipe(catchError(this.errorsService.catch$)).subscribe();
   }
 }

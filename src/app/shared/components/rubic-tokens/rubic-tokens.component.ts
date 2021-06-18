@@ -3,6 +3,8 @@ import { IToken } from 'src/app/shared/models/tokens/IToken';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
 import BigNumber from 'bignumber.js';
 import { of } from 'rxjs';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { AvailableTokenAmount } from '../../models/tokens/AvailableTokenAmount';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
@@ -12,20 +14,18 @@ import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
   styleUrls: ['./rubic-tokens.component.scss']
 })
 export class RubicTokensComponent {
+  @Input() loading: boolean;
+
   @Input() tokenType: 'from' | 'to';
+
+  @Input() tokens: AvailableTokenAmount[];
+
+  public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public selectedToken: IToken;
 
-  constructor(private tokensSelectService: TokensSelectService) {}
-
-  openTokensSelect() {
-    this.tokensSelectService
-      .showDialog(of(this.tokens))
-      .subscribe(token => (this.selectedToken = token));
-  }
-
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  public tokens: AvailableTokenAmount[] = [
+  public testTokens: AvailableTokenAmount[] = [
     {
       image: 'http://api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
       rank: 1,
@@ -146,6 +146,19 @@ export class RubicTokensComponent {
       available: true
     },
     {
+      image: '',
+      rank: 1,
+      price: 2500,
+      usedInIframe: true,
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
+      name: 'Rubic',
+      symbol: 'RBC',
+      decimals: 18,
+      amount: new BigNumber(1234.412),
+      available: true
+    },
+    {
       image: 'http://api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
       rank: 0.5,
       price: 200,
@@ -213,4 +226,48 @@ export class RubicTokensComponent {
       available: true
     }
   ];
+
+  constructor(
+    private tokensSelectService: TokensSelectService,
+    private readonly swapFormService: SwapFormService
+  ) {
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(formValue => {
+      const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+      this.selectedToken = formValue[formKey];
+    });
+  }
+
+  openTokensSelect() {
+    const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
+    const enabledCustomTokenBlockchain = this.tokenType === 'from' ? toBlockchain : fromBlockchain;
+
+    this.tokensSelectService
+      .showDialog(of(this.tokens), enabledCustomTokenBlockchain)
+      .subscribe((token: IToken) => {
+        if (token) {
+          this.selectedToken = token;
+          if (this.tokenType === 'from') {
+            this.swapFormService.commonTrade.controls.input.patchValue({
+              fromBlockchain: token.blockchain
+            });
+            this.swapFormService.commonTrade.controls.input.patchValue({
+              fromToken: token
+            });
+          } else {
+            this.swapFormService.commonTrade.controls.input.patchValue({
+              toBlockchain: token.blockchain
+            });
+            this.swapFormService.commonTrade.controls.input.patchValue({
+              toToken: token
+            });
+          }
+        }
+      });
+  }
+
+  clearToken() {
+    this.selectedToken = null;
+    const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+    this.swapFormService.commonTrade.controls.input.patchValue({ [formKey]: null });
+  }
 }

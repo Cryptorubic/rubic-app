@@ -1,7 +1,13 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
-import { NewUiDataService } from 'src/app/features/new-ui/new-ui-data.service';
-import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models/providers.enum';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { IToken } from 'src/app/shared/models/tokens/IToken';
+import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-trades/models/instant-trades-trade-status';
+import { SwapForm } from 'src/app/features/swaps/models/SwapForm';
+import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
+import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constants/providers';
 
 @Component({
   selector: 'app-instant-trade-bottom-form',
@@ -9,11 +15,109 @@ import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models
   styleUrls: ['./instant-trade-bottom-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InstantTradeBottomFormComponent {
+export class InstantTradeBottomFormComponent implements OnInit {
+  public get allowAnalyse(): boolean {
+    return Boolean(this.swapFormService.commonTrade.controls.input.value.fromToken);
+  }
+
+  public get allowTrade(): boolean {
+    const form = this.swapFormService.commonTrade.controls.input.value;
+    return Boolean(
+      form.fromBlockchain && form.fromToken && form.toBlockchain && form.toToken && form.fromAmount
+    );
+  }
+
   public providerControllers: ProviderControllerData[];
 
-  constructor(public readonly store: NewUiDataService) {
-    this.providerControllers = [store.providerControllers[0], store.providerControllers[2]];
+  private currentBlockchain: BLOCKCHAIN_NAME;
+
+  constructor(
+    private readonly swapFormService: SwapFormService,
+    private readonly instantTradeService: InstantTradeService,
+    private readonly cdr: ChangeDetectorRef
+  ) {
+    const formValue = this.swapFormService.commonTrade.value;
+    this.currentBlockchain = formValue.input.toBlockchain;
+    this.initiateProviders(this.currentBlockchain);
+    this.conditionalCalculate(formValue);
+  }
+
+  public ngOnInit(): void {
+    this.swapFormService.commonTrade.valueChanges.subscribe(form => {
+      this.conditionalCalculate(form);
+      if (
+        this.currentBlockchain !== form.input.fromBlockchain &&
+        form.input.fromBlockchain === form.input.toBlockchain
+      ) {
+        this.currentBlockchain = form.input.fromBlockchain;
+        this.initiateProviders(this.currentBlockchain);
+      }
+    });
+  }
+
+  private async conditionalCalculate(form: ControlsValue<SwapForm>): Promise<void> {
+    if (
+      form.input.fromToken &&
+      form.input.toToken &&
+      form.input.fromBlockchain &&
+      form.input.fromAmount &&
+      form.input.toBlockchain
+    ) {
+      await this.calculateTrades();
+    }
+  }
+
+  public async calculateTrades(): Promise<void> {
+    this.providerControllers = this.providerControllers.map(controller => ({
+      ...controller,
+      tradeState: INSTANT_TRADES_STATUS.CALCULATION
+    }));
+    const tradeData = (await this.instantTradeService.calculateTrades()) as any[];
+    this.providerControllers = this.providerControllers.map((controller, index) => ({
+      ...controller,
+      trade: tradeData[index]?.value,
+      tradeState:
+        tradeData[index]?.status === 'fulfilled'
+          ? INSTANT_TRADES_STATUS.APPROVAL
+          : INSTANT_TRADES_STATUS.ERROR
+    }));
+    this.cdr.detectChanges();
+  }
+
+  public async createTrade(): Promise<void> {
+    const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
+    const provider = this.providerControllers[providerIndex];
+    if (providerIndex) {
+      this.providerControllers[providerIndex] = {
+        ...this.providerControllers[providerIndex],
+        tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
+      };
+      this.cdr.detectChanges();
+      await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, provider.trade);
+      this.providerControllers[providerIndex] = {
+        ...this.providerControllers[providerIndex],
+        tradeState: INSTANT_TRADES_STATUS.COMPLETED
+      };
+      this.cdr.detectChanges();
+    } else {
+      console.error('No provider selected');
+    }
+  }
+
+  private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
+    switch (blockchain) {
+      case BLOCKCHAIN_NAME.ETHEREUM:
+        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.ETHEREUM];
+        break;
+      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
+        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
+        break;
+      case BLOCKCHAIN_NAME.POLYGON:
+        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
+        break;
+      default:
+        console.debug(`Blockchain ${blockchain} was not found.`);
+    }
   }
 
   public collapseProvider(providerNumber: number, isCollapsed: boolean): void {
@@ -39,81 +143,8 @@ export class InstantTradeBottomFormComponent {
     this.providerControllers = newProviders;
   }
 
-  // private initInstantTradeProviders() {
-  //   switch (this.blockchain) {
-  //     case BLOCKCHAIN_NAME.ETHEREUM:
-  //       this._instantTradeServices = [this.oneInchEthService, this.uniSwapService];
-  //       this.trades = [
-  //         {
-  //           trade: null,
-  //           tradeState: null,
-  //           tradeProviderInfo: {
-  //             label: '1inch',
-  //             value: PROVIDERS.ONEINCH
-  //           },
-  //           isBestRate: false
-  //         },
-  //         {
-  //           trade: null,
-  //           tradeState: null,
-  //           tradeProviderInfo: {
-  //             label: 'Uniswap',
-  //             value: PROVIDERS.UNISWAP
-  //           },
-  //           isBestRate: false
-  //         }
-  //       ];
-  //       break;
-  //     case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-  //       this._instantTradeServices = [this.oneInchBscService, this.pancakeSwapService];
-  //       this.trades = [
-  //         {
-  //           trade: null,
-  //           tradeState: null,
-  //           tradeProviderInfo: {
-  //             label: '1inch',
-  //             value: PROVIDERS.ONEINCH
-  //           },
-  //           isBestRate: false
-  //         },
-  //         {
-  //           trade: null,
-  //           tradeState: null,
-  //           tradeProviderInfo: {
-  //             label: 'Pancakeswap',
-  //             value: PROVIDERS.PANCAKESWAP
-  //           },
-  //           isBestRate: false
-  //         }
-  //       ];
-  //       break;
-  //     case BLOCKCHAIN_NAME.POLYGON:
-  //       this._instantTradeServices = [this.oneInchPolService, this.quickSwapService];
-  //       this.trades = [
-  //         {
-  //           trade: null,
-  //           tradeState: null,
-  //           tradeProviderInfo: {
-  //             label: '1inch',
-  //             value: PROVIDERS.ONEINCH
-  //           },
-  //           isBestRate: false
-  //         },
-  //         {
-  //           trade: null,
-  //           tradeState: null,
-  //           tradeProviderInfo: {
-  //             label: 'Quickswap',
-  //             value: PROVIDERS.QUICKSWAP
-  //           },
-  //           isBestRate: false
-  //         }
-  //       ];
-  //       break;
-  //     default:
-  //       console.debug(`Blockchain ${this.blockchain} was not found.`);
-  //   }
-  //   this.setSlippagePercent(this.slippagePercent);
-  //   [this.bestProvider] = this.trades;
-  // }
+  public getAnalytic() {
+    const token = this.swapFormService.commonTrade.get('fromToken').value as IToken;
+    window.open(`https://keks.app/t/${token.address}`, '_blank').focus();
+  }
 }

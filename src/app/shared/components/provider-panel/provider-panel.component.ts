@@ -93,6 +93,8 @@ export class ProviderPanelComponent {
    */
   @Output() public selectProvider: EventEmitter<void>;
 
+  public tradeData;
+
   /**
    * Provider data.
    */
@@ -123,7 +125,7 @@ export class ProviderPanelComponent {
    * Emit provider selection event to parent component.
    */
   public activateProvider(): void {
-    if (!this.loading) {
+    if (!this.loading && !this.hasError) {
       this.collapseProvider.emit(!this.providerData.isCollapsed);
       this.selectProvider.emit();
     }
@@ -137,14 +139,15 @@ export class ProviderPanelComponent {
     this.calculateState(data.tradeState);
     this.providerData = {
       name: data.tradeProviderInfo.label,
-      amount: data.trade.to.amount,
-      estimatedGas: data.trade.estimatedGas,
-      gasFeeInEth: data.trade.gasFeeInEth,
-      gasFeeInUsd: data.trade.gasFeeInUsd,
+      amount: data.trade?.to?.amount,
+      estimatedGas: data.trade?.estimatedGas,
+      gasFeeInEth: data.trade?.gasFeeInEth,
+      gasFeeInUsd: data.trade?.gasFeeInUsd,
       isBestRate: data.isBestRate,
       isActive: data.isSelected,
       isCollapsed: data.isCollapsed
     };
+    this.tradeData = data.trade;
   }
 
   /**
@@ -172,5 +175,9 @@ export class ProviderPanelComponent {
         break;
       }
     }
+  }
+
+  getUsdPrice(): string {
+    return this.tradeData.to.amount.multipliedBy(this.tradeData.to.token.price).toFixed(2);
   }
 }

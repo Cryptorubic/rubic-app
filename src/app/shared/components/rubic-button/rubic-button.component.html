@@ -1,12 +1,15 @@
-<button
-  tuiButton
-  [shape]="'rounded'"
-  type="button"
-  [size]="size"
-  [appearance]="appearance"
-  [class.full-width]="_fullWidth"
-  [disabled]="_disabled"
-  [attr.bordered]="_border"
->
-  <ng-content></ng-content>
-</button>
+<tui-loader [showLoader]="loading" [overlay]="true">
+  <button
+    tuiButton
+    [shape]="'rounded'"
+    type="button"
+    [size]="size"
+    [appearance]="appearance"
+    [class.full-width]="_fullWidth"
+    [disabled]="_disabled"
+    [attr.bordered]="_border"
+    (click)="onClick.emit()"
+  >
+    <ng-content></ng-content>
+  </button>
+</tui-loader>

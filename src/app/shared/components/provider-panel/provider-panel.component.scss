@@ -17,7 +17,7 @@ $white: white;
 
     transition: $default-transition;
 
-    &:not(&_loading) {
+    &:not(&_loading):not(&_error) {
       cursor: pointer;
 
       &:hover {
@@ -25,7 +25,7 @@ $white: white;
       }
     }
 
-    &:not(&_loading):not(&_selected):hover {
+    &:not(&_loading):not(&_selected):not(&_error):hover {
       border: 1px solid $green;
       border-left-width: 5px;
 
@@ -33,6 +33,10 @@ $white: white;
         border-top-color: $green;
         border-right-color: $green;
       }
+    }
+
+    &_error {
+      border-color: red;
     }
     
     &_selected {

@@ -5,7 +5,7 @@
   flex-direction: column;
   justify-content: space-between;
   width: 20px;
-  height: 15px;
+  height: 14px;
 
   &__line {
     width: 100%;
@@ -15,12 +15,13 @@
     border-radius: 5px;
 
     transition: 0.3s ease-in-out;
+    transition-property: opacity, transform;
   }
 
   &_opened {
     .burger-menu__line {
       &:first-child {
-        transform: translateY(7px) rotate(45deg);
+        transform: translateY(6px) rotate(45deg);
       }
 
       &:nth-child(2) {

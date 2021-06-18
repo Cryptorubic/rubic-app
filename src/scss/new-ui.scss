@@ -64,3 +64,7 @@ html {
     box-shadow: $rubic-shadow-button-active;
   }
 }
+
+.tooltip .text {
+  font-size: $rubic-font-size-01;
+}

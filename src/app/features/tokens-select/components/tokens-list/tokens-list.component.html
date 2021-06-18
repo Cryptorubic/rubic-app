@@ -6,10 +6,16 @@
       class="tokens-scrollbar tui-zero-scrollbar"
     >
     <ul class="tokens-list">
-      <li *ngFor="let token of tokens"
+      <li *ngFor="let token of tokens; let i = index"
           class="tokens-list__item"
           [ngClass]="{'tokens-list__item_disabled': !token.available}"
+          [tuiManualHint]="disabledTokenHint"
+          [tuiManualHintShow]="hintsShown[i]"
+          tuiHintMode="error"
+          tuiHintDirection="bottom-right"
           (click)="onTokenSelect(token)"
+          (mouseenter)="hintsShown[i] = !token.available && true"
+          (mouseleave)="hintsShown[i] = false"
       >
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
@@ -18,5 +24,10 @@
   </tui-scrollbar>
   <ng-template #emptyListMessage>
     <span class="nothing-to-show-message">Nothing to show</span>
+  </ng-template>
+  <ng-template #disabledTokenHint>
+    <div>
+      Clear other form parameters to select this token
+    </div>
   </ng-template>
 </ng-container>
