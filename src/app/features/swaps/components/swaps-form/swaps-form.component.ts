@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -9,6 +9,8 @@ import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/Blockcha
 import { combineLatest } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
+import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/bridge-bottom-form/bridge-bottom-form.component';
+import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -21,6 +23,10 @@ type SelectedToken = {
   styleUrls: ['./swaps-form.component.scss']
 })
 export class SwapsFormComponent {
+  @ViewChild(BridgeBottomFormComponent) bridgeForm: BridgeBottomFormComponent;
+
+  @ViewChild(InstantTradeBottomFormComponent) itForm: InstantTradeBottomFormComponent;
+
   public blockchainsList = [
     {
       symbol: BLOCKCHAIN_NAME.ETHEREUM,
@@ -99,8 +105,8 @@ export class SwapsFormComponent {
       this.setAvailableTokens('from');
       this.setAvailableTokens('to');
 
-      this.setNewSelectedToken('from', formValue['fromToken']);
-      this.setNewSelectedToken('to', formValue['toToken']);
+      this.setNewSelectedToken('from', formValue.fromToken);
+      this.setNewSelectedToken('to', formValue.toToken);
 
       this.isLoading = false;
     });
@@ -225,5 +231,9 @@ export class SwapsFormComponent {
     this.swapFormService.commonTrade.controls.input.patchValue({
       fromAmount: new BigNumber(amount)
     });
+  }
+
+  public async refreshTrade(): Promise<void> {
+    await this.itForm.calculateTrades();
   }
 }
