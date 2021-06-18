@@ -69,8 +69,10 @@ export class SwapsFormComponent {
 
       this.selectedFromAmount = formValue.fromAmount;
 
-      this.setAvailableTokens('from');
-      this.setAvailableTokens('to');
+      if (this._supportedTokens) {
+        this.setAvailableTokens('from');
+        this.setAvailableTokens('to');
+      }
 
       this.setNewSelectedToken('from', formValue['fromToken']);
       this.setNewSelectedToken('to', formValue['toToken']);
