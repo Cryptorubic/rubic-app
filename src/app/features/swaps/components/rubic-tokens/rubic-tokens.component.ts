@@ -34,10 +34,11 @@ export class RubicTokensComponent {
 
   openTokensSelect() {
     const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
-    const enabledCustomTokenBlockchain = this.tokenType === 'from' ? toBlockchain : fromBlockchain;
+    const [currentBlockchain, enabledCustomTokenBlockchain] =
+      this.tokenType === 'from' ? [fromBlockchain, toBlockchain] : [toBlockchain, fromBlockchain];
 
     this.tokensSelectService
-      .showDialog(of(this.tokens), enabledCustomTokenBlockchain)
+      .showDialog(of(this.tokens), currentBlockchain, enabledCustomTokenBlockchain)
       .subscribe((token: IToken) => {
         if (token) {
           this.selectedToken = token;
