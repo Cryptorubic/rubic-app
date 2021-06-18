@@ -201,9 +201,11 @@ export class SwapsFormComponent {
   }
 
   public onTokenInputAmountChange(amount: string): void {
-    this.swapFormService.commonTrade.controls.input.patchValue({
-      fromAmount: new BigNumber(amount)
-    });
+    if (!this.selectedFromAmount?.eq(amount)) {
+      this.swapFormService.commonTrade.controls.input.patchValue({
+        fromAmount: new BigNumber(amount)
+      });
+    }
   }
 
   public revert() {

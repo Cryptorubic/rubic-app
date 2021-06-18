@@ -1,14 +1,21 @@
 <div class="tokens">
   <div class="tokens__container">
-    <app-rubic-button class="tokens__btn" [size]="'s'" [loading]="loading" (onClick)="openTokensSelect()">
+    <app-rubic-button
+      class="tokens__btn"
+      [size]="'s'"
+      [loading]="loading"
+      (onClick)="openTokensSelect()"
+    >
       <ng-container *ngIf="selectedToken">
         <div class="tokens__inner" [tuiHint]="tooltip">
-          <img
-            [src]="selectedToken.image || 'assets/images/icons/coins/empty.svg'"
-            width="18px"
-            height="18px"
-            [alt]="selectedToken.symbol"
-          />
+          <div class="tokens__image-container">
+            <img
+              [src]="selectedToken.image || 'assets/images/icons/coins/empty.svg'"
+              width="18px"
+              height="18px"
+              [alt]="selectedToken.symbol"
+            />
+          </div>
           {{ selectedToken.symbol }}
         </div>
       </ng-container>
