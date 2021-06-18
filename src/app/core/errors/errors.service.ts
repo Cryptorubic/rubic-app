@@ -50,7 +50,8 @@ export class ErrorsService {
     const options = {
       label: 'Error',
       status: TuiNotification.Error,
-      data: {}
+      data: {},
+      autoClose: 7000
     };
     const setPolyContent = (Component: Type<object>) => {
       errorContent = new PolymorpheusComponent(Component, this.injector);

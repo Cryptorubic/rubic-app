@@ -35,6 +35,7 @@ export class SwapsButtonComponent implements OnInit {
     private readonly swapsService: SwapsService,
     private readonly cdr: ChangeDetectorRef
   ) {
+    this.disabled = false;
     this.clickEvent = new EventEmitter<void>();
   }
 
