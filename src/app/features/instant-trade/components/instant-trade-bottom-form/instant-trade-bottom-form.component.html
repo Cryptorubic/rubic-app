@@ -1,11 +1,11 @@
 <div class="instant-trade-bottom-form">
   <ng-container *ngIf="allowTrade">
   <header class="instant-trade-bottom-form__header">
-<!--    <h4 class="instant-trade-bottom-form__title">Instant trade swaps</h4>-->
-<!--    <a *ngIf="allowAnalyse" (click)="getAnalytic()" class="instant-trade-bottom-form__analytics">-->
-<!--      <img src="assets/images/icons/analytic.svg" alt="Analytic">-->
-<!--      <span>Analytic</span>-->
-<!--    </a>-->
+    <h4 class="instant-trade-bottom-form__title">Instant trade swaps</h4>
+    <a *ngIf="tokenInfoUrl" [href]="'https://keks.app/' + tokenInfoUrl" class="instant-trade-bottom-form__analytics" target="_blank">
+      <img src="assets/images/icons/analytic.svg" alt="Analytics">
+      <span>Analytics</span>
+    </a>
   </header>
   <main class="instant-trade-bottom-form__body">
     <div

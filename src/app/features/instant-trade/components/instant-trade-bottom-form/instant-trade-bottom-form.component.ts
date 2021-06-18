@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
@@ -11,6 +17,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-instant-trade-bottom-form',
@@ -18,17 +25,23 @@ import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/
   styleUrls: ['./instant-trade-bottom-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InstantTradeBottomFormComponent implements OnInit {
-  public get allowAnalyse(): boolean {
-    return Boolean(this.swapFormService.commonTrade.controls.input.value.fromToken);
-  }
-
+export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public get allowTrade(): boolean {
     const form = this.swapFormService.commonTrade.controls.input.value;
     return Boolean(
       form.fromBlockchain && form.fromToken && form.toBlockchain && form.toToken && form.fromAmount
     );
   }
+
+  get tokenInfoUrl(): string {
+    const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
+    if (!fromToken?.address || !toToken?.address) {
+      return '';
+    }
+    return `t/${toToken.address}`;
+  }
+
+  public formChangesSubscription$: Subscription;
 
   public providerControllers: ProviderControllerData[];
 
@@ -46,20 +59,30 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.conditionalCalculate(formValue);
   }
 
-  public ngOnInit(): void {
-    this.swapFormService.commonTrade.valueChanges.subscribe(form => {
-      this.conditionalCalculate(form);
-      if (
-        this.currentBlockchain !== form.input.fromBlockchain &&
-        form.input.fromBlockchain === form.input.toBlockchain
-      ) {
-        this.currentBlockchain = form.input.fromBlockchain;
-        this.initiateProviders(this.currentBlockchain);
+  ngOnInit(): void {
+    this.formChangesSubscription$ = this.swapFormService.commonTrade.valueChanges.subscribe(
+      form => {
+        this.conditionalCalculate(form);
+        if (
+          this.currentBlockchain !== form.input.fromBlockchain &&
+          form.input.fromBlockchain === form.input.toBlockchain
+        ) {
+          this.currentBlockchain = form.input.fromBlockchain;
+          this.initiateProviders(this.currentBlockchain);
+        }
       }
-    });
+    );
+  }
+
+  ngOnDestroy() {
+    this.formChangesSubscription$.unsubscribe();
   }
 
   private async conditionalCalculate(form: ControlsValue<SwapForm>): Promise<void> {
+    if (form.input.fromBlockchain !== form.input.toBlockchain) {
+      return;
+    }
+
     if (
       form.input.fromToken &&
       form.input.toToken &&

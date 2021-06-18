@@ -63,10 +63,7 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
     return this.panamaBridgeProvider.getFee(token, toBlockchain);
   }
 
-  public createTrade(
-    bridgeTrade: BridgeTrade,
-    updateTransactionsList: () => Promise<void>
-  ): Observable<TransactionReceipt> {
-    return this.panamaBridgeProvider.createTrade(bridgeTrade, updateTransactionsList);
+  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
+    return this.panamaBridgeProvider.createTrade(bridgeTrade);
   }
 }

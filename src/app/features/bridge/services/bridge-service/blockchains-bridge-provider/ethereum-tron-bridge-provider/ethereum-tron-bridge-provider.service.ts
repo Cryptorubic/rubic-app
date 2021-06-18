@@ -61,10 +61,7 @@ export class EthereumTronBridgeProviderService extends BlockchainsBridgeProvider
     return this.commonPanamaBridgeProviderService.getFee(token, toBlockchain);
   }
 
-  public createTrade(
-    bridgeTrade: BridgeTrade,
-    updateTransactionsList: () => Promise<void>
-  ): Observable<TransactionReceipt> {
-    return this.commonPanamaBridgeProviderService.createTrade(bridgeTrade, updateTransactionsList);
+  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
+    return this.commonPanamaBridgeProviderService.createTrade(bridgeTrade);
   }
 }
