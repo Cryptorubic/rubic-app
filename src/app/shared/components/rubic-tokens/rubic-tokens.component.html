@@ -1,6 +1,6 @@
 <div class="tokens">
   <div class="tokens__container">
-    <app-rubic-button [size]="'s'" [loading]="loading" (onClick)="openTokensSelect()">
+    <app-rubic-button class="tokens__btn" [size]="'s'" [loading]="loading" (onClick)="openTokensSelect()">
       <ng-container *ngIf="selectedToken">
         <div class="tokens__inner" [tuiHint]="tooltip">
           <img

@@ -20,9 +20,12 @@
     align-items: center;
   }
 
-  &__nav,
   &__profile {
     grid-gap: 10px;
+  }
+
+  &__nav {
+    grid-gap: 30px;
   }
 
   &__logo {
