@@ -138,6 +138,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       toAddress: this.authService.user.address,
       onTransactionHash: () => {
         this.tradeInProgress = true;
+        this.cdr.detectChanges();
         tradeInProgressSubscription$ = this.notificationsService
           .show(this.translate.instant('bridgePage.progressMessage'), {
             label: 'Trade in progress',
@@ -163,6 +164,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             })
             .subscribe();
           this.tradeInProgress = false;
+          this.cdr.detectChanges();
 
           setTimeout(() => successfulTradeSubscription$.unsubscribe(), 15000);
         },
