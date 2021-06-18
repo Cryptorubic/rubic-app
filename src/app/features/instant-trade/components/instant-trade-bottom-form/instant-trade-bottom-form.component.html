@@ -1,11 +1,11 @@
 <div class="instant-trade-bottom-form">
   <ng-container *ngIf="allowTrade">
   <header class="instant-trade-bottom-form__header">
-    <h4 class="instant-trade-bottom-form__title">Instant trade swaps</h4>
-    <a *ngIf="allowAnalyse" (click)="getAnalytic()" class="instant-trade-bottom-form__analytics">
-      <img src="assets/images/icons/analytic.svg" alt="Analytic">
-      <span>Analytic</span>
-    </a>
+<!--    <h4 class="instant-trade-bottom-form__title">Instant trade swaps</h4>-->
+<!--    <a *ngIf="allowAnalyse" (click)="getAnalytic()" class="instant-trade-bottom-form__analytics">-->
+<!--      <img src="assets/images/icons/analytic.svg" alt="Analytic">-->
+<!--      <span>Analytic</span>-->
+<!--    </a>-->
   </header>
   <main class="instant-trade-bottom-form__body">
     <div
@@ -15,7 +15,6 @@
       <app-provider-panel
         [providerControllerData]="provider"
         (selectProvider)="selectProvider(i)"
-        (collapseProvider)="collapseProvider(i, $event)"
       ></app-provider-panel>
     </div>
   </main>
@@ -23,4 +22,4 @@
   </footer>
 </ng-container>
 </div>
-<app-swaps-button [disabled]="!allowTrade" (click)="createTrade()"></app-swaps-button>
+<app-swaps-button></app-swaps-button>

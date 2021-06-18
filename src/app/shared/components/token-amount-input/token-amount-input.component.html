@@ -32,12 +32,11 @@
         [tuiHint]="usdPriceTooltip"
         tuiHintDirection="top"
         tuiHintMode="onDark"
-        >{{ getUsdPrice() | bigNumberFormat: 2 }}</span
+        >${{ getUsdPrice() | bigNumberFormat: 2 }}</span
       >
       <ng-template #usdPriceTooltip>
         {{ getUsdPrice() | bigNumberFormat: 2 }}
       </ng-template>
-      USD
     </div>
 
     <div class="right-side__error-info">

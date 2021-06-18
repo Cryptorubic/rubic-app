@@ -5,7 +5,8 @@ import {
   Injector,
   Input,
   ChangeDetectorRef,
-  OnInit
+  OnInit,
+  EventEmitter
 } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiDialogService } from '@taiga-ui/core';
@@ -43,7 +44,7 @@ export class SwapsButtonComponent implements OnInit {
     if (!this.allowSwap) {
       this.showModal();
       // eslint-disable-next-line no-empty
-    } else {
+    } else if (!this.disabled) {
       this.swapsService.createTrade();
     }
   }

@@ -120,14 +120,14 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
   }
 
-  public collapseProvider(providerNumber: number, isCollapsed: boolean): void {
-    const newProviders = [...this.providerControllers];
-    newProviders[providerNumber] = {
-      ...newProviders[providerNumber],
-      isCollapsed
-    };
-    this.providerControllers = newProviders;
-  }
+  // public collapseProvider(providerNumber: number, isCollapsed: boolean): void {
+  //   const newProviders = [...this.providerControllers];
+  //   newProviders[providerNumber] = {
+  //     ...newProviders[providerNumber],
+  //     isCollapsed
+  //   };
+  //   this.providerControllers = newProviders;
+  // }
 
   public selectProvider(providerNumber: number): void {
     const newProviders = this.providerControllers.map(provider => {
@@ -143,8 +143,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.providerControllers = newProviders;
   }
 
-  public getAnalytic() {
-    const token = this.swapFormService.commonTrade.get('fromToken').value as IToken;
-    window.open(`https://keks.app/t/${token.address}`, '_blank').focus();
-  }
+  // public getAnalytic() {
+  //   const token = this.swapFormService.commonTrade.get('fromToken').value as IToken;
+  //   window.open(`https://keks.app/t/${token.address}`, '_blank').focus();
+  // }
 }

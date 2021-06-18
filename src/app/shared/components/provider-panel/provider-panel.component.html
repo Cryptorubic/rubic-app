@@ -28,12 +28,10 @@
       </div>
       <div *ngIf="providerData.estimatedGas" class='provider-panel__right'>
         <div
-          *ngIf='!providerData.isCollapsed'
           class='provider-panel__token-usd-price'
           [ngClass]='{ "tui-skeleton": loading, "tui-skeleton-text": loading }'
         >
-          {{ getUsdPrice() }}
-          <span class='provider-panel__currency'>USD</span>
+          ${{ getUsdPrice() }}
         </div>
         <div
           class='provider-panel__token-gas-fee'
@@ -52,13 +50,13 @@
 <!--          ></tui-tooltip>-->
         </div>
       </div>
-      <div
-        *ngIf='!loading'
-        class='provider-panel__collapse-toggle'
-        [ngClass]='{ "provider-panel__collapse-toggle_collapsed": providerData.isCollapsed }'
-      >
-        <tui-svg class="icon" src="tuiIconChevronUpLarge"></tui-svg>
-      </div>
+<!--      <div-->
+<!--        *ngIf='!loading'-->
+<!--        class='provider-panel__collapse-toggle'-->
+<!--        [ngClass]='{ "provider-panel__collapse-toggle_collapsed": providerData.isCollapsed }'-->
+<!--      >-->
+<!--        <tui-svg class="icon" src="tuiIconChevronUpLarge"></tui-svg>-->
+<!--      </div>-->
     </div>
   </div>
 </div>

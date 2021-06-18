@@ -36,4 +36,10 @@ export class RubicButtonComponent {
   @Output() onClick = new EventEmitter<void>();
 
   constructor() {}
+
+  public buttonClick(): void {
+    if (!this._disabled) {
+      this.onClick.emit();
+    }
+  }
 }
