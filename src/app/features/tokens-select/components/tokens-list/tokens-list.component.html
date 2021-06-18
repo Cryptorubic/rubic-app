@@ -1,12 +1,13 @@
 <ng-container>
   <tui-scrollbar *ngIf="tokens.length; else emptyListMessage" class="tokens-scrollbar tokens-container">
-    <cdk-virtual-scroll-viewport
-      tuiScrollable
-      itemSize="10"
-      class="tokens-scrollbar tui-zero-scrollbar"
-    >
     <ul class="tokens-list">
-      <li *ngFor="let token of tokens; let i = index"
+      <cdk-virtual-scroll-viewport
+        tuiScrollable
+        itemSize="50"
+        class="tokens-scrollbar tui-zero-scrollbar"
+      >
+        <li
+          *cdkVirtualFor="let token of tokens; let i = index"
           class="tokens-list__item"
           [ngClass]="{'tokens-list__item_disabled': !token.available}"
           [tuiManualHint]="disabledTokenHint"
@@ -16,11 +17,12 @@
           (click)="onTokenSelect(token)"
           (mouseenter)="hintsShown[i] = !token.available && true"
           (mouseleave)="hintsShown[i] = false"
-      >
+        >
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
+
+      </cdk-virtual-scroll-viewport>
     </ul>
-    </cdk-virtual-scroll-viewport>
   </tui-scrollbar>
   <ng-template #emptyListMessage>
     <span class="nothing-to-show-message">Nothing to show</span>
