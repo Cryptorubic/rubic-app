@@ -25,7 +25,7 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
   @Input() token?: TokenAmount;
 
   @Input() set amount(value: BigNumber) {
-    if (value && !value.eq(this.amountControl.value)) {
+    if (value && !value.isNaN() && !value.eq(this.amountControl.value.split(',').join(''))) {
       this.amountControl.setValue(value.toFixed());
     }
   }
@@ -67,10 +67,15 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
   public onUserBalanceMaxButtonClick(): void {
     const amount = this.token.amount.toString();
     this.amountControl.setValue(amount);
-    this.amountChange.emit(amount);
+    this.emitAmountChange(amount);
   }
 
   public getUsdPrice(): BigNumber {
     return new BigNumber(this.amountControl.value || 0).multipliedBy(this.token?.price ?? 0);
+  }
+
+  public emitAmountChange(amount: string): void {
+    this.amountControl.setValue(amount, { emitViewToModelChange: false });
+    this.amountChange.emit(amount.split(',').join(''));
   }
 }

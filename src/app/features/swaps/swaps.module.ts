@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { SwapsRoutingModule } from 'src/app/features/swaps/swaps-routing.module';
 import { InstantTradeModule } from 'src/app/features/instant-trade/instant-trade.module';
 import { BridgeModule } from 'src/app/features/bridge/bridge.module';
@@ -28,6 +27,8 @@ import { BridgesSwapProviderService } from 'src/app/features/bridge/services/bri
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { InstantTradesSwapProviderService } from 'src/app/features/instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
+import { RubicBlockchainsComponent } from 'src/app/features/swaps/components/rubic-blockchains/rubic-blockchains.component';
+import { RubicTokensComponent } from 'src/app/features/swaps/components/rubic-tokens/rubic-tokens.component';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SettingsBridgeComponent } from './components/settings-bridge/settings-bridge.component';
 
@@ -36,7 +37,9 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     SwapsFormComponent,
     SettingsContainerComponent,
     SettingsItComponent,
-    SettingsBridgeComponent
+    SettingsBridgeComponent,
+    RubicBlockchainsComponent,
+    RubicTokensComponent
   ],
   exports: [SettingsContainerComponent],
   imports: [

@@ -10,7 +10,7 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { catchError, first, map, mergeMap, tap } from 'rxjs/operators';
+import { catchError, first, map, mergeMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
@@ -25,7 +25,6 @@ import { NetworkError } from '../../../../shared/models/errors/provider/NetworkE
 import { ProviderConnectorService } from '../../../../core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from '../../../../core/services/use-testing-mode/use-testing-mode.service';
 import { RubicError } from '../../../../shared/models/errors/RubicError';
-import { BridgeTableTrade } from '../../../cross-chain-swaps-page-old/bridge-page/models/BridgeTableTrade';
 import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
 import { BridgeApiService } from '../../../../core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from '../../../../core/services/backend/tokens-service/tokens.service';
@@ -47,12 +46,7 @@ export class BridgeService {
 
   private _isTestingMode = false;
 
-  private _transactions: BehaviorSubject<List<BridgeTableTrade>> = new BehaviorSubject(null);
-
   private _backendTokens: List<TokenAmount>;
-
-  public readonly transactions: Observable<List<BridgeTableTrade>> =
-    this._transactions.asObservable();
 
   constructor(
     private ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
@@ -73,7 +67,6 @@ export class BridgeService {
     this.setTokens();
     tokensService.tokens.subscribe(tokens => {
       this._backendTokens = tokens;
-      this.updateTransactionsList();
     });
 
     this.subscribeToFormChanges();
@@ -223,15 +216,12 @@ export class BridgeService {
           ).pipe(map(() => bridgeTrade));
         }),
         mergeMap((bridgeTrade: BridgeTrade) => {
-          return this.bridgeProvider
-            .createTrade(bridgeTrade, () => this.updateTransactionsList())
-            .pipe(
-              tap(() => this.updateTransactionsList()),
-              catchError(err => {
-                console.error(err);
-                return throwError(new RubicError());
-              })
-            );
+          return this.bridgeProvider.createTrade(bridgeTrade).pipe(
+            catchError(err => {
+              console.error(err);
+              return throwError(new RubicError());
+            })
+          );
         })
       )
     );
@@ -249,63 +239,13 @@ export class BridgeService {
     }
 
     return this.ethereumPolygonBridgeProviderService
-      .depositTradeAfterCheckpoint(burnTransactionHash, onTransactionHash, () =>
-        this.updateTransactionsList()
-      )
+      .depositTradeAfterCheckpoint(burnTransactionHash, onTransactionHash)
       .pipe(
-        tap(() => this.updateTransactionsList()),
         catchError(err => {
           console.error(err);
           return throwError(new RubicError());
         })
       );
-  }
-
-  public async updateTransactionsList(): Promise<void> {
-    if (this.authService.user === null) {
-      this._transactions.next(List([]));
-      return;
-    }
-
-    const userAddress = this.authService.user?.address;
-    if (this._backendTokens.size && userAddress) {
-      const transactionsApi = await this.bridgeApiService.getTransactions(userAddress);
-
-      const transactions = transactionsApi.map(transaction => {
-        const { fromBlockchain, toBlockchain } = transaction;
-        let { fromSymbol, toSymbol } = transaction;
-
-        if (
-          fromBlockchain === BLOCKCHAIN_NAME.POLYGON ||
-          toBlockchain === BLOCKCHAIN_NAME.POLYGON
-        ) {
-          if (!this._isTestingMode) {
-            fromSymbol = this._backendTokens
-              .filter(token => token.blockchain === fromBlockchain)
-              .find(token => token.address.toLowerCase() === fromSymbol.toLowerCase())?.symbol;
-            toSymbol = this._backendTokens
-              .filter(token => token.blockchain === toBlockchain)
-              .find(token => token.address.toLowerCase() === toSymbol.toLowerCase())?.symbol;
-          } else {
-            const testBridgeToken = bridgeTestTokens[BLOCKCHAIN_NAME.POLYGON].find(
-              token =>
-                token.blockchainToken[fromBlockchain].address.toLowerCase() ===
-                transaction.fromSymbol.toLowerCase()
-            );
-            fromSymbol = testBridgeToken?.blockchainToken[fromBlockchain].symbol;
-            toSymbol = testBridgeToken?.blockchainToken[toBlockchain].symbol;
-          }
-        }
-
-        return {
-          ...transaction,
-          fromSymbol,
-          toSymbol
-        };
-      });
-
-      this._transactions.next(List(transactions));
-    }
   }
 
   private async checkBalance(
