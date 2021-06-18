@@ -51,8 +51,8 @@
     }
 
     &._disabled {
-      background-color: rgba($rubic-disable, 0.6);
-      border-color: rgba($rubic-disable, 0.6);
+      background-color: rgba($rubic-disable, 0.4);
+      border-color: rgba($rubic-disable, 0.4);
       filter: saturate(0);
 
       ::ng-deep img {
