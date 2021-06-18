@@ -268,8 +268,6 @@ export class RubicTokensComponent {
   clearToken() {
     this.selectedToken = null;
     const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
-    this.swapFormService.commonTrade.get(formKey).setValue(null, {
-      emitEvent: false
-    });
+    this.swapFormService.commonTrade.controls.input.patchValue({ [formKey]: null });
   }
 }

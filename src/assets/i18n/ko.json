@@ -27,7 +27,8 @@
     "enterAmount": "금액을 입력하세요",
     "chooseToken": "토큰 선택",
     "warning": "Warning",
-    "customerSupport": "customer support"
+    "customerSupport": "customer support",
+    "OK": "확인"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -480,6 +481,14 @@
         "text": "성공적인 스왑!",
         "link": "탐색기에서 거래 확인"
       }
+    },
+    "confirmImportModal": {
+      "title": "가져 오기를 확인하세요!",
+      "text": "이 토큰은 Rubic.exchange에 등록되지 않았습니다.\n맞춤 토큰으로 추가하면 자신의 책임하에 거래하고 있음을 확인하게됩니다."
     }
+  },
+  "riskBanner": {
+    "text": "UI는 현재 베타 버전이며 플랫폼 기능에 영향을 미치는 감지되지 않은 버그가 여전히 포함되어있을 수 있습니다. 자신의 책임하에 사용하십시오.",
+    "link": "이전 디자인으로 전환"
   }
 }

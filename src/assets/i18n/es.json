@@ -27,7 +27,8 @@
     "enterAmount": "Ingresa el monto",
     "chooseToken": "Elija Token",
     "warning": "Warning",
-    "customerSupport": "customer support"
+    "customerSupport": "customer support",
+    "OK": "OK"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
@@ -480,6 +481,14 @@
         "text": "Successful swap!",
         "link": "Check transaction on explorer"
       }
+    },
+    "confirmImportModal": {
+      "title": "¡Confirme su importación!",
+      "text": "Este token no aparece en Rubic.exchange.\nAl agregarlo como un token personalizado, confirma que está operando con él bajo su propio riesgo."
     }
+  },
+  "riskBanner": {
+    "text": "Tenga en cuenta que la interfaz de usuario se encuentra actualmente en versión beta y aún puede contener errores no detectados que afectan la funcionalidad de la plataforma. Úselo bajo su propio riesgo.",
+    "link": "Cambiar al diseño antiguo"
   }
 }

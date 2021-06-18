@@ -14,12 +14,12 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { first } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
-import { BridgeService } from '../../services/bridge-service/bridge.service';
-import { ErrorsService } from '../../../../core/errors/errors.service';
-import { RubicError } from '../../../../shared/models/errors/RubicError';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
-import { AuthService } from '../../../../core/services/auth/auth.service';
-import { WalletsModalComponent } from '../../../../core/header/components/header/components/wallets-modal/wallets-modal.component';
+import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
 
@@ -64,8 +64,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(() =>
-      this.calculateTrade()
+    this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
+      () => this.calculateTrade()
     );
 
     this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
@@ -143,8 +143,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .createTrade(bridgeTradeRequest)
       .pipe(first())
       .subscribe(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        (res: TransactionReceipt) => {
+        (_res: TransactionReceipt) => {
           this.notificationsService
             .show(this.translate.instant('bridgePage.successMessage'), {
               label: 'Successful trade',
