@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
@@ -9,6 +8,7 @@ import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/Blockcha
 import { combineLatest } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
+import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -21,33 +21,6 @@ type SelectedToken = {
   styleUrls: ['./swaps-form.component.scss']
 })
 export class SwapsFormComponent {
-  public blockchainsList = [
-    {
-      symbol: BLOCKCHAIN_NAME.ETHEREUM,
-      name: 'Ethereum',
-      chainImg: 'assets/images/icons/eth-logo.svg',
-      id: 1
-    },
-    {
-      symbol: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      name: 'Binance Smart Chain',
-      chainImg: 'assets/images/icons/coins/bnb.svg',
-      id: 56
-    },
-    {
-      symbol: BLOCKCHAIN_NAME.POLYGON,
-      name: 'Polygon',
-      chainImg: 'assets/images/icons/coins/polygon.svg',
-      id: 137
-    },
-    {
-      symbol: BLOCKCHAIN_NAME.XDAI,
-      name: 'XDai',
-      chainImg: 'assets/images/icons/coins/xdai.svg',
-      id: 100
-    }
-  ];
-
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
@@ -116,7 +89,7 @@ export class SwapsFormComponent {
 
     const tokens: AvailableTokenAmount[] = [];
     if (!oppositeToken) {
-      Object.values(this.blockchainsList).forEach(blockchainItem => {
+      Object.values(blockchainsList).forEach(blockchainItem => {
         const blockchain = blockchainItem.symbol;
 
         this._supportedTokens[blockchain][blockchain].forEach(token => {
@@ -154,7 +127,7 @@ export class SwapsFormComponent {
           )
         )
         .filter(tokenPair => tokenPair);
-      Object.values(this.blockchainsList).forEach(blockchainItem => {
+      Object.values(blockchainsList).forEach(blockchainItem => {
         const blockchain = blockchainItem.symbol;
         if (oppositeBlockchain === blockchain) {
           return;
