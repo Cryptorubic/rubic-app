@@ -2,15 +2,16 @@
 
 .switcher {
   display: flex;
+  box-sizing: content-box;
   width: 35px;
   height: 42px;
-  
+  padding: 0;
+
   background-color: $rubic-secondary;
   border: 5px solid #fcfcfc;
   border-radius: 67px;
 
   cursor: pointer;
-  box-sizing: content-box;
 
   img {
     margin: auto;

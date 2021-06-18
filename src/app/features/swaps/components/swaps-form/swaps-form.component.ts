@@ -205,4 +205,17 @@ export class SwapsFormComponent {
       fromAmount: new BigNumber(amount)
     });
   }
+
+  public revert() {
+    const { fromBlockchain, toBlockchain, fromToken, toToken } =
+      this.swapFormService.commonTrade.controls.input.value;
+    const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
+    this.swapFormService.commonTrade.controls.input.patchValue({
+      ...(fromToken && { toToken: fromToken }),
+      ...(toToken && { fromToken: toToken }),
+      ...(fromBlockchain && { toBlockchain: fromBlockchain }),
+      ...(toBlockchain && { fromBlockchain: toBlockchain }),
+      ...(toAmount && { fromAmount: toAmount })
+    });
+  }
 }
