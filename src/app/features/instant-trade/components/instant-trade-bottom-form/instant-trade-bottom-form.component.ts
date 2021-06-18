@@ -74,8 +74,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
   public async calculateTrades(): Promise<void> {
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION
+      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      isBestRate: false
     }));
+    this.cdr.detectChanges();
     const tradeData = (await this.instantTradeService.calculateTrades()) as any[];
     const bestProviderIndex = this.calculateBestRate(tradeData);
     this.providerControllers = this.providerControllers.map((controller, index) => ({
@@ -127,15 +129,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
   }
 
-  // public collapseProvider(providerNumber: number, isCollapsed: boolean): void {
-  //   const newProviders = [...this.providerControllers];
-  //   newProviders[providerNumber] = {
-  //     ...newProviders[providerNumber],
-  //     isCollapsed
-  //   };
-  //   this.providerControllers = newProviders;
-  // }
-
   public selectProvider(providerNumber: number): void {
     const newProviders = this.providerControllers.map(provider => {
       return {
@@ -175,9 +168,4 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     return bestRateProviderIndex || 0;
   }
-
-  // public getAnalytic() {
-  //   const token = this.swapFormService.commonTrade.get('fromToken').value as IToken;
-  //   window.open(`https://keks.app/t/${token.address}`, '_blank').focus();
-  // }
 }
