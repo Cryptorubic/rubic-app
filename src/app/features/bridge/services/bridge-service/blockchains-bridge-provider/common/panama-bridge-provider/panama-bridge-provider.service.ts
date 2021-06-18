@@ -99,10 +99,7 @@ export class PanamaBridgeProviderService {
     );
   }
 
-  public createTrade(
-    bridgeTrade: BridgeTrade,
-    updateTransactionsList: () => Promise<void>
-  ): Observable<TransactionReceipt> {
+  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const body = {
       amount: bridgeTrade.amount.toFixed(),
       fromNetwork: bridgeTrade.fromBlockchain,
@@ -122,9 +119,7 @@ export class PanamaBridgeProviderService {
           return this.errorsService.$throw(new OverQueryLimitError());
         }
         const { data } = res;
-        return from(
-          this.sendDeposit(data.id, bridgeTrade, data.depositAddress, updateTransactionsList)
-        );
+        return from(this.sendDeposit(data.id, bridgeTrade, data.depositAddress));
       }),
       catchError(err => {
         return this.errorsService.$throw(
@@ -138,8 +133,7 @@ export class PanamaBridgeProviderService {
   private async sendDeposit(
     binanceId: string,
     bridgeTrade: BridgeTrade,
-    depositAddress: string,
-    updateTransactionsList: () => Promise<void>
+    depositAddress: string
   ): Promise<TransactionReceipt> {
     const { token } = bridgeTrade;
     const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
@@ -156,7 +150,6 @@ export class PanamaBridgeProviderService {
         token.blockchainToken[bridgeTrade.fromBlockchain].symbol,
         token.blockchainToken[bridgeTrade.toBlockchain].symbol
       );
-      await updateTransactionsList();
     };
 
     let receipt;

@@ -8,9 +8,8 @@ describe('RubicTokensComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RubicTokensComponent ]
-    })
-    .compileComponents();
+      declarations: [RubicTokensComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

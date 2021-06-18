@@ -220,11 +220,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     });
   }
 
-  public createTrade(
-    bridgeTrade: BridgeTrade,
-    updateTransactionsList: () => Promise<void>
-  ): Observable<TransactionReceipt> {
-    return this.createPolygonTrade(bridgeTrade, updateTransactionsList).pipe(
+  public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
+    return this.createPolygonTrade(bridgeTrade).pipe(
       tap(receipt => {
         this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,
@@ -235,10 +232,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     );
   }
 
-  public createPolygonTrade(
-    bridgeTrade: BridgeTrade,
-    updateTransactionsList: () => Promise<void>
-  ): Observable<TransactionReceipt> {
+  public createPolygonTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
     const userAddress = this.providerConnectorService.address;
 
@@ -258,7 +252,6 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           hash,
           this.providerConnectorService.address
         );
-        await updateTransactionsList();
       };
     };
 
@@ -351,8 +344,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
 
   public depositTradeAfterCheckpoint(
     burnTransactionHash: string,
-    onTransactionHash: (hash: string) => void,
-    updateTransactionsList: () => Promise<void>
+    onTransactionHash: (hash: string) => void
   ): Observable<string> {
     const maticPOSClient = this.getMaticPOSClient(BLOCKCHAIN_NAME.ETHEREUM);
     const userAddress = this.providerConnectorService.address;
@@ -366,7 +358,6 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         hash,
         TRADE_STATUS.WITHDRAW_IN_PROGRESS
       );
-      updateTransactionsList();
     };
 
     return defer(async () => {

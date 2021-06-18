@@ -32,11 +32,7 @@ export abstract class BlockchainsBridgeProvider {
   /**
    * @description create trade between different networks
    * @param bridgeTrade object with data for trade
-   * @param updateTransactionsList callback function for update list of bridge trades
    * @return observable transaction receipt object
    */
-  public abstract createTrade(
-    bridgeTrade: BridgeTrade,
-    updateTransactionsList: () => Promise<void>
-  ): Observable<TransactionReceipt>;
+  public abstract createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt>;
 }
