@@ -22,6 +22,31 @@ import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+
+interface BlockchainInfo {
+  name: string;
+  href: string;
+}
+
+const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+    name: 'Binance Smart Chain',
+    href: 'https://www.binance.org/'
+  },
+  [BLOCKCHAIN_NAME.POLYGON]: {
+    name: 'Polygon',
+    href: 'https://polygon.technology/'
+  },
+  [BLOCKCHAIN_NAME.XDAI]: {
+    name: 'xDai',
+    href: 'https://www.xdaichain.com/'
+  },
+  [BLOCKCHAIN_NAME.TRON]: {
+    name: 'Tron',
+    href: 'https://tron.network/'
+  }
+};
 
 @Component({
   selector: 'app-bridge-bottom-form',
@@ -48,6 +73,23 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
     const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
     return !toAmount || toAmount.isNaN() || toAmount.eq(0);
+  }
+
+  get whatIsBlockchain(): BlockchainInfo {
+    const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
+    const nonEthBlockchain =
+      fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? toBlockchain : fromBlockchain;
+    return BLOCKCHAINS_INFO[nonEthBlockchain];
+  }
+
+  get address(): string {
+    return this.authService.user?.address;
+  }
+
+  get tokenInfoUrl(): string {
+    const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
+    const tokenAddress = toToken?.address || fromToken?.address;
+    return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
   constructor(

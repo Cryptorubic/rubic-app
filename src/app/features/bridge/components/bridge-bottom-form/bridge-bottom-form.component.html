@@ -1,14 +1,15 @@
 <section class="bridge-bottom-form">
   <app-amount-input [loading]="loading"></app-amount-input>
-<!--  <div class="bridge-bottom-form__analytics">-->
-<!--    <a-->
-<!--      href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"-->
-<!--      class="instant-trade-bottom-form__analytics"-->
-<!--    >-->
-<!--      <img src="assets/images/icons/analytic.svg" alt="Analytic" />-->
-<!--      <span>Analytic</span>-->
-<!--    </a>-->
-<!--  </div>-->
+  <div class="bridge-bottom-form__analytics" *ngIf="tokenInfoUrl">
+    <a
+      [href]="'https://keks.app/' + tokenInfoUrl"
+      target="_blank"
+      class="instant-trade-bottom-form__analytics"
+    >
+      <img src="assets/images/icons/analytic.svg" alt="Analytics" />
+      <span>Analytics</span>
+    </a>
+  </div>
   <div class="bridge-bottom-form__footer">
     <div class="bridge-bottom-form__button">
       <app-rubic-button
@@ -19,8 +20,8 @@
       >{{ isAuthorized ? 'Swap' : 'Connect wallet' }}</app-rubic-button>
     </div>
     <div class="bridge-bottom-form__terms-and-conditions">
-      You will get Binance Smart Chain tokens to the selected address
-      <a href="">What is Binance Smart Chain?</a>
+      <span *ngIf="address">You will get {{whatIsBlockchain.name}} tokens to the {{address}} address</span>
+      <a [href]="whatIsBlockchain.href" target="_blank">What is {{whatIsBlockchain.name}}?</a>
     </div>
   </div>
 </section>
