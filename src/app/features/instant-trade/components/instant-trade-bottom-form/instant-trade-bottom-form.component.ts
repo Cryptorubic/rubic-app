@@ -26,15 +26,19 @@ import { Subscription } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
-  public get allowAnalyse(): boolean {
-    return Boolean(this.swapFormService.commonTrade.controls.input.value.fromToken);
-  }
-
   public get allowTrade(): boolean {
     const form = this.swapFormService.commonTrade.controls.input.value;
     return Boolean(
       form.fromBlockchain && form.fromToken && form.toBlockchain && form.toToken && form.fromAmount
     );
+  }
+
+  get tokenInfoUrl(): string {
+    const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
+    if (!fromToken?.address || !toToken?.address) {
+      return '';
+    }
+    return `t/${toToken.address}`;
   }
 
   public formChangesSubscription$: Subscription;
