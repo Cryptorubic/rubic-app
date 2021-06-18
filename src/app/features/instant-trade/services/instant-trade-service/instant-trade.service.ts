@@ -5,9 +5,14 @@ import { OneInchEthService } from 'src/app/features/instant-trade/services/insta
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
-import { Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/trade-api';
+import { switchMap } from 'rxjs/operators';
+import { INTSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps-page-old/models/trade-data';
+import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +29,9 @@ export class InstantTradeService {
     private readonly swapFormService: SwapFormService,
     private readonly uniswapService: UniSwapService,
     private readonly errorService: ErrorsService,
-    @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService
+    private readonly instantTradesApiService: InstantTradesApiService,
+    @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService,
+    private readonly web3Public: Web3PublicService
   ) {
     this.currentBlockchain = 'ETH';
     this.setBlockchainsProviders();
@@ -46,26 +53,52 @@ export class InstantTradeService {
 
   public async createTrade(provider: PROVIDERS, trade): Promise<void> {
     try {
-      await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(trade, {
-        onConfirm: () => {
-          this.modalShowing = this.notificationsService
-            .show('Transaction in progress', {
-              status: TuiNotification.Info,
-              autoClose: false,
-              hasCloseButton: false
-            })
-            .subscribe();
+      const receipt = await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(
+        trade,
+        {
+          onConfirm: async () => {
+            this.modalShowing = this.notificationsService
+              .show('Transaction in progress', {
+                status: TuiNotification.Info,
+                autoClose: false,
+                hasCloseButton: false
+              })
+              .subscribe();
+            await this.postTrade(trade);
+          }
         }
-      });
+      );
       this.modalShowing.unsubscribe();
+      this.updateTrade(receipt.transactionHash, INTSTANT_TRADES_TRADE_STATUS.COMPLETED);
       this.notificationsService
         .show('Transaction completed', {
           status: TuiNotification.Success
         })
         .subscribe();
+      await this.instantTradesApiService.notifyInstantTradesBot({
+        provider,
+        blockchain: this.currentBlockchain,
+        walletAddress: receipt.from,
+        trade,
+        txHash: receipt.transactionHash
+      });
     } catch (err) {
       this.errorService.catch$(err);
     }
+  }
+
+  public async postTrade(data: InstantTradesPostApi) {
+    const web3Public = this.web3Public[this.currentBlockchain];
+    const transaction = await web3Public.getTransactionByHash(data.hash, 0, 60, 1000);
+    const delay = transaction ? 100 : 1000;
+    // TODO: Fix post request. Have to delay request to fix problem with finding transaction on backend.
+    timer(delay)
+      .pipe(switchMap(() => this.instantTradesApiService.createTrade(data)))
+      .subscribe();
+  }
+
+  public updateTrade(hash: string, status: INTSTANT_TRADES_TRADE_STATUS) {
+    return this.instantTradesApiService.patchTrade(hash, status).subscribe();
   }
 
   private setBlockchainsProviders(): void {

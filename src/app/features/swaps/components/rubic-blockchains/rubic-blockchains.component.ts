@@ -62,12 +62,9 @@ export class RubicBlockchainsComponent implements OnInit {
 
       const blockchainControlName =
         this.blockchainType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-      this.swapFormService.commonTrade.controls.input.patchValue({
-        [blockchainControlName]: blockchainSymbol
-      });
-
       const tokenControlName = this.blockchainType === 'from' ? 'fromToken' : 'toToken';
       this.swapFormService.commonTrade.controls.input.patchValue({
+        [blockchainControlName]: blockchainSymbol,
         [tokenControlName]: null
       });
     }

@@ -88,7 +88,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       form.input.toToken &&
       form.input.fromBlockchain &&
       form.input.fromAmount &&
-      form.input.toBlockchain
+      form.input.toBlockchain &&
+      form.input.fromAmount.gt(0)
     ) {
       await this.calculateTrades();
     }
@@ -103,7 +104,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
     const tradeData = (await this.instantTradeService.calculateTrades()) as any[];
     const bestProviderIndex = this.calculateBestRate(tradeData);
-    this.providerControllers = this.providerControllers.map((controller, index) => ({
+    const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
       trade: tradeData[index]?.value,
       isBestRate: false,
@@ -112,7 +113,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           ? INSTANT_TRADES_STATUS.APPROVAL
           : INSTANT_TRADES_STATUS.ERROR
     }));
-    this.providerControllers[bestProviderIndex].isBestRate = true;
+    newProviders[bestProviderIndex].isBestRate = true;
+    this.providerControllers = newProviders;
     this.cdr.detectChanges();
   }
 
