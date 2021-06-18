@@ -64,6 +64,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.calculateTrade();
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       () => this.calculateTrade()
     );
@@ -82,6 +83,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   public calculateTrade() {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.commonTrade.controls.input.value;
+
+    if (fromBlockchain === toBlockchain) {
+      return;
+    }
+
     if (
       !fromBlockchain ||
       !toBlockchain ||
