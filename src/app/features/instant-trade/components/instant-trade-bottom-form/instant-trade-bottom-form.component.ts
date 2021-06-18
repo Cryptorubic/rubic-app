@@ -74,8 +74,10 @@ export class InstantTradeBottomFormComponent implements OnInit {
   public async calculateTrades(): Promise<void> {
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION
+      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      isBestRate: false
     }));
+    this.cdr.detectChanges();
     const tradeData = (await this.instantTradeService.calculateTrades()) as any[];
     const bestProviderIndex = this.calculateBestRate(tradeData);
     this.providerControllers = this.providerControllers.map((controller, index) => ({
