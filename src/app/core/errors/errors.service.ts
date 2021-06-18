@@ -8,6 +8,7 @@ import { Observable, EMPTY } from 'rxjs';
 import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
+import { NotSupportedItNetwork } from 'src/app/shared/models/errors/instant-trade/not-supported-it-network';
 import { RubicError } from '../../shared/models/errors/RubicError';
 import { RubicErrorComponent } from './components/rubic-error/rubic-error.component';
 import { NotSupportedNetworkError } from '../../shared/models/errors/provider/NotSupportedNetwork';
@@ -144,6 +145,11 @@ export class ErrorsService {
       case NoSelectedProviderError:
         this.notificationsService
           .show(this.translateService.instant('errors.noSelectedProvider'), options)
+          .subscribe();
+        return EMPTY;
+      case NotSupportedItNetwork:
+        this.notificationsService
+          .show(this.translateService.instant('errors.notSupportedItNetwork'), options)
           .subscribe();
         return EMPTY;
       default:
