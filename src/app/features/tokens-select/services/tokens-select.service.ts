@@ -16,6 +16,7 @@ export class TokensSelectService {
 
   showDialog(
     tokens: Observable<AvailableTokenAmount[]>,
+    currentBlockchain: BLOCKCHAIN_NAME,
     enabledCustomTokenBlockchain: BLOCKCHAIN_NAME
   ): Observable<TokenAmount> {
     return this.dialogService.open(
@@ -24,6 +25,7 @@ export class TokensSelectService {
         size: 's',
         data: {
           tokens,
+          currentBlockchain,
           enabledCustomTokenBlockchain
         }
       }

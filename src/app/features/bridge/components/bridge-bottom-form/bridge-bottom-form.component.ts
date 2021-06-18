@@ -64,6 +64,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.calculateTrade();
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       () => this.calculateTrade()
     );
@@ -82,6 +83,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   public calculateTrade() {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.commonTrade.controls.input.value;
+
+    if (fromBlockchain === toBlockchain) {
+      return;
+    }
+
     if (
       !fromBlockchain ||
       !toBlockchain ||
@@ -126,14 +132,17 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade() {
+    let tradeInProgressSubscription$: Subscription;
+
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.authService.user.address,
       onTransactionHash: () => {
         this.tradeInProgress = true;
-        this.notificationsService
+        tradeInProgressSubscription$ = this.notificationsService
           .show(this.translate.instant('bridgePage.progressMessage'), {
             label: 'Trade in progress',
-            status: TuiNotification.Info
+            status: TuiNotification.Info,
+            autoClose: false
           })
           .subscribe();
       }
@@ -144,15 +153,21 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe(
         (_res: TransactionReceipt) => {
-          this.notificationsService
+          tradeInProgressSubscription$.unsubscribe();
+
+          const successfulTradeSubscription$ = this.notificationsService
             .show(this.translate.instant('bridgePage.successMessage'), {
               label: 'Successful trade',
-              status: TuiNotification.Success
+              status: TuiNotification.Success,
+              autoClose: false
             })
             .subscribe();
           this.tradeInProgress = false;
+
+          setTimeout(() => successfulTradeSubscription$.unsubscribe(), 15000);
         },
         err => {
+          tradeInProgressSubscription$?.unsubscribe();
           this.tradeInProgress = false;
           this.errorsService.catch$(err);
         }

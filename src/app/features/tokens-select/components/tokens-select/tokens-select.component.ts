@@ -57,7 +57,11 @@ export class TokensSelectComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       AvailableTokenAmount,
-      { tokens: Observable<AvailableTokenAmount[]>; enabledCustomTokenBlockchain: BLOCKCHAIN_NAME }
+      {
+        tokens: Observable<AvailableTokenAmount[]>;
+        enabledCustomTokenBlockchain: BLOCKCHAIN_NAME;
+        currentBlockchain: BLOCKCHAIN_NAME;
+      }
     >,
     private cdr: ChangeDetectorRef,
     private web3PublicService: Web3PublicService,
@@ -65,6 +69,7 @@ export class TokensSelectComponent implements OnInit {
   ) {
     this.tokens = context.data.tokens;
     this.enabledCustomTokenBlockchain = context.data.enabledCustomTokenBlockchain;
+    this.blockchain = context.data.currentBlockchain;
   }
 
   ngOnInit() {
