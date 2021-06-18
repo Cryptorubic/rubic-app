@@ -38,14 +38,15 @@ export class RubicBlockchainsComponent implements OnInit {
     this.visibleBlockchainsList = this.blockchainsList.filter(
       blockchain => blockchain.symbol !== this.selectedBlockchain
     );
+
     this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
       this.selectedBlockchain =
         this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
       this.visibleBlockchainsList = this.blockchainsList.filter(
         blockchain => blockchain.symbol !== this.selectedBlockchain
       );
+      this.cdr.markForCheck();
     });
-    this.cdr.detectChanges();
   }
 
   public selectBlockchain(blockchainSymbol: number) {
