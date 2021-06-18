@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { Subscription } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class InstantTradeService {
     private readonly oneInchEthService: OneInchEthService,
     private readonly swapFormService: SwapFormService,
     private readonly uniswapService: UniSwapService,
+    private readonly errorService: ErrorsService,
     @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService
   ) {
     this.currentBlockchain = 'ETH';
@@ -43,23 +45,27 @@ export class InstantTradeService {
   }
 
   public async createTrade(provider: PROVIDERS, trade): Promise<void> {
-    await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(trade, {
-      onConfirm: () => {
-        this.modalShowing = this.notificationsService
-          .show('Transaction in progress', {
-            status: TuiNotification.Info,
-            autoClose: false,
-            hasCloseButton: false
-          })
-          .subscribe();
-      }
-    });
-    this.modalShowing.unsubscribe();
-    this.notificationsService
-      .show('Transaction completed', {
-        status: TuiNotification.Success
-      })
-      .subscribe();
+    try {
+      await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(trade, {
+        onConfirm: () => {
+          this.modalShowing = this.notificationsService
+            .show('Transaction in progress', {
+              status: TuiNotification.Info,
+              autoClose: false,
+              hasCloseButton: false
+            })
+            .subscribe();
+        }
+      });
+      this.modalShowing.unsubscribe();
+      this.notificationsService
+        .show('Transaction completed', {
+          status: TuiNotification.Success
+        })
+        .subscribe();
+    } catch (err) {
+      this.errorService.catch$(err);
+    }
   }
 
   private setBlockchainsProviders(): void {

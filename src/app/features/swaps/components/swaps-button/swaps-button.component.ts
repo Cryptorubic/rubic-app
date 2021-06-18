@@ -5,7 +5,8 @@ import {
   Injector,
   Input,
   ChangeDetectorRef,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiDialogService } from '@taiga-ui/core';
@@ -22,6 +23,8 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
 export class SwapsButtonComponent implements OnInit {
   @Input() disabled: boolean;
 
+  @Output() clickEvent: EventEmitter<void>;
+
   public allowSwap: boolean;
 
   constructor(
@@ -30,7 +33,10 @@ export class SwapsButtonComponent implements OnInit {
     @Inject(Injector) private injector: Injector,
     private readonly swapsService: SwapsService,
     private readonly cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.disabled = false;
+    this.clickEvent = new EventEmitter<void>();
+  }
 
   public ngOnInit(): void {
     this.authService.getCurrentUser().subscribe(user => {
@@ -44,7 +50,7 @@ export class SwapsButtonComponent implements OnInit {
       this.showModal();
       // eslint-disable-next-line no-empty
     } else if (!this.disabled) {
-      this.swapsService.createTrade();
+      this.clickEvent.emit();
     }
   }
 

@@ -35,8 +35,13 @@
     img {
       display: block;
     }
+
+    ::ng-deep [tuiButton] {
+      border-color: $rubic-primary !important;
+    }
   }
 }
+
 
 ::ng-deep button .content span {
   font-weight: 300;

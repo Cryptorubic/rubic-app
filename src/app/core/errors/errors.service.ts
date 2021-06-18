@@ -7,6 +7,7 @@ import {
 import { Observable, EMPTY } from 'rxjs';
 import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
+import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
 import { RubicError } from '../../shared/models/errors/RubicError';
 import { RubicErrorComponent } from './components/rubic-error/rubic-error.component';
 import { NotSupportedNetworkError } from '../../shared/models/errors/provider/NotSupportedNetwork';
@@ -50,7 +51,8 @@ export class ErrorsService {
     const options = {
       label: 'Error',
       status: TuiNotification.Error,
-      data: {}
+      data: {},
+      autoClose: 7000
     };
     const setPolyContent = (Component: Type<object>) => {
       errorContent = new PolymorpheusComponent(Component, this.injector);
@@ -137,6 +139,11 @@ export class ErrorsService {
       case WalletlinkError:
         this.notificationsService
           .show(this.translateService.instant('errors.noQrCode'), options)
+          .subscribe();
+        return EMPTY;
+      case NoSelectedProviderError:
+        this.notificationsService
+          .show(this.translateService.instant('errors.noSelectedProvider'), options)
           .subscribe();
         return EMPTY;
       default:
