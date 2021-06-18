@@ -81,7 +81,11 @@ export class NewUiComponent implements OnInit {
 
   openTokensSelect() {
     this.tokensSelectService
-      .showDialog(of(this.store.tokens), BLOCKCHAIN_NAME.ETHEREUM)
+      .showDialog(
+        of(this.store.tokens),
+        BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        BLOCKCHAIN_NAME.ETHEREUM
+      )
       .subscribe(token =>
         alert(`Token ${token.symbol} in ${token.blockchain} blockchain selected`)
       );
