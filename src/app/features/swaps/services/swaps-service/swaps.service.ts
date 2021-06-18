@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
@@ -15,7 +15,7 @@ import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 export class SwapsService {
   private _swapProvider: SwapProvider;
 
-  private _availableTokens = new Subject<SupportedTokensInfo>();
+  private _availableTokens = new BehaviorSubject<SupportedTokensInfo>(undefined);
 
   private _bridgeTokensPairs = new BehaviorSubject<BlockchainsBridgeTokens[]>([]);
 

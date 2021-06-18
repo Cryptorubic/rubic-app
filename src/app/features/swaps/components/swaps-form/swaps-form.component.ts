@@ -78,6 +78,10 @@ export class SwapsFormComponent {
       this.swapsService.availableTokens,
       this.swapsService.bridgeTokensPairs
     ]).subscribe(([supportedTokens, bridgeTokensPairs]) => {
+      if (!supportedTokens) {
+        return;
+      }
+
       this._supportedTokens = supportedTokens;
       this._bridgeTokensPairs = bridgeTokensPairs;
 
