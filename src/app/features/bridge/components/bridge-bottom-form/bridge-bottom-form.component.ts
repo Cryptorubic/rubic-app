@@ -22,6 +22,31 @@ import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
+import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+
+interface BlockchainInfo {
+  name: string;
+  href: string;
+}
+
+const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+    name: 'Binance Smart Chain',
+    href: 'https://www.binance.org/'
+  },
+  [BLOCKCHAIN_NAME.POLYGON]: {
+    name: 'Polygon',
+    href: 'https://polygon.technology/'
+  },
+  [BLOCKCHAIN_NAME.XDAI]: {
+    name: 'xDai',
+    href: 'https://www.xdaichain.com/'
+  },
+  [BLOCKCHAIN_NAME.TRON]: {
+    name: 'Tron',
+    href: 'https://tron.network/'
+  }
+};
 
 @Component({
   selector: 'app-bridge-bottom-form',
@@ -50,6 +75,23 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     return !toAmount || toAmount.isNaN() || toAmount.eq(0);
   }
 
+  get whatIsBlockchain(): BlockchainInfo {
+    const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
+    const nonEthBlockchain =
+      fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? toBlockchain : fromBlockchain;
+    return BLOCKCHAINS_INFO[nonEthBlockchain];
+  }
+
+  get address(): string {
+    return this.authService.user?.address;
+  }
+
+  get tokenInfoUrl(): string {
+    const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
+    const tokenAddress = toToken?.address || fromToken?.address;
+    return tokenAddress ? `t/${tokenAddress}` : '';
+  }
+
   constructor(
     private bridgeService: BridgeService,
     private errorsService: ErrorsService,
@@ -64,6 +106,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.calculateTrade();
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       () => this.calculateTrade()
     );
@@ -82,6 +125,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   public calculateTrade() {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.commonTrade.controls.input.value;
+
+    if (fromBlockchain === toBlockchain) {
+      return;
+    }
+
     if (
       !fromBlockchain ||
       !toBlockchain ||
@@ -126,14 +174,18 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade() {
+    let tradeInProgressSubscription$: Subscription;
+
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.authService.user.address,
       onTransactionHash: () => {
         this.tradeInProgress = true;
-        this.notificationsService
+        this.cdr.detectChanges();
+        tradeInProgressSubscription$ = this.notificationsService
           .show(this.translate.instant('bridgePage.progressMessage'), {
             label: 'Trade in progress',
-            status: TuiNotification.Info
+            status: TuiNotification.Info,
+            autoClose: false
           })
           .subscribe();
       }
@@ -144,15 +196,22 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe(
         (_res: TransactionReceipt) => {
-          this.notificationsService
+          tradeInProgressSubscription$.unsubscribe();
+
+          const successfulTradeSubscription$ = this.notificationsService
             .show(this.translate.instant('bridgePage.successMessage'), {
               label: 'Successful trade',
-              status: TuiNotification.Success
+              status: TuiNotification.Success,
+              autoClose: false
             })
             .subscribe();
           this.tradeInProgress = false;
+          this.cdr.detectChanges();
+
+          setTimeout(() => successfulTradeSubscription$.unsubscribe(), 15000);
         },
         err => {
+          tradeInProgressSubscription$?.unsubscribe();
           this.tradeInProgress = false;
           this.errorsService.catch$(err);
         }

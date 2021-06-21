@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { debounceTime } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { NotSupportedItNetwork } from 'src/app/shared/models/errors/instant-trade/not-supported-it-network';
 import { SwapProvider } from '../swap-provider';
 import { BridgesSwapProviderService } from '../../../bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { InstantTradesSwapProviderService } from '../../../instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
@@ -15,7 +18,7 @@ import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 export class SwapsService {
   private _swapProvider: SwapProvider;
 
-  private _availableTokens = new Subject<SupportedTokensInfo>();
+  private _availableTokens = new BehaviorSubject<SupportedTokensInfo>(undefined);
 
   private _bridgeTokensPairs = new BehaviorSubject<BlockchainsBridgeTokens[]>([]);
 
@@ -35,7 +38,8 @@ export class SwapsService {
     private readonly bridgesSwapProvider: BridgesSwapProviderService,
     private readonly instantTradesSwapProvider: InstantTradesSwapProviderService,
     private readonly swapFormService: SwapFormService,
-    private readonly instantTradeService: InstantTradeService
+    private readonly instantTradeService: InstantTradeService,
+    private readonly errorService: ErrorsService
   ) {
     combineLatest([this.bridgesSwapProvider.tokens, this.instantTradesSwapProvider.tokens])
       .pipe(debounceTime(0))
@@ -62,6 +66,10 @@ export class SwapsService {
     }
     this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
       if (form.fromBlockchain === form.toBlockchain) {
+        const blockchain = commonForm.value.fromBlockchain;
+        if (blockchain === BLOCKCHAIN_NAME.XDAI || blockchain === BLOCKCHAIN_NAME.TRON) {
+          this.errorService.catch$(new NotSupportedItNetwork());
+        }
         this._swapProvider = this.instantTradesSwapProvider;
       } else {
         this._swapProvider = this.bridgesSwapProvider;

@@ -2,13 +2,14 @@
   <div class="amount-input-container">
     <label class="amount-input-container__label">
       <input
+        autocomplete="off"
         class="amount-input-container__input"
         name="token-amount"
         [placeholder]="placeholder"
         appTokenAmount
         [formControl]="amountControl"
         [decimals]="token?.decimals || DEFAULT_DECIMALS"
-        (amountChange)="amountChange.emit($event)"
+        (amountChange)="emitAmountChange($event)"
       />
     </label>
 
@@ -26,24 +27,26 @@
   </div>
 
   <div class="token-input-container__right-side right-side">
-    <div class="right-side__usd-price-container usd-price-container" *ngIf="getUsdPrice().gt(0)">
+    <div
+      class="right-side__usd-price-container usd-price-container"
+      [ngClass]="{ 'usd-price-container_hidden': getUsdPrice().eq(0) }"
+    >
       <span
         class="usd-price-container__price"
         [tuiHint]="usdPriceTooltip"
         tuiHintDirection="top"
         tuiHintMode="onDark"
-        >{{ getUsdPrice() | bigNumberFormat: 2 }}</span
+        >${{ getUsdPrice() | bigNumberFormat: 2 }}</span
       >
       <ng-template #usdPriceTooltip>
         {{ getUsdPrice() | bigNumberFormat: 2 }}
       </ng-template>
-      USD
     </div>
 
     <div class="right-side__error-info">
-      <span *ngIf="amountControl.errors?.min">Min {{ minAmount }}</span>
+      <span *ngIf="minAmount !== undefined && amount.lt(minAmount)">Min {{ minAmount }}</span>
 
-      <span *ngIf="amountControl.errors?.max">Max {{ maxAmount }}</span>
+      <span *ngIf="maxAmount !== undefined && amount.gt(maxAmount)">Max {{ maxAmount }}</span>
     </div>
   </div>
 </div>

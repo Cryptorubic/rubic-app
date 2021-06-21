@@ -1,7 +1,7 @@
 <div class="swaps-form">
   <header class="swaps-form__header">
     <h1 class="swaps-form__title">Swap</h1>
-    <app-rubic-button-circle size="l" appearance="flat" hint="Reload" hintDirection="top-left">
+    <app-rubic-button-circle (click)="refreshTrade()" size="l" appearance="flat" hint="Reload" hintDirection="top-left">
       <img src="assets/images/icons/reload.svg" width="18" height="18" alt="Reload" />
     </app-rubic-button-circle>
 
@@ -15,7 +15,6 @@
       <app-rubic-blockchains
         class="form-panel__blockchains"
         blockchainType="from"
-        [blockchainsList]="blockchainsList"
       ></app-rubic-blockchains>
 
       <app-rubic-tokens
@@ -35,14 +34,13 @@
     ></app-token-amount-input>
 
     <div class="swaps-form__delimiter">
-      <app-rubic-switcher></app-rubic-switcher>
+      <app-rubic-switcher (onClick)="revert()"></app-rubic-switcher>
     </div>
 
     <div class="swaps-form__top-part">
       <app-rubic-blockchains
         class="form-panel__blockchains"
         blockchainType="to"
-        [blockchainsList]="blockchainsList"
       ></app-rubic-blockchains>
 
       <app-rubic-tokens

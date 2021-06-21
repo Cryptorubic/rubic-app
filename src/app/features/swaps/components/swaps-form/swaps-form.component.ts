@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
@@ -9,6 +8,10 @@ import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/Blockcha
 import { combineLatest } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
+import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
+import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/bridge-bottom-form/bridge-bottom-form.component';
+import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -21,6 +24,10 @@ type SelectedToken = {
   styleUrls: ['./swaps-form.component.scss']
 })
 export class SwapsFormComponent {
+  @ViewChild(BridgeBottomFormComponent) bridgeForm: BridgeBottomFormComponent;
+
+  @ViewChild(InstantTradeBottomFormComponent) itForm: InstantTradeBottomFormComponent;
+
   public blockchainsList = [
     {
       symbol: BLOCKCHAIN_NAME.ETHEREUM,
@@ -78,6 +85,10 @@ export class SwapsFormComponent {
       this.swapsService.availableTokens,
       this.swapsService.bridgeTokensPairs
     ]).subscribe(([supportedTokens, bridgeTokensPairs]) => {
+      if (!supportedTokens) {
+        return;
+      }
+
       this._supportedTokens = supportedTokens;
       this._bridgeTokensPairs = bridgeTokensPairs;
 
@@ -96,8 +107,10 @@ export class SwapsFormComponent {
 
       this.selectedFromAmount = formValue.fromAmount;
 
-      this.setAvailableTokens('from');
-      this.setAvailableTokens('to');
+      if (this._supportedTokens) {
+        this.setAvailableTokens('from');
+        this.setAvailableTokens('to');
+      }
 
       this.setNewSelectedToken('from', formValue['fromToken']);
       this.setNewSelectedToken('to', formValue['toToken']);
@@ -116,7 +129,7 @@ export class SwapsFormComponent {
 
     const tokens: AvailableTokenAmount[] = [];
     if (!oppositeToken) {
-      Object.values(this.blockchainsList).forEach(blockchainItem => {
+      Object.values(blockchainsList).forEach(blockchainItem => {
         const blockchain = blockchainItem.symbol;
 
         this._supportedTokens[blockchain][blockchain].forEach(token => {
@@ -154,7 +167,7 @@ export class SwapsFormComponent {
           )
         )
         .filter(tokenPair => tokenPair);
-      Object.values(this.blockchainsList).forEach(blockchainItem => {
+      Object.values(blockchainsList).forEach(blockchainItem => {
         const blockchain = blockchainItem.symbol;
         if (oppositeBlockchain === blockchain) {
           return;
@@ -222,8 +235,27 @@ export class SwapsFormComponent {
   }
 
   public onTokenInputAmountChange(amount: string): void {
+    if (!this.selectedFromAmount?.eq(amount)) {
+      this.swapFormService.commonTrade.controls.input.patchValue({
+        fromAmount: new BigNumber(amount)
+      });
+    }
+  }
+
+  public revert() {
+    const { fromBlockchain, toBlockchain, fromToken, toToken } =
+      this.swapFormService.commonTrade.controls.input.value;
+    const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
     this.swapFormService.commonTrade.controls.input.patchValue({
-      fromAmount: new BigNumber(amount)
+      ...(fromToken && { toToken: fromToken }),
+      ...(toToken && { fromToken: toToken }),
+      ...(fromBlockchain && { toBlockchain: fromBlockchain }),
+      ...(toBlockchain && { fromBlockchain: toBlockchain }),
+      ...(toAmount && { fromAmount: toAmount })
     });
+  }
+
+  public async refreshTrade(): Promise<void> {
+    await this.itForm.calculateTrades();
   }
 }

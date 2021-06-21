@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-rubic-switcher',
@@ -7,9 +7,5 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicSwitcherComponent {
-  @Output() onClickEmit: EventEmitter<MouseEvent> = new EventEmitter();
-
-  onClick(event: MouseEvent) {
-    this.onClickEmit.emit(event);
-  }
+  @Output() onClick: EventEmitter<MouseEvent> = new EventEmitter();
 }

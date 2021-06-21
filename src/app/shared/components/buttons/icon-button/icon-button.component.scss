@@ -3,6 +3,7 @@
 :host {
   --tui-primary-text: #{$main-green};
   --tui-primary: white;
+  --tui-disabled-opacity: 1;
 
   ::ng-deep tui-wrapper {
     &[data-state='hovered'] {

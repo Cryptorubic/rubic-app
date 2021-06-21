@@ -99,6 +99,10 @@ $background-white: #fcfcfc;
   font-size: 14px;
   line-height: 17px;
 
+  &_hidden {
+    visibility: hidden;
+  }
+
   &__price {
     overflow: hidden;
 

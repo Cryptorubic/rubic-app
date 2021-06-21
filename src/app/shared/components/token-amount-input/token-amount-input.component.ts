@@ -1,7 +1,6 @@
 import {
   Component,
   Input,
-  OnInit,
   Output,
   EventEmitter,
   ChangeDetectionStrategy,
@@ -10,7 +9,7 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
@@ -19,15 +18,19 @@ import { TokenAmount } from '../../models/tokens/TokenAmount';
   styleUrls: ['./token-amount-input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokenAmountInputComponent implements OnInit, OnChanges {
+export class TokenAmountInputComponent implements OnChanges {
   @Input() placeholder = '0.0';
 
   @Input() token?: TokenAmount;
 
   @Input() set amount(value: BigNumber) {
-    if (value && !value.eq(this.amountControl.value)) {
+    if (value && !value.isNaN() && !value.eq(this.amount)) {
       this.amountControl.setValue(value.toFixed());
     }
+  }
+
+  get amount() {
+    return new BigNumber(this.amountControl.value.split(',').join('') || 0);
   }
 
   @Input() minAmount?: number;
@@ -42,35 +45,24 @@ export class TokenAmountInputComponent implements OnInit, OnChanges {
 
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
-  ngOnInit(): void {
-    this.setAmountControlValidators();
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.minAmount || changes.maxAmount) {
-      this.setAmountControlValidators();
       this.cdr.markForCheck();
     }
-  }
-
-  private setAmountControlValidators(): void {
-    const validators = [];
-    if (this.minAmount !== undefined) {
-      validators.push(Validators.min(this.minAmount));
-    }
-    if (this.maxAmount !== undefined) {
-      validators.push(Validators.max(this.maxAmount));
-    }
-    this.amountControl.setValidators(validators);
   }
 
   public onUserBalanceMaxButtonClick(): void {
     const amount = this.token.amount.toString();
     this.amountControl.setValue(amount);
-    this.amountChange.emit(amount);
+    this.emitAmountChange(amount);
   }
 
   public getUsdPrice(): BigNumber {
-    return new BigNumber(this.amountControl.value || 0).multipliedBy(this.token?.price ?? 0);
+    return this.amount.multipliedBy(this.token?.price ?? 0);
+  }
+
+  public emitAmountChange(amount: string): void {
+    this.amountControl.setValue(amount, { emitViewToModelChange: false });
+    this.amountChange.emit(amount.split(',').join(''));
   }
 }
