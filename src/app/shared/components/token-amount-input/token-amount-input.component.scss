@@ -105,6 +105,7 @@ $background-white: #fcfcfc;
   &__price {
     overflow: hidden;
 
+    letter-spacing: 0.1em;
     text-overflow: ellipsis;
 
     cursor: default;

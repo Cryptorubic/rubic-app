@@ -52,14 +52,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly instantTradeService: InstantTradeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly errorService: ErrorsService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     const formValue = this.swapFormService.commonTrade.value;
     this.currentBlockchain = formValue.input.toBlockchain;
     this.initiateProviders(this.currentBlockchain);
     this.conditionalCalculate(formValue);
-  }
 
-  ngOnInit(): void {
     this.formChangesSubscription$ = this.swapFormService.commonTrade.valueChanges.subscribe(
       form => {
         this.conditionalCalculate(form);
