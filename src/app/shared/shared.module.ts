@@ -100,6 +100,7 @@ import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
 import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.component';
 import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.component';
+import { ApproveButtonComponent } from './components/buttons/approve-button/approve-button.component';
 
 @NgModule({
   declarations: [
@@ -173,7 +174,8 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicMenuComponent,
     RubicVolumeComponent,
     RubicFooterComponent,
-    RubicBannerComponent
+    RubicBannerComponent,
+    ApproveButtonComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -277,7 +279,8 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicHeaderComponent,
     TokenAmountInputComponent,
     RubicBannerComponent,
-    SwapsButtonComponent
+    SwapsButtonComponent,
+    ApproveButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

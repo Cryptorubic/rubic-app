@@ -12,12 +12,18 @@
   </div>
   <div class="bridge-bottom-form__footer">
     <div class="bridge-bottom-form__button">
-      <app-rubic-button
+      <!--<app-rubic-button
         [fullWidth]="true"
         (onClick)="onButtonClick()"
         [loading]="loading || tradeInProgress"
         [disabled]="disabled"
-      >{{ isAuthorized ? 'Swap' : 'Connect wallet' }}</app-rubic-button>
+      >{{ isAuthorized ? 'Swap' : 'Connect wallet' }}</app-rubic-button>-->
+      <app-approve-button
+        [needApprove]="true"
+        [status]="TRADE_STATUS.READY_TO_APPROVE"
+      >
+
+      </app-approve-button>
     </div>
     <div class="bridge-bottom-form__terms-and-conditions">
       <span *ngIf="address">You will get {{whatIsBlockchain.name}} tokens to the {{address}} address</span>

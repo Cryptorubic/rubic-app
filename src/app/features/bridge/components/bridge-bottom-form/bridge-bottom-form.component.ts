@@ -18,6 +18,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
+import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -66,6 +67,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   public tradeInProgress = false;
 
   public minmaxError = false;
+
+  public TRADE_STATUS = TRADE_STATUS;
 
   get disabled(): boolean {
     if (this.loading || this.tradeInProgress || this.minmaxError) {
