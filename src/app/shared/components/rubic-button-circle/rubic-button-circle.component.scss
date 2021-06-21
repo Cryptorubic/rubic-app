@@ -41,10 +41,6 @@
       border-color: $rubic-primary;
       box-shadow: $rubic-shadow-button-active;
 
-      ::ng-deep img {
-        filter: brightness(10);
-      }
-
       ::ng-deep .burger-menu__line {
         background-color: $rubic-base-01;
       }

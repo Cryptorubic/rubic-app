@@ -19,6 +19,16 @@
     inset 4px 4px 20px rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(24px);
 
+  &__table-container {
+    width: 100%;
+  }
+}
+
+.header {
+  display: flex;
+  grid-gap: 5px;
+  align-items: center;
+
   &__title {
     color: #283125;
     font-weight: 200;
@@ -26,8 +36,20 @@
     line-height: 29px;
   }
 
-  &__table-container {
-    width: 100%;
+  &__refresh-circle {
+    &_refreshing {
+      animation: 0.9s linear 0.1s infinite refreshing;
+    }
+
+    &_stopped {
+      animation-iteration-count: 1;
+    }
+  }
+}
+
+@keyframes refreshing {
+  100% {
+    transform: rotate(-360deg);
   }
 }
 

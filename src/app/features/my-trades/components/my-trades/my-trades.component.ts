@@ -85,10 +85,15 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public readonly loading$ = new BehaviorSubject<boolean>(true);
 
+  public loadingStatus: 'refreshing' | 'stopped' | '' = 'refreshing';
+
   public readonly visibleData$ = this.request$.pipe(
     filter(isPresent),
     map(tableRow => {
       this.loading$.next(false);
+      this.loadingStatus = 'stopped';
+      setTimeout(() => (this.loadingStatus = ''), 1200);
+
       return tableRow.filter(isPresent);
     }),
     startWith([])
@@ -124,32 +129,37 @@ export class MyTradesComponent implements OnInit, OnDestroy {
       this.tokens = tokens;
       this.walletAddress = user?.address || null;
 
-      if (!this.walletAddress) {
-        this.tableData$.next([]);
-        return;
-      }
-
-      this.loading$.next(true);
-      zip(this.getBridgeTransactions(), this.getInstantTradesTransactions()).subscribe(data => {
-        this.tableTrades = data.flat();
-        const tableData = [];
-        this.tableTrades.forEach(trade => {
-          tableData.push({
-            Status: trade.status,
-            From: trade.fromToken.blockchain,
-            To: trade.toToken.blockchain,
-            Sent: trade.fromToken.amount,
-            Expected: trade.toToken.amount,
-            Date: trade.date
-          });
-        });
-        this.tableData$.next(tableData);
-      });
+      this.setTableData();
     });
   }
 
   ngOnDestroy(): void {
     this.userSubscription$.unsubscribe();
+  }
+
+  private setTableData(): void {
+    if (!this.walletAddress) {
+      this.tableData$.next([]);
+      return;
+    }
+
+    this.loading$.next(true);
+    this.loadingStatus = 'refreshing';
+    zip(this.getBridgeTransactions(), this.getInstantTradesTransactions()).subscribe(data => {
+      this.tableTrades = data.flat();
+      const tableData = [];
+      this.tableTrades.forEach(trade => {
+        tableData.push({
+          Status: trade.status,
+          From: trade.fromToken.blockchain,
+          To: trade.toToken.blockchain,
+          Sent: trade.fromToken.amount,
+          Expected: trade.toToken.amount,
+          Date: trade.date
+        });
+      });
+      this.tableData$.next(tableData);
+    });
   }
 
   private getInstantTradesTransactions(): Observable<TableTrade[]> {
@@ -258,7 +268,13 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     return (a, b) => direction * defaultSort(a[key], b[key]);
   }
 
+  public refreshTable(): void {
+    if (!this.loading$.getValue()) {
+      this.setTableData();
+    }
+  }
+
   public getTableTrade(tableRow: TableRow): TableTrade {
-    return this.tableTrades.find(trade => trade.date === tableRow.Date);
+    return this.tableTrades.find(trade => trade.date.getTime() === tableRow.Date.getTime());
   }
 }
