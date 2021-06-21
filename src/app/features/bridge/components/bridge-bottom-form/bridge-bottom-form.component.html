@@ -17,11 +17,14 @@
         (onClick)="onButtonClick()"
         [loading]="loading || tradeInProgress"
         [disabled]="disabled"
-      >{{ isAuthorized ? 'Swap' : 'Connect wallet' }}</app-rubic-button>
+        >{{ isAuthorized ? 'Swap' : 'Connect wallet' }}</app-rubic-button
+      >
     </div>
     <div class="bridge-bottom-form__terms-and-conditions">
-      <span *ngIf="address">You will get {{whatIsBlockchain.name}} tokens to the {{address}} address</span>
-      <a [href]="whatIsBlockchain.href" target="_blank">What is {{whatIsBlockchain.name}}?</a>
+      <span *ngIf="address"
+        >You will get {{ whatIsBlockchain.name }} tokens to the {{ address }} address</span
+      >
+      <a [href]="whatIsBlockchain.href" target="_blank">What is {{ whatIsBlockchain.name }}?</a>
     </div>
   </div>
 </section>
