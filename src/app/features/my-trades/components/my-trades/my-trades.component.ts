@@ -1,9 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Injector,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BLOCKCHAINS';
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription, zip } from 'rxjs';
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
-import { debounceTime, filter, first, map, share, startWith } from 'rxjs/operators';
+import { debounceTime, filter, map, share, startWith, take } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
@@ -11,8 +19,11 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { InstantTradesTradeData } from '../../../swaps-page-old/models/trade-data';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
+import { TuiDialogService } from '@taiga-ui/core';
 import { BridgeTableTrade } from '../../../bridge/models/BridgeTableTrade';
+import { InstantTradesTradeData } from '../../../swaps-page-old/models/trade-data';
 
 interface TableToken {
   blockchain: BLOCKCHAIN_NAME;
@@ -42,7 +53,8 @@ interface TableRow {
 @Component({
   selector: 'app-my-trades',
   templateUrl: './my-trades.component.html',
-  styleUrls: ['./my-trades.component.scss']
+  styleUrls: ['./my-trades.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MyTradesComponent implements OnInit, OnDestroy {
   public BLOCKCHAINS = BLOCKCHAINS;
@@ -89,12 +101,18 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public readonly visibleData$ = this.request$.pipe(
     filter(isPresent),
-    map(tableRow => {
+    map(visibleTableData => {
       this.loading$.next(false);
       this.loadingStatus = 'stopped';
-      setTimeout(() => (this.loadingStatus = ''), 1200);
+      setTimeout(() => {
+        this.cdr.detectChanges();
+      });
+      setTimeout(() => {
+        this.loadingStatus = '';
+        this.cdr.detectChanges();
+      }, 1000);
 
-      return tableRow.filter(isPresent);
+      return visibleTableData.filter(isPresent);
     }),
     startWith([])
   );
@@ -107,23 +125,23 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   private tokens: List<TokenAmount>;
 
-  private walletAddress: string;
+  public walletAddress: string;
 
   private userSubscription$: Subscription;
 
   constructor(
+    private readonly cdr: ChangeDetectorRef,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly tokensService: TokensService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   ngOnInit(): void {
     this.userSubscription$ = combineLatest([
-      this.tokensService.tokens.pipe(
-        filter(tokens => !!tokens.size),
-        first()
-      ),
+      this.tokensService.tokens.pipe(take(2)),
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined))
     ]).subscribe(([tokens, user]) => {
       this.tokens = tokens;
@@ -139,12 +157,19 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   private setTableData(): void {
     if (!this.walletAddress) {
+      this.cdr.detectChanges();
       this.tableData$.next([]);
       return;
     }
 
     this.loading$.next(true);
     this.loadingStatus = 'refreshing';
+    this.cdr.detectChanges();
+
+    if (!this.tokens.size) {
+      return;
+    }
+
     zip(this.getBridgeTransactions(), this.getInstantTradesTransactions()).subscribe(data => {
       this.tableTrades = data.flat();
       const tableData = [];
@@ -272,6 +297,12 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     if (!this.loading$.getValue()) {
       this.setTableData();
     }
+  }
+
+  public showConnectWalletModal(): void {
+    this.dialogService
+      .open(new PolymorpheusComponent(WalletsModalComponent, this.injector), { size: 's' })
+      .subscribe();
   }
 
   public getTableTrade(tableRow: TableRow): TableTrade {

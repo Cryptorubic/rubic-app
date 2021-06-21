@@ -3,10 +3,8 @@
 .my-trades {
   display: flex;
   flex-direction: column;
-  grid-gap: 42px;
 
   max-width: 1240px;
-  min-height: 77vh;
   margin: 0 auto;
   padding: 30px 35px 40px;
 
@@ -21,6 +19,7 @@
 
   &__table-container {
     width: 100%;
+    margin-top: 10px;
   }
 }
 
@@ -54,6 +53,11 @@
 }
 
 .table-container {
+  &__connect-wallet-container {
+    max-width: 245px;
+    margin: 0 auto;
+  }
+
   &__no-trades-text {
     font-weight: 200;
     font-size: 18px;
@@ -66,6 +70,8 @@
 }
 
 .table {
+  margin-top: 42px;
+
   font-weight: 300;
 
   border-radius: 14px;
