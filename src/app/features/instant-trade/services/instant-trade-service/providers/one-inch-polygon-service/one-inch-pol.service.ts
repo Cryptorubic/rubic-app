@@ -50,13 +50,12 @@ interface OneInchSwapResponse {
     gasPrice: string;
     gas: number;
   };
-  error?: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class OneInchEthService {
+export class OneInchPolService {
   private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
   private supportedTokensAddresses: string[] = [];
@@ -71,8 +70,6 @@ export class OneInchEthService {
 
   protected slippagePercent = 0.001; // 0.1%
 
-  private isTestingMode: boolean;
-
   constructor(
     private readonly httpClient: HttpClient,
     private readonly coingeckoApiService: CoingeckoApiService,
@@ -82,8 +79,7 @@ export class OneInchEthService {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly errorsService: ErrorsService
   ) {
-    useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
-    this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.blockchain = BLOCKCHAIN_NAME.POLYGON;
     const network = BlockchainsInfo.getBlockchainByName(this.blockchain);
     this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
     this.web3Public = this.web3PublicService[this.blockchain];
@@ -142,6 +138,11 @@ export class OneInchEthService {
           amount: fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0)
         }
       })
+      .pipe(
+        catchError(err => {
+          throw new CustomError(err.error.message);
+        })
+      )
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {

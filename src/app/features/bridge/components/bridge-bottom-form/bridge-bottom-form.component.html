@@ -10,6 +10,7 @@
       <span>Analytics</span>
     </a>
   </div>
+
   <div class="bridge-bottom-form__footer">
     <div class="bridge-bottom-form__button">
       <!--<app-rubic-button
@@ -26,8 +27,10 @@
       </app-approve-button>
     </div>
     <div class="bridge-bottom-form__terms-and-conditions">
-      <span *ngIf="address">You will get {{whatIsBlockchain.name}} tokens to the {{address}} address</span>
-      <a [href]="whatIsBlockchain.href" target="_blank">What is {{whatIsBlockchain.name}}?</a>
+      <span *ngIf="address"
+        >You will get {{ whatIsBlockchain.name }} tokens to the {{ address }} address</span
+      >
+      <a [href]="whatIsBlockchain.href" target="_blank">What is {{ whatIsBlockchain.name }}?</a>
     </div>
   </div>
 </section>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -9,6 +9,9 @@ import { combineLatest } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
+import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/bridge-bottom-form/bridge-bottom-form.component';
+import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -21,6 +24,37 @@ type SelectedToken = {
   styleUrls: ['./swaps-form.component.scss']
 })
 export class SwapsFormComponent {
+  @ViewChild(BridgeBottomFormComponent) bridgeForm: BridgeBottomFormComponent;
+
+  @ViewChild(InstantTradeBottomFormComponent) itForm: InstantTradeBottomFormComponent;
+
+  public blockchainsList = [
+    {
+      symbol: BLOCKCHAIN_NAME.ETHEREUM,
+      name: 'Ethereum',
+      chainImg: 'assets/images/icons/eth-logo.svg',
+      id: 1
+    },
+    {
+      symbol: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      name: 'Binance Smart Chain',
+      chainImg: 'assets/images/icons/coins/bnb.svg',
+      id: 56
+    },
+    {
+      symbol: BLOCKCHAIN_NAME.POLYGON,
+      name: 'Polygon',
+      chainImg: 'assets/images/icons/coins/polygon.svg',
+      id: 137
+    },
+    {
+      symbol: BLOCKCHAIN_NAME.XDAI,
+      name: 'XDai',
+      chainImg: 'assets/images/icons/coins/xdai.svg',
+      id: 100
+    }
+  ];
+
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
@@ -201,9 +235,11 @@ export class SwapsFormComponent {
   }
 
   public onTokenInputAmountChange(amount: string): void {
-    this.swapFormService.commonTrade.controls.input.patchValue({
-      fromAmount: new BigNumber(amount)
-    });
+    if (!this.selectedFromAmount?.eq(amount)) {
+      this.swapFormService.commonTrade.controls.input.patchValue({
+        fromAmount: new BigNumber(amount)
+      });
+    }
   }
 
   public revert() {
@@ -217,5 +253,9 @@ export class SwapsFormComponent {
       ...(toBlockchain && { fromBlockchain: toBlockchain }),
       ...(toAmount && { fromAmount: toAmount })
     });
+  }
+
+  public async refreshTrade(): Promise<void> {
+    await this.itForm.calculateTrades();
   }
 }

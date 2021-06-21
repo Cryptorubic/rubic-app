@@ -7,7 +7,6 @@ $background-white: #fcfcfc;
   align-items: center;
   justify-content: space-between;
 
-  max-width: 540px;
   height: 88px;
 
   font-family: $sf-pro-font;
@@ -99,9 +98,14 @@ $background-white: #fcfcfc;
   font-size: 14px;
   line-height: 17px;
 
+  &_hidden {
+    visibility: hidden;
+  }
+
   &__price {
     overflow: hidden;
 
+    letter-spacing: 0.1em;
     text-overflow: ellipsis;
 
     cursor: default;
