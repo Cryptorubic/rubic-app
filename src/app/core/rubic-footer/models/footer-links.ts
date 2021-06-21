@@ -32,7 +32,7 @@ export const footerLinks: FooterLink[] = [
     link: 'https://cryptorubic.medium.com/'
   },
   {
-    imageUrl: 'assets/img/icons/socials/discord.svg"',
+    imageUrl: 'assets/img/icons/socials/discord.svg',
     altText: 'Discord',
     link: 'https://discord.gg/hayrHU2Tvh'
   },
