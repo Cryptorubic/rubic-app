@@ -11,7 +11,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BLOCKCHAINS';
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription, zip } from 'rxjs';
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
-import { debounceTime, filter, map, share, startWith, take } from 'rxjs/operators';
+import { debounceTime, filter, map, share, startWith, takeWhile } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
@@ -61,7 +61,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   private tableTrades: TableTrade[];
 
-  private readonly tableData$ = new Subject<TableRow[]>();
+  private readonly tableData$ = new BehaviorSubject<TableRow[]>(null);
 
   public readonly columns: TableRowKey[] = ['Status', 'From', 'To', 'Sent', 'Expected', 'Date'];
 
@@ -82,12 +82,12 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public readonly size$ = new Subject<number>();
 
-  private readonly request$ = combineLatest([
+  private request$ = combineLatest([
     this.sorter$.pipe(map(sorter => this.getTableRowKey(sorter, this.sorters))),
     this.direction$,
     this.page$.pipe(startWith(0)),
     this.size$.pipe(startWith(10)),
-    this.tableData$
+    this.tableData$.pipe(filter(isPresent))
   ]).pipe(
     // zero time debounce for a case when both key and direction change
     debounceTime(0),
@@ -104,9 +104,6 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     map(visibleTableData => {
       this.loading$.next(false);
       this.loadingStatus = 'stopped';
-      setTimeout(() => {
-        this.cdr.detectChanges();
-      });
       setTimeout(() => {
         this.loadingStatus = '';
         this.cdr.detectChanges();
@@ -141,9 +138,9 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userSubscription$ = combineLatest([
-      this.tokensService.tokens.pipe(take(2)),
-      this.authService.getCurrentUser().pipe(filter(user => user !== undefined))
-    ]).subscribe(([tokens, user]) => {
+      this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
+      this.tokensService.tokens.pipe(takeWhile(tokens => tokens.size === 0, true))
+    ]).subscribe(([user, tokens]) => {
       this.tokens = tokens;
       this.walletAddress = user?.address || null;
 
@@ -157,14 +154,12 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   private setTableData(): void {
     if (!this.walletAddress) {
-      this.cdr.detectChanges();
       this.tableData$.next([]);
       return;
     }
 
     this.loading$.next(true);
     this.loadingStatus = 'refreshing';
-    this.cdr.detectChanges();
 
     if (!this.tokens.size) {
       return;
@@ -256,7 +251,12 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     };
   }
 
-  private transformToTableToken(image, amount, blockchain, symbol): TableToken {
+  private transformToTableToken(
+    image: string,
+    amount: string,
+    blockchain: BLOCKCHAIN_NAME,
+    symbol: string
+  ): TableToken {
     return {
       image,
       amount,
