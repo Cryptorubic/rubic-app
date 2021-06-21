@@ -15,19 +15,13 @@
     }
   }
 
-  &__button {
-    margin-bottom: 15px;
-
-    ::ng-deep .content {
-      font-weight: 500;
-    }
-  }
-
   &__footer {
-    padding-top: 25px;
+    padding-top: 15px;
   }
 
   &__terms-and-conditions {
+    margin-top: 15px;
+
     font-weight: 300;
     font-size: 14px;
     text-align: center;

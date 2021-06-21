@@ -10,14 +10,12 @@ import {
 import { Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { first } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
@@ -57,11 +55,7 @@ const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
 export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   private formSubscription$: Subscription;
 
-  private userSubscription$: Subscription;
-
   public loading = false;
-
-  public isAuthorized: boolean;
 
   public tradeInProgress = false;
 
@@ -110,16 +104,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       () => this.calculateTrade()
     );
-
-    this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
-      this.isAuthorized = !!user?.address;
-      this.cdr.detectChanges();
-    });
   }
 
   ngOnDestroy() {
     this.formSubscription$.unsubscribe();
-    this.userSubscription$.unsubscribe();
   }
 
   public calculateTrade() {
@@ -161,16 +149,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       this.minmaxError = !this.swapService.checkMinMax(fromAmount);
       this.cdr.detectChanges();
     });
-  }
-
-  public onButtonClick() {
-    if (!this.isAuthorized) {
-      this.dialogService
-        .open(new PolymorpheusComponent(WalletsModalComponent, this.injector), { size: 's' })
-        .subscribe();
-      return;
-    }
-    this.createTrade();
   }
 
   public createTrade() {

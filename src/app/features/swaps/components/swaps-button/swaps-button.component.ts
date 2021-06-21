@@ -22,11 +22,13 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapsButtonComponent implements OnInit {
+  @Input() loading = false;
+
   @Input() disabled: boolean;
 
   @Output() clickEvent: EventEmitter<void>;
 
-  public allowSwap: boolean;
+  public isAuthorized: boolean;
 
   constructor(
     private readonly authService: AuthService,
@@ -41,15 +43,14 @@ export class SwapsButtonComponent implements OnInit {
 
   public ngOnInit(): void {
     this.authService.getCurrentUser().subscribe(user => {
-      this.allowSwap = Boolean(user !== undefined && user !== null && user.address);
+      this.isAuthorized = Boolean(user !== undefined && user !== null && user.address);
       this.cdr.detectChanges();
     });
   }
 
   public async handleClick(): Promise<void> {
-    if (!this.allowSwap) {
+    if (!this.isAuthorized) {
       this.showModal();
-      // eslint-disable-next-line no-empty
     } else if (!this.disabled) {
       this.clickEvent.emit();
     }

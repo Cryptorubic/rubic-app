@@ -1,8 +1,8 @@
 <app-rubic-button
   (onClick)="handleClick()"
   [fullWidth]="true"
-  [disabled]="disabled"
+  [loading]="loading"
+  [disabled]="isAuthorized && disabled"
 >
-  {{ allowSwap ? 'Swap' : 'Connect wallet' }}
+  {{ isAuthorized ? 'Swap' : 'Connect wallet' }}
 </app-rubic-button>
-
