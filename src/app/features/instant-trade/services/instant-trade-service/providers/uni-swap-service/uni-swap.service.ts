@@ -60,6 +60,12 @@ export class UniSwapService {
 
   private slippagePercent: number;
 
+  private WETHAddress: string;
+
+  private uniswapContractAddress: string;
+
+  private routingProviders: string[];
+
   constructor(
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly web3Private: Web3PrivateService,
@@ -72,6 +78,13 @@ export class UniSwapService {
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.shouldCalculateGas = true;
     this.slippagePercent = 0.15;
+    useTestingModeService.isTestingMode.subscribe(value => {
+      if (value) {
+        this.WETHAddress = WETH.testnetAddress;
+        this.uniswapContractAddress = uniSwapContracts.testnetAddress;
+        this.routingProviders = routingProviders.testnetAddresses;
+      }
+    });
   }
 
   public setSlippagePercent(slippagePercent: number): void {
@@ -89,12 +102,12 @@ export class UniSwapService {
     let estimatedGasPredictionMethod = 'calculateTokensToTokensGasLimit';
 
     if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
-      fromTokenClone.address = WETH.address;
+      fromTokenClone.address = this.WETHAddress;
       estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
     }
 
     if (this.web3Public.isNativeAddress(toTokenClone.address)) {
-      toTokenClone.address = WETH.address;
+      toTokenClone.address = this.WETHAddress;
       estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
     }
 
@@ -140,13 +153,13 @@ export class UniSwapService {
         const allowance = await this.web3Public.getAllowance(
           path[0],
           walletAddress,
-          uniSwapContracts.address
+          this.uniswapContractAddress
         );
         const balance = await this.web3Public.getTokenBalance(walletAddress, path[0]);
         if (allowance.gte(amountIn) && balance.gte(amountIn)) {
           estimatedGas = await this.web3Public.getEstimatedGas(
             abi,
-            uniSwapContracts.address,
+            this.uniswapContractAddress,
             SWAP_METHOD.TOKENS_TO_TOKENS,
             [amountIn, amountOutMin, path, walletAddress, deadline],
             walletAddress
@@ -174,7 +187,7 @@ export class UniSwapService {
         if (balance.gte(amountIn)) {
           const gas = await this.web3Public.getEstimatedGas(
             abi,
-            uniSwapContracts.address,
+            this.uniswapContractAddress,
             SWAP_METHOD.ETH_TO_TOKENS,
             [amountOutMin, path, walletAddress, deadline],
             walletAddress,
@@ -204,13 +217,13 @@ export class UniSwapService {
         const allowance = await this.web3Public.getAllowance(
           path[0],
           walletAddress,
-          uniSwapContracts.address
+          this.uniswapContractAddress
         );
         const balance = await this.web3Public.getTokenBalance(walletAddress, path[0]);
         if (allowance.gte(amountIn) && balance.gte(amountIn)) {
           estimatedGas = await this.web3Public.getEstimatedGas(
             abi,
-            uniSwapContracts.address,
+            this.uniswapContractAddress,
             SWAP_METHOD.TOKENS_TO_ETH,
             [amountIn, amountOutMin, path, walletAddress, deadline],
             walletAddress
@@ -266,7 +279,7 @@ export class UniSwapService {
     } = {}
   ): Promise<TransactionReceipt> {
     return this.web3Private.executeContractMethod(
-      uniSwapContracts.address,
+      this.uniswapContractAddress,
       abi,
       SWAP_METHOD.ETH_TO_TOKENS,
       [trade.amountOutMin, trade.path, trade.to, trade.deadline],
@@ -292,7 +305,7 @@ export class UniSwapService {
     );
 
     return this.web3Private.executeContractMethod(
-      uniSwapContracts.address,
+      this.uniswapContractAddress,
       abi,
       SWAP_METHOD.TOKENS_TO_ETH,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
@@ -312,7 +325,7 @@ export class UniSwapService {
     await this.provideAllowance(
       trade.path[0],
       new BigNumber(trade.amountIn),
-      uniSwapContracts.address,
+      this.uniswapContractAddress,
       options.onApprove
     );
 
@@ -393,7 +406,7 @@ export class UniSwapService {
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
   ): Promise<UniswapRoute[]> {
-    const vertexes: string[] = routingProviders.addresses
+    const vertexes: string[] = this.routingProviders
       .map(elem => elem.toLowerCase())
       .filter(elem => elem !== toToken.address.toLowerCase());
     const initialPath = [fromToken.address];
@@ -403,7 +416,7 @@ export class UniSwapService {
       routePromises.push(
         new Promise<UniswapRoute>((resolve, reject) => {
           this.web3Public
-            .callContractMethod(uniSwapContracts.address, abi, 'getAmountsOut', {
+            .callContractMethod(this.uniswapContractAddress, abi, 'getAmountsOut', {
               methodArguments: [fromAmountAbsolute, path]
             })
             .then(response => {

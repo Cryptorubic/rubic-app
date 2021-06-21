@@ -54,7 +54,7 @@ interface OneInchSwapResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class OneInchEthService {
+export class OneInchBscService {
   private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
   private supportedTokensAddresses: string[] = [];
@@ -69,8 +69,6 @@ export class OneInchEthService {
 
   protected slippagePercent = 0.001; // 0.1%
 
-  private isTestingMode: boolean;
-
   constructor(
     private readonly httpClient: HttpClient,
     private readonly coingeckoApiService: CoingeckoApiService,
@@ -80,8 +78,7 @@ export class OneInchEthService {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly errorsService: ErrorsService
   ) {
-    useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
-    this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     const network = BlockchainsInfo.getBlockchainByName(this.blockchain);
     this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
     this.web3Public = this.web3PublicService[this.blockchain];

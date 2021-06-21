@@ -13,6 +13,9 @@ import { switchMap } from 'rxjs/operators';
 import { INTSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps-page-old/models/trade-data';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol.service';
+import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap.service';
+import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/pancake-swap-service/pancake-swap.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +23,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 export class InstantTradeService {
   private blockchainsProviders;
 
-  private readonly currentBlockchain: any;
+  private currentBlockchain: BLOCKCHAIN_NAME;
 
   private modalShowing: Subscription;
 
@@ -30,13 +33,21 @@ export class InstantTradeService {
     private readonly uniswapService: UniSwapService,
     private readonly errorService: ErrorsService,
     private readonly instantTradesApiService: InstantTradesApiService,
+    private readonly oneInchPolygonService: OneInchPolService,
+    private readonly pancakeSwapService: PancakeSwapService,
+    private readonly quickSwapService: QuickSwapService,
     @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService,
     private readonly web3Public: Web3PublicService
   ) {
-    this.currentBlockchain = 'ETH';
+    this.currentBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.setBlockchainsProviders();
     this.swapFormService.itProviders.subscribe(providers => {
       this.blockchainsProviders = providers;
+    });
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
+      if (form.fromBlockchain === form.toBlockchain) {
+        this.currentBlockchain = form.fromBlockchain;
+      }
     });
   }
 
@@ -109,11 +120,11 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         // [PROVIDERS.ONEINCH]: this.ethereumBinanceBridgeProviderService,
-        // [PROVIDERS.PANCAKESWAP]: this.binanceTronBridgeProviderService
+        [PROVIDERS.PANCAKESWAP]: this.pancakeSwapService
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
-        // [PROVIDERS.ONEINCH]: this.ethereumPolygonBridgeProviderService,
-        // [PROVIDERS.QUICKSWAP]: this.ethereumPolygonBridgeProviderService
+        [PROVIDERS.ONEINCH]: this.oneInchPolygonService,
+        [PROVIDERS.QUICKSWAP]: this.quickSwapService
       }
     });
   }
