@@ -1,5 +1,5 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BridgeBlockchain } from 'src/app/features/cross-chain-swaps-page-old/bridge-page/models/BridgeBlockchain';
+import { BridgeBlockchain } from 'src/app/features/bridge/models/BridgeBlockchain';
 
 type Blockchains = {
   [BLOCKCHAIN_NAME.ETHEREUM]: BridgeBlockchain;

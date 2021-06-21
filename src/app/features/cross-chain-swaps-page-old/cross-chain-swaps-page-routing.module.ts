@@ -8,10 +8,6 @@ const routes: Routes = [
     component: CrossChainSwapsComponent,
     children: [
       {
-        path: 'bridge',
-        loadChildren: () => import('./bridge-page/bridge-page.module').then(m => m.BridgePageModule)
-      },
-      {
         path: 'get-bnb',
         loadChildren: () =>
           import('./get-bnb-page/get-bnb-page.module').then(m => m.GetBnbPageModule)
