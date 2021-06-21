@@ -12,7 +12,7 @@ import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
@@ -20,7 +20,6 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Injectable } from '@angular/core';
-import CustomError from 'src/app/shared/models/errors/custom-error';
 
 interface OneInchQuoteResponse {
   fromToken: object;
@@ -50,13 +49,12 @@ interface OneInchSwapResponse {
     gasPrice: string;
     gas: number;
   };
-  error?: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class OneInchEthService {
+export class OneInchBscService {
   private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
   private supportedTokensAddresses: string[] = [];
@@ -71,8 +69,6 @@ export class OneInchEthService {
 
   protected slippagePercent = 0.001; // 0.1%
 
-  private isTestingMode: boolean;
-
   constructor(
     private readonly httpClient: HttpClient,
     private readonly coingeckoApiService: CoingeckoApiService,
@@ -82,8 +78,7 @@ export class OneInchEthService {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly errorsService: ErrorsService
   ) {
-    useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
-    this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     const network = BlockchainsInfo.getBlockchainByName(this.blockchain);
     this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
     this.web3Public = this.web3PublicService[this.blockchain];
@@ -219,11 +214,6 @@ export class OneInchEthService {
           fromAddress: this.providerConnectorService.address
         }
       })
-      .pipe(
-        catchError(err => {
-          throw new CustomError(err.error.message);
-        })
-      )
       .toPromise()) as OneInchSwapResponse;
 
     const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.25).toFixed(0);
