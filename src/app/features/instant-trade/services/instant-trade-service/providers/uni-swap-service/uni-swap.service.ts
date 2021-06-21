@@ -80,6 +80,7 @@ export class UniSwapService {
     this.slippagePercent = 0.15;
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
+        this.web3Public = w3Public[BLOCKCHAIN_NAME.ETHEREUM_TESTNET];
         this.WETHAddress = WETH.testnetAddress;
         this.uniswapContractAddress = uniSwapContracts.testnetAddress;
         this.routingProviders = routingProviders.testnetAddresses;

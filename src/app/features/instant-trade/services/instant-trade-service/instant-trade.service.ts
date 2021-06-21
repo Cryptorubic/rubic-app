@@ -16,6 +16,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol.service';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/pancake-swap-service/pancake-swap.service';
+import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 @Injectable({
   providedIn: 'root'
@@ -64,10 +65,33 @@ export class InstantTradeService {
 
   public async createTrade(provider: PROVIDERS, trade): Promise<void> {
     try {
+      let tradeInfo;
       const receipt = await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(
         trade,
         {
-          onConfirm: async () => {
+          onConfirm: async hash => {
+            if (provider === PROVIDERS.ONEINCH) {
+              tradeInfo = {
+                hash,
+                network: TO_BACKEND_BLOCKCHAINS[this.currentBlockchain],
+                provider,
+                from_token: trade.fromToken.address,
+                to_token: trade.toToken.address,
+                from_amount: Web3PublicService.tokenAmountToWei(trade.fromToken, trade.from.amount),
+                to_amount: Web3PublicService.tokenAmountToWei(trade.toToken, trade.to.amount)
+              };
+            } else {
+              tradeInfo = {
+                hash,
+                provider,
+                network: TO_BACKEND_BLOCKCHAINS[this.currentBlockchain]
+              };
+            }
+            try {
+              await this.postTrade(tradeInfo);
+            } catch (err) {
+              console.error(err);
+            }
             this.modalShowing = this.notificationsService
               .show('Transaction in progress', {
                 status: TuiNotification.Info,
@@ -75,7 +99,6 @@ export class InstantTradeService {
                 hasCloseButton: false
               })
               .subscribe();
-            await this.postTrade(trade);
           }
         }
       );
