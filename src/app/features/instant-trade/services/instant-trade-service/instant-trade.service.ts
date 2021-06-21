@@ -17,6 +17,7 @@ import { OneInchPolService } from 'src/app/features/instant-trade/services/insta
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/pancake-swap-service/pancake-swap.service';
 import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { OneInchBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-bsc-service/one-inch-bsc.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,7 @@ export class InstantTradeService {
     private readonly oneInchPolygonService: OneInchPolService,
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
+    private readonly oneInchBscService: OneInchBscService,
     @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService,
     private readonly web3Public: Web3PublicService
   ) {
@@ -142,7 +144,7 @@ export class InstantTradeService {
         [PROVIDERS.UNISWAP]: this.uniswapService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-        // [PROVIDERS.ONEINCH]: this.ethereumBinanceBridgeProviderService,
+        [PROVIDERS.ONEINCH]: this.oneInchBscService,
         [PROVIDERS.PANCAKESWAP]: this.pancakeSwapService
       },
       [BLOCKCHAIN_NAME.POLYGON]: {

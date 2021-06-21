@@ -12,7 +12,7 @@ import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
@@ -20,6 +20,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Injectable } from '@angular/core';
+import CustomError from 'src/app/shared/models/errors/custom-error';
 
 interface OneInchQuoteResponse {
   fromToken: object;
@@ -137,6 +138,11 @@ export class OneInchPolService {
           amount: fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0)
         }
       })
+      .pipe(
+        catchError(err => {
+          throw new CustomError(err.error.message);
+        })
+      )
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
@@ -214,6 +220,11 @@ export class OneInchPolService {
           fromAddress: this.providerConnectorService.address
         }
       })
+      .pipe(
+        catchError(err => {
+          throw new CustomError(err.error.message);
+        })
+      )
       .toPromise()) as OneInchSwapResponse;
 
     const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.25).toFixed(0);
