@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { delay, map, switchMap } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 import { InstantTradesTradeData } from 'src/app/features/swaps-page-old/models/trade-data';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { HttpService } from '../../http/http.service';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTrade from '../../../../features/swaps-page-old/instant-trades/models/InstantTrade';
 import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
@@ -12,7 +12,6 @@ import { Web3PublicService } from '../../blockchain/web3-public-service/web3-pub
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
 import { QueryParamsService } from '../../query-params/query-params.service';
-import { AuthService } from '../../auth/auth.service';
 
 const instantTradesApiRoutes = {
   createData: 'instant_trades/',
@@ -32,8 +31,7 @@ export class InstantTradesApiService {
     private httpService: HttpService,
     private useTestingModeService: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private queryParamsService: QueryParamsService,
-    private authService: AuthService
+    private queryParamsService: QueryParamsService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
     this.queryParamsService.$isIframe.subscribe(res => (this.isIframe = res));
@@ -93,21 +91,15 @@ export class InstantTradesApiService {
 
   /**
    * @description get list of trades from server
+   * @param walletAddress wallet address of user
    * @return list of trades
    */
-  // TODO: use AuthService to get user wallet address instead of Web3Private after Coinbase realease
-  public fetchSwaps(): Observable<InstantTradesTradeData[]> {
-    return this.authService
-      .getCurrentUser()
+  public fetchSwaps(walletAddress: string): Observable<InstantTradesTradeData[]> {
+    return this.httpService
+      .get(instantTradesApiRoutes.getData, { user: walletAddress.toLowerCase() })
       .pipe(
-        switchMap(user =>
-          this.httpService
-            .get(instantTradesApiRoutes.getData, { user: user?.address })
-            .pipe(
-              map((swaps: InstantTradesResponseApi[]) =>
-                swaps.map(swap => this.tradeApiToTradeData(swap))
-              )
-            )
+        map((swaps: InstantTradesResponseApi[]) =>
+          swaps.map(swap => this.tradeApiToTradeData(swap))
         )
       );
   }

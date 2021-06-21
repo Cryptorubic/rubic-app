@@ -13,6 +13,7 @@
       <table
         tuiTable
         class="table-container__table table"
+        [ngClass]="{ table_hidden: (loading$ | async) === false && !data.length }"
         [columns]="columns"
         [sorter]="sorter$ | async"
         [direction]="direction$ | async"
@@ -58,8 +59,7 @@
                       trade.status === 'deposit in progress' ||
                       trade.status === 'withdraw in progress' ||
                       trade.status === 'pending',
-                    'status-circle_red': trade.status === 'cancelled' ||
-                      trade.status === 'rejected'
+                    'status-circle_red': trade.status === 'cancelled' || trade.status === 'rejected'
                   }"
                 >
                   <div class="status-circle__inner"></div>
@@ -82,7 +82,9 @@
               </td>
 
               <td *tuiCell="'Sent'" tuiTd class="token">
-                <span>{{ trade.fromToken.amount }}</span>
+                <span>{{
+                  trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
+                }}</span>
                 <div class="token-info">
                   <div class="token-info__img-container">
                     <img [src]="trade.fromToken.image" alt="from token" />
@@ -92,7 +94,9 @@
               </td>
 
               <td *tuiCell="'Expected'" tuiTd class="token">
-                <span>{{ trade.toToken.amount }}</span>
+                <span>{{
+                  trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue'
+                }}</span>
                 <div class="token-info">
                   <div class="token-info__img-container">
                     <img [src]="trade.toToken.image" alt="to token" />

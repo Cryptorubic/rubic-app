@@ -51,6 +51,10 @@
     30px 30px 80px rgba(84, 129, 90, 0.15),
     inset 4px 4px 50px rgba(255, 255, 255, 0.6);
 
+  &_hidden {
+    display: none;
+  }
+
   thead {
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;
