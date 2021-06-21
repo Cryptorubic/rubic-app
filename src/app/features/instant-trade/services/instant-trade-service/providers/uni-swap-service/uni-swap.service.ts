@@ -78,6 +78,9 @@ export class UniSwapService {
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.shouldCalculateGas = true;
     this.slippagePercent = 0.15;
+    this.WETHAddress = WETH.address;
+    this.uniswapContractAddress = uniSwapContracts.address;
+    this.routingProviders = routingProviders.addresses;
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
         this.web3Public = w3Public[BLOCKCHAIN_NAME.ETHEREUM_TESTNET];
