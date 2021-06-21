@@ -148,13 +148,10 @@
     content: '';
   }
 
-  app-footer,
   app-collaborations,
   app-volume-block,
   app-disclaimer-text,
-  app-header-navigation,
   app-custom-token-form,
-  app-header-language-dropdown,
   app-header,
   .trades-form__tabs,
   .main-page__intro,
@@ -213,9 +210,6 @@
     margin: 0 auto;
   }
 
-  app-iframe-tokens-swap-input .selection-block {
-    position: relative;
-  }
 
   .instant-trade-form__from-section {
     margin-top: 0 !important;
@@ -293,11 +287,6 @@
       display: flex !important;
       flex-wrap: wrap;
 
-      app-chain-dropdown {
-        order: 2;
-        margin-left: 25px;
-      }
-
       > *:not(:last-child) {
         margin-bottom: 20px;
       }
@@ -318,12 +307,6 @@
     }
 
     @include b($mobile-sm-plus) {
-      app-chain-dropdown {
-        flex: 100% !important;
-        order: 1;
-        margin-left: 0 !important;
-      }
-
       .instant-trade-form__from-section {
         order: 2;
       }
@@ -332,10 +315,6 @@
         flex: 100% !important;
         margin-right: 0 !important;
         margin-bottom: 20px !important;
-      }
-
-      app-iframe-tokens-swap-input {
-        flex-wrap: wrap;
       }
 
       app-primary-button {
@@ -350,29 +329,12 @@
     box-shadow: 0 3px 6px rgba(black, 0.16);
   }
 
-  app-header-logotype {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 52px;
-    margin: 0 auto !important;
-  }
-
   .header__container {
     background-color: transparent !important;
   }
 
   app-login-button {
     min-width: 182px;
-  }
-
-  app-header-language-dropdown {
-    display: flex;
-    align-items: center;
-    height: 52px;
-    padding-left: 30px;
-
-    background-color: white;
   }
 
   app-user-profile,

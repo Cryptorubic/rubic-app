@@ -1,35 +1,21 @@
 <div class="rubic-footer">
   <nav class="rubic-footer__nav">
-    <a class="rubic-footer__link" href="https://www.facebook.com/RubicDEX/" rel="noopener" target="_blank">
-      <img src="../../../assets/img/icons/socials/fb.svg" width="22" height="20" alt="Facebook">
-    </a>
-    <a class="rubic-footer__link" href="https://twitter.com/CryptoRubic" rel="noopener" target="_blank">
-      <img src="../../../assets/img/icons/socials/twitter.svg" width="22" height="20" alt="Twitter">
-    </a>
-    <a class="rubic-footer__link" href="https://www.reddit.com/r/Rubic/new/" rel="noopener" target="_blank">
-      <img src="../../../assets/img/icons/socials/reddit.svg" width="22" height="20" alt="Reddit">
-    </a>
-    <a class="rubic-footer__link" href="https://t.me/cryptorubic_chat" rel="noopener" target="_blank">
-      <img src="../../../assets/img/icons/socials/telegram.svg" width="22" height="20" alt="Telegram">
-    </a>
-    <a class="rubic-footer__link" href="mailto:support@rubic.finance">
-      <img src="../../../assets/img/icons/socials/mail.svg" width="22" height="20" alt="Email">
-    </a>
-    <a class="rubic-footer__link" href="https://cryptorubic.medium.com/" rel="noopener" target="_blank">
-      <img src="../../../assets/img/icons/socials/medium.svg" width="22" height="20" alt="Medium">
-    </a>
-    <a class="rubic-footer__link" href="https://discord.gg/hayrHU2Tvh" rel="noopener" target="_blank">
-      <img src="../../../assets/img/icons/socials/discord.svg" width="22" height="20" alt="Discord">
-    </a>
-    <a class="rubic-footer__link" href="https://coinmarketcap.com/currencies/rubic/" rel="noopener" target="_blank">
-      <img src="../../../assets/img/icons/socials/coinmarket.svg" width="22" height="20" alt="Coinmarket">
-    </a>
-    <a class="rubic-footer__link" href="https://www.coingecko.com/en/coins/rubic" rel="noopener" target="_blank">
-      <img src="../../../assets/img/icons/socials/coingecko.svg" width="22" height="20" alt="Coingecko">
+    <a
+      *ngFor="let link of footerLinks"
+      class="rubic-footer__link"
+      [href]="link.link"
+      rel="noopener"
+      target="_blank"
+    >
+      <img
+        [src]="link.imageUrl"
+        width="22"
+        height="20"
+        [alt]="link.altText">
     </a>
   </nav>
   <div class="rubic-footer__copyright">
-    © Copyright Rubic 2021,
-    <a href="#" class="rubic-footer__policy">Privacy policy</a>
+    © Copyright Rubic {{ year }},
+    <a href="#" class="rubic-footer__policy">{{ 'common.privacyPolicy' | translate }}</a>
   </div>
 </div>

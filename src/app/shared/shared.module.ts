@@ -43,7 +43,6 @@ import { RubicTogglerThemeComponent } from 'src/app/core/header/components/heade
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
 import { RubicMenuComponent } from 'src/app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
 import { MessageBoxComponent } from './components/message-box/message-box.component';
@@ -102,7 +101,6 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
 @NgModule({
   declarations: [
     SwapsButtonComponent,
-    FooterComponent,
     SpinnerComponent,
     ArrowComponent,
     MessageBoxComponent,
@@ -209,7 +207,6 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     TuiLoaderModule
   ],
   exports: [
-    FooterComponent,
     SpinnerComponent,
     ArrowComponent,
     MessageBoxComponent,
