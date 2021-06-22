@@ -1,7 +1,7 @@
 <ng-container>
   <app-rubic-button *ngIf="needLogin | async"
+    [fullWidth]="true"
     (onClick)="onLogin()"
-    [disabled]="status === TRADE_STATUS.DISABLED"
   >
     Connect wallet
   </app-rubic-button>

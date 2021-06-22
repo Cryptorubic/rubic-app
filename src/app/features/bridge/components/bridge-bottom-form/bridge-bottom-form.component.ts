@@ -7,7 +7,7 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, of, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { first } from 'rxjs/operators';
@@ -56,6 +56,8 @@ const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
 export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   private formSubscription$: Subscription;
 
+  private userSubscription$: Subscription;
+
   public needApprove: boolean;
 
   public minmaxError = false;
@@ -63,11 +65,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   public tradeStatus = TRADE_STATUS.DISABLED;
 
   public TRADE_STATUS = TRADE_STATUS;
-
-  get disabled(): boolean {
-    const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
-    return !toAmount || toAmount.isNaN() || toAmount.eq(0);
-  }
 
   get whatIsBlockchain(): BlockchainInfo {
     const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
@@ -104,10 +101,16 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       () => this.calculateTrade()
     );
+    this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
+      if (user?.address) {
+        this.calculateTrade();
+      }
+    });
   }
 
   ngOnDestroy() {
     this.formSubscription$.unsubscribe();
+    this.userSubscription$.unsubscribe();
   }
 
   public calculateTrade() {
@@ -136,30 +139,32 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = TRADE_STATUS.LOADING;
     this.cdr.detectChanges();
 
-    forkJoin([this.bridgeService.getFee(), this.bridgeService.needApprove()]).subscribe(
-      ([fee, needApprove]) => {
-        this.needApprove = needApprove;
+    const needApprove$ = this.authService.user?.address
+      ? this.bridgeService.needApprove()
+      : of(false);
 
-        if (fee === null) {
-          this.errorsService.catch$(new RubicError());
-          this.tradeStatus = TRADE_STATUS.DISABLED;
-          this.cdr.detectChanges();
-          return;
-        }
+    forkJoin([this.bridgeService.getFee(), needApprove$]).subscribe(([fee, needApprove]) => {
+      this.needApprove = needApprove;
 
-        const toAmount = fromAmount.minus(fee);
-
-        this.swapFormService.commonTrade.controls.output.patchValue({
-          toAmount
-        });
-        this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
-        this.minmaxError = !this.swapService.checkMinMax(fromAmount);
-        if (this.minmaxError || !toAmount || toAmount.isNaN() || toAmount.eq(0)) {
-          this.tradeStatus = TRADE_STATUS.DISABLED;
-        }
+      if (fee === null) {
+        this.errorsService.catch$(new RubicError());
+        this.tradeStatus = TRADE_STATUS.DISABLED;
         this.cdr.detectChanges();
+        return;
       }
-    );
+
+      const toAmount = fromAmount.minus(fee);
+
+      this.swapFormService.commonTrade.controls.output.patchValue({
+        toAmount
+      });
+      this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
+      this.minmaxError = !this.swapService.checkMinMax(fromAmount);
+      if (this.minmaxError || !toAmount || toAmount.isNaN() || toAmount.eq(0)) {
+        this.tradeStatus = TRADE_STATUS.DISABLED;
+      }
+      this.cdr.detectChanges();
+    });
   }
 
   public createTrade() {
