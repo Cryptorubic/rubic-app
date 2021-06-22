@@ -66,4 +66,12 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     return this.panamaBridgeProvider.createTrade(bridgeTrade);
   }
+
+  public needApprove(): Observable<boolean> {
+    return this.panamaBridgeProvider.needApprove();
+  }
+
+  public approve(): Observable<TransactionReceipt> {
+    return this.panamaBridgeProvider.approve();
+  }
 }

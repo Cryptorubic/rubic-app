@@ -196,16 +196,22 @@ export class Web3PrivateService {
   public async approveTokens(
     tokenAddress: string,
     spenderAddress: string,
-    value: BigNumber,
+    value: BigNumber | 'infinity',
     options: {
       onTransactionHash?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
+    let rawValue: BigNumber;
+    if (value === 'infinity') {
+      rawValue = new BigNumber(2).pow(256).minus(1);
+    } else {
+      rawValue = value;
+    }
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
 
     return new Promise((resolve, reject) => {
       contract.methods
-        .approve(spenderAddress, value.toFixed(0))
+        .approve(spenderAddress, rawValue.toFixed(0))
         .send({
           from: this.address,
           ...(this.defaultMockGas && { gas: this.defaultMockGas })

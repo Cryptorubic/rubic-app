@@ -35,4 +35,18 @@ export abstract class BlockchainsBridgeProvider {
    * @return observable transaction receipt object
    */
   public abstract createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt>;
+
+  /**
+   * @description check if trade requires approve
+   * @param bridgeTrade object with data for trade
+   * @return trade requires approve or no
+   */
+  public abstract needApprove(bridgeTrade: BridgeTrade): Observable<boolean>;
+
+  /**
+   * @description approve tokens for trade
+   * @param bridgeTrade object with data for trade
+   * @return observable transaction receipt object
+   */
+  public abstract approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt>;
 }

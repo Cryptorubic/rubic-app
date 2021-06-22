@@ -227,6 +227,10 @@ export class BridgeService {
     );
   }
 
+  public needApprove() {}
+
+  public approve() {}
+
   public depositPolygonTradeAfterCheckpoint(
     burnTransactionHash: string,
     onTransactionHash: (hash: string) => void
