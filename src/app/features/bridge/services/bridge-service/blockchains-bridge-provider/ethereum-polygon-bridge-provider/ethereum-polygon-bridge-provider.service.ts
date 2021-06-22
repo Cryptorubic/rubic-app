@@ -4,7 +4,7 @@ import { defer, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
-import { first, skip, tap } from 'rxjs/operators';
+import { filter, first, tap } from 'rxjs/operators';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
@@ -62,9 +62,14 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   ) {
     super();
 
-    this.tokensService.tokens.pipe(skip(1), first()).subscribe(tokenAmounts => {
-      this.getTokensList(tokenAmounts);
-    });
+    this.tokensService.tokens
+      .pipe(
+        filter(tokens => !!tokens.size),
+        first()
+      )
+      .subscribe(tokenAmounts => {
+        this.getTokensList(tokenAmounts);
+      });
 
     this.web3PublicEth = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
     this.web3PublicPolygon = this.web3PublicService[BLOCKCHAIN_NAME.POLYGON];
@@ -188,21 +193,10 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   }
 
   private getMaticPOSClient(fromBlockchain: BLOCKCHAIN_NAME): MaticPOSClient {
-    let ethRPC: string;
-    let maticRPC: string;
-    let network: string;
-    let version: string;
-    if (!this.isTestingMode) {
-      ethRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.ETHEREUM).rpcLink;
-      maticRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON).rpcLink;
-      network = 'mainnet';
-      version = 'v1';
-    } else {
-      ethRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.GOERLI_TESTNET).rpcLink;
-      maticRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON_TESTNET).rpcLink;
-      network = 'testnet';
-      version = 'mumbai';
-    }
+    const ethRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.ETHEREUM).rpcLink;
+    const maticRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON).rpcLink;
+    const network = 'mainnet';
+    const version = 'v1';
 
     if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
       return new MaticPOSClient({
@@ -289,11 +283,10 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     onTradeTransactionHash: (hash: string) => void
   ): Observable<TransactionReceipt> {
     return defer(async () => {
-      const receipt = await maticPOSClient.depositEtherForUser(userAddress, amountInWei.toFixed(), {
+      return maticPOSClient.depositEtherForUser(userAddress, amountInWei.toFixed(), {
         from: userAddress,
         onTransactionHash: onTradeTransactionHash
       });
-      return receipt;
     });
   }
 
@@ -313,16 +306,10 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           onTransactionHash: onApprove
         });
       }
-      const receipt = await maticPOSClient.depositERC20ForUser(
-        tokenAddress,
-        userAddress,
-        amountInWei.toFixed(),
-        {
-          from: userAddress,
-          onTransactionHash: onTradeTransactionHash
-        }
-      );
-      return receipt;
+      return maticPOSClient.depositERC20ForUser(tokenAddress, userAddress, amountInWei.toFixed(), {
+        from: userAddress,
+        onTransactionHash: onTradeTransactionHash
+      });
     });
   }
 
@@ -334,43 +321,10 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     onTradeTransactionHash: (hash: string) => void
   ): Observable<TransactionReceipt> {
     return defer(async () => {
-      const receipt = await maticPOSClient.burnERC20(tokenAddress, amountInWei.toFixed(), {
+      return maticPOSClient.burnERC20(tokenAddress, amountInWei.toFixed(), {
         from: userAddress,
         onTransactionHash: onTradeTransactionHash
       });
-      return receipt;
-    });
-  }
-
-  public depositTradeAfterCheckpoint(
-    burnTransactionHash: string,
-    onTransactionHash: (hash: string) => void
-  ): Observable<string> {
-    const maticPOSClient = this.getMaticPOSClient(BLOCKCHAIN_NAME.ETHEREUM);
-    const userAddress = this.providerConnectorService.address;
-
-    const onTradeTransactionHash = async (hash: string) => {
-      if (onTransactionHash) {
-        onTransactionHash(hash);
-      }
-      await this.bridgeApiService.patchPolygonTransaction(
-        burnTransactionHash,
-        hash,
-        TRADE_STATUS.WITHDRAW_IN_PROGRESS
-      );
-    };
-
-    return defer(async () => {
-      const receipt = await maticPOSClient.exitERC20(burnTransactionHash, {
-        from: userAddress,
-        onTransactionHash: onTradeTransactionHash
-      });
-      await this.bridgeApiService.patchPolygonTransaction(
-        burnTransactionHash,
-        receipt.transactionHash,
-        TRADE_STATUS.COMPLETED
-      );
-      return receipt;
     });
   }
 }

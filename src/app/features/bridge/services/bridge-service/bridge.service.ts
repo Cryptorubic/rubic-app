@@ -49,12 +49,12 @@ export class BridgeService {
   private _backendTokens: List<TokenAmount>;
 
   constructor(
-    private ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
-    private rubicBridgeProviderService: EthereumBinanceRubicBridgeProviderService,
-    private ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
-    private ethereumTronBridgeProviderService: EthereumTronBridgeProviderService,
-    private ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
-    private binanceTronBridgeProviderService: BinanceTronBridgeProviderService,
+    private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
+    private readonly rubicBridgeProviderService: EthereumBinanceRubicBridgeProviderService,
+    private readonly ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
+    private readonly ethereumTronBridgeProviderService: EthereumTronBridgeProviderService,
+    private readonly ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
+    private readonly binanceTronBridgeProviderService: BinanceTronBridgeProviderService,
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
     private readonly providerConnectorService: ProviderConnectorService,
@@ -227,27 +227,6 @@ export class BridgeService {
     );
   }
 
-  public depositPolygonTradeAfterCheckpoint(
-    burnTransactionHash: string,
-    onTransactionHash: (hash: string) => void
-  ): Observable<string> {
-    try {
-      this.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
-    } catch (err) {
-      console.error(err);
-      throw new RubicError();
-    }
-
-    return this.ethereumPolygonBridgeProviderService
-      .depositTradeAfterCheckpoint(burnTransactionHash, onTransactionHash)
-      .pipe(
-        catchError(err => {
-          console.error(err);
-          return throwError(new RubicError());
-        })
-      );
-  }
-
   private async checkBalance(
     fromBlockchain: BLOCKCHAIN_NAME,
     toBlockchain: BLOCKCHAIN_NAME,
@@ -295,10 +274,7 @@ export class BridgeService {
     if (
       this.providerConnectorService.network?.name !== blockchain &&
       (!this.useTestingModeService.isTestingMode.getValue() ||
-        this.providerConnectorService.network?.name !== `${blockchain}_TESTNET`) &&
-      (!this.useTestingModeService.isTestingMode.getValue() ||
-        blockchain !== BLOCKCHAIN_NAME.ETHEREUM ||
-        this.providerConnectorService.network?.name !== BLOCKCHAIN_NAME.GOERLI_TESTNET)
+        this.providerConnectorService.network?.name !== `${blockchain}_TESTNET`)
     ) {
       throw new NetworkError(blockchain);
     }

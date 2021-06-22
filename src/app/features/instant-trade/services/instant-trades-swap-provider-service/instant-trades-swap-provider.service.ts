@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SupportedTokensInfo } from '../../../swaps/models/SupportedTokensInfo';
@@ -13,6 +13,7 @@ export class InstantTradesSwapProviderService extends SwapProvider {
     const supportedTokensInfo = this.getSupportedTokensInfoTemplate();
 
     return this.tokensService.tokens.pipe(
+      filter(tokens => !!tokens.size),
       map(tokensList => {
         const tokens = tokensList.toArray();
         const supportedBlockchains = [

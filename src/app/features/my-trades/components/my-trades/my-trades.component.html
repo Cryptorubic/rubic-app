@@ -79,23 +79,34 @@
         <tbody tuiTbody [data]="data">
           <ng-container *ngFor="let item of data">
             <tr tuiTr *tuiLet="getTableTrade(item) as trade">
-              <td *tuiCell="'Status'" tuiTd>
-                <div
-                  class="status-circle"
-                  [ngClass]="{
-                    'status-circle_green': trade.status === 'completed',
-                    'status-circle_yellow':
-                      trade.status === 'waiting for deposit' ||
-                      trade.status === 'waiting for receiving' ||
-                      trade.status === 'deposit in progress' ||
-                      trade.status === 'withdraw in progress' ||
-                      trade.status === 'pending',
-                    'status-circle_red': trade.status === 'cancelled' || trade.status === 'rejected'
-                  }"
-                >
-                  <div class="status-circle__inner"></div>
+              <td *tuiCell="'Status'" tuiTd class="status">
+                <div class="status__text">
+                  <div
+                    class="status-circle"
+                    [ngClass]="{
+                      'status-circle_green': trade.status === 'completed',
+                      'status-circle_yellow':
+                        trade.status === 'waiting for deposit' ||
+                        trade.status === 'waiting for receiving' ||
+                        trade.status === 'deposit in progress' ||
+                        trade.status === 'withdraw in progress' ||
+                        trade.status === 'pending',
+                      'status-circle_red':
+                        trade.status === 'cancelled' || trade.status === 'rejected'
+                    }"
+                  >
+                    <div class="status-circle__inner"></div>
+                  </div>
+                  <span class="status__text">{{ trade.status }}</span>
                 </div>
-                <span class="status__text">{{ trade.status }}</span>
+
+                <app-rubic-button
+                  *ngIf="trade.status === 'waiting for receiving'"
+                  size="s"
+                  [loading]="item.inProgress"
+                  (onClick)="receivePolygonBridgeTrade(trade)"
+                  >Receive</app-rubic-button
+                >
               </td>
 
               <td *tuiCell="'From'" tuiTd>

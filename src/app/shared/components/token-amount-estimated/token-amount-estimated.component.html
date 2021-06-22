@@ -5,7 +5,7 @@
       class="bottom-amount__usd-container"
       [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
     >
-      <span class="bottom-amount__usd">${{ usd }}</span>
+      <span class="bottom-amount__usd">${{ usd | bigNumberFormat: 2 }}</span>
     </div>
     <div
       class="bottom-amount__tokens-container"

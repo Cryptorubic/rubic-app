@@ -21,7 +21,10 @@ import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
-import { TuiDialogService } from '@taiga-ui/core';
+import { TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { BridgeTableTrade } from '../../../bridge/models/BridgeTableTrade';
 import { InstantTradesTradeData } from '../../../swaps-page-old/models/trade-data';
 
@@ -37,6 +40,8 @@ interface TableTrade {
   fromToken: TableToken;
   toToken: TableToken;
   date: Date;
+
+  burtTransactionHash?: string;
 }
 
 type TableRowKey = 'Status' | 'From' | 'To' | 'Sent' | 'Expected' | 'Date';
@@ -45,9 +50,11 @@ interface TableRow {
   Status: string;
   From: string;
   To: string;
-  Sent: number;
-  Expected: number;
+  Sent: string;
+  Expected: string;
   Date: Date;
+
+  inProgress: boolean;
 }
 
 @Component({
@@ -131,10 +138,14 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
+    private readonly myTradesService: MyTradesService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly tokensService: TokensService,
     private readonly authService: AuthService,
+    private readonly translate: TranslateService,
+    private readonly notificationsService: TuiNotificationsService,
+    private errorsService: ErrorsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
@@ -171,7 +182,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
     zip(this.getBridgeTransactions(), this.getInstantTradesTransactions()).subscribe(data => {
       this.tableTrades = data.flat();
-      const tableData = [];
+      const tableData: TableRow[] = [];
       this.tableTrades.forEach(trade => {
         tableData.push({
           Status: trade.status,
@@ -179,7 +190,9 @@ export class MyTradesComponent implements OnInit, OnDestroy {
           To: trade.toToken.blockchain,
           Sent: trade.fromToken.amount,
           Expected: trade.toToken.amount,
-          Date: trade.date
+          Date: trade.date,
+
+          inProgress: false
         });
       });
       this.tableData$.next(tableData);
@@ -251,7 +264,9 @@ export class MyTradesComponent implements OnInit, OnDestroy {
         trade.toBlockchain,
         toSymbol
       ),
-      date: new Date(trade.updateTime)
+      date: new Date(trade.updateTime),
+
+      burtTransactionHash: trade.transactionHash
     };
   }
 
@@ -311,5 +326,56 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public getTableTrade(tableRow: TableRow): TableTrade {
     return this.tableTrades.find(trade => trade.date.getTime() === tableRow.Date.getTime());
+  }
+
+  public receivePolygonBridgeTrade(trade: TableTrade): void {
+    let tableData = this.tableData$.getValue().map(tableTrade => {
+      if (tableTrade.Date.getTime() === trade.date.getTime()) {
+        return {
+          ...tableTrade,
+          inProgress: true
+        };
+      }
+      return tableTrade;
+    });
+    this.tableData$.next(tableData);
+
+    let tradeInProgressSubscription$: Subscription;
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService
+        .show(this.translate.instant('bridgePage.progressMessage'), {
+          label: 'Trade in progress',
+          status: TuiNotification.Info,
+          autoClose: false
+        })
+        .subscribe();
+    };
+
+    this.myTradesService
+      .depositPolygonBridgeTradeAfterCheckpoint(trade.burtTransactionHash, onTransactionHash)
+      .subscribe(
+        _receipt => {
+          tradeInProgressSubscription$.unsubscribe();
+          this.notificationsService
+            .show(this.translate.instant('bridgePage.successMessage'), {
+              label: 'Successful trade',
+              status: TuiNotification.Success,
+              autoClose: 15000
+            })
+            .subscribe();
+
+          this.refreshTable();
+        },
+        err => {
+          tradeInProgressSubscription$?.unsubscribe();
+          this.errorsService.catch$(err);
+
+          tableData = this.tableData$.getValue().map(tableTrade => ({
+            ...tableTrade,
+            inProgress: false
+          }));
+          this.tableData$.next(tableData);
+        }
+      );
   }
 }

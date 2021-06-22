@@ -3,13 +3,12 @@ import BigNumber from 'bignumber.js';
 import { Transaction } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
 import { MULTICALL_ADDRESSES, MULTICALL_ADDRESSES_TESTNET } from '../constants/multicall-addresses';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-import { BlockchainToken } from '../../../../shared/models/tokens/BlockchainToken';
-import { BlockchainTokenExtended } from '../../../../shared/models/tokens/BlockchainTokenExtended';
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
@@ -212,9 +211,6 @@ export class Web3Public {
    * @param address address to check
    */
   public isNativeAddress = (address: string): boolean => {
-    if (this.blockchain.name === BLOCKCHAIN_NAME.POLYGON) {
-      return address.toLowerCase() === '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'.toLowerCase();
-    }
     return address === '0x0000000000000000000000000000000000000000';
   };
 
