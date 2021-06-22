@@ -10,27 +10,27 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { catchError, first, map, mergeMap } from 'rxjs/operators';
+import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
-import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
-import { BridgeTrade } from '../../../cross-chain-swaps-page-old/bridge-page/models/BridgeTrade';
-import { bridgeTestTokens } from '../../../../../test/tokens/bridge-tokens';
-import { AuthService } from '../../../../core/services/auth/auth.service';
-import { Web3PublicService } from '../../../../core/services/blockchain/web3-public-service/web3-public.service';
-import { WalletError } from '../../../../shared/models/errors/provider/WalletError';
-import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
-import { NetworkError } from '../../../../shared/models/errors/provider/NetworkError';
-import { ProviderConnectorService } from '../../../../core/services/blockchain/provider-connector/provider-connector.service';
-import { UseTestingModeService } from '../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { RubicError } from '../../../../shared/models/errors/RubicError';
-import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
-import { BridgeApiService } from '../../../../core/services/backend/bridge-api/bridge-api.service';
-import { TokensService } from '../../../../core/services/backend/tokens-service/tokens.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
+import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
+import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
+import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
 
 @Injectable()
 export class BridgeService {
@@ -187,20 +187,25 @@ export class BridgeService {
     );
   }
 
-  public createTrade(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+  private getBridgeTrade(bridgeTradeRequest?: BridgeTradeRequest): Observable<BridgeTrade> {
     const { fromBlockchain, toBlockchain, fromAmount } =
       this.swapFormService.commonTrade.value.input;
 
+    return this.getCurrentBridgeToken().pipe(
+      map(bridgeToken => ({
+        fromBlockchain,
+        toBlockchain,
+        token: bridgeToken,
+        amount: fromAmount,
+        toAddress: bridgeTradeRequest?.toAddress || this.authService.user.address,
+        onTransactionHash: bridgeTradeRequest?.onTransactionHash || (() => {})
+      }))
+    );
+  }
+
+  public createTrade(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
     return defer(() =>
-      this.getCurrentBridgeToken().pipe(
-        map(bridgeToken => ({
-          fromBlockchain,
-          toBlockchain,
-          token: bridgeToken,
-          amount: fromAmount,
-          toAddress: bridgeTradeRequest.toAddress,
-          onTransactionHash: bridgeTradeRequest.onTransactionHash
-        })),
+      this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap((bridgeTrade: BridgeTrade) => {
           this.checkSettings(bridgeTrade.fromBlockchain);
           const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
@@ -219,7 +224,8 @@ export class BridgeService {
           return this.bridgeProvider.createTrade(bridgeTrade).pipe(
             catchError(err => {
               console.error(err);
-              return throwError(new RubicError());
+              const error = err instanceof RubicError ? err : new RubicError();
+              return throwError(error);
             })
           );
         })
@@ -227,9 +233,47 @@ export class BridgeService {
     );
   }
 
-  public needApprove() {}
+  public needApprove(): Observable<boolean> {
+    return this.getBridgeTrade().pipe(
+      switchMap(bridgeTrade =>
+        this.bridgeProvider.needApprove(bridgeTrade).pipe(
+          catchError(err => {
+            console.error(err);
+            const error = err instanceof RubicError ? err : new RubicError();
+            return throwError(error);
+          })
+        )
+      )
+    );
+  }
 
-  public approve() {}
+  public approve(bridgeTradeRequest: BridgeTradeRequest) {
+    this.getBridgeTrade(bridgeTradeRequest).pipe(
+      mergeMap((bridgeTrade: BridgeTrade) => {
+        this.checkSettings(bridgeTrade.fromBlockchain);
+        const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+        return from(
+          this.checkBalance(
+            bridgeTrade.fromBlockchain,
+            bridgeTrade.toBlockchain,
+            token.address,
+            token.symbol,
+            token.decimals,
+            bridgeTrade.amount
+          )
+        ).pipe(map(() => bridgeTrade));
+      }),
+      mergeMap((bridgeTrade: BridgeTrade) => {
+        return this.bridgeProvider.approve(bridgeTrade).pipe(
+          catchError(err => {
+            console.error(err);
+            const error = err instanceof RubicError ? err : new RubicError();
+            return throwError(error);
+          })
+        );
+      })
+    );
+  }
 
   public depositPolygonTradeAfterCheckpoint(
     burnTransactionHash: string,
