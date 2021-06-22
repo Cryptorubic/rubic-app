@@ -38,7 +38,8 @@ import {
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
-import { SwapsButtonComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button.component';
+import { SwapsButtonOldComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button-old.component';
+import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-button/swap-button.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -100,11 +101,10 @@ import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
 import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.component';
 import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.component';
-import { ApproveButtonComponent } from './components/buttons/approve-button/approve-button.component';
 
 @NgModule({
   declarations: [
-    SwapsButtonComponent,
+    SwapsButtonOldComponent,
     FooterComponent,
     SpinnerComponent,
     ArrowComponent,
@@ -175,7 +175,7 @@ import { ApproveButtonComponent } from './components/buttons/approve-button/appr
     RubicVolumeComponent,
     RubicFooterComponent,
     RubicBannerComponent,
-    ApproveButtonComponent
+    SwapButtonComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -279,8 +279,8 @@ import { ApproveButtonComponent } from './components/buttons/approve-button/appr
     RubicHeaderComponent,
     TokenAmountInputComponent,
     RubicBannerComponent,
-    SwapsButtonComponent,
-    ApproveButtonComponent
+    SwapsButtonOldComponent,
+    SwapButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

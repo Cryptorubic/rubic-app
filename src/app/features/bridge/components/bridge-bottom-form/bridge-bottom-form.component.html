@@ -13,12 +13,12 @@
 
   <div class="bridge-bottom-form__footer">
     <div class="bridge-bottom-form__button">
-      <app-approve-button
+      <app-swap-button
         [needApprove]="needApprove"
         [status]="tradeStatus"
         (swapClick)="createTrade()"
         (approveClick)="approveTrade()"
-      ></app-approve-button>
+      ></app-swap-button>
     </div>
     <div class="bridge-bottom-form__terms-and-conditions">
       <span *ngIf="address"

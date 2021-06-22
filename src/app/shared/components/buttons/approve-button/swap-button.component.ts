@@ -6,24 +6,23 @@ import {
   EventEmitter,
   Inject,
   INJECTOR,
-  Injector,
-  OnInit
+  Injector
 } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
-import { WalletsModalComponent } from '../../../../core/header/components/header/components/wallets-modal/wallets-modal.component';
-import { AuthService } from '../../../../core/services/auth/auth.service';
 
 @Component({
-  selector: 'app-approve-button',
-  templateUrl: './approve-button.component.html',
-  styleUrls: ['./approve-button.component.scss'],
+  selector: 'app-swap-button',
+  templateUrl: './swap-button.component.html',
+  styleUrls: ['./swap-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ApproveButtonComponent implements OnInit {
+export class SwapButtonComponent {
   @Input() needApprove: boolean = false;
 
   @Input() status: TRADE_STATUS;
@@ -48,9 +47,5 @@ export class ApproveButtonComponent implements OnInit {
     this.dialogService
       .open(new PolymorpheusComponent(WalletsModalComponent, this.injector), { size: 's' })
       .subscribe();
-  }
-
-  ngOnInit() {
-    console.log(this.status);
   }
 }
