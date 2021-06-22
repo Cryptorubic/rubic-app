@@ -95,4 +95,12 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
       })
     );
   }
+
+  public needApprove(): Observable<boolean> {
+    return of(false);
+  }
+
+  approve(): Observable<TransactionReceipt> {
+    return of(null);
+  }
 }

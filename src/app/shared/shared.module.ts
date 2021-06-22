@@ -38,7 +38,8 @@ import {
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
-import { SwapsButtonComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button.component';
+import { SwapsButtonOldComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button-old.component';
+import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-button/swap-button.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -103,7 +104,7 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
 
 @NgModule({
   declarations: [
-    SwapsButtonComponent,
+    SwapsButtonOldComponent,
     FooterComponent,
     SpinnerComponent,
     ArrowComponent,
@@ -173,7 +174,8 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicMenuComponent,
     RubicVolumeComponent,
     RubicFooterComponent,
-    RubicBannerComponent
+    RubicBannerComponent,
+    SwapButtonComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -277,7 +279,8 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicHeaderComponent,
     TokenAmountInputComponent,
     RubicBannerComponent,
-    SwapsButtonComponent
+    SwapsButtonOldComponent,
+    SwapButtonComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

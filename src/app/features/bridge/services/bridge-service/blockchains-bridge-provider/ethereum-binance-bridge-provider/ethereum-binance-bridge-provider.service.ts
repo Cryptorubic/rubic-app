@@ -42,4 +42,18 @@ export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvi
     }
     return this.panamaBridgeProvider.createTrade(bridgeTrade);
   }
+
+  approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
+    if (bridgeTrade.token.symbol === 'RBC') {
+      return this.rubicBridgeProvider.approve(bridgeTrade);
+    }
+    return this.panamaBridgeProvider.approve();
+  }
+
+  needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
+    if (bridgeTrade.token.symbol === 'RBC') {
+      return this.rubicBridgeProvider.needApprove(bridgeTrade);
+    }
+    return this.panamaBridgeProvider.needApprove();
+  }
 }
