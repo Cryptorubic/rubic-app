@@ -102,12 +102,15 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   public readonly visibleData$ = this.request$.pipe(
     filter(isPresent),
     map(visibleTableData => {
-      this.loading$.next(false);
-      this.loadingStatus = 'stopped';
       setTimeout(() => {
-        this.loadingStatus = '';
+        this.loading$.next(false);
+        this.loadingStatus = 'stopped';
         this.cdr.detectChanges();
-      }, 1000);
+        setTimeout(() => {
+          this.loadingStatus = '';
+          this.cdr.detectChanges();
+        }, 1000);
+      });
 
       return visibleTableData.filter(isPresent);
     }),
@@ -153,13 +156,14 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   }
 
   private setTableData(): void {
+    this.loading$.next(true);
+    this.loadingStatus = 'refreshing';
+    this.cdr.detectChanges();
+
     if (!this.walletAddress) {
       this.tableData$.next([]);
       return;
     }
-
-    this.loading$.next(true);
-    this.loadingStatus = 'refreshing';
 
     if (!this.tokens.size) {
       return;
