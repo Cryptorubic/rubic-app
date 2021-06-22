@@ -7,7 +7,7 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { first } from 'rxjs/operators';
@@ -56,18 +56,15 @@ const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
 export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   private formSubscription$: Subscription;
 
-  public loading = false;
-
-  public tradeInProgress = false;
+  public needApprove: boolean;
 
   public minmaxError = false;
+
+  public tradeStatus = TRADE_STATUS.DISABLED;
 
   public TRADE_STATUS = TRADE_STATUS;
 
   get disabled(): boolean {
-    if (this.loading || this.tradeInProgress || this.minmaxError) {
-      return true;
-    }
     const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
     return !toAmount || toAmount.isNaN() || toAmount.eq(0);
   }
@@ -136,22 +133,33 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loading = true;
+    this.tradeStatus = TRADE_STATUS.LOADING;
     this.cdr.detectChanges();
 
-    this.bridgeService.getFee().subscribe(fee => {
-      if (fee === null) {
-        this.errorsService.catch$(new RubicError());
-        return;
-      }
+    forkJoin([this.bridgeService.getFee(), this.bridgeService.needApprove()]).subscribe(
+      ([fee, needApprove]) => {
+        this.needApprove = needApprove;
 
-      this.swapFormService.commonTrade.controls.output.patchValue({
-        toAmount: fromAmount.minus(fee)
-      });
-      this.loading = false;
-      this.minmaxError = !this.swapService.checkMinMax(fromAmount);
-      this.cdr.detectChanges();
-    });
+        if (fee === null) {
+          this.errorsService.catch$(new RubicError());
+          this.tradeStatus = TRADE_STATUS.DISABLED;
+          this.cdr.detectChanges();
+          return;
+        }
+
+        const toAmount = fromAmount.minus(fee);
+
+        this.swapFormService.commonTrade.controls.output.patchValue({
+          toAmount
+        });
+        this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
+        this.minmaxError = !this.swapService.checkMinMax(fromAmount);
+        if (this.minmaxError || !toAmount || toAmount.isNaN() || toAmount.eq(0)) {
+          this.tradeStatus = TRADE_STATUS.DISABLED;
+        }
+        this.cdr.detectChanges();
+      }
+    );
   }
 
   public createTrade() {
@@ -160,7 +168,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.authService.user.address,
       onTransactionHash: () => {
-        this.tradeInProgress = true;
+        this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
         this.cdr.detectChanges();
         tradeInProgressSubscription$ = this.notificationsService
           .show(this.translate.instant('bridgePage.progressMessage'), {
@@ -179,21 +187,62 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         (_res: TransactionReceipt) => {
           tradeInProgressSubscription$.unsubscribe();
 
-          const successfulTradeSubscription$ = this.notificationsService
+          this.notificationsService
             .show(this.translate.instant('bridgePage.successMessage'), {
               label: 'Successful trade',
               status: TuiNotification.Success,
-              autoClose: false
+              autoClose: 15000
             })
             .subscribe();
-          this.tradeInProgress = false;
+          this.tradeStatus = null;
           this.cdr.detectChanges();
-
-          setTimeout(() => successfulTradeSubscription$.unsubscribe(), 15000);
+          this.calculateTrade();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
-          this.tradeInProgress = false;
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+          this.errorsService.catch$(err);
+        }
+      );
+  }
+
+  public approveTrade() {
+    let approveInProgressSubscription$: Subscription;
+
+    const bridgeTradeRequest: BridgeTradeRequest = {
+      onTransactionHash: () => {
+        this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+        this.cdr.detectChanges();
+        approveInProgressSubscription$ = this.notificationsService
+          .show(this.translate.instant('bridgePage.approveProgressMessage'), {
+            label: 'Approve in progress',
+            status: TuiNotification.Info,
+            autoClose: false
+          })
+          .subscribe();
+      }
+    };
+
+    this.bridgeService
+      .approve(bridgeTradeRequest)
+      .pipe(first())
+      .subscribe(
+        (_res: TransactionReceipt) => {
+          approveInProgressSubscription$.unsubscribe();
+
+          this.notificationsService
+            .show(this.translate.instant('bridgePage.approveSuccessMessage'), {
+              label: 'Successful approve',
+              status: TuiNotification.Success,
+              autoClose: 15000
+            })
+            .subscribe();
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+          this.cdr.detectChanges();
+        },
+        err => {
+          approveInProgressSubscription$?.unsubscribe();
+          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
           this.errorsService.catch$(err);
         }
       );

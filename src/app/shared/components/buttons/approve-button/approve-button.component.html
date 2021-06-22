@@ -11,7 +11,7 @@
       <div class="buttons" *ngIf="!(needLogin | async)">
         <app-rubic-button
           [fullWidth]="true"
-          (onClick)="swapClick.emit()"
+          (onClick)="approveClick.emit()"
           [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS"
           [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
         >

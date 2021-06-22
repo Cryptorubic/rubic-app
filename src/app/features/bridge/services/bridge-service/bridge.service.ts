@@ -157,7 +157,8 @@ export class BridgeService {
         }
 
         return this.bridgeProvider.getFee(bridgeToken, toBlockchain);
-      })
+      }),
+      first()
     );
   }
 
@@ -243,12 +244,13 @@ export class BridgeService {
             return throwError(error);
           })
         )
-      )
+      ),
+      first()
     );
   }
 
-  public approve(bridgeTradeRequest: BridgeTradeRequest) {
-    this.getBridgeTrade(bridgeTradeRequest).pipe(
+  public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+    return this.getBridgeTrade(bridgeTradeRequest).pipe(
       mergeMap((bridgeTrade: BridgeTrade) => {
         this.checkSettings(bridgeTrade.fromBlockchain);
         const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];

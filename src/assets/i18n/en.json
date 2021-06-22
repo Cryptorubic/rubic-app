@@ -336,6 +336,8 @@
     "swapToggleText": "Use our swaps",
     "progressMessage": "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
     "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
+    "approveProgressMessage": "You accepted the approve transaction and the exchange has started. Please wait until the trade is complete.",
+    "approveSuccessMessage": "You have approved tokens. Press swap button to continue trade.",
     "tableTitle": "Your cross-chain swaps",
     "whatIs": "What is ",
     "whatIsAfter": "",

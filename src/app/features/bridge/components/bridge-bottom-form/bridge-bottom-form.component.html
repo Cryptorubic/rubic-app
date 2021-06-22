@@ -1,5 +1,5 @@
 <section class="bridge-bottom-form">
-  <app-amount-input [loading]="loading"></app-amount-input>
+  <app-amount-input [loading]="tradeStatus === TRADE_STATUS.LOADING"></app-amount-input>
   <div class="bridge-bottom-form__analytics" *ngIf="tokenInfoUrl">
     <a
       [href]="'https://keks.app/' + tokenInfoUrl"
@@ -13,18 +13,12 @@
 
   <div class="bridge-bottom-form__footer">
     <div class="bridge-bottom-form__button">
-      <!--<app-rubic-button
-        [fullWidth]="true"
-        (onClick)="onButtonClick()"
-        [loading]="loading || tradeInProgress"
-        [disabled]="disabled"
-      >{{ isAuthorized ? 'Swap' : 'Connect wallet' }}</app-rubic-button>-->
       <app-approve-button
-        [needApprove]="true"
-        [status]="TRADE_STATUS.READY_TO_APPROVE"
-      >
-
-      </app-approve-button>
+        [needApprove]="needApprove"
+        [status]="tradeStatus"
+        (swapClick)="createTrade()"
+        (approveClick)="approveTrade()"
+      ></app-approve-button>
     </div>
     <div class="bridge-bottom-form__terms-and-conditions">
       <span *ngIf="address"
