@@ -10,7 +10,7 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { catchError, first, map, mergeMap } from 'rxjs/operators';
+import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
@@ -157,7 +157,8 @@ export class BridgeService {
         }
 
         return this.bridgeProvider.getFee(bridgeToken, toBlockchain);
-      })
+      }),
+      first()
     );
   }
 
@@ -187,20 +188,25 @@ export class BridgeService {
     );
   }
 
-  public createTrade(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+  private getBridgeTrade(bridgeTradeRequest?: BridgeTradeRequest): Observable<BridgeTrade> {
     const { fromBlockchain, toBlockchain, fromAmount } =
       this.swapFormService.commonTrade.value.input;
 
+    return this.getCurrentBridgeToken().pipe(
+      map(bridgeToken => ({
+        fromBlockchain,
+        toBlockchain,
+        token: bridgeToken,
+        amount: fromAmount,
+        toAddress: bridgeTradeRequest?.toAddress || this.authService.user.address,
+        onTransactionHash: bridgeTradeRequest?.onTransactionHash || (() => {})
+      }))
+    );
+  }
+
+  public createTrade(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
     return defer(() =>
-      this.getCurrentBridgeToken().pipe(
-        map(bridgeToken => ({
-          fromBlockchain,
-          toBlockchain,
-          token: bridgeToken,
-          amount: fromAmount,
-          toAddress: bridgeTradeRequest.toAddress,
-          onTransactionHash: bridgeTradeRequest.onTransactionHash
-        })),
+      this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap((bridgeTrade: BridgeTrade) => {
           this.checkSettings(bridgeTrade.fromBlockchain);
           const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
@@ -219,11 +225,55 @@ export class BridgeService {
           return this.bridgeProvider.createTrade(bridgeTrade).pipe(
             catchError(err => {
               console.error(err);
-              return throwError(new RubicError());
+              const error = err instanceof RubicError ? err : new RubicError();
+              return throwError(error);
             })
           );
         })
       )
+    );
+  }
+
+  public needApprove(): Observable<boolean> {
+    return this.getBridgeTrade().pipe(
+      switchMap(bridgeTrade =>
+        this.bridgeProvider.needApprove(bridgeTrade).pipe(
+          catchError(err => {
+            console.error(err);
+            const error = err instanceof RubicError ? err : new RubicError();
+            return throwError(error);
+          })
+        )
+      ),
+      first()
+    );
+  }
+
+  public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+    return this.getBridgeTrade(bridgeTradeRequest).pipe(
+      mergeMap((bridgeTrade: BridgeTrade) => {
+        this.checkSettings(bridgeTrade.fromBlockchain);
+        const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+        return from(
+          this.checkBalance(
+            bridgeTrade.fromBlockchain,
+            bridgeTrade.toBlockchain,
+            token.address,
+            token.symbol,
+            token.decimals,
+            bridgeTrade.amount
+          )
+        ).pipe(map(() => bridgeTrade));
+      }),
+      mergeMap((bridgeTrade: BridgeTrade) => {
+        return this.bridgeProvider.approve(bridgeTrade).pipe(
+          catchError(err => {
+            console.error(err);
+            const error = err instanceof RubicError ? err : new RubicError();
+            return throwError(error);
+          })
+        );
+      })
     );
   }
 

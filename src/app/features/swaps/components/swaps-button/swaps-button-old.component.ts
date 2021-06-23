@@ -18,12 +18,12 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-swaps-button',
-  templateUrl: './swaps-button.component.html',
-  styleUrls: ['./swaps-button.component.scss'],
+  selector: 'app-swaps-button-old',
+  templateUrl: './swaps-button-old.component.html',
+  styleUrls: ['./swaps-button-old.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SwapsButtonComponent implements OnInit, OnDestroy {
+export class SwapsButtonOldComponent implements OnInit, OnDestroy {
   @Input() loading = false;
 
   @Input() disabled: boolean;

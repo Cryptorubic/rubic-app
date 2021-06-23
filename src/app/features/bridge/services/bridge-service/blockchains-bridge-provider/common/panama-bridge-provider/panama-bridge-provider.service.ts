@@ -130,6 +130,14 @@ export class PanamaBridgeProviderService {
     );
   }
 
+  public needApprove(): Observable<boolean> {
+    return of(false);
+  }
+
+  public approve(): Observable<TransactionReceipt> {
+    return null;
+  }
+
   private async sendDeposit(
     binanceId: string,
     bridgeTrade: BridgeTrade,

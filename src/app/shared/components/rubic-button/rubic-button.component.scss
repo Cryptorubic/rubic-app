@@ -53,10 +53,15 @@
     }
 
     &._disabled {
-      color: rgba($rubic-text-disable, 0.6);
-
-      background-color: rgba($rubic-disable, 0.6);
       border: 0;
+
+      ::ng-deep tui-wrapper {
+        color: rgba($rubic-text-disable, 0.6);
+
+        background-color: rgba($rubic-disable, 0.6);
+        box-shadow: $rubic-shadow-button-disabled;
+        opacity: 1 !important;
+      }
     }
 
     &[data-tui-host-size='l'] {

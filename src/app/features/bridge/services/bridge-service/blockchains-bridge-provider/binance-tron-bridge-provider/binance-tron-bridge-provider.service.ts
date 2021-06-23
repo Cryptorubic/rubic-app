@@ -66,4 +66,12 @@ export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider 
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     return this.commonPanamaBridgeProviderService.createTrade(bridgeTrade);
   }
+
+  public needApprove(): Observable<boolean> {
+    return this.commonPanamaBridgeProviderService.needApprove();
+  }
+
+  public approve(): Observable<TransactionReceipt> {
+    return this.commonPanamaBridgeProviderService.approve();
+  }
 }

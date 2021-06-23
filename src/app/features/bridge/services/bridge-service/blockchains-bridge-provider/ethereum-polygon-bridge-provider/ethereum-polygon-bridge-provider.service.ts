@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { List } from 'immutable';
-import { defer, Observable, of } from 'rxjs';
+import { defer, from, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
-import { filter, first, tap } from 'rxjs/operators';
+import { filter, first, map, skip, switchMap, tap } from 'rxjs/operators';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
@@ -20,6 +20,8 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 import networks from '../../../../../../shared/constants/blockchain/networks';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
@@ -58,7 +60,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     private readonly bridgeApiService: BridgeApiService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly authService: AuthService
   ) {
     super();
 
@@ -226,6 +229,41 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     );
   }
 
+  public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
+    const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
+    const userAddress = this.authService.user.address;
+    const tokenAddress = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].address;
+    const { decimals } = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+    const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
+    if (bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
+      return of(false);
+    }
+    return from(maticPOSClient.getERC20Allowance(userAddress, tokenAddress)).pipe(
+      map(allowance => amountInWei.gt(allowance))
+    );
+  }
+
+  public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
+    const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
+    const userAddress = this.authService.user.address;
+    const tokenAddress = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].address;
+
+    return this.needApprove(bridgeTrade).pipe(
+      switchMap(needApprove => {
+        if (!needApprove) {
+          console.error('You should check bridge trade allowance before approve');
+          return throwError(new RubicError());
+        }
+        return from(
+          maticPOSClient.approveMaxERC20ForDeposit(tokenAddress, {
+            from: userAddress,
+            onTransactionHash: bridgeTrade.onTransactionHash
+          })
+        ) as Observable<TransactionReceipt>;
+      })
+    );
+  }
+
   public createPolygonTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
     const userAddress = this.providerConnectorService.address;
@@ -282,7 +320,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     amountInWei: BigNumber,
     onTradeTransactionHash: (hash: string) => void
   ): Observable<TransactionReceipt> {
-    return defer(async () => {
+    return defer(() => {
       return maticPOSClient.depositEtherForUser(userAddress, amountInWei.toFixed(), {
         from: userAddress,
         onTransactionHash: onTradeTransactionHash

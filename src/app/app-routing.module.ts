@@ -11,13 +11,6 @@ const routes: Routes = [
     redirectTo: 'cross-chain/bridge'
   },
   {
-    path: 'cross-chain',
-    loadChildren: () =>
-      import('./features/cross-chain-swaps-page-old/cross-chain-swaps-page.module').then(
-        m => m.CrossChainSwapsPageModule
-      )
-  },
-  {
     path: 'about',
     loadChildren: () =>
       import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule)
