@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import ConnectionLink from '../types/ConnectionLink';
 
 import { Web3Public } from './Web3Public';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 import { BlockchainsInfo } from '../blockchain-info';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 
 @Injectable({
@@ -22,6 +22,10 @@ export class Web3PublicService {
 
   static tokenWeiToAmount(token: SwapToken, amount: string | BigNumber): BigNumber {
     return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
+  }
+
+  static weiToAmount(amountInWei: string, decimals: number): BigNumber {
+    return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
   }
 
   constructor(publicProvider: PublicProviderService, useTestingModeService: UseTestingModeService) {

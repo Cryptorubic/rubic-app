@@ -4,14 +4,13 @@ import { defer, from, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
-import { filter, first, map, skip, switchMap, tap } from 'rxjs/operators';
+import { filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TRADE_STATUS } from 'src/app/core/services/backend/bridge-api/models/TRADE_STATUS';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { TransactionReceipt } from 'web3-eth';
 import { BRIDGE_PROVIDER_TYPE } from 'src/app/features/bridge/models/ProviderType';
@@ -22,6 +21,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import networks from '../../../../../../shared/constants/blockchain/networks';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
@@ -273,7 +273,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
-    const onTradeTransactionHashFactory = (status: TRADE_STATUS) => {
+    const onTradeTransactionHashFactory = (status: TRANSACTION_STATUS) => {
       return async (hash: string) => {
         if (bridgeTrade.onTransactionHash) {
           bridgeTrade.onTransactionHash(hash);
@@ -289,7 +289,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
       const onTradeTransactionHash = onTradeTransactionHashFactory(
-        TRADE_STATUS.DEPOSIT_IN_PROGRESS
+        TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS
       );
       if (token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
         return this.depositEther(maticPOSClient, userAddress, amountInWei, onTradeTransactionHash);
@@ -304,7 +304,9 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       );
     }
 
-    const onTradeTransactionHash = onTradeTransactionHashFactory(TRADE_STATUS.DEPOSIT_IN_PROGRESS);
+    const onTradeTransactionHash = onTradeTransactionHashFactory(
+      TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS
+    );
     return this.burnERC20(
       maticPOSClient,
       userAddress,

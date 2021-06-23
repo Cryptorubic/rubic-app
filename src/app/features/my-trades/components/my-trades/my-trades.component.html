@@ -84,15 +84,16 @@
                   <div
                     class="status-circle"
                     [ngClass]="{
-                      'status-circle_green': trade.status === 'completed',
+                      'status-circle_green': trade.status === TRANSACTION_STATUS.COMPLETED,
                       'status-circle_yellow':
-                        trade.status === 'waiting for deposit' ||
-                        trade.status === 'waiting for receiving' ||
-                        trade.status === 'deposit in progress' ||
-                        trade.status === 'withdraw in progress' ||
-                        trade.status === 'pending',
+                        trade.status === TRANSACTION_STATUS.WAITING_FOR_DEPOSIT ||
+                        trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING ||
+                        trade.status === TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS ||
+                        trade.status === TRANSACTION_STATUS.WITHDRAW_IN_PROGRESS ||
+                        trade.status === TRANSACTION_STATUS.PENDING,
                       'status-circle_red':
-                        trade.status === 'cancelled' || trade.status === 'rejected'
+                        trade.status === TRANSACTION_STATUS.CANCELLED ||
+                        trade.status === TRANSACTION_STATUS.REJECTED
                     }"
                   >
                     <div class="status-circle__inner"></div>
@@ -101,7 +102,7 @@
                 </div>
 
                 <app-rubic-button
-                  *ngIf="trade.status === 'waiting for receiving'"
+                  *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
                   size="s"
                   [loading]="item.inProgress"
                   (onClick)="receivePolygonBridgeTrade(trade)"
@@ -110,17 +111,24 @@
               </td>
 
               <td *tuiCell="'From'" tuiTd>
-                <div class="blockchain-img-container">
+                <div class="img-container">
                   <img [src]="BLOCKCHAINS[trade.fromToken.blockchain].img" alt="from blockchain" />
                 </div>
                 {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
               </td>
 
               <td *tuiCell="'To'" tuiTd>
-                <div class="blockchain-img-container">
+                <div class="img-container">
                   <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
                 </div>
                 {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
+              </td>
+
+              <td *tuiCell="'Provider'" tuiTd>
+                <div class="img-container">
+                  <img [src]="TRADES_PROVIDERS[trade.provider].image" alt="provider" />
+                </div>
+                {{ TRADES_PROVIDERS[trade.provider].name }}
               </td>
 
               <td *tuiCell="'Sent'" tuiTd class="token">

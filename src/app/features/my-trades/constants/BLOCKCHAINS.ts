@@ -13,6 +13,7 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.POLYGON]: Blockchain;
   [BLOCKCHAIN_NAME.TRON]: Blockchain;
   [BLOCKCHAIN_NAME.XDAI]: Blockchain;
+  [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
 };
 
 const imageBaseSrc = 'assets/images/icons/coins/';
@@ -47,5 +48,11 @@ export const BLOCKCHAINS: Blockchains = {
     label: 'XDAI',
     name: 'XDAI',
     img: `${imageBaseSrc}xdai.svg`
+  },
+  [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
+    key: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
+    label: 'Kovan',
+    name: 'Kovan',
+    img: `${imageBaseSrc}kovan.png`
   }
 };
