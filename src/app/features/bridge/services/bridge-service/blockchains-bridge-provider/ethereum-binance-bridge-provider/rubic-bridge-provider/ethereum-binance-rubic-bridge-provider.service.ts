@@ -14,10 +14,10 @@ import { WrongToken } from 'src/app/shared/models/errors/provider/WrongToken';
 import { TransactionReceipt } from 'web3-eth';
 import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { BRIDGE_PROVIDER_TYPE } from 'src/app/features/bridge/models/ProviderType';
 import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import BinanceContractAbi from './abi/BinanceContractAbi';
@@ -108,8 +108,8 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       .subscribe(rubicToken => this.tokens$.next(List([rubicToken])));
   }
 
-  public getProviderType(): BRIDGE_PROVIDER_TYPE {
-    return BRIDGE_PROVIDER_TYPE.RUBIC;
+  public getProviderType(): BRIDGE_PROVIDER {
+    return BRIDGE_PROVIDER.SWAP_RBC;
   }
 
   public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
@@ -245,7 +245,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       );
     };
 
-    const receipt = await this.web3PrivateService.executeContractMethod(
+    return this.web3PrivateService.executeContractMethod(
       trade.swapContractAddress,
       trade.swapContractAbi,
       'transferToOtherBlockchain',
@@ -254,8 +254,6 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
         onTransactionHash: onTradeTransactionHash
       }
     );
-
-    return receipt;
   }
 
   private async provideAllowance(trade: RubicTrade, web3Public: Web3Public, onApprove) {

@@ -10,8 +10,8 @@ import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridg
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
-import { BRIDGE_PROVIDER_TYPE } from 'src/app/features/bridge/models/ProviderType';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 @Injectable()
@@ -55,8 +55,8 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
     setTimeout(() => this.tokens$.next(List(this.xDaiProviderTokens)));
   }
 
-  public getProviderType(): BRIDGE_PROVIDER_TYPE {
-    return BRIDGE_PROVIDER_TYPE.XDAI;
+  public getProviderType(): BRIDGE_PROVIDER {
+    return BRIDGE_PROVIDER.XDAI;
   }
 
   public getFee(): Observable<number> {

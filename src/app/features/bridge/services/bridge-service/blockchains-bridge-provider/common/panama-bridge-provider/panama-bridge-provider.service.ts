@@ -13,8 +13,8 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { RetrievingTokensError } from 'src/app/shared/models/errors/provider/RetrievingTokensError';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { BRIDGE_PROVIDER_TYPE } from 'src/app/features/bridge/models/ProviderType';
 import { List } from 'immutable';
+import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { PanamaToken } from './models/PanamaToken';
 
 interface PanamaResponse {
@@ -73,8 +73,8 @@ export class PanamaBridgeProviderService {
       .subscribe(tokens => this.tokens$.next(tokens));
   }
 
-  public getProviderType(): BRIDGE_PROVIDER_TYPE {
-    return BRIDGE_PROVIDER_TYPE.PANAMA;
+  public getProviderType(): BRIDGE_PROVIDER {
+    return BRIDGE_PROVIDER.PANAMA;
   }
 
   public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {

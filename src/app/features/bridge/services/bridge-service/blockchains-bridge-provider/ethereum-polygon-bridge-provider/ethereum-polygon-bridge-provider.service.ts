@@ -13,7 +13,6 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { TransactionReceipt } from 'web3-eth';
-import { BRIDGE_PROVIDER_TYPE } from 'src/app/features/bridge/models/ProviderType';
 import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
@@ -22,6 +21,7 @@ import { TokensService } from 'src/app/core/services/backend/tokens-service/toke
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
+import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import networks from '../../../../../../shared/constants/blockchain/networks';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
@@ -187,8 +187,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     }
   }
 
-  public getProviderType(): BRIDGE_PROVIDER_TYPE {
-    return BRIDGE_PROVIDER_TYPE.POLYGON;
+  public getProviderType(): BRIDGE_PROVIDER {
+    return BRIDGE_PROVIDER.POLYGON;
   }
 
   public getFee(): Observable<number> {
