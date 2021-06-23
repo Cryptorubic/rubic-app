@@ -13,7 +13,6 @@ import { UniSwapService } from './services/uni-swap-service/uni-swap.service';
 import { OneInchEthService } from './services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from './services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
 import { PancakeSwapService } from './services/pancake-swap-service/pancake-swap.service';
-import { InstantTradesTableComponent } from './components/instant-trades-table/instant-trades-table.component';
 import { QuickSwapService } from './services/quick-swap-service/quick-swap.service';
 import { TokensSwapInputComponent } from './components/instant-trades-form/components/tokens-swap-input/tokens-swap-input.component';
 import { ChainDropdownComponent } from './components/instant-trades-form/components/chain-dropdown/chain-dropdown.component';
@@ -26,7 +25,6 @@ import { OneInchPolService } from './services/one-inch-service/one-inch-pol-serv
   declarations: [
     InstantTradesComponent,
     InstantTradesFormComponent,
-    InstantTradesTableComponent,
     TokensSwapInputComponent,
     IframeTokensSwapInputComponent,
     ChainDropdownComponent,

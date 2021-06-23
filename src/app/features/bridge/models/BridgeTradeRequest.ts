@@ -1,4 +1,4 @@
 export interface BridgeTradeRequest {
-  toAddress: string;
+  toAddress?: string;
   onTransactionHash?: (hash: string) => void;
 }

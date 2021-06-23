@@ -1,7 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import SwapToken from '../models/tokens/SwapToken';
-import InputToken from '../models/tokens/InputToken';
 
 type RoundMode = 'toClosestValue' | 'fixedValue';
 
@@ -9,12 +7,12 @@ type RoundMode = 'toClosestValue' | 'fixedValue';
   name: 'withRound'
 })
 export class WithRoundPipe implements PipeTransform {
-  public readonly DEFAULT_DECIMAL_LENGTH = 8;
+  public readonly DEFAULT_DECIMAL_LENGTH = 18;
 
   transform(
     value: string,
-    token: SwapToken | InputToken,
     roundMode: RoundMode,
+    decimals = this.DEFAULT_DECIMAL_LENGTH,
     minRound = 5,
     maxRound = 6
   ) {
@@ -40,11 +38,9 @@ export class WithRoundPipe implements PipeTransform {
           }
           decimalSymbols = zerosAmount + maxRound;
         }
-        if (token?.decimals) {
-          decimalSymbols = Math.min(decimalSymbols, token.decimals);
-        }
+        decimalSymbols = Math.min(decimalSymbols, decimals);
       } else {
-        decimalSymbols = token?.decimals ? token.decimals : this.DEFAULT_DECIMAL_LENGTH;
+        decimalSymbols = decimals;
       }
 
       value = value.slice(0, startIndex + decimalSymbols);

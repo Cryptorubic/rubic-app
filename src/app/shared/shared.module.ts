@@ -38,7 +38,8 @@ import {
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
-import { SwapsButtonComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button.component';
+import { SwapsButtonOldComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button-old.component';
+import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-button/swap-button.component';
 import { RubicTogglerThemeComponent } from 'src/app/core/header/components/header/components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
@@ -100,8 +101,8 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
 
 @NgModule({
   declarations: [
-    SwapsButtonComponent,
     SpinnerComponent,
+    SwapsButtonOldComponent,
     ArrowComponent,
     MessageBoxComponent,
     InfoTooltipComponent,
@@ -166,6 +167,8 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicSelectWalletComponent,
     RubicMenuComponent,
     RubicVolumeComponent,
+    RubicBannerComponent,
+    SwapButtonComponent,
     RubicBannerComponent
   ],
   entryComponents: [MessageBoxComponent],
@@ -266,7 +269,9 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicVolumeComponent,
     TokenAmountInputComponent,
     RubicBannerComponent,
-    SwapsButtonComponent
+    SwapsButtonOldComponent,
+    SwapButtonComponent,
+    WithRoundPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

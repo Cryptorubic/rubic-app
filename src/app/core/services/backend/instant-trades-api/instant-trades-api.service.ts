@@ -3,8 +3,8 @@ import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { InstantTradesTradeData } from 'src/app/features/swaps-page-old/models/trade-data';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { HttpService } from '../../http/http.service';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTrade from '../../../../features/swaps-page-old/instant-trades/models/InstantTrade';
 import { BOT_URL } from '../constants/BOT_URL';
 import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
@@ -91,12 +91,12 @@ export class InstantTradesApiService {
 
   /**
    * @description get list of trades from server
+   * @param walletAddress wallet address of user
    * @return list of trades
    */
-  // TODO: use AuthService to get user wallet address instead of Web3Private after Coinbase realease
-  public fetchSwaps(): Observable<InstantTradesTradeData[]> {
+  public fetchSwaps(walletAddress: string): Observable<InstantTradesTradeData[]> {
     return this.httpService
-      .get(instantTradesApiRoutes.getData, { user: this.providerConnectorService.address })
+      .get(instantTradesApiRoutes.getData, { user: walletAddress.toLowerCase() })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
           swaps.map(swap => this.tradeApiToTradeData(swap))

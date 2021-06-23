@@ -18,7 +18,8 @@
       *ngIf="token?.amount.gt(0)"
     >
       <span class="user-balance-container__balance"
-        >You have {{ token?.amount | bigNumberFormat | withRound: token:'toClosestValue' }}</span
+        >You have
+        {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}</span
       >
       <button class="user-balance-container__max-button" (click)="onUserBalanceMaxButtonClick()">
         MAX

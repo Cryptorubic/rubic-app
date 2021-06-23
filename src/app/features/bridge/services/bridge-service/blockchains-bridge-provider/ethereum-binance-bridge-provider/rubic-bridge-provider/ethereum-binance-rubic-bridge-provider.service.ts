@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { List } from 'immutable';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, Observable, of, throwError } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
@@ -17,6 +17,7 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { BRIDGE_PROVIDER_TYPE } from 'src/app/features/bridge/models/ProviderType';
 import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
+import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import BinanceContractAbi from './abi/BinanceContractAbi';
@@ -142,6 +143,55 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
           subscriber.complete();
         });
     });
+  }
+
+  public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
+    const { token } = bridgeTrade;
+    const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
+    const tokenFrom = token.blockchainToken[bridgeTrade.fromBlockchain];
+
+    if (token.symbol !== 'RBC') {
+      return throwError(new WrongToken());
+    }
+
+    return from(
+      web3Public.getAllowance(
+        tokenFrom.address,
+        this.providerConnectorService.address,
+        bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM
+          ? this.EthereumSmartContractAddress
+          : this.BinanceSmartContractAddress
+      )
+    ).pipe(
+      map(allowance => bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).gt(allowance))
+    );
+  }
+
+  public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
+    const { token } = bridgeTrade;
+    const tokenFrom = token.blockchainToken[bridgeTrade.fromBlockchain];
+    const spenderAddress =
+      bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM
+        ? this.EthereumSmartContractAddress
+        : this.BinanceSmartContractAddress;
+
+    if (token.symbol !== 'RBC') {
+      this.errorsService.throw(new WrongToken());
+    }
+
+    return this.needApprove(bridgeTrade).pipe(
+      switchMap(needApprove => {
+        if (!needApprove) {
+          console.error('You should check bridge trade allowance before approve');
+          return throwError(new RubicError());
+        }
+        return from(
+          this.web3PrivateService.approveTokens(tokenFrom.address, spenderAddress, 'infinity', {
+            onTransactionHash: bridgeTrade.onTransactionHash
+          })
+        );
+      })
+    );
   }
 
   private async createRubicTrade(bridgeTrade: BridgeTrade): Promise<TransactionReceipt> {
