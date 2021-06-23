@@ -32,8 +32,11 @@ export class InstantTradesFormService implements OnDestroy {
   }
 
   public updateTrade(hash: string, status: INTSTANT_TRADES_TRADE_STATUS) {
-    return this.instantTradesApiService
-      .patchTrade(hash, status)
-      .subscribe(() => this.onInstantTradesUpdated.next());
+    return this.instantTradesApiService.patchTrade(hash, status).subscribe(
+      () => this.onInstantTradesUpdated.next(),
+      err => {
+        console.debug('IT patch request is failed', err);
+      }
+    );
   }
 }
