@@ -9,12 +9,6 @@ import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicButtonComponent {
-  public _border: boolean;
-
-  @Input() _fullWidth: boolean;
-
-  @Input() _disabled = false;
-
   @Input() appearance: TuiAppearance | string = 'primary';
 
   @Input() size: TuiSizeXS | TuiSizeXL = 'l';
@@ -34,6 +28,12 @@ export class RubicButtonComponent {
   @Input() loading = false;
 
   @Output() onClick = new EventEmitter<void>();
+
+  public _border: boolean;
+
+  public _fullWidth: boolean;
+
+  public _disabled = false;
 
   constructor() {}
 

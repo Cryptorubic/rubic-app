@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
-import { debounceTime, map, skip } from 'rxjs/operators';
+import { debounceTime, filter, map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -37,8 +37,8 @@ export class BridgesSwapProviderService extends SwapProvider {
     }
 
     return combineLatest([
-      this.bridgeService.tokens.pipe(skip(1)),
-      this.tokensService.tokens.pipe(skip(1))
+      this.bridgeService.tokens.pipe(filter(tokens => !!tokens.length)),
+      this.tokensService.tokens.pipe(filter(tokens => !!tokens.size))
     ]).pipe(
       debounceTime(0),
       map(([blockchainsBridgeTokensArray, tokenAmounts]) => {

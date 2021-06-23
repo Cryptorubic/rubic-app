@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
@@ -13,15 +13,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
-import { OrderBookTradeService } from '../../services/order-book-trade.service';
-import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
-import { AccountError } from '../../../../shared/models/errors/provider/AccountError';
-import { RubicError } from '../../../../shared/models/errors/RubicError';
-import { TX_STATUS } from '../../models/TX_STATUS';
-import { BIG_NUMBER_FORMAT } from '../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
+import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
+import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
-import { TokenPart } from '../../../../shared/models/order-book/tokens';
-import { ErrorsOldService } from '../../../../core/services/errors-old/errors-old.service';
+import { TX_STATUS } from '../../models/TX_STATUS';
+import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
+import { OrderBookTradeService } from '../../services/order-book-trade.service';
 
 interface Blockchain {
   name: BLOCKCHAIN_NAME;
@@ -215,16 +215,16 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
     this.fromTokenToToTokenRate = new BigNumber(
       this.withRoundPipe.transform(
         this.tradeData.token.from.amountTotal.div(this.tradeData.token.to.amountTotal).toFixed(),
-        this.tradeData.token.from,
-        'toClosestValue'
+        'toClosestValue',
+        this.tradeData.token.from.decimals
       )
     ).toFormat(BIG_NUMBER_FORMAT);
 
     this.toTokenToFromTokenRate = new BigNumber(
       this.withRoundPipe.transform(
         this.tradeData.token.to.amountTotal.div(this.tradeData.token.from.amountTotal).toFixed(),
-        this.tradeData.token.to,
-        'toClosestValue'
+        'toClosestValue',
+        this.tradeData.token.to.decimals
       )
     ).toFormat(BIG_NUMBER_FORMAT);
   }

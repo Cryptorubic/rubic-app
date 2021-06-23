@@ -1,11 +1,42 @@
 <div class="my-trades">
-  <div class="my-trades__title">My trades</div>
+  <div class="my-trades__header header">
+    <div class="header__title">My trades</div>
+    <app-rubic-button-circle
+      (click)="refreshTable()"
+      size="l"
+      appearance="flat"
+      hint="Reload"
+      hintDirection="top-left"
+    >
+      <img
+        class="header__refresh-circle"
+        [ngClass]="{
+          'header__refresh-circle_refreshing':
+            loadingStatus === 'refreshing' || loadingStatus === 'stopped',
+          'header__refresh-circle_stopped': loadingStatus === 'stopped'
+        }"
+        src="assets/images/icons/reload.svg"
+        width="18"
+        height="18"
+        alt="Reload"
+      />
+    </app-rubic-button-circle>
+  </div>
 
   <tui-loader [overlay]="true" [showLoader]="loading$ | async">
     <div class="my-trades__table-container table-container" *tuiLet="visibleData$ | async as data">
       <div
+        class="table-container__connect-wallet-container"
+        *ngIf="(loading$ | async) === false && !walletAddress"
+      >
+        <app-rubic-button (onClick)="showConnectWalletModal()" [fullWidth]="true">
+          Connect wallet
+        </app-rubic-button>
+      </div>
+
+      <div
         class="table-container__no-trades-text"
-        *ngIf="(loading$ | async) === false && !data.length"
+        *ngIf="(loading$ | async) === false && walletAddress && !data.length"
       >
         You have no trades yet
       </div>
@@ -13,6 +44,7 @@
       <table
         tuiTable
         class="table-container__table table"
+        [ngClass]="{ table_hidden: (loading$ | async) === false && !data.length }"
         [columns]="columns"
         [sorter]="sorter$ | async"
         [direction]="direction$ | async"
@@ -47,22 +79,34 @@
         <tbody tuiTbody [data]="data">
           <ng-container *ngFor="let item of data">
             <tr tuiTr *tuiLet="getTableTrade(item) as trade">
-              <td *tuiCell="'Status'" tuiTd>
-                <div
-                  class="status-circle"
-                  [ngClass]="{
-                    'status-circle_green': trade.status === 'Completed',
-                    'status-circle_yellow':
-                      trade.status === 'Waiting for deposit' ||
-                      trade.status === 'Waiting for receiving' ||
-                      trade.status === 'Deposit in progress' ||
-                      trade.status === 'Withdraw in progress',
-                    'status-circle_red': trade.status === 'Cancelled'
-                  }"
-                >
-                  <div class="status-circle__inner"></div>
+              <td *tuiCell="'Status'" tuiTd class="status">
+                <div class="status__text">
+                  <div
+                    class="status-circle"
+                    [ngClass]="{
+                      'status-circle_green': trade.status === 'completed',
+                      'status-circle_yellow':
+                        trade.status === 'waiting for deposit' ||
+                        trade.status === 'waiting for receiving' ||
+                        trade.status === 'deposit in progress' ||
+                        trade.status === 'withdraw in progress' ||
+                        trade.status === 'pending',
+                      'status-circle_red':
+                        trade.status === 'cancelled' || trade.status === 'rejected'
+                    }"
+                  >
+                    <div class="status-circle__inner"></div>
+                  </div>
+                  <span class="status__text">{{ trade.status }}</span>
                 </div>
-                {{ trade.status }}
+
+                <app-rubic-button
+                  *ngIf="trade.status === 'waiting for receiving'"
+                  size="s"
+                  [loading]="item.inProgress"
+                  (onClick)="receivePolygonBridgeTrade(trade)"
+                  >Receive</app-rubic-button
+                >
               </td>
 
               <td *tuiCell="'From'" tuiTd>
@@ -80,7 +124,9 @@
               </td>
 
               <td *tuiCell="'Sent'" tuiTd class="token">
-                <span>{{ trade.fromToken.amount }}</span>
+                <span>{{
+                  trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
+                }}</span>
                 <div class="token-info">
                   <div class="token-info__img-container">
                     <img [src]="trade.fromToken.image" alt="from token" />
@@ -90,7 +136,9 @@
               </td>
 
               <td *tuiCell="'Expected'" tuiTd class="token">
-                <span>{{ trade.toToken.amount }}</span>
+                <span>{{
+                  trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue'
+                }}</span>
                 <div class="token-info">
                   <div class="token-info__img-container">
                     <img [src]="trade.toToken.image" alt="to token" />
@@ -100,8 +148,8 @@
               </td>
 
               <td *tuiCell="'Date'" tuiTd class="date">
-                <span>{{ trade.date | date: 'shortDate' }}</span>
-                <span>{{ trade.date | date: 'shortTime' }} {{ trade.date | date: 'ZZZZ' }}</span>
+                <span>{{ trade.date | date: 'dd.MM.yyyy' }}</span>
+                <span>{{ trade.date | date: 'HH:mm' }}</span>
               </td>
             </tr>
           </ng-container>

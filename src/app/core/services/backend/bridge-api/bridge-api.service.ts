@@ -28,20 +28,14 @@ export class BridgeApiService {
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
 
-  public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
-    return new Promise<BridgeTableTrade[]>((resolve, reject) => {
-      this.httpService
-        .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
-        .subscribe(
-          (tradesApi: BridgeTableTradeApi[]) => {
-            resolve(tradesApi.map(trade => this.parseBridgeTableTrade(trade)));
-          },
-          error => {
-            console.error(error);
-            reject(error);
-          }
-        );
-    });
+  public getTransactions(walletAddress: string): Observable<BridgeTableTrade[]> {
+    return this.httpService
+      .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
+      .pipe(
+        map((tradesApi: BridgeTableTradeApi[]) =>
+          tradesApi.map(trade => this.parseBridgeTableTrade(trade))
+        )
+      );
   }
 
   private parseBridgeTableTrade(trade: BridgeTableTradeApi): BridgeTableTrade {

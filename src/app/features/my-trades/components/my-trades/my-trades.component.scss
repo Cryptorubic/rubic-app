@@ -3,10 +3,8 @@
 .my-trades {
   display: flex;
   flex-direction: column;
-  grid-gap: 42px;
 
   max-width: 1240px;
-  min-height: 77vh;
   margin: 0 auto;
   padding: 30px 35px 40px;
 
@@ -19,6 +17,17 @@
     inset 4px 4px 20px rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(24px);
 
+  &__table-container {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+.header {
+  display: flex;
+  grid-gap: 5px;
+  align-items: center;
+
   &__title {
     color: #283125;
     font-weight: 200;
@@ -26,12 +35,29 @@
     line-height: 29px;
   }
 
-  &__table-container {
-    width: 100%;
+  &__refresh-circle {
+    &_refreshing {
+      animation: 0.9s linear 0.1s infinite refreshing;
+    }
+
+    &_stopped {
+      animation-iteration-count: 1;
+    }
+  }
+}
+
+@keyframes refreshing {
+  100% {
+    transform: rotate(-360deg);
   }
 }
 
 .table-container {
+  &__connect-wallet-container {
+    max-width: 245px;
+    margin: 0 auto;
+  }
+
   &__no-trades-text {
     font-weight: 200;
     font-size: 18px;
@@ -44,12 +70,18 @@
 }
 
 .table {
+  margin-top: 42px;
+
   font-weight: 300;
 
   border-radius: 14px;
   box-shadow: -30px -30px 80px #fff0,
     30px 30px 80px rgba(84, 129, 90, 0.15),
     inset 4px 4px 50px rgba(255, 255, 255, 0.6);
+
+  &_hidden {
+    display: none;
+  }
 
   thead {
     border-top-left-radius: 14px;
@@ -149,6 +181,25 @@
       }
     }
 
+    &.status,
+    &.token,
+    &.date {
+      ::ng-deep {
+        .wrapper {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    }
+
+    .status {
+      &__text {
+        display: flex;
+        grid-gap: 12px;
+        align-items: center;
+      }
+    }
+
     .status-circle {
       display: flex;
 
@@ -191,6 +242,10 @@
       }
     }
 
+    .status__text {
+      text-transform: capitalize;
+    }
+
     .blockchain-img-container {
       display: flex;
 
@@ -202,16 +257,6 @@
         max-width: 100%;
         max-height: 100%;
         margin: auto;
-      }
-    }
-
-    &.token,
-    &.date {
-      ::ng-deep {
-        .wrapper {
-          flex-direction: column;
-          align-items: flex-start;
-        }
       }
     }
 

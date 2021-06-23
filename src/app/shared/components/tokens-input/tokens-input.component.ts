@@ -78,8 +78,8 @@ export class TokensInputComponent implements OnChanges, OnInit {
   @Input() set selectedAmount(value) {
     this._selectedAmount = this.withRoundPipe.transform(
       value,
-      this.selectedToken,
       'toClosestValue',
+      this.selectedToken.decimals,
       this.minRound,
       this.maxRound
     );

@@ -7,13 +7,15 @@ import {
   ChangeDetectorRef,
   OnInit,
   Output,
-  EventEmitter
+  EventEmitter,
+  OnDestroy
 } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-swaps-button-old',
@@ -21,7 +23,7 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
   styleUrls: ['./swaps-button-old.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SwapsButtonOldComponent implements OnInit {
+export class SwapsButtonOldComponent implements OnInit, OnDestroy {
   @Input() loading = false;
 
   @Input() disabled: boolean;
@@ -29,6 +31,8 @@ export class SwapsButtonOldComponent implements OnInit {
   @Output() clickEvent: EventEmitter<void>;
 
   public isAuthorized: boolean;
+
+  private authSubscription$: Subscription;
 
   constructor(
     private readonly authService: AuthService,
@@ -41,11 +45,15 @@ export class SwapsButtonOldComponent implements OnInit {
     this.clickEvent = new EventEmitter<void>();
   }
 
-  public ngOnInit(): void {
-    this.authService.getCurrentUser().subscribe(user => {
+  ngOnInit(): void {
+    this.authSubscription$ = this.authService.getCurrentUser().subscribe(user => {
       this.isAuthorized = Boolean(user !== undefined && user !== null && user.address);
       this.cdr.detectChanges();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription$.unsubscribe();
   }
 
   public async handleClick(): Promise<void> {
