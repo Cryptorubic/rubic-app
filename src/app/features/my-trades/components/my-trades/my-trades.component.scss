@@ -70,7 +70,7 @@
 }
 
 .table {
-  margin-top: 42px;
+  margin-top: 26px;
 
   font-weight: 300;
 
@@ -140,6 +140,11 @@
     }
 
     .title {
+      display: flex;
+      flex-wrap: nowrap;
+      grid-gap: 5px;
+      align-items: center;
+
       margin-right: 10px;
     }
 
@@ -182,6 +187,7 @@
     }
 
     &.status,
+    &.blockchains,
     &.token,
     &.date {
       ::ng-deep {
@@ -197,6 +203,8 @@
         display: flex;
         grid-gap: 12px;
         align-items: center;
+
+        text-transform: capitalize;
       }
     }
 
@@ -242,8 +250,28 @@
       }
     }
 
-    .status__text {
-      text-transform: capitalize;
+    &.blockchains {
+      ::ng-deep {
+        .wrapper {
+          grid-gap: 6px;
+          align-items: center;
+        }
+      }
+    }
+
+    .blockchains {
+      &__blockchain {
+        display: flex;
+        flex-wrap: nowrap;
+        grid-gap: 12px;
+        align-items: center;
+
+        white-space: nowrap;
+      }
+
+      img {
+        align-self: center;
+      }
     }
 
     .img-container {

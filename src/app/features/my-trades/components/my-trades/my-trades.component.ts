@@ -28,16 +28,16 @@ import { TableProvider, TableTrade } from 'src/app/shared/models/my-trades/Table
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
+import BigNumber from 'bignumber.js';
 
-type TableRowKey = 'Status' | 'From' | 'To' | 'Provider' | 'Sent' | 'Expected' | 'Date';
+type TableRowKey = 'Status' | 'FromTo' | 'Provider' | 'Sent' | 'Expected' | 'Date';
 
 interface TableRow {
   Status: TRANSACTION_STATUS;
-  From: string;
-  To: string;
+  FromTo: string;
   Provider: TableProvider;
-  Sent: string;
-  Expected: string;
+  Sent: BigNumber;
+  Expected: BigNumber;
   Date: Date;
 
   inProgress: boolean;
@@ -62,21 +62,19 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public readonly columns: TableRowKey[] = [
     'Status',
-    'From',
-    'To',
+    'FromTo',
     'Provider',
     'Sent',
     'Expected',
     'Date'
   ];
 
-  public readonly sorters: Record<TableRowKey, TuiComparator<TableRow>> = {
+  public readonly sorters: Record<TableRowKey, TuiComparator<any>> = {
     Status: () => 0,
-    From: () => 0,
-    To: () => 0,
+    FromTo: () => 0,
     Provider: () => 0,
-    Sent: () => 0,
-    Expected: () => 0,
+    Sent: (a: BigNumber, b: BigNumber) => a.comparedTo(b),
+    Expected: (a: BigNumber, b: BigNumber) => a.comparedTo(b),
     Date: () => 0
   };
 
@@ -188,11 +186,10 @@ export class MyTradesComponent implements OnInit, OnDestroy {
       this.tableTrades.forEach(trade => {
         tableData.push({
           Status: trade.status,
-          From: trade.fromToken.blockchain,
-          To: trade.toToken.blockchain,
+          FromTo: trade.fromToken.blockchain + trade.toToken.blockchain,
           Provider: trade.provider,
-          Sent: trade.fromToken.amount,
-          Expected: trade.toToken.amount,
+          Sent: new BigNumber(trade.fromToken.amount),
+          Expected: new BigNumber(trade.toToken.amount),
           Date: trade.date,
 
           inProgress: false
@@ -267,7 +264,15 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   }
 
   private sortBy(key: TableRowKey, direction: -1 | 1): TuiComparator<TableRow> {
-    return (a, b) => direction * defaultSort(a[key], b[key]);
+    return (a, b) => {
+      let sort;
+      if (key === 'Sent' || key === 'Expected') {
+        sort = this.sorters[key];
+      } else {
+        sort = defaultSort;
+      }
+      return direction * sort(a[key], b[key]);
+    };
   }
 
   public refreshTable(): void {
