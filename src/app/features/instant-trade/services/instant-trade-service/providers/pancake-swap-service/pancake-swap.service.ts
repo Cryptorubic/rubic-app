@@ -32,6 +32,7 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,12 +46,19 @@ export class PancakeSwapService {
 
   private slippagePercent: number;
 
+  private deadlineMinutes: number;
+
+  private rubicOptimisation: boolean;
+
+  private disableMultihops: boolean;
+
   constructor(
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly web3Private: Web3PrivateService,
     private readonly w3Public: Web3PublicService,
     private readonly useTestingModeService: UseTestingModeService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly settingsService: SettingsService
   ) {
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
@@ -60,11 +68,18 @@ export class PancakeSwapService {
     this.web3Public = w3Public[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
     this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     this.shouldCalculateGas = true;
-    this.slippagePercent = 0.15;
-  }
-
-  public setSlippagePercent(slippagePercent: number): void {
-    this.slippagePercent = slippagePercent;
+    const { slippageTolerance, deadline, disableMultihops, rubicOptimisation } =
+      this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    this.slippagePercent = slippageTolerance;
+    this.deadlineMinutes = deadline;
+    this.disableMultihops = disableMultihops;
+    this.rubicOptimisation = rubicOptimisation;
+    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
+      this.slippagePercent = form.slippageTolerance;
+      this.deadlineMinutes = form.deadline;
+      this.disableMultihops = form.disableMultihops;
+      this.rubicOptimisation = form.rubicOptimisation;
+    });
   }
 
   public async calculateTrade(
@@ -232,7 +247,8 @@ export class PancakeSwapService {
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
+    // 20 minutes from the current Unix time.
+    const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 

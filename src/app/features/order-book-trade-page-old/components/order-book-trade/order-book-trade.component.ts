@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
@@ -197,10 +197,10 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async setDynamicData(): Promise<void> {
-    this.tradeData = { ...(await this.orderBookTradeService.setStatus(this.tradeData)) };
-    this.tradeData = { ...(await this.orderBookTradeService.setAllowance(this.tradeData)) };
-    this.tradeData = { ...(await this.orderBookTradeService.setAmountContributed(this.tradeData)) };
-    this.tradeData = { ...(await this.orderBookTradeService.setInvestorsNumber(this.tradeData)) };
+    // this.tradeData = { ...(await this.orderBookTradeService.setStatus(this.tradeData)) };
+    // this.tradeData = { ...(await this.orderBookTradeService.setAllowance(this.tradeData)) };
+    // this.tradeData = { ...(await this.orderBookTradeService.setAmountContributed(this.tradeData)) };
+    // this.tradeData = { ...(await this.orderBookTradeService.setInvestorsNumber(this.tradeData)) };
 
     setTimeout(() => this.setDynamicData(), 10000);
   }

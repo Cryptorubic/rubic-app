@@ -211,16 +211,16 @@ export class Web3Public {
    * @description checks if address is Ether native address
    * @param address address to check
    */
-  public isNativeAddress(address: string): boolean {
+  public isNativeAddress = (address: string): boolean => {
     const defaultAddress = '0x0000000000000000000000000000000000000000';
-    if (this.blockchain.name === BLOCKCHAIN_NAME.POLYGON) {
+    if (this.blockchain?.name === BLOCKCHAIN_NAME.POLYGON) {
       return (
         address.toLowerCase() === '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'.toLowerCase() ||
         address.toLowerCase() === defaultAddress
       );
     }
     return address === defaultAddress;
-  }
+  };
 
   /**
    * @description call smart-contract pure method of smart-contract and returns its output value
@@ -240,7 +240,7 @@ export class Web3Public {
       methodArguments?: unknown[];
       from?: string;
     } = { methodArguments: [] }
-  ): Promise<unknown | unknown[]> {
+  ): Promise<string | string[]> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     return contract.methods[methodName](...options.methodArguments).call({

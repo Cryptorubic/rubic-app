@@ -131,7 +131,9 @@ export class InstantTradeService {
   }
 
   public updateTrade(hash: string, status: INTSTANT_TRADES_TRADE_STATUS) {
-    return this.instantTradesApiService.patchTrade(hash, status).subscribe();
+    return this.instantTradesApiService.patchTrade(hash, status).subscribe({
+      error: err => console.debug('IT patch request is failed', err)
+    });
   }
 
   private setBlockchainsProviders(): void {
