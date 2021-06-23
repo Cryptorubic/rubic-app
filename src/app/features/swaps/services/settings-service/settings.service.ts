@@ -18,16 +18,15 @@ export interface SettingsForm {
   [SWAP_PROVIDER_TYPE.BRIDGE]: {};
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SettingsService {
   private readonly defaultSlippage = 0.1;
 
   public settingsForm: FormGroup<SettingsForm>;
 
-  constructor(
-    private readonly swapsService: SwapsService,
-    private readonly swapFormService: SwapFormService
-  ) {
+  constructor() {
     this.settingsForm = new FormGroup<SettingsForm>({
       [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: new FormGroup({
         slippageTolerance: new FormControl<number>(this.defaultSlippage),
@@ -39,15 +38,5 @@ export class SettingsService {
         toAmount: new FormControl<BigNumber>()
       })
     });
-  }
-
-  public getSettingsComponent(): PolymorpheusComponent<
-    SettingsItComponent | SettingsBridgeComponent,
-    Injector
-  > {
-    const control = this.swapFormService.commonTrade.controls.input.value;
-    return control.fromBlockchain === control.toBlockchain
-      ? new PolymorpheusComponent(SettingsItComponent)
-      : new PolymorpheusComponent(SettingsBridgeComponent);
   }
 }
