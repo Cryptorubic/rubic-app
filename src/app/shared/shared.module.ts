@@ -280,7 +280,8 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     TokenAmountInputComponent,
     RubicBannerComponent,
     SwapsButtonOldComponent,
-    SwapButtonComponent
+    SwapButtonComponent,
+    WithRoundPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
