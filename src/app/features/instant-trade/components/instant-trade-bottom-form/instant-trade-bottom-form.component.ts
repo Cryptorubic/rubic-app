@@ -18,6 +18,12 @@ import BigNumber from 'bignumber.js';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
 import { Subscription } from 'rxjs';
+import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+
+interface CalculationResult {
+  status: 'fulfilled' | 'rejected';
+  value?: InstantTrade | null;
+}
 
 @Component({
   selector: 'app-instant-trade-bottom-form',
@@ -102,11 +108,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       isBestRate: false
     }));
     this.cdr.detectChanges();
-    const tradeData = (await this.instantTradeService.calculateTrades()) as any[];
-    const bestProviderIndex = this.calculateBestRate(tradeData);
+    const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
+    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
-      trade: tradeData[index]?.value,
+      trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
       isBestRate: false,
       tradeState:
         tradeData[index]?.status === 'fulfilled'
@@ -127,7 +133,17 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
       };
       this.cdr.detectChanges();
-      await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, provider.trade);
+      try {
+        await this.instantTradeService.createTrade(
+          provider.tradeProviderInfo.value,
+          provider.trade
+        );
+      } catch (err) {
+        this.providerControllers[providerIndex] = {
+          ...this.providerControllers[providerIndex],
+          tradeState: INSTANT_TRADES_STATUS.ERROR
+        };
+      }
       this.providerControllers[providerIndex] = {
         ...this.providerControllers[providerIndex],
         tradeState: INSTANT_TRADES_STATUS.COMPLETED
@@ -168,7 +184,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.providerControllers = newProviders;
   }
 
-  private calculateBestRate(tradeData: any): number {
+  private calculateBestRate(tradeData: InstantTrade[]): number {
     const newTradeData = tradeData.map(tradeController => ({
       ...tradeController,
       isBestRate: false
@@ -177,8 +193,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     let bestRateProviderIndex;
     let bestRateProviderProfit = new BigNumber(-Infinity);
     newTradeData.forEach((tradeController, index) => {
-      if (tradeController.value) {
-        const { gasFeeInUsd, to } = tradeController.value;
+      if (tradeController) {
+        const { gasFeeInUsd, to } = tradeController;
         const amountInUsd = to.amount?.multipliedBy(to.token.price);
 
         if (amountInUsd && gasFeeInUsd) {
