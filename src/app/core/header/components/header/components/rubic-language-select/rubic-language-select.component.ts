@@ -1,23 +1,23 @@
 import {
-  Component,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  ViewChildren,
+  Component,
   QueryList,
-  TemplateRef
+  TemplateRef,
+  ViewChildren
 } from '@angular/core';
-import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
-import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
 import { languagesList } from 'src/app/core/header/models/languages-list';
+import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
 
 @Component({
-  selector: 'app-header-language-dropdown',
-  templateUrl: './header-language-dropdown.component.html',
-  styleUrls: ['./header-language-dropdown.component.scss'],
+  selector: 'app-rubic-language-select',
+  templateUrl: './rubic-language-select.component.html',
+  styleUrls: ['./rubic-language-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderLanguageDropdownComponent {
+export class RubicLanguageSelectComponent {
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
 
   public readonly languagesList: LanguageListElement[];

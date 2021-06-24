@@ -21,37 +21,13 @@ import { CoingeckoApiService } from 'src/app/core/services/external-api/coingeck
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Injectable } from '@angular/core';
 import CustomError from 'src/app/shared/models/errors/custom-error';
-
-interface OneInchQuoteResponse {
-  fromToken: object;
-  toToken: object;
-  toTokenAmount: string;
-  fromTokenAmount: string;
-  protocols: unknown[];
-  estimatedGas: string;
-}
-
-interface OneInchTokensResponse {
-  tokens: {
-    [key in string]: any;
-  };
-}
-
-interface OneInchApproveResponse {
-  address: string;
-}
-
-interface OneInchSwapResponse {
-  tx: {
-    from: string;
-    to: string;
-    data: string;
-    value: string;
-    gasPrice: string;
-    gas: number;
-  };
-  error?: number;
-}
+import {
+  OneInchApproveResponse,
+  OneInchQuoteResponse,
+  OneInchSwapResponse,
+  OneInchTokensResponse
+} from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch-types';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +35,7 @@ interface OneInchSwapResponse {
 export class OneInchEthService {
   private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
-  private supportedTokensAddresses: string[] = [];
+  private supportedTokensAddresses: string[];
 
   private tokensLoadingProcess: Promise<void>;
 
@@ -67,7 +43,7 @@ export class OneInchEthService {
 
   protected blockchain: BLOCKCHAIN_NAME;
 
-  protected web3Public: any;
+  protected web3Public: Web3Public;
 
   protected slippagePercent = 0.001; // 0.1%
 
@@ -148,23 +124,10 @@ export class OneInchEthService {
       this.errorsService.catch$(new OneinchQuoteError());
     }
 
-    // TODO: верменный фикс, потому что rpc binance сломалось
-
-    let estimatedGas;
-    let gasFeeInUsd;
-    let gasFeeInEth;
-
-    if (this.blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-      estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
-      const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-
-      gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
-      gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
-    } else {
-      estimatedGas = new BigNumber(0);
-      gasFeeInUsd = new BigNumber(0);
-      gasFeeInEth = new BigNumber(0);
-    }
+    const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
+    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+    const gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
+    const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
 
     return {
       from: {
@@ -186,11 +149,7 @@ export class OneInchEthService {
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
     await this.checkSettings(this.blockchain);
-
-    // TODO: верменный фикс, потому что rpc binance сломалось
-    if (this.blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-      await this.checkBalance(trade);
-    }
+    await this.checkBalance(trade);
 
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       trade.from.token,
@@ -268,18 +227,18 @@ export class OneInchEthService {
 
   protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
     if (!this.providerConnectorService.isProviderActive) {
-      this.errorsService.catch$(new WalletError());
+      throw new WalletError();
     }
 
     if (!this.providerConnectorService.address) {
-      this.errorsService.catch$(new AccountError());
+      throw new AccountError();
     }
     if (this.providerConnectorService.networkName !== selectedBlockchain) {
       if (this.providerConnectorService.networkName !== `${selectedBlockchain}_TESTNET`) {
         if (this.providerConnectorService.providerName === WALLET_NAME.METAMASK) {
-          this.errorsService.catch$(new NetworkError(selectedBlockchain));
+          throw new NetworkError(selectedBlockchain);
         } else {
-          this.errorsService.catch$(new NotSupportedNetworkError(selectedBlockchain));
+          throw new NotSupportedNetworkError(selectedBlockchain);
         }
       }
     }
@@ -294,12 +253,10 @@ export class OneInchEthService {
       });
       if (balance.lt(amountIn)) {
         const formattedBalance = this.web3Public.weiToEth(balance);
-        this.errorsService.catch$(
-          new InsufficientFundsError(
-            trade.from.token.symbol,
-            formattedBalance,
-            trade.from.amount.toString()
-          )
+        throw new InsufficientFundsError(
+          trade.from.token.symbol,
+          formattedBalance,
+          trade.from.amount.toString()
         );
       }
     } else {
@@ -311,12 +268,10 @@ export class OneInchEthService {
         const formattedTokensBalance = tokensBalance
           .div(10 ** trade.from.token.decimals)
           .toString();
-        this.errorsService.catch$(
-          new InsufficientFundsError(
-            trade.from.token.symbol,
-            formattedTokensBalance,
-            trade.from.amount.toString()
-          )
+        throw new InsufficientFundsError(
+          trade.from.token.symbol,
+          formattedTokensBalance,
+          trade.from.amount.toString()
         );
       }
     }

@@ -39,7 +39,7 @@ export class Web3PublicService {
           useTestingModeService
         )
       }),
-      {} as any
+      {}
     );
     Object.assign(this, web3Connections);
 

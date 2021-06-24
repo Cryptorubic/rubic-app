@@ -27,35 +27,36 @@ export class OrderBookCommonService {
   }
 
   public async setAmountContributed(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
-
-    const fromTokensContributed: string = await web3Public.callContractMethod(
-      contractAddress,
-      contractAbi,
-      'baseRaised',
-      {
-        methodArguments: [tradeData.memo]
-      }
-    );
-    tradeData.token.from.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.from,
-      fromTokensContributed
-    );
-
-    const toTokensContributed: string = await web3Public.callContractMethod(
-      contractAddress,
-      contractAbi,
-      'quoteRaised',
-      {
-        methodArguments: [tradeData.memo]
-      }
-    );
-    tradeData.token.to.amountContributed = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.to,
-      toTokensContributed
-    );
-
-    return tradeData;
+    // const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    // const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+    //
+    // const fromTokensContributed: string = await web3Public.callContractMethod(
+    //   contractAddress,
+    //   contractAbi,
+    //   'baseRaised',
+    //   {
+    //     methodArguments: [tradeData.memo]
+    //   }
+    // );
+    // tradeData.token.from.amountContributed = Web3PublicService.tokenWeiToAmount(
+    //   tradeData.token.from,
+    //   fromTokensContributed
+    // );
+    //
+    // const toTokensContributed: string = await web3Public.callContractMethod(
+    //   contractAddress,
+    //   contractAbi,
+    //   'quoteRaised',
+    //   {
+    //     methodArguments: [tradeData.memo]
+    //   }
+    // );
+    // tradeData.token.to.amountContributed = Web3PublicService.tokenWeiToAmount(
+    //   tradeData.token.to,
+    //   toTokensContributed
+    // );
+    //
+    // return tradeData;
+    return null;
   }
 }

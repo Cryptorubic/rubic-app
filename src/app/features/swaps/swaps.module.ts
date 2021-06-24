@@ -41,7 +41,7 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     RubicBlockchainsComponent,
     RubicTokensComponent
   ],
-  exports: [SettingsContainerComponent],
+  exports: [],
   imports: [
     CommonModule,
     SwapsRoutingModule,
