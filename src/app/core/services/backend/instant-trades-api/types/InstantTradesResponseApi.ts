@@ -31,21 +31,3 @@ export interface InstantTradesResponseApi {
   status: TRANSACTION_STATUS;
   status_updated_at: string;
 }
-
-interface InstantTradesUniswapAbstractApi {
-  hash: string;
-  provider: INSTANT_TRADES_PROVIDER;
-  network: string;
-}
-
-interface InstantTradesOneInchApi {
-  hash: string;
-  provider: INSTANT_TRADES_PROVIDER;
-  network: string;
-  from_token: string;
-  to_token: string;
-  from_amount: number;
-  to_amount: number;
-}
-
-export type InstantTradesPostApi = InstantTradesUniswapAbstractApi | InstantTradesOneInchApi;

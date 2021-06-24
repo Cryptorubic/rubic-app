@@ -7,7 +7,6 @@ import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { Subscription, timer } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/trade-api';
 import { switchMap } from 'rxjs/operators';
 import { INTSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps-page-old/models/trade-data';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
@@ -19,6 +18,7 @@ import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACK
 import { OneInchBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-bsc-service/one-inch-bsc.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
 
 @Injectable({
   providedIn: 'root'
