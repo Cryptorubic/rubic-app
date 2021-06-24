@@ -1,0 +1,47 @@
+<div class="swaps-form">
+  <header class="swaps-form__header">
+    <h1 class="swaps-form__title">Crypto tap</h1>
+  </header>
+
+  <main class="swaps-form__content">
+    <div class="swaps-form__top-part">
+      <app-rubic-blockchains
+        class="form-panel__blockchains"
+        blockchainType="from"
+        [formService]="cryptoTapFormService"
+        [blockchainsList]="blockchainsListFrom"
+      ></app-rubic-blockchains>
+
+      <app-rubic-tokens
+        class="form-panel__tokens"
+        [loading]="isLoading"
+        tokenType="from"
+        [tokens]="availableTokens['from']"
+        [formService]="cryptoTapFormService"
+      ></app-rubic-tokens>
+    </div>
+
+    <div class="swaps-form__delimiter">
+      <app-rubic-switcher></app-rubic-switcher>
+    </div>
+
+    <div class="swaps-form__top-part">
+      <app-rubic-blockchains
+        class="form-panel__blockchains"
+        blockchainType="to"
+        [formService]="cryptoTapFormService"
+        [blockchainsList]="blockchainsListTo"
+      ></app-rubic-blockchains>
+
+      <app-rubic-tokens
+        class="form-panel__tokens"
+        [loading]="isLoading"
+        tokenType="to"
+        [tokens]="availableTokens['to']"
+        [formService]="cryptoTapFormService"
+      ></app-rubic-tokens>
+    </div>
+  </main>
+</div>
+
+<app-rubic-volume></app-rubic-volume>

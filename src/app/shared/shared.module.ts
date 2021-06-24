@@ -40,6 +40,8 @@ import { AmountInputComponent } from 'src/app/shared/components/token-amount-est
 import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
 import { SwapsButtonOldComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button-old.component';
 import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-button/swap-button.component';
+import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
+import { RubicBlockchainsComponent } from 'src/app/shared/components/rubic-blockchains/rubic-blockchains.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
@@ -175,7 +177,9 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicVolumeComponent,
     RubicFooterComponent,
     RubicBannerComponent,
-    SwapButtonComponent
+    SwapButtonComponent,
+    RubicTokensComponent,
+    RubicBlockchainsComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -281,7 +285,9 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicBannerComponent,
     SwapsButtonOldComponent,
     SwapButtonComponent,
-    WithRoundPipe
+    WithRoundPipe,
+    RubicTokensComponent,
+    RubicBlockchainsComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

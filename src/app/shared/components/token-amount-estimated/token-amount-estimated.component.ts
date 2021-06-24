@@ -7,7 +7,7 @@ import {
   OnInit
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SwapFormService } from '../../../features/swaps/services/swaps-form-service/swap-form.service';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 
 @Component({
   selector: 'app-amount-input',
