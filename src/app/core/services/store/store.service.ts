@@ -7,6 +7,7 @@ import { WALLET_NAME } from '../../header/components/header/components/wallets-m
 
 interface Store {
   provider: WALLET_NAME;
+  settings: unknown;
 }
 
 @Injectable({
@@ -46,7 +47,7 @@ export class StoreService {
     this.$dataSubject.next(newData);
   }
 
-  public setItem(key: keyof Store, value: any): void {
+  public setItem(key: keyof Store, value: unknown): void {
     const newData = {
       ...this.$dataSubject.value,
       [key]: value
@@ -60,7 +61,7 @@ export class StoreService {
     this.$dataSubject.next(newData);
   }
 
-  public getItem(key: keyof Store): any {
+  public getItem(key: keyof Store): unknown {
     return this.$dataSubject?.value[key];
   }
 

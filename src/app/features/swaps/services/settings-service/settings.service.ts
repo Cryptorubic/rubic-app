@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import BigNumber from 'bignumber.js';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
+import { StoreService } from 'src/app/core/services/store/store.service';
 
 export interface ItSettingsForm {
   slippageTolerance: number;
@@ -23,8 +24,17 @@ export class SettingsService {
 
   public settingsForm: FormGroup<SettingsForm>;
 
-  constructor() {
+  constructor(private readonly storeService: StoreService) {
     this.createForm();
+    const localData = this.storeService.getItem('settings') as string;
+    if (localData) {
+      this.settingsForm.setValue(JSON.parse(localData), {
+        emitEvent: false
+      });
+    }
+    this.settingsForm.valueChanges.subscribe(form => {
+      this.storeService.setItem('settings', JSON.stringify(form));
+    });
   }
 
   private createForm(): void {
