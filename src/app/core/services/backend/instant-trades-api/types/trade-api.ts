@@ -18,12 +18,6 @@ interface InstantTradesTokenApi extends InputToken {
   usd_price: number;
 }
 
-export interface InstantTradesRequestApi {
-  hash: string;
-  provider: string;
-  network: string;
-}
-
 export interface InstantTradesResponseApi {
   hash: string;
   contract: InstantTradesContract;

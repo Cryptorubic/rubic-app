@@ -7,7 +7,7 @@ import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTra
 import { HttpService } from '../../http/http.service';
 import InstantTrade from '../../../../features/swaps-page-old/instant-trades/models/InstantTrade';
 import { BOT_URL } from '../constants/BOT_URL';
-import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
+import { InstantTradesPostApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
@@ -62,9 +62,7 @@ export class InstantTradesApiService {
    * @param tradeInfo data body for request
    * @return instant trade object
    */
-  public createTrade(
-    tradeInfo: InstantTradesRequestApi
-  ): Observable<InstantTradesResponseApi | null> {
+  public createTrade(tradeInfo: InstantTradesPostApi): Observable<InstantTradesResponseApi | null> {
     if (this.isIframe) {
       return of(null);
     }

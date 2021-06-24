@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-trades/models/instant-trades-trade-status';
-import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models/providers.enum';
 import BigNumber from 'bignumber.js';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
+import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 export interface InstantTrade<T> {
   from: {
@@ -24,7 +24,7 @@ export interface ProviderControllerData {
   tradeState: INSTANT_TRADES_STATUS;
   tradeProviderInfo: {
     label: string;
-    value: PROVIDERS;
+    value: INSTANT_TRADES_PROVIDER;
   };
   isBestRate: boolean;
   isSelected: boolean;
