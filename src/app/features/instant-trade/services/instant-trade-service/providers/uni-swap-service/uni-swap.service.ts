@@ -411,7 +411,7 @@ export class UniSwapService {
               methodArguments: [fromAmountAbsolute, path]
             })
             .then(response => {
-              const amount = new BigNumber((response as []).pop());
+              const amount = new BigNumber(response[response.length - 1]);
               resolve({
                 outputAbsoluteAmount: amount,
                 path

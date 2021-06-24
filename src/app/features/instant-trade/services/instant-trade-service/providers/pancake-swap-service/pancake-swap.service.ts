@@ -247,7 +247,6 @@ export class PancakeSwapService {
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    // 20 minutes from the current Unix time.
     const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
@@ -412,7 +411,7 @@ export class PancakeSwapService {
               methodArguments: [fromAmountAbsolute, path]
             })
             .then(response => {
-              const amount = new BigNumber((response as []).pop());
+              const amount = new BigNumber(response[response.length - 1]);
               resolve({
                 outputAbsoluteAmount: amount,
                 path

@@ -23,6 +23,7 @@ import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
   value?: InstantTrade | null;
+  reason?: Error;
 }
 
 @Component({
@@ -185,28 +186,30 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private calculateBestRate(tradeData: InstantTrade[]): number {
-    const newTradeData = tradeData.map(tradeController => ({
-      ...tradeController,
-      isBestRate: false
-    }));
-
-    let bestRateProviderIndex;
-    let bestRateProviderProfit = new BigNumber(-Infinity);
-    newTradeData.forEach((tradeController, index) => {
-      if (tradeController) {
-        const { gasFeeInUsd, to } = tradeController;
+    const { index } = tradeData.reduce(
+      (bestRate, trade, index) => {
+        if (!trade) {
+          return bestRate;
+        }
+        const { gasFeeInUsd, to } = trade;
         const amountInUsd = to.amount?.multipliedBy(to.token.price);
 
         if (amountInUsd && gasFeeInUsd) {
           const profit = amountInUsd.minus(gasFeeInUsd);
-          if (profit.gt(bestRateProviderProfit)) {
-            bestRateProviderProfit = profit;
-            bestRateProviderIndex = index;
-          }
+          return profit.gt(bestRate.profit)
+            ? {
+                index,
+                profit
+              }
+            : bestRate;
         }
+      },
+      {
+        index: 0,
+        profit: new BigNumber(-Infinity)
       }
-    });
+    );
 
-    return bestRateProviderIndex || 0;
+    return index;
   }
 }
