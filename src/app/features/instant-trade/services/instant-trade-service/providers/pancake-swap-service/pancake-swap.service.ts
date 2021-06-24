@@ -5,7 +5,6 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
 import {
@@ -22,31 +21,18 @@ import { TransactionReceipt } from 'web3-eth';
 import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
-
-interface UniSwapTrade {
-  amountIn: string;
-  amountOutMin: string;
-  path: string[];
-  to: string;
-  deadline: number;
-}
-
-interface UniswapRoute {
-  path: string[];
-  outputAbsoluteAmount: BigNumber;
-}
-
-interface Gas {
-  estimatedGas;
-  gasFeeInUsd;
-  gasFeeInEth;
-}
-
-enum SWAP_METHOD {
-  TOKENS_TO_TOKENS = 'swapExactTokensForTokens',
-  ETH_TO_TOKENS = 'swapExactETHForTokens',
-  TOKENS_TO_ETH = 'swapExactTokensForETH'
-}
+import {
+  Gas,
+  SWAP_METHOD,
+  UniswapRoute,
+  UniSwapTrade
+} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
+import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -56,9 +42,15 @@ export class PancakeSwapService {
 
   protected shouldCalculateGas: boolean;
 
-  private web3Public: any;
+  private web3Public: Web3Public;
 
   private slippagePercent: number;
+
+  private deadlineMinutes: number;
+
+  private rubicOptimisation: boolean;
+
+  private disableMultihops: boolean;
 
   constructor(
     private readonly coingeckoApiService: CoingeckoApiService,
@@ -66,7 +58,7 @@ export class PancakeSwapService {
     private readonly w3Public: Web3PublicService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsOldService
+    private readonly settingsService: SettingsService
   ) {
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
@@ -76,11 +68,18 @@ export class PancakeSwapService {
     this.web3Public = w3Public[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
     this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     this.shouldCalculateGas = true;
-    this.slippagePercent = 0.15;
-  }
-
-  public setSlippagePercent(slippagePercent: number): void {
-    this.slippagePercent = slippagePercent;
+    const { slippageTolerance, deadline, disableMultihops, rubicOptimisation } =
+      this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    this.slippagePercent = slippageTolerance;
+    this.deadlineMinutes = deadline;
+    this.disableMultihops = disableMultihops;
+    this.rubicOptimisation = rubicOptimisation;
+    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
+      this.slippagePercent = form.slippageTolerance;
+      this.deadlineMinutes = form.deadline;
+      this.disableMultihops = form.disableMultihops;
+      this.rubicOptimisation = form.rubicOptimisation;
+    });
   }
 
   public async calculateTrade(
@@ -88,7 +87,7 @@ export class PancakeSwapService {
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
     gasOptimization: boolean = true
-  ): Promise<any> {
+  ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
     let estimatedGasPredictionMethod = 'calculateTokensToTokensGasLimit';
@@ -231,7 +230,7 @@ export class PancakeSwapService {
   }
 
   public async createTrade(
-    trade: any,
+    trade: InstantTrade,
     options: {
       onConfirm?: (hash: string) => void;
       onApprove?: (hash: string) => void;
@@ -248,7 +247,7 @@ export class PancakeSwapService {
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
+    const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
@@ -509,15 +508,24 @@ export class PancakeSwapService {
 
   protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
     if (!this.providerConnectorService.isProviderActive) {
-      this.errorsService.throw(new WalletError());
+      throw new WalletError();
     }
 
     if (!this.providerConnectorService.address) {
-      this.errorsService.throw(new AccountError());
+      throw new AccountError();
+    }
+    if (this.providerConnectorService.networkName !== selectedBlockchain) {
+      if (this.providerConnectorService.networkName !== `${selectedBlockchain}_TESTNET`) {
+        if (this.providerConnectorService.providerName === WALLET_NAME.METAMASK) {
+          throw new NetworkError(selectedBlockchain);
+        } else {
+          throw new NotSupportedNetworkError(selectedBlockchain);
+        }
+      }
     }
   }
 
-  protected async checkBalance(trade: any): Promise<void> {
+  protected async checkBalance(trade: InstantTrade): Promise<void> {
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
@@ -526,12 +534,10 @@ export class PancakeSwapService {
       });
       if (balance.lt(amountIn)) {
         const formattedBalance = this.web3Public.weiToEth(balance);
-        this.errorsService.throw(
-          new InsufficientFundsError(
-            trade.from.token.symbol,
-            formattedBalance,
-            trade.from.amount.toString()
-          )
+        throw new InsufficientFundsError(
+          trade.from.token.symbol,
+          formattedBalance,
+          trade.from.amount.toString()
         );
       }
     } else {
@@ -543,12 +549,10 @@ export class PancakeSwapService {
         const formattedTokensBalance = tokensBalance
           .div(10 ** trade.from.token.decimals)
           .toString();
-        this.errorsService.throw(
-          new InsufficientFundsError(
-            trade.from.token.symbol,
-            formattedTokensBalance,
-            trade.from.amount.toString()
-          )
+        throw new InsufficientFundsError(
+          trade.from.token.symbol,
+          formattedTokensBalance,
+          trade.from.amount.toString()
         );
       }
     }

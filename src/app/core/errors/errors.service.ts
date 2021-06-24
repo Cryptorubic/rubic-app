@@ -4,7 +4,6 @@ import {
   TuiNotificationContentContext,
   TuiNotificationsService
 } from '@taiga-ui/core';
-import { Observable, EMPTY } from 'rxjs';
 import { PolymorpheusComponent, PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
@@ -45,7 +44,7 @@ export class ErrorsService {
     private translateService: TranslateService
   ) {}
 
-  catch$ = (error: Error): Observable<never> => {
+  public catch$(error: Error): void {
     console.debug(error);
 
     let errorContent: PolymorpheusContent<TuiNotificationContentContext<void, any>> | string =
@@ -97,65 +96,65 @@ export class ErrorsService {
         this.notificationsService
           .show(this.translateService.instant('errors.noMetamaskAccess'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case LowGasError:
         this.notificationsService
           .show(this.translateService.instant('errors.lowGas'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case OneinchQuoteError:
         this.notificationsService
           .show(this.translateService.instant('errors.oneInchQuote'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case RetrievingTokensError:
         this.notificationsService
           .show(this.translateService.instant('errors.retrievingTokensError'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case SignRejectError:
         this.notificationsService
           .show(this.translateService.instant('errors.signReject'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case UserRejectError:
         this.notificationsService
           .show(this.translateService.instant('errors.userReject'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case WalletconnectError:
         this.notificationsService
           .show(this.translateService.instant('errors.noQrCode'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case WalletError:
         this.notificationsService
           .show(this.translateService.instant('errors.noWallet'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case WrongToken:
         this.notificationsService
           .show(this.translateService.instant('errors.wrongToken'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case WalletlinkError:
         this.notificationsService
           .show(this.translateService.instant('errors.noQrCode'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case NoSelectedProviderError:
         this.notificationsService
           .show(this.translateService.instant('errors.noSelectedProvider'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case NotSupportedItNetwork:
         this.notificationsService
           .show(this.translateService.instant('errors.notSupportedItNetwork'), options)
           .subscribe();
-        return EMPTY;
+        throw error;
       case CustomError:
         this.notificationsService.show(error.message, options).subscribe();
-        return EMPTY;
+        throw error;
       default:
         console.error(error);
         setPolyContent(RubicErrorComponent);
@@ -163,6 +162,6 @@ export class ErrorsService {
     }
 
     this.notificationsService.show(errorContent, options).subscribe();
-    return EMPTY;
-  };
+    throw error;
+  }
 }

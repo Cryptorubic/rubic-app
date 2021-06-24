@@ -4,6 +4,7 @@ import { Transaction } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
+import { AbiItem } from 'web3-utils';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -59,7 +60,7 @@ export class Web3Public {
    * @return account tokens balance as integer (multiplied to 10 ** decimals)
    */
   public async getTokenBalance(address: string, tokenAddress: string): Promise<BigNumber> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddress);
 
     const balance = await contract.methods.balanceOf(address).call();
     return new BigNumber(balance);
@@ -76,10 +77,10 @@ export class Web3Public {
    * @return The gas amount estimated
    */
   public async getEstimatedGas(
-    contractAbi: any[],
+    contractAbi: AbiItem[],
     contractAddress: string,
     methodName: string,
-    methodArguments: any[],
+    methodArguments: unknown[],
     fromAddress: string,
     value?: string | BigNumber
   ): Promise<BigNumber> {
@@ -125,7 +126,7 @@ export class Web3Public {
     ownerAddress: string,
     spenderAddress: string
   ): Promise<BigNumber> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddress);
 
     const allowance = await contract.methods
       .allowance(ownerAddress, spenderAddress)
@@ -211,7 +212,14 @@ export class Web3Public {
    * @param address address to check
    */
   public isNativeAddress = (address: string): boolean => {
-    return address === '0x0000000000000000000000000000000000000000';
+    const defaultAddress = '0x0000000000000000000000000000000000000000';
+    if (this.blockchain?.name === BLOCKCHAIN_NAME.POLYGON) {
+      return (
+        address.toLowerCase() === '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'.toLowerCase() ||
+        address.toLowerCase() === defaultAddress
+      );
+    }
+    return address === defaultAddress;
   };
 
   /**
@@ -226,13 +234,13 @@ export class Web3Public {
    */
   public async callContractMethod(
     contractAddress: string,
-    contractAbi: any[],
+    contractAbi: AbiItem[],
     methodName: string,
     options: {
-      methodArguments?: any[];
+      methodArguments?: unknown[];
       from?: string;
     } = { methodArguments: [] }
-  ): Promise<any> {
+  ): Promise<string | string[]> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     return contract.methods[methodName](...options.methodArguments).call({
@@ -264,7 +272,7 @@ export class Web3Public {
 
     const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'];
     const tokenFieldsPromises = tokenMethods.map((method: string) =>
-      this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
+      this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI as AbiItem[], method)
     );
     const token: BlockchainTokenExtended = {
       blockchain: this.blockchain.name,
@@ -281,7 +289,7 @@ export class Web3Public {
   }
 
   public async getTokensBalances(address: string, tokenAddresses: string[]): Promise<BigNumber[]> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddresses[0]);
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddresses[0]);
     const indexOfNativeCoin = tokenAddresses.findIndex(this.isNativeAddress);
     const promises = [];
 
@@ -307,7 +315,7 @@ export class Web3Public {
 
   private async multicall(calls: Call[]): Promise<string[]> {
     const contract = new this.web3.eth.Contract(
-      MULTICALL_ABI as any[],
+      MULTICALL_ABI as AbiItem[],
       this.multicallAddresses[this.blockchain.name]
     );
     const result = await contract.methods.aggregate(calls).call();

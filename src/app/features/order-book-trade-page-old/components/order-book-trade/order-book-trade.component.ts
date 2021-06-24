@@ -197,10 +197,10 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async setDynamicData(): Promise<void> {
-    this.tradeData = { ...(await this.orderBookTradeService.setStatus(this.tradeData)) };
-    this.tradeData = { ...(await this.orderBookTradeService.setAllowance(this.tradeData)) };
-    this.tradeData = { ...(await this.orderBookTradeService.setAmountContributed(this.tradeData)) };
-    this.tradeData = { ...(await this.orderBookTradeService.setInvestorsNumber(this.tradeData)) };
+    // this.tradeData = { ...(await this.orderBookTradeService.setStatus(this.tradeData)) };
+    // this.tradeData = { ...(await this.orderBookTradeService.setAllowance(this.tradeData)) };
+    // this.tradeData = { ...(await this.orderBookTradeService.setAmountContributed(this.tradeData)) };
+    // this.tradeData = { ...(await this.orderBookTradeService.setInvestorsNumber(this.tradeData)) };
 
     setTimeout(() => this.setDynamicData(), 10000);
   }

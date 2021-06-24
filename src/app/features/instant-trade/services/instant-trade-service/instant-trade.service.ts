@@ -18,6 +18,7 @@ import { QuickSwapService } from 'src/app/features/instant-trade/services/instan
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/pancake-swap-service/pancake-swap.service';
 import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { OneInchBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-bsc-service/one-inch-bsc.service';
+import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 
 @Injectable({
   providedIn: 'root'
@@ -30,15 +31,17 @@ export class InstantTradeService {
   private modalShowing: Subscription;
 
   constructor(
+    // Providers start
     private readonly oneInchEthService: OneInchEthService,
-    private readonly swapFormService: SwapFormService,
     private readonly uniswapService: UniSwapService,
-    private readonly errorService: ErrorsService,
-    private readonly instantTradesApiService: InstantTradesApiService,
     private readonly oneInchPolygonService: OneInchPolService,
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
     private readonly oneInchBscService: OneInchBscService,
+    // Providers end
+    private readonly instantTradesApiService: InstantTradesApiService,
+    private readonly errorService: ErrorsService,
+    private readonly swapFormService: SwapFormService,
     @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService,
     private readonly web3Public: Web3PublicService
   ) {
@@ -54,13 +57,13 @@ export class InstantTradeService {
     });
   }
 
-  public async calculateTrades(): Promise<any> {
+  public async calculateTrades(): Promise<PromiseSettledResult<void>[]> {
     const { fromAmount, fromToken, toToken } =
       this.swapFormService.commonTrade.controls.input.value;
     const providersDataPromises = Object.values(
       this.blockchainsProviders[this.currentBlockchain]
-    ).map(async provider =>
-      (provider as any).calculateTrade(new BigNumber(fromAmount), fromToken, toToken)
+    ).map(async (provider: ItProvider) =>
+      provider.calculateTrade(new BigNumber(fromAmount), fromToken, toToken)
     );
     return Promise.allSettled(providersDataPromises);
   }
@@ -89,11 +92,7 @@ export class InstantTradeService {
                 network: TO_BACKEND_BLOCKCHAINS[this.currentBlockchain]
               };
             }
-            try {
-              await this.postTrade(tradeInfo);
-            } catch (err) {
-              console.error(err);
-            }
+            await this.postTrade(tradeInfo);
             this.modalShowing = this.notificationsService
               .show('Transaction in progress', {
                 status: TuiNotification.Info,
@@ -125,16 +124,16 @@ export class InstantTradeService {
 
   public async postTrade(data: InstantTradesPostApi) {
     const web3Public = this.web3Public[this.currentBlockchain];
-    const transaction = await web3Public.getTransactionByHash(data.hash, 0, 60, 1000);
-    const delay = transaction ? 100 : 1000;
-    // TODO: Fix post request. Have to delay request to fix problem with finding transaction on backend.
-    timer(delay)
+    await web3Public.getTransactionByHash(data.hash, 0, 60, 1000);
+    timer(1000)
       .pipe(switchMap(() => this.instantTradesApiService.createTrade(data)))
       .subscribe();
   }
 
   public updateTrade(hash: string, status: INTSTANT_TRADES_TRADE_STATUS) {
-    return this.instantTradesApiService.patchTrade(hash, status).subscribe();
+    return this.instantTradesApiService.patchTrade(hash, status).subscribe({
+      error: err => console.debug('IT patch request is failed', err)
+    });
   }
 
   private setBlockchainsProviders(): void {

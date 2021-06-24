@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
+  ItSettingsForm,
   SettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { FormGroup } from '@ngneat/reactive-forms';
+import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 
 @Component({
@@ -23,16 +24,29 @@ export class SettingsItComponent {
     this.instantTradeForm.get(['slippageTolerance']).setValue(this.defaultSlippage);
   }
 
-  public instantTradeForm: FormGroup<SettingsForm>;
+  public instantTradeForm: FormGroup<ItSettingsForm>;
 
   constructor(private readonly settingsService: SettingsService) {
-    this.instantTradeForm = this.settingsService.settingsForm.getControl(
-      SWAP_PROVIDER_TYPE.INSTANT_TRADE
-    ) as any;
-    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
-      this.instantTradeForm.patchValue({
-        ...form
-      });
+    const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    this.instantTradeForm = new FormGroup<ItSettingsForm>({
+      slippageTolerance: new FormControl<number>(form.value.slippageTolerance),
+      deadline: new FormControl<number>(form.value.deadline),
+      disableMultihops: new FormControl<boolean>(form.value.disableMultihops),
+      rubicOptimisation: new FormControl<boolean>(form.value.rubicOptimisation)
+    });
+    this.instantTradeForm.valueChanges.subscribe(settings => {
+      this.settingsService.settingsForm.controls.INSTANT_TRADE.setValue(settings);
+    });
+    // this.settingsService.settingsForm.getControl(SWAP_PROVIDER_TYPE.INSTANT_TRADE) as any;
+    form.valueChanges.subscribe(settings => {
+      this.instantTradeForm.setValue(
+        {
+          ...settings
+        },
+        {
+          emitEvent: false
+        }
+      );
     });
   }
 }

@@ -20,6 +20,7 @@ module.exports = {
         'class-method-use-this': 'off',
         'no-underscore-dangle': 'off',
         'no-inferrable-types': 'off',
+        '@typescript-eslint/no-explicit-any': 2,
         '@typescript-eslint/no-unused-vars': [
           'error',
           {

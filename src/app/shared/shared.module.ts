@@ -40,7 +40,10 @@ import { AmountInputComponent } from 'src/app/shared/components/token-amount-est
 import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
 import { SwapsButtonOldComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button-old.component';
 import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-button/swap-button.component';
-import { FooterComponent } from './components/footer/footer.component';
+import { RubicTogglerThemeComponent } from 'src/app/core/header/components/header/components/rubic-toggler-theme/rubic-toggler-theme.component';
+import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
+import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
+import { RubicMenuComponent } from 'src/app/core/header/components/header/components/rubic-menu/rubic-menu.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
 import { MessageBoxComponent } from './components/message-box/message-box.component';
@@ -92,21 +95,14 @@ import { ProviderPanelComponent } from './components/provider-panel/provider-pan
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
-import { RubicTogglerThemeComponent } from './components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
-import { RubicHeaderComponent } from './components/rubic-header/rubic-header.component';
-import { RubicLanguageSelectComponent } from './components/rubic-language-select/rubic-language-select.component';
-import { RubicSelectWalletComponent } from './components/rubic-select-wallet/rubic-select-wallet.component';
-import { RubicMenuComponent } from './components/rubic-menu/rubic-menu.component';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { RubicFooterComponent } from './components/rubic-footer/rubic-footer.component';
 import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.component';
 
 @NgModule({
   declarations: [
-    SwapsButtonOldComponent,
-    FooterComponent,
     SpinnerComponent,
+    SwapsButtonOldComponent,
     ArrowComponent,
     MessageBoxComponent,
     InfoTooltipComponent,
@@ -163,19 +159,17 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
-    RubicTogglerThemeComponent,
     IconButtonComponent,
     CrossButtonComponent,
     ShortenAmountPipe,
     RubicTogglerThemeComponent,
-    RubicHeaderComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicMenuComponent,
     RubicVolumeComponent,
-    RubicFooterComponent,
     RubicBannerComponent,
-    SwapButtonComponent
+    SwapButtonComponent,
+    RubicBannerComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -216,7 +210,6 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     TuiLoaderModule
   ],
   exports: [
-    FooterComponent,
     SpinnerComponent,
     ArrowComponent,
     MessageBoxComponent,
@@ -270,13 +263,10 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RoundPipe,
     ShortenAmountPipe,
     RubicTogglerThemeComponent,
-    RubicHeaderComponent,
     RubicMenuComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,
-    RubicFooterComponent,
-    RubicHeaderComponent,
     TokenAmountInputComponent,
     RubicBannerComponent,
     SwapsButtonOldComponent,

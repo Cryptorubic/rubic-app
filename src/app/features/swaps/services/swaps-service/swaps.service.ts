@@ -3,7 +3,6 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { debounceTime } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -38,7 +37,6 @@ export class SwapsService {
     private readonly bridgesSwapProvider: BridgesSwapProviderService,
     private readonly instantTradesSwapProvider: InstantTradesSwapProviderService,
     private readonly swapFormService: SwapFormService,
-    private readonly instantTradeService: InstantTradeService,
     private readonly errorService: ErrorsService
   ) {
     combineLatest([this.bridgesSwapProvider.tokens, this.instantTradesSwapProvider.tokens])
@@ -77,10 +75,6 @@ export class SwapsService {
     });
   }
 
-  public async calculateTrade(): Promise<void> {
-    await this.instantTradeService.calculateTrades();
-  }
-
   public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
     const { fromToken, toToken, fromBlockchain, toBlockchain } =
       this.swapFormService.commonTrade.controls.input.value;
@@ -107,6 +101,4 @@ export class SwapsService {
     const maxAmount = this.getMinMaxAmounts('maxAmount');
     return amount.gte(minAmount) && amount.lte(maxAmount);
   }
-
-  public createTrade(): void {}
 }

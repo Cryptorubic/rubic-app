@@ -10,9 +10,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { TuiDataListModule, TuiHintModule } from '@taiga-ui/core';
-import { HeaderLanguageDropdownComponent } from './components/header/components/header-language-dropdown/header-language-dropdown.component';
-import { HeaderLogotypeComponent } from './components/header/components/header-logotype/header-logotype.component';
-import { HeaderNavigationComponent } from './components/header/components/header-navigation/header-navigation.component';
 import { LoginButtonComponent } from './components/header/components/login-button/login-button.component';
 import { LogoutConfirmModalComponent } from './components/header/components/logout-confirm-modal/logout-confirm-modal.component';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
@@ -23,12 +20,9 @@ import { WalletsModalComponent } from './components/header/components/wallets-mo
 @NgModule({
   declarations: [
     HeaderComponent,
-    HeaderLogotypeComponent,
-    HeaderLanguageDropdownComponent,
     LoginButtonComponent,
     UserProfileComponent,
     LogoutConfirmModalComponent,
-    HeaderNavigationComponent,
     MobileMenuTogglerComponent,
     WalletsModalComponent
   ],
@@ -46,7 +40,7 @@ import { WalletsModalComponent } from './components/header/components/wallets-mo
     TuiDataListModule,
     TuiHintModule
   ],
-  exports: [HeaderComponent, HeaderLanguageDropdownComponent, LoginButtonComponent],
+  exports: [HeaderComponent, LoginButtonComponent],
   entryComponents: [WalletsModalComponent]
 })
 export class HeaderModule {}

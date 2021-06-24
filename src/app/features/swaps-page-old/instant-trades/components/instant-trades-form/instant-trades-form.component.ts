@@ -521,10 +521,14 @@ export class InstantTradesFormComponent implements OnInit, OnDestroy {
   }
 
   private calculateBestRate(): void {
-    this.trades = this.trades.map(tradeController => ({
-      ...tradeController,
-      isBestRate: false
-    }));
+    this.trades = this.trades.map(tradeController =>
+      tradeController
+        ? {
+            ...tradeController,
+            isBestRate: false
+          }
+        : null
+    );
 
     let bestRateProviderIndex;
     let bestRateProviderProfit = new BigNumber(-Infinity);

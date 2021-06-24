@@ -4,9 +4,8 @@ import BigNumber from 'bignumber.js';
 import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapForm } from '../../models/SwapForm';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { IToken } from '../../../../shared/models/tokens/IToken';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,7 @@ export class SwapFormService {
   private readonly instantTradeProviders: BehaviorSubject<ProviderControllerData[]>;
 
   public setItProviders(providers) {
-    this.instantTradeProviders.next(providers as any);
+    this.instantTradeProviders.next(providers);
   }
 
   public get itProviders(): Observable<ProviderControllerData[]> {

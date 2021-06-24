@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HeaderLogotypeComponent } from './header-logotype.component';
+import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
 
-describe('HeaderLogotypeComponent', () => {
-  let component: HeaderLogotypeComponent;
-  let fixture: ComponentFixture<HeaderLogotypeComponent>;
+describe('RubicFooterComponent', () => {
+  let component: RubicFooterComponent;
+  let fixture: ComponentFixture<RubicFooterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HeaderLogotypeComponent]
+      declarations: [RubicFooterComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HeaderLogotypeComponent);
+    fixture = TestBed.createComponent(RubicFooterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

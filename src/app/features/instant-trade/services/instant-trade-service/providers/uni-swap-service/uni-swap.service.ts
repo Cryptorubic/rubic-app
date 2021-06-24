@@ -5,7 +5,6 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
 import {
@@ -22,31 +21,17 @@ import { TransactionReceipt } from 'web3-eth';
 import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
 import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
-
-interface UniSwapTrade {
-  amountIn: string;
-  amountOutMin: string;
-  path: string[];
-  to: string;
-  deadline: number;
-}
-
-interface UniswapRoute {
-  path: string[];
-  outputAbsoluteAmount: BigNumber;
-}
-
-interface Gas {
-  estimatedGas;
-  gasFeeInUsd;
-  gasFeeInEth;
-}
-
-enum SWAP_METHOD {
-  TOKENS_TO_TOKENS = 'swapExactTokensForTokens',
-  ETH_TO_TOKENS = 'swapExactETHForTokens',
-  TOKENS_TO_ETH = 'swapExactTokensForETH'
-}
+import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
+import {
+  Gas,
+  SWAP_METHOD,
+  UniswapRoute,
+  UniSwapTrade
+} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +41,7 @@ export class UniSwapService {
 
   protected shouldCalculateGas: boolean;
 
-  private web3Public: any;
+  private web3Public: Web3Public;
 
   private slippagePercent: number;
 
@@ -66,13 +51,14 @@ export class UniSwapService {
 
   private routingProviders: string[];
 
+  private isTestingMode: boolean;
+
   constructor(
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly web3Private: Web3PrivateService,
     private readonly w3Public: Web3PublicService,
     private readonly useTestingModeService: UseTestingModeService,
-    private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsOldService
+    private readonly providerConnectorService: ProviderConnectorService
   ) {
     this.web3Public = w3Public[BLOCKCHAIN_NAME.ETHEREUM];
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
@@ -83,6 +69,7 @@ export class UniSwapService {
     this.routingProviders = routingProviders.addresses;
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
+        this.isTestingMode = true;
         this.web3Public = w3Public[BLOCKCHAIN_NAME.ETHEREUM_TESTNET];
         this.WETHAddress = WETH.testnetAddress;
         this.uniswapContractAddress = uniSwapContracts.testnetAddress;
@@ -100,7 +87,7 @@ export class UniSwapService {
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
     gasOptimization: boolean = true
-  ): Promise<any> {
+  ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
     let estimatedGasPredictionMethod = 'calculateTokensToTokensGasLimit';
@@ -243,7 +230,7 @@ export class UniSwapService {
   }
 
   public async createTrade(
-    trade: any,
+    trade: InstantTrade,
     options: {
       onConfirm?: (hash: string) => void;
       onApprove?: (hash: string) => void;
@@ -521,15 +508,23 @@ export class UniSwapService {
 
   protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
     if (!this.providerConnectorService.isProviderActive) {
-      this.errorsService.throw(new WalletError());
+      throw new WalletError();
     }
-
     if (!this.providerConnectorService.address) {
-      this.errorsService.throw(new AccountError());
+      throw new AccountError();
+    }
+    if (this.providerConnectorService.networkName !== selectedBlockchain) {
+      if (this.providerConnectorService.networkName !== `${selectedBlockchain}_TESTNET`) {
+        if (this.providerConnectorService.providerName === WALLET_NAME.METAMASK) {
+          throw new NetworkError(selectedBlockchain);
+        } else {
+          throw new NotSupportedNetworkError(selectedBlockchain);
+        }
+      }
     }
   }
 
-  protected async checkBalance(trade: any): Promise<void> {
+  protected async checkBalance(trade: InstantTrade): Promise<void> {
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
@@ -538,12 +533,10 @@ export class UniSwapService {
       });
       if (balance.lt(amountIn)) {
         const formattedBalance = this.web3Public.weiToEth(balance);
-        this.errorsService.throw(
-          new InsufficientFundsError(
-            trade.from.token.symbol,
-            formattedBalance,
-            trade.from.amount.toString()
-          )
+        throw new InsufficientFundsError(
+          trade.from.token.symbol,
+          formattedBalance,
+          trade.from.amount.toString()
         );
       }
     } else {
@@ -555,12 +548,10 @@ export class UniSwapService {
         const formattedTokensBalance = tokensBalance
           .div(10 ** trade.from.token.decimals)
           .toString();
-        this.errorsService.throw(
-          new InsufficientFundsError(
-            trade.from.token.symbol,
-            formattedTokensBalance,
-            trade.from.amount.toString()
-          )
+        throw new InsufficientFundsError(
+          trade.from.token.symbol,
+          formattedTokensBalance,
+          trade.from.amount.toString()
         );
       }
     }
