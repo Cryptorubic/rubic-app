@@ -32,7 +32,10 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
-import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
+import {
+  ItSettingsForm,
+  SettingsService
+} from 'src/app/features/swaps/services/settings-service/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -44,13 +47,7 @@ export class PancakeSwapService {
 
   private web3Public: Web3Public;
 
-  private slippagePercent: number;
-
-  private deadlineMinutes: number;
-
-  private rubicOptimisation: boolean;
-
-  private disableMultihops: boolean;
+  private settings: ItSettingsForm;
 
   constructor(
     private readonly coingeckoApiService: CoingeckoApiService,
@@ -68,25 +65,16 @@ export class PancakeSwapService {
     this.web3Public = w3Public[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
     this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     this.shouldCalculateGas = true;
-    const { slippageTolerance, deadline, disableMultihops, rubicOptimisation } =
-      this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
-    this.slippagePercent = slippageTolerance;
-    this.deadlineMinutes = deadline;
-    this.disableMultihops = disableMultihops;
-    this.rubicOptimisation = rubicOptimisation;
+    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
     this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
-      this.slippagePercent = form.slippageTolerance;
-      this.deadlineMinutes = form.deadline;
-      this.disableMultihops = form.disableMultihops;
-      this.rubicOptimisation = form.rubicOptimisation;
+      this.settings = form;
     });
   }
 
   public async calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    gasOptimization: boolean = true
+    toToken: InstantTradeToken
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -105,7 +93,7 @@ export class PancakeSwapService {
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const { route, gasData } = await this.getToAmountAndPath(
-      gasOptimization,
+      this.settings.rubicOptimisation,
       amountIn,
       fromTokenClone,
       toTokenClone,
@@ -126,7 +114,7 @@ export class PancakeSwapService {
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
         path: route.path,
-        gasOptimization
+        gasOptimisation: this.settings.rubicOptimisation
       }
     };
   }
@@ -242,7 +230,7 @@ export class PancakeSwapService {
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     const amountOutMin = trade.to.amount
-      .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
+      .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
       .multipliedBy(10 ** trade.to.token.decimals)
       .toFixed(0);
     const { path } = trade.options;
@@ -352,12 +340,12 @@ export class PancakeSwapService {
 
     if (this.shouldCalculateGas) {
       const to = this.providerConnectorService.address;
-      const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+      const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
       const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
       const gasPrice = await this.web3Public.getGasPriceInETH();
 
       const amountOutMin = route.outputAbsoluteAmount
-        .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
+        .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
         .toFixed(0);
 
       const estimatedGas = await this[gasCalculationMethodName].call(
@@ -460,7 +448,7 @@ export class PancakeSwapService {
     ) => Promise<BigNumber>
   ): Promise<{ route: UniswapRoute; gasData: Gas }> {
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
     const gasPrice = await this.web3Public.getGasPriceInETH();
@@ -471,7 +459,7 @@ export class PancakeSwapService {
       profit: BigNumber;
     }>[] = routes.map(async route => {
       const amountOutMin = route.outputAbsoluteAmount
-        .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
+        .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
         .toFixed(0);
 
       const estimatedGas = await gasCalculationMethod(

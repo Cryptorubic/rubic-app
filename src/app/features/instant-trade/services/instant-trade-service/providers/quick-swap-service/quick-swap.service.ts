@@ -32,6 +32,10 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import {
+  ItSettingsForm,
+  SettingsService
+} from 'src/app/features/swaps/services/settings-service/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -43,14 +47,15 @@ export class QuickSwapService {
 
   private web3Public: Web3Public;
 
-  private slippagePercent: number;
+  private settings: ItSettingsForm;
 
   constructor(
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly web3Private: Web3PrivateService,
     private readonly w3Public: Web3PublicService,
     private readonly useTestingModeService: UseTestingModeService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly settingsService: SettingsService
   ) {
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
@@ -60,11 +65,10 @@ export class QuickSwapService {
     this.web3Public = w3Public[BLOCKCHAIN_NAME.POLYGON];
     this.blockchain = BLOCKCHAIN_NAME.POLYGON_TESTNET;
     this.shouldCalculateGas = true;
-    this.slippagePercent = 0.15;
-  }
-
-  public setSlippagePercent(slippagePercent: number): void {
-    this.slippagePercent = slippagePercent;
+    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
+      this.settings = form;
+    });
   }
 
   public async calculateTrade(
@@ -227,12 +231,12 @@ export class QuickSwapService {
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     const amountOutMin = trade.to.amount
-      .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
+      .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
       .multipliedBy(10 ** trade.to.token.decimals)
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
+    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
@@ -337,12 +341,13 @@ export class QuickSwapService {
 
     if (this.shouldCalculateGas) {
       const to = this.providerConnectorService.address;
-      const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+      const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
+
       const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
       const gasPrice = await this.web3Public.getGasPriceInETH();
 
       const amountOutMin = route.outputAbsoluteAmount
-        .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
+        .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
         .toFixed(0);
 
       const estimatedGas = await this[gasCalculationMethodName].call(
@@ -445,7 +450,7 @@ export class QuickSwapService {
     ) => Promise<BigNumber>
   ): Promise<{ route: UniswapRoute; gasData: Gas }> {
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
     const gasPrice = await this.web3Public.getGasPriceInETH();
@@ -456,7 +461,7 @@ export class QuickSwapService {
       profit: BigNumber;
     }>[] = routes.map(async route => {
       const amountOutMin = route.outputAbsoluteAmount
-        .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
+        .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
         .toFixed(0);
 
       const estimatedGas = await gasCalculationMethod(
@@ -510,7 +515,7 @@ export class QuickSwapService {
     }
   }
 
-  protected async checkBalance(trade: any): Promise<void> {
+  protected async checkBalance(trade: InstantTrade): Promise<void> {
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {

@@ -32,6 +32,10 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import {
+  ItSettingsForm,
+  SettingsService
+} from 'src/app/features/swaps/services/settings-service/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +47,6 @@ export class UniSwapService {
 
   private web3Public: Web3Public;
 
-  private slippagePercent: number;
-
   private WETHAddress: string;
 
   private uniswapContractAddress: string;
@@ -53,17 +55,19 @@ export class UniSwapService {
 
   private isTestingMode: boolean;
 
+  private settings: ItSettingsForm;
+
   constructor(
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly web3Private: Web3PrivateService,
     private readonly w3Public: Web3PublicService,
     private readonly useTestingModeService: UseTestingModeService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly settingsService: SettingsService
   ) {
     this.web3Public = w3Public[BLOCKCHAIN_NAME.ETHEREUM];
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.shouldCalculateGas = true;
-    this.slippagePercent = 0.15;
     this.WETHAddress = WETH.address;
     this.uniswapContractAddress = uniSwapContracts.address;
     this.routingProviders = routingProviders.addresses;
@@ -76,10 +80,10 @@ export class UniSwapService {
         this.routingProviders = routingProviders.testnetAddresses;
       }
     });
-  }
-
-  public setSlippagePercent(slippagePercent: number): void {
-    this.slippagePercent = slippagePercent;
+    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
+      this.settings = form;
+    });
   }
 
   public async calculateTrade(
@@ -242,7 +246,7 @@ export class UniSwapService {
     const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
     const amountOutMin = trade.to.amount
-      .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
+      .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
       .multipliedBy(10 ** trade.to.token.decimals)
       .toFixed(0);
     const { path } = trade.options;
@@ -357,7 +361,7 @@ export class UniSwapService {
       const gasPrice = await this.web3Public.getGasPriceInETH();
 
       const amountOutMin = route.outputAbsoluteAmount
-        .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
+        .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
         .toFixed(0);
 
       const estimatedGas = await this[gasCalculationMethodName].call(
@@ -471,7 +475,7 @@ export class UniSwapService {
       profit: BigNumber;
     }>[] = routes.map(async route => {
       const amountOutMin = route.outputAbsoluteAmount
-        .multipliedBy(new BigNumber(1).minus(this.slippagePercent))
+        .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
         .toFixed(0);
 
       const estimatedGas = await gasCalculationMethod(

@@ -28,6 +28,10 @@ import {
   OneInchTokensResponse
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch-types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import {
+  ItSettingsForm,
+  SettingsService
+} from 'src/app/features/swaps/services/settings-service/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +49,7 @@ export class OneInchBscService {
 
   protected web3Public: Web3Public;
 
-  protected slippagePercent = 0.001; // 0.1%
+  private settings: ItSettingsForm;
 
   constructor(
     private readonly httpClient: HttpClient,
@@ -54,23 +58,28 @@ export class OneInchBscService {
     private readonly web3Private: Web3PrivateService,
     private readonly web3PublicService: Web3PublicService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly settingsService: SettingsService
   ) {
     this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     const network = BlockchainsInfo.getBlockchainByName(this.blockchain);
     this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
     this.web3Public = this.web3PublicService[this.blockchain];
-    setTimeout(() => this.loadSupportedTokens());
+    useTestingModeService.isTestingMode.subscribe(value => {
+      if (value) {
+        this.web3Public = this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET];
+      }
+    });
+    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
+      this.settings = form;
+    });
+    this.loadSupportedTokens();
   }
 
-  private loadSupportedTokens() {
-    this.tokensLoadingProcess = new Promise<void>(resolve => {
-      this.httpClient
-        .get(`${this.apiBaseUrl}tokens`)
-        .subscribe((response: OneInchTokensResponse) => {
-          resolve();
-          this.supportedTokensAddresses = Object.keys(response.tokens);
-        });
+  private loadSupportedTokens(): void {
+    this.httpClient.get(`${this.apiBaseUrl}tokens`).subscribe((response: OneInchTokensResponse) => {
+      this.supportedTokensAddresses = Object.keys(response.tokens);
     });
   }
 
@@ -79,10 +88,6 @@ export class OneInchBscService {
       .get(`${this.apiBaseUrl}approve/spender`)
       .pipe(map((response: OneInchApproveResponse) => response.address))
       .toPromise();
-  }
-
-  public setSlippagePercent(slippagePercent: number): void {
-    this.slippagePercent = slippagePercent;
   }
 
   public async calculateTrade(
@@ -174,7 +179,7 @@ export class OneInchBscService {
           fromTokenAddress,
           toTokenAddress,
           amount: fromAmount,
-          slippage: (this.slippagePercent * 100).toString(),
+          slippage: this.settings.slippageTolerance.toString(),
           fromAddress: this.providerConnectorService.address
         }
       })
@@ -269,12 +274,10 @@ export class OneInchBscService {
         const formattedTokensBalance = tokensBalance
           .div(10 ** trade.from.token.decimals)
           .toString();
-        this.errorsService.catch$(
-          new InsufficientFundsError(
-            trade.from.token.symbol,
-            formattedTokensBalance,
-            trade.from.amount.toString()
-          )
+        throw new InsufficientFundsError(
+          trade.from.token.symbol,
+          formattedTokensBalance,
+          trade.from.amount.toString()
         );
       }
     }
