@@ -92,8 +92,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly notificationsService: TuiNotificationsService,
-    @Inject(Injector) private injector: Injector,
-    private translate: TranslateService
+    @Inject(Injector) private readonly injector: Injector,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit() {

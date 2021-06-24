@@ -17,8 +17,11 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { take } from 'rxjs/operators';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -36,7 +39,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public get allowTrade(): boolean {
     const form = this.swapFormService.commonTrade.controls.input.value;
     return Boolean(
-      form.fromBlockchain && form.fromToken && form.toBlockchain && form.toToken && form.fromAmount
+      form.fromBlockchain &&
+        form.fromToken &&
+        form.toBlockchain &&
+        form.toToken &&
+        form.fromAmount &&
+        form.fromAmount.gt(0)
     );
   }
 
@@ -54,12 +62,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private currentBlockchain: BLOCKCHAIN_NAME;
 
+  public tradeStatus;
+
+  public needApprove: boolean;
+
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly errorService: ErrorsService
-  ) {}
+    private readonly errorService: ErrorsService,
+    private readonly authService: AuthService
+  ) {
+    this.tradeStatus = TRADE_STATUS.DISABLED;
+  }
 
   ngOnInit(): void {
     const formValue = this.swapFormService.commonTrade.value;
@@ -103,12 +118,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async calculateTrades(): Promise<void> {
+    this.tradeStatus = TRADE_STATUS.LOADING;
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
       tradeState: INSTANT_TRADES_STATUS.CALCULATION,
       isBestRate: false
     }));
     this.cdr.detectChanges();
+    const needApprove$ = this.authService.user?.address
+      ? this.instantTradeService.needApprove()
+      : of(false);
+    needApprove$
+      .pipe(take(1))
+      .subscribe((needApprove: boolean) => (this.needApprove = needApprove));
     const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
     const newProviders = this.providerControllers.map((controller, index) => ({
@@ -121,6 +143,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           : INSTANT_TRADES_STATUS.ERROR
     }));
     newProviders[bestProviderIndex].isBestRate = true;
+    this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
     this.providerControllers = newProviders;
     this.cdr.detectChanges();
   }
@@ -129,6 +152,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
     const provider = this.providerControllers[providerIndex];
     if (providerIndex !== -1) {
+      this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
       this.providerControllers[providerIndex] = {
         ...this.providerControllers[providerIndex],
         tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
@@ -139,11 +163,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           provider.tradeProviderInfo.value,
           provider.trade
         );
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       } catch (err) {
         this.providerControllers[providerIndex] = {
           ...this.providerControllers[providerIndex],
           tradeState: INSTANT_TRADES_STATUS.ERROR
         };
+        this.tradeStatus = TRADE_STATUS.DISABLED;
       }
       this.providerControllers[providerIndex] = {
         ...this.providerControllers[providerIndex],
@@ -186,8 +212,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private calculateBestRate(tradeData: InstantTrade[]): number {
-    const { index } = tradeData.reduce(
-      (bestRate, trade, index) => {
+    const { index: providerIndex } = tradeData.reduce(
+      (bestRate, trade, i: number) => {
         if (!trade) {
           return bestRate;
         }
@@ -198,11 +224,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           const profit = amountInUsd.minus(gasFeeInUsd);
           return profit.gt(bestRate.profit)
             ? {
-                index,
+                index: i,
                 profit
               }
             : bestRate;
         }
+        return bestRate;
       },
       {
         index: 0,
@@ -210,6 +237,48 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       }
     );
 
-    return index;
+    return providerIndex;
+  }
+
+  public approveTrade(): void {
+    // let approveInProgressSubscription$: Subscription;
+    //
+    // const bridgeTradeRequest: BridgeTradeRequest = {
+    //   onTransactionHash: () => {
+    //     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+    //     this.cdr.detectChanges();
+    //     approveInProgressSubscription$ = this.notificationsService
+    //       .show(this.translate.instant('bridgePage.approveProgressMessage'), {
+    //         label: 'Approve in progress',
+    //         status: TuiNotification.Info,
+    //         autoClose: false
+    //       })
+    //       .subscribe();
+    //   }
+    // };
+    //
+    // this.bridgeService
+    //   .approve(bridgeTradeRequest)
+    //   .pipe(first())
+    //   .subscribe(
+    //     (_res: TransactionReceipt) => {
+    //       approveInProgressSubscription$.unsubscribe();
+    //
+    //       this.notificationsService
+    //         .show(this.translate.instant('bridgePage.approveSuccessMessage'), {
+    //           label: 'Successful approve',
+    //           status: TuiNotification.Success,
+    //           autoClose: 15000
+    //         })
+    //         .subscribe();
+    //       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+    //       this.cdr.detectChanges();
+    //     },
+    //     err => {
+    //       approveInProgressSubscription$?.unsubscribe();
+    //       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+    //       this.errorsService.catch$(err);
+    //     }
+    //   );
   }
 }
