@@ -48,7 +48,7 @@ export class AmountEstimatedComponent implements OnInit, OnDestroy {
         this.hidden = false;
         const { toToken } = this.formService.commonTrade.controls.input.value;
         this.tokensAmount = output.toAmount.toFixed();
-        this.usd = toToken.price && output.toAmount.multipliedBy(toToken.price).toFixed(2);
+        this.usd = toToken?.price && output.toAmount.multipliedBy(toToken.price).toFixed(2);
         this.cdr.detectChanges();
       }
     );

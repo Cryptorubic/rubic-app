@@ -3,7 +3,8 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  OnDestroy
+  OnDestroy,
+  Input
 } from '@angular/core';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { Subscription } from 'rxjs';
@@ -17,28 +18,38 @@ import BigNumber from 'bignumber.js';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CryptoTapTopFormComponent implements OnInit, OnDestroy {
+  @Input() loading: boolean;
+
   public token: TokenAmount;
 
   public amount: BigNumber;
 
-  public $formSubscription: Subscription;
+  public $fromAmountSubscription: Subscription;
+
+  public $fromTokenSubscription: Subscription;
 
   constructor(private cdr: ChangeDetectorRef, private cryptoTapFormService: CryptoTapFormService) {}
 
   ngOnInit(): void {
     this.token = this.cryptoTapFormService.commonTrade.controls.input.value.fromToken;
-    this.amount = this.cryptoTapFormService.commonTrade.controls.input.value.fromAmount;
+    this.amount = this.cryptoTapFormService.commonTrade.controls.output.value.fromAmount;
 
-    this.$formSubscription =
-      this.cryptoTapFormService.commonTrade.controls.input.valueChanges.subscribe(value => {
+    this.$fromAmountSubscription =
+      this.cryptoTapFormService.commonTrade.controls.output.valueChanges.subscribe(value => {
         this.amount = value.fromAmount;
-        this.token = value.input.fromToken;
+        this.cdr.detectChanges();
+      });
+
+    this.$fromTokenSubscription =
+      this.cryptoTapFormService.commonTrade.controls.input.valueChanges.subscribe(value => {
+        this.token = value.fromToken;
         this.cdr.detectChanges();
       });
   }
 
   ngOnDestroy() {
-    this.$formSubscription.unsubscribe();
+    this.$fromTokenSubscription.unsubscribe();
+    this.$fromAmountSubscription.unsubscribe();
   }
 
   public getUsdPrice(): BigNumber {

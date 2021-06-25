@@ -1,6 +1,6 @@
 <div class="crypto-tap-output">
   <div class="crypto-tap-output__wrapper">
-    <div class="crypto-tap-output__amount">
+    <div class="crypto-tap-output__amount" [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton_text': loading }">
       {{amount | bigNumberFormat | withRound: 'toClosestValue':token?.decimals || 18}}
     </div>
 

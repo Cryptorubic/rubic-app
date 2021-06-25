@@ -14,14 +14,14 @@
 
       <app-rubic-tokens
         class="form-panel__tokens"
-        [loading]="isLoading"
+        [loading]="tokensLoading"
         tokenType="from"
         [tokens]="availableTokens['from']"
         [formService]="cryptoTapFormService"
       ></app-rubic-tokens>
     </div>
 
-    <app-crypto-tap-top-form></app-crypto-tap-top-form>
+    <app-crypto-tap-top-form [loading]="tradeStatus === TRADE_STATUS.LOADING"></app-crypto-tap-top-form>
 
     <div class="swaps-form__delimiter">
       <app-rubic-switcher></app-rubic-switcher>
@@ -37,14 +37,23 @@
 
       <app-rubic-tokens
         class="form-panel__tokens"
-        [loading]="isLoading"
+        [loading]="tokensLoading"
         tokenType="to"
         [tokens]="availableTokens['to']"
         [formService]="cryptoTapFormService"
       ></app-rubic-tokens>
     </div>
 
-    <app-amount-estimated [formService]="cryptoTapFormService"></app-amount-estimated>
+    <app-amount-estimated [loading]="tradeStatus === TRADE_STATUS.LOADING" [formService]="cryptoTapFormService">
+    </app-amount-estimated>
+
+    <app-swap-button
+      [needApprove]="needApprove"
+      [status]="tradeStatus"
+      (approveClick)=""
+      (swapClick)=""
+    ></app-swap-button>
+
   </main>
 </div>
 

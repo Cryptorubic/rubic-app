@@ -144,11 +144,11 @@ export class CryptoTapService {
       return NEVER;
     }
 
-    const { fromToken, toToken, fromAmount } =
-      this.cryptoTapFormService.commonTrade.controls.input.value;
+    const { fromToken, toToken } = this.cryptoTapFormService.commonTrade.controls.input.value;
+    const { fromAmount } = this.cryptoTapFormService.commonTrade.controls.output.value;
     const toNetwork = toToken.blockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 3;
 
-    return forkJoin([this.needApprove(), this.checkBalance(fromToken, fromAmount)]).pipe(
+    return forkJoin([this.needApprove(fromAmount), this.checkBalance(fromToken, fromAmount)]).pipe(
       mergeMap(([needApprove, enoughBalance]) => {
         if (!needApprove) {
           console.error('You should call approve before call createTrade method');
@@ -198,11 +198,10 @@ export class CryptoTapService {
     );
   }
 
-  public needApprove(): Observable<boolean> {
+  public needApprove(fromAmount: BigNumber): Observable<boolean> {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    const userAddress = this.authService.user.address;
-    const { fromToken: token, fromAmount } =
-      this.cryptoTapFormService.commonTrade.controls.input.value;
+    const userAddress = this.authService.user?.address;
+    const { fromToken: token } = this.cryptoTapFormService.commonTrade.controls.input.value;
 
     const amountInWei = fromAmount.multipliedBy(10 ** token.decimals);
     if (web3Public.isNativeAddress(token.address)) {
@@ -214,14 +213,14 @@ export class CryptoTapService {
   }
 
   public approve(onTransactionHash: (hash: string) => void): Observable<TransactionReceipt> {
-    const { fromToken: token, fromAmount } =
-      this.cryptoTapFormService.commonTrade.controls.input.value;
+    const { fromToken: token } = this.cryptoTapFormService.commonTrade.controls.input.value;
+    const { fromAmount } = this.cryptoTapFormService.commonTrade.controls.output.value;
 
     if (!this.checkSettings()) {
-      return;
+      return EMPTY;
     }
 
-    return forkJoin([this.needApprove(), this.checkBalance(token, fromAmount)]).pipe(
+    return forkJoin([this.needApprove(fromAmount), this.checkBalance(token, fromAmount)]).pipe(
       mergeMap(([needApprove, enoughBalance]) => {
         if (!needApprove) {
           console.error('You should check needApprove before call approve method');
