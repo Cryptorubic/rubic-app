@@ -14,11 +14,14 @@ import { Subscription, throwError } from 'rxjs';
 import { CryptoTapService } from 'src/app/features/crypto-tap/services/crypto-tap-service/crypto-tap.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { filter, mergeMap, tap } from 'rxjs/operators';
+import { filter, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
+import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import { TransactionReceipt } from 'web3-eth';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-crypto-tap-form',
@@ -31,7 +34,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   public TRADE_STATUS = TRADE_STATUS;
 
-  public tradeStatus: TRADE_STATUS;
+  public tradeStatus = TRADE_STATUS.DISABLED;
 
   public needApprove = false;
 
@@ -62,7 +65,9 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     public cryptoTapFormService: CryptoTapFormService,
     private cryptoTapTokenService: CryptoTapTokensService,
     private authService: AuthService,
-    private errorsService: ErrorsService
+    private errorsService: ErrorsService,
+    private notificationsService: TuiNotificationsService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -98,6 +103,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
         fromAmount: new BigNumber(0),
         fee: new BigNumber(0)
       });
+      this.tradeStatus = TRADE_STATUS.DISABLED;
       return;
     }
 
@@ -142,5 +148,87 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   private isBNIncorrect(bn: BigNumber): boolean {
     return !bn.isFinite() || bn.eq(0) || bn.isNaN();
+  }
+
+  public approveTrade() {
+    let approveInProgressSubscription$: Subscription;
+
+    const onTransactionHash = () => {
+      this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+      this.cdr.detectChanges();
+      approveInProgressSubscription$ = this.notificationsService
+        .show(this.translate.instant('bridgePage.progressMessage'), {
+          label: 'Trade in progress',
+          status: TuiNotification.Info,
+          autoClose: false
+        })
+        .subscribe();
+    };
+
+    this.cryptoTapService
+      .approve(onTransactionHash)
+      .pipe(first())
+      .subscribe(
+        (_res: TransactionReceipt) => {
+          approveInProgressSubscription$.unsubscribe();
+
+          this.notificationsService
+            .show(this.translate.instant('bridgePage.successMessage'), {
+              label: 'Successful trade',
+              status: TuiNotification.Success,
+              autoClose: 15000
+            })
+            .subscribe();
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+          this.cdr.detectChanges();
+          this.calculateTrade();
+        },
+        err => {
+          approveInProgressSubscription$?.unsubscribe();
+          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+          this.errorsService.catch$(err);
+        }
+      );
+  }
+
+  public createTrade() {
+    let tradeInProgressSubscription$: Subscription;
+
+    const onTransactionHash = () => {
+      this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+      this.cdr.detectChanges();
+      tradeInProgressSubscription$ = this.notificationsService
+        .show(this.translate.instant('bridgePage.progressMessage'), {
+          label: 'Trade in progress',
+          status: TuiNotification.Info,
+          autoClose: false
+        })
+        .subscribe();
+    };
+
+    this.cryptoTapService
+      .createTrade(onTransactionHash)
+      .pipe(first())
+      .subscribe(
+        (_res: TransactionReceipt) => {
+          tradeInProgressSubscription$.unsubscribe();
+
+          this.notificationsService
+            .show(this.translate.instant('bridgePage.successMessage'), {
+              label: 'Successful trade',
+              status: TuiNotification.Success,
+              autoClose: 15000
+            })
+            .subscribe();
+          this.tradeStatus = null;
+          this.cdr.detectChanges();
+          this.calculateTrade();
+        },
+        err => {
+          tradeInProgressSubscription$?.unsubscribe();
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+          this.errorsService.catch$(err);
+        }
+      );
   }
 }

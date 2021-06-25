@@ -50,8 +50,8 @@
     <app-swap-button
       [needApprove]="needApprove"
       [status]="tradeStatus"
-      (approveClick)=""
-      (swapClick)=""
+      (approveClick)="approveTrade()"
+      (swapClick)="createTrade()"
     ></app-swap-button>
 
   </main>

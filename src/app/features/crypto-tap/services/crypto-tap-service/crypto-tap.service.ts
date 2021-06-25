@@ -104,7 +104,7 @@ export class CryptoTapService {
     return true;
   }
 
-  private async checkBalance(token: TokenAmount, fromAmount: BigNumber): Promise<boolean> {
+  private async checkBalance(token: TokenAmount, fromAmount: BigNumber): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
     const amountInWei = fromAmount.multipliedBy(10 ** token.decimals);
 
@@ -114,10 +114,7 @@ export class CryptoTapService {
       });
       if (balance.lt(amountInWei)) {
         const formattedBalance = web3Public.weiToEth(balance);
-        this.errorService.catch$(
-          new InsufficientFundsError(token.symbol, formattedBalance, fromAmount.toString())
-        );
-        return false;
+        throw new InsufficientFundsError(token.symbol, formattedBalance, fromAmount.toString());
       }
     } else {
       const tokensBalance = await web3Public.getTokenBalance(
@@ -129,13 +126,13 @@ export class CryptoTapService {
           token,
           tokensBalance
         ).toFixed();
-        this.errorService.catch$(
-          new InsufficientFundsError(token.symbol, formattedTokensBalance, fromAmount.toString())
+        throw new InsufficientFundsError(
+          token.symbol,
+          formattedTokensBalance,
+          fromAmount.toString()
         );
-        return false;
       }
     }
-    return true;
   }
 
   public createTrade(onTransactionHash: (hash: string) => void): Observable<TransactionReceipt> {
@@ -149,15 +146,10 @@ export class CryptoTapService {
     const toNetwork = toToken.blockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 3;
 
     return forkJoin([this.needApprove(fromAmount), this.checkBalance(fromToken, fromAmount)]).pipe(
-      mergeMap(([needApprove, enoughBalance]) => {
+      mergeMap(([needApprove]) => {
         if (!needApprove) {
           console.error('You should call approve before call createTrade method');
           return throwError(new RubicError());
-        }
-
-        if (!enoughBalance) {
-          console.error('Not enough balance');
-          return EMPTY;
         }
 
         if (web3Public.isNativeAddress(fromToken.address)) {
@@ -221,15 +213,10 @@ export class CryptoTapService {
     }
 
     return forkJoin([this.needApprove(fromAmount), this.checkBalance(token, fromAmount)]).pipe(
-      mergeMap(([needApprove, enoughBalance]) => {
+      mergeMap(([needApprove]) => {
         if (!needApprove) {
           console.error('You should check needApprove before call approve method');
           return throwError(new RubicError());
-        }
-
-        if (!enoughBalance) {
-          console.error('Not enough balance');
-          return EMPTY;
         }
 
         return this.web3PrivateService.approveTokens(
