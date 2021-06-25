@@ -2,7 +2,7 @@
 
 .bottom-amount {
   box-sizing: border-box;
-  padding: 15px 20px 25px;
+  padding: 25px 20px 15px;
 
   background-color: rgba(#fcfcfc, 0.9);
   border-radius: 0 0 14px 14px;
@@ -13,14 +13,15 @@
   }
 
   &__usd-container {
-    display: flex;
-    width: 50%;
+
+    display: inline-block;
+    float: right;
     margin-bottom: 10px;
-    margin-left: auto;
 
     color: rgba(144, 144, 144, 0.6);
     font-weight: 400;
     font-size: 14px;
+    text-align: right;
 
     span {
       margin-left: 10px;
@@ -48,6 +49,14 @@
     font-weight: 100;
     font-size: 30px;
     text-align: left;
+  }
+
+  &__tokens-container {
+    display: inline-block;
+
+    &_wide {
+      width: calc(100% - 100px);
+    }
   }
 
   &__fee {
