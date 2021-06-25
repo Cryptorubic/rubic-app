@@ -32,7 +32,7 @@
       </div>
       <div *ngIf="providerData.estimatedGas" class="provider-panel__right">
         <div
-          *ngIf="tradeData.to.amount && tradeData.to.token.price && tradeData.to.token.price.gte('0.01')"
+          *ngIf="tradeData.to.amount && tradeData.to.token.price && tradeData.to.token.price > 0.01"
           class="provider-panel__token-usd-price"
           [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
         >

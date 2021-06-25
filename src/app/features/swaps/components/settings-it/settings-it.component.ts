@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   ItSettingsForm,
-  SettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
+import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms';
 
 @Component({
   selector: 'app-settings-it',
@@ -20,33 +18,34 @@ export class SettingsItComponent {
     return this.instantTradeForm.get(['slippageTolerance']).value === this.defaultSlippage;
   }
 
-  public set autoSlippage(value: boolean) {
+  public set autoSlippage(_) {
     this.instantTradeForm.get(['slippageTolerance']).setValue(this.defaultSlippage);
   }
 
   public instantTradeForm: FormGroup<ItSettingsForm>;
 
   constructor(private readonly settingsService: SettingsService) {
+    this.setForm();
+  }
+
+  private setForm(): void {
     const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
     this.instantTradeForm = new FormGroup<ItSettingsForm>({
       slippageTolerance: new FormControl<number>(form.value.slippageTolerance),
       deadline: new FormControl<number>(form.value.deadline),
       disableMultihops: new FormControl<boolean>(form.value.disableMultihops),
-      rubicOptimisation: new FormControl<boolean>(form.value.rubicOptimisation)
+      rubicOptimisation: new FormControl<boolean>(form.value.rubicOptimisation),
+      autoRefresh: new FormControl<boolean>(form.value.autoRefresh)
     });
+    this.setFormChanges(form);
+  }
+
+  private setFormChanges(form: AbstractControl<ItSettingsForm>): void {
     this.instantTradeForm.valueChanges.subscribe(settings => {
-      this.settingsService.settingsForm.controls.INSTANT_TRADE.setValue(settings);
+      form.patchValue({ ...settings });
     });
-    // this.settingsService.settingsForm.getControl(SWAP_PROVIDER_TYPE.INSTANT_TRADE) as any;
     form.valueChanges.subscribe(settings => {
-      this.instantTradeForm.setValue(
-        {
-          ...settings
-        },
-        {
-          emitEvent: false
-        }
-      );
+      this.instantTradeForm.patchValue({ ...settings }, { emitEvent: false });
     });
   }
 }
