@@ -20,6 +20,7 @@ import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -59,6 +60,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   public TRADE_STATUS = TRADE_STATUS;
 
   public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
+  public ADDRESS_TYPE = ADDRESS_TYPE;
 
   private formSubscription$: Subscription;
 
@@ -158,6 +161,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         if (this.toBlockchain === BLOCKCHAIN_NAME.TRON) {
           this.toWalletAddress = this.tronAddress;
         }
+
+        try {
+          this.calculateTrade();
+        } catch (err) {}
         this.cdr.detectChanges();
       });
 
@@ -241,13 +248,20 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       }
 
       const toAmount = fromAmount.minus(fee);
-
       this.swapFormService.commonTrade.controls.output.patchValue({
         toAmount
       });
+
       this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
+
       this.minmaxError = !this.swapService.checkMinMax(fromAmount);
-      if (this.minmaxError || !toAmount || toAmount.isNaN() || toAmount.eq(0)) {
+      if (
+        this.minmaxError ||
+        !toAmount ||
+        toAmount.isNaN() ||
+        toAmount.eq(0) ||
+        !this.toWalletAddress
+      ) {
         this.tradeStatus = TRADE_STATUS.DISABLED;
       }
       this.cdr.detectChanges();
@@ -258,7 +272,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     let tradeInProgressSubscription$: Subscription;
 
     const bridgeTradeRequest: BridgeTradeRequest = {
-      toAddress: this.authService.user.address,
+      toAddress: this.toWalletAddress,
       onTransactionHash: () => {
         this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
         this.cdr.detectChanges();

@@ -4,6 +4,7 @@ import {
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-settings-bridge',
@@ -20,11 +21,16 @@ export class SettingsBridgeComponent implements OnInit {
     const form = this.settingsService.settingsForm.controls.BRIDGE;
 
     this.bridgeForm = new FormGroup<BridgeSettingsForm>({
-      tronAddress: new FormControl<string>(form.value.tronAddress)
+      tronAddress: new FormControl<string>(
+        form.value.tronAddress,
+        Validators.pattern(/^[A-Za-z0-9]{34}$/)
+      )
     });
 
     this.bridgeForm.valueChanges.subscribe(settings => {
-      this.settingsService.settingsForm.controls.BRIDGE.setValue(settings);
+      if (settings.tronAddress !== form.value.tronAddress && this.bridgeForm.valid) {
+        this.settingsService.settingsForm.controls.BRIDGE.setValue(settings);
+      }
     });
 
     form.valueChanges.subscribe(settings => {
