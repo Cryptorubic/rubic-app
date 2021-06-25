@@ -63,7 +63,7 @@ export class QuickSwapService {
       }
     });
     this.web3Public = w3Public[BLOCKCHAIN_NAME.POLYGON];
-    this.blockchain = BLOCKCHAIN_NAME.POLYGON_TESTNET;
+    this.blockchain = BLOCKCHAIN_NAME.POLYGON;
     this.shouldCalculateGas = true;
     this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
     this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
