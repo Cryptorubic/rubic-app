@@ -181,7 +181,6 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
             .subscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
-          this.calculateTrade();
         },
         err => {
           approveInProgressSubscription$?.unsubscribe();

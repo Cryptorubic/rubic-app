@@ -7,6 +7,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypto-tap-form-service/crypto-tap-form.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 
 @Injectable()
 export class CryptoTapTokensService {
@@ -24,10 +25,34 @@ export class CryptoTapTokensService {
   constructor(
     private tokensService: TokensService,
     private cryptoTapFormService: CryptoTapFormService,
-    private web3PublicService: Web3PublicService
+    private web3PublicService: Web3PublicService,
+    useTestingModeService: UseTestingModeService
   ) {
     this.loadCryptoTapTokens();
     this.setUpTokens();
+
+    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      if (isTestingMode) {
+        this._cryptoTapTokens$.next([
+          {
+            address: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
+            direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+          },
+          {
+            address: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
+            direction: BLOCKCHAIN_NAME.POLYGON
+          },
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+          },
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            direction: BLOCKCHAIN_NAME.POLYGON
+          }
+        ]);
+      }
+    });
   }
 
   private loadCryptoTapTokens() {

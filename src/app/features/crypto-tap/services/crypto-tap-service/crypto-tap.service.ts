@@ -147,7 +147,7 @@ export class CryptoTapService {
 
     return forkJoin([this.needApprove(fromAmount), this.checkBalance(fromToken, fromAmount)]).pipe(
       mergeMap(([needApprove]) => {
-        if (!needApprove) {
+        if (needApprove) {
           console.error('You should call approve before call createTrade method');
           return throwError(new RubicError());
         }
