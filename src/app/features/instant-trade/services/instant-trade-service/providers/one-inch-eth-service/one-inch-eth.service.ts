@@ -28,6 +28,10 @@ import {
   OneInchTokensResponse
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch-types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import {
+  ItSettingsForm,
+  SettingsService
+} from 'src/app/features/swaps/services/settings-service/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,9 +49,7 @@ export class OneInchEthService {
 
   protected web3Public: Web3Public;
 
-  protected slippagePercent = 0.001; // 0.1%
-
-  private isTestingMode: boolean;
+  private settings: ItSettingsForm;
 
   constructor(
     private readonly httpClient: HttpClient,
@@ -56,14 +58,18 @@ export class OneInchEthService {
     private readonly web3Private: Web3PrivateService,
     private readonly web3PublicService: Web3PublicService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly settingsService: SettingsService
   ) {
-    useTestingModeService.isTestingMode.subscribe(value => (this.isTestingMode = value));
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
     const network = BlockchainsInfo.getBlockchainByName(this.blockchain);
     this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
     this.web3Public = this.web3PublicService[this.blockchain];
-    setTimeout(() => this.loadSupportedTokens());
+    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
+      this.settings = form;
+    });
+    this.loadSupportedTokens();
   }
 
   private loadSupportedTokens() {
@@ -82,10 +88,6 @@ export class OneInchEthService {
       .get(`${this.apiBaseUrl}approve/spender`)
       .pipe(map((response: OneInchApproveResponse) => response.address))
       .toPromise();
-  }
-
-  public setSlippagePercent(slippagePercent: number): void {
-    this.slippagePercent = slippagePercent;
   }
 
   public async calculateTrade(
@@ -174,7 +176,7 @@ export class OneInchEthService {
           fromTokenAddress,
           toTokenAddress,
           amount: fromAmount,
-          slippage: (this.slippagePercent * 100).toString(),
+          slippage: this.settings.slippageTolerance.toString(),
           fromAddress: this.providerConnectorService.address
         }
       })
