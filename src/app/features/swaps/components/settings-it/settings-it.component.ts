@@ -12,7 +12,7 @@ import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsItComponent implements OnInit {
-  private readonly defaultSlippage = 0.1;
+  private readonly defaultSlippage = 0.15;
 
   public get autoSlippage(): boolean {
     return this.instantTradeForm.get(['slippageTolerance']).value === this.defaultSlippage;
