@@ -17,11 +17,10 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
-import { of, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { take } from 'rxjs/operators';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -125,12 +124,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       isBestRate: false
     }));
     this.cdr.detectChanges();
-    const needApprove$ = this.authService.user?.address
-      ? this.instantTradeService.needApprove()
-      : of(false);
-    needApprove$
-      .pipe(take(1))
-      .subscribe((needApprove: boolean) => (this.needApprove = needApprove));
+    // const needApprove$ = this.authService.user?.address
+    //   ? this.instantTradeService.needApprove()
+    //   : of(false);
+    // needApprove$
+    //   .pipe(take(1))
+    //   .subscribe((needApprove: boolean) => (this.needApprove = needApprove));
     const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
     const newProviders = this.providerControllers.map((controller, index) => ({

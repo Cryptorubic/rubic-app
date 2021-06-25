@@ -21,6 +21,8 @@ import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INS
 import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
 import { BridgeTradeRequest } from 'src/app/features/bridge/models/BridgeTradeRequest';
 import { TransactionReceipt } from 'web3-eth';
+import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +72,7 @@ export class InstantTradeService {
     return Promise.allSettled(providersDataPromises);
   }
 
-  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade): Promise<void> {
+  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
     try {
       let tradeInfo;
       const receipt = await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(
@@ -82,10 +84,16 @@ export class InstantTradeService {
                 hash,
                 network: TO_BACKEND_BLOCKCHAINS[this.currentBlockchain],
                 provider,
-                from_token: trade.fromToken.address,
-                to_token: trade.toToken.address,
-                from_amount: Web3PublicService.tokenAmountToWei(trade.fromToken, trade.from.amount),
-                to_amount: Web3PublicService.tokenAmountToWei(trade.toToken, trade.to.amount)
+                from_token: trade.from.token.address,
+                to_token: trade.to.token.address,
+                from_amount: Web3PublicService.tokenAmountToWei(
+                  trade.from.token as SwapToken,
+                  trade.from.amount
+                ),
+                to_amount: Web3PublicService.tokenAmountToWei(
+                  trade.to.token as SwapToken,
+                  trade.to.amount
+                )
               };
             } else {
               tradeInfo = {
