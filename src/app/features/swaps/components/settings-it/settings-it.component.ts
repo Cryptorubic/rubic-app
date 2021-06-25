@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
   ItSettingsForm,
   SettingsService
@@ -11,7 +11,7 @@ import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms'
   styleUrls: ['./settings-it.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingsItComponent {
+export class SettingsItComponent implements OnInit {
   private readonly defaultSlippage = 0.1;
 
   public get autoSlippage(): boolean {
@@ -24,7 +24,9 @@ export class SettingsItComponent {
 
   public instantTradeForm: FormGroup<ItSettingsForm>;
 
-  constructor(private readonly settingsService: SettingsService) {
+  constructor(private readonly settingsService: SettingsService) {}
+
+  public ngOnInit(): void {
     this.setForm();
   }
 

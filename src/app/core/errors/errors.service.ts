@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
 import { NotSupportedItNetwork } from 'src/app/shared/models/errors/instant-trade/not-supported-it-network';
 import CustomError from 'src/app/shared/models/errors/custom-error';
+import { NotSupportedBridge } from 'src/app/shared/models/errors/bridge/NotSupportedBridge';
 import { RubicError } from '../../shared/models/errors/RubicError';
 import { RubicErrorComponent } from './components/rubic-error/rubic-error.component';
 import { NotSupportedNetworkError } from '../../shared/models/errors/provider/NotSupportedNetwork';
@@ -150,6 +151,11 @@ export class ErrorsService {
       case NotSupportedItNetwork:
         this.notificationsService
           .show(this.translateService.instant('errors.notSupportedItNetwork'), options)
+          .subscribe();
+        throw error;
+      case NotSupportedBridge:
+        this.notificationsService
+          .show(this.translateService.instant('errors.notSupportedBridge'), options)
           .subscribe();
         throw error;
       case CustomError:

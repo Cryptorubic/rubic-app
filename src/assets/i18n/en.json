@@ -48,7 +48,8 @@
     "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
     "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
     "noSelectedProvider": "You have not selected any swap provider",
-    "notSupportedItNetwork": "Chosen network is not supported for instant trades"
+    "notSupportedItNetwork": "Chosen network is not supported for instant trades",
+    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks."
   },
   "navigation": {
     "about": "About",

@@ -37,14 +37,15 @@
 }
 
 html {
-  min-height: 100%;
   height: auto !important;
+  min-height: 100%;
 
   body {
     min-width: 320px;
     height: auto;
     margin: 0;
     padding: 0;
+
     background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
 
     main,
@@ -131,6 +132,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 }
 
 tui-dropdown-box {
+  min-width: 265px;
+
   border: none !important;
   border-radius: 18px !important;
 }
