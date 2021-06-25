@@ -86,7 +86,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   constructor(
     private bridgeService: BridgeService,
     private errorsService: ErrorsService,
-    private swapFormService: SwapFormService,
+    public swapFormService: SwapFormService,
     private swapService: SwapsService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,

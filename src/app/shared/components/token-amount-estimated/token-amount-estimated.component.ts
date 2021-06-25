@@ -7,21 +7,23 @@ import {
   OnInit
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { FormService } from 'src/app/shared/models/swaps/FormService';
 
 @Component({
-  selector: 'app-amount-input',
+  selector: 'app-amount-estimated',
   templateUrl: './token-amount-estimated.component.html',
   styleUrls: ['./token-amount-estimated.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AmountInputComponent implements OnInit, OnDestroy {
+export class AmountEstimatedComponent implements OnInit, OnDestroy {
   @Input() set loading(value: boolean) {
     this._loading = value;
     this.hidden = false;
   }
 
   @Input() disabled: boolean;
+
+  @Input() formService: FormService;
 
   public _loading: boolean;
 
@@ -33,22 +35,23 @@ export class AmountInputComponent implements OnInit, OnDestroy {
 
   public hidden: boolean;
 
-  constructor(private swapFormService: SwapFormService, private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.formSubscription$ =
-      this.swapFormService.commonTrade.controls.output.valueChanges.subscribe(output => {
+    this.formSubscription$ = this.formService.commonTrade.controls.output.valueChanges.subscribe(
+      output => {
         if (output.toAmount.isNaN()) {
           this.hidden = true;
           this.cdr.detectChanges();
           return;
         }
         this.hidden = false;
-        const { toToken } = this.swapFormService.commonTrade.controls.input.value;
+        const { toToken } = this.formService.commonTrade.controls.input.value;
         this.tokensAmount = output.toAmount.toFixed();
         this.usd = toToken.price && output.toAmount.multipliedBy(toToken.price).toFixed(2);
         this.cdr.detectChanges();
-      });
+      }
+    );
   }
 
   ngOnDestroy() {
