@@ -69,12 +69,12 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     'Date'
   ];
 
-  public readonly sorters: Record<TableRowKey, TuiComparator<any>> = {
+  public readonly sorters: Record<TableRowKey, TuiComparator<TableRow>> = {
     Status: () => 0,
     FromTo: () => 0,
     Provider: () => 0,
-    Sent: (a: BigNumber, b: BigNumber) => a.comparedTo(b),
-    Expected: (a: BigNumber, b: BigNumber) => a.comparedTo(b),
+    Sent: () => 0,
+    Expected: () => 0,
     Date: () => 0
   };
 
@@ -203,7 +203,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     return this.bridgeApiService
       .getUserTrades(this.walletAddress)
       .pipe(
-        map(transactions => transactions.map(transaction => this.prepareBridgeData(transaction)))
+        map(trades => trades.map(trade => this.prepareBridgeData(trade)).filter(trade => !!trade))
       );
   }
 
@@ -218,12 +218,16 @@ export class MyTradesComponent implements OnInit, OnDestroy {
         token =>
           token.blockchain === trade.fromToken.blockchain &&
           token.address.toLowerCase() === fromSymbol.toLowerCase()
-      ).symbol;
+      )?.symbol;
       toSymbol = this.tokens.find(
         token =>
           token.blockchain === trade.toToken.blockchain &&
           token.address.toLowerCase() === toSymbol.toLowerCase()
-      ).symbol;
+      )?.symbol;
+
+      if (!fromSymbol || !toSymbol) {
+        return null;
+      }
     }
 
     return {
@@ -267,7 +271,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     return (a, b) => {
       let sort;
       if (key === 'Sent' || key === 'Expected') {
-        sort = this.sorters[key];
+        sort = (x: BigNumber, y: BigNumber) => x.comparedTo(y);
       } else {
         sort = defaultSort;
       }
