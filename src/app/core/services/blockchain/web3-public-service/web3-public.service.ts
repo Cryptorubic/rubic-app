@@ -24,6 +24,10 @@ export class Web3PublicService {
     return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
   }
 
+  static weiToAmount(amountInWei: string, decimals: number): BigNumber {
+    return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
+  }
+
   constructor(publicProvider: PublicProviderService, useTestingModeService: UseTestingModeService) {
     this.connectionLinks = publicProvider.connectionLinks;
     const web3Connections = this.connectionLinks.reduce(

@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models/providers.enum';
 import { OneInchEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-eth-service/one-inch-eth.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
@@ -8,7 +7,6 @@ import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { Subscription, timer } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/trade-api';
 import { switchMap } from 'rxjs/operators';
 import { INTSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps-page-old/models/trade-data';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
@@ -19,6 +17,8 @@ import { PancakeSwapService } from 'src/app/features/instant-trade/services/inst
 import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { OneInchBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-bsc-service/one-inch-bsc.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
+import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
 
 @Injectable({
   providedIn: 'root'
@@ -68,14 +68,14 @@ export class InstantTradeService {
     return Promise.allSettled(providersDataPromises);
   }
 
-  public async createTrade(provider: PROVIDERS, trade): Promise<void> {
+  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade): Promise<void> {
     try {
       let tradeInfo;
       const receipt = await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(
         trade,
         {
           onConfirm: async hash => {
-            if (provider === PROVIDERS.ONEINCH) {
+            if (provider === INSTANT_TRADES_PROVIDER.ONEINCH) {
               tradeInfo = {
                 hash,
                 network: TO_BACKEND_BLOCKCHAINS[this.currentBlockchain],
@@ -139,16 +139,16 @@ export class InstantTradeService {
   private setBlockchainsProviders(): void {
     this.swapFormService.setItProviders({
       [BLOCKCHAIN_NAME.ETHEREUM]: {
-        [PROVIDERS.ONEINCH]: this.oneInchEthService,
-        [PROVIDERS.UNISWAP]: this.uniswapService
+        [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchEthService,
+        [INSTANT_TRADES_PROVIDER.UNISWAP]: this.uniswapService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-        [PROVIDERS.ONEINCH]: this.oneInchBscService,
-        [PROVIDERS.PANCAKESWAP]: this.pancakeSwapService
+        [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchBscService,
+        [INSTANT_TRADES_PROVIDER.PANCAKESWAP]: this.pancakeSwapService
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
-        [PROVIDERS.ONEINCH]: this.oneInchPolygonService,
-        [PROVIDERS.QUICKSWAP]: this.quickSwapService
+        [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchPolygonService,
+        [INSTANT_TRADES_PROVIDER.QUICKSWAP]: this.quickSwapService
       }
     });
   }

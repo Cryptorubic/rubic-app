@@ -8,7 +8,6 @@ import {
   OnInit
 } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BLOCKCHAINS';
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription, zip } from 'rxjs';
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
 import { debounceTime, filter, map, share, startWith, takeWhile } from 'rxjs/operators';
@@ -25,33 +24,22 @@ import { TuiDialogService, TuiNotification, TuiNotificationsService } from '@tai
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { BridgeTableTrade } from '../../../bridge/models/BridgeTableTrade';
-import { InstantTradesTradeData } from '../../../swaps-page-old/models/trade-data';
+import { TableProvider, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
+import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
+import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
+import BigNumber from 'bignumber.js';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
+import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 
-interface TableToken {
-  blockchain: BLOCKCHAIN_NAME;
-  symbol: string;
-  amount: string;
-  image: string;
-}
-
-interface TableTrade {
-  status: string;
-  fromToken: TableToken;
-  toToken: TableToken;
-  date: Date;
-
-  burtTransactionHash?: string;
-}
-
-type TableRowKey = 'Status' | 'From' | 'To' | 'Sent' | 'Expected' | 'Date';
+type TableRowKey = 'Status' | 'FromTo' | 'Provider' | 'Sent' | 'Expected' | 'Date';
 
 interface TableRow {
-  Status: string;
-  From: string;
-  To: string;
-  Sent: string;
-  Expected: string;
+  Status: TRANSACTION_STATUS;
+  FromTo: string;
+  Provider: TableProvider;
+  Sent: BigNumber;
+  Expected: BigNumber;
   Date: Date;
 
   inProgress: boolean;
@@ -64,18 +52,29 @@ interface TableRow {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MyTradesComponent implements OnInit, OnDestroy {
+  public TRANSACTION_STATUS = TRANSACTION_STATUS;
+
   public BLOCKCHAINS = BLOCKCHAINS;
+
+  public TRADES_PROVIDERS = TRADES_PROVIDERS;
 
   private tableTrades: TableTrade[];
 
   private readonly tableData$ = new BehaviorSubject<TableRow[]>(null);
 
-  public readonly columns: TableRowKey[] = ['Status', 'From', 'To', 'Sent', 'Expected', 'Date'];
+  public readonly columns: TableRowKey[] = [
+    'Status',
+    'FromTo',
+    'Provider',
+    'Sent',
+    'Expected',
+    'Date'
+  ];
 
   public readonly sorters: Record<TableRowKey, TuiComparator<TableRow>> = {
     Status: () => 0,
-    From: () => 0,
-    To: () => 0,
+    FromTo: () => 0,
+    Provider: () => 0,
     Sent: () => 0,
     Expected: () => 0,
     Date: () => 0
@@ -145,7 +144,8 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService,
     private readonly translate: TranslateService,
     private readonly notificationsService: TuiNotificationsService,
-    private errorsService: ErrorsService,
+    private readonly errorsService: ErrorsService,
+    private readonly scannerLinkPipe: ScannerLinkPipe,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
@@ -180,16 +180,19 @@ export class MyTradesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    zip(this.getBridgeTransactions(), this.getInstantTradesTransactions()).subscribe(data => {
+    zip(
+      this.getBridgeTransactions(),
+      this.instantTradesApiService.getUserTrades(this.walletAddress)
+    ).subscribe(data => {
       this.tableTrades = data.flat();
       const tableData: TableRow[] = [];
       this.tableTrades.forEach(trade => {
         tableData.push({
           Status: trade.status,
-          From: trade.fromToken.blockchain,
-          To: trade.toToken.blockchain,
-          Sent: trade.fromToken.amount,
-          Expected: trade.toToken.amount,
+          FromTo: trade.fromToken.blockchain + trade.toToken.blockchain,
+          Provider: trade.provider,
+          Sent: new BigNumber(trade.fromToken.amount),
+          Expected: new BigNumber(trade.toToken.amount),
           Date: trade.date,
 
           inProgress: false
@@ -199,88 +202,47 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getInstantTradesTransactions(): Observable<TableTrade[]> {
-    return this.instantTradesApiService
-      .fetchSwaps(this.walletAddress)
-      .pipe(map(transactions => transactions.map(trade => this.prepareInstantTradesData(trade))));
-  }
-
   private getBridgeTransactions(): Observable<TableTrade[]> {
     return this.bridgeApiService
-      .getTransactions(this.walletAddress)
+      .getUserTrades(this.walletAddress)
       .pipe(
-        map(transactions => transactions.map(transaction => this.prepareBridgeData(transaction)))
+        map(trades => trades.map(trade => this.prepareBridgeData(trade)).filter(trade => !!trade))
       );
   }
 
-  private prepareInstantTradesData(trade: InstantTradesTradeData): TableTrade {
-    return {
-      status: trade.status.toLowerCase(),
-      fromToken: this.transformToTableToken(
-        trade.token.from.image,
-        trade.fromAmount.toFixed(),
-        trade.blockchain,
-        trade.token.from.symbol
-      ),
-      toToken: this.transformToTableToken(
-        trade.token.to.image,
-        trade.fromAmount.toFixed(),
-        trade.blockchain,
-        trade.token.to.symbol
-      ),
-      date: trade.date
-    };
-  }
-
-  private prepareBridgeData(trade: BridgeTableTrade): TableTrade {
-    let { fromSymbol, toSymbol } = trade;
+  private prepareBridgeData(trade: TableTrade): TableTrade {
+    let fromSymbol = trade.fromToken.symbol;
+    let toSymbol = trade.toToken.symbol;
     if (
-      trade.fromBlockchain === BLOCKCHAIN_NAME.POLYGON ||
-      trade.toBlockchain === BLOCKCHAIN_NAME.POLYGON
+      trade.fromToken.blockchain === BLOCKCHAIN_NAME.POLYGON ||
+      trade.toToken.blockchain === BLOCKCHAIN_NAME.POLYGON
     ) {
       fromSymbol = this.tokens.find(
         token =>
-          token.blockchain === trade.fromBlockchain &&
+          token.blockchain === trade.fromToken.blockchain &&
           token.address.toLowerCase() === fromSymbol.toLowerCase()
-      ).symbol;
+      )?.symbol;
       toSymbol = this.tokens.find(
         token =>
-          token.blockchain === trade.toBlockchain &&
+          token.blockchain === trade.toToken.blockchain &&
           token.address.toLowerCase() === toSymbol.toLowerCase()
-      ).symbol;
+      )?.symbol;
+
+      if (!fromSymbol || !toSymbol) {
+        return null;
+      }
     }
 
     return {
-      status: trade.status.toLowerCase(),
-      fromToken: this.transformToTableToken(
-        trade.tokenImage,
-        trade.fromAmount,
-        trade.fromBlockchain,
-        fromSymbol
-      ),
-      toToken: this.transformToTableToken(
-        trade.tokenImage,
-        trade.toAmount,
-        trade.toBlockchain,
-        toSymbol
-      ),
-      date: new Date(trade.updateTime),
-
-      burtTransactionHash: trade.transactionHash
-    };
-  }
-
-  private transformToTableToken(
-    image: string,
-    amount: string,
-    blockchain: BLOCKCHAIN_NAME,
-    symbol: string
-  ): TableToken {
-    return {
-      image,
-      amount,
-      blockchain,
-      symbol
+      ...trade,
+      fromToken: {
+        ...trade.fromToken,
+        symbol: fromSymbol
+      },
+      toToken: {
+        ...trade.toToken,
+        symbol: fromSymbol
+      }
     };
   }
 
@@ -309,7 +271,15 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   }
 
   private sortBy(key: TableRowKey, direction: -1 | 1): TuiComparator<TableRow> {
-    return (a, b) => direction * defaultSort(a[key], b[key]);
+    return (a, b) => {
+      let sort;
+      if (key === 'Sent' || key === 'Expected') {
+        sort = (x: BigNumber, y: BigNumber) => x.comparedTo(y);
+      } else {
+        sort = defaultSort;
+      }
+      return direction * sort(a[key], b[key]);
+    };
   }
 
   public refreshTable(): void {
@@ -326,6 +296,14 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public getTableTrade(tableRow: TableRow): TableTrade {
     return this.tableTrades.find(trade => trade.date.getTime() === tableRow.Date.getTime());
+  }
+
+  public getTransactionLink(trade: TableTrade): string {
+    return this.scannerLinkPipe.transform(
+      trade.transactionHash,
+      trade.fromToken.blockchain,
+      ADDRESS_TYPE.TRANSACTION
+    );
   }
 
   public receivePolygonBridgeTrade(trade: TableTrade): void {
@@ -352,7 +330,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     };
 
     this.myTradesService
-      .depositPolygonBridgeTradeAfterCheckpoint(trade.burtTransactionHash, onTransactionHash)
+      .depositPolygonBridgeTradeAfterCheckpoint(trade.transactionHash, onTransactionHash)
       .subscribe(
         _receipt => {
           tradeInProgressSubscription$.unsubscribe();

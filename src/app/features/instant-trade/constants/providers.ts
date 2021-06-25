@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-trades/models/instant-trades-trade-status';
-import { PROVIDERS } from 'src/app/features/swaps-page-old/instant-trades/models/providers.enum';
+import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 export const INSTANT_TRADE_PROVIDERS = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
@@ -9,7 +9,7 @@ export const INSTANT_TRADE_PROVIDERS = {
       tradeState: INSTANT_TRADES_STATUS.CALCULATION,
       tradeProviderInfo: {
         label: '1inch',
-        value: PROVIDERS.ONEINCH
+        value: INSTANT_TRADES_PROVIDER.ONEINCH
       },
       isBestRate: false,
       isSelected: false,
@@ -20,7 +20,7 @@ export const INSTANT_TRADE_PROVIDERS = {
       tradeState: INSTANT_TRADES_STATUS.CALCULATION,
       tradeProviderInfo: {
         label: 'Uniswap',
-        value: PROVIDERS.UNISWAP
+        value: INSTANT_TRADES_PROVIDER.UNISWAP
       },
       isBestRate: false,
       isSelected: false,
@@ -33,7 +33,7 @@ export const INSTANT_TRADE_PROVIDERS = {
       tradeState: INSTANT_TRADES_STATUS.CALCULATION,
       tradeProviderInfo: {
         label: '1inch',
-        value: PROVIDERS.ONEINCH
+        value: INSTANT_TRADES_PROVIDER.ONEINCH
       },
       isBestRate: false,
       isSelected: false,
@@ -44,7 +44,7 @@ export const INSTANT_TRADE_PROVIDERS = {
       tradeState: INSTANT_TRADES_STATUS.CALCULATION,
       tradeProviderInfo: {
         label: 'Pancakeswap',
-        value: PROVIDERS.PANCAKESWAP
+        value: INSTANT_TRADES_PROVIDER.PANCAKESWAP
       },
       isBestRate: false,
       isSelected: false,
@@ -57,7 +57,7 @@ export const INSTANT_TRADE_PROVIDERS = {
       tradeState: INSTANT_TRADES_STATUS.CALCULATION,
       tradeProviderInfo: {
         label: '1inch',
-        value: PROVIDERS.ONEINCH
+        value: INSTANT_TRADES_PROVIDER.ONEINCH
       },
       isBestRate: false,
       isSelected: false,
@@ -68,7 +68,7 @@ export const INSTANT_TRADE_PROVIDERS = {
       tradeState: null,
       tradeProviderInfo: {
         label: 'Quickswap',
-        value: PROVIDERS.QUICKSWAP
+        value: INSTANT_TRADES_PROVIDER.QUICKSWAP
       },
       isBestRate: false,
       isSelected: false,

@@ -3,8 +3,8 @@ import { Observable, Subject } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
-import { BRIDGE_PROVIDER_TYPE } from 'src/app/features/bridge/models/ProviderType';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
+import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 
 export abstract class BlockchainsBridgeProvider {
   protected tokens$ = new Subject<List<BridgeToken>>();
@@ -19,7 +19,7 @@ export abstract class BlockchainsBridgeProvider {
   /**
    * @description get type of provider
    */
-  public abstract getProviderType?(token?: BridgeToken): BRIDGE_PROVIDER_TYPE;
+  public abstract getProviderType?(token?: BridgeToken): BRIDGE_PROVIDER;
 
   /**
    * @description get price blockchain provider's fee

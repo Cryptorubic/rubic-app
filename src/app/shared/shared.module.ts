@@ -271,7 +271,8 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicBannerComponent,
     SwapsButtonOldComponent,
     SwapButtonComponent,
-    WithRoundPipe
+    WithRoundPipe,
+    SafetyLinkDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
