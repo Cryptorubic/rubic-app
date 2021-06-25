@@ -29,6 +29,8 @@ import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import BigNumber from 'bignumber.js';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
+import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 
 type TableRowKey = 'Status' | 'FromTo' | 'Provider' | 'Sent' | 'Expected' | 'Date';
 
@@ -142,7 +144,8 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService,
     private readonly translate: TranslateService,
     private readonly notificationsService: TuiNotificationsService,
-    private errorsService: ErrorsService,
+    private readonly errorsService: ErrorsService,
+    private readonly scannerLinkPipe: ScannerLinkPipe,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
@@ -293,6 +296,14 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public getTableTrade(tableRow: TableRow): TableTrade {
     return this.tableTrades.find(trade => trade.date.getTime() === tableRow.Date.getTime());
+  }
+
+  public getTransactionLink(trade: TableTrade): string {
+    return this.scannerLinkPipe.transform(
+      trade.transactionHash,
+      trade.fromToken.blockchain,
+      ADDRESS_TYPE.TRANSACTION
+    );
   }
 
   public receivePolygonBridgeTrade(trade: TableTrade): void {
