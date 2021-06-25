@@ -23,7 +23,7 @@ export class SettingsBridgeComponent implements OnInit {
     this.bridgeForm = new FormGroup<BridgeSettingsForm>({
       tronAddress: new FormControl<string>(
         form.value.tronAddress,
-        Validators.pattern(/^[A-Za-z0-9]{34}$/)
+        Validators.pattern(/^T[1-9A-HJ-NP-Za-km-z]{33}$/)
       )
     });
 

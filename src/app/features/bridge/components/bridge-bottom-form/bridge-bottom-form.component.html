@@ -20,7 +20,10 @@
         (approveClick)="approveTrade()"
       ></app-swap-button>
     </div>
-    <div class="bridge-bottom-form__terms-and-conditions" *ngIf="whatIsBlockchain">
+    <div
+      class="bridge-bottom-form__terms-and-conditions terms-and-conditions"
+      *ngIf="whatIsBlockchain"
+    >
       <span *ngIf="toWalletAddress"
         >You will get {{ whatIsBlockchain.name }} tokens to the
         <a
@@ -31,9 +34,13 @@
         >
         address</span
       >
-      <span *ngIf="!toWalletAddress && toBlockchain === BLOCKCHAIN_NAME.TRON"
+
+      <span
+        class="terms-and-conditions__error"
+        *ngIf="!toWalletAddress && toBlockchain === BLOCKCHAIN_NAME.TRON"
         >You must set TRON wallet address in settings parameters</span
       >
+
       <a [href]="whatIsBlockchain.href" target="_blank">What is {{ whatIsBlockchain.name }}?</a>
     </div>
   </div>

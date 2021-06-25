@@ -20,21 +20,27 @@
   }
 
   &__terms-and-conditions {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 8px;
-
     margin-top: 15px;
+  }
+}
 
-    font-weight: 300;
-    font-size: 14px;
-    text-align: center;
+.terms-and-conditions {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 8px;
 
-    a {
-      display: block;
+  font-weight: 300;
+  font-size: 14px;
+  text-align: center;
 
-      color: $rubic-primary;
-      font-weight: 400;
-    }
+  a {
+    display: block;
+
+    color: $rubic-primary;
+    font-weight: 400;
+  }
+
+  &__error {
+    color: #d82122;
   }
 }
