@@ -101,7 +101,10 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       this.cryptoTapFormService.commonTrade.controls.output.patchValue({
         toAmount: new BigNumber(0),
         fromAmount: new BigNumber(0),
-        fee: new BigNumber(0)
+        fee: {
+          token: null,
+          amount: new BigNumber(0)
+        }
       });
       this.tradeStatus = TRADE_STATUS.DISABLED;
       return;
@@ -127,7 +130,10 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
           this.cryptoTapFormService.commonTrade.controls.output.patchValue({
             toAmount,
             fromAmount,
-            fee
+            fee: {
+              token: fromToken,
+              amount: fee
+            }
           });
         }),
         mergeMap((trade: CryptoTapTrade) => this.cryptoTapService.needApprove(trade.fromAmount))

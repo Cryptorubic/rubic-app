@@ -13,6 +13,9 @@ export interface CryptoTapForm extends ISwapForm {
   output: {
     fromAmount: BigNumber;
     toAmount: BigNumber;
-    fee: BigNumber;
+    fee: {
+      token: TokenAmount;
+      amount: BigNumber;
+    };
   };
 }

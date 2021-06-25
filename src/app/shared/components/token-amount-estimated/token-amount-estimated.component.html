@@ -13,5 +13,12 @@
     >
       <span class="bottom-amount__tokens">{{ tokensAmount }}</span>
     </div>
+    <div
+      *ngIf="fee?.token"
+      class="bottom-amount__fee"
+      [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
+    >
+      <span>Provider fee: {{fee.amount + ' ' + fee.token.symbol}} ≈ {{fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2}}$</span>
+    </div>
   </ng-container>
 </div>

@@ -20,7 +20,10 @@ export class CryptoTapFormService implements FormService {
       }),
       output: new FormGroup({
         toAmount: new FormControl<BigNumber>(new BigNumber(0)),
-        fee: new FormControl<BigNumber>(),
+        fee: new FormControl<{ token: TokenAmount; amount: BigNumber }>({
+          token: null,
+          amount: new BigNumber(0)
+        }),
         fromAmount: new FormControl<BigNumber>(new BigNumber(0))
       })
     });

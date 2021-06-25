@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-amount-estimated',
@@ -31,6 +33,11 @@ export class AmountEstimatedComponent implements OnInit, OnDestroy {
 
   public tokensAmount: string;
 
+  public fee: {
+    token: TokenAmount;
+    amount: BigNumber;
+  };
+
   public formSubscription$: Subscription;
 
   public hidden: boolean;
@@ -49,6 +56,7 @@ export class AmountEstimatedComponent implements OnInit, OnDestroy {
         const { toToken } = this.formService.commonTrade.controls.input.value;
         this.tokensAmount = output.toAmount.toFixed();
         this.usd = toToken?.price && output.toAmount.multipliedBy(toToken.price).toFixed(2);
+        this.fee = output.fee;
         this.cdr.detectChanges();
       }
     );
