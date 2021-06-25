@@ -17,10 +17,10 @@ export class CryptoTapFormService implements FormService {
         toBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN),
         fromToken: new FormControl<TokenAmount>(),
         toToken: new FormControl<TokenAmount>(),
-        fromAmount: new FormControl<BigNumber>()
+        fromAmount: new FormControl<BigNumber>(new BigNumber(0))
       }),
       output: new FormGroup({
-        toAmount: new FormControl<BigNumber>()
+        toAmount: new FormControl<BigNumber>(new BigNumber(0))
       })
     });
   }

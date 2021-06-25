@@ -6,9 +6,10 @@ import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypt
 import { CryptoTapTokensService } from 'src/app/features/crypto-tap/services/crypto-tap-tokens-service/crypto-tap-tokens.service';
 import { TokensSelectModule } from 'src/app/features/tokens-select/tokens-select.module';
 import { CryptoTapFormComponent } from './components/crypto-tap-form/crypto-tap-form.component';
+import { CryptoTapTopFormComponent } from './components/crypto-tap-top-form/crypto-tap-top-form.component';
 
 @NgModule({
-  declarations: [CryptoTapFormComponent],
+  declarations: [CryptoTapFormComponent, CryptoTapTopFormComponent],
   imports: [CommonModule, CryptoTapRoutingModule, SharedModule, TokensSelectModule],
   providers: [CryptoTapFormService, CryptoTapTokensService]
 })
