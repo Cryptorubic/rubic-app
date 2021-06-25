@@ -4,9 +4,8 @@ import { ORDER_BOOK_CONTRACT } from 'src/app/shared/constants/order-book/smart-c
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import * as moment from 'moment';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../models/trade-data';
+import { OrderBookTradeData } from '../models/trade-data';
 import { Web3PrivateService } from '../../../core/services/blockchain/web3-private-service/web3-private.service';
 import { TokenPart } from '../../../shared/models/order-book/tokens';
 import { NetworkError } from '../../../shared/models/errors/provider/NetworkError';
@@ -42,92 +41,95 @@ export class OrderBookTradeService {
   }
 
   public async setOwner(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
-
-    tradeData.owner = await web3Public.callContractMethod(contractAddress, contractAbi, 'owners', {
-      methodArguments: [tradeData.memo]
-    });
-
-    return tradeData;
+    // const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    // const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+    //
+    // tradeData.owner = await web3Public.callContractMethod(contractAddress, contractAbi, 'owners', {
+    //   methodArguments: [tradeData.memo]
+    // });
+    //
+    // return tradeData;
+    return null;
   }
 
   public async setStatus(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
-
-    const { expirationDate } = tradeData;
-    if (expirationDate.isBefore(moment.utc())) {
-      tradeData.status = ORDER_BOOK_TRADE_STATUS.EXPIRED;
-    } else {
-      const isDone: boolean = await web3Public.callContractMethod(
-        contractAddress,
-        contractAbi,
-        'isSwapped',
-        {
-          methodArguments: [tradeData.memo]
-        }
-      );
-
-      if (isDone) {
-        tradeData.status = ORDER_BOOK_TRADE_STATUS.DONE;
-      } else {
-        const isCancelled: boolean = await web3Public.callContractMethod(
-          contractAddress,
-          contractAbi,
-          'isCancelled',
-          {
-            methodArguments: [tradeData.memo]
-          }
-        );
-
-        if (isCancelled) {
-          tradeData.status = ORDER_BOOK_TRADE_STATUS.CANCELLED;
-        } else {
-          tradeData.status = ORDER_BOOK_TRADE_STATUS.ACTIVE;
-        }
-      }
-    }
-
-    return tradeData;
+    // const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    // const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+    //
+    // const { expirationDate } = tradeData;
+    // if (expirationDate.isBefore(moment.utc())) {
+    //   tradeData.status = ORDER_BOOK_TRADE_STATUS.EXPIRED;
+    // } else {
+    //   const isDone: boolean = await web3Public.callContractMethod(
+    //     contractAddress,
+    //     contractAbi,
+    //     'isSwapped',
+    //     {
+    //       methodArguments: [tradeData.memo]
+    //     }
+    //   );
+    //
+    //   if (isDone) {
+    //     tradeData.status = ORDER_BOOK_TRADE_STATUS.DONE;
+    //   } else {
+    //     const isCancelled: boolean = await web3Public.callContractMethod(
+    //       contractAddress,
+    //       contractAbi,
+    //       'isCancelled',
+    //       {
+    //         methodArguments: [tradeData.memo]
+    //       }
+    //     );
+    //
+    //     if (isCancelled) {
+    //       tradeData.status = ORDER_BOOK_TRADE_STATUS.CANCELLED;
+    //     } else {
+    //       tradeData.status = ORDER_BOOK_TRADE_STATUS.ACTIVE;
+    //     }
+    //   }
+    // }
+    //
+    // return tradeData;
+    return null;
   }
 
-  public setAmountContributed(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    return this.orderBookCommonService.setAmountContributed(tradeData);
-  }
-
-  public async setInvestorsNumber(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
-    const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
-
-    const fromInvestors: string[] = await web3Public.callContractMethod(
-      contractAddress,
-      contractAbi,
-      'baseInvestors',
-      {
-        methodArguments: [tradeData.memo]
-      }
-    );
-    tradeData.token.from.investorsNumber = fromInvestors.length;
-
-    const toInvestors: string[] = await web3Public.callContractMethod(
-      contractAddress,
-      contractAbi,
-      'quoteInvestors',
-      {
-        methodArguments: [tradeData.memo]
-      }
-    );
-    tradeData.token.to.investorsNumber = toInvestors.length;
-
-    return tradeData;
-  }
-
-  public async setAllowance(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
-    await this.setAllowanceToToken(tradeData, 'from');
-    await this.setAllowanceToToken(tradeData, 'to');
-
-    return tradeData;
+  public setAmountContributed(tradeData?: OrderBookTradeData): Promise<OrderBookTradeData> {
+    //   return this.orderBookCommonService.setAmountContributed(tradeData);
+    // }
+    //
+    // public async setInvestorsNumber(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
+    //   const web3Public: Web3Public = this.web3PublicService[tradeData.blockchain];
+    //   const { contractAddress, contractAbi } = this.getContractParameters(tradeData);
+    //
+    //   const fromInvestors: string[] = await web3Public.callContractMethod(
+    //     contractAddress,
+    //     contractAbi,
+    //     'baseInvestors',
+    //     {
+    //       methodArguments: [tradeData.memo]
+    //     }
+    //   );
+    //   tradeData.token.from.investorsNumber = fromInvestors.length;
+    //
+    //   const toInvestors: string[] = await web3Public.callContractMethod(
+    //     contractAddress,
+    //     contractAbi,
+    //     'quoteInvestors',
+    //     {
+    //       methodArguments: [tradeData.memo]
+    //     }
+    //   );
+    //   tradeData.token.to.investorsNumber = toInvestors.length;
+    //
+    //   return tradeData;
+    // }
+    //
+    // public async setAllowance(tradeData: OrderBookTradeData): Promise<OrderBookTradeData> {
+    //   await this.setAllowanceToToken(tradeData, 'from');
+    //   await this.setAllowanceToToken(tradeData, 'to');
+    //
+    //   return tradeData;
+    return null;
   }
 
   public async setAllowanceToToken(

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { AbiItem } from 'web3-utils';
 
 export const uniSwapContracts = {
   address: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
@@ -385,4 +386,4 @@ export const abi = [
     type: 'function'
   },
   { stateMutability: 'payable', type: 'receive' }
-];
+] as AbiItem[];

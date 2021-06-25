@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
-import { InstantTradesTradeData } from 'src/app/features/swaps-page-old/models/trade-data';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
+import { InstantTradesResponseApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesResponseApi';
 import { HttpService } from '../../http/http.service';
 import InstantTrade from '../../../../features/swaps-page-old/instant-trades/models/InstantTrade';
 import { BOT_URL } from '../constants/BOT_URL';
-import { InstantTradesRequestApi, InstantTradesResponseApi } from './types/trade-api';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
@@ -62,9 +63,7 @@ export class InstantTradesApiService {
    * @param tradeInfo data body for request
    * @return instant trade object
    */
-  public createTrade(
-    tradeInfo: InstantTradesRequestApi
-  ): Observable<InstantTradesResponseApi | null> {
+  public createTrade(tradeInfo: InstantTradesPostApi): Observable<InstantTradesResponseApi | null> {
     if (this.isIframe) {
       return of(null);
     }
@@ -90,56 +89,39 @@ export class InstantTradesApiService {
   }
 
   /**
-   * @description get list of trades from server
+   * @description get list of user's instant trades
    * @param walletAddress wallet address of user
    * @return list of trades
    */
-  public fetchSwaps(walletAddress: string): Observable<InstantTradesTradeData[]> {
+  public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
     return this.httpService
       .get(instantTradesApiRoutes.getData, { user: walletAddress.toLowerCase() })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
-          swaps.map(swap => this.tradeApiToTradeData(swap))
+          swaps.map(swap => this.parseTradeApiToTableTrade(swap))
         )
       );
   }
 
-  /**
-   * @description transform data structure to our format
-   * @param tradeApi data from server
-   */
-  public tradeApiToTradeData(tradeApi: InstantTradesResponseApi): InstantTradesTradeData {
-    const tradeData = {
-      hash: tradeApi.hash,
-      provider: tradeApi.contract.name,
-      token: {
-        from: {
-          ...tradeApi.from_token,
-          blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.from_token.blockchain_network],
-          price: tradeApi.from_token.usd_price
-        },
-        to: {
-          ...tradeApi.to_token,
-          blockchain: FROM_BACKEND_BLOCKCHAINS[tradeApi.to_token.blockchain_network],
-          price: tradeApi.to_token.usd_price
-        }
-      },
-      blockchain:
-        FROM_BACKEND_BLOCKCHAINS[tradeApi.contract.blockchain_network.title] ||
-        BLOCKCHAIN_NAME.ETHEREUM,
+  private parseTradeApiToTableTrade(tradeApi: InstantTradesResponseApi): TableTrade {
+    function getTableToken(type: 'from' | 'to'): TableToken {
+      const token = tradeApi[`${type}_token`];
+      const amount = tradeApi[`${type}_amount`];
+      return {
+        blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
+        symbol: token.symbol,
+        amount: Web3PublicService.weiToAmount(amount, token.decimals).toFixed(),
+        image: token.image
+      };
+    }
+
+    return {
+      transactionHash: tradeApi.hash,
       status: tradeApi.status,
+      provider: tradeApi.contract.name,
+      fromToken: getTableToken('from'),
+      toToken: getTableToken('to'),
       date: new Date(tradeApi.status_updated_at)
-    } as unknown as InstantTradesTradeData;
-
-    tradeData.fromAmount = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.from,
-      tradeApi.from_amount
-    );
-    tradeData.toAmount = Web3PublicService.tokenWeiToAmount(
-      tradeData.token.from,
-      tradeApi.to_amount
-    );
-
-    return tradeData;
+    };
   }
 }

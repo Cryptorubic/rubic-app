@@ -4,9 +4,9 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TransactionReceipt } from 'web3-eth';
 import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
-import { BRIDGE_PROVIDER_TYPE } from 'src/app/features/bridge/models/ProviderType';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { first } from 'rxjs/operators';
+import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { PanamaToken } from '../../common/panama-bridge-provider/models/PanamaToken';
 import { PanamaBridgeProviderService } from '../../common/panama-bridge-provider/panama-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
@@ -55,8 +55,8 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
     };
   }
 
-  public getProviderType(): BRIDGE_PROVIDER_TYPE {
-    return BRIDGE_PROVIDER_TYPE.PANAMA;
+  public getProviderType(): BRIDGE_PROVIDER {
+    return BRIDGE_PROVIDER.PANAMA;
   }
 
   public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {

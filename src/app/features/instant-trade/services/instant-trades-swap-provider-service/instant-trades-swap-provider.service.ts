@@ -19,7 +19,9 @@ export class InstantTradesSwapProviderService extends SwapProvider {
         const supportedBlockchains = [
           BLOCKCHAIN_NAME.ETHEREUM,
           BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-          BLOCKCHAIN_NAME.POLYGON
+          BLOCKCHAIN_NAME.POLYGON,
+          BLOCKCHAIN_NAME.TRON,
+          BLOCKCHAIN_NAME.XDAI
         ];
 
         supportedBlockchains.forEach(

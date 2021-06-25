@@ -4,6 +4,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
@@ -15,7 +16,7 @@ import { WalletsModalComponent } from './header/components/header/components/wal
 import { ErrorsModule } from './errors/errors.module';
 
 @NgModule({
-  declarations: [MaintenanceComponent],
+  declarations: [MaintenanceComponent, RubicFooterComponent],
   providers: [
     CookieService,
     {
@@ -44,6 +45,6 @@ import { ErrorsModule } from './errors/errors.module';
       }
     })
   ],
-  exports: [MaintenanceComponent, RouterModule, HeaderComponent]
+  exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })
 export class CoreModule {}

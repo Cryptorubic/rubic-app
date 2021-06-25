@@ -17,7 +17,7 @@ export class SwapFormService implements FormService {
   private readonly instantTradeProviders: BehaviorSubject<ProviderControllerData[]>;
 
   public setItProviders(providers) {
-    this.instantTradeProviders.next(providers as any);
+    this.instantTradeProviders.next(providers);
   }
 
   public get itProviders(): Observable<ProviderControllerData[]> {

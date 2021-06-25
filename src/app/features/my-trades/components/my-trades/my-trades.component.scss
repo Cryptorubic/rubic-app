@@ -70,7 +70,7 @@
 }
 
 .table {
-  margin-top: 42px;
+  margin-top: 26px;
 
   font-weight: 300;
 
@@ -140,6 +140,11 @@
     }
 
     .title {
+      display: flex;
+      flex-wrap: nowrap;
+      grid-gap: 5px;
+      align-items: center;
+
       margin-right: 10px;
     }
 
@@ -165,29 +170,49 @@
   }
 
   td {
-    padding: 13px 27px;
-
     font-size: 16px;
     line-height: 19px;
 
     background: rgba(255, 255, 255, 0.5);
     border-bottom-width: 1px;
 
-    ::ng-deep {
-      .wrapper {
-        display: flex;
-        grid-gap: 12px;
-        align-items: center;
+    .transaction-link {
+      display: flex;
+      grid-gap: 12px;
+      align-items: center;
+
+      padding: 13px 15px;
+
+      color: inherit;
+
+      &:hover,
+      &:focus {
+        text-decoration: none !important;
       }
     }
 
-    &.status,
+    &.blockchains,
     &.token,
     &.date {
+      .transaction-link {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    &.status {
+      .transaction-link {
+        padding: 0;
+      }
+
       ::ng-deep {
         .wrapper {
+          display: flex;
           flex-direction: column;
+          grid-gap: 12px;
           align-items: flex-start;
+
+          padding: 13px 15px;
         }
       }
     }
@@ -197,6 +222,8 @@
         display: flex;
         grid-gap: 12px;
         align-items: center;
+
+        text-transform: capitalize;
       }
     }
 
@@ -242,11 +269,29 @@
       }
     }
 
-    .status__text {
-      text-transform: capitalize;
+    &.blockchains {
+      .transaction-link {
+        grid-gap: 6px;
+        align-items: center;
+      }
     }
 
-    .blockchain-img-container {
+    .blockchains {
+      &__blockchain {
+        display: flex;
+        flex-wrap: nowrap;
+        grid-gap: 12px;
+        align-items: center;
+
+        white-space: nowrap;
+      }
+
+      img {
+        align-self: center;
+      }
+    }
+
+    .img-container {
       display: flex;
 
       width: 18px;
@@ -282,17 +327,15 @@
   }
 
   tfoot {
-    tr {
-      &:last-child {
-        td {
-          &:first-child {
-            border-bottom-left-radius: 14px;
-          }
+    td {
+      padding: 13px 27px;
 
-          &:last-child {
-            border-bottom-right-radius: 14px;
-          }
-        }
+      &:first-child {
+        border-bottom-left-radius: 14px;
+      }
+
+      &:last-child {
+        border-bottom-right-radius: 14px;
       }
     }
   }

@@ -1,9 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { Web3PublicService } from '../../../../../../core/services/blockchain/web3-public-service/web3-public.service';
-import { InstantTradesApiService } from '../../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
-import { InstantTradesPostApi } from '../../../../../../core/services/backend/instant-trades-api/types/trade-api';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
+import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../../models/trade-data';
 
 @Injectable({
