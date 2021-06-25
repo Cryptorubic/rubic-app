@@ -89,7 +89,7 @@ export class SwapsService {
           bridgeTokensPair.fromBlockchain === fromBlockchain &&
           bridgeTokensPair.toBlockchain === toBlockchain
       )
-      .bridgeTokens.find(
+      ?.bridgeTokens.find(
         bridgeToken =>
           bridgeToken.blockchainToken[fromBlockchain]?.address.toLowerCase() ===
           fromToken.address.toLowerCase()

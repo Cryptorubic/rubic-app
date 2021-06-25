@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
-import BigNumber from 'bignumber.js';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { StoreService } from 'src/app/core/services/store/store.service';
 
@@ -11,9 +10,13 @@ export interface ItSettingsForm {
   rubicOptimisation: boolean;
 }
 
+export interface BridgeSettingsForm {
+  tronAddress: string;
+}
+
 export interface SettingsForm {
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: ItSettingsForm;
-  [SWAP_PROVIDER_TYPE.BRIDGE]: {};
+  [SWAP_PROVIDER_TYPE.BRIDGE]: BridgeSettingsForm;
 }
 
 @Injectable({
@@ -46,7 +49,7 @@ export class SettingsService {
         rubicOptimisation: new FormControl<boolean>(false)
       }),
       [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup({
-        toAmount: new FormControl<BigNumber>()
+        tronAddress: new FormControl<string>('')
       })
     });
   }

@@ -1,4 +1,4 @@
-$green: rgb(74, 169, 86);
+@import 'src/scss/vars';
 
 .settings {
   width: 265px;
@@ -13,6 +13,7 @@ $green: rgb(74, 169, 86);
     height: 15px;
     margin-right: auto;
     margin-left: 6px;
+
     cursor: pointer;
   }
 
@@ -33,7 +34,7 @@ $green: rgb(74, 169, 86);
     &_active {
       color: white;
 
-      background: $green;
+      background: $main-green;
     }
   }
 
@@ -64,14 +65,19 @@ $green: rgb(74, 169, 86);
     }
   }
 
-  ::ng-deep tui-wrapper[data-appearance='textfield'] {
-    border-radius: 100px;
-    box-shadow: none;
+  ::ng-deep {
+    tui-wrapper[data-appearance='textfield'] {
+      border-radius: 100px;
+      box-shadow: none;
 
-    input,
-    input::placeholder {
+      input,
+      input::placeholder {
+        text-align: right;
+      }
+    }
+
+    input + .content .placeholder {
       text-align: right;
     }
   }
-
 }

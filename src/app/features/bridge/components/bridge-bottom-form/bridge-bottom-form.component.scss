@@ -20,6 +20,10 @@
   }
 
   &__terms-and-conditions {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 8px;
+
     margin-top: 15px;
 
     font-weight: 300;
