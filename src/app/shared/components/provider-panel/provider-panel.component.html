@@ -32,12 +32,14 @@
       </div>
       <div *ngIf="providerData.estimatedGas" class="provider-panel__right">
         <div
+          *ngIf="tradeData.to.amount && tradeData.to.token.price"
           class="provider-panel__token-usd-price"
           [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
         >
           ${{ getUsdPrice() }}
         </div>
         <div
+          *ngIf="tradeData.gasFeeInEth && tradeData.gasFeeInUsd && tradeData.gasFeeInEth.gt(0)"
           class="provider-panel__token-gas-fee"
           [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
         >
