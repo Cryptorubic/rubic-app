@@ -8,11 +8,11 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { IToken } from 'src/app/shared/models/tokens/IToken';
+import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
 import { HttpService } from '../../http/http.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BackendToken } from './models/BackendToken';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
-import { coingeckoTestTokens } from '../../../../../test/tokens/coingecko-tokens';
 
 const RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
 
@@ -119,10 +119,14 @@ export class TokensService {
   }
 
   private async recalculateUsersBalance(
-    tokens: List<IToken> = this._tokens.getValue()
+    tokens: List<TokenAmount> = this._tokens.getValue()
   ): Promise<void> {
     if (this.userAddress && tokens.size) {
-      const blockchains: BLOCKCHAIN_NAME[] = [...tokens.map(token => token.blockchain).toSet()];
+      const blockchains: BLOCKCHAIN_NAME[] = [
+        BLOCKCHAIN_NAME.ETHEREUM,
+        BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        BLOCKCHAIN_NAME.POLYGON
+      ];
       const promises = [];
 
       blockchains.forEach(blockchain => {
@@ -152,6 +156,10 @@ export class TokensService {
             }))
             .toArray()
         )
+      );
+
+      tokensWithBalance.push(
+        tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
       );
 
       this._tokens.next(List(tokensWithBalance.flat()));

@@ -125,13 +125,11 @@ export class BridgeService {
         if (provider) {
           tokensObservables.push(
             provider.tokens.pipe(
-              map(bridgeTokens => {
-                return {
-                  fromBlockchain,
-                  toBlockchain,
-                  bridgeTokens
-                };
-              })
+              map(bridgeTokens => ({
+                fromBlockchain,
+                toBlockchain,
+                bridgeTokens
+              }))
             )
           );
         }
