@@ -181,22 +181,39 @@
       grid-gap: 12px;
       align-items: center;
 
-      padding: 13px 27px;
+      padding: 13px 15px;
 
       color: inherit;
 
-      &:hover {
+      &:hover,
+      &:focus {
         text-decoration: none !important;
       }
     }
 
-    &.status,
     &.blockchains,
     &.token,
     &.date {
       .transaction-link {
         flex-direction: column;
         align-items: flex-start;
+      }
+    }
+
+    &.status {
+      .transaction-link {
+        padding: 0;
+      }
+
+      ::ng-deep {
+        .wrapper {
+          display: flex;
+          flex-direction: column;
+          grid-gap: 12px;
+          align-items: flex-start;
+
+          padding: 13px 15px;
+        }
       }
     }
 
@@ -310,17 +327,15 @@
   }
 
   tfoot {
-    tr {
-      &:last-child {
-        td {
-          &:first-child {
-            border-bottom-left-radius: 14px;
-          }
+    td {
+      padding: 13px 27px;
 
-          &:last-child {
-            border-bottom-right-radius: 14px;
-          }
-        }
+      &:first-child {
+        border-bottom-left-radius: 14px;
+      }
+
+      &:last-child {
+        border-bottom-right-radius: 14px;
       }
     }
   }

@@ -105,15 +105,15 @@
                     </div>
                     <span class="status__text">{{ trade.status }}</span>
                   </div>
-
-                  <app-rubic-button
-                    *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
-                    size="s"
-                    [loading]="item.inProgress"
-                    (onClick)="receivePolygonBridgeTrade(trade)"
-                    >Receive</app-rubic-button
-                  >
                 </a>
+
+                <app-rubic-button
+                  *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
+                  size="s"
+                  [loading]="item.inProgress"
+                  (onClick)="receivePolygonBridgeTrade(trade)"
+                  >Receive</app-rubic-button
+                >
               </td>
 
               <td *tuiCell="'FromTo'" tuiTd class="blockchains">

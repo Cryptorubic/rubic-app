@@ -346,13 +346,14 @@ export class MyTradesComponent implements OnInit, OnDestroy {
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
-          this.errorsService.catch$(err);
 
           tableData = this.tableData$.getValue().map(tableTrade => ({
             ...tableTrade,
             inProgress: false
           }));
           this.tableData$.next(tableData);
+
+          this.errorsService.catch$(err);
         }
       );
   }

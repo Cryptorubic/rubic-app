@@ -101,26 +101,37 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       .post(this.polygonGraphApiUrl, {
         query
       })
-      .subscribe(async (response: PolygonGraphResponse) => {
-        const posTokens = response.data.tokenMappings;
-        const promisesTokens = [];
+      .subscribe(
+        async (response: PolygonGraphResponse) => {
+          if (!response.data) {
+            this.tokens$.next(List([]));
+            return;
+          }
 
-        posTokens.forEach(token =>
-          promisesTokens.push(this.parsePolygonTokens(token, tokenAmounts))
-        );
-        const tokens = await Promise.all(promisesTokens);
+          const posTokens = response.data.tokenMappings;
+          const promisesTokens = [];
 
-        this.tokens$.next(
-          List(
-            tokens.filter(
-              t =>
-                t !== null &&
-                t.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() !==
-                  this.RBC_ADDRESS_IN_ETHEREUM.toLowerCase()
+          posTokens.forEach(token =>
+            promisesTokens.push(this.parsePolygonTokens(token, tokenAmounts))
+          );
+          const tokens = await Promise.all(promisesTokens);
+
+          this.tokens$.next(
+            List(
+              tokens.filter(
+                t =>
+                  t !== null &&
+                  t.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() !==
+                    this.RBC_ADDRESS_IN_ETHEREUM.toLowerCase()
+              )
             )
-          )
-        );
-      });
+          );
+        },
+        err => {
+          console.debug('Error retrieving polygon tokens: ', err);
+          this.tokens$.next(List([]));
+        }
+      );
   }
 
   private async parsePolygonTokens(

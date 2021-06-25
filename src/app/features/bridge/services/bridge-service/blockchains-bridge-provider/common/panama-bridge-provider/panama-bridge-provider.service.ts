@@ -58,9 +58,7 @@ export class PanamaBridgeProviderService {
       .pipe(
         map((response: PanamaResponse) => {
           if (response.code !== this.PANAMA_SUCCESS_CODE) {
-            this.errorsService.throw(
-              new RetrievingTokensError(`Error retrieving tokens, code ${response.code}`)
-            );
+            console.debug('Error retrieving panama tokens', response);
             return List([]);
           }
           return List(

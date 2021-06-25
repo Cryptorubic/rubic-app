@@ -6,6 +6,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { TransactionReceipt } from 'web3-eth';
 import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
 
 @Injectable()
 export class MyTradesService {
@@ -34,6 +35,9 @@ export class MyTradesService {
       .depositTradeAfterCheckpoint(burnTransactionHash, onTransactionHash)
       .pipe(
         catchError(err => {
+          if (err.code === 4001) {
+            return throwError(new UserRejectError());
+          }
           return throwError(err);
         })
       );

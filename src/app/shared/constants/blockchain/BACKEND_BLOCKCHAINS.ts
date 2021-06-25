@@ -4,6 +4,8 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   ethereum: BLOCKCHAIN_NAME.ETHEREUM,
   'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   polygon: BLOCKCHAIN_NAME.POLYGON,
+  'tron-mainnet': BLOCKCHAIN_NAME.TRON,
+  'xdai-mainnet': BLOCKCHAIN_NAME.XDAI,
   'ethereum-test': BLOCKCHAIN_NAME.ETHEREUM_TESTNET
 };
 
