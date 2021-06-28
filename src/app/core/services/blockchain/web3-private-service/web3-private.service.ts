@@ -3,9 +3,9 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
+import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
-import { LowGasError } from '../../../../shared/models/errors/provider/LowGasError';
+import { LowGasError } from '../../../errors/models/provider/LowGasError';
 
 @Injectable({
   providedIn: 'root'

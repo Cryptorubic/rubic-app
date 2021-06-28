@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TotalSupplyOverflowErrorComponent } from './total-supply-overflow-error.component';
-import { TotalSupplyOverflowError } from '../../../models/errors/order-book/TotalSupplyOverflowError';
+import { TotalSupplyOverflowError } from '../../../../core/errors/models/order-book/TotalSupplyOverflowError';
 
 describe('TotalSupplyOverflowErrorComponent', () => {
   let component: TotalSupplyOverflowErrorComponent;

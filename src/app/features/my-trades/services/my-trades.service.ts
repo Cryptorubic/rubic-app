@@ -4,9 +4,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
+import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
 
 @Injectable()
 export class MyTradesService {

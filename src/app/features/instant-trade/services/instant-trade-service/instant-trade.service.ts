@@ -142,6 +142,7 @@ export class InstantTradeService {
 
   public updateTrade(hash: string, status: INTSTANT_TRADES_TRADE_STATUS) {
     return this.instantTradesApiService.patchTrade(hash, status).subscribe({
+      // tslint:disable-next-line:no-console
       error: err => console.debug('IT patch request is failed', err)
     });
   }
@@ -169,7 +170,7 @@ export class InstantTradeService {
     //     this.bridgeProvider.needApprove(bridgeTrade).pipe(
     //       catchError(err => {
     //         console.error(err);
-    //         const error = err instanceof RubicError ? err : new RubicError();
+    //         const error = err instanceof UndefinedError ? err : new UndefinedError();
     //         return throwError(error);
     //       })
     //     )
@@ -199,7 +200,7 @@ export class InstantTradeService {
     //     return this.bridgeProvider.approve(bridgeTrade).pipe(
     //       catchError(err => {
     //         console.error(err);
-    //         const error = err instanceof RubicError ? err : new RubicError();
+    //         const error = err instanceof UndefinedError ? err : new UndefinedError();
     //         return throwError(error);
     //       })
     //     );

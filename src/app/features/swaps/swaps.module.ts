@@ -26,11 +26,11 @@ import { TokensSelectModule } from 'src/app/features/tokens-select/tokens-select
 import { BridgesSwapProviderService } from 'src/app/features/bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { InstantTradesSwapProviderService } from 'src/app/features/instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
-import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { RubicBlockchainsComponent } from 'src/app/features/swaps/components/rubic-blockchains/rubic-blockchains.component';
 import { RubicTokensComponent } from 'src/app/features/swaps/components/rubic-tokens/rubic-tokens.component';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SettingsBridgeComponent } from './components/settings-bridge/settings-bridge.component';
+import { RubicRefreshButtonComponent } from './components/rubic-refresh-button/rubic-refresh-button.component';
 
 @NgModule({
   declarations: [
@@ -39,9 +39,10 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     SettingsItComponent,
     SettingsBridgeComponent,
     RubicBlockchainsComponent,
-    RubicTokensComponent
+    RubicTokensComponent,
+    RubicRefreshButtonComponent
   ],
-  exports: [],
+  exports: [RubicRefreshButtonComponent],
   imports: [
     CommonModule,
     SwapsRoutingModule,

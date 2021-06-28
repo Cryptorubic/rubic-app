@@ -18,9 +18,9 @@ import {
   WETH
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap-constants';
 import { TransactionReceipt } from 'web3-eth';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
-import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
+import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
+import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
+import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import {
   Gas,
   SWAP_METHOD,
@@ -28,8 +28,8 @@ import {
   UniSwapTrade
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
+import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import {
@@ -74,8 +74,7 @@ export class QuickSwapService {
   public async calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    gasOptimization: boolean = true
+    toToken: InstantTradeToken
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -94,7 +93,7 @@ export class QuickSwapService {
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const { route, gasData } = await this.getToAmountAndPath(
-      gasOptimization,
+      this.settings.rubicOptimisation,
       amountIn,
       fromTokenClone,
       toTokenClone,
@@ -115,7 +114,7 @@ export class QuickSwapService {
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
         path: route.path,
-        gasOptimization
+        gasOptimization: this.settings.rubicOptimisation
       }
     };
   }
@@ -149,6 +148,7 @@ export class QuickSwapService {
 
       return estimatedGas || tokensToTokensEstimatedGas[path.length - 2];
     } catch (e) {
+      // tslint:disable-next-line:no-console
       console.debug(e);
       return tokensToTokensEstimatedGas[path.length - 2];
     }
@@ -179,6 +179,7 @@ export class QuickSwapService {
       }
       return ethToTokensEstimatedGas[path.length - 2];
     } catch (e) {
+      // tslint:disable-next-line:no-console
       console.debug(e);
       return ethToTokensEstimatedGas[path.length - 2];
     }

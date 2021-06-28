@@ -1,17 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
+import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { OneinchQuoteError } from 'src/app/shared/models/errors/provider/OneinchQuoteError';
+import { OneinchQuoteError } from 'src/app/core/errors/models/provider/OneinchQuoteError';
 import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
+import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
-import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
-import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
+import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
+import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
 import { catchError, map } from 'rxjs/operators';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
@@ -20,7 +20,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Injectable } from '@angular/core';
-import CustomError from 'src/app/shared/models/errors/custom-error';
+import CustomError from 'src/app/core/errors/models/custom-error';
 import {
   OneInchApproveResponse,
   OneInchQuoteResponse,
@@ -123,7 +123,7 @@ export class OneInchEthService {
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      this.errorsService.catch$(new OneinchQuoteError());
+      this.errorsService.throw$(new OneinchQuoteError());
     }
 
     const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);

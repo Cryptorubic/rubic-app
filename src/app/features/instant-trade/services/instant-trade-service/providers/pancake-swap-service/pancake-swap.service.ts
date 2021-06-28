@@ -18,9 +18,9 @@ import {
   WETH
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/pancake-swap-service/pankace-swap-constants';
 import { TransactionReceipt } from 'web3-eth';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
-import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
+import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
+import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
+import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import {
   Gas,
   SWAP_METHOD,
@@ -28,8 +28,8 @@ import {
   UniSwapTrade
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
+import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import {
@@ -148,6 +148,7 @@ export class PancakeSwapService {
 
       return estimatedGas || tokensToTokensEstimatedGas[path.length - 2];
     } catch (e) {
+      // tslint:disable-next-line:no-console
       console.debug(e);
       return tokensToTokensEstimatedGas[path.length - 2];
     }
@@ -178,6 +179,7 @@ export class PancakeSwapService {
       }
       return ethToTokensEstimatedGas[path.length - 2];
     } catch (e) {
+      // tslint:disable-next-line:no-console
       console.debug(e);
       return ethToTokensEstimatedGas[path.length - 2];
     }
@@ -212,6 +214,7 @@ export class PancakeSwapService {
 
       return estimatedGas || tokensToEthEstimatedGas[path.length - 2];
     } catch (e) {
+      // tslint:disable-next-line:no-console
       console.debug(e);
       return tokensToEthEstimatedGas[path.length - 2];
     }

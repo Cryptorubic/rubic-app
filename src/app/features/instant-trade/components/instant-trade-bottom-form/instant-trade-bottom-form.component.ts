@@ -15,12 +15,12 @@ import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
 import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constants/providers';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
-import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
+import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
 import { Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -176,7 +176,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       };
       this.cdr.detectChanges();
     } else {
-      this.errorService.catch$(new NoSelectedProviderError());
+      this.errorService.throw$(new NoSelectedProviderError());
     }
   }
 
@@ -192,7 +192,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
         break;
       default:
-        this.errorService.catch$(new RubicError());
+        this.errorService.throw$(new UndefinedError());
     }
   }
 
@@ -276,7 +276,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     //     err => {
     //       approveInProgressSubscription$?.unsubscribe();
     //       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-    //       this.errorsService.catch$(err);
     //     }
     //   );
   }

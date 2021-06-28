@@ -9,6 +9,9 @@ import {
 } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import BigNumber from 'bignumber.js';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
 import {
   ORDER_BOOK_TRADE_STATUS,
   OrderBookDataToken,
@@ -16,11 +19,7 @@ import {
 } from '../../../../models/trade-data';
 import ADDRESS_TYPE from '../../../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TX_STATUS } from '../../../../models/TX_STATUS';
-import { TokenPart } from '../../../../../../shared/models/order-book/tokens';
-import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
-import { RubicError } from '../../../../../../shared/models/errors/RubicError';
 import { OrderBookTradeService } from '../../../../services/order-book-trade.service';
-import { ErrorsOldService } from '../../../../../../core/services/errors-old/errors-old.service';
 
 type Operation = 'approve' | 'contribute' | 'withdraw';
 
@@ -76,10 +75,7 @@ export class TokenFormComponent implements OnInit, OnChanges {
     return new BigNumber(this.amountToContribute?.split(',').join(''));
   }
 
-  constructor(
-    private orderBookTradeService: OrderBookTradeService,
-    private readonly errorsService: ErrorsOldService
-  ) {}
+  constructor(private orderBookTradeService: OrderBookTradeService) {}
 
   ngOnInit(): void {
     this.token = this.tradeData.token[this.tokenPart];
@@ -155,7 +151,7 @@ export class TokenFormComponent implements OnInit, OnChanges {
   }
 
   private showErrorMessage(err: RubicError): void {
-    this.errorsService.showErrorDialog(err);
+    // this.errorsService.showErrorDialog(err);
   }
 
   public makeApproveOrContribute(): void {

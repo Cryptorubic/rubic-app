@@ -18,12 +18,12 @@ import {
   WETH
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap-constants';
 import { TransactionReceipt } from 'web3-eth';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
-import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
+import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
+import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
+import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
+import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import {
   Gas,
   SWAP_METHOD,
@@ -89,8 +89,7 @@ export class UniSwapService {
   public async calculateTrade(
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    gasOptimization: boolean = true
+    toToken: InstantTradeToken
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -109,7 +108,7 @@ export class UniSwapService {
     const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
 
     const { route, gasData } = await this.getToAmountAndPath(
-      gasOptimization,
+      this.settings.rubicOptimisation,
       amountIn,
       fromTokenClone,
       toTokenClone,
@@ -130,7 +129,7 @@ export class UniSwapService {
       gasFeeInEth: gasData.gasFeeInEth,
       options: {
         path: route.path,
-        gasOptimization
+        gasOptimization: this.settings.rubicOptimisation
       }
     };
   }
