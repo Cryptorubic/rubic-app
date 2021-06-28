@@ -7,6 +7,7 @@ import { TuiLetModule } from '@taiga-ui/cdk';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
+import { SwapsModule } from 'src/app/features/swaps/swaps.module';
 import { MyTradesComponent } from './components/my-trades/my-trades.component';
 import { SharedModule } from '../../shared/shared.module';
 
@@ -20,7 +21,8 @@ import { SharedModule } from '../../shared/shared.module';
     TuiLetModule,
     TuiTablePaginationModule,
     InlineSVGModule,
-    SharedModule
+    SharedModule,
+    SwapsModule
   ],
   providers: [MyTradesService, EthereumPolygonBridgeService]
 })

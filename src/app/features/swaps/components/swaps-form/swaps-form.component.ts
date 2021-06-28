@@ -59,6 +59,18 @@ export class SwapsFormComponent {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
 
+  public get allowTrade(): boolean {
+    const form = this.swapFormService.commonTrade.controls.input.value;
+    return Boolean(
+      form.fromAmount &&
+        form.fromAmount.gt(0) &&
+        form.fromBlockchain &&
+        form.toBlockchain &&
+        form.fromToken &&
+        form.toToken
+    );
+  }
+
   private _supportedTokens: SupportedTokensInfo;
 
   private _bridgeTokensPairs: BlockchainsBridgeTokens[];
@@ -76,6 +88,8 @@ export class SwapsFormComponent {
   public selectedFromAmount = new BigNumber(0);
 
   public isLoading = true;
+
+  public loadingStatus: 'refreshing' | 'stopped' | '';
 
   constructor(
     private readonly swapsService: SwapsService,
@@ -112,8 +126,8 @@ export class SwapsFormComponent {
         this.setAvailableTokens('to');
       }
 
-      this.setNewSelectedToken('from', formValue['fromToken']);
-      this.setNewSelectedToken('to', formValue['toToken']);
+      this.setNewSelectedToken('from', formValue.fromToken);
+      this.setNewSelectedToken('to', formValue.toToken);
 
       this.isLoading = false;
     });
@@ -257,6 +271,9 @@ export class SwapsFormComponent {
   }
 
   public async refreshTrade(): Promise<void> {
+    this.loadingStatus = 'refreshing';
     await this.itForm.calculateTrades();
+    this.loadingStatus = 'stopped';
+    setTimeout(() => (this.loadingStatus = ''), 1000);
   }
 }
