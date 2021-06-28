@@ -1,0 +1,285 @@
+@import 'src/scss/vars';
+
+.table {
+  width: 100%;
+  margin-top: 26px;
+
+  font-weight: 300;
+
+  border-radius: 14px;
+  box-shadow: -30px -30px 80px #fff0, 30px 30px 80px rgba(84, 129, 90, 0.15), inset 4px 4px 50px rgba(255, 255, 255, 0.6);
+
+  &_hidden {
+    display: none;
+  }
+
+  thead {
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    box-shadow: -30px -30px 80px #fff0, 30px 30px 80px rgba(84, 129, 90, 0.15), inset 4px 4px 50px rgba(255, 255, 255, 0.6);
+  }
+
+  th,
+  td {
+    color: #808080;
+    font-weight: inherit;
+    font-family: inherit;
+
+    border-color: white;
+    border-style: solid;
+    border-width: 0;
+    border-right-width: 1px;
+
+    &:last-child {
+      border-right-width: 0;
+    }
+  }
+
+  th {
+    height: 56px;
+    padding: 18px 27px;
+
+    font-size: 18px;
+    line-height: 21px;
+
+    background: rgba(255, 255, 255, 0.6);
+
+    &:first-child {
+      border-top-left-radius: 14px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 14px;
+    }
+
+    ::ng-deep {
+      .sort {
+        color: inherit;
+        font-weight: inherit;
+
+        &_sorted {
+          font-weight: 500;
+        }
+      }
+
+      .arrow {
+        display: none;
+      }
+    }
+
+    .title {
+      display: flex;
+      flex-wrap: nowrap;
+      grid-gap: 5px;
+      align-items: center;
+
+      margin-right: 10px;
+    }
+
+    .sort-arrow {
+      ::ng-deep {
+        svg path {
+          opacity: 0.3;
+
+          fill: #808080;
+        }
+      }
+
+      &_green {
+        ::ng-deep {
+          svg path {
+            opacity: 1;
+
+            fill: $main-green;
+          }
+        }
+      }
+    }
+  }
+
+  td {
+    font-size: 16px;
+    line-height: 19px;
+
+    background: rgba(255, 255, 255, 0.5);
+    border-bottom-width: 1px;
+
+    .transaction-link {
+      display: flex;
+      grid-gap: 12px;
+      align-items: center;
+
+      padding: 13px 15px;
+
+      color: inherit;
+
+      &:hover,
+      &:focus {
+        text-decoration: none !important;
+      }
+    }
+
+    &.blockchains,
+    &.token,
+    &.date {
+      .transaction-link {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    &.status {
+      .transaction-link {
+        padding: 0;
+      }
+
+      ::ng-deep {
+        .wrapper {
+          display: flex;
+          flex-direction: column;
+          grid-gap: 12px;
+          align-items: flex-start;
+
+          padding: 13px 15px;
+        }
+      }
+    }
+
+    .status {
+      &__text {
+        display: flex;
+        grid-gap: 12px;
+        align-items: center;
+
+        text-transform: capitalize;
+      }
+    }
+
+    .status-circle {
+      display: flex;
+
+      width: 20px;
+      min-width: 20px;
+      height: 20px;
+
+      border-radius: 50%;
+
+      &_green {
+        background: rgba(74, 169, 86, 0.3);
+
+        .status-circle__inner {
+          background: rgb(74, 169, 86);
+        }
+      }
+
+      &_yellow {
+        background: rgba(255, 203, 17, 0.3);
+
+        .status-circle__inner {
+          background: rgb(255, 203, 17);
+        }
+      }
+
+      &_red {
+        background: rgba(216, 33, 34, 0.3);
+
+        .status-circle__inner {
+          background: rgb(216, 33, 34);
+        }
+      }
+
+      &__inner {
+        width: 10px;
+        height: 10px;
+        margin: auto;
+
+        border-radius: 50%;
+      }
+    }
+
+    &.blockchains {
+      .transaction-link {
+        grid-gap: 6px;
+        align-items: center;
+      }
+    }
+
+    .blockchains {
+      &__blockchain {
+        display: flex;
+        flex-wrap: nowrap;
+        grid-gap: 12px;
+        align-items: center;
+
+        white-space: nowrap;
+      }
+
+      img {
+        align-self: center;
+      }
+    }
+
+    .img-container {
+      display: flex;
+
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        margin: auto;
+      }
+    }
+
+    .token-info {
+      display: flex;
+      grid-gap: 8px;
+      align-items: center;
+
+      &__img-container {
+        display: flex;
+
+        width: 18px;
+        min-width: 18px;
+        height: 17px;
+
+        img {
+          max-width: 100%;
+          max-height: 100%;
+          margin: auto;
+        }
+      }
+    }
+  }
+
+  tfoot {
+    td {
+      padding: 13px 27px;
+
+      &:first-child {
+        border-bottom-left-radius: 14px;
+      }
+
+      &:last-child {
+        border-bottom-right-radius: 14px;
+      }
+    }
+  }
+}
+
+tui-table-pagination {
+  ::ng-deep {
+    span {
+      font-weight: 400;
+      font-size: 14px;
+      font-family: $sf-pro-font;
+      word-spacing: 0.1em;
+    }
+
+    button {
+      color: $main-green;
+    }
+  }
+}

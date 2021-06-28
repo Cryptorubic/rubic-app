@@ -9,9 +9,10 @@ import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.s
 import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
 import { MyTradesComponent } from './components/my-trades/my-trades.component';
 import { SharedModule } from '../../shared/shared.module';
+import { TableComponent } from './components/my-trades/components/table/table.component';
 
 @NgModule({
-  declarations: [MyTradesComponent],
+  declarations: [MyTradesComponent, TableComponent],
   imports: [
     CommonModule,
     MyTradesRoutingModule,
