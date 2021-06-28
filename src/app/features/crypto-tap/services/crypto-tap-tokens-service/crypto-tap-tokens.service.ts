@@ -22,6 +22,8 @@ export class CryptoTapTokensService {
     return this._availableTokens$.asObservable();
   }
 
+  private isTestingMode = false;
+
   constructor(
     private tokensService: TokensService,
     private cryptoTapFormService: CryptoTapFormService,
@@ -33,6 +35,7 @@ export class CryptoTapTokensService {
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
+        this.isTestingMode = true;
         this._cryptoTapTokens$.next([
           {
             address: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
@@ -57,25 +60,27 @@ export class CryptoTapTokensService {
 
   private loadCryptoTapTokens() {
     setTimeout(() => {
-      this._cryptoTapTokens$.next([
-        {
-          address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
-          direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-        },
-        {
-          address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
-          direction: BLOCKCHAIN_NAME.POLYGON
-        },
-        {
-          address: '0x0000000000000000000000000000000000000000',
-          direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-        },
-        {
-          address: '0x0000000000000000000000000000000000000000',
-          direction: BLOCKCHAIN_NAME.POLYGON
-        }
-      ]);
-    }, 2000);
+      if (!this.isTestingMode) {
+        this._cryptoTapTokens$.next([
+          {
+            address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
+            direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+          },
+          {
+            address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
+            direction: BLOCKCHAIN_NAME.POLYGON
+          },
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+          },
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            direction: BLOCKCHAIN_NAME.POLYGON
+          }
+        ]);
+      }
+    });
   }
 
   private setUpTokens() {

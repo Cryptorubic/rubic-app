@@ -214,10 +214,7 @@ export class Web3Public {
   public isNativeAddress = (address: string): boolean => {
     const defaultAddress = '0x0000000000000000000000000000000000000000';
     if (this.blockchain?.name === BLOCKCHAIN_NAME.POLYGON) {
-      return (
-        address.toLowerCase() === '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'.toLowerCase() ||
-        address.toLowerCase() === defaultAddress
-      );
+      return address.toLowerCase() === defaultAddress;
     }
     return address === defaultAddress;
   };
