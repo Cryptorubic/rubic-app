@@ -8,9 +8,17 @@ import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypt
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { HttpClient } from '@angular/common/http';
+
+interface BackendTokensResponse {
+  '1': { address?: string }[];
+  '3': { address?: string }[];
+}
 
 @Injectable()
 export class CryptoTapTokensService {
+  private baseApiUrl = 'https://exchanger.rubic.exchange/api/v1/';
+
   private _cryptoTapTokens$ = new BehaviorSubject<CryptoTapToken[]>([]);
 
   private _availableTokens$ = new BehaviorSubject<FromToAvailableTokens>({
@@ -26,6 +34,7 @@ export class CryptoTapTokensService {
 
   constructor(
     private tokensService: TokensService,
+    private httpClient: HttpClient,
     private cryptoTapFormService: CryptoTapFormService,
     private web3PublicService: Web3PublicService,
     useTestingModeService: UseTestingModeService
@@ -36,51 +45,31 @@ export class CryptoTapTokensService {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this._cryptoTapTokens$.next([
-          {
-            address: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
-            direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-          },
-          {
-            address: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
-            direction: BLOCKCHAIN_NAME.POLYGON
-          },
-          {
-            address: '0x0000000000000000000000000000000000000000',
-            direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-          },
-          {
-            address: '0x0000000000000000000000000000000000000000',
-            direction: BLOCKCHAIN_NAME.POLYGON
-          }
-        ]);
+        this.baseApiUrl = 'https://devbnbexchange.mywish.io/api/v1/';
+        this.loadCryptoTapTokens();
       }
     });
   }
 
   private loadCryptoTapTokens() {
-    setTimeout(() => {
-      if (!this.isTestingMode) {
-        this._cryptoTapTokens$.next([
-          {
-            address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
-            direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-          },
-          {
-            address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
-            direction: BLOCKCHAIN_NAME.POLYGON
-          },
-          {
-            address: '0x0000000000000000000000000000000000000000',
-            direction: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-          },
-          {
-            address: '0x0000000000000000000000000000000000000000',
-            direction: BLOCKCHAIN_NAME.POLYGON
-          }
-        ]);
-      }
-    });
+    this.httpClient
+      .get(`${this.baseApiUrl}tokens/`)
+      .subscribe((response: BackendTokensResponse) => {
+        const tokens: CryptoTapToken[] = [];
+        Object.entries(response).forEach(([key, value]) =>
+          tokens.push(
+            ...value.map(token => ({
+              address:
+                token.address ||
+                this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].nativeTokenAddress,
+              // eslint-disable-next-line eqeqeq
+              direction: key == '1' ? BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN : BLOCKCHAIN_NAME.POLYGON
+            }))
+          )
+        );
+
+        this._cryptoTapTokens$.next(tokens);
+      });
   }
 
   private setUpTokens() {
@@ -98,7 +87,9 @@ export class CryptoTapTokensService {
             .map(cryptoTapToken => ({
               ...tokens
                 .filter(token => token.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
-                .find(token => token.address === cryptoTapToken.address),
+                .find(
+                  token => token.address.toLowerCase() === cryptoTapToken.address.toLowerCase()
+                ),
               available: true
             })),
           to: tokens

@@ -10,7 +10,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
 import { FromToAvailableTokens } from 'src/app/features/crypto-tap/models/FromToAvailableTokens';
 import { CryptoTapTokensService } from 'src/app/features/crypto-tap/services/crypto-tap-tokens-service/crypto-tap-tokens.service';
-import { Observable, of, Subscription, throwError } from 'rxjs';
+import { of, Subscription, throwError } from 'rxjs';
 import { CryptoTapService } from 'src/app/features/crypto-tap/services/crypto-tap-service/crypto-tap.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';

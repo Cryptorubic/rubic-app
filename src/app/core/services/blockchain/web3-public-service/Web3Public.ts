@@ -32,6 +32,10 @@ export class Web3Public {
     return new this.web3.BatchRequest();
   }
 
+  public get nativeTokenAddress(): string {
+    return '0x0000000000000000000000000000000000000000';
+  }
+
   /**
    * @description gets information about token through ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token

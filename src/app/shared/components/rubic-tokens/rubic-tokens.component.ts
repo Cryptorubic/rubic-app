@@ -53,17 +53,13 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
           this.selectedToken = token;
           if (this.tokenType === 'from') {
             this.formService.commonTrade.controls.input.patchValue({
-              fromBlockchain: token.blockchain
-            });
-            this.formService.commonTrade.controls.input.patchValue({
+              fromBlockchain: token.blockchain,
               fromToken: token
             });
           } else {
             this.formService.commonTrade.controls.input.patchValue({
+              toToken: token,
               toBlockchain: token.blockchain
-            });
-            this.formService.commonTrade.controls.input.patchValue({
-              toToken: token
             });
           }
         }
