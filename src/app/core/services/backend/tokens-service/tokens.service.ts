@@ -167,7 +167,9 @@ export class TokensService {
         tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
       );
 
-      this._tokens.next(List(tokensWithBalance.flat()));
+      if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
+        this._tokens.next(List(tokensWithBalance.flat()));
+      }
     }
   }
 }

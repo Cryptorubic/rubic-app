@@ -37,7 +37,7 @@ interface EstimatedAmountResponse {
 
 @Injectable()
 export class CryptoTapService {
-  private readonly baseApiUrl = 'https://exchanger.rubic.exchange/api/v1/';
+  private baseApiUrl = 'https://exchanger.rubic.exchange/api/v1/';
 
   private isTestingMode: boolean;
 
@@ -60,6 +60,7 @@ export class CryptoTapService {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
       if (isTestingMode) {
+        this.baseApiUrl = 'https://devbnbexchange.mywish.io/api/v1/';
         this.contractAddress = contractAddressKovan;
       }
     });
