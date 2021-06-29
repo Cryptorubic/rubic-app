@@ -108,8 +108,7 @@ export class OneInchBscService {
       !this.supportedTokensAddresses.includes(fromTokenAddress) ||
       !this.supportedTokensAddresses.includes(toTokenAddress)
     ) {
-      console.error(`One inch not support ${fromToken.address} or ${toToken.address}`);
-      return null;
+      throw new CustomError('1inch not supports one of entered tokens');
     }
 
     const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
@@ -173,16 +172,20 @@ export class OneInchBscService {
       );
     }
 
+    const tradeParams = {
+      params: {
+        fromTokenAddress,
+        toTokenAddress,
+        amount: fromAmount,
+        slippage: this.settings.slippageTolerance.toString(),
+        fromAddress: this.providerConnectorService.address
+      }
+    };
+    if (this.settings.disableMultihops) {
+      (tradeParams.params as any).mainRouteParts = 1;
+    }
     const oneInchTrade: OneInchSwapResponse = (await this.httpClient
-      .get(`${this.apiBaseUrl}swap`, {
-        params: {
-          fromTokenAddress,
-          toTokenAddress,
-          amount: fromAmount,
-          slippage: this.settings.slippageTolerance.toString(),
-          fromAddress: this.providerConnectorService.address
-        }
-      })
+      .get(`${this.apiBaseUrl}swap`, tradeParams)
       .pipe(
         catchError(err => {
           throw new CustomError(err.error.message);

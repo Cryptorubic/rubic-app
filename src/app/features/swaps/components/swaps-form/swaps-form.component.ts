@@ -12,6 +12,7 @@ import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsLis
 import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/bridge-bottom-form/bridge-bottom-form.component';
 import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -55,6 +56,8 @@ export class SwapsFormComponent {
     }
   ];
 
+  public autoRefresh: boolean;
+
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
@@ -93,7 +96,8 @@ export class SwapsFormComponent {
 
   constructor(
     private readonly swapsService: SwapsService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly settingsService: SettingsService
   ) {
     combineLatest([
       this.swapsService.availableTokens,
@@ -115,7 +119,13 @@ export class SwapsFormComponent {
       this.isLoading = false;
     });
 
+    this.autoRefresh = this.settingsService.settingsForm.controls.INSTANT_TRADE.value.autoRefresh;
     this.selectedFromAmount = this.swapFormService.commonTrade.controls.input.value.fromAmount;
+    this.settingsService.settingsForm.controls.INSTANT_TRADE.get(
+      'autoRefresh'
+    ).valueChanges.subscribe(el => {
+      this.autoRefresh = el;
+    });
     this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(formValue => {
       this.isLoading = true;
 

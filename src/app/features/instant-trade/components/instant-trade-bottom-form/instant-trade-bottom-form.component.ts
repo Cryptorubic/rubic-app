@@ -21,6 +21,7 @@ import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -131,17 +132,24 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     //   .pipe(take(1))
     //   .subscribe((needApprove: boolean) => (this.needApprove = needApprove));
     const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
+    const wrongTrades = tradeData.filter(el => el.status === 'rejected');
+    wrongTrades.forEach(el => {
+      this.errorService.catch$(el.reason as RubicError);
+    });
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
       trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
       isBestRate: false,
       tradeState:
-        tradeData[index]?.status === 'fulfilled'
+        tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
           ? INSTANT_TRADES_STATUS.APPROVAL
           : INSTANT_TRADES_STATUS.ERROR
     }));
-    newProviders[bestProviderIndex].isBestRate = true;
+    if (tradeData[bestProviderIndex].value && tradeData[bestProviderIndex].status !== 'rejected') {
+      newProviders[bestProviderIndex].isBestRate = true;
+    }
+
     this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
     this.providerControllers = newProviders;
     this.cdr.detectChanges();

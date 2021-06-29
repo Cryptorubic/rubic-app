@@ -36,6 +36,7 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
+import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 
 @Injectable({
   providedIn: 'root'
@@ -250,7 +251,7 @@ export class UniSwapService {
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
+    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
@@ -339,9 +340,16 @@ export class UniSwapService {
     toToken: InstantTradeToken,
     gasCalculationMethodName: string
   ): Promise<{ route: UniswapRoute; gasData: Gas }> {
-    const routes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort((a, b) =>
-      b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
+    const allRoutes = (await this.getAllRoutes(fromAmountAbsolute, fromToken, toToken)).sort(
+      (a, b) => (b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1)
     );
+    const routes = this.settings.disableMultihops
+      ? allRoutes.filter(el => el.path.length < 3)
+      : allRoutes;
+
+    if (routes.length === 0) {
+      throw new InsufficientLiquidityError();
+    }
     if (shouldOptimiseGas && this.shouldCalculateGas && toToken.price) {
       return this.getOptimalRouteAndGas(
         fromAmountAbsolute,
@@ -355,7 +363,7 @@ export class UniSwapService {
 
     if (this.shouldCalculateGas) {
       const to = this.providerConnectorService.address;
-      const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+      const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
       const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
       const gasPrice = await this.web3Public.getGasPriceInETH();
 
@@ -463,7 +471,7 @@ export class UniSwapService {
     ) => Promise<BigNumber>
   ): Promise<{ route: UniswapRoute; gasData: Gas }> {
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time\
+    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
     const gasPrice = await this.web3Public.getGasPriceInETH();

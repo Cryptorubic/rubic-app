@@ -5,7 +5,7 @@
       *ngIf="allowTrade"
       (refresh)="refreshTrade()"
       [loadingStatus]="loadingStatus"
-      [autoUpdate]="true"
+      [autoUpdate]="autoRefresh"
     ></app-rubic-refresh-button>
 
     <div class="swaps-form__settings">

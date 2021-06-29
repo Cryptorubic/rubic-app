@@ -49,7 +49,8 @@
     "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
     "noSelectedProvider": "You have not selected any swap provider",
     "notSupportedItNetwork": "Chosen network is not supported for instant trades",
-    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks."
+    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks.",
+    "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading."
   },
   "navigation": {
     "about": "О компании",
@@ -492,5 +493,14 @@
   "riskBanner": {
     "text": "Пожалуйста учитывайте что новый UI в настоящее время находится в стадии бета-тестирования, и он все еще может содержать необнаруженные ошибки, влияющие на функциональность платформы. Используйте его на свой страх и риск.",
     "link": "Перейти на старый дизайн"
+  },
+  "settings": {
+    "instantTrades": {
+      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "multihops": "Your swap will be completed only with direct pairs.",
+      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
+      "deadline": "Your transaction will revert if it is pending for more than this period of time.",
+      "autoRefresh": "Update trade parameters each 15 seconds."
+    }
   }
 }
