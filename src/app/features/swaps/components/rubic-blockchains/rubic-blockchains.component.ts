@@ -8,10 +8,10 @@ import {
   TemplateRef,
   ViewChildren
 } from '@angular/core';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
 import { BlockchainItem } from 'src/app/features/swaps/models/BlockchainItem';
+import { SwapForm } from 'src/app/features/swaps/models/SwapForm';
 
 @Component({
   selector: 'app-rubic-blockchains',
@@ -36,20 +36,20 @@ export class RubicBlockchainsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.selectedBlockchain = this.findBlockchainBySymbol(BLOCKCHAIN_NAME.ETHEREUM);
+    this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
+      this.setFormValues(form);
+    });
+  }
+
+  private setFormValues(form: SwapForm['input']): void {
+    const blockchainSymbol =
+      this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
+    this.selectedBlockchain = this.findBlockchainBySymbol(blockchainSymbol);
     this.visibleBlockchainsList = this.blockchainsList.filter(
       blockchain => blockchain.symbol !== this.selectedBlockchain.symbol
     );
-
-    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
-      const blockchainSymbol =
-        this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
-      this.selectedBlockchain = this.findBlockchainBySymbol(blockchainSymbol);
-      this.visibleBlockchainsList = this.blockchainsList.filter(
-        blockchain => blockchain.symbol !== this.selectedBlockchain.symbol
-      );
-      this.cdr.markForCheck();
-    });
+    this.cdr.markForCheck();
   }
 
   private findBlockchainBySymbol(symbol: string): BlockchainItem {
