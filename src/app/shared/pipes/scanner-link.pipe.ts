@@ -29,10 +29,10 @@ const blockchainsScanners = {
     nativeCoinUrl: 'stat/supply/'
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
-    baseUrl: 'https://explorer-mainnet.maticvigil.com/',
-    nativeCoinUrl: '',
+    baseUrl: 'https://polygonscan.com/',
+    nativeCoinUrl: 'stat/supply/',
     [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/'
   },
   [BLOCKCHAIN_NAME.POLYGON_TESTNET]: {
