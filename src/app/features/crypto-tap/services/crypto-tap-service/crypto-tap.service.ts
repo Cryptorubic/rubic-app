@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { EMPTY, forkJoin, from, NEVER, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, EMPTY, forkJoin, from, NEVER, Observable, of, throwError } from 'rxjs';
 
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -28,6 +28,7 @@ import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypt
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
 import { CryptoTapApiService } from 'src/app/core/services/backend/crypto-tap-api/crypto-tap-api.service';
+import { CryptoTapFullPriceFeeInfo } from 'src/app/features/crypto-tap/models/CryptoTapFullPriceFeeInfo';
 
 interface EstimatedAmountResponse {
   from_amount: number;
@@ -37,11 +38,17 @@ interface EstimatedAmountResponse {
 
 @Injectable()
 export class CryptoTapService {
+  private _fullPriceFeeInfo$ = new BehaviorSubject<CryptoTapFullPriceFeeInfo>(null);
+
   private baseApiUrl = 'https://exchanger.rubic.exchange/api/v1/';
 
   private isTestingMode: boolean;
 
   private contractAddress: string;
+
+  public get fullPriceFeeInfo$(): Observable<CryptoTapFullPriceFeeInfo> {
+    return this._fullPriceFeeInfo$.asObservable();
+  }
 
   constructor(
     private authService: AuthService,
@@ -63,6 +70,25 @@ export class CryptoTapService {
         this.baseApiUrl = 'https://devbnbexchange.mywish.io/api/v1/';
         this.contractAddress = contractAddressKovan;
       }
+    });
+
+    this.setBestRateInfo();
+  }
+
+  public setBestRateInfo() {
+    const nativeDecimals = 18;
+    forkJoin([
+      this.httpService.get(`estimate_amount/`, { fsym: 'ETH', tsym: 'BNB' }, this.baseApiUrl),
+      this.httpService.get(`estimate_amount/`, { fsym: 'ETH', tsym: 'MATIC' }, this.baseApiUrl)
+    ]).subscribe(([bscResponse, polygonResponse]) => {
+      this._fullPriceFeeInfo$.next({
+        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new BigNumber(bscResponse.fee_amount).div(
+          10 ** nativeDecimals
+        ),
+        [BLOCKCHAIN_NAME.POLYGON]: new BigNumber(polygonResponse.fee_amount).div(
+          10 ** nativeDecimals
+        )
+      });
     });
   }
 

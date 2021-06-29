@@ -30,6 +30,10 @@ export class CryptoTapTokensService {
     return this._availableTokens$.asObservable();
   }
 
+  public get availableTokens(): FromToAvailableTokens {
+    return this._availableTokens$.getValue();
+  }
+
   private isTestingMode = false;
 
   constructor(

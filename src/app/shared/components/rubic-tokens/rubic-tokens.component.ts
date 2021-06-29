@@ -20,6 +20,8 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
+  @Input() disabled = false;
+
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public selectedToken: IToken;

@@ -49,6 +49,9 @@
     </div>
 
     <app-amount-estimated [loading]="tradeStatus === TRADE_STATUS.LOADING" [formService]="cryptoTapFormService">
+      <app-crypto-tap-discount
+        *ngIf="tradeStatus && tradeStatus !== TRADE_STATUS.DISABLED && tradeStatus !== TRADE_STATUS.LOADING"
+      ></app-crypto-tap-discount>
     </app-amount-estimated>
 
     <app-swap-button
@@ -57,7 +60,6 @@
       (approveClick)="approveTrade()"
       (swapClick)="createTrade()"
     ></app-swap-button>
-
   </main>
 </div>
 

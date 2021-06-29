@@ -4,6 +4,7 @@
       class="tokens__btn"
       [size]="'s'"
       [loading]="loading"
+      [disabled]="disabled"
       (onClick)="openTokensSelect()"
     >
       <ng-container *ngIf="selectedToken">
