@@ -34,6 +34,7 @@
       --tui-secondary-active: #{$rubic-primary};
       --tui-primary-active: #{$rubic-primary};
       --tui-primary-text: #{$rubic-base-01};
+      --tui-text-01: #{$rubic-base-01};
       --tui-link: #{$rubic-base-01};
 
       background-color: $rubic-primary;
@@ -88,10 +89,6 @@
       font-weight: 500;
 
       border: 1px solid $rubic-primary;
-
-      &._pressed {
-        color: $rubic-base-01;
-      }
     }
   }
 

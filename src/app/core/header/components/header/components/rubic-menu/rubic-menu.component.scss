@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .burger-menu {
   display: flex;
@@ -82,10 +83,28 @@
       }
     }
 
+    &_active {
+      color: $rubic-primary;
+    }
+
     &_disabled {
       color: rgba(#909090, 0.6);
 
-      pointer-events: none;
+      &:hover,
+      &:active,
+      &:focus {
+        color: rgba(#909090, 0.6);
+
+        background: transparent;
+
+        border-color: transparent;
+
+        cursor: default;
+      }
+    }
+
+    &_logout {
+      color: $rubic-text-error;
     }
 
     ::ng-deep {
@@ -102,6 +121,23 @@
       }
     }
   }
+
+  &__address {
+    cursor: default;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  &__address-container {
+    display: flex;
+    align-items: center;
+
+    img {
+      margin-right: 10px;
+    }
+  }
 }
 
 tui-opt-group:not(:empty) ~ tui-opt-group {
@@ -110,7 +146,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   }
 
   &::before {
-    padding-top: 0;
+    display: none;
   }
 }
 
@@ -122,6 +158,14 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
     margin-right: 5px;
 
     vertical-align: middle;
+  }
+
+  &__mobile {
+    display: none;
+  }
+
+  &__login {
+    margin: 0 auto;
   }
 }
 
@@ -135,8 +179,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 
     border-top: 1px solid rgba(225, 225, 225, 0.6);
 
-    [tuiButton],
-    .button-link {
+    [tuiButton] {
       width: 170px;
       height: 45px;
 
@@ -144,3 +187,9 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
     }
   }
 }
+
+@include b($desktop) {
+  .rubic-menu__mobile {
+    display: block;
+  }
+} 

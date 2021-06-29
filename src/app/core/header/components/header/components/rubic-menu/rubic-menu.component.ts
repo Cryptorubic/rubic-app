@@ -44,11 +44,6 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     { title: 'Team', link: 'team' }
   ];
 
-  public menuNavItems = [
-    { title: 'Swaps', link: '' },
-    { title: 'Order book', link: '', disabled: true, hint: 'Order book is not available in beta.' }
-  ];
-
   constructor(
     private router: Router,
     private headerStore: HeaderStore,
@@ -87,5 +82,9 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
       this.router.navigate([link]);
     }
     this.isOpened = false;
+  }
+
+  public toggleConfirmModal(): void {
+    this.headerStore.toggleConfirmModalOpeningStatus();
   }
 }
