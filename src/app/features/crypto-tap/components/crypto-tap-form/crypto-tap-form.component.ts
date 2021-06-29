@@ -42,6 +42,8 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   public $formSubscription: Subscription;
 
+  public $blockchainSubscription: Subscription;
+
   public $userSubscription: Subscription;
 
   public blockchainsListFrom = blockchainsList.filter(
@@ -75,10 +77,30 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       if (!tokens.from?.length) {
         return;
       }
+
+      const { toBlockchain } = this.cryptoTapFormService.commonTrade.value.input;
+      this.cryptoTapFormService.commonTrade.controls.input.patchValue({
+        toToken: tokens.to.find(token => token.blockchain === toBlockchain)
+      });
+
       this.availableTokens = tokens;
       this.tokensLoading = false;
       this.cdr.detectChanges();
     });
+
+    this.$blockchainSubscription =
+      this.cryptoTapFormService.commonTrade.controls.input.controls.toBlockchain.valueChanges.subscribe(
+        toBlockchain => {
+          const tokens = this.cryptoTapTokenService.availableTokens.to;
+          if (tokens.length) {
+            setTimeout(() =>
+              this.cryptoTapFormService.commonTrade.controls.input.patchValue({
+                toToken: tokens.find(token => token.blockchain === toBlockchain)
+              })
+            );
+          }
+        }
+      );
 
     this.$formSubscription =
       this.cryptoTapFormService.commonTrade.controls.input.valueChanges.subscribe(() =>
@@ -93,6 +115,9 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.$tokensSubscription.unsubscribe();
+    this.$blockchainSubscription.unsubscribe();
+    this.$formSubscription.unsubscribe();
+    this.$userSubscription.unsubscribe();
   }
 
   private calculateTrade() {

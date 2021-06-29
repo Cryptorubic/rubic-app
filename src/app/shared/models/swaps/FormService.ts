@@ -7,14 +7,15 @@ export interface FormService {
 }
 
 export interface ISwapForm {
-  input: {
-    fromBlockchain: BLOCKCHAIN_NAME;
-    toBlockchain: BLOCKCHAIN_NAME;
-    fromToken: TokenAmount;
-    toToken: TokenAmount;
-    [key: string]: any;
-  };
-  output: {
-    [key: string]: any;
-  };
+  input: FormGroup<ISwapFormInput>;
+  output: FormGroup<ISwapFormOutput>;
 }
+
+export interface ISwapFormInput {
+  fromBlockchain: BLOCKCHAIN_NAME;
+  toBlockchain: BLOCKCHAIN_NAME;
+  fromToken: TokenAmount;
+  toToken: TokenAmount;
+}
+
+export interface ISwapFormOutput {}
