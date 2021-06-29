@@ -1,0 +1,173 @@
+<tui-accordion class="accordions" [rounded]="true" *ngFor="let item of visibleData">
+  <tui-accordion-item
+    class="accordions__item item"
+    [showArrow]="true"
+    *tuiLet="getTableTrade(item) as trade"
+  >
+    <div class="item__header item-header">
+      <div class="item-header__status status">
+        <div
+          class="status-circle"
+          [ngClass]="{
+            'status-circle_green': trade.status === TRANSACTION_STATUS.COMPLETED,
+            'status-circle_yellow':
+              trade.status === TRANSACTION_STATUS.WAITING_FOR_DEPOSIT ||
+              trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING ||
+              trade.status === TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS ||
+              trade.status === TRANSACTION_STATUS.WITHDRAW_IN_PROGRESS ||
+              trade.status === TRANSACTION_STATUS.PENDING,
+            'status-circle_red':
+              trade.status === TRANSACTION_STATUS.CANCELLED ||
+              trade.status === TRANSACTION_STATUS.REJECTED
+          }"
+        >
+          <div class="status-circle__inner"></div>
+        </div>
+
+        <app-rubic-button
+          *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
+          size="s"
+          [loading]="item.inProgress"
+          (onClick)="onReceive(trade, $event)"
+          >Receive</app-rubic-button
+        >
+
+        <div class="status__text">{{ trade.status }}</div>
+      </div>
+
+      <div class="item-header__blockchains-container">
+        <div class="blockchains">
+          <div class="blockchains__blockchain">
+            <div class="img-container">
+              <img [src]="BLOCKCHAINS[trade.fromToken.blockchain].img" alt="from blockchain" />
+            </div>
+            {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
+          </div>
+
+          <img
+            src="assets/images/icons/my-trades/arrow-down.svg"
+            *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
+            alt
+          />
+
+          <div
+            class="blockchains__blockchain"
+            *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
+          >
+            <div class="img-container">
+              <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
+            </div>
+            {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
+          </div>
+        </div>
+      </div>
+
+      <div class="item-header__token token">
+        <span>{{ trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue' }}</span>
+        <div class="token__info">
+          <div class="img-container">
+            <img [src]="trade.toToken.image" alt="to token" />
+          </div>
+          {{ trade.toToken.symbol }}
+        </div>
+      </div>
+
+      <div class="item-header__date date">
+        <span>{{ trade.date | date: 'dd.MM.yyyy' }}</span>
+        <span>{{ trade.date | date: 'HH:mm' }}</span>
+      </div>
+    </div>
+
+    <ng-template tuiAccordionItemContent>
+      <div class="row">
+        <div class="row__title">
+          From<img src="assets/images/icons/my-trades/arrow-right.svg" alt />To
+        </div>
+
+        <div class="row__data">
+          <div class="blockchains">
+            <div class="blockchains__blockchain">
+              <div class="img-container">
+                <img [src]="BLOCKCHAINS[trade.fromToken.blockchain].img" alt="from blockchain" />
+              </div>
+              {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
+            </div>
+
+            <img
+              src="assets/images/icons/my-trades/arrow-down.svg"
+              *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
+              alt
+            />
+
+            <div
+              class="blockchains__blockchain"
+              *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
+            >
+              <div class="img-container">
+                <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
+              </div>
+              {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row__title">Provider</div>
+
+        <div class="row__data">
+          <div class="provider">
+            <div class="img-container">
+              <img [src]="TRADES_PROVIDERS[trade.provider].image" alt="provider" />
+            </div>
+            {{ TRADES_PROVIDERS[trade.provider].name }}
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row__title">Sent</div>
+
+        <div class="row__data">
+          <div class="token">
+            <span>{{
+              trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
+            }}</span>
+            <div class="token__info">
+              <div class="img-container">
+                <img [src]="trade.fromToken.image" alt="from token" />
+              </div>
+              {{ trade.fromToken.symbol }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row__title">Expected</div>
+
+        <div class="row__data">
+          <div class="token">
+            <span>{{ trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue' }}</span>
+            <div class="token__info">
+              <div class="img-container">
+                <img [src]="trade.toToken.image" alt="to token" />
+              </div>
+              {{ trade.toToken.symbol }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row__title">Explorer link</div>
+
+        <div class="row__data row__data_explorer-link">
+          <a class="explorer-link" safetyLink [link]="getTransactionLink(trade)">{{
+            trade.transactionHash
+          }}</a>
+        </div>
+      </div>
+    </ng-template>
+  </tui-accordion-item>
+</tui-accordion>
