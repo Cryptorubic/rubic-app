@@ -1,12 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import {
-  ISwapForm,
-  ISwapFormInput,
-  ISwapFormOutput
-} from 'src/app/shared/models/swaps/FormService';
+
 import { FormGroup } from '@ngneat/reactive-forms';
+import { ISwapForm, ISwapFormInput, ISwapFormOutput } from 'src/app/shared/models/swaps/ISwapForm';
 
 export interface CryptoTapForm extends ISwapForm {
   input: FormGroup<CryptoTapFormInput>;
