@@ -1,3 +1,6 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
 $border-radius: 14px;
 $green: rgb(74, 169, 96);
 $default-transition: 0.2s ease-in-out;
@@ -172,6 +175,24 @@ $white: white;
       ::ng-deep svg {
         transform: rotate(180deg);
       }
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .provider-panel {
+    &__body {
+      flex-direction: column;
+      padding-top: 10px;
+    }
+
+    &__right {
+      align-items: flex-start;
+    }
+
+    &__left,
+    &__token-usd-price {
+      margin-bottom: 5px;
     }
   }
 }

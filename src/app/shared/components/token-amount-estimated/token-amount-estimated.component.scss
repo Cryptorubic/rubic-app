@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .bottom-amount {
   box-sizing: border-box;
@@ -14,7 +15,7 @@
 
   &__usd-container {
     display: flex;
-    width: 50%;
+    width: 31%;
     margin-bottom: 10px;
     margin-left: auto;
 
@@ -39,7 +40,10 @@
   }
 
   &__usd {
+    overflow: hidden;
+
     text-align: right;
+    text-overflow: ellipsis;
   }
 
   &__tokens {
@@ -48,5 +52,35 @@
     font-weight: 100;
     font-size: 30px;
     text-align: left;
+  }
+
+  &__tokens-container {
+    overflow: hidden;
+  }
+}
+
+@include b($mobile-md) {
+  .bottom-amount {
+    display: flex;
+    flex-direction: column;
+
+    &__tokens-container {
+      margin-bottom: 2px;
+    }
+
+    &__usd-container {
+      order: 1;
+      width: 100%;
+      margin-bottom: 0;
+      margin-left: 0;
+
+      span {
+        margin-left: 0;
+      }
+    }
+
+    &__usd {
+      text-align: left;
+    }
   }
 }
