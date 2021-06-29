@@ -218,6 +218,7 @@
 @include b($mobile-md) {
   .item-header {
     &__status {
+      width: initial;
       margin-right: auto;
     }
 
@@ -247,6 +248,24 @@
           justify-content: center;
         }
       }
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .item-header {
+    .status {
+      width: 70px;
+
+      white-space: normal;
+    }
+
+    .date {
+      position: relative;
+      top: 12px;
+
+      margin-right: 0;
+      margin-bottom: 10px;
     }
   }
 }
