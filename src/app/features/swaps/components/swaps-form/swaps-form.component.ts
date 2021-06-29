@@ -214,7 +214,7 @@ export class SwapsFormComponent {
     }
   }
 
-  public revert() {
+  public async revert() {
     const { fromBlockchain, toBlockchain, fromToken, toToken } =
       this.swapFormService.commonTrade.controls.input.value;
     const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
@@ -225,6 +225,7 @@ export class SwapsFormComponent {
       ...(toBlockchain && { fromBlockchain: toBlockchain }),
       ...(toAmount && { fromAmount: toAmount })
     });
+    await this.refreshTrade();
   }
 
   public async refreshTrade(): Promise<void> {

@@ -59,11 +59,6 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     TokensSelectModule
   ],
   entryComponents: [SettingsItComponent, SettingsBridgeComponent],
-  providers: [
-    SwapsService,
-    InstantTradesSwapProviderService,
-    BridgesSwapProviderService,
-    SettingsService
-  ]
+  providers: [SwapsService, InstantTradesSwapProviderService, BridgesSwapProviderService]
 })
 export class SwapsModule {}

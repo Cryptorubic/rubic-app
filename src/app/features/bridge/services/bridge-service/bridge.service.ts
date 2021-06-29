@@ -92,13 +92,6 @@ export class BridgeService {
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
         [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumPolygonBridgeProviderService
-      },
-      [BLOCKCHAIN_NAME.TRON]: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumTronBridgeProviderService,
-        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.binanceTronBridgeProviderService
-      },
-      [BLOCKCHAIN_NAME.XDAI]: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumXdaiBridgeProviderService
       }
     };
   }
@@ -139,6 +132,10 @@ export class BridgeService {
     zip(...tokensObservables)
       .pipe(first())
       .subscribe(tokens => this.tokens$.next(tokens));
+  }
+
+  public isBridgeSupported(): boolean {
+    return !!this.bridgeProvider;
   }
 
   public getFee(): Observable<number | null> {

@@ -4,7 +4,7 @@ import { OneInchEthService } from 'src/app/features/instant-trade/services/insta
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
-import { Subscription, timer } from 'rxjs';
+import { Observable, Subscription, timer } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { switchMap } from 'rxjs/operators';
@@ -19,6 +19,10 @@ import { OneInchBscService } from 'src/app/features/instant-trade/services/insta
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
+import { BridgeTradeRequest } from 'src/app/features/bridge/models/BridgeTradeRequest';
+import { TransactionReceipt } from 'web3-eth';
+import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +72,7 @@ export class InstantTradeService {
     return Promise.allSettled(providersDataPromises);
   }
 
-  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade): Promise<void> {
+  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
     try {
       let tradeInfo;
       const receipt = await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(
@@ -80,10 +84,16 @@ export class InstantTradeService {
                 hash,
                 network: TO_BACKEND_BLOCKCHAINS[this.currentBlockchain],
                 provider,
-                from_token: trade.fromToken.address,
-                to_token: trade.toToken.address,
-                from_amount: Web3PublicService.tokenAmountToWei(trade.fromToken, trade.from.amount),
-                to_amount: Web3PublicService.tokenAmountToWei(trade.toToken, trade.to.amount)
+                from_token: trade.from.token.address,
+                to_token: trade.to.token.address,
+                from_amount: Web3PublicService.tokenAmountToWei(
+                  trade.from.token as SwapToken,
+                  trade.from.amount
+                ),
+                to_amount: Web3PublicService.tokenAmountToWei(
+                  trade.to.token as SwapToken,
+                  trade.to.amount
+                )
               };
             } else {
               tradeInfo = {
@@ -151,5 +161,50 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDER.QUICKSWAP]: this.quickSwapService
       }
     });
+  }
+
+  public needApprove(): Observable<boolean> {
+    // return this.getBridgeTrade().pipe(
+    //   switchMap(bridgeTrade =>
+    //     this.bridgeProvider.needApprove(bridgeTrade).pipe(
+    //       catchError(err => {
+    //         console.error(err);
+    //         const error = err instanceof RubicError ? err : new RubicError();
+    //         return throwError(error);
+    //       })
+    //     )
+    //   ),
+    //   first()
+    // );
+    return undefined;
+  }
+
+  public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+    // return this.getBridgeTrade(bridgeTradeRequest).pipe(
+    //   mergeMap((bridgeTrade: BridgeTrade) => {
+    //     this.checkSettings(bridgeTrade.fromBlockchain);
+    //     const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+    //     return from(
+    //       this.checkBalance(
+    //         bridgeTrade.fromBlockchain,
+    //         bridgeTrade.toBlockchain,
+    //         token.address,
+    //         token.symbol,
+    //         token.decimals,
+    //         bridgeTrade.amount
+    //       )
+    //     ).pipe(map(() => bridgeTrade));
+    //   }),
+    //   mergeMap((bridgeTrade: BridgeTrade) => {
+    //     return this.bridgeProvider.approve(bridgeTrade).pipe(
+    //       catchError(err => {
+    //         console.error(err);
+    //         const error = err instanceof RubicError ? err : new RubicError();
+    //         return throwError(error);
+    //       })
+    //     );
+    //   })
+    // );
+    return undefined;
   }
 }
