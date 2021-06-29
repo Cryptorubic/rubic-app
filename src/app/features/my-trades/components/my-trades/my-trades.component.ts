@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  HostListener,
   Inject,
   Injector,
   OnDestroy,
@@ -19,6 +20,8 @@ import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import BigNumber from 'bignumber.js';
 import { TableRow } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 
+const DESKTOP_WIDTH = 1240;
+
 @Component({
   selector: 'app-my-trades',
   templateUrl: './my-trades.component.html',
@@ -26,11 +29,13 @@ import { TableRow } from 'src/app/features/my-trades/components/my-trades/models
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MyTradesComponent implements OnInit, OnDestroy {
-  public readonly tableData$ = new BehaviorSubject<TableRow[]>(null);
+  public readonly tableData$ = new BehaviorSubject<TableRow[]>(undefined);
 
   public loading = true;
 
   public loadingStatus: 'refreshing' | 'stopped' | '' = 'refreshing';
+
+  public isDesktop: boolean;
 
   public walletAddress: string;
 
@@ -52,6 +57,8 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.isDesktop = window.innerWidth >= DESKTOP_WIDTH;
+
     this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address || null;
     });
@@ -104,6 +111,8 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public refreshTable(): void {
     if (!this.loading) {
+      this.loading = true;
+      this.loadingStatus = 'refreshing';
       this.myTradesService.updateTableTrades();
     }
   }
@@ -164,5 +173,10 @@ export class MyTradesComponent implements OnInit, OnDestroy {
           this.errorsService.catch$(err);
         }
       );
+  }
+
+  @HostListener('window:resize')
+  private onResize() {
+    this.isDesktop = window.innerWidth >= DESKTOP_WIDTH;
   }
 }

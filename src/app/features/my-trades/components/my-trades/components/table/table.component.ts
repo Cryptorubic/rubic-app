@@ -1,12 +1,5 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-  Output,
-  EventEmitter
-} from '@angular/core';
-import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { TuiComparator } from '@taiga-ui/addon-table';
 import {
   TableRow,
   TableRowKey
@@ -14,14 +7,12 @@ import {
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
-import BigNumber from 'bignumber.js';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
-import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
+import { TableData } from 'src/app/features/my-trades/components/my-trades/components/table-data';
 
 @Component({
   selector: 'app-table',
@@ -29,12 +20,10 @@ import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent implements OnInit {
+export class TableComponent extends TableData implements OnInit {
   @Input() loading: boolean;
 
   @Input() tableData$: BehaviorSubject<TableRow[]>;
-
-  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
@@ -75,9 +64,11 @@ export class TableComponent implements OnInit {
   public total$: Observable<number>;
 
   constructor(
-    private readonly myTradesService: MyTradesService,
-    private readonly scannerLinkPipe: ScannerLinkPipe
-  ) {}
+    protected readonly myTradesService: MyTradesService,
+    protected readonly scannerLinkPipe: ScannerLinkPipe
+  ) {
+    super(myTradesService, scannerLinkPipe);
+  }
 
   ngOnInit(): void {
     this.request$ = combineLatest([
@@ -128,29 +119,5 @@ export class TableComponent implements OnInit {
     return [...tableData]
       .sort(this.sortBy(key, direction))
       .map((user, index) => (index >= start && index < end ? user : null));
-  }
-
-  private sortBy(key: TableRowKey, direction: -1 | 1): TuiComparator<TableRow> {
-    return (a, b) => {
-      let sort;
-      if (key === 'Sent' || key === 'Expected') {
-        sort = (x: BigNumber, y: BigNumber) => x.comparedTo(y);
-      } else {
-        sort = defaultSort;
-      }
-      return direction * sort(a[key], b[key]);
-    };
-  }
-
-  public getTableTrade(tableRow: TableRow): TableTrade {
-    return this.myTradesService.getTableTradeByDate(tableRow.Date);
-  }
-
-  public getTransactionLink(trade: TableTrade): string {
-    return this.scannerLinkPipe.transform(
-      trade.transactionHash,
-      trade.fromToken.blockchain,
-      ADDRESS_TYPE.TRANSACTION
-    );
   }
 }

@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .my-trades {
   display: flex;
@@ -70,5 +71,19 @@ tui-loader {
     .loader {
       stroke: $main-green;
     }
+  }
+}
+
+tui-loader.position-up {
+  ::ng-deep {
+    .loader {
+      align-self: flex-start;
+    }
+  }
+}
+
+@include b($mobile-sm-plus) {
+  .my-trades {
+    padding: 30px 20px 40px;
   }
 }

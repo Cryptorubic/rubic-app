@@ -115,7 +115,7 @@
               trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
             }}</span>
             <div class="token-info">
-              <div class="token-info__img-container">
+              <div class="img-container">
                 <img [src]="trade.fromToken.image" alt="from token" />
               </div>
               {{ trade.fromToken.symbol }}
@@ -127,7 +127,7 @@
           <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
             <span>{{ trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue' }}</span>
             <div class="token-info">
-              <div class="token-info__img-container">
+              <div class="img-container">
                 <img [src]="trade.toToken.image" alt="to token" />
               </div>
               {{ trade.toToken.symbol }}

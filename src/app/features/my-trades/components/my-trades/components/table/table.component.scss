@@ -1,5 +1,7 @@
 @import 'src/scss/vars';
 
+@import '../styles';
+
 .table {
   width: 100%;
   margin-top: 26px;
@@ -155,48 +157,6 @@
       }
     }
 
-    .status-circle {
-      display: flex;
-
-      width: 20px;
-      min-width: 20px;
-      height: 20px;
-
-      border-radius: 50%;
-
-      &_green {
-        background: rgba(74, 169, 86, 0.3);
-
-        .status-circle__inner {
-          background: rgb(74, 169, 86);
-        }
-      }
-
-      &_yellow {
-        background: rgba(255, 203, 17, 0.3);
-
-        .status-circle__inner {
-          background: rgb(255, 203, 17);
-        }
-      }
-
-      &_red {
-        background: rgba(216, 33, 34, 0.3);
-
-        .status-circle__inner {
-          background: rgb(216, 33, 34);
-        }
-      }
-
-      &__inner {
-        width: 10px;
-        height: 10px;
-        margin: auto;
-
-        border-radius: 50%;
-      }
-    }
-
     &.blockchains {
       .transaction-link {
         grid-gap: 6px;
@@ -219,38 +179,10 @@
       }
     }
 
-    .img-container {
-      display: flex;
-
-      width: 18px;
-      min-width: 18px;
-      height: 18px;
-
-      img {
-        max-width: 100%;
-        max-height: 100%;
-        margin: auto;
-      }
-    }
-
     .token-info {
       display: flex;
       grid-gap: 8px;
       align-items: center;
-
-      &__img-container {
-        display: flex;
-
-        width: 18px;
-        min-width: 18px;
-        height: 17px;
-
-        img {
-          max-width: 100%;
-          max-height: 100%;
-          margin: auto;
-        }
-      }
     }
   }
 

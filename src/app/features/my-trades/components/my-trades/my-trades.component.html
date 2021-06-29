@@ -23,7 +23,7 @@
     </app-rubic-button-circle>
   </div>
 
-  <tui-loader [overlay]="true" [showLoader]="loading">
+  <tui-loader [overlay]="true" [showLoader]="loading" [ngClass]="{ 'position-up': !isDesktop }">
     <div class="my-trades__table-container table-container" *tuiLet="tableData$ | async as data">
       <div
         class="table-container__connect-wallet-container"
@@ -41,7 +41,14 @@
         You have no trades yet
       </div>
 
+      <app-accordion
+        *ngIf="!isDesktop"
+        [tableData$]="tableData$"
+        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
+      ></app-accordion>
+
       <app-table
+        *ngIf="isDesktop"
         [loading]="loading"
         [tableData$]="tableData$"
         (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"

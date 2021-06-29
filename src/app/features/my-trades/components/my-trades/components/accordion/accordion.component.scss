@@ -1,0 +1,252 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+@import '../styles';
+
+.accordions {
+  &:not(:last-child) {
+    margin-bottom: 20px;
+  }
+}
+
+.item {
+  color: #808080;
+
+  box-shadow: -30px -30px 80px #fff0, 30px 30px 80px rgba(84, 129, 90, 0.15), inset 4px 4px 50px rgba(255, 255, 255, 0.6);
+
+  ::ng-deep {
+    .wrapper[automation-id='tui-accordion__item-wrapper'] {
+      background: transparent !important;
+
+      &::after {
+        border: none;
+      }
+    }
+
+    .header[automation-id='tui-accordion__item-header'] {
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+      box-shadow: -30px -30px 80px #fff0, 30px 30px 80px rgba(84, 129, 90, 0.15), inset 4px 4px 50px rgba(255, 255, 255, 0.6);
+      
+      .title[automation-id='tui-accordion__item-title'] {
+        overflow: visible;
+      }
+    }
+
+    tui-expand {
+      .wrapper {
+        background: rgba(255, 255, 255, 0.2);
+
+        .content {
+          padding: 0;
+        }
+      }
+    }
+  }
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+
+  color: #808080;
+  font-size: 15px;
+
+  &__status {
+    width: 170px;
+    margin-right: 8%;
+  }
+
+  &__blockchains-container {
+    width: 158px;
+
+    margin-right: 6%;
+
+    .blockchains {
+      width: fit-content;
+    }
+  }
+
+  &__token {
+    margin-right: auto;
+  }
+
+  &__date {
+    margin-right: 10px;
+  }
+}
+
+.status {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  grid-gap: 5px;
+
+  padding-top: 6px;
+
+  &__text {
+    text-transform: capitalize;
+  }
+
+  app-rubic-button {
+    position: absolute;
+    top: 0;
+    left: 31px;
+
+    ::ng-deep {
+      button {
+        height: 32px;
+
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.blockchains {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 2px;
+  align-items: center;
+
+  &__blockchain {
+    display: flex;
+    flex-wrap: nowrap;
+    grid-gap: 8px;
+    align-items: center;
+
+    white-space: nowrap;
+  }
+
+  img {
+    align-self: center;
+  }
+}
+
+.token {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 4px;
+
+  &__info {
+    display: flex;
+    grid-gap: 8px;
+    align-items: center;
+  }
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 4px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 157px 1fr;
+  align-items: center;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid white;
+  }
+
+  &__title {
+    display: flex;
+    flex-wrap: nowrap;
+    grid-gap: 5px;
+    align-items: center;
+
+    height: 100%;
+    padding: 16px 29px;
+
+    border-right: 1px solid white;
+  }
+
+  &__data {
+    max-width: 280px;
+    padding: 15px 30px;
+    overflow: hidden;
+
+    &_explorer-link {
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .token {
+      text-align: center;
+
+      span {
+        overflow: hidden;
+
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      &__info {
+        justify-content: center;
+      }
+    }
+
+    .explorer-link {
+      display: block;
+
+      max-width: 100%;
+      overflow: hidden;
+
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.provider {
+  display: flex;
+  grid-gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+@include b($laptop) {
+  .item-header {
+    &__blockchains-container {
+      display: none;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .item-header {
+    &__status {
+      margin-right: auto;
+    }
+
+    &__token {
+      display: none;
+    }
+  }
+}
+
+@include b($mobile-sm-plus) {
+  .row {
+    grid-template-columns: 109px 1fr;
+
+    &__title {
+      padding: 16px;
+    }
+
+    &__data {
+      .blockchains {
+        &__blockchain {
+          white-space: normal;
+        }
+      }
+
+      .token {
+        &__info {
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
