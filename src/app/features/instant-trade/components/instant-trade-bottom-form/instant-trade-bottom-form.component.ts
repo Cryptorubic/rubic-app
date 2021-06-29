@@ -62,7 +62,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private currentBlockchain: BLOCKCHAIN_NAME;
 
-  public tradeStatus;
+  public tradeStatus: TRADE_STATUS;
 
   public needApprove: boolean;
 
@@ -76,7 +76,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = TRADE_STATUS.DISABLED;
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const formValue = this.swapFormService.commonTrade.value;
     this.currentBlockchain = formValue.input.toBlockchain;
     this.initiateProviders(this.currentBlockchain);
@@ -118,6 +118,22 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async calculateTrades(): Promise<void> {
+    this.prepareControllers();
+    const approveData = this.authService.user?.address
+      ? await this.instantTradeService.getApprove().toPromise()
+      : new Array(this.providerControllers.length).fill(null);
+    const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
+
+    const wrongTrades = tradeData.filter(el => el.status === 'rejected');
+    wrongTrades.forEach(el => {
+      this.errorService.catch$(el.reason as RubicError);
+    });
+
+    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
+    this.setupControllers(tradeData, approveData, bestProviderIndex);
+  }
+
+  private prepareControllers(): void {
     this.tradeStatus = TRADE_STATUS.LOADING;
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
@@ -125,22 +141,18 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       isBestRate: false
     }));
     this.cdr.detectChanges();
-    // const needApprove$ = this.authService.user?.address
-    //   ? this.instantTradeService.needApprove()
-    //   : of(false);
-    // needApprove$
-    //   .pipe(take(1))
-    //   .subscribe((needApprove: boolean) => (this.needApprove = needApprove));
-    const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
-    const wrongTrades = tradeData.filter(el => el.status === 'rejected');
-    wrongTrades.forEach(el => {
-      this.errorService.catch$(el.reason as RubicError);
-    });
-    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
+  }
+
+  private setupControllers(
+    tradeData: CalculationResult[],
+    approveData: Array<boolean | null>,
+    bestProviderIndex: number
+  ): void {
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
       trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
       isBestRate: false,
+      needApprove: approveData[index],
       tradeState:
         tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
           ? INSTANT_TRADES_STATUS.APPROVAL
@@ -150,8 +162,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       newProviders[bestProviderIndex].isBestRate = true;
     }
 
-    this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
     this.providerControllers = newProviders;
+    this.tradeStatus = TRADE_STATUS.DISABLED;
     this.cdr.detectChanges();
   }
 
@@ -216,6 +228,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       isSelected: true
     };
     this.providerControllers = newProviders;
+    if (newProviders[providerNumber].needApprove !== null) {
+      this.tradeStatus = newProviders[providerNumber].needApprove
+        ? TRADE_STATUS.READY_TO_APPROVE
+        : TRADE_STATUS.READY_TO_SWAP;
+      this.needApprove = newProviders[providerNumber].needApprove;
+    }
   }
 
   private calculateBestRate(tradeData: InstantTrade[]): number {
@@ -247,44 +265,29 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     return providerIndex;
   }
 
-  public approveTrade(): void {
-    // let approveInProgressSubscription$: Subscription;
-    //
-    // const bridgeTradeRequest: BridgeTradeRequest = {
-    //   onTransactionHash: () => {
-    //     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-    //     this.cdr.detectChanges();
-    //     approveInProgressSubscription$ = this.notificationsService
-    //       .show(this.translate.instant('bridgePage.approveProgressMessage'), {
-    //         label: 'Approve in progress',
-    //         status: TuiNotification.Info,
-    //         autoClose: false
-    //       })
-    //       .subscribe();
-    //   }
-    // };
-    //
-    // this.bridgeService
-    //   .approve(bridgeTradeRequest)
-    //   .pipe(first())
-    //   .subscribe(
-    //     (_res: TransactionReceipt) => {
-    //       approveInProgressSubscription$.unsubscribe();
-    //
-    //       this.notificationsService
-    //         .show(this.translate.instant('bridgePage.approveSuccessMessage'), {
-    //           label: 'Successful approve',
-    //           status: TuiNotification.Success,
-    //           autoClose: 15000
-    //         })
-    //         .subscribe();
-    //       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-    //       this.cdr.detectChanges();
-    //     },
-    //     err => {
-    //       approveInProgressSubscription$?.unsubscribe();
-    //       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-    //     }
-    //   );
+  public async approveTrade(): Promise<void> {
+    const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
+    const provider = this.providerControllers[providerIndex];
+    if (providerIndex !== -1) {
+      this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+      this.providerControllers[providerIndex] = {
+        ...this.providerControllers[providerIndex],
+        tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
+      };
+      this.cdr.detectChanges();
+      try {
+        await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      } catch (err) {
+        this.providerControllers[providerIndex] = {
+          ...this.providerControllers[providerIndex],
+          tradeState: INSTANT_TRADES_STATUS.APPROVAL
+        };
+        this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+      }
+      this.cdr.detectChanges();
+    } else {
+      this.errorService.throw$(new NoSelectedProviderError());
+    }
   }
 }

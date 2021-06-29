@@ -30,6 +30,7 @@ export interface ProviderControllerData {
   isBestRate: boolean;
   isSelected: boolean;
   isCollapsed: boolean;
+  needApprove: boolean;
 }
 
 interface ProviderData {
