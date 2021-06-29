@@ -1,0 +1,67 @@
+<div class="swaps-form">
+  <header class="swaps-form__header">
+    <h1 class="swaps-form__title">Crypto tap</h1>
+  </header>
+
+  <main class="swaps-form__content">
+    <div class="swaps-form__top-part">
+      <app-rubic-blockchains
+        class="form-panel__blockchains"
+        blockchainType="from"
+        [formService]="cryptoTapFormService"
+        [blockchainsList]="blockchainsListFrom"
+      ></app-rubic-blockchains>
+
+      <app-rubic-tokens
+        class="form-panel__tokens"
+        [loading]="tokensLoading"
+        tokenType="from"
+        [tokens]="availableTokens['from']"
+        [formService]="cryptoTapFormService"
+      ></app-rubic-tokens>
+
+      <div class="form-panel__fee">
+
+      </div>
+    </div>
+
+    <app-crypto-tap-top-form [loading]="tradeStatus === TRADE_STATUS.LOADING"></app-crypto-tap-top-form>
+
+    <div class="swaps-form__delimiter">
+      <app-rubic-switcher></app-rubic-switcher>
+    </div>
+
+    <div class="swaps-form__top-part">
+      <app-rubic-blockchains
+        class="form-panel__blockchains"
+        blockchainType="to"
+        [formService]="cryptoTapFormService"
+        [blockchainsList]="blockchainsListTo"
+      ></app-rubic-blockchains>
+
+      <app-rubic-tokens
+        class="form-panel__tokens"
+        [loading]="tokensLoading"
+        tokenType="to"
+        [tokens]="availableTokens['to']"
+        [formService]="cryptoTapFormService"
+        [disabled]="true"
+      ></app-rubic-tokens>
+    </div>
+
+    <app-amount-estimated [loading]="tradeStatus === TRADE_STATUS.LOADING" [formService]="cryptoTapFormService">
+      <app-crypto-tap-discount
+        *ngIf="tradeStatus && tradeStatus !== TRADE_STATUS.DISABLED && tradeStatus !== TRADE_STATUS.LOADING"
+      ></app-crypto-tap-discount>
+    </app-amount-estimated>
+
+    <app-swap-button
+      [needApprove]="needApprove"
+      [status]="tradeStatus"
+      (approveClick)="approveTrade()"
+      (swapClick)="createTrade()"
+    ></app-swap-button>
+  </main>
+</div>
+
+<app-rubic-volume></app-rubic-volume>
