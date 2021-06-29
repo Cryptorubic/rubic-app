@@ -26,7 +26,7 @@
     >
       <span *ngIf="toWalletAddress"
         >You will get {{ whatIsBlockchain.name }} tokens to the
-        <a
+        <a class="terms-and-conditions__address"
           [href]="toWalletAddress | scannerLink: toBlockchain:ADDRESS_TYPE.WALLET"
           target="_blank"
           rel="noopener"

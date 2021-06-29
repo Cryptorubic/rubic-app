@@ -1,4 +1,6 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
+
 
 $background-white: #fcfcfc;
 
@@ -109,5 +111,26 @@ $background-white: #fcfcfc;
     text-overflow: ellipsis;
 
     cursor: default;
+  }
+}
+
+@include b($mobile-md) {
+  .token-input-container {
+    flex-direction: column;
+    height: 110px;
+
+    &__right-side {
+      width: 100%;
+      max-width: none;
+      padding: 5px 20px;
+    }
+  }
+
+  .amount-input-container {
+    padding-right: 20px;
+  }
+
+  .usd-price-container {
+    justify-content: flex-start;
   }
 }

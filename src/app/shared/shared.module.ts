@@ -43,7 +43,6 @@ import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-b
 import { RubicTogglerThemeComponent } from 'src/app/core/header/components/header/components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
-import { RubicMenuComponent } from 'src/app/core/header/components/header/components/rubic-menu/rubic-menu.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ArrowComponent } from './components/arrow/arrow.component';
 import { MessageBoxComponent } from './components/message-box/message-box.component';
@@ -165,7 +164,6 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicTogglerThemeComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
-    RubicMenuComponent,
     RubicVolumeComponent,
     RubicBannerComponent,
     SwapButtonComponent,
@@ -263,7 +261,6 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RoundPipe,
     ShortenAmountPipe,
     RubicTogglerThemeComponent,
-    RubicMenuComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,

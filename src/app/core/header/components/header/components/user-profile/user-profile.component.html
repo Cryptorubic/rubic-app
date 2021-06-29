@@ -51,6 +51,7 @@
   <div class="user-profile">
     <img
       *ngIf="currentBlockchain?.imagePath"
+      class="user-profile__chain-icon"
       (click)="useTestingMode()"
       [src]="currentBlockchain?.imagePath"
       alt="($currentBlockchain | async)?.name"

@@ -33,4 +33,114 @@
       }
     }
   }
+
+  &__nav {
+    display: flex;
+    flex-direction: column;
+
+    a {
+      margin-bottom: 2px;
+    }
+  }
+}
+
+.data-list {
+  padding: 6px 6px 0px;
+
+  &__option {
+    height: 45px;
+    min-height: initial !important;
+    margin: 0;
+
+    color: black;
+
+    border: none;
+    border-radius: 156px;
+
+    transition: all 0.35s ease;
+
+    &:hover {
+      color: #4aa956;
+
+      background: #f3f9f3;
+    }
+
+    &:active {
+      color: white;
+
+      background: $rubic-primary;
+
+      ::ng-deep {
+        .template-blockchains__icon {
+          filter: brightness(10);
+        }
+
+        a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+          color: $rubic-base-01;
+          text-decoration: none;
+        }
+      }
+    }
+
+    &_disabled {
+      color: rgba(#909090, 0.6);
+
+      pointer-events: none;
+    }
+
+    ::ng-deep {
+      > * {
+        display: flex;
+        width: 100%;
+      }
+
+      a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+        color: $rubic-base-02;
+        text-decoration: none;
+
+        transition: 0.35s color ease;
+      }
+    }
+  }
+}
+
+tui-opt-group:not(:empty) ~ tui-opt-group {
+  &::after {
+    background: rgba(225, 225, 225, 0.6);
+  }
+
+  &::before {
+    padding-top: 0;
+  }
+}
+
+.rubic-menu {
+  &__chain-icon {
+    width: auto;
+    max-width: 25px;
+    height: auto;
+    margin-right: 5px;
+
+    vertical-align: middle;
+  }
+}
+
+::ng-deep {
+  .rubic-menu__bottom {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 2px;
+    align-items: center;
+    padding: 10px 6px;
+
+    border-top: 1px solid rgba(225, 225, 225, 0.6);
+
+    [tuiButton],
+    .button-link {
+      width: 170px;
+      height: 45px;
+
+      font-size: 14px !important;
+    }
+  }
 }

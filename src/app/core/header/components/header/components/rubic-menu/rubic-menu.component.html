@@ -1,22 +1,83 @@
-<app-dropdown-selector
-  (opened)="getDropdownStatus($event)"
-  [dropdownButtonTemplate]="dropdownButtonTemplate"
-  [dropdownOptionsTemplates]="dropdownOptionsTemplates"
-></app-dropdown-selector>
+<!--<app-dropdown-selector-->
+<!--  (opened)="getDropdownStatus($event)"-->
+<!--  [dropdownButtonTemplate]="dropdownButtonTemplate"-->
+<!--  [dropdownOptionsTemplates]="dropdownOptionsTemplates"-->
+<!--&gt;</app-dropdown-selector>-->
 
-<ng-template #dropdownButtonTemplate>
-  <app-rubic-button-circle [size]="'l'" appearance="flat">
-    <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">
-      <div class="burger-menu__line"></div>
-      <div class="burger-menu__line"></div>
-      <div class="burger-menu__line"></div>
+<!--<ng-template #dropdownButtonTemplate>-->
+<!--  <app-rubic-button-circle [size]="'l'" appearance="flat">-->
+<!--    <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">-->
+<!--      <div class="burger-menu__line"></div>-->
+<!--      <div class="burger-menu__line"></div>-->
+<!--      <div class="burger-menu__line"></div>-->
+<!--    </div>-->
+<!--  </app-rubic-button-circle>-->
+<!--</ng-template>-->
+
+
+<!--<ng-template #dropdownOptionTemplate *ngFor="let item of menuItems">-->
+<!--  <a (click)="clickNavigate(item.link)">-->
+<!--    {{ item.title }}-->
+<!--  </a>-->
+<!--</ng-template>-->
+<!--<ng-template #dropdownOptionTemplate>-->
+<!--    <nav class="rubic-menu__nav">-->
+<!--      <a class="button-link" routerLink="/" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Swaps</a>-->
+<!--      <span class="rubic-header__disabled-link">Order book</span>-->
+<!--    </nav>-->
+<!--</ng-template>-->
+
+<tui-hosted-dropdown [content]="dropdown" [(open)]="isOpened">
+  <div tuiGroup>
+    <app-rubic-button-circle [size]="'l'" appearance="flat">
+      <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">
+        <div class="burger-menu__line"></div>
+        <div class="burger-menu__line"></div>
+        <div class="burger-menu__line"></div>
+      </div>
+    </app-rubic-button-circle>
+  </div>
+</tui-hosted-dropdown>
+<ng-template #dropdown let-activeZone>
+  <tui-opt-group>
+    <tui-data-list class="data-list">
+      <button
+        *ngFor="let item of menuItems"
+        (click)="clickNavigate(item.link)"
+        tuiOption
+        class="data-list__option">
+        {{ item.title }}
+      </button>
+    </tui-data-list>
+  </tui-opt-group>
+
+  <tui-opt-group>
+    <tui-data-list class="data-list">
+      <button
+        *ngFor="let item of menuNavItems"
+        (click)="clickNavigate(item.link)"
+        tuiOption
+        [disabled]="item.disabled"
+        class="data-list__option"
+        [class.data-list__option_disabled]="item.disabled">
+        {{ item.title }}
+      </button>
+    </tui-data-list>
+  </tui-opt-group>
+
+    <div class="rubic-menu__bottom">
+      <app-login-button class="rubic-menu__login" appearance="outline" *ngIf="!($currentUser | async)?.address"></app-login-button>
+      <app-rubic-button appearance="outline" *ngIf="($currentUser | async)?.address">
+        <img
+          *ngIf="currentBlockchain?.imagePath"
+          class="rubic-menu__chain-icon"
+          [src]="currentBlockchain?.imagePath"
+          alt="($currentBlockchain | async)?.name"
+          width="25"
+          height="25">
+        {{ ($currentUser | async)?.address | shortAddress: 5:3  }}
+      </app-rubic-button>
+      <app-rubic-button appearance="flat">{{ 'My trades' | translate }}</app-rubic-button>
+      <button class="button-link button-link_error">{{ 'navigation.logout' | translate }}</button>
     </div>
-  </app-rubic-button-circle>
-</ng-template>
-
-
-<ng-template #dropdownOptionTemplate *ngFor="let item of menuItems">
-  <a (click)="clickNavigate(item.link)">
-    {{ item.title }}
-  </a>
 </ng-template>
