@@ -1,5 +1,5 @@
 <section class="bridge-bottom-form">
-  <app-amount-input [loading]="tradeStatus === TRADE_STATUS.LOADING"></app-amount-input>
+  <app-amount-estimated [formService]="swapFormService" [loading]="tradeStatus === TRADE_STATUS.LOADING"></app-amount-estimated>
   <div class="bridge-bottom-form__analytics" *ngIf="tokenInfoUrl">
     <a
       [href]="'https://keks.app/' + tokenInfoUrl"

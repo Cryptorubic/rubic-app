@@ -27,7 +27,7 @@ export class RubicButtonComponent {
 
   @Input() loading = false;
 
-  @Output() onClick = new EventEmitter<void>();
+  @Output() onClick = new EventEmitter<Event>();
 
   public _border: boolean;
 
@@ -37,9 +37,9 @@ export class RubicButtonComponent {
 
   constructor() {}
 
-  public buttonClick(): void {
+  public buttonClick(event: Event): void {
     if (!this._disabled) {
-      this.onClick.emit();
+      this.onClick.emit(event);
     }
   }
 }

@@ -22,6 +22,7 @@
     </app-rubic-button-circle>
 
     <app-dropdown-selector
+      *ngIf="visibleBlockchainsList.length > 3"
       [dropdownButtonTemplate]="dropdownButtonTemplate"
       [dropdownOptionsTemplates]="dropdownOptionsTemplates"
       (optionChange)="selectBlockchain(visibleBlockchainsList[$event + 3].symbol)"

@@ -7,15 +7,17 @@ import {
   OnInit
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SwapFormService } from '../../../features/swaps/services/swaps-form-service/swap-form.service';
+import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import BigNumber from 'bignumber.js';
 
 @Component({
-  selector: 'app-amount-input',
+  selector: 'app-amount-estimated',
   templateUrl: './token-amount-estimated.component.html',
   styleUrls: ['./token-amount-estimated.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AmountInputComponent implements OnInit, OnDestroy {
+export class AmountEstimatedComponent implements OnInit, OnDestroy {
   @Input() set loading(value: boolean) {
     this._loading = value;
     this.hidden = false;
@@ -23,32 +25,42 @@ export class AmountInputComponent implements OnInit, OnDestroy {
 
   @Input() disabled: boolean;
 
+  @Input() formService: FormService;
+
   public _loading: boolean;
 
   public usd: string;
 
   public tokensAmount: string;
 
+  public fee: {
+    token: TokenAmount;
+    amount: BigNumber;
+  };
+
   public formSubscription$: Subscription;
 
   public hidden: boolean;
 
-  constructor(private swapFormService: SwapFormService, private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.formSubscription$ =
-      this.swapFormService.commonTrade.controls.output.valueChanges.subscribe(output => {
+    this.formSubscription$ = this.formService.commonTrade.controls.output.valueChanges.subscribe(
+      output => {
         if (output.toAmount.isNaN()) {
           this.hidden = true;
           this.cdr.detectChanges();
           return;
         }
         this.hidden = false;
-        const { toToken } = this.swapFormService.commonTrade.controls.input.value;
+        const { toToken } = this.formService.commonTrade.controls.input.value;
         this.tokensAmount = output.toAmount.toFixed();
-        this.usd = toToken.price && output.toAmount.multipliedBy(toToken.price).toFixed(2);
+        this.usd = toToken?.price && output.toAmount.multipliedBy(toToken.price).toFixed(2);
+        // @ts-ignore
+        this.fee = output.fee;
         this.cdr.detectChanges();
-      });
+      }
+    );
   }
 
   ngOnDestroy() {
