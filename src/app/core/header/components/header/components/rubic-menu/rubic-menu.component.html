@@ -12,25 +12,33 @@
 <ng-template #dropdown let-activeZone>
   <tui-opt-group>
     <tui-data-list class="data-list">
-      <button
-        *ngFor="let item of menuItems"
-        (click)="clickNavigate(item.link)"
-        tuiOption
-        class="data-list__option">
-        {{ item.title }}
-      </button>
+      <a *ngFor="let item of menuItems"
+         [routerLink]="item.link"
+         (click)="clickNavigate(item.link)"
+         routerLinkActive="data-list__link_active"
+         class="data-list__link">
+        <button
+          tuiOption
+          class="data-list__option">
+          {{ item.title }}
+        </button>
+      </a>
     </tui-data-list>
   </tui-opt-group>
 
   <tui-opt-group class="rubic-menu__mobile">
     <tui-data-list class="data-list">
-      <button
-        tuiOption
-        (click)="clickNavigate('')"
-        class="data-list__option"
-        routerLinkActive="data-list__option_active">
-        {{ 'Swaps' | translate }}
-      </button>
+      <a routerLink="/"
+         (click)="clickNavigate('')"
+         routerLinkActive="data-list__link_active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         class="data-list__link">
+        <button
+          tuiOption
+          class="data-list__option">
+          {{ 'Swaps' | translate }}
+        </button>
+      </a>
 
       <button
         tuiOption
@@ -57,9 +65,14 @@
           {{ ($currentUser | async)?.address | shortAddress: 5:3  }}
         </div>
       </button>
-      <button tuiOption class="data-list__option" (click)="clickNavigate('my-trades')">
-        {{ 'My trades' | translate }}
-      </button>
+      <a routerLink="my-trades"
+         (click)="clickNavigate('my-trades')"
+         routerLinkActive="data-list__link_active"
+         class="data-list__link">
+        <button tuiOption class="data-list__option" (click)="clickNavigate('my-trades')">
+          {{ 'My trades' | translate }}
+        </button>
+      </a>
       <button
         tuiOption
         (click)="toggleConfirmModal()"

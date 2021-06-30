@@ -83,10 +83,6 @@
       }
     }
 
-    &_active {
-      color: $rubic-primary;
-    }
-
     &_disabled {
       color: rgba(#909090, 0.6);
 
@@ -122,6 +118,16 @@
     }
   }
 
+  &__link {
+    text-decoration: none !important;
+
+    &_active {
+      .data-list__option {
+        color: $rubic-primary;
+      }
+    }
+  }
+
   &__address {
     cursor: default;
 
@@ -153,7 +159,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 .rubic-menu {
   &__chain-icon {
     width: auto;
-    max-width: 25px;
+    max-width: 18px;
     height: auto;
     margin-right: 5px;
 
