@@ -102,8 +102,7 @@ export class InstantTradeService {
             this.modalShowing = this.notificationsService
               .show('Transaction in progress', {
                 status: TuiNotification.Info,
-                autoClose: false,
-                hasCloseButton: false
+                autoClose: false
               })
               .subscribe();
           }
@@ -175,15 +174,14 @@ export class InstantTradeService {
 
   public async approve(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
     try {
-      await this.blockchainsProviders[this.currentBlockchain][provider].approve(
+      await (this.blockchainsProviders[this.currentBlockchain][provider] as ItProvider).approve(
         trade.from.token.address,
         {
-          onConfirm: () => {
+          onTransactionHash: () => {
             this.modalShowing = this.notificationsService
               .show('Approve in progress', {
                 status: TuiNotification.Info,
-                autoClose: false,
-                hasCloseButton: false
+                autoClose: false
               })
               .subscribe();
           }
@@ -196,6 +194,7 @@ export class InstantTradeService {
         })
         .subscribe();
     } catch (err) {
+      this.modalShowing.unsubscribe();
       this.errorService.throw$(err);
     }
   }

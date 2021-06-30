@@ -104,6 +104,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           this.currentBlockchain = form.input.fromBlockchain;
           this.initiateProviders(this.currentBlockchain);
         }
+        if (!this.allowTrade) {
+          this.tradeStatus = TRADE_STATUS.DISABLED;
+        }
+        this.cdr.detectChanges();
       }
     );
   }
@@ -191,6 +195,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public async createTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
     const provider = this.providerControllers[providerIndex];
+    const currentTradeState = this.tradeStatus;
+
     if (providerIndex !== -1) {
       this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
       this.providerControllers[providerIndex] = {
@@ -210,12 +216,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           ...this.providerControllers[providerIndex],
           tradeState: INSTANT_TRADES_STATUS.ERROR
         };
-        this.tradeStatus = TRADE_STATUS.DISABLED;
+        this.tradeStatus = currentTradeState;
       }
       this.providerControllers[providerIndex] = {
         ...this.providerControllers[providerIndex],
         tradeState: INSTANT_TRADES_STATUS.COMPLETED
       };
+      this.tradeStatus = currentTradeState;
       this.cdr.detectChanges();
 
       this.tokensService.recalculateUsersBalance();
@@ -303,6 +310,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       try {
         await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.providerControllers[providerIndex] = {
+          ...this.providerControllers[providerIndex],
+          tradeState: INSTANT_TRADES_STATUS.COMPLETED
+        };
+        this.cdr.detectChanges();
       } catch (err) {
         this.providerControllers[providerIndex] = {
           ...this.providerControllers[providerIndex],
@@ -311,7 +323,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
       }
       this.cdr.detectChanges();
-
       this.tokensService.recalculateUsersBalance();
     } else {
       this.errorService.throw$(new NoSelectedProviderError());
