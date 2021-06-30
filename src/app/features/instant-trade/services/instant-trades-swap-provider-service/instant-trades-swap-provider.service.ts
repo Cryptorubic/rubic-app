@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SupportedTokensInfo } from '../../../swaps/models/SupportedTokensInfo';
 import { SwapProvider } from '../../../swaps/services/swap-provider';
 import { SWAP_PROVIDER_TYPE } from '../../../swaps/models/SwapProviderType';

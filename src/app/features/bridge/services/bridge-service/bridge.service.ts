@@ -24,8 +24,8 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeToken } from '../../models/BridgeToken';
@@ -185,7 +185,7 @@ export class BridgeService {
 
   private getBridgeTrade(bridgeTradeRequest?: BridgeTradeRequest): Observable<BridgeTrade> {
     const { fromBlockchain, toBlockchain, fromAmount } =
-      this.swapFormService.commonTrade.value.input;
+      this.swapFormService.commonTrade.controls.input.value;
 
     return this.getCurrentBridgeToken().pipe(
       map(bridgeToken => ({
@@ -246,19 +246,18 @@ export class BridgeService {
 
   public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
-      mergeMap((bridgeTrade: BridgeTrade) => {
+      mergeMap(async (bridgeTrade: BridgeTrade) => {
         this.checkSettings(bridgeTrade.fromBlockchain);
         const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-        return from(
-          this.checkBalance(
-            bridgeTrade.fromBlockchain,
-            bridgeTrade.toBlockchain,
-            token.address,
-            token.symbol,
-            token.decimals,
-            bridgeTrade.amount
-          )
-        ).pipe(map(() => bridgeTrade));
+        await this.checkBalance(
+          bridgeTrade.fromBlockchain,
+          bridgeTrade.toBlockchain,
+          token.address,
+          token.symbol,
+          token.decimals,
+          bridgeTrade.amount
+        );
+        return bridgeTrade;
       }),
       mergeMap((bridgeTrade: BridgeTrade) => {
         return this.bridgeProvider.approve(bridgeTrade).pipe(
