@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .bridge-bottom-form {
   display: flex;
@@ -42,5 +43,17 @@
 
   &__error {
     color: #d82122;
+  }
+
+  &__address {
+    word-break: break-all;
+  }
+}
+
+@include b($mobile-md) {
+  .bridge-bottom-form {
+    &__footer {
+      padding: 15px 20px 0;
+    }
   }
 }

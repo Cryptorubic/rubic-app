@@ -1,7 +1,17 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
 tui-dialog {
   overflow: hidden;
 
   &::after {
     box-shadow: unset !important;
+  }
+}
+
+@include b($mobile-md) {
+  tui-dialog {
+    height: 100vh;
+    margin: 0;
   }
 }

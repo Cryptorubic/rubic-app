@@ -1,4 +1,4 @@
-import { Component, Inject, Injector } from '@angular/core';
+import { Component, Inject, Injector, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -13,6 +13,8 @@ import { WalletsModalComponent } from '../wallets-modal/wallets-modal.component'
 })
 export class LoginButtonComponent {
   public $currentUser: Observable<UserInterface>;
+
+  @Input() appearance: string;
 
   constructor(
     private readonly authService: AuthService,
