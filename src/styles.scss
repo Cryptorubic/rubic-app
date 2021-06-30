@@ -137,3 +137,9 @@ tui-dropdown-box {
   border: none !important;
   border-radius: 18px !important;
 }
+
+@include b($desktop) {
+  tui-dropdown-box {
+    min-width: 153px;
+  }
+}

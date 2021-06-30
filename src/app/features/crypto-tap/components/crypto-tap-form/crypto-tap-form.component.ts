@@ -17,11 +17,11 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { filter, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 
 @Component({
   selector: 'app-crypto-tap-form',
@@ -149,7 +149,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
             this.isBNIncorrect(fee)
           ) {
             console.error('Incorrect crypto tap output parameters');
-            throwError(new RubicError());
+            throwError(new UndefinedError());
           }
 
           this.cryptoTapFormService.commonTrade.controls.output.patchValue({

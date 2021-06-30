@@ -10,14 +10,14 @@ import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridg
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { WrongToken } from 'src/app/shared/models/errors/provider/WrongToken';
+import { WrongToken } from 'src/app/core/errors/models/provider/WrongToken';
 import { TransactionReceipt } from 'web3-eth';
-import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import BinanceContractAbi from './abi/BinanceContractAbi';
@@ -52,7 +52,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     private readonly bridgeApiService: BridgeApiService,
     private readonly useTestingMode: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsOldService
+    private readonly errorService: ErrorsService
   ) {
     super();
 
@@ -176,14 +176,14 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
         : this.BinanceSmartContractAddress;
 
     if (token.symbol !== 'RBC') {
-      this.errorsService.throw(new WrongToken());
+      this.errorService.throw$(new WrongToken());
     }
 
     return this.needApprove(bridgeTrade).pipe(
       switchMap(needApprove => {
         if (!needApprove) {
           console.error('You should check bridge trade allowance before approve');
-          return throwError(new RubicError());
+          return throwError(new UndefinedError());
         }
         return from(
           this.web3PrivateService.approveTokens(tokenFrom.address, spenderAddress, 'infinity', {
@@ -198,7 +198,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     const { token } = bridgeTrade;
 
     if (token.symbol !== 'RBC') {
-      this.errorsService.throw(new WrongToken());
+      this.errorService.throw$(new WrongToken());
     }
 
     const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];

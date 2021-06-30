@@ -1,18 +1,21 @@
-@import '../../../scss/vars';
+@import 'src/scss/vars';
 
 .rubic-footer {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 60px;
+  padding: 0 20px;
 
   font-weight: 300;
   font-family: $sf-pro-font;
 
   &__nav {
     display: flex;
+    flex-wrap: wrap;
     grid-gap: 21px;
     align-items: center;
+    justify-content: center;
     margin-bottom: 26px;
   }
 

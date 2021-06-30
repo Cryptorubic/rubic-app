@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { from, Observable, of, Subject } from 'rxjs';
+import { from, Observable, of, Subject, throwError } from 'rxjs';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { OverQueryLimitError } from 'src/app/shared/models/errors/bridge/OverQueryLimitError';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { OverQueryLimitError } from 'src/app/core/errors/models/bridge/OverQueryLimitError';
 import { TransactionReceipt } from 'web3-eth';
-import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { RetrievingTokensError } from 'src/app/shared/models/errors/provider/RetrievingTokensError';
+import { RetrievingTokensError } from 'src/app/core/errors/models/provider/RetrievingTokensError';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { List } from 'immutable';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { PanamaToken } from './models/PanamaToken';
 
 interface PanamaResponse {
@@ -46,7 +45,7 @@ export class PanamaBridgeProviderService {
     private readonly httpClient: HttpClient,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly bridgeApiService: BridgeApiService,
-    private readonly errorsService: ErrorsOldService,
+    private readonly errorService: ErrorsService,
     private readonly providerConnectorService: ProviderConnectorService
   ) {
     this.setTokensList();
@@ -58,6 +57,7 @@ export class PanamaBridgeProviderService {
       .pipe(
         map((response: PanamaResponse) => {
           if (response.code !== this.PANAMA_SUCCESS_CODE) {
+            // tslint:disable-next-line:no-console
             console.debug('Error retrieving panama tokens', response);
             return List([]);
           }
@@ -85,14 +85,13 @@ export class PanamaBridgeProviderService {
     return this.httpClient.get(`${this.apiUrl}tokens/${token.symbol}/networks`).pipe(
       map((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
-          this.errorsService.throw(
-            new RetrievingTokensError(`Error retrieving tokens, code ${res.code}`)
-          );
+          this.errorService.throw$(new RetrievingTokensError());
         }
         return res.data.networks.find(network => network.name === toBlockchain).networkFee;
       }),
       catchError(err => {
-        return this.errorsService.$throw(err);
+        this.errorService.catch$(err);
+        return throwError(err);
       })
     );
   }
@@ -114,16 +113,14 @@ export class PanamaBridgeProviderService {
       mergeMap((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
           console.error(`Bridge POST error, code ${res.code}`);
-          return this.errorsService.$throw(new OverQueryLimitError());
+          this.errorService.throw$(new OverQueryLimitError());
         }
         const { data } = res;
         return from(this.sendDeposit(data.id, bridgeTrade, data.depositAddress));
       }),
       catchError(err => {
-        return this.errorsService.$throw(
-          err instanceof RubicError ? err : new RubicError(),
-          `Error bridge post: ${err}`
-        );
+        this.errorService.throw$(err);
+        return throwError(err);
       })
     );
   }
@@ -170,6 +167,7 @@ export class PanamaBridgeProviderService {
         }
       );
     } else {
+      // tslint:disable-next-line:max-line-length
       const estimatedGas = '120000'; // TODO: хотфикс сломавшегося в метамаске рассчета газа. Estimated gas не подойдет, т.к. в BSC не работает rpc
       receipt = await this.web3PrivateService.transferTokens(
         tokenAddress,

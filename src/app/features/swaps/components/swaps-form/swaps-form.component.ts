@@ -11,6 +11,7 @@ import BigNumber from 'bignumber.js';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
 import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/bridge-bottom-form/bridge-bottom-form.component';
 import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 
 type SelectedToken = {
@@ -28,8 +29,22 @@ export class SwapsFormComponent implements OnInit {
 
   @ViewChild(InstantTradeBottomFormComponent) itForm: InstantTradeBottomFormComponent;
 
+  public autoRefresh: boolean;
+
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
+  }
+
+  public get allowTrade(): boolean {
+    const form = this.swapFormService.commonTrade.controls.input.value;
+    return Boolean(
+      form.fromAmount &&
+        form.fromAmount.gt(0) &&
+        form.fromBlockchain &&
+        form.toBlockchain &&
+        form.fromToken &&
+        form.toToken
+    );
   }
 
   private _supportedTokens: SupportedTokensInfo;
@@ -50,9 +65,12 @@ export class SwapsFormComponent implements OnInit {
 
   public isLoading = true;
 
+  public loadingStatus: 'refreshing' | 'stopped' | '';
+
   constructor(
     private readonly swapsService: SwapsService,
-    public readonly swapFormService: SwapFormService
+    public readonly swapFormService: SwapFormService,
+    private readonly settingsService: SettingsService
   ) {}
 
   ngOnInit(): void {
@@ -76,6 +94,14 @@ export class SwapsFormComponent implements OnInit {
       this.updateSelectedToken('to');
 
       this.isLoading = false;
+    });
+
+    this.autoRefresh = this.settingsService.settingsForm.controls.INSTANT_TRADE.value.autoRefresh;
+    this.selectedFromAmount = this.swapFormService.commonTrade.controls.input.value.fromAmount;
+    this.settingsService.settingsForm.controls.INSTANT_TRADE.get(
+      'autoRefresh'
+    ).valueChanges.subscribe(el => {
+      this.autoRefresh = el;
     });
 
     this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
@@ -233,6 +259,9 @@ export class SwapsFormComponent implements OnInit {
   }
 
   public async refreshTrade(): Promise<void> {
+    this.loadingStatus = 'refreshing';
     await this.itForm.calculateTrades();
+    this.loadingStatus = 'stopped';
+    setTimeout(() => (this.loadingStatus = ''), 1000);
   }
 }

@@ -1,4 +1,5 @@
-@import '../../../../scss/vars';
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .tokens {
   display: flex;
@@ -62,4 +63,10 @@
 
 ::ng-deep button .content span {
   font-weight: 300;
+}
+
+@include b($mobile-md) {
+  .tokens {
+    border-radius: 0;
+  }
 }

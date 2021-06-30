@@ -1,5 +1,7 @@
-.tokens-select {
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
 
+.tokens-select {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -28,4 +30,12 @@
 
 app-tokens-search-bar {
   margin-bottom: 14px;
+}
+
+@include b($mobile-md) {
+  .tokens-select {
+    &__content {
+      max-height: none;
+    }
+  }
 }

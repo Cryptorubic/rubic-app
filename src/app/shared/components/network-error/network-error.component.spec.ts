@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 
 import { NetworkErrorComponent } from './network-error.component';
 

@@ -17,11 +17,12 @@ import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/B
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import networks from '../../../../../../shared/constants/blockchain/networks';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
@@ -82,7 +83,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     });
   }
 
-  private getTokensList(tokenAmounts: List<TokenAmount>): void {
+  private getTokensList(tokenAmounts: List<SwapToken>): void {
     const query = `{
       tokenMappings(
         first: 1000,
@@ -112,7 +113,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           const promisesTokens = [];
 
           posTokens.forEach(token =>
-            promisesTokens.push(this.parsePolygonTokens(token, tokenAmounts))
+            promisesTokens.push(this.parsePolygonTokens(token, tokenAmounts as any))
           );
           const tokens = await Promise.all(promisesTokens);
 
@@ -128,6 +129,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           );
         },
         err => {
+          // tslint:disable-next-line:no-console
           console.debug('Error retrieving polygon tokens: ', err);
           this.tokens$.next(List([]));
         }
@@ -193,6 +195,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         toEthFee: 0
       };
     } catch (err) {
+      // tslint:disable-next-line:no-console
       console.debug('Error getting polygon tokens:', err, token.rootToken, token.childToken);
       return null;
     }
@@ -263,7 +266,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       switchMap(needApprove => {
         if (!needApprove) {
           console.error('You should check bridge trade allowance before approve');
-          return throwError(new RubicError());
+          return throwError(new UndefinedError());
         }
         return from(
           maticPOSClient.approveMaxERC20ForDeposit(tokenAddress, {
@@ -299,11 +302,16 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      const onTradeTransactionHash = onTradeTransactionHashFactory(
+      const onTradeTransactionHashFn = onTradeTransactionHashFactory(
         TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS
       );
       if (token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
-        return this.depositEther(maticPOSClient, userAddress, amountInWei, onTradeTransactionHash);
+        return this.depositEther(
+          maticPOSClient,
+          userAddress,
+          amountInWei,
+          onTradeTransactionHashFn
+        );
       }
       return this.depositERC20(
         maticPOSClient,
@@ -311,7 +319,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         tokenAddress,
         amountInWei,
         bridgeTrade.onTransactionHash,
-        onTradeTransactionHash
+        onTradeTransactionHashFn
       );
     }
 

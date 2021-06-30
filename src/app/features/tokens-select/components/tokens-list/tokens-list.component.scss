@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 :host {
   width: 100%;
@@ -61,4 +62,15 @@
 
 ::ng-deep div.content {
   height: 100% !important;
+}
+
+@include b($mobile-md) {
+  .tokens-scrollbar {
+    width: 100%;
+    height: 100vh;
+  }
+
+  .tokens-container {
+    left: 0;
+  }
 }

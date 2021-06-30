@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { RubicErrorComponent } from './components/rubic-error/rubic-error.component';
+import { UndefinedErrorComponent } from 'src/app/core/errors/components/undefined-error/undefined-error.component';
 import { NotSupportedNetworkErrorComponent } from './components/not-supported-network-error/not-supported-network-error.component';
 import { InsufficientFundsErrorComponent } from './components/insufficient-funds-error/insufficient-funds-error.component';
 import { MetamaskErrorComponent } from './components/metamask-error/metamask-error.component';
@@ -11,7 +11,7 @@ import { OverQueryLimitErrorComponent } from './components/over-query-limit-erro
 
 @NgModule({
   declarations: [
-    RubicErrorComponent,
+    UndefinedErrorComponent,
     NotSupportedNetworkErrorComponent,
     InsufficientFundsErrorComponent,
     MetamaskErrorComponent,
@@ -21,7 +21,7 @@ import { OverQueryLimitErrorComponent } from './components/over-query-limit-erro
   ],
   imports: [CommonModule, TranslateModule],
   entryComponents: [
-    RubicErrorComponent,
+    UndefinedErrorComponent,
     NotSupportedNetworkErrorComponent,
     InsufficientFundsErrorComponent,
     MetamaskErrorComponent,

@@ -9,7 +9,7 @@ import { TradeTypeService } from 'src/app/core/services/swaps-old/trade-type-ser
 import { TradeParametersService } from 'src/app/core/services/swaps-old/trade-parameters-service/trade-parameters.service';
 import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
 import { MatDialog } from '@angular/material/dialog';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { Router } from '@angular/router';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';

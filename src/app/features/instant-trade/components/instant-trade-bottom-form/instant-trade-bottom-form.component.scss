@@ -1,10 +1,11 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 $green: rgb(74, 169, 86);
 
 .instant-trade-bottom-form {
-  padding: 15px 20px 30px;
   margin-bottom: 15px;
+  padding: 15px 20px 30px;
 
   background-color: #fcfcfc;
   border-radius: 0 0 14px 14px;
@@ -33,6 +34,15 @@ $green: rgb(74, 169, 86);
       color: $green;
       font-weight: 500;
       font-size: 16px;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .instant-trade-bottom-form {
+    &__swap {
+      display: block;
+      margin: 0 20px;
     }
   }
 }

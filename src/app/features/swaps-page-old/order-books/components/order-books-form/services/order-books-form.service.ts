@@ -6,19 +6,19 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
-import { MetamaskError } from 'src/app/shared/models/errors/provider/MetamaskError';
-import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { MetamaskError } from 'src/app/core/errors/models/provider/MetamaskError';
+import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
 import { OrderBookTradeApi } from 'src/app/core/services/backend/order-book-api/types/trade-api';
 import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { OrderBookFormToken, OrderBookTradeForm } from '../../../models/trade-form';
-import { UseTestingModeService } from '../../../../../../core/services/use-testing-mode/use-testing-mode.service';
-import { TotalSupplyOverflowError } from '../../../../../../shared/models/errors/order-book/TotalSupplyOverflowError';
+import { TotalSupplyOverflowError } from '../../../../../../core/errors/models/order-book/TotalSupplyOverflowError';
 import { BIG_NUMBER_FORMAT } from '../../../../../../shared/constants/formats/BIG_NUMBER_FORMAT';
 import { ProviderConnectorService } from '../../../../../../core/services/blockchain/provider-connector/provider-connector.service';
 import { ErrorsOldService } from '../../../../../../core/services/errors-old/errors-old.service';
-import SameTokensError from '../../../../../../shared/models/errors/order-book/SameTokensError';
+import SameTokensError from '../../../../../../core/errors/models/order-book/SameTokensError';
 
 @Injectable()
 export class OrderBooksFormService implements OnDestroy {

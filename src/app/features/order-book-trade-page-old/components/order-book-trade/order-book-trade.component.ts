@@ -11,12 +11,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
-import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
-import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TX_STATUS } from '../../models/TX_STATUS';
@@ -118,8 +115,7 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
     private dialog: MatDialog,
     private readonly translateService: TranslateService,
     private readonly withRoundPipe: WithRoundPipe,
-    private readonly providerConnector: ProviderConnectorService,
-    private readonly errorsService: ErrorsOldService
+    private readonly providerConnector: ProviderConnectorService
   ) {}
 
   public ngAfterViewInit(): void {
@@ -143,16 +139,16 @@ export class OrderBookTradeComponent implements AfterViewInit, OnDestroy {
 
   private checkProviderSettings() {
     if (!this.providerConnector.isProviderActive) {
-      this.errorsService.throw(new WalletError());
+      // this.errorsService.throw(new WalletError());
     }
 
     if (!this.providerConnector.address) {
-      this.errorsService.throw(new AccountError());
+      // this.errorsService.throw(new AccountError());
     }
   }
 
   private showErrorMessage(err: RubicError): void {
-    this.errorsService.showErrorDialog(err);
+    // this.errorsService.showErrorDialog(err);
   }
 
   private setTradeData(uniqueLink: string): void {

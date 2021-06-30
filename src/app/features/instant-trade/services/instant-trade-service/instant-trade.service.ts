@@ -4,10 +4,10 @@ import { OneInchEthService } from 'src/app/features/instant-trade/services/insta
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
-import { Observable, Subscription, timer } from 'rxjs';
+import { forkJoin, Observable, Subscription, timer } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { INTSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps-page-old/models/trade-data';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -19,8 +19,6 @@ import { OneInchBscService } from 'src/app/features/instant-trade/services/insta
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
-import { BridgeTradeRequest } from 'src/app/features/bridge/models/BridgeTradeRequest';
-import { TransactionReceipt } from 'web3-eth';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 
@@ -61,14 +59,12 @@ export class InstantTradeService {
     });
   }
 
-  public async calculateTrades(): Promise<PromiseSettledResult<void>[]> {
+  public async calculateTrades(): Promise<PromiseSettledResult<InstantTrade>[]> {
     const { fromAmount, fromToken, toToken } =
       this.swapFormService.commonTrade.controls.input.value;
     const providersDataPromises = Object.values(
       this.blockchainsProviders[this.currentBlockchain]
-    ).map(async (provider: ItProvider) =>
-      provider.calculateTrade(new BigNumber(fromAmount), fromToken, toToken)
-    );
+    ).map(async (provider: ItProvider) => provider.calculateTrade(fromAmount, fromToken, toToken));
     return Promise.allSettled(providersDataPromises);
   }
 
@@ -142,6 +138,7 @@ export class InstantTradeService {
 
   public updateTrade(hash: string, status: INTSTANT_TRADES_TRADE_STATUS) {
     return this.instantTradesApiService.patchTrade(hash, status).subscribe({
+      // tslint:disable-next-line:no-console
       error: err => console.debug('IT patch request is failed', err)
     });
   }
@@ -164,47 +161,60 @@ export class InstantTradeService {
   }
 
   public needApprove(): Observable<boolean> {
-    // return this.getBridgeTrade().pipe(
-    //   switchMap(bridgeTrade =>
-    //     this.bridgeProvider.needApprove(bridgeTrade).pipe(
-    //       catchError(err => {
-    //         console.error(err);
-    //         const error = err instanceof RubicError ? err : new RubicError();
-    //         return throwError(error);
-    //       })
-    //     )
-    //   ),
-    //   first()
-    // );
-    return undefined;
+    const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
+    const providerApproveData = Object.values(
+      this.blockchainsProviders[this.currentBlockchain]
+    ).map((provider: ItProvider) => provider.needApprove(fromToken.address));
+
+    return forkJoin(providerApproveData).pipe(
+      map((approveArray: BigNumber[]) => {
+        return approveArray.some(el => fromAmount.gt(el));
+      })
+    );
   }
 
-  public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
-    // return this.getBridgeTrade(bridgeTradeRequest).pipe(
-    //   mergeMap((bridgeTrade: BridgeTrade) => {
-    //     this.checkSettings(bridgeTrade.fromBlockchain);
-    //     const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-    //     return from(
-    //       this.checkBalance(
-    //         bridgeTrade.fromBlockchain,
-    //         bridgeTrade.toBlockchain,
-    //         token.address,
-    //         token.symbol,
-    //         token.decimals,
-    //         bridgeTrade.amount
-    //       )
-    //     ).pipe(map(() => bridgeTrade));
-    //   }),
-    //   mergeMap((bridgeTrade: BridgeTrade) => {
-    //     return this.bridgeProvider.approve(bridgeTrade).pipe(
-    //       catchError(err => {
-    //         console.error(err);
-    //         const error = err instanceof RubicError ? err : new RubicError();
-    //         return throwError(error);
-    //       })
-    //     );
-    //   })
-    // );
-    return undefined;
+  public async approve(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
+    try {
+      await this.blockchainsProviders[this.currentBlockchain][provider].approve(
+        trade.from.token.address,
+        {
+          onConfirm: () => {
+            this.modalShowing = this.notificationsService
+              .show('Approve in progress', {
+                status: TuiNotification.Info,
+                autoClose: false,
+                hasCloseButton: false
+              })
+              .subscribe();
+          }
+        }
+      );
+      this.modalShowing.unsubscribe();
+      this.notificationsService
+        .show('Approve completed', {
+          status: TuiNotification.Success
+        })
+        .subscribe();
+    } catch (err) {
+      this.errorService.throw$(err);
+    }
+  }
+
+  public getApprove(): Observable<boolean[]> {
+    try {
+      const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
+      const providers = Object.values(this.blockchainsProviders[this.currentBlockchain]);
+      const providerApproveData = providers.map((provider: ItProvider) =>
+        provider.needApprove(fromToken.address)
+      );
+
+      return forkJoin(providerApproveData).pipe(
+        map((approveArray: BigNumber[]) => {
+          return approveArray.map(el => fromAmount.gt(el));
+        })
+      );
+    } catch (err) {
+      this.errorService.throw$(err);
+    }
   }
 }
