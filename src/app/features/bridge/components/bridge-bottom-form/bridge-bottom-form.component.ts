@@ -21,6 +21,7 @@ import { SettingsService } from 'src/app/features/swaps/services/settings-servic
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -98,7 +99,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
     let tokenAddress;
     if (
-      toToken?.address &&
+      toToken?.address !== NATIVE_TOKEN_ADDRESS &&
       this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(toToken.address)
     ) {
       tokenAddress = toToken?.address;

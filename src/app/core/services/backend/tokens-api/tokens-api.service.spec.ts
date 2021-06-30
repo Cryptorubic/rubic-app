@@ -1,17 +1,17 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { TokensService } from './tokens.service';
+import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 
-describe('TokensService', () => {
-  let service: TokensService;
+describe('TokensApiService', () => {
+  let service: TokensApiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [TokensService]
+      providers: [TokensApiService]
     });
-    service = TestBed.inject(TokensService);
+    service = TestBed.inject(TokensApiService);
   });
 
   it('should be created', () => {

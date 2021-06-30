@@ -6,16 +6,16 @@ import { Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TradeTypeService } from 'src/app/core/services/swaps-old/trade-type-service/trade-type.service';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { TradeParametersService } from 'src/app/core/services/swaps-old/trade-parameters-service/trade-parameters.service';
 import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
 import { MatDialog } from '@angular/material/dialog';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { Router } from '@angular/router';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
 import { OrderBookTradeForm } from '../../models/trade-form';
 import { OrderBooksFormService } from './services/order-books-form.service';
-import { TokenPart } from '../../../../../shared/models/order-book/tokens';
-import { ErrorsOldService } from '../../../../../core/services/errors-old/errors-old.service';
 
 enum TRADE_STATUS {
   STARTED = 'STARTED',

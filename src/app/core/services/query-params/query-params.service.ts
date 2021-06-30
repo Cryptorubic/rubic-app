@@ -8,7 +8,7 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { skip, take } from 'rxjs/operators';
 import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
-import { TokensService } from '../backend/tokens-service/tokens.service';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { TradeParametersService } from '../swaps-old/trade-parameters-service/trade-parameters.service';
