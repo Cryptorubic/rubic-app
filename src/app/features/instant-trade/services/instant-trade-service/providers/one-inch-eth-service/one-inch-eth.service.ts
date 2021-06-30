@@ -6,7 +6,7 @@ import { OneinchQuoteError } from 'src/app/core/errors/models/provider/OneinchQu
 import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
-import { catchError, first, switchMap } from 'rxjs/operators';
+import { catchError, first } from 'rxjs/operators';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
@@ -24,7 +24,7 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { from, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-oneinch/common-oneinch.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 
@@ -78,30 +78,21 @@ export class OneInchEthService implements ItProvider {
   }
 
   public needApprove(tokenAddress: string): Observable<BigNumber> {
-    if (this.web3Public.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-    return this.commonOneinch
-      .loadApproveAddress(BlockchainsInfo.getBlockchainByName(this.blockchain).id)
-      .pipe(
-        switchMap(address =>
-          from(
-            this.web3Public.getAllowance(
-              tokenAddress,
-              this.providerConnectorService.address,
-              address
-            )
-          )
-        )
-      );
+    return this.commonOneinch.needApprove(
+      tokenAddress,
+      this.web3Public,
+      this.blockchain,
+      this.providerConnectorService.address
+    );
   }
 
-  public async approve(tokenAddress: string): Promise<void> {
-    const approveAddress = await this.commonOneinch
-      .loadApproveAddress(BlockchainsInfo.getBlockchainByName(this.blockchain).id)
-      .toPromise();
-    const uintInfinity = new BigNumber(2).pow(256).minus(1);
-    await this.web3Private.approveTokens(tokenAddress, approveAddress, uintInfinity);
+  public async approve(
+    tokenAddress: string,
+    options: {
+      onTransactionHash?: (hash: string) => void;
+    }
+  ): Promise<void> {
+    return this.commonOneinch.approve(tokenAddress, this.blockchain, options);
   }
 
   public async calculateTrade(

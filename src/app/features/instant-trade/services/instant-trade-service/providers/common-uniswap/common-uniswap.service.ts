@@ -24,6 +24,8 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { ItSettingsForm } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { AbiItem } from 'web3-utils';
+import { from, Observable, of } from 'rxjs';
+import { uniSwapContracts } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap-constants';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +36,34 @@ export class CommonUniswapService {
     public providerConnectorService: ProviderConnectorService,
     private readonly coingeckoApiService: CoingeckoApiService
   ) {}
+
+  public needApprove(tokenAddress: string, web3Public: Web3Public): Observable<BigNumber> {
+    if (web3Public.isNativeAddress(tokenAddress)) {
+      return of(new BigNumber(Infinity));
+    }
+    return from(
+      web3Public.getAllowance(
+        tokenAddress,
+        this.providerConnectorService.address,
+        uniSwapContracts.address
+      )
+    );
+  }
+
+  public async approve(
+    tokenAddress: string,
+    options: {
+      onTransactionHash?: (hash: string) => void;
+    }
+  ): Promise<void> {
+    const uintInfinity = new BigNumber(2).pow(256).minus(1);
+    await this.web3Private.approveTokens(
+      tokenAddress,
+      uniSwapContracts.address,
+      uintInfinity,
+      options
+    );
+  }
 
   public async calculateTokensToTokensGasLimit(
     amountIn: string,

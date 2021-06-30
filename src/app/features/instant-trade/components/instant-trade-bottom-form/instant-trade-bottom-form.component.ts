@@ -289,14 +289,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       try {
         await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.providerControllers[providerIndex] = {
+          ...this.providerControllers[providerIndex],
+          tradeState: INSTANT_TRADES_STATUS.COMPLETED
+        };
+        this.cdr.detectChanges();
       } catch (err) {
         this.providerControllers[providerIndex] = {
           ...this.providerControllers[providerIndex],
           tradeState: INSTANT_TRADES_STATUS.APPROVAL
         };
         this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+        this.cdr.detectChanges();
       }
-      this.cdr.detectChanges();
     } else {
       this.errorService.throw$(new NoSelectedProviderError());
     }
