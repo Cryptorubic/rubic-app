@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import {
   Gas,
+  GasCalculationMethod,
   SWAP_METHOD,
   UniswapRoute,
   UniSwapTrade
@@ -30,7 +31,7 @@ import { AbiItem } from 'web3-utils';
 export class CommonUniswapService {
   constructor(
     private readonly web3Private: Web3PrivateService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    public providerConnectorService: ProviderConnectorService,
     private readonly coingeckoApiService: CoingeckoApiService
   ) {}
 
@@ -231,7 +232,7 @@ export class CommonUniswapService {
     if (routes.length === 0) {
       throw new InsufficientLiquidityError();
     }
-    if (shouldOptimiseGas && toToken.price) {
+    if (shouldOptimiseGas && toToken.price && this.providerConnectorService.isProviderActive) {
       return this.getOptimalRouteAndGas(
         fromAmountAbsolute,
         toToken,
@@ -247,7 +248,8 @@ export class CommonUniswapService {
 
     const route = routes[0];
 
-    const to = this.providerConnectorService.address;
+    const to =
+      this.providerConnectorService.isProviderActive && this.providerConnectorService?.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * settings.deadline;
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
     const gasPrice = await web3Public.getGasPriceInETH();
@@ -256,12 +258,13 @@ export class CommonUniswapService {
       .multipliedBy(new BigNumber(1).minus(settings.slippageTolerance))
       .toFixed(0);
 
-    const estimatedGas = await this[gasCalculationMethodName](
+    const estimatedGas = await (this[gasCalculationMethodName] as GasCalculationMethod)(
       fromAmountAbsolute,
       amountOutMin,
       route.path,
       to,
       deadline,
+      contractAddress,
       web3Public,
       estimatedGasArray,
       abi
@@ -345,17 +348,7 @@ export class CommonUniswapService {
     amountIn: string,
     toToken: InstantTradeToken,
     routes: UniswapRoute[],
-    gasCalculationMethod: (
-      amountIn: string,
-      amountOutMin: string,
-      path: string[],
-      walletAddress: string,
-      deadline: number,
-      contractAddress: string,
-      web3Public: Web3Public,
-      tokensToTokensEstimatedGas: BigNumber[],
-      abi: AbiItem[]
-    ) => Promise<BigNumber>,
+    gasCalculationMethod: GasCalculationMethod,
     web3Public: Web3Public,
     settings: ItSettingsForm,
     contractAddress: string,
@@ -377,7 +370,7 @@ export class CommonUniswapService {
         .multipliedBy(new BigNumber(1).minus(settings.slippageTolerance))
         .toFixed(0);
 
-      const estimatedGas = await gasCalculationMethod(
+      const estimatedGas = await (gasCalculationMethod as GasCalculationMethod)(
         amountIn,
         amountOutMin,
         route.path,
