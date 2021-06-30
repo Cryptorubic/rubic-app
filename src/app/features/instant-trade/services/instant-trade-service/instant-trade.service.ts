@@ -200,7 +200,7 @@ export class InstantTradeService {
     }
   }
 
-  public getApprove(): Observable<boolean[]> {
+  public getApprove(): Observable<boolean[]> | never {
     try {
       const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
       const providers = Object.values(this.blockchainsProviders[this.currentBlockchain]);
@@ -214,7 +214,7 @@ export class InstantTradeService {
         })
       );
     } catch (err) {
-      this.errorService.throw$(err);
+      return this.errorService.throw$(err);
     }
   }
 }

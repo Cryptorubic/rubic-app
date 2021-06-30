@@ -117,19 +117,24 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (
-      form.input.fromToken &&
-      form.input.toToken &&
-      form.input.fromBlockchain &&
-      form.input.fromAmount &&
-      form.input.toBlockchain &&
-      form.input.fromAmount.gt(0)
-    ) {
-      await this.calculateTrades();
-    }
+    await this.calculateTrades();
   }
 
   public async calculateTrades(): Promise<void> {
+    const form = this.swapFormService.commonTrade.value;
+    if (
+      !(
+        form.input.fromToken &&
+        form.input.toToken &&
+        form.input.fromBlockchain &&
+        form.input.fromAmount &&
+        form.input.toBlockchain &&
+        form.input.fromAmount.gt(0)
+      )
+    ) {
+      return;
+    }
+
     const currentTradeStatus = this.tradeStatus;
     this.prepareControllers();
     const approveData = this.authService.user?.address
