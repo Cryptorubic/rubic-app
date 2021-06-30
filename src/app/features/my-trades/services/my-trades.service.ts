@@ -109,7 +109,7 @@ export class MyTradesService {
       },
       toToken: {
         ...trade.toToken,
-        symbol: fromSymbol
+        symbol: toSymbol
       }
     };
   }
