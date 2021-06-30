@@ -24,6 +24,7 @@ import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -54,7 +55,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
     let tokenAddress;
     if (
-      toToken?.address !== NATIVE_TOKEN_ADDRESS &&
+      toToken?.address &&
+      toToken.address !== NATIVE_TOKEN_ADDRESS &&
       this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(toToken.address)
     ) {
       tokenAddress = toToken?.address;
@@ -80,7 +82,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
-    private readonly web3PublicService: Web3PublicService
+    private readonly web3PublicService: Web3PublicService,
+    private readonly tokensService: TokensService
   ) {
     this.tradeStatus = TRADE_STATUS.DISABLED;
   }
@@ -190,6 +193,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
       };
       this.cdr.detectChanges();
+
       try {
         await this.instantTradeService.createTrade(
           provider.tradeProviderInfo.value,
@@ -208,6 +212,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         tradeState: INSTANT_TRADES_STATUS.COMPLETED
       };
       this.cdr.detectChanges();
+
+      this.tokensService.recalculateUsersBalance();
     } else {
       this.errorService.throw$(new NoSelectedProviderError());
     }
@@ -288,6 +294,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
       };
       this.cdr.detectChanges();
+
       try {
         await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
@@ -299,6 +306,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
       }
       this.cdr.detectChanges();
+
+      this.tokensService.recalculateUsersBalance();
     } else {
       this.errorService.throw$(new NoSelectedProviderError());
     }

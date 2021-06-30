@@ -38,17 +38,17 @@ export class TokensService {
   ) {
     this.tokensApiService.getTokensList().subscribe(
       tokens => {
-        this.setDefaultTokenAmounts(this.setCustomRanks(tokens));
-        this.recalculateUsersBalance();
+        if (!this.isTestingMode) {
+          this.setDefaultTokenAmounts(this.setCustomRanks(tokens));
+          this.recalculateUsersBalance();
+        }
       },
       err => console.error('Error retrieving tokens', err)
     );
 
     this.authService.getCurrentUser().subscribe(user => {
       this.userAddress = user?.address;
-      if (!this.isTestingMode) {
-        this.recalculateUsersBalance();
-      }
+      this.recalculateUsersBalance();
     });
 
     useTestingMode.isTestingMode.subscribe(isTestingMode => {
@@ -102,7 +102,7 @@ export class TokensService {
     );
   }
 
-  private async recalculateUsersBalance(
+  public async recalculateUsersBalance(
     tokens: List<TokenAmount> = this._tokens.getValue()
   ): Promise<void> {
     if (!tokens.size) {
