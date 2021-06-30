@@ -1,17 +1,18 @@
 import { BehaviorSubject } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { WalletlinkError } from 'src/app/shared/models/errors/provider/WalletlinkError';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
+import { WalletlinkError } from 'src/app/core/errors/models/provider/WalletlinkError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import Web3 from 'web3';
 import WalletConnect from '@walletconnect/web3-provider';
 import networks from 'src/app/shared/constants/blockchain/networks';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { WalletconnectError } from 'src/app/core/errors/models/provider/WalletconnectError';
+import { AbstractProvider } from 'web3-core';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
-import { WalletconnectError } from '../../../../../shared/models/errors/provider/WalletconnectError';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
-import { ErrorsOldService } from '../../../errors-old/errors-old.service';
 
 export class WalletConnectProvider extends PrivateProvider {
   private isEnabled: boolean;
@@ -42,7 +43,7 @@ export class WalletConnectProvider extends PrivateProvider {
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
     accountChange: BehaviorSubject<string>,
-    errorsService: ErrorsOldService
+    errorsService: ErrorsService
   ) {
     super(errorsService);
     this.isEnabled = false;
@@ -80,6 +81,7 @@ export class WalletConnectProvider extends PrivateProvider {
       this.selectedChain = chain;
       if (this.isEnabled) {
         chainChange.next(BlockchainsInfo.getBlockchainById(chain));
+        // tslint:disable-next-line:no-console
         console.info('Chain changed', chain);
       }
     });
@@ -87,6 +89,7 @@ export class WalletConnectProvider extends PrivateProvider {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
         this.onAddressChanges.next(this.selectedAddress);
+        // tslint:disable-next-line:no-console
         console.info('Selected account changed to', accounts[0]);
       }
     });
@@ -115,7 +118,7 @@ export class WalletConnectProvider extends PrivateProvider {
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(address);
     } catch (error) {
-      this.errorsService.throw(new WalletlinkError());
+      this.errorsService.throw$(new WalletlinkError());
     }
   }
 
@@ -128,10 +131,10 @@ export class WalletConnectProvider extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      this.errorsService.throw(new WalletconnectError());
+      this.errorsService.throw$(new WalletconnectError());
     }
     if (this.getNetwork().name !== token.blockchain) {
-      this.errorsService.throw(new NetworkError(token.blockchain));
+      this.errorsService.throw$(new NetworkError(token.blockchain));
     }
 
     return this.core.request({
@@ -144,7 +147,7 @@ export class WalletConnectProvider extends PrivateProvider {
           decimals: token.decimals,
           image: token.image
         }
-      } as any
+      }
     });
   }
 }

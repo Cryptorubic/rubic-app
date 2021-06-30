@@ -35,22 +35,6 @@
     font-size: 24px;
     line-height: 29px;
   }
-
-  &__refresh-circle {
-    &_refreshing {
-      animation: 0.9s linear 0.1s infinite refreshing;
-    }
-
-    &_stopped {
-      animation-iteration-count: 1;
-    }
-  }
-}
-
-@keyframes refreshing {
-  100% {
-    transform: rotate(-360deg);
-  }
 }
 
 .table-container {

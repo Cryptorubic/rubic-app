@@ -1,4 +1,4 @@
-interface OneInchQuoteResponse {
+export interface OneInchQuoteResponse {
   fromToken: object;
   toToken: object;
   toTokenAmount: string;
@@ -7,17 +7,17 @@ interface OneInchQuoteResponse {
   estimatedGas: string;
 }
 
-interface OneInchTokensResponse {
+export interface OneInchTokensResponse {
   tokens: {
     [key in string]: unknown;
   };
 }
 
-interface OneInchApproveResponse {
+export interface OneInchApproveResponse {
   address: string;
 }
 
-interface OneInchSwapResponse {
+export interface OneInchSwapResponse {
   tx: {
     from: string;
     to: string;
@@ -29,4 +29,11 @@ interface OneInchSwapResponse {
   error?: number;
 }
 
-export { OneInchQuoteResponse, OneInchSwapResponse, OneInchApproveResponse, OneInchTokensResponse };
+export interface OneInchTradeRequestParams {
+  fromTokenAddress: string;
+  toTokenAddress: string;
+  amount: string;
+  slippage: string;
+  fromAddress: string;
+  mainRouteParts?: string;
+}

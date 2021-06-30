@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-trades/models/instant-trades-trade-status';
 import BigNumber from 'bignumber.js';
-import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export interface InstantTrade<T> {
   from: {
@@ -16,11 +17,11 @@ export interface InstantTrade<T> {
   estimatedGas: BigNumber;
   gasFeeInUsd: BigNumber;
   gasFeeInEth: BigNumber;
-  options?: any;
+  options?: unknown;
 }
 
 export interface ProviderControllerData {
-  trade: InstantTrade<BlockchainToken>;
+  trade: InstantTrade<TokenAmount>;
   tradeState: INSTANT_TRADES_STATUS;
   tradeProviderInfo: {
     label: string;
@@ -29,6 +30,7 @@ export interface ProviderControllerData {
   isBestRate: boolean;
   isSelected: boolean;
   isCollapsed: boolean;
+  needApprove: boolean;
 }
 
 interface ProviderData {
@@ -93,7 +95,17 @@ export class ProviderPanelComponent {
    */
   @Output() public selectProvider: EventEmitter<void>;
 
-  public tradeData;
+  public get gasFeeDisplay(): boolean {
+    return (
+      this.tradeData.gasFeeInEth &&
+      this.tradeData.gasFeeInUsd &&
+      this.tradeData.to.token.blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
+      this.tradeData.to.token.blockchain !== BLOCKCHAIN_NAME.POLYGON &&
+      this.tradeData.gasFeeInUsd.gte('0.01')
+    );
+  }
+
+  public tradeData: InstantTrade<TokenAmount>;
 
   /**
    * Provider data.

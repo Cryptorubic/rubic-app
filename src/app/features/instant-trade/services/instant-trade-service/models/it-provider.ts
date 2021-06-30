@@ -1,15 +1,19 @@
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
+import { Observable } from 'rxjs';
+import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import { TransactionReceipt } from 'web3-eth';
 
 export interface ItProvider {
   createTrade: (
-    fromAmount: BigNumber,
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
-  ) => Promise<void>;
+    trade: InstantTrade,
+    options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
+  ) => Promise<TransactionReceipt>;
   calculateTrade: (
     fromAmount: BigNumber,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
-  ) => Promise<void>;
+  ) => Promise<InstantTrade>;
+  needApprove: (tokenAddress: string) => Observable<BigNumber>;
+  approve: (tokenAddress: string) => Promise<void>;
 }

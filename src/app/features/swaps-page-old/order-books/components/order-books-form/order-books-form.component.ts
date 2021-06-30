@@ -10,7 +10,7 @@ import { TokensService } from 'src/app/core/services/backend/tokens-service/toke
 import { TradeParametersService } from 'src/app/core/services/swaps-old/trade-parameters-service/trade-parameters.service';
 import { TradeParameters } from 'src/app/shared/models/swaps/TradeParameters';
 import { MatDialog } from '@angular/material/dialog';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { Router } from '@angular/router';
 import { OrderBookTradeForm } from '../../models/trade-form';
 import { OrderBooksFormService } from './services/order-books-form.service';

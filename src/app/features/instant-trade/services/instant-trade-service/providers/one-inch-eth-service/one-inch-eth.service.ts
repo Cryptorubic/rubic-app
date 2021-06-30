@@ -1,18 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { OneinchQuoteError } from 'src/app/shared/models/errors/provider/OneinchQuoteError';
+import { OneinchQuoteError } from 'src/app/core/errors/models/provider/OneinchQuoteError';
 import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { NotSupportedNetworkError } from 'src/app/shared/models/errors/provider/NotSupportedNetwork';
-import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
-import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
-import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, first, switchMap } from 'rxjs/operators';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
@@ -20,23 +14,24 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Injectable } from '@angular/core';
-import CustomError from 'src/app/shared/models/errors/custom-error';
+import CustomError from 'src/app/core/errors/models/custom-error';
 import {
-  OneInchApproveResponse,
   OneInchQuoteResponse,
-  OneInchSwapResponse,
-  OneInchTokensResponse
+  OneInchSwapResponse
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch-types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
+import { from, Observable, of } from 'rxjs';
+import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-oneinch/common-oneinch.service';
+import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OneInchEthService {
+export class OneInchEthService implements ItProvider {
   private readonly oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
   private supportedTokensAddresses: string[];
@@ -59,12 +54,13 @@ export class OneInchEthService {
     private readonly web3PublicService: Web3PublicService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly errorsService: ErrorsService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly commonOneinch: CommonOneinchService
   ) {
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    const network = BlockchainsInfo.getBlockchainByName(this.blockchain);
+    const network = BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.ETHEREUM);
     this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
-    this.web3Public = this.web3PublicService[this.blockchain];
+    this.web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
     this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
     this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
       this.settings = form;
@@ -72,22 +68,40 @@ export class OneInchEthService {
     this.loadSupportedTokens();
   }
 
-  private loadSupportedTokens() {
-    this.tokensLoadingProcess = new Promise<void>(resolve => {
-      this.httpClient
-        .get(`${this.apiBaseUrl}tokens`)
-        .subscribe((response: OneInchTokensResponse) => {
-          resolve();
-          this.supportedTokensAddresses = Object.keys(response.tokens);
-        });
-    });
+  private loadSupportedTokens(): void {
+    this.commonOneinch
+      .loadSupportedTokens(BlockchainsInfo.getBlockchainByName(this.blockchain).id)
+      .pipe(first())
+      .subscribe(addresses => {
+        this.supportedTokensAddresses = addresses;
+      });
   }
 
-  private loadApproveAddress(): Promise<string> {
-    return this.httpClient
-      .get(`${this.apiBaseUrl}approve/spender`)
-      .pipe(map((response: OneInchApproveResponse) => response.address))
+  public needApprove(tokenAddress: string): Observable<BigNumber> {
+    if (this.web3Public.isNativeAddress(tokenAddress)) {
+      return of(new BigNumber(Infinity));
+    }
+    return this.commonOneinch
+      .loadApproveAddress(BlockchainsInfo.getBlockchainByName(this.blockchain).id)
+      .pipe(
+        switchMap(address =>
+          from(
+            this.web3Public.getAllowance(
+              tokenAddress,
+              this.providerConnectorService.address,
+              address
+            )
+          )
+        )
+      );
+  }
+
+  public async approve(tokenAddress: string): Promise<void> {
+    const approveAddress = await this.commonOneinch
+      .loadApproveAddress(BlockchainsInfo.getBlockchainByName(this.blockchain).id)
       .toPromise();
+    const uintInfinity = new BigNumber(2).pow(256).minus(1);
+    await this.web3Private.approveTokens(tokenAddress, approveAddress, uintInfinity);
   }
 
   public async calculateTrade(
@@ -95,10 +109,8 @@ export class OneInchEthService {
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
   ): Promise<InstantTrade> {
-    const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
-      fromToken,
-      toToken
-    );
+    const { fromTokenAddress, toTokenAddress } =
+      this.commonOneinch.getOneInchTokenSpecificAddresses(fromToken, toToken, this.web3Public);
 
     if (!this.supportedTokensAddresses.length) {
       await this.tokensLoadingProcess;
@@ -108,8 +120,7 @@ export class OneInchEthService {
       !this.supportedTokensAddresses.includes(fromTokenAddress) ||
       !this.supportedTokensAddresses.includes(toTokenAddress)
     ) {
-      console.error(`One inch not support ${fromToken.address} or ${toToken.address}`);
-      return null;
+      throw new CustomError('1inch not supports one of entered tokens');
     }
 
     const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
@@ -123,7 +134,7 @@ export class OneInchEthService {
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      this.errorsService.catch$(new OneinchQuoteError());
+      this.errorsService.throw$(new OneinchQuoteError());
     }
 
     const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
@@ -150,36 +161,38 @@ export class OneInchEthService {
     trade: InstantTrade,
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
-    await this.checkSettings(this.blockchain);
-    await this.checkBalance(trade);
-
-    const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
-      trade.from.token,
-      trade.to.token
+    await this.commonOneinch.checkSettings(this.blockchain, this.providerConnectorService);
+    await this.commonOneinch.checkBalance(
+      trade,
+      this.web3Public,
+      this.providerConnectorService.address
     );
+
+    const { fromTokenAddress, toTokenAddress } =
+      this.commonOneinch.getOneInchTokenSpecificAddresses(
+        trade.from.token,
+        trade.to.token,
+        this.web3Public
+      );
 
     const fromAmount = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
 
-    if (fromTokenAddress !== this.oneInchNativeAddress) {
-      const approveAddress = await this.loadApproveAddress();
-      await this.provideAllowance(
+    const tradeParams = {
+      params: {
         fromTokenAddress,
-        new BigNumber(fromAmount),
-        approveAddress,
-        options.onApprove
-      );
+        toTokenAddress,
+        amount: fromAmount,
+        slippage: this.settings.slippageTolerance.toString(),
+        fromAddress: this.providerConnectorService.address
+      } as {
+        [param: string]: string;
+      }
+    };
+    if (this.settings.disableMultihops) {
+      tradeParams.params.mainRouteParts = '1';
     }
-
-    const oneInchTrade: OneInchSwapResponse = (await this.httpClient
-      .get(`${this.apiBaseUrl}swap`, {
-        params: {
-          fromTokenAddress,
-          toTokenAddress,
-          amount: fromAmount,
-          slippage: this.settings.slippageTolerance.toString(),
-          fromAddress: this.providerConnectorService.address
-        }
-      })
+    const oneInchTrade = (await this.httpClient
+      .get(`${this.apiBaseUrl}swap`, tradeParams)
       .pipe(
         catchError(err => {
           throw new CustomError(err.error.message);
@@ -189,112 +202,18 @@ export class OneInchEthService {
 
     const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.25).toFixed(0);
 
-    if (fromTokenAddress !== this.oneInchNativeAddress) {
-      await this.provideAllowance(
-        trade.from.token.address,
-        new BigNumber(fromAmount),
-        oneInchTrade.tx.to,
-        options.onApprove
-      );
-
-      return this.web3Private.sendTransaction(oneInchTrade.tx.to, '0', {
-        onTransactionHash: options.onConfirm,
-        data: oneInchTrade.tx.data,
-        gas: increasedGas,
-        gasPrice: oneInchTrade.tx.gasPrice
-      });
-    }
-
-    return this.web3Private.sendTransaction(oneInchTrade.tx.to, fromAmount, {
+    const trxOptions = {
       onTransactionHash: options.onConfirm,
       data: oneInchTrade.tx.data,
       gas: increasedGas,
       gasPrice: oneInchTrade.tx.gasPrice,
-      inWei: true
-    });
-  }
+      inWei: fromTokenAddress === this.oneInchNativeAddress || undefined
+    };
 
-  private getOneInchTokenSpecificAddresses(
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
-  ): { fromTokenAddress: string; toTokenAddress: string } {
-    const fromTokenAddress = this.web3Public.isNativeAddress(fromToken.address)
-      ? this.oneInchNativeAddress
-      : fromToken.address;
-    const toTokenAddress = this.web3Public.isNativeAddress(toToken.address)
-      ? this.oneInchNativeAddress
-      : toToken.address;
-    return { fromTokenAddress, toTokenAddress };
-  }
-
-  protected checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
-    if (!this.providerConnectorService.isProviderActive) {
-      throw new WalletError();
-    }
-
-    if (!this.providerConnectorService.address) {
-      throw new AccountError();
-    }
-    if (this.providerConnectorService.networkName !== selectedBlockchain) {
-      if (this.providerConnectorService.networkName !== `${selectedBlockchain}_TESTNET`) {
-        if (this.providerConnectorService.providerName === WALLET_NAME.METAMASK) {
-          throw new NetworkError(selectedBlockchain);
-        } else {
-          throw new NotSupportedNetworkError(selectedBlockchain);
-        }
-      }
-    }
-  }
-
-  protected async checkBalance(trade: InstantTrade): Promise<void> {
-    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
-
-    if (this.web3Public.isNativeAddress(trade.from.token.address)) {
-      const balance = await this.web3Public.getBalance(this.providerConnectorService.address, {
-        inWei: true
-      });
-      if (balance.lt(amountIn)) {
-        const formattedBalance = this.web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedBalance,
-          trade.from.amount.toString()
-        );
-      }
-    } else {
-      const tokensBalance = await this.web3Public.getTokenBalance(
-        this.providerConnectorService.address,
-        trade.from.token.address
-      );
-      if (tokensBalance.lt(amountIn)) {
-        const formattedTokensBalance = tokensBalance
-          .div(10 ** trade.from.token.decimals)
-          .toString();
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedTokensBalance,
-          trade.from.amount.toString()
-        );
-      }
-    }
-  }
-
-  protected async provideAllowance(
-    tokenAddress: string,
-    value: BigNumber,
-    targetAddress: string,
-    onApprove?: (hash: string) => void
-  ): Promise<void> {
-    const allowance = await this.web3Public.getAllowance(
-      tokenAddress,
-      this.providerConnectorService.address,
-      targetAddress
+    return this.web3Private.sendTransaction(
+      oneInchTrade.tx.to,
+      fromTokenAddress !== this.oneInchNativeAddress ? '0' : fromAmount,
+      trxOptions
     );
-    if (value.gt(allowance)) {
-      const uintInfinity = new BigNumber(2).pow(256).minus(1);
-      await this.web3Private.approveTokens(tokenAddress, targetAddress, uintInfinity, {
-        onTransactionHash: onApprove
-      });
-    }
   }
 }
