@@ -34,7 +34,10 @@ app-tokens-search-bar {
 
 @include b($mobile-md) {
   .tokens-select {
+    height: 100%;
+
     &__content {
+      height: 100%;
       max-height: none;
     }
   }

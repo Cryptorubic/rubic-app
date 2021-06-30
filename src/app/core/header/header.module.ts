@@ -44,6 +44,6 @@ import { RubicMenuComponent } from './components/header/components/rubic-menu/ru
     TuiHostedDropdownModule
   ],
   exports: [HeaderComponent, LoginButtonComponent],
-  entryComponents: [WalletsModalComponent]
+  entryComponents: [WalletsModalComponent, LogoutConfirmModalComponent]
 })
 export class HeaderModule {}
