@@ -25,8 +25,8 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';

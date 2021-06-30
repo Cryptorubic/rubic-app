@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { List } from 'immutable';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { UniSwapService } from 'src/app/features/swaps-page-old/instant-trades/services/uni-swap-service/uni-swap.service';
 import BigNumber from 'bignumber.js';
@@ -15,6 +14,11 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { OneInchPolService } from 'src/app/features/swaps-page-old/instant-trades/services/one-inch-service/one-inch-pol-service/one-inch-pol.service';
 import { REFRESH_STATUS } from 'src/app/shared/models/instant-trade/REFRESH_STATUS';
 import { Token } from 'src/app/shared/models/tokens/Token';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { ErrorsOldService } from 'src/app/core/services/errors-old/errors-old.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import InstantTradeToken from '../../models/InstantTradeToken';
 import { OneInchEthService } from '../../services/one-inch-service/one-inch-eth-service/one-inch-eth.service';
 import { OneInchBscService } from '../../services/one-inch-service/one-inch-bsc-service/one-inch-bsc.service';
@@ -26,11 +30,7 @@ import { InstantTradeProviderController } from '../../models/instant-trades-prov
 import { INTSTANT_TRADES_TRADE_STATUS } from '../../../models/trade-data';
 import { PROVIDERS } from '../../models/providers.enum';
 import { InstantTradesFormService } from './services/instant-trades-form.service';
-import { ErrorsOldService } from '../../../../../core/services/errors-old/errors-old.service';
 import { PancakeSwapService } from '../../services/pancake-swap-service/pancake-swap.service';
-import { InstantTradesApiService } from '../../../../../core/services/backend/instant-trades-api/instant-trades-api.service';
-import { Web3PublicService } from '../../../../../core/services/blockchain/web3-public-service/web3-public.service';
-import { TO_BACKEND_BLOCKCHAINS } from '../../../../../shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 @Component({
   selector: 'app-instant-trades-form',

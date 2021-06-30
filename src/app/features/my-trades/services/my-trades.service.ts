@@ -8,12 +8,12 @@ import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 @Injectable()
 export class MyTradesService {
