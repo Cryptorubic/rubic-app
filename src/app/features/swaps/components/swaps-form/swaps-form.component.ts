@@ -249,11 +249,11 @@ export class SwapsFormComponent implements OnInit {
       this.swapFormService.commonTrade.controls.input.value;
     const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
     this.swapFormService.commonTrade.controls.input.patchValue({
-      ...(fromToken && { toToken: fromToken }),
-      ...(toToken && { fromToken: toToken }),
-      ...(fromBlockchain && { toBlockchain: fromBlockchain }),
-      ...(toBlockchain && { fromBlockchain: toBlockchain }),
-      ...(toAmount && { fromAmount: toAmount })
+      toToken: fromToken,
+      fromToken: toToken,
+      toBlockchain: fromBlockchain,
+      fromBlockchain: toBlockchain,
+      fromAmount: toAmount
     });
     await this.refreshTrade();
   }

@@ -93,7 +93,7 @@ export class SwapsService {
         bridgeToken =>
           bridgeToken.blockchainToken[fromBlockchain]?.address.toLowerCase() ===
           fromToken.address.toLowerCase()
-      ).blockchainToken[fromBlockchain][amountType];
+      )?.blockchainToken[fromBlockchain][amountType];
   }
 
   public checkMinMax(amount: BigNumber): boolean {
