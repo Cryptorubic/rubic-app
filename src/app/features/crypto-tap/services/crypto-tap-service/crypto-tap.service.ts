@@ -5,17 +5,13 @@ import { BehaviorSubject, EMPTY, forkJoin, from, NEVER, Observable, of, throwErr
 
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import InsufficientFundsError from 'src/app/shared/models/errors/instant-trade/InsufficientFundsError';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import BigNumber from 'bignumber.js';
 import { TranslateService } from '@ngx-translate/core';
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
 import {
   ABI,
   contractAddressEthereum,
@@ -25,10 +21,14 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypto-tap-form-service/crypto-tap-form.service';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
 import { CryptoTapApiService } from 'src/app/core/services/backend/crypto-tap-api/crypto-tap-api.service';
 import { CryptoTapFullPriceFeeInfo } from 'src/app/features/crypto-tap/models/CryptoTapFullPriceFeeInfo';
+import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
+import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
+import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 
 interface EstimatedAmountResponse {
   from_amount: number;
@@ -176,7 +176,7 @@ export class CryptoTapService {
       mergeMap(([needApprove]) => {
         if (needApprove) {
           console.error('You should call approve before call createTrade method');
-          return throwError(new RubicError());
+          return throwError(new UndefinedError());
         }
 
         if (web3Public.isNativeAddress(fromToken.address)) {
@@ -243,7 +243,7 @@ export class CryptoTapService {
       mergeMap(([needApprove]) => {
         if (!needApprove) {
           console.error('You should check needApprove before call approve method');
-          return throwError(new RubicError());
+          return throwError(new UndefinedError());
         }
 
         return this.web3PrivateService.approveTokens(

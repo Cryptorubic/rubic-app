@@ -69,7 +69,7 @@ export class SwapsFormComponent implements OnInit {
 
   constructor(
     private readonly swapsService: SwapsService,
-    private readonly swapFormService: SwapFormService,
+    public readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService
   ) {}
 
