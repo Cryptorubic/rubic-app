@@ -92,6 +92,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           this.currentBlockchain = form.input.fromBlockchain;
           this.initiateProviders(this.currentBlockchain);
         }
+        this.cdr.detectChanges();
       }
     );
   }
