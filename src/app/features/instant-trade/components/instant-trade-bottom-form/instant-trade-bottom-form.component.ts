@@ -21,6 +21,8 @@ import { Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -49,10 +51,16 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   get tokenInfoUrl(): string {
     const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
-    if (!fromToken?.address || !toToken?.address) {
-      return '';
+    let tokenAddress;
+    if (
+      toToken?.address !== NATIVE_TOKEN_ADDRESS &&
+      this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(toToken.address)
+    ) {
+      tokenAddress = toToken?.address;
+    } else {
+      tokenAddress = fromToken?.address;
     }
-    return `t/${toToken.address}`;
+    return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
   public formChangesSubscription$: Subscription;
@@ -70,7 +78,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly instantTradeService: InstantTradeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly errorService: ErrorsService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly web3PublicService: Web3PublicService
   ) {
     this.tradeStatus = TRADE_STATUS.DISABLED;
   }
