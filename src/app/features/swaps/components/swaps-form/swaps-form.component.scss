@@ -1,4 +1,10 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+:host {
+  width: 100%;
+  max-width: 610px;
+}
 
 .swaps-form {
   min-height: 200px;
@@ -89,5 +95,34 @@
 .button-reloading {
   img {
     animation: spin 0.9s linear 2s;
+  }
+}
+
+@include b($mobile-md) {
+  .swaps-form {
+    padding: 0 0 20px;
+
+    &__header {
+      display: none;
+    }
+
+    &__top-part {
+      display: block;
+
+      > *:first-child {
+        display: block;
+
+        border-right: 0;
+        border-bottom: 2px solid $rubic-base-01;
+      }
+    }
+
+    &__delimiter {
+      margin-bottom: 6px;
+
+      > * {
+        top: 0;
+      }
+    }
   }
 }

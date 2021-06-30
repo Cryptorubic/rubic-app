@@ -1,19 +1,122 @@
 import { Injectable } from '@angular/core';
 import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subject, throwError, zip } from 'rxjs';
+import { catchError, filter, map, takeWhile } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
+import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
+import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { List } from 'immutable';
+import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
+import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 
 @Injectable()
 export class MyTradesService {
+  private _isDataUpdating$ = new Subject<void>();
+
+  public isDataUpdating$ = this._isDataUpdating$.asObservable();
+
+  private _tableTrades$ = new BehaviorSubject<TableTrade[]>(undefined);
+
+  public tableTrades$ = this._tableTrades$.asObservable();
+
+  private tokens: List<TokenAmount>;
+
+  private walletAddress: string;
+
   constructor(
-    private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService,
-    private readonly providerConnectorService: ProviderConnectorService
-  ) {}
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly authService: AuthService,
+    private readonly tokensService: TokensService,
+    private readonly instantTradesApiService: InstantTradesApiService,
+    private readonly bridgeApiService: BridgeApiService,
+    private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService
+  ) {
+    combineLatest([
+      this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
+      this.tokensService.tokens.pipe(takeWhile(tokens => tokens.size === 0, true))
+    ]).subscribe(([user, tokens]) => {
+      this.tokens = tokens;
+      this.walletAddress = user?.address || null;
+
+      this._isDataUpdating$.next();
+
+      if (tokens.size) {
+        this.updateTableTrades();
+      }
+    });
+  }
+
+  public updateTableTrades(): void {
+    if (!this.walletAddress) {
+      this._tableTrades$.next([]);
+      return;
+    }
+
+    if (!this.tokens.size) {
+      return;
+    }
+
+    zip(
+      this.getBridgeTransactions(),
+      this.instantTradesApiService.getUserTrades(this.walletAddress)
+    ).subscribe(data => {
+      this._tableTrades$.next(data.flat());
+    });
+  }
+
+  private getBridgeTransactions(): Observable<TableTrade[]> {
+    return this.bridgeApiService
+      .getUserTrades(this.walletAddress)
+      .pipe(
+        map(trades => trades.map(trade => this.prepareBridgeData(trade)).filter(trade => !!trade))
+      );
+  }
+
+  private prepareBridgeData(trade: TableTrade): TableTrade {
+    let fromSymbol = trade.fromToken.symbol;
+    let toSymbol = trade.toToken.symbol;
+    if (
+      trade.fromToken.blockchain === BLOCKCHAIN_NAME.POLYGON ||
+      trade.toToken.blockchain === BLOCKCHAIN_NAME.POLYGON
+    ) {
+      fromSymbol = this.tokens.find(
+        token =>
+          token.blockchain === trade.fromToken.blockchain &&
+          token.address.toLowerCase() === fromSymbol.toLowerCase()
+      )?.symbol;
+      toSymbol = this.tokens.find(
+        token =>
+          token.blockchain === trade.toToken.blockchain &&
+          token.address.toLowerCase() === toSymbol.toLowerCase()
+      )?.symbol;
+
+      if (!fromSymbol || !toSymbol) {
+        return null;
+      }
+    }
+
+    return {
+      ...trade,
+      fromToken: {
+        ...trade.fromToken,
+        symbol: fromSymbol
+      },
+      toToken: {
+        ...trade.toToken,
+        symbol: toSymbol
+      }
+    };
+  }
+
+  public getTableTradeByDate(date: Date): TableTrade {
+    return this._tableTrades$.getValue()?.find(trade => trade.date.getTime() === date.getTime());
+  }
 
   private checkSettings(blockchain: BLOCKCHAIN_NAME): void {
     if (this.providerConnectorService.network?.name !== blockchain) {

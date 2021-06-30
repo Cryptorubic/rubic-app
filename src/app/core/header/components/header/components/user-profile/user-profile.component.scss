@@ -31,4 +31,11 @@
 
     font-size: $rubic-font-size-01;
   }
+
+  &__chain-icon {
+    width: auto;
+    max-width: 25px;
+    height: auto;
+    max-height: 25px;
+  }
 }

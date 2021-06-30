@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RubicTokensComponent } from './rubic-tokens.component';
+import { AccordionComponent } from './accordion.component';
 
-describe('RubicTokensComponent', () => {
-  let component: RubicTokensComponent;
-  let fixture: ComponentFixture<RubicTokensComponent>;
+describe('AccordionComponent', () => {
+  let component: AccordionComponent;
+  let fixture: ComponentFixture<AccordionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RubicTokensComponent]
+      declarations: [AccordionComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RubicTokensComponent);
+    fixture = TestBed.createComponent(AccordionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -32,6 +32,8 @@ export class TokensService {
 
   private userAddress: string;
 
+  private isTestingMode = false;
+
   constructor(
     private httpService: HttpService,
     private web3PublicService: Web3PublicService,
@@ -52,6 +54,7 @@ export class TokensService {
 
     useTestingModule.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
+        this.isTestingMode = true;
         this._tokens.next(List(coingeckoTestTokens));
         this.recalculateUsersBalance();
       }
@@ -75,11 +78,13 @@ export class TokensService {
   private getTokensList(): void {
     this.httpService.get(this.getTokensUrl).subscribe(
       (tokens: BackendToken[]) => {
-        let parsedTokens = TokensService.prepareTokens(tokens);
-        parsedTokens = this.setCustomRanks(parsedTokens);
-        this._tokens.next(parsedTokens);
+        if (!this.isTestingMode) {
+          let parsedTokens = TokensService.prepareTokens(tokens);
+          parsedTokens = this.setCustomRanks(parsedTokens);
+          this._tokens.next(parsedTokens);
 
-        this.recalculateUsersBalance(List(parsedTokens));
+          this.recalculateUsersBalance(List(parsedTokens));
+        }
       },
       err => console.error('Error retrieving tokens', err)
     );
@@ -162,7 +167,9 @@ export class TokensService {
         tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
       );
 
-      this._tokens.next(List(tokensWithBalance.flat()));
+      if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
+        this._tokens.next(List(tokensWithBalance.flat()));
+      }
     }
   }
 }

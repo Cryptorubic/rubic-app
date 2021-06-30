@@ -111,7 +111,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   constructor(
     private bridgeService: BridgeService,
     private errorsService: ErrorsService,
-    private swapFormService: SwapFormService,
+    public swapFormService: SwapFormService,
     private swapService: SwapsService,
     private settingsService: SettingsService,
     private cdr: ChangeDetectorRef,
@@ -126,6 +126,12 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fromBlockchain = this.swapFormService.commonTrade.controls.input.value.fromBlockchain;
     this.toBlockchain = this.swapFormService.commonTrade.controls.input.value.toBlockchain;
+
+    this.tronAddress = this.settingsService.settingsForm.controls.BRIDGE.value.tronAddress;
+    if (this.toBlockchain === BLOCKCHAIN_NAME.TRON) {
+      this.toWalletAddress = this.tronAddress;
+    }
+
     this.isBridgeSupported = true;
     try {
       this.calculateTrade();

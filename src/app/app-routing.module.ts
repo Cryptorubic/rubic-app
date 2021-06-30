@@ -11,6 +11,11 @@ const routes: Routes = [
     redirectTo: 'cross-chain/bridge'
   },
   {
+    path: 'crypto-tap',
+    loadChildren: () =>
+      import('./features/crypto-tap/crypto-tap.module').then(m => m.CryptoTapModule)
+  },
+  {
     path: 'about',
     loadChildren: () =>
       import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule)

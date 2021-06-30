@@ -9,14 +9,15 @@
 
   <nav class="rubic-header__nav">
     <a class="button-link" routerLink="/" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Swaps</a>
+    <a class="button-link" routerLink="/crypto-tap" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Crypto tap</a>
     <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order book</span>
   </nav>
 
   <div class="rubic-header__profile">
-    <a class="button-link" routerLink="my-trades" routerLinkActive="button-link_active">My trades</a>
+    <a class="rubic-header__profile-trades button-link" routerLink="my-trades" routerLinkActive="button-link_active">My trades</a>
 
-    <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
-    <app-user-profile *ngIf="($currentUser | async)?.address"></app-user-profile>
+    <app-login-button class="rubic-header__login" *ngIf="!($currentUser | async)?.address"></app-login-button>
+    <app-user-profile class="rubic-header__profile-user" *ngIf="($currentUser | async)?.address"></app-user-profile>
     <app-rubic-language-select></app-rubic-language-select>
     <!--<app-rubic-toggler-theme></app-rubic-toggler-theme>-->
   </div>

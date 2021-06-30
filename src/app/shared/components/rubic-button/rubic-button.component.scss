@@ -34,6 +34,7 @@
       --tui-secondary-active: #{$rubic-primary};
       --tui-primary-active: #{$rubic-primary};
       --tui-primary-text: #{$rubic-base-01};
+      --tui-text-01: #{$rubic-base-01};
       --tui-link: #{$rubic-base-01};
 
       background-color: $rubic-primary;
@@ -83,6 +84,12 @@
     &.full-width {
       width: 100%;
     }
+
+    &[data-appearance='outline'] {
+      font-weight: 500;
+
+      border: 1px solid $rubic-primary;
+    }
   }
 
   [tuiButton][bordered=true] {
@@ -90,27 +97,33 @@
   }
 
 
-  ::ng-deep tui-wrapper[data-appearance='secondary'] {
-    color: white;
+  ::ng-deep {
+    tui-wrapper[data-appearance='secondary'] {
+      color: white;
 
-    background-color: $main-green;
+      background-color: $main-green;
 
-    &[data-state='hovered'] {
-      box-shadow: $rubic-shadow-button-hover;
+      &[data-state='hovered'] {
+        box-shadow: $rubic-shadow-button-hover;
+      }
+
+      &[data-state='pressed'] {
+        color: $main-green;
+
+        background-color: white !important;
+        box-shadow: $rubic-shadow-button-active;
+      }
+
+      &[data-state='disabled'] {
+        color: rgba(white, 0.4);
+
+        background-color: rgba($main-green, 0.4);
+        border: 0;
+      }
     }
 
-    &[data-state='pressed'] {
-      color: $main-green;
-
-      background-color: white !important;
-      box-shadow: $rubic-shadow-button-active;
-    }
-
-    &[data-state='disabled'] {
-      color: rgba(white, 0.4);
-
-      background-color: rgba($main-green, 0.4);
-      border: 0;
+    tui-wrapper[data-appearance='outline']::after {
+      display: none;
     }
   }
 }

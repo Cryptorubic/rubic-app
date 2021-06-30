@@ -38,6 +38,7 @@ import { RubicRefreshButtonComponent } from './components/rubic-refresh-button/r
     SettingsContainerComponent,
     SettingsItComponent,
     SettingsBridgeComponent,
+    SettingsBridgeComponent,
     RubicBlockchainsComponent,
     RubicTokensComponent,
     RubicRefreshButtonComponent

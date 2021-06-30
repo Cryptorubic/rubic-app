@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .rubic-header {
   position: relative;
@@ -33,6 +34,10 @@
 
     transition: 0.3s ease-in-out opacity;
 
+    img {
+      display: block;
+    }
+
     &:hover {
       opacity: 0.5;
     }
@@ -54,48 +59,37 @@
   }
 }
 
-
-.button-link {
-  display: inline-block;
-  padding: 14px 20px;
-
-  font-size: $rubic-font-size-01;
-  text-decoration: none;
-
-  border: 1px solid transparent;
-  border-radius: 175px;
-
-  transition: 0.3s all ease-in-out;
-
-  &:hover,
-  &_active {
-    background-color: $rubic-base-01;
-  }
-
-  &:hover {
-    box-shadow: $rubic-shadow-button-hover;
-  }
-
-  &:active,
-  &_active:active {
-    color: $rubic-base-01 !important;
-
-    background-color: $rubic-primary;
-    box-shadow: $rubic-shadow-button-active;
-  }
-
-  &:focus {
-    border-color: $rubic-primary;
-  }
-
-  &_disabled {
-    color: $rubic-text-disable !important;
-
-    pointer-events: none;
-  }
-}
-
 a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):hover,
 a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
   text-decoration: none;
+}
+
+@include b($desktop) {
+  .rubic-header {
+    &__profile-trades,
+    &__profile-user,
+    &__login,
+    &__nav {
+      display: none;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .rubic-header {
+    padding: 21px 15px 19px;
+
+    &__main {
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+
+    &__logo {
+      margin-right: 0;
+    }
+
+    &__menu {
+      margin-right: 10px;
+    }
+  }
 }

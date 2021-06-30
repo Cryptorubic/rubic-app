@@ -41,3 +41,16 @@
     transform: translateY(-50%);
   }
 }
+
+@include b($mobile-md) {
+  .banner {
+    &__content {
+      margin-bottom: 5px;
+      padding-right: 0;
+    }
+
+    &__link {
+      position: static;
+    }
+  }
+}

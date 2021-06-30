@@ -7,11 +7,11 @@
     ></app-rubic-refresh-button>
   </div>
 
-  <tui-loader [overlay]="true" [showLoader]="loading$ | async">
-    <div class="my-trades__table-container table-container" *tuiLet="visibleData$ | async as data">
+  <tui-loader [overlay]="true" [showLoader]="loading" [ngClass]="{ 'position-up': !isDesktop }">
+    <div class="my-trades__table-container table-container" *tuiLet="tableData$ | async as data">
       <div
         class="table-container__connect-wallet-container"
-        *ngIf="(loading$ | async) === false && !walletAddress"
+        *ngIf="loading === false && !walletAddress"
       >
         <app-rubic-button (onClick)="showConnectWalletModal()" [fullWidth]="true">
           Connect wallet
@@ -20,175 +20,23 @@
 
       <div
         class="table-container__no-trades-text"
-        *ngIf="(loading$ | async) === false && walletAddress && !data.length"
+        *ngIf="loading === false && walletAddress && !data.length"
       >
         You have no trades yet
       </div>
 
-      <table
-        tuiTable
-        class="table-container__table table"
-        [ngClass]="{ table_hidden: (loading$ | async) === false && !data.length }"
-        [columns]="columns"
-        [sorter]="sorter$ | async"
-        [direction]="direction$ | async"
-        (sorterChange)="sorter$.next($event)"
-        (directionChange)="direction$.next($event)"
-      >
-        <thead>
-          <tr tuiThGroup>
-            <th tuiTh [resizable]="true" *ngFor="let column of columns" [sorter]="sorters[column]">
-              <span class="title" *ngIf="column !== 'FromTo'">{{ column }}</span>
+      <app-accordion
+        *ngIf="!isDesktop"
+        [tableData$]="tableData$"
+        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
+      ></app-accordion>
 
-              <span class="title" *ngIf="column === 'FromTo'">
-                From<img src="assets/images/icons/my-trades/arrow-right.svg" alt />To
-              </span>
-
-              <div
-                class="sort-arrow"
-                [ngClass]="{
-                  'sort-arrow_green':
-                    sorter$.getValue() === sorters[column] && direction$.getValue() === -1
-                }"
-                [inlineSVG]="'assets/images/icons/my-trades/arrow-up.svg'"
-              ></div>
-              <div
-                class="sort-arrow"
-                [ngClass]="{
-                  'sort-arrow_green':
-                    sorter$.getValue() === sorters[column] && direction$.getValue() === 1
-                }"
-                [inlineSVG]="'assets/images/icons/my-trades/arrow-down.svg'"
-              ></div>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody tuiTbody [data]="data">
-          <ng-container *ngFor="let item of data">
-            <tr tuiTr *tuiLet="getTableTrade(item) as trade">
-              <td *tuiCell="'Status'" tuiTd class="status">
-                <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
-                  <div class="status__text">
-                    <div
-                      class="status-circle"
-                      [ngClass]="{
-                        'status-circle_green': trade.status === TRANSACTION_STATUS.COMPLETED,
-                        'status-circle_yellow':
-                          trade.status === TRANSACTION_STATUS.WAITING_FOR_DEPOSIT ||
-                          trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING ||
-                          trade.status === TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS ||
-                          trade.status === TRANSACTION_STATUS.WITHDRAW_IN_PROGRESS ||
-                          trade.status === TRANSACTION_STATUS.PENDING,
-                        'status-circle_red':
-                          trade.status === TRANSACTION_STATUS.CANCELLED ||
-                          trade.status === TRANSACTION_STATUS.REJECTED
-                      }"
-                    >
-                      <div class="status-circle__inner"></div>
-                    </div>
-                    <span class="status__text">{{ trade.status }}</span>
-                  </div>
-                </a>
-
-                <app-rubic-button
-                  *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
-                  size="s"
-                  [loading]="item.inProgress"
-                  (onClick)="receivePolygonBridgeTrade(trade)"
-                  >Receive</app-rubic-button
-                >
-              </td>
-
-              <td *tuiCell="'FromTo'" tuiTd class="blockchains">
-                <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
-                  <div class="blockchains__blockchain">
-                    <div class="img-container">
-                      <img
-                        [src]="BLOCKCHAINS[trade.fromToken.blockchain].img"
-                        alt="from blockchain"
-                      />
-                    </div>
-                    {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
-                  </div>
-
-                  <img
-                    src="assets/images/icons/my-trades/arrow-down.svg"
-                    *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
-                    alt
-                  />
-
-                  <div
-                    class="blockchains__blockchain"
-                    *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
-                  >
-                    <div class="img-container">
-                      <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
-                    </div>
-                    {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
-                  </div>
-                </a>
-              </td>
-
-              <td *tuiCell="'Provider'" tuiTd>
-                <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
-                  <div class="img-container">
-                    <img [src]="TRADES_PROVIDERS[trade.provider].image" alt="provider" />
-                  </div>
-                  {{ TRADES_PROVIDERS[trade.provider].name }}
-                </a>
-              </td>
-
-              <td *tuiCell="'Sent'" tuiTd class="token">
-                <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
-                  <span>{{
-                    trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
-                  }}</span>
-                  <div class="token-info">
-                    <div class="token-info__img-container">
-                      <img [src]="trade.fromToken.image" alt="from token" />
-                    </div>
-                    {{ trade.fromToken.symbol }}
-                  </div>
-                </a>
-              </td>
-
-              <td *tuiCell="'Expected'" tuiTd class="token">
-                <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
-                  <span>{{
-                    trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue'
-                  }}</span>
-                  <div class="token-info">
-                    <div class="token-info__img-container">
-                      <img [src]="trade.toToken.image" alt="to token" />
-                    </div>
-                    {{ trade.toToken.symbol }}
-                  </div>
-                </a>
-              </td>
-
-              <td *tuiCell="'Date'" tuiTd class="date">
-                <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
-                  <span>{{ trade.date | date: 'dd.MM.yyyy' }}</span>
-                  <span>{{ trade.date | date: 'HH:mm' }}</span>
-                </a>
-              </td>
-            </tr>
-          </ng-container>
-        </tbody>
-
-        <tfoot>
-          <tr>
-            <td [colSpan]="columns.length">
-              <tui-table-pagination
-                [total]="total$ | async"
-                (pageChange)="page$.next($event)"
-                (sizeChange)="size$.next($event)"
-              ></tui-table-pagination>
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+      <app-table
+        *ngIf="isDesktop"
+        [loading]="loading"
+        [tableData$]="tableData$"
+        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
+      ></app-table>
     </div>
   </tui-loader>
 </div>
