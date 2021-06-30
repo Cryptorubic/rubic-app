@@ -1,8 +1,8 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
 import BigNumber from 'bignumber.js';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { ETH, WEENUS, WSATT, XEENUS, YEENUS } from './eth-tokens';
-import { TokenAmount } from '../../app/shared/models/tokens/TokenAmount';
 
 const eth: TokenAmount = {
   name: 'Ethereum',
@@ -10,7 +10,7 @@ const eth: TokenAmount = {
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: ETH.address,
   decimals: ETH.decimals,
-  image: 'http://dev-api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.HIGH,
   price: 1705,
   usedInIframe: true,
@@ -23,8 +23,7 @@ const weenus: TokenAmount = {
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: WEENUS.address,
   decimals: WEENUS.decimals,
-  image:
-    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.LOW,
   price: 10,
   usedInIframe: true,
@@ -37,8 +36,7 @@ const yeenus: TokenAmount = {
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: YEENUS.address,
   decimals: YEENUS.decimals,
-  image:
-    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.LOW,
   price: 50,
   usedInIframe: true,
@@ -51,8 +49,7 @@ const xeenus: TokenAmount = {
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: XEENUS.address,
   decimals: XEENUS.decimals,
-  image:
-    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.LOW,
   price: 2,
   usedInIframe: true,
@@ -65,8 +62,7 @@ const wsatt: TokenAmount = {
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: WSATT.address,
   decimals: WSATT.decimals,
-  image:
-    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.LOW,
   price: 5,
   usedInIframe: true,
@@ -79,7 +75,7 @@ const rbc: TokenAmount = {
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
   decimals: 18,
-  image: 'http://dev-api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: 6,
   price: 6,
   usedInIframe: true,
@@ -92,7 +88,7 @@ const bnb: TokenAmount = {
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   address: '0x0000000000000000000000000000000000000000',
   decimals: 18,
-  image: 'http://dev-api.rubic.exchange/media/token_images/cg_logo_bnb_binance-coin-logo.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: 1,
   price: 1,
   usedInIframe: true,
@@ -105,11 +101,24 @@ const wrbc: TokenAmount = {
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   address: '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8',
   decimals: 18,
-  image: 'http://dev-api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: 2,
   price: 2,
   usedInIframe: true,
   amount: new BigNumber(0)
 };
 
-export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt, rbc, bnb, wrbc];
+const matic: TokenAmount = {
+  name: 'Matic',
+  symbol: 'MATIC',
+  blockchain: BLOCKCHAIN_NAME.POLYGON,
+  address: '0x0000000000000000000000000000000000000000',
+  decimals: 18,
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
+  rank: 2,
+  price: 2,
+  usedInIframe: true,
+  amount: new BigNumber(0)
+};
+
+export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt, rbc, bnb, wrbc, matic];

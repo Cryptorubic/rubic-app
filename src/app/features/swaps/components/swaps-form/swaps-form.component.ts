@@ -29,33 +29,6 @@ export class SwapsFormComponent implements OnInit {
 
   @ViewChild(InstantTradeBottomFormComponent) itForm: InstantTradeBottomFormComponent;
 
-  public blockchainsList = [
-    {
-      symbol: BLOCKCHAIN_NAME.ETHEREUM,
-      name: 'Ethereum',
-      chainImg: 'assets/images/icons/eth-logo.svg',
-      id: 1
-    },
-    {
-      symbol: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      name: 'Binance Smart Chain',
-      chainImg: 'assets/images/icons/coins/bnb.svg',
-      id: 56
-    },
-    {
-      symbol: BLOCKCHAIN_NAME.POLYGON,
-      name: 'Polygon',
-      chainImg: 'assets/images/icons/coins/polygon.svg',
-      id: 137
-    },
-    {
-      symbol: BLOCKCHAIN_NAME.XDAI,
-      name: 'XDai',
-      chainImg: 'assets/images/icons/coins/xdai.svg',
-      id: 100
-    }
-  ];
-
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
@@ -80,7 +53,7 @@ export class SwapsFormComponent implements OnInit {
 
   constructor(
     private readonly swapsService: SwapsService,
-    private readonly swapFormService: SwapFormService
+    public readonly swapFormService: SwapFormService
   ) {}
 
   ngOnInit(): void {

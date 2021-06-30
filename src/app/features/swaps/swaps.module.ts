@@ -27,8 +27,6 @@ import { BridgesSwapProviderService } from 'src/app/features/bridge/services/bri
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { InstantTradesSwapProviderService } from 'src/app/features/instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { RubicBlockchainsComponent } from 'src/app/features/swaps/components/rubic-blockchains/rubic-blockchains.component';
-import { RubicTokensComponent } from 'src/app/features/swaps/components/rubic-tokens/rubic-tokens.component';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SettingsBridgeComponent } from './components/settings-bridge/settings-bridge.component';
 
@@ -37,9 +35,7 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     SwapsFormComponent,
     SettingsContainerComponent,
     SettingsItComponent,
-    SettingsBridgeComponent,
-    RubicBlockchainsComponent,
-    RubicTokensComponent
+    SettingsBridgeComponent
   ],
   exports: [],
   imports: [

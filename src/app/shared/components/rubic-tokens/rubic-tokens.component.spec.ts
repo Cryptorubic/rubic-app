@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RubicTokensComponent } from './rubic-tokens.component';
+import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 
 describe('RubicTokensComponent', () => {
   let component: RubicTokensComponent;

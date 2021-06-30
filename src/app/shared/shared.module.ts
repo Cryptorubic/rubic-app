@@ -36,10 +36,12 @@ import {
   TuiLoaderModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import { AmountInputComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
+import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
 import { SwapsButtonOldComponent } from 'src/app/features/swaps/components/swaps-button/swaps-button-old.component';
 import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-button/swap-button.component';
+import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
+import { RubicBlockchainsComponent } from 'src/app/shared/components/rubic-blockchains/rubic-blockchains.component';
 import { RubicTogglerThemeComponent } from 'src/app/core/header/components/header/components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
@@ -153,7 +155,7 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     TokenAmountInputComponent,
     TokenAmountDirective,
     ProviderPanelComponent,
-    AmountInputComponent,
+    AmountEstimatedComponent,
     RoundPipe,
     RubicButtonCircleComponent,
     RubicButtonCircleComponent,
@@ -169,7 +171,9 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicVolumeComponent,
     RubicBannerComponent,
     SwapButtonComponent,
-    RubicBannerComponent
+    RubicBannerComponent,
+    RubicTokensComponent,
+    RubicBlockchainsComponent
   ],
   entryComponents: [MessageBoxComponent],
   imports: [
@@ -252,7 +256,7 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicButtonCircleComponent,
     AdvancedOptionsButtonComponent,
     ProviderPanelComponent,
-    AmountInputComponent,
+    AmountEstimatedComponent,
     DropdownSelectorComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
@@ -262,7 +266,6 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     CrossButtonComponent,
     RoundPipe,
     ShortenAmountPipe,
-    RubicTogglerThemeComponent,
     RubicMenuComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
@@ -272,7 +275,9 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     SwapsButtonOldComponent,
     SwapButtonComponent,
     WithRoundPipe,
-    SafetyLinkDirective
+    SafetyLinkDirective,
+    RubicTokensComponent,
+    RubicBlockchainsComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
