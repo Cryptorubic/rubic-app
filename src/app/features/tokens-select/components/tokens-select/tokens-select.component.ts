@@ -9,12 +9,12 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PublicService } from '../../../../core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from '../../../../core/services/blockchain/web3-public-service/Web3Public';
-import { BlockchainToken } from '../../../../shared/models/tokens/BlockchainToken';
-import { AuthService } from '../../../../core/services/auth/auth.service';
-import { AvailableTokenAmount } from '../../../../shared/models/tokens/AvailableTokenAmount';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 
 @Component({
   selector: 'app-tokens-select',
