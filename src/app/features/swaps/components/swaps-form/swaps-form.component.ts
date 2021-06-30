@@ -260,7 +260,7 @@ export class SwapsFormComponent implements OnInit {
 
   public async refreshTrade(): Promise<void> {
     this.loadingStatus = 'refreshing';
-    await this.itForm.calculateTrades();
+    await this.itForm?.calculateTrades();
     this.loadingStatus = 'stopped';
     setTimeout(() => (this.loadingStatus = ''), 1000);
   }

@@ -102,7 +102,7 @@ export class TokensService {
     );
   }
 
-  private async recalculateUsersBalance(
+  public async recalculateUsersBalance(
     tokens: List<TokenAmount> = this._tokens.getValue()
   ): Promise<void> {
     if (!tokens.size) {

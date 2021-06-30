@@ -185,7 +185,7 @@ export class BridgeService {
 
   private getBridgeTrade(bridgeTradeRequest?: BridgeTradeRequest): Observable<BridgeTrade> {
     const { fromBlockchain, toBlockchain, fromAmount } =
-      this.swapFormService.commonTrade.value.input;
+      this.swapFormService.commonTrade.controls.input.value;
 
     return this.getCurrentBridgeToken().pipe(
       map(bridgeToken => ({
@@ -246,19 +246,18 @@ export class BridgeService {
 
   public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
-      mergeMap((bridgeTrade: BridgeTrade) => {
+      mergeMap(async (bridgeTrade: BridgeTrade) => {
         this.checkSettings(bridgeTrade.fromBlockchain);
         const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-        return from(
-          this.checkBalance(
-            bridgeTrade.fromBlockchain,
-            bridgeTrade.toBlockchain,
-            token.address,
-            token.symbol,
-            token.decimals,
-            bridgeTrade.amount
-          )
-        ).pipe(map(() => bridgeTrade));
+        await this.checkBalance(
+          bridgeTrade.fromBlockchain,
+          bridgeTrade.toBlockchain,
+          token.address,
+          token.symbol,
+          token.decimals,
+          bridgeTrade.amount
+        );
+        return bridgeTrade;
       }),
       mergeMap((bridgeTrade: BridgeTrade) => {
         return this.bridgeProvider.approve(bridgeTrade).pipe(

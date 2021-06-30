@@ -19,6 +19,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import BigNumber from 'bignumber.js';
 import { TableRow } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -53,7 +54,8 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly notificationsService: TuiNotificationsService,
     private readonly errorsService: ErrorsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector
+    @Inject(Injector) private readonly injector: Injector,
+    private readonly tokensService: TokensService
   ) {}
 
   ngOnInit(): void {
@@ -160,6 +162,8 @@ export class MyTradesComponent implements OnInit, OnDestroy {
             .subscribe();
 
           this.refreshTable();
+
+          this.tokensService.recalculateUsersBalance();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
