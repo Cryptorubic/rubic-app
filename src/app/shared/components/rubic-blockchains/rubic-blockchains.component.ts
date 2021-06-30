@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
 import { BlockchainItem } from 'src/app/features/swaps/models/BlockchainItem';
-import { SwapForm } from 'src/app/features/swaps/models/SwapForm';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 
 @Component({
   selector: 'app-rubic-blockchains',
@@ -35,13 +35,13 @@ export class RubicBlockchainsComponent implements OnInit {
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
+    this.setFormValues(this.formService.commonTrade.controls.input.value);
     this.formService.commonTrade.controls.input.valueChanges.subscribe(form => {
       this.setFormValues(form);
     });
   }
 
-  private setFormValues(form: SwapForm['input']): void {
+  private setFormValues(form: ISwapFormInput): void {
     const blockchainSymbol =
       this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
     this.selectedBlockchain = this.findBlockchainBySymbol(blockchainSymbol);

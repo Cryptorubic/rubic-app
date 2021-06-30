@@ -11,8 +11,7 @@ import BigNumber from 'bignumber.js';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
 import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/bridge-bottom-form/bridge-bottom-form.component';
 import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { SwapForm } from 'src/app/features/swaps/models/SwapForm';
+import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -87,7 +86,7 @@ export class SwapsFormComponent implements OnInit {
     });
   }
 
-  private setFormValues(formValue: SwapForm['input']): void {
+  private setFormValues(formValue: SwapFormInput): void {
     this.selectedFromAmount = formValue.fromAmount;
 
     if (this._supportedTokens) {
