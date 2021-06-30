@@ -1,20 +1,20 @@
 import { AsyncPipe } from '@angular/common';
 import {
-  Component,
   ChangeDetectionStrategy,
-  ElementRef,
-  ViewChild,
   ChangeDetectorRef,
+  Component,
+  ElementRef,
   EventEmitter,
-  Output
+  Output,
+  ViewChild
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { List } from 'immutable';
 import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
+import { map, startWith } from 'rxjs/operators';
 import { TokenPart, TokenValueType } from 'src/app/shared/models/order-book/tokens';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-coins-filter',

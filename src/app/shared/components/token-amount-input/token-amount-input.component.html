@@ -32,9 +32,14 @@
       class="right-side__usd-price-container usd-price-container"
       [ngClass]="{ 'usd-price-container_hidden': getUsdPrice().eq(0) }"
     >
-      <span class="usd-price-container__price"
-        >${{ getUsdPrice().toFixed(2) | bigNumberFormat: 2 }}</span
+      <span
+        class="usd-price-container__price"
+        [tuiHint]="usdPriceTooltip"
+        tuiHintDirection="top"
+        tuiHintMode="onDark"
+        >${{ getUsdPrice() | bigNumberFormat: 2 }}</span
       >
+      <ng-template #usdPriceTooltip>${{ getUsdPrice() | bigNumberFormat: 2 }}</ng-template>
     </div>
 
     <div class="right-side__error-info">

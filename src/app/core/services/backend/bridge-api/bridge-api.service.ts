@@ -11,8 +11,8 @@ import {
   BridgeTableTradeApi
 } from 'src/app/core/services/backend/bridge-api/models/BridgeTableTradeApi';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { HttpService } from '../../http/http.service';
-import { TokensService } from '../tokens-service/tokens.service';
 import { BOT_URL } from '../constants/BOT_URL';
 
 @Injectable({

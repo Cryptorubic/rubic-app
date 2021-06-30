@@ -1,10 +1,9 @@
-import { Component, OnDestroy, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
 import { OrderBookApiService } from 'src/app/core/services/backend/order-book-api/order-book-api.service';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { Observable, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
@@ -15,6 +14,7 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { TokenPart } from 'src/app/shared/models/order-book/tokens';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { TX_STATUS } from '../../models/TX_STATUS';
 import { ORDER_BOOK_TRADE_STATUS, OrderBookTradeData } from '../../models/trade-data';
