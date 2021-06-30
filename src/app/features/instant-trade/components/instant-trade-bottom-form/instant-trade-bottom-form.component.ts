@@ -118,6 +118,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async calculateTrades(): Promise<void> {
+    const currentTradeStatus = this.tradeStatus;
     this.prepareControllers();
     const approveData = this.authService.user?.address
       ? await this.instantTradeService.getApprove().toPromise()
@@ -130,7 +131,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     });
 
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
-    this.setupControllers(tradeData, approveData, bestProviderIndex);
+    this.setupControllers(tradeData, approveData, bestProviderIndex, currentTradeStatus);
   }
 
   private prepareControllers(): void {
@@ -146,7 +147,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private setupControllers(
     tradeData: CalculationResult[],
     approveData: Array<boolean | null>,
-    bestProviderIndex: number
+    bestProviderIndex: number,
+    currentTradeStatus: TRADE_STATUS
   ): void {
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
@@ -163,7 +165,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     this.providerControllers = newProviders;
-    this.tradeStatus = TRADE_STATUS.DISABLED;
+    this.tradeStatus = newProviders.some(el => el.isSelected)
+      ? currentTradeStatus
+      : TRADE_STATUS.DISABLED;
     this.cdr.detectChanges();
   }
 

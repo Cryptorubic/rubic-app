@@ -26,7 +26,7 @@ import {
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +64,9 @@ export class PancakeSwapService {
   }
 
   public needApprove(tokenAddress: string): Observable<BigNumber> {
+    if (this.web3Public.isNativeAddress(tokenAddress)) {
+      return of(new BigNumber(Infinity));
+    }
     return from(
       this.web3Public.getAllowance(
         tokenAddress,

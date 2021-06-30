@@ -64,9 +64,7 @@ export class InstantTradeService {
       this.swapFormService.commonTrade.controls.input.value;
     const providersDataPromises = Object.values(
       this.blockchainsProviders[this.currentBlockchain]
-    ).map(async (provider: ItProvider) =>
-      provider.calculateTrade(new BigNumber(fromAmount), fromToken, toToken)
-    );
+    ).map(async (provider: ItProvider) => provider.calculateTrade(fromAmount, fromToken, toToken));
     return Promise.allSettled(providersDataPromises);
   }
 
@@ -203,15 +201,20 @@ export class InstantTradeService {
   }
 
   public getApprove(): Observable<boolean[]> {
-    const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
-    const providerApproveData = Object.values(
-      this.blockchainsProviders[this.currentBlockchain]
-    ).map((provider: ItProvider) => provider.needApprove(fromToken.address));
+    try {
+      const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
+      const providers = Object.values(this.blockchainsProviders[this.currentBlockchain]);
+      const providerApproveData = providers.map((provider: ItProvider) =>
+        provider.needApprove(fromToken.address)
+      );
 
-    return forkJoin(providerApproveData).pipe(
-      map((approveArray: BigNumber[]) => {
-        return approveArray.map(el => fromAmount.gt(el));
-      })
-    );
+      return forkJoin(providerApproveData).pipe(
+        map((approveArray: BigNumber[]) => {
+          return approveArray.map(el => fromAmount.gt(el));
+        })
+      );
+    } catch (err) {
+      this.errorService.throw$(err);
+    }
   }
 }

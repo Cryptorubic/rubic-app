@@ -26,7 +26,7 @@ import {
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-oneinch/common-oneinch.service';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -78,6 +78,9 @@ export class OneInchPolService implements ItProvider {
   }
 
   public needApprove(tokenAddress: string): Observable<BigNumber> {
+    if (this.web3Public.isNativeAddress(tokenAddress)) {
+      return of(new BigNumber(Infinity));
+    }
     return this.commonOneinch
       .loadApproveAddress(BlockchainsInfo.getBlockchainByName(this.blockchain).id)
       .pipe(

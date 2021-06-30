@@ -34,7 +34,7 @@ export class CommonUniswapService {
     private readonly coingeckoApiService: CoingeckoApiService
   ) {}
 
-  private async calculateTokensToTokensGasLimit(
+  public async calculateTokensToTokensGasLimit(
     amountIn: string,
     amountOutMin: string,
     path: string[],
@@ -69,7 +69,7 @@ export class CommonUniswapService {
     }
   }
 
-  private async calculateEthToTokensGasLimit(
+  public async calculateEthToTokensGasLimit(
     amountIn: string,
     amountOutMin: string,
     path: string[],
@@ -77,8 +77,8 @@ export class CommonUniswapService {
     deadline: number,
     contractAddress: string,
     web3Public: Web3Public,
-    abi: AbiItem[],
-    ethToTokensEstimatedGas: BigNumber[]
+    ethToTokensEstimatedGas: BigNumber[],
+    abi: AbiItem[]
   ): Promise<BigNumber> {
     try {
       if (walletAddress) {
@@ -104,7 +104,7 @@ export class CommonUniswapService {
     }
   }
 
-  private async calculateTokensToEthGasLimit(
+  public async calculateTokensToEthGasLimit(
     amountIn: string,
     amountOutMin: string,
     path: string[],
@@ -256,13 +256,15 @@ export class CommonUniswapService {
       .multipliedBy(new BigNumber(1).minus(settings.slippageTolerance))
       .toFixed(0);
 
-    const estimatedGas = await this[gasCalculationMethodName].call(
-      this,
+    const estimatedGas = await this[gasCalculationMethodName](
       fromAmountAbsolute,
       amountOutMin,
       route.path,
       to,
-      deadline
+      deadline,
+      web3Public,
+      estimatedGasArray,
+      abi
     );
 
     const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
