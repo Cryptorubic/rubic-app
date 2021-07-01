@@ -35,6 +35,9 @@ export abstract class TableData {
   }
 
   public getTransactionLink(trade: TableTrade): string {
+    if (!trade) {
+      return '';
+    }
     return this.scannerLinkPipe.transform(
       trade.transactionHash,
       trade.fromToken.blockchain,
