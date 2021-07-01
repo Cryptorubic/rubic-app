@@ -46,7 +46,7 @@
 }
 
 .data-list {
-  padding: 6px 6px 0px;
+  padding: 0;
 
   &__option {
     height: 45px;
@@ -72,10 +72,6 @@
       background: $rubic-primary;
 
       ::ng-deep {
-        .template-blockchains__icon {
-          filter: brightness(10);
-        }
-
         a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
           color: $rubic-base-01;
           text-decoration: none;
@@ -124,6 +120,10 @@
     &_active {
       .data-list__option {
         color: $rubic-primary;
+
+        &:active {
+          color: $rubic-base-01;
+        }
       }
     }
   }
@@ -144,10 +144,21 @@
       margin-right: 10px;
     }
   }
+
+  tui-opt-group {
+    margin: 0;
+    padding: 6px;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
 }
 
 tui-opt-group:not(:empty) ~ tui-opt-group {
   &::after {
+    top: 0;
+
     background: rgba(225, 225, 225, 0.6);
   }
 
@@ -186,7 +197,6 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
     border-top: 1px solid rgba(225, 225, 225, 0.6);
 
     [tuiButton] {
-      width: 170px;
       height: 45px;
 
       font-size: 14px !important;
@@ -195,7 +205,9 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 }
 
 @include b($desktop) {
-  .rubic-menu__mobile {
-    display: block;
+  .rubic-menu {
+    &__mobile {
+      display: block;
+    }
   }
 } 
