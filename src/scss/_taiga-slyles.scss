@@ -9,9 +9,13 @@ tui-dialog {
   }
 }
 
-@include b($mobile-md) {
+@include b($mobile-md-minus) {
   tui-dialog {
     height: 100vh;
     margin: 0;
+
+    .content {
+      height: 100%;
+    }
   }
 }
