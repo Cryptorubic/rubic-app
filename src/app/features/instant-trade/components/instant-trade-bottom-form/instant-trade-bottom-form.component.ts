@@ -166,6 +166,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   ): void {
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
+      isSelected: !controller.error && controller.isSelected,
       trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
       isBestRate: false,
       needApprove: approveData[index],

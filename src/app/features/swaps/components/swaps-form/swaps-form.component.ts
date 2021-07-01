@@ -255,7 +255,6 @@ export class SwapsFormComponent implements OnInit {
       fromBlockchain: toBlockchain,
       fromAmount: toAmount
     });
-    await this.refreshTrade();
   }
 
   public async refreshTrade(): Promise<void> {
