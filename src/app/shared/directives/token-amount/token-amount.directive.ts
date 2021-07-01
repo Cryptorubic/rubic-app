@@ -8,6 +8,8 @@ import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_F
 export class TokenAmountDirective {
   @Input() decimals: number;
 
+  @Input() maxLength = 14;
+
   @Output() amountChange = new EventEmitter<string>();
 
   private readonly amountRegex = /^([0-9]+\.?[0-9]*|[0-9]*\.?[0-9]+)?$/;
@@ -20,34 +22,39 @@ export class TokenAmountDirective {
 
   @HostListener('ngModelChange')
   private onChange(): void {
-    const nativeValue = this.elementRef.nativeElement.value;
-    let value = nativeValue.split(',').join('');
+    const nativeValue: string = this.elementRef.nativeElement.value;
+    let value = nativeValue.replaceAll(',', '');
     let caretPosition = this.elementRef.nativeElement.selectionStart;
 
-    if (nativeValue && nativeValue[nativeValue.length - 1] === ',') {
-      value += '.';
-    }
-    if (value === '.') {
-      if (this.prevValue === '') {
-        value = '0.';
-        caretPosition = 2;
-      } else {
-        value = '';
-        caretPosition = 0;
-      }
-    }
-
-    if (this.amountRegex.test(value)) {
-      value = this.getNewValue(value);
-
-      if (value === this.prevValue) {
-        caretPosition = this.prevCaretPosition;
-      } else {
-        caretPosition = this.getNewCaretPosition(value, caretPosition);
-      }
-    } else {
+    if (value.replace('.', '').length > this.maxLength) {
       value = this.prevValue;
       caretPosition = this.prevCaretPosition;
+    } else {
+      if (nativeValue && nativeValue[nativeValue.length - 1] === ',') {
+        value += '.';
+      }
+      if (value === '.') {
+        if (this.prevValue === '') {
+          value = '0.';
+          caretPosition = 2;
+        } else {
+          value = '';
+          caretPosition = 0;
+        }
+      }
+
+      if (this.amountRegex.test(value)) {
+        value = this.getNewValue(value);
+
+        if (value === this.prevValue) {
+          caretPosition = this.prevCaretPosition;
+        } else {
+          caretPosition = this.getNewCaretPosition(value, caretPosition);
+        }
+      } else {
+        value = this.prevValue;
+        caretPosition = this.prevCaretPosition;
+      }
     }
 
     this.elementRef.nativeElement.value = value;
