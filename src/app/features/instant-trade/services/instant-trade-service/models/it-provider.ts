@@ -15,5 +15,10 @@ export interface ItProvider {
     toToken: InstantTradeToken
   ) => Promise<InstantTrade>;
   needApprove: (tokenAddress: string) => Observable<BigNumber>;
-  approve: (tokenAddress: string) => Promise<void>;
+  approve: (
+    tokenAddress: string,
+    options: {
+      onTransactionHash?: (hash: string) => void;
+    }
+  ) => Promise<void>;
 }

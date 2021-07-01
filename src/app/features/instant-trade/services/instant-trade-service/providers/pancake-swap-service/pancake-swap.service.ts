@@ -64,21 +64,16 @@ export class PancakeSwapService {
   }
 
   public needApprove(tokenAddress: string): Observable<BigNumber> {
-    if (this.web3Public.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-    return from(
-      this.web3Public.getAllowance(
-        tokenAddress,
-        this.providerConnectorService.address,
-        uniSwapContracts.address
-      )
-    );
+    return this.commonUniswap.needApprove(tokenAddress, this.web3Public);
   }
 
-  public async approve(tokenAddress: string): Promise<void> {
-    const uintInfinity = new BigNumber(2).pow(256).minus(1);
-    await this.web3Private.approveTokens(tokenAddress, uniSwapContracts.address, uintInfinity);
+  public async approve(
+    tokenAddress: string,
+    options: {
+      onTransactionHash?: (hash: string) => void;
+    }
+  ): Promise<void> {
+    return this.commonUniswap.approve(tokenAddress, options);
   }
 
   public async calculateTrade(

@@ -22,6 +22,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -99,7 +100,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
     let tokenAddress;
     if (
-      toToken?.address !== NATIVE_TOKEN_ADDRESS &&
+      toToken?.address &&
+      toToken.address !== NATIVE_TOKEN_ADDRESS &&
       this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(toToken.address)
     ) {
       tokenAddress = toToken?.address;
@@ -121,7 +123,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly notificationsService: TuiNotificationsService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly tokensService: TokensService
   ) {}
 
   ngOnInit() {
@@ -301,7 +304,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe(
         (_: TransactionReceipt) => {
           tradeInProgressSubscription$.unsubscribe();
-
           this.notificationsService
             .show(this.translate.instant('bridgePage.successMessage'), {
               label: 'Successful trade',
@@ -309,9 +311,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
               autoClose: 15000
             })
             .subscribe();
+
           this.tradeStatus = null;
           this.cdr.detectChanges();
+
           this.calculateTrade();
+
+          this.tokensService.recalculateUsersBalance();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
@@ -344,7 +350,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe(
         (_: TransactionReceipt) => {
           approveInProgressSubscription$.unsubscribe();
-
           this.notificationsService
             .show(this.translate.instant('bridgePage.approveSuccessMessage'), {
               label: 'Successful approve',
@@ -352,8 +357,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
               autoClose: 15000
             })
             .subscribe();
+
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
+
+          this.tokensService.recalculateUsersBalance();
         },
         err => {
           approveInProgressSubscription$?.unsubscribe();

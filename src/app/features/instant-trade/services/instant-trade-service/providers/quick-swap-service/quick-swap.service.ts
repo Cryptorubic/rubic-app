@@ -25,13 +25,14 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { from, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
+import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 
 @Injectable({
   providedIn: 'root'
 })
-export class QuickSwapService {
+export class QuickSwapService implements ItProvider {
   protected blockchain: BLOCKCHAIN_NAME;
 
   protected shouldCalculateGas: boolean;
@@ -64,21 +65,16 @@ export class QuickSwapService {
   }
 
   public needApprove(tokenAddress: string): Observable<BigNumber> {
-    if (this.web3Public.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-    return from(
-      this.web3Public.getAllowance(
-        tokenAddress,
-        this.providerConnectorService.address,
-        uniSwapContracts.address
-      )
-    );
+    return this.commonUniswap.needApprove(tokenAddress, this.web3Public);
   }
 
-  public async approve(tokenAddress: string): Promise<void> {
-    const uintInfinity = new BigNumber(2).pow(256).minus(1);
-    await this.web3Private.approveTokens(tokenAddress, uniSwapContracts.address, uintInfinity);
+  public async approve(
+    tokenAddress: string,
+    options: {
+      onTransactionHash?: (hash: string) => void;
+    }
+  ): Promise<void> {
+    return this.commonUniswap.approve(tokenAddress, options);
   }
 
   public async calculateTrade(
