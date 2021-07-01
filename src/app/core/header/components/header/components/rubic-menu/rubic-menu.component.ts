@@ -20,7 +20,6 @@ import { AuthService } from '../../../../../services/auth/auth.service';
 import { IBlockchain } from '../../../../../../shared/models/blockchain/IBlockchain';
 import { ProviderConnectorService } from '../../../../../services/blockchain/provider-connector/provider-connector.service';
 import { LogoutConfirmModalComponent } from '../logout-confirm-modal/logout-confirm-modal.component';
-import { WalletsModalComponent } from '../wallets-modal/wallets-modal.component';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -33,8 +32,6 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public isOpened = false;
 
-  public readonly $isMobile: Observable<boolean>;
-
   public $currentUser: Observable<UserInterface>;
 
   public currentBlockchain: IBlockchain;
@@ -42,13 +39,6 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   private _onNetworkChanges$: Subscription;
 
   private _onAddressChanges$: Subscription;
-
-  public menuItems = [
-    { title: 'About Company', link: 'about' },
-    { title: 'FAQ', link: 'faq' },
-    { title: 'Project', link: 'https://rubic.finance/' },
-    { title: 'Team', link: 'team' }
-  ];
 
   constructor(
     private router: Router,
@@ -59,7 +49,6 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector
   ) {
-    this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.$currentUser = this.authService.getCurrentUser();
   }
 
