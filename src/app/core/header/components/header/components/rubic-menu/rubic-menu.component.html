@@ -40,6 +40,18 @@
         </button>
       </a>
 
+      <a routerLink="crypto-tap"
+         (click)="clickNavigate('crypto-tap')"
+         routerLinkActive="data-list__link_active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         class="data-list__link">
+        <button
+          tuiOption
+          class="data-list__option">
+          {{ 'Crypto tap' | translate }}
+        </button>
+      </a>
+
       <button
         tuiOption
         class="data-list__option data-list__option_disabled"

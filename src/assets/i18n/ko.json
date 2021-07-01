@@ -27,14 +27,14 @@
     "enterAmount": "금액을 입력하세요",
     "chooseToken": "토큰 선택",
     "warning": "Warning",
-    "customerSupport": "customer support",
+    "customerSupport": "바랍니다 우리의 고객 지원에 문의하시기 바랍니다",
     "OK": "확인"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
     "noMetamaskInstalled": "메타 마스크 플러그인이 설치 및 잠금 해제되어 있는지 확인하십시오. 에서 다운로드 할 수 있습니다.",
     "wrongNetwork": "잘못된 네트워크를 선택했습니다. 메타 마스크에서 {{ networkToChoose }}를 선택하십시오.",
-    "OverQueryLimit": "당신은 시간의 짧은 기간에 너무 많은 거래를 실행하려고했습니다. 당신은 여전히 문제가있는 경우, 기다려 나중에 다시 시도하시기 <a href='mailto:support@rubic.finance' target='_blank'>바랍니다 우리의 고객 지원에 문의하시기 바랍니다</a>.",
+    "OverQueryLimit": "당신은 시간의 짧은 기간에 너무 많은 거래를 실행하려고했습니다. 당신은 여전히 문제가있는 경우, 기다려 나중에 다시 시도하시기",
     "userReject": "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
     "rubicError": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우",
     "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
