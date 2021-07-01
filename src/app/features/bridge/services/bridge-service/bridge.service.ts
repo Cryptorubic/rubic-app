@@ -161,7 +161,7 @@ export class BridgeService {
     return this.tokens.pipe(
       map(tokens => {
         const { fromBlockchain, toBlockchain, fromToken, toToken } =
-          this.swapFormService.commonTrade.value.input;
+          this.swapFormService.commonTrade.controls.input.value;
         const bridgeTokensList = tokens.find(
           item => item.fromBlockchain === fromBlockchain && item.toBlockchain === toBlockchain
         );
