@@ -111,7 +111,7 @@ export class OneInchPolService implements ItProvider {
       !this.supportedTokensAddresses.includes(fromTokenAddress) ||
       !this.supportedTokensAddresses.includes(toTokenAddress)
     ) {
-      throw new CustomError('1inch not supports one of entered tokens');
+      console.error('1inch not supports one of entered tokens');
     }
 
     const oneInchTrade: OneInchQuoteResponse = (await this.httpClient

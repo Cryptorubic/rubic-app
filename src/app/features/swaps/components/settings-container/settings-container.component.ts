@@ -25,7 +25,7 @@ export class SettingsContainerComponent implements OnInit {
     private readonly swapService: SwapsService,
     private readonly swapFormService: SwapFormService
   ) {
-    this.open = false;
+    this.open = true;
   }
 
   ngOnInit(): void {
