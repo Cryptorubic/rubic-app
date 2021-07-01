@@ -25,11 +25,11 @@
     </ul>
   </tui-scrollbar>
   <ng-template #emptyListMessage>
-    <span class="nothing-to-show-message">Nothing to show</span>
+    <span class="nothing-to-show-message">{{ 'modals.tokensListModal.noSearchData' | translate }}</span>
   </ng-template>
   <ng-template #disabledTokenHint>
     <div>
-      Clear other form parameters to select this token
+      {{ 'modals.tokensListModal.disabledTokenHint' | translate }}
     </div>
   </ng-template>
 </ng-container>

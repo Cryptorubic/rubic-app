@@ -3,7 +3,7 @@
     [fullWidth]="true"
     (onClick)="onLogin()"
   >
-    Connect wallet
+    {{ 'navigation.login' | translate }}
   </app-rubic-button>
 
   <ng-template [ngIf]="!(needLogin | async)">

@@ -29,29 +29,30 @@
     "clearToken": "Token claro",
     "warning": "Warning",
     "customerSupport": "customer support",
-    "OK": "OK"
+    "OK": "OK",
+    "analytics": "Analítica"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
     "noMetamaskInstalled": "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde y conectar la billeta con el botón de Conectar la Billetera.",
     "wrongNetwork": "Has seleccionado la red principal incorrecta. Elige {{ networkToChoose }} en MetaMask.",
-    "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our",
+    "OverQueryLimit": "Ha intentado ejecutar demasiadas operaciones en un corto período de tiempo y excedió las restricciones del puente Binance de 3 operaciones como máximo en 30 minutos. Espere y vuelva a intentarlo más tarde. Si aún tiene problemas, comuníquese con nuestro",
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
     "rubicError": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al",
-    "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
-    "sameTokens": "You can't choose the same token on both sides, please choose different tokens.",
-    "noQrCode": "Please make sure that you have scan qrCode",
-    "noWallet": "You have not connected any wallet",
-    "retrievingTokensError": "Error retrieving tokens",
-    "wrongToken": "Rubic bridge supports only rubic token.",
-    "oneInchQuote": "Oneinch quote error",
-    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
-    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
-    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
-    "noSelectedProvider": "You have not selected any swap provider",
-    "notSupportedItNetwork": "Chosen network is not supported for instant trades",
-    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks.",
-    "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading."
+    "insufficientFunds": "No tienes suficiente {{ tokenSymbol }}. Su balance es {{balance}} {{tokenSymbol}}, pero {{requiredBalance}} {{tokenSymbol}} se requiere.",
+    "sameTokens": "No puede elegir el mismo token en ambos lados, elija diferentes tokens.",
+    "noQrCode": "Asegúrese de haber escaneado qrCode",
+    "noWallet": "No has conectado ninguna billetera",
+    "retrievingTokensError": "Error al recuperar tokens",
+    "wrongToken": "El puente de rubic solo admite token de rubic.",
+    "oneInchQuote": "1inch de cotización",
+    "notSupportedNetwork": "{{networkToChoose}} no es compatible con el proveedor de billetera seleccionado.",
+    "signReject": "Tiene signo de billetera rechazada. Confirme primero para iniciar sesión en nuestra aplicación",
+    "lowGas": "El gas de transacción es demasiado bajo. No hay suficiente gas para cubrir el costo mínimo de la transacción. Intente aumentar el gas suministrado",
+    "noSelectedProvider": "No ha seleccionado ningún proveedor de intercambio",
+    "notSupportedItNetwork": "La red elegida no es compatible con intercambios instantáneos",
+    "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
+    "insufficientLiquidity": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda."
   },
   "navigation": {
     "about": "Información",
@@ -399,7 +400,7 @@
       "expected": "Expected",
       "date": "Fecha"
     },
-    "noData": "You have no swaps yet",
+    "noData": "Aún no tienes intercambios",
     "noTrades": "There are no trades",
     "noTradesWithSelected": "There are no trades with selected parameters",
     "showData": "Mostrar datos",
@@ -490,6 +491,17 @@
     "confirmImportModal": {
       "title": "¡Confirme su importación!",
       "text": "Este token no aparece en Rubic.exchange.\nAl agregarlo como un token personalizado, confirma que está operando con él bajo su propio riesgo."
+    },
+    "tokensListModal": {
+      "title": "Elija token",
+      "disabledTokenHint": "Este token no está disponible para el intercambio. Seleccione los pares compatibles.",
+      "searchPlaceholder": "Buscar nombre o pegar dirección",
+      "noSearchData": "Nada que mostrar"
+    },
+    "walletsModal": {
+      "title": "Conectar billetera",
+      "new": "¿Nuevo en Ethereum?",
+      "learnMore": "Más información sobre carteras"
     }
   },
   "riskBanner": {
@@ -498,11 +510,19 @@
   },
   "settings": {
     "instantTrades": {
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
-      "multihops": "Your swap will be completed only with direct pairs.",
-      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
-      "deadline": "Your transaction will revert if it is pending for more than this period of time.",
-      "autoRefresh": "Update trade parameters each 15 seconds."
+      "slippage": "Su transacción será cancelada si el precio cambia desfavorablemente en más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea anticipada)",
+      "multihops": "Su intercambio se completará solo con pares directos.",
+      "rubicOptimisation": "La optimización de rúbrica está habilitada de forma predeterminada. Sin embargo, puede deshabilitarlo para que se ejecute la ruta comercial óptima, sin tener en cuenta el costo del gas.",
+      "deadline": "Su transacción se revertirá si está pendiente por más de este período de tiempo.",
+      "autoRefresh": "Actualice los parámetros comerciales cada 15 segundos."
+    },
+    "bridge": {
+      "walletAddress": "La dirección de la billetera en la cadena de bloques TRON, en la que se proporcionarán los tokens."
     }
+  },
+  "volume": {
+    "title": "Volumen de transacciones acumuladas",
+    "instantTrades": "Intercambios instantáneos",
+    "crossChain": "Ntercambios entre plataformas"
   }
 }

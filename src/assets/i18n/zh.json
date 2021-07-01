@@ -29,7 +29,8 @@
     "clearToken": "清除令牌",
     "warning": "Warning",
     "customerSupport": "请联系我们的客户支持",
-    "OK": "好的"
+    "OK": "好的",
+    "analytics": "分析"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -40,18 +41,18 @@
     "rubicError": "请稍后再试，或尝试使用其他设备。如果您仍有问题",
     "insufficientFunds": "你没有足够的 {{ tokenSymbol }}. 您的余额是 {{balance}} {{tokenSymbol}}, 但 {{requiredBalance}} {{tokenSymbol}} 是必需的。",
     "sameTokens": "兩邊不能選擇相同的令牌，請選擇不同的令牌.",
-    "noQrCode": "Please make sure that you have scan qrCode",
-    "noWallet": "You have not connected any wallet",
-    "retrievingTokensError": "Error retrieving tokens",
-    "wrongToken": "Rubic bridge supports only rubic token.",
-    "oneInchQuote": "Oneinch quote error",
-    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
-    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
-    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
-    "noSelectedProvider": "You have not selected any swap provider",
-    "notSupportedItNetwork": "Chosen network is not supported for instant trades",
-    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks.",
-    "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading."
+    "noQrCode": "請確保您有掃描二維碼",
+    "noWallet": "您尚未連接任何錢包",
+    "retrievingTokensError": "檢索令牌時出錯",
+    "wrongToken": "Rubic 橋僅支持 rubic 令牌。",
+    "oneInchQuote": "1inch 報價錯誤",
+    "notSupportedNetwork": "{{networkToChoose}} 所選錢包提供商不支持。",
+    "signReject": "您有拒絕錢包標誌。 請先確認登錄我們的應用程序",
+    "lowGas": "交易氣體太低。 沒有足夠的氣體來支付交易的最低成本。 嘗試增加供氣",
+    "noSelectedProvider": "您尚未選擇任何掉期提供者",
+    "notSupportedItNetwork": "即時交易不支持所選網絡",
+    "notSupportedBridge": "不支持選擇的網橋。 請更改順序或選擇其他網絡。",
+    "insufficientLiquidity": "這筆交易的流動性不足。 嘗試啟用多跳交易。"
   },
   "navigation": {
     "about": "关于",
@@ -399,7 +400,7 @@
       "expected": "預期的",
       "date": "日期"
     },
-    "noData": "您還沒有掉期",
+    "noData": "您還沒有交易",
     "noTrades": "沒有交易",
     "noTradesWithSelected": "沒有選擇參數的交易",
     "showData": "顯示資料",
@@ -490,6 +491,17 @@
     "confirmImportModal": {
       "title": "請確認您的導入！",
       "text": "該令牌未在 Rubic.exchange 上列出。\n通過將其添加為自定義代幣，您確認使用它進行交易的風險由您自己承擔。"
+    },
+    "tokensListModal": {
+      "title": "选择币种",
+      "disabledTokenHint": "此令牌不可用於交換。 請選擇支持的對。",
+      "searchPlaceholder": "搜索姓名或粘貼地址",
+      "noSearchData": "沒什麼可顯示的"
+    },
+    "walletsModal": {
+      "title": "連接錢包",
+      "new": "以太坊新手？",
+      "learnMore": "了解有關錢包的更多信息"
     }
   },
   "riskBanner": {
@@ -498,11 +510,19 @@
   },
   "settings": {
     "instantTrades": {
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
-      "multihops": "Your swap will be completed only with direct pairs.",
-      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
-      "deadline": "Your transaction will revert if it is pending for more than this period of time.",
-      "autoRefresh": "Update trade parameters each 15 seconds."
+      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
+      "multihops": "您的交換將僅通過直接對完成。",
+      "rubicOptimisation": "默認情況下啟用 Rubic 優化。 但是，您可以禁用它以便執行最佳貿易路線，而無需考慮 gas 成本。",
+      "deadline": "如果待處理的時間超過此時間段，您的交易將恢復。",
+      "autoRefresh": "每 15 秒更新一次交易參數。"
+    },
+    "bridge": {
+      "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
     }
+  },
+  "volume": {
+    "title": "累計交易量",
+    "instantTrades": "支持即时交易",
+    "crossChain": "跨鏈掉期"
   }
 }

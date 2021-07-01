@@ -14,7 +14,7 @@
         *ngIf="loading === false && !walletAddress"
       >
         <app-rubic-button (onClick)="showConnectWalletModal()" [fullWidth]="true">
-          Connect wallet
+          {{ 'navigation.login' | translate }}
         </app-rubic-button>
       </div>
 
@@ -22,7 +22,7 @@
         class="table-container__no-trades-text"
         *ngIf="loading === false && walletAddress && !data.length"
       >
-        You have no trades yet
+        {{ 'tradesTable.noData' | translate }}
       </div>
 
       <app-accordion
