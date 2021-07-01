@@ -146,11 +146,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       : new Array(this.providerControllers.length).fill(null);
     const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
 
-    const wrongTrades = tradeData.filter(el => el.status === 'rejected');
-    wrongTrades.forEach(el => {
-      this.errorService.catch$(el.reason as RubicError);
-    });
-
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
     this.setupControllers(tradeData, approveData, bestProviderIndex, currentTradeStatus);
   }
@@ -179,7 +174,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       tradeState:
         tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
           ? INSTANT_TRADES_STATUS.APPROVAL
-          : INSTANT_TRADES_STATUS.ERROR
+          : INSTANT_TRADES_STATUS.ERROR,
+      error: tradeData[index]?.status === 'rejected' ? (tradeData as unknown)[index]?.reason : null
     }));
     if (tradeData[bestProviderIndex].value && tradeData[bestProviderIndex].status !== 'rejected') {
       newProviders[bestProviderIndex].isBestRate = true;

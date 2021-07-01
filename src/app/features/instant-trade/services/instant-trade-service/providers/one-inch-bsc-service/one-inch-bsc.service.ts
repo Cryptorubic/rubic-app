@@ -116,7 +116,7 @@ export class OneInchBscService implements ItProvider {
       !this.supportedTokensAddresses.includes(fromTokenAddress) ||
       !this.supportedTokensAddresses.includes(toTokenAddress)
     ) {
-      console.error('1inch not supports one of entered tokens');
+      throw new CustomError('1inch not supports one of entered tokens');
     }
 
     const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
@@ -135,7 +135,7 @@ export class OneInchBscService implements ItProvider {
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      this.errorsService.throw$(new OneinchQuoteError());
+      throw new OneinchQuoteError();
     }
 
     const estimatedGas = new BigNumber(0);
