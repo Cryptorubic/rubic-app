@@ -125,7 +125,7 @@ export class OneInchEthService implements ItProvider {
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      this.errorsService.throw$(new OneinchQuoteError());
+      throw new OneinchQuoteError();
     }
 
     const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
