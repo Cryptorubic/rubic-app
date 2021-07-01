@@ -1,26 +1,10 @@
 <div class="my-trades">
   <div class="my-trades__header header">
     <div class="header__title">My trades</div>
-    <app-rubic-button-circle
-      (click)="refreshTable()"
-      size="l"
-      appearance="flat"
-      hint="Reload"
-      hintDirection="top-left"
-    >
-      <img
-        class="header__refresh-circle"
-        [ngClass]="{
-          'header__refresh-circle_refreshing':
-            loadingStatus === 'refreshing' || loadingStatus === 'stopped',
-          'header__refresh-circle_stopped': loadingStatus === 'stopped'
-        }"
-        src="assets/images/icons/reload.svg"
-        width="18"
-        height="18"
-        alt="Reload"
-      />
-    </app-rubic-button-circle>
+    <app-rubic-refresh-button
+      (refresh)="refreshTable()"
+      [loadingStatus]="loadingStatus"
+    ></app-rubic-refresh-button>
   </div>
 
   <tui-loader [overlay]="true" [showLoader]="loading" [ngClass]="{ 'position-up': !isDesktop }">

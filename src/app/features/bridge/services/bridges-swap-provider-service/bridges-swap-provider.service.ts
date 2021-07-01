@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, filter, map } from 'rxjs/operators';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import BigNumber from 'bignumber.js';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '../../../swaps/models/SwapProviderType';
 import { SwapProvider } from '../../../swaps/services/swap-provider';
 import { SupportedTokensInfo } from '../../../swaps/models/SupportedTokensInfo';

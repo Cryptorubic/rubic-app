@@ -11,6 +11,7 @@ import {
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
 import { BlockchainItem } from 'src/app/features/swaps/models/BlockchainItem';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 
 @Component({
   selector: 'app-rubic-blockchains',
@@ -34,20 +35,20 @@ export class RubicBlockchainsComponent implements OnInit {
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.selectedBlockchain = this.findBlockchainBySymbol(this.blockchainsList[0].symbol);
+    this.setFormValues(this.formService.commonTrade.controls.input.value);
+    this.formService.commonTrade.controls.input.valueChanges.subscribe(form => {
+      this.setFormValues(form);
+    });
+  }
+
+  private setFormValues(form: ISwapFormInput): void {
+    const blockchainSymbol =
+      this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
+    this.selectedBlockchain = this.findBlockchainBySymbol(blockchainSymbol);
     this.visibleBlockchainsList = this.blockchainsList.filter(
       blockchain => blockchain.symbol !== this.selectedBlockchain.symbol
     );
-
-    this.formService.commonTrade.controls.input.valueChanges.subscribe(form => {
-      const blockchainSymbol =
-        this.blockchainType === 'from' ? form.fromBlockchain : form.toBlockchain;
-      this.selectedBlockchain = this.findBlockchainBySymbol(blockchainSymbol);
-      this.visibleBlockchainsList = this.blockchainsList.filter(
-        blockchain => blockchain.symbol !== this.selectedBlockchain.symbol
-      );
-      this.cdr.markForCheck();
-    });
+    this.cdr.markForCheck();
   }
 
   private findBlockchainBySymbol(symbol: string): BlockchainItem {

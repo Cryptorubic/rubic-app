@@ -13,7 +13,8 @@ export const INSTANT_TRADE_PROVIDERS = {
       },
       isBestRate: false,
       isSelected: false,
-      isCollapsed: false
+      isCollapsed: false,
+      needApprove: null
     },
     {
       trade: null,
@@ -24,7 +25,8 @@ export const INSTANT_TRADE_PROVIDERS = {
       },
       isBestRate: false,
       isSelected: false,
-      isCollapsed: false
+      isCollapsed: false,
+      needApprove: null
     }
   ],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
@@ -37,7 +39,8 @@ export const INSTANT_TRADE_PROVIDERS = {
       },
       isBestRate: false,
       isSelected: false,
-      isCollapsed: false
+      isCollapsed: false,
+      needApprove: null
     },
     {
       trade: null,
@@ -48,7 +51,8 @@ export const INSTANT_TRADE_PROVIDERS = {
       },
       isBestRate: false,
       isSelected: false,
-      isCollapsed: false
+      isCollapsed: false,
+      needApprove: null
     }
   ],
   [BLOCKCHAIN_NAME.POLYGON]: [
@@ -61,7 +65,8 @@ export const INSTANT_TRADE_PROVIDERS = {
       },
       isBestRate: false,
       isSelected: false,
-      isCollapsed: false
+      isCollapsed: false,
+      needApprove: null
     },
     {
       trade: null,
@@ -72,7 +77,8 @@ export const INSTANT_TRADE_PROVIDERS = {
       },
       isBestRate: false,
       isSelected: false,
-      isCollapsed: false
+      isCollapsed: false,
+      needApprove: null
     }
   ]
 };

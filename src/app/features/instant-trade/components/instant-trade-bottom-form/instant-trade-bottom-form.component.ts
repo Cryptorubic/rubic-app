@@ -15,12 +15,16 @@ import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
 import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constants/providers';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
-import NoSelectedProviderError from 'src/app/shared/models/errors/instant-trade/no-selected-provider.error';
+import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
 import { Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -49,10 +53,17 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   get tokenInfoUrl(): string {
     const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
-    if (!fromToken?.address || !toToken?.address) {
-      return '';
+    let tokenAddress;
+    if (
+      toToken?.address &&
+      toToken.address !== NATIVE_TOKEN_ADDRESS &&
+      this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(toToken.address)
+    ) {
+      tokenAddress = toToken?.address;
+    } else {
+      tokenAddress = fromToken?.address;
     }
-    return `t/${toToken.address}`;
+    return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
   public formChangesSubscription$: Subscription;
@@ -61,7 +72,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private currentBlockchain: BLOCKCHAIN_NAME;
 
-  public tradeStatus;
+  public tradeStatus: TRADE_STATUS;
 
   public needApprove: boolean;
 
@@ -70,12 +81,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly instantTradeService: InstantTradeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly errorService: ErrorsService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly web3PublicService: Web3PublicService,
+    private readonly tokensService: TokensService
   ) {
     this.tradeStatus = TRADE_STATUS.DISABLED;
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const formValue = this.swapFormService.commonTrade.value;
     this.currentBlockchain = formValue.input.toBlockchain;
     this.initiateProviders(this.currentBlockchain);
@@ -91,6 +104,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           this.currentBlockchain = form.input.fromBlockchain;
           this.initiateProviders(this.currentBlockchain);
         }
+        if (!this.allowTrade) {
+          this.tradeStatus = TRADE_STATUS.DISABLED;
+        }
+        this.cdr.detectChanges();
       }
     );
   }
@@ -104,19 +121,41 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (
-      form.input.fromToken &&
-      form.input.toToken &&
-      form.input.fromBlockchain &&
-      form.input.fromAmount &&
-      form.input.toBlockchain &&
-      form.input.fromAmount.gt(0)
-    ) {
-      await this.calculateTrades();
-    }
+    await this.calculateTrades();
   }
 
   public async calculateTrades(): Promise<void> {
+    const form = this.swapFormService.commonTrade.value;
+    if (
+      !(
+        form.input.fromToken &&
+        form.input.toToken &&
+        form.input.fromBlockchain &&
+        form.input.fromAmount &&
+        form.input.toBlockchain &&
+        form.input.fromAmount.gt(0)
+      )
+    ) {
+      return;
+    }
+
+    const currentTradeStatus = this.tradeStatus;
+    this.prepareControllers();
+    const approveData = this.authService.user?.address
+      ? await this.instantTradeService.getApprove().toPromise()
+      : new Array(this.providerControllers.length).fill(null);
+    const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
+
+    const wrongTrades = tradeData.filter(el => el.status === 'rejected');
+    wrongTrades.forEach(el => {
+      this.errorService.catch$(el.reason as RubicError);
+    });
+
+    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
+    this.setupControllers(tradeData, approveData, bestProviderIndex, currentTradeStatus);
+  }
+
+  private prepareControllers(): void {
     this.tradeStatus = TRADE_STATUS.LOADING;
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
@@ -124,32 +163,40 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       isBestRate: false
     }));
     this.cdr.detectChanges();
-    // const needApprove$ = this.authService.user?.address
-    //   ? this.instantTradeService.needApprove()
-    //   : of(false);
-    // needApprove$
-    //   .pipe(take(1))
-    //   .subscribe((needApprove: boolean) => (this.needApprove = needApprove));
-    const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
-    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
+  }
+
+  private setupControllers(
+    tradeData: CalculationResult[],
+    approveData: Array<boolean | null>,
+    bestProviderIndex: number,
+    currentTradeStatus: TRADE_STATUS
+  ): void {
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
       trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
       isBestRate: false,
+      needApprove: approveData[index],
       tradeState:
-        tradeData[index]?.status === 'fulfilled'
+        tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
           ? INSTANT_TRADES_STATUS.APPROVAL
           : INSTANT_TRADES_STATUS.ERROR
     }));
-    newProviders[bestProviderIndex].isBestRate = true;
-    this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+    if (tradeData[bestProviderIndex].value && tradeData[bestProviderIndex].status !== 'rejected') {
+      newProviders[bestProviderIndex].isBestRate = true;
+    }
+
     this.providerControllers = newProviders;
+    this.tradeStatus = newProviders.some(el => el.isSelected)
+      ? currentTradeStatus
+      : TRADE_STATUS.DISABLED;
     this.cdr.detectChanges();
   }
 
   public async createTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
     const provider = this.providerControllers[providerIndex];
+    const currentTradeState = this.tradeStatus;
+
     if (providerIndex !== -1) {
       this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
       this.providerControllers[providerIndex] = {
@@ -157,6 +204,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
       };
       this.cdr.detectChanges();
+
       try {
         await this.instantTradeService.createTrade(
           provider.tradeProviderInfo.value,
@@ -168,15 +216,18 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           ...this.providerControllers[providerIndex],
           tradeState: INSTANT_TRADES_STATUS.ERROR
         };
-        this.tradeStatus = TRADE_STATUS.DISABLED;
+        this.tradeStatus = currentTradeState;
       }
       this.providerControllers[providerIndex] = {
         ...this.providerControllers[providerIndex],
         tradeState: INSTANT_TRADES_STATUS.COMPLETED
       };
+      this.tradeStatus = currentTradeState;
       this.cdr.detectChanges();
+
+      this.tokensService.recalculateUsersBalance();
     } else {
-      this.errorService.catch$(new NoSelectedProviderError());
+      this.errorService.throw$(new NoSelectedProviderError());
     }
   }
 
@@ -192,7 +243,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
         break;
       default:
-        this.errorService.catch$(new RubicError());
+        this.errorService.throw$(new UndefinedError());
     }
   }
 
@@ -208,6 +259,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       isSelected: true
     };
     this.providerControllers = newProviders;
+    if (newProviders[providerNumber].needApprove !== null) {
+      this.tradeStatus = newProviders[providerNumber].needApprove
+        ? TRADE_STATUS.READY_TO_APPROVE
+        : TRADE_STATUS.READY_TO_SWAP;
+      this.needApprove = newProviders[providerNumber].needApprove;
+    }
   }
 
   private calculateBestRate(tradeData: InstantTrade[]): number {
@@ -239,45 +296,36 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     return providerIndex;
   }
 
-  public approveTrade(): void {
-    // let approveInProgressSubscription$: Subscription;
-    //
-    // const bridgeTradeRequest: BridgeTradeRequest = {
-    //   onTransactionHash: () => {
-    //     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-    //     this.cdr.detectChanges();
-    //     approveInProgressSubscription$ = this.notificationsService
-    //       .show(this.translate.instant('bridgePage.approveProgressMessage'), {
-    //         label: 'Approve in progress',
-    //         status: TuiNotification.Info,
-    //         autoClose: false
-    //       })
-    //       .subscribe();
-    //   }
-    // };
-    //
-    // this.bridgeService
-    //   .approve(bridgeTradeRequest)
-    //   .pipe(first())
-    //   .subscribe(
-    //     (_res: TransactionReceipt) => {
-    //       approveInProgressSubscription$.unsubscribe();
-    //
-    //       this.notificationsService
-    //         .show(this.translate.instant('bridgePage.approveSuccessMessage'), {
-    //           label: 'Successful approve',
-    //           status: TuiNotification.Success,
-    //           autoClose: 15000
-    //         })
-    //         .subscribe();
-    //       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-    //       this.cdr.detectChanges();
-    //     },
-    //     err => {
-    //       approveInProgressSubscription$?.unsubscribe();
-    //       this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-    //       this.errorsService.catch$(err);
-    //     }
-    //   );
+  public async approveTrade(): Promise<void> {
+    const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
+    const provider = this.providerControllers[providerIndex];
+    if (providerIndex !== -1) {
+      this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+      this.providerControllers[providerIndex] = {
+        ...this.providerControllers[providerIndex],
+        tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
+      };
+      this.cdr.detectChanges();
+
+      try {
+        await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.providerControllers[providerIndex] = {
+          ...this.providerControllers[providerIndex],
+          tradeState: INSTANT_TRADES_STATUS.COMPLETED
+        };
+        this.cdr.detectChanges();
+      } catch (err) {
+        this.providerControllers[providerIndex] = {
+          ...this.providerControllers[providerIndex],
+          tradeState: INSTANT_TRADES_STATUS.APPROVAL
+        };
+        this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+      }
+      this.cdr.detectChanges();
+      this.tokensService.recalculateUsersBalance();
+    } else {
+      this.errorService.throw$(new NoSelectedProviderError());
+    }
   }
 }

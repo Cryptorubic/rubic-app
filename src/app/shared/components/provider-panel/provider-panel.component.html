@@ -39,7 +39,7 @@
           ${{ getUsdPrice() }}
         </div>
         <div
-          *ngIf="tradeData.gasFeeInEth && tradeData.gasFeeInUsd && tradeData.gasFeeInUsd.gte('0.01')"
+          *ngIf="gasFeeDisplay"
           class="provider-panel__token-gas-fee"
           [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
         >
@@ -50,20 +50,8 @@
             [inlineSVG]="'/assets/images/icons/hint.svg'"
             [tuiHint]="'instantTrades.gasFeeMessage' | translate"
           ></div>
-          <!--          <tui-tooltip-->
-          <!--            [content]="-->
-          <!--            [showDelay]='200'-->
-          <!--            direction="left"-->
-          <!--          ></tui-tooltip>-->
         </div>
       </div>
-      <!--      <div-->
-      <!--        *ngIf='!loading'-->
-      <!--        class='provider-panel__collapse-toggle'-->
-      <!--        [ngClass]='{ "provider-panel__collapse-toggle_collapsed": providerData.isCollapsed }'-->
-      <!--      >-->
-      <!--        <tui-svg class="icon" src="tuiIconChevronUpLarge"></tui-svg>-->
-      <!--      </div>-->
     </div>
   </div>
 </div>

@@ -4,12 +4,12 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import Web3 from 'web3';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
 import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
 import { StoreService } from '../../store/store.service';
 import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
-import { ErrorsOldService } from '../../errors-old/errors-old.service';
 import { PrivateProvider } from '../private-provider/private-provider';
 
 @Injectable({
@@ -64,7 +64,7 @@ export class ProviderConnectorService {
 
   constructor(
     private readonly storage: StoreService,
-    private readonly errorsService: ErrorsOldService
+    private readonly errorService: ErrorsService
   ) {
     this.web3 = new Web3();
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
@@ -119,7 +119,7 @@ export class ProviderConnectorService {
           this.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject,
-          this.errorsService,
+          this.errorService,
           chainId
         );
         break;
@@ -129,7 +129,7 @@ export class ProviderConnectorService {
           this.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject,
-          this.errorsService
+          this.errorService
         );
         await (this.provider as MetamaskProvider).setupDefaultValues();
         break;
@@ -139,7 +139,7 @@ export class ProviderConnectorService {
           this.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject,
-          this.errorsService
+          this.errorService
         );
         break;
       }
@@ -148,7 +148,7 @@ export class ProviderConnectorService {
           this.web3,
           this.$networkChangeSubject,
           this.$addressChangeSubject,
-          this.errorsService
+          this.errorService
         ) as PrivateProvider;
         await (this.provider as MetamaskProvider).setupDefaultValues();
       }

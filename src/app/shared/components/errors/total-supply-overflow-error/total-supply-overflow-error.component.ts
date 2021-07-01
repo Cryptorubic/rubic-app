@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TotalSupplyOverflowError } from '../../../models/errors/order-book/TotalSupplyOverflowError';
+import { TotalSupplyOverflowError } from '../../../../core/errors/models/order-book/TotalSupplyOverflowError';
 
 @Component({
   selector: 'app-total-supply-overflow-error',

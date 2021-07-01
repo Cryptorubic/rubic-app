@@ -6,9 +6,10 @@
       [loading]="loading"
       [disabled]="disabled"
       (onClick)="openTokensSelect()"
+      [tuiHint]="selectedToken ? tooltip : null"
     >
       <ng-container *ngIf="selectedToken">
-        <div class="tokens__inner" [tuiHint]="tooltip">
+        <div class="tokens__inner">
           <div class="tokens__image-container">
             <img
               [src]="selectedToken.image || 'assets/images/icons/coins/empty.svg'"

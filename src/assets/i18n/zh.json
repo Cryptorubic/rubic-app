@@ -50,7 +50,8 @@
     "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
     "noSelectedProvider": "You have not selected any swap provider",
     "notSupportedItNetwork": "Chosen network is not supported for instant trades",
-    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks."
+    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks.",
+    "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading."
   },
   "navigation": {
     "about": "关于",
@@ -494,5 +495,14 @@
   "riskBanner": {
     "text": "請注意，用戶界面目前處於測試階段，它可能仍包含影響平台功能的未檢測到的錯誤。 需要您自擔風險使用它。",
     "link": "切換到舊設計"
+  },
+  "settings": {
+    "instantTrades": {
+      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "multihops": "Your swap will be completed only with direct pairs.",
+      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
+      "deadline": "Your transaction will revert if it is pending for more than this period of time.",
+      "autoRefresh": "Update trade parameters each 15 seconds."
+    }
   }
 }

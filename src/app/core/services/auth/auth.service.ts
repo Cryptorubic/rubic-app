@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, first, mergeMap } from 'rxjs/operators';
-import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
-import { WalletlinkError } from 'src/app/shared/models/errors/provider/WalletlinkError';
+import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
+import { WalletlinkError } from 'src/app/core/errors/models/provider/WalletlinkError';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
 import { QueryParamsService } from '../query-params/query-params.service';
 import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
-import { ErrorsOldService } from '../errors-old/errors-old.service';
 import { StoreService } from '../store/store.service';
 
 /**
@@ -39,8 +39,8 @@ export class AuthService {
     private readonly httpService: HttpService,
     private readonly queryParamsService: QueryParamsService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsOldService,
-    private readonly store: StoreService
+    private readonly store: StoreService,
+    private readonly errorService: ErrorsService
   ) {
     this.isAuthProcess = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
@@ -146,7 +146,7 @@ export class AuthService {
         this.headerStore.setWalletsLoadingStatus(false);
         error = new UserRejectError();
       }
-      this.errorsService.throw(error);
+      this.errorService.catch$(error);
       this.$currentUser.next(null);
       this.isAuthProcess = false;
     }

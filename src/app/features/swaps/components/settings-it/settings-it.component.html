@@ -5,17 +5,17 @@
       <div
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
-        [tuiHint]="'instantTrades.gasFeeMessage' | translate"
+        [tuiHint]="'settings.instantTrades.slippage' | translate"
       ></div>
     </div>
     <div class="settings__form-row settings__form-row_united">
-      <button
+      <div
         (click)="autoSlippage = true"
         class="settings__button-auto"
         [ngClass]="{ 'settings__button-auto_active': autoSlippage }"
       >
         Auto
-      </button>
+      </div>
       <tui-input-number
         id="slippageTolerance"
         [tuiTextfieldLabelOutside]="true"
@@ -32,7 +32,7 @@
         <div
           class="settings__hint"
           [inlineSVG]="'/assets/images/icons/hint.svg'"
-          [tuiHint]="'instantTrades.gasFeeMessage' | translate"
+          [tuiHint]="'settings.instantTrades.deadline' | translate"
         ></div>
       </div>
       <tui-input-number
@@ -48,25 +48,25 @@
       <span> minutes</span>
     </div>
 
-<!--    <div class="settings__form-row">-->
-<!--      <label for="disableMultihops">Disable multihops</label>-->
-<!--      <div-->
-<!--        class='settings__hint'-->
-<!--        [inlineSVG]='"/assets/images/icons/hint.svg"'-->
-<!--        [tuiHint]="'instantTrades.gasFeeMessage' | translate"-->
-<!--      ></div>-->
-<!--      <tui-toggle-->
-<!--        id="disableMultihops"-->
-<!--        formControlName="disableMultihops"-->
-<!--      ></tui-toggle>-->
-<!--    </div>-->
+    <div class="settings__form-row">
+      <label for="disableMultihops">Disable multihops</label>
+      <div
+        class='settings__hint'
+        [inlineSVG]='"/assets/images/icons/hint.svg"'
+        [tuiHint]="'settings.instantTrades.multihops' | translate"
+      ></div>
+      <tui-toggle
+        id="disableMultihops"
+        formControlName="disableMultihops"
+      ></tui-toggle>
+    </div>
 
     <div class="settings__form-row">
       <label for="rubicOptimisation">Use rubic optimisation</label>
       <div
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
-        [tuiHint]="'instantTrades.gasFeeMessage' | translate"
+        [tuiHint]="'settings.instantTrades.rubicOptimisation' | translate"
       ></div>
       <tui-toggle
         id="rubicOptimisation"
@@ -74,17 +74,17 @@
       ></tui-toggle>
     </div>
 
-<!--    <div class="settings__form-row">-->
-<!--      <label for="rubicOptimisation">Auto refresh</label>-->
-<!--      <div-->
-<!--        class='settings__hint'-->
-<!--        [inlineSVG]='"/assets/images/icons/hint.svg"'-->
-<!--        [tuiHint]="'instantTrades.gasFeeMessage' | translate"-->
-<!--      ></div>-->
-<!--      <tui-toggle-->
-<!--        id="autoRefresh"-->
-<!--        formControlName="autoRefresh"-->
-<!--      ></tui-toggle>-->
-<!--    </div>-->
+    <div class="settings__form-row">
+      <label for="autoRefresh">Auto refresh</label>
+      <div
+        class='settings__hint'
+        [inlineSVG]='"/assets/images/icons/hint.svg"'
+        [tuiHint]="'settings.instantTrades.autoRefresh' | translate"
+      ></div>
+      <tui-toggle
+        id="autoRefresh"
+        formControlName="autoRefresh"
+      ></tui-toggle>
+    </div>
   </form>
 </div>

@@ -50,7 +50,8 @@
     "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
     "noSelectedProvider": "You have not selected any swap provider",
     "notSupportedItNetwork": "Chosen network is not supported for instant trades",
-    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks."
+    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks.",
+    "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading."
   },
   "navigation": {
     "about": "소개",
@@ -494,5 +495,14 @@
   "riskBanner": {
     "text": "UI는 현재 베타 버전이며 플랫폼 기능에 영향을 미치는 감지되지 않은 버그가 여전히 포함되어있을 수 있습니다. 자신의 책임하에 사용하십시오.",
     "link": "이전 디자인으로 전환"
+  },
+  "settings": {
+    "instantTrades": {
+      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "multihops": "Your swap will be completed only with direct pairs.",
+      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
+      "deadline": "Your transaction will revert if it is pending for more than this period of time.",
+      "autoRefresh": "Update trade parameters each 15 seconds."
+    }
   }
 }

@@ -5,6 +5,7 @@ import { of, Subscription } from 'rxjs';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -31,12 +32,17 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
   constructor(private tokensSelectService: TokensSelectService) {}
 
   ngOnInit() {
+    this.setFormValues(this.formService.commonTrade.controls.input.value);
     this.$formSubscription = this.formService.commonTrade.controls.input.valueChanges.subscribe(
       formValue => {
-        const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
-        this.selectedToken = formValue[formKey];
+        this.setFormValues(formValue);
       }
     );
+  }
+
+  private setFormValues(formValue: ISwapFormInput): void {
+    const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+    this.selectedToken = formValue[formKey];
   }
 
   ngOnDestroy() {

@@ -17,20 +17,20 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { WalletError } from 'src/app/shared/models/errors/provider/WalletError';
-import { AccountError } from 'src/app/shared/models/errors/provider/AccountError';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
+import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { RubicError } from 'src/app/shared/models/errors/RubicError';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
-import { TokensService } from 'src/app/core/services/backend/tokens-service/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
-import InsufficientFundsError from '../../../../shared/models/errors/instant-trade/InsufficientFundsError';
+import InsufficientFundsError from '../../../../core/errors/models/instant-trade/InsufficientFundsError';
 
 @Injectable()
 export class BridgeService {
@@ -185,7 +185,7 @@ export class BridgeService {
 
   private getBridgeTrade(bridgeTradeRequest?: BridgeTradeRequest): Observable<BridgeTrade> {
     const { fromBlockchain, toBlockchain, fromAmount } =
-      this.swapFormService.commonTrade.value.input;
+      this.swapFormService.commonTrade.controls.input.value;
 
     return this.getCurrentBridgeToken().pipe(
       map(bridgeToken => ({
@@ -220,7 +220,7 @@ export class BridgeService {
           return this.bridgeProvider.createTrade(bridgeTrade).pipe(
             catchError(err => {
               console.error(err);
-              const error = err instanceof RubicError ? err : new RubicError();
+              const error = err instanceof UndefinedError ? err : new UndefinedError();
               return throwError(error);
             })
           );
@@ -235,7 +235,7 @@ export class BridgeService {
         this.bridgeProvider.needApprove(bridgeTrade).pipe(
           catchError(err => {
             console.error(err);
-            const error = err instanceof RubicError ? err : new RubicError();
+            const error = err instanceof UndefinedError ? err : new UndefinedError();
             return throwError(error);
           })
         )
@@ -246,25 +246,24 @@ export class BridgeService {
 
   public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
-      mergeMap((bridgeTrade: BridgeTrade) => {
+      mergeMap(async (bridgeTrade: BridgeTrade) => {
         this.checkSettings(bridgeTrade.fromBlockchain);
         const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-        return from(
-          this.checkBalance(
-            bridgeTrade.fromBlockchain,
-            bridgeTrade.toBlockchain,
-            token.address,
-            token.symbol,
-            token.decimals,
-            bridgeTrade.amount
-          )
-        ).pipe(map(() => bridgeTrade));
+        await this.checkBalance(
+          bridgeTrade.fromBlockchain,
+          bridgeTrade.toBlockchain,
+          token.address,
+          token.symbol,
+          token.decimals,
+          bridgeTrade.amount
+        );
+        return bridgeTrade;
       }),
       mergeMap((bridgeTrade: BridgeTrade) => {
         return this.bridgeProvider.approve(bridgeTrade).pipe(
           catchError(err => {
             console.error(err);
-            const error = err instanceof RubicError ? err : new RubicError();
+            const error = err instanceof UndefinedError ? err : new UndefinedError();
             return throwError(error);
           })
         );
