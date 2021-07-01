@@ -113,6 +113,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.cdr.detach();
     this.formChangesSubscription$.unsubscribe();
   }
 
