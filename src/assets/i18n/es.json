@@ -25,7 +25,8 @@
     "via": "Via",
     "contractAddress": "Dirección del contrato de token",
     "enterAmount": "Ingresa el monto",
-    "chooseToken": "Elija Token",
+    "chooseToken": "Elija token",
+    "clearToken": "Token claro",
     "warning": "Warning",
     "customerSupport": "customer support",
     "OK": "OK"
@@ -34,7 +35,7 @@
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
     "noMetamaskInstalled": "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde y conectar la billeta con el botón de Conectar la Billetera.",
     "wrongNetwork": "Has seleccionado la red principal incorrecta. Elige {{ networkToChoose }} en MetaMask.",
-    "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our <a href='mailto:support@rubic.finance' target='_blank'>Customer Support</a>.",
+    "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our",
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
     "rubicError": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
@@ -61,7 +62,8 @@
     "login": "Conecta tu Billetera",
     "myTrades": "Mis intercambios",
     "logout": "Cerrar sesión",
-    "logoutMessage": "¿Deseas Cerrar Sesión?"
+    "logoutMessage": "¿Deseas Cerrar Sesión?",
+    "notAvailable": "Order book no está disponible en versión beta."
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",

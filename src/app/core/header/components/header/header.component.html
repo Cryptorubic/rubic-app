@@ -9,12 +9,14 @@
 
   <nav class="rubic-header__nav">
     <a class="button-link" routerLink="/" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Swaps</a>
-    <a class="button-link" routerLink="/crypto-tap" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Crypto tap</a>
+    <a class="button-link" routerLink="/crypto-tap" routerLinkActive="button-link_active">Crypto tap</a>
     <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order book</span>
   </nav>
 
   <div class="rubic-header__profile">
-    <a class="rubic-header__profile-trades button-link" routerLink="my-trades" routerLinkActive="button-link_active">My trades</a>
+    <a class="rubic-header__profile-trades button-link" routerLink="my-trades" routerLinkActive="button-link_active">
+      {{ 'navigation.myTrades' | translate }}
+    </a>
 
     <app-login-button class="rubic-header__login" *ngIf="!($currentUser | async)?.address"></app-login-button>
     <app-user-profile class="rubic-header__profile-user" *ngIf="($currentUser | async)?.address"></app-user-profile>
@@ -22,9 +24,8 @@
     <!--<app-rubic-toggler-theme></app-rubic-toggler-theme>-->
   </div>
 </header>
-<app-logout-confirm-modal></app-logout-confirm-modal>
 
 
 <ng-template #orderBookTooltip>
-  <span>Order book is not available in beta.</span>
+  <span>{{ 'navigation.notAvailable' | translate }}</span>
 </ng-template>

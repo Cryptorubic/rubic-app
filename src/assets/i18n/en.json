@@ -25,7 +25,8 @@
     "via": "Via ",
     "contractAddress": "Token Contract Address",
     "enterAmount": "Enter amount",
-    "chooseToken": "Choose Token",
+    "chooseToken": "Select token",
+    "clearToken": "Clear token",
     "warning": "Warning",
     "customerSupport": "customer support",
     "OK": "OK"
@@ -61,7 +62,8 @@
     "login": "Connect Wallet",
     "myTrades": "My trades",
     "logout": "Logout",
-    "logoutMessage": "Do you really want to Log Out?"
+    "logoutMessage": "Do you really want to Log Out?",
+    "notAvailable": "Order book is not available in beta."
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform.",

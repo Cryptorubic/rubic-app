@@ -7,7 +7,7 @@ import {
   OneInchApproveResponse,
   OneInchTokensResponse
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch-types';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
@@ -16,7 +16,10 @@ import { WALLET_NAME } from 'src/app/core/header/components/header/components/wa
 import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
-import { Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import BigNumber from 'bignumber.js';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +29,10 @@ export class CommonOneinchService {
 
   private readonly apiBaseUrl: string;
 
-  constructor(private readonly httpClient: HttpClient) {
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly web3Private: Web3PrivateService
+  ) {
     this.oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
     this.apiBaseUrl = 'https://api.1inch.exchange/v3.0/';
   }
@@ -37,7 +43,7 @@ export class CommonOneinchService {
       .pipe(map((response: OneInchTokensResponse) => Object.keys(response.tokens)));
   }
 
-  public loadApproveAddress(blockchainId: number): Observable<string> {
+  private loadApproveAddress(blockchainId: number): Observable<string> {
     return this.httpClient
       .get(`${this.apiBaseUrl}${blockchainId}/approve/spender`)
       .pipe(map((response: OneInchApproveResponse) => response.address));
@@ -106,5 +112,31 @@ export class CommonOneinchService {
         );
       }
     }
+  }
+
+  public needApprove(
+    tokenAddress: string,
+    web3Public: Web3Public,
+    blockchain: BLOCKCHAIN_NAME,
+    userAddress: string
+  ): Observable<BigNumber> {
+    if (web3Public.isNativeAddress(tokenAddress)) {
+      return of(new BigNumber(Infinity));
+    }
+    return this.loadApproveAddress(BlockchainsInfo.getBlockchainByName(blockchain).id).pipe(
+      switchMap(address => from(web3Public.getAllowance(tokenAddress, userAddress, address)))
+    );
+  }
+
+  public async approve(
+    tokenAddress: string,
+    blockchain: BLOCKCHAIN_NAME,
+    options: { onTransactionHash?: (hash: string) => void }
+  ): Promise<void> {
+    const approveAddress = await this.loadApproveAddress(
+      BlockchainsInfo.getBlockchainByName(blockchain).id
+    ).toPromise();
+    const uintInfinity = new BigNumber(2).pow(256).minus(1);
+    await this.web3Private.approveTokens(tokenAddress, approveAddress, uintInfinity, options);
   }
 }

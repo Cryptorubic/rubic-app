@@ -9,13 +9,13 @@
       ></div>
     </div>
     <div class="settings__form-row settings__form-row_united">
-      <button
+      <div
         (click)="autoSlippage = true"
         class="settings__button-auto"
         [ngClass]="{ 'settings__button-auto_active': autoSlippage }"
       >
         Auto
-      </button>
+      </div>
       <tui-input-number
         id="slippageTolerance"
         [tuiTextfieldLabelOutside]="true"
@@ -23,6 +23,7 @@
         [tuiTextfieldSize]="'s'"
         [max]="50"
         [min]="0.001"
+        [postfix]="'%'"
       >0.15%
       </tui-input-number>
     </div>

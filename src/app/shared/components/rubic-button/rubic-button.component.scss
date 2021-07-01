@@ -90,6 +90,10 @@
 
       border: 1px solid $rubic-primary;
     }
+
+    &[data-appearance='secondary'] {
+      border: 0;
+    }
   }
 
   [tuiButton][bordered=true] {

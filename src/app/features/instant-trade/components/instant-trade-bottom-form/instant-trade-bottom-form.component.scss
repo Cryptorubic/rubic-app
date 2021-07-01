@@ -41,8 +41,7 @@ $green: rgb(74, 169, 86);
 @include b($mobile-md) {
   .instant-trade-bottom-form {
     &__swap {
-      display: block;
-      margin: 0 20px;
+      padding: 0 20px
     }
   }
 }
