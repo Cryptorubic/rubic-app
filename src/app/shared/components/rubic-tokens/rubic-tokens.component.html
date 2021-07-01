@@ -18,7 +18,9 @@
               [alt]="selectedToken.symbol"
             />
           </div>
-          {{ selectedToken.symbol }}
+          <div class="tokens__symbol">
+            {{ selectedToken.symbol }}
+          </div>
         </div>
       </ng-container>
       <span *ngIf="!selectedToken">Select token</span>

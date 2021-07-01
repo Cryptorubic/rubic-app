@@ -34,6 +34,13 @@
     }
   }
 
+  &__symbol {
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   &__clear-container {
     display: flex;
     align-items: center;
