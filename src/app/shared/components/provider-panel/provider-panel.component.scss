@@ -128,6 +128,8 @@ $white: white;
   }
 
   &__amount {
+    display: flex;
+
     font-weight: 300;
     font-size: 24px;
     letter-spacing: 2px;
@@ -153,7 +155,15 @@ $white: white;
     align-items: center;
     margin-left: 10px;
 
+    cursor: pointer;
 
+    &_error {
+      ::ng-deep {
+        svg path {
+          fill: red;
+        }
+      }
+    }
   }
 
   &__collapse-toggle {

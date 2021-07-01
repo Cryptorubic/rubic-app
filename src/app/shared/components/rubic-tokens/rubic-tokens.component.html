@@ -21,7 +21,9 @@
           {{ selectedToken.symbol }}
         </div>
       </ng-container>
-      <span *ngIf="!selectedToken">Select token</span>
+      <span *ngIf="!selectedToken">
+        {{ 'common.chooseToken' | translate }}
+      </span>
     </app-rubic-button>
     <a
       [hidden]="!selectedToken"
@@ -29,14 +31,14 @@
       rel="noopener"
       target="_blank"
     >
-      <img [src]="'assets/img/icons/scanner.svg'" alt="Go to the scanner" />
+      <img [src]="'assets/img/icons/scanner.svg'" alt="{{ 'common.checkOnExplorer' | translate }}" />
     </a>
   </div>
 </div>
 
 <ng-template #tooltip>
   <div class="tokens__clear-container" (click)="clearToken()">
-    <span>Clear token</span>
+    <span>{{ 'common.clearToken' | translate }}</span>
     <tui-svg class="icon" src="tuiIconCloseCircleLarge"></tui-svg>
   </div>
 </ng-template>

@@ -25,7 +25,8 @@
     "via": "Via",
     "contractAddress": "Dirección del contrato de token",
     "enterAmount": "Ingresa el monto",
-    "chooseToken": "Elija Token",
+    "chooseToken": "Elija token",
+    "clearToken": "Token claro",
     "warning": "Warning",
     "customerSupport": "customer support",
     "OK": "OK"
@@ -61,7 +62,8 @@
     "login": "Conecta tu Billetera",
     "myTrades": "Mis intercambios",
     "logout": "Cerrar sesión",
-    "logoutMessage": "¿Deseas Cerrar Sesión?"
+    "logoutMessage": "¿Deseas Cerrar Sesión?",
+    "notAvailable": "Order book no está disponible en versión beta."
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",

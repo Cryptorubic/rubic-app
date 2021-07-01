@@ -26,6 +26,7 @@
     "contractAddress": "토큰 계약 주소",
     "enterAmount": "금액을 입력하세요",
     "chooseToken": "토큰 선택",
+    "clearToken": "클리어 토큰",
     "warning": "Warning",
     "customerSupport": "바랍니다 우리의 고객 지원에 문의하시기 바랍니다",
     "OK": "확인"
@@ -61,7 +62,8 @@
     "login": "메타마스크로 로그인",
     "myTrades": "내 거래",
     "logout": "로그 아웃",
-    "logoutMessage": "정말 로그 아웃 하시겠습니까?"
+    "logoutMessage": "정말 로그 아웃 하시겠습니까?",
+    "notAvailable": "Order book는 베타에서 사용할 수 없습니다."
   },
   "aboutPage": {
     "description": "Rubic은 완전한 원스톱 분산화 플랫폼을 제공하는 것을 목표로 하는 크로스 체인, P2P, 즉시 스왑 및 지정가 주문을 여러 블록체인에 제공하는 멀티체인 DeFi 생태계입니다.",
