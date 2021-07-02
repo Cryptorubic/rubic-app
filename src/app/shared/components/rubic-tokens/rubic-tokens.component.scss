@@ -4,6 +4,7 @@
 .tokens {
   display: flex;
   align-items: center;
+  justify-content: center;
 
   height: 100%;
   padding: 15px 20px;
@@ -32,6 +33,13 @@
       height: initial;
       max-height: 18px;
     }
+  }
+
+  &__symbol {
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   &__clear-container {
@@ -67,6 +75,8 @@
 
 @include b($mobile-md) {
   .tokens {
+    justify-content: flex-start;
+
     border-radius: 0;
   }
 }

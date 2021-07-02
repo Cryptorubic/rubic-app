@@ -19,7 +19,7 @@
         class="bottom-amount__fee"
         [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
       >
-        <span>Provider fee: {{fee.amount + ' ' + fee.token.symbol}} ≈ {{fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2}}$</span>
+        <span>{{ 'tradePage.providerFee' | translate }}: {{fee.amount + ' ' + fee.token.symbol}} ≈ {{fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2}}$</span>
       </div>
       <div  class="bottom-amount__additional-content">
         <ng-content></ng-content>

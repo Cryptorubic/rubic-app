@@ -18,7 +18,7 @@
       *ngIf="token?.amount.gt(0)"
     >
       <span class="user-balance-container__balance"
-        >You have
+        >{{ 'common.have' | translate }}
         {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}</span
       >
       <button class="user-balance-container__max-button" (click)="onUserBalanceMaxButtonClick()">
@@ -39,7 +39,7 @@
         tuiHintMode="onDark"
         >${{ getUsdPrice() | bigNumberFormat: 2 }}</span
       >
-      <ng-template #usdPriceTooltip>${{ getUsdPrice() | bigNumberFormat: 2 }}</ng-template>
+      <ng-template #usdPriceTooltip>${{ getUsdPrice() | bigNumberFormat }}</ng-template>
     </div>
 
     <div class="right-side__error-info">

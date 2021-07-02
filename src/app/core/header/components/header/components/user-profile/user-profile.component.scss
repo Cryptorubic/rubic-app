@@ -18,7 +18,13 @@
   }
 
   &__chain-icon {
+    width: 25px;
     margin-right: 10px;
+    
+    img {
+      display: block;
+      height: auto;
+    }
   }
 
   &__dropdown-nav {
@@ -32,10 +38,4 @@
     font-size: $rubic-font-size-01;
   }
 
-  &__chain-icon {
-    width: auto;
-    max-width: 25px;
-    height: auto;
-    max-height: 25px;
-  }
 }

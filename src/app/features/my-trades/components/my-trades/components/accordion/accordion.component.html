@@ -81,7 +81,7 @@
     <ng-template tuiAccordionItemContent>
       <div class="row">
         <div class="row__title">
-          From<img src="assets/images/icons/my-trades/arrow-right.svg" alt />To
+          {{ 'tradesTable.columns.from' | translate }}<img src="assets/images/icons/my-trades/arrow-right.svg" alt />{{ 'tradesTable.columns.to' | translate }}
         </div>
 
         <div class="row__data">
@@ -113,7 +113,7 @@
       </div>
 
       <div class="row">
-        <div class="row__title">Provider</div>
+        <div class="row__title">{{ 'tradesTable.columns.provider' | translate }}</div>
 
         <div class="row__data">
           <div class="provider">
@@ -126,7 +126,7 @@
       </div>
 
       <div class="row">
-        <div class="row__title">Sent</div>
+        <div class="row__title">{{ 'tradesTable.columns.send' | translate }}</div>
 
         <div class="row__data">
           <div class="token">
@@ -144,7 +144,7 @@
       </div>
 
       <div class="row">
-        <div class="row__title">Expected</div>
+        <div class="row__title">{{ 'tradesTable.columns.expected' | translate }}</div>
 
         <div class="row__data">
           <div class="token">
@@ -160,7 +160,7 @@
       </div>
 
       <div class="row">
-        <div class="row__title">Explorer link</div>
+        <div class="row__title">{{ 'tradesTable.columns.explorerLink' | translate }}</div>
 
         <div class="row__data row__data_explorer-link">
           <a class="explorer-link" safetyLink [link]="getTransactionLink(trade)">{{

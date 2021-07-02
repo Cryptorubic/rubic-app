@@ -7,6 +7,37 @@ tui-dialog {
   &::after {
     box-shadow: unset !important;
   }
+
+  &[data-size='s'] {
+    .content {
+      .heading {
+        margin-right: 40px;
+
+        font-size: 21px;
+      }
+    }
+  }
+
+  .close {
+    position: absolute !important;
+    top: 18px !important;
+    right: 18px !important;
+
+    color: #bfbfbf !important;
+
+    background: transparent !important;
+    transform: scale(1.2);
+
+    &:hover {
+      transform: scale(1.4);
+    }
+  }
+}
+
+tui-notification {
+  .close {
+    top: 10px !important;
+  }
 }
 
 @include b($mobile-md-minus) {

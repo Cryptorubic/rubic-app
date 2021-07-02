@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
+import { TranslateService } from '@ngx-translate/core';
 import { HeaderStore } from '../../../../services/header.store';
 import { UserInterface } from '../../../../../services/auth/models/user.interface';
 import { AuthService } from '../../../../../services/auth/auth.service';
@@ -46,6 +47,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
     private readonly providerConnectorService: ProviderConnectorService,
+    private translateService: TranslateService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector
   ) {
@@ -83,7 +85,10 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public toggleConfirmModal(): void {
     this.dialogService
-      .open(new PolymorpheusComponent(LogoutConfirmModalComponent, this.injector), { size: 's' })
+      .open(new PolymorpheusComponent(LogoutConfirmModalComponent, this.injector), {
+        size: 's',
+        label: this.translateService.instant('navigation.logoutMessage')
+      })
       .subscribe();
   }
 }

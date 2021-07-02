@@ -4,7 +4,7 @@ export class NotSupportedBridge extends RubicError {
   public comment: string;
 
   constructor() {
-    super('text', 'errors.notSupportedItNetwork');
+    super('text', 'errors.notSupportedBridge');
     Object.setPrototypeOf(this, NotSupportedBridge.prototype);
   }
 }

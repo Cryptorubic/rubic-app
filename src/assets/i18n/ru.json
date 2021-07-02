@@ -24,12 +24,17 @@
     "add": "Добавить",
     "via": "Через",
     "contractAddress": "Адрес контракта Токена",
+    "address": "адрес",
     "enterAmount": "Введите количество",
     "chooseToken": "Выберите токен",
     "clearToken": "Очистить токен",
-    "warning": "Warning",
+    "warning": "Предупреждение",
     "customerSupport": "службу поддержки",
-    "OK": "OK"
+    "OK": "OK",
+    "analytics": "Аналитика",
+    "minutes": "минут(-ы)",
+    "swap": "Обменять",
+    "approve": "Утвердить"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -40,18 +45,20 @@
     "rubicError": "Пожалуйста, повторите попытку позже или попробуйте использовать другое устройство. Если у вас все равно вознинет ошибка обратитесь в нашу",
     "insufficientFunds": "У вас недостаточно {{ tokenSymbol }}. Ваш баланс {{balance}} {{tokenSymbol}}, но требуется {{requiredBalance}} {{tokenSymbol}}.",
     "sameTokens": "Один и тот же токен не может быть выбран в обоих блоках, пожалуйста, выберете разные токены.",
-    "noQrCode": "Please make sure that you have scan qrCode",
-    "noWallet": "You have not connected any wallet",
-    "retrievingTokensError": "Error retrieving tokens",
-    "wrongToken": "Rubic bridge supports only rubic token.",
-    "oneInchQuote": "Oneinch quote error",
-    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
-    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
-    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
-    "noSelectedProvider": "You have not selected any swap provider",
-    "notSupportedItNetwork": "Chosen network is not supported for instant trades",
-    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks.",
-    "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading."
+    "noQrCode": "Убедитесь, что у вас есть отсканированный qrCode",
+    "noWallet": "Вы не подключили кошелек",
+    "retrievingTokensError": "Ошибка при получении токенов",
+    "wrongToken": "Рубический мост поддерживает только рубиновый жетон.",
+    "oneInchQuote": "Ошибка котировки 1inch",
+    "notSupportedNetwork": "{{networkToChoose}} не поддерживается выбранным поставщиком кошелька.",
+    "signReject": "У вас есть знак отказа от кошелька. Пожалуйста, сначала подтвердите его, чтобы войти в наше приложение",
+    "lowGas": "Газ транзакции слишком низкий. Не хватает газа, чтобы покрыть минимальную стоимость сделки. Попробуйте увеличить подачу газа",
+    "noSelectedProvider": "Вы не выбрали провайдера для обмена",
+    "notSupportedItNetwork": "Выбранная сеть не поддерживается для мгновенных сделок",
+    "notSupportedBridge": "Выбранный мост не поддерживается. Пожалуйста, измените порядок или выберите другие сети.",
+    "insufficientLiquidity": "Недостаточная ликвидность для этой сделки. Попробуйте включить мультископовую торговлю.",
+    "oneinchRefreshError":  "1inch в настоящее время недоступен. Пожалуйста, попробуйте обновить сделку.",
+    "1inchNotSupportedToken": "1inch не поддерживает один из введенных токенов."
   },
   "navigation": {
     "about": "О компании",
@@ -340,6 +347,8 @@
     "swapToggleText": "Использования наших свопов",
     "progressMessage": "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
     "successMessage": "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами.",
+    "approveProgressMessage": "Вы приняли одобренную транзакцию, и обмен начался. Подождите, пока сделка не будет завершена.",
+    "approveSuccessMessage": "Вы одобрили токены. Нажмите кнопку свопа, чтобы продолжить торговлю.",
     "tableTitle": "Ваши кросс-чейн обмены",
     "whatIs": "Что такое ",
     "whatIsAfter": "",
@@ -391,19 +400,22 @@
       "from": "Откуда",
       "to": "Куда",
       "get": "Получить",
-      "send": "Отправить",
+      "send": "Отправлено",
       "expiresIn": "Истекает через",
       "volume": "Объем",
       "network": "Сеть",
       "spent": "Потратить",
-      "expected": "Ожидаемый",
-      "date": "Дата"
+      "expected": "Получено",
+      "date": "Дата",
+      "provider": "Провайдер",
+      "explorerLink": "Ссылка на проводник"
     },
-    "noData": "У вас еще нет кросс-чейн обменов",
+    "noData": "У вас еще нет сделок",
     "noTrades": "Сделок нет",
     "noTradesWithSelected": "С текущими параметрами сделок не существует",
     "showData": "Показать данные",
-    "sortBy": "Сортировать"
+    "sortBy": "Сортировать",
+    "receive": "Получить"
   },
   "tradesPage": {
     "createTrade": "Создайте свою Сделку",
@@ -436,10 +448,12 @@
     "left": "Осталось",
     "investors": "Количество инвесторов",
     "getBefore": "Вы получите",
+    "getMiddle": "токены на",
     "getAfter": "после завершения сделки",
     "find": "Заполните все",
     "limit": "Лимит минимального взноса:",
     "fee": "Брокерская комиссия:",
+    "providerFee": "Комиссия провайдера",
     "withdraw": "Вывести",
     "rate": "Курс:",
     "closingDate": "Дата закрытия сделки",
@@ -448,7 +462,9 @@
     "copied": "Скопировано",
     "publicDeal": "Публичная сделка",
     "brokerAddress": "Брокерский адрес",
-    "notExist": "Такой сделки не существует"
+    "notExist": "Такой сделки не существует",
+    "rbcLowFees": "Использовать RBC для низкой комиссии",
+    "discountRBC": "скидка с RBC"
   },
   "maintenance": {
     "title": "Поддержка",
@@ -490,6 +506,17 @@
     "confirmImportModal": {
       "title": "Этот токен не указан на Rubic.exchange.",
       "text": "Добавляя его в качестве пользовательского токена, вы подтверждаете, что торгуете с ним на свой страх и риск."
+    },
+    "tokensListModal": {
+      "title": "Выберите токен",
+      "disabledTokenHint": "Этот токен недоступен для обмена. Пожалуйста, выберите поддерживаемые пары.",
+      "searchPlaceholder": "Найдите по названию или вставьте адрес",
+      "noSearchData": "Нет подходящих данных"
+    },
+    "walletsModal": {
+      "title": "Подключить кошелёк",
+      "new": "Впервые в Ethereum?",
+      "learnMore": "Узнайте больше о кошельках"
     }
   },
   "riskBanner": {
@@ -498,11 +525,30 @@
   },
   "settings": {
     "instantTrades": {
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
-      "multihops": "Your swap will be completed only with direct pairs.",
-      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
-      "deadline": "Your transaction will revert if it is pending for more than this period of time.",
-      "autoRefresh": "Update trade parameters each 15 seconds."
+      "slippageTitle": "Допустимое проскальзывание",
+      "slippage": "Ваша транзакция будет отменена, если цена изменится в неблагоприятную сторону более чем на введенный процент. (Более низкий процент снижает шансы на то, что ваша транзакция будет проведена заранее)",
+      "multihopsTitle": "Отключить множественные переходы",
+      "multihops": "Ваш обмен будет завершен только с прямыми парами.",
+      "rubicOptimisationTitle": "Использовать оптимизацию Rubic",
+      "rubicOptimisation": "Оптимизация Rubic включена по умолчанию. Однако вы можете отключить его, чтобы был выполнен оптимальный торговый маршрут без учета стоимости газа.",
+      "deadlineTitle": "Cрок действия транзакции",
+      "deadline": "Ваша транзакция будет отменена, если она будет отложена дольше этого периода времени.",
+      "autoRefreshTitle": "Автообновление",
+      "autoRefresh": "Обновлять торговые параметры каждые 15 секунд."
+    },
+    "bridge": {
+      "walletAddress": "Адрес кошелька в блокчейне TRON, на который будут предоставляться токены."
     }
+  },
+  "volume": {
+    "title": "Накопленный Объем Операций",
+    "instantTrades": "Мгновенные сделки",
+    "crossChain": "Кросс-чейн обмены"
+  },
+  "notifications": {
+    "tradeInProgress": "Сделка в процессе выполнения",
+    "successfulTrade": "Сделка проведена успешно",
+    "approveInProgress": "Идёт процесс подтверждения сделки",
+    "successApprove": "Сделка одобрена успешно"
   }
 }

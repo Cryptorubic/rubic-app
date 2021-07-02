@@ -1,9 +1,9 @@
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import networks from '../../../shared/constants/blockchain/networks';
-import { IBlockchain } from '../../../shared/models/blockchain/IBlockchain';
-import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export class BlockchainsInfo {
-  static getBlockchainById(id: Number | string): IBlockchain {
+  static getBlockchainById(id: number | string): IBlockchain {
     return networks.find(network => network.id === Number(id)) as IBlockchain;
   }
 

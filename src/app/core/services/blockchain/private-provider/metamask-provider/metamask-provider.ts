@@ -35,8 +35,6 @@ export class MetamaskProvider extends PrivateProvider {
     return WALLET_NAME.METAMASK;
   }
 
-  private errorService: ErrorsService;
-
   constructor(
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
@@ -49,7 +47,7 @@ export class MetamaskProvider extends PrivateProvider {
 
     const { ethereum } = window;
     if (!ethereum) {
-      errorsService.throw$(new MetamaskError());
+      errorsService.catch$(new MetamaskError());
       return;
     }
     web3.setProvider(ethereum);
@@ -109,7 +107,7 @@ export class MetamaskProvider extends PrivateProvider {
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.getAddress());
     } catch (error) {
-      this.errorService.throw$(new MetamaskError());
+      this.errorsService.throw$(new MetamaskError());
     }
   }
 
@@ -133,10 +131,10 @@ export class MetamaskProvider extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      this.errorService.throw$(new MetamaskError());
+      this.errorsService.throw$(new MetamaskError());
     }
     if (this.getNetwork().name !== token.blockchain) {
-      this.errorService.throw$(new NetworkError(token.blockchain));
+      this.errorsService.throw$(new NetworkError(token.blockchain));
     }
 
     return this.core.request({

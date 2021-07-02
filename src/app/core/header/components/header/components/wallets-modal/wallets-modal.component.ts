@@ -82,10 +82,10 @@ export class WalletsModalComponent {
     this.headerStore.setWalletsLoadingStatus(true);
     try {
       await this.providerConnectorService.connectProvider(provider);
+      await this.authService.signIn();
     } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);
     }
-    await this.authService.signIn();
     this.headerStore.setWalletsLoadingStatus(false);
     this.close();
   }

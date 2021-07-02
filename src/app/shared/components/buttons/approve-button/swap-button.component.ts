@@ -23,13 +23,15 @@ import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapButtonComponent {
-  @Input() needApprove: boolean = false;
+  @Input() needApprove: boolean;
 
   @Input() status: TRADE_STATUS;
 
   @Output() approveClick = new EventEmitter<void>();
 
   @Output() swapClick = new EventEmitter<void>();
+
+  @Output() loginEvent = new EventEmitter<void>();
 
   public TRADE_STATUS = TRADE_STATUS;
 
@@ -40,12 +42,13 @@ export class SwapButtonComponent {
     private dialogService: TuiDialogService,
     @Inject(INJECTOR) private injector: Injector
   ) {
+    this.needApprove = false;
     this.needLogin = authService.getCurrentUser().pipe(map(user => !user?.address));
   }
 
   onLogin() {
     this.dialogService
       .open(new PolymorpheusComponent(WalletsModalComponent, this.injector), { size: 's' })
-      .subscribe();
+      .subscribe(() => this.loginEvent.emit());
   }
 }

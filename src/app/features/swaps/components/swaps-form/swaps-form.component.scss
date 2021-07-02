@@ -48,6 +48,16 @@
 
       border-right: 2px solid $rubic-base-01;
     }
+
+    app-rubic-tokens {
+      width: 185px;
+
+      ::ng-deep {
+        .tokens__symbol {
+          max-width: 48px;
+        }
+      }
+    }
   }
   
   &__delimiter {
