@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, defer, from, Observable, of, throwError, zip } from 'rxjs';
+import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
@@ -27,6 +27,7 @@ import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridg
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -161,7 +162,7 @@ export class BridgeService {
     return this.tokens.pipe(
       map(tokens => {
         const { fromBlockchain, toBlockchain, fromToken, toToken } =
-          this.swapFormService.commonTrade.value.input;
+          this.swapFormService.commonTrade.controls.input.value;
         const bridgeTokensList = tokens.find(
           item => item.fromBlockchain === fromBlockchain && item.toBlockchain === toBlockchain
         );
@@ -202,25 +203,24 @@ export class BridgeService {
   public createTrade(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
     return defer(() =>
       this.getBridgeTrade(bridgeTradeRequest).pipe(
-        mergeMap((bridgeTrade: BridgeTrade) => {
+        mergeMap(async (bridgeTrade: BridgeTrade) => {
           this.checkSettings(bridgeTrade.fromBlockchain);
           const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-          return from(
-            this.checkBalance(
-              bridgeTrade.fromBlockchain,
-              bridgeTrade.toBlockchain,
-              token.address,
-              token.symbol,
-              token.decimals,
-              bridgeTrade.amount
-            )
-          ).pipe(map(() => bridgeTrade));
+          await this.checkBalance(
+            bridgeTrade.fromBlockchain,
+            bridgeTrade.toBlockchain,
+            token.address,
+            token.symbol,
+            token.decimals,
+            bridgeTrade.amount
+          );
+          return bridgeTrade;
         }),
         mergeMap((bridgeTrade: BridgeTrade) => {
           return this.bridgeProvider.createTrade(bridgeTrade).pipe(
             catchError(err => {
-              console.error(err);
-              const error = err instanceof UndefinedError ? err : new UndefinedError();
+              console.debug(err);
+              const error = err instanceof RubicError ? err : new UndefinedError();
               return throwError(error);
             })
           );
@@ -235,7 +235,7 @@ export class BridgeService {
         this.bridgeProvider.needApprove(bridgeTrade).pipe(
           catchError(err => {
             console.error(err);
-            const error = err instanceof UndefinedError ? err : new UndefinedError();
+            const error = err instanceof RubicError ? err : new UndefinedError();
             return throwError(error);
           })
         )
@@ -262,8 +262,8 @@ export class BridgeService {
       mergeMap((bridgeTrade: BridgeTrade) => {
         return this.bridgeProvider.approve(bridgeTrade).pipe(
           catchError(err => {
-            console.error(err);
-            const error = err instanceof UndefinedError ? err : new UndefinedError();
+            console.debug(err);
+            const error = err instanceof RubicError ? err : new UndefinedError();
             return throwError(error);
           })
         );
