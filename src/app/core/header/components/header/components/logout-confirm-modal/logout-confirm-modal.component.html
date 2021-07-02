@@ -1,33 +1,28 @@
-<ng-template #logoutConfirmation>
-  <div class="dialog-block">
-    <div class="dialog-block__content">
-      <div class="alert-window-title">
-        {{ 'navigation.logoutMessage' | translate }}
-      </div>
-      <br /><br />
-      <div class="alert-window-buttons text-center dialog-block__body">
-        <div class="grid-row dialog-block__body-row">
-          <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <app-primary-button
-              matDialogClose
-              [label]="'common.yes' | translate"
-              (click)="confirmLogout()"
-              [disabled]="logoutProgress"
-              backgroundColor="white"
-              textColor="#4aa956"
-              [border]="true"
-              [hideArrow]="true"
-            ></app-primary-button>
-          </div>
-          <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
-            <app-primary-button
-              matDialogClose
-              [label]="'common.no' | translate"
-              [hideArrow]="true"
-            ></app-primary-button>
-          </div>
+<div class="dialog-block">
+  <div class="dialog-block__content">
+    <div class="alert-window-title">
+      {{ 'navigation.logoutMessage' | translate }}
+    </div>
+    <br /><br />
+    <div class="alert-window-buttons text-center dialog-block__body">
+      <div class="grid-row dialog-block__body-row">
+        <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+          <app-rubic-button
+            fullWidth
+            appearance="outline"
+            (click)="confirmLogout()">
+            {{ 'common.yes' | translate }}
+          </app-rubic-button>
+        </div>
+        <div class="grid-cell grid-cell-1-2 grid-cell-vs-1">
+          <app-rubic-button
+            fullWidth
+            appearance="secondary"
+            (click)="close()">
+            {{ 'common.no' | translate }}
+          </app-rubic-button>
         </div>
       </div>
     </div>
   </div>
-</ng-template>
+</div>

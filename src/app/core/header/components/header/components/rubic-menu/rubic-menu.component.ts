@@ -3,6 +3,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
+  Injector,
   OnDestroy,
   QueryList,
   TemplateRef,
@@ -10,11 +12,14 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogService } from '@taiga-ui/core';
 import { HeaderStore } from '../../../../services/header.store';
 import { UserInterface } from '../../../../../services/auth/models/user.interface';
 import { AuthService } from '../../../../../services/auth/auth.service';
 import { IBlockchain } from '../../../../../../shared/models/blockchain/IBlockchain';
 import { ProviderConnectorService } from '../../../../../services/blockchain/provider-connector/provider-connector.service';
+import { LogoutConfirmModalComponent } from '../logout-confirm-modal/logout-confirm-modal.component';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -27,8 +32,6 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public isOpened = false;
 
-  public readonly $isMobile: Observable<boolean>;
-
   public $currentUser: Observable<UserInterface>;
 
   public currentBlockchain: IBlockchain;
@@ -37,21 +40,15 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   private _onAddressChanges$: Subscription;
 
-  public menuItems = [
-    { title: 'About Company', link: 'about' },
-    { title: 'FAQ', link: 'faq' },
-    { title: 'Project', link: 'https://rubic.finance/' },
-    { title: 'Team', link: 'team' }
-  ];
-
   constructor(
     private router: Router,
     private headerStore: HeaderStore,
     private authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private injector: Injector
   ) {
-    this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.$currentUser = this.authService.getCurrentUser();
   }
 
@@ -85,6 +82,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   }
 
   public toggleConfirmModal(): void {
-    this.headerStore.toggleConfirmModalOpeningStatus();
+    this.dialogService
+      .open(new PolymorpheusComponent(LogoutConfirmModalComponent, this.injector), { size: 's' })
+      .subscribe();
   }
 }

@@ -27,15 +27,16 @@
     "contractAddress": "代币合约地址",
     "enterAmount": "输入金额",
     "chooseToken": "选择币种",
+    "clearToken": "清除令牌",
     "warning": "Warning",
-    "customerSupport": "customer support",
+    "customerSupport": "请联系我们的客户支持",
     "OK": "好的"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
     "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它",
     "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
-    "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，<a href='mailto:support@rubic.finance' target='_blank'>请联系我们的客户支持</a>。",
+    "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，",
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
     "rubicError": "请稍后再试，或尝试使用其他设备。如果您仍有问题",
     "insufficientFunds": "你没有足够的 {{ tokenSymbol }}. 您的余额是 {{balance}} {{tokenSymbol}}, 但 {{requiredBalance}} {{tokenSymbol}} 是必需的。",
@@ -63,7 +64,8 @@
     "login": "連接錢包",
     "myTrades": "我的行业",
     "logout": "注销",
-    "logoutMessage": "你真的想注销吗？"
+    "logoutMessage": "你真的想注销吗？",
+    "notAvailable": "Order book 在測試版中不可用。"
   },
   "aboutPage": {
     "description": "Rubic 是一个支持多链的 DeFi 生态系统，以成为完整的一站式去中心化平台为目标，提供多个不同区块链间的跨链P2P即时兑换功能。",

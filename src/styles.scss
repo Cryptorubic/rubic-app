@@ -131,6 +131,14 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
   text-align: center;
 }
 
+.bar {
+  bottom: 10px !important;
+
+  &_vertical {
+    top: 10px !important;
+  }
+}
+
 tui-dropdown-box {
   min-width: 265px;
 
@@ -138,7 +146,7 @@ tui-dropdown-box {
   border-radius: 18px !important;
 }
 
-@include b($desktop) {
+@include b($mobile-sm) {
   tui-dropdown-box {
     min-width: 153px;
   }
