@@ -7,6 +7,9 @@
     <small>{{ token.name }}</small>
   </div>
   <div class="token-card__amount" *ngIf="!token.amount.isEqualTo(0)">
-    {{ token.amount | bigNumberFormat | shortenAmount: 12 }}
+    <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top" tuiHintMode="onDark">{{
+      token.amount | bigNumberFormat | shortenAmount: 12:4
+    }}</span>
+    <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
   </div>
 </div>
