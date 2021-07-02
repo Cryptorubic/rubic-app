@@ -83,7 +83,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public tradeStatus = TRADE_STATUS.DISABLED;
 
-  private isBridgeSupported;
+  public isBridgeSupported;
 
   public toWalletAddress: string;
 

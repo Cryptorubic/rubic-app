@@ -9,7 +9,6 @@ import WalletConnect from '@walletconnect/web3-provider';
 import networks from 'src/app/shared/constants/blockchain/networks';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { WalletconnectError } from 'src/app/core/errors/models/provider/WalletconnectError';
-import { AbstractProvider } from 'web3-core';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
@@ -76,12 +75,12 @@ export class WalletConnectProvider extends PrivateProvider {
         ]
       }
     });
+    // eslint-disable-next-line
     web3.setProvider(this.core as any);
     this.core.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
         chainChange.next(BlockchainsInfo.getBlockchainById(chain));
-        // tslint:disable-next-line:no-console
         console.info('Chain changed', chain);
       }
     });
@@ -89,7 +88,6 @@ export class WalletConnectProvider extends PrivateProvider {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
         this.onAddressChanges.next(this.selectedAddress);
-        // tslint:disable-next-line:no-console
         console.info('Selected account changed to', accounts[0]);
       }
     });
@@ -118,7 +116,7 @@ export class WalletConnectProvider extends PrivateProvider {
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(address);
     } catch (error) {
-      this.errorsService.throw$(new WalletlinkError());
+      throw new WalletlinkError();
     }
   }
 

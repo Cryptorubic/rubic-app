@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, first, mergeMap } from 'rxjs/operators';
-import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
-import { WalletlinkError } from 'src/app/core/errors/models/provider/WalletlinkError';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
@@ -142,10 +141,10 @@ export class AuthService {
       this.isAuthProcess = false;
     } catch (err) {
       let error = err;
-      if (err.code === 4001 || err instanceof WalletlinkError) {
-        this.headerStore.setWalletsLoadingStatus(false);
-        error = new UserRejectError();
+      if (err.code === 4001) {
+        error = new SignRejectError();
       }
+      this.headerStore.setWalletsLoadingStatus(false);
       this.errorService.catch$(error);
       this.$currentUser.next(null);
       this.isAuthProcess = false;
