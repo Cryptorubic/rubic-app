@@ -21,6 +21,7 @@ import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INS
 import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,8 @@ export class InstantTradeService {
     private readonly errorService: ErrorsService,
     private readonly swapFormService: SwapFormService,
     @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService,
-    private readonly web3Public: Web3PublicService
+    private readonly web3Public: Web3PublicService,
+    private translateService: TranslateService
   ) {
     this.currentBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.setBlockchainsProviders();
@@ -100,7 +102,7 @@ export class InstantTradeService {
             }
             await this.postTrade(tradeInfo);
             this.modalShowing = this.notificationsService
-              .show('Transaction in progress', {
+              .show(this.translateService.instant('notifications.tradeInProgress'), {
                 status: TuiNotification.Info,
                 autoClose: false
               })
@@ -111,7 +113,7 @@ export class InstantTradeService {
       this.modalShowing.unsubscribe();
       this.updateTrade(receipt.transactionHash, INTSTANT_TRADES_TRADE_STATUS.COMPLETED);
       this.notificationsService
-        .show('Transaction completed', {
+        .show(this.translateService.instant('notifications.successfulTradeTitle'), {
           status: TuiNotification.Success
         })
         .subscribe();
@@ -179,7 +181,7 @@ export class InstantTradeService {
         {
           onTransactionHash: () => {
             this.modalShowing = this.notificationsService
-              .show('Approve in progress', {
+              .show(this.translateService.instant('notifications.approveInProgress'), {
                 status: TuiNotification.Info,
                 autoClose: false
               })
@@ -189,7 +191,7 @@ export class InstantTradeService {
       );
       this.modalShowing.unsubscribe();
       this.notificationsService
-        .show('Approve completed', {
+        .show(this.translateService.instant('notifications.successApprove'), {
           status: TuiNotification.Success
         })
         .subscribe();

@@ -4,6 +4,11 @@ import BigNumber from 'bignumber.js';
 
 export type TableRowKey = 'Status' | 'FromTo' | 'Provider' | 'Sent' | 'Expected' | 'Date';
 
+export type TableRowKeyValue = {
+  translateKey: string;
+  value: TableRowKey;
+};
+
 export interface TableRow {
   Status: TRANSACTION_STATUS;
   FromTo: string;

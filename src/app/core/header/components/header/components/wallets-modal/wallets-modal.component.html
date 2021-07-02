@@ -1,7 +1,7 @@
 <div class="modal">
   <div class="modal__content">
     <header class="modal__header">
-      <h1 class="modal__title">Connect wallet</h1>
+      <h1 class="modal__title">{{ 'modals.walletsModal.title' | translate }}</h1>
     </header>
     <main class="modal__body">
       <button [disabled]="($walletsLoading | async) ? 'disabled' : false" class="modal__provider-button" *ngFor="let provider of providers" (click)="connectProvider(provider.value)">{{ provider.name }}
@@ -9,8 +9,8 @@
       </button>
     </main>
     <footer class="modal__footer">
-      <span>New to Ethereum? </span>
-      <a target="_blank" class="modal__link" href="https://ethereum.org/en/wallets/">Learn more about wallets</a>
+      <span>{{ 'modals.walletsModal.new' | translate }} </span>
+      <a target="_blank" class="modal__link" href="https://ethereum.org/en/wallets/">{{ 'modals.walletsModal.learnMore' | translate }}</a>
     </footer>
   </div>
 </div>

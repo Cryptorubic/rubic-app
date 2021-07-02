@@ -2,7 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core
 import { TuiComparator } from '@taiga-ui/addon-table';
 import {
   TableRow,
-  TableRowKey
+  TableRowKey,
+  TableRowKeyValue
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
@@ -31,13 +32,31 @@ export class TableComponent extends TableData implements OnInit {
 
   public TRADES_PROVIDERS = TRADES_PROVIDERS;
 
-  public readonly columns: TableRowKey[] = [
-    'Status',
-    'FromTo',
-    'Provider',
-    'Sent',
-    'Expected',
-    'Date'
+  public readonly columns: TableRowKeyValue[] = [
+    {
+      translateKey: 'tradesTable.columns.status',
+      value: 'Status'
+    },
+    {
+      translateKey: 'tradesTable.columns.from',
+      value: 'FromTo'
+    },
+    {
+      translateKey: 'tradesTable.columns.provider',
+      value: 'Provider'
+    },
+    {
+      translateKey: 'tradesTable.columns.send',
+      value: 'Sent'
+    },
+    {
+      translateKey: 'tradesTable.columns.expected',
+      value: 'Expected'
+    },
+    {
+      translateKey: 'tradesTable.columns.date',
+      value: 'Date'
+    }
   ];
 
   public readonly sorters: Record<TableRowKey, TuiComparator<TableRow>> = {

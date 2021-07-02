@@ -205,7 +205,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         this.isBridgeSupported = false;
         this.unsupportedBridgeSubscription$ = this.notificationsService
           .show(this.translate.instant('errors.notSupportedBridge'), {
-            label: 'Error',
+            label: this.translate.instant('common.error'),
             status: TuiNotification.Error,
             autoClose: false
           })
@@ -278,7 +278,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
         tradeInProgressSubscription$ = this.notificationsService
           .show(this.translate.instant('bridgePage.progressMessage'), {
-            label: 'Trade in progress',
+            label: this.translate.instant('notifications.tradeInProgress'),
             status: TuiNotification.Info,
             autoClose: false
           })
@@ -294,7 +294,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           tradeInProgressSubscription$.unsubscribe();
           this.notificationsService
             .show(this.translate.instant('bridgePage.successMessage'), {
-              label: 'Successful trade',
+              label: this.translate.instant('notifications.successfulTradeTitle'),
               status: TuiNotification.Success,
               autoClose: 15000
             })
@@ -325,7 +325,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
         approveInProgressSubscription$ = this.notificationsService
           .show(this.translate.instant('bridgePage.approveProgressMessage'), {
-            label: 'Approve in progress',
+            label: this.translate.instant('notifications.approveInProgress'),
             status: TuiNotification.Info,
             autoClose: false
           })
@@ -341,7 +341,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService
             .show(this.translate.instant('bridgePage.approveSuccessMessage'), {
-              label: 'Successful approve',
+              label: this.translate.instant('notifications.successApprove'),
               status: TuiNotification.Success,
               autoClose: 15000
             })
