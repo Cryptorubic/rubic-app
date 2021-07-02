@@ -69,22 +69,6 @@ html {
   font-size: $rubic-font-size-01;
 }
 
-
-.close {
-  position: absolute !important;
-  top: 18px !important;
-  right: 18px !important;
-
-  color: #bfbfbf !important;
-
-  background: transparent !important;
-  transform: scale(1.2);
-
-  &:hover {
-    transform: scale(1.4);
-  }
-}
-
 .button-link {
   display: inline-block;
   padding: 14px 20px;

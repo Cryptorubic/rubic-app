@@ -58,7 +58,8 @@
     "notSupportedItNetwork": "Chosen network is not supported for instant trades",
     "notSupportedBridge": "Currently this bridge is unavailable. Please select supported bridge.",
     "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading.",
-    "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
+    "oneinchRefreshError":  "1inch is currently unavailable. Please try to refresh the trade.",
+    "1inchNotSupportedToken": "1inch not supports one of entered tokens."
   },
   "navigation": {
     "about": "About",
