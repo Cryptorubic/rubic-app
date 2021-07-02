@@ -19,7 +19,7 @@ export class ErrorsService {
     console.debug(error);
 
     const options = {
-      label: 'dsfsdfsd',
+      label: this.translateService.instant('common.error'),
       status: TuiNotification.Error,
       data: {},
       autoClose: 7000
@@ -46,7 +46,7 @@ export class ErrorsService {
     console.debug(error);
 
     const options = {
-      label: 'fdssf',
+      label: this.translateService.instant('common.error'),
       status: TuiNotification.Error,
       data: {},
       autoClose: 7000
