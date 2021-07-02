@@ -253,16 +253,19 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   }
 
   public async revert() {
-    const { fromBlockchain, toBlockchain, fromToken, toToken } =
-      this.swapFormService.commonTrade.controls.input.value;
-    const { toAmount } = this.swapFormService.commonTrade.controls.output.value;
-    this.swapFormService.commonTrade.controls.input.patchValue({
+    const formControls = this.swapFormService.commonTrade.controls;
+    const { fromBlockchain, toBlockchain, fromToken, toToken } = formControls.input.value;
+    const { toAmount } = formControls.output.value;
+    const revertData = {
       toToken: fromToken,
       fromToken: toToken,
       toBlockchain: fromBlockchain,
       fromBlockchain: toBlockchain,
       fromAmount: toAmount
-    });
+    } as SwapFormInput;
+    // Remove null control values.
+    const formData = Object.fromEntries(Object.entries(revertData).filter(el => Boolean(el[1])));
+    formControls.input.patchValue(formData);
   }
 
   public async refreshTrade(): Promise<void> {
