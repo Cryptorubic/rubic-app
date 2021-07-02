@@ -35,7 +35,7 @@ export class InstantTradesApiService {
     private queryParamsService: QueryParamsService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
-    this.queryParamsService.$isIframe.subscribe(res => (this.isIframe = res));
+    this.queryParamsService.isIframe$.subscribe(res => (this.isIframe = res));
   }
 
   public notifyInstantTradesBot(body: {

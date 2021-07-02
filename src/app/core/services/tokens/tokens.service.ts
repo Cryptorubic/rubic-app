@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
@@ -11,6 +11,8 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import { IToken } from 'src/app/shared/models/tokens/IToken';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { map, tap } from 'rxjs/operators';
 
 const RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
 
@@ -58,6 +60,10 @@ export class TokensService {
         this.recalculateUsersBalance();
       }
     });
+  }
+
+  public setTokens(tokens: List<TokenAmount>): void {
+    this._tokens.next(tokens);
   }
 
   private setCustomRanks(tokens: List<IToken>): List<IToken> {
@@ -157,5 +163,28 @@ export class TokensService {
     if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
       this._tokens.next(List(tokensWithBalance.flat()));
     }
+  }
+
+  public addToken(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
+    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    const balance$: Observable<BigNumber> = this.userAddress
+      ? from(web3Public.getTokenBalance(this.userAddress, address))
+      : of(null);
+
+    return forkJoin([web3Public.getTokenInfo(address), balance$]).pipe(
+      map(([tokenInfo, amount]) => ({
+        blockchain,
+        address,
+        name: tokenInfo.name,
+        symbol: tokenInfo.symbol,
+        decimals: tokenInfo.decimals,
+        image: '',
+        rank: 1,
+        price: null,
+        usedInIframe: true,
+        amount
+      })),
+      tap((token: TokenAmount) => this._tokens.next(this._tokens.getValue().push(token)))
+    );
   }
 }
