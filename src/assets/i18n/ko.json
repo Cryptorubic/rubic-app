@@ -34,7 +34,7 @@
     "analytics": "해석학",
     "minutes": "의사록",
     "swap": "교환",
-    "approve": "승인"
+    "approve": "승인",
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -547,7 +547,7 @@
   },
   "notifications": {
     "tradeInProgress": "진행중인 거래",
-    "successfulTrade": "성공적인 거래",
+    "successfulTradeTitle": "성공적인 거래",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인"
   }
