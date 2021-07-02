@@ -16,7 +16,7 @@ export class ShortenAmountPipe implements PipeTransform {
 
     const newValue = integerPart + (decimalPart ? `.${decimalPart}` : '');
     if (new BigNumber(newValue).eq(0)) {
-      return new BigNumber(value).toExponential(maxDecimals - 2);
+      return `${newValue.slice(0, newValue.length - 1)}...`;
     }
 
     const currentDigits = newValue.replaceAll(',', '').replaceAll('.', '').length;

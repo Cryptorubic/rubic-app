@@ -56,7 +56,7 @@ export class CryptoTapDiscountComponent implements OnInit, OnDestroy {
     }
 
     this.$formSubscription = this.cryptoTapFormService.commonTrade.valueChanges.subscribe(form => {
-      if (form.input.fromToken.symbol === 'RBC') {
+      if (form.input.fromToken?.symbol === 'RBC') {
         this.bestRate = true;
         return;
       }
