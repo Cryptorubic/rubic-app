@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
@@ -24,7 +24,7 @@ type SelectedToken = {
   templateUrl: './swaps-form.component.html',
   styleUrls: ['./swaps-form.component.scss']
 })
-export class SwapsFormComponent implements OnInit {
+export class SwapsFormComponent implements OnInit, OnDestroy {
   @ViewChild(BridgeBottomFormComponent) bridgeForm: BridgeBottomFormComponent;
 
   @ViewChild(InstantTradeBottomFormComponent) itForm: InstantTradeBottomFormComponent;
@@ -67,6 +67,8 @@ export class SwapsFormComponent implements OnInit {
 
   public loadingStatus: 'refreshing' | 'stopped' | '';
 
+  private formSubscription$: Subscription;
+
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
@@ -105,11 +107,17 @@ export class SwapsFormComponent implements OnInit {
     });
 
     this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
-    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(formValue => {
-      this.isLoading = true;
-      this.setFormValues(formValue);
-      this.isLoading = false;
-    });
+    this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
+      formValue => {
+        this.isLoading = true;
+        this.setFormValues(formValue);
+        this.isLoading = false;
+      }
+    );
+  }
+
+  public ngOnDestroy(): void {
+    this.formSubscription$.unsubscribe();
   }
 
   private setFormValues(formValue: SwapFormInput): void {
