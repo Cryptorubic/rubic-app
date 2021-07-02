@@ -56,7 +56,8 @@
     "noSelectedProvider": "Вы не выбрали провайдера для обмена",
     "notSupportedItNetwork": "Выбранная сеть не поддерживается для мгновенных сделок",
     "notSupportedBridge": "Выбранный мост не поддерживается. Пожалуйста, измените порядок или выберите другие сети.",
-    "insufficientLiquidity": "Недостаточная ликвидность для этой сделки. Попробуйте включить мультископовую торговлю."
+    "insufficientLiquidity": "Недостаточная ликвидность для этой сделки. Попробуйте включить мультископовую торговлю.",
+    "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
   },
   "navigation": {
     "about": "О компании",

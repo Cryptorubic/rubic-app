@@ -56,7 +56,8 @@
     "noSelectedProvider": "스왑 제공 업체를 선택하지 않았습니다.",
     "notSupportedItNetwork": "선택한 네트워크는 즉시 거래에 지원되지 않습니다.",
     "notSupportedBridge": "선택한 브리지는 지원되지 않습니다. 순서를 변경하거나 다른 네트워크를 선택하십시오.",
-    "insufficientLiquidity": "이 거래에 대한 유동성이 충분하지 않습니다. 멀티 홉 거래를 활성화하십시오."
+    "insufficientLiquidity": "이 거래에 대한 유동성이 충분하지 않습니다. 멀티 홉 거래를 활성화하십시오.",
+    "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
   },
   "navigation": {
     "about": "소개",

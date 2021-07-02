@@ -5,7 +5,7 @@ export default [
     id: 1,
     name: BLOCKCHAIN_NAME.ETHEREUM,
     scannerUrl: 'https://etherscan.io/',
-    rpcLink: 'https://mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    rpcLink: 'https://damp-misty-hill.quiknode.pro/c5c252ef9e1c07505eaf8109044b87b8e792f54c/',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
     nativeCoin: {
       blockchainName: BLOCKCHAIN_NAME.ETHEREUM,

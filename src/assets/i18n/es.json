@@ -56,7 +56,8 @@
     "noSelectedProvider": "No ha seleccionado ningún proveedor de intercambio",
     "notSupportedItNetwork": "La red elegida no es compatible con intercambios instantáneos",
     "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
-    "insufficientLiquidity": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda."
+    "insufficientLiquidity": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda.",
+    "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
   },
   "navigation": {
     "about": "Información",

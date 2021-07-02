@@ -24,9 +24,10 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-oneinch/common-oneinch.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
+import { OneinchRefreshError } from 'src/app/core/errors/models/instant-trade/oneinch-refresh.error';
 
 @Injectable({
   providedIn: 'root'
@@ -122,10 +123,18 @@ export class OneInchEthService implements ItProvider {
           amount: fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0)
         }
       })
+      .pipe(
+        catchError(err => {
+          if (err.status === 500) {
+            return throwError(new OneinchRefreshError());
+          }
+          return throwError(new CustomError(err.error.message));
+        })
+      )
       .toPromise()) as OneInchQuoteResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      this.errorsService.throw$(new OneinchQuoteError());
+      throw new OneinchQuoteError();
     }
 
     const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);

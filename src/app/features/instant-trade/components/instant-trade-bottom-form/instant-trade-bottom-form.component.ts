@@ -20,11 +20,10 @@ import { Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -93,26 +92,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.currentBlockchain = formValue.input.toBlockchain;
     this.initiateProviders(this.currentBlockchain);
     this.conditionalCalculate(formValue);
-
-    this.formChangesSubscription$ = this.swapFormService.commonTrade.valueChanges.subscribe(
-      form => {
-        this.conditionalCalculate(form);
-        if (
-          this.currentBlockchain !== form.input.fromBlockchain &&
-          form.input.fromBlockchain === form.input.toBlockchain
-        ) {
-          this.currentBlockchain = form.input.fromBlockchain;
-          this.initiateProviders(this.currentBlockchain);
-        }
-        if (!this.allowTrade) {
-          this.tradeStatus = TRADE_STATUS.DISABLED;
-        }
-        this.cdr.detectChanges();
-      }
+    this.formChangesSubscription$ = this.swapFormService.commonTrade.valueChanges.subscribe(form =>
+      this.setupForm(form)
     );
   }
 
   ngOnDestroy() {
+    this.cdr.detach();
     this.formChangesSubscription$.unsubscribe();
   }
 
@@ -120,7 +106,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (form.input.fromBlockchain !== form.input.toBlockchain) {
       return;
     }
-
+    if (
+      form.input.fromBlockchain === BLOCKCHAIN_NAME.TRON ||
+      form.input.fromBlockchain === BLOCKCHAIN_NAME.XDAI
+    ) {
+      throw new NotSupportedItNetwork();
+    }
     await this.calculateTrades();
   }
 
@@ -139,20 +130,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const currentTradeStatus = this.tradeStatus;
     this.prepareControllers();
     const approveData = this.authService.user?.address
       ? await this.instantTradeService.getApprove().toPromise()
       : new Array(this.providerControllers.length).fill(null);
     const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
 
-    const wrongTrades = tradeData.filter(el => el.status === 'rejected');
-    wrongTrades.forEach(el => {
-      this.errorService.catch$(el.reason as RubicError);
-    });
-
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
-    this.setupControllers(tradeData, approveData, bestProviderIndex, currentTradeStatus);
+    this.setupControllers(tradeData, approveData, bestProviderIndex);
   }
 
   private prepareControllers(): void {
@@ -168,27 +153,34 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private setupControllers(
     tradeData: CalculationResult[],
     approveData: Array<boolean | null>,
-    bestProviderIndex: number,
-    currentTradeStatus: TRADE_STATUS
+    bestProviderIndex: number
   ): void {
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
+      isSelected: !controller.error && controller.isSelected,
       trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
       isBestRate: false,
       needApprove: approveData[index],
       tradeState:
         tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
           ? INSTANT_TRADES_STATUS.APPROVAL
-          : INSTANT_TRADES_STATUS.ERROR
+          : INSTANT_TRADES_STATUS.ERROR,
+      error: tradeData[index]?.status === 'rejected' ? (tradeData as unknown)[index]?.reason : null
     }));
     if (tradeData[bestProviderIndex].value && tradeData[bestProviderIndex].status !== 'rejected') {
       newProviders[bestProviderIndex].isBestRate = true;
     }
 
     this.providerControllers = newProviders;
-    this.tradeStatus = newProviders.some(el => el.isSelected)
-      ? currentTradeStatus
-      : TRADE_STATUS.DISABLED;
+    const selectedProviderIndex = newProviders.findIndex(el => el.isSelected);
+    if (selectedProviderIndex !== -1) {
+      const provider = this.providerControllers[selectedProviderIndex];
+      this.tradeStatus = provider.needApprove
+        ? TRADE_STATUS.READY_TO_APPROVE
+        : TRADE_STATUS.READY_TO_SWAP;
+    } else {
+      this.tradeStatus = TRADE_STATUS.DISABLED;
+    }
     this.cdr.detectChanges();
   }
 
@@ -243,7 +235,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
         break;
       default:
-        this.errorService.throw$(new UndefinedError());
+        throw new NotSupportedItNetwork();
     }
   }
 
@@ -323,9 +315,28 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
       }
       this.cdr.detectChanges();
-      this.tokensService.recalculateUsersBalance();
+      await this.tokensService.recalculateUsersBalance();
     } else {
       this.errorService.throw$(new NoSelectedProviderError());
+    }
+  }
+
+  private async setupForm(form: ControlsValue<SwapForm>) {
+    try {
+      await this.conditionalCalculate(form);
+      if (
+        this.currentBlockchain !== form.input.fromBlockchain &&
+        form.input.fromBlockchain === form.input.toBlockchain
+      ) {
+        this.currentBlockchain = form.input.fromBlockchain;
+        this.initiateProviders(this.currentBlockchain);
+      }
+      if (!this.allowTrade) {
+        this.tradeStatus = TRADE_STATUS.DISABLED;
+      }
+      this.cdr.detectChanges();
+    } catch (err) {
+      this.errorService.catch$(err);
     }
   }
 }

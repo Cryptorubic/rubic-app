@@ -5,9 +5,7 @@ import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedToke
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { debounceTime } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
 import { SwapProvider } from '../swap-provider';
 import { BridgesSwapProviderService } from '../../../bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { InstantTradesSwapProviderService } from '../../../instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
@@ -62,17 +60,6 @@ export class SwapsService {
     } else {
       this._swapProvider = this.bridgesSwapProvider;
     }
-    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
-      if (form.fromBlockchain === form.toBlockchain) {
-        const blockchain = commonForm.value.fromBlockchain;
-        if (blockchain === BLOCKCHAIN_NAME.XDAI || blockchain === BLOCKCHAIN_NAME.TRON) {
-          this.errorService.throw$(new NotSupportedItNetwork());
-        }
-        this._swapProvider = this.instantTradesSwapProvider;
-      } else {
-        this._swapProvider = this.bridgesSwapProvider;
-      }
-    });
   }
 
   public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {

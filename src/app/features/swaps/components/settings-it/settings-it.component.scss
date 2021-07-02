@@ -74,6 +74,10 @@
       border-radius: 100px;
       box-shadow: none;
 
+      input {
+        padding-right: 22px !important;
+      }
+
       input,
       input::placeholder {
         text-align: right;
@@ -83,13 +87,17 @@
     input + .content .placeholder {
       text-align: right;
     }
+
+    .wrapper {
+      display: flex;
+    }
+
+    .value-decoration {
+      margin-left: auto;
+    }
   }
 }
 
 #deadline + span {
-  margin-left: 10px;
-}
-
-#deadline span {
   margin-left: 10px;
 }

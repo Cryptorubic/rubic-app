@@ -56,7 +56,8 @@
     "noSelectedProvider": "您尚未選擇任何掉期提供者",
     "notSupportedItNetwork": "即時交易不支持所選網絡",
     "notSupportedBridge": "不支持選擇的網橋。 請更改順序或選擇其他網絡。",
-    "insufficientLiquidity": "這筆交易的流動性不足。 嘗試啟用多跳交易。"
+    "insufficientLiquidity": "這筆交易的流動性不足。 嘗試啟用多跳交易。",
+    "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
   },
   "navigation": {
     "about": "关于",

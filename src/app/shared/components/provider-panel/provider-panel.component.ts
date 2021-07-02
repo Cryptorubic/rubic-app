@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
 
 export interface InstantTrade<T> {
   from: {
@@ -31,6 +32,7 @@ export interface ProviderControllerData {
   isSelected: boolean;
   isCollapsed: boolean;
   needApprove: boolean;
+  error?: RubicError;
 }
 
 interface ProviderData {
@@ -66,6 +68,8 @@ interface ProviderData {
    * Is provider collapsed.
    */
   isCollapsed: boolean;
+
+  error: string;
 }
 
 @Component({
@@ -157,8 +161,15 @@ export class ProviderPanelComponent {
       gasFeeInUsd: data.trade?.gasFeeInUsd,
       isBestRate: data.isBestRate,
       isActive: data.isSelected,
-      isCollapsed: data.isCollapsed
+      isCollapsed: data.isCollapsed,
+      error: null
     };
+    if (this.hasError) {
+      this.providerData.error =
+        data?.error?.type === 'text'
+          ? data.error.translateKey || data.error.message
+          : 'errors.rubicError';
+    }
     this.tradeData = data.trade;
   }
 

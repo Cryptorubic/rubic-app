@@ -22,7 +22,6 @@ import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import networks from '../../../../../../shared/constants/blockchain/networks';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
@@ -83,7 +82,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     });
   }
 
-  private getTokensList(tokenAmounts: List<SwapToken>): void {
+  private getTokensList(tokenAmounts: List<TokenAmount>): void {
     const query = `{
       tokenMappings(
         first: 1000,
@@ -113,7 +112,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           const promisesTokens = [];
 
           posTokens.forEach(token =>
-            promisesTokens.push(this.parsePolygonTokens(token, tokenAmounts as any))
+            promisesTokens.push(this.parsePolygonTokens(token, tokenAmounts))
           );
           const tokens = await Promise.all(promisesTokens);
 
@@ -244,10 +243,14 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   }
 
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
-    const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
+    if (bridgeTrade.fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM) {
+      return of(false);
+    }
+
+    const maticPOSClient = this.getMaticPOSClient(BLOCKCHAIN_NAME.ETHEREUM);
     const userAddress = this.authService.user.address;
-    const tokenAddress = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].address;
-    const { decimals } = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+    const tokenAddress = bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address;
+    const { decimals } = bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
     if (bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
       return of(false);
