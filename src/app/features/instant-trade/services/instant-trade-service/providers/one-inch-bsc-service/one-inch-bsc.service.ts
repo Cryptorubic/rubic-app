@@ -121,14 +121,21 @@ export class OneInchBscService implements ItProvider {
       throw new CustomError('1inch not supports one of entered tokens');
     }
 
+    const tradeParams = {
+      params: {
+        fromTokenAddress,
+        toTokenAddress,
+        amount: fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0)
+      } as {
+        [param: string]: string;
+      }
+    };
+    if (this.settings.disableMultihops) {
+      tradeParams.params.mainRouteParts = '1';
+    }
+
     const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
-      .get(`${this.apiBaseUrl}quote`, {
-        params: {
-          fromTokenAddress,
-          toTokenAddress,
-          amount: fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0)
-        }
-      })
+      .get(`${this.apiBaseUrl}quote`, tradeParams)
       .pipe(
         catchError(err => {
           if (err.status === 500) {
