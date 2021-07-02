@@ -21,7 +21,6 @@ import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -113,6 +112,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.cdr.detach();
     this.formChangesSubscription$.unsubscribe();
   }
 
@@ -139,7 +139,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const currentTradeStatus = this.tradeStatus;
     this.prepareControllers();
     const approveData = this.authService.user?.address
       ? await this.instantTradeService.getApprove().toPromise()
@@ -147,7 +146,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
 
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
-    this.setupControllers(tradeData, approveData, bestProviderIndex, currentTradeStatus);
+    this.setupControllers(tradeData, approveData, bestProviderIndex);
   }
 
   private prepareControllers(): void {
@@ -163,11 +162,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private setupControllers(
     tradeData: CalculationResult[],
     approveData: Array<boolean | null>,
-    bestProviderIndex: number,
-    currentTradeStatus: TRADE_STATUS
+    bestProviderIndex: number
   ): void {
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
+      isSelected: !controller.error && controller.isSelected,
       trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
       isBestRate: false,
       needApprove: approveData[index],
@@ -182,9 +181,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     this.providerControllers = newProviders;
-    this.tradeStatus = newProviders.some(el => el.isSelected)
-      ? currentTradeStatus
-      : TRADE_STATUS.DISABLED;
+    const selectedProviderIndex = newProviders.findIndex(el => el.isSelected);
+    if (selectedProviderIndex !== -1) {
+      const provider = this.providerControllers[selectedProviderIndex];
+      this.tradeStatus = provider.needApprove
+        ? TRADE_STATUS.READY_TO_APPROVE
+        : TRADE_STATUS.READY_TO_SWAP;
+    } else {
+      this.tradeStatus = TRADE_STATUS.DISABLED;
+    }
     this.cdr.detectChanges();
   }
 

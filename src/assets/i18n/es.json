@@ -51,7 +51,8 @@
     "noSelectedProvider": "You have not selected any swap provider",
     "notSupportedItNetwork": "Chosen network is not supported for instant trades",
     "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks.",
-    "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading."
+    "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading.",
+    "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
   },
   "navigation": {
     "about": "Información",
