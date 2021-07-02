@@ -1,46 +1,3 @@
-<!--<div class="user-profile" [ngClass]="{ 'user-profile_mobile': $isMobile | async }">-->
-<!--  <div class="user-profile__account">-->
-<!--    <div *ngIf="currentBlockchain?.imagePath" class="user-profile__blockchain-icon">-->
-<!--      <img-->
-<!--        (click)="useTestingMode()"-->
-<!--        [src]="currentBlockchain?.imagePath"-->
-<!--        alt="($currentBlockchain | async)?.name"-->
-<!--        width="34"-->
-<!--        height="25"-->
-<!--      />-->
-<!--    </div>-->
-<!--    <span-->
-<!--      class="user-profile__text"-->
-<!--      [ngClass]="{ 'user-profile__text_iconless': !currentBlockchain?.imagePath }"-->
-<!--    >{{ ($currentUser | async)?.address | shortAddress: 5:3  }}</span>-->
-<!--  </div>-->
-<!--  <ul *ngIf="$isMobile | async" class="user-profile__list">-->
-<!--    <li class="user-profile__item">-->
-<!--      <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'navigation.myTrades' | translate }}</a>-->
-<!--    </li>-->
-<!--    <li class="user-profile__item">-->
-<!--      <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'navigation.logout' | translate }}</a>-->
-<!--    </li>-->
-<!--  </ul>-->
-<!--  <div *ngIf="($isMobile | async) === false" class="user-profile__menu">-->
-<!--    <div class="user-profile__menu-icon" mat-button [matMenuTriggerFor]="userMenu">-->
-<!--      <span></span>-->
-<!--      <span></span>-->
-<!--      <span></span>-->
-<!--    </div>-->
-<!--    <mat-menu class="user-profile__sublist-container" #userMenu="matMenu">-->
-<!--      <ul class="user-profile__sublist">-->
-<!--        <li class="user-profile__sublist-item">-->
-<!--          <a routerLink="/trades/contracts" class="user-profile__sublist-link">{{ 'navigation.myTrades' | translate }}</a>-->
-<!--        </li>-->
-<!--        <li class="user-profile__sublist-item">-->
-<!--          <a class="user-profile__sublist-link" (click)="toggleConfirmModal()">{{ 'navigation.logout' | translate }}</a>-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--    </mat-menu>-->
-<!--  </div>-->
-<!--</div>-->
-
 <app-dropdown-selector
   (opened)="getDropdownStatus($event)"
   [dropdownButtonTemplate]="dropdownButtonTemplate"
@@ -60,7 +17,7 @@
     <div class="user-profile__address">
       {{ ($currentUser | async)?.address | shortAddress: 5:3  }}
     </div>
-    <img src="assets/img/icons/arrow-down.svg" alt="Dropdown arrow">
+    <img src="assets/img/icons/arrow-down.svg" width="11" height="7" alt="Dropdown arrow">
   </div>
 </ng-template>
 

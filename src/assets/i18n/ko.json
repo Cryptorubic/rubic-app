@@ -24,12 +24,17 @@
     "add": "더하다",
     "via": "통하다",
     "contractAddress": "토큰 계약 주소",
+    "address": "주소",
     "enterAmount": "금액을 입력하세요",
     "chooseToken": "토큰 선택",
     "clearToken": "클리어 토큰",
-    "warning": "Warning",
+    "warning": "경고",
     "customerSupport": "바랍니다 우리의 고객 지원에 문의하시기 바랍니다",
-    "OK": "확인"
+    "OK": "확인",
+    "analytics": "해석학",
+    "minutes": "의사록",
+    "swap": "교환",
+    "approve": "승인"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -40,18 +45,18 @@
     "rubicError": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우",
     "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
     "sameTokens": "양쪽에서 동일한 토큰을 선택할 수 없습니다. 다른 토큰을 선택하십시오.",
-    "noQrCode": "Please make sure that you have scan qrCode",
-    "noWallet": "You have not connected any wallet",
-    "retrievingTokensError": "Error retrieving tokens",
-    "wrongToken": "Rubic bridge supports only rubic token.",
-    "oneInchQuote": "Oneinch quote error",
-    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
-    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
-    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
-    "noSelectedProvider": "You have not selected any swap provider",
-    "notSupportedItNetwork": "Chosen network is not supported for instant trades",
-    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks.",
-    "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading.",
+    "noQrCode": "qrCode를 스캔했는지 확인하십시오",
+    "noWallet": "연결된 지갑이 없습니다.",
+    "retrievingTokensError": "토큰 검색 오류",
+    "wrongToken": "루빅 브릿지는 루빅 토큰 만 지원합니다.",
+    "oneInchQuote": "1inch 견적 오류",
+    "notSupportedNetwork": "{{networkToChoose}} 선택한 지갑 제공 업체에서 지원하지 않습니다.",
+    "signReject": "지갑 서명을 거부했습니다. 신청서에 로그인하려면 먼저 확인하십시오",
+    "lowGas": "거래 가스가 너무 낮습니다. 최소한의 거래 비용을 충당하기에는 가스가 충분하지 않습니다. 공급 가스를 늘리십시오",
+    "noSelectedProvider": "스왑 제공 업체를 선택하지 않았습니다.",
+    "notSupportedItNetwork": "선택한 네트워크는 즉시 거래에 지원되지 않습니다.",
+    "notSupportedBridge": "선택한 브리지는 지원되지 않습니다. 순서를 변경하거나 다른 네트워크를 선택하십시오.",
+    "insufficientLiquidity": "이 거래에 대한 유동성이 충분하지 않습니다. 멀티 홉 거래를 활성화하십시오.",
     "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
   },
   "navigation": {
@@ -341,6 +346,8 @@
     "swapToggleText": "당사 스왑 사용하기",
     "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
     "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
+    "approveProgressMessage": "승인 거래를 수락하고 교환이 시작되었습니다. 거래가 완료 될 때까지 기다려주세요.",
+    "approveSuccessMessage": "토큰을 승인했습니다. 거래를 계속하려면 스왑 버튼을 누르십시오.",
     "tableTitle": "내 크로스-체인 스왑",
     "whatIs": "뭐가 ",
     "whatIsAfter": "",
@@ -398,13 +405,16 @@
       "network": "회로망",
       "spent": "지출",
       "expected": "예상",
-      "date": "데이트"
+      "date": "데이트",
+      "provider": "공급자",
+      "explorerLink": "탐색기 링크"
     },
-    "noData": "아직 스왑이 없습니다",
+    "noData": "아직 거래가 없습니다",
     "noTrades": "거래가 없습니다",
     "noTradesWithSelected": "선택한 매개 변수를 사용한 거래가 없습니다.",
     "showData": "데이터 표시",
-    "sortBy": "정렬 기준"
+    "sortBy": "정렬 기준",
+    "receive": "받다"
   },
   "tradesPage": {
     "createTrade": "거래 생성",
@@ -437,10 +447,12 @@
     "left": "왼쪽",
     "investors": "투자자 수",
     "getBefore": "당신은 얻을 것이다",
+    "getMiddle": "토큰을",
     "getAfter": "거래가 완료된 후",
     "find": "모두 채우기",
     "limit": "최소 기부 한도:",
     "fee": "브로커 수수료:",
+    "providerFee": "제공자 수수료",
     "withdraw": "빼다",
     "rate": "율:",
     "closingDate": "마감일",
@@ -449,13 +461,15 @@
     "copied": "Сopied",
     "publicDeal": "공개 거래",
     "brokerAddress": "브로커 주소",
-    "notExist": "그러한 거래는 존재하지 않습니다."
+    "notExist": "그러한 거래는 존재하지 않습니다.",
+    "rbcLowFees": "저렴한 수수료로 RBC 사용",
+    "discountRBC": "RBC 할인"
   },
   "maintenance": {
     "title": "유지",
     "text": "서버 문제가 발생했습니다. 추후 공지가있을 때까지 지금 플랫폼을 사용하지 마십시오. 감사합니다."
   },
-  "modal": {
+  "modals": {
     "adModal": {
       "text": "바이낸스 스마트 체인 Wrapped Rubic이 출시되었습니다!",
       "button": "지갑에 BRBC 추가하기"
@@ -491,6 +505,17 @@
     "confirmImportModal": {
       "title": "가져 오기를 확인하세요!",
       "text": "이 토큰은 Rubic.exchange에 등록되지 않았습니다.\n맞춤 토큰으로 추가하면 자신의 책임하에 거래하고 있음을 확인하게됩니다."
+    },
+    "tokensListModal": {
+      "title": "토큰 선택",
+      "disabledTokenHint": "此令牌不可用於交換。 請選擇支持的對。\n이 토큰은 스왑에 사용할 수 없습니다. 지원되는 쌍을 선택하십시오.",
+      "searchPlaceholder": "이름 검색 또는 주소 붙여 넣기",
+      "noSearchData": "표시 할 내용 없음"
+    },
+    "walletsModal": {
+      "title": "지갑 연결",
+      "new": "Ethereum을 처음 사용하십니까?",
+      "learnMore": "지갑에 대해 더 알아보기"
     }
   },
   "riskBanner": {
@@ -499,11 +524,30 @@
   },
   "settings": {
     "instantTrades": {
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
-      "multihops": "Your swap will be completed only with direct pairs.",
-      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
-      "deadline": "Your transaction will revert if it is pending for more than this period of time.",
-      "autoRefresh": "Update trade parameters each 15 seconds."
+      "slippageTitle": "미끄러짐 허용 오차",
+      "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다. (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다.)",
+      "multihopsTitle": "멀티 홉 비활성화",
+      "multihops": "스왑은 직접 쌍으로 만 완료됩니다.",
+      "rubicOptimisationTitle": "Rubic 최적화 사용",
+      "rubicOptimisation": "Rubic 최적화는 기본적으로 활성화되어 있습니다. 그러나 가스 비용을 고려하지 않고 최적의 무역 경로가 실행되도록 비활성화 할 수 있습니다.",
+      "deadlineTitle": "거래 기한",
+      "deadline": "거래가이 기간 이상 보류중인 경우 거래가 취소됩니다.",
+      "autoRefreshTitle": "자동 새로 고침",
+      "autoRefresh": "15 초마다 거래 매개 변수를 업데이트합니다."
+    },
+    "bridge": {
+      "walletAddress": "토큰이 제공되는 TRON 블록 체인의 지갑 주소."
     }
+  },
+  "volume": {
+    "title": "누적 거래량",
+    "instantTrades": "즉시 거래",
+    "crossChain": "크로스-체인 스왑"
+  },
+  "notifications": {
+    "tradeInProgress": "진행중인 거래",
+    "successfulTrade": "성공적인 거래",
+    "approveInProgress": "진행중인 승인",
+    "successApprove": "성공적인 승인"
   }
 }

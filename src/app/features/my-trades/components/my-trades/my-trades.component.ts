@@ -141,7 +141,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     const onTransactionHash = () => {
       tradeInProgressSubscription$ = this.notificationsService
         .show(this.translate.instant('bridgePage.progressMessage'), {
-          label: 'Trade in progress',
+          label: this.translate.instant('notifications.tradeInProgress'),
           status: TuiNotification.Info,
           autoClose: false
         })
@@ -155,7 +155,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
           tradeInProgressSubscription$.unsubscribe();
           this.notificationsService
             .show(this.translate.instant('bridgePage.successMessage'), {
-              label: 'Successful trade',
+              label: this.translate.instant('notifications.successfulTradeTitle'),
               status: TuiNotification.Success,
               autoClose: 15000
             })

@@ -9,7 +9,7 @@
     }"
     (click)="activateProvider()"
   >
-    <div class="provider-panel__provider-name">{{ 'Via ' + providerData.name }}</div>
+    <div class="provider-panel__provider-name">{{ 'common.via' | translate }} {{ providerData.name }}</div>
     <div
       *ngIf="providerData.isBestRate"
       class="provider-panel__best-rate"

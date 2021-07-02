@@ -2,7 +2,14 @@
   tuiTable
   class="table"
   [ngClass]="{ table_hidden: loading === false && !(tableData$ | async).length }"
-  [columns]="columns"
+  [columns]="[
+    'Status',
+    'FromTo',
+    'Provider',
+    'Sent',
+    'Expected',
+    'Date'
+  ]"
   [sorter]="sorter$ | async"
   [direction]="direction$ | async"
   (sorterChange)="sorter$.next($event)"
@@ -10,18 +17,18 @@
 >
   <thead>
     <tr tuiThGroup>
-      <th tuiTh [resizable]="true" *ngFor="let column of columns" [sorter]="sorters[column]">
-        <span class="title" *ngIf="column !== 'FromTo'">{{ column }}</span>
+      <th tuiTh [resizable]="true" *ngFor="let column of columns" [sorter]="sorters[column.value]">
+        <span class="title" *ngIf="column.value !== 'FromTo'">{{ column.translateKey | translate }}</span>
 
-        <span class="title" *ngIf="column === 'FromTo'">
-          From<img src="assets/images/icons/my-trades/arrow-right.svg" alt />To
+        <span class="title" *ngIf="column.value === 'FromTo'">
+          {{ 'tradesTable.columns.from' | translate }}<img src="assets/images/icons/my-trades/arrow-right.svg" alt />{{ 'tradesTable.columns.to' | translate }}
         </span>
 
         <div
           class="sort-arrow"
           [ngClass]="{
             'sort-arrow_green':
-              sorter$.getValue() === sorters[column] && direction$.getValue() === -1
+              sorter$.getValue() === sorters[column.value] && direction$.getValue() === -1
           }"
           [inlineSVG]="'assets/images/icons/my-trades/arrow-up.svg'"
         ></div>
@@ -29,7 +36,7 @@
           class="sort-arrow"
           [ngClass]="{
             'sort-arrow_green':
-              sorter$.getValue() === sorters[column] && direction$.getValue() === 1
+              sorter$.getValue() === sorters[column.value] && direction$.getValue() === 1
           }"
           [inlineSVG]="'assets/images/icons/my-trades/arrow-down.svg'"
         ></div>
@@ -69,8 +76,7 @@
             size="s"
             [loading]="item.inProgress"
             (onClick)="onReceivePolygonBridgeTrade.emit(trade)"
-            >Receive</app-rubic-button
-          >
+            >{{ 'tradesTable.receive' | translate }}</app-rubic-button>
         </td>
 
         <td *tuiCell="'FromTo'" tuiTd class="blockchains">

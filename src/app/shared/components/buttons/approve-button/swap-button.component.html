@@ -3,7 +3,7 @@
     [fullWidth]="true"
     (onClick)="onLogin()"
   >
-    Connect wallet
+    {{ 'navigation.login' | translate }}
   </app-rubic-button>
 
   <ng-template [ngIf]="!(needLogin | async)">
@@ -15,28 +15,36 @@
           [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.LOADING"
           [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
         >
-          Approve
+          {{ 'common.approve' | translate }}
         </app-rubic-button>
         <app-rubic-button
           [fullWidth]="true"
           (onClick)="swapClick.emit()"
           [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
           [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
-        >Swap</app-rubic-button>
+        >{{ 'common.swap' | translate }}</app-rubic-button>
         <div class="buttons__timeline-container timeline">
           <span class="timeline__connector"></span>
-          <div class="timeline__point"
-               [attr.disabled]="
-                 status === TRADE_STATUS.READY_TO_SWAP ||
-                 status === TRADE_STATUS.SWAP_IN_PROGRESS ||
-                 status === TRADE_STATUS.DISABLED
-          ">1</div>
-          <div class="timeline__point"
-               [attr.disabled]="
-                 status === TRADE_STATUS.READY_TO_APPROVE ||
-                 status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-                 status === TRADE_STATUS.DISABLED"
-          >2</div>
+          <div
+            class="timeline__point"
+            [attr.disabled]="
+              status === TRADE_STATUS.READY_TO_SWAP ||
+              status === TRADE_STATUS.SWAP_IN_PROGRESS ||
+              status === TRADE_STATUS.DISABLED
+            "
+          >
+            1
+          </div>
+          <div
+            class="timeline__point"
+            [attr.disabled]="
+              status === TRADE_STATUS.READY_TO_APPROVE ||
+              status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+              status === TRADE_STATUS.DISABLED
+            "
+          >
+            2
+          </div>
         </div>
       </div>
     </ng-container>
@@ -46,7 +54,7 @@
         (onClick)="swapClick.emit()"
         [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
         [disabled]="status === TRADE_STATUS.DISABLED"
-      >Swap</app-rubic-button>
+      >{{ 'common.swap' | translate }}</app-rubic-button>
     </ng-template>
   </ng-template>
 </ng-container>

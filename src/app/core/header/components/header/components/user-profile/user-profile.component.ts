@@ -17,6 +17,7 @@ import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
+import { TranslateService } from '@ngx-translate/core';
 import { HeaderStore } from '../../../../services/header.store';
 import { AuthService } from '../../../../../services/auth/auth.service';
 import { LogoutConfirmModalComponent } from '../logout-confirm-modal/logout-confirm-modal.component';
@@ -35,6 +36,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
     private readonly providerConnectorService: ProviderConnectorService,
+    private translateService: TranslateService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector
   ) {
@@ -96,7 +98,10 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   public toggleConfirmModal(): void {
     this.dialogService
-      .open(new PolymorpheusComponent(LogoutConfirmModalComponent, this.injector), { size: 'l' })
+      .open(new PolymorpheusComponent(LogoutConfirmModalComponent, this.injector), {
+        size: 's',
+        label: this.translateService.instant('navigation.logoutMessage')
+      })
       .subscribe();
   }
 

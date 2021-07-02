@@ -8,6 +8,8 @@
 }
 
 .dialog-block {
+  padding-top: 20px;
+
   &__body-row {
     > *:not(:last-child) {
       @include b($mobile-sm-plus) {
