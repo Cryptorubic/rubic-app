@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { FormControl } from '@angular/forms';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
@@ -52,7 +53,7 @@ export class TokenAmountInputComponent implements OnChanges {
   }
 
   public onUserBalanceMaxButtonClick(): void {
-    const amount = this.token.amount.toString();
+    const amount = this.token.amount.toFormat(BIG_NUMBER_FORMAT);
     this.amountControl.setValue(amount);
     this.emitAmountChange(amount);
   }
