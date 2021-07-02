@@ -1,6 +1,6 @@
 <div class="my-trades">
   <div class="my-trades__header header">
-    <div class="header__title">My trades</div>
+    <div class="header__title">{{ 'myTrades.title' | translate }}</div>
     <app-rubic-refresh-button
       (refresh)="refreshTable()"
       [loadingStatus]="loadingStatus"

@@ -24,6 +24,7 @@
     "add": "添加",
     "via": "通過",
     "contractAddress": "代币合约地址",
+    "address": "地址",
     "enterAmount": "输入金额",
     "chooseToken": "选择币种",
     "clearToken": "清除令牌",
@@ -31,7 +32,9 @@
     "customerSupport": "请联系我们的客户支持",
     "OK": "好的",
     "analytics": "分析",
-    "minutes": "分鐘"
+    "minutes": "分鐘",
+    "swap": "交換",
+    "approve": "批准"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -401,13 +404,16 @@
       "network": "网络",
       "spent": "花費",
       "expected": "預期的",
-      "date": "日期"
+      "date": "日期",
+      "provider": "提供者",
+      "explorerLink": "資源管理器鏈接",
     },
     "noData": "您還沒有交易",
     "noTrades": "沒有交易",
     "noTradesWithSelected": "沒有選擇參數的交易",
     "showData": "顯示資料",
-    "sortBy": "排序方式"
+    "sortBy": "排序方式",
+    "receive": "收到"
   },
   "tradesPage": {
     "createTrade": "创造你的贸易",
@@ -440,10 +446,12 @@
     "left": "左",
     "investors": "投资者人数",
     "getBefore": "交易完成后，你将获得",
+    "getMiddle": "令牌到",
     "getAfter": "",
     "find": "交割全部",
     "limit": "最低出资限额",
     "fee": "经纪商佣金：",
+    "providerFee": "提供者費用",
     "withdraw": "退款",
     "rate": "价格：",
     "closingDate": "结束日期",
@@ -452,7 +460,9 @@
     "copied": "影射",
     "publicDeal": "公開交易",
     "brokerAddress": "經紀人地址",
-    "notExist": "這樣的貿易不存在。"
+    "notExist": "這樣的貿易不存在。",
+    "rbcLowFees": "使用 RBC 收取低費用",
+    "discountRBC": "RBC 折扣"
   },
   "maintenance": {
     "title": "維護",

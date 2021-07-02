@@ -24,6 +24,7 @@
     "add": "Add",
     "via": "Via",
     "contractAddress": "Dirección del contrato de token",
+    "address": "dirección de",
     "enterAmount": "Ingresa el monto",
     "chooseToken": "Elija token",
     "clearToken": "Token claro",
@@ -31,7 +32,9 @@
     "customerSupport": "customer support",
     "OK": "OK",
     "analytics": "Analítica",
-    "minutes": "minutos"
+    "minutes": "minutos",
+    "swap": "Intercambio",
+    "approve": "Aprobar"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
@@ -401,13 +404,16 @@
       "network": "Red Principal",
       "spent": "Spent",
       "expected": "Expected",
-      "date": "Fecha"
+      "date": "Fecha",
+      "provider": "Proveedora",
+      "explorerLink": "Enlace del explorador"
     },
     "noData": "Aún no tienes intercambios",
     "noTrades": "There are no trades",
     "noTradesWithSelected": "There are no trades with selected parameters",
     "showData": "Mostrar datos",
-    "sortBy": "Ordenar por"
+    "sortBy": "Ordenar por",
+    "receive": "Recibir"
   },
   "tradesPage": {
     "createTrade": "Crea tu Intercambio",
@@ -440,10 +446,12 @@
     "left": "Left",
     "investors": "Number of investors",
     "getBefore": "You will get",
+    "getMiddle": "tokens para el",
     "getAfter": "after the trade is complete",
     "find": "Fill all",
     "limit": "Min contribution limit:",
     "fee": "Broker's fee:",
+    "providerFee": "Tarifa de proveedor",
     "withdraw": "Withdraw",
     "rate": "Rate:",
     "closingDate": "Fecha límite",
@@ -452,7 +460,9 @@
     "copied": "Copiado",
     "publicDeal": "Intercambio Público",
     "brokerAddress": "Broker Address",
-    "notExist": "Such trade doesn't exist."
+    "notExist": "Such trade doesn't exist.",
+    "rbcLowFees": "Use RBC por tarifas bajas",
+    "discountRBC": "descuento con RBC"
   },
   "maintenance": {
     "title": "Maintenance",

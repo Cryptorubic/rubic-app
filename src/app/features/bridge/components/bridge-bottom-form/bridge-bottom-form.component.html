@@ -7,7 +7,7 @@
       class="instant-trade-bottom-form__analytics"
     >
       <img src="assets/images/icons/analytic.svg" alt="Analytics" />
-      <span>Analytics</span>
+      <span>{{ 'common.analytics' | translate }}</span>
     </a>
   </div>
 
@@ -25,14 +25,13 @@
       *ngIf="whatIsBlockchain"
     >
       <span *ngIf="toWalletAddress"
-        >You will get {{ whatIsBlockchain.name }} tokens to the
+        > {{ 'tradePage.getBefore'  | translate }} {{ whatIsBlockchain.name }} {{ 'tradePage.getMiddle' | translate}}
         <a class="terms-and-conditions__address"
           [href]="toWalletAddress | scannerLink: toBlockchain:ADDRESS_TYPE.WALLET"
           target="_blank"
           rel="noopener"
-          >{{ toWalletAddress }}</a
-        >
-        address</span
+          >{{ toWalletAddress }}</a>
+        {{ 'common.address' | translate }}</span
       >
 
       <span
@@ -41,7 +40,7 @@
         >You must set TRON wallet address in settings parameters</span
       >
 
-      <a [href]="whatIsBlockchain.href" target="_blank">What is {{ whatIsBlockchain.name }}?</a>
+      <a [href]="whatIsBlockchain.href" target="_blank">{{ 'bridgePage.whatIs' | translate }} {{ whatIsBlockchain.name }}?</a>
     </div>
   </div>
 </section>

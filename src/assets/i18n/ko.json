@@ -24,6 +24,7 @@
     "add": "더하다",
     "via": "통하다",
     "contractAddress": "토큰 계약 주소",
+    "address": "주소",
     "enterAmount": "금액을 입력하세요",
     "chooseToken": "토큰 선택",
     "clearToken": "클리어 토큰",
@@ -31,7 +32,9 @@
     "customerSupport": "바랍니다 우리의 고객 지원에 문의하시기 바랍니다",
     "OK": "확인",
     "analytics": "해석학",
-    "minutes": "의사록"
+    "minutes": "의사록",
+    "swap": "교환",
+    "approve": "승인"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -401,13 +404,16 @@
       "network": "회로망",
       "spent": "지출",
       "expected": "예상",
-      "date": "데이트"
+      "date": "데이트",
+      "provider": "공급자",
+      "explorerLink": "탐색기 링크",
     },
     "noData": "아직 거래가 없습니다",
     "noTrades": "거래가 없습니다",
     "noTradesWithSelected": "선택한 매개 변수를 사용한 거래가 없습니다.",
     "showData": "데이터 표시",
-    "sortBy": "정렬 기준"
+    "sortBy": "정렬 기준",
+    "receive": "받다"
   },
   "tradesPage": {
     "createTrade": "거래 생성",
@@ -440,10 +446,12 @@
     "left": "왼쪽",
     "investors": "투자자 수",
     "getBefore": "당신은 얻을 것이다",
+    "getMiddle": "토큰을",
     "getAfter": "거래가 완료된 후",
     "find": "모두 채우기",
     "limit": "최소 기부 한도:",
     "fee": "브로커 수수료:",
+    "providerFee": "제공자 수수료",
     "withdraw": "빼다",
     "rate": "율:",
     "closingDate": "마감일",
@@ -452,7 +460,9 @@
     "copied": "Сopied",
     "publicDeal": "공개 거래",
     "brokerAddress": "브로커 주소",
-    "notExist": "그러한 거래는 존재하지 않습니다."
+    "notExist": "그러한 거래는 존재하지 않습니다.",
+    "rbcLowFees": "저렴한 수수료로 RBC 사용",
+    "discountRBC": "RBC 할인"
   },
   "maintenance": {
     "title": "유지",

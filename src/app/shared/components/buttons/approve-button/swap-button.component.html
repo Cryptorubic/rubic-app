@@ -15,14 +15,14 @@
           [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.LOADING"
           [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
         >
-          Approve
+          {{ 'common.approve' | translate }}
         </app-rubic-button>
         <app-rubic-button
           [fullWidth]="true"
           (onClick)="swapClick.emit()"
           [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
           [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
-        >Swap</app-rubic-button>
+        >{{ 'common.swap' | translate }}</app-rubic-button>
         <div class="buttons__timeline-container timeline">
           <span class="timeline__connector"></span>
           <div class="timeline__point"
@@ -46,7 +46,7 @@
         (onClick)="swapClick.emit()"
         [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
         [disabled]="status === TRADE_STATUS.DISABLED"
-      >Swap</app-rubic-button>
+      >{{ 'common.swap' | translate }}</app-rubic-button>
     </ng-template>
   </ng-template>
 </ng-container>
