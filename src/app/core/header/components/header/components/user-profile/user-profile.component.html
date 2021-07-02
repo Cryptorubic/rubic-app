@@ -6,14 +6,15 @@
 
 <ng-template #dropdownButtonTemplate>
   <div class="user-profile">
-    <img
-      *ngIf="currentBlockchain?.imagePath"
-      class="user-profile__chain-icon"
-      (click)="useTestingMode()"
-      [src]="currentBlockchain?.imagePath"
-      alt="($currentBlockchain | async)?.name"
-      width="25"
-      height="25">
+    <div class="user-profile__chain-icon">
+      <img
+        *ngIf="currentBlockchain?.imagePath"
+        (click)="useTestingMode()"
+        [src]="currentBlockchain?.imagePath"
+        alt="($currentBlockchain | async)?.name"
+        width="25"
+        height="25">
+    </div>
     <div class="user-profile__address">
       {{ ($currentUser | async)?.address | shortAddress: 5:3  }}
     </div>
