@@ -4,12 +4,14 @@ import { Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { filter, first, map } from 'rxjs/operators';
+import { filter, first, map, mergeMap } from 'rxjs/operators';
 import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
+import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
+import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { QueryParams } from './models/query-params';
@@ -32,7 +34,7 @@ export class QueryParamsService {
         [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BRBC',
         [BLOCKCHAIN_NAME.POLYGON]: 'CAKE'
       },
-      amount: '0.1'
+      amount: '1'
     }
   };
 
@@ -67,7 +69,8 @@ export class QueryParamsService {
     private readonly web3Public: Web3PublicService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly swapsService: SwapsService
   ) {}
 
   public setupQueryParams(queryParams: QueryParams): void {
@@ -102,24 +105,44 @@ export class QueryParamsService {
   }
 
   private initiateTradesParams(params: QueryParams): void {
-    this.tokensService.tokens.pipe(filter(tokens => tokens?.size !== 0)).subscribe(tokens => {
-      const protectedParams = this.getProtectedSwapParams(params);
-      const fromBlockchain = protectedParams.fromChain as BLOCKCHAIN_NAME;
-      const toBlockchain = protectedParams.toChain as BLOCKCHAIN_NAME;
-
-      const findFromToken$ = protectedParams.from
-        ? this.getTokenBySymbolOrAddress(tokens, protectedParams.from, fromBlockchain).pipe(
-            map(token => token || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromBlockchain])
+    this.tokensService.tokens
+      .pipe(
+        filter(tokens => tokens?.size !== 0),
+        mergeMap(tokens =>
+          this.getProtectedSwapParams(params).pipe(
+            map(protectedParams => ({ tokens, protectedParams }))
           )
-        : of(null);
+        ),
+        mergeMap(({ tokens, protectedParams }) => {
+          const fromBlockchain = protectedParams.fromChain as BLOCKCHAIN_NAME;
+          const toBlockchain = protectedParams.toChain as BLOCKCHAIN_NAME;
 
-      const findToToken$ = protectedParams.from
-        ? this.getTokenBySymbolOrAddress(tokens, protectedParams.to, toBlockchain).pipe(
-            map(token => token || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toBlockchain])
-          )
-        : of(null);
+          const findFromToken$ = protectedParams.from
+            ? this.getTokenBySymbolOrAddress(tokens, protectedParams.from, fromBlockchain).pipe(
+                map(
+                  token => token || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromBlockchain]
+                )
+              )
+            : of(null);
 
-      forkJoin([findFromToken$, findToToken$]).subscribe(([fromToken, toToken]) => {
+          const findToToken$ = protectedParams.from
+            ? this.getTokenBySymbolOrAddress(tokens, protectedParams.to, toBlockchain).pipe(
+                map(token => token || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toBlockchain])
+              )
+            : of(null);
+
+          return forkJoin([findFromToken$, findToToken$]).pipe(
+            map(([fromToken, toToken]) => ({
+              fromToken,
+              toToken,
+              fromBlockchain,
+              toBlockchain,
+              protectedParams
+            }))
+          );
+        })
+      )
+      .subscribe(({ fromToken, toToken, fromBlockchain, toBlockchain, protectedParams }) => {
         this.swapFormService.commonTrade.controls.input.patchValue({
           fromBlockchain,
           toBlockchain,
@@ -130,7 +153,6 @@ export class QueryParamsService {
           })
         });
       });
-    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -138,31 +160,70 @@ export class QueryParamsService {
     // TODO: add crypto tap params
   }
 
-  private getProtectedSwapParams(queryParams: QueryParams): QueryParams {
-    const fromChain = Object.values(BLOCKCHAIN_NAME).includes(
-      queryParams?.fromChain as BLOCKCHAIN_NAME
-    )
-      ? queryParams.fromChain
-      : QueryParamsService.DEFAULT_PARAMETERS.swap.fromChain;
+  private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
+    return this.swapsService.bridgeTokensPairs.pipe(
+      filter(pairs => !!pairs?.length),
+      first(),
+      map(pairs => {
+        const fromChain = Object.values(BLOCKCHAIN_NAME).includes(
+          queryParams?.fromChain as BLOCKCHAIN_NAME
+        )
+          ? queryParams.fromChain
+          : QueryParamsService.DEFAULT_PARAMETERS.swap.fromChain;
 
-    const toChain = Object.values(BLOCKCHAIN_NAME).includes(queryParams?.toChain as BLOCKCHAIN_NAME)
-      ? queryParams.toChain
-      : QueryParamsService.DEFAULT_PARAMETERS.swap.toChain;
+        const toChain = Object.values(BLOCKCHAIN_NAME).includes(
+          queryParams?.toChain as BLOCKCHAIN_NAME
+        )
+          ? queryParams.toChain
+          : QueryParamsService.DEFAULT_PARAMETERS.swap.toChain;
 
-    return queryParams.from || queryParams.to
-      ? {
-          ...queryParams,
-          from: queryParams.from || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain],
-          to: queryParams.to || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toChain],
-          amount: queryParams.amount || QueryParamsService.DEFAULT_PARAMETERS.swap.amount,
-          fromChain,
-          toChain
+        let newParams =
+          queryParams.from || queryParams.to
+            ? {
+                ...queryParams,
+                from:
+                  queryParams.from || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain],
+                to: queryParams.to || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toChain],
+                amount: queryParams.amount || QueryParamsService.DEFAULT_PARAMETERS.swap.amount,
+                fromChain,
+                toChain
+              }
+            : {
+                ...queryParams,
+                fromChain,
+                toChain
+              };
+        if (newParams.from === newParams.to && fromChain === toChain) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          newParams.from === QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]
+            ? (newParams.from = QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain])
+            : (newParams.to = QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]);
         }
-      : {
-          ...queryParams,
-          fromChain,
-          toChain
-        };
+
+        if (
+          fromChain !== toChain &&
+          !pairs.some(
+            (pair: BlockchainsBridgeTokens) =>
+              pair.fromBlockchain === fromChain &&
+              pair.toBlockchain === toChain &&
+              pair.bridgeTokens.some(
+                bridgeToken =>
+                  bridgeToken[fromChain]?.symbol.toLowerCase() === newParams.from.toLowerCase() &&
+                  bridgeToken[toChain]?.symbol.toLowerCase() === newParams.to.toLowerCase()
+              )
+          )
+        ) {
+          newParams = {
+            from: QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain],
+            to: QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain],
+            amount: queryParams.amount || QueryParamsService.DEFAULT_PARAMETERS.swap.amount,
+            fromChain,
+            toChain: fromChain
+          };
+        }
+        return newParams;
+      })
+    );
   }
 
   private getTokenBySymbolOrAddress(

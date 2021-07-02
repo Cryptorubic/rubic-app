@@ -5,6 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
+import { SwapsModule } from 'src/app/features/swaps/swaps.module';
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
@@ -43,7 +44,8 @@ import { ErrorsModule } from './errors/errors.module';
         useFactory: httpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    SwapsModule
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })
