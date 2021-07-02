@@ -71,7 +71,19 @@ export class QueryParamsService {
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService
-  ) {}
+  ) {
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(value => {
+      this.setQueryParams({
+        ...(value.fromToken?.symbol && { from: value.fromToken.symbol }),
+        ...(value.toToken?.symbol && { to: value.toToken.symbol }),
+        ...(value.fromBlockchain && { fromChain: value.fromBlockchain }),
+        ...(value.toBlockchain && { toChain: value.toBlockchain }),
+        ...(value.fromAmount &&
+          !value.fromAmount?.eq(0) &&
+          value.fromAmount?.isFinite() && { amount: value.fromAmount.toFixed() })
+      });
+    });
+  }
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams) {
@@ -92,15 +104,11 @@ export class QueryParamsService {
     }
   }
 
-  public setQueryParam(key: keyof QueryParams, value: QueryParams[typeof key]): void {
-    if (this.currentQueryParams && value) {
-      this.currentQueryParams[key] = value;
-      this.navigate();
-    }
-  }
-
-  public removeQueryParam(key: keyof QueryParams): void {
-    this.currentQueryParams[key] = undefined;
+  public setQueryParams(params: Partial<QueryParams>): void {
+    this.currentQueryParams = {
+      ...this.currentQueryParams,
+      ...params
+    };
     this.navigate();
   }
 
@@ -208,8 +216,10 @@ export class QueryParamsService {
               pair.toBlockchain === toChain &&
               pair.bridgeTokens.some(
                 bridgeToken =>
-                  bridgeToken[fromChain]?.symbol.toLowerCase() === newParams.from.toLowerCase() &&
-                  bridgeToken[toChain]?.symbol.toLowerCase() === newParams.to.toLowerCase()
+                  bridgeToken.blockchainToken[fromChain]?.symbol.toLowerCase() ===
+                    newParams.from.toLowerCase() &&
+                  bridgeToken.blockchainToken[toChain]?.symbol.toLowerCase() ===
+                    newParams.to.toLowerCase()
               )
           )
         ) {
