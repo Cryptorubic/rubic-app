@@ -9,6 +9,9 @@ declare global {
       use: () => void;
       set: () => void;
       clear: () => void;
+      uniswapSettings: {
+        setSecondsDeadline: () => void;
+      };
     };
     tu: void;
     ts: void;
@@ -21,6 +24,10 @@ declare global {
 })
 export class UseTestingModeService {
   public isTestingMode = new BehaviorSubject(false);
+
+  public uniswapSettings = {
+    secondsDeadline: new BehaviorSubject(false)
+  };
 
   constructor(
     @Inject(WINDOW) private window: Window,
@@ -39,6 +46,9 @@ export class UseTestingModeService {
       clear: () => {
         cookieService.delete('testingMode');
         this.window.location.reload();
+      },
+      uniswapSettings: {
+        setSecondsDeadline: () => this.uniswapSettings.secondsDeadline.next(true)
       }
     };
 
