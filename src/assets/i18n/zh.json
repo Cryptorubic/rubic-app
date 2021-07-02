@@ -547,7 +547,7 @@
   },
   "notifications": {
     "tradeInProgress": "進行中的交易",
-    "successfulTrade": "成功的交易",
+    "successfulTradeTitle": "成功的交易",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功"
   }

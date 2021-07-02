@@ -547,7 +547,7 @@
   },
   "notifications": {
     "tradeInProgress": "Сделка в процессе выполнения",
-    "successfulTrade": "Сделка проведена успешно",
+    "successfulTradeTitle": "Сделка проведена успешно",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно"
   }

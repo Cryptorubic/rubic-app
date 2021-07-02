@@ -547,7 +547,7 @@
   },
   "notifications": {
     "tradeInProgress": "Comercio en curso",
-    "successfulTrade": "Comercio exitoso",
+    "successfulTradeTitle": "Comercio exitoso",
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa"
   }
