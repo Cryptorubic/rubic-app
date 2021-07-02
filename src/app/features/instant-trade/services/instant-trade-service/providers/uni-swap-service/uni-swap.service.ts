@@ -25,7 +25,7 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { from, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
 
 @Injectable({
@@ -146,6 +146,7 @@ export class UniSwapService {
       onTransactionHash?: (hash: string) => void;
     }
   ): Promise<void> {
+    await this.commonUniswap.checkSettings(this.blockchain);
     return this.commonUniswap.approve(tokenAddress, options);
   }
 

@@ -93,6 +93,7 @@ export class OneInchPolService implements ItProvider {
       onTransactionHash?: (hash: string) => void;
     }
   ): Promise<void> {
+    await this.commonOneinch.checkSettings(this.blockchain, this.providerConnectorService);
     return this.commonOneinch.approve(tokenAddress, this.blockchain, options);
   }
 
