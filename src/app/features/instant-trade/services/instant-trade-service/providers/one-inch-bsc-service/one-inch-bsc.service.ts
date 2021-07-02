@@ -100,6 +100,7 @@ export class OneInchBscService implements ItProvider {
       onTransactionHash?: (hash: string) => void;
     }
   ): Promise<void> {
+    await this.commonOneinch.checkSettings(this.blockchain, this.providerConnectorService);
     return this.commonOneinch.approve(tokenAddress, this.blockchain, options);
   }
 
@@ -122,14 +123,21 @@ export class OneInchBscService implements ItProvider {
       throw new CustomError(this.translateService.instant('errors.1inchNotSupportedToken'));
     }
 
+    const tradeParams = {
+      params: {
+        fromTokenAddress,
+        toTokenAddress,
+        amount: fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0)
+      } as {
+        [param: string]: string;
+      }
+    };
+    if (this.settings.disableMultihops) {
+      tradeParams.params.mainRouteParts = '1';
+    }
+
     const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
-      .get(`${this.apiBaseUrl}quote`, {
-        params: {
-          fromTokenAddress,
-          toTokenAddress,
-          amount: fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0)
-        }
-      })
+      .get(`${this.apiBaseUrl}quote`, tradeParams)
       .pipe(
         catchError(err => {
           if (err.status === 500) {
