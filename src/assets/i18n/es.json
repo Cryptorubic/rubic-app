@@ -57,7 +57,8 @@
     "notSupportedItNetwork": "La red elegida no es compatible con intercambios instantáneos",
     "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
     "insufficientLiquidity": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda.",
-    "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
+    "1inchRefreshError":  "1inch no está disponible. Intente actualizar el comercio.",
+    "1inchNotSupportedToken": "1inch no admite uno de los tokens ingresados."
   },
   "navigation": {
     "about": "Información",
