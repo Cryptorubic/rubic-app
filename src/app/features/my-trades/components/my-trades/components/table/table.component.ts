@@ -32,7 +32,7 @@ export class TableComponent extends TableData implements OnInit {
 
   public TRADES_PROVIDERS = TRADES_PROVIDERS;
 
-  private readonly columns: TableRowKeyValue[] = [
+  public readonly columns: TableRowKeyValue[] = [
     {
       translateKey: 'tradesTable.columns.status',
       value: 'Status'
