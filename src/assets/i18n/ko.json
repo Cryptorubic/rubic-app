@@ -27,10 +27,11 @@
     "enterAmount": "금액을 입력하세요",
     "chooseToken": "토큰 선택",
     "clearToken": "클리어 토큰",
-    "warning": "Warning",
+    "warning": "경고",
     "customerSupport": "바랍니다 우리의 고객 지원에 문의하시기 바랍니다",
     "OK": "확인",
-    "analytics": "해석학"
+    "analytics": "해석학",
+    "minutes": "의사록"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -341,6 +342,8 @@
     "swapToggleText": "당사 스왑 사용하기",
     "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
     "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
+    "approveProgressMessage": "승인 거래를 수락하고 교환이 시작되었습니다. 거래가 완료 될 때까지 기다려주세요.",
+    "approveSuccessMessage": "토큰을 승인했습니다. 거래를 계속하려면 스왑 버튼을 누르십시오.",
     "tableTitle": "내 크로스-체인 스왑",
     "whatIs": "뭐가 ",
     "whatIsAfter": "",
@@ -510,10 +513,15 @@
   },
   "settings": {
     "instantTrades": {
+      "slippageTitle": "미끄러짐 허용 오차",
       "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다. (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다.)",
+      "multihopsTitle": "멀티 홉 비활성화",
       "multihops": "스왑은 직접 쌍으로 만 완료됩니다.",
+      "rubicOptimisationTitle": "Rubic 최적화 사용",
       "rubicOptimisation": "Rubic 최적화는 기본적으로 활성화되어 있습니다. 그러나 가스 비용을 고려하지 않고 최적의 무역 경로가 실행되도록 비활성화 할 수 있습니다.",
+      "deadlineTitle": "거래 기한",
       "deadline": "거래가이 기간 이상 보류중인 경우 거래가 취소됩니다.",
+      "autoRefreshTitle": "자동 새로 고침",
       "autoRefresh": "15 초마다 거래 매개 변수를 업데이트합니다."
     },
     "bridge": {
@@ -524,5 +532,11 @@
     "title": "누적 거래량",
     "instantTrades": "즉시 거래",
     "crossChain": "크로스-체인 스왑"
+  },
+  "notifications": {
+    "tradeInProgress": "진행중인 거래",
+    "successfulTrade": "성공적인 거래",
+    "approveInProgress": "진행중인 승인",
+    "successApprove": "성공적인 승인"
   }
 }

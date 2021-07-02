@@ -19,7 +19,7 @@ export class ErrorsService {
     console.debug(error);
 
     const options = {
-      label: 'Error',
+      label: 'dsfsdfsd',
       status: TuiNotification.Error,
       data: {},
       autoClose: 7000
@@ -46,7 +46,7 @@ export class ErrorsService {
     console.debug(error);
 
     const options = {
-      label: 'Error',
+      label: 'fdssf',
       status: TuiNotification.Error,
       data: {},
       autoClose: 7000

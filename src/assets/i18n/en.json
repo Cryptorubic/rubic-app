@@ -30,7 +30,8 @@
     "warning": "Warning",
     "customerSupport": "customer support",
     "OK": "OK",
-    "analytics": "Analytics"
+    "analytics": "Analytics",
+    "minutes": "minutes"
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
@@ -512,10 +513,15 @@
   },
   "settings": {
     "instantTrades": {
+      "slippageTitle": "Slippage tolerance",
       "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "multihopsTitle": "Disable multihops",
       "multihops": "Your swap will be completed only with direct pairs.",
+      "rubicOptimisationTitle": "Use Rubic optimisation",
       "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed, without taking into account the cost of gas.",
+      "deadlineTitle": "Transaction deadline",
       "deadline": "Your transaction will revert if it is pending for more than this period of time.",
+      "autoRefreshTitle": "Auto refresh",
       "autoRefresh": "Update trade parameters each 15 seconds."
     },
     "bridge": {
@@ -526,5 +532,11 @@
     "title": "Accumulated Transactions Volume",
     "instantTrades": "Instant Trades",
     "crossChain": "Cross-Chain Swaps"
+  },
+  "notifications": {
+    "tradeInProgress": "Trade in progress",
+    "successfulTradeTitle": "Successful trade",
+    "approveInProgress": "Approve in progress",
+    "successApprove": "Successful approve"
   }
 }

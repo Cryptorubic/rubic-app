@@ -1,7 +1,7 @@
 @import 'src/scss/vars';
 
 .settings {
-  width: 265px;
+  min-width: 265px;
   padding: 20px;
 
   &__form {
@@ -36,6 +36,10 @@
 
       background: $main-green;
     }
+  }
+
+  &__toggle {
+    margin-left: 30px;
   }
 
   &__form-row {

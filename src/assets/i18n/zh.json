@@ -27,10 +27,11 @@
     "enterAmount": "输入金额",
     "chooseToken": "选择币种",
     "clearToken": "清除令牌",
-    "warning": "Warning",
+    "warning": "警告",
     "customerSupport": "请联系我们的客户支持",
     "OK": "好的",
-    "analytics": "分析"
+    "analytics": "分析",
+    "minutes": "分鐘"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -341,6 +342,8 @@
     "swapToggleText": "使用我們的掉期",
     "progressMessage": "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
     "successMessage": "跨链交换的过程已经开始。请等待双方区块链完成交易。",
+    "approveProgressMessage": "您接受了批准交易並且交易已經開始。 請等待交易完成。",
+    "approveSuccessMessage": "您已批准令牌。 按掉期按鈕繼續交易。",
     "tableTitle": "您的跨鏈互換",
     "whatIs": "什麼是幣安智能鏈？",
     "whatIsAfter": "是什么",
@@ -510,10 +513,15 @@
   },
   "settings": {
     "instantTrades": {
+      "slippageTitle": "滑點公差",
       "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
+      "multihopsTitle": "禁用多跳",
       "multihops": "您的交換將僅通過直接對完成。",
+      "rubicOptimisationTitle": "使用 Rubic 優化",
       "rubicOptimisation": "默認情況下啟用 Rubic 優化。 但是，您可以禁用它以便執行最佳貿易路線，而無需考慮 gas 成本。",
+      "deadlineTitle": "交易截止日期",
       "deadline": "如果待處理的時間超過此時間段，您的交易將恢復。",
+      "autoRefreshTitle": "自動刷新",
       "autoRefresh": "每 15 秒更新一次交易參數。"
     },
     "bridge": {
@@ -524,5 +532,11 @@
     "title": "累計交易量",
     "instantTrades": "支持即时交易",
     "crossChain": "跨鏈掉期"
+  },
+  "notifications": {
+    "tradeInProgress": "進行中的交易",
+    "successfulTrade": "成功的交易",
+    "approveInProgress": "正在審批",
+    "successApprove": "批准成功"
   }
 }

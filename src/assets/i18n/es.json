@@ -27,10 +27,11 @@
     "enterAmount": "Ingresa el monto",
     "chooseToken": "Elija token",
     "clearToken": "Token claro",
-    "warning": "Warning",
+    "warning": "Advertencia",
     "customerSupport": "customer support",
     "OK": "OK",
-    "analytics": "Analítica"
+    "analytics": "Analítica",
+    "minutes": "minutos"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
@@ -341,6 +342,8 @@
     "swapToggleText": "Use our swaps",
     "progressMessage": "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
     "successMessage": "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",
+    "approveProgressMessage": "Aceptaste la transacción aprobada y el intercambio ha comenzado. Espere hasta que se complete el intercambio.",
+    "approveSuccessMessage": "Tienes tokens aprobados. Presione el botón de intercambio para continuar operando.",
     "tableTitle": "Sus intercambios entre plataformas",
     "whatIs": "¿Qué es ",
     "whatIsAfter": "",
@@ -510,10 +513,15 @@
   },
   "settings": {
     "instantTrades": {
+      "slippageTitle": "Tolerancia al deslizamiento",
       "slippage": "Su transacción será cancelada si el precio cambia desfavorablemente en más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea anticipada)",
+      "multihopsTitle": "Desactivar tiendas múltiples",
       "multihops": "Su intercambio se completará solo con pares directos.",
+      "rubicOptimisationTitle": "Utilice la optimización de Rubic",
       "rubicOptimisation": "La optimización de rúbrica está habilitada de forma predeterminada. Sin embargo, puede deshabilitarlo para que se ejecute la ruta comercial óptima, sin tener en cuenta el costo del gas.",
+      "deadlineTitle": "Fecha límite de transacción",
       "deadline": "Su transacción se revertirá si está pendiente por más de este período de tiempo.",
+      "autoRefreshTitle": "Autorefrescar",
       "autoRefresh": "Actualice los parámetros comerciales cada 15 segundos."
     },
     "bridge": {
@@ -524,5 +532,11 @@
     "title": "Volumen de transacciones acumuladas",
     "instantTrades": "Intercambios instantáneos",
     "crossChain": "Ntercambios entre plataformas"
+  },
+  "notifications": {
+    "tradeInProgress": "Comercio en curso",
+    "successfulTrade": "Comercio exitoso",
+    "approveInProgress": "Aprobar en progreso",
+    "successApprove": "Aprobación exitosa"
   }
 }
