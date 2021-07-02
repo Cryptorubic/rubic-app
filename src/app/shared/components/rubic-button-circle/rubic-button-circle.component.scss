@@ -57,3 +57,19 @@
     }
   }
 }
+
+:host(.unfocused) {
+  [tuiIconButton] {
+    &._focused {
+      background-color: transparent;
+
+      &._hovered {
+        background-color: $rubic-base-01;
+      }
+
+      &._pressed {
+        background-color: $rubic-primary;
+      }
+    }
+  }
+}
