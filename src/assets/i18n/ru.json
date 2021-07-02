@@ -57,7 +57,8 @@
     "notSupportedItNetwork": "Выбранная сеть не поддерживается для мгновенных сделок",
     "notSupportedBridge": "Выбранный мост не поддерживается. Пожалуйста, измените порядок или выберите другие сети.",
     "insufficientLiquidity": "Недостаточная ликвидность для этой сделки. Попробуйте включить мультископовую торговлю.",
-    "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
+    "oneinchRefreshError":  "1inch в настоящее время недоступен. Пожалуйста, попробуйте обновить сделку.",
+    "1inchNotSupportedToken": "1inch не поддерживает один из введенных токенов."
   },
   "navigation": {
     "about": "О компании",

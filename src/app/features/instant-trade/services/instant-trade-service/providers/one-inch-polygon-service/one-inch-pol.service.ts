@@ -28,6 +28,7 @@ import { ItProvider } from 'src/app/features/instant-trade/services/instant-trad
 import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-oneinch/common-oneinch.service';
 import { Observable, throwError } from 'rxjs';
 import { OneinchRefreshError } from 'src/app/core/errors/models/instant-trade/oneinch-refresh.error';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +57,8 @@ export class OneInchPolService implements ItProvider {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly errorsService: ErrorsService,
     private readonly settingsService: SettingsService,
-    private readonly commonOneinch: CommonOneinchService
+    private readonly commonOneinch: CommonOneinchService,
+    private translateService: TranslateService
   ) {
     this.blockchain = BLOCKCHAIN_NAME.POLYGON;
     const network = BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.POLYGON);
@@ -112,7 +114,7 @@ export class OneInchPolService implements ItProvider {
       !this.supportedTokensAddresses.includes(fromTokenAddress) ||
       !this.supportedTokensAddresses.includes(toTokenAddress)
     ) {
-      throw new CustomError('1inch not supports one of entered tokens');
+      throw new CustomError(this.translateService.instant('errors.1inchNotSupportedToken'));
     }
 
     const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
