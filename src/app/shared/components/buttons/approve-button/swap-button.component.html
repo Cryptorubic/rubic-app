@@ -25,18 +25,26 @@
         >{{ 'common.swap' | translate }}</app-rubic-button>
         <div class="buttons__timeline-container timeline">
           <span class="timeline__connector"></span>
-          <div class="timeline__point"
-               [attr.disabled]="
-                 status === TRADE_STATUS.READY_TO_SWAP ||
-                 status === TRADE_STATUS.SWAP_IN_PROGRESS ||
-                 status === TRADE_STATUS.DISABLED
-          ">1</div>
-          <div class="timeline__point"
-               [attr.disabled]="
-                 status === TRADE_STATUS.READY_TO_APPROVE ||
-                 status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-                 status === TRADE_STATUS.DISABLED"
-          >2</div>
+          <div
+            class="timeline__point"
+            [attr.disabled]="
+              status === TRADE_STATUS.READY_TO_SWAP ||
+              status === TRADE_STATUS.SWAP_IN_PROGRESS ||
+              status === TRADE_STATUS.DISABLED
+            "
+          >
+            1
+          </div>
+          <div
+            class="timeline__point"
+            [attr.disabled]="
+              status === TRADE_STATUS.READY_TO_APPROVE ||
+              status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+              status === TRADE_STATUS.DISABLED
+            "
+          >
+            2
+          </div>
         </div>
       </div>
     </ng-container>

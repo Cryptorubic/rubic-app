@@ -1,5 +1,8 @@
 <section class="bridge-bottom-form">
-  <app-amount-estimated [formService]="swapFormService" [loading]="tradeStatus === TRADE_STATUS.LOADING"></app-amount-estimated>
+  <app-amount-estimated
+    [formService]="swapFormService"
+    [loading]="tradeStatus === TRADE_STATUS.LOADING"
+  ></app-amount-estimated>
   <div class="bridge-bottom-form__analytics" *ngIf="tokenInfoUrl">
     <a
       [href]="'https://keks.app/' + tokenInfoUrl"
@@ -24,7 +27,7 @@
       class="bridge-bottom-form__terms-and-conditions terms-and-conditions"
       *ngIf="whatIsBlockchain"
     >
-      <span *ngIf="toWalletAddress"
+      <span *ngIf="toWalletAddress && isBridgeSupported"
         > {{ 'tradePage.getBefore'  | translate }} {{ whatIsBlockchain.name }} {{ 'tradePage.getMiddle' | translate}}
         <a class="terms-and-conditions__address"
           [href]="toWalletAddress | scannerLink: toBlockchain:ADDRESS_TYPE.WALLET"

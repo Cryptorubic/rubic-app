@@ -4,7 +4,7 @@ import { defer, from, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
-import { filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
@@ -22,6 +22,7 @@ import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
 import networks from '../../../../../../shared/constants/blockchain/networks';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
@@ -238,6 +239,12 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           receipt.transactionHash,
           this.providerConnectorService.address
         );
+      }),
+      catchError(err => {
+        if (err.code === 4001) {
+          return throwError(new UserRejectError());
+        }
+        return throwError(err);
       })
     );
   }
@@ -281,7 +288,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     );
   }
 
-  public createPolygonTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
+  private createPolygonTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
     const userAddress = this.providerConnectorService.address;
 

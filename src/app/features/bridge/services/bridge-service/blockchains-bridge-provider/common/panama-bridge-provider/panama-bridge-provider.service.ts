@@ -90,7 +90,6 @@ export class PanamaBridgeProviderService {
         return res.data.networks.find(network => network.name === toBlockchain).networkFee;
       }),
       catchError(err => {
-        this.errorService.catch$(err);
         return throwError(err);
       })
     );
@@ -113,13 +112,12 @@ export class PanamaBridgeProviderService {
       mergeMap((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
           console.error(`Bridge POST error, code ${res.code}`);
-          this.errorService.throw$(new OverQueryLimitError());
+          return throwError(new OverQueryLimitError());
         }
         const { data } = res;
         return from(this.sendDeposit(data.id, bridgeTrade, data.depositAddress));
       }),
       catchError(err => {
-        this.errorService.throw$(err);
         return throwError(err);
       })
     );

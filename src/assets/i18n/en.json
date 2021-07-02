@@ -46,7 +46,7 @@
     "rubicError": "Please try again later or try using another device. If you’re still having problems, please reach out to our",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
     "sameTokens": "You can't choose the same token on both sides, please choose different tokens.",
-    "noQrCode": "Please make sure that you have scan qrCode",
+    "noQrCode": "Please make sure that you have scanned QR code.",
     "noWallet": "You have not connected any wallet",
     "retrievingTokensError": "Error retrieving tokens",
     "wrongToken": "Rubic bridge supports only rubic token.",
@@ -56,7 +56,7 @@
     "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
     "noSelectedProvider": "You have not selected any swap provider",
     "notSupportedItNetwork": "Chosen network is not supported for instant trades",
-    "notSupportedBridge": "Chosen bridge is not supported. Please, change the order or choose another networks.",
+    "notSupportedBridge": "Currently this bridge is unavailable. Please select supported bridge.",
     "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading.",
     "oneinchRefreshError":  "Oneinch is currently unavailable. Please try to refresh the trade."
   },

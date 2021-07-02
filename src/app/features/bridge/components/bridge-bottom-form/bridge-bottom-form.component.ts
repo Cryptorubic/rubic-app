@@ -83,7 +83,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public tradeStatus = TRADE_STATUS.DISABLED;
 
-  private isBridgeSupported;
+  public isBridgeSupported;
 
   public toWalletAddress: string;
 
@@ -137,10 +137,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     this.isBridgeSupported = true;
-    try {
-      this.calculateTrade();
-      // eslint-disable-next-line no-empty
-    } catch (err) {}
+    this.calculateTrade();
 
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       form => {
@@ -159,10 +156,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.toWalletAddress = this.authService.user?.address;
         }
 
-        try {
-          this.calculateTrade();
-          // eslint-disable-next-line no-empty
-        } catch (err) {}
+        this.calculateTrade();
         this.cdr.detectChanges();
       }
     );
@@ -174,10 +168,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.toWalletAddress = this.tronAddress;
         }
 
-        try {
-          this.calculateTrade();
-          // eslint-disable-next-line no-empty
-        } catch (err) {}
+        this.calculateTrade();
         this.cdr.detectChanges();
       });
 
@@ -187,10 +178,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.toWalletAddress = user.address;
         }
 
-        try {
-          this.calculateTrade();
-          // eslint-disable-next-line no-empty
-        } catch (err) {}
+        this.calculateTrade();
         this.cdr.detectChanges();
       }
     });
@@ -203,7 +191,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.unsupportedBridgeSubscription$?.unsubscribe();
   }
 
-  public calculateTrade() {
+  public calculateTrade(): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.commonTrade.controls.input.value;
 
@@ -281,12 +269,12 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade() {
-    let tradeInProgressSubscription$: Subscription;
+    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
 
+    let tradeInProgressSubscription$: Subscription;
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
       onTransactionHash: () => {
-        this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
         this.cdr.detectChanges();
         tradeInProgressSubscription$ = this.notificationsService
           .show(this.translate.instant('bridgePage.progressMessage'), {
@@ -323,16 +311,17 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.errorsService.catch$(err);
+          this.cdr.detectChanges();
         }
       );
   }
 
   public approveTrade() {
-    let approveInProgressSubscription$: Subscription;
+    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
 
+    let approveInProgressSubscription$: Subscription;
     const bridgeTradeRequest: BridgeTradeRequest = {
       onTransactionHash: () => {
-        this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
         this.cdr.detectChanges();
         approveInProgressSubscription$ = this.notificationsService
           .show(this.translate.instant('bridgePage.approveProgressMessage'), {
@@ -367,6 +356,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           approveInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
           this.errorsService.catch$(err);
+          this.cdr.detectChanges();
         }
       );
   }
