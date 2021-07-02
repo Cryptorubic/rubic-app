@@ -98,7 +98,10 @@ export class InstantTradesApiService {
       .get(instantTradesApiRoutes.getData, { user: walletAddress.toLowerCase() })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
-          swaps.map(swap => this.parseTradeApiToTableTrade(swap))
+          swaps
+            // @ts-ignore TODO hotfix
+            .filter(swap => swap.status !== 'not_in_mempool')
+            .map(swap => this.parseTradeApiToTableTrade(swap))
         )
       );
   }
