@@ -21,6 +21,8 @@
         [status]="tradeStatus"
         [formService]="swapFormService"
         [fromAmount]="fromAmount"
+        [isBridgeNotSupported]="!isBridgeSupported"
+        [isTronAddressNotSet]="!toWalletAddress && toBlockchain === BLOCKCHAIN_NAME.TRON"
         (swapClick)="createTrade()"
         (approveClick)="approveTrade()"
       ></app-swap-button>
@@ -40,12 +42,6 @@
           >{{ toWalletAddress }}</a
         >
         {{ 'common.address' | translate }}</span
-      >
-
-      <span
-        class="terms-and-conditions__error"
-        *ngIf="!toWalletAddress && toBlockchain === BLOCKCHAIN_NAME.TRON"
-        >You must set TRON wallet address in settings parameters</span
       >
 
       <a [href]="whatIsBlockchain.href" target="_blank"

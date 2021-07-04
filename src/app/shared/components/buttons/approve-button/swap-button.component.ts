@@ -8,11 +8,12 @@ import {
   INJECTOR,
   Injector,
   ChangeDetectorRef,
-  OnInit
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -27,7 +28,9 @@ import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
-  WRONG_BLOCKCHAIN = 'Wrong network'
+  WRONG_BLOCKCHAIN = 'Wrong user network',
+  NOT_SUPPORTED_BRIDGE = 'Not supported bridge',
+  TRON_WALLET_ADDRESS = 'TRON wallet address is not set'
 }
 
 @Component({
@@ -36,7 +39,7 @@ enum ERROR_TYPE {
   styleUrls: ['./swap-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SwapButtonComponent implements OnInit {
+export class SwapButtonComponent implements OnInit, OnDestroy {
   @Input() needApprove: boolean;
 
   @Input() status: TRADE_STATUS;
@@ -46,6 +49,14 @@ export class SwapButtonComponent implements OnInit {
   @Input() set fromAmount(value: BigNumber) {
     this._fromAmount = value;
     this.checkInsufficientFundsError();
+  }
+
+  @Input() set isBridgeNotSupported(value: boolean) {
+    this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE] = value;
+  }
+
+  @Input() set isTronAddressNotSet(value: boolean) {
+    this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
   }
 
   @Output() approveClick = new EventEmitter<void>();
@@ -60,13 +71,25 @@ export class SwapButtonComponent implements OnInit {
 
   public loading: boolean;
 
-  public errorType: Record<ERROR_TYPE, boolean>;
+  public errorType: Record<ERROR_TYPE, boolean> = Object.values(ERROR_TYPE).reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: false
+    }),
+    {}
+  ) as Record<ERROR_TYPE, boolean>;
 
   private isTestingMode: boolean;
 
   private fromToken: TokenAmount;
 
   private _fromAmount: BigNumber;
+
+  private useTestingModeSubscription$: Subscription;
+
+  private formServiceSubscription$: Subscription;
+
+  private providerConnectorServiceSubscription$: Subscription;
 
   get hasError(): boolean {
     return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);
@@ -79,6 +102,12 @@ export class SwapButtonComponent implements OnInit {
     }
     if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
       return `Choose ${this.fromToken.blockchain} network`;
+    }
+    if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
+      return `Choose supported bridge`;
+    }
+    if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
+      return `Set TRON address in settings`;
     }
   }
 
@@ -98,26 +127,28 @@ export class SwapButtonComponent implements OnInit {
 
     this.loading = true;
 
-    this.errorType = Object.values(ERROR_TYPE).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: false
-      }),
-      {}
-    ) as Record<ERROR_TYPE, boolean>;
-
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      this.isTestingMode = isTestingMode;
-    });
+    this.useTestingModeSubscription$ = this.useTestingModeService.isTestingMode.subscribe(
+      isTestingMode => {
+        this.isTestingMode = isTestingMode;
+      }
+    );
 
     this.setFormValues(this.formService.commonTrade.controls.input.value);
-    this.formService.commonTrade.controls.input.valueChanges.subscribe(form => {
-      this.setFormValues(form);
-    });
+    this.formServiceSubscription$ =
+      this.formService.commonTrade.controls.input.valueChanges.subscribe(form => {
+        this.setFormValues(form);
+      });
 
-    this.providerConnectorService.$networkChange.subscribe(() => {
-      this.checkWrongBlockchainError();
-    });
+    this.providerConnectorServiceSubscription$ =
+      this.providerConnectorService.$networkChange.subscribe(() => {
+        this.checkWrongBlockchainError();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.useTestingModeSubscription$.unsubscribe();
+    this.formServiceSubscription$.unsubscribe();
+    this.providerConnectorServiceSubscription$.unsubscribe();
   }
 
   private setFormValues(form: ISwapFormInput): void {
@@ -132,19 +163,22 @@ export class SwapButtonComponent implements OnInit {
 
   private checkInsufficientFundsError(): void {
     if (!this._fromAmount || !this.fromToken) {
+      this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.loading = false;
+      this.cdr.markForCheck();
       return;
     }
 
     if (this.fromToken.amount.isNaN()) {
       this.loading = true;
+      this.cdr.markForCheck();
       return;
     }
 
     this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = this.fromToken.amount.lt(this._fromAmount);
 
     this.loading = false;
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   private checkWrongBlockchainError(): void {
@@ -162,7 +196,7 @@ export class SwapButtonComponent implements OnInit {
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] = false;
     }
 
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   public onLogin() {

@@ -126,12 +126,12 @@ export class QueryParamsService {
 
           const findFromToken$ = this.getTokenBySymbolOrAddress(
             tokens,
-            protectedParams.from || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromBlockchain],
+            protectedParams?.from,
             fromBlockchain
           );
           const findToToken$ = this.getTokenBySymbolOrAddress(
             tokens,
-            protectedParams.to || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toBlockchain],
+            protectedParams?.to,
             toBlockchain
           );
 
@@ -181,7 +181,7 @@ export class QueryParamsService {
           ? queryParams.toChain
           : QueryParamsService.DEFAULT_PARAMETERS.swap.toChain;
 
-        let newParams =
+        const newParams =
           queryParams.from || queryParams.to
             ? {
                 ...queryParams,
@@ -219,13 +219,8 @@ export class QueryParamsService {
               )
           )
         ) {
-          newParams = {
-            from: QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain],
-            to: QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain],
-            amount: queryParams.amount || QueryParamsService.DEFAULT_PARAMETERS.swap.amount,
-            fromChain,
-            toChain: fromChain
-          };
+          newParams.from = null;
+          newParams.to = null;
         }
         return newParams;
       })
