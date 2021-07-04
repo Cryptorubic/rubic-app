@@ -26,10 +26,12 @@
     <footer class="instant-trade-bottom-form__footer"></footer>
   </ng-container>
 </div>
-<div class="instant-trade-bottom-form__swap" >
+<div class="instant-trade-bottom-form__swap">
   <app-swap-button
     [needApprove]="needApprove"
     [status]="tradeStatus"
+    [formService]="swapFormService"
+    [fromAmount]="fromAmount"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
     (loginEvent)="calculateTrades()"

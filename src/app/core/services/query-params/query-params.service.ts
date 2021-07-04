@@ -31,8 +31,7 @@ export class QueryParamsService {
       },
       to: {
         [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',
-        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BRBC',
-        [BLOCKCHAIN_NAME.POLYGON]: 'CAKE'
+        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BRBC'
       },
       amount: '1'
     }
@@ -125,19 +124,16 @@ export class QueryParamsService {
           const fromBlockchain = protectedParams.fromChain as BLOCKCHAIN_NAME;
           const toBlockchain = protectedParams.toChain as BLOCKCHAIN_NAME;
 
-          const findFromToken$ = protectedParams.from
-            ? this.getTokenBySymbolOrAddress(tokens, protectedParams.from, fromBlockchain).pipe(
-                map(
-                  token => token || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromBlockchain]
-                )
-              )
-            : of(null);
-
-          const findToToken$ = protectedParams.from
-            ? this.getTokenBySymbolOrAddress(tokens, protectedParams.to, toBlockchain).pipe(
-                map(token => token || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toBlockchain])
-              )
-            : of(null);
+          const findFromToken$ = this.getTokenBySymbolOrAddress(
+            tokens,
+            protectedParams.from || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromBlockchain],
+            fromBlockchain
+          );
+          const findToToken$ = this.getTokenBySymbolOrAddress(
+            tokens,
+            protectedParams.to || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toBlockchain],
+            toBlockchain
+          );
 
           return forkJoin([findFromToken$, findToToken$]).pipe(
             map(([fromToken, toToken]) => ({
@@ -241,6 +237,10 @@ export class QueryParamsService {
     token: string,
     chain: BLOCKCHAIN_NAME
   ): Observable<TokenAmount> {
+    if (!token) {
+      return of(null);
+    }
+
     return this.isAddress(token, chain)
       ? this.searchTokenByAddress(tokens, token, chain)
       : of(this.searchTokenBySymbol(tokens, token, chain));
@@ -260,7 +260,7 @@ export class QueryParamsService {
     }
 
     return similarTokens.size > 1
-      ? similarTokens.find(token => token.usedInIframe)
+      ? similarTokens.find(token => token.usedInIframe) || similarTokens.first()
       : similarTokens.first();
   }
 

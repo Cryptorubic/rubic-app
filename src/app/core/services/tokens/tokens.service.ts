@@ -103,7 +103,7 @@ export class TokensService {
     this._tokens.next(
       tokens.map(token => ({
         ...token,
-        amount: new BigNumber(0)
+        amount: new BigNumber(NaN)
       }))
     );
   }
