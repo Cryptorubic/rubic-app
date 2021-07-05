@@ -16,7 +16,6 @@ import {
 } from 'src/app/features/cross-chain-swaps-page/crypto-tap-page/models/CryptoTapTrade';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
-import { MatDialog } from '@angular/material/dialog';
 import { ErrorsService } from 'src/app/core/services/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
