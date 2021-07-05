@@ -134,13 +134,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     this.selectedFromAmount = formValue.fromAmount;
 
     if (this._supportedTokens) {
-      this.setAvailableTokens('from');
-      this.setAvailableTokens('to');
-
-      setTimeout(() => {
+      /* this.setAvailableTokens('from');
+      this.setAvailableTokens('to'); */
+      /* setTimeout(() => {
         this.setNewSelectedToken('from', formValue.fromToken);
         this.setNewSelectedToken('to', formValue.toToken);
-      });
+      }); */
     }
   }
 
@@ -222,14 +221,18 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
 
     const token = this.selectedToken[tokenType];
-    this.selectedToken[tokenType] = this._supportedTokens[token.blockchain][token.blockchain].find(
-      supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
-    );
+    const supportedTokenWithBalance = this._supportedTokens[token.blockchain][
+      token.blockchain
+    ].find(supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase());
 
-    const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
-    this.swapFormService.commonTrade.controls.input.patchValue({
-      [formKey]: this.selectedToken[tokenType]
-    });
+    if (supportedTokenWithBalance) {
+      this.selectedToken[tokenType] = supportedTokenWithBalance;
+
+      const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
+      this.swapFormService.commonTrade.controls.input.patchValue({
+        [formKey]: this.selectedToken[tokenType]
+      });
+    }
   }
 
   private setNewSelectedToken(tokenType: 'from' | 'to', token: TokenAmount): void {
