@@ -62,14 +62,16 @@
       ></app-crypto-tap-discount>
     </app-amount-estimated>
 
-    <app-swap-button
-      [needApprove]="needApprove"
-      [status]="tradeStatus"
-      [formService]="cryptoTapFormService"
-      [fromAmount]="fromAmount"
-      (approveClick)="approveTrade()"
-      (swapClick)="createTrade()"
-    ></app-swap-button>
+    <div class="swaps-form__button-container">
+      <app-swap-button
+        [needApprove]="needApprove"
+        [status]="tradeStatus"
+        [formService]="cryptoTapFormService"
+        [fromAmount]="fromAmount"
+        (approveClick)="approveTrade()"
+        (swapClick)="createTrade()"
+      ></app-swap-button>
+    </div>
   </main>
 </div>
 

@@ -75,10 +75,14 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
   }
 }
 
+@include b($desktop) {
+  .rubic-header {
+    padding: 21px 20px 19px;
+  }
+}
+
 @include b($mobile-sm) {
   .rubic-header {
-    padding: 21px 15px 19px;
-
     &__main {
       flex-grow: 1;
       justify-content: space-between;
