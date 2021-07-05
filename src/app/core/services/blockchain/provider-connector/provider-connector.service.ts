@@ -124,16 +124,6 @@ export class ProviderConnectorService {
         );
         break;
       }
-      case WALLET_NAME.METAMASK: {
-        this.provider = new MetamaskProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService
-        );
-        await (this.provider as MetamaskProvider).setupDefaultValues();
-        break;
-      }
       case WALLET_NAME.WALLET_CONNECT: {
         this.provider = new WalletConnectProvider(
           this.web3,
@@ -162,7 +152,7 @@ export class ProviderConnectorService {
       this.web3,
       this.$networkChangeSubject,
       this.$addressChangeSubject,
-      this.errorsService
+      this.errorService
     ) as PrivateProvider;
     this.providerName = WALLET_NAME.METAMASK;
   }
