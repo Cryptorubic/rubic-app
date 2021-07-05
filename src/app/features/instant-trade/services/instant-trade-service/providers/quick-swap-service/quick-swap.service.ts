@@ -74,6 +74,7 @@ export class QuickSwapService implements ItProvider {
       onTransactionHash?: (hash: string) => void;
     }
   ): Promise<void> {
+    await this.commonUniswap.checkSettings(this.blockchain);
     return this.commonUniswap.approve(tokenAddress, options);
   }
 

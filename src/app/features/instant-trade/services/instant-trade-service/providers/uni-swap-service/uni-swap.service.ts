@@ -154,6 +154,7 @@ export class UniSwapService {
       onTransactionHash?: (hash: string) => void;
     }
   ): Promise<void> {
+    await this.commonUniswap.checkSettings(this.blockchain);
     return this.commonUniswap.approve(tokenAddress, options);
   }
 
@@ -175,7 +176,7 @@ export class UniSwapService {
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + this.timeCoefficient * this.settings.deadline;
+    const deadline = Math.floor(Date.now() / 1000) + this.settings.deadline;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 

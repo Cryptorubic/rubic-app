@@ -547,7 +547,7 @@
   },
   "notifications": {
     "tradeInProgress": "진행중인 거래",
-    "successfulTrade": "성공적인 거래",
+    "successfulTradeTitle": "성공적인 거래",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인"
   }

@@ -13,6 +13,7 @@ import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/br
 import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -260,18 +261,24 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       toToken: fromToken,
       fromToken: toToken,
       toBlockchain: fromBlockchain,
-      fromBlockchain: toBlockchain,
-      fromAmount: toAmount
-    } as SwapFormInput;
+      fromBlockchain: toBlockchain
+    } as Partial<SwapFormInput>;
+    if (toAmount) {
+      revertData.fromAmount = toAmount;
+    }
     // Remove null control values.
-    const formData = Object.fromEntries(Object.entries(revertData).filter(el => Boolean(el[1])));
-    formControls.input.patchValue(formData);
+    formControls.input.patchValue(revertData);
   }
 
   public async refreshTrade(): Promise<void> {
-    this.loadingStatus = 'refreshing';
-    await this.itForm?.calculateTrades();
-    this.loadingStatus = 'stopped';
-    setTimeout(() => (this.loadingStatus = ''), 1000);
+    if (
+      this.itForm.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
+      this.itForm.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
+    ) {
+      this.loadingStatus = 'refreshing';
+      await this.itForm?.calculateTrades();
+      this.loadingStatus = 'stopped';
+      setTimeout(() => (this.loadingStatus = ''), 1000);
+    }
   }
 }
