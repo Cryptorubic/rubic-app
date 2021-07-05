@@ -9,7 +9,7 @@ describe('LogoutConfirmModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientModule, MatDialogModule],
+      imports: [HttpClientModule],
       declarations: [LogoutConfirmModalComponent]
     }).compileComponents();
   });

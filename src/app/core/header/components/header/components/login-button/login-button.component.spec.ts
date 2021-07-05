@@ -1,6 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { LoginButtonComponent } from './login-button.component';
@@ -11,7 +10,7 @@ describe('LoginButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientModule, MatDialogModule, TranslateModule.forRoot()],
+      imports: [HttpClientModule, TranslateModule.forRoot()],
       declarations: [LoginButtonComponent]
     }).compileComponents();
   });
