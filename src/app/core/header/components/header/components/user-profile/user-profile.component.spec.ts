@@ -1,6 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatMenuModule } from '@angular/material/menu';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -12,7 +11,7 @@ describe('UserProfileComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientModule, MatMenuModule, TranslateModule.forRoot()],
+      imports: [RouterTestingModule, HttpClientModule, TranslateModule.forRoot()],
       declarations: [UserProfileComponent]
     }).compileComponents();
   });
