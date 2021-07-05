@@ -13,13 +13,14 @@
   &__nav {
     display: flex;
     flex-wrap: wrap;
-    grid-gap: 21px;
     align-items: center;
     justify-content: center;
     margin-bottom: 26px;
   }
 
   &__link {
+    margin-right: 21px;
+
     transition: 0.1s ease-in-out;
 
     img {
@@ -31,6 +32,10 @@
 
     &:hover {
       transform: scale(1.2);
+    }
+
+    &:last-child {
+      margin-right: 0;
     }
   }
 
